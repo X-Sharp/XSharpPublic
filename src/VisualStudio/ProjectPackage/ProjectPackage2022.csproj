@@ -172,13 +172,10 @@
     <Compile Include="List\TaskList\TaskListManager.cs" />
     <Compile Include="List\TaskList\TaskListProvider.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="Nodes\XSharpDependenciesContainerNode.cs" />
     <Compile Include="Nodes\XSharpFrameworkContainerNode.cs" />
     <Compile Include="Nodes\XSharpIncludeContainerNode.cs" />
     <Compile Include="Nodes\XSharpProjectNodeReferenceManager.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
-    <Compile Include="Nodes\XSharpSDKAssemblyReferenceNode.cs" />
-    <Compile Include="Nodes\XSharpSDKProjectNode.cs" />
     <Compile Include="OptionsPages\BaseOptionsModel.cs" />
     <Compile Include="OptionsPages\BaseOptionsPage.cs">
       <SubType>Component</SubType>

@@ -44,14 +44,7 @@ namespace XSharp.Project
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             XSharpProjectNode project;
-            if (BuildProject.Imports.Where(i => i.SdkResult != null).Any())
-            {
-                project = new XSharpSDKProjectNode(this.package);   
-            }
-            else
-            {
-                project = new XSharpProjectNode(this.package);
-            }
+            project = new XSharpProjectNode(this.package);
             IOleServiceProvider provider = null;
             var serviceProvider = this.package as IServiceProvider;
             // ProjectPackage already switches to UI thread inside GetService

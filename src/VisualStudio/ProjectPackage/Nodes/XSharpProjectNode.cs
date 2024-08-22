@@ -162,7 +162,7 @@ namespace XSharp.Project
                 var prop = e.NewValue;
                 if (!Enum.TryParse(prop, true, out _dialect))
                 {
-                    _dialect = VsParser.XSharpDialect.Core;
+                    _dialect = XDialect.Core;
                 }
                 _dialectIsCached = true;
             }
@@ -1688,12 +1688,6 @@ namespace XSharp.Project
 
 #region IXSharpProject Interface
 
-        bool _enforceSelf = false;
-        public bool EnforceSelf
-        {
-            get => _enforceSelf;
-            set => _enforceSelf = value;
-        }
         public void RunInForeGroundThread(Action a)
         {
 
@@ -2163,9 +2157,9 @@ namespace XSharp.Project
             }
         }
         private bool _dialectIsCached = false;
-        private VsParser.XSharpDialect _dialect;
+        private XDialect _dialect;
 
-        public VsParser.XSharpDialect Dialect
+        public XDialect Dialect
         {
             get
             {
@@ -2175,7 +2169,7 @@ namespace XSharp.Project
                 var prop = GetProjectProperty(XSharpProjectFileConstants.Dialect);
                 if (!Enum.TryParse(prop, true, out _dialect))
                 {
-                    _dialect = VsParser.XSharpDialect.Core;
+                    _dialect = XDialect.Core;
                 }
                 _dialectIsCached = true;
                 return _dialect;
@@ -2222,14 +2216,14 @@ namespace XSharp.Project
             }
         }
          internal XSharpParseOptions CachedOptions;
-        public XSharpParseOptions ParseOptions
+        public XParseOptions ParseOptions
         {
             get
             {
                 if (CachedOptions != null)
                     return CachedOptions;
                 if (this.IsClosed || XSolution.IsClosing)
-                    return XSharpParseOptions.Default;
+                    return XParseOptions.Default;
                 try
                 {
                     var config = this.CurrentConfig;

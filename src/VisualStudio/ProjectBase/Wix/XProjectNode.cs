@@ -17,6 +17,7 @@ using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.VisualStudio.Shell;
+using XSharp.VisualStudio.Project;
 
 namespace Microsoft.VisualStudio.Project
 {

@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-namespace Microsoft.VisualStudio.Project
+namespace XSharp.VisualStudio.Project
 {
     using Microsoft.Build.Tasks;
     using System;

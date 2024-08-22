@@ -14,7 +14,7 @@ using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using XSharp;
-
+using XSharp.VisualStudio.Project;
 namespace Microsoft.VisualStudio.Project
 {
     public class XBuildMacroCollection : ICollection, IEnumerable<XBuildMacroCollection.MacroNameValuePair>

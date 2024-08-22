@@ -27,7 +27,7 @@ namespace XSharp.Project
 
         private XSharpProjectNode _prjNode;
         internal ConfigCanonicalName ConfigCanonicalName { get; set; }
-        public XSharpParseOptions ParseOptions { get; private set;}
+        public XParseOptions ParseOptions { get; private set;}
         public XSharpProjectOptions(XSharpProjectNode prjNode) : base()
         {
             _prjNode = prjNode;
@@ -178,7 +178,7 @@ namespace XSharp.Project
                 options.Add("nostddefs-");
             }
 
-            ParseOptions = XSharpParseOptions.FromVsValues(options);
+            ParseOptions = XParseOptions.FromVsValues(options);
             if (this.ConfigCanonicalName != null && ConfigCanonicalName.ConfigName.ToUpper() == "DEBUG")
             {
                 // dirty trick to set property with private setter
@@ -190,7 +190,6 @@ namespace XSharp.Project
 
             }
             _prjNode.ProjectModel.ResetParseOptions(ParseOptions);
-            _prjNode.EnforceSelf = _prjNode.GetLogicProjectProperty(XSharpProjectFileConstants.EnforceSelf);
         }
 
     }

@@ -34,7 +34,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
     PROPERTY HasParseErrors AS LOGIC AUTO
 
     PRIVATE PROPERTY ProjectNode as IXSharpProject GET SELF:_file?:Project?:ProjectNode
-    PRIVATE PROPERTY ParseOptions AS XSharpParseOptions GET SELF:ProjectNode?:ParseOptions
+    PRIVATE PROPERTY ParseOptions AS XParseOptions GET SELF:ProjectNode?:ParseOptions
 
     PROPERTY SourcePath AS STRING AUTO  // Save it because calculation the XAML source path is a bit expensive
     PROPERTY IncludeFiles AS IList<string>      GET _includeFiles
@@ -138,9 +138,9 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
             startLine   -= nLines
             sb:AppendLine(source)
             sb:AppendLine()
-            IF td:ClassType == XSharpDialect.XPP
+            IF td:ClassType == XDialect.XPP
                 sb:AppendLine("ENDCLASS")
-            ELSEIF td:ClassType == XSharpDialect.FoxPro
+            ELSEIF td:ClassType == XDialect.FoxPro
                 sb:AppendLine("ENDDEFINE")
             ELSE
                 sb:AppendLine("END CLASS")

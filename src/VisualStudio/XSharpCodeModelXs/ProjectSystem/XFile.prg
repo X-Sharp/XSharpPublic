@@ -63,7 +63,7 @@ BEGIN NAMESPACE XSharpModel
                 RETURN List<XSourceEntity>{}
             END GET
         END PROPERTY
-        PROPERTY Dialect AS XSharpDialect GET _project:Dialect
+        PROPERTY Dialect AS XDialect GET _project:Dialect
         PROPERTY Virtual AS LOGIC AUTO
 
         METHOD AddDefaultUsings() AS VOID

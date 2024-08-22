@@ -19,10 +19,10 @@ namespace XSharp.LanguageService
     internal class CompletionHelpers
     {
         internal IGlyphService _glyphService = null;
-        private XSharpDialect _dialect;
+        private XDialect _dialect;
         private XFile _file;
         private bool _settingIgnoreCase;
-        internal CompletionHelpers(XSharpDialect dialect, IGlyphService glyphService, XFile file, bool ignoreCase)
+        internal CompletionHelpers(XDialect dialect, IGlyphService glyphService, XFile file, bool ignoreCase)
         {
             _dialect = dialect;
             _glyphService = glyphService;

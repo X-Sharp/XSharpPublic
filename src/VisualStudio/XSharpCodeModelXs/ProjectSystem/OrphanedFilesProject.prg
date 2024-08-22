@@ -20,20 +20,20 @@ BEGIN NAMESPACE XSharpModel
         #region properties
         PROPERTY IntermediateOutputPath AS STRING GET ""
         PROPERTY OutputFile AS STRING GET ""
-        PROPERTY ParseOptions AS XSharpParseOptions GET _parseOptions
+        PROPERTY ParseOptions AS XParseOptions GET _parseOptions
         PROPERTY PrefixClassesWithDefaultNamespace AS LOGIC GET FALSE
         PROPERTY Project AS XProject AUTO
         PROPERTY RootNameSpace AS STRING GET ""
         PROPERTY Url AS STRING GET OrphanName+".xsproj"
-        PROPERTY Dialect AS XSharpDialect GET XSharpDialect.Core
+        PROPERTY Dialect AS XDialect GET XDialect.Core
         PROPERTY EnforceSelf as LOGIC GET FALSE
         PROPERTY Name  AS STRING GET OrphanName
         #endregion
-        PRIVATE _parseOptions AS XSharpParseOptions
+        PRIVATE _parseOptions AS XParseOptions
         CONSTRUCTOR()
             VAR options := List<STRING>{}
             options.Add("dialect:Core")
-            _parseOptions   := XSharpParseOptions.FromVsValues(options)
+            _parseOptions   := XParseOptions.FromVsValues(options)
 
         METHOD AddFileNode(strFileName AS STRING) AS VOID
             RETURN

@@ -167,8 +167,8 @@ BEGIN NAMESPACE XSharpModel
             END SWITCH
         RETURN FALSE
 
-        STATIC METHOD HasReturnType( SELF elementKind AS Kind, inDialect AS XSharpDialect) AS LOGIC
-            IF inDialect == XSharpDialect.FoxPro .and. elementKind == Kind.Procedure
+        STATIC METHOD HasReturnType( SELF elementKind AS Kind, inDialect AS XDialect) AS LOGIC
+            IF inDialect == XDialect.FoxPro .and. elementKind == Kind.Procedure
                 RETURN TRUE
             ENDIF
         RETURN HasReturnType(elementKind)
@@ -206,7 +206,7 @@ BEGIN NAMESPACE XSharpModel
             END SWITCH
         RETURN FALSE
 
-        STATIC METHOD IsClassMember( SELF elementKind AS Kind, inDialect AS XSharpDialect ) AS LOGIC
+        STATIC METHOD IsClassMember( SELF elementKind AS Kind, inDialect AS XDialect ) AS LOGIC
             SWITCH elementKind
                 CASE Kind.Constructor
                 CASE Kind.Destructor
@@ -219,7 +219,7 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.Field
                     RETURN TRUE
                 OTHERWISE
-                    IF ( inDialect == XSharpDialect.FoxPro )
+                    IF ( inDialect == XDialect.FoxPro )
                         SWITCH elementKind
                             CASE Kind.Function
                             CASE Kind.Procedure
@@ -229,12 +229,12 @@ BEGIN NAMESPACE XSharpModel
             END SWITCH
         RETURN FALSE
 
-        STATIC METHOD IsClassMethod( SELF elementKind AS Kind, inDialect AS XSharpDialect ) AS LOGIC
+        STATIC METHOD IsClassMethod( SELF elementKind AS Kind, inDialect AS XDialect ) AS LOGIC
             SWITCH elementKind
                 CASE Kind.Method
                     RETURN TRUE
                 OTHERWISE
-                    IF ( inDialect == XSharpDialect.FoxPro )
+                    IF ( inDialect == XDialect.FoxPro )
                         SWITCH elementKind
                             CASE Kind.Function
                             CASE Kind.Procedure

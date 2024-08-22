@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LanguageService.CodeAnalysis.XSharp;
+using XSharpModel;
 namespace XSharp.CodeDom
 {
     public interface IProjectTypeHelper
@@ -13,7 +14,7 @@ namespace XSharp.CodeDom
         XSharpModel.XSourceTypeSymbol ResolveReferencedType(string name, IList<string> usings);
         XSharpModel.IXTypeSymbol ResolveExternalType(string name, IList<string> usings);
 
-        XSharpParseOptions ParseOptions { get; }
+        XParseOptions ParseOptions { get; }
         string SynchronizeKeywordCase(string code, string fileName);
     }
 }

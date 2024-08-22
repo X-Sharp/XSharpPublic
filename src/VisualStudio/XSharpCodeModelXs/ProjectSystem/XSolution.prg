@@ -146,7 +146,8 @@ BEGIN NAMESPACE XSharpModel
 
 
     INTERNAL STATIC METHOD Add(project AS XProject) AS LOGIC
-        RETURN @@Add(project:Name, project)
+        RETURN XSolution.Add(project:NameId, project)
+
 
     INTERNAL STATIC METHOD Add(projectName AS STRING, project AS XProject) AS LOGIC
         XSettings.Information("XModel.Solution.Add() "+projectName+" "+project.FileName)
@@ -200,6 +201,17 @@ BEGIN NAMESPACE XSharpModel
         NEXT
         RETURN NULL
 
+
+    STATIC METHOD FindProject(projectFile AS STRING, framework as STRING) AS XProject
+        LOCAL project AS XProject
+        projectFile := System.IO.Path.GetFileNameWithoutExtension(projectFile)
+        project := NULL
+        IF _projects:TryGetValue(projectFile+":"+framework, OUT project) .AND. project != NULL
+            RETURN project
+        ENDIF
+        RETURN NULL
+
+
     STATIC METHOD FindProject(projectFile AS STRING) AS XProject
         LOCAL project AS XProject
         projectFile := System.IO.Path.GetFileNameWithoutExtension(projectFile)
@@ -233,7 +245,7 @@ BEGIN NAMESPACE XSharpModel
 
     INTERNAL STATIC METHOD Remove(project AS XProject) AS LOGIC
         IF project != NULL .AND. project:ProjectNode != NULL  .AND. _projects:Count > 0
-            RETURN XSolution.Remove(project:Name)
+            RETURN XSolution.Remove(project:NameId)
         ENDIF
         RETURN FALSE
 

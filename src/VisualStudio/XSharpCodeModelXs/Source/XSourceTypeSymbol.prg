@@ -42,7 +42,7 @@ BEGIN NAMESPACE XSharpModel
          SELF:_basemembers := List<IXMemberSymbol>{}
          SELF:_children    := List<XSourceTypeSymbol>{}
          SELF:_signature   := XTypeSignature{""}
-         SELF:ClassType    := XSharpDialect.Core
+         SELF:ClassType    := XDialect.Core
          SELF:Namespace    := ""
          IF attributes:HasFlag(Modifiers.Static)
             SELF:IsStatic := TRUE
@@ -237,7 +237,7 @@ BEGIN NAMESPACE XSharpModel
          SUPER:CopyValuesFrom(dbresult)
          SELF:Namespace  := dbresult:Namespace
          SELF:Id         := dbresult:IdType
-         SELF:ClassType   := (XSharpDialect) dbresult:ClassType
+         SELF:ClassType   := (XDialect) dbresult:ClassType
 
 
       /// <summary>
@@ -260,7 +260,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Description       AS STRING GET SELF:GetDescription()
       PROPERTY IsPartial         AS LOGIC  GET SELF:_isPartial SET SELF:_isPartial := VALUE
       PROPERTY IsNested          AS LOGIC  GET SELF:Parent IS XSourceTypeSymbol
-      PROPERTY ClassType         AS XSharpDialect AUTO
+      PROPERTY ClassType         AS XDialect AUTO
 
       STATIC METHOD CreateGlobalType(xfile AS XFile) AS XSourceTypeSymbol
          VAR globalType := XSourceTypeSymbol{XLiterals.GlobalName, Kind.Class, Modifiers.Public+Modifiers.Static, TextRange.Empty, TextInterval.Empty, xfile, NULL}
@@ -355,9 +355,9 @@ BEGIN NAMESPACE XSharpModel
          IF element != NULL
              SWITCH element:Kind
              CASE Kind.Class
-                IF element:ClassType == (INT) XSharpDialect.XPP
+                IF element:ClassType == (INT) XDialect.XPP
                    sb:AppendLine("ENDCLASS")
-                ELSEIF element:ClassType == (INT) XSharpDialect.FoxPro
+                ELSEIF element:ClassType == (INT) XDialect.FoxPro
                    sb:AppendLine("ENDDEFINE")
                 ELSE
                    sb:AppendLine("END CLASS")
@@ -373,7 +373,7 @@ BEGIN NAMESPACE XSharpModel
             var tickedName := SELF:TickedName
             if sName:Contains('.') .and. !String.IsNullOrEmpty(SELF:Namespace)
                 // compare full name
-                
+
                 IF SELF:FullName:Equals(sName, StringComparison.OrdinalIgnoreCase)
                     RETURN TRUE
                 ENDIF

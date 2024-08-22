@@ -35,12 +35,10 @@ INTERFACE IXSharpProject
         // Properties
     PROPERTY IntermediateOutputPath AS STRING GET
     PROPERTY OutputFile AS STRING GET
-    PROPERTY ParseOptions AS XSharpParseOptions GET
+    PROPERTY ParseOptions AS XParseOptions GET
     PROPERTY PrefixClassesWithDefaultNamespace AS LOGIC GET
     PROPERTY RootNameSpace AS STRING GET
     PROPERTY Url AS STRING GET
-    PROPERTY Dialect as XSharpDialect GET
-    PROPERTY EnforceSelf as LOGIC GET
 
 END INTERFACE
 

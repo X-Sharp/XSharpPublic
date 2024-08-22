@@ -16,18 +16,20 @@ USING System.Diagnostics
 USING System.Reflection
 USING XSharp.Settings
 
+
 #pragma options ("az", ON)
 BEGIN NAMESPACE XSharpModel
-[DebuggerDisplay("{Name,nq}")];
+[DebuggerDisplay("{NameId,nq}")];
 CLASS XProject
 #region Fields
     // Fields
     PROTECTED _id    := -1                    AS INT64
+    PRIVATE _framework                          AS STRING
     PRIVATE _AssemblyReferences					AS List<XAssembly>
-    PRIVATE _AssemblyDict					        AS XDictionary<INT64 ,XAssembly>
-    PRIVATE _AssemblyTypeCache                    AS XDictionary<STRING, XPETypeSymbol>
-    PRIVATE _parseOptions := NULL					AS XSharpParseOptions
-    PRIVATE _projectNode							AS IXSharpProject
+    PRIVATE _AssemblyDict					    AS XDictionary<INT64 ,XAssembly>
+    PRIVATE _AssemblyTypeCache                  AS XDictionary<STRING, XPETypeSymbol>
+    PRIVATE _parseOptions := NULL			    AS XParseOptions
+    PRIVATE _projectNode						AS IXSharpProject
     PRIVATE _projectOutputDLLs					AS ConcurrentDictionary<STRING, STRING>
     PRIVATE _ReferencedProjects					AS List<XProject>
     PRIVATE _StrangerProjects						AS List<Object>
@@ -55,7 +57,7 @@ CLASS XProject
     PROPERTY FileWalkCompleted                 AS LOGIC AUTO
     PROPERTY FileName                          AS STRING GET iif (_projectNode != null, _projectNode:Url, "")
     PROPERTY HasFiles                          AS LOGIC GET _SourceFilesDict:Keys:Count > 0 .or. _OtherFilesDict:Keys:Count > 0
-
+    PROPERTY Framework                         AS STRING GET _framework
     PROPERTY DependentAssemblyList             AS STRING
     GET
         IF String.IsNullOrEmpty(_dependentAssemblyList)
@@ -103,17 +105,16 @@ CLASS XProject
     END GET
     END PROPERTY
 
-    PROPERTY Dialect                           AS XSharpDialect
+    PROPERTY Dialect                           AS XDialect
     GET
         TRY
-            IF _projectNode != NULL
-                RETURN _projectNode:Dialect
+            IF _parseOptions != NULL
+                RETURN _parseOptions:Dialect
             ENDIF
-            RETURN XSharpDialect.Core
         CATCH e AS Exception
             XSettings.Exception(e,__FUNCTION__)
         END TRY
-        RETURN XSharpDialect.Core
+        RETURN XDialect.Core
 
     END GET
     END PROPERTY
@@ -168,12 +169,13 @@ CLASS XProject
     END PROPERTY
 
     PROPERTY RootNamespace as STRING GET _projectNode:RootNameSpace
+    #endregion
 
-
-
-#endregion
     CONSTRUCTOR(project AS IXSharpProject)
+        SELF(project,"")
+    CONSTRUCTOR(project AS IXSharpProject, framework as string)
         SUPER()
+        SELF:_framework := framework
         SELF:_AssemblyReferences := List<XAssembly>{}
         SELF:_AssemblyTypeCache  := XDictionary<STRING, XPETypeSymbol>{}
         SELF:_unprocessedAssemblyReferences       := List<STRING>{}
@@ -1150,7 +1152,7 @@ CLASS XProject
                 xtype:BaseTypeName    := baseTypeName
                 xtype:CopyValuesFrom(oType)
                 xtype:Namespace   := namespace
-                xtype:ClassType   := (XSharpDialect) oType:ClassType
+                xtype:ClassType   := (XDialect) oType:ClassType
                 VAR xmembers := xtype:XMembers:ToArray()
                 VAR dict := XDictionary<STRING, IList<XSourceMemberSymbol>>{}
                 FOREACH m as XSourceMemberSymbol in xmembers
@@ -1432,6 +1434,16 @@ CLASS XProject
         RETURN _name
     END GET
     END PROPERTY
+    PROPERTY NameId as STRING
+        GET
+            IF String.IsNullOrEmpty(_framework)
+                RETURN _name
+            ENDIF
+            return _name+":"+_framework:ToLower()
+        END GET
+
+    END PROPERTY
+
     PRIVATE _prjNameSpaces AS IList<STRING>
     PRIVATE _lastNameSpaces := DateTime.MinValue AS DateTime
     PROPERTY ProjectNamespaces AS IList<STRING>
@@ -1493,15 +1505,15 @@ CLASS XProject
 
     PROPERTY OtherFiles AS List<STRING> GET SELF:_OtherFilesDict:Keys:ToList()
 
-    METHOD ResetParseOptions(newOptions AS XSharpParseOptions) AS VOID
+    METHOD ResetParseOptions(newOptions AS XParseOptions) AS VOID
         SELF:_parseOptions := newOptions
         RETURN
 
-    PROPERTY ParseOptions AS XSharpParseOptions
+    PROPERTY ParseOptions AS XParseOptions
     GET
         IF SELF:_parseOptions == NULL
             IF SELF:ProjectNode == NULL
-                SELF:_parseOptions := XSharpParseOptions.Default
+                SELF:_parseOptions := XParseOptions.Default
             ELSE
                 SELF:_parseOptions := SELF:ProjectNode:ParseOptions
             ENDIF

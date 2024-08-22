@@ -124,7 +124,7 @@ BEGIN NAMESPACE XSharpModel
             XDatabase.Read(project)
             ModelWalker.AddProject(project)
             FOREACH VAR dbproject  in dbprojectList
-                if String.Compare(dbproject, project:FileName, StringComparison.OrdinalIgnoreCase) == 0
+                if String.Compare(dbproject, project:FileName+":"+project:Framework, StringComparison.OrdinalIgnoreCase) == 0
                     dbprojectList:Remove(dbproject)
                     EXIT
                 ENDIF

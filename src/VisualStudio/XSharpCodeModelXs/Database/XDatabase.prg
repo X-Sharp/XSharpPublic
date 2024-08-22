@@ -24,7 +24,7 @@ STATIC CLASS XDatabase
     STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
-    PRIVATE CONST CurrentDbVersion := 2.0 AS System.Double
+    PRIVATE CONST CurrentDbVersion := 3.0 AS System.Double
 
     STATIC METHOD InitializeMicrosoft() AS VOID
         SQLitePCL.Batteries.Init()
@@ -242,10 +242,10 @@ STATIC CLASS XDatabase
 #endregion
 #region Table Projects
             VAR stmt	:= "CREATE TABLE Projects ("
-            stmt     	+= " Id integer NOT NULL PRIMARY KEY, ProjectFileName text NOT NULL COLLATE NOCASE "
+            stmt     	+= " Id integer NOT NULL PRIMARY KEY, ProjectFileName text NOT NULL COLLATE NOCASE, Framework text NOT NULL COLLATE NOCASE"
             stmt		+= " ) ;"
             stmt	    += "CREATE UNIQUE INDEX Projects_Pk     ON Projects (Id) ;"
-            stmt	    += "CREATE UNIQUE INDEX Projects_Name   ON Projects (ProjectFileName); "
+            stmt	    += "CREATE UNIQUE INDEX Projects_Name   ON Projects (ProjectFileName, Framework); "
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 #endregion
@@ -416,7 +416,7 @@ STATIC CLASS XDatabase
             cmd:Parameters:Clear()
 
 #region views
-            stmt := " CREATE VIEW ProjectFiles AS SELECT fp.IdFile, f.FileName, f.FileType, f.LastChanged, f.Size, fp.IdProject, p.ProjectFileName " + ;
+            stmt := " CREATE VIEW ProjectFiles AS SELECT fp.IdFile, f.FileName, f.FileType, f.LastChanged, f.Size, fp.IdProject, p.ProjectFileName, p.Framework " + ;
                 " FROM Files f JOIN FilesPerProject fp ON f.Id = fp.IdFile JOIN Projects p ON fp.IdProject = P.Id"
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
@@ -452,7 +452,7 @@ STATIC CLASS XDatabase
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
-            stmt := "CREATE VIEW ProjectMembers AS SELECT m.*, p.IdProject, p.FileName, p.ProjectFileName " +;
+            stmt := "CREATE VIEW ProjectMembers AS SELECT m.*, p.IdProject, p.FileName, p.ProjectFileName, p.Framework " +;
                 " FROM TypeMembers m  JOIN ProjectFiles p ON m.IdFile = p.IdFile "
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
@@ -471,7 +471,7 @@ STATIC CLASS XDatabase
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
-            stmt := " CREATE VIEW ProjectCommentTasks AS SELECT c.*, pf.IdProject, pf.ProjectFileName, pf.FileName FROM CommentTasks c" + ;
+            stmt := " CREATE VIEW ProjectCommentTasks AS SELECT c.*, pf.IdProject, pf.ProjectFileName, pf.Framework, pf.FileName FROM CommentTasks c" + ;
                 " JOIN ProjectFiles pf ON c.IdFile = pf.IdFile JOIN Projects p ON pf.IdProject = p.Id"
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
@@ -606,11 +606,12 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR cmd := CreateCommand("SELECT ProjectFileName from Projects", oConn)
+                    USING VAR cmd := CreateCommand("SELECT DISTINCT ProjectFileName, TargetFramework from Projects", oConn)
                     USING VAR rdr := cmd:ExecuteReader()
                     DO WHILE rdr:Read()
-                        VAR name := rdr:GetString(0)
-                        result:Add(name)
+                        VAR name        := rdr:GetString(0)
+                        VAR framework   := rdr:GetString(1)
+                        result:Add(name+":"+framework)
                     ENDDO
                 CATCH e AS Exception
                     Log("Error reading project filenames ")
@@ -626,14 +627,16 @@ STATIC CLASS XDatabase
         IF ! IsDbOpen .OR. String.IsNullOrEmpty(oProject:FileName)
             RETURN
         ENDIF
-        VAR file    := oProject:FileName
+        VAR file        := oProject:FileName
+        var framework   := oProject:Framework
         VAR lUpdated := FALSE
         Log(i"Read Project info for project {file}")
         BEGIN LOCK oConn
             TRY
                 USING VAR cmd := CreateCommand("", oConn)
-                cmd:CommandText := "SELECT Id, ProjectFileName from Projects WHERE ProjectFileName = $file"
+                cmd:CommandText := "SELECT Id, ProjectFileName from Projects WHERE ProjectFileName = $file and Framework = $framework"
                 cmd:Parameters:AddWithValue("$file",file)
+                cmd:Parameters:AddWithValue("$framework",framework)
                 VAR lOk := FALSE
                 BEGIN USING VAR rdr := cmd:ExecuteReader()
                     IF rdr:Read()
@@ -642,7 +645,7 @@ STATIC CLASS XDatabase
                     ENDIF
                 END USING
                 IF ! lOk
-                    cmd:CommandText := "INSERT INTO Projects( ProjectFileName ) values ($file); SELECT last_insert_rowid() "
+                    cmd:CommandText := "INSERT INTO Projects( ProjectFileName, Framework ) values ($file, $framework); SELECT last_insert_rowid() "
                     VAR Id := (INT64) cmd:ExecuteScalar()
                     oProject:Id := Id
                     lUpdated := TRUE
@@ -705,8 +708,15 @@ STATIC CLASS XDatabase
         BEGIN LOCK oConn
             TRY
                 USING VAR cmd := CreateCommand("", oConn)
-                cmd:CommandText := "delete from Projects where ProjectFileName = $file"
+                local cFramework := "" as STRING
+                if cFileName:Contains(":")
+                    VAR parts := cFileName:Split(':')
+                    cFileName := parts[1]
+                    cFramework := parts[2]
+                endif
+                cmd:CommandText := "delete from Projects where ProjectFileName = $file and Framework = $framework"
                 cmd:Parameters:AddWithValue("$file",cFileName)
+                cmd:Parameters:AddWithValue("$framework",cFramework)
                 cmd:ExecuteNonQuery()
             CATCH e as Exception
                 Log("Error deleting project   : "+cFileName)
@@ -1933,6 +1943,7 @@ STATIC CLASS XDatabase
         res:Attributes   := (Modifiers) (INT64) rdr["Attributes"]
         res:FileName     := DbToString(rdr["FileName"])
         res:Project      := DbToString(rdr["ProjectFileName"])
+        res:Framework    := DbToString(rdr["Framework"])
         res:StartLine    := DbToInt(rdr["StartLine"])
         res:StartColumn  := DbToInt(rdr["StartColumn"])
         res:EndLine      := DbToInt(rdr["EndLine"])

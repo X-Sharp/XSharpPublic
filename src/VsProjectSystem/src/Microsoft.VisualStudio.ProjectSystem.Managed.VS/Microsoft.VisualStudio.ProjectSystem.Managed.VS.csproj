@@ -91,6 +91,9 @@
 
   <ItemGroup>
     <None Include="**\*.xlf" />
+    <Compile Remove="XSharp\Packaging\**" />
+    <EmbeddedResource Remove="XSharp\Packaging\**" />
+    <None Remove="XSharp\Packaging\**" />
     <EmbeddedResource Update="ProjectSystem\VS\PropertyPages\PropertyPageResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>PropertyPageResources.Designer.cs</LastGenOutput>
@@ -117,8 +120,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\..\Common\Constants.cs" Link="Constants.cs" />
+    <Compile Include="..\..\..\Common\XSharpConstants.cs" Link="XSharpConstants.cs" />
+    <Compile Include="..\..\..\VisualStudio\ProjectBase\Wix\XProjectFileConstants.cs" Link="XProjectFileConstants.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="WPF" />
-    <Folder Include="XSharp\Packaging\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="XSharp.CodeModel">
+      <HintPath>$(Solutiondir)..\..\Artifacts\Common\Debug\XSharp.CodeModel.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

@@ -61,11 +61,11 @@ using Microsoft.VisualStudio.ProjectSystem.VS;
 
 // X#
 [assembly: ProjectTypeRegistration(
-    projectTypeGuid: ProjectType.XSharp,
+    projectTypeGuid: ProjectType.XSharpCps,
     displayName: "#28",                      // "X#"
     displayProjectFileExtensions: "#29",     // "X# Project Files (*.xsproj);*.xsproj"
     defaultProjectExtension: "xsproj",
-    language: "XSharp",
+    language: XSharp.Constants.LanguageName,
     resourcePackageGuid: XSharpManagedProjectSystemPackage.PackageGuid,
     Capabilities = ProjectTypeCapabilities.XSharp,
     DisableAsynchronousProjectTreeLoad = true,

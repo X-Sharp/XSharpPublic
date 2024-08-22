@@ -18,7 +18,7 @@ namespace Microsoft.VisualStudio
         /// <summary>
         ///     A <see cref="string"/> representing the legacy X# project type based on the native project system
         /// </summary>
-        public const string LegacyXSharp = "AA6C8D78-22FF-423A-9C7C-5F2393824E04";
+        public const string LegacyXSharp = XSharp.XSharpConstants.guidXSharpProjectFactoryString;
 
         /// <summary>
         ///     A <see cref="Guid"/> representing the legacy C# project type based on the native project system 
@@ -28,12 +28,12 @@ namespace Microsoft.VisualStudio
         /// <summary>
         ///     A <see cref="string"/> representing the X# project type based on the Common Project System (CPS).
         /// </summary>
-        public const string XSharp = "AB494DCE-A11B-4583-851E-D4A86775B3F0";
+        public const string XSharpCps = XSharp.XSharpConstants.guidCpsProjectTypeString;
 
         /// <summary>
         ///     A <see cref="Guid"/> representing the X# project type based on the Common Project System (CPS).
         /// </summary>
-        public static readonly Guid XSharpGuid = new(XSharp);
+        public static readonly Guid XSharpGuid = new(XSharpCps);
 
         /// <summary>
         ///     A <see cref="string"/> representing the Visual Basic project type based on the Common Project System (CPS).

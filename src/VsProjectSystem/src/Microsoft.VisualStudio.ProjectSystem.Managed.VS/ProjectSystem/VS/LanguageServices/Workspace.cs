@@ -302,12 +302,20 @@ internal sealed class Workspace : OnceInitializedOnceDisposedUnderLockAsync, IWo
                     hostObject,
                     cancellationToken,);
 #else
-                _context = new XSharpWorkspaceProjectContext(_projectGuid,
-                                _contextId,
-                                languageName,
-                                evaluationData,
-                                hostObject,
-                                cancellationToken);
+                if (languageName == "X#")
+
+                {
+                    _context = new XSharpWorkspaceProjectContext(_projectGuid,
+                                                    _contextId,
+                                                    languageName,
+                                                    evaluationData,
+                                                    hostObject,
+                                                    cancellationToken);
+                }
+                else
+                { 
+                    _context = null;
+                }
 #endif
                 evaluationData.Release();
 

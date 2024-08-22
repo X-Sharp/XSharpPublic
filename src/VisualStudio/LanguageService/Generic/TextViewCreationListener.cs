@@ -128,7 +128,7 @@ namespace XSharp.LanguageService
                 {
                     dropdown = new XSharpDropDownClient(dropDownBarManager, file);
                     dropDownBarManager.RemoveDropdownBar();
-                    dropDownBarManager.AddDropdownBar(2, dropdown);
+                    dropDownBarManager.AddDropdownBar(3, dropdown);
                     _dropDowns.Add(fileName, dropdown);
                     dropdown.addTextView(textView, textViewAdapter);
                 }

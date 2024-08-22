@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Text.Tagging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using XSharp.LanguageService.Commands;
 using XSharpModel;
@@ -77,6 +78,12 @@ namespace XSharp.LanguageService
                         {
                             if (foundSpans[i].Contains(currentChar))
                             {
+                                if (foundSpans[i].GetText().ToLower() == "end" && i >= foundSpans.Count - 2)
+                                {
+                                    // end should be the word after the END keyword. This is already selected
+                                    break;
+
+                                }
                                 start = foundSpans[i].Start;
                                 target = end = foundSpans[i + 1].End;
                                 break;
@@ -170,6 +177,7 @@ namespace XSharp.LanguageService
                 doc.TextView.Selection.Select(selection, reversed);
             }
             doc.TextView.Caret.MoveTo(target);
+            doc.TextView.ViewScroller.EnsureSpanVisible(new SnapshotSpan(target, 1));
         }
 
         private static void GotoDefinition(DocumentView doc)

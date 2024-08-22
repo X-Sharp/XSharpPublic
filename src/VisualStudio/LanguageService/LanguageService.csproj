@@ -63,7 +63,6 @@
     <Compile Include="Commands\GotoDefinition.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\HelpViewer.cs" />
-    <Compile Include="Commands\MyCommands.cs" />
     <Compile Include="Commands\SaveCommand.cs" />
     <Compile Include="Generic\TextViewCreationListener.cs" />
     <Compile Include="LanguageService\XSharpEditorFactory.cs" />
@@ -235,7 +234,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.507</Version>
+      <Version>15.0.522</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.15.0</Version>

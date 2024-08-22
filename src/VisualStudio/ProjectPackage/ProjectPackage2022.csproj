@@ -764,7 +764,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Data.Sqlite">
-      <Version>8.0.1</Version>
+      <Version>8.0.8</Version>
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime</IncludeAssets>
     </PackageReference>
@@ -774,7 +774,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" GeneratePathProperty="true">
-      <Version>2.1.6</Version>
+      <Version>2.1.9</Version>
       <IncludeAssets>all</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.DiaSymReader">

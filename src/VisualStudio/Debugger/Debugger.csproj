@@ -89,7 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.507</Version>
+      <Version>15.0.522</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.DiaSymReader">
       <Version>1.4.0</Version>

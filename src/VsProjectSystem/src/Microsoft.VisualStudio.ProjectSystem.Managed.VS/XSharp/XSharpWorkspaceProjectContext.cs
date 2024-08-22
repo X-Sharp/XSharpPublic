@@ -20,7 +20,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
 {
     internal class XSharpWorkspaceProjectContext : IWorkspaceProjectContext, IXSharpProject
     {
-        public string DisplayName { get; set; }
+        private string _name;
         public Guid Guid { get; set; }
         public Guid ProjectGuid { get; set; }
         public string? ProjectFilePath { get; set; }
@@ -28,15 +28,16 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
         public string? BinOutputPath { get; set; }
         private string ? _IntermediateOutputPath;
         private string? _RootNamespace;
-        private string? _TargetFrameworkVersion;
+        private string? _version;
         private string? _TargetFrameworkIdentifier;
         public bool IsPrimary { get; set; }
+        public string DisplayName { get; set; }
         private IVsHierarchy? _vsHierarchy;
         private readonly Stack<BatchScope> _batchScopes = new();
         private XParseOptions _parseOptions = XParseOptions.Default;
         private XProject? _xproject;
 
-        public string FrameworkVersion => _TargetFrameworkVersion ?? "";
+        public string FrameworkVersion => _version ?? "";
         public string FrameworkIdentifier => _TargetFrameworkIdentifier ?? "";
         internal XSharpWorkspaceProjectContext(Guid projectGuid, string? contextId, string languageName, 
             EvaluationData evaluationData, object? hostObject, CancellationToken cancellationToken)
@@ -44,20 +45,21 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
             Guid = Guid.NewGuid();
             ProjectGuid = projectGuid;
             BinOutputPath = evaluationData.GetRequiredPropertyAbsolutePathValue(BuildPropertyNames.TargetPath);
-            DisplayName = evaluationData.GetPropertyValue(BuildPropertyNames.AssemblyName);
+            _name = evaluationData.GetPropertyValue(BuildPropertyNames.AssemblyName);
             EnforceSelf = evaluationData.GetPropertyValue(XSharpProjectFileConstants.EnforceSelf)?.ToLower() == "true";
             ProjectFilePath = evaluationData.GetPropertyValue(BuildPropertyNames.MSBuildProjectFullPath);
             _IntermediateOutputPath = evaluationData.GetPropertyValue(XSharpProjectFileConstants.IntermediateOutputPath);
             _RootNamespace = evaluationData.GetPropertyValue(XSharpProjectFileConstants.RootNamespace);
-            _TargetFrameworkVersion = evaluationData.GetPropertyValue(XSharpProjectFileConstants.TargetFrameworkVersion);
+            _version = evaluationData.GetPropertyValue(XSharpProjectFileConstants.TargetFrameworkVersion);
+            DisplayName = $"{_name} ({_version})";
             LastDesignTimeBuildSucceeded = true;
             IsPrimary = true;
             _vsHierarchy = hostObject as IVsHierarchy;
             Id = ProjectId.CreateNewId(DisplayName);
-            _xproject = XSolution.FindProject(ProjectFilePath, _TargetFrameworkVersion);
+            _xproject = XSolution.FindProject(ProjectFilePath, _version);
             if (_xproject is null)
             {
-                _xproject = new XProject(this, _TargetFrameworkVersion);
+                _xproject = new XProject(this, _version);
             }
             else
             {
@@ -80,6 +82,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
         public string Url => ProjectFilePath ?? "";
 
         public XDialect Dialect => _parseOptions.Dialect;
+
 
         public bool EnforceSelf { get; set; }
 

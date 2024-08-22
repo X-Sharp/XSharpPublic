@@ -32,7 +32,8 @@ INTERFACE IXSharpProject
     METHOD SynchronizeKeywordCase(code as STRING, fileName as STRING) AS STRING
     METHOD RunInForeGroundThread( a as Action) AS VOID
 
-        // Properties
+    // Properties
+    PROPERTY DisplayName AS STRING GET
     PROPERTY IntermediateOutputPath AS STRING GET
     PROPERTY OutputFile AS STRING GET
     PROPERTY ParseOptions AS XParseOptions GET

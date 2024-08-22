@@ -259,6 +259,7 @@ BEGIN NAMESPACE XSharpModel
     STATIC METHOD CreateOrphanedFilesProject() AS VOID
         var prj := OrphanedFilesProject{}
         _orphanedFilesProject := XProject{prj}
+        _orphanedFilesProject:Name := prj:Name
         VAR projectNode := (OrphanedFilesProject)(_orphanedFilesProject:ProjectNode)
         projectNode:Project := _orphanedFilesProject
         IF _projects:TryAdd(prj:Name, _orphanedFilesProject)

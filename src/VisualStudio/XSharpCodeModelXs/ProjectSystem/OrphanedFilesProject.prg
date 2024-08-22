@@ -27,7 +27,8 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY Url AS STRING GET OrphanName+".xsproj"
         PROPERTY Dialect AS XDialect GET XDialect.Core
         PROPERTY EnforceSelf as LOGIC GET FALSE
-        PROPERTY Name  AS STRING GET OrphanName
+        PROPERTY DisplayName  AS STRING GET "Miscellaneous Files"
+        PROPERTY Name as STRING GET OrphanName
         #endregion
         PRIVATE _parseOptions AS XParseOptions
         CONSTRUCTOR()

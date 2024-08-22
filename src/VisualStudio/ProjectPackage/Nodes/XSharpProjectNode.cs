@@ -1735,7 +1735,7 @@ namespace XSharp.Project
         }
 
 
-
+        public string DisplayName => this.Caption;
 
 
 

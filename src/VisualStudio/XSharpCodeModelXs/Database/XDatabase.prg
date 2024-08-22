@@ -443,7 +443,7 @@ STATIC CLASS XDatabase
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
-            stmt := "CREATE VIEW ProjectTypes AS SELECT t.*, p.IdProject, p.FileName, p.ProjectFileName " +;
+            stmt := "CREATE VIEW ProjectTypes AS SELECT t.*, p.IdProject, p.FileName, p.ProjectFileName, p.Framework " +;
                 " FROM Types t  JOIN ProjectFiles p ON t.IdFile = p.IdFile "
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
@@ -606,11 +606,11 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR cmd := CreateCommand("SELECT DISTINCT ProjectFileName, TargetFramework from Projects", oConn)
+                    USING VAR cmd := CreateCommand("SELECT DISTINCT ProjectFileName, Framework from Projects", oConn)
                     USING VAR rdr := cmd:ExecuteReader()
                     DO WHILE rdr:Read()
-                        VAR name        := rdr:GetString(0)
-                        VAR framework   := rdr:GetString(1)
+                        VAR name        := DbToString(rdr:GetString(0))
+                        VAR framework   := DbToString(rdr:GetString(1))
                         result:Add(name+":"+framework)
                     ENDDO
                 CATCH e AS Exception

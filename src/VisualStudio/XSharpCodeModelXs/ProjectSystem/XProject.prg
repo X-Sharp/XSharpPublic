@@ -58,6 +58,8 @@ CLASS XProject
     PROPERTY FileName                          AS STRING GET iif (_projectNode != null, _projectNode:Url, "")
     PROPERTY HasFiles                          AS LOGIC GET _SourceFilesDict:Keys:Count > 0 .or. _OtherFilesDict:Keys:Count > 0
     PROPERTY Framework                         AS STRING GET _framework
+    PROPERTY DisplayName                       AS STRING GET _projectNode?.DisplayName
+
     PROPERTY DependentAssemblyList             AS STRING
     GET
         IF String.IsNullOrEmpty(_dependentAssemblyList)
@@ -1433,6 +1435,9 @@ CLASS XProject
     GET
         RETURN _name
     END GET
+    INTERNAL SET
+        _name := value
+    END SET
     END PROPERTY
     PROPERTY NameId as STRING
         GET
@@ -1443,6 +1448,8 @@ CLASS XProject
         END GET
 
     END PROPERTY
+
+
 
     PRIVATE _prjNameSpaces AS IList<STRING>
     PRIVATE _lastNameSpaces := DateTime.MinValue AS DateTime

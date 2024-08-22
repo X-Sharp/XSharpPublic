@@ -60,7 +60,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.VS.XSharp
             {
                 guidProjectFactory = ProjectType.XSharpGuid;
                 return;
-            }
+            } 
 
             guidProjectFactory = ProjectType.LegacyXSharpGuid;
         }

@@ -22,10 +22,9 @@ namespace XSharp.LanguageService
         {
             await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.GOTOBRACE, () => Execute(GotoBraceNormal));
             await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.GOTOBRACE_EXT, () => Execute(GotoBraceExt));
-            var cmd = new MyCommands();
-            await cmd.InterceptAsync(VSConstants.VSStd97CmdID.GotoDefn, () => Execute(GotoDefinition));
-            await cmd.InterceptAsync(VSConstants.VSStd2KCmdID.ECMD_NEXTMETHOD, () => Execute(GotoNextMethod));
-            await cmd.InterceptAsync(VSConstants.VSStd2KCmdID.ECMD_PREVMETHOD, () => Execute(GotoPreviousMethod));
+            await VS.Commands.InterceptAsync(VSConstants.VSStd97CmdID.GotoDefn, () => Execute(GotoDefinition));
+            await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.ECMD_NEXTMETHOD, () => Execute(GotoNextMethod));
+            await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.ECMD_PREVMETHOD, () => Execute(GotoPreviousMethod));
         }
 
         private static void GotoBraceExt(DocumentView doc)

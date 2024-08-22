@@ -10,9 +10,8 @@ namespace XSharp.LanguageService
     {
         public static async Task InitializeAsync()
         {
-            var cmd = new MyCommands();
-            await cmd.InterceptAsync(VSConstants.VSStd2KCmdID.FORMATDOCUMENT, () => Execute(FormatDocument));
-            await cmd.InterceptAsync(VSConstants.VSStd2KCmdID.FORMATSELECTION, () => Execute(FormatSelection));
+            await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.FORMATDOCUMENT, () => Execute(FormatDocument));
+            await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.FORMATSELECTION, () => Execute(FormatSelection));
         }
 
         private static void FormatDocument(DocumentView doc)

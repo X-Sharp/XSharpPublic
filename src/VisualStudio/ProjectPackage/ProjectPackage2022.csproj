@@ -447,7 +447,6 @@
     </Compile>
     <Compile Include="XSharpFileType.cs" />
     <Compile Include="XSharpOutputPane.cs" />
-    <Compile Include="XSharpShellLink.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
@@ -456,6 +455,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Menus.vsct</DependentUpon>
     </Compile>
+    <Compile Include="XSharpShellEvents.cs" />
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />
     <Compile Include="WPF\XSharpWPFFlavor.cs" />

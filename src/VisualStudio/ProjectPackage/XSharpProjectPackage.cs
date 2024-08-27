@@ -166,7 +166,7 @@ namespace XSharp.Project
         }
 
 
-
+        XSharpShellEvents _shellEvents;
         #region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -175,7 +175,7 @@ namespace XSharp.Project
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             // Give the codemodel a way to talk to the VS Shell
-            XSettings.ShellLink = new XSharpShellLink();
+            _shellEvents = new XSharpShellEvents();
 
             this.RegisterToolWindows();
 
@@ -268,8 +268,9 @@ namespace XSharp.Project
             StartLogging();
             return true;
         }
+
         
-	 private void StartLogging()
+        private void StartLogging()
         {
             int FileLogging = (int)Constants.GetSetting("Log2File", XSettings.EnableFileLogging? 1 : 0);
             int DebugLogging = (int)Constants.GetSetting("Log2Debug", XSettings.EnableDebugLogging ? 1 : 0);

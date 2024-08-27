@@ -11,21 +11,11 @@ using System.Reflection;
 using XSharp.Settings;
 using XSharpModel;
 
-namespace XSharp.Project
+namespace XSharp.LanguageService
 {
     internal class XSharpShellLink : IXVsShellLink
     {
         static ILogger Logger => XSettings.Logger;
-
-        static bool hasEnvironmentvariable = false;
-        static XSharpShellLink()
-        {
-            hasEnvironmentvariable = !String.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("XSharpMsBuildDir"));
-            if (!hasEnvironmentvariable)
-            {
-                VS.MessageBox.ShowWarning("The environment variable 'XSharpMsBuildDir' is missing. \rSome projects may have problems loading. \rPlease run the XSharp setup program again.");
-            }
-        }
 
         internal XSharpShellLink()
         {
@@ -214,7 +204,16 @@ namespace XSharp.Project
             }
 
         }
+        private void SolutionEvents_OnBeforeOpenProject(string project)
+        {
+            if (IsXSharpProject(project))
+            {
+                Logger.SingleLine();
+                Logger.Information("Opening project: " + project ?? "");
+                Logger.SingleLine();
+            }
 
+        }
         private void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project project)
         {
             if (IsXSharpProject(project?.FullPath))
@@ -225,95 +224,14 @@ namespace XSharp.Project
             }
         }
 
-        private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
-        {
-            if (IsXSharpProject(projectFileName))
-            {
-                Logger.SingleLine();
-                Logger.Information("Before Opening project: " + projectFileName ?? "");
-                Logger.SingleLine();
-                checkProjectFile(projectFileName);
-            }
-        }
+       
         bool IsXSharpProject(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
                 return false;
             return string.Equals(Path.GetExtension(fileName), ".xsproj", StringComparison.OrdinalIgnoreCase);
         }
-        const string oldText = @"$(MSBuildExtensionsPath)\XSharp";
-        const string newText = @"$(XSharpMsBuildDir)";
-        const string MsTestGuid = @"{3AC096D0-A1C2-E12C-1390-A8335801FDAB};";
 
-        private void checkProjectFile(string fileName)
-        {
-            if (fileName != null && fileName.ToLower().EndsWith("xsproj") && File.Exists(fileName))
-            {
-                string xml = File.ReadAllText(fileName);
-                var original = Path.ChangeExtension(fileName, ".original");
-                bool changed = false;
-                if (hasEnvironmentvariable)
-                {
-                    var pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
-                    if (pos >= 0)
-                    {
-                        while (pos > 0)
-                        {
-                            xml = xml.Substring(0, pos) + newText + xml.Substring(pos + oldText.Length);
-                            pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
-                        }
-                        DeleteFileSafe(original);
-                        File.Copy(fileName, original);
-                        DeleteFileSafe(fileName);
-                        File.WriteAllText(fileName, xml);
-                        changed = true;
-                    }
-                }
-                var testpos = xml.IndexOf(MsTestGuid, StringComparison.OrdinalIgnoreCase);
-                if (testpos >= 0)
-                {
-                    var left = xml.Substring(0, testpos);
-                    var right = xml.Substring(testpos + MsTestGuid.Length);
-                    if (!changed)
-                    {
-                        DeleteFileSafe(original);
-                        File.Copy(fileName, original);
-                    }
-                    xml = left + right;
-                    DeleteFileSafe(fileName);
-                    File.WriteAllText(fileName, xml);
-                    changed = true;
-                }
-                if (changed)
-                {
-                    Logger.SingleLine();
-                    Logger.Information("==> Project must be upgraded: " + fileName);
-                    Logger.SingleLine();
-
-                    XSharpProjectNode.ChangedProjectFiles.Add(fileName, original);
-                }
-            }
-        }
-
-        public static bool DeleteFileSafe(string fileName)
-        {
-            try
-            {
-                if (File.Exists(fileName))
-                {
-                    File.SetAttributes(fileName, FileAttributes.Normal);
-                    File.Delete(fileName);
-
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Exception(e, "DeleteFileSafe");
-                return false;
-            }
-            return true;
-
-        }
         #endregion
 
         #region Solution Events

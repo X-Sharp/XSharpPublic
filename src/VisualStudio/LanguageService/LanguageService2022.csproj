@@ -216,6 +216,7 @@
     <Compile Include="XMLDoc\XSharpXMLDoc.cs" />
     <Compile Include="Outlining\XSharpOutlining.cs" />
     <Compile Include="Document\XDocument.cs" />
+    <Compile Include="XSharpShellLink.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -22,6 +22,7 @@ using XSharp.LanguageService.OptionsPages;
 using XSharpModel;
 using XSharp.Settings;
 
+
 // The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
 [assembly: ProvideCodeBase(AssemblyName = "Community.VisualStudio.Toolkit")]
@@ -278,6 +279,7 @@ namespace XSharp.LanguageService
             await FormattingCommand.InitializeAsync();
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             XSettings.LanguageService = this;
+            XSettings.ShellLink = new XSharpShellLink();
         }
 
         protected override void Dispose(bool disposing)

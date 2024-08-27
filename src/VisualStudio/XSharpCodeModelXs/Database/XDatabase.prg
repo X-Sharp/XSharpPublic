@@ -599,7 +599,26 @@ STATIC CLASS XDatabase
         ENDIF
         Log(i"SaveOpenDesignerFiles returned {result}")
         RETURN result
-        ;
+
+    STATIC METHOD GetProjectsPerFile(file as XFile) AS List<Int64>
+        VAR result := List<INT64>{}
+        IF IsDbOpen
+            BEGIN LOCK oConn
+                TRY
+                    USING VAR cmd := CreateCommand("SELECT DISTINCT IdProject from FilesPerProject where IdFile = $file", oConn)
+                    cmd:Parameters:AddWithValue("$file",file:Id)
+                    USING VAR rdr := cmd:ExecuteReader()
+                    DO WHILE rdr:Read()
+                        result:Add(rdr:GetInt64(0))
+                    ENDDO
+                CATCH e AS Exception
+                    Log("Error reading projects")
+                    XSettings.Exception(e, __FUNCTION__)
+                END TRY
+            END LOCK
+        ENDIF
+        Log(i"GetProjectsPerFile returned {result.Count} names")
+        RETURN result
 
     STATIC METHOD GetProjectFileNames() AS List<STRING>
         VAR result := List<STRING>{}

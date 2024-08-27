@@ -4,8 +4,10 @@
 // See License.txt in the project root for license information.
 //
 
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Package;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -73,24 +75,39 @@ namespace XSharp.LanguageService
 
                 if (langId == XSharpConstants.guidLanguageService)          // is our language service active ?
                 {
-
                     // Get XFile and assign it to the TextBuffer
                     if (!textView.TextBuffer.Properties.TryGetProperty(typeof(XFile), out file))
                     {
                         file = XSolution.FindFile(fileName);
+
                         if (file == null)
                         {
                             XSolution.OrphanedFilesProject.AddFile(fileName);
                             file = XSolution.FindFile(fileName);
                         }
-                        if (file != null)
-                        {
-                            textView.TextBuffer.Properties.AddProperty(typeof(XFile), file);
-                        }
+                        
                     }
-
                     if (file != null)
                     {
+                        var projects = XDatabase.GetProjectsPerFile(file);
+                        if (projects.Count > 1)
+                        {
+                            ThreadHelper.JoinableTaskFactory.Run(async delegate
+                            {
+                                var proj = await VS.Solutions.GetActiveProjectAsync();
+                                if (proj != null)
+                                {
+                                    var xproj = XSolution.FindProject(proj.FullPath);
+                                    if (xproj != null)
+                                    {
+                                        if (file.Project.FileName != xproj.FileName)
+                                        {
+                                            file.Project = xproj;
+                                        }
+                                    }
+                                }
+                            });
+                        }
                         file.Interactive = true;
                         textView.Properties.AddProperty(typeof(XFile), file);
                     }

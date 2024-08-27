@@ -57,14 +57,15 @@ namespace XSharp.LanguageService
         readonly Dictionary<ITextView, ITextView> _textViews;
         ITextView _activeView = null;
         readonly IVsDropdownBarManager _manager;
+#if XDEBUG
         XSourceEntity _lastSelected = null;
+#endif
         XSourceEntity _lastType = null;
-
         readonly List<XDropDownMember> _members = null;
         readonly Dictionary<string, int> _membersDict = null;	// to speed up the lookup of members
         readonly List<XDropDownMember> _types = null;
         readonly List<XProject> _projects = null;   
-        readonly XFile _file = null;
+        XFile _file = null;
         uint _lastHashCode = 0;
         private int _lastLine;
         private int _selectedMemberIndex = -1;
@@ -74,6 +75,18 @@ namespace XSharp.LanguageService
         private List<string> _relatedFiles;
         private DateTime _lastFileChanged = DateTime.MinValue;
         private static int XsIcon = -1;
+        private XDocument _document;
+        XProject ActiveProject
+        {
+            get
+            {
+                if (_selectedProjectIndex >= 0 && _selectedProjectIndex < _projects.Count)
+                {
+                    return _projects[_selectedProjectIndex];
+                }
+                return null;
+            }
+        }
 
         static XSharpDropDownClient()
         {
@@ -102,6 +115,19 @@ namespace XSharp.LanguageService
             {
                 _file.Project
             };
+            var projects = XDatabase.GetProjectsPerFile(_file);
+            if (projects?.Count > 1)
+            {
+                foreach (var proj in projects)
+                {
+                    if (proj != _file.Project.Id)
+                    {
+                        var project = XSolution.FindProject(proj);
+                        if (project != null)
+                            _projects.Add(project);
+                    }
+                }
+            }
             _selectedProjectIndex = 0;
             _membersDict = new Dictionary<string, int>();
             _saveSettings();
@@ -119,11 +145,13 @@ namespace XSharp.LanguageService
             if (!_textViews.ContainsKey(textView))
             {
                 _textViews.Add(textView, textView);
+                this._document = textView.TextBuffer.GetDocument();
+                _file.Project = ActiveProject;
                 textView.GotAggregateFocus += TextView_GotAggregateFocus;
                 textView.LostAggregateFocus += TextView_LostAggregateFocus;
                 textView.Closed += TextView_Closed;
                 StartOnIdleAsync(textViewAdapter).FireAndForget();
-
+                
 
             }
         }
@@ -356,7 +384,9 @@ namespace XSharp.LanguageService
                 refreshCombos();
             }
             _lastHashCode = _file.ContentHashCode;
+#if XDEBUG
             _lastSelected = selectedElement;
+#endif
             _lastType = parentType;
             return;
         }
@@ -736,7 +766,7 @@ namespace XSharp.LanguageService
                     entries = (uint)_members.Count;
                     break;
                 case PROJECTINDEX: // projects
-                    entries = 1;
+                    entries = (uint)_projects.Count; ;
                     break;
                 default:
                     return VSConstants.E_INVALIDARG;
@@ -916,8 +946,17 @@ namespace XSharp.LanguageService
             if (iCombo == MEMBERINDEX)
                 _selectedMemberIndex = iIndex;
             if (iCombo == PROJECTINDEX)
+            {
                 _selectedProjectIndex = iIndex;
+                _file.Project = ActiveProject;
+                var classifier = _document.Buffer.GetClassifier();
+                if (classifier != null)
+                {
+                    _ = classifier.ForceClassifyAsync();
+                    classifier.TriggerRepaint(classifier.Snapshot);
+                }
 
+            }
             return VSConstants.S_OK;
         }
 

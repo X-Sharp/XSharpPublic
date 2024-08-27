@@ -201,6 +201,13 @@ BEGIN NAMESPACE XSharpModel
         NEXT
         RETURN NULL
 
+    STATIC METHOD FindProject(idProject as INT64) AS XProject
+        FOREACH VAR project IN _projects:Values
+            IF project:Id == idProject
+                RETURN project
+            ENDIF
+        NEXT
+        RETURN NULL
 
     STATIC METHOD FindProject(projectFile AS STRING, framework as STRING) AS XProject
         LOCAL project AS XProject

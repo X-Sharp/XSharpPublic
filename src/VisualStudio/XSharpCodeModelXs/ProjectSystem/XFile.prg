@@ -292,7 +292,7 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
                 RETURN SELF:_project
             END GET
-            INTERNAL SET
+            SET
                 SELF:_project := value
             END SET
         END PROPERTY

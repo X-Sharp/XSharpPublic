@@ -56,6 +56,8 @@ namespace XSharp.LanguageService
         internal XSharpLineState LineState => _lineState;
         internal IDictionary<string, IList<IToken>> Identifiers => _identifiers;
         internal IList<XSourceBlock> Blocks => _blocks;
+        internal ITextBuffer Buffer => _buffer;
+
         #endregion
 
 

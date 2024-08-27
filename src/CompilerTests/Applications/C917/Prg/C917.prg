@@ -52,3 +52,20 @@ END CLASS
 CLASS AnotherTest
 	STATIC METHOD StaticMethod() AS VOID
 END CLASS
+
+
+
+
+CLASS ThirdTest
+	PROPERTY System AS LOGIC AUTO
+		
+	CONSTRUCTOR()
+		System.Diagnostics.Debug.WriteLine( "Hi" ) // OK
+	METHOD Test1() AS VOID
+		System.Diagnostics.Debug.WriteLine( "Hi" ) // OK
+	RETURN
+	STATIC METHOD Test2() AS VOID
+		System.Diagnostics.Debug.WriteLine( "Hi" ) // Failed to emit module
+	RETURN
+END CLASS
+

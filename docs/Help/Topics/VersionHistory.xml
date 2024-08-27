@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-08-23T15:07:06.558+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-08-27T17:57:56.632+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -53,13 +53,17 @@
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Fixed problem with saving/reading the OldStyleAssignment compiler option project setting (#1495)</li>
       <li styleclass="Normal">Improved the Clone Window selection dialog in the VOWED (#1508)</li>
-      <li styleclass="Normal"></li>
-      <li styleclass="Normal"></li>
+      <li styleclass="Normal">In recent versions of VS Format Document and Commenting was no longer working. This has been fixed.</li>
     </list>
+    <para styleclass="Normal"></para>
     <para styleclass="Heading3">New features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Now the TargetFramework attribute is automatically added to the assembly when building any project type in VS (#1507)</li>
       <li styleclass="Normal">Implemented GoToBrace action in the VS editor (#1522)</li>
+      <li styleclass="Normal">The editor now has a combobox on the top left that shows the project in which the file is defined.</li>
+      <li styleclass="Normal">When a file is present in multiple projects (as Linked file) then the projects combobox will show all project names in which the file is used.</li>
+      <li styleclass="Normal">When you select a different project from this combobox then the buffer will be repainted, because conditional compilation symbols for each of the projects may be different.</li>
+      <li styleclass="Normal">When you use intellisense in the editor, then the lookup engine will use the project selected. So if a file is used in 2 projects, then the references and source files of the selected project will be used to find reference data.</li>
     </list>
     <para styleclass="Heading2">XIDE</para>
     <para styleclass="Heading3">General</para>

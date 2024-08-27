@@ -37,7 +37,24 @@ namespace XSharp.LanguageService
         private XKeyword GetFirstKeywordInLine(int lineNo)
         {
             var line = _buffer.CurrentSnapshot.GetLineFromLineNumber(lineNo);
-            return GetFirstKeywordInLine(line, out _, out _);
+            var kw = GetFirstKeywordInLine(line, out _, out var tokens);
+            if (kw.Kw1 == XTokenType.Udc_keyword)
+            {
+                // there are some rules in the UDC that for example translate
+                // NEXT x to NEXT
+                // without this change that does not outdent properly.
+                // Hopefully that does not produce another problem
+
+                var token = tokens.Where(t => t.Type != XSharpLexer.WS).FirstOrDefault();
+                if (token != null)
+                {
+                    var text = token.Text;
+                    tokens = _buffer.GetDocument().GetTokens(text);
+                    kw = XSharpLineKeywords.Tokens2Keyword(tokens);
+                }
+
+            }
+            return kw;
         }
         private XKeyword GetFirstKeywordInLine(ITextSnapshotLine line, out int minIndent, out IList<IToken> tokens)
         {

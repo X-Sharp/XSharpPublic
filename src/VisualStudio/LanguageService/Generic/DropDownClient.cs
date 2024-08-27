@@ -128,7 +128,16 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-            _selectedProjectIndex = 0;
+
+            if (_projects.Count > 1)
+            {
+                _projects.Sort( (a, b) => string.Compare(a.DisplayName, b.DisplayName, true));
+                _selectedProjectIndex = _projects.IndexOf(_file.Project);
+            }
+            else
+            {
+                _selectedProjectIndex = 0;
+            }
             _membersDict = new Dictionary<string, int>();
             _saveSettings();
             _lastLine = -1;

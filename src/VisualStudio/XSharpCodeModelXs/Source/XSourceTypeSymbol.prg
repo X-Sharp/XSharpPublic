@@ -172,7 +172,8 @@ BEGIN NAMESPACE XSharpModel
          elementName := elementName:GetTickedname()
          IF lExact
             VAR result := List<IXMemberSymbol>{}
-            result:AddRange(SELF:_members:Where ({ m => m.TickedName:Equals(elementName, StringComparison.OrdinalIgnoreCase)} ))
+            result:AddRange(SELF:_members:Where ({ m => m.TickedName:Equals(elementName, StringComparison.OrdinalIgnoreCase) ;
+                                                    .or. m.TickedName:Contains('`') .and. m.TickedName:StartsWith(elementName, StringComparison.OrdinalIgnoreCase) } ))
             RETURN result
          ELSE
             RETURN SELF:GetMembers(elementName)

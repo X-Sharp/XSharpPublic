@@ -4,7 +4,7 @@ USING System.Linq
 USING STATIC System.Console
 FUNCTION Start(args as STRING[])  AS VOID
     LOCAL cCopy AS STRING
-    LOCAL aFiles AS List<STRING>
+    LOCAL aFiles AS IList<STRING>
     LOCAL lRemove := FALSE as LOGIC
     TRY
         IF args?:Length > 0
@@ -221,44 +221,11 @@ CLASS ConfigPatcher
 
 END CLASS
 
-FUNCTION GetConfigFiles AS List<STRING>
-    VAR aFiles := System.Collections.Generic.List<STRING>{}
-    VAR sFile := System.Runtime.InteropServices.RuntimeEnvironment.SystemConfigurationFile
-    VAR aVersion := <STRING>{"v1.0.3705","v1.1.4322", "v2.0.50727","v4.0.30319"}
-    VAR sMask := ""
-    VAR Is64Bits := FALSE
-    Is64Bits := IntPtr.Size == 8
-    FOREACH VAR sVersion IN aVersion
-        IF sFile:Contains(sVersion)
-            sMask := sVersion
-        ENDIF
-    NEXT
-    IF String.IsNullOrEmpty(sMask)
-        WriteToLog("Configfile has Unknown version: "+sFile)
-        RETURN  aFiles
-    ENDIF
-    FOREACH VAR sVersion IN aVersion
-        VAR sSearch := sFile:Replace(sMask, sVersion)
-        local sSearch2 as STRING
-
-        IF System.IO.File.Exists(sSearch)
-            aFiles:Add(sSearch)
-        ENDIF
-        IF Is64Bits
-            sSearch2 := sSearch:Replace("\Framework64","\FrameworkArm64")
-            sSearch  := sSearch:Replace("\Framework64","\Framework")
-        ELSE
-            sSearch2 := sSearch:Replace("\Framework","\FrameworkArm64")
-            sSearch  := sSearch:Replace("\Framework","\Framework64")
-        ENDIF
-        IF System.IO.File.Exists(sSearch)
-            aFiles:Add(sSearch)
-        ENDIF
-        IF System.IO.File.Exists(sSearch2)
-            aFiles:Add(sSearch2)
-        ENDIF
-    NEXT
-
+FUNCTION GetConfigFiles AS IList<STRING>
+    var sFolder := System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory()
+    var pos     := sFolder:ToLower():IndexOf("framework")
+    var sBase   := sFolder:Substring(0, pos)
+    var aFiles   := System.IO.Directory.GetFiles(sBase, "machine.config", System.IO.SearchOption.AllDirectories)
     RETURN aFiles
 
 FUNCTION WriteToLog(sLine AS STRING) AS LOGIC

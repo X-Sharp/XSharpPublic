@@ -4,6 +4,7 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,9 @@ namespace XSharp.LanguageService
         {
             // We need to manually intercept the commenting command, because language services swallow these commands.
             await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.COMMENT_BLOCK, () => Execute(Comment));
+            await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.COMMENTBLOCK, () => Execute(Comment));
             await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.UNCOMMENT_BLOCK, () => Execute(Uncomment));
+            await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.UNCOMMENTBLOCK, () => Execute(Uncomment));
         }
 
         private static (int, int) swapNumbers(int start, int end)
@@ -40,6 +43,10 @@ namespace XSharp.LanguageService
             // in that case surround with /* */
             var snapshot = doc.TextBuffer.CurrentSnapshot;
             var sel = doc.TextView.Selection;
+            if (sel.Mode == TextSelectionMode.Box)
+            {
+                return;
+            }
             var (start, end) = swapNumbers(sel.Start.Position.Position, sel.End.Position.Position);
             using (var editsession = doc.TextBuffer.CreateEdit())
             {
@@ -72,6 +79,10 @@ namespace XSharp.LanguageService
         {
             var snapshot = doc.TextBuffer.CurrentSnapshot;
             var sel = doc.TextView.Selection;
+            if (sel.Mode == TextSelectionMode.Box)
+            {
+                return;
+            }
             var (start, end) = swapNumbers(sel.Start.Position.Position, sel.End.Position.Position);
             using (var editsession = doc.TextBuffer.CreateEdit())
             {

@@ -422,10 +422,6 @@
       <Generator>VsctGenerator</Generator>
       <LastGenOutput>Menus.cs</LastGenOutput>
     </VSCTCompile>
-    <Content Include="XSharp.Designers.pkgdef">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="XSharpVSIXLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

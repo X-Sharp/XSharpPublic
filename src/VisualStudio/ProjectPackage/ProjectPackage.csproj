@@ -170,7 +170,6 @@
     <Compile Include="List\TaskList\TaskListItem.cs" />
     <Compile Include="List\TaskList\TaskListManager.cs" />
     <Compile Include="List\TaskList\TaskListProvider.cs" />
-    <Compile Include="Logger.cs" />
     <Compile Include="Nodes\XSharpFrameworkContainerNode.cs" />
     <Compile Include="Nodes\XSharpIncludeContainerNode.cs" />
     <Compile Include="Nodes\XSharpProjectNodeReferenceManager.cs" />
@@ -439,7 +438,6 @@
     </Compile>
     <Compile Include="XSharpFileType.cs" />
     <Compile Include="XSharpOutputPane.cs" />
-    <Compile Include="XSharpShellLink.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
@@ -448,6 +446,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Menus.vsct</DependentUpon>
     </Compile>
+    <Compile Include="XSharpShellEvents.cs" />
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />
     <Compile Include="WPF\XSharpWPFFlavor.cs" />
@@ -769,12 +768,6 @@
     </Content>
     <PackageReference Include="Newtonsoft.Json">
       <Version>8.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="Serilog.Sinks.Debug">
-      <Version>3.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="Serilog.Sinks.File">
-      <Version>6.0.0</Version>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
       <IncludeAssets>all</IncludeAssets>

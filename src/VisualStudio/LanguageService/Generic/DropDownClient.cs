@@ -73,7 +73,7 @@ namespace XSharp.LanguageService
         private DropdownSettings _settings;
         private List<string> _relatedFiles;
         private DateTime _lastFileChanged = DateTime.MinValue;
-        private static int XsIcon = -1;
+        private static readonly int projectIcon = -1;
         private XDocument _document;
         XProject ActiveProject
         {
@@ -89,11 +89,13 @@ namespace XSharp.LanguageService
 
         static XSharpDropDownClient()
         {
+            // Load images from Microsoft and Our project system (linked resource file)
             Stream stream = typeof(MVP.LanguageService).Assembly.GetManifestResourceStream("Resources.completionset.bmp");
             _imageList.ImageSize = new Size(16, 16);
             _imageList.TransparentColor = Color.FromArgb(255, 0, 255);
             _imageList.Images.AddStrip(new Bitmap(stream));
-            XsIcon = _imageList.Images.Count;
+            // the project Icon is the first in the ImageList from the project package
+            projectIcon = _imageList.Images.Count;
             stream = typeof(XSharpDropDownClient).Assembly.GetManifestResourceStream("XSharp.LanguageService.Resources.XSharpProjectImageList.bmp");
             _imageList.Images.AddStrip(new Bitmap(stream));
         }
@@ -836,7 +838,7 @@ namespace XSharp.LanguageService
                         imageIndex = _members[index].Glyph;
                     break;
                 case PROJECTINDEX: // projects
-                    imageIndex = XsIcon; 
+                    imageIndex = projectIcon; 
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

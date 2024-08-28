@@ -120,6 +120,8 @@ namespace XSharp.LanguageService
         private void RestoreDesignerWindows()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            if (!XSolution.HasProjects)
+                return;
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 Logger.SingleLine();
@@ -186,7 +188,7 @@ namespace XSharp.LanguageService
 
         private void SolutionEvents_OnAfterRenameProject(Community.VisualStudio.Toolkit.Project project)
         {
-            if (IsXSharpProject(project?.FullPath))
+            //if (IsXSharpProject(project?.FullPath))
             {
                 Logger.SingleLine();
                 Logger.Information("Renamed project: " + project?.FullPath ?? "");
@@ -196,7 +198,7 @@ namespace XSharp.LanguageService
 
         private void SolutionEvents_OnBeforeCloseProject(Community.VisualStudio.Toolkit.Project project)
         {
-            if (IsXSharpProject(project?.FullPath))
+            //if (IsXSharpProject(project?.FullPath))
             {
                 Logger.SingleLine();
                 Logger.Information("Closing project: " + project.FullPath ?? "");
@@ -206,7 +208,7 @@ namespace XSharp.LanguageService
         }
         private void SolutionEvents_OnBeforeOpenProject(string project)
         {
-            if (IsXSharpProject(project))
+            //if (IsXSharpProject(project))
             {
                 Logger.SingleLine();
                 Logger.Information("Opening project: " + project ?? "");
@@ -216,7 +218,7 @@ namespace XSharp.LanguageService
         }
         private void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project project)
         {
-            if (IsXSharpProject(project?.FullPath))
+            //if (IsXSharpProject(project?.FullPath))
             {
                 Logger.SingleLine();
                 Logger.Information("Opened project: " + project.FullPath ?? "");
@@ -245,11 +247,10 @@ namespace XSharp.LanguageService
         string solutionName = "";
         private void SolutionEvents_OnBeforeCloseSolution()
         {
-            bool hasXsProject = XSolution.Projects.Count > 0;
             XSolution.IsClosing = true;
             XSolution.Close();
             // close OUR documents that are opened in design mode.
-            if (!hasXsProject)
+            if (!XSolution.HasProjects)
             {
                 return;
             }

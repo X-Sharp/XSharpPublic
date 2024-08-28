@@ -17,7 +17,7 @@ namespace XSharp.Project
         }
         protected override void BeforeQueryStatus(EventArgs e)
         {
-            Command.Enabled = XSolution.HasProject;
+            Command.Enabled = XSolution.HasProjects;
             base.BeforeQueryStatus(e);
         }
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)

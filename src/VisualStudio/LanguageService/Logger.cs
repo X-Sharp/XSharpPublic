@@ -12,7 +12,7 @@ using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
 using System.Diagnostics;
 
-namespace XSharp.Project
+namespace XSharp.LanguageService
 {
     internal static class Logger
     {
@@ -56,9 +56,7 @@ namespace XSharp.Project
                     {
                         Directory.CreateDirectory(temp);
                     }
-#pragma warning disable CS0618 // Type or member is obsolete
-                    int threadid = AppDomain.GetCurrentThreadId();
-#pragma warning restore CS0618 // Type or member is obsolete
+                    int threadid = Process.GetCurrentProcess().Id;
                     string strId = threadid.ToString("X");
                     var log = Path.Combine(temp, "Project_" + strId + "_.log");
                     config = config.WriteTo.File(log,
@@ -143,8 +141,8 @@ namespace XSharp.Project
 
                     AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
                     //AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
-                    active = true;
                 }
+                active = true;
             }
             // Force all Logging options to be enabled
             XSettings.EnableAll();

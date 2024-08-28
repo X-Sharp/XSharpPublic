@@ -113,18 +113,23 @@ STATIC CLASS XDatabase
         RETURN FALSE
 
     STATIC METHOD CloseDatabase(cFile AS STRING) AS LOGIC
+        LOCAL lResult := FALSE AS LOGIC
         IF IsDbOpen
-            IF DeleteOnClose
-                SafeFileDelete(cFile)
+            IF XSolution.HasProjects
+                IF DeleteOnClose
+                    SafeFileDelete(cFile)
+                ELSE
+                    SaveToDisk(oConn, cFile)
+                ENDIF
             ELSE
-                SaveToDisk(oConn, cFile)
+                Log(i"Delete database {cFile} because there are no X# projects in the solution")
+                SafeFileDelete(cFile)
             ENDIF
             oConn:Close()
-            oConn := NULL
-            RETURN TRUE
+            lResult := TRUE
         ENDIF
         oConn := NULL
-        RETURN FALSE
+        RETURN lResult
 
     STATIC METHOD SetPragmas(oConn AS DbConnection) AS VOID
         IF ! IsDbOpen
@@ -630,7 +635,7 @@ STATIC CLASS XDatabase
                     DO WHILE rdr:Read()
                         VAR name        := DbToString(rdr:GetString(0))
                         VAR framework   := DbToString(rdr:GetString(1))
-                        result:Add(name+":"+framework)
+                        result:Add(name+"|"+framework)
                     ENDDO
                 CATCH e AS Exception
                     Log("Error reading project filenames ")
@@ -728,8 +733,8 @@ STATIC CLASS XDatabase
             TRY
                 USING VAR cmd := CreateCommand("", oConn)
                 local cFramework := "" as STRING
-                if cFileName:Contains(":")
-                    VAR parts := cFileName:Split(':')
+                if cFileName:Contains("|")
+                    VAR parts := cFileName:Split('|')
                     cFileName := parts[1]
                     cFramework := parts[2]
                 endif

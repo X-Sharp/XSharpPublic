@@ -28,11 +28,22 @@ BEGIN NAMESPACE XSharpModel
     STATIC PROPERTY IsShuttingDown  AS LOGIC AUTO
 
         // OrphanedFiles Project is always open, so at least 1
-    STATIC PROPERTY HasProject AS  LOGIC GET _projects:Count > 1
     STATIC PROPERTY FileName AS STRING GET _fileName
     STATIC PROPERTY BuiltInFunctions AS STRING AUTO
     STATIC PROPERTY CommentTokens AS IList<XCommentToken> GET _commentTokens
     STATIC PROPERTY Projects AS IList<XProject> get _projects:Values:ToArray()
+    STATIC PROPERTY HasProjects as LOGIC
+        GET
+            FOREACH var project IN _projects:Values
+                IF project != _orphanedFilesProject
+                    RETURN TRUE
+                ENDIF
+            NEXT
+            RETURN FALSE
+        END GET
+
+    END PROPERTY
+
 
         // Methods
     STATIC CONSTRUCTOR
@@ -124,7 +135,7 @@ BEGIN NAMESPACE XSharpModel
             XDatabase.Read(project)
             ModelWalker.AddProject(project)
             FOREACH VAR dbproject  in dbprojectList
-                if String.Compare(dbproject, project:FileName+":"+project:Framework, StringComparison.OrdinalIgnoreCase) == 0
+                if String.Compare(dbproject, project:FileName+"|"+project:Framework, StringComparison.OrdinalIgnoreCase) == 0
                     dbprojectList:Remove(dbproject)
                     EXIT
                 ENDIF

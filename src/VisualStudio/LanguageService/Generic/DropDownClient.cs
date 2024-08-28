@@ -15,7 +15,6 @@ using File = System.IO.File;
 using MVP = Microsoft.VisualStudio.Package;
 using Task = System.Threading.Tasks.Task;
 using XSharp.Settings;
-using Microsoft.VisualStudio.Language.Intellisense;
 namespace XSharp.LanguageService
 {
     internal class DropdownSettings
@@ -118,6 +117,9 @@ namespace XSharp.LanguageService
             var projects = XDatabase.GetProjectsPerFile(_file);
             if (projects?.Count > 1)
             {
+#if DEBUG
+                Logger.Information($"DropdownClient: Found {projects.Count} projects for file {_file.FullPath}");
+#endif
                 foreach (var proj in projects)
                 {
                     if (proj != _file.Project.Id)
@@ -250,8 +252,8 @@ namespace XSharp.LanguageService
                 _lastLine = newLine;
             }
 #if XDEBUG
-            Logger.Information($"Caret_PositionChanged {newLine} Types: {_types.Count} Members: {_members.Count}");
-            Logger.Information($"Caret_PositionChanged {newLine} Entity: {_lastSelected} Type: {_selectedTypeIndex}, Member: {_selectedMemberIndex} ");
+            Logger.Information($"DropdownClient: Caret_PositionChanged {newLine} Types: {_types.Count} Members: {_members.Count}");
+            Logger.Information($"DropdownClient: Caret_PositionChanged {newLine} Entity: {_lastSelected} Type: {_selectedTypeIndex}, Member: {_selectedMemberIndex} ");
 #endif
             if (_lastLine != -1)
             {

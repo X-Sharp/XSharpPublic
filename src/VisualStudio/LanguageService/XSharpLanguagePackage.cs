@@ -280,10 +280,12 @@ namespace XSharp.LanguageService
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             XSettings.LanguageService = this;
             XSettings.ShellLink = new XSharpShellLink();
+            StartLogging();
         }
 
         protected override void Dispose(bool disposing)
         {
+            Logger.Stop();
             try
             {
 #if LIBRARYMANAGER
@@ -422,16 +424,20 @@ namespace XSharp.LanguageService
             return IntPtr.Zero;
         }
         #endregion
-    }
-    internal static class Logger
-    {
-        internal static void Exception(Exception e, string msg)
+
+        public void StartLogging()
         {
-            XSettings.Logger.Exception(e, msg);
-        }
-        internal static void Information(string msg)
-        {
-            XSettings.Logger.Information(msg);
+            int FileLogging = (int)Constants.GetSetting("Log2File", XSettings.EnableFileLogging ? 1 : 0);
+            int DebugLogging = (int)Constants.GetSetting("Log2Debug", XSettings.EnableDebugLogging ? 1 : 0);
+
+            XSettings.EnableFileLogging = FileLogging != 0;
+            XSettings.EnableDebugLogging = DebugLogging != 0;
+            if (XSettings.EnableFileLogging || XSettings.EnableDebugLogging)
+                Logger.Start();
+            else
+                Logger.Stop();
+
         }
     }
+    
 }

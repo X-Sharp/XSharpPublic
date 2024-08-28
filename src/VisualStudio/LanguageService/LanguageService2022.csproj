@@ -64,6 +64,7 @@
     <Compile Include="Commands\GotoCommand.cs" />
     <Compile Include="Commands\CommentCommand.cs" />
     <Compile Include="LanguageService\XSharpEditorFactory.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="MatchingTokens\AbstractMatching.cs" />
     <Compile Include="MatchingTokens\IdentifierMatching.cs" />
     <Compile Include="MatchingTokens\KeywordMatching.cs" />
@@ -244,6 +245,12 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop.12.0">
       <Version>17.4.33103.184</Version>
+    </PackageReference>
+    <PackageReference Include="Serilog.Sinks.Debug">
+      <Version>3.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Serilog.Sinks.File">
+      <Version>6.0.0</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>

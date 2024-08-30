@@ -54,7 +54,7 @@ CLASS XSourceSymbol INHERIT XSymbol IMPLEMENTS IXSourceSymbol
 
     METHOD OpenEditor() AS VOID
         IF SELF:File != NULL
-            XSettings.OpenDocument(SELF:File:SourcePath, SELF:Range:StartLine, SELF:Range:StartColumn , FALSE)
+            XDocuments.Open(SELF:File:SourcePath, SELF:Range:StartLine, SELF:Range:StartColumn , FALSE)
         ENDIF
 
     METHOD InSameProject(otherSymbol AS XSourceSymbol) AS LOGIC

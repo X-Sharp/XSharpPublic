@@ -165,7 +165,7 @@ namespace XSharp.Project
                 }
                 else
                 {
-                    isOpen = XSettings.IsDocumentOpen(file);
+                    isOpen = XDocuments.IsOpen(file);
                     filenames.Add(file, isOpen);
                 }
                 if (isOpen && !keys.Contains(key))
@@ -208,7 +208,7 @@ namespace XSharp.Project
                     }
                     else
                     {
-                        isOpen = XSettings.IsDocumentOpen(file);
+                        isOpen = XDocuments.IsOpen(file);
                         filenames.Add(file, isOpen);
                     }
                     if (isOpen && !keys.ContainsKey(key) && (file == fileName))

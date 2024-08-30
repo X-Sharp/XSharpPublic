@@ -177,7 +177,6 @@ namespace XSharp.Project
             {
                 options.Add("nostddefs-");
             }
-
             ParseOptions = XParseOptions.FromVsValues(options);
             if (this.ConfigCanonicalName != null && ConfigCanonicalName.ConfigName.ToUpper() == "DEBUG")
             {

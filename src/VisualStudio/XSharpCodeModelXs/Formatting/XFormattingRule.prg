@@ -446,9 +446,10 @@ CLASS RulesReader IMPLEMENTS VsParser.IErrorListener
         LOCAL stream := NULL AS ITokenStream
         TRY
             var options := List<String>{} {"lexonly"}
-            var parseOptions := XSharpParseOptions.FromVsValues(options)
-            lexer := XSharpLexer.Create(cSource, "rules.txt", parseOptions)
-            XSharp.Parser.VsParser.Lex(cSource, "rules.txt", parseOptions, SELF, OUT stream, OUT VAR includeFiles)
+            var parseOptions := XParseOptions.FromVsValues(options)
+            var opts := (XSharpParseOptions) parseOptions
+            lexer := XSharpLexer.Create(cSource, "rules.txt", opts)
+            XSharp.Parser.VsParser.Lex(cSource, "rules.txt", opts, SELF, OUT stream, OUT VAR includeFiles)
             VAR bufferedStream := (BufferedTokenStream) stream
             VAR tokens := bufferedStream:GetTokens()
             VAR line := List<IToken>{}

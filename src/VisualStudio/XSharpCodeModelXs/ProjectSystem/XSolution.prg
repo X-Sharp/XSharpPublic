@@ -230,13 +230,12 @@ BEGIN NAMESPACE XSharpModel
         RETURN NULL
 
 
-    STATIC METHOD FindProject(projectFile AS STRING) AS XProject
-        LOCAL project AS XProject
-        projectFile := System.IO.Path.GetFileNameWithoutExtension(projectFile)
-        project := NULL
-        IF _projects:TryGetValue(projectFile, OUT project) .AND. project != NULL
-            RETURN project
-        ENDIF
+    STATIC METHOD FindProjectByFileName(projectFile AS STRING) AS XProject
+        FOREACH var project in _projects:Values
+            IF String.Compare(project:FileName, projectFile, StringComparison.OrdinalIgnoreCase) == 0
+                RETURN project
+            ENDIF
+        NEXT
         RETURN NULL
 
     INTERNAL STATIC METHOD Remove(projectName AS STRING) AS LOGIC

@@ -1,15 +1,24 @@
 ﻿using Community.VisualStudio.Toolkit;
+using LanguageService.CodeAnalysis.Text;
+using LanguageService.CodeAnalysis.XSharp;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using LanguageService.SyntaxTree;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.TextManager.Interop;
+using Microsoft.VisualStudio.Text;
+using TM=Microsoft.VisualStudio.TextManager.Interop;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Windows.Shapes;
 using XSharp.Settings;
 using XSharpModel;
+using static XSharp.Parser.VsParser;
+using Microsoft.VisualStudio.TextManager.Interop;
 
 namespace XSharp.LanguageService
 {
@@ -172,7 +181,7 @@ namespace XSharp.LanguageService
 
         #endregion
 
- 
+
         private void ShellEvents_ShutdownStarted()
         {
             XSolution.IsClosing = true;
@@ -226,12 +235,12 @@ namespace XSharp.LanguageService
             }
         }
 
-       
+
         bool IsXSharpProject(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
                 return false;
-            return string.Equals(Path.GetExtension(fileName), ".xsproj", StringComparison.OrdinalIgnoreCase);
+            return string.Equals(System.IO.Path.GetExtension(fileName), ".xsproj", StringComparison.OrdinalIgnoreCase);
         }
 
         #endregion
@@ -366,15 +375,14 @@ namespace XSharp.LanguageService
                         view = await VS.Documents.OpenAsync(file);
                     }
                 }
-                IVsTextView textView = null;
+                TM.IVsTextView textView = null;
                 if (view != null)
                 {
                     textView = await view.TextView.ToIVsTextViewAsync();
                 }
                 if (textView != null)
                 {
-                    //
-                    TextSpan span = new TextSpan();
+                    TM.TextSpan span = new TM.TextSpan();
                     span.iStartLine = line;
                     span.iStartIndex = column;
                     span.iEndLine = line;
@@ -438,6 +446,158 @@ namespace XSharp.LanguageService
         private void BuildEvents_SolutionBuildStarted(object sender, EventArgs e)
         {
             building = true;
+        }
+        #endregion
+
+        public void RunInForeGroundThread(Action a)
+        {
+
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                a();
+            });
+        }
+
+        public string DocumentGetText(string file, ref bool IsOpen)
+        {
+            bool open = false;
+            var result = ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var doc = await VS.Documents.GetDocumentViewAsync(file);
+                open = doc != null;
+                if (open)
+                {
+                    return doc.TextBuffer.CurrentSnapshot.GetText();
+                }
+                return File.ReadAllText(file);
+            });
+            IsOpen = open;
+            return result;
+        }
+
+        private void writeToFile(string file, int line, string text)
+        {
+            var lines = File.ReadAllLines(file).ToList();
+            if (line >= 0 && line < lines.Count)
+            {
+                lines.Insert(line, text);
+            }
+            else
+            {
+                lines.Add(text);
+            }
+            File.WriteAllLines(file, lines);
+        }
+        private void writeToDocument(DocumentView doc, int line, string text)
+        {
+            var textBuffer = doc.TextBuffer.CurrentSnapshot.TextBuffer;
+            var lineCount = textBuffer.CurrentSnapshot.LineCount;
+            int insertPos = textBuffer.CurrentSnapshot.Length;
+            if (line > 0 && line < lineCount)
+            {
+                var textLine = textBuffer.CurrentSnapshot.GetLineFromLineNumber(line);
+                insertPos = textLine.End.Position;
+
+            }
+            textBuffer.Insert(insertPos, text + Environment.NewLine);
+        }
+        public bool DocumentInsertLine(string file, int line, string text)
+        {
+            if (!File.Exists(file))
+            {
+                return false;
+            }
+            var result = ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var doc = await VS.Documents.GetDocumentViewAsync(file);
+                if (doc != null)
+                {
+                    writeToDocument(doc, line, text);
+                }
+                else
+                {
+                    writeToFile(file, line, text);
+                }
+                return true;
+            });
+            return result;
+        }
+
+        private void writeToDocument(DocumentView doc, string text)
+        {
+            doc.TextBuffer.CurrentSnapshot.TextBuffer.Replace(new Span(0, doc.TextBuffer.CurrentSnapshot.Length), text);
+            return;
+        }
+        public bool DocumentSetText(string file, string text)
+        {
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var doc = await VS.Documents.GetDocumentViewAsync(file);
+                if (doc != null)
+                {
+                    writeToDocument(doc, text);
+                }
+                else
+                {
+                    File.WriteAllText(file, text);
+                }
+                return true;
+            });
+        }
+
+        public void ClearIntellisenseErrors(string file)
+        {
+            return;
+        }
+        public string SynchronizeKeywordCase(string code, string fileName)
+        {
+            if (XEditorSettings.KeywordCase == KeywordCase.None)
+                return code;
+            // we also normalize the line endings
+            code = code.Replace("\n", "");
+            code = code.Replace("\r", "\r\n");
+
+            var file = XSolution.FindFullPath(fileName);
+            var sb = new StringBuilder();
+            XParseOptions parseoptions;
+            if (file != null)
+            {
+                parseoptions = file.Project.ParseOptions;
+            }
+            else
+                parseoptions = XParseOptions.Default;
+            ITokenStream tokenStream;
+            var reporter = new ErrorIgnorer();
+            bool ok = XSharp.Parser.VsParser.Lex(code, fileName, (XSharpParseOptions)parseoptions, reporter, out tokenStream, out _);
+            var stream = tokenStream as BufferedTokenStream;
+            var tokens = stream.GetTokens();
+            foreach (var token in tokens)
+            {
+                if (XSharpLexer.IsKeyword(token.Type))
+                {
+                    sb.Append(XLiterals.FormatKeyword(token.Text));
+                }
+                else
+                {
+                    sb.Append(token.Text);
+                }
+            }
+            return sb.ToString();
+        }
+
+    }
+    internal class ErrorIgnorer : IErrorListener
+    {
+        #region IErrorListener
+        public void ReportError(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
+        {
+            ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
+        }
+
+        public void ReportWarning(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
+        {
+            ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
         }
         #endregion
     }

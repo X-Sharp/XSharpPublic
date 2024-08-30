@@ -81,7 +81,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         SELF:_errors := List<XError>{}
         LOCAL stream := NULL AS ITokenStream
         TRY
-            XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, SELF:ParseOptions, SELF, OUT stream, OUT VAR includeFiles)
+            XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, (XSharpParseOptions) SELF:ParseOptions, SELF, OUT stream, OUT VAR includeFiles)
             SELF:AddIncludes(includeFiles)
         CATCH e AS Exception
             WriteOutputMessage("Lex() Failed:")

@@ -97,7 +97,7 @@ namespace XSharp.LanguageService
                                 var proj = await VS.Solutions.GetActiveProjectAsync();
                                 if (proj != null)
                                 {
-                                    var xproj = XSolution.FindProject(proj.FullPath);
+                                    var xproj = XSolution.FindProjectByFileName(proj.FullPath);
                                     if (xproj != null)
                                     {
                                         if (file.Project.FileName != xproj.FileName)

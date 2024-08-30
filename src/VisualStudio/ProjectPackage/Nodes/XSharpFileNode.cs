@@ -868,57 +868,6 @@ namespace XSharp.Project
             }
         }
 
-        public string DocumentGetText()
-        {
-            return VsShellUtilities.GetRunningDocumentContents(this.ProjectMgr.Site, this.Url);
-        }
-        public bool DocumentInsertLine(int line, string text)
-        {
-            IVsTextLines VsTxtlines = TextLines;
-            if (VsTxtlines == null || line < 1)
-                return false;
-            bool Result = false;
-            text += "\r\n";
-            TextSpan[] span = new TextSpan[1];
-            GCHandle handle = GCHandle.Alloc(text, GCHandleType.Pinned);
-            try
-            {
-                line -= 1;
-                Int32 result = VsTxtlines.ReplaceLines(line, 0, line, 0, handle.AddrOfPinnedObject(), text.Length, span);
-                if (result == VSConstants.S_OK)
-                    Result = true;
-            }
-            finally
-            {
-                handle.Free();
-            }
-            return Result;
-        }
-
-        public bool DocumentSetText(string text)
-        {
-            IVsTextLines VsTxtlines = TextLines;
-            if (VsTxtlines == null)
-                return false;
-            bool Result = false;
-            GCHandle handle = GCHandle.Alloc(text, GCHandleType.Pinned);
-            try
-            {
-                TextSpan[] span = new TextSpan[1];
-                int line, col;
-                Int32 result = VsTxtlines.GetLastLineIndex(out line, out col);
-                if (result == VSConstants.S_OK)
-                    result = VsTxtlines.ReloadLines(0, 0, line, col, handle.AddrOfPinnedObject(), text.Length, span);
-                if (result == VSConstants.S_OK)
-                    Result = true;
-            }
-            finally
-            {
-                handle.Free();
-            }
-            return Result;
-        }
-
         #endregion
     }
 }

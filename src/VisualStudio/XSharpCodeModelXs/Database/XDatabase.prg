@@ -24,7 +24,7 @@ STATIC CLASS XDatabase
     STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
-    PRIVATE CONST CurrentDbVersion := 3.0 AS System.Double
+    PRIVATE CONST CurrentDbVersion := 3.2 AS System.Double
 
     STATIC METHOD InitializeMicrosoft() AS VOID
         SQLitePCL.Batteries.Init()
@@ -307,11 +307,12 @@ STATIC CLASS XDatabase
 #region Table Types
 
             stmt  	:= "CREATE TABLE Types ("
-            stmt	+= " Id integer NOT NULL PRIMARY KEY, idFile integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
+            stmt	+= " Id integer NOT NULL PRIMARY KEY, idFile integer NOT NULL, idProject integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
             stmt    += " Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
             stmt    += " StartLine integer , StartColumn integer, EndLine integer , EndColumn integer, Start integer , Stop integer,  "
             stmt	+= " Sourcecode text , XmlComments text, ClassType integer NOT NULL, "
-            stmt    += " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
+            stmt    += " FOREIGN KEY (idFile)    REFERENCES Files (Id)    ON DELETE CASCADE ON UPDATE CASCADE"
+            stmt    += " FOREIGN KEY (idProject) REFERENCES Projects (Id) ON DELETE CASCADE ON UPDATE CASCADE"
             stmt	+= ") ;"
             stmt	+= "CREATE UNIQUE INDEX Types_Pk    ON Types (Id); "
             stmt	+= "CREATE INDEX Types_Name         ON Types (Name); "
@@ -955,14 +956,15 @@ STATIC CLASS XDatabase
                 oCmd:CommandText  := "DELETE FROM IncludeFilesPerFile WHERE IdFile = "+oFile:Id:ToString()
                 oCmd:ExecuteNonQuery()
 
-                oCmd:CommandText := "INSERT INTO Types (Name, IdFile, Namespace, Kind,  BaseTypeName, Attributes,  Sourcecode, XmlComments, " + ;
+                oCmd:CommandText := "INSERT INTO Types (Name, IdFile, IdProject, Namespace, Kind,  BaseTypeName, Attributes,  Sourcecode, XmlComments, " + ;
                     "                 StartLine,  StartColumn,  EndLine,  EndColumn,  Start,  Stop, ClassType) " +;
-                    " VALUES ($name, $file, $namespace, $kind, $baseTypeName,  $attributes, $sourcecode, $xmlcomments, " +;
+                    " VALUES ($name, $file, $project, $namespace, $kind, $baseTypeName,  $attributes, $sourcecode, $xmlcomments, " +;
                     "           $startline, $startcolumn, $endline, $endcolumn, $start, $stop, $classtype) ;" +;
                     " SELECT last_insert_rowid()"
                 VAR pars := List<DbParameter>{} { ;
                     oCmd:Parameters:AddWithValue("$name", ""),;
                     oCmd:Parameters:AddWithValue("$file", 0),;
+                    oCmd:Parameters:AddWithValue("$project", 0),;
                     oCmd:Parameters:AddWithValue("$namespace", ""),;
                     oCmd:Parameters:AddWithValue("$kind", 0),;
                     oCmd:Parameters:AddWithValue("$baseTypeName", ""),;
@@ -979,21 +981,23 @@ STATIC CLASS XDatabase
                 VAR Types := oFile:TypeList:Values:Where({ t=> t.Kind != Kind.Namespace })
                 FOREACH VAR typedef IN Types
                     TRY
-                        pars[0]:Value := typedef:Name
-                        pars[1]:Value := oFile:Id
-                        pars[2]:Value := typedef:Namespace default ""
-                        pars[3]:Value := (INT) typedef:Kind
-                        pars[4]:Value := typedef:BaseTypeName default ""
-                        pars[5]:Value := (INT) typedef:Attributes
-                        pars[6]:Value := typedef:SourceCode default ""
-                        pars[7]:Value := typedef:XmlComments default ""
-                        pars[8]:Value := typedef:Range:StartLine
-                        pars[9]:Value := typedef:Range:StartColumn
-                        pars[10]:Value := typedef:Range:EndLine
-                        pars[11]:Value := typedef:Range:EndColumn
-                        pars[12]:Value := typedef:Interval:Start
-                        pars[13]:Value := typedef:Interval:Stop
-                        pars[14]:Value := (INT) typedef:ClassType
+                        local i := 0 as LONG
+                        pars[i++]:Value := typedef:Name
+                        pars[i++]:Value := oFile:Id
+                        pars[i++]:Value := oFile:Project:Id
+                        pars[i++]:Value := typedef:Namespace default ""
+                        pars[i++]:Value := (INT) typedef:Kind
+                        pars[i++]:Value := typedef:BaseTypeName default ""
+                        pars[i++]:Value := (INT) typedef:Attributes
+                        pars[i++]:Value := typedef:SourceCode default ""
+                        pars[i++]:Value := typedef:XmlComments default ""
+                        pars[i++]:Value := typedef:Range:StartLine
+                        pars[i++]:Value := typedef:Range:StartColumn
+                        pars[i++]:Value := typedef:Range:EndLine
+                        pars[i++]:Value := typedef:Range:EndColumn
+                        pars[i++]:Value := typedef:Interval:Start
+                        pars[i++]:Value := typedef:Interval:Stop
+                        pars[i++]:Value := (INT) typedef:ClassType
                         VAR Id := (INT64) oCmd:ExecuteScalar()
                         typedef:Id := Id
                     CATCH e AS Exception
@@ -1037,21 +1041,22 @@ STATIC CLASS XDatabase
                 FOREACH VAR typedef IN Types
                     FOREACH VAR xmember IN typedef:XMembers
                         TRY
+                            local i := 0 as LONG
                             // file is constant
-                            pars[ 0]:Value := oFile:Id
-                            pars[ 1]:Value := typedef:Id
-                            pars[ 2]:Value := xmember:Name
-                            pars[ 3]:Value := (INT) xmember:Kind
-                            pars[ 4]:Value := (INT) xmember:Attributes
-                            pars[ 5]:Value := xmember:Range:StartLine
-                            pars[ 6]:Value := xmember:Range:StartColumn
-                            pars[ 7]:Value := xmember:Range:EndLine
-                            pars[ 8]:Value := xmember:Range:EndColumn
-                            pars[ 9]:Value := xmember:Interval:Start
-                            pars[10]:Value := xmember:Interval:Stop
-                            pars[11]:Value := xmember:SourceCode default ""
-                            pars[12]:Value := xmember:XmlComments default ""
-                            pars[13]:Value := xmember:ReturnType default ""
+                            pars[i++]:Value := oFile:Id
+                            pars[i++]:Value := typedef:Id
+                            pars[i++]:Value := xmember:Name
+                            pars[i++]:Value := (INT) xmember:Kind
+                            pars[i++]:Value := (INT) xmember:Attributes
+                            pars[i++]:Value := xmember:Range:StartLine
+                            pars[i++]:Value := xmember:Range:StartColumn
+                            pars[i++]:Value := xmember:Range:EndLine
+                            pars[i++]:Value := xmember:Range:EndColumn
+                            pars[i++]:Value := xmember:Interval:Start
+                            pars[i++]:Value := xmember:Interval:Stop
+                            pars[i++]:Value := xmember:SourceCode default ""
+                            pars[i++]:Value := xmember:XmlComments default ""
+                            pars[i++]:Value := xmember:ReturnType default ""
                             VAR Id := (INT64) oCmd:ExecuteScalar()
                             xmember:Id := Id
                             if xmember:Signature:IsExtension .and. xmember:Parameters:Count > 0
@@ -1077,20 +1082,21 @@ STATIC CLASS XDatabase
                 FOREACH xmember as XSourceMemberSymbol in oFile:EntityList:Where ( {m => m.Kind.IsLocal() } )
                     TRY
                         // file is constant
-                        pars[ 0]:Value := oFile:Id
-                        pars[ 1]:Value := ((XSourceTypeSymbol) xmember:ParentType):Id
-                        pars[ 2]:Value := xmember:Name
-                        pars[ 3]:Value := (INT) xmember:Kind
-                        pars[ 4]:Value := (INT) xmember:Attributes
-                        pars[ 5]:Value := xmember:Range:StartLine
-                        pars[ 6]:Value := xmember:Range:StartColumn
-                        pars[ 7]:Value := xmember:Range:EndLine
-                        pars[ 8]:Value := xmember:Range:EndColumn
-                        pars[ 9]:Value := xmember:Interval:Start
-                        pars[10]:Value := xmember:Interval:Stop
-                        pars[11]:Value := xmember:SourceCode default ""
-                        pars[12]:Value := xmember:XmlComments default ""
-                        pars[13]:Value := xmember:ReturnType default ""
+                        local i := 0 as LONG
+                        pars[i++]:Value := oFile:Id
+                        pars[i++]:Value := ((XSourceTypeSymbol) xmember:ParentType):Id
+                        pars[i++]:Value := xmember:Name
+                        pars[i++]:Value := (INT) xmember:Kind
+                        pars[i++]:Value := (INT) xmember:Attributes
+                        pars[i++]:Value := xmember:Range:StartLine
+                        pars[i++]:Value := xmember:Range:StartColumn
+                        pars[i++]:Value := xmember:Range:EndLine
+                        pars[i++]:Value := xmember:Range:EndColumn
+                        pars[i++]:Value := xmember:Interval:Start
+                        pars[i++]:Value := xmember:Interval:Stop
+                        pars[i++]:Value := xmember:SourceCode default ""
+                        pars[i++]:Value := xmember:XmlComments default ""
+                        pars[i++]:Value := xmember:ReturnType default ""
                         VAR Id := (INT64) oCmd:ExecuteScalar()
                         xmember:Id := Id
                     CATCH e AS Exception
@@ -1116,11 +1122,12 @@ STATIC CLASS XDatabase
                         oCmd:Parameters:AddWithValue("$priority", 0),;
                         oCmd:Parameters:AddWithValue("$comment", "")}
                     FOREACH task AS XCommentTask IN oFile:CommentTasks
-                        pars[ 0]:Value := oFile:Id
-                        pars[ 1]:Value := task:Line
-                        pars[ 2]:Value := task:Column
-                        pars[ 3]:Value := task:Priority
-                        pars[ 4]:Value := task:Comment default ""
+                        local i := 0 as LONG
+                        pars[i++]:Value := oFile:Id
+                        pars[i++]:Value := task:Line
+                        pars[i++]:Value := task:Column
+                        pars[i++]:Value := task:Priority
+                        pars[i++]:Value := task:Comment default ""
                         oCmd:ExecuteScalar()
                     NEXT
                 endif

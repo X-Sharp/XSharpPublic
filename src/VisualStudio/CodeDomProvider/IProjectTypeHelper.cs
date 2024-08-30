@@ -15,6 +15,5 @@ namespace XSharp.CodeDom
         XSharpModel.IXTypeSymbol ResolveExternalType(string name, IList<string> usings);
 
         XParseOptions ParseOptions { get; }
-        string SynchronizeKeywordCase(string code, string fileName);
     }
 }

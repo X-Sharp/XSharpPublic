@@ -229,7 +229,7 @@ namespace XSharp.LanguageService
                 {
                     fileName = "MissingFile.prg";
                 }
-                bool ok = Parser.VsParser.Lex(text, fileName, ParseOptions, this, out ITokenStream tokenStream, out var _);
+                bool ok = Parser.VsParser.Lex(text, fileName, (XSharpParseOptions) ParseOptions, this, out ITokenStream tokenStream, out var _);
                 var stream = tokenStream as BufferedTokenStream;
                 tokens.AddRange(stream.GetTokens());
                 return tokens;
@@ -240,21 +240,21 @@ namespace XSharp.LanguageService
             }
             return tokens;
         }
-        private XSharpParseOptions ParseOptions
+        private XParseOptions ParseOptions
         {
             get
             {
-                XSharpParseOptions parseoptions;
                 var file = _buffer.GetFile();
+                XParseOptions parseOptions ;
                 if (file != null)
                 {
-                    parseoptions = file.Project.ParseOptions;
+                    parseOptions = file.Project.ParseOptions;
                 }
                 else
                 {
-                    parseoptions = XSharpParseOptions.Default;
+                    parseOptions = XParseOptions.Default;
                 }
-                return parseoptions;
+                return parseOptions;
             }
         }
 

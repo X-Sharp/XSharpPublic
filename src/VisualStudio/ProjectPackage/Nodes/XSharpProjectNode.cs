@@ -194,7 +194,7 @@ namespace XSharp.Project
 #else
                 var task = (Microsoft.VisualStudio.Shell.Task)sender;
 #endif
-                XSettings.OpenDocument(task.Document, task.Line, task.Column, false);
+                XDocuments.Open(task.Document, task.Line, task.Column, false);
             }
         }
 
@@ -1342,7 +1342,7 @@ namespace XSharp.Project
                 if (projectModel == null)
                 {
                     // Already in the Solution ?
-                    projectModel = XSharpModel.XSolution.FindProject(this.Url);
+                    projectModel = XSharpModel.XSolution.FindProjectByFileName(this.Url);
                 }
                 // Neither ? Ok, Create
                 if (projectModel == null)
@@ -1688,55 +1688,7 @@ namespace XSharp.Project
 
 #region IXSharpProject Interface
 
-        public void RunInForeGroundThread(Action a)
-        {
-
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                a();
-            });
-        }
-
-        public string SynchronizeKeywordCase(string code, string fileName)
-        {
-            if (XEditorSettings.KeywordCase == KeywordCase.None)
-                return code;
-            // we also normalize the line endings
-            code = code.Replace("\n", "");
-            code = code.Replace("\r", "\r\n");
-
-            var file = XSolution.FindFullPath(fileName);
-            var sb = new StringBuilder();
-            XSharpParseOptions parseoptions;
-            if (file != null)
-            {
-                parseoptions = file.Project.ParseOptions;
-            }
-            else
-                parseoptions = XSharpParseOptions.Default;
-            ITokenStream tokenStream;
-            var reporter = new XSharp.CodeDom.ErrorIgnorer();
-            bool ok = XSharp.Parser.VsParser.Lex(code, fileName, parseoptions, reporter, out tokenStream, out _);
-            var stream = tokenStream as BufferedTokenStream;
-            var tokens = stream.GetTokens();
-            foreach (var token in tokens)
-            {
-                if (XSharpLexer.IsKeyword(token.Type))
-                {
-                    sb.Append(XLiterals.FormatKeyword(token.Text));
-                }
-                else
-                {
-                    sb.Append(token.Text);
-                }
-            }
-            return sb.ToString();
-        }
-
-
         public string DisplayName => this.Caption;
-
 
 
         public string IntermediateOutputPath
@@ -2215,7 +2167,7 @@ namespace XSharp.Project
                 xoptions.BuildCommandLine();
             }
         }
-         internal XSharpParseOptions CachedOptions;
+         internal XParseOptions CachedOptions;
         public XParseOptions ParseOptions
         {
             get
@@ -2243,7 +2195,7 @@ namespace XSharp.Project
                 {
                     Logger.Exception(e, "Retrieving Parse Options");
                 }
-                return XSharpParseOptions.Default;
+                return XParseOptions.Default;
             }
         }
         bool _closing = false;
@@ -2920,41 +2872,6 @@ namespace XSharp.Project
                 pitemid = 0;
             }
             return VSConstants.S_OK;
-        }
-
-
-        public bool DocumentInsertLine(string fileName, int line, string text)
-        {
-            XSharpFileNode node = this.FindURL(fileName) as XSharpFileNode;
-            if (node != null)
-            {
-                return node.DocumentInsertLine(line, text);
-            }
-            return false;
-        }
-
-        public string DocumentGetText(string fileName, ref bool isOpen)
-        {
-            isOpen = XSettings.IsDocumentOpen(fileName);
-            if (isOpen)
-            {
-                XSharpFileNode node = this.FindURL(fileName) as XSharpFileNode;
-                if (node != null)
-                {
-                    return node.DocumentGetText();
-                }
-            }
-            return "";
-        }
-
-        public bool DocumentSetText(string fileName, string text)
-        {
-            XSharpFileNode node = this.FindURL(fileName) as XSharpFileNode;
-            if (node != null)
-            {
-                return node.DocumentSetText(text);
-            }
-            return false;
         }
 
 #endregion

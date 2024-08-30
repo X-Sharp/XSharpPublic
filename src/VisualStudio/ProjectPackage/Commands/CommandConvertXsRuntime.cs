@@ -43,7 +43,7 @@ namespace XSharp.Project
         {
             var project = await VS.Solutions.GetActiveProjectAsync();
             var path = project.FullPath;
-            var xsproject = XSolution.FindProject(path);
+            var xsproject = XSolution.FindProjectByFileName(path);
             if (xsproject != null)
             {
                 return xsproject.AssemblyReferences;
@@ -109,7 +109,7 @@ namespace XSharp.Project
             }
             var project = await VS.Solutions.GetActiveProjectAsync();
             var path = project.FullPath;
-            var xsproject = XSolution.FindProject(path);
+            var xsproject = XSolution.FindProjectByFileName(path);
             var projectNode = (XSharpProjectNode)xsproject.ProjectNode;
             var refContainer = projectNode.GetReferenceContainer() as XSharpReferenceContainerNode;
             // Delete Vulcan items from the project

@@ -38,9 +38,6 @@
             <param name="key"></param>
             <param name="value"></param>
         </member>
-        <member name="T:XSharp.Settings.IXVsShellLink">
-            <summary>This interface allows the code model to call back into the VS Shell</summary>
-        </member>
         <member name="T:XSharpModel.XDbResultHelpers">
             <summary>
             The XDbResultHelpers class.
@@ -195,11 +192,6 @@
             for the formatting code
             </summary>
         </member>
-        <member name="T:XSharpModel.XParseOptions">
-            <summary>
-            The ParseOptions class.
-            </summary>
-        </member>
         <member name="T:XSharpModel.XSharpTokenList">
             <summary>
             The XSharpTokenList class. This class is used to process a list of tokens
@@ -344,6 +336,9 @@
             </summary>
             <param name="sUrl"></param>
             <returns>EnvDte project</returns>
+        </member>
+        <member name="T:XSharpModel.IXVsShellLink">
+            <summary>This interface allows the code model to call back into the VS Shell</summary>
         </member>
         <member name="T:XSharpModel.SystemTypeController">
             <summary>

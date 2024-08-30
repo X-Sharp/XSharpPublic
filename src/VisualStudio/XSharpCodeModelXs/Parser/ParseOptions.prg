@@ -10,27 +10,57 @@ USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 USING System
 USING System.Collections.Generic
 USING System.Text
+using System.Diagnostics
 
 BEGIN NAMESPACE XSharpModel
 
 	/// <summary>
     /// The ParseOptions class.
     /// </summary>
+    #ifdef DEBUG
+    [DebuggerDisplay("{Id} {Dialect} ")];
     CLASS XParseOptions
-        private initonly _options := XSharpParseOptions.Default AS XSharpParseOptions
+    #else
+    CLASS XParseOptions
+    #endif
+
+    #ifdef DEBUG
+    public Id as Int64
+    public static nextId := 0 as Int64
+    #endif
+        private _options AS XSharpParseOptions
         public static PROPERTY Default AS XParseOptions GET XParseOptions{XSharpParseOptions.Default}
 
         PRIVATE CONSTRUCTOR(options as XSharpParseOptions)
+            #ifdef DEBUG
+            Id := ++nextId
+            #endif
             _options := options
+            FixOptions(options)
             RETURN
+
+    STATIC METHOD FixOptions(options as XSharpParseOptions) as XSharpParseOptions
+        if String.IsNullOrEmpty(options.WindowsDir)
+            var prop := typeof(XSharpParseOptions).GetProperty(nameof(XSharpParseOptions.WindowsDir))
+            if prop != null
+                prop:SetValue(options, System.Environment.GetFolderPath(Environment.SpecialFolder.Windows))
+            endif
+        endif
+        if String.IsNullOrEmpty(options.SystemDir)
+            var prop := typeof(XSharpParseOptions).GetProperty(nameof(XSharpParseOptions.SystemDir))
+            if prop != null
+                prop:SetValue(options, System.Environment.GetFolderPath(Environment.SpecialFolder.System))
+            endif
+        endif
+        return options
     STATIC METHOD FromVsValues(opt AS IList<string>) AS XParseOptions
         var options  := XSharpParseOptions.FromVsValues(opt)
         RETURN XParseOptions{options}
 
-    OPERATOR IMPLICIT(options AS XSharpParseOptions) AS XParseOptions
+    OPERATOR EXPLICIT(options AS XSharpParseOptions) AS XParseOptions
         RETURN XParseOptions{options}
 
-    OPERATOR IMPLICIT(options AS XParseOptions) AS XSharpParseOptions
+    OPERATOR EXPLICIT(options AS XParseOptions) AS XSharpParseOptions
         RETURN options._options
 
     PROPERTY SupportsMemvars AS LOGIC GET _options:SupportsMemvars

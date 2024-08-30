@@ -136,7 +136,7 @@ namespace XSharp.LanguageService
                 }
             }
             // Note that the line numbers in the list are 0 based. OpenDocument also wants a 0 based line number
-            XSettings.OpenDocument(xFile.FullPath, entity.Range.StartLine, 0, true);
+            XDocuments.Open(xFile.FullPath, entity.Range.StartLine, 0, true);
 
         }
 

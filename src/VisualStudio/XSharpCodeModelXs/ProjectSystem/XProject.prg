@@ -445,7 +445,7 @@ CLASS XProject
                 RETURN TRUE
             ENDIF
             // Does this url belongs to a project in the Solution ?
-            prj := XSolution.FindProject(url)
+            prj := XSolution.FindProjectByFileName(url)
             IF (SELF:_ReferencedProjects:Contains(prj))
                 //
                 outputname := prj:ProjectNode:OutputFile
@@ -472,7 +472,7 @@ CLASS XProject
             SELF:LogReferenceMessage("ResolveUnprocessedProjectReferences()")
             existing := List<STRING>{}
             FOREACH sProject AS STRING IN SELF:_unprocessedProjectReferences:ToArray()
-                p := XSolution.FindProject(sProject)
+                p := XSolution.FindProjectByFileName(sProject)
                 IF p != NULL
                     existing:Add(sProject)
                     SELF:_ReferencedProjects:Add(p)
@@ -583,7 +583,7 @@ CLASS XProject
         // Check if any DLL has changed
         IF SELF:_StrangerProjects:Count > 0 .AND. ! XSettings.DisableForeignProjectReferences .and. SELF:RefCheckTimeOut
             SELF:LogReferenceMessage("--> RefreshStrangerProjectDLLOutputFiles() "+SELF:_StrangerProjects:Count():ToString())
-            _projectNode:RunInForeGroundThread ( { => SELF:RefreshStrangerProjectDLLOutputFiles_Worker() })
+            XSettings.RunInForeGroundThread ( { => SELF:RefreshStrangerProjectDLLOutputFiles_Worker() })
             SELF:LogReferenceMessage("<-- RefreshStrangerProjectDLLOutputFiles()")
         ENDIF
 
@@ -615,7 +615,7 @@ CLASS XProject
         NEXT
     PRIVATE METHOD ResolveUnprocessedStrangerReferences() AS VOID
         IF SELF:_unprocessedStrangerProjectReferences:Count > 0 .AND. ! XSettings.DisableForeignProjectReferences
-            _projectNode:RunInForeGroundThread ( { => SELF:ResolveUnprocessedStrangerReferences_Worker() })
+            XSettings.RunInForeGroundThread ( { => SELF:ResolveUnprocessedStrangerReferences_Worker() })
 
             SELF:_clearTypeCache()
         ENDIF
@@ -635,6 +635,8 @@ CLASS XProject
         VAR type := XFileTypeHelpers.GetFileType(filePath)
         IF type == XFileType.SourceCode
             SELF:_SourceFilesDict:Add(filePath)
+            var xFile := XFile{filePath, SELF}
+            XDatabase.Read(xFile)
         ELSEIF type == XFileType.XAML
             VAR xFile := XFile{filePath, SELF}
             xamlCodeBehindFile := xFile:XamlCodeBehindFile
@@ -1123,7 +1125,10 @@ CLASS XProject
         //todo Collect interfaces from IMPLEMENTS clauses
         VAR members  := XDatabase.GetMembers(sTypeIds):ToArray()
         VAR oType   := found[0]
-        var project := XSolution.FindProject(oType:Project)
+        var project := XSolution.FindProjectByFileName(oType:Project)
+        if project == null
+            RETURN NULL
+        ENDIF
         VAR file    := project:GetFileById(oType:IdFile)
         IF file == null
             file := project:FindXFile(oType:FileName)

@@ -15,24 +15,15 @@ BEGIN NAMESPACE XSharpModel
 INTERFACE IXSharpProject
     METHOD AddFileNode(fileName AS STRING) AS VOID
         //METHOD AddIntellisenseError(file AS STRING, line AS LONG, column AS LONG, Length AS LONG, errCode AS STRING, message AS STRING, sev AS DiagnosticSeverity) AS VOID
-    METHOD ClearIntellisenseErrors(file AS STRING) AS VOID
     METHOD DeleteFileNode(fileName AS STRING) AS VOID
-    METHOD DocumentGetText(file AS STRING, IsOpen REF LOGIC) AS STRING
-    METHOD DocumentInsertLine(fileName AS STRING, line AS LONG, text AS STRING) AS LOGIC
-    METHOD DocumentSetText(fileName AS STRING, text AS STRING) AS LOGIC
     /// <summary>
     /// Return the EnvDte project for a url
     /// </summary>
     /// <param name="sUrl"></param>
     /// <returns>EnvDte project</returns>
     METHOD FindProject(sUrl AS STRING) AS Object
-    METHOD GetIntellisenseErrorPos(fileName AS STRING) AS System.Collections.Generic.List<IXErrorPosition>
     METHOD HasFileNode(fileName AS STRING) AS LOGIC
-    METHOD ShowIntellisenseErrors() AS VOID
-    METHOD SynchronizeKeywordCase(code as STRING, fileName as STRING) AS STRING
-    METHOD RunInForeGroundThread( a as Action) AS VOID
-
-    // Properties
+        // Properties
     PROPERTY DisplayName AS STRING GET
     PROPERTY IntermediateOutputPath AS STRING GET
     PROPERTY OutputFile AS STRING GET
@@ -61,6 +52,23 @@ INTERFACE ILogger
     PROPERTY Active as LOGIC GET
 END INTERFACE
 
+/// <summary>This interface allows the code model to call back into the VS Shell</summary>
+INTERFACE IXVsShellLink
+    METHOD OpenDocument(file AS STRING, Line AS LONG, Column AS LONG, lPreview as LOGIC) AS VOID
+    METHOD IsDocumentOpen(file as STRING) AS LOGIC
+    METHOD SetStatusBarText(cText AS STRING) AS VOID
+    METHOD SetStatusBarProgress(cMessage as STRING, nItem AS LONG, nTotal as LONG) AS VOID
+    METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
+    METHOD ShowMessageBox(message AS STRING) AS INT
+    PROPERTY IsVsBuilding AS LOGIC GET
+    METHOD DocumentGetText(file AS STRING, IsOpen REF LOGIC) AS STRING
+    METHOD DocumentInsertLine(fileName AS STRING, line AS LONG, text AS STRING) AS LOGIC
+    METHOD DocumentSetText(fileName AS STRING, Text AS STRING) AS LOGIC
+    METHOD ClearIntellisenseErrors(file AS STRING) AS VOID
+    METHOD SynchronizeKeywordCase(code AS STRING, fileName as string) AS STRING
+    METHOD RunInForeGroundThread( a as Action) AS VOID
+
+END INTERFACE
 
 
 END NAMESPACE

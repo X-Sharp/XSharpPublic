@@ -7,9 +7,10 @@ namespace Microsoft.VisualStudio.ProjectSystem
     /// </summary>
     internal static class ProjectCapability
     {
+#if XSHARP	
         public const string XSharp = nameof(XSharp);
         public const string XSharpAppDesigner = ProjectCapability.XSharp + " & " + AppDesigner;
-
+#endif
         public const string CSharp =  ProjectCapabilities.CSharp;
         public const string VisualBasic = ProjectCapabilities.VB;
         public const string FSharp = nameof(FSharp);
@@ -17,7 +18,11 @@ namespace Microsoft.VisualStudio.ProjectSystem
         public const string CSharpAppDesigner = ProjectCapabilities.CSharp + " & " + AppDesigner;
         public const string FSharpAppDesigner = FSharp + " & " + AppDesigner;
         public const string CSharpOrFSharp = "(" + CSharp + " | " + FSharp + ")";
+#if XSHARP		
         public const string CSharpOrVisualBasic = "(" + ProjectCapability.XSharp + " | " + ProjectCapabilities.CSharp + " | " + ProjectCapabilities.VB + ")";
+#else
+        public const string CSharpOrVisualBasic = "(" + ProjectCapabilities.CSharp + " | " + ProjectCapabilities.VB + ")";
+#endif		
         public const string CSharpOrVisualBasicLanguageService = CSharpOrVisualBasic + " & " + LanguageService;
 
         public const string AppDesigner = nameof(AppDesigner);

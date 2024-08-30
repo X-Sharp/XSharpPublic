@@ -15,7 +15,7 @@ namespace Microsoft.VisualStudio.Packaging
     /// </remarks>
     internal static class ProjectTypeCapabilities
     {
-
+#if XSHARP
         /// <summary>
         ///     Represents X#'s (csproj) set of capabilities that are always present ("fixed").
         /// </summary>
@@ -23,7 +23,7 @@ namespace Microsoft.VisualStudio.Packaging
                                      ProjectCapability.XSharp + "; " +
                                      ProjectCapabilities.SharedImports + "; " +
                                      ProjectCapability.UseProjectEvaluationCache;
-
+#endif
         /// <summary>
         ///     Represent set of capabilities for all .NET-based project that are always present ("fixed").
         /// </summary>

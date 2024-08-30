@@ -363,7 +363,7 @@ Namespace Microsoft.VisualStudio.Editors.ResourceEditor
             End If
 
             Dim Bytes(CInt(Data.Length - 1)) As Byte
-            Data.Read(Bytes, 0, CInt(Data.Length))
+            Dim v = Data.Read(Bytes, 0, CInt(Data.Length))
             Return IsWavSoundFile(Bytes)
         End Function
 

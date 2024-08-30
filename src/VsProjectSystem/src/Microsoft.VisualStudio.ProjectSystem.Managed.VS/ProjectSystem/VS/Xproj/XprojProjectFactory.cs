@@ -11,14 +11,14 @@ namespace Microsoft.VisualStudio.ProjectSystem.VS.Xproj
 {
     [Export(typeof(IXPackageService))]
     [Guid(ProjectType.LegacyXProj)]
-    internal sealed class XprojProjectFactory : FlavoredProjectFactoryBase, IVsProjectUpgradeViaFactory4, IXPackageService, IDisposable
+    internal sealed class XXprojProjectFactory : FlavoredProjectFactoryBase, IVsProjectUpgradeViaFactory4, IXPackageService, IDisposable
     {
         private readonly JoinableTaskContext _context;
         private IVsRegisterProjectTypes? _registerProjectTypes;
         private uint _cookie = VSConstants.VSCOOKIE_NIL;
 
         [ImportingConstructor]
-        public XprojProjectFactory(JoinableTaskContext context)
+        public XXprojProjectFactory(JoinableTaskContext context)
         {
             _context = context;
         }

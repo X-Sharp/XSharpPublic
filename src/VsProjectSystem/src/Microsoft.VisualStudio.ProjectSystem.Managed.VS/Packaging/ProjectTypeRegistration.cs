@@ -3,7 +3,26 @@
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Packaging;
 using Microsoft.VisualStudio.ProjectSystem.VS;
-#if !XSHARP
+#if XSHARP
+// X#
+[assembly: ProjectTypeRegistration(
+    projectTypeGuid: ProjectType.XSharpCps,
+    displayName: "#28",                      // "X#"
+    displayProjectFileExtensions: "#29",     // "X# Project Files (*.xsproj);*.xsproj"
+    defaultProjectExtension: XSharp.XSharpConstants.ProjectExtension,
+    language: XSharp.Constants.LanguageName,
+    resourcePackageGuid: XSharpManagedProjectSystemPackage.PackageGuid,
+    Capabilities = ProjectTypeCapabilities.XSharp,
+    DisableAsynchronousProjectTreeLoad = true,
+    PossibleProjectExtensions = XSharp.XSharpConstants.ProjectExtension,
+    PreferredPersistProjectTypeGuid = ProjectType.LegacyXSharp,
+    NewProjectRequireNewFolderVsTemplate = true,
+    SupportsCodespaces = true,
+    SupportsSolutionChangeWithoutReload = true)]
+[assembly: ProvideDiffSupportedContentType(XSharp.XSharpConstants.DottedProjectExtension, "")]   // Empty string because content type is not important, we just want to tell the diff that the file type is supported
+[assembly: ProvideEditorFactoryMapping("{f6819a78-a205-47b5-be1c-675b3c7f0b8e}", XSharp.XSharpConstants.DottedProjectExtension)] // Use the XML editor
+
+#else
 // Visual Basic
 [assembly: ProjectTypeRegistration(
     projectTypeGuid: ProjectType.VisualBasic,
@@ -59,20 +78,3 @@ using Microsoft.VisualStudio.ProjectSystem.VS;
 [assembly: ProvideEditorFactoryMapping("{f6819a78-a205-47b5-be1c-675b3c7f0b8e}", ".csproj")] // Use the XML editor
 #endif
 
-// X#
-[assembly: ProjectTypeRegistration(
-    projectTypeGuid: ProjectType.XSharpCps,
-    displayName: "#28",                      // "X#"
-    displayProjectFileExtensions: "#29",     // "X# Project Files (*.xsproj);*.xsproj"
-    defaultProjectExtension: "xsproj",
-    language: XSharp.Constants.LanguageName,
-    resourcePackageGuid: XSharpManagedProjectSystemPackage.PackageGuid,
-    Capabilities = ProjectTypeCapabilities.XSharp,
-    DisableAsynchronousProjectTreeLoad = true,
-    PossibleProjectExtensions = "xsproj",
-    PreferredPersistProjectTypeGuid = ProjectType.LegacyXSharp,
-    NewProjectRequireNewFolderVsTemplate = true,
-    SupportsCodespaces = true,
-    SupportsSolutionChangeWithoutReload = true)]
-[assembly: ProvideDiffSupportedContentType(".xsproj", "")]   // Empty string because content type is not important, we just want to tell the diff that the file type is supported
-[assembly: ProvideEditorFactoryMapping("{f6819a78-a205-47b5-be1c-675b3c7f0b8e}", ".xsproj")] // Use the XML editor

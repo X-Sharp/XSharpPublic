@@ -10,7 +10,6 @@
         "CSharpDesignTimeTargetsPath": "$(VisualStudioXamlRulesDir)Microsoft.CSharp.DesignTime.targets",
         "CPS_DiagnosticRuntime": "1",
         "CPS_MetricsCollection": "1",
-        "XSharpMsBuildDir": "e:\\XSharp\\Dev\\src\\Compiler\\src\\Compiler\\XSharpBuildTask",
         "DesignTimeBuildOutputPane": "1"
       }
     },

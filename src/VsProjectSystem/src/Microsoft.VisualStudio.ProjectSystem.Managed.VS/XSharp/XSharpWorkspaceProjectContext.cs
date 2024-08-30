@@ -14,10 +14,11 @@ using Microsoft.VisualStudio.Shell.Interop;
 using XSharpModel;
 using Microsoft.VisualStudio.Shell;
 using XSharp;
-
+using System.Diagnostics;
 
 namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
 {
+    [DebuggerDisplay("{XsDisplayName,nq}")]
     internal class XSharpWorkspaceProjectContext : IWorkspaceProjectContext, IXSharpProject
     {
         private string _name;
@@ -32,6 +33,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
         private string? _TargetFrameworkIdentifier;
         public bool IsPrimary { get; set; }
         public string DisplayName { get; set; }
+        public string XsDisplayName { get; set; }
         private IVsHierarchy? _vsHierarchy;
         private readonly Stack<BatchScope> _batchScopes = new();
         private XParseOptions _parseOptions = XParseOptions.Default;
@@ -50,8 +52,9 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
             ProjectFilePath = evaluationData.GetPropertyValue(BuildPropertyNames.MSBuildProjectFullPath);
             _IntermediateOutputPath = evaluationData.GetPropertyValue(XSharpProjectFileConstants.IntermediateOutputPath);
             _RootNamespace = evaluationData.GetPropertyValue(XSharpProjectFileConstants.RootNamespace);
-            _version = evaluationData.GetPropertyValue(XSharpProjectFileConstants.TargetFrameworkVersion);
-            DisplayName = $"{_name} ({_version})";
+            _version = evaluationData.GetPropertyValue(XSharpProjectFileConstants.TargetFramework);
+            XsDisplayName = $"{_name} ({_version})";
+            DisplayName = _name;
             LastDesignTimeBuildSucceeded = true;
             IsPrimary = true;
             _vsHierarchy = hostObject as IVsHierarchy;
@@ -73,7 +76,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
         public string IntermediateOutputPath => IntermediateOutputPath ?? "";
 
         public string OutputFile => BinOutputPath ?? "";
-        public XParseOptions ParseOptions => XParseOptions.Default;
+        public XParseOptions ParseOptions => _parseOptions;
 
         public bool PrefixClassesWithDefaultNamespace => _parseOptions.ImplicitNamespace;
 
@@ -219,21 +222,30 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
             var tmp = new List<string>();
             foreach (var arg in arguments)
             {
+                string cleanarg;
                 switch (arg[0])
                 {
                     case '/':
-                        tmp.Add(arg.Substring(1));
-                        break;
                     case '-':
-                        tmp.Add(arg.Substring(1));
+                        cleanarg = arg.Substring(1);
                         break;
                     default:
-                        tmp.Add(arg);
+                        cleanarg = arg;
                         break;
                 }
+                // we want /d: and not /define:
+                if (cleanarg.ToLower().StartsWith("define:"))
+                {
+                    cleanarg = "d:" + cleanarg.Substring(7);
+                }
+                tmp.Add(cleanarg);
             }
             var options = XParseOptions.FromVsValues(tmp);
             _parseOptions = options;
+            if (_xproject != null)
+            {
+                _xproject.ResetParseOptions(options);
+            }
             _RootNamespace = options.DefaultNamespace;  
             EnforceSelf = options.EnforceSelf;
         }
@@ -259,42 +271,25 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
         #region IXSharpProject
         public void AddFileNode(string fileName)
         {
-            return;
+            if (! System.IO.File.Exists(fileName))
+            {
+                System.IO.File.WriteAllBytes(fileName, new byte[0]);
+            }
         }
 
-        public void ClearIntellisenseErrors(string file)
-        {
-            return;
-        }
 
         public void DeleteFileNode(string fileName)
         {
-            return;
+            if (System.IO.File.Exists(fileName))
+            {
+                System.IO.File.Delete(fileName);
+            }
         }
 
-        public string DocumentGetText(string file, ref bool IsOpen)
-        {
-            return "";
-        }
-
-        public bool DocumentInsertLine(string fileName, int line, string text)
-        {
-            return true;
-        }
-
-        public bool DocumentSetText(string fileName, string text)
-        {
-            return true;
-        }
 
         public object? FindProject(string sUrl)
         {
             return null;
-        }
-
-        public List<IXErrorPosition> GetIntellisenseErrorPos(string fileName)
-        {
-            return new List<IXErrorPosition>();
         }
 
         public bool HasFileNode(string fileName)
@@ -302,26 +297,6 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
             return false;
         }
 
-        public void ShowIntellisenseErrors()
-        {
-            return;
-        }
-
-        public string SynchronizeKeywordCase(string code, string fileName)
-        {
-            return "";
-        }
-
-        public void RunInForeGroundThread(Action a)
-        {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                a();
-            });
-
-            return;
-        }
 #endregion
     }
     internal sealed class BatchScope : IDisposable, IAsyncDisposable

@@ -34,7 +34,7 @@
     <ProjectReference Update="@(ProjectReference)">
       <Name>%(Filename)</Name>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
-      <Ngen>true</Ngen>
+      <Ngen>false</Ngen>
       <NgenPriority>3</NgenPriority>
     </ProjectReference>
   </ItemGroup>

@@ -11,7 +11,7 @@ namespace Microsoft.VisualStudio.Packaging
 {
     [Guid(PackageGuid)]
     [PackageRegistration(AllowsBackgroundLoading = true, RegisterUsing = RegistrationMethod.Assembly, UseManagedResourcesOnly = true)]
-    [ProvideProjectFactory(typeof(XprojProjectFactory), null, "#27", "xproj", "xproj", null)]
+    [ProvideProjectFactory(typeof(XXprojProjectFactory), null, "#27", "xxproj", "xxproj", null)]
     [ProvideAutoLoad(ActivationContextGuid, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideUIContextRule(ActivationContextGuid,
         name: "Load Managed Project Package",
@@ -23,9 +23,11 @@ namespace Microsoft.VisualStudio.Packaging
     internal sealed class XSharpManagedProjectSystemPackage : AsyncPackage
     {
         public const string ActivationContextGuid = "E7DF1626-44DD-4E8C-A8A0-92EAB6DDC16E";
-        //public const string PackageGuid = "860A27C0-B665-47F3-BC12-637E16A1050A";
+#if XSHARP		
         public const string PackageGuid = "93bc6a0e-d5ad-455e-a9b9-01d09153707d";
-
+#else		
+        public const string PackageGuid = "860A27C0-B665-47F3-BC12-637E16A1050A";
+#endif
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             // Here we initialize our internal IXPackageService implementations, both in global and project services scope.

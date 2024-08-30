@@ -131,7 +131,7 @@
 
   <ItemGroup>
     <Reference Include="XSharp.CodeModel">
-      <HintPath>$(Solutiondir)..\..\Artifacts\Common\Debug\XSharp.CodeModel.dll</HintPath>
+      <HintPath>..\..\..\..\Artifacts\2022\Debug\XSharp.CodeModel.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -173,6 +173,8 @@ namespace XSharp
         internal const string StandardDefs = nameof(StandardDefs);
         internal const string SuppressRCWarnings = nameof(SuppressRCWarnings);
         internal const string TargetFrameworkVersion = nameof(TargetFrameworkVersion);
+        internal const string TargetFramework = nameof(TargetFramework);
+        internal const string TargetFrameworks = nameof(TargetFrameworks);
         internal const string ToolsVersion = nameof(ToolsVersion);
         internal const string TreatWarningsAsErrors = nameof(TreatWarningsAsErrors);
         internal const string Undeclared = nameof(Undeclared);

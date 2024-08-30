@@ -17,20 +17,17 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 ***********************************************************************************************
 -->
 <Project>
-
-  <UsingTask TaskName="XSharp.Build.Xsc"  AssemblyFile="$(XSharpBuildAssemblyFile)" />
-  <UsingTask TaskName="CreateXSharpManifestResourceName" AssemblyFile="$(XSharpBuildAssemblyFile)" />
-  <UsingTask TaskName="NativeResourceCompiler" AssemblyFile="$(XSharpBuildAssemblyFile)" />
-  <!-- The next line replaces the defailt WriteCodeFragment task with our own task -->
-  <UsingTask TaskName="WriteCodeFragment" AssemblyFile="$(XSharpBuildAssemblyFile)" />
-
     <PropertyGroup>
         <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
         <XSharpBuildAssemblyFile Condition=" '$(XSharpBuildAssemblyFile)' =='' ">$(MSBuildThisFileDirectory)XSharp.Build.dll</XSharpBuildAssemblyFile>
     </PropertyGroup>
 
 
-    <Import Project="$(CustomBeforeXSharpTargets)" Condition="'$(CustomBeforeXSharpTargets)' != '' and Exists('$(CustomBeforeXSharpTargets)')" />
+  <UsingTask TaskName="XSharp.Build.Xsc"  AssemblyFile="$(XSharpBuildAssemblyFile)" />
+  <UsingTask TaskName="CreateXSharpManifestResourceName" AssemblyFile="$(XSharpBuildAssemblyFile)" />
+  <UsingTask TaskName="NativeResourceCompiler" AssemblyFile="$(XSharpBuildAssemblyFile)" />
+  <!-- The next line replaces the defailt WriteCodeFragment task with our own task -->
+  <UsingTask TaskName="WriteCodeFragment" AssemblyFile="$(XSharpBuildAssemblyFile)" />
 
   <PropertyGroup>
     <DefaultLanguageSourceExtension>.prg</DefaultLanguageSourceExtension>
@@ -46,15 +43,27 @@ Copyright (c) XSharp B.V.  All Rights Reserved
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(DefineXSharpItemSchemas)' != 'false' ">
-        <PropertyPageSchema Include="$(CommonXamlResourcesDirectory)XSharp.ProjectItemsSchema.xaml;"/>
-        <PropertyPageSchema Include="$(CommonXamlResourcesDirectory)XSharp.xaml;">
+        <PropertyPageSchema Include="$(XSharpXamlDir)ProjectItemsSchema.XSharp.xaml;"/>
+        <PropertyPageSchema Include="$(XSharpXamlDir)XSharp.xaml;">
             <Context>File</Context>
         </PropertyPageSchema>
-        <PropertyPageSchema Include="$(CommonXamlResourcesDirectory)XSharp.BrowseObject.xaml;">
+        <PropertyPageSchema Include="$(XSharpXamlDir)XSharp.BrowseObject.xaml;">
+            <Context>BrowseObject</Context>
+        </PropertyPageSchema>
+    <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.xaml;">
+            <Context>File</Context>
+        </PropertyPageSchema>
+        <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.BrowseObject.xaml;">
+            <Context>BrowseObject</Context>
+        </PropertyPageSchema>
+    <PropertyPageSchema Include="$(XSharpXamlDir)VOBinary.xaml;">
+            <Context>File</Context>
+        </PropertyPageSchema>
+        <PropertyPageSchema Include="$(XSharpXamlDir)VOBinary.BrowseObject.xaml;">
             <Context>BrowseObject</Context>
         </PropertyPageSchema>
 
-         <ProjectCapability Include="XSharp;Managed"/>
+         <ProjectCapability Include="XSharp;Managed;SingleTargetBuildForStartupProjects"/>
    </ItemGroup>
 
     <ItemGroup Condition=" '$(DefineCommonCapabilities)' == 'true' ">
@@ -153,7 +162,8 @@ Copyright (c) XSharp B.V.  All Rights Reserved
             <Output TaskParameter="ResolvedCodeAnalysisRuleSet" PropertyName="ResolvedCodeAnalysisRuleSet" />
         </ResolveCodeAnalysisRuleSet>
     </Target>
-  <Target Condition =" '$(GenerateAssemblyInfo)' == 'True' and '$(UsingMicrosoftNETSdk)' == 'True' " 
+    <!-- Our own GenerateAssemblyInfo task -->
+  <Target Condition =" '$(GenerateAssemblyInfo)' == 'true'  and '$(Language)'=='X#' and '$(UsingNETSdkDefaults)' == 'true'" 
           Name="XsCoreGenerateAssemblyInfo"
           DependsOnTargets="CreateGeneratedAssemblyInfoInputsCacheFile"
           Inputs="$(GeneratedAssemblyInfoInputsCacheFile)"
@@ -163,7 +173,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
       <Compile Remove="$(GeneratedAssemblyInfoFile)" />
     </ItemGroup>
 
-    <WriteCodeFragment AssemblyAttributes="@(AssemblyAttribute)" Language="X#" OutputFile="$(GeneratedAssemblyInfoFile)">
+    <WriteCodeFragment AssemblyAttributes="@(AssemblyAttribute)" Language="$(Language)" OutputFile="$(GeneratedAssemblyInfoFile)">
       <Output TaskParameter="OutputFile" ItemName="Compile" />
       <Output TaskParameter="OutputFile" ItemName="FileWrites" />
     </WriteCodeFragment>
@@ -191,7 +201,8 @@ Copyright (c) XSharp B.V.  All Rights Reserved
     </ItemGroup>
 
     <PropertyGroup>
-        <CoreCompileDependsOn>$(CoreCompileDependsOn);_ComputeNonExistentFileProperty;ResolveCodeAnalysisRuleSet</CoreCompileDependsOn>
+    	<!-- Include our own GenerateAssemblyInfo -->
+        <CoreCompileDependsOn>$(CoreCompileDependsOn);_ComputeNonExistentFileProperty;ResolveCodeAnalysisRuleSet;XsCoreGenerateAssemblyInfo</CoreCompileDependsOn>
         <ExportWinMDFile Condition="'$(ExportWinMDFile)' == '' and '$(OutputType)' == 'WinMDObj'">true</ExportWinMDFile>
     </PropertyGroup>
 
@@ -206,7 +217,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
                 @(Compile);
                 @(_CoreCompileResourceInputs);
                 $(ApplicationIcon);
-                $(KeyOriginatorFile);
+                $(AssemblyOriginatorKeyFile);
                 @(ReferencePath);
                 @(CompiledLicenseFile);
                 @(LinkResource);
@@ -271,97 +282,94 @@ Copyright (c) XSharp B.V.  All Rights Reserved
        <!-- Condition is to filter out the _CoreCompileResourceInputs so that it doesn't pass in culture resources to the compiler -->
        <!-- Don't run analyzers for Csc task on XamlPrecompile pass, we only want to run them on core compile. -->
     <Xsc Condition=" '%(_CoreCompileResourceInputs.WithCulture)' != 'true' "
-            AdditionalFiles="@(AdditionalFiles)"
             AdditionalLibPaths="$(AdditionalLibPaths)"
             AddModules="@(AddModules)"
-            AllowDot="$(AllowDot)"
-            AllowOldStyleAssignments="$(AllowOldStyleAssignments)"
+            AdditionalFiles="@(AdditionalFiles)"
             AllowUnsafeBlocks="$(Unsafe)"
+            AnalyzerConfigFiles="@(EditorConfigFiles)"
             Analyzers="@(Analyzer)"
             ApplicationConfiguration="$(AppConfigForCompiler)"
-            AZ="$(AZ)"
             BaseAddress="$(BaseAddress)"
             CheckForOverflowUnderflow="$(CheckForOverflowUnderflow)"
-            ChecksumAlgorithm="$(ChecksumAlgorithm)"
             CodeAnalysisRuleSet="$(ResolvedCodeAnalysisRuleSet)"
             CodePage="$(CodePage)"
-            CommandLineOption="$(CommandLineOption)"
             CompilerPath="$(XSharpPath)"
-            CS="$(CS)"
             DebugType="$(DebugType)"
             DefineConstants="$(DefineConstants)"
             DelaySign="$(DelaySign)"
-            Deterministic="$(Deterministic)"
-            Dialect="$(Dialect)"
             DisabledWarnings="$(DisabledWarnings)"
             DocumentationFile="@(DocFileItem)"
-            EmbedAllSources="$(EmbedAllSources)"
-            EmbeddedFiles="@(EmbeddedFiles)"
             EmitDebugInformation="$(EmitDebugInformation)"
-            EnforceOverride="$(EnforceOverride)"
-            EnforceSelf="$(EnforceSelf)"
             EnvironmentVariables="$(XscEnvironment)"
             ErrorEndLocation="$(ErrorEndLocation)"
             ErrorLog="$(ErrorLog)"
             ErrorReport="$(ErrorReport)"
-            Features="$(Features)"
             FileAlignment="$(FileAlignment)"
-            FOX1="$(FOX1)"
-            FOX2="$(FOX2)"
             GenerateFullPaths="$(GenerateFullPaths)"
             HighEntropyVA="$(HighEntropyVA)"
-            IncludePaths="$(IncludePaths)"
-            InitLocals="$(InitLocals)"
-            INS="$(INS)"
             KeyContainer="$(KeyContainerName)"
             KeyFile="$(KeyOriginatorFile)"
             LangVersion="$(LangVersion)"
-            LB="$(LB)"
             LinkResources="@(LinkResource)"
             MainEntryPoint="$(StartupObject)"
-            MemVar="$(MemVar)"
-            ModernSyntax="$(ModernSyntax)"
             ModuleAssemblyName="$(ModuleAssemblyName)"
-            NamedArgs="$(NamedArgs)"
             NoConfig="true"
-            NoInit="$(NoInit)"
             NoLogo="$(NoLogo)"
-            NoStandardDefs="$(NoStandardDefs)"
             NoStandardLib="$(NoCompilerStandardLib)"
             NoWin32Manifest="$(NoWin32Manifest)"
-            NS="$(NS)"
+            Nullable="$(Nullable)"
             Optimize="$(Optimize)"
             OutputAssembly="@(XamlIntermediateAssembly)"
-            OutputRefAssembly="@(IntermediateRefAssembly)"
-            OVF="$(OVF)"
-            PathMap="$(PathMap)"
             PdbFile="$(PdbFile)"
             Platform="$(PlatformTarget)"
-            PPO="$(PPO)"
             Prefer32Bit="$(Prefer32Bit)"
             PreferredUILang="$(PreferredUILang)"
-            PublicSign="$(PublicSign)"
             References="@(ReferencePath)"
             ReportAnalyzer="$(ReportAnalyzer)"
             Resources="@(_CoreCompileResourceInputs);@(CompiledLicenseFile)"
             ResponseFiles="$(CompilerResponseFile)"
-            RootNamespace="$(RootNamespace)"
-            RuntimeMetadataVersion="$(RuntimeMetadataVersion)"
-            SharedCompilationId="$(SharedCompilationId)"
-            SkipCompilerExecution="$(SkipCompilerExecution)"
-            SourceLink="$(SourceLink)"
+            SkipAnalyzers="true"
             Sources="@(Compile)"
-            StandardDefs="$(StandardDefs)"
             SubsystemVersion="$(SubsystemVersion)"
             TargetType="$(OutputType)"
             ToolExe="$(XscToolExe)"
             ToolPath="$(XscToolPath)"
             TreatWarningsAsErrors="$(TreatWarningsAsErrors)"
-            Undeclared="$(Undeclared)"
             UseHostCompilerIfAvailable="$(UseHostCompilerIfAvailable)"
-            UseNativeVersion="$(UseNativeVersion)"
             UseSharedCompilation="$(UseSharedCompilation)"
             Utf8Output="$(Utf8Output)"
+            VsSessionGuid="$(VsSessionGuid)"
+            WarningLevel="$(WarningLevel)"
+            WarningsAsErrors="$(WarningsAsErrors)"
+            WarningsNotAsErrors="$(WarningsNotAsErrors)"
+            Win32Icon="$(ApplicationIcon)"
+            Win32Manifest="$(Win32Manifest)"
+            Win32Resource="$(Win32Resource)"
+            AllowDot="$(AllowDot)"
+            AllowOldStyleAssignments="$(AllowOldStyleAssignments)"
+            AZ="$(AZ)"
+            CommandLineOption="$(CommandLineOption)"
+            CS="$(CS)"
+            Dialect="$(Dialect)"
+            EnforceOverride="$(EnforceOverride)"
+            EnforceSelf="$(EnforceSelf)"
+            FOX1="$(FOX1)"
+            FOX2="$(FOX2)"
+            IncludePaths="$(IncludePaths)"
+            InitLocals="$(InitLocals)"
+            INS="$(INS)"
+            LB="$(LB)"
+            MemVar="$(MemVar)"
+            ModernSyntax="$(ModernSyntax)"
+            NamedArgs="$(NamedArgs)"
+            NoInit="$(NoInit)"
+            NoStandardDefs="$(NoStandardDefs)"
+            NS="$(NS)"
+            OVF="$(OVF)"
+            PPO="$(PPO)"
+            StandardDefs="$(StandardDefs)"
+            Undeclared="$(Undeclared)"
+            UseNativeVersion="$(UseNativeVersion)"
             VO1="$(VO1)"
             VO2="$(VO2)"
             VO3="$(VO3)"
@@ -379,16 +387,11 @@ Copyright (c) XSharp B.V.  All Rights Reserved
             VO15="$(VO15)"
             VO16="$(VO16)"
             VO17="$(VO17)"
-            VsSessionGuid="$(VsSessionGuid)"
             VulcanCompatibleResources="$(VulcanCompatibleResources)"
-            WarningLevel="$(WarningLevel)"
-            WarningsAsErrors="$(WarningsAsErrors)"
-            WarningsNotAsErrors="$(WarningsNotAsErrors)"
-            Win32Icon="$(ApplicationIcon)"
-            Win32Manifest="$(Win32Manifest)"
-            Win32Resource="$(Win32Resource)"
             XPP1="$(XPP1)"
-    />
+         SourceLink="$(SourceLink)" >
+      <Output TaskParameter="CommandLineArgs" ItemName="XscCommandLineArgs" />
+    </Xsc>
 
 <!-- Only Applicable to the regular CoreCompile:
     <ItemGroup>
@@ -401,6 +404,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
     </Target>
 
     <PropertyGroup>
+        <!-- Design-time builds require a newer version than 1.0 to succeed, so override back to inbox in that case -->
         <XSharpCoreTargetsPath Condition="'$(XSharpCoreTargetsPath)' == '' or '$(DesignTimeBuild)' == 'true'">$(XSharpMsBuildDir)\XSharp.Core.targets</XSharpCoreTargetsPath>
     </PropertyGroup>
 

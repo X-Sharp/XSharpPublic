@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE file in the project root for more information. -->
+<!-- This file is inspired by "..\MSBuild\Current\Bin\Roslyn\Microsoft.CSharp.Core.targets" . -->
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!--<Import Project="Microsoft.Managed.Core.targets"/> -->
+  <Import Project="$(RoslynTargetsPath)\Microsoft.Managed.Core.targets"/> 
 
   <PropertyGroup>
     <!-- .NETCoreApp < 3.0, .NETStandard < 2.1, or any other target framework -->
@@ -30,10 +30,18 @@
     <_MaxSupportedLangVersion Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp' AND '$(_TargetFrameworkVersionWithoutV)' == '8.0' AND
                                          '$(_MaxSupportedLangVersion)' == ''">9.0</_MaxSupportedLangVersion> <!-- 12.0 -->
 
+    <!-- .NETCoreApp == 9.0 -->
+    <_MaxSupportedLangVersion Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp' AND '$(_TargetFrameworkVersionWithoutV)' == '9.0' AND
+                                         '$(_MaxSupportedLangVersion)' == ''">9.0</_MaxSupportedLangVersion> <!-- 13.0 -->
+
     <MaxSupportedLangVersion>$(_MaxSupportedLangVersion)</MaxSupportedLangVersion>
     <LangVersion Condition="'$(LangVersion)' == '' AND '$(_MaxSupportedLangVersion)' != ''">$(_MaxSupportedLangVersion)</LangVersion>
+	
   </PropertyGroup>
 
+  <ItemGroup>
+     <ProjectCapability Include="XSharp;Managed;SingleTargetBuildForStartupProjects"/>
+  </ItemGroup>
   <Target Name="CoreCompile"
           Inputs="$(MSBuildAllProjects);
                   @(Compile);
@@ -60,7 +68,7 @@
                    $(NonExistentFile);
                    @(CustomAdditionalCompileOutputs)"
           Returns="@(XscCommandLineArgs)"
-          DependsOnTargets="$(CoreCompileDependsOn)">
+          DependsOnTargets="$(CoreCompileDependsOn);_BeforeVBCSCoreCompile">
     <!-- These two compiler warnings are raised when a reference is bound to a different version
              than specified in the assembly reference version number.  MSBuild raises the same warning in this case,
              so the compiler warning would be redundant. -->
@@ -84,100 +92,115 @@
 
     <!-- Condition is to filter out the _CoreCompileResourceInputs so that it doesn't pass in culture resources to the compiler -->
     <Xsc Condition=" '%(_CoreCompileResourceInputs.WithCulture)' != 'true' "
-            AdditionalFiles="@(AdditionalFiles)"
             AdditionalLibPaths="$(AdditionalLibPaths)"
             AddModules="@(AddModules)"
-            AllowDot="$(AllowDot)"
-            AllowOldStyleAssignments="$(AllowOldStyleAssignments)"
+            AdditionalFiles="@(AdditionalFiles)"
             AllowUnsafeBlocks="$(Unsafe)"
-         AnalyzerConfigFiles="@(EditorConfigFiles)"
+            AnalyzerConfigFiles="@(EditorConfigFiles)"
             Analyzers="@(Analyzer)"
             ApplicationConfiguration="$(AppConfigForCompiler)"
-            AZ="$(AZ)"
             BaseAddress="$(BaseAddress)"
             CheckForOverflowUnderflow="$(CheckForOverflowUnderflow)"
             ChecksumAlgorithm="$(ChecksumAlgorithm)"
             CodeAnalysisRuleSet="$(ResolvedCodeAnalysisRuleSet)"
             CodePage="$(CodePage)"
-            CommandLineOption="$(CommandLineOption)"
             CompilerPath="$(XSharpPath)"
-            CS="$(CS)"
             DebugType="$(DebugType)"
             DefineConstants="$(DefineConstants)"
             DelaySign="$(DelaySign)"
-            Deterministic="$(Deterministic)"
-            Dialect="$(Dialect)"
             DisabledWarnings="$(DisabledWarnings)"
+            DisableSdkPath="$(DisableSdkPath)"
             DocumentationFile="@(DocFileItem)"
             EmbedAllSources="$(EmbedAllSources)"
             EmbeddedFiles="@(EmbeddedFiles)"
             EmitDebugInformation="$(EmitDebugInformation)"
-            EnforceOverride="$(EnforceOverride)"
-            EnforceSelf="$(EnforceSelf)"
             EnvironmentVariables="$(XscEnvironment)"
             ErrorEndLocation="$(ErrorEndLocation)"
             ErrorLog="$(ErrorLog)"
             ErrorReport="$(ErrorReport)"
             Features="$(Features)"
+            InterceptorsPreviewNamespaces="$(InterceptorsPreviewNamespaces)"
             FileAlignment="$(FileAlignment)"
-            FOX1="$(FOX1)"
-            FOX2="$(FOX2)"
+            GeneratedFilesOutputPath="$(CompilerGeneratedFilesOutputPath)"
             GenerateFullPaths="$(GenerateFullPaths)"
             HighEntropyVA="$(HighEntropyVA)"
-            IncludePaths="$(IncludePaths)"
-            InitLocals="$(InitLocals)"
-            INS="$(INS)"
+            Instrument="$(Instrument)"
             KeyContainer="$(KeyContainerName)"
             KeyFile="$(KeyOriginatorFile)"
             LangVersion="$(LangVersion)"
-            LB="$(LB)"
             LinkResources="@(LinkResource)"
             MainEntryPoint="$(StartupObject)"
-            MemVar="$(MemVar)"
-            ModernSyntax="$(ModernSyntax)"
             ModuleAssemblyName="$(ModuleAssemblyName)"
-            NamedArgs="$(NamedArgs)"
             NoConfig="true"
-            NoInit="$(NoInit)"
             NoLogo="$(NoLogo)"
-            NoStandardDefs="$(NoStandardDefs)"
             NoStandardLib="$(NoCompilerStandardLib)"
             NoWin32Manifest="$(NoWin32Manifest)"
-            NS="$(NS)"
+            Nullable="$(Nullable)"
             Optimize="$(Optimize)"
+            Deterministic="$(Deterministic)"
+            PublicSign="$(PublicSign)"
             OutputAssembly="@(IntermediateAssembly)"
             OutputRefAssembly="@(IntermediateRefAssembly)"
-            OVF="$(OVF)"
-            PathMap="$(PathMap)"
             PdbFile="$(PdbFile)"
             Platform="$(PlatformTarget)"
-            PPO="$(PPO)"
             Prefer32Bit="$(Prefer32Bit)"
             PreferredUILang="$(PreferredUILang)"
-            PublicSign="$(PublicSign)"
+            ProjectName="$(MSBuildProjectName)"
+            ProvideCommandLineArgs="$(ProvideCommandLineArgs)"
             References="@(ReferencePathWithRefAssemblies)"
             RefOnly="$(ProduceOnlyReferenceAssembly)"
             ReportAnalyzer="$(ReportAnalyzer)"
+            ReportIVTs="$(ReportIVTs)"
             Resources="@(_CoreCompileResourceInputs);@(CompiledLicenseFile)"
             ResponseFiles="$(CompilerResponseFile)"
             RootNamespace="$(RootNamespace)"
             RuntimeMetadataVersion="$(RuntimeMetadataVersion)"
             SharedCompilationId="$(SharedCompilationId)"
-           SkipAnalyzers="$(_SkipAnalyzers)"
+            SkipAnalyzers="$(_SkipAnalyzers)"
             SkipCompilerExecution="$(SkipCompilerExecution)"
-            SourceLink="$(SourceLink)"
             Sources="@(Compile)"
-            StandardDefs="$(StandardDefs)"
             SubsystemVersion="$(SubsystemVersion)"
             TargetType="$(OutputType)"
+            TargetFramework="$(TargetFramework)"
             ToolExe="$(XscToolExe)"
             ToolPath="$(XscToolPath)"
             TreatWarningsAsErrors="$(TreatWarningsAsErrors)"
-            Undeclared="$(Undeclared)"
             UseHostCompilerIfAvailable="$(UseHostCompilerIfAvailable)"
-            UseNativeVersion="$(UseNativeVersion)"
             UseSharedCompilation="$(UseSharedCompilation)"
             Utf8Output="$(Utf8Output)"
+            VsSessionGuid="$(VsSessionGuid)"
+            WarningLevel="$(WarningLevel)"
+            WarningsAsErrors="$(WarningsAsErrors)"
+            WarningsNotAsErrors="$(WarningsNotAsErrors)"
+            Win32Icon="$(ApplicationIcon)"
+            Win32Manifest="$(Win32Manifest)"
+            Win32Resource="$(Win32Resource)"
+            PathMap="$(PathMap)"
+            AllowDot="$(AllowDot)"
+            AllowOldStyleAssignments="$(AllowOldStyleAssignments)"
+            AZ="$(AZ)"
+            CommandLineOption="$(CommandLineOption)"
+            CS="$(CS)"
+            Dialect="$(Dialect)"
+            EnforceOverride="$(EnforceOverride)"
+            EnforceSelf="$(EnforceSelf)"
+            FOX1="$(FOX1)"
+            FOX2="$(FOX2)"
+            IncludePaths="$(IncludePaths)"
+            InitLocals="$(InitLocals)"
+            INS="$(INS)"
+            LB="$(LB)"
+            MemVar="$(MemVar)"
+            ModernSyntax="$(ModernSyntax)"
+            NamedArgs="$(NamedArgs)"
+            NoInit="$(NoInit)"
+            NoStandardDefs="$(NoStandardDefs)"
+            NS="$(NS)"
+            OVF="$(OVF)"
+            PPO="$(PPO)"
+            StandardDefs="$(StandardDefs)"
+            Undeclared="$(Undeclared)"
+            UseNativeVersion="$(UseNativeVersion)"
             VO1="$(VO1)"
             VO2="$(VO2)"
             VO3="$(VO3)"
@@ -195,16 +218,11 @@
             VO15="$(VO15)"
             VO16="$(VO16)"
             VO17="$(VO17)"
-            VsSessionGuid="$(VsSessionGuid)"
             VulcanCompatibleResources="$(VulcanCompatibleResources)"
-            WarningLevel="$(WarningLevel)"
-            WarningsAsErrors="$(WarningsAsErrors)"
-            WarningsNotAsErrors="$(WarningsNotAsErrors)"
-            Win32Icon="$(ApplicationIcon)"
-            Win32Manifest="$(Win32Manifest)"
-            Win32Resource="$(Win32Resource)"
             XPP1="$(XPP1)"
-    />
+         SourceLink="$(SourceLink)" >
+      <Output TaskParameter="CommandLineArgs" ItemName="XscCommandLineArgs" />
+    </Xsc>
 
     <ItemGroup>
       <_CoreCompileResourceInputs Remove="@(_CoreCompileResourceInputs)" />

@@ -3,8 +3,7 @@
   <Import Condition="Exists('$(MsBuildBinPath)\Microsoft.Common.props')" Project="$((MsBuildBinPath)\Microsoft.Common.props"  />
   <PropertyGroup>
     <XSharpDefaultProps>true</XSharpDefaultProps>
-		<_EnableDefaultWindowsPlatform>true</_EnableDefaultWindowsPlatform>
-
+    <_EnableDefaultWindowsPlatform>true</_EnableDefaultWindowsPlatform>
     <BuildInParallel Condition="'$(BuildInParallel)' == ''">true</BuildInParallel>
     <DefaultLanguageSourceExtension>.prg</DefaultLanguageSourceExtension>
     <DefaultProjectTypeGuid Condition=" '$(DefaultProjectTypeGuid)' == '' ">{AA6C8D78-22FF-423A-9C7C-5F2393824E04}</DefaultProjectTypeGuid>
@@ -34,6 +33,7 @@
     <Nologo>true</Nologo>
     <UseSharedCompilation>true</UseSharedCompilation>
     <WarningLevel>4</WarningLevel>
+	<XSharpXamlDir>$(XSharpMsBuildDir)\Rules\</XSharpXamlDir>
   </PropertyGroup>
   <!-- Set defaults for Configuration, Platform, Optimize and PDB generation -->
   <PropertyGroup>

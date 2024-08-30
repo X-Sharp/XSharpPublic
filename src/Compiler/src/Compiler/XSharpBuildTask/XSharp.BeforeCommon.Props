@@ -17,7 +17,8 @@
     <XSharpMsBuildDir Condition="'$(XSharpMsBuildDir)' == '' and '$(MSBuildExtensionsPath64)'!='' " >$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\XSharpBV\XSharp@XSharpPath)\MsBuild</XSharpMsBuildDir>
     <XSharpMsBuildDir Condition="'$(XSharpMsBuildDir)' == ''" >$(MSBuildProgramFiles32)\XSharp\MsBuild</XSharpMsBuildDir>
     <LanguageTargets Condition="'$(LanguageTargets )' == ''" >$(XSharpMsBuildDir)\XSharp.Common.targets</LanguageTargets>  
-	<TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    <XsMSBuildManagedFolder>$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed</XsMSBuildManagedFolder>
 </PropertyGroup>
 <Import Condition="'$(MSBuildProjectExtension)' == '.xsproj' and '$(XSharpDefaultProps)' == '' " Project="$(XSharpMsBuildDir)\XSharp.Props" />
 </Project>

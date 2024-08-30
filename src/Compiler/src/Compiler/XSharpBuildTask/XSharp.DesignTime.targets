@@ -6,7 +6,9 @@
 -->
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
+  <PropertyGroup>
+  <VSINSTALLDIR>c:\Program Files\Microsoft Visual Studio\2022\Preview</VSINSTALLDIR>
+  </PropertyGroup>
   <Import Project="Microsoft.Managed.DesignTime.targets" />
 
   <!-- Properties -->
@@ -14,25 +16,24 @@
     <AppDesignerFolder Condition="'$(AppDesignerFolder)' == ''">Properties</AppDesignerFolder>
     <AppDesignerFolderContentsVisibleOnlyInShowAllFiles Condition="'$(AppDesignerFolderContentsVisibleOnlyInShowAllFiles)' == ''">false</AppDesignerFolderContentsVisibleOnlyInShowAllFiles>
     <LanguageServiceName Condition="'$(LanguageServiceName)' == ''">X#</LanguageServiceName>
-    <LanguageServiceId Condition="'$(LanguageServiceId)'==''">{e9b6ee0f-9bfa-4cff-a60b-51a08bbc5050}</LanguageServiceId>
+    <LanguageServiceId Condition="'$(LanguageServiceId)'==''">{694DD9B6-B865-4C5B-AD85-86356E9C88DC}</LanguageServiceId>
     <TemplateLanguage Condition="'$(TemplateLanguage)' == ''">XSharp</TemplateLanguage>
-    <AddItemTemplatesGuid Condition="'$(AddItemTemplatesGuid)' == ''">{AA6C8D78-22FF-423A-9C7C-5F2393824E04}</AddItemTemplatesGuid>
-    <CmdUIContextGuid Condition="'$(CmdUIContextGuid)' == ''">{e299fb7b-d273-4678-9acf-b37b4af04a12}</CmdUIContextGuid>
-    <GeneratorsTypeGuid Condition="'$(GeneratorsTypeGuid)' == ''">{e299fb7b-d273-4678-9acf-b37b4af04a12}</GeneratorsTypeGuid>
+    <AddItemTemplatesGuid Condition="'$(AddItemTemplatesGuid)' == ''">{FAE04EC0-301F-11d3-BF4B-00C04F79EFBC}</AddItemTemplatesGuid>
+    <CmdUIContextGuid Condition="'$(CmdUIContextGuid)' == ''">{FAE04EC1-301F-11d3-BF4B-00C04F79EFBC}</CmdUIContextGuid>
+    <GeneratorsTypeGuid Condition="'$(GeneratorsTypeGuid)' == ''">{FAE04EC1-301F-11d3-BF4B-00C04F79EFBC}</GeneratorsTypeGuid>
     <DesignerFunctionVisibility Condition="'$(DesignerFunctionVisibility)' == ''">Private</DesignerFunctionVisibility>
     <DesignerVariableNaming Condition="'$(DesignerVariableNaming)' == ''">Camel</DesignerVariableNaming>
     <DesignerHiddenCodeGeneration Condition="'$(DesignerHiddenCodeGeneration)' == ''">Declarations</DesignerHiddenCodeGeneration>
-
     <!-- Turn off rules and capabilities that are defined in MSBuild so that we can import our own below -->
     <DefineXSharpItemSchemas>false</DefineXSharpItemSchemas>
   </PropertyGroup>
 
   <ItemGroup>
-    <PropertyPageSchema Include="$(ManagedXamlResourcesDirectory)ProjectItemsSchema.XSharp.xaml;" />
-
+    <PropertyPageSchema Include="$(XSharpXamlDir)ProjectItemsSchema.XSharp.xaml;" />
     <ProjectCapability Include="
                           XSharp;
                           Managed;
+		                  SingleTargetBuildForStartupProjects;
                           ClassDesigner;
                           SharedProjectReferences;
                           ProjectPropertiesEditor;" />
@@ -40,19 +41,43 @@
 
   <ItemGroup Condition="'$(DefineCommonManagedItemSchemas)' == 'true'">
 
-    <PropertyPageSchema Include="$(ManagedXamlResourcesDirectory)ApplicationPropertyPage.XSharp.xaml">
+    <PropertyPageSchema Include="$(XSharpXamlDir)ApplicationPropertyPage.XSharp.xaml">
       <Context>Project</Context>
     </PropertyPageSchema>
 
-    <PropertyPageSchema Include="$(ManagedXamlResourcesDirectory)BuildPropertyPage.XSharp.xaml">
+    <PropertyPageSchema Include="$(XSharpXamlDir)LanguagePage.XSharp.xaml">
       <Context>Project</Context>
     </PropertyPageSchema>
 
-    <PropertyPageSchema Include="$(ManagedXamlResourcesDirectory)ReferencesPage.XSharp.xaml">
+    <PropertyPageSchema Include="$(XSharpXamlDir)DialectPage.XSharp.xaml">
       <Context>Project</Context>
     </PropertyPageSchema>
 
-    <PropertyPageSchema Include="$(ManagedXamlNeutralResourcesDirectory)EditorConfigFiles.xaml">
+    <PropertyPageSchema Include="$(XSharpXamlDir)BuildPropertyPage.XSharp.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+
+    <PropertyPageSchema Include="$(XSharpXamlDir)ReferencesPage.XSharp.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+
+    <PropertyPageSchema Include="$(XSharpXamlDir)VOBinary.xaml">
+      <Context>File</Context>
+    </PropertyPageSchema>
+
+   <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.xaml">
+      <Context>File</Context>
+    </PropertyPageSchema>
+	
+   <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.BrowseObject.xaml">
+      <Context>BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <PropertyPageSchema Include="$(XSharpXamlDir)VOBinary.BrowseObject.xaml">
+      <Context>BrowseObject</Context>
+    </PropertyPageSchema>
+
+	<PropertyPageSchema Include="$(ManagedXamlNeutralResourcesDirectory)EditorConfigFiles.xaml">
       <Context>File</Context>
     </PropertyPageSchema>
 
@@ -71,7 +96,6 @@
     the condition is not met and config file will not be included. This workaround ensures the config file is included during design-time build.
     Tracking item to remove the workaround: https://devdiv.visualstudio.com/DevDiv/_workitems/edit/1806334.
   -->
-
   <Target Name="_FixRazorEditorConfigFiles" AfterTargets="_PrepareRazorSourceGenerators">
     <ItemGroup>
       <EditorConfigFiles Remove="$(RazorEncConfigFile)" Condition="'$(DesignTimeBuild)' == 'true'"/>

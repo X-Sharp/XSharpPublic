@@ -3,12 +3,21 @@
 
   This file contains Visual Studio and designer-related properties and items for X# projects.
   It is based on Microsoft.CSharp.DesignTime.targets 
+  It gets install inside the <VisualStudio>\MSBuild\Microsoft\VisualStudio\Managed folder.
+  This folder is also known as "ManagedXamlResourcesDirectory"
+  It references the Microsoft xaml files and the XSharp specific files that are normally installed
+  in the folder that is defined in the property XSharpXamlDir, 
+  which is set to the $(XSharpMsBuildDir)\Rules folder.
+  This file plays an essential role in the managed project system. It declares the items that 
+  are supported and also declares the various Project Property pages.
+  We inherit the property pages from Microsoft.Managed.DesignTime.targets and extend some of them 
+  with X# specific properties. Our pages are called <Somepage>.XSharp.Xaml.
+  The order attribute in the xaml files determines the order in which pages are shown in the UI.
+  
 -->
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-  <VSINSTALLDIR>c:\Program Files\Microsoft Visual Studio\2022\Preview</VSINSTALLDIR>
-  </PropertyGroup>
+
   <Import Project="Microsoft.Managed.DesignTime.targets" />
 
   <!-- Properties -->
@@ -89,21 +98,14 @@
 
   <!-- Targets -->
 
-  <!--
-    Backwards compatibility workaround for https://devdiv.visualstudio.com/DevDiv/_workitems/edit/1803616/.
-    Razor is dependent on RazorSourceGenerator.razorencconfig during design-time build in order to behave correctly.
-    The SDK conditionally includes this config file, however with the current global properties that are set,
-    the condition is not met and config file will not be included. This workaround ensures the config file is included during design-time build.
-    Tracking item to remove the workaround: https://devdiv.visualstudio.com/DevDiv/_workitems/edit/1806334.
+  <!-- 
+      Returns Xsc command-line arguments for the language service 
+	  The _CheckCompileDesignTimePrerequisite target checks to make sure that 
+	  both SkipCompilerExecution and ProvideCommandLineArgs are set to true.
+	  When that happens, then the xsc task will create items for each of the command-line arguments
+	  and will not execute xsc.exe
+	  These items are picked up by the managed project system and fed to the language service.
   -->
-  <Target Name="_FixRazorEditorConfigFiles" AfterTargets="_PrepareRazorSourceGenerators">
-    <ItemGroup>
-      <EditorConfigFiles Remove="$(RazorEncConfigFile)" Condition="'$(DesignTimeBuild)' == 'true'"/>
-      <EditorConfigFiles Include="$(RazorEncConfigFile)" Condition="'$(DesignTimeBuild)' == 'true'"/>
-    </ItemGroup>
-  </Target>
-
-  <!-- Returns Xsc command-line arguments for the language service -->
   <Target Name="CompileDesignTime"
           Returns="@(_CompilerCommandLineArgs)"
           DependsOnTargets="_CheckCompileDesignTimePrerequisite;Compile"

@@ -13,7 +13,6 @@
               Description="Managed Resource settings for the application." />
   </Rule.Categories>
 
-
   <EnumProperty Name="ResourceSpecificationKind"
                 DisplayName="Resources"
                 Description="Specifies how application resources will be managed."

@@ -2,14 +2,44 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
   <file datatype="xml" source-language="en" target-language="cs" original="../ApplicationPropertyPage.XSharp.xaml">
     <body>
-      <trans-unit id="Category|Packaging|Description">
-        <source>Packaging settings for the application.</source>
-        <target state="new">Packaging settings for the application.</target>
+      <trans-unit id="BoolProperty|VulcanCompatibleResources|Description">
+        <source>Use Vulcan Compatible Managed Resources (when 'True' then resources files are included in the assembly without namespace prefix. When 'False' then the resource files are prefixed with the namespace of the app, just like in other .Net languages, such as C#)</source>
+        <target state="new">Use Vulcan Compatible Managed Resources (when 'True' then resources files are included in the assembly without namespace prefix. When 'False' then the resource files are prefixed with the namespace of the app, just like in other .Net languages, such as C#)</target>
         <note />
       </trans-unit>
-      <trans-unit id="Category|Packaging|DisplayName">
-        <source>Packaging</source>
-        <target state="new">Packaging</target>
+      <trans-unit id="BoolProperty|VulcanCompatibleResources|DisplayName">
+        <source>Vulcan Compatible Resources</source>
+        <target state="new">Vulcan Compatible Resources</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|nowin32manifest|Description">
+        <source>Use The -nowin32manifest option to instruct the compiler not to embed any application manifest into the executable file.</source>
+        <target state="new">Use The -nowin32manifest option to instruct the compiler not to embed any application manifest into the executable file.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|nowin32manifest|DisplayName">
+        <source>Suppress default Win32 manifest</source>
+        <target state="new">Suppress default Win32 manifest</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|usenativeversion |Description">
+        <source>When your application includes a native resource, use this native resource and do not generate a resource based on the global assembly properties such as AssemblyTitle, AssemblyVersion etc.</source>
+        <target state="new">When your application includes a native resource, use this native resource and do not generate a resource based on the global assembly properties such as AssemblyTitle, AssemblyVersion etc.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|usenativeversion |DisplayName">
+        <source>Prefer explicit version resource</source>
+        <target state="new">Prefer explicit version resource</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|ManagedResources|Description">
+        <source>Managed Resource settings for the application.</source>
+        <target state="new">Managed Resource settings for the application.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|ManagedResources|DisplayName">
+        <source>Managed Resources</source>
+        <target state="new">Managed Resources</target>
         <note />
       </trans-unit>
       <trans-unit id="Category|Resources|Description">

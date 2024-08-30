@@ -20,6 +20,7 @@ namespace Microsoft.VisualStudio.ProjectSystem
         public const string CSharpOrFSharp = "(" + CSharp + " | " + FSharp + ")";
 #if XSHARP		
         public const string CSharpOrVisualBasic = "(" + ProjectCapability.XSharp + " | " + ProjectCapabilities.CSharp + " | " + ProjectCapabilities.VB + ")";
+        public const string CSharpOrVisualBasicOnly = "(" + ProjectCapabilities.CSharp + " | " + ProjectCapabilities.VB + ")";
 #else
         public const string CSharpOrVisualBasic = "(" + ProjectCapabilities.CSharp + " | " + ProjectCapabilities.VB + ")";
 #endif		

@@ -8,9 +8,9 @@
     <Category Name="Resources"
               DisplayName="Win32 Resources"
               Description="Resource settings for the application." />
-    <Category Name="Packaging"
-              DisplayName="Packaging"
-              Description="Packaging settings for the application." />
+    <Category Name="ManagedResources"
+              DisplayName="Managed Resources"
+              Description="Managed Resource settings for the application." />
   </Rule.Categories>
 
   <EnumProperty Name="ResourceSpecificationKind"
@@ -92,5 +92,39 @@
       </NameValuePair>
     </StringProperty.Metadata>
   </StringProperty>
+  
+<BoolProperty Name="VulcanCompatibleResources"
+                DisplayName="Vulcan Compatible Resources"
+				Description="Use Vulcan Compatible Managed Resources (when 'True' then resources files are included in the assembly without namespace prefix. When 'False' then the resource files are prefixed with the namespace of the app, just like in other .Net languages, such as C#)" 
+                Category="ManagedResources">
+    <BoolProperty.DataSource>
+      <DataSource PersistedName="VulcanCompatibleResources"
+                  Persistence="ProjectFileWithInterception"
+                  HasConfigurationCondition="False" />
+
+    </BoolProperty.DataSource>
+  </BoolProperty>
+<BoolProperty Name="usenativeversion "
+                DisplayName="Prefer explicit version resource"
+				Description="When your application includes a native resource, use this native resource and do not generate a resource based on the global assembly properties such as AssemblyTitle, AssemblyVersion etc." 
+                Category="Resources">
+    <BoolProperty.DataSource>
+      <DataSource PersistedName="usenativeversion   "
+                  Persistence="ProjectFileWithInterception"
+                  HasConfigurationCondition="False" />
+
+    </BoolProperty.DataSource>
+  </BoolProperty>  
+  <BoolProperty Name="nowin32manifest"
+                DisplayName="Suppress default Win32 manifest"
+				Description="Use The -nowin32manifest option to instruct the compiler not to embed any application manifest into the executable file." 
+                Category="Resources">
+    <BoolProperty.DataSource>
+      <DataSource PersistedName="nowin32manifest  "
+                  Persistence="ProjectFileWithInterception"
+                  HasConfigurationCondition="False" />
+
+    </BoolProperty.DataSource>
+  </BoolProperty>
 
 </Rule>

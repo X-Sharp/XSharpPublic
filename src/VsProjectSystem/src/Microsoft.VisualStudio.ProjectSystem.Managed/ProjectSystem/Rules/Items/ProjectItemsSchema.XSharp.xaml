@@ -2,29 +2,29 @@
 <ProjectSchemaDefinitions
     xmlns="http://schemas.microsoft.com/build/2009/properties">
 
-  <ContentType
+    <ContentType
       Name="XSharpFile"
       DisplayName="X# file"
       ItemType="Compile">
-  </ContentType>
+    </ContentType>
 
-  <ContentType
-      Name="XSharpHeader"
-      DisplayName="X# header"
-      ItemType="None">
-  </ContentType>
+    <ContentType
+    Name="XSharpHeader"
+    DisplayName="X# header"
+    ItemType="None">
+    </ContentType>
 
-  <ContentType
+    <ContentType
         Name="VOBinary"
         DisplayName="VOBinary"
         ItemType="VOBinary">
-  </ContentType>
+    </ContentType>
 
-  <ContentType
-         Name="NativeResource"
-         DisplayName="Native Resource"
-         ItemType="NativeResource">
-  </ContentType>
+     <ContentType
+        Name="NativeResource"
+        DisplayName="Native Resource"
+        ItemType="NativeResource">
+    </ContentType>
 
   <ItemType Name="Compile" DisplayName="X# compiler"/>
   <ItemType Name="AdditionalFiles" DisplayName="X# analyzer additional file"/>
@@ -33,12 +33,12 @@
   <ItemType Name="VOBinary" DisplayName="VO Binary"/>
 
 
-  <FileExtension Name=".prg" ContentType="XSharpFile"/>
-  <FileExtension Name=".xs" ContentType="XSharpFile"/>
-  <FileExtension Name=".vh"  ContentType="XSharpHeader"/>
-  <FileExtension Name=".xh"  ContentType="XSharpHeader"/>
-  <FileExtension Name=".ch"  ContentType="XSharpHeader"/>
-  <FileExtension Name=".rc"  ContentType="NativeResource"/>
+    <FileExtension Name=".prg" ContentType="XSharpFile"/>
+    <FileExtension Name=".xs"  ContentType="XSharpFile"/>
+    <FileExtension Name=".vh"  ContentType="XSharpHeader"/>
+    <FileExtension Name=".xh"  ContentType="XSharpHeader"/>
+    <FileExtension Name=".ch"  ContentType="XSharpHeader"/>
+    <FileExtension Name=".rc"  ContentType="NativeResource"/>
   <FileExtension Name=".xsfrm"  ContentType="VOBinary"/>
   <FileExtension Name=".vnfrm"  ContentType="VOBinary"/>
   <FileExtension Name=".xsdbs"  ContentType="VOBinary"/>

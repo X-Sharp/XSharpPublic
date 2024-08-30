@@ -9,9 +9,9 @@
         "FSharpDesignTimeTargetsPath": "$(VisualStudioXamlRulesDir)Microsoft.FSharp.DesignTime.targets",
         "CSharpDesignTimeTargetsPath": "$(VisualStudioXamlRulesDir)Microsoft.CSharp.DesignTime.targets",
         "CPS_DiagnosticRuntime": "1",
-        "CPS_MetricsCollection": "1",
-        "DesignTimeBuildOutputPane": "1"
-      }
+        "CPS_MetricsCollection": "1"
+      },
+      "nativeDebugging": false
     },
     "Start (with native debugging)": {
       "commandName": "Executable",

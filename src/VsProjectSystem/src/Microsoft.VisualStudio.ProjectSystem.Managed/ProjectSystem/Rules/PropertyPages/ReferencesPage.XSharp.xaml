@@ -17,11 +17,12 @@
                 SourceOfDefaultValue="AfterContext"
                 HasConfigurationCondition="False" />
   </Rule.DataSource>
-  
+
   <BoolProperty Name="ImplicitUsings"
                 DisplayName="Implicit global usings"
                 Description="Enable implicit global usings to be declared by the project SDK."
-                Category="General">
+				Category="General"
+				Visible="False"                >
     <BoolProperty.DataSource>
       <DataSource Persistence="ProjectFileWithInterception"
                   SourceOfDefaultValue="AfterContext"
@@ -30,11 +31,11 @@
     <BoolProperty.Metadata>
       <NameValuePair Name="SearchTerms" Value="implicit" />
       <NameValuePair Name="VisibilityCondition">
-        <NameValuePair.Value>(has-xsharp-lang-version-or-greater "10")</NameValuePair.Value>
+        <NameValuePair.Value>true</NameValuePair.Value>
       </NameValuePair>
     </BoolProperty.Metadata>
   </BoolProperty>
-  
+
   <StringProperty Name="ImplicitUsingsEditor"
                        DisplayName="Manage Implicit Global Usings"
                        Description="Manage common global usings directives for your project to reference."
@@ -48,9 +49,10 @@
     </StringProperty.ValueEditors>
     <StringProperty.Metadata>
       <NameValuePair Name="VisibilityCondition">
-        <NameValuePair.Value>(and (has-xsharp-lang-version-or-greater "10") (has-evaluated-value "References" "ImplicitUsings" true))</NameValuePair.Value>
+        <NameValuePair.Value>(has-evaluated-value "References" "ImplicitUsings" true)</NameValuePair.Value>
       </NameValuePair>
     </StringProperty.Metadata>
   </StringProperty>
+
 
 </Rule>

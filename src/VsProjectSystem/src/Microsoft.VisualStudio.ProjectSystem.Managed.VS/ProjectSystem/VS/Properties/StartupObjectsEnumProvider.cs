@@ -41,8 +41,11 @@ namespace Microsoft.VisualStudio.ProjectSystem.Properties
                 pair.Name == "IncludeEmptyValue"
                 && bool.TryParse(pair.Value, out bool optionValue)
                 && optionValue) ?? false;
-
+#if XSHARP
+            return Task.FromResult<IDynamicEnumValuesGenerator>(new XSharpStartupObjectsEnumGenerator(_workspace, _unconfiguredProject, includeEmptyValue, searchForEntryPointsInFormsOnly));
+#else
             return Task.FromResult<IDynamicEnumValuesGenerator>(new StartupObjectsEnumGenerator(_workspace, _unconfiguredProject, includeEmptyValue, searchForEntryPointsInFormsOnly));
+#endif
         }
     }
 

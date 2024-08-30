@@ -15,6 +15,7 @@ using XSharpModel;
 using Microsoft.VisualStudio.Shell;
 using XSharp;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
 {
@@ -41,6 +42,23 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
 
         public string FrameworkVersion => _version ?? "";
         public string FrameworkIdentifier => _TargetFrameworkIdentifier ?? "";
+
+        static XSharpWorkspaceProjectContext()
+        {
+            var installDir = Environment.GetEnvironmentVariable("VSINSTALLDIR");
+            if (string.IsNullOrEmpty(installDir))
+            {
+                installDir = Process.GetCurrentProcess().MainModule.FileName;
+                var pos = installDir.IndexOf("Common7", StringComparison.OrdinalIgnoreCase);
+                if (pos > 0)
+                {
+                    installDir = installDir.Substring(0, pos);
+                }
+                Environment.SetEnvironmentVariable("VSINSTALLDIR", installDir);
+            }
+
+        }
+
         internal XSharpWorkspaceProjectContext(Guid projectGuid, string? contextId, string languageName, 
             EvaluationData evaluationData, object? hostObject, CancellationToken cancellationToken)
         {
@@ -323,6 +341,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
         {
             if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
             {
+                await Task.Yield();
                 //await _project.OnBatchScopeDisposedMaybeAsync(useAsync: true).ConfigureAwait(false);
             }
         }

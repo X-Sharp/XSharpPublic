@@ -159,7 +159,6 @@
     <Compile Include="List\ErrorList\ErrorListItem.cs" />
     <Compile Include="List\ErrorList\ErrorListManager.cs" />
     <Compile Include="List\ErrorList\ErrorListProvider.cs" />
-    <Compile Include="List\ErrorList\ErrorMessageUtil.cs" />
     <Compile Include="List\IListItem.cs" />
     <Compile Include="List\IListProvider.cs" />
     <Compile Include="List\IListSinkManager.cs" />

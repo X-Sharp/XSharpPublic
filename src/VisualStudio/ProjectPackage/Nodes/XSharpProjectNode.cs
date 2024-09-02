@@ -20,21 +20,14 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 using VSLangProj;
 using XSharp.CodeDom;
-using XSharp.Project.WPF;
 using XSharpModel;
 using XSharp.Settings;
 using File = System.IO.File;
 using MBC = Microsoft.Build.Construction;
 using MSBuild = Microsoft.Build.Evaluation;
-using VsParser = global::LanguageService.CodeAnalysis.XSharp;
-using LanguageService.CodeAnalysis;
-using LanguageService.CodeAnalysis.XSharp;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using LanguageService.SyntaxTree;
 //using XSharp.LanguageService;
 
 namespace XSharp.Project
@@ -2047,22 +2040,6 @@ namespace XSharp.Project
         public void ClearIntellisenseErrors(string fileName)
         {
             _errorListManager.DeleteIntellisenseErrorsFromFile(fileName);
-        }
-        public void AddIntellisenseError(string file, int line, int column, int length, string errCode, string message, DiagnosticSeverity sev)
-        {
-            _errorListManager.AddIntellisenseError(file, line, column, length, errCode, message, sev.ToMessageSeverity());
-        }
-
-        public List<IXErrorPosition> GetIntellisenseErrorPos(string fileName)
-        {
-            return _errorListManager.GetIntellisenseErrorPos(fileName);
-        }
-
-
-        public void ShowIntellisenseErrors()
-        {
-            _errorListManager.Refresh();
-            return;
         }
 
 #endregion

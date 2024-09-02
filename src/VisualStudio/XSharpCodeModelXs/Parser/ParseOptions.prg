@@ -11,7 +11,7 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 using System.Diagnostics
-
+using Microsoft.Win32
 BEGIN NAMESPACE XSharpModel
 
 	/// <summary>
@@ -23,7 +23,8 @@ BEGIN NAMESPACE XSharpModel
     #else
     CLASS XParseOptions
     #endif
-
+    public static regKey as STRING
+    public static defaultIncludeDir as STRING
     #ifdef DEBUG
     public Id as Int64
     public static nextId := 0 as Int64
@@ -36,25 +37,11 @@ BEGIN NAMESPACE XSharpModel
             Id := ++nextId
             #endif
             _options := options
-            FixOptions(options)
             RETURN
 
-    STATIC METHOD FixOptions(options as XSharpParseOptions) as XSharpParseOptions
-        if String.IsNullOrEmpty(options.WindowsDir)
-            var prop := typeof(XSharpParseOptions).GetProperty(nameof(XSharpParseOptions.WindowsDir))
-            if prop != null
-                prop:SetValue(options, System.Environment.GetFolderPath(Environment.SpecialFolder.Windows))
-            endif
-        endif
-        if String.IsNullOrEmpty(options.SystemDir)
-            var prop := typeof(XSharpParseOptions).GetProperty(nameof(XSharpParseOptions.SystemDir))
-            if prop != null
-                prop:SetValue(options, System.Environment.GetFolderPath(Environment.SpecialFolder.System))
-            endif
-        endif
-        return options
     STATIC METHOD FromVsValues(opt AS IList<string>) AS XParseOptions
         var options  := XSharpParseOptions.FromVsValues(opt)
+
         RETURN XParseOptions{options}
 
     OPERATOR EXPLICIT(options AS XSharpParseOptions) AS XParseOptions
@@ -63,6 +50,8 @@ BEGIN NAMESPACE XSharpModel
     OPERATOR EXPLICIT(options AS XParseOptions) AS XSharpParseOptions
         RETURN options._options
 
+    STATIC PROPERTY DefaultIncludeDir as STRING GET XSharpSpecificCompilationOptions.DefaultIncludeDir
+    PROPERTY IncludePaths as IList<String> GET _options:IncludePaths
     PROPERTY SupportsMemvars AS LOGIC GET _options:SupportsMemvars
     PROPERTY XSharpRuntime AS LOGIC GET _options:XSharpRuntime
     PROPERTY VOUntypedAllowed AS LOGIC GET _options:VOUntypedAllowed

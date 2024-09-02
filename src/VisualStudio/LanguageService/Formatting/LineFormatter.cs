@@ -42,15 +42,14 @@ namespace XSharp.LanguageService
             {
                 // there are some rules in the UDC that for example translate
                 // NEXT x to NEXT
-                // without this change that does not outdent properly.
-                // Hopefully that does not produce another problem
+                // The original token is stored in the Original property of XSharpToken
 
                 var token = tokens.Where(t => t.Type != XSharpLexer.WS).FirstOrDefault();
                 if (token != null)
                 {
-                    var text = token.Text;
-                    tokens = _buffer.GetDocument().GetTokens(text);
-                    kw = XSharpLineKeywords.Tokens2Keyword(tokens);
+                    var t = (XSharpToken)token;
+                    var list = new List<IToken>{t.Original};
+                    kw = XSharpLineKeywords.Tokens2Keyword(list);
                 }
 
             }

@@ -251,7 +251,6 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         SELF:_prjNode:AddIntellisenseError(sourcePath, (start:Line + 1), (start:Character + 1), length, error:ErrCode, error:ToString(), error:Severity)
         NEXT
         ENDIF
-        SELF:_prjNode:ShowIntellisenseErrors()
         END LOCK
         WriteOutputMessage("<<-- ShowErrorsAsync() "+_file:FullPath)
         ENDIF

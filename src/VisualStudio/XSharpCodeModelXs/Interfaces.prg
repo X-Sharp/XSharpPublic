@@ -14,7 +14,6 @@ USING System.Threading.Tasks
 BEGIN NAMESPACE XSharpModel
 INTERFACE IXSharpProject
     METHOD AddFileNode(fileName AS STRING) AS VOID
-        //METHOD AddIntellisenseError(file AS STRING, line AS LONG, column AS LONG, Length AS LONG, errCode AS STRING, message AS STRING, sev AS DiagnosticSeverity) AS VOID
     METHOD DeleteFileNode(fileName AS STRING) AS VOID
     /// <summary>
     /// Return the EnvDte project for a url

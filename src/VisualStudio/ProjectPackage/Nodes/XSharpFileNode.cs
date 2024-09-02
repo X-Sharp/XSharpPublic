@@ -167,8 +167,6 @@ namespace XSharp.Project
              {
                  var prjNode = this.ProjectMgr as XSharpProjectNode;
                  prjNode.ProjectModel.RemoveFile(this.Url);
-                 prjNode.ClearIntellisenseErrors(this.Url);
-                 prjNode.ShowIntellisenseErrors();
              }
              return base.ExcludeFromProject();
          });

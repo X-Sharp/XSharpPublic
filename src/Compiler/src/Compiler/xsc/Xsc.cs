@@ -45,10 +45,6 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
             Trace.Listeners.Add(new ConsoleTraceListener());
 #endif
             FatalError.Handler = FailFast.OnFatalException;
-            string[] paths = GetPaths(); 
-            XSharpSpecificCompilationOptions.SetDefaultIncludeDir(paths[0]);
-            XSharpSpecificCompilationOptions.SetWinDir(paths[1]);
-            XSharpSpecificCompilationOptions.SetSysDir(paths[2]);
             var responseFile = Path.Combine(buildPaths.ClientDirectory, CSharpCompiler.ResponseFileName);
             var compiler = new Xsc(responseFile, buildPaths, args, analyzerLoader);
             var result = ConsoleUtil.RunWithUtf8Output(compiler.Arguments.Utf8Output, textWriter, tw => compiler.Run(tw));

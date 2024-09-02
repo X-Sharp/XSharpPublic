@@ -106,7 +106,7 @@ namespace XSharp.LanguageService
             lock (this)
             {
                 _blocks.Clear();
-                _blocks.AddRange(Blocks);
+                _blocks.AddRange(blocks);
             }
         }
 

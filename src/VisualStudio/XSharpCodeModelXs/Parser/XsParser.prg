@@ -633,6 +633,16 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 token:Type := XSharpLexer.PP_ENDTEXT
                 return
             otherwise
+                var xt := GetNextKeyword()
+                if XFormattingRule.IsStartKeyword(xt)
+                    RETURN
+                ENDIF
+                if XFormattingRule.IsMiddleKeyword(xt)
+                    RETURN
+                ENDIF
+                if XFormattingRule.IsEndKeyword(xt)
+                    RETURN
+                ENDIF
                 SELF:Consume()
             end switch
         ENDDO
@@ -1043,6 +1053,24 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ENDIF
         RETURN
 
+    PRIVATE METHOD GetNextKeyword() AS XKeyword
+        var oLt1 := Lt1
+        var oLt2 := Lt2
+        if oLt1:Type == XSharpLexer.UDC_KEYWORD
+            oLt1 := oLt1:Original
+        ENDIF
+        if oLt2:Type == XSharpLexer.UDC_KEYWORD
+            oLt2 := oLt2:Original
+        ENDIF
+        local xt as XKeyword
+        if XFormattingRule.IsSingleKeyword(oLt1:Type)
+            xt := XKeyword{oLt1:Type}
+        elseif XSharpLexer.IsKeyword(oLt2:Type)
+            xt := XKeyword{oLt1:Type, oLt2:Type}
+        else
+            xt := XKeyword{oLt1:Type}
+        endif
+        return xt
     PRIVATE METHOD ParseBlock() AS VOID
         // Adds, updates or removes block token on the block tokens stack
         // Start of block is also added to the _BlockList
@@ -1053,13 +1081,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         endif
         local xt as XKeyword
         LOCAL rule as XFormattingRule
-        if XFormattingRule.IsSingleKeyword(La1)
-            xt := XKeyword{SELF:La1}
-        elseif XSharpLexer.IsKeyword(La2)
-            xt := XKeyword{SELF:La1, SELF:La2}
-        else
-            xt := XKeyword{SELF:La1}
-        endif
+        xt := SELF:GetNextKeyword()
         rule := XFormattingRule.GetFirstRuleByStart(xt)
         if rule != null
             SELF:ParseBlockStart(rule, xt)
@@ -1226,9 +1248,9 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
     PRIVATE PROPERTY La1 AS INT => _list:La1
     PRIVATE PROPERTY La2 AS INT => _list:La2
     PRIVATE PROPERTY La3 AS INT => _list:La3
-    PRIVATE PROPERTY Lt1 AS IToken => _list:Lt1
-    PRIVATE PROPERTY Lt2 AS IToken => _list:Lt2
-    PRIVATE PROPERTY Lt3 AS IToken => _list:Lt3
+    PRIVATE PROPERTY Lt1 AS XSharpToken => (XSharpToken) _list:Lt1
+    PRIVATE PROPERTY Lt2 AS XSharpToken => (XSharpToken) _list:Lt2
+    PRIVATE PROPERTY Lt3 AS XSharpToken => (XSharpToken) _list:Lt3
     PRIVATE PROPERTY LastToken AS IToken => _list:LastReadToken
     PRIVATE METHOD La(nToken AS LONG) AS LONG => _list:La(nToken)
     PRIVATE METHOD Lt(nToken AS LONG) AS IToken => _list:Lt(nToken)

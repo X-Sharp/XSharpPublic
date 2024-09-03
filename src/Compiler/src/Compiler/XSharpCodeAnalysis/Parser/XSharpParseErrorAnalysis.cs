@@ -985,7 +985,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitProperty([NotNull] XSharpParser.PropertyContext context)
         {
-            //var isInInterface = context.isInInterface();
+            var isInInterface = context.isInInterface();
             var isExtern = context.Modifiers?.EXTERN().Length > 0;
             var isAbstract = context.Modifiers?.ABSTRACT().Length > 0;
             bool HasBody = (context.Auto != null || context.Multi != null);
@@ -1014,9 +1014,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_AbstractHasBody, "Property"));
                 }
             }
+            if (context.Auto != null && context.ParamList != null && context.ParamList._Params.Count > 0)
+            {
+                _parseErrors.Add(new ParseErrorData(context.Auto, ErrorCode.ERR_AutoPropertyParameters));
+            }
+
             if (isAbstract && isExtern)
             {
                 _parseErrors.Add(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern));
+            }
+            if (!isAbstract && !isExtern && !isInInterface && context.ParamList?._Params.Count > 0)
+            {
+                if (context?._LineAccessors.Count != 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_IndexPropertyLineAccessors));
+                }
+                else if (context?._Accessors.Count == 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_PropertyWithNoAccessors, context.Id.GetText()));
+                }
             }
         }
 

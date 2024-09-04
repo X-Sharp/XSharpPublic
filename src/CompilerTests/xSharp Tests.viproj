@@ -29,17 +29,6 @@ CustomControlsGuid = 91D751CB-030B-4A75-98B9-05D9B82C3067
 DefaultPropertiesGuid = 25819EAF-9863-441B-90D0-A9072599943A
 
 [Recent References]
-RecentReference = GAC:VulcanRT,v4,4.0.401.0
-RecentReference = GAC:VulcanRTFuncs,v4,4.0.401.0
-RecentReference = GAC:Microsoft.CSharp,v4,4.0.0.0
-RecentReference = GAC:XSharp.Core,v4,2.6.0.0
-RecentReference = GAC:XSharp.RT,v4,2.6.0.0
-RecentReference = GAC:XSharp.VFP,v4,2.6.0.0
-RecentReference = GAC:XSharp.VO,v4,2.6.0.0
-RecentReference = GAC:XSharp.XPP,v4,2.6.0.0
-RecentReference = GAC:XSharp.Harbour,v4,2.6.0.0
-RecentReference = GAC:System.Windows.Forms,v4,4.0.0.0
-RecentReference = GAC:System.Drawing,v4,4.0.0.0
 
 [Application Groups]
 ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,723E53EA-0D2C-4FC9-B86E-F050D29A49D2
@@ -120372,11 +120361,11 @@ IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
-Target = 2
+Target = 0
 Platform = x86
 Language = XSharp
 Runtime = CLR4
-Dialect = Core
+Dialect = VO
 Folder = %ProjectPath%\Applications\Tester\
 PrgSubFolder = \Prg
 ResourcesSubFolder = \Resources
@@ -120413,6 +120402,8 @@ CopyToBin = 0
 [Tester References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
 [Tester Resources]
 [Tester Native Resources]
 [Tester License files]
@@ -120429,7 +120420,7 @@ VO5=0
 VO6=0
 VO7=0
 VO8=0
-VO9=0
+VO9=1
 VO10=0
 VO11=0
 VO12=0
@@ -131436,7 +131427,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.Harbour,1,0,2.6.0.0
+ReferenceGAC = XSharp.Harbour,1,0,2.6.0.0
 ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C910 - Compiler problem reading clipper/harbour .prg file with end of file marker Resources]
 [C910 - Compiler problem reading clipper/harbour .prg file with end of file marker Native Resources]
@@ -132999,9 +132990,9 @@ CopyToBin = 0
 [C914 - Problems using the Str() functioon in the macrocompiler in the FoxPro dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.VFP,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C914 - Problems using the Str() functioon in the macrocompiler in the FoxPro dialect Resources]
 [C914 - Problems using the Str() functioon in the macrocompiler in the FoxPro dialect Native Resources]
 [C914 - Problems using the Str() functioon in the macrocompiler in the FoxPro dialect License files]
@@ -133237,8 +133228,8 @@ CopyToBin = 0
 [C916 - Some issues with indexed PROPERTY SET and ASSIGN References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C916 - Some issues with indexed PROPERTY SET and ASSIGN Resources]
 [C916 - Some issues with indexed PROPERTY SET and ASSIGN Native Resources]
 [C916 - Some issues with indexed PROPERTY SET and ASSIGN License files]

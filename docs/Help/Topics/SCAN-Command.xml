@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-09-04T14:50:27.780+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SCAN .. ENDSCAN Command</title>
+  <keywords>
+    <keyword>ENDSCAN</keyword>
+    <keyword>EXIT statement</keyword>
+    <keyword>LOOP statement</keyword>
+    <keyword>SCAN</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SCAN ... ENDSCAN Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Body Text">Moves the record pointer through the currently selected table and executes a block of commands for each record that meets the specified conditions.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">SCAN [NOOPTIMIZE] [Scope] [FOR lExpression1] [WHILE lExpression2]<br/> &#160; [Commands]<br/> &#160; [LOOP]<br/> &#160; [EXIT] <br/>ENDSCAN</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">NOOPTIMIZE <tab />Prevents Rushmore Query Optimization of SCAN.<br/>For more information, see SET OPTIMIZE Command and Using Rushmore Query Optimization to Speed Data Access. </para>
+    <para styleclass="List"></para>
+    <para styleclass="List">Scope <tab />Specifies a range of records to be scanned. Only the records within the range are scanned. The scope clauses are: ALL, NEXT nRecords, RECORD nRecordNumber, and REST. For more information on scope clauses, see the Scope Clauses online topic. The default scope for SCAN is all records (ALL). <br/></para>
+    <para styleclass="List">FOR lExpression1 <tab />Executes commands only for records for which lExpression1 evaluates to true (.T.). Including the FOR clause lets you filter out records you don&apos;t want scanned.<br/>Rushmore optimizes a query created with SCAN ... FOR if lExpression1 is an optimizable expression. For best performance, use an optimizable expression in the FOR clause. <br/>For more information, see SET OPTIMIZE Command and Using Rushmore Query Optimization to Speed Data Access. </para>
+    <para styleclass="List"></para>
+    <para styleclass="List">WHILE lExpression2 <tab />Specifies a condition whereby the commands are executed for as long as lExpression2 evaluates to true (.T.).</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">Commands <tab />Specifies the Visual FoxPro commands to be executed.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">LOOP <tab />Returns control directly back to SCAN. LOOP can be placed anywhere between SCAN and ENDSCAN.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">EXIT <tab />Transfers program control from within the SCAN ... ENDSCAN loop to the first command following ENDSCAN. EXIT can be placed anywhere between SCAN and ENDSCAN.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ENDSCAN <tab />Indicates the end of the SCAN procedure.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Heading1"><text styleclass="Body Text">SCAN automatically advances the record pointer to the next record that meets the specified conditions and executes the block of commands.</text></para>
+    <para styleclass="Body Text">You can place comments after ENDSCAN on the same line. The comments are ignored during program compilation and execution.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">SCAN ... ENDSCAN ensures that, upon reaching ENDSCAN, Visual FoxPro reselects the table that was current when the SCAN ... ENDSCAN loop began.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading1">Example</para>
+    <para styleclass="Body Text">The following example uses a SCAN ... ENDSCAN loop to display all the companies in Sweden.</para>
+    <para styleclass="Code Example"><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> customer &#160;&amp;&amp; Opens Customer table</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLEAR</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">SCAN</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FOR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> UPPER(country) = &apos;SWEDEN&apos;</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; ? contact, company, city</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">ENDSCAN</text></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">DO CASE Statement</link></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_WHILE">DO WHILE </link><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">Statement</link></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOR">FOR Statement</link></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOREACH">FOREACH </link><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">Statement</link></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SWITCH">SWITCH Statement</link></para>
+  </body>
+</topic>

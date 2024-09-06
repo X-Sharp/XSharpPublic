@@ -467,6 +467,9 @@ FUNCTION DbUseAreaFox(uArea, cDataFile, cAlias, lShared, lReadOnly, ;
     lOnline, lAdmin, lAgain, lNoData, lNoRequery, nDataSession, uConnection) AS LOGIC CLIPPER
 
 LOCAL cDriver := "DBFVFP" AS STRING
+IF !IsNil(uArea)
+    DbSelectArea(uArea)
+ENDIF
 IF !IsNil(lAgain) .and. lAgain
     // select other area where cDataFile is open and copy lShared, lReadonly
     var ext := System.IO.Path.GetExtension(cDataFile)

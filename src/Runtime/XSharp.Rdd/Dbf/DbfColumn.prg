@@ -104,15 +104,16 @@ BEGIN NAMESPACE XSharp.RDD
             // but can also be used to set a timestamp or rowversion later
             RETURN
 
-        PROTECTED METHOD _GetString(buffer AS BYTE[]) AS STRING
+
+        PROTECTED METHOD _GetString(buffer AS BYTE[], nLen as LONG) AS STRING
             // Let the DBF layer handle the encoding
             local result as string
             if SELF:RDD is DBF
-                result := SELF:RDD:_GetString(buffer, SELF:Offset, SELF:Length)
+                result := SELF:RDD:_GetString(buffer, SELF:Offset, nLen)
             ELSE
-                result := RuntimeState.WinEncoding:GetString(buffer, SELF:Offset, SELF:Length)
+                result := RuntimeState.WinEncoding:GetString(buffer, SELF:Offset, nLen)
             endif
-	    RETURN result
+        RETURN result
 
         PROTECTED METHOD _PutString(buffer AS BYTE[], strValue as STRING) AS VOID
             // Let the DBF layer handle the encoding
@@ -128,7 +129,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:IsNull()
                 RETURN DBNull.Value
             ENDIF
-            RETURN SELF:_GetString(buffer)
+            RETURN SELF:_GetString(buffer, SELF:Length)
 
         /// <summary>Handle NULL values.</summary>
        /// <param name="buffer">Record buffer for the current record</param>
@@ -147,23 +148,23 @@ BEGIN NAMESPACE XSharp.RDD
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)];
          INTERNAL METHOD IsNull() AS LOGIC
-            IF SELF:IsNullable .AND. SELF:RDD:_NullColumn != NULL
-                RETURN SELF:RDD:_NullColumn:GetBit(SELF:NullBit)
+            IF SELF:IsNullable .AND. SELF:RDD:NullColumn != NULL
+                RETURN SELF:RDD:NullColumn:GetBit(SELF:NullBit)
             ENDIF
             RETURN FALSE
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PROTECTED METHOD SetNullValue() AS LOGIC
-            IF SELF:IsNullable .AND. SELF:RDD:_NullColumn != NULL
-                SELF:RDD:_NullColumn:SetBit(SELF:NullBit, TRUE)
+            IF SELF:IsNullable .AND. SELF:RDD:NullColumn != NULL
+                SELF:RDD:NullColumn:SetBit(SELF:NullBit, TRUE)
                 RETURN TRUE
             ENDIF
             RETURN FALSE
 
          [MethodImpl(MethodImplOptions.AggressiveInlining)];
          PROTECTED METHOD ClearNullValue() AS VOID
-            IF SELF:IsNullable .AND. SELF:RDD:_NullColumn != NULL
-                SELF:RDD:_NullColumn:SetBit(SELF:NullBit, FALSE)
+            IF SELF:IsNullable .AND. SELF:RDD:NullColumn != NULL
+                SELF:RDD:NullColumn:SetBit(SELF:NullBit, FALSE)
             ENDIF
             RETURN
 
@@ -312,12 +313,12 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_PutString(buffer, str)
             ENDIF
             IF SELF:IsVarLength
-                IF SELF:RDD:_NullColumn != NULL
+                IF SELF:RDD:NullColumn != NULL
                     IF str:Length >= SELF:Length
                         // we used all the bytes, so set the varlength bit to 0
-                        SELF:RDD:_NullColumn:SetBit(SELF:LengthBit, FALSE)
+                        SELF:RDD:NullColumn:SetBit(SELF:LengthBit, FALSE)
                     ELSE
-                        SELF:RDD:_NullColumn:SetBit(SELF:LengthBit, TRUE)
+                        SELF:RDD:NullColumn:SetBit(SELF:LengthBit, TRUE)
                         buffer[SELF:Offset + SELF:Length-1] := (BYTE) str:Length
                     ENDIF
                 ELSE
@@ -335,34 +336,29 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc/>
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             LOCAL result AS STRING
+            VAR len := SELF:Length
             IF SELF:IsNull()
                 RETURN DBNull.Value
             ENDIF
             IF SELF:IsBinary
-                result := System.Text.Encoding.Default:GetString(buffer, SELF:Offset, SELF:Length)
+                result := System.Text.Encoding.Default:GetString(buffer, SELF:Offset, len)
             ELSEIF SELF:IsUnicode
-                VAR chars := CHAR[]{SELF:Length /2}
-                System.Buffer.BlockCopy(buffer, SELF:Offset, chars, 0, SELF:Length)
+                VAR chars := CHAR[]{len /2}
+                System.Buffer.BlockCopy(buffer, SELF:Offset, chars, 0, len)
                 result := STRING{chars}
-            ELSE
-                result := SUPER:_GetString(buffer)
-            ENDIF
-            IF IsVarLength
-                LOCAL len AS LONG
-                len := SELF:Length
-                IF SELF:RDD:_NullColumn != NULL
+            ELSEIF IsVarLength
+                IF SELF:RDD:NullColumn != NULL
                     LOCAL lSet AS LOGIC
-                    lSet := SELF:RDD:_NullColumn:GetBit(SELF:LengthBit)
+                    lSet := SELF:RDD:NullColumn:GetBit(SELF:LengthBit)
                     IF lSet
                         len := buffer[SELF:Offset + SELF:Length-1]
                     ENDIF
                 ENDIF
-                IF !String.IsNullOrEmpty(result)
-                    result := result:Substring(0, len)
-                ENDIF
+                result := SUPER:_GetString(buffer, len)
             ELSE
+                result := SUPER:_GetString(buffer, len)
                 IF String.IsNullOrEmpty(result)
-                    result := STRING{ ' ', SELF:Length }
+                    result := STRING{ ' ', len }
                 ENDIF
             ENDIF
             RETURN result

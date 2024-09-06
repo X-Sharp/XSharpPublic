@@ -66,9 +66,9 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
 	PROTECT _Hot            AS LOGIC
 	PROTECT _lockScheme     AS DbfLocking
 	PROTECT _NewRecord      AS LOGIC
-    PROTECT INTERNAL _NullColumn    AS DbfNullColumn            // Column definition for _NullFlags, used in DBFVFP driver
-    PROTECT INTERNAL _NullCount      := 0 AS LONG   // to count the NULL and Length bits for DBFVFP
 
+
+    VIRTUAL PROPERTY NullColumn as DbfNullColumn => NULL_OBJECT
     PROTECT INTERNAL PROPERTY FullPath AS STRING GET _FileName
     PROTECT INTERNAL PROPERTY Header AS DbfHeader GET _Header
     PROTECT INTERNAL _Ansi          AS LOGIC
@@ -1074,7 +1074,18 @@ PROTECTED VIRTUAL METHOD _writeFieldsHeader() AS LOGIC
 		SELF:_dbfError( FException(), ERDD.WRITE, XSharp.Gencode.EG_WRITE )
     ENDIF
     //
-RETURN isOK
+    RETURN isOK
+
+PROTECTED VIRTUAL METHOD _determineCodePage() AS VOID
+	SELF:_Ansi := SELF:_Header:IsAnsi
+    var codePage := CodePageExtensions.ToCodePage( SELF:_Header:CodePage )
+    if ! SELF:_Ansi .and. RuntimeState.Ansi
+        SELF:_Encoding   := RuntimeState.DosEncoding
+        SELF:_OemConvert := TRUE
+    ELSE
+        SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage )
+        SELF:_OemConvert := FALSE
+    ENDIF
 
     /// <inheritdoc />
 OVERRIDE METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
@@ -1110,15 +1121,7 @@ OVERRIDE METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
 			ENDIF
 			SELF:GoTop()
             //
-			SELF:_Ansi := SELF:_Header:IsAnsi
-            var codePage := CodePageExtensions.ToCodePage( SELF:_Header:CodePage )
-            if ! SELF:_Ansi .and. RuntimeState.Ansi
-                SELF:_Encoding   := RuntimeState.DosEncoding
-                SELF:_OemConvert := TRUE
-            ELSE
-                SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage )
-                SELF:_OemConvert := FALSE
-            ENDIF
+            SELF:_determineCodePage()
             //
 		ELSE
 			SELF:_dbfError( ERDD.CORRUPT_HEADER, XSharp.Gencode.EG_CORRUPTION )
@@ -1172,7 +1175,6 @@ PROTECTED METHOD _readFieldsHeader() AS LOGIC
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
-	SELF:_NullCount := 0
     // Read full Fields Header
 	VAR fieldsBuffer := BYTE[]{ fieldDefSize }
     isOK   := _oStream:SafeReadAt(DbfHeader.SIZE, fieldsBuffer,fieldDefSize)

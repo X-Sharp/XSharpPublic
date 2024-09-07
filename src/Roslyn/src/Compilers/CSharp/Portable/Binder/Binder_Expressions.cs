@@ -1302,9 +1302,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         bag.Clear();
                     left = this.BindNamespaceOrType(node.Left, bag);
                 }
-                diagnostics.AddRangeAndFree(bag);
-
             }
+            diagnostics.AddRangeAndFree(bag);
             return BindMemberAccessWithBoundLeft(node, left, node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
 #else
             return BindMemberAccessWithBoundLeft(node, this.BindLeftOfPotentialColorColorMemberAccess(node.Left, diagnostics), node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);

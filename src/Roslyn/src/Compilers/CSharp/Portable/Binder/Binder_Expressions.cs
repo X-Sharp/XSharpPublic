@@ -1278,7 +1278,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
 #if XSHARP
             var bag = DiagnosticBag.GetInstance();
-            var left = this.BindExpression(node.Left, bag);
+            var left = BindLeftOfPotentialColorColorMemberAccess(node.Left, bag);
             if (left != null && !left.HasErrors && !(left.ExpressionSymbol is NamespaceOrTypeSymbol) &&
                 left.Type?.IsVoStructOrUnion() != true)
             {

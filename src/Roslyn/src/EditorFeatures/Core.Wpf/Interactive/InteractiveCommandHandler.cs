@@ -8,33 +8,32 @@ using System;
 using System.Diagnostics;
 using Microsoft.VisualStudio.InteractiveWindow;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Utilities;
 using System.Threading;
-using Microsoft.CodeAnalysis.Editor.Host;
 using Microsoft.VisualStudio.Text.Editor.Commanding.Commands;
 using Microsoft.VisualStudio.Commanding;
 using Microsoft.VisualStudio.Text.Editor.Commanding;
+using Microsoft.CodeAnalysis.Options;
 
-namespace Microsoft.CodeAnalysis.Editor.Interactive
+namespace Microsoft.CodeAnalysis.Interactive
 {
     internal abstract class InteractiveCommandHandler :
         ICommandHandler<ExecuteInInteractiveCommandArgs>,
         ICommandHandler<CopyToInteractiveCommandArgs>
     {
         private readonly IContentTypeRegistryService _contentTypeRegistryService;
-        private readonly IEditorOptionsFactoryService _editorOptionsFactoryService;
+        private readonly EditorOptionsService _editorOptionsService;
         private readonly IEditorOperationsFactoryService _editorOperationsFactoryService;
 
         protected InteractiveCommandHandler(
             IContentTypeRegistryService contentTypeRegistryService,
-            IEditorOptionsFactoryService editorOptionsFactoryService,
+            EditorOptionsService editorOptionsService,
             IEditorOperationsFactoryService editorOperationsFactoryService)
         {
             _contentTypeRegistryService = contentTypeRegistryService;
-            _editorOptionsFactoryService = editorOptionsFactoryService;
+            _editorOptionsService = editorOptionsService;
             _editorOperationsFactoryService = editorOperationsFactoryService;
         }
 
@@ -48,7 +47,7 @@ namespace Microsoft.CodeAnalysis.Editor.Interactive
 
         private string GetSelectedText(EditorCommandArgs args, CancellationToken cancellationToken)
         {
-            var editorOptions = _editorOptionsFactoryService.GetOptions(args.SubjectBuffer);
+            var editorOptions = _editorOptionsService.Factory.GetOptions(args.SubjectBuffer);
             return SendToInteractiveSubmissionProvider.GetSelectedText(editorOptions, args, cancellationToken);
         }
 
@@ -58,7 +57,7 @@ namespace Microsoft.CodeAnalysis.Editor.Interactive
         bool ICommandHandler<ExecuteInInteractiveCommandArgs>.ExecuteCommand(ExecuteInInteractiveCommandArgs args, CommandExecutionContext context)
         {
             var window = OpenInteractiveWindow(focus: false);
-            using (context.OperationContext.AddScope(allowCancellation: true, InteractiveEditorFeaturesResources.Executing_selection_in_Interactive_Window))
+            using (context.OperationContext.AddScope(allowCancellation: true, EditorFeaturesWpfResources.Executing_selection_in_Interactive_Window))
             {
                 var submission = GetSelectedText(args, context.OperationContext.UserCancellationToken);
                 if (!string.IsNullOrWhiteSpace(submission))
@@ -104,7 +103,7 @@ namespace Microsoft.CodeAnalysis.Editor.Interactive
 
             using (var edit = buffer.CreateEdit())
             using (var waitScope = context.OperationContext.AddScope(allowCancellation: true,
-                InteractiveEditorFeaturesResources.Copying_selection_to_Interactive_Window))
+                EditorFeaturesWpfResources.Copying_selection_to_Interactive_Window))
             {
                 var text = GetSelectedText(args, context.OperationContext.UserCancellationToken);
 
@@ -113,7 +112,7 @@ namespace Microsoft.CodeAnalysis.Editor.Interactive
                 var lastLine = buffer.CurrentSnapshot.GetLineFromLineNumber(buffer.CurrentSnapshot.LineCount - 1);
                 if (lastLine.Extent.Length > 0)
                 {
-                    var editorOptions = _editorOptionsFactoryService.GetOptions(args.SubjectBuffer);
+                    var editorOptions = _editorOptionsService.Factory.GetOptions(args.SubjectBuffer);
                     text = editorOptions.GetNewLineCharacter() + text;
                 }
 

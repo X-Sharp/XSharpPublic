@@ -5,7 +5,6 @@
 using System;
 using System.Composition;
 using System.Threading;
-using Microsoft.CodeAnalysis.Editor.FindUsages;
 using Microsoft.CodeAnalysis.Editor.Host;
 using Microsoft.CodeAnalysis.FindUsages;
 using Microsoft.CodeAnalysis.Host.Mef;
@@ -15,22 +14,15 @@ namespace Microsoft.CodeAnalysis.UnitTests.Fakes
     [Export(typeof(IStreamingFindUsagesPresenter))]
     [Shared]
     [PartNotDiscoverable]
-    internal class StubStreamingFindUsagesPresenter : IStreamingFindUsagesPresenter
+    [method: ImportingConstructor]
+    [method: Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
+    internal sealed class StubStreamingFindUsagesPresenter() : IStreamingFindUsagesPresenter
     {
-        [ImportingConstructor]
-        [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
-        public StubStreamingFindUsagesPresenter()
+        public void ClearAll()
         {
         }
 
-        public virtual void ClearAll()
-        {
-        }
-
-        public virtual FindUsagesContext StartSearch(string title, bool supportsReferences)
-            => new SimpleFindUsagesContext(CancellationToken.None);
-
-        public virtual FindUsagesContext StartSearchWithCustomColumns(string title, bool supportsReferences, bool includeContainingTypeAndMemberColumns, bool includeKindColumn)
-            => new SimpleFindUsagesContext(CancellationToken.None);
+        public (FindUsagesContext, CancellationToken) StartSearch(string title, StreamingFindUsagesPresenterOptions options)
+            => (new SimpleFindUsagesContext(), CancellationToken.None);
     }
 }

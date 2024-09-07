@@ -7,9 +7,12 @@ Imports System.Threading
 Imports Microsoft.CodeAnalysis.Completion
 Imports Microsoft.CodeAnalysis.Editor.CommandHandlers
 Imports Microsoft.CodeAnalysis.Editor.CSharp.CompleteStatement
-Imports Microsoft.CodeAnalysis.Editor.Implementation.Formatting
+Imports Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.AsyncCompletion
+Imports Microsoft.CodeAnalysis.Editor.[Shared].Utilities
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Extensions
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Utilities
+Imports Microsoft.CodeAnalysis.Formatting
+Imports Microsoft.CodeAnalysis.LanguageService
 Imports Microsoft.CodeAnalysis.Shared.TestHooks
 Imports Microsoft.CodeAnalysis.SignatureHelp
 Imports Microsoft.CodeAnalysis.Test.Utilities
@@ -19,22 +22,21 @@ Imports Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion
 Imports Microsoft.VisualStudio.Text
 Imports Microsoft.VisualStudio.Text.Editor
 Imports Microsoft.VisualStudio.Text.Editor.Commanding.Commands
+Imports Roslyn.Utilities
 
 Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
     Friend Class TestState
         Inherits AbstractCommandHandlerTestState
 
         Private Const timeoutMs = 60000
-        Private Const editorTimeoutMs = 60000
-        Friend Const RoslynItem = "RoslynItem"
         Friend ReadOnly EditorCompletionCommandHandler As ICommandHandler
         Friend ReadOnly CompletionPresenterProvider As ICompletionPresenterProvider
 
         Protected ReadOnly SessionTestState As IIntelliSenseTestState
         Private ReadOnly SignatureHelpBeforeCompletionCommandHandler As SignatureHelpBeforeCompletionCommandHandler
         Protected ReadOnly SignatureHelpAfterCompletionCommandHandler As SignatureHelpAfterCompletionCommandHandler
-        Private ReadOnly FormatCommandHandler As FormatCommandHandler
         Protected ReadOnly CompleteStatementCommandHandler As CompleteStatementCommandHandler
+        Private ReadOnly FormatCommandHandler As FormatCommandHandler
 
         Public Shared ReadOnly CompositionWithoutCompletionTestParts As TestComposition = EditorTestCompositions.EditorFeaturesWpf.
             AddExcludedPartTypes(
@@ -61,18 +63,18 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
                        Optional roles As ImmutableArray(Of String) = Nothing)
             MyBase.New(workspaceElement, GetComposition(excludedTypes, extraExportedTypes, includeFormatCommandHandler), workspaceKind:=workspaceKind, makeSeparateBufferForCursor, roles)
 
-            ' The current default timeout defined in the Editor may not work on slow virtual test machines.
-            ' Need to use a safe timeout there to follow real code paths.
-            MyBase.TextView.Options.GlobalOptions.SetOptionValue(DefaultOptions.ResponsiveCompletionThresholdOptionId, editorTimeoutMs)
+            ' Disable editor's responsive completion option to ensure a deterministic test behavior
+            MyBase.TextView.Options.GlobalOptions.SetOptionValue(DefaultOptions.ResponsiveCompletionOptionId, False)
+            MyBase.TextView.Options.GlobalOptions.SetOptionValue(DefaultOptions.IndentStyleId, IndentingStyle.Smart)
 
-            Dim languageServices = Me.Workspace.CurrentSolution.Projects.First().LanguageServices
-            Dim language = languageServices.Language
+            Dim language = Me.Workspace.CurrentSolution.Projects.First().Language
 
             Me.SessionTestState = GetExportedValue(Of IIntelliSenseTestState)()
 
             Me.SignatureHelpBeforeCompletionCommandHandler = GetExportedValue(Of SignatureHelpBeforeCompletionCommandHandler)()
 
             Me.SignatureHelpAfterCompletionCommandHandler = GetExportedValue(Of SignatureHelpAfterCompletionCommandHandler)()
+            Me.CompleteStatementCommandHandler = GetExportedValue(Of CompleteStatementCommandHandler)()
 
             Me.FormatCommandHandler = If(includeFormatCommandHandler, GetExportedValue(Of FormatCommandHandler)(), Nothing)
             Me.CompleteStatementCommandHandler = Workspace.ExportProvider.GetCommandHandler(Of CompleteStatementCommandHandler)(NameOf(CompleteStatementCommandHandler))
@@ -93,7 +95,12 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
                 AddParts(extraExportedTypes)
 
             If includeFormatCommandHandler Then
-                composition = composition.AddParts(GetType(FormatCommandHandler))
+                ' FormatCommandHandler would generally be included in the catalog, but is excluded from tests by adding
+                ' it to the list of excluded part types. Here we validate the input state and restore the default
+                ' behavior of the catalog by removing FormatCommandHandler from the excluded parts list.
+                Assert.Contains(GetType(FormatCommandHandler).Assembly, composition.Assemblies)
+                Assert.Contains(GetType(FormatCommandHandler), composition.ExcludedPartTypes)
+                composition = composition.RemoveExcludedPartTypes(GetType(FormatCommandHandler))
             End If
 
             Return composition
@@ -127,6 +134,12 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
             MyBase.SendReturn(Sub(a, n, c) handler.ExecuteCommand(a, n, c), Sub() EditorOperations.InsertNewLine())
         End Sub
 
+        Public Sub SendBackspaces(count As Integer)
+            For i = 0 To count - 1
+                Me.SendBackspace()
+            Next
+        End Sub
+
         Public Overrides Sub SendBackspace()
             Dim compHandler = GetHandler(Of IChainedCommandHandler(Of BackspaceKeyCommandArgs))()
             MyBase.SendBackspace(Sub(a, n, c) compHandler.ExecuteCommand(a, n, c), AddressOf MyBase.SendBackspace)
@@ -150,6 +163,12 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
         Public Overloads Sub SendTypeChars(typeChars As String)
             MyBase.SendTypeChars(typeChars, Sub(a, n, c) ExecuteTypeCharCommand(a, n, c))
         End Sub
+
+        Public Async Function SendTypeCharsAndWaitForUiRenderAsync(typeChars As String) As Task
+            Dim uiRender = WaitForUIRenderedAsync()
+            SendTypeChars(typeChars)
+            Await uiRender
+        End Function
 
         Public Overloads Sub SendEscape()
             MyBase.SendEscape(Sub(a, n, c) EditorCompletionCommandHandler.ExecuteCommand(a, Sub() SignatureHelpAfterCompletionCommandHandler.ExecuteCommand(a, n, c), c), Sub() Return)
@@ -187,6 +206,12 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
         Public Overloads Sub SendInvokeCompletionList()
             MyBase.SendInvokeCompletionList(Sub(a, n, c) EditorCompletionCommandHandler.ExecuteCommand(a, n, c), Sub() Return)
         End Sub
+
+        Public Async Function SendInvokeCompletionListAndWaitForUiRenderAsync() As Task
+            Dim uiRender = WaitForUIRenderedAsync()
+            MyBase.SendInvokeCompletionList(Sub(a, n, c) EditorCompletionCommandHandler.ExecuteCommand(a, n, c), Sub() Return)
+            Await uiRender
+        End Function
 
         Public Overloads Sub SendInsertSnippetCommand()
             MyBase.SendInsertSnippetCommand(Sub(a, n, c) EditorCompletionCommandHandler.ExecuteCommand(a, n, c), Sub() Return)
@@ -232,22 +257,41 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
             Dim sessionComplete = New TaskCompletionSource(Of Object)()
             Dim asynchronousOperationListenerProvider = Workspace.ExportProvider.GetExportedValue(Of AsynchronousOperationListenerProvider)()
             Dim asyncToken = asynchronousOperationListenerProvider.GetListener(FeatureAttribute.CompletionSet) _
-                .BeginAsyncOperation("SendCommitUniqueCompletionListItemAsync")
+                .BeginAsyncOperation(NameOf(SendCommitUniqueCompletionListItemAsync))
 
 #Disable Warning BC42358 ' Because this call is not awaited, execution of the current method continues before the call is completed
             sessionComplete.Task.CompletesAsyncOperation(asyncToken)
+            Dim waitingForUI = WaitForUIRenderedAsync()
 #Enable Warning BC42358 ' Because this call is not awaited, execution of the current method continues before the call is completed
 
             Dim itemsUpdatedHandler = Sub(sender As Object, e As Data.ComputedCompletionItemsEventArgs)
                                           ' If there is 0 or more than one item left, then it means this was the filter operation that resulted and we're done. 
                                           ' Otherwise we know a Dismiss operation is coming so we should wait for it.
                                           If e.Items.Items.Count() <> 1 Then
-                                              Task.Run(Sub()
-                                                           Thread.Sleep(5000)
-                                                           sessionComplete.TrySetResult(Nothing)
-                                                       End Sub)
+                                              Dim threadingContext = Workspace.ExportProvider.GetExportedValue(Of IThreadingContext)()
+
+                                              ' Set up a timeout path to make sure tests don't deadlock
+                                              Dim asyncToken2 = asynchronousOperationListenerProvider.GetListener(FeatureAttribute.CompletionSet) _
+                                                  .BeginAsyncOperation(NameOf(SendCommitUniqueCompletionListItemAsync))
+                                              Task.Run(
+                                                  Async Function() As Task
+                                                      Using cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(threadingContext.DisposalToken)
+                                                          Await Task.WhenAny(sessionComplete.Task, Task.Delay(TimeSpan.FromSeconds(2), cancellationSource.Token))
+                                                          If sessionComplete.TrySetException(New TimeoutException()) Then
+                                                              Throw New TimeoutException()
+                                                          End If
+                                                      End Using
+                                                  End Function).CompletesAsyncOperation(asyncToken2).ReportNonFatalErrorUnlessCancelledAsync(threadingContext.DisposalToken)
+
+                                              ' Now set up the expected path of just waiting for the UI to complete rendering
+                                              threadingContext.JoinableTaskFactory.RunAsync(
+                                                  Async Function() As Task
+                                                      Await waitingForUI
+                                                      sessionComplete.SetResult(Nothing)
+                                                  End Function)
                                           End If
                                       End Sub
+
             Dim sessionDismissedHandler = Sub(sender As Object, e As EventArgs) sessionComplete.TrySetResult(Nothing)
 
             Dim session As IAsyncCompletionSession
@@ -325,6 +369,13 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
             Task.WaitAny(task1, task2)
         End Sub
 
+        Public Async Function GetCompletionSession(Optional projectionsView As ITextView = Nothing) As Task(Of IAsyncCompletionSession)
+            Await WaitForAsynchronousOperationsAsync()
+            Dim view = If(projectionsView, TextView)
+
+            Return GetExportedValue(Of IAsyncCompletionBroker)().GetSession(view)
+        End Function
+
         Public Async Function AssertCompletionSession(Optional projectionsView As ITextView = Nothing) As Task
             Await WaitForAsynchronousOperationsAsync()
             Dim view = If(projectionsView, TextView)
@@ -342,13 +393,17 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
         Public Async Function AssertCompletionItemsContainAll(ParamArray displayText As String()) As Task
             Await WaitForAsynchronousOperationsAsync()
             Dim items = GetCompletionItems()
-            Assert.True(displayText.All(Function(v) items.Any(Function(i) i.DisplayText = v)))
+            Assert.All(displayText, Sub(v) Assert.Contains(v, items.Select(Function(i) i.DisplayText)))
         End Function
 
         Public Async Function AssertCompletionItemsContain(displayText As String, displayTextSuffix As String) As Task
+            Await AssertCompletionItemsContain(Function(i) i.DisplayText = displayText AndAlso i.DisplayTextSuffix = displayTextSuffix)
+        End Function
+
+        Public Async Function AssertCompletionItemsContain(predicate As Func(Of CompletionItem, Boolean)) As Task
             Await WaitForAsynchronousOperationsAsync()
             Dim items = GetCompletionItems()
-            Assert.True(items.Any(Function(i) i.DisplayText = displayText AndAlso i.DisplayTextSuffix = displayTextSuffix))
+            Assert.True(items.Any(predicate))
         End Function
 
         Public Sub AssertItemsInOrder(expectedOrder As String())
@@ -373,15 +428,15 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
         End Sub
 
         Public Async Function AssertSelectedCompletionItem(
-                                                    Optional displayText As String = Nothing,
-                                                    Optional displayTextSuffix As String = Nothing,
-                                                    Optional description As String = Nothing,
-                                                    Optional isSoftSelected As Boolean? = Nothing,
-                                                    Optional isHardSelected As Boolean? = Nothing,
-                                                    Optional shouldFormatOnCommit As Boolean? = Nothing,
-                                                    Optional inlineDescription As String = Nothing,
-                                                    Optional automationText As String = Nothing,
-                                                    Optional projectionsView As ITextView = Nothing) As Task
+                Optional displayText As String = Nothing,
+                Optional displayTextSuffix As String = Nothing,
+                Optional description As String = Nothing,
+                Optional isSoftSelected As Boolean? = Nothing,
+                Optional isHardSelected As Boolean? = Nothing,
+                Optional shouldFormatOnCommit As Boolean? = Nothing,
+                Optional inlineDescription As String = Nothing,
+                Optional automationText As String = Nothing,
+                Optional projectionsView As ITextView = Nothing) As Task
 
             Await WaitForAsynchronousOperationsAsync()
             Dim view = If(projectionsView, TextView)
@@ -438,7 +493,8 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
             Dim document = Me.Workspace.CurrentSolution.Projects.First().Documents.First()
             Dim service = CompletionService.GetService(document)
             Dim roslynItem = GetSelectedItem()
-            Return Await service.GetDescriptionAsync(document, roslynItem)
+            Dim options = CompletionOptions.Default
+            Return Await service.GetDescriptionAsync(document, roslynItem, options, SymbolDescriptionOptions.Default)
         End Function
 
         Public Sub AssertCompletionItemExpander(isAvailable As Boolean, isSelected As Boolean)
@@ -453,12 +509,14 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
             End If
         End Sub
 
-        Public Sub SetCompletionItemExpanderState(isSelected As Boolean)
+        Public Async Function SetCompletionItemExpanderStateAndWaitForUiRenderAsync(isSelected As Boolean) As Task
+            Dim uiRender = WaitForUIRenderedAsync()
             Dim presenter = DirectCast(CompletionPresenterProvider.GetOrCreate(Me.TextView), MockCompletionPresenter)
             Dim expander = presenter.GetExpander()
             Assert.NotNull(expander)
             presenter.SetExpander(isSelected)
-        End Sub
+            Await uiRender
+        End Function
 
         Public Async Function AssertSessionIsNothingOrNoCompletionItemLike(text As String) As Task
             Await WaitForAsynchronousOperationsAsync()
@@ -489,14 +547,24 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
         End Function
 
         Private Shared Function GetRoslynCompletionItem(item As Data.CompletionItem) As CompletionItem
-            Return If(item IsNot Nothing, DirectCast(item.Properties(RoslynItem), CompletionItem), Nothing)
+            If (item Is Nothing) Then
+                Return Nothing
+            End If
+
+            Dim roslynItemData As CompletionItemData = Nothing
+            If (CompletionItemData.TryGetData(item, roslynItemData) = False) Then
+                Return Nothing
+            End If
+            Return roslynItemData.RoslynItem
         End Function
 
-        Public Sub RaiseFiltersChanged(args As ImmutableArray(Of Data.CompletionFilterWithState))
+        Public Async Function RaiseFiltersChangedAndWaitForUiRenderAsync(args As ImmutableArray(Of Data.CompletionFilterWithState)) As Task
+            Dim uiRender = WaitForUIRenderedAsync()
             Dim presenter = DirectCast(CompletionPresenterProvider.GetOrCreate(Me.TextView), MockCompletionPresenter)
             Dim newArgs = New Data.CompletionFilterChangedEventArgs(args)
             presenter.TriggerFiltersChanged(Me, newArgs)
-        End Sub
+            Await uiRender
+        End Function
 
         Public Function GetCompletionItemFilters() As ImmutableArray(Of Data.CompletionFilterWithState)
             Dim presenter = DirectCast(CompletionPresenterProvider.GetOrCreate(Me.TextView), MockCompletionPresenter)
@@ -509,6 +577,14 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
             Dim computedItems = session.GetComputedItems(CancellationToken.None)
             Return computedItems.SuggestionItem IsNot Nothing
         End Function
+
+        Public Sub AssertSuggestedItemSelected(displayText As String)
+            Dim session = GetExportedValue(Of IAsyncCompletionBroker)().GetSession(TextView)
+            Assert.NotNull(session)
+            Dim computedItems = session.GetComputedItems(CancellationToken.None)
+            Assert.True(computedItems.SuggestionItemSelected)
+            Assert.Equal(computedItems.SuggestionItem.DisplayText, displayText)
+        End Sub
 
         Public Function IsSoftSelected() As Boolean
             Dim session = GetExportedValue(Of IAsyncCompletionBroker)().GetSession(TextView)
@@ -524,7 +600,6 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
         End Sub
 
         Public Async Function WaitForUIRenderedAsync() As Task
-            Await WaitForAsynchronousOperationsAsync()
             Dim tcs = New TaskCompletionSource(Of Boolean)
             Dim presenter = DirectCast(CompletionPresenterProvider.GetOrCreate(TextView), MockCompletionPresenter)
             Dim uiUpdated As EventHandler(Of Data.CompletionItemSelectedEventArgs)
@@ -536,9 +611,9 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
 
             AddHandler presenter.UiUpdated, uiUpdated
             Dim ct = New CancellationTokenSource(timeoutMs)
-            ct.Token.Register(Sub() tcs.TrySetCanceled(), useSynchronizationContext:=False)
-
-            Await tcs.Task.ConfigureAwait(True)
+            Using registration = ct.Token.Register(Sub() tcs.TrySetCanceled(), useSynchronizationContext:=False)
+                Await tcs.Task.ConfigureAwait(True)
+            End Using
         End Function
 
         Public Overloads Sub SendTypeCharsToSpecificViewAndBuffer(typeChars As String, view As IWpfTextView, buffer As ITextBuffer)

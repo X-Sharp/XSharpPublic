@@ -2,61 +2,93 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
+using System;
 using System.Composition;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeRefactorings;
-using Microsoft.CodeAnalysis.CSharp.CodeStyle;
+using Microsoft.CodeAnalysis.CSharp.Simplification;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
+using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.InitializeParameter;
-using Microsoft.CodeAnalysis.Options;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Microsoft.CodeAnalysis.CSharp.InitializeParameter
+namespace Microsoft.CodeAnalysis.CSharp.InitializeParameter;
+
+using static CSharpSyntaxTokens;
+
+[ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = PredefinedCodeRefactoringProviderNames.AddParameterCheck), Shared]
+[ExtensionOrder(Before = PredefinedCodeRefactoringProviderNames.ChangeSignature)]
+internal sealed class CSharpAddParameterCheckCodeRefactoringProvider :
+    AbstractAddParameterCheckCodeRefactoringProvider<
+        BaseTypeDeclarationSyntax,
+        ParameterSyntax,
+        StatementSyntax,
+        ExpressionSyntax,
+        BinaryExpressionSyntax,
+        CSharpSimplifierOptions>
 {
-    [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(CSharpAddParameterCheckCodeRefactoringProvider)), Shared]
-    [ExtensionOrder(Before = PredefinedCodeRefactoringProviderNames.ChangeSignature)]
-    internal class CSharpAddParameterCheckCodeRefactoringProvider :
-        AbstractAddParameterCheckCodeRefactoringProvider<
-            BaseTypeDeclarationSyntax,
-            ParameterSyntax,
-            StatementSyntax,
-            ExpressionSyntax,
-            BinaryExpressionSyntax>
+    [ImportingConstructor]
+    [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
+    public CSharpAddParameterCheckCodeRefactoringProvider()
     {
-        [ImportingConstructor]
-        [SuppressMessage("RoslynDiagnosticsReliability", "RS0033:Importing constructor should be [Obsolete]", Justification = "Used in test code: https://github.com/dotnet/roslyn/issues/42814")]
-        public CSharpAddParameterCheckCodeRefactoringProvider()
+    }
+
+    protected override bool IsFunctionDeclaration(SyntaxNode node)
+        => InitializeParameterHelpers.IsFunctionDeclaration(node);
+
+    protected override SyntaxNode GetBody(SyntaxNode functionDeclaration)
+        => InitializeParameterHelpers.GetBody(functionDeclaration);
+
+    protected override void InsertStatement(SyntaxEditor editor, SyntaxNode functionDeclaration, bool returnsVoid, SyntaxNode? statementToAddAfter, StatementSyntax statement)
+        => InitializeParameterHelpers.InsertStatement(editor, functionDeclaration, returnsVoid, statementToAddAfter, statement);
+
+    protected override bool IsImplicitConversion(Compilation compilation, ITypeSymbol source, ITypeSymbol destination)
+        => InitializeParameterHelpers.IsImplicitConversion(compilation, source, destination);
+
+    protected override bool CanOffer(SyntaxNode body)
+    {
+        if (InitializeParameterHelpers.IsExpressionBody(body))
         {
+            return InitializeParameterHelpers.TryConvertExpressionBodyToStatement(body,
+                semicolonToken: SemicolonToken,
+                createReturnStatementForExpression: false,
+                statement: out var _);
         }
 
-        protected override bool IsFunctionDeclaration(SyntaxNode node)
-            => InitializeParameterHelpers.IsFunctionDeclaration(node);
+        return true;
+    }
 
-        protected override SyntaxNode GetBody(SyntaxNode functionDeclaration)
-            => InitializeParameterHelpers.GetBody(functionDeclaration);
+    protected override bool PrefersThrowExpression(CSharpSimplifierOptions options)
+        => options.PreferThrowExpression.Value;
 
-        protected override void InsertStatement(SyntaxEditor editor, SyntaxNode functionDeclaration, bool returnsVoid, SyntaxNode statementToAddAfterOpt, StatementSyntax statement)
-            => InitializeParameterHelpers.InsertStatement(editor, functionDeclaration, returnsVoid, statementToAddAfterOpt, statement);
+    protected override string EscapeResourceString(string input)
+        => input.Replace("\\", "\\\\").Replace("\"", "\\\"");
 
-        protected override bool IsImplicitConversion(Compilation compilation, ITypeSymbol source, ITypeSymbol destination)
-            => InitializeParameterHelpers.IsImplicitConversion(compilation, source, destination);
-
-        protected override bool CanOffer(SyntaxNode body)
+    protected override StatementSyntax CreateParameterCheckIfStatement(ExpressionSyntax condition, StatementSyntax ifTrueStatement, CSharpSimplifierOptions options)
+    {
+        var withBlock = options.PreferBraces.Value == CodeAnalysis.CodeStyle.PreferBracesPreference.Always;
+        var singleLine = options.AllowEmbeddedStatementsOnSameLine.Value;
+        var closeParenToken = CloseParenToken;
+        if (withBlock)
         {
-            if (InitializeParameterHelpers.IsExpressionBody(body))
-            {
-                return InitializeParameterHelpers.TryConvertExpressionBodyToStatement(body,
-                    semicolonToken: SyntaxFactory.Token(SyntaxKind.SemicolonToken),
-                    createReturnStatementForExpression: false,
-                    statement: out var _);
-            }
-
-            return true;
+            ifTrueStatement = Block(ifTrueStatement);
+        }
+        else if (singleLine)
+        {
+            // Any elastic trivia between the closing parenthesis of if and the statement must be removed
+            // to convince the formatter to keep everything on a single line.
+            // Note: ifTrueStatement and closeParenToken are generated, so there is no need to deal with any existing trivia.
+            closeParenToken = closeParenToken.WithTrailingTrivia(Space);
+            ifTrueStatement = ifTrueStatement.WithoutLeadingTrivia();
         }
 
-        protected override bool PrefersThrowExpression(DocumentOptionSet options)
-            => options.GetOption(CSharpCodeStyleOptions.PreferThrowExpression).Value;
+        return IfStatement(
+            attributeLists: default,
+            ifKeyword: IfKeyword,
+            openParenToken: OpenParenToken,
+            condition: condition,
+            closeParenToken: closeParenToken,
+            statement: ifTrueStatement,
+            @else: null);
     }
 }

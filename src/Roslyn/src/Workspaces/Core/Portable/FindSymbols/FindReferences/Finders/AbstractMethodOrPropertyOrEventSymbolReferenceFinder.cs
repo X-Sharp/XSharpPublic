@@ -4,103 +4,59 @@
 
 using System.Collections.Immutable;
 using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.LanguageServices;
+using Microsoft.CodeAnalysis.LanguageService;
 using Microsoft.CodeAnalysis.PooledObjects;
-using Microsoft.CodeAnalysis.Shared.Extensions;
 
-namespace Microsoft.CodeAnalysis.FindSymbols.Finders
+namespace Microsoft.CodeAnalysis.FindSymbols.Finders;
+
+internal abstract class AbstractMethodOrPropertyOrEventSymbolReferenceFinder<TSymbol> : AbstractReferenceFinder<TSymbol>
+    where TSymbol : ISymbol
 {
-    internal abstract class AbstractMethodOrPropertyOrEventSymbolReferenceFinder<TSymbol> : AbstractReferenceFinder<TSymbol>
-        where TSymbol : ISymbol
+    protected static ImmutableArray<IMethodSymbol> GetReferencedAccessorSymbols(
+        FindReferencesDocumentState state, IPropertySymbol property, SyntaxNode node, CancellationToken cancellationToken)
     {
-        protected AbstractMethodOrPropertyOrEventSymbolReferenceFinder()
+        var semanticFacts = state.SemanticFacts;
+        var semanticModel = state.SemanticModel;
+
+        if (state.SyntaxFacts.IsForEachStatement(node))
         {
+            var symbols = semanticFacts.GetForEachSymbols(semanticModel, node);
+
+            // the only accessor method referenced in a foreach-statement is the .Current's
+            // get-accessor
+            return symbols.CurrentProperty.GetMethod == null
+                ? []
+                : [symbols.CurrentProperty.GetMethod];
         }
 
-        protected override async Task<ImmutableArray<ISymbol>> DetermineCascadedSymbolsAsync(
-            TSymbol symbol,
-            Solution solution,
-            IImmutableSet<Project>? projects,
-            FindReferencesSearchOptions options,
-            CancellationToken cancellationToken)
+        if (semanticFacts.IsWrittenTo(semanticModel, node, cancellationToken))
         {
-            // Static methods can't cascade.
-            if (!symbol.IsStatic)
-            {
-                if (symbol.IsImplementableMember())
-                {
-                    // We have an interface method.  Find all implementations of that method and
-                    // cascade to them.
-                    return await SymbolFinder.FindMemberImplementationsArrayAsync(symbol, solution, projects, cancellationToken).ConfigureAwait(false);
-                }
-                else
-                {
-                    // We have a normal method.  Find any interface methods that it implicitly or
-                    // explicitly implements and cascade down to those.
-                    var interfaceMembersImplemented = await SymbolFinder.FindImplementedInterfaceMembersArrayAsync(
-                        symbol, solution, projects, cancellationToken).ConfigureAwait(false);
+            // if it was only written to, then only the setter was referenced.
+            // if it was written *and* read, then both accessors were referenced.
+            using var _ = ArrayBuilder<IMethodSymbol>.GetInstance(out var result);
+            result.AddIfNotNull(property.SetMethod);
 
-                    // Finally, methods can cascade through virtual/override inheritance.  NOTE(cyrusn):
-                    // We only need to go up or down one level.  Then, when we're finding references on
-                    // those members, we'll end up traversing the entire hierarchy.
-                    var overrides = await SymbolFinder.FindOverridesArrayAsync(
-                        symbol, solution, projects, cancellationToken).ConfigureAwait(false);
+            if (!semanticFacts.IsOnlyWrittenTo(semanticModel, node, cancellationToken))
+                result.AddIfNotNull(property.GetMethod);
 
-                    var overriddenMember = symbol.GetOverriddenMember();
-                    return overriddenMember == null
-                        ? interfaceMembersImplemented.Concat(overrides)
-                        : interfaceMembersImplemented.Concat(overrides).Concat(overriddenMember);
-                }
-            }
-
-            return ImmutableArray<ISymbol>.Empty;
+            return result.ToImmutableAndClear();
         }
-
-        protected static ImmutableArray<IMethodSymbol> GetReferencedAccessorSymbols(
-            ISyntaxFactsService syntaxFacts, ISemanticFactsService semanticFacts,
-            SemanticModel model, IPropertySymbol property, SyntaxNode node, CancellationToken cancellationToken)
+        else
         {
-            if (syntaxFacts.IsForEachStatement(node))
-            {
-                var symbols = semanticFacts.GetForEachSymbols(model, node);
+            // Wasn't written. This could be a normal read, or it could be neither a read nor
+            // write. Example of this include:
+            //
+            // 1) referencing through something like nameof().
+            // 2) referencing in a cref in a doc-comment.
+            //
+            // This list is thought to be complete.  However, if new examples are found, they
+            // can be added here.
+            var inNameOf = semanticFacts.IsInsideNameOfExpression(semanticModel, node, cancellationToken);
+            var inStructuredTrivia = node.IsPartOfStructuredTrivia();
 
-                // the only accessor method referenced in a foreach-statement is the .Current's
-                // get-accessor
-                return symbols.CurrentProperty.GetMethod == null
-                    ? ImmutableArray<IMethodSymbol>.Empty
-                    : ImmutableArray.Create(symbols.CurrentProperty.GetMethod);
-            }
-
-            if (semanticFacts.IsWrittenTo(model, node, cancellationToken))
-            {
-                // if it was only written to, then only the setter was referenced.
-                // if it was written *and* read, then both accessors were referenced.
-                using var _ = ArrayBuilder<IMethodSymbol>.GetInstance(out var result);
-                result.AddIfNotNull(property.SetMethod);
-
-                if (!semanticFacts.IsOnlyWrittenTo(model, node, cancellationToken))
-                    result.AddIfNotNull(property.GetMethod);
-
-                return result.ToImmutable();
-            }
-            else
-            {
-                // Wasn't written. This could be a normal read, or it could be neither a read nor
-                // write. Example of this include:
-                //
-                // 1) referencing through something like nameof().
-                // 2) referencing in a cref in a doc-comment.
-                //
-                // This list is thought to be complete.  However, if new examples are found, they
-                // can be added here.
-                var inNameOf = semanticFacts.IsInsideNameOfExpression(model, node, cancellationToken);
-                var inStructuredTrivia = node.IsPartOfStructuredTrivia();
-
-                return inNameOf || inStructuredTrivia || property.GetMethod == null
-                    ? ImmutableArray<IMethodSymbol>.Empty
-                    : ImmutableArray.Create(property.GetMethod);
-            }
+            return inNameOf || inStructuredTrivia || property.GetMethod == null
+                ? []
+                : [property.GetMethod];
         }
     }
 }

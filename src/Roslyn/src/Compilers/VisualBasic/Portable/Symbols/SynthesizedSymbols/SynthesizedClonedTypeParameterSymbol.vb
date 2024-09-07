@@ -45,6 +45,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             _correspondingMethodTypeParameter = correspondingMethodTypeParameter
             _name = name
             _typeMapFactory = typeMapFactory
+
+            Debug.Assert(Me.TypeParameterKind = If(TypeOf Me.ContainingSymbol Is MethodSymbol, TypeParameterKind.Method,
+                                                If(TypeOf Me.ContainingSymbol Is NamedTypeSymbol, TypeParameterKind.Type,
+                                                TypeParameterKind.Cref)),
+                $"Container is {Me.ContainingSymbol?.Kind}, TypeParameterKind is {Me.TypeParameterKind}")
         End Sub
 
         Public Overrides ReadOnly Property TypeParameterKind As TypeParameterKind
@@ -92,6 +97,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         Public Overrides ReadOnly Property HasValueTypeConstraint As Boolean
             Get
                 Return _correspondingMethodTypeParameter.HasValueTypeConstraint
+            End Get
+        End Property
+
+        Public Overrides ReadOnly Property AllowsRefLikeType As Boolean
+            Get
+                Return _correspondingMethodTypeParameter.AllowsRefLikeType
             End Get
         End Property
 

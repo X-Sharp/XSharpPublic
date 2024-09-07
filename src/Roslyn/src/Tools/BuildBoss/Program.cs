@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.Build.Locator;
 using Mono.Options;
 
 namespace BuildBoss
@@ -30,6 +31,8 @@ namespace BuildBoss
 
         private static bool MainCore(string[] args)
         {
+            VisualStudioInstance instance = MSBuildLocator.RegisterDefaults();
+            Console.WriteLine($"Version: {instance.Version}");
             string repositoryDirectory = null;
             string configuration = "Debug";
             string primarySolution = null;
@@ -42,7 +45,7 @@ namespace BuildBoss
                 { "p|primary=", "Primary solution file name (which contains all projects)", value => primarySolution = value },
             };
 
-            if (configuration != "Debug" && configuration != "Release")
+            if (configuration is not "Debug" and not "Release")
             {
                 Console.Error.WriteLine($"Invalid configuration: '{configuration}'");
                 return false;

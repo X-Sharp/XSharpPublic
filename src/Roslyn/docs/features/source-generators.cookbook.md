@@ -2,14 +2,44 @@
 
 ## Summary
 
-> **Note**: The design for the source generator proposal is still under review. This document uses only one possible syntax, and
-> it is expected to change without notice as the feature evolves.
+> **Warning**: Source generators implementing `ISourceGenerator` have been deprecated
+> in favor of [incremental generators](incremental-generators.md).
+> The incremental version of this document is [here](incremental-generators.cookbook.md).
+> You should implement `IIncrementalGenerator` instead of `ISourceGenerator`.
 
 This document aims to be a guide to help the creation of source generators by providing a series of guidelines for common patterns.
 It also aims to set out what types of generators are possible under the current design, and what is expected to be explicitly out 
 of scope in the final design of the shipping feature.
 
 **This document expands on the details in the [full design document](source-generators.md), please ensure you have read that first.**
+
+## Table of content
+
+- [Source Generators Cookbook](#source-generators-cookbook)
+  - [Table of content](#table-of-content)
+  - [Summary](#summary)
+  - [Proposal](#proposal)
+  - [Out of scope designs](#out-of-scope-designs)
+    - [Language features](#language-features)
+    - [Code rewriting](#code-rewriting)
+  - [Conventions](#conventions)
+  - [Designs](#designs)
+    - [Generated class](#generated-class)
+    - [Additional file transformation](#additional-file-transformation)
+    - [Augment user code](#augment-user-code)
+    - [Issue Diagnostics](#issue-diagnostics)
+    - [INotifyPropertyChanged](#inotifypropertychanged)
+    - [Package a generator as a NuGet package](#package-a-generator-as-a-nuget-package)
+    - [Use functionality from NuGet packages](#use-functionality-from-nuget-packages)
+    - [Access Analyzer Config properties](#access-analyzer-config-properties)
+    - [Consume MSBuild properties and metadata](#consume-msbuild-properties-and-metadata)
+    - [Unit Testing of Generators](#unit-testing-of-generators)
+    - [Participate in the IDE experience](#participate-in-the-ide-experience)
+    - [Serialization](#serialization)
+    - [Auto interface implementation](#auto-interface-implementation)
+  - [Breaking Changes:](#breaking-changes)
+  - [Open Issues](#open-issues)
+
 
 ## Proposal
 
@@ -121,7 +151,7 @@ public class FileTransformGenerator : ISourceGenerator
     public void Execute(GeneratorExecutionContext context)
     {
         // find anything that matches our files
-        var myFiles = context.AnalyzerOptions.AdditionalFiles.Where(at => at.Path.EndsWith(".xml"));
+        var myFiles = context.AdditionalFiles.Where(at => at.Path.EndsWith(".xml"));
         foreach (var file in myFiles)
         {
             var content = file.GetText(context.CancellationToken);
@@ -624,7 +654,86 @@ public class MyGenerator : ISourceGenerator
 
 **User scenario**: As a generator author, I want to be able to unit test my generators to make development easier and ensure correctness.
 
-**Solution**: A user can host the `GeneratorDriver` directly within a unit test, making the generator portion of the code relatively simple to unit test. A user will need to provide a compilation for the generator to operate on, and can then probe either the resulting compilation, or the `GeneratorDriverRunResult` of the driver to see the individual items added by the generator.
+**Solution A**:
+
+The recommended approach is to use [Microsoft.CodeAnalysis.Testing](https://github.com/dotnet/roslyn-sdk/tree/main/src/Microsoft.CodeAnalysis.Testing#microsoftcodeanalysistesting) packages:
+
+- `Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest`
+- `Microsoft.CodeAnalysis.VisualBasic.SourceGenerators.Testing.MSTest`
+- `Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.NUnit`
+- `Microsoft.CodeAnalysis.VisualBasic.SourceGenerators.Testing.NUnit`
+- `Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.XUnit`
+- `Microsoft.CodeAnalysis.VisualBasic.SourceGenerators.Testing.XUnit`
+
+This works in the same way as analyzers and codefix testing. You add a class like the following:
+
+```csharp
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Testing;
+using Microsoft.CodeAnalysis.Testing.Verifiers;
+
+public static class CSharpSourceGeneratorVerifier<TSourceGenerator>
+    where TSourceGenerator : ISourceGenerator, new()
+{
+    public class Test : CSharpSourceGeneratorTest<TSourceGenerator, XUnitVerifier>
+    {
+        public Test()
+        {
+        }
+
+        protected override CompilationOptions CreateCompilationOptions()
+        {
+           var compilationOptions = base.CreateCompilationOptions();
+           return compilationOptions.WithSpecificDiagnosticOptions(
+                compilationOptions.SpecificDiagnosticOptions.SetItems(GetNullableWarningsFromCompiler()));
+        }
+
+        public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.Default;
+
+        private static ImmutableDictionary<string, ReportDiagnostic> GetNullableWarningsFromCompiler()
+        {
+            string[] args = { "/warnaserror:nullable" };
+            var commandLineArguments = CSharpCommandLineParser.Default.Parse(args, baseDirectory: Environment.CurrentDirectory, sdkDirectory: Environment.CurrentDirectory);
+            var nullableWarnings = commandLineArguments.CompilationOptions.SpecificDiagnosticOptions;
+
+            return nullableWarnings;
+        }
+
+        protected override ParseOptions CreateParseOptions()
+        {
+            return ((CSharpParseOptions)base.CreateParseOptions()).WithLanguageVersion(LanguageVersion);
+        }
+    }
+}
+```
+
+Then, in your test file:
+
+```csharp
+using VerifyCS = CSharpSourceGeneratorVerifier<YourGenerator>;
+```
+
+And use the following in your test method:
+
+```csharp
+var code = "initial code";
+var generated = "expected generated code";
+await new VerifyCS.Test
+{
+    TestState = 
+    {
+        Sources = { code },
+        GeneratedSources =
+        {
+            (typeof(YourGenerator), "GeneratedFileName", SourceText.From(generated, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+        },
+    },
+}.RunAsync();
+```
+
+**Solution B:**
+
+Another approach without using the testing library is that a user can host the `GeneratorDriver` directly within a unit test, making the generator portion of the code relatively simple to unit test. A user will need to provide a compilation for the generator to operate on, and can then probe either the resulting compilation, or the `GeneratorDriverRunResult` of the driver to see the individual items added by the generator.
 
 Starting with a basic generator that adds a single source file:
 
@@ -726,39 +835,9 @@ Note: the above example uses MSTest, but the contents of the test are easily ada
 
 ### Participate in the IDE experience
 
-**Implementation Status**: Not Implemented.
-
 **User scenario:** As a generator author I want to be able to interactively regenerate code as the user is editing files.
 
-**Solution:** We expect there to be an opt-in set of interactive callbacks that can be implemented to allow for progressively more complex generation strategies.
-It is anticipated there will be a mechanism for providing symbol mapping for lighting up features such as 'Find all references'.
-
-```csharp
-[Generator]
-public class InteractiveGenerator : ISourceGenerator
-{
-    public void Initialize(GeneratorInitializationContext context)
-    {
-        // Register for additional file callbacks
-        context.RegisterForAdditionalFileChanges(OnAdditionalFilesChanged);
-    }
-
-    public void Execute(GeneratorExecutionContext context)
-    {
-        // generators must always support a total generation pass
-    }
-
-    public void OnAdditionalFilesChanged(AdditionalFilesChangedContext context)
-    {
-        // determine which file changed, and if it affects this generator
-        // regenerate only the parts that are affected by this change.
-    }
-}
-```
-
-*Note*: Until these interfaces are made available, generator authors should not try and emulate 'incrementality' with caching to disk and custom up-to-date checks.
-The compiler currently provides no reliable way for a generator to detect if it is suitable to use a previous run, and any attempt to do so will
-likely lead to hard to diagnose bugs for consumers. Generator authors should always assume this is a 'full' generation, happening for the first time.
+**Solution:** See [incremental generators](incremental-generators.md).
 
 ### Serialization
 
@@ -918,7 +997,6 @@ private static string Generate(ClassDeclarationSyntax c)
                 sb.Append("\\\"");
             }
             sb.AppendLine(",\");");
-            break;
         }
     }
 

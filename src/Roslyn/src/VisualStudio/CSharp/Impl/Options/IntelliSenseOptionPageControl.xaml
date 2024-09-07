@@ -13,28 +13,22 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel>
             <GroupBox x:Uid="CompletionListsGroupBox"
-                      Header="{x:Static local:IntelliSenseOptionPageStrings.Option_CompletionLists}">
+                      Header="{x:Static local:IntelliSenseOptionPageStrings.Option_Completion}">
                 <StackPanel>
                     <CheckBox x:Uid="Show_completion_list_after_a_character_is_typed"
                               x:Name="Show_completion_list_after_a_character_is_typed"
                               Content="{x:Static local:IntelliSenseOptionPageStrings.Option_Show_completion_list_after_a_character_is_typed}" 
-                              Checked="Show_completion_list_after_a_character_is_typed_Checked" 
+                              Checked="Show_completion_list_after_a_character_is_typed_Checked"
                               Unchecked="Show_completion_list_after_a_character_is_typed_Unchecked"/>
                     <StackPanel Margin="15, 0, 0, 0">
                         <CheckBox x:Uid="Show_completion_list_after_a_character_is_deleted"
                                   x:Name="Show_completion_list_after_a_character_is_deleted"
-                                  Content="{x:Static local:IntelliSenseOptionPageStrings.Option_Show_completion_list_after_a_character_is_deleted}" 
-                                  Checked="Show_completion_list_after_a_character_is_deleted_Checked" 
-                                  Unchecked="Show_completion_list_after_a_character_is_deleted_Unchecked"/>
+                                  Content="{x:Static local:IntelliSenseOptionPageStrings.Option_Show_completion_list_after_a_character_is_deleted}" />
                     </StackPanel>
 
                     <CheckBox x:Uid="Automatically_show_completion_list_in_argument_lists"
                                   x:Name="Automatically_show_completion_list_in_argument_lists"
-                                  Content="{x:Static local:IntelliSenseOptionPageStrings.Automatically_show_completion_list_in_argument_lists}" 
-                              Checked="Automatically_show_completion_list_in_argument_lists_CheckedChanged"       
-                              Unchecked="Automatically_show_completion_list_in_argument_lists_CheckedChanged"
-                              Indeterminate="Automatically_show_completion_list_in_argument_lists_CheckedChanged"
-                              IsThreeState="True"/>
+                                  Content="{x:Static local:IntelliSenseOptionPageStrings.Automatically_show_completion_list_in_argument_lists}" />
 
                     <CheckBox x:Uid="Highlight_matching_portions_of_completion_list_items"
                                   x:Name="Highlight_matching_portions_of_completion_list_items"
@@ -42,6 +36,9 @@
                     <CheckBox x:Uid="Show_completion_item_filters"
                                   x:Name="Show_completion_item_filters"
                                   Content="{x:Static local:IntelliSenseOptionPageStrings.Option_Show_completion_item_filters}" />
+
+                    <CheckBox x:Name="Automatically_complete_statement_on_semicolon"
+                              Content="{x:Static local:IntelliSenseOptionPageStrings.Option_Automatically_complete_statement_on_semicolon}" />
 
                     <Label Content="{x:Static local:IntelliSenseOptionPageStrings.Snippets_behavior}"/>
                     <StackPanel Margin="15, 0, 0, 0">
@@ -75,11 +72,15 @@
 
                     <CheckBox x:Uid="Show_items_from_unimported_namespaces"
                                   x:Name="Show_items_from_unimported_namespaces"
-                                  Content="{x:Static local:IntelliSenseOptionPageStrings.Option_Show_items_from_unimported_namespaces}" 
-                              Checked="Show_items_from_unimported_namespaces_CheckedChanged"       
-                              Unchecked="Show_items_from_unimported_namespaces_CheckedChanged"
-                              Indeterminate="Show_items_from_unimported_namespaces_CheckedChanged"
-                              IsThreeState="True"/>
+                                  Content="{x:Static local:IntelliSenseOptionPageStrings.Option_Show_items_from_unimported_namespaces}" />
+
+                    <CheckBox x:Uid="Tab_twice_to_insert_arguments"
+                                  x:Name="Tab_twice_to_insert_arguments"
+                                  Content="{x:Static local:IntelliSenseOptionPageStrings.Option_Tab_twice_to_insert_arguments}" />
+
+                    <CheckBox x:Uid="Show_new_snippet_experience"
+                                  x:Name="Show_new_snippet_experience"
+                                  Content="{x:Static local:IntelliSenseOptionPageStrings.Option_Show_new_snippet_experience_experimental}" />
                 </StackPanel>
             </GroupBox>
         </StackPanel>

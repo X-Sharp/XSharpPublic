@@ -4,70 +4,47 @@
 
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Notification;
 using Microsoft.CodeAnalysis.Shared.TestHooks;
-using Roslyn.Utilities;
 
-namespace Microsoft.CodeAnalysis.SolutionCrawler
+namespace Microsoft.CodeAnalysis.SolutionCrawler;
+
+internal abstract class GlobalOperationAwareIdleProcessor : IdleProcessor
 {
-    internal abstract class GlobalOperationAwareIdleProcessor : IdleProcessor
+    /// <summary>
+    /// We're not at a layer where we are guaranteed to have an IGlobalOperationNotificationService.  So allow for
+    /// it being null.
+    /// </summary>
+    private readonly IGlobalOperationNotificationService? _globalOperationNotificationService;
+
+    public GlobalOperationAwareIdleProcessor(
+        IAsynchronousOperationListener listener,
+        IGlobalOperationNotificationService? globalOperationNotificationService,
+        TimeSpan backOffTimeSpan,
+        CancellationToken shutdownToken)
+        : base(listener, backOffTimeSpan, shutdownToken)
     {
-        private readonly IGlobalOperationNotificationService _globalOperationNotificationService;
+        _globalOperationNotificationService = globalOperationNotificationService;
 
-        private TaskCompletionSource<object?>? _globalOperation;
-        private Task _globalOperationTask;
-
-        public GlobalOperationAwareIdleProcessor(
-            IAsynchronousOperationListener listener,
-            IGlobalOperationNotificationService globalOperationNotificationService,
-            int backOffTimeSpanInMs,
-            CancellationToken shutdownToken)
-            : base(listener, backOffTimeSpanInMs, shutdownToken)
+        if (_globalOperationNotificationService != null)
         {
-            _globalOperation = null;
-            _globalOperationTask = Task.CompletedTask;
-
-            _globalOperationNotificationService = globalOperationNotificationService;
             _globalOperationNotificationService.Started += OnGlobalOperationStarted;
             _globalOperationNotificationService.Stopped += OnGlobalOperationStopped;
         }
+    }
 
-        protected Task GlobalOperationTask => _globalOperationTask;
-
-        protected abstract void PauseOnGlobalOperation();
-
-        private void OnGlobalOperationStarted(object? sender, EventArgs e)
-        {
-            Contract.ThrowIfFalse(_globalOperation == null);
-
-            // events are serialized. no lock is needed
-            _globalOperation = new TaskCompletionSource<object?>();
-            _globalOperationTask = _globalOperation.Task;
-
-            PauseOnGlobalOperation();
-        }
-
-        private void OnGlobalOperationStopped(object? sender, GlobalOperationEventArgs e)
-        {
-            if (_globalOperation == null)
-            {
-                // we subscribed to the event while it is already running.
-                return;
-            }
-
-            // events are serialized. no lock is needed
-            _globalOperation.SetResult(null);
-            _globalOperation = null;
-
-            // set to empty task so that we don't need a lock
-            _globalOperationTask = Task.CompletedTask;
-        }
-
-        public virtual void Shutdown()
+    public virtual void Shutdown()
+    {
+        if (_globalOperationNotificationService != null)
         {
             _globalOperationNotificationService.Started -= OnGlobalOperationStarted;
             _globalOperationNotificationService.Stopped -= OnGlobalOperationStopped;
         }
     }
+
+    private void OnGlobalOperationStarted(object? sender, EventArgs e)
+        => this.SetIsPaused(isPaused: true);
+
+    private void OnGlobalOperationStopped(object? sender, EventArgs e)
+        => this.SetIsPaused(isPaused: false);
 }

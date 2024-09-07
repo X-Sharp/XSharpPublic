@@ -2,18 +2,16 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
-using Microsoft.CodeAnalysis.CSharp.Symbols;
+using Microsoft.CodeAnalysis.CSharp.Emit;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.PooledObjects;
-using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
-using System.Collections.Generic;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.CSharp.Emit;
 #if XSHARP
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 #endif
@@ -52,7 +50,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             bool isFieldLike,
             ExplicitInterfaceSpecifierSyntax? interfaceSpecifierSyntaxOpt,
             SyntaxToken nameTokenSyntax,
-            DiagnosticBag diagnostics)
+            BindingDiagnosticBag diagnostics)
         {
             _location = nameTokenSyntax.GetLocation();
 
@@ -66,6 +64,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             this.CheckAccessibility(_location, diagnostics, isExplicitInterfaceImplementation);
         }
 
+        public Location Location
+            => _location;
+
         internal sealed override bool RequiresCompletion
         {
             get { return true; }
@@ -76,8 +77,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return _state.HasComplete(part);
         }
 
-        internal override void ForceComplete(SourceLocation? locationOpt, CancellationToken cancellationToken)
+        internal override void ForceComplete(SourceLocation? locationOpt, Predicate<Symbol>? filter, CancellationToken cancellationToken)
         {
+            if (filter?.Invoke(this) == false)
+            {
+                return;
+            }
+
             _state.DefaultForceComplete(this, cancellationToken);
         }
 
@@ -119,6 +125,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return ImmutableArray.Create(_location);
             }
         }
+
+        public override Location TryGetFirstLocation()
+            => _location;
 
         public sealed override ImmutableArray<SyntaxReference> DeclaringSyntaxReferences
         {
@@ -248,19 +257,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return (CommonEventEarlyWellKnownAttributeData)attributesBag.EarlyDecodedWellKnownAttributeData;
         }
 
-        internal override CSharpAttributeData? EarlyDecodeWellKnownAttribute(ref EarlyDecodeWellKnownAttributeArguments<EarlyWellKnownAttributeBinder, NamedTypeSymbol, AttributeSyntax, AttributeLocation> arguments)
+        internal override (CSharpAttributeData?, BoundAttribute?) EarlyDecodeWellKnownAttribute(ref EarlyDecodeWellKnownAttributeArguments<EarlyWellKnownAttributeBinder, NamedTypeSymbol, AttributeSyntax, AttributeLocation> arguments)
         {
-            CSharpAttributeData? boundAttribute;
+            CSharpAttributeData? attributeData;
+            BoundAttribute? boundAttribute;
             ObsoleteAttributeData? obsoleteData;
 
-            if (EarlyDecodeDeprecatedOrExperimentalOrObsoleteAttribute(ref arguments, out boundAttribute, out obsoleteData))
+            if (EarlyDecodeDeprecatedOrExperimentalOrObsoleteAttribute(ref arguments, out attributeData, out boundAttribute, out obsoleteData))
             {
                 if (obsoleteData != null)
                 {
                     arguments.GetOrCreateData<CommonEventEarlyWellKnownAttributeData>().ObsoleteAttributeData = obsoleteData;
                 }
 
-                return boundAttribute;
+                return (attributeData, boundAttribute);
             }
 
             return base.EarlyDecodeWellKnownAttribute(ref arguments);
@@ -290,26 +300,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal sealed override void DecodeWellKnownAttribute(ref DecodeWellKnownAttributeArguments<AttributeSyntax, CSharpAttributeData, AttributeLocation> arguments)
+        protected sealed override void DecodeWellKnownAttributeImpl(ref DecodeWellKnownAttributeArguments<AttributeSyntax, CSharpAttributeData, AttributeLocation> arguments)
         {
             var attribute = arguments.Attribute;
             Debug.Assert(!attribute.HasErrors);
             Debug.Assert(arguments.SymbolPart == AttributeLocation.None);
+            var diagnostics = (BindingDiagnosticBag)arguments.Diagnostics;
 
-            if (attribute.IsTargetAttribute(this, AttributeDescription.SpecialNameAttribute))
+            if (attribute.IsTargetAttribute(AttributeDescription.SpecialNameAttribute))
             {
                 arguments.GetOrCreateData<CommonEventWellKnownAttributeData>().HasSpecialNameAttribute = true;
             }
             else if (ReportExplicitUseOfReservedAttributes(in arguments, ReservedAttributes.NullableAttribute | ReservedAttributes.NativeIntegerAttribute | ReservedAttributes.TupleElementNamesAttribute))
             {
             }
-            else if (attribute.IsTargetAttribute(this, AttributeDescription.ExcludeFromCodeCoverageAttribute))
+            else if (attribute.IsTargetAttribute(AttributeDescription.ExcludeFromCodeCoverageAttribute))
             {
                 arguments.GetOrCreateData<CommonEventWellKnownAttributeData>().HasExcludeFromCodeCoverageAttribute = true;
             }
-            else if (attribute.IsTargetAttribute(this, AttributeDescription.SkipLocalsInitAttribute))
+            else if (attribute.IsTargetAttribute(AttributeDescription.SkipLocalsInitAttribute))
             {
                 CSharpAttributeData.DecodeSkipLocalsInitAttribute<CommonEventWellKnownAttributeData>(DeclaringCompilation, ref arguments);
+            }
+            else if (attribute.IsTargetAttribute(AttributeDescription.UnscopedRefAttribute))
+            {
+                diagnostics.Add(ErrorCode.ERR_UnscopedRefAttributeUnsupportedMemberTarget, arguments.AttributeSyntaxOpt!.Location);
             }
         }
 
@@ -325,7 +340,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 AddSynthesizedAttribute(ref attributes, compilation.SynthesizeDynamicAttribute(type.Type, type.CustomModifiers.Length));
             }
 
-            if (type.Type.ContainsNativeInteger())
+            if (compilation.ShouldEmitNativeIntegerAttributes(type.Type))
             {
                 AddSynthesizedAttribute(ref attributes, moduleBuilder.SynthesizeNativeIntegerAttribute(this, type.Type));
             }
@@ -427,18 +442,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return _modifiers; }
         }
 
-        private void CheckAccessibility(Location location, DiagnosticBag diagnostics, bool isExplicitInterfaceImplementation)
+        private void CheckAccessibility(Location location, BindingDiagnosticBag diagnostics, bool isExplicitInterfaceImplementation)
         {
-            var info = ModifierUtils.CheckAccessibility(_modifiers, this, isExplicitInterfaceImplementation);
-            if (info != null)
-            {
-                diagnostics.Add(new CSDiagnostic(info, location));
-            }
+            ModifierUtils.CheckAccessibility(_modifiers, this, isExplicitInterfaceImplementation, diagnostics, location);
         }
 
         private DeclarationModifiers MakeModifiers(SyntaxTokenList modifiers, bool explicitInterfaceImplementation,
                                                    bool isFieldLike, Location location,
-                                                   DiagnosticBag diagnostics, out bool modifierErrors)
+                                                   BindingDiagnosticBag diagnostics, out bool modifierErrors)
         {
             bool isInterface = this.ContainingType.IsInterface;
             var defaultAccess = isInterface && !explicitInterfaceImplementation ? DeclarationModifiers.Public : DeclarationModifiers.Private;
@@ -474,10 +485,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                                                DeclarationModifiers.AccessibilityMask;
                 }
             }
-            else if (isInterface)
+            else
             {
                 Debug.Assert(explicitInterfaceImplementation);
-                allowedModifiers |= DeclarationModifiers.Abstract;
+
+                if (isInterface)
+                {
+                    allowedModifiers |= DeclarationModifiers.Abstract;
+                }
+
+                allowedModifiers |= DeclarationModifiers.Static;
             }
 
             if (this.ContainingType.IsStructType())
@@ -490,7 +507,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 allowedModifiers |= DeclarationModifiers.Extern;
             }
 
-            var mods = ModifierUtils.MakeAndCheckNontypeMemberModifiers(modifiers, defaultAccess, allowedModifiers, location, diagnostics, out modifierErrors);
+            var mods = ModifierUtils.MakeAndCheckNonTypeMemberModifiers(isOrdinaryMethod: false, isForInterfaceMember: isInterface,
+                                                                        modifiers, defaultAccess, allowedModifiers, location, diagnostics, out modifierErrors);
+
+            ModifierUtils.CheckFeatureAvailabilityForStaticAbstractMembersInInterfacesIfNeeded(mods, explicitInterfaceImplementation, location, diagnostics);
 
             this.CheckUnsafeModifier(mods, diagnostics);
 
@@ -508,20 +528,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return mods;
         }
 
-        protected void CheckModifiersAndType(DiagnosticBag diagnostics)
+        protected void CheckModifiersAndType(BindingDiagnosticBag diagnostics)
         {
-            Location location = this.Locations[0];
-            HashSet<DiagnosticInfo>? useSiteDiagnostics = null;
+            Debug.Assert(!IsStatic || !IsOverride); // Otherwise should have been reported and cleared earlier.
+            Debug.Assert(!IsStatic || ContainingType.IsInterface || (!IsAbstract && !IsVirtual)); // Otherwise should have been reported and cleared earlier.
+
+            Location location = this.GetFirstLocation();
+            var useSiteInfo = new CompoundUseSiteInfo<AssemblySymbol>(diagnostics, ContainingAssembly);
             bool isExplicitInterfaceImplementationInInterface = ContainingType.IsInterface && IsExplicitInterfaceImplementation;
 
             if (this.DeclaredAccessibility == Accessibility.Private && (IsVirtual || (IsAbstract && !isExplicitInterfaceImplementationInInterface) || IsOverride))
             {
                 diagnostics.Add(ErrorCode.ERR_VirtualPrivate, location, this);
-            }
-            else if (IsStatic && (IsOverride || IsVirtual || IsAbstract))
-            {
-                // A static member '{0}' cannot be marked as override, virtual, or abstract
-                diagnostics.Add(ErrorCode.ERR_StaticNotVirtual, location, this);
             }
             else if (IsReadOnly && IsStatic)
             {
@@ -583,7 +601,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 // Diagnostic reported by parser.
             }
-            else if (!this.IsNoMoreVisibleThan(this.Type, ref useSiteDiagnostics) && (CSharpSyntaxNode as EventDeclarationSyntax)?.ExplicitInterfaceSpecifier == null)
+            else if (!this.IsNoMoreVisibleThan(this.Type, ref useSiteInfo) && (CSharpSyntaxNode as EventDeclarationSyntax)?.ExplicitInterfaceSpecifier == null)
             {
                 // Dev10 reports different errors for field-like events (ERR_BadVisFieldType) and custom events (ERR_BadVisPropertyType).
                 // Both seem odd, so add a new one.
@@ -632,7 +650,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #endif
             }
 
-            diagnostics.Add(location, useSiteDiagnostics);
+            diagnostics.Add(location, useSiteInfo);
         }
 
         public override string GetDocumentationCommentXml(CultureInfo? preferredCulture = null, bool expandIncludes = false, CancellationToken cancellationToken = default)
@@ -756,7 +774,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return (isAdder ? "add_" : "remove_") + eventName;
         }
 
-        protected TypeWithAnnotations BindEventType(Binder binder, TypeSyntax typeSyntax, DiagnosticBag diagnostics)
+        protected TypeWithAnnotations BindEventType(Binder binder, TypeSyntax typeSyntax, BindingDiagnosticBag diagnostics)
         {
             // NOTE: no point in reporting unsafe errors in the return type - anything unsafe will either
             // fail to be a delegate or will be (invalidly) passed as a type argument.
@@ -766,15 +784,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return binder.BindType(typeSyntax, diagnostics);
         }
 
-        internal override void AfterAddingTypeMembersChecks(ConversionsBase conversions, DiagnosticBag diagnostics)
+        internal override void AfterAddingTypeMembersChecks(ConversionsBase conversions, BindingDiagnosticBag diagnostics)
         {
             var compilation = DeclaringCompilation;
-            var location = this.Locations[0];
+            var location = this.GetFirstLocation();
 
             this.CheckModifiersAndType(diagnostics);
             this.Type.CheckAllConstraints(compilation, conversions, location, diagnostics);
 
-            if (Type.ContainsNativeInteger())
+            if (compilation.ShouldEmitNativeIntegerAttributes(Type))
             {
                 compilation.EnsureNativeIntegerAttributeExists(diagnostics, location, modifyCompilation: true);
             }
@@ -783,6 +801,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 TypeWithAnnotations.NeedsNullableAttribute())
             {
                 compilation.EnsureNullableAttributeExists(diagnostics, location, modifyCompilation: true);
+            }
+
+            EventSymbol? explicitlyImplementedEvent = ExplicitInterfaceImplementations.FirstOrDefault();
+
+            if (explicitlyImplementedEvent is object)
+            {
+                CheckExplicitImplementationAccessor(AddMethod, explicitlyImplementedEvent.AddMethod, explicitlyImplementedEvent, diagnostics);
+                CheckExplicitImplementationAccessor(RemoveMethod, explicitlyImplementedEvent.RemoveMethod, explicitlyImplementedEvent, diagnostics);
+            }
+        }
+
+        private void CheckExplicitImplementationAccessor(MethodSymbol? thisAccessor, MethodSymbol? otherAccessor, EventSymbol explicitlyImplementedEvent, BindingDiagnosticBag diagnostics)
+        {
+            if (!otherAccessor.IsImplementable() && thisAccessor is object)
+            {
+                diagnostics.Add(ErrorCode.ERR_ExplicitPropertyAddingAccessor, thisAccessor.GetFirstLocation(), thisAccessor, explicitlyImplementedEvent);
             }
         }
     }

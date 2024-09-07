@@ -2,46 +2,39 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Navigation;
+using Microsoft.CodeAnalysis.Shared.Extensions;
 
-namespace Microsoft.CodeAnalysis
+namespace Microsoft.CodeAnalysis;
+
+internal static class DocumentSpanExtensions
 {
-    internal static class DocumentSpanExtensions
+    private static (Workspace workspace, IDocumentNavigationService service) GetNavigationParts(DocumentSpan documentSpan)
     {
-        public static bool CanNavigateTo(this DocumentSpan documentSpan, CancellationToken cancellationToken)
+        var solution = documentSpan.Document.Project.Solution;
+        var workspace = solution.Workspace;
+        var service = workspace.Services.GetRequiredService<IDocumentNavigationService>();
+        return (workspace, service);
+    }
+
+    public static Task<INavigableLocation?> GetNavigableLocationAsync(this DocumentSpan documentSpan, CancellationToken cancellationToken)
+    {
+        var (workspace, service) = GetNavigationParts(documentSpan);
+        return service.GetLocationForSpanAsync(workspace, documentSpan.Document.Id, documentSpan.SourceSpan, allowInvalidSpan: false, cancellationToken);
+    }
+
+    public static async Task<bool> IsHiddenAsync(
+        this DocumentSpan documentSpan, CancellationToken cancellationToken)
+    {
+        var document = documentSpan.Document;
+        if (document.SupportsSyntaxTree)
         {
-            var workspace = documentSpan.Document.Project.Solution.Workspace;
-            var service = workspace.Services.GetService<IDocumentNavigationService>();
-            return service.CanNavigateToSpan(workspace, documentSpan.Document.Id, documentSpan.SourceSpan, cancellationToken);
+            var tree = await document.GetRequiredSyntaxTreeAsync(cancellationToken).ConfigureAwait(false);
+            return tree.IsHiddenPosition(documentSpan.SourceSpan.Start, cancellationToken);
         }
 
-        public static bool TryNavigateTo(this DocumentSpan documentSpan, bool showInPreviewTab, bool activateTab, CancellationToken cancellationToken)
-        {
-            var solution = documentSpan.Document.Project.Solution;
-            var workspace = solution.Workspace;
-            var service = workspace.Services.GetService<IDocumentNavigationService>();
-
-            var options = solution.Options.WithChangedOption(NavigationOptions.PreferProvisionalTab, showInPreviewTab);
-            options = options.WithChangedOption(NavigationOptions.ActivateTab, activateTab);
-
-            return service.TryNavigateToSpan(workspace, documentSpan.Document.Id, documentSpan.SourceSpan, options, cancellationToken);
-        }
-
-        public static async Task<bool> IsHiddenAsync(
-            this DocumentSpan documentSpan, CancellationToken cancellationToken)
-        {
-            var document = documentSpan.Document;
-            if (document.SupportsSyntaxTree)
-            {
-                var tree = await document.GetSyntaxTreeAsync(cancellationToken).ConfigureAwait(false);
-                return tree.IsHiddenPosition(documentSpan.SourceSpan.Start, cancellationToken);
-            }
-
-            return false;
-        }
+        return false;
     }
 }

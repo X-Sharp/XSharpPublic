@@ -19,7 +19,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Shared.Extensions;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.LanguageServices.Implementation.Interop;
 using Microsoft.VisualStudio.LanguageServices.Implementation.Utilities;
 
@@ -49,7 +48,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
 
         internal ITypeSymbol LookupTypeSymbol()
         {
-            if (!(CodeModelService.ResolveSymbol(this.State.Workspace, _projectId, _symbolId) is ITypeSymbol typeSymbol))
+            if (CodeModelService.ResolveSymbol(this.State.Workspace, _projectId, _symbolId) is not ITypeSymbol typeSymbol)
             {
                 throw Exceptions.ThrowEFail();
             }

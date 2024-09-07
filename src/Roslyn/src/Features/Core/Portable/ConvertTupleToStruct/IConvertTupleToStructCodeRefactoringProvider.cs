@@ -2,18 +2,16 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CodeGeneration;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Microsoft.CodeAnalysis.ConvertTupleToStruct
+namespace Microsoft.CodeAnalysis.ConvertTupleToStruct;
+
+internal interface IConvertTupleToStructCodeRefactoringProvider : ILanguageService
 {
-    internal interface IConvertTupleToStructCodeRefactoringProvider : ILanguageService
-    {
-        Task<Solution> ConvertToStructAsync(
-            Document document, TextSpan span, Scope scope, CancellationToken cancellationToken);
-    }
+    Task<Solution> ConvertToStructAsync(
+        Document document, TextSpan span, Scope scope, CleanCodeGenerationOptionsProvider fallbackOptions, bool isRecord, CancellationToken cancellationToken);
 }

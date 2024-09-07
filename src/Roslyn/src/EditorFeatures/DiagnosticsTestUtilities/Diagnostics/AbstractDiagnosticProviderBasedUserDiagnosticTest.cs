@@ -3,6 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 #nullable disable
+#if CODE_STYLE
+extern alias CODESTYLE_UTILITIES;
+#endif
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,12 +14,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp.MakeLocalFunctionStatic;
 using Microsoft.CodeAnalysis.CSharp.UseAutoProperty;
-using Microsoft.CodeAnalysis.CSharp.UseLocalFunction;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Editor.UnitTests.CodeActions;
-using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
+using Microsoft.CodeAnalysis.Shared.Extensions;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.UnitTests.Diagnostics;
 using Microsoft.CodeAnalysis.VisualBasic.UseAutoProperty;
@@ -27,11 +29,16 @@ using Xunit.Abstractions;
 
 namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
 {
+#if CODE_STYLE
+    using OptionsCollectionAlias = CODESTYLE_UTILITIES::Microsoft.CodeAnalysis.Editor.UnitTests.CodeActions.OptionsCollection;
+#else
+    using OptionsCollectionAlias = OptionsCollection;
+#endif
     public abstract partial class AbstractDiagnosticProviderBasedUserDiagnosticTest : AbstractUserDiagnosticTest
     {
-        private readonly ConcurrentDictionary<Workspace, (DiagnosticAnalyzer, CodeFixProvider)> _analyzerAndFixerMap = new();
+        private readonly ConcurrentDictionary<Workspace, (DiagnosticAnalyzer, CodeFixProvider)> _analyzerAndFixerMap = [];
 
-        public AbstractDiagnosticProviderBasedUserDiagnosticTest(ITestOutputHelper logger)
+        protected AbstractDiagnosticProviderBasedUserDiagnosticTest(ITestOutputHelper logger)
            : base(logger)
         {
         }
@@ -51,7 +58,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
 
         internal virtual bool ShouldSkipMessageDescriptionVerification(DiagnosticDescriptor descriptor)
         {
-            if (descriptor.CustomTags.Contains(WellKnownDiagnosticTags.NotConfigurable))
+            if (descriptor.ImmutableCustomTags().Contains(WellKnownDiagnosticTags.NotConfigurable))
             {
                 if (!descriptor.IsEnabledByDefault || descriptor.DefaultSeverity == DiagnosticSeverity.Hidden)
                 {
@@ -59,99 +66,101 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
                     return true;
                 }
             }
+
             return false;
         }
 
         [Fact]
         public void TestSupportedDiagnosticsMessageTitle()
         {
-            using (var workspace = new AdhocWorkspace())
+            using var workspace = new AdhocWorkspace();
+            var diagnosticAnalyzer = CreateDiagnosticProviderAndFixer(workspace).Item1;
+            if (diagnosticAnalyzer == null)
             {
-                var diagnosticAnalyzer = CreateDiagnosticProviderAndFixer(workspace).Item1;
-                if (diagnosticAnalyzer == null)
+                return;
+            }
+
+            foreach (var descriptor in diagnosticAnalyzer.SupportedDiagnostics)
+            {
+                if (descriptor.ImmutableCustomTags().Contains(WellKnownDiagnosticTags.NotConfigurable))
                 {
-                    return;
+                    // The title only displayed for rule configuration
+                    continue;
                 }
 
-                foreach (var descriptor in diagnosticAnalyzer.SupportedDiagnostics)
-                {
-                    if (descriptor.CustomTags.Contains(WellKnownDiagnosticTags.NotConfigurable))
-                    {
-                        // The title only displayed for rule configuration
-                        continue;
-                    }
-
-                    Assert.NotEqual("", descriptor.Title?.ToString() ?? "");
-                }
+                Assert.NotEqual("", descriptor.Title?.ToString() ?? "");
             }
         }
 
         [Fact]
         public void TestSupportedDiagnosticsMessageDescription()
         {
-            using (var workspace = new AdhocWorkspace())
+            using var workspace = new AdhocWorkspace();
+            var diagnosticAnalyzer = CreateDiagnosticProviderAndFixer(workspace).Item1;
+            if (diagnosticAnalyzer == null)
             {
-                var diagnosticAnalyzer = CreateDiagnosticProviderAndFixer(workspace).Item1;
-                if (diagnosticAnalyzer == null)
+                return;
+            }
+
+            foreach (var descriptor in diagnosticAnalyzer.SupportedDiagnostics)
+            {
+                if (ShouldSkipMessageDescriptionVerification(descriptor))
                 {
-                    return;
+                    continue;
                 }
 
-                foreach (var descriptor in diagnosticAnalyzer.SupportedDiagnostics)
-                {
-                    if (ShouldSkipMessageDescriptionVerification(descriptor))
-                    {
-                        continue;
-                    }
-
-                    Assert.NotEqual("", descriptor.MessageFormat?.ToString() ?? "");
-                }
+                Assert.NotEqual("", descriptor.MessageFormat?.ToString() ?? "");
             }
         }
 
-        [Fact(Skip = "https://github.com/dotnet/roslyn/issues/26717")]
+        [Fact]
         public void TestSupportedDiagnosticsMessageHelpLinkUri()
         {
-            using (var workspace = new AdhocWorkspace())
-            {
-                var diagnosticAnalyzer = CreateDiagnosticProviderAndFixer(workspace).Item1;
-                if (diagnosticAnalyzer == null)
-                {
-                    return;
-                }
+            using var workspace = new AdhocWorkspace();
+            var diagnosticAnalyzer = CreateDiagnosticProviderAndFixer(workspace).Item1;
+            if (diagnosticAnalyzer == null)
+                return;
 
-                foreach (var descriptor in diagnosticAnalyzer.SupportedDiagnostics)
-                {
-                    Assert.NotEqual("", descriptor.HelpLinkUri ?? "");
-                }
+            foreach (var descriptor in diagnosticAnalyzer.SupportedDiagnostics)
+            {
+                // These don't come up in UI.
+                if (descriptor.DefaultSeverity == DiagnosticSeverity.Hidden && descriptor.CustomTags.Contains(WellKnownDiagnosticTags.NotConfigurable))
+                    continue;
+
+                if (descriptor.Id is "RE0001" or "JSON001" or "JSON002") // Currently not documented. https://github.com/dotnet/roslyn/issues/48530
+                    continue;
+
+                if (descriptor.Id == "IDE0043") // Intentionally undocumented. It will be removed in favor of CA2241
+                    continue;
+
+                if (descriptor.Id == "IDE1007")
+                    continue;
+
+                Assert.NotEqual("", descriptor.HelpLinkUri ?? "");
             }
         }
 
         internal override async Task<IEnumerable<Diagnostic>> GetDiagnosticsAsync(
-            TestWorkspace workspace, TestParameters parameters)
+            EditorTestWorkspace workspace, TestParameters parameters)
         {
             var (analyzer, _) = GetOrCreateDiagnosticProviderAndFixer(workspace, parameters);
-            AddAnalyzerToWorkspace(workspace, analyzer, parameters);
+            AddAnalyzerToWorkspace(workspace, analyzer);
 
             var document = GetDocumentAndSelectSpan(workspace, out var span);
-            var allDiagnostics = await DiagnosticProviderTestUtilities.GetAllDiagnosticsAsync(workspace, document, span);
+            var allDiagnostics = await DiagnosticProviderTestUtilities.GetAllDiagnosticsAsync(workspace, document, span, includeNonLocalDocumentDiagnostics: parameters.includeNonLocalDocumentDiagnostics);
             AssertNoAnalyzerExceptionDiagnostics(allDiagnostics);
             return allDiagnostics;
         }
 
         internal override async Task<(ImmutableArray<Diagnostic>, ImmutableArray<CodeAction>, CodeAction actionToInvoke)> GetDiagnosticAndFixesAsync(
-            TestWorkspace workspace, TestParameters parameters)
+            EditorTestWorkspace workspace, TestParameters parameters)
         {
             var (analyzer, fixer) = GetOrCreateDiagnosticProviderAndFixer(workspace, parameters);
-            AddAnalyzerToWorkspace(workspace, analyzer, parameters);
+            AddAnalyzerToWorkspace(workspace, analyzer);
 
-            string annotation = null;
-            if (!TryGetDocumentAndSelectSpan(workspace, out var document, out var span))
-            {
-                document = GetDocumentAndAnnotatedSpan(workspace, out annotation, out span);
-            }
+            GetDocumentAndSelectSpanOrAnnotatedSpan(workspace, out var document, out var span, out var annotation);
 
-            var testDriver = new TestDiagnosticAnalyzerDriver(workspace, document.Project);
+            var testDriver = new TestDiagnosticAnalyzerDriver(workspace, includeNonLocalDocumentDiagnostics: parameters.includeNonLocalDocumentDiagnostics);
             var filterSpan = parameters.includeDiagnosticsOutsideSelection ? (TextSpan?)null : span;
             var diagnostics = (await testDriver.GetAllDiagnosticsAsync(document, filterSpan)).ToImmutableArray();
             AssertNoAnalyzerExceptionDiagnostics(diagnostics);
@@ -179,42 +188,42 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
 
         private protected async Task TestDiagnosticInfoAsync(
             string initialMarkup,
-            OptionsCollection options,
             string diagnosticId,
             DiagnosticSeverity diagnosticSeverity,
+            OptionsCollectionAlias options = null,
+            OptionsCollectionAlias globalOptions = null,
             LocalizableString diagnosticMessage = null)
         {
-            await TestDiagnosticInfoAsync(initialMarkup, null, null, options, diagnosticId, diagnosticSeverity, diagnosticMessage);
-            await TestDiagnosticInfoAsync(initialMarkup, GetScriptOptions(), null, options, diagnosticId, diagnosticSeverity, diagnosticMessage);
+            await TestDiagnosticInfoAsync(initialMarkup, parseOptions: null, compilationOptions: null, options, globalOptions, diagnosticId, diagnosticSeverity, diagnosticMessage);
+            await TestDiagnosticInfoAsync(initialMarkup, GetScriptOptions(), compilationOptions: null, options, globalOptions, diagnosticId, diagnosticSeverity, diagnosticMessage);
         }
 
         private protected async Task TestDiagnosticInfoAsync(
             string initialMarkup,
             ParseOptions parseOptions,
             CompilationOptions compilationOptions,
-            OptionsCollection options,
+            OptionsCollectionAlias options,
+            OptionsCollectionAlias globalOptions,
             string diagnosticId,
             DiagnosticSeverity diagnosticSeverity,
             LocalizableString diagnosticMessage = null)
         {
-            var testOptions = new TestParameters(parseOptions, compilationOptions, options);
-            using (var workspace = CreateWorkspaceFromOptions(initialMarkup, testOptions))
+            var testOptions = new TestParameters(parseOptions, compilationOptions, options: options, globalOptions: globalOptions);
+            using var workspace = CreateWorkspaceFromOptions(initialMarkup, testOptions);
+            var diagnostics = (await GetDiagnosticsAsync(workspace, testOptions)).ToImmutableArray();
+            diagnostics = diagnostics.WhereAsArray(d => d.Id == diagnosticId);
+            Assert.Equal(1, diagnostics.Length);
+
+            var hostDocument = workspace.Documents.Single(d => d.SelectedSpans.Any());
+            var expected = hostDocument.SelectedSpans.Single();
+            var actual = diagnostics.Single().Location.SourceSpan;
+            Assert.Equal(expected, actual);
+
+            Assert.Equal(diagnosticSeverity, diagnostics.Single().Severity);
+
+            if (diagnosticMessage != null)
             {
-                var diagnostics = (await GetDiagnosticsAsync(workspace, testOptions)).ToImmutableArray();
-                diagnostics = diagnostics.WhereAsArray(d => d.Id == diagnosticId);
-                Assert.Equal(1, diagnostics.Count());
-
-                var hostDocument = workspace.Documents.Single(d => d.SelectedSpans.Any());
-                var expected = hostDocument.SelectedSpans.Single();
-                var actual = diagnostics.Single().Location.SourceSpan;
-                Assert.Equal(expected, actual);
-
-                Assert.Equal(diagnosticSeverity, diagnostics.Single().Severity);
-
-                if (diagnosticMessage != null)
-                {
-                    Assert.Equal(diagnosticMessage, diagnostics.Single().GetMessage());
-                }
+                Assert.Equal(diagnosticMessage, diagnostics.Single().GetMessage());
             }
         }
 
@@ -229,7 +238,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
         private static void AssertNoAnalyzerExceptionDiagnostics(IEnumerable<Diagnostic> diagnostics)
 #pragma warning restore CS1574 // XML comment has cref attribute that could not be resolved
         {
-            var analyzerExceptionDiagnostics = diagnostics.Where(diag => diag.Descriptor.CustomTags.Contains(WellKnownDiagnosticTags.AnalyzerException));
+            var analyzerExceptionDiagnostics = diagnostics.Where(diag => diag.Descriptor.ImmutableCustomTags().Contains(WellKnownDiagnosticTags.AnalyzerException));
             AssertEx.Empty(analyzerExceptionDiagnostics, "Found analyzer exception diagnostics");
         }
 
@@ -237,12 +246,6 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
         // analyzer has been ported to CodeStyle layer, but not the fixer.
         // This enables porting the tests for the ported analyzer in CodeStyle layer.
         #region CodeFixProvider Helpers
-
-        // https://github.com/dotnet/roslyn/issues/43056 blocks porting the fixer to CodeStyle layer.
-        protected static CodeFixProvider GetMakeLocalFunctionStaticCodeFixProvider() => new MakeLocalFunctionStaticCodeFixProvider();
-
-        // https://github.com/dotnet/roslyn/issues/43056 blocks porting the fixer to CodeStyle layer.
-        protected static CodeFixProvider GetCSharpUseLocalFunctionCodeFixProvider() => new CSharpUseLocalFunctionCodeFixProvider();
 
         // https://github.com/dotnet/roslyn/issues/43091 blocks porting the fixer to CodeStyle layer.
         protected static CodeFixProvider GetCSharpUseAutoPropertyCodeFixProvider() => new CSharpUseAutoPropertyCodeFixProvider();

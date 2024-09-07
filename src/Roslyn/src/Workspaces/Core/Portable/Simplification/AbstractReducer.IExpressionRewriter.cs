@@ -6,19 +6,17 @@
 
 using System;
 using System.Threading;
-using Microsoft.CodeAnalysis.Options;
 
-namespace Microsoft.CodeAnalysis.Simplification
+namespace Microsoft.CodeAnalysis.Simplification;
+
+internal abstract partial class AbstractReducer
 {
-    internal abstract partial class AbstractReducer
+    internal interface IReductionRewriter : IDisposable
     {
-        internal interface IReductionRewriter : IDisposable
-        {
-            void Initialize(ParseOptions parseOptions, OptionSet optionSet, CancellationToken cancellationToken);
+        void Initialize(ParseOptions parseOptions, SimplifierOptions options, CancellationToken cancellationToken);
 
-            SyntaxNodeOrToken VisitNodeOrToken(SyntaxNodeOrToken nodeOrTokenToReduce, SemanticModel semanticModel, bool simplifyAllDescendants);
+        SyntaxNodeOrToken VisitNodeOrToken(SyntaxNodeOrToken nodeOrTokenToReduce, SemanticModel semanticModel, bool simplifyAllDescendants);
 
-            bool HasMoreWork { get; }
-        }
+        bool HasMoreWork { get; }
     }
 }

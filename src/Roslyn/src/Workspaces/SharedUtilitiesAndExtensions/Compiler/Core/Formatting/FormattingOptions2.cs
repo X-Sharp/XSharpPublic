@@ -4,117 +4,108 @@
 
 using System;
 using System.Collections.Immutable;
-using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.Options;
+using Microsoft.CodeAnalysis.Indentation;
+using Microsoft.CodeAnalysis.CodeStyle;
 
 #if CODE_STYLE
 using WorkspacesResources = Microsoft.CodeAnalysis.CodeStyleResources;
+using PublicIndentStyle = Microsoft.CodeAnalysis.Formatting.FormattingOptions2.IndentStyle;
+#else
+using PublicIndentStyle = Microsoft.CodeAnalysis.Formatting.FormattingOptions.IndentStyle;
 #endif
 
-namespace Microsoft.CodeAnalysis.Formatting
+namespace Microsoft.CodeAnalysis.Formatting;
+
+/// <summary>
+/// Formatting options stored in editorconfig.
+/// </summary>
+internal sealed partial class FormattingOptions2
 {
-    internal static class FormattingOptions2
-    {
-        private static readonly ImmutableArray<IOption2>.Builder s_allOptionsBuilder = ImmutableArray.CreateBuilder<IOption2>();
+    private const string PublicFeatureName = "FormattingOptions";
 
-        internal static ImmutableArray<IOption2> AllOptions { get; }
+    public static PerLanguageOption2<bool> UseTabs = new PerLanguageOption2<bool>(
+        "indent_style", LineFormattingOptions.Default.UseTabs, FormattingOptionGroups.IndentationAndSpacing, isEditorConfigOption: true,
+        serializer: new EditorConfigValueSerializer<bool>(str => str == "tab", value => value ? "tab" : "space"))
+        .WithPublicOption(PublicFeatureName, "UseTabs");
 
-        private static PerLanguageOption2<T> CreatePerLanguageOption<T>(OptionGroup group, string name, T defaultValue, params OptionStorageLocation2[] storageLocations)
-        {
-            var option = new PerLanguageOption2<T>(nameof(FormattingOptions), group, name, defaultValue, storageLocations);
-            s_allOptionsBuilder.Add(option);
-            return option;
-        }
+    public static PerLanguageOption2<int> TabSize = new PerLanguageOption2<int>(
+        "tab_width", LineFormattingOptions.Default.TabSize, FormattingOptionGroups.IndentationAndSpacing, isEditorConfigOption: true)
+        .WithPublicOption(PublicFeatureName, "TabSize");
 
-        private static Option2<T> CreateOption<T>(OptionGroup group, string name, T defaultValue, params OptionStorageLocation2[] storageLocations)
-        {
-            var option = new Option2<T>(nameof(FormattingOptions), group, name, defaultValue, storageLocations);
-            s_allOptionsBuilder.Add(option);
-            return option;
-        }
+    public static PerLanguageOption2<int> IndentationSize = new PerLanguageOption2<int>(
+        "indent_size", LineFormattingOptions.Default.IndentationSize, FormattingOptionGroups.IndentationAndSpacing, isEditorConfigOption: true)
+        .WithPublicOption(PublicFeatureName, "IndentationSize");
 
-        public static PerLanguageOption2<bool> UseTabs { get; } = CreatePerLanguageOption(
-            FormattingOptionGroups.IndentationAndSpacing, nameof(UseTabs),
-            defaultValue: false,
-            storageLocations: new EditorConfigStorageLocation<bool>(
-                "indent_style",
-                s => s == "tab",
-                isSet => isSet ? "tab" : "space"));
-
-        // This is also serialized by the Visual Studio-specific LanguageSettingsPersister
-        public static PerLanguageOption2<int> TabSize { get; } = CreatePerLanguageOption(
-            FormattingOptionGroups.IndentationAndSpacing, nameof(TabSize),
-            defaultValue: 4,
-            storageLocations: EditorConfigStorageLocation.ForInt32Option("tab_width"));
-
-        // This is also serialized by the Visual Studio-specific LanguageSettingsPersister
-        public static PerLanguageOption2<int> IndentationSize { get; } = CreatePerLanguageOption(
-            FormattingOptionGroups.IndentationAndSpacing, nameof(IndentationSize),
-            defaultValue: 4,
-            storageLocations: EditorConfigStorageLocation.ForInt32Option("indent_size"));
-
-        // This is also serialized by the Visual Studio-specific LanguageSettingsPersister
-        public static PerLanguageOption2<FormattingOptions.IndentStyle> SmartIndent { get; } = CreatePerLanguageOption(
-            FormattingOptionGroups.IndentationAndSpacing, nameof(SmartIndent),
-            defaultValue: FormattingOptions.IndentStyle.Smart);
-
-        public static PerLanguageOption2<string> NewLine { get; } = CreatePerLanguageOption(
-            FormattingOptionGroups.NewLine, nameof(NewLine),
-            defaultValue: Environment.NewLine,
-            storageLocations: new EditorConfigStorageLocation<string>(
-                "end_of_line",
-                ParseEditorConfigEndOfLine,
-                GetEndOfLineEditorConfigString));
-
-        internal static Option2<bool> InsertFinalNewLine { get; } = CreateOption(
-            FormattingOptionGroups.NewLine, nameof(InsertFinalNewLine),
-            defaultValue: false,
-            storageLocations: EditorConfigStorageLocation.ForBoolOption("insert_final_newline"));
-
-        /// <summary>
-        /// Default value of 120 was picked based on the amount of code in a github.com diff at 1080p.
-        /// That resolution is the most common value as per the last DevDiv survey as well as the latest
-        /// Steam hardware survey.  This also seems to a reasonable length default in that shorter
-        /// lengths can often feel too cramped for .NET languages, which are often starting with a
-        /// default indentation of at least 16 (for namespace, class, member, plus the final construct
-        /// indentation).
-        /// </summary>
-        internal static Option2<int> PreferredWrappingColumn { get; } = new Option2<int>(
-            nameof(FormattingOptions),
-            FormattingOptionGroups.NewLine,
-            nameof(PreferredWrappingColumn),
-            defaultValue: 120);
-
-        private static readonly BidirectionalMap<string, string> s_parenthesesPreferenceMap =
-            new(new[]
+    public static PerLanguageOption2<string> NewLine = new PerLanguageOption2<string>(
+        "end_of_line", LineFormattingOptions.Default.NewLine, FormattingOptionGroups.NewLine, isEditorConfigOption: true,
+        serializer: new EditorConfigValueSerializer<string>(
+            parseValue: value => value.Trim() switch
             {
-                KeyValuePairUtil.Create("lf", "\n"),
-                KeyValuePairUtil.Create("cr", "\r"),
-                KeyValuePairUtil.Create("crlf", "\r\n"),
-            });
+                "lf" => "\n",
+                "cr" => "\r",
+                "crlf" => "\r\n",
+                _ => Environment.NewLine
+            },
+            serializeValue: value => value switch
+            {
+                "\n" => "lf",
+                "\r" => "cr",
+                "\r\n" => "crlf",
+                _ => "unset"
+            }))
+        .WithPublicOption(PublicFeatureName, "NewLine");
 
-        private static Optional<string> ParseEditorConfigEndOfLine(string endOfLineValue)
-            => s_parenthesesPreferenceMap.TryGetValue(endOfLineValue.Trim(), out var parsedOption) ? parsedOption : NewLine.DefaultValue;
+    internal static Option2<bool> InsertFinalNewLine = new(
+        "insert_final_newline", DocumentFormattingOptions.Default.InsertFinalNewLine, FormattingOptionGroups.NewLine, isEditorConfigOption: true);
 
-        private static string GetEndOfLineEditorConfigString(string option)
-            => s_parenthesesPreferenceMap.TryGetKey(option, out var editorConfigString) ? editorConfigString : "unset";
+    public static PerLanguageOption2<IndentStyle> SmartIndent = new PerLanguageOption2<IndentStyle>(
+        "smart_indent",
+        defaultValue: IndentationOptions.DefaultIndentStyle,
+        group: FormattingOptionGroups.IndentationAndSpacing)
+        .WithPublicOption(PublicFeatureName, "SmartIndent", static value => (PublicIndentStyle)value, static value => (IndentStyle)value);
 
-        internal static Option2<bool> AllowDisjointSpanMerging { get; } = CreateOption(OptionGroup.Default, nameof(AllowDisjointSpanMerging), defaultValue: false);
+    /// <summary>
+    /// Default value of 120 was picked based on the amount of code in a github.com diff at 1080p.
+    /// That resolution is the most common value as per the last DevDiv survey as well as the latest
+    /// Steam hardware survey.  This also seems to a reasonable length default in that shorter
+    /// lengths can often feel too cramped for .NET languages, which are often starting with a
+    /// default indentation of at least 16 (for namespace, class, member, plus the final construct
+    /// indentation).
+    /// 
+    /// TODO: Currently the option has no storage and always has its default value. See https://github.com/dotnet/roslyn/pull/30422#issuecomment-436118696.
+    /// 
+    /// Internal option -- not exposed to tooling.
+    /// </summary>
+    public static readonly PerLanguageOption2<int> WrappingColumn = new(
+        $"dotnet_unsupported_wrapping_column",
+        defaultValue: SyntaxFormattingOptions.CommonDefaults.WrappingColumn,
+        isEditorConfigOption: true);
 
-        internal static readonly PerLanguageOption2<bool> AutoFormattingOnReturn = CreatePerLanguageOption(OptionGroup.Default, nameof(AutoFormattingOnReturn), defaultValue: true,
-            storageLocations: new RoamingProfileStorageLocation("TextEditor.%LANGUAGE%.Specific.Auto Formatting On Return"));
+    /// <summary>
+    /// Internal option -- not exposed to editorconfig tooling.
+    /// </summary>
+    public static readonly PerLanguageOption2<int> ConditionalExpressionWrappingLength = new(
+        $"dotnet_unsupported_conditional_expression_wrapping_length",
+        defaultValue: SyntaxFormattingOptions.CommonDefaults.ConditionalExpressionWrappingLength,
+        isEditorConfigOption: true);
 
-        static FormattingOptions2()
-        {
-            // Note that the static constructor executes after all the static field initializers for the options have executed,
-            // and each field initializer adds the created option to s_allOptionsBuilder.
-            AllOptions = s_allOptionsBuilder.ToImmutable();
-        }
-    }
+#if !CODE_STYLE
+    /// <summary>
+    /// Options that we expect the user to set in editorconfig.
+    /// </summary>
+    internal static readonly ImmutableArray<IOption2> EditorConfigOptions = [UseTabs, TabSize, IndentationSize, NewLine, InsertFinalNewLine];
 
-    internal static class FormattingOptionGroups
-    {
-        public static readonly OptionGroup IndentationAndSpacing = new(WorkspacesResources.Indentation_and_spacing, priority: 1);
-        public static readonly OptionGroup NewLine = new(WorkspacesResources.New_line_preferences, priority: 2);
-    }
+    /// <summary>
+    /// Options that can be set via editorconfig but we do not provide tooling support.
+    /// </summary>
+    internal static readonly ImmutableArray<IOption2> UndocumentedOptions = [WrappingColumn, ConditionalExpressionWrappingLength];
+#endif
+}
+
+internal static class FormattingOptionGroups
+{
+    public static readonly OptionGroup FormattingOptionGroup = new(name: "formatting", description: "", parent: CodeStyleOptionGroups.CodeStyle);
+    public static readonly OptionGroup IndentationAndSpacing = new(name: "indentation_and_spacing", description: WorkspacesResources.Indentation_and_spacing, priority: 1, parent: FormattingOptionGroup);
+    public static readonly OptionGroup NewLine = new(name: "new_line", description: WorkspacesResources.New_line_preferences, priority: 2, parent: FormattingOptionGroup);
 }

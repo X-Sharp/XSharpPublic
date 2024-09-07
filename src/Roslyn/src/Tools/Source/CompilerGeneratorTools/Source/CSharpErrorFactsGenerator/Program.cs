@@ -62,8 +62,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Internal.CSharpErrorFactsGenerator
                 {
                     warningCodeNames.Add(line.Substring(0, line.IndexOf(' ')).Replace("XS_WRN:", ""));
                 }
+                // end of XSHARP changes
             }
-            // end of XSHARP changes
 
             outputText.AppendLine("        public static bool IsWarning(ErrorCode code)");
             outputText.AppendLine("        {");

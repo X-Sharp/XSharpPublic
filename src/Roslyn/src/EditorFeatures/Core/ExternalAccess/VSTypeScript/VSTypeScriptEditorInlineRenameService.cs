@@ -2,44 +2,40 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
+using System;
+using System.Collections.Immutable;
+using System.Composition;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Editor;
-using Roslyn.Utilities;
-using System.Composition;
-using Microsoft.CodeAnalysis.Host.Mef;
-using System;
+using Microsoft.CodeAnalysis.Editor.Implementation.InlineRename;
 using Microsoft.CodeAnalysis.ExternalAccess.VSTypeScript.Api;
+using Microsoft.CodeAnalysis.Host.Mef;
+using Microsoft.CodeAnalysis.Text;
 
-namespace Microsoft.CodeAnalysis.ExternalAccess.VSTypeScript
+namespace Microsoft.CodeAnalysis.ExternalAccess.VSTypeScript;
+
+[Shared]
+[ExportLanguageService(typeof(IEditorInlineRenameService), InternalLanguageNames.TypeScript)]
+[method: ImportingConstructor]
+[method: Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
+internal sealed class VSTypeScriptEditorInlineRenameService(
+    [Import(AllowDefault = true)] Lazy<VSTypeScriptEditorInlineRenameServiceImplementation>? service) : IEditorInlineRenameService
 {
-    [Shared]
-    [ExportLanguageService(typeof(IEditorInlineRenameService), InternalLanguageNames.TypeScript)]
-    internal sealed class VSTypeScriptEditorInlineRenameService : IEditorInlineRenameService
+    private readonly Lazy<VSTypeScriptEditorInlineRenameServiceImplementation>? _service = service;
+
+    public Task<ImmutableDictionary<string, ImmutableArray<string>>> GetRenameContextAsync(IInlineRenameInfo inlineRenameInfo, IInlineRenameLocationSet inlineRenameLocationSet, CancellationToken cancellationToken)
     {
-        private readonly Lazy<IVSTypeScriptEditorInlineRenameService> _service;
+        return Task.FromResult(ImmutableDictionary<string, ImmutableArray<string>>.Empty);
+    }
 
-        [ImportingConstructor]
-        [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
-        public VSTypeScriptEditorInlineRenameService(Lazy<IVSTypeScriptEditorInlineRenameService> service)
+    public async Task<IInlineRenameInfo> GetRenameInfoAsync(Document document, int position, CancellationToken cancellationToken)
+    {
+        if (_service != null)
         {
-            Contract.ThrowIfNull(service);
-            _service = service;
+            return await _service.Value.GetRenameInfoAsync(document, position, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<IInlineRenameInfo> GetRenameInfoAsync(Document document, int position, CancellationToken cancellationToken)
-        {
-            var info = await _service.Value.GetRenameInfoAsync(document, position, cancellationToken).ConfigureAwait(false);
-            if (info != null)
-            {
-                return new VSTypeScriptInlineRenameInfo(info);
-            }
-            else
-            {
-                return null;
-            }
-        }
+        return AbstractEditorInlineRenameService.DefaultFailureInfo;
     }
 }

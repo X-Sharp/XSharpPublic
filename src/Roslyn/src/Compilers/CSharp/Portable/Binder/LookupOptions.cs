@@ -100,24 +100,34 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// Do not consider symbols that are method type parameters.
         /// </summary>
         MustNotBeMethodTypeParameter = 1 << 14,
+
+        /// <summary>
+        /// Consider only symbols that are abstract or virtual.
+        /// </summary>
+        MustBeAbstractOrVirtual = 1 << 15,
+
+        /// <summary>
+        /// Do not consider symbols that are parameters.
+        /// </summary>
+        MustNotBeParameter = 1 << 16,
 #if XSHARP
 
         /// <summary>
         /// Prevent finding namespaces when we want a type or member
         /// </summary>
-        ExcludeNameSpaces = 1 << 15,
+        ExcludeNameSpaces = 1 << 17,
 
         /// <summary>
         /// In VO/Vulcan compatibility mode we look for defines first
         /// </summary>
 
-        DefinesOnly = 1 << 16,
+        DefinesOnly = 1 << 18,
 
         /// <summary>
         /// In VO/Vulcan compatibility mode we look for defines first
         /// </summary>
 
-        MustNotBeMethod = 1 << 17,
+        MustNotBeMethod = 1 << 19,
 #endif
     }
 

@@ -7,11 +7,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Text;
-namespace Microsoft.CodeAnalysis.EditAndContinue
+using Roslyn.Utilities;
+
+namespace Microsoft.CodeAnalysis.EditAndContinue;
+
+internal interface IEditAndContinueAnalyzer : ILanguageService
 {
-    internal interface IEditAndContinueAnalyzer : ILanguageService
-    {
-        Task<DocumentAnalysisResults> AnalyzeDocumentAsync(Document? oldDocument, ImmutableArray<ActiveStatement> activeStatements, Document document, ImmutableArray<TextSpan> newActiveStatementSpans, CancellationToken cancellationToken);
-        ImmutableArray<LinePositionSpan> GetExceptionRegions(SourceText text, SyntaxNode syntaxRoot, LinePositionSpan activeStatementSpan, bool isLeaf, out bool isCovered);
-    }
+    Task<DocumentAnalysisResults> AnalyzeDocumentAsync(
+        Project baseProject,
+        AsyncLazy<ActiveStatementsMap> lazyBaseActiveStatements,
+        Document document,
+        ImmutableArray<ActiveStatementLineSpan> newActiveStatementSpans,
+        AsyncLazy<EditAndContinueCapabilities> lazyCapabilities,
+        CancellationToken cancellationToken);
+
+    ActiveStatementExceptionRegions GetExceptionRegions(SyntaxNode syntaxRoot, TextSpan unmappedActiveStatementSpan, bool isNonLeaf, CancellationToken cancellationToken);
 }

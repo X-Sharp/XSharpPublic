@@ -29,7 +29,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             VariableDeclaratorSyntax declarator,
             DeclarationModifiers modifiers,
             bool modifierErrors,
-            DiagnosticBag diagnostics)
+            BindingDiagnosticBag diagnostics)
             : base(containingType, declarator, modifiers, modifierErrors, diagnostics)
         {
             // Checked in parser: a fixed field declaration requires a length in square brackets
@@ -57,7 +57,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 if (_fixedSize == FixedSizeNotInitialized)
                 {
-                    DiagnosticBag diagnostics = DiagnosticBag.GetInstance();
+                    BindingDiagnosticBag diagnostics = BindingDiagnosticBag.GetInstance();
                     int size = 0;
 
                     VariableDeclaratorSyntax declarator = VariableDeclaratorNode;
@@ -94,7 +94,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                             // GetAndValidateConstantValue doesn't generate a very intuitive-reading diagnostic
                             // for this situation, but this is what the Dev10 compiler produces.
-                            ConstantValue sizeConstant = ConstantValueUtils.GetAndValidateConstantValue(boundSizeExpression, this, intType, sizeExpression.Location, diagnostics);
+                            ConstantValue sizeConstant = ConstantValueUtils.GetAndValidateConstantValue(boundSizeExpression, this, intType, sizeExpression, diagnostics);
 
                             Debug.Assert(sizeConstant != null);
                             Debug.Assert(sizeConstant.IsIntegral || diagnostics.HasAnyErrors() || sizeExpression.HasErrors);
@@ -188,7 +188,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 int nElements = _field.FixedSize;
                 var elementType = ((PointerTypeSymbol)_field.Type).PointedAtType;
                 int elementSize = elementType.FixedBufferElementSizeInBytes();
-
 #if XSHARP
 				if ( DeclaringCompilation.Options.HasRuntime)
 				{
@@ -250,9 +249,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             => ContainingAssembly.GetSpecialType(SpecialType.System_ValueType);
 
         public sealed override bool AreLocalsZeroed
-            => throw ExceptionUtilities.Unreachable;
+            => throw ExceptionUtilities.Unreachable();
 
         internal override bool IsRecord => false;
+        internal override bool IsRecordStruct => false;
         internal override bool HasPossibleWellKnownCloneMethod() => false;
     }
 }

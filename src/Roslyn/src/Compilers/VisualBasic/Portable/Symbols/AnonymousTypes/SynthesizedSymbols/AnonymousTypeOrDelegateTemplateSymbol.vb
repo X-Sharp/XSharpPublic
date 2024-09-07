@@ -215,11 +215,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
                 End Get
             End Property
 
-            Friend Overrides Function MakeDeclaredBase(basesBeingResolved As BasesBeingResolved, diagnostics As DiagnosticBag) As NamedTypeSymbol
+            Friend Overrides Function MakeDeclaredBase(basesBeingResolved As BasesBeingResolved, diagnostics As BindingDiagnosticBag) As NamedTypeSymbol
                 Return MakeAcyclicBaseType(diagnostics)
             End Function
 
-            Friend Overrides Function MakeDeclaredInterfaces(basesBeingResolved As BasesBeingResolved, diagnostics As DiagnosticBag) As ImmutableArray(Of NamedTypeSymbol)
+            Friend Overrides Function MakeDeclaredInterfaces(basesBeingResolved As BasesBeingResolved, diagnostics As BindingDiagnosticBag) As ImmutableArray(Of NamedTypeSymbol)
                 Return MakeAcyclicInterfaces(diagnostics)
             End Function
 
@@ -379,6 +379,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
 
             Friend NotOverridable Overrides Function GetSynthesizedWithEventsOverrides() As IEnumerable(Of PropertySymbol)
                 Return SpecializedCollections.EmptyEnumerable(Of PropertySymbol)()
+            End Function
+
+            Friend NotOverridable Overrides ReadOnly Property HasAnyDeclaredRequiredMembers As Boolean
+                Get
+                    Return False
+                End Get
+            End Property
+
+            Friend Overrides Function GetGuidString(ByRef guidString As String) As Boolean
+                guidString = Nothing
+                Return False
             End Function
         End Class
 

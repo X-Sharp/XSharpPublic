@@ -9,26 +9,26 @@ using System.IO;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Host;
+using Microsoft.CodeAnalysis.Workspaces.ProjectSystem;
 using Microsoft.VisualStudio.LanguageServices.CSharp.ProjectSystemShim.Interop;
-using Microsoft.VisualStudio.LanguageServices.Implementation.ProjectSystem;
 using Roslyn.Utilities;
 
 namespace Microsoft.VisualStudio.LanguageServices.CSharp.ProjectSystemShim
 {
     internal partial class CSharpProjectShim
     {
-        private class OptionsProcessor : VisualStudioProjectOptionsProcessor
+        private class OptionsProcessor : ProjectSystemProjectOptionsProcessor
         {
-            private readonly VisualStudioProject _visualStudioProject;
+            private readonly ProjectSystemProject _projectSystemProject;
 
             private readonly object[] _options = new object[(int)CompilerOptions.LARGEST_OPTION_ID];
             private string? _mainTypeName;
             private OutputKind _outputKind;
 
-            public OptionsProcessor(VisualStudioProject visualStudioProject, HostWorkspaceServices workspaceServices)
-                : base(visualStudioProject, workspaceServices)
+            public OptionsProcessor(ProjectSystemProject projectSystemProject, SolutionServices workspaceServices)
+                : base(projectSystemProject, workspaceServices)
             {
-                _visualStudioProject = visualStudioProject;
+                _projectSystemProject = projectSystemProject;
             }
 
             public object this[CompilerOptions compilerOption]
@@ -156,9 +156,9 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.ProjectSystemShim
             private IEnumerable<string> ParseWarningCodes(CompilerOptions compilerOptions)
             {
                 Contract.ThrowIfFalse(
-                    compilerOptions == CompilerOptions.OPTID_NOWARNLIST ||
-                    compilerOptions == CompilerOptions.OPTID_WARNASERRORLIST ||
-                    compilerOptions == CompilerOptions.OPTID_WARNNOTASERRORLIST);
+                    compilerOptions is CompilerOptions.OPTID_NOWARNLIST or
+                    CompilerOptions.OPTID_WARNASERRORLIST or
+                    CompilerOptions.OPTID_WARNNOTASERRORLIST);
 
                 foreach (var warning in GetStringOption(compilerOptions, defaultValue: "").Split(new[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries))
                 {
@@ -187,7 +187,7 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.ProjectSystemShim
                     return null;
                 }
 
-                var directory = Path.GetDirectoryName(_visualStudioProject.FilePath);
+                var directory = Path.GetDirectoryName(_projectSystemProject.FilePath);
 
                 if (!string.IsNullOrEmpty(directory))
                 {
@@ -197,7 +197,7 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.ProjectSystemShim
                 return null;
             }
 
-            [return: NotNullIfNotNull("defaultValue")]
+            [return: NotNullIfNotNull(nameof(defaultValue))]
             private string? GetStringOption(CompilerOptions optionID, string? defaultValue)
             {
                 var value = (string)_options[(int)optionID];

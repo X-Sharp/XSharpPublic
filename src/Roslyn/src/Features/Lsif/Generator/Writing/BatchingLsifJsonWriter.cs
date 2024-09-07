@@ -19,7 +19,7 @@ namespace Microsoft.CodeAnalysis.LanguageServerIndexFormat.Generator.Writing
         /// A lock that must be held when adding elements to <see cref="_elements"/>.
         /// </summary>
         private readonly object _elementsGate = new object();
-        private List<Element> _elements = new List<Element>();
+        private List<Element> _elements = [];
 
         /// <summary>
         /// A lock held when writing to ensure that we maintain ordering of elements across multiple threads.
@@ -57,6 +57,14 @@ namespace Microsoft.CodeAnalysis.LanguageServerIndexFormat.Generator.Writing
             }
         }
 
+        public void WriteAll(List<Element> elements)
+        {
+            lock (_elementsGate)
+            {
+                _elements.AddRange(elements);
+            }
+        }
+
         public void FlushToUnderlyingAndEmpty()
         {
             lock (_writingGate)
@@ -66,13 +74,10 @@ namespace Microsoft.CodeAnalysis.LanguageServerIndexFormat.Generator.Writing
                 lock (_elementsGate)
                 {
                     localElements = _elements;
-                    _elements = new List<Element>();
+                    _elements = [];
                 }
 
-                foreach (var element in localElements)
-                {
-                    _underlyingWriter.Write(element);
-                }
+                _underlyingWriter.WriteAll(localElements);
             }
         }
     }

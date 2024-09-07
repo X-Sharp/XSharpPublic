@@ -9,6 +9,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -28,6 +29,7 @@ namespace Microsoft.CodeAnalysis
     {
         /// <summary>
         /// The list of <see cref="AnalyzerConfig" />s in this set. This list has been sorted per <see cref="AnalyzerConfig.DirectoryLengthComparer"/>.
+        /// This does not include any of the global configs that were merged into <see cref="_globalConfig"/>.
         /// </summary>
         private readonly ImmutableArray<AnalyzerConfig> _analyzerConfigs;
 
@@ -57,7 +59,7 @@ namespace Microsoft.CodeAnalysis
 
         private readonly ObjectPool<List<Section>> _sectionKeyPool = new ObjectPool<List<Section>>(() => new List<Section>());
 
-        private StrongBox<AnalyzerConfigOptionsResult>? _lazyConfigOptions;
+        private SingleInitNullable<AnalyzerConfigOptionsResult> _lazyConfigOptions;
 
         private sealed class SequenceEqualComparer : IEqualityComparer<List<Section>>
         {
@@ -164,20 +166,7 @@ namespace Microsoft.CodeAnalysis
         /// Gets an <see cref="AnalyzerConfigOptionsResult"/> that contain the options that apply globally
         /// </summary>
         public AnalyzerConfigOptionsResult GlobalConfigOptions
-        {
-            get
-            {
-                if (_lazyConfigOptions is null)
-                {
-                    Interlocked.CompareExchange(
-                        ref _lazyConfigOptions,
-                        new StrongBox<AnalyzerConfigOptionsResult>(ParseGlobalConfigOptions()),
-                        null);
-                }
-
-                return _lazyConfigOptions.Value;
-            }
-        }
+            => _lazyConfigOptions.Initialize(static @this => @this.ParseGlobalConfigOptions(), this);
 
         /// <summary>
         /// Returns a <see cref="AnalyzerConfigOptionsResult"/> for a source file. This computes which <see cref="AnalyzerConfig"/> rules applies to this file, and correctly applies
@@ -194,14 +183,18 @@ namespace Microsoft.CodeAnalysis
 
             var sectionKey = _sectionKeyPool.Allocate();
 
-            var normalizedPath = PathUtilities.NormalizeWithForwardSlash(sourcePath);
+            var normalizedPath = PathUtilities.CollapseWithForwardSlash(sourcePath.AsSpan());
+            normalizedPath = PathUtilities.ExpandAbsolutePathWithRelativeParts(normalizedPath);
+            normalizedPath = PathUtilities.NormalizeDriveLetter(normalizedPath);
 
-            // If we have a global config, add any sections that match the full path 
+            // If we have a global config, add any sections that match the full path. We can have at most one section since
+            // we would have merged them earlier.
             foreach (var section in _globalConfig.NamedSections)
             {
                 if (normalizedPath.Equals(section.Name, Section.NameComparer))
                 {
                     sectionKey.Add(section);
+                    break;
                 }
             }
             int globalConfigOptionsCount = sectionKey.Count;
@@ -212,7 +205,7 @@ namespace Microsoft.CodeAnalysis
             {
                 var config = _analyzerConfigs[analyzerConfigIndex];
 
-                if (normalizedPath.StartsWith(config.NormalizedDirectory, StringComparison.Ordinal))
+                if (PathUtilities.IsSameDirectoryOrChildOf(normalizedPath, config.NormalizedDirectory, StringComparison.Ordinal))
                 {
                     // If this config is a root config, then clear earlier options since they don't apply
                     // to this source file.
@@ -303,7 +296,7 @@ namespace Microsoft.CodeAnalysis
 
                 result = new AnalyzerConfigOptionsResult(
                     treeOptionsBuilder.Count > 0 ? treeOptionsBuilder.ToImmutable() : SyntaxTree.EmptyDiagnosticOptions,
-                    analyzerOptionsBuilder.Count > 0 ? analyzerOptionsBuilder.ToImmutable() : AnalyzerConfigOptions.EmptyDictionary,
+                    analyzerOptionsBuilder.Count > 0 ? analyzerOptionsBuilder.ToImmutable() : DictionaryAnalyzerConfigOptions.EmptyDictionary,
                     diagnosticBuilder.ToImmutableAndFree());
 
                 if (_optionsCache.TryAdd(sectionKey, result))
@@ -500,7 +493,10 @@ namespace Microsoft.CodeAnalysis
                 {
                     if (IsAbsoluteEditorConfigPath(section.Name))
                     {
-                        MergeSection(config.PathToFile, section, config.GlobalLevel, isGlobalSection: false);
+                        // Let's recreate the section with the name unescaped, since we can then properly merge and match it later
+                        var unescapedSection = new Section(UnescapeSectionName(section.Name), section.Properties);
+
+                        MergeSection(config.PathToFile, unescapedSection, config.GlobalLevel, isGlobalSection: false);
                     }
                     else
                     {

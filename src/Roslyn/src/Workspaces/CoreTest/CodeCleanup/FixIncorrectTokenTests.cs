@@ -4,7 +4,6 @@
 
 #nullable disable
 
-using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CodeCleanup;
 using Microsoft.CodeAnalysis.CodeCleanup.Providers;
@@ -16,11 +15,10 @@ using Xunit;
 namespace Microsoft.CodeAnalysis.UnitTests.CodeCleanup
 {
     [UseExportProvider]
+    [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
     public class FixIncorrectTokensTests
     {
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_WithMatchingIf()
         {
             var code = @"
@@ -43,9 +41,7 @@ End Module";
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_WithMatchingIf_Directive()
         {
             var code = @"[|
@@ -58,9 +54,7 @@ End Module";
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_WithoutMatchingIf()
         {
             var code = @"
@@ -79,9 +73,7 @@ End Module";
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_WithoutMatchingIf_Directive()
         {
             var code = @"[|
@@ -100,7 +92,6 @@ End Class
 
         [Fact(Skip = "889521")]
         [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
         public async Task FixEndIfKeyword_SameLineAsIf()
         {
             var code = @"
@@ -120,9 +111,7 @@ End Module";
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_SameLineAsIf_Invalid()
         {
             var code = @"
@@ -141,9 +130,7 @@ End Module";
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_SameLineAsIf_Directive()
         {
             var code = @"[|
@@ -154,9 +141,7 @@ End Module";
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_WithLeadingTrivia()
         {
             var code = @"
@@ -181,9 +166,7 @@ End Module";
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_WithLeadingTrivia_Directive()
         {
             var code = @"[|
@@ -200,9 +183,7 @@ End Module";
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_InvocationExpressionArgument()
         {
             var code = @"
@@ -225,9 +206,7 @@ End Module";
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_InvalidDirectiveCases()
         {
             var code = @"[|
@@ -284,9 +263,7 @@ InvocationExpression
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_WithTrailingTrivia()
         {
             var code = @"
@@ -309,9 +286,7 @@ End Module";
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_WithTrailingTrivia_Directive()
         {
             var code = @"[|
@@ -326,9 +301,7 @@ End Module";
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_WithIdentifierTokenTrailingTrivia()
         {
             var code = @"
@@ -351,9 +324,7 @@ End Module";
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_InvalidDirectiveCases_02()
         {
             var code = @"[|
@@ -410,9 +381,7 @@ IdentifierToken
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_WithLeadingAndTrailingTrivia()
         {
             var code = @"
@@ -439,9 +408,7 @@ End Module";
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_WithLeadingAndTrailingTrivia_Directive()
         {
             var code = @"[|
@@ -458,9 +425,7 @@ End Module";
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_WithLeadingAndTrailingInvocationExpressions()
         {
             var code = @"
@@ -487,9 +452,7 @@ End Module";
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(17313, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(17313, "DevDiv_Projects/Roslyn")]
         public async Task FixEndIfKeyword_WithLeadingAndTrailingInvocationExpressions_Directive()
         {
             var code = @"[|
@@ -546,9 +509,7 @@ InvalidTrivia#
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(5722, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(5722, "DevDiv_Projects/Roslyn")]
         public async Task FixPrimitiveTypeKeywords_ValidCases()
         {
             var code = @"[|
@@ -639,9 +600,7 @@ End Module
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(5722, "DevDiv_Projects/Roslyn")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem(5722, "DevDiv_Projects/Roslyn")]
         public async Task FixPrimitiveTypeKeywords_InvalidCases()
         {
             // With a user defined type named System
@@ -724,9 +683,7 @@ End Module
             await VerifyAsync(@"[|" + code + @"|]", expectedResult: code);
         }
 
-        [Fact]
-        [WorkItem(606015, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/606015")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/606015")]
         public async Task FixFullWidthSingleQuotes()
         {
             var code = @"[|
@@ -751,9 +708,7 @@ End Module
             await VerifyAsync(code, expected);
         }
 
-        [Fact]
-        [WorkItem(707135, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/707135")]
-        [Trait(Traits.Feature, Traits.Features.FixIncorrectTokens)]
+        [Fact, WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/707135")]
         public async Task FixFullWidthSingleQuotes2()
         {
             var savedCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
@@ -782,13 +737,12 @@ End Module
             codeWithMarker = FixLineEndings(codeWithMarker);
             expectedResult = FixLineEndings(expectedResult);
 
-            MarkupTestFile.GetSpans(codeWithMarker,
-                out var codeWithoutMarker, out ImmutableArray<TextSpan> textSpans);
+            MarkupTestFile.GetSpans(codeWithMarker, out var codeWithoutMarker, out var textSpans);
 
             var document = CreateDocument(codeWithoutMarker, LanguageNames.VisualBasic);
-            var codeCleanups = CodeCleaner.GetDefaultProviders(document).WhereAsArray(p => p.Name == PredefinedCodeCleanupProviderNames.FixIncorrectTokens || p.Name == PredefinedCodeCleanupProviderNames.Format);
+            var codeCleanups = CodeCleaner.GetDefaultProviders(document).WhereAsArray(p => p.Name is PredefinedCodeCleanupProviderNames.FixIncorrectTokens or PredefinedCodeCleanupProviderNames.Format);
 
-            var cleanDocument = await CodeCleaner.CleanupAsync(document, textSpans[0], codeCleanups);
+            var cleanDocument = await CodeCleaner.CleanupAsync(document, textSpans[0], CodeCleanupOptions.GetDefault(document.Project.Services), codeCleanups);
 
             Assert.Equal(expectedResult, (await cleanDocument.GetSyntaxRootAsync()).ToFullString());
         }

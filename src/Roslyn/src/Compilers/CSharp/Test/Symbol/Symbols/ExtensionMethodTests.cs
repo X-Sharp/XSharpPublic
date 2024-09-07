@@ -676,7 +676,7 @@ namespace N4
                 // (10,17): error CS1501: No overload for method 'M1' takes 3 arguments
                 //                 this.M1(1, 2, 3); // MethodResolutionKind.NoCorrespondingParameter
                 Diagnostic(ErrorCode.ERR_BadArgCount, "M1").WithArguments("M1", "3").WithLocation(10, 22),
-                // (11,17): error CS7036: There is no argument given that corresponds to the required formal parameter 'y' of 'N1.N2.C.M2(int, int)'
+                // (11,17): error CS7036: There is no argument given that corresponds to the required parameter 'y' of 'N1.N2.C.M2(int, int)'
                 //                 this.M2(1); // MethodResolutionKind.RequiredParameterMissing
                 Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "M2").WithArguments("y", "N1.N2.C.M2(int, int)").WithLocation(11, 22),
                 // (12,28): error CS1503: Argument 2: cannot convert from 'double' to 'int'
@@ -694,7 +694,7 @@ namespace N4
                 // (41,17): error CS1501: No overload for method 'M1' takes 3 arguments
                 //                 this.M1(1, 2, 3); // MethodResolutionKind.NoCorrespondingParameter
                 Diagnostic(ErrorCode.ERR_BadArgCount, "M1").WithArguments("M1", "3").WithLocation(41, 22),
-                // (42,17): error CS7036: There is no argument given that corresponds to the required formal parameter 'y' of 'N1.N2.C.M2(int, int)'
+                // (42,17): error CS7036: There is no argument given that corresponds to the required parameter 'y' of 'N1.N2.C.M2(int, int)'
                 //                 this.M2(1); // MethodResolutionKind.RequiredParameterMissing
                 Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "M2").WithArguments("y", "N1.N2.C.M2(int, int)").WithLocation(42, 22),
                 // (43,28): error CS1503: Argument 2: cannot convert from 'double' to 'int'
@@ -1135,7 +1135,7 @@ static class S
     internal static object E(this object o) { return null; }
     private static object F(this object o) { return null; }
 }";
-            var compilation = CreateCompilation(source);
+            var compilation = CreateCompilation(source, parseOptions: TestOptions.Regular9);
             compilation.VerifyDiagnostics(
                 // (5,9): error CS1656: Cannot assign to 'E' because it is a 'method group'
                 //         o.E += o.E;
@@ -1152,22 +1152,22 @@ static class S
                 // (10,17): error CS0023: Operator '!' cannot be applied to operand of type 'method group'
                 //             o = !o.E;
                 Diagnostic(ErrorCode.ERR_BadUnaryOp, "!o.E").WithArguments("!", "method group").WithLocation(10, 17),
-                // (12,11): error CS1061: 'object' does not contain a definition for 'F' and no extension method 'F' accepting a first argument of type 'object' could be found (are you missing a using directive or an assembly reference?)
+                // (12,11): error CS1061: 'object' does not contain a definition for 'F' and no accessible extension method 'F' accepting a first argument of type 'object' could be found (are you missing a using directive or an assembly reference?)
                 //         o.F += o.F;
                 Diagnostic(ErrorCode.ERR_NoSuchMemberOrExtension, "F").WithArguments("object", "F").WithLocation(12, 11),
-                // (12,18): error CS1061: 'object' does not contain a definition for 'F' and no extension method 'F' accepting a first argument of type 'object' could be found (are you missing a using directive or an assembly reference?)
+                // (12,18): error CS1061: 'object' does not contain a definition for 'F' and no accessible extension method 'F' accepting a first argument of type 'object' could be found (are you missing a using directive or an assembly reference?)
                 //         o.F += o.F;
                 Diagnostic(ErrorCode.ERR_NoSuchMemberOrExtension, "F").WithArguments("object", "F").WithLocation(12, 18),
-                // (13,15): error CS1061: 'object' does not contain a definition for 'F' and no extension method 'F' accepting a first argument of type 'object' could be found (are you missing a using directive or an assembly reference?)
+                // (13,15): error CS1061: 'object' does not contain a definition for 'F' and no accessible extension method 'F' accepting a first argument of type 'object' could be found (are you missing a using directive or an assembly reference?)
                 //         if (o.F != null)
                 Diagnostic(ErrorCode.ERR_NoSuchMemberOrExtension, "F").WithArguments("object", "F").WithLocation(13, 15),
-                // (15,17): error CS1061: 'object' does not contain a definition for 'F' and no extension method 'F' accepting a first argument of type 'object' could be found (are you missing a using directive or an assembly reference?)
+                // (15,17): error CS1061: 'object' does not contain a definition for 'F' and no accessible extension method 'F' accepting a first argument of type 'object' could be found (are you missing a using directive or an assembly reference?)
                 //             M(o.F);
                 Diagnostic(ErrorCode.ERR_NoSuchMemberOrExtension, "F").WithArguments("object", "F").WithLocation(15, 17),
-                // (16,15): error CS1061: 'object' does not contain a definition for 'F' and no extension method 'F' accepting a first argument of type 'object' could be found (are you missing a using directive or an assembly reference?)
+                // (16,15): error CS1061: 'object' does not contain a definition for 'F' and no accessible extension method 'F' accepting a first argument of type 'object' could be found (are you missing a using directive or an assembly reference?)
                 //             o.F.ToString();
                 Diagnostic(ErrorCode.ERR_NoSuchMemberOrExtension, "F").WithArguments("object", "F").WithLocation(16, 15),
-                // (17,20): error CS1061: 'object' does not contain a definition for 'F' and no extension method 'F' accepting a first argument of type 'object' could be found (are you missing a using directive or an assembly reference?)
+                // (17,20): error CS1061: 'object' does not contain a definition for 'F' and no accessible extension method 'F' accepting a first argument of type 'object' could be found (are you missing a using directive or an assembly reference?)
                 //             o = !o.F;
                 Diagnostic(ErrorCode.ERR_NoSuchMemberOrExtension, "F").WithArguments("object", "F").WithLocation(17, 20),
                 // (19,11): error CS0119: 'S.E(object)' is a method, which is not valid in the given context
@@ -1436,10 +1436,17 @@ static class S
 {
     internal static void E(this object o) { }
 }";
-            var compilation = CreateCompilation(source);
+
+            var compilation = CreateCompilation(source, parseOptions: TestOptions.Regular9);
             compilation.VerifyDiagnostics(
                 // (5,18): error CS0428: Cannot convert method group 'E' to non-delegate type 'object'. Did you intend to invoke the method?
                 Diagnostic(ErrorCode.ERR_MethGrpToNonDel, "E").WithArguments("E", "object").WithLocation(5, 18));
+
+            compilation = CreateCompilation(source);
+            compilation.VerifyDiagnostics(
+                // (5,16): warning CS8974: Converting method group 'E' to non-delegate type 'object'. Did you intend to invoke the method?
+                //         return o.E;
+                Diagnostic(ErrorCode.WRN_MethGrpToNonDel, "o.E").WithArguments("E", "object").WithLocation(5, 16));
         }
 
         [Fact]
@@ -2248,7 +2255,7 @@ class C
   IL_0024:  call       ""string System.Linq.Enumerable.Aggregate<string>(System.Collections.Generic.IEnumerable<string>, System.Func<string, string, string>)""
   IL_0029:  ret       
 }";
-            var compilation = CompileAndVerify(source, expectedOutput: "orange, apple");
+            var compilation = CompileAndVerify(source, parseOptions: TestOptions.Regular10, expectedOutput: "orange, apple");
             compilation.VerifyIL("C.F", code);
             compilation.VerifyIL("C.G", code);
         }
@@ -2286,11 +2293,12 @@ static class C
         a();
     }
 }";
+            // ILVerify: Unrecognized arguments for delegate .ctor.
             var compilation = CompileAndVerify(source, expectedOutput:
 @"F: System.Int32
 F: S
 G: System.Int32
-G: S");
+G: S", verify: Verification.FailsILVerify);
             compilation.VerifyIL("C.Main",
 @"{
   // Code size      105 (0x69)
@@ -2722,7 +2730,7 @@ class Program
             Assert.False(methodSymbol.IsFromCompilation(compilation));
 
             var parameter = methodSymbol.ThisParameter;
-            Assert.Equal(parameter.Ordinal, -1);
+            Assert.Equal(-1, parameter.Ordinal);
             Assert.Equal(parameter.ContainingSymbol, methodSymbol);
 
             // Get the GenericNameSyntax node Cast<T1> for binding
@@ -2764,10 +2772,10 @@ class Program
                 // (5,9): error CS1501: No overload for method 'M' takes 2 arguments
                 //         x.M(x, y);
                 Diagnostic(ErrorCode.ERR_BadArgCount, "M").WithArguments("M", "2").WithLocation(5, 11),
-                // (6,9): error CS7036: There is no argument given that corresponds to the required formal parameter 'y' of 'S.M(object, object)'
+                // (6,9): error CS7036: There is no argument given that corresponds to the required parameter 'y' of 'S.M(object, object)'
                 //         x.M();
                 Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "M").WithArguments("y", "S.M(object, object)").WithLocation(6, 11),
-                // (7,9): error CS7036: There is no argument given that corresponds to the required formal parameter 'y' of 'S.M(object, object)'
+                // (7,9): error CS7036: There is no argument given that corresponds to the required parameter 'y' of 'S.M(object, object)'
                 //         M(x);
                 Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "M").WithArguments("y", "S.M(object, object)").WithLocation(7, 9));
         }
@@ -2849,7 +2857,6 @@ public struct MyStruct<T>
 
             reducedWithReceiver = extensionMethod.GetPublicSymbol().ReduceExtensionMethod(msi.GetPublicSymbol());
             Assert.NotNull(reducedWithReceiver);
-
 
             compilation2 = CreateCompilation(source2, references: new[] { new CSharpCompilationReference(compilation1) }, parseOptions: TestOptions.Regular7);
             compilation2.VerifyDiagnostics(
@@ -4017,7 +4024,7 @@ public static class C
     public static void M2(in this int p) { }
 }";
 
-            void Validator(ModuleSymbol module)
+            void validator(ModuleSymbol module)
             {
                 var type = module.GlobalNamespace.GetMember<NamedTypeSymbol>("C");
 
@@ -4034,7 +4041,7 @@ public static class C
                 Assert.Equal(RefKind.In, parameter.RefKind);
             }
 
-            CompileAndVerify(source, validator: Validator, options: TestOptions.ReleaseDll);
+            CompileAndVerify(source, validator: validator, options: TestOptions.ReleaseDll);
         }
 
         [Fact]
@@ -4047,7 +4054,7 @@ public static class C
     public static void M2(ref this int p) { }
 }";
 
-            void Validator(ModuleSymbol module)
+            void validator(ModuleSymbol module)
             {
                 var type = module.GlobalNamespace.GetMember<NamedTypeSymbol>("C");
 
@@ -4064,7 +4071,73 @@ public static class C
                 Assert.Equal(RefKind.Ref, parameter.RefKind);
             }
 
-            CompileAndVerify(source, validator: Validator, options: TestOptions.ReleaseDll);
+            CompileAndVerify(source, validator: validator, options: TestOptions.ReleaseDll);
+        }
+
+        [Fact]
+        [WorkItem(65020, "https://github.com/dotnet/roslyn/issues/65020")]
+        public void ReduceExtensionsMethodOnReceiverTypeSystemVoid()
+        {
+            var source =
+@"static class C
+{
+    static void M(this object x)
+    {
+    }
+}";
+            var compilation = CreateCompilationWithMscorlib40AndSystemCore(source);
+            compilation.VerifyDiagnostics();
+
+            var extensionMethod = compilation.GlobalNamespace.GetMember<NamedTypeSymbol>("C").GetMember<MethodSymbol>("M");
+            Assert.True(extensionMethod.IsExtensionMethod);
+
+            var systemVoidType = compilation.GetSpecialType(SpecialType.System_Void);
+            Assert.Equal(SpecialType.System_Void, systemVoidType.SpecialType);
+
+            var reduced = extensionMethod.ReduceExtensionMethod(systemVoidType, null!);
+            Assert.Null(reduced);
+
+            reduced = extensionMethod.ReduceExtensionMethod(systemVoidType, compilation);
+            Assert.Null(reduced);
+        }
+
+        [Fact, WorkItem("https://github.com/dotnet/roslyn/issues/68110")]
+        public void DefaultSyntaxValueReentrancy_01()
+        {
+            var source =
+                """
+                #nullable enable
+
+                [A(3, X = 6)]
+                public struct A
+                {
+                    public int X;
+
+                    public A(int x, A a = new A().M(1)) { }
+                }
+
+                public static class AExt
+                {
+                    public static void M(this A s, ref int i) {}
+                }
+                """;
+            var compilation = CreateCompilation(source, targetFramework: TargetFramework.NetCoreApp);
+
+            var a = compilation.GlobalNamespace.GetTypeMember("A").InstanceConstructors.Where(c => !c.IsDefaultValueTypeConstructor()).Single();
+
+            Assert.Null(a.Parameters[1].ExplicitDefaultValue);
+            Assert.True(a.Parameters[1].HasExplicitDefaultValue);
+
+            compilation.VerifyDiagnostics(
+                // (3,2): error CS0616: 'A' is not an attribute class
+                // [A(3, X = 6)]
+                Diagnostic(ErrorCode.ERR_NotAnAttributeClass, "A").WithArguments("A").WithLocation(3, 2),
+                // (3,2): error CS0182: An attribute argument must be a constant expression, typeof expression or array creation expression of an attribute parameter type
+                // [A(3, X = 6)]
+                Diagnostic(ErrorCode.ERR_BadAttributeArgument, "A(3, X = 6)").WithLocation(3, 2),
+                // (8,37): error CS1620: Argument 2 must be passed with the 'ref' keyword
+                //     public A(int x, A a = new A().M(1)) { }
+                Diagnostic(ErrorCode.ERR_BadArgRef, "1").WithArguments("2", "ref").WithLocation(8, 37));
         }
     }
 }

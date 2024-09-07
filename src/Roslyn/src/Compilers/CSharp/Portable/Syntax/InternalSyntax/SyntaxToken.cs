@@ -23,55 +23,40 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             : base(kind)
         {
             FullWidth = this.Text.Length;
-            this.flags |= NodeFlags.IsNotMissing; //note: cleared by subclasses representing missing tokens
+            SetFlags(NodeFlags.IsNotMissing); //note: cleared by subclasses representing missing tokens
         }
 
         internal SyntaxToken(SyntaxKind kind, DiagnosticInfo[] diagnostics)
             : base(kind, diagnostics)
         {
             FullWidth = this.Text.Length;
-            this.flags |= NodeFlags.IsNotMissing; //note: cleared by subclasses representing missing tokens
+            SetFlags(NodeFlags.IsNotMissing); //note: cleared by subclasses representing missing tokens
         }
 
         internal SyntaxToken(SyntaxKind kind, DiagnosticInfo[] diagnostics, SyntaxAnnotation[] annotations)
             : base(kind, diagnostics, annotations)
         {
             FullWidth = this.Text.Length;
-            this.flags |= NodeFlags.IsNotMissing; //note: cleared by subclasses representing missing tokens
+            SetFlags(NodeFlags.IsNotMissing); //note: cleared by subclasses representing missing tokens
         }
 
         internal SyntaxToken(SyntaxKind kind, int fullWidth)
             : base(kind, fullWidth)
         {
-            this.flags |= NodeFlags.IsNotMissing; //note: cleared by subclasses representing missing tokens
+            SetFlags(NodeFlags.IsNotMissing); //note: cleared by subclasses representing missing tokens
         }
 
         internal SyntaxToken(SyntaxKind kind, int fullWidth, DiagnosticInfo[] diagnostics)
             : base(kind, diagnostics, fullWidth)
         {
-            this.flags |= NodeFlags.IsNotMissing; //note: cleared by subclasses representing missing tokens
+            SetFlags(NodeFlags.IsNotMissing); //note: cleared by subclasses representing missing tokens
         }
 
         internal SyntaxToken(SyntaxKind kind, int fullWidth, DiagnosticInfo[] diagnostics, SyntaxAnnotation[] annotations)
             : base(kind, diagnostics, annotations, fullWidth)
         {
-            this.flags |= NodeFlags.IsNotMissing; //note: cleared by subclasses representing missing tokens
+            SetFlags(NodeFlags.IsNotMissing); //note: cleared by subclasses representing missing tokens
         }
-
-        internal SyntaxToken(ObjectReader reader)
-            : base(reader)
-        {
-            var text = this.Text;
-            if (text != null)
-            {
-                FullWidth = text.Length;
-            }
-
-            this.flags |= NodeFlags.IsNotMissing;  //note: cleared by subclasses representing missing tokens
-        }
-
-        internal override bool ShouldReuseInSerialization => base.ShouldReuseInSerialization &&
-                                                             FullWidth < Lexer.MaxCachedTokenSize;
 
         //====================
 
@@ -79,7 +64,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal override GreenNode GetSlot(int index)
         {
-            throw ExceptionUtilities.Unreachable;
+            throw ExceptionUtilities.Unreachable();
         }
 
         internal static SyntaxToken Create(SyntaxKind kind)
@@ -149,8 +134,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         static SyntaxToken()
         {
-            ObjectBinder.RegisterTypeReader(typeof(SyntaxToken), r => new SyntaxToken(r));
-
             for (var kind = FirstTokenWithWellKnownText; kind <= LastTokenWithWellKnownText; kind++)
             {
                 s_tokensWithNoTrivia[(int)kind].Value = new SyntaxToken(kind);
@@ -285,9 +268,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 switch (this.Kind)
                 {
                     case SyntaxKind.TrueKeyword:
-                        return true;
+                        return Boxes.BoxedTrue;
                     case SyntaxKind.FalseKeyword:
-                        return false;
+                        return Boxes.BoxedFalse;
                     case SyntaxKind.NullKeyword:
                         return null;
                     default:
@@ -473,7 +456,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal override SyntaxNode CreateRed(SyntaxNode parent, int position)
         {
-            throw ExceptionUtilities.Unreachable;
+            throw ExceptionUtilities.Unreachable();
         }
     }
 }

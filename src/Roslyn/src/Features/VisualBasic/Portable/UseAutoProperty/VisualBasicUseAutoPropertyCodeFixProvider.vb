@@ -2,6 +2,7 @@
 ' The .NET Foundation licenses this file to you under the MIT license.
 ' See the LICENSE file in the project root for more information.
 
+Imports System.Collections.Immutable
 Imports System.Composition
 Imports System.Diagnostics.CodeAnalysis
 Imports System.Threading
@@ -12,7 +13,7 @@ Imports Microsoft.CodeAnalysis.UseAutoProperty
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UseAutoProperty
-    <ExportCodeFixProvider(LanguageNames.VisualBasic, Name:=NameOf(VisualBasicUseAutoPropertyCodeFixProvider)), [Shared]>
+    <ExportCodeFixProvider(LanguageNames.VisualBasic, Name:=PredefinedCodeFixProviderNames.UseAutoProperty), [Shared]>
     Friend Class VisualBasicUseAutoPropertyCodeFixProvider
         Inherits AbstractUseAutoPropertyCodeFixProvider(Of TypeBlockSyntax, PropertyBlockSyntax, ModifiedIdentifierSyntax, ConstructorBlockSyntax, ExpressionSyntax)
 
@@ -33,7 +34,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UseAutoProperty
             Return Utilities.GetNodeToRemove(identifier)
         End Function
 
-        Protected Overrides Function GetFormattingRules(document As Document) As IEnumerable(Of AbstractFormattingRule)
+        Protected Overrides Function GetFormattingRules(document As Document) As ImmutableArray(Of AbstractFormattingRule)
             Return Nothing
         End Function
 

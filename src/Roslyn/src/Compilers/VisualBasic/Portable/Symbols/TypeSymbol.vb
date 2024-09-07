@@ -94,22 +94,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         ''' </summary>
         Friend MustOverride ReadOnly Property BaseTypeNoUseSiteDiagnostics As NamedTypeSymbol
 
-        Friend Function BaseTypeWithDefinitionUseSiteDiagnostics(<[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo)) As NamedTypeSymbol
+        Friend Function BaseTypeWithDefinitionUseSiteDiagnostics(<[In], Out> ByRef useSiteInfo As CompoundUseSiteInfo(Of AssemblySymbol)) As NamedTypeSymbol
             Dim result = BaseTypeNoUseSiteDiagnostics
 
             If result IsNot Nothing Then
-                result.OriginalDefinition.AddUseSiteDiagnostics(useSiteDiagnostics)
+                result.OriginalDefinition.AddUseSiteInfo(useSiteInfo)
             End If
 
             Return result
         End Function
 
-        Friend Function BaseTypeOriginalDefinition(<[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo)) As NamedTypeSymbol
+        Friend Function BaseTypeOriginalDefinition(<[In], Out> ByRef useSiteInfo As CompoundUseSiteInfo(Of AssemblySymbol)) As NamedTypeSymbol
             Dim result = BaseTypeNoUseSiteDiagnostics
 
             If result IsNot Nothing Then
                 result = result.OriginalDefinition
-                result.AddUseSiteDiagnostics(useSiteDiagnostics)
+                result.AddUseSiteInfo(useSiteInfo)
             End If
 
             Return result
@@ -141,14 +141,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             End Get
         End Property
 
-        Friend Function AllInterfacesWithDefinitionUseSiteDiagnostics(<[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo)) As ImmutableArray(Of NamedTypeSymbol)
+        Friend Function AllInterfacesWithDefinitionUseSiteDiagnostics(<[In], Out> ByRef useSiteInfo As CompoundUseSiteInfo(Of AssemblySymbol)) As ImmutableArray(Of NamedTypeSymbol)
             Dim result = AllInterfacesNoUseSiteDiagnostics
 
             ' Since bases affect content of AllInterfaces set, we need to make sure they all are good.
-            Me.AddUseSiteDiagnosticsForBaseDefinitions(useSiteDiagnostics)
+            Me.AddUseSiteDiagnosticsForBaseDefinitions(useSiteInfo)
 
             For Each iface In result
-                iface.OriginalDefinition.AddUseSiteDiagnostics(useSiteDiagnostics)
+                iface.OriginalDefinition.AddUseSiteInfo(useSiteInfo)
             Next
 
             Return result
@@ -273,9 +273,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         ''' <summary>
         ''' Gets corresponding special TypeId of this type.
         ''' </summary>
-        Public Overridable ReadOnly Property SpecialType As SpecialType Implements ITypeSymbol.SpecialType, ITypeSymbolInternal.SpecialType
+        Public Overridable ReadOnly Property ExtendedSpecialType As ExtendedSpecialType
             Get
-                Return SpecialType.None
+                Return Nothing
+            End Get
+        End Property
+
+        Public ReadOnly Property SpecialType As SpecialType Implements ITypeSymbol.SpecialType, ITypeSymbolInternal.SpecialType
+            Get
+                Return CType(ExtendedSpecialType, SpecialType)
             End Get
         End Property
 
@@ -355,7 +361,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         ''' Type name.
         ''' </param>
         ''' <returns>
-        ''' Symbol for the type, or MissingMetadataSymbol if the type isn't found.
+        ''' Symbol for the type, or Nothing if the type isn't found.
         ''' </returns>
         ''' <remarks></remarks>
         Friend Overridable Function LookupMetadataType(ByRef emittedTypeName As MetadataTypeName) As NamedTypeSymbol
@@ -425,10 +431,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             End If
 
 Done:
-            If namedType Is Nothing Then
-                Return New MissingMetadataTypeSymbol.Nested(DirectCast(Me, NamedTypeSymbol), emittedTypeName)
-            End If
-
             Return namedType
         End Function
 
@@ -436,11 +438,11 @@ Done:
             Return BaseTypeNoUseSiteDiagnostics
         End Function
 
-        Friend Overridable Function GetDirectBaseTypeWithDefinitionUseSiteDiagnostics(basesBeingResolved As BasesBeingResolved, <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo)) As NamedTypeSymbol
+        Friend Overridable Function GetDirectBaseTypeWithDefinitionUseSiteDiagnostics(basesBeingResolved As BasesBeingResolved, <[In], Out> ByRef useSiteInfo As CompoundUseSiteInfo(Of AssemblySymbol)) As NamedTypeSymbol
             Dim result = GetDirectBaseTypeNoUseSiteDiagnostics(basesBeingResolved)
 
             If result IsNot Nothing Then
-                result.OriginalDefinition.AddUseSiteDiagnostics(useSiteDiagnostics)
+                result.OriginalDefinition.AddUseSiteInfo(useSiteInfo)
             End If
 
             Return result
@@ -513,16 +515,14 @@ Done:
         ''' <summary>
         ''' Return error code that has highest priority while calculating use site error for this symbol. 
         ''' </summary>
-        Protected Overrides ReadOnly Property HighestPriorityUseSiteError As Integer
-            Get
-                Return ERRID.ERR_UnsupportedType1
-            End Get
-        End Property
+        Protected Overrides Function IsHighestPriorityUseSiteError(code As Integer) As Boolean
+            Return code = ERRID.ERR_UnsupportedType1 OrElse code = ERRID.ERR_UnsupportedCompilerFeature
+        End Function
 
-        Public NotOverridable Overrides ReadOnly Property HasUnsupportedMetadata As Boolean
+        Public Overrides ReadOnly Property HasUnsupportedMetadata As Boolean
             Get
-                Dim info As DiagnosticInfo = GetUseSiteErrorInfo()
-                Return info IsNot Nothing AndAlso info.Code = ERRID.ERR_UnsupportedType1
+                Dim info As DiagnosticInfo = GetUseSiteInfo().DiagnosticInfo
+                Return info IsNot Nothing AndAlso (info.Code = ERRID.ERR_UnsupportedType1 OrElse info.Code = ERRID.ERR_UnsupportedCompilerFeature)
             End Get
         End Property
 
@@ -645,7 +645,7 @@ Done:
 
             If Not interfaceMember.RequiresImplementation() OrElse
                Me.IsInterfaceType() OrElse ' In VB interfaces do not implement anything
-               Not Me.ImplementsInterface(interfaceMember.ContainingType, comparer:=EqualsIgnoringComparer.InstanceCLRSignatureCompare, useSiteDiagnostics:=Nothing) Then
+               Not Me.ImplementsInterface(interfaceMember.ContainingType, comparer:=EqualsIgnoringComparer.InstanceCLRSignatureCompare, useSiteInfo:=CompoundUseSiteInfo(Of AssemblySymbol).Discarded) Then
                 Return Nothing
             End If
 
@@ -673,7 +673,6 @@ Done:
                 Return If(Interlocked.CompareExchange(_lazyImplementationForInterfaceMemberMap, map, Nothing), map)
             End Get
         End Property
-
 
         ''' <summary>
         ''' Compute the implementation for an interface member in this type, or Nothing if none.

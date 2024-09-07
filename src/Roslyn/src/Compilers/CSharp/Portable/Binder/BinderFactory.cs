@@ -17,7 +17,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         // key in the binder cache.
         // PERF: we are not using ValueTuple because its Equals is relatively slow.
-        private struct BinderCacheKey : IEquatable<BinderCacheKey>
+        internal readonly struct BinderCacheKey : IEquatable<BinderCacheKey>
         {
             public readonly CSharpSyntaxNode syntaxNode;
             public readonly NodeUsage usage;
@@ -44,7 +44,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-
         // This dictionary stores contexts so we don't have to recreate them, which can be
         // expensive. 
         private readonly ConcurrentCache<BinderCacheKey, Binder> _binderCache;
@@ -56,15 +55,17 @@ namespace Microsoft.CodeAnalysis.CSharp
         // In a typing scenario, GetBinder is regularly called with a non-zero position.
         // This results in a lot of allocations of BinderFactoryVisitors. Pooling them
         // reduces this churn to almost nothing.
+        private static readonly ObjectPool<BinderFactoryVisitor> s_binderFactoryVisitorPool
+            = new ObjectPool<BinderFactoryVisitor>(static () => new BinderFactoryVisitor(), 64);
+
         private readonly ObjectPool<BinderFactoryVisitor> _binderFactoryVisitorPool;
 
-        internal BinderFactory(CSharpCompilation compilation, SyntaxTree syntaxTree, bool ignoreAccessibility)
+        internal BinderFactory(CSharpCompilation compilation, SyntaxTree syntaxTree, bool ignoreAccessibility, ObjectPool<BinderFactoryVisitor> binderFactoryVisitorPoolOpt = null)
         {
             _compilation = compilation;
             _syntaxTree = syntaxTree;
             _ignoreAccessibility = ignoreAccessibility;
-
-            _binderFactoryVisitorPool = new ObjectPool<BinderFactoryVisitor>(() => new BinderFactoryVisitor(this), 64);
+            _binderFactoryVisitorPool = binderFactoryVisitorPoolOpt ?? s_binderFactoryVisitorPool;
 
             // 50 is more or less a guess, but it seems to work fine for scenarios that I tried.
             // we need something big enough to keep binders for most classes and some methods 
@@ -75,7 +76,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // more than 50 items added before getting collected.
             _binderCache = new ConcurrentCache<BinderCacheKey, Binder>(50);
 
-            _buckStopsHereBinder = new BuckStopsHereBinder(compilation);
+            _buckStopsHereBinder = new BuckStopsHereBinder(compilation, FileIdentifier.Create(syntaxTree, compilation.Options.SourceReferenceResolver));
         }
 
         internal SyntaxTree SyntaxTree
@@ -124,17 +125,37 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             Debug.Assert(node != null);
 
-            BinderFactoryVisitor visitor = _binderFactoryVisitorPool.Allocate();
-            visitor.Initialize(position, memberDeclarationOpt, memberOpt);
+#if DEBUG
+            if (memberOpt is { ContainingSymbol: SourceMemberContainerTypeSymbol container })
+            {
+                container.AssertMemberExposure(memberOpt);
+            }
+#endif
+            BinderFactoryVisitor visitor = GetBinderFactoryVisitor(position, memberDeclarationOpt, memberOpt);
             Binder result = visitor.Visit(node);
-            _binderFactoryVisitorPool.Free(visitor);
+            ClearBinderFactoryVisitor(visitor);
 
             return result;
         }
 
-        internal InMethodBinder GetRecordConstructorInMethodBinder(SynthesizedRecordConstructor constructor)
+        private BinderFactoryVisitor GetBinderFactoryVisitor(int position, CSharpSyntaxNode memberDeclarationOpt, Symbol memberOpt)
         {
-            RecordDeclarationSyntax typeDecl = constructor.GetSyntax();
+            BinderFactoryVisitor visitor = _binderFactoryVisitorPool.Allocate();
+            visitor.Initialize(factory: this, position, memberDeclarationOpt, memberOpt);
+
+            return visitor;
+        }
+
+        private void ClearBinderFactoryVisitor(BinderFactoryVisitor visitor)
+        {
+            visitor.Clear();
+            _binderFactoryVisitorPool.Free(visitor);
+        }
+
+        internal InMethodBinder GetPrimaryConstructorInMethodBinder(SynthesizedPrimaryConstructor constructor)
+        {
+            var typeDecl = constructor.GetSyntax();
+            Debug.Assert(typeDecl.ParameterList is not null);
 
             var extraInfo = NodeUsage.ConstructorBodyOrInitializer;
             var key = BinderFactoryVisitor.CreateBinderCacheKey(typeDecl, extraInfo);
@@ -143,7 +164,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 // Ctors cannot be generic
                 Debug.Assert(constructor.Arity == 0, "Generic Ctor, What to do?");
-                resultBinder = new InMethodBinder(constructor, GetInRecordBodyBinder(typeDecl));
+                resultBinder = new InMethodBinder(constructor, GetInTypeBodyBinder(typeDecl));
 
                 _binderCache.TryAdd(key, resultBinder);
             }
@@ -151,44 +172,34 @@ namespace Microsoft.CodeAnalysis.CSharp
             return (InMethodBinder)resultBinder;
         }
 
-        internal Binder GetInRecordBodyBinder(RecordDeclarationSyntax typeDecl)
+        internal Binder GetInTypeBodyBinder(TypeDeclarationSyntax typeDecl)
         {
-            BinderFactoryVisitor visitor = _binderFactoryVisitorPool.Allocate();
-            visitor.Initialize(position: typeDecl.SpanStart, memberDeclarationOpt: null, memberOpt: null);
+            BinderFactoryVisitor visitor = GetBinderFactoryVisitor(position: typeDecl.SpanStart, memberDeclarationOpt: null, memberOpt: null);
             Binder resultBinder = visitor.VisitTypeDeclarationCore(typeDecl, NodeUsage.NamedTypeBodyOrTypeParameters);
-            _binderFactoryVisitorPool.Free(visitor);
+            ClearBinderFactoryVisitor(visitor);
 
             return resultBinder;
         }
 
-        /// <summary>
-        /// Returns binder that binds usings and aliases 
-        /// </summary>
-        /// <param name="unit">
-        /// Specify <see cref="NamespaceDeclarationSyntax"/> imports in the corresponding namespace, or
-        /// <see cref="CompilationUnitSyntax"/> for top-level imports.
-        /// </param>
-        /// <param name="inUsing">True if the binder will be used to bind a using directive.</param>
-        internal Binder GetImportsBinder(CSharpSyntaxNode unit, bool inUsing = false)
+        internal Binder GetInNamespaceBinder(CSharpSyntaxNode unit)
         {
             switch (unit.Kind())
             {
                 case SyntaxKind.NamespaceDeclaration:
+                case SyntaxKind.FileScopedNamespaceDeclaration:
                     {
-                        BinderFactoryVisitor visitor = _binderFactoryVisitorPool.Allocate();
-                        visitor.Initialize(0, null, null);
-                        Binder result = visitor.VisitNamespaceDeclaration((NamespaceDeclarationSyntax)unit, unit.SpanStart, inBody: true, inUsing: inUsing);
-                        _binderFactoryVisitorPool.Free(visitor);
+                        BinderFactoryVisitor visitor = GetBinderFactoryVisitor(0, null, null);
+                        Binder result = visitor.VisitNamespaceDeclaration((BaseNamespaceDeclarationSyntax)unit, unit.SpanStart, inBody: true, inUsing: false);
+                        ClearBinderFactoryVisitor(visitor);
                         return result;
                     }
 
                 case SyntaxKind.CompilationUnit:
                     // imports are bound by the Script class binder:
                     {
-                        BinderFactoryVisitor visitor = _binderFactoryVisitorPool.Allocate();
-                        visitor.Initialize(0, null, null);
-                        Binder result = visitor.VisitCompilationUnit((CompilationUnitSyntax)unit, inUsing: inUsing, inScript: InScript);
-                        _binderFactoryVisitorPool.Free(visitor);
+                        BinderFactoryVisitor visitor = GetBinderFactoryVisitor(0, null, null);
+                        Binder result = visitor.VisitCompilationUnit((CompilationUnitSyntax)unit, inUsing: false, inScript: InScript);
+                        ClearBinderFactoryVisitor(visitor);
                         return result;
                     }
 

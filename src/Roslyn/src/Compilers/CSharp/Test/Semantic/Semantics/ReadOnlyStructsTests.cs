@@ -410,9 +410,9 @@ public partial struct S
 ";
             var comp = CreateCompilation(csharp);
             comp.VerifyDiagnostics(
-                // (10,27): error CS8662: Both partial method declarations must be readonly or neither may be readonly
+                // (10,27): error CS8662: Both partial member declarations must be readonly or neither may be readonly
                 //     readonly partial void M()
-                Diagnostic(ErrorCode.ERR_PartialMethodReadOnlyDifference, "M").WithLocation(10, 27),
+                Diagnostic(ErrorCode.ERR_PartialMemberReadOnlyDifference, "M").WithLocation(10, 27),
                 // (12,9): error CS1604: Cannot assign to 'i' because it is read-only
                 //         i++;
                 Diagnostic(ErrorCode.ERR_AssgReadonlyLocal, "i").WithArguments("i").WithLocation(12, 9));
@@ -443,9 +443,9 @@ public partial struct S
 ";
             var comp = CreateCompilation(csharp);
             comp.VerifyDiagnostics(
-                // (10,18): error CS8662: Both partial method declarations must be readonly or neither may be readonly
+                // (10,18): error CS8662: Both partial member declarations must be readonly or neither may be readonly
                 //     partial void M()
-                Diagnostic(ErrorCode.ERR_PartialMethodReadOnlyDifference, "M").WithLocation(10, 18));
+                Diagnostic(ErrorCode.ERR_PartialMemberReadOnlyDifference, "M").WithLocation(10, 18));
 
             var method = comp.GetMember<NamedTypeSymbol>("S").GetMethod("M");
             // Symbol APIs always return the declaration part of the partial method.
@@ -1229,8 +1229,8 @@ public readonly struct S2
             static IEventSymbol getEvent(INamedTypeSymbol symbol, string name) => (IEventSymbol)symbol.GetMembers(name).Single();
         }
 
-        [Fact]
-        public void ReadOnlyMembers_ExtensionMethods_SemanticModel()
+        [Theory, CombinatorialData]
+        public void ReadOnlyMembers_ExtensionMethods_SemanticModel([CombinatorialValues("in", "ref readonly")] string modifier)
         {
             var csharp = @"
 public struct S1 {}
@@ -1240,10 +1240,10 @@ public static class C
 {
     static void M1(this S1 s1) {}
     static void M2(this ref S1 s1) {}
-    static void M3(this in S1 s1) {}
+    static void M3(this " + modifier + @" S1 s1) {}
     static void M4(this S2 s2) {}
     static void M5(this ref S2 s2) {}
-    static void M6(this in S2 s2) {}
+    static void M6(this " + modifier + @" S2 s2) {}
 
     static void Test()
     {
@@ -2046,7 +2046,7 @@ public struct S
                 Diagnostic(ErrorCode.ERR_BadMemberFlag, "S").WithArguments("readonly").WithLocation(4, 15),
                 // (4,15): error CS0575: Only class types can contain destructors
                 //     readonly ~S() { }
-                Diagnostic(ErrorCode.ERR_OnlyClassesCanContainDestructors, "S").WithArguments("S.~S()").WithLocation(4, 15));
+                Diagnostic(ErrorCode.ERR_OnlyClassesCanContainDestructors, "S").WithLocation(4, 15));
         }
 
         [Fact]
@@ -2128,7 +2128,7 @@ public struct S
 ";
             var comp = CreateCompilation(csharp);
             comp.VerifyDiagnostics(
-                // (6,9): error CS7036: There is no argument given that corresponds to the required formal parameter 'a' of 'S.M2(Func<int>)'
+                // (6,9): error CS7036: There is no argument given that corresponds to the required parameter 'a' of 'S.M2(Func<int>)'
                 //         M2(readonly () => 42);
                 Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "M2").WithArguments("a", "S.M2(System.Func<int>)").WithLocation(6, 9),
                 // (6,12): error CS1026: ) expected
@@ -2148,7 +2148,7 @@ public struct S
                 Diagnostic(ErrorCode.ERR_IdentifierExpected, "=>").WithLocation(6, 24),
                 // (6,24): error CS1003: Syntax error, ',' expected
                 //         M2(readonly () => 42);
-                Diagnostic(ErrorCode.ERR_SyntaxError, "=>").WithArguments(",", "=>").WithLocation(6, 24),
+                Diagnostic(ErrorCode.ERR_SyntaxError, "=>").WithArguments(",").WithLocation(6, 24),
                 // (6,27): error CS1002: ; expected
                 //         M2(readonly () => 42);
                 Diagnostic(ErrorCode.ERR_SemicolonExpected, "42").WithLocation(6, 27),

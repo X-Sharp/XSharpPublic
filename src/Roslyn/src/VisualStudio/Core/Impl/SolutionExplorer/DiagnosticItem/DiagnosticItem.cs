@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +12,6 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.Internal.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
-using Microsoft.VisualStudio.LanguageServices.Implementation.Utilities;
 
 namespace Microsoft.VisualStudio.LanguageServices.Implementation.SolutionExplorer
 {
@@ -21,7 +19,6 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.SolutionExplore
     {
         private readonly AnalyzerReference _analyzerReference;
         private readonly IAnalyzersCommandHandler _commandHandler;
-        private readonly string _language;
 
         public ProjectId ProjectId { get; }
         public DiagnosticDescriptor Descriptor { get; }
@@ -29,14 +26,13 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.SolutionExplore
 
         public override event PropertyChangedEventHandler? PropertyChanged;
 
-        public DiagnosticItem(ProjectId projectId, AnalyzerReference analyzerReference, DiagnosticDescriptor descriptor, ReportDiagnostic effectiveSeverity, string language, IAnalyzersCommandHandler commandHandler)
+        public DiagnosticItem(ProjectId projectId, AnalyzerReference analyzerReference, DiagnosticDescriptor descriptor, ReportDiagnostic effectiveSeverity, IAnalyzersCommandHandler commandHandler)
             : base(descriptor.Id + ": " + descriptor.Title)
         {
             ProjectId = projectId;
             _analyzerReference = analyzerReference;
             Descriptor = descriptor;
             EffectiveSeverity = effectiveSeverity;
-            _language = language;
             _commandHandler = commandHandler;
         }
 
@@ -50,9 +46,6 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.SolutionExplore
             return new BrowseObject(this);
         }
 
-        public Uri? GetHelpLink()
-            => BrowserHelper.GetHelpLink(Descriptor, _language);
-
         internal void UpdateEffectiveSeverity(ReportDiagnostic newEffectiveSeverity)
         {
             if (EffectiveSeverity != newEffectiveSeverity)
@@ -64,7 +57,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.SolutionExplore
             }
         }
 
-        private ImageMoniker MapEffectiveSeverityToIconMoniker(ReportDiagnostic effectiveSeverity)
+        private static ImageMoniker MapEffectiveSeverityToIconMoniker(ReportDiagnostic effectiveSeverity)
             => effectiveSeverity switch
             {
                 ReportDiagnostic.Error => KnownMonikers.CodeErrorRule,

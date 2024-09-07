@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE;
 using Microsoft.CodeAnalysis.CSharp.Symbols.Retargeting;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
+using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
@@ -19,13 +20,12 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Semantics
     [CompilerTrait(CompilerFeature.InitOnlySetters)]
     public class InitOnlyMemberTests : CompilingTestBase
     {
-        // Spec: https://github.com/dotnet/csharplang/blob/master/proposals/init.md
+        // Spec: https://github.com/dotnet/csharplang/blob/main/proposals/init.md
 
         // https://github.com/dotnet/roslyn/issues/44685
         // test dynamic scenario
         // test whether reflection use property despite modreq?
         // test behavior of old compiler with modreq. For example VB
-        // test with ambiguous IsExternalInit types
 
         [Fact]
         public void TestCSharp8()
@@ -1279,9 +1279,9 @@ public class C
 ";
             var comp = CreateCompilation(new[] { source, IsExternalInitTypeDefinition }, parseOptions: TestOptions.Regular9);
             comp.VerifyEmitDiagnostics(
-                // (8,16): error CS0206: A property or indexer may not be passed as an out or ref parameter
+                // (8,16): error CS0206: A non ref-returning property or indexer may not be used as an out or ref value
                 //         M2(out Property); // 1
-                Diagnostic(ErrorCode.ERR_RefProperty, "Property").WithArguments("C.Property").WithLocation(8, 16)
+                Diagnostic(ErrorCode.ERR_RefProperty, "Property").WithLocation(8, 16)
                 );
         }
 
@@ -1409,19 +1409,19 @@ public class C
             comp.VerifyEmitDiagnostics(
                 // (4,13): error CS8145: Auto-implemented properties cannot return by reference
                 //     ref int Property1 { get; init; }
-                Diagnostic(ErrorCode.ERR_AutoPropertyCannotBeRefReturning, "Property1").WithArguments("C.Property1").WithLocation(4, 13),
+                Diagnostic(ErrorCode.ERR_AutoPropertyCannotBeRefReturning, "Property1").WithLocation(4, 13),
                 // (4,30): error CS8147: Properties which return by reference cannot have set accessors
                 //     ref int Property1 { get; init; }
-                Diagnostic(ErrorCode.ERR_RefPropertyCannotHaveSetAccessor, "init").WithArguments("C.Property1.init").WithLocation(4, 30),
+                Diagnostic(ErrorCode.ERR_RefPropertyCannotHaveSetAccessor, "init").WithLocation(4, 30),
                 // (5,13): error CS8146: Properties which return by reference must have a get accessor
                 //     ref int Property2 { init; }
-                Diagnostic(ErrorCode.ERR_RefPropertyMustHaveGetAccessor, "Property2").WithArguments("C.Property2").WithLocation(5, 13),
+                Diagnostic(ErrorCode.ERR_RefPropertyMustHaveGetAccessor, "Property2").WithLocation(5, 13),
                 // (6,44): error CS8147: Properties which return by reference cannot have set accessors
                 //     ref int Property3 { get => throw null; init => throw null; }
-                Diagnostic(ErrorCode.ERR_RefPropertyCannotHaveSetAccessor, "init").WithArguments("C.Property3.init").WithLocation(6, 44),
+                Diagnostic(ErrorCode.ERR_RefPropertyCannotHaveSetAccessor, "init").WithLocation(6, 44),
                 // (7,13): error CS8146: Properties which return by reference must have a get accessor
                 //     ref int Property4 { init => throw null; }
-                Diagnostic(ErrorCode.ERR_RefPropertyMustHaveGetAccessor, "Property4").WithArguments("C.Property4").WithLocation(7, 13)
+                Diagnostic(ErrorCode.ERR_RefPropertyMustHaveGetAccessor, "Property4").WithLocation(7, 13)
                 );
         }
 
@@ -1439,9 +1439,9 @@ public class C
                 options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All));
             comp.VerifyDiagnostics();
 
-            // PE verification fails:  [ : C::set_Property] Cannot change initonly field outside its .ctor.
+            // PEVerify:  [ : C::set_Property] Cannot change initonly field outside its .ctor.
             CompileAndVerify(comp, sourceSymbolValidator: symbolValidator, symbolValidator: symbolValidator,
-                verify: ExecutionConditionUtil.IsCoreClr ? Verification.Passes : Verification.Fails);
+                verify: Verification.FailsPEVerify);
 
             void symbolValidator(ModuleSymbol m)
             {
@@ -2279,6 +2279,7 @@ public interface IWithInitWithExplicitImplementation : I1, I2
                 targetFramework: TargetFramework.NetCoreApp,
                 parseOptions: TestOptions.Regular9);
             Assert.True(comp.Assembly.RuntimeSupportsDefaultInterfaceImplementation);
+            Assert.True(comp.SupportsRuntimeCapability(RuntimeCapability.DefaultImplementationsOfInterfaces));
 
             comp.VerifyEmitDiagnostics(
                 // (12,12): warning CS0108: 'IWithoutInit.Property' hides inherited member 'I1.Property'. Use the new keyword if hiding was intended.
@@ -2371,6 +2372,7 @@ public class CWithImplementationWithoutInitOnly : I1, I2 // 7
                 targetFramework: TargetFramework.NetCoreApp,
                 parseOptions: TestOptions.Regular9);
             Assert.True(comp.Assembly.RuntimeSupportsDefaultInterfaceImplementation);
+            Assert.True(comp.SupportsRuntimeCapability(RuntimeCapability.DefaultImplementationsOfInterfaces));
 
             comp.VerifyEmitDiagnostics(
                 // (13,12): warning CS0108: 'IWithoutInit.Property' hides inherited member 'I1.Property'. Use the new keyword if hiding was intended.
@@ -2543,8 +2545,8 @@ public record C(int i)
                 "void C.M()",
                 "System.String C.ToString()",
                 "System.Boolean C." + WellKnownMemberNames.PrintMembersMethodName + "(System.Text.StringBuilder builder)",
-                "System.Boolean C.op_Inequality(C? r1, C? r2)",
-                "System.Boolean C.op_Equality(C? r1, C? r2)",
+                "System.Boolean C.op_Inequality(C? left, C? right)",
+                "System.Boolean C.op_Equality(C? left, C? right)",
                 "System.Int32 C.GetHashCode()",
                 "System.Boolean C.Equals(System.Object? obj)",
                 "System.Boolean C.Equals(C? other)",
@@ -2636,19 +2638,19 @@ public class C
     {
         init
         {
-            field = null;
+            @field = null;
         }
     }
     public int RegularProperty
     {
         get
         {
-            field = null; // 3
+            @field = null; // 3
             throw null;
         }
         set
         {
-            field = null; // 4
+            @field = null; // 4
         }
     }
 }
@@ -2666,34 +2668,34 @@ public class Derived : C
     {
         init
         {
-            field = null; // 7
+            @field = null; // 7
         }
     }
 }
 ";
             var comp = CreateCompilation(new[] { source, IsExternalInitTypeDefinition }, parseOptions: TestOptions.Regular9);
             comp.VerifyEmitDiagnostics(
-                // (11,9): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the class in which the field is defined or a variable initializer))
+                // 0.cs(11,9): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
                 //         field = null; // 1
                 Diagnostic(ErrorCode.ERR_AssgReadonly, "field").WithLocation(11, 9),
-                // (12,23): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+                // 0.cs(12,23): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
                 //         _ = new C() { field = null }; // 2
                 Diagnostic(ErrorCode.ERR_AssgReadonly, "field").WithLocation(12, 23),
-                // (25,13): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
-                //             field = null; // 3
-                Diagnostic(ErrorCode.ERR_AssgReadonly, "field").WithLocation(25, 13),
-                // (30,13): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
-                //             field = null; // 4
-                Diagnostic(ErrorCode.ERR_AssgReadonly, "field").WithLocation(30, 13),
-                // (38,9): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+                // 0.cs(25,13): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+                //             @field = null; // 3
+                Diagnostic(ErrorCode.ERR_AssgReadonly, "@field").WithLocation(25, 13),
+                // 0.cs(30,13): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+                //             @field = null; // 4
+                Diagnostic(ErrorCode.ERR_AssgReadonly, "@field").WithLocation(30, 13),
+                // 0.cs(38,9): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
                 //         field = null; // 5
                 Diagnostic(ErrorCode.ERR_AssgReadonly, "field").WithLocation(38, 9),
-                // (42,9): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+                // 0.cs(42,9): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
                 //         field = null; // 6
                 Diagnostic(ErrorCode.ERR_AssgReadonly, "field").WithLocation(42, 9),
-                // (48,13): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
-                //             field = null; // 7
-                Diagnostic(ErrorCode.ERR_AssgReadonly, "field").WithLocation(48, 13)
+                // 0.cs(48,13): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+                //             @field = null; // 7
+                Diagnostic(ErrorCode.ERR_AssgReadonly, "@field").WithLocation(48, 13)
                 );
         }
 
@@ -2722,7 +2724,7 @@ public class C
     {
         init
         {
-            field = value;
+            @field = value;
         }
     }
 }
@@ -2731,9 +2733,9 @@ public class C
             var comp = CreateCompilation(new[] { source, IsExternalInitTypeDefinition },
                 options: TestOptions.DebugExe, parseOptions: TestOptions.Regular9);
             comp.VerifyDiagnostics();
-            // [ : C::set_Property] Cannot change initonly field outside its .ctor.
+            // PEVerify: [ : C::set_Property] Cannot change initonly field outside its .ctor.
             CompileAndVerify(comp, expectedOutput: "42 43",
-                verify: ExecutionConditionUtil.IsCoreClr ? Verification.Passes : Verification.Fails);
+                verify: Verification.FailsPEVerify);
         }
 
         [Fact]
@@ -2836,7 +2838,7 @@ public class C
     {
         init
         {
-            c.field = null; // 2
+            c.@field = null; // 2
         }
     }
 }
@@ -2851,7 +2853,7 @@ public class Derived : C
     {
         init
         {
-            c.field = null; // 4
+            c.@field = null; // 4
         }
     }
 }
@@ -2869,22 +2871,22 @@ public class Caller
 
             var comp = CreateCompilation(new[] { source, IsExternalInitTypeDefinition }, parseOptions: TestOptions.Regular9);
             comp.VerifyEmitDiagnostics(
-                // (9,9): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the class in which the field is defined or a variable initializer))
+                // 0.cs(9,9): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
                 //         c.field = null; // 1
                 Diagnostic(ErrorCode.ERR_AssgReadonly, "c.field").WithLocation(9, 9),
-                // (16,13): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
-                //             c.field = null; // 2
-                Diagnostic(ErrorCode.ERR_AssgReadonly, "c.field").WithLocation(16, 13),
-                // (24,9): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+                // 0.cs(16,13): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+                //             c.@field = null; // 2
+                Diagnostic(ErrorCode.ERR_AssgReadonly, "c.@field").WithLocation(16, 13),
+                // 0.cs(24,9): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
                 //         c.field = null; // 3
                 Diagnostic(ErrorCode.ERR_AssgReadonly, "c.field").WithLocation(24, 9),
-                // (31,13): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
-                //             c.field = null; // 4
-                Diagnostic(ErrorCode.ERR_AssgReadonly, "c.field").WithLocation(31, 13),
-                // (40,13): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+                // 0.cs(31,13): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+                //             c.@field = null; // 4
+                Diagnostic(ErrorCode.ERR_AssgReadonly, "c.@field").WithLocation(31, 13),
+                // 0.cs(40,13): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
                 //             field = // 5
                 Diagnostic(ErrorCode.ERR_AssgReadonly, "field").WithLocation(40, 13),
-                // (41,18): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+                // 0.cs(41,18): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
                 //                 (c.field = null)  // 6
                 Diagnostic(ErrorCode.ERR_AssgReadonly, "c.field").WithLocation(41, 18)
                 );
@@ -2913,19 +2915,19 @@ public class C
     {
         init
         {
-            field.content = null;
+            @field.content = null;
         }
     }
     public int RegularProperty
     {
         get
         {
-            field.content = null; // 2
+            @field.content = null; // 2
             throw null;
         }
         set
         {
-            field.content = null; // 3
+            @field.content = null; // 3
         }
     }
 }
@@ -2943,31 +2945,31 @@ public class Derived : C
     {
         init
         {
-            field.content = null; // 6
+            @field.content = null; // 6
         }
     }
 }
 ";
             var comp = CreateCompilation(new[] { source, IsExternalInitTypeDefinition }, parseOptions: TestOptions.Regular9);
             comp.VerifyEmitDiagnostics(
-                // (15,9): error CS1648: Members of readonly field 'C.field' cannot be modified (except in a constructor, an init-only member or a variable initializer)
+                // 0.cs(15,9): error CS1648: Members of readonly field 'C.field' cannot be modified (except in a constructor or a variable initializer)
                 //         field.content = null; // 1
                 Diagnostic(ErrorCode.ERR_AssgReadonly2, "field.content").WithArguments("C.field").WithLocation(15, 9),
-                // (28,13): error CS1648: Members of readonly field 'C.field' cannot be modified (except in a constructor, an init-only member or a variable initializer)
-                //             field.content = null; // 2
-                Diagnostic(ErrorCode.ERR_AssgReadonly2, "field.content").WithArguments("C.field").WithLocation(28, 13),
-                // (33,13): error CS1648: Members of readonly field 'C.field' cannot be modified (except in a constructor, an init-only member or a variable initializer)
-                //             field.content = null; // 3
-                Diagnostic(ErrorCode.ERR_AssgReadonly2, "field.content").WithArguments("C.field").WithLocation(33, 13),
-                // (41,9): error CS1648: Members of readonly field 'C.field' cannot be modified (except in a constructor, an init-only member or a variable initializer)
+                // 0.cs(28,13): error CS1648: Members of readonly field 'C.field' cannot be modified (except in a constructor or a variable initializer)
+                //             @field.content = null; // 2
+                Diagnostic(ErrorCode.ERR_AssgReadonly2, "@field.content").WithArguments("C.field").WithLocation(28, 13),
+                // 0.cs(33,13): error CS1648: Members of readonly field 'C.field' cannot be modified (except in a constructor or a variable initializer)
+                //             @field.content = null; // 3
+                Diagnostic(ErrorCode.ERR_AssgReadonly2, "@field.content").WithArguments("C.field").WithLocation(33, 13),
+                // 0.cs(41,9): error CS1648: Members of readonly field 'C.field' cannot be modified (except in a constructor or a variable initializer)
                 //         field.content = null; // 4
                 Diagnostic(ErrorCode.ERR_AssgReadonly2, "field.content").WithArguments("C.field").WithLocation(41, 9),
-                // (45,9): error CS1648: Members of readonly field 'C.field' cannot be modified (except in a constructor, an init-only member or a variable initializer)
+                // 0.cs(45,9): error CS1648: Members of readonly field 'C.field' cannot be modified (except in a constructor or a variable initializer)
                 //         field.content = null; // 5
                 Diagnostic(ErrorCode.ERR_AssgReadonly2, "field.content").WithArguments("C.field").WithLocation(45, 9),
-                // (51,13): error CS1648: Members of readonly field 'C.field' cannot be modified (except in a constructor, an init-only member or a variable initializer)
-                //             field.content = null; // 6
-                Diagnostic(ErrorCode.ERR_AssgReadonly2, "field.content").WithArguments("C.field").WithLocation(51, 13)
+                // 0.cs(51,13): error CS1648: Members of readonly field 'C.field' cannot be modified (except in a constructor or a variable initializer)
+                //             @field.content = null; // 6
+                Diagnostic(ErrorCode.ERR_AssgReadonly2, "@field.content").WithArguments("C.field").WithLocation(51, 13)
                 );
         }
 
@@ -2988,7 +2990,7 @@ public class C
     {
         init
         {
-            field.content = value;
+            @field.content = value;
             System.Console.Write(""RAN "");
         }
     }
@@ -3022,19 +3024,19 @@ public static class C
     {
         init
         {
-            field.content = value;
+            @field.content = value;
         }
     }
 }
 ";
             var comp = CreateCompilation(new[] { source, IsExternalInitTypeDefinition }, parseOptions: TestOptions.Regular9);
             comp.VerifyEmitDiagnostics(
-                // (13,9): error CS8856: The 'init' accessor is not valid on static members
+                // 0.cs(13,9): error CS8856: The 'init' accessor is not valid on static members
                 //         init
                 Diagnostic(ErrorCode.ERR_BadInitAccessor, "init").WithLocation(13, 9),
-                // (15,13): error CS1650: Fields of static readonly field 'C.field' cannot be assigned to (except in a static constructor or a variable initializer)
-                //             field.content = value;
-                Diagnostic(ErrorCode.ERR_AssgReadonlyStatic2, "field.content").WithArguments("C.field").WithLocation(15, 13)
+                // 0.cs(15,13): error CS1650: Fields of static readonly field 'C.field' cannot be assigned to (except in a static constructor or a variable initializer)
+                //             @field.content = value;
+                Diagnostic(ErrorCode.ERR_AssgReadonlyStatic2, "@field.content").WithArguments("C.field").WithLocation(15, 13)
                 );
         }
 
@@ -3070,7 +3072,7 @@ public class Derived : C
     {
         init
         {
-            field = null; // 5
+            @field = null; // 5
         }
     }
 }
@@ -3079,7 +3081,7 @@ public class Derived : C
                 references: new[] { emitAsImage ? libComp.EmitToImageReference() : libComp.ToMetadataReference() },
                 parseOptions: TestOptions.Regular9);
             comp.VerifyEmitDiagnostics(
-                // (6,9): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the class in which the field is defined or a variable initializer))
+                // (6,9): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
                 //         field = null; // 1
                 Diagnostic(ErrorCode.ERR_AssgReadonly, "field").WithLocation(6, 9),
                 // (7,23): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
@@ -3092,8 +3094,8 @@ public class Derived : C
                 //         _ = new C() { field = null }; // 4
                 Diagnostic(ErrorCode.ERR_AssgReadonly, "field").WithLocation(13, 23),
                 // (20,13): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
-                //             field = null; // 5
-                Diagnostic(ErrorCode.ERR_AssgReadonly, "field").WithLocation(20, 13)
+                //             @field = null; // 5
+                Diagnostic(ErrorCode.ERR_AssgReadonly, "@field").WithLocation(20, 13)
                 );
         }
 
@@ -4182,7 +4184,7 @@ class Program
                 targetFramework: TargetFramework.Mscorlib40, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular9);
             // PEVerify: [ : S::set_Property] Cannot change initonly field outside its .ctor.
             CompileAndVerify(comp1, expectedOutput: "42",
-                verify: ExecutionConditionUtil.IsCoreClr ? Verification.Passes : Verification.Fails);
+                verify: Verification.FailsPEVerify);
             var comp1Ref = new[] { comp1.ToMetadataReference() };
 
             var comp7 = CreateCompilation(source2, references: comp1Ref,
@@ -4206,9 +4208,7 @@ public readonly struct S
 {
     public int I { get; init; }
 }
-" }, verify: ExecutionConditionUtil.IsCoreClr ? Verification.Passes : Verification.Fails, expectedOutput: "1");
-
-
+" }, verify: Verification.FailsPEVerify, expectedOutput: "1");
 
             verifier.VerifyIL("<top-level-statements-entry-point>", @"
 {
@@ -4244,7 +4244,7 @@ public readonly struct S
     private readonly int i;
     public int I { get => i; init => i = value; }
 }
-" }, verify: ExecutionConditionUtil.IsCoreClr ? Verification.Passes : Verification.Fails, expectedOutput: "1");
+" }, verify: Verification.FailsPEVerify, expectedOutput: "1");
 
             var s = verifier.Compilation.GetTypeByMetadataName("S");
             var i = s.GetMember<IPropertySymbol>("I");
@@ -4283,7 +4283,7 @@ public struct S
 {
     public readonly int I { get; init; }
 }
-" }, verify: ExecutionConditionUtil.IsCoreClr ? Verification.Passes : Verification.Fails, expectedOutput: "1");
+" }, verify: Verification.FailsPEVerify, expectedOutput: "1");
 
             var s = verifier.Compilation.GetTypeByMetadataName("S");
             var i = s.GetMember<IPropertySymbol>("I");
@@ -4323,7 +4323,7 @@ public struct S
     private readonly int i;
     public readonly int I { get => i; init => i = value; }
 }
-" }, verify: ExecutionConditionUtil.IsCoreClr ? Verification.Passes : Verification.Fails, expectedOutput: "1");
+" }, verify: Verification.FailsPEVerify, expectedOutput: "1");
 
             var s = verifier.Compilation.GetTypeByMetadataName("S");
             var i = s.GetMember<IPropertySymbol>("I");
@@ -4418,7 +4418,7 @@ public readonly struct S
         }
     }
 }
-" }, verify: ExecutionConditionUtil.IsCoreClr ? Verification.Passes : Verification.Fails, expectedOutput: @"I1 was 1
+" }, verify: Verification.FailsPEVerify, expectedOutput: @"I1 was 1
 I1 is 0");
 
             var s = verifier.Compilation.GetTypeByMetadataName("S");
@@ -4552,7 +4552,7 @@ public record Container(Person Person);
             var comp = CreateCompilation(new[] { IsExternalInitTypeDefinition, source }, options: TestOptions.DebugExe);
             comp.VerifyEmitDiagnostics();
             // PEVerify: Cannot change initonly field outside its .ctor.
-            CompileAndVerify(comp, expectedOutput: "c", verify: ExecutionConditionUtil.IsCoreClr ? Verification.Passes : Verification.Fails);
+            CompileAndVerify(comp, expectedOutput: "c", verify: Verification.FailsPEVerify);
         }
 
         [Fact]
@@ -4606,6 +4606,224 @@ class UsePia
                 //         var x2 = new UsePia() { Property2 = { Property = 43 } };
                 Diagnostic(ErrorCode.ERR_AssignmentInitOnly, "Property").WithArguments("ITest28.Property").WithLocation(9, 47)
                 );
+        }
+
+        [Fact, WorkItem(50696, "https://github.com/dotnet/roslyn/issues/50696")]
+        public void PickAmbiguousTypeFromCorlib()
+        {
+            var corlib_cs = @"
+namespace System
+{
+    public class Object { }
+    public struct Int32 { }
+    public struct Boolean { }
+    public class String { }
+    public class ValueType { }
+    public struct Void { }
+    public class Attribute { }
+    public class AttributeUsageAttribute : Attribute
+    {
+        public AttributeUsageAttribute(AttributeTargets t) { }
+        public bool AllowMultiple { get; set; }
+        public bool Inherited { get; set; }
+    }
+    public struct Enum { }
+    public enum AttributeTargets { }
+}
+";
+
+            string source = @"
+public class C
+{
+    public int Property { get; init; }
+}
+";
+            var corlibWithoutIsExternalInitRef = CreateEmptyCompilation(corlib_cs, assemblyName: "corlibWithoutIsExternalInit")
+                .EmitToImageReference();
+
+            var corlibWithIsExternalInitRef = CreateEmptyCompilation(corlib_cs + IsExternalInitTypeDefinition, assemblyName: "corlibWithIsExternalInit")
+                .EmitToImageReference();
+
+            var libWithIsExternalInitRef = CreateEmptyCompilation(IsExternalInitTypeDefinition, references: new[] { corlibWithoutIsExternalInitRef }, assemblyName: "libWithIsExternalInit")
+                .EmitToImageReference();
+
+            var libWithIsExternalInitRef2 = CreateEmptyCompilation(IsExternalInitTypeDefinition, references: new[] { corlibWithoutIsExternalInitRef }, assemblyName: "libWithIsExternalInit2")
+                .EmitToImageReference();
+
+            {
+                // type in source
+                var comp = CreateEmptyCompilation(new[] { source, IsExternalInitTypeDefinition }, references: new[] { corlibWithoutIsExternalInitRef }, assemblyName: "source");
+                comp.VerifyEmitDiagnostics();
+                verify(comp, "source");
+            }
+
+            {
+                // type in library
+                var comp = CreateEmptyCompilation(new[] { source }, references: new[] { corlibWithoutIsExternalInitRef, libWithIsExternalInitRef }, assemblyName: "source");
+                comp.VerifyEmitDiagnostics();
+                verify(comp, "libWithIsExternalInit");
+            }
+
+            {
+                // type in corlib and in source
+                var comp = CreateEmptyCompilation(new[] { source, IsExternalInitTypeDefinition }, references: new[] { corlibWithIsExternalInitRef }, assemblyName: "source");
+                comp.VerifyEmitDiagnostics();
+                verify(comp, "source");
+            }
+
+            {
+                // type in corlib, in library and in source
+                var comp = CreateEmptyCompilation(new[] { source, IsExternalInitTypeDefinition }, references: new[] { corlibWithIsExternalInitRef, libWithIsExternalInitRef }, assemblyName: "source");
+                comp.VerifyEmitDiagnostics();
+                verify(comp, "source");
+            }
+
+            {
+                // type in corlib and in two libraries
+                var comp = CreateEmptyCompilation(source, references: new[] { corlibWithIsExternalInitRef, libWithIsExternalInitRef, libWithIsExternalInitRef2 });
+                comp.VerifyEmitDiagnostics();
+                verify(comp, "corlibWithIsExternalInit");
+            }
+
+            {
+                // type in corlib and in two libraries (corlib in middle)
+                var comp = CreateEmptyCompilation(source, references: new[] { libWithIsExternalInitRef, corlibWithIsExternalInitRef, libWithIsExternalInitRef2 });
+                comp.VerifyEmitDiagnostics();
+                verify(comp, "corlibWithIsExternalInit");
+            }
+
+            {
+                // type in corlib and in two libraries (corlib last)
+                var comp = CreateEmptyCompilation(source, references: new[] { libWithIsExternalInitRef, libWithIsExternalInitRef2, corlibWithIsExternalInitRef });
+                comp.VerifyEmitDiagnostics();
+                verify(comp, "corlibWithIsExternalInit");
+            }
+
+            {
+                // type in corlib and in two libraries, but flag is set
+                var comp = CreateEmptyCompilation(source, references: new[] { corlibWithIsExternalInitRef, libWithIsExternalInitRef, libWithIsExternalInitRef2 },
+                    options: TestOptions.DebugDll.WithTopLevelBinderFlags(BinderFlags.IgnoreCorLibraryDuplicatedTypes));
+                comp.VerifyEmitDiagnostics(
+                    // (4,32): error CS0518: Predefined type 'System.Runtime.CompilerServices.IsExternalInit' is not defined or imported
+                    //     public int Property { get; init; }
+                    Diagnostic(ErrorCode.ERR_PredefinedTypeNotFound, "init").WithArguments("System.Runtime.CompilerServices.IsExternalInit").WithLocation(4, 32)
+                    );
+            }
+
+            {
+                // type in two libraries
+                var comp = CreateEmptyCompilation(source, references: new[] { corlibWithoutIsExternalInitRef, libWithIsExternalInitRef, libWithIsExternalInitRef2 });
+                comp.VerifyEmitDiagnostics(
+                    // (4,32): error CS018: Predefined type 'System.Runtime.CompilerServices.IsExternalInit' is not defined or imported
+                    //     public int Property { get; init; }
+                    Diagnostic(ErrorCode.ERR_PredefinedTypeNotFound, "init").WithArguments("System.Runtime.CompilerServices.IsExternalInit").WithLocation(4, 32)
+                    );
+            }
+
+            {
+                // type in two libraries, but flag is set
+                var comp = CreateEmptyCompilation(source, references: new[] { corlibWithoutIsExternalInitRef, libWithIsExternalInitRef, libWithIsExternalInitRef2 },
+                    options: TestOptions.DebugDll.WithTopLevelBinderFlags(BinderFlags.IgnoreCorLibraryDuplicatedTypes));
+                comp.VerifyEmitDiagnostics(
+                    // (4,32): error CS0518: Predefined type 'System.Runtime.CompilerServices.IsExternalInit' is not defined or imported
+                    //     public int Property { get; init; }
+                    Diagnostic(ErrorCode.ERR_PredefinedTypeNotFound, "init").WithArguments("System.Runtime.CompilerServices.IsExternalInit").WithLocation(4, 32)
+                    );
+            }
+
+            {
+                // type in corlib and in a library
+                var comp = CreateEmptyCompilation(source, references: new[] { corlibWithIsExternalInitRef, libWithIsExternalInitRef });
+                comp.VerifyEmitDiagnostics();
+                verify(comp, "corlibWithIsExternalInit");
+            }
+
+            {
+                // type in corlib and in a library (reverse order)
+                var comp = CreateEmptyCompilation(source, references: new[] { libWithIsExternalInitRef, corlibWithIsExternalInitRef });
+                comp.VerifyEmitDiagnostics();
+                verify(comp, "corlibWithIsExternalInit");
+            }
+
+            {
+                // type in corlib and in a library, but flag is set
+                var comp = CreateEmptyCompilation(source, references: new[] { corlibWithIsExternalInitRef, libWithIsExternalInitRef },
+                    options: TestOptions.DebugDll.WithTopLevelBinderFlags(BinderFlags.IgnoreCorLibraryDuplicatedTypes));
+                comp.VerifyEmitDiagnostics();
+                Assert.Equal("libWithIsExternalInit", comp.GetWellKnownType(WellKnownType.System_Runtime_CompilerServices_IsExternalInit).ContainingAssembly.Name);
+                Assert.Equal("corlibWithIsExternalInit", comp.GetTypeByMetadataName("System.Runtime.CompilerServices.IsExternalInit").ContainingAssembly.Name);
+            }
+
+            static void verify(CSharpCompilation comp, string expectedAssemblyName)
+            {
+                var modifier = ((SourcePropertySymbol)comp.GlobalNamespace.GetMember("C.Property")).SetMethod.ReturnTypeWithAnnotations.CustomModifiers.Single();
+                Assert.Equal(expectedAssemblyName, modifier.Modifier.ContainingAssembly.Name);
+
+                Assert.Equal(expectedAssemblyName, comp.GetWellKnownType(WellKnownType.System_Runtime_CompilerServices_IsExternalInit).ContainingAssembly.Name);
+                Assert.Equal(expectedAssemblyName, comp.GetTypeByMetadataName("System.Runtime.CompilerServices.IsExternalInit").ContainingAssembly.Name);
+            }
+        }
+
+        [Theory, WorkItem(67079, "https://github.com/dotnet/roslyn/issues/67079")]
+        [CombinatorialData]
+        public void DoNotPickTypeFromSourceWithFileModifier(bool useCompilationReference)
+        {
+            var corlib_cs = """
+                namespace System
+                {
+                    public class Object { }
+                    public struct Int32 { }
+                    public struct Boolean { }
+                    public class String { }
+                    public class ValueType { }
+                    public struct Void { }
+                    public class Attribute { }
+                    public class AttributeUsageAttribute : Attribute
+                    {
+                        public AttributeUsageAttribute(AttributeTargets t) { }
+                        public bool AllowMultiple { get; set; }
+                        public bool Inherited { get; set; }
+                    }
+                    public struct Enum { }
+                    public enum AttributeTargets { }
+                }
+                """;
+
+            var source = """
+                namespace System.Runtime.CompilerServices
+                {
+                    file class IsExternalInit {}
+                }
+
+                public class C
+                {
+                    public string Property { get; init; }
+                }
+                """;
+
+            var corlibWithoutIsExternalInitRef = AsReference(CreateEmptyCompilation(corlib_cs), useCompilationReference);
+            var corlibWithIsExternalInitRef = AsReference(CreateEmptyCompilation(corlib_cs + IsExternalInitTypeDefinition), useCompilationReference);
+            var emitOptions = EmitOptions.Default.WithRuntimeMetadataVersion("0.0.0.0");
+
+            {
+                // proper type in corlib and file type in source
+                var comp = CreateEmptyCompilation(source, references: new[] { corlibWithIsExternalInitRef });
+                comp.VerifyEmitDiagnostics(emitOptions);
+                var modifier = ((SourcePropertySymbol)comp.GlobalNamespace.GetMember("C.Property")).SetMethod.ReturnTypeWithAnnotations.CustomModifiers.Single();
+                Assert.False(modifier.Modifier.IsFileLocal);
+            }
+
+            {
+                // no type in corlib and file type in source
+                var comp = CreateEmptyCompilation(source, references: new[] { corlibWithoutIsExternalInitRef });
+                comp.VerifyEmitDiagnostics(emitOptions,
+                    // (8,35): error CS018: Predefined type 'System.Runtime.CompilerServices.IsExternalInit' is not defined or imported
+                    //     public int Property { get; init; }
+                    Diagnostic(ErrorCode.ERR_PredefinedTypeNotFound, "init").WithArguments("System.Runtime.CompilerServices.IsExternalInit").WithLocation(8, 35)
+                    );
+                var modifier = ((SourcePropertySymbol)comp.GlobalNamespace.GetMember("C.Property")).SetMethod.ReturnTypeWithAnnotations.CustomModifiers.Single();
+                Assert.False(modifier.Modifier.IsFileLocal);
+            }
         }
     }
 }

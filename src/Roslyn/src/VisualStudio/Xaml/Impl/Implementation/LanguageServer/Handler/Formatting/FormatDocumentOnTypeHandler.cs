@@ -3,25 +3,22 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections.Generic;
 using System.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.Editor.Xaml;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.LanguageServer;
 using Microsoft.CodeAnalysis.LanguageServer.Handler;
 using Microsoft.CodeAnalysis.PooledObjects;
-using Microsoft.CodeAnalysis.Text;
-using Microsoft.VisualStudio.LanguageServer.Protocol;
+using Roslyn.LanguageServer.Protocol;
 using Microsoft.VisualStudio.LanguageServices.Xaml.Features.Formatting;
 
 namespace Microsoft.VisualStudio.LanguageServices.Xaml.LanguageServer.Handler
 {
-    [Shared]
-    [ExportLspMethod(Methods.TextDocumentOnTypeFormattingName, mutatesSolutionState: false, StringConstants.XamlLanguageName)]
-    internal class FormatDocumentOnTypeHandler : IRequestHandler<DocumentOnTypeFormattingParams, TextEdit[]>
+    [ExportStatelessXamlLspService(typeof(FormatDocumentOnTypeHandler)), Shared]
+    [Method(Methods.TextDocumentOnTypeFormattingName)]
+    internal class FormatDocumentOnTypeHandler : ILspServiceRequestHandler<DocumentOnTypeFormattingParams, TextEdit[]>
     {
         [ImportingConstructor]
         [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
@@ -29,7 +26,10 @@ namespace Microsoft.VisualStudio.LanguageServices.Xaml.LanguageServer.Handler
         {
         }
 
-        public TextDocumentIdentifier? GetTextDocumentIdentifier(DocumentOnTypeFormattingParams request) => request.TextDocument;
+        public bool MutatesSolutionState => false;
+        public bool RequiresLSPSolution => true;
+
+        public TextDocumentIdentifier GetTextDocumentIdentifier(DocumentOnTypeFormattingParams request) => request.TextDocument;
 
         public async Task<TextEdit[]> HandleRequestAsync(DocumentOnTypeFormattingParams request, RequestContext context, CancellationToken cancellationToken)
         {
@@ -40,15 +40,15 @@ namespace Microsoft.VisualStudio.LanguageServices.Xaml.LanguageServer.Handler
             }
 
             var document = context.Document;
-            var formattingService = document?.Project.LanguageServices.GetService<IXamlFormattingService>();
+            var formattingService = document?.Project.Services.GetService<IXamlFormattingService>();
             if (document != null && formattingService != null)
             {
                 var position = await document.GetPositionFromLinePositionAsync(ProtocolConversions.PositionToLinePosition(request.Position), cancellationToken).ConfigureAwait(false);
                 var options = new XamlFormattingOptions { InsertSpaces = request.Options.InsertSpaces, TabSize = request.Options.TabSize, OtherOptions = request.Options.OtherOptions };
-                IList<TextChange>? textChanges = await formattingService.GetFormattingChangesAsync(document, options, request.Character[0], position, cancellationToken).ConfigureAwait(false);
+                var textChanges = await formattingService.GetFormattingChangesAsync(document, options, request.Character[0], position, cancellationToken).ConfigureAwait(false);
                 if (textChanges != null)
                 {
-                    var text = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
+                    var text = await document.GetValueTextAsync(cancellationToken).ConfigureAwait(false);
                     edits.AddRange(textChanges.Select(change => ProtocolConversions.TextChangeToTextEdit(change, text)));
                 }
             }

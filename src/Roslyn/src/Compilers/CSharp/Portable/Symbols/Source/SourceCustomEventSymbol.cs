@@ -23,7 +23,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private readonly TypeSymbol _explicitInterfaceType;
         private readonly ImmutableArray<EventSymbol> _explicitInterfaceImplementations;
 
-        internal SourceCustomEventSymbol(SourceMemberContainerTypeSymbol containingType, Binder binder, EventDeclarationSyntax syntax, DiagnosticBag diagnostics) :
+        internal SourceCustomEventSymbol(SourceMemberContainerTypeSymbol containingType, Binder binder, EventDeclarationSyntax syntax, BindingDiagnosticBag diagnostics) :
             base(containingType, syntax, syntax.Modifiers, isFieldLike: false,
                  interfaceSpecifierSyntaxOpt: syntax.ExplicitInterfaceSpecifier,
                  nameTokenSyntax: syntax.Identifier, diagnostics: diagnostics)
@@ -146,27 +146,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
                 else if ((addSyntax == null || removeSyntax == null) && (!syntax.AccessorList.OpenBraceToken.IsMissing || !isExplicitInterfaceImplementation))
                 {
-                    diagnostics.Add(ErrorCode.ERR_EventNeedsBothAccessors, this.Locations[0], this);
+                    diagnostics.Add(ErrorCode.ERR_EventNeedsBothAccessors, this.GetFirstLocation(), this);
                 }
             }
             else if (isExplicitInterfaceImplementation && !IsAbstract)
             {
-                diagnostics.Add(ErrorCode.ERR_ExplicitEventFieldImpl, this.Locations[0]);
+                diagnostics.Add(ErrorCode.ERR_ExplicitEventFieldImpl, this.GetFirstLocation());
             }
 
             if (isExplicitInterfaceImplementation && IsAbstract && syntax.AccessorList == null)
             {
                 Debug.Assert(containingType.IsInterface);
 
-                Binder.CheckFeatureAvailability(syntax, MessageID.IDS_DefaultInterfaceImplementation, diagnostics, this.Locations[0]);
+                Binder.CheckFeatureAvailability(syntax, MessageID.IDS_DefaultInterfaceImplementation, diagnostics, this.GetFirstLocation());
 
                 if (!ContainingAssembly.RuntimeSupportsDefaultInterfaceImplementation)
                 {
-                    diagnostics.Add(ErrorCode.ERR_RuntimeDoesNotSupportDefaultInterfaceImplementation, this.Locations[0]);
+                    diagnostics.Add(ErrorCode.ERR_RuntimeDoesNotSupportDefaultInterfaceImplementation, this.GetFirstLocation());
                 }
 
-                _addMethod = new SynthesizedEventAccessorSymbol(this, isAdder: true, explicitlyImplementedEvent, aliasQualifierOpt);
-                _removeMethod = new SynthesizedEventAccessorSymbol(this, isAdder: false, explicitlyImplementedEvent, aliasQualifierOpt);
+                _addMethod = new SynthesizedEventAccessorSymbol(this, isAdder: true, isExpressionBodied: false, explicitlyImplementedEvent, aliasQualifierOpt);
+                _removeMethod = new SynthesizedEventAccessorSymbol(this, isAdder: false, isExpressionBodied: false, explicitlyImplementedEvent, aliasQualifierOpt);
             }
             else
             {
@@ -220,7 +220,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return _explicitInterfaceImplementations; }
         }
 
-        internal override void AfterAddingTypeMembersChecks(ConversionsBase conversions, DiagnosticBag diagnostics)
+        internal override void AfterAddingTypeMembersChecks(ConversionsBase conversions, BindingDiagnosticBag diagnostics)
         {
             base.AfterAddingTypeMembersChecks(conversions, diagnostics);
 
@@ -235,13 +235,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 // Note: we delayed nullable-related checks that could pull on NonNullTypes
                 EventSymbol explicitlyImplementedEvent = _explicitInterfaceImplementations[0];
-                TypeSymbol.CheckNullableReferenceTypeMismatchOnImplementingMember(this.ContainingType, this, explicitlyImplementedEvent, isExplicit: true, diagnostics);
+                TypeSymbol.CheckModifierMismatchOnImplementingMember(this.ContainingType, this, explicitlyImplementedEvent, isExplicit: true, diagnostics);
             }
         }
 
-        [return: NotNullIfNotNull(parameterName: "syntaxOpt")]
+        [return: NotNullIfNotNull(parameterName: nameof(syntaxOpt))]
         private SourceCustomEventAccessorSymbol? CreateAccessorSymbol(CSharpCompilation compilation, AccessorDeclarationSyntax? syntaxOpt,
-            EventSymbol? explicitlyImplementedEventOpt, string? aliasQualifierOpt, DiagnosticBag diagnostics)
+            EventSymbol? explicitlyImplementedEventOpt, string? aliasQualifierOpt, BindingDiagnosticBag diagnostics)
         {
             if (syntaxOpt == null)
             {

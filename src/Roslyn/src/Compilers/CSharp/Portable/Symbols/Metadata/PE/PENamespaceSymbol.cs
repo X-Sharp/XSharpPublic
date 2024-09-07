@@ -4,8 +4,6 @@
 
 #nullable disable
 
-using Microsoft.CodeAnalysis.PooledObjects;
-using Roslyn.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -13,6 +11,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Threading;
+using Microsoft.CodeAnalysis.PooledObjects;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 {
@@ -27,7 +27,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         /// A map of namespaces immediately contained within this namespace 
         /// mapped by their name (case-sensitively).
         /// </summary>
-        protected Dictionary<string, PENestedNamespaceSymbol> lazyNamespaces;
+        protected Dictionary<ReadOnlyMemory<char>, PENestedNamespaceSymbol> lazyNamespaces;
 #if XSHARP
         // We keep track of duplicate namespaces and link these namespaces 
         // so we can find all types and sub namespaces easily
@@ -41,7 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         /// A map of types immediately contained within this namespace 
         /// grouped by their name (case-sensitively).
         /// </summary>
-        protected Dictionary<string, ImmutableArray<PENamedTypeSymbol>> lazyTypes;
+        protected Dictionary<ReadOnlyMemory<char>, ImmutableArray<PENamedTypeSymbol>> lazyTypes;
 
         /// <summary>
         /// A map of NoPia local types immediately contained in this assembly.
@@ -54,6 +54,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         /// All type members in a flat array
         /// </summary>
         private ImmutableArray<PENamedTypeSymbol> _lazyFlattenedTypes;
+
+        /// <summary>
+        /// All namespace and type members in a flat array
+        /// </summary>
+        private ImmutableArray<Symbol> _lazyFlattenedNamespacesAndTypes;
 
         internal sealed override NamespaceExtent Extent
         {
@@ -69,23 +74,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             AllowGenericEnumeration = false)]
         public sealed override ImmutableArray<Symbol> GetMembers()
         {
-            EnsureAllMembersLoaded();
+            if (_lazyFlattenedNamespacesAndTypes.IsDefault)
+            {
+                EnsureAllMembersLoaded();
+                ImmutableInterlocked.InterlockedExchange(ref _lazyFlattenedNamespacesAndTypes, calculateMembers());
+            }
 
-            var memberTypes = GetMemberTypesPrivate();
+            return _lazyFlattenedNamespacesAndTypes;
+
+            ImmutableArray<Symbol> calculateMembers()
+            {
+                var memberTypes = GetMemberTypesPrivate();
+
+                if (lazyNamespaces.Count == 0)
+                    return StaticCast<Symbol>.From(memberTypes);
+
 #if XSHARP
             // call GetTypeMembers() because it includes the types from Siblings
             var builder = ArrayBuilder<Symbol>.GetInstance();
             builder.AddRange(GetTypeMembers());
 #else
-            var builder = ArrayBuilder<Symbol>.GetInstance(memberTypes.Length + lazyNamespaces.Count);
+                var builder = ArrayBuilder<Symbol>.GetInstance(memberTypes.Length + lazyNamespaces.Count);
 
-            builder.AddRange(memberTypes);
-            foreach (var pair in lazyNamespaces)
-            {
-                builder.Add(pair.Value);
-            }
+                builder.AddRange(memberTypes);
+                foreach (var pair in lazyNamespaces)
+                {
+                    builder.Add(pair.Value);
+                }
 #endif
-            return builder.ToImmutableAndFree();
+                return builder.ToImmutableAndFree();
+            }
         }
 
         private ImmutableArray<NamedTypeSymbol> GetMemberTypesPrivate()
@@ -100,7 +118,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             return StaticCast<NamedTypeSymbol>.From(_lazyFlattenedTypes);
         }
 
-        public sealed override ImmutableArray<Symbol> GetMembers(string name)
+        internal override NamespaceSymbol GetNestedNamespace(ReadOnlyMemory<char> name)
+        {
+            EnsureAllMembersLoaded();
+
+            if (lazyNamespaces.TryGetValue(name, out var ns))
+            {
+                return ns;
+            }
+
+            return null;
+        }
+
+        public sealed override ImmutableArray<Symbol> GetMembers(ReadOnlyMemory<char> name)
         {
             EnsureAllMembersLoaded();
 
@@ -166,7 +196,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             return GetMemberTypesPrivate();
         }
 
-        public sealed override ImmutableArray<NamedTypeSymbol> GetTypeMembers(string name)
+        public sealed override ImmutableArray<NamedTypeSymbol> GetTypeMembers(ReadOnlyMemory<char> name)
         {
             EnsureAllMembersLoaded();
 
@@ -190,7 +220,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 : ImmutableArray<NamedTypeSymbol>.Empty;
         }
 
-        public sealed override ImmutableArray<NamedTypeSymbol> GetTypeMembers(string name, int arity)
+        public sealed override ImmutableArray<NamedTypeSymbol> GetTypeMembers(ReadOnlyMemory<char> name, int arity)
         {
             return GetTypeMembers(name).WhereAsArray((type, arity) => type.Arity == arity, arity);
         }
@@ -290,7 +320,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 var duplicates = new Dictionary<string, List<PENestedNamespaceSymbol>>(XSharpString.Comparer);
                 var list = new List<PENestedNamespaceSymbol>();
 #else
-                var namespaces = new Dictionary<string, PENestedNamespaceSymbol>(StringOrdinalComparer.Instance);
+                var namespaces = new Dictionary<ReadOnlyMemory<char>, PENestedNamespaceSymbol>(ReadOnlyMemoryOfCharComparer.Instance);
 #endif
 
                 foreach (var child in childNamespaces)
@@ -317,7 +347,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                     }
                     list.Add(c);
 #else
-                    namespaces.Add(c.Name, c);
+                    namespaces.Add(c.Name.AsMemory(), c);
 #endif
                 }
 
@@ -381,9 +411,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 }
 
 #if XSHARP
-                var typesDict = children.ToDictionary(c => c.Name, XSharpString.Comparer);
+                var typesDict = children.ToDictionary(c => c.Name.AsMemory(), XSharpString.Comparer);
 #else
-                var typesDict = children.ToDictionary(c => c.Name, StringOrdinalComparer.Instance);
+                var typesDict = children.ToDictionary(c => c.Name.AsMemory(), ReadOnlyMemoryOfCharComparer.Instance);
 #endif
                 children.Free();
 
@@ -403,26 +433,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             }
         }
 
-        internal NamedTypeSymbol LookupMetadataType(ref MetadataTypeName emittedTypeName, out bool isNoPiaLocalType)
+#nullable enable
+
+        internal NamedTypeSymbol? UnifyIfNoPiaLocalType(ref MetadataTypeName emittedTypeName)
         {
-            NamedTypeSymbol result = LookupMetadataType(ref emittedTypeName);
-            isNoPiaLocalType = false;
+            EnsureAllMembersLoaded();
+            TypeDefinitionHandle typeDef;
 
-            if (result is MissingMetadataTypeSymbol)
+            // See if this is a NoPia local type, which we should unify.
+            // Note, VB should use FullName.
+            if (_lazyNoPiaLocalTypes != null && _lazyNoPiaLocalTypes.TryGetValue(emittedTypeName.TypeName, out typeDef))
             {
-                EnsureAllMembersLoaded();
-                TypeDefinitionHandle typeDef;
-
-                // See if this is a NoPia local type, which we should unify.
-                // Note, VB should use FullName.
-                if (_lazyNoPiaLocalTypes != null && _lazyNoPiaLocalTypes.TryGetValue(emittedTypeName.TypeName, out typeDef))
-                {
-                    result = (NamedTypeSymbol)new MetadataDecoder(ContainingPEModule).GetTypeOfToken(typeDef, out isNoPiaLocalType);
-                    Debug.Assert(isNoPiaLocalType);
-                }
+                var result = (NamedTypeSymbol)new MetadataDecoder(ContainingPEModule).GetTypeOfToken(typeDef, out bool isNoPiaLocalType);
+                Debug.Assert(isNoPiaLocalType);
+                Debug.Assert(result is not null);
+                return result;
             }
 
-            return result;
+            return null;
         }
     }
 }

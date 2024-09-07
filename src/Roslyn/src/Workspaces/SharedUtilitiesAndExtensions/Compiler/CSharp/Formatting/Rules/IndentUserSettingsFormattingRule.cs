@@ -5,93 +5,54 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Formatting.Rules;
 using Microsoft.CodeAnalysis.Options;
 
-namespace Microsoft.CodeAnalysis.CSharp.Formatting
+namespace Microsoft.CodeAnalysis.CSharp.Formatting;
+
+internal sealed class IndentUserSettingsFormattingRule : BaseFormattingRule
 {
-    internal sealed class IndentUserSettingsFormattingRule : BaseFormattingRule
+    private readonly CSharpSyntaxFormattingOptions _options;
+
+    public IndentUserSettingsFormattingRule()
+        : this(CSharpSyntaxFormattingOptions.Default)
     {
-        private readonly CachedOptions _options;
+    }
 
-        public IndentUserSettingsFormattingRule()
-            : this(new CachedOptions(null))
+    private IndentUserSettingsFormattingRule(CSharpSyntaxFormattingOptions options)
+    {
+        _options = options;
+    }
+
+    public override AbstractFormattingRule WithOptions(SyntaxFormattingOptions options)
+    {
+        var newOptions = options as CSharpSyntaxFormattingOptions ?? CSharpSyntaxFormattingOptions.Default;
+
+        if (_options.Indentation.HasFlag(IndentationPlacement.Braces) == newOptions.Indentation.HasFlag(IndentationPlacement.Braces))
         {
+            return this;
         }
 
-        private IndentUserSettingsFormattingRule(CachedOptions options)
+        return new IndentUserSettingsFormattingRule(newOptions);
+    }
+
+    public override void AddIndentBlockOperations(List<IndentBlockOperation> list, SyntaxNode node, in NextIndentBlockOperationAction nextOperation)
+    {
+        nextOperation.Invoke();
+
+        var bracePair = node.GetBracePair();
+
+        // don't put block indentation operation if the block only contains lambda expression body block
+        if (node.IsLambdaBodyBlock() || !bracePair.IsValidBracketOrBracePair())
         {
-            _options = options;
+            return;
         }
 
-        public override AbstractFormattingRule WithOptions(AnalyzerConfigOptions options)
+        if (_options.Indentation.HasFlag(IndentationPlacement.Braces))
         {
-            var cachedOptions = new CachedOptions(options);
-
-            if (cachedOptions == _options)
-            {
-                return this;
-            }
-
-            return new IndentUserSettingsFormattingRule(cachedOptions);
-        }
-
-        public override void AddIndentBlockOperations(List<IndentBlockOperation> list, SyntaxNode node, in NextIndentBlockOperationAction nextOperation)
-        {
-            nextOperation.Invoke();
-
-            var bracePair = node.GetBracePair();
-
-            // don't put block indentation operation if the block only contains lambda expression body block
-            if (node.IsLambdaBodyBlock() || !bracePair.IsValidBracePair())
-            {
-                return;
-            }
-
-            if (_options.IndentBraces)
-            {
-                AddIndentBlockOperation(list, bracePair.Item1, bracePair.Item1, bracePair.Item1.Span);
-                AddIndentBlockOperation(list, bracePair.Item2, bracePair.Item2, bracePair.Item2.Span);
-            }
-        }
-
-        private readonly struct CachedOptions : IEquatable<CachedOptions>
-        {
-            public readonly bool IndentBraces;
-
-            public CachedOptions(AnalyzerConfigOptions? options)
-            {
-                IndentBraces = GetOptionOrDefault(options, CSharpFormattingOptions2.IndentBraces);
-            }
-
-            public static bool operator ==(CachedOptions left, CachedOptions right)
-                => left.Equals(right);
-
-            public static bool operator !=(CachedOptions left, CachedOptions right)
-                => !(left == right);
-
-            private static T GetOptionOrDefault<T>(AnalyzerConfigOptions? options, Option2<T> option)
-            {
-                if (options is null)
-                    return option.DefaultValue;
-
-                return options.GetOption(option);
-            }
-
-            public override bool Equals(object? obj)
-                => obj is CachedOptions options && Equals(options);
-
-            public bool Equals(CachedOptions other)
-            {
-                return IndentBraces == other.IndentBraces;
-            }
-
-            public override int GetHashCode()
-            {
-                var hashCode = 0;
-                hashCode = (hashCode << 1) + (IndentBraces ? 1 : 0);
-                return hashCode;
-            }
+            AddIndentBlockOperation(list, bracePair.openBrace, bracePair.openBrace, bracePair.openBrace.Span);
+            AddIndentBlockOperation(list, bracePair.closeBrace, bracePair.closeBrace, bracePair.closeBrace.Span);
         }
     }
 }

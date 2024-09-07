@@ -27,8 +27,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
 
         public override bool IsCompleteSubmission(SyntaxTree tree) => SyntaxFactory.IsCompleteSubmission(tree);
 
-        public override SyntaxTree ParseSubmission(SourceText text, ParseOptions parseOptions, CancellationToken cancellationToken) =>
-            SyntaxFactory.ParseSyntaxTree(text, parseOptions ?? DefaultParseOptions, cancellationToken: cancellationToken);
+        public override SyntaxTree ParseSubmission(SourceText text, ParseOptions parseOptions, CancellationToken cancellationToken)
+            => SyntaxFactory.ParseSyntaxTree(text, parseOptions ?? DefaultParseOptions, cancellationToken: cancellationToken);
 
         public override Compilation CreateSubmission(Script script)
         {
@@ -45,7 +45,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
             diagnostics.Free();
 
 #if !XSHARP
-            var tree = SyntaxFactory.ParseSyntaxTree(script.SourceText, DefaultParseOptions, script.Options.FilePath);
+            var tree = SyntaxFactory.ParseSyntaxTree(script.SourceText, script.Options.ParseOptions ?? DefaultParseOptions, script.Options.FilePath);
 #else
             var tree = SyntaxFactory.ParseSyntaxTree(script.SourceText, DefaultParseOptions.WithXSharpSpecificOptions(script.Options.XsOptions), script.Options.FilePath);
 #endif
@@ -57,7 +57,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
                 assemblyName,
                 tree,
                 references,
-                new CSharpCompilationOptions(
+                WithTopLevelBinderFlags(new CSharpCompilationOptions(
                     outputKind: OutputKind.DynamicallyLinkedLibrary,
                     mainTypeName: null,
                     scriptClassName: submissionTypeName,
@@ -71,11 +71,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
                     sourceReferenceResolver: script.Options.SourceResolver,
                     metadataReferenceResolver: script.Options.MetadataResolver,
                     assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default
-                ).WithTopLevelBinderFlags(BinderFlags.IgnoreCorLibraryDuplicatedTypes)
+                )),
 #if XSHARP
                 .WithXSharpSpecificOptions(script.Options.XsOptions)
 #endif
-                ,
                 previousSubmission,
                 script.ReturnType,
                 script.GlobalsType
@@ -83,5 +82,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
 
             return compilation;
         }
+
+        internal static CSharpCompilationOptions WithTopLevelBinderFlags(CSharpCompilationOptions options)
+            => options.WithTopLevelBinderFlags(BinderFlags.IgnoreCorLibraryDuplicatedTypes);
     }
 }

@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
-    public partial class IOperationTests : SemanticModelTestBase
+    public class IOperationTests_IUsingStatement : SemanticModelTestBase
     {
         [CompilerTrait(CompilerFeature.IOperation)]
         [Fact]
@@ -93,7 +93,7 @@ class C
 }
 ";
             string expectedOperationTree = @"
-IUsingOperation (IsAsynchronous) (OperationKind.Using, Type: null) (Syntax: 'await using ... }')
+IUsingOperation (IsAsynchronous) (DisposeMethod: System.Threading.Tasks.ValueTask System.IAsyncDisposable.DisposeAsync()) (OperationKind.Using, Type: null) (Syntax: 'await using ... }')
   Locals: Local_1: System.IAsyncDisposable c
   Resources: 
     IVariableDeclarationGroupOperation (1 declarations) (OperationKind.VariableDeclarationGroup, Type: null, IsImplicit) (Syntax: 'var c = disposable')
@@ -123,7 +123,125 @@ IUsingOperation (IsAsynchronous) (OperationKind.Using, Type: null) (Syntax: 'awa
 ";
 
             var expectedDiagnostics = DiagnosticDescription.None;
-            VerifyOperationTreeAndDiagnosticsForTest<UsingStatementSyntax>(source + s_IAsyncEnumerable + s_ValueTask, expectedOperationTree, expectedDiagnostics);
+            VerifyOperationTreeAndDiagnosticsForTest<UsingStatementSyntax>(source + s_IAsyncEnumerable + IOperationTests_IForEachLoopStatement.s_ValueTask, expectedOperationTree, expectedDiagnostics);
+        }
+
+        [CompilerTrait(CompilerFeature.IOperation, CompilerFeature.AsyncStreams)]
+        [Fact, WorkItem(30362, "https://github.com/dotnet/roslyn/issues/30362")]
+        public void IUsingAwaitStatement_SimpleAwaitUsing_PatternBased()
+        {
+            string source = @"
+using System;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+
+class C
+{
+    public async Task M1()
+    {
+        /*<bind>*/await using (var c = this)
+        {
+            Console.WriteLine(c.ToString());
+        }/*</bind>*/
+    }
+
+    public async System.Threading.Tasks.ValueTask DisposeAsync()
+    {
+        await Task.Yield();
+    }
+}
+";
+            string expectedOperationTree = @"
+IUsingOperation (IsAsynchronous) (DisposeMethod: System.Threading.Tasks.ValueTask C.DisposeAsync()) (OperationKind.Using, Type: null) (Syntax: 'await using ... }')
+  Locals: Local_1: C c
+  Resources:
+    IVariableDeclarationGroupOperation (1 declarations) (OperationKind.VariableDeclarationGroup, Type: null, IsImplicit) (Syntax: 'var c = this')
+      IVariableDeclarationOperation (1 declarators) (OperationKind.VariableDeclaration, Type: null) (Syntax: 'var c = this')
+        Declarators:
+            IVariableDeclaratorOperation (Symbol: C c) (OperationKind.VariableDeclarator, Type: null) (Syntax: 'c = this')
+              Initializer:
+                IVariableInitializerOperation (OperationKind.VariableInitializer, Type: null) (Syntax: '= this')
+                  IInstanceReferenceOperation (ReferenceKind: ContainingTypeInstance) (OperationKind.InstanceReference, Type: C) (Syntax: 'this')
+        Initializer:
+          null
+  Body:
+    IBlockOperation (1 statements) (OperationKind.Block, Type: null) (Syntax: '{ ... }')
+      IExpressionStatementOperation (OperationKind.ExpressionStatement, Type: null) (Syntax: 'Console.Wri ... oString());')
+        Expression:
+          IInvocationOperation (void System.Console.WriteLine(System.String value)) (OperationKind.Invocation, Type: System.Void) (Syntax: 'Console.Wri ... ToString())')
+            Instance Receiver:
+              null
+            Arguments(1):
+                IArgumentOperation (ArgumentKind.Explicit, Matching Parameter: value) (OperationKind.Argument, Type: null) (Syntax: 'c.ToString()')
+                  IInvocationOperation (virtual System.String System.Object.ToString()) (OperationKind.Invocation, Type: System.String) (Syntax: 'c.ToString()')
+                    Instance Receiver:
+                      ILocalReferenceOperation: c (OperationKind.LocalReference, Type: C) (Syntax: 'c')
+                    Arguments(0)
+                  InConversion: CommonConversion (Exists: True, IsIdentity: True, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
+                  OutConversion: CommonConversion (Exists: True, IsIdentity: True, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
+";
+
+            var expectedDiagnostics = DiagnosticDescription.None;
+            VerifyOperationTreeAndDiagnosticsForTest<UsingStatementSyntax>(source + IOperationTests_IForEachLoopStatement.s_ValueTask, expectedOperationTree, expectedDiagnostics);
+        }
+
+        [CompilerTrait(CompilerFeature.IOperation, CompilerFeature.AsyncStreams)]
+        [Fact, WorkItem(30362, "https://github.com/dotnet/roslyn/issues/30362")]
+        public void IUsingAwaitStatement_SimpleAwaitUsing_InterfaceBased()
+        {
+            string source = @"
+using System;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+
+class C : IAsyncDisposable
+{
+    public async Task M1()
+    {
+        /*<bind>*/await using (var c = this)
+        {
+            Console.WriteLine(c.ToString());
+        }/*</bind>*/
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        await Task.Yield();
+    }
+}
+";
+            string expectedOperationTree = @"
+IUsingOperation (IsAsynchronous) (OperationKind.Using, Type: null) (Syntax: 'await using ... }')
+  Locals: Local_1: C c
+  Resources:
+    IVariableDeclarationGroupOperation (1 declarations) (OperationKind.VariableDeclarationGroup, Type: null, IsImplicit) (Syntax: 'var c = this')
+      IVariableDeclarationOperation (1 declarators) (OperationKind.VariableDeclaration, Type: null) (Syntax: 'var c = this')
+        Declarators:
+            IVariableDeclaratorOperation (Symbol: C c) (OperationKind.VariableDeclarator, Type: null) (Syntax: 'c = this')
+              Initializer:
+                IVariableInitializerOperation (OperationKind.VariableInitializer, Type: null) (Syntax: '= this')
+                  IInstanceReferenceOperation (ReferenceKind: ContainingTypeInstance) (OperationKind.InstanceReference, Type: C) (Syntax: 'this')
+        Initializer:
+          null
+  Body:
+    IBlockOperation (1 statements) (OperationKind.Block, Type: null) (Syntax: '{ ... }')
+      IExpressionStatementOperation (OperationKind.ExpressionStatement, Type: null) (Syntax: 'Console.Wri ... oString());')
+        Expression:
+          IInvocationOperation (void System.Console.WriteLine(System.String value)) (OperationKind.Invocation, Type: System.Void) (Syntax: 'Console.Wri ... ToString())')
+            Instance Receiver:
+              null
+            Arguments(1):
+                IArgumentOperation (ArgumentKind.Explicit, Matching Parameter: value) (OperationKind.Argument, Type: null) (Syntax: 'c.ToString()')
+                  IInvocationOperation (virtual System.String System.Object.ToString()) (OperationKind.Invocation, Type: System.String) (Syntax: 'c.ToString()')
+                    Instance Receiver:
+                      ILocalReferenceOperation: c (OperationKind.LocalReference, Type: C) (Syntax: 'c')
+                    Arguments(0)
+                  InConversion: CommonConversion (Exists: True, IsIdentity: True, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
+                  OutConversion: CommonConversion (Exists: True, IsIdentity: True, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
+";
+
+            var expectedDiagnostics = DiagnosticDescription.None;
+            VerifyOperationTreeAndDiagnosticsForTest<UsingStatementSyntax>(source + s_IAsyncEnumerable + IOperationTests_IForEachLoopStatement.s_ValueTask, expectedOperationTree, expectedDiagnostics);
         }
 
         [CompilerTrait(CompilerFeature.IOperation, CompilerFeature.Dataflow, CompilerFeature.AsyncStreams)]
@@ -159,9 +277,9 @@ Block[B0] - Entry
         Predecessors: [B0]
         Statements (1)
             ISimpleAssignmentOperation (OperationKind.SimpleAssignment, Type: System.IAsyncDisposable, IsImplicit) (Syntax: 'c = disposable')
-              Left: 
+              Left:
                 ILocalReferenceOperation: c (IsDeclaration: True) (OperationKind.LocalReference, Type: System.IAsyncDisposable, IsImplicit) (Syntax: 'c = disposable')
-              Right: 
+              Right:
                 IParameterReferenceOperation: disposable (OperationKind.ParameterReference, Type: System.IAsyncDisposable) (Syntax: 'disposable')
         Next (Regular) Block[B2]
             Entering: {R2} {R3}
@@ -171,14 +289,14 @@ Block[B0] - Entry
             Predecessors: [B1]
             Statements (1)
                 IExpressionStatementOperation (OperationKind.ExpressionStatement, Type: null) (Syntax: 'Console.Wri ... oString());')
-                  Expression: 
+                  Expression:
                     IInvocationOperation (void System.Console.WriteLine(System.String value)) (OperationKind.Invocation, Type: System.Void) (Syntax: 'Console.Wri ... ToString())')
-                      Instance Receiver: 
+                      Instance Receiver:
                         null
                       Arguments(1):
                           IArgumentOperation (ArgumentKind.Explicit, Matching Parameter: value) (OperationKind.Argument, Type: null) (Syntax: 'c.ToString()')
                             IInvocationOperation (virtual System.String System.Object.ToString()) (OperationKind.Invocation, Type: System.String) (Syntax: 'c.ToString()')
-                              Instance Receiver: 
+                              Instance Receiver:
                                 ILocalReferenceOperation: c (OperationKind.LocalReference, Type: System.IAsyncDisposable) (Syntax: 'c')
                               Arguments(0)
                             InConversion: CommonConversion (Exists: True, IsIdentity: True, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
@@ -194,16 +312,16 @@ Block[B0] - Entry
             Statements (0)
             Jump if True (Regular) to Block[B5]
                 IIsNullOperation (OperationKind.IsNull, Type: System.Boolean, IsImplicit) (Syntax: 'c = disposable')
-                  Operand: 
+                  Operand:
                     ILocalReferenceOperation: c (OperationKind.LocalReference, Type: System.IAsyncDisposable, IsImplicit) (Syntax: 'c = disposable')
             Next (Regular) Block[B4]
         Block[B4] - Block
             Predecessors: [B3]
             Statements (1)
                 IAwaitOperation (OperationKind.Await, Type: System.Void, IsImplicit) (Syntax: 'c = disposable')
-                  Expression: 
+                  Expression:
                     IInvocationOperation (virtual System.Threading.Tasks.ValueTask System.IAsyncDisposable.DisposeAsync()) (OperationKind.Invocation, Type: System.Threading.Tasks.ValueTask, IsImplicit) (Syntax: 'c = disposable')
-                      Instance Receiver: 
+                      Instance Receiver:
                         ILocalReferenceOperation: c (OperationKind.LocalReference, Type: System.IAsyncDisposable, IsImplicit) (Syntax: 'c = disposable')
                       Arguments(0)
             Next (Regular) Block[B5]
@@ -219,7 +337,213 @@ Block[B6] - Exit
 ";
             var expectedDiagnostics = DiagnosticDescription.None;
 
-            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source + s_IAsyncEnumerable + s_ValueTask, expectedGraph, expectedDiagnostics);
+            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source + s_IAsyncEnumerable + IOperationTests_IForEachLoopStatement.s_ValueTask, expectedGraph, expectedDiagnostics);
+        }
+
+        [CompilerTrait(CompilerFeature.IOperation, CompilerFeature.Dataflow, CompilerFeature.AsyncStreams)]
+        [Fact, WorkItem(30362, "https://github.com/dotnet/roslyn/issues/30362")]
+        public void UsingFlow_SimpleAwaitUsing_PatternBased()
+        {
+            string source = @"
+using System;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+
+class C
+{
+    public async Task M1()
+    /*<bind>*/{
+        await using (var c = this)
+        {
+            Console.WriteLine(c.ToString());
+        }
+    }/*</bind>*/
+
+    public async ValueTask DisposeAsync()
+    {
+        await System.Threading.Tasks.Task.Yield();
+    }
+}
+";
+
+            string expectedGraph = @"
+Block[B0] - Entry
+    Statements (0)
+    Next (Regular) Block[B1]
+        Entering: {R1}
+.locals {R1}
+{
+    Locals: [C c]
+    Block[B1] - Block
+        Predecessors: [B0]
+        Statements (1)
+            ISimpleAssignmentOperation (OperationKind.SimpleAssignment, Type: C, IsImplicit) (Syntax: 'c = this')
+              Left:
+                ILocalReferenceOperation: c (IsDeclaration: True) (OperationKind.LocalReference, Type: C, IsImplicit) (Syntax: 'c = this')
+              Right:
+                IInstanceReferenceOperation (ReferenceKind: ContainingTypeInstance) (OperationKind.InstanceReference, Type: C) (Syntax: 'this')
+        Next (Regular) Block[B2]
+            Entering: {R2} {R3}
+    .try {R2, R3}
+    {
+        Block[B2] - Block
+            Predecessors: [B1]
+            Statements (1)
+                IExpressionStatementOperation (OperationKind.ExpressionStatement, Type: null) (Syntax: 'Console.Wri ... oString());')
+                  Expression:
+                    IInvocationOperation (void System.Console.WriteLine(System.String value)) (OperationKind.Invocation, Type: System.Void) (Syntax: 'Console.Wri ... ToString())')
+                      Instance Receiver:
+                        null
+                      Arguments(1):
+                          IArgumentOperation (ArgumentKind.Explicit, Matching Parameter: value) (OperationKind.Argument, Type: null) (Syntax: 'c.ToString()')
+                            IInvocationOperation (virtual System.String System.Object.ToString()) (OperationKind.Invocation, Type: System.String) (Syntax: 'c.ToString()')
+                              Instance Receiver:
+                                ILocalReferenceOperation: c (OperationKind.LocalReference, Type: C) (Syntax: 'c')
+                              Arguments(0)
+                            InConversion: CommonConversion (Exists: True, IsIdentity: True, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
+                            OutConversion: CommonConversion (Exists: True, IsIdentity: True, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
+            Next (Regular) Block[B6]
+                Finalizing: {R4}
+                Leaving: {R3} {R2} {R1}
+    }
+    .finally {R4}
+    {
+        Block[B3] - Block
+            Predecessors (0)
+            Statements (0)
+            Jump if True (Regular) to Block[B5]
+                IIsNullOperation (OperationKind.IsNull, Type: System.Boolean, IsImplicit) (Syntax: 'c = this')
+                  Operand:
+                    ILocalReferenceOperation: c (OperationKind.LocalReference, Type: C, IsImplicit) (Syntax: 'c = this')
+            Next (Regular) Block[B4]
+        Block[B4] - Block
+            Predecessors: [B3]
+            Statements (1)
+                IAwaitOperation (OperationKind.Await, Type: System.Void, IsImplicit) (Syntax: 'c = this')
+                  Expression:
+                    IInvocationOperation ( System.Threading.Tasks.ValueTask C.DisposeAsync()) (OperationKind.Invocation, Type: System.Threading.Tasks.ValueTask, IsImplicit) (Syntax: 'c = this')
+                      Instance Receiver:
+                        ILocalReferenceOperation: c (OperationKind.LocalReference, Type: C, IsImplicit) (Syntax: 'c = this')
+                      Arguments(0)
+            Next (Regular) Block[B5]
+        Block[B5] - Block
+            Predecessors: [B3] [B4]
+            Statements (0)
+            Next (StructuredExceptionHandling) Block[null]
+    }
+}
+Block[B6] - Exit
+    Predecessors: [B2]
+    Statements (0)
+";
+            var expectedDiagnostics = DiagnosticDescription.None;
+
+            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source + s_IAsyncEnumerable + IOperationTests_IForEachLoopStatement.s_ValueTask, expectedGraph, expectedDiagnostics);
+        }
+
+        [CompilerTrait(CompilerFeature.IOperation, CompilerFeature.Dataflow, CompilerFeature.AsyncStreams)]
+        [Fact, WorkItem(30362, "https://github.com/dotnet/roslyn/issues/30362")]
+        public void UsingFlow_SimpleAwaitUsing_InterfaceBased()
+        {
+            string source = @"
+using System;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+
+class C : IAsyncDisposable
+{
+    public async Task M1()
+    /*<bind>*/{
+        await using (var c = this)
+        {
+            Console.WriteLine(c.ToString());
+        }
+    }/*</bind>*/
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        await System.Threading.Tasks.Task.Yield();
+    }
+}
+";
+
+            string expectedGraph = @"
+Block[B0] - Entry
+    Statements (0)
+    Next (Regular) Block[B1]
+        Entering: {R1}
+.locals {R1}
+{
+    Locals: [C c]
+    Block[B1] - Block
+        Predecessors: [B0]
+        Statements (1)
+            ISimpleAssignmentOperation (OperationKind.SimpleAssignment, Type: C, IsImplicit) (Syntax: 'c = this')
+              Left:
+                ILocalReferenceOperation: c (IsDeclaration: True) (OperationKind.LocalReference, Type: C, IsImplicit) (Syntax: 'c = this')
+              Right:
+                IInstanceReferenceOperation (ReferenceKind: ContainingTypeInstance) (OperationKind.InstanceReference, Type: C) (Syntax: 'this')
+        Next (Regular) Block[B2]
+            Entering: {R2} {R3}
+    .try {R2, R3}
+    {
+        Block[B2] - Block
+            Predecessors: [B1]
+            Statements (1)
+                IExpressionStatementOperation (OperationKind.ExpressionStatement, Type: null) (Syntax: 'Console.Wri ... oString());')
+                  Expression:
+                    IInvocationOperation (void System.Console.WriteLine(System.String value)) (OperationKind.Invocation, Type: System.Void) (Syntax: 'Console.Wri ... ToString())')
+                      Instance Receiver:
+                        null
+                      Arguments(1):
+                          IArgumentOperation (ArgumentKind.Explicit, Matching Parameter: value) (OperationKind.Argument, Type: null) (Syntax: 'c.ToString()')
+                            IInvocationOperation (virtual System.String System.Object.ToString()) (OperationKind.Invocation, Type: System.String) (Syntax: 'c.ToString()')
+                              Instance Receiver:
+                                ILocalReferenceOperation: c (OperationKind.LocalReference, Type: C) (Syntax: 'c')
+                              Arguments(0)
+                            InConversion: CommonConversion (Exists: True, IsIdentity: True, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
+                            OutConversion: CommonConversion (Exists: True, IsIdentity: True, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
+            Next (Regular) Block[B6]
+                Finalizing: {R4}
+                Leaving: {R3} {R2} {R1}
+    }
+    .finally {R4}
+    {
+        Block[B3] - Block
+            Predecessors (0)
+            Statements (0)
+            Jump if True (Regular) to Block[B5]
+                IIsNullOperation (OperationKind.IsNull, Type: System.Boolean, IsImplicit) (Syntax: 'c = this')
+                  Operand:
+                    ILocalReferenceOperation: c (OperationKind.LocalReference, Type: C, IsImplicit) (Syntax: 'c = this')
+            Next (Regular) Block[B4]
+        Block[B4] - Block
+            Predecessors: [B3]
+            Statements (1)
+                IAwaitOperation (OperationKind.Await, Type: System.Void, IsImplicit) (Syntax: 'c = this')
+                  Expression:
+                    IInvocationOperation (virtual System.Threading.Tasks.ValueTask System.IAsyncDisposable.DisposeAsync()) (OperationKind.Invocation, Type: System.Threading.Tasks.ValueTask, IsImplicit) (Syntax: 'c = this')
+                      Instance Receiver:
+                        IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IAsyncDisposable, IsImplicit) (Syntax: 'c = this')
+                          Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: True, IsUserDefined: False) (MethodSymbol: null)
+                            (ImplicitReference)
+                          Operand:
+                            ILocalReferenceOperation: c (OperationKind.LocalReference, Type: C, IsImplicit) (Syntax: 'c = this')
+                      Arguments(0)
+            Next (Regular) Block[B5]
+        Block[B5] - Block
+            Predecessors: [B3] [B4]
+            Statements (0)
+            Next (StructuredExceptionHandling) Block[null]
+    }
+}
+Block[B6] - Exit
+    Predecessors: [B2]
+    Statements (0)
+";
+            var expectedDiagnostics = DiagnosticDescription.None;
+
+            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source + s_IAsyncEnumerable + IOperationTests_IForEachLoopStatement.s_ValueTask, expectedGraph, expectedDiagnostics);
         }
 
         [CompilerTrait(CompilerFeature.IOperation)]
@@ -1368,7 +1692,7 @@ Block[B4] - Exit
 
             var expectedDiagnostics = new[]
             {
-                // file.cs(19,25): error CS1751: Cannot specify a default value for a parameter array
+                // file.cs(19,25): error CS1751: Cannot specify a default value for a parameter collection
                 //     public void Dispose(params object[] extras = null) { } 
                 Diagnostic(ErrorCode.ERR_DefaultValueForParamsParameter, "params").WithLocation(19, 25)
             };
@@ -1380,10 +1704,9 @@ Block[B4] - Exit
 
         //THEORY: we won't ever call a params in normal form, because we ignore the default value in metadata.
         //        So: it's either a valid params parameter, in which case we call it in the extended way.
-        //        Or its an invalid params paramter, in which case we can't use it, and we error out.
+        //        Or its an invalid params parameter, in which case we can't use it, and we error out.
         //        Interestingly we check params before we check default, so a params int = 3 will be callable with an 
         //        argument, but not without. 
-
 
         [CompilerTrait(CompilerFeature.IOperation)]
         [Fact]
@@ -1471,7 +1794,6 @@ class C
   IL_0017:  ret
 }
 ");
-
 
             string expectedOperationTree = @"
 IBlockOperation (1 statements) (OperationKind.Block, Type: null) (Syntax: '{ ... }')
@@ -1617,13 +1939,10 @@ class C
 
             var expectedDiagnostics = new[]
             {
-                // (6,15): error CS7036: There is no argument given that corresponds to the required formal parameter 'extras' of 'S.Dispose(params int)'
-                //         using(var s = new S())
-                Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "var s = new S()").WithArguments("extras", "S.Dispose(params int)").WithLocation(6, 15),
                 // (6,15): error CS1674: 'S': type used in a using statement must be implicitly convertible to 'System.IDisposable'.
                 //         using(var s = new S())
                 Diagnostic(ErrorCode.ERR_NoConvToIDisp, "var s = new S()").WithArguments("S").WithLocation(6, 15),
-                // (14,11): error CS7036: There is no argument given that corresponds to the required formal parameter 'extras' of 'S.Dispose(params int)'
+                // (14,11): error CS7036: There is no argument given that corresponds to the required parameter 'extras' of 'S.Dispose(params int)'
                 //         s.Dispose();
                 Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "Dispose").WithArguments("extras", "S.Dispose(params int)").WithLocation(14, 11)
             };
@@ -1689,11 +2008,7 @@ Block[B0] - Entry
             Statements (1)
                 IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsInvalid, IsImplicit) (Syntax: 's = new S()')
                   Instance Receiver: 
-                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, IsInvalid, IsImplicit) (Syntax: 's = new S()')
-                      Conversion: CommonConversion (Exists: False, IsIdentity: False, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
-                        (NoConversion)
-                      Operand: 
-                        ILocalReferenceOperation: s (OperationKind.LocalReference, Type: S, IsInvalid, IsImplicit) (Syntax: 's = new S()')
+                    ILocalReferenceOperation: s (OperationKind.LocalReference, Type: S, IsInvalid, IsImplicit) (Syntax: 's = new S()')
                   Arguments(0)
             Next (StructuredExceptionHandling) Block[null]
     }
@@ -1758,13 +2073,10 @@ class C
 
             var expectedDiagnostics = new[]
             {
-                // (6,15): error CS7036: There is no argument given that corresponds to the required formal parameter 'extras' of 'S.Dispose(params int)'
-                //         using(var s = new S())
-                Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "var s = new S()").WithArguments("extras", "S.Dispose(params int)").WithLocation(6, 15),
                 // (6,15): error CS1674: 'S': type used in a using statement must be implicitly convertible to 'System.IDisposable'.
                 //         using(var s = new S())
                 Diagnostic(ErrorCode.ERR_NoConvToIDisp, "var s = new S()").WithArguments("S").WithLocation(6, 15),
-                // (14,11): error CS7036: There is no argument given that corresponds to the required formal parameter 'extras' of 'S.Dispose(params int)'
+                // (14,11): error CS7036: There is no argument given that corresponds to the required parameter 'extras' of 'S.Dispose(params int)'
                 //         s.Dispose();
                 Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "Dispose").WithArguments("extras", "S.Dispose(params int)").WithLocation(14, 11)
             };
@@ -1830,11 +2142,7 @@ Block[B0] - Entry
             Statements (1)
                 IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsInvalid, IsImplicit) (Syntax: 's = new S()')
                   Instance Receiver: 
-                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, IsInvalid, IsImplicit) (Syntax: 's = new S()')
-                      Conversion: CommonConversion (Exists: False, IsIdentity: False, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
-                        (NoConversion)
-                      Operand: 
-                        ILocalReferenceOperation: s (OperationKind.LocalReference, Type: S, IsInvalid, IsImplicit) (Syntax: 's = new S()')
+                    ILocalReferenceOperation: s (OperationKind.LocalReference, Type: S, IsInvalid, IsImplicit) (Syntax: 's = new S()')
                   Arguments(0)
             Next (StructuredExceptionHandling) Block[null]
     }
@@ -1899,13 +2207,10 @@ class C
 
             var expectedDiagnostics = new[]
             {
-                // (6,15): error CS7036: There is no argument given that corresponds to the required formal parameter 'extras' of 'S.Dispose(params int)'
-                //         using(var s = new S())
-                Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "var s = new S()").WithArguments("extras", "S.Dispose(params int)").WithLocation(6, 15),
                 // (6,15): error CS1674: 'S': type used in a using statement must be implicitly convertible to 'System.IDisposable'.
                 //         using(var s = new S())
                 Diagnostic(ErrorCode.ERR_NoConvToIDisp, "var s = new S()").WithArguments("S").WithLocation(6, 15),
-                // (14,11): error CS7036: There is no argument given that corresponds to the required formal parameter 'extras' of 'S.Dispose(params int)'
+                // (14,11): error CS7036: There is no argument given that corresponds to the required parameter 'extras' of 'S.Dispose(params int)'
                 //         s.Dispose();
                 Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "Dispose").WithArguments("extras", "S.Dispose(params int)").WithLocation(14, 11)
             };
@@ -1971,11 +2276,7 @@ Block[B0] - Entry
             Statements (1)
                 IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsInvalid, IsImplicit) (Syntax: 's = new S()')
                   Instance Receiver: 
-                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, IsInvalid, IsImplicit) (Syntax: 's = new S()')
-                      Conversion: CommonConversion (Exists: False, IsIdentity: False, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
-                        (NoConversion)
-                      Operand: 
-                        ILocalReferenceOperation: s (OperationKind.LocalReference, Type: S, IsInvalid, IsImplicit) (Syntax: 's = new S()')
+                    ILocalReferenceOperation: s (OperationKind.LocalReference, Type: S, IsInvalid, IsImplicit) (Syntax: 's = new S()')
                   Arguments(0)
             Next (StructuredExceptionHandling) Block[null]
     }
@@ -2041,20 +2342,16 @@ class C
 
             var expectedDiagnostics = new[]
             {
-                // (6,15): error CS7036: There is no argument given that corresponds to the required formal parameter 'extras' of 'S.Dispose(params object[], int)'
-                //         using(var s = new S())
-                Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "var s = new S()").WithArguments("extras", "S.Dispose(params object[], int)").WithLocation(6, 15),
                 // (6,15): error CS1674: 'S': type used in a using statement must be implicitly convertible to 'System.IDisposable'.
                 //         using(var s = new S())
                 Diagnostic(ErrorCode.ERR_NoConvToIDisp, "var s = new S()").WithArguments("S").WithLocation(6, 15),
-                // (14,11): error CS7036: There is no argument given that corresponds to the required formal parameter 'extras' of 'S.Dispose(params object[], int)'
+                // (14,11): error CS7036: There is no argument given that corresponds to the required parameter 'extras' of 'S.Dispose(params object[], int)'
                 //         s.Dispose();
                 Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "Dispose").WithArguments("extras", "S.Dispose(params object[], int)").WithLocation(14, 11)
             };
 
             var compilation = CreateCompilationWithIL(source, ilSource);
             compilation.VerifyDiagnostics(expectedDiagnostics);
-
 
             string expectedOperationTree = @"
 IBlockOperation (1 statements) (OperationKind.Block, Type: null, IsInvalid) (Syntax: '{ ... }')
@@ -2116,11 +2413,7 @@ Block[B0] - Entry
             Statements (1)
                 IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsInvalid, IsImplicit) (Syntax: 's = new S()')
                   Instance Receiver: 
-                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, IsInvalid, IsImplicit) (Syntax: 's = new S()')
-                      Conversion: CommonConversion (Exists: False, IsIdentity: False, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
-                        (NoConversion)
-                      Operand: 
-                        ILocalReferenceOperation: s (OperationKind.LocalReference, Type: S, IsInvalid, IsImplicit) (Syntax: 's = new S()')
+                    ILocalReferenceOperation: s (OperationKind.LocalReference, Type: S, IsInvalid, IsImplicit) (Syntax: 's = new S()')
                   Arguments(0)
             Next (StructuredExceptionHandling) Block[null]
     }
@@ -2471,11 +2764,7 @@ Block[B0] - Entry
             Statements (1)
                 IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsImplicit) (Syntax: 'b ? GetDisp ... e() : input')
                   Instance Receiver: 
-                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, IsImplicit) (Syntax: 'b ? GetDisp ... e() : input')
-                      Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
-                        (Boxing)
-                      Operand: 
-                        IFlowCaptureReferenceOperation: 0 (OperationKind.FlowCaptureReference, Type: MyDisposable, IsImplicit) (Syntax: 'b ? GetDisp ... e() : input')
+                    IFlowCaptureReferenceOperation: 0 (OperationKind.FlowCaptureReference, Type: MyDisposable, IsImplicit) (Syntax: 'b ? GetDisp ... e() : input')
                   Arguments(0)
 
             Next (StructuredExceptionHandling) Block[null]
@@ -2580,11 +2869,7 @@ Block[B0] - Entry
             Statements (1)
                 IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsImplicit) (Syntax: 'b ? GetDisp ... >() : input')
                   Instance Receiver: 
-                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, IsImplicit) (Syntax: 'b ? GetDisp ... >() : input')
-                      Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
-                        (Boxing)
-                      Operand: 
-                        IFlowCaptureReferenceOperation: 0 (OperationKind.FlowCaptureReference, Type: MyDisposable, IsImplicit) (Syntax: 'b ? GetDisp ... >() : input')
+                    IFlowCaptureReferenceOperation: 0 (OperationKind.FlowCaptureReference, Type: MyDisposable, IsImplicit) (Syntax: 'b ? GetDisp ... >() : input')
                   Arguments(0)
 
             Next (Regular) Block[B7]
@@ -2711,11 +2996,10 @@ Block[B0] - Entry
             Statements (1)
                 IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsImplicit) (Syntax: 'GetDisposable() ?? input')
                   Instance Receiver: 
-                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, IsImplicit) (Syntax: 'GetDisposable() ?? input')
-                      Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
-                        (Boxing)
-                      Operand: 
+                    IInvocationOperation ( MyDisposable MyDisposable?.GetValueOrDefault()) (OperationKind.Invocation, Type: MyDisposable, IsImplicit) (Syntax: 'GetDisposable() ?? input')
+                      Instance Receiver:
                         IFlowCaptureReferenceOperation: 1 (OperationKind.FlowCaptureReference, Type: MyDisposable?, IsImplicit) (Syntax: 'GetDisposable() ?? input')
+                      Arguments(0)
                   Arguments(0)
 
             Next (Regular) Block[B7]
@@ -3074,11 +3358,7 @@ Block[B0] - Entry
             Statements (1)
                 IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsInvalid, IsImplicit) (Syntax: 'b ? GetDisp ... e() : input')
                   Instance Receiver: 
-                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, IsInvalid, IsImplicit) (Syntax: 'b ? GetDisp ... e() : input')
-                      Conversion: CommonConversion (Exists: False, IsIdentity: False, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
-                        (NoConversion)
-                      Operand: 
-                        IFlowCaptureReferenceOperation: 0 (OperationKind.FlowCaptureReference, Type: MyDisposable, IsInvalid, IsImplicit) (Syntax: 'b ? GetDisp ... e() : input')
+                    IFlowCaptureReferenceOperation: 0 (OperationKind.FlowCaptureReference, Type: MyDisposable, IsInvalid, IsImplicit) (Syntax: 'b ? GetDisp ... e() : input')
                   Arguments(0)
             Next (StructuredExceptionHandling) Block[null]
     }
@@ -3178,11 +3458,7 @@ Block[B0] - Entry
             Statements (1)
                 IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsInvalid, IsImplicit) (Syntax: 'b ? GetDisp ... >() : input')
                   Instance Receiver: 
-                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, IsInvalid, IsImplicit) (Syntax: 'b ? GetDisp ... >() : input')
-                      Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
-                        (Unboxing)
-                      Operand: 
-                        IFlowCaptureReferenceOperation: 0 (OperationKind.FlowCaptureReference, Type: MyDisposable, IsInvalid, IsImplicit) (Syntax: 'b ? GetDisp ... >() : input')
+                    IFlowCaptureReferenceOperation: 0 (OperationKind.FlowCaptureReference, Type: MyDisposable, IsInvalid, IsImplicit) (Syntax: 'b ? GetDisp ... >() : input')
                   Arguments(0)
             Next (Regular) Block[B7]
         Block[B7] - Block
@@ -3301,11 +3577,10 @@ Block[B0] - Entry
             Statements (1)
                 IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsInvalid, IsImplicit) (Syntax: 'GetDisposable() ?? input')
                   Instance Receiver: 
-                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, IsInvalid, IsImplicit) (Syntax: 'GetDisposable() ?? input')
-                      Conversion: CommonConversion (Exists: False, IsIdentity: False, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
-                        (NoConversion)
-                      Operand: 
+                    IInvocationOperation ( MyDisposable MyDisposable?.GetValueOrDefault()) (OperationKind.Invocation, Type: MyDisposable, IsInvalid, IsImplicit) (Syntax: 'GetDisposable() ?? input')
+                      Instance Receiver:
                         IFlowCaptureReferenceOperation: 1 (OperationKind.FlowCaptureReference, Type: MyDisposable?, IsInvalid, IsImplicit) (Syntax: 'GetDisposable() ?? input')
+                      Arguments(0)
                   Arguments(0)
             Next (Regular) Block[B7]
         Block[B7] - Block
@@ -4097,11 +4372,10 @@ Block[B0] - Entry
                   Expression: 
                     IInvocationOperation (virtual System.Threading.Tasks.ValueTask System.IAsyncDisposable.DisposeAsync()) (OperationKind.Invocation, Type: System.Threading.Tasks.ValueTask, IsInvalid, IsImplicit) (Syntax: 's')
                       Instance Receiver: 
-                        IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IAsyncDisposable, IsInvalid, IsImplicit) (Syntax: 's')
-                          Conversion: CommonConversion (Exists: False, IsIdentity: False, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
-                            (NoConversion)
-                          Operand: 
+                        IInvocationOperation ( S S?.GetValueOrDefault()) (OperationKind.Invocation, Type: S, IsInvalid, IsImplicit) (Syntax: 's')
+                          Instance Receiver:
                             IFlowCaptureReferenceOperation: 0 (OperationKind.FlowCaptureReference, Type: S?, IsInvalid, IsImplicit) (Syntax: 's')
+                          Arguments(0)
                       Arguments(0)
             Next (Regular) Block[B5]
         Block[B5] - Block
@@ -4208,7 +4482,7 @@ Block[B6] - Exit
 ";
             var expectedDiagnostics = DiagnosticDescription.None;
 
-            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source + s_IAsyncEnumerable + s_ValueTask, expectedGraph, expectedDiagnostics);
+            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source + s_IAsyncEnumerable + IOperationTests_IForEachLoopStatement.s_ValueTask, expectedGraph, expectedDiagnostics);
         }
 
         [CompilerTrait(CompilerFeature.IOperation, CompilerFeature.Dataflow)]
@@ -4302,7 +4576,7 @@ Block[B6] - Exit
 ";
             var expectedDiagnostics = DiagnosticDescription.None;
 
-            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source + s_IAsyncEnumerable + s_ValueTask, expectedGraph, expectedDiagnostics);
+            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source + s_IAsyncEnumerable + IOperationTests_IForEachLoopStatement.s_ValueTask, expectedGraph, expectedDiagnostics);
         }
 
         [CompilerTrait(CompilerFeature.IOperation, CompilerFeature.Dataflow)]
@@ -4388,7 +4662,7 @@ Block[B6] - Exit
 ";
             var expectedDiagnostics = DiagnosticDescription.None;
 
-            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source + s_IAsyncEnumerable + s_ValueTask, expectedGraph, expectedDiagnostics);
+            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source + s_IAsyncEnumerable + IOperationTests_IForEachLoopStatement.s_ValueTask, expectedGraph, expectedDiagnostics);
         }
 
         [CompilerTrait(CompilerFeature.IOperation, CompilerFeature.Dataflow)]
@@ -4469,18 +4743,15 @@ Block[B6] - Exit
 ";
             var expectedDiagnostics = new[]
             {
-                // file.cs(8,21): error CS7036: There is no argument given that corresponds to the required formal parameter 'extras' of 'C.DisposeAsync(int, params int[], bool)'
-                //         await using(this){}
-                Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "this").WithArguments("extras", "C.DisposeAsync(int, params int[], bool)").WithLocation(8, 21),
                 // file.cs(8,21): error CS8410: 'C': type used in an asynchronous using statement must be implicitly convertible to 'System.IAsyncDisposable' or implement a suitable 'DisposeAsync' method.
                 //         await using(this){}
                 Diagnostic(ErrorCode.ERR_NoConvToIAsyncDisp, "this").WithArguments("C").WithLocation(8, 21),
-                // file.cs(11,34): error CS0231: A params parameter must be the last parameter in a formal parameter list
+                // file.cs(11,34): error CS0231: A params parameter must be the last parameter in a parameter list
                 //     Task DisposeAsync(int a = 3, params int[] extras, bool b = false) => throw null;
                 Diagnostic(ErrorCode.ERR_ParamsLast, "params int[] extras").WithLocation(11, 34)
             };
 
-            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source + s_IAsyncEnumerable + s_ValueTask, expectedGraph, expectedDiagnostics);
+            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source + s_IAsyncEnumerable + IOperationTests_IForEachLoopStatement.s_ValueTask, expectedGraph, expectedDiagnostics);
         }
 
         [CompilerTrait(CompilerFeature.IOperation, CompilerFeature.Dataflow)]
@@ -7276,11 +7547,7 @@ Block[B0] - Entry
             Statements (1)
                 IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsInvalid, IsImplicit) (Syntax: 'x = new P()')
                   Instance Receiver: 
-                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, IsInvalid, IsImplicit) (Syntax: 'x = new P()')
-                      Conversion: CommonConversion (Exists: False, IsIdentity: False, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
-                        (NoConversion)
-                      Operand: 
-                        ILocalReferenceOperation: x (OperationKind.LocalReference, Type: P, IsInvalid, IsImplicit) (Syntax: 'x = new P()')
+                    ILocalReferenceOperation: x (OperationKind.LocalReference, Type: P, IsInvalid, IsImplicit) (Syntax: 'x = new P()')
                   Arguments(0)
             Next (StructuredExceptionHandling) Block[null]
     }
@@ -7291,12 +7558,9 @@ Block[B4] - Exit
 ";
             var expectedDiagnostics = new[]
             {
-                    // file.cs(8,13): warning CS0280: 'P' does not implement the 'disposable' pattern. 'P.Dispose()' has the wrong signature.
-                    //             using var x = new P();
-                    Diagnostic(ErrorCode.WRN_PatternBadSignature, "using var x = new P();").WithArguments("P", "disposable", "P.Dispose()").WithLocation(8, 13),
-                    // file.cs(8,13): error CS1674: 'P': type used in a using statement must be implicitly convertible to 'System.IDisposable'.
-                    //             using var x = new P();
-                    Diagnostic(ErrorCode.ERR_NoConvToIDisp, "using var x = new P();").WithArguments("P").WithLocation(8, 13)
+                // file.cs(8,13): error CS1674: 'P': type used in a using statement must be implicitly convertible to 'System.IDisposable'.
+                //             using var x = new P();
+                Diagnostic(ErrorCode.ERR_NoConvToIDisp, "using var x = new P();").WithArguments("P").WithLocation(8, 13)
             };
 
             VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source, expectedGraph, expectedDiagnostics);
@@ -7467,7 +7731,7 @@ Block[B6] - Exit
 ";
             var expectedDiagnostics = DiagnosticDescription.None;
 
-            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source + s_IAsyncEnumerable + s_ValueTask, expectedGraph, expectedDiagnostics);
+            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source + s_IAsyncEnumerable + IOperationTests_IForEachLoopStatement.s_ValueTask, expectedGraph, expectedDiagnostics);
         }
 
         [CompilerTrait(CompilerFeature.IOperation, CompilerFeature.Dataflow)]
@@ -7565,9 +7829,120 @@ Block[B6] - Exit
 ";
             var expectedDiagnostics = DiagnosticDescription.None;
 
-            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source + s_IAsyncEnumerable + s_ValueTask, expectedGraph, expectedDiagnostics);
+            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source + s_IAsyncEnumerable + IOperationTests_IForEachLoopStatement.s_ValueTask, expectedGraph, expectedDiagnostics);
         }
 
+        [CompilerTrait(CompilerFeature.IOperation, CompilerFeature.Dataflow)]
+        [Fact, WorkItem("https://github.com/dotnet/roslyn/issues/73068")]
+        public void UsingDeclaration_Flow_25()
+        {
+            var code = """
+                class C
+                {
+                    void M()
+                    /*<bind>*/{
+                        x:
+                        System.Action a = () => {
+                            using System.IDisposable d = null;
+                            goto x;
+                        };
+                    }/*</bind>*/
+
+                }
+                """;
+            var expectedGraph = """
+Block[B0] - Entry
+    Statements (0)
+    Next (Regular) Block[B1]
+        Entering: {R1}
+.locals {R1}
+{
+    Locals: [System.Action a]
+    Block[B1] - Block
+        Predecessors: [B0]
+        Statements (1)
+            ISimpleAssignmentOperation (OperationKind.SimpleAssignment, Type: System.Action, IsInvalid, IsImplicit) (Syntax: 'a = () => { ... }')
+                Left:
+                ILocalReferenceOperation: a (IsDeclaration: True) (OperationKind.LocalReference, Type: System.Action, IsInvalid, IsImplicit) (Syntax: 'a = () => { ... }')
+                Right:
+                IDelegateCreationOperation (OperationKind.DelegateCreation, Type: System.Action, IsInvalid, IsImplicit) (Syntax: '() => { ... }')
+                    Target:
+                    IFlowAnonymousFunctionOperation (Symbol: lambda expression) (OperationKind.FlowAnonymousFunction, Type: null, IsInvalid) (Syntax: '() => { ... }')
+                    {
+                        Block[B0#A0] - Entry
+                            Statements (0)
+                            Next (Regular) Block[B1#A0]
+                                Entering: {R1#A0}
+                        .locals {R1#A0}
+                        {
+                            Locals: [System.IDisposable d]
+                            Block[B1#A0] - Block
+                                Predecessors: [B0#A0]
+                                Statements (1)
+                                    ISimpleAssignmentOperation (OperationKind.SimpleAssignment, Type: System.IDisposable, IsImplicit) (Syntax: 'd = null')
+                                        Left:
+                                        ILocalReferenceOperation: d (IsDeclaration: True) (OperationKind.LocalReference, Type: System.IDisposable, IsImplicit) (Syntax: 'd = null')
+                                        Right:
+                                        IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, Constant: null, IsImplicit) (Syntax: 'null')
+                                            Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: True, IsUserDefined: False) (MethodSymbol: null)
+                                            (ImplicitReference)
+                                            Operand:
+                                            ILiteralOperation (OperationKind.Literal, Type: null, Constant: null) (Syntax: 'null')
+                                Next (Regular) Block[B2#A0]
+                                    Entering: {R2#A0} {R3#A0}
+                            .try {R2#A0, R3#A0}
+                            {
+                                Block[B2#A0] - Block
+                                    Predecessors: [B1#A0]
+                                    Statements (0)
+                                    Next (Error) Block[null]
+                            }
+                            .finally {R4#A0}
+                            {
+                                Block[B3#A0] - Block
+                                    Predecessors (0)
+                                    Statements (0)
+                                    Jump if True (Regular) to Block[B5#A0]
+                                        IIsNullOperation (OperationKind.IsNull, Type: System.Boolean, IsImplicit) (Syntax: 'd = null')
+                                            Operand:
+                                            ILocalReferenceOperation: d (OperationKind.LocalReference, Type: System.IDisposable, IsImplicit) (Syntax: 'd = null')
+                                    Next (Regular) Block[B4#A0]
+                                Block[B4#A0] - Block
+                                    Predecessors: [B3#A0]
+                                    Statements (1)
+                                        IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsImplicit) (Syntax: 'd = null')
+                                            Instance Receiver:
+                                            ILocalReferenceOperation: d (OperationKind.LocalReference, Type: System.IDisposable, IsImplicit) (Syntax: 'd = null')
+                                            Arguments(0)
+                                    Next (Regular) Block[B5#A0]
+                                Block[B5#A0] - Block
+                                    Predecessors: [B3#A0] [B4#A0]
+                                    Statements (0)
+                                    Next (StructuredExceptionHandling) Block[null]
+                            }
+                        }
+                        Block[B6#A0] - Exit [UnReachable]
+                            Predecessors (0)
+                            Statements (0)
+                    }
+        Next (Regular) Block[B2]
+            Leaving: {R1}
+}
+Block[B2] - Exit
+    Predecessors: [B1]
+    Statements (0)
+""";
+            var expectedDiagnostics = new[]
+            {
+                // (5,9): warning CS0164: This label has not been referenced
+                //         x:
+                Diagnostic(ErrorCode.WRN_UnreferencedLabel, "x").WithLocation(5, 9),
+                // (8,13): error CS0159: No such label 'x' within the scope of the goto statement
+                //             goto x;
+                Diagnostic(ErrorCode.ERR_LabelNotFound, "goto").WithArguments("x").WithLocation(8, 13)
+            };
+            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(code, expectedGraph, expectedDiagnostics);
+        }
 
         [CompilerTrait(CompilerFeature.IOperation)]
         [Fact, WorkItem(32100, "https://github.com/dotnet/roslyn/issues/32100")]
@@ -8161,6 +8536,812 @@ IUsingDeclarationOperation(IsAsynchronous: False, DisposeMethod: void S.Dispose(
             var expectedDiagnostics = DiagnosticDescription.None;
 
             VerifyOperationTreeAndDiagnosticsForTest<LocalDeclarationStatementSyntax>(source, expectedOperationTree, expectedDiagnostics);
+        }
+
+        [Fact]
+        public void UsingDeclaration_LocalFunctionDefinedAfterUsingReferenceBeforeUsing()
+        {
+            var comp = CreateCompilation(@"
+using System;
+
+class C
+{
+    void M()
+    /*<bind>*/{
+        localFunc2();
+        static void localFunc() {}
+
+        using IDisposable i = null;
+        localFunc();
+
+        static void localFunc2() {}
+        localFunc3();
+
+        static void localFunc3() {}
+    }/*</bind>*/
+}
+");
+
+            VerifyOperationTreeAndDiagnosticsForTest<BlockSyntax>(comp, @"
+IBlockOperation (7 statements, 1 locals) (OperationKind.Block, Type: null) (Syntax: '{ ... }')
+  Locals: Local_1: System.IDisposable i
+  IExpressionStatementOperation (OperationKind.ExpressionStatement, Type: null) (Syntax: 'localFunc2();')
+    Expression: 
+      IInvocationOperation (void localFunc2()) (OperationKind.Invocation, Type: System.Void) (Syntax: 'localFunc2()')
+        Instance Receiver: 
+          null
+        Arguments(0)
+  ILocalFunctionOperation (Symbol: void localFunc()) (OperationKind.LocalFunction, Type: null) (Syntax: 'static void ... alFunc() {}')
+    IBlockOperation (1 statements) (OperationKind.Block, Type: null) (Syntax: '{}')
+      IReturnOperation (OperationKind.Return, Type: null, IsImplicit) (Syntax: '{}')
+        ReturnedValue: 
+          null
+  IUsingDeclarationOperation(IsAsynchronous: False) (OperationKind.UsingDeclaration, Type: null) (Syntax: 'using IDisp ... e i = null;')
+    DeclarationGroup: 
+      IVariableDeclarationGroupOperation (1 declarations) (OperationKind.VariableDeclarationGroup, Type: null, IsImplicit) (Syntax: 'using IDisp ... e i = null;')
+        IVariableDeclarationOperation (1 declarators) (OperationKind.VariableDeclaration, Type: null) (Syntax: 'IDisposable i = null')
+          Declarators:
+              IVariableDeclaratorOperation (Symbol: System.IDisposable i) (OperationKind.VariableDeclarator, Type: null) (Syntax: 'i = null')
+                Initializer: 
+                  IVariableInitializerOperation (OperationKind.VariableInitializer, Type: null) (Syntax: '= null')
+                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, Constant: null, IsImplicit) (Syntax: 'null')
+                      Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: True, IsUserDefined: False) (MethodSymbol: null)
+                      Operand: 
+                        ILiteralOperation (OperationKind.Literal, Type: null, Constant: null) (Syntax: 'null')
+          Initializer: 
+            null
+  IExpressionStatementOperation (OperationKind.ExpressionStatement, Type: null) (Syntax: 'localFunc();')
+    Expression: 
+      IInvocationOperation (void localFunc()) (OperationKind.Invocation, Type: System.Void) (Syntax: 'localFunc()')
+        Instance Receiver: 
+          null
+        Arguments(0)
+  ILocalFunctionOperation (Symbol: void localFunc2()) (OperationKind.LocalFunction, Type: null) (Syntax: 'static void ... lFunc2() {}')
+    IBlockOperation (1 statements) (OperationKind.Block, Type: null) (Syntax: '{}')
+      IReturnOperation (OperationKind.Return, Type: null, IsImplicit) (Syntax: '{}')
+        ReturnedValue: 
+          null
+  IExpressionStatementOperation (OperationKind.ExpressionStatement, Type: null) (Syntax: 'localFunc3();')
+    Expression: 
+      IInvocationOperation (void localFunc3()) (OperationKind.Invocation, Type: System.Void) (Syntax: 'localFunc3()')
+        Instance Receiver: 
+          null
+        Arguments(0)
+  ILocalFunctionOperation (Symbol: void localFunc3()) (OperationKind.LocalFunction, Type: null) (Syntax: 'static void ... lFunc3() {}')
+    IBlockOperation (1 statements) (OperationKind.Block, Type: null) (Syntax: '{}')
+      IReturnOperation (OperationKind.Return, Type: null, IsImplicit) (Syntax: '{}')
+        ReturnedValue: 
+          null
+", DiagnosticDescription.None);
+
+            VerifyFlowGraphForTest<BlockSyntax>(comp, @"
+Block[B0] - Entry
+    Statements (0)
+    Next (Regular) Block[B1]
+        Entering: {R1}
+.locals {R1}
+{
+    Locals: [System.IDisposable i]
+    Methods: [void localFunc()] [void localFunc2()] [void localFunc3()]
+    Block[B1] - Block
+        Predecessors: [B0]
+        Statements (2)
+            IExpressionStatementOperation (OperationKind.ExpressionStatement, Type: null) (Syntax: 'localFunc2();')
+              Expression: 
+                IInvocationOperation (void localFunc2()) (OperationKind.Invocation, Type: System.Void) (Syntax: 'localFunc2()')
+                  Instance Receiver: 
+                    null
+                  Arguments(0)
+            ISimpleAssignmentOperation (OperationKind.SimpleAssignment, Type: System.IDisposable, IsImplicit) (Syntax: 'i = null')
+              Left: 
+                ILocalReferenceOperation: i (IsDeclaration: True) (OperationKind.LocalReference, Type: System.IDisposable, IsImplicit) (Syntax: 'i = null')
+              Right: 
+                IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, Constant: null, IsImplicit) (Syntax: 'null')
+                  Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: True, IsUserDefined: False) (MethodSymbol: null)
+                    (ImplicitReference)
+                  Operand: 
+                    ILiteralOperation (OperationKind.Literal, Type: null, Constant: null) (Syntax: 'null')
+        Next (Regular) Block[B2]
+            Entering: {R2} {R3}
+    .try {R2, R3}
+    {
+        Block[B2] - Block
+            Predecessors: [B1]
+            Statements (2)
+                IExpressionStatementOperation (OperationKind.ExpressionStatement, Type: null) (Syntax: 'localFunc();')
+                  Expression: 
+                    IInvocationOperation (void localFunc()) (OperationKind.Invocation, Type: System.Void) (Syntax: 'localFunc()')
+                      Instance Receiver: 
+                        null
+                      Arguments(0)
+                IExpressionStatementOperation (OperationKind.ExpressionStatement, Type: null) (Syntax: 'localFunc3();')
+                  Expression: 
+                    IInvocationOperation (void localFunc3()) (OperationKind.Invocation, Type: System.Void) (Syntax: 'localFunc3()')
+                      Instance Receiver: 
+                        null
+                      Arguments(0)
+            Next (Regular) Block[B6]
+                Finalizing: {R4}
+                Leaving: {R3} {R2} {R1}
+    }
+    .finally {R4}
+    {
+        Block[B3] - Block
+            Predecessors (0)
+            Statements (0)
+            Jump if True (Regular) to Block[B5]
+                IIsNullOperation (OperationKind.IsNull, Type: System.Boolean, IsImplicit) (Syntax: 'i = null')
+                  Operand: 
+                    ILocalReferenceOperation: i (OperationKind.LocalReference, Type: System.IDisposable, IsImplicit) (Syntax: 'i = null')
+            Next (Regular) Block[B4]
+        Block[B4] - Block
+            Predecessors: [B3]
+            Statements (1)
+                IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsImplicit) (Syntax: 'i = null')
+                  Instance Receiver: 
+                    ILocalReferenceOperation: i (OperationKind.LocalReference, Type: System.IDisposable, IsImplicit) (Syntax: 'i = null')
+                  Arguments(0)
+            Next (Regular) Block[B5]
+        Block[B5] - Block
+            Predecessors: [B3] [B4]
+            Statements (0)
+            Next (StructuredExceptionHandling) Block[null]
+    }
+    
+    {   void localFunc()
+    
+        Block[B0#0R1] - Entry
+            Statements (0)
+            Next (Regular) Block[B1#0R1]
+        Block[B1#0R1] - Exit
+            Predecessors: [B0#0R1]
+            Statements (0)
+    }
+    
+    {   void localFunc2()
+    
+        Block[B0#1R1] - Entry
+            Statements (0)
+            Next (Regular) Block[B1#1R1]
+        Block[B1#1R1] - Exit
+            Predecessors: [B0#1R1]
+            Statements (0)
+    }
+    
+    {   void localFunc3()
+    
+        Block[B0#2R1] - Entry
+            Statements (0)
+            Next (Regular) Block[B1#2R1]
+        Block[B1#2R1] - Exit
+            Predecessors: [B0#2R1]
+            Statements (0)
+    }
+}
+Block[B6] - Exit
+    Predecessors: [B2]
+    Statements (0)
+");
+        }
+
+        [Fact]
+        public void UsingDeclaration_LocalDefinedAfterUsingReferenceBeforeUsing()
+        {
+            var comp = CreateCompilation(@"
+using System;
+
+class C
+{
+    void M()
+    /*<bind>*/{
+        _ = local;
+        using IDisposable i = null;
+        object local = null;
+    }/*</bind>*/
+}
+");
+
+            var expectedDiagnostics = new DiagnosticDescription[] {
+                // (8,13): error CS0841: Cannot use local variable 'local' before it is declared
+                //         _ = local;
+                Diagnostic(ErrorCode.ERR_VariableUsedBeforeDeclaration, "local").WithArguments("local").WithLocation(8, 13)
+            };
+
+            VerifyOperationTreeAndDiagnosticsForTest<BlockSyntax>(comp, @"
+IBlockOperation (3 statements, 2 locals) (OperationKind.Block, Type: null, IsInvalid) (Syntax: '{ ... }')
+  Locals: Local_1: System.IDisposable i
+    Local_2: System.Object local
+  IExpressionStatementOperation (OperationKind.ExpressionStatement, Type: null, IsInvalid) (Syntax: '_ = local;')
+    Expression: 
+      ISimpleAssignmentOperation (OperationKind.SimpleAssignment, Type: var, IsInvalid) (Syntax: '_ = local')
+        Left: 
+          IDiscardOperation (Symbol: var _) (OperationKind.Discard, Type: var) (Syntax: '_')
+        Right: 
+          ILocalReferenceOperation: local (OperationKind.LocalReference, Type: var, IsInvalid) (Syntax: 'local')
+  IUsingDeclarationOperation(IsAsynchronous: False) (OperationKind.UsingDeclaration, Type: null) (Syntax: 'using IDisp ... e i = null;')
+    DeclarationGroup: 
+      IVariableDeclarationGroupOperation (1 declarations) (OperationKind.VariableDeclarationGroup, Type: null, IsImplicit) (Syntax: 'using IDisp ... e i = null;')
+        IVariableDeclarationOperation (1 declarators) (OperationKind.VariableDeclaration, Type: null) (Syntax: 'IDisposable i = null')
+          Declarators:
+              IVariableDeclaratorOperation (Symbol: System.IDisposable i) (OperationKind.VariableDeclarator, Type: null) (Syntax: 'i = null')
+                Initializer: 
+                  IVariableInitializerOperation (OperationKind.VariableInitializer, Type: null) (Syntax: '= null')
+                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, Constant: null, IsImplicit) (Syntax: 'null')
+                      Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: True, IsUserDefined: False) (MethodSymbol: null)
+                      Operand: 
+                        ILiteralOperation (OperationKind.Literal, Type: null, Constant: null) (Syntax: 'null')
+          Initializer: 
+            null
+  IVariableDeclarationGroupOperation (1 declarations) (OperationKind.VariableDeclarationGroup, Type: null) (Syntax: 'object local = null;')
+    IVariableDeclarationOperation (1 declarators) (OperationKind.VariableDeclaration, Type: null) (Syntax: 'object local = null')
+      Declarators:
+          IVariableDeclaratorOperation (Symbol: System.Object local) (OperationKind.VariableDeclarator, Type: null) (Syntax: 'local = null')
+            Initializer: 
+              IVariableInitializerOperation (OperationKind.VariableInitializer, Type: null) (Syntax: '= null')
+                IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.Object, Constant: null, IsImplicit) (Syntax: 'null')
+                  Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: True, IsUserDefined: False) (MethodSymbol: null)
+                  Operand: 
+                    ILiteralOperation (OperationKind.Literal, Type: null, Constant: null) (Syntax: 'null')
+      Initializer: 
+        null
+", expectedDiagnostics);
+
+            VerifyFlowGraphForTest<BlockSyntax>(comp, @"
+Block[B0] - Entry
+    Statements (0)
+    Next (Regular) Block[B1]
+        Entering: {R1}
+.locals {R1}
+{
+    Locals: [System.IDisposable i] [System.Object local]
+    Block[B1] - Block
+        Predecessors: [B0]
+        Statements (2)
+            IExpressionStatementOperation (OperationKind.ExpressionStatement, Type: null, IsInvalid) (Syntax: '_ = local;')
+              Expression: 
+                ISimpleAssignmentOperation (OperationKind.SimpleAssignment, Type: var, IsInvalid) (Syntax: '_ = local')
+                  Left: 
+                    IDiscardOperation (Symbol: var _) (OperationKind.Discard, Type: var) (Syntax: '_')
+                  Right: 
+                    ILocalReferenceOperation: local (OperationKind.LocalReference, Type: var, IsInvalid) (Syntax: 'local')
+            ISimpleAssignmentOperation (OperationKind.SimpleAssignment, Type: System.IDisposable, IsImplicit) (Syntax: 'i = null')
+              Left: 
+                ILocalReferenceOperation: i (IsDeclaration: True) (OperationKind.LocalReference, Type: System.IDisposable, IsImplicit) (Syntax: 'i = null')
+              Right: 
+                IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, Constant: null, IsImplicit) (Syntax: 'null')
+                  Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: True, IsUserDefined: False) (MethodSymbol: null)
+                    (ImplicitReference)
+                  Operand: 
+                    ILiteralOperation (OperationKind.Literal, Type: null, Constant: null) (Syntax: 'null')
+        Next (Regular) Block[B2]
+            Entering: {R2} {R3}
+    .try {R2, R3}
+    {
+        Block[B2] - Block
+            Predecessors: [B1]
+            Statements (1)
+                ISimpleAssignmentOperation (OperationKind.SimpleAssignment, Type: System.Object, IsImplicit) (Syntax: 'local = null')
+                  Left: 
+                    ILocalReferenceOperation: local (IsDeclaration: True) (OperationKind.LocalReference, Type: System.Object, IsImplicit) (Syntax: 'local = null')
+                  Right: 
+                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.Object, Constant: null, IsImplicit) (Syntax: 'null')
+                      Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: True, IsUserDefined: False) (MethodSymbol: null)
+                        (ImplicitReference)
+                      Operand: 
+                        ILiteralOperation (OperationKind.Literal, Type: null, Constant: null) (Syntax: 'null')
+            Next (Regular) Block[B6]
+                Finalizing: {R4}
+                Leaving: {R3} {R2} {R1}
+    }
+    .finally {R4}
+    {
+        Block[B3] - Block
+            Predecessors (0)
+            Statements (0)
+            Jump if True (Regular) to Block[B5]
+                IIsNullOperation (OperationKind.IsNull, Type: System.Boolean, IsImplicit) (Syntax: 'i = null')
+                  Operand: 
+                    ILocalReferenceOperation: i (OperationKind.LocalReference, Type: System.IDisposable, IsImplicit) (Syntax: 'i = null')
+            Next (Regular) Block[B4]
+        Block[B4] - Block
+            Predecessors: [B3]
+            Statements (1)
+                IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsImplicit) (Syntax: 'i = null')
+                  Instance Receiver: 
+                    ILocalReferenceOperation: i (OperationKind.LocalReference, Type: System.IDisposable, IsImplicit) (Syntax: 'i = null')
+                  Arguments(0)
+            Next (Regular) Block[B5]
+        Block[B5] - Block
+            Predecessors: [B3] [B4]
+            Statements (0)
+            Next (StructuredExceptionHandling) Block[null]
+    }
+}
+Block[B6] - Exit
+    Predecessors: [B2]
+    Statements (0)
+");
+        }
+
+        [Fact]
+        public void UsingDeclaration_InsideSwitchCaseEmbeddedStatements()
+        {
+            var source = @"
+using System;
+class C1 : IDisposable
+{
+    public void Dispose() { }
+}
+class C2
+{
+    public static void M(int x)
+    /*<bind>*/{
+        switch (x)
+        {
+            case 5:
+                using C1 o1 = new C1();
+                break;
+        }
+    }/*</bind>*/
+}";
+
+            var expectedDiagnostics = new DiagnosticDescription[] {
+                // file.cs(14,17): error CS8647: A using variable cannot be used directly within a switch section (consider using braces). 
+                //                 using C1 o1 = new C1();
+                Diagnostic(ErrorCode.ERR_UsingVarInSwitchCase, "using C1 o1 = new C1();").WithLocation(14, 17)
+            };
+
+            var expectedFlowGraph = @"
+Block[B0] - Entry
+    Statements (0)
+    Next (Regular) Block[B1]
+        Entering: {R1}
+.locals {R1}
+{
+    CaptureIds: [0]
+    Block[B1] - Block
+        Predecessors: [B0]
+        Statements (1)
+            IFlowCaptureOperation: 0 (OperationKind.FlowCapture, Type: null, IsImplicit) (Syntax: 'x')
+              Value: 
+                IParameterReferenceOperation: x (OperationKind.ParameterReference, Type: System.Int32) (Syntax: 'x')
+        Next (Regular) Block[B2]
+            Entering: {R2}
+    .locals {R2}
+    {
+        Locals: [C1 o1]
+        Block[B2] - Block
+            Predecessors: [B1]
+            Statements (0)
+            Jump if False (Regular) to Block[B8]
+                IBinaryOperation (BinaryOperatorKind.Equals) (OperationKind.Binary, Type: System.Boolean, IsImplicit) (Syntax: '5')
+                  Left: 
+                    IFlowCaptureReferenceOperation: 0 (OperationKind.FlowCaptureReference, Type: System.Int32, IsImplicit) (Syntax: 'x')
+                  Right: 
+                    ILiteralOperation (OperationKind.Literal, Type: System.Int32, Constant: 5) (Syntax: '5')
+                Leaving: {R2} {R1}
+            Next (Regular) Block[B3]
+        Block[B3] - Block
+            Predecessors: [B2]
+            Statements (1)
+                ISimpleAssignmentOperation (OperationKind.SimpleAssignment, Type: C1, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                  Left: 
+                    ILocalReferenceOperation: o1 (IsDeclaration: True) (OperationKind.LocalReference, Type: C1, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                  Right: 
+                    IObjectCreationOperation (Constructor: C1..ctor()) (OperationKind.ObjectCreation, Type: C1, IsInvalid) (Syntax: 'new C1()')
+                      Arguments(0)
+                      Initializer: 
+                        null
+            Next (Regular) Block[B4]
+                Entering: {R3} {R4}
+        .try {R3, R4}
+        {
+            Block[B4] - Block
+                Predecessors: [B3]
+                Statements (0)
+                Next (Regular) Block[B8]
+                    Finalizing: {R5}
+                    Leaving: {R4} {R3} {R2} {R1}
+        }
+        .finally {R5}
+        {
+            Block[B5] - Block
+                Predecessors (0)
+                Statements (0)
+                Jump if True (Regular) to Block[B7]
+                    IIsNullOperation (OperationKind.IsNull, Type: System.Boolean, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                      Operand: 
+                        ILocalReferenceOperation: o1 (OperationKind.LocalReference, Type: C1, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                Next (Regular) Block[B6]
+            Block[B6] - Block
+                Predecessors: [B5]
+                Statements (1)
+                    IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                      Instance Receiver: 
+                        IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                          Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: True, IsUserDefined: False) (MethodSymbol: null)
+                            (ImplicitReference)
+                          Operand: 
+                            ILocalReferenceOperation: o1 (OperationKind.LocalReference, Type: C1, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                      Arguments(0)
+                Next (Regular) Block[B7]
+            Block[B7] - Block
+                Predecessors: [B5] [B6]
+                Statements (0)
+                Next (StructuredExceptionHandling) Block[null]
+        }
+    }
+}
+Block[B8] - Exit
+    Predecessors: [B2] [B4]
+    Statements (0)
+";
+
+            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source, expectedFlowGraph, expectedDiagnostics);
+        }
+
+        [Fact]
+        public void UsingDeclaration_InsideIfEmbeddedStatement()
+        {
+            var source = @"
+using System;
+class C1 : IDisposable
+{
+    public void Dispose() { }
+}
+class C2
+{
+    public static void M(bool b)
+    /*<bind>*/{
+        if (b)
+            using C1 o1 = new C1();
+    }/*</bind>*/
+}";
+
+            var expectedDiagnostics = new DiagnosticDescription[] {
+                // file.cs(12,13): error CS1023: Embedded statement cannot be a declaration or labeled statement
+                //             using C1 o1 = new C1();
+                Diagnostic(ErrorCode.ERR_BadEmbeddedStmt, "using C1 o1 = new C1();").WithLocation(12, 13)
+            };
+
+            var expectedFlowGraph = @"
+Block[B0] - Entry
+    Statements (0)
+    Next (Regular) Block[B1]
+Block[B1] - Block
+    Predecessors: [B0]
+    Statements (0)
+    Jump if False (Regular) to Block[B7]
+        IParameterReferenceOperation: b (OperationKind.ParameterReference, Type: System.Boolean) (Syntax: 'b')
+    Next (Regular) Block[B2]
+        Entering: {R1}
+.locals {R1}
+{
+    Locals: [C1 o1]
+    Block[B2] - Block
+        Predecessors: [B1]
+        Statements (1)
+            ISimpleAssignmentOperation (OperationKind.SimpleAssignment, Type: C1, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+              Left: 
+                ILocalReferenceOperation: o1 (IsDeclaration: True) (OperationKind.LocalReference, Type: C1, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+              Right: 
+                IObjectCreationOperation (Constructor: C1..ctor()) (OperationKind.ObjectCreation, Type: C1, IsInvalid) (Syntax: 'new C1()')
+                  Arguments(0)
+                  Initializer: 
+                    null
+        Next (Regular) Block[B3]
+            Entering: {R2} {R3}
+    .try {R2, R3}
+    {
+        Block[B3] - Block
+            Predecessors: [B2]
+            Statements (0)
+            Next (Regular) Block[B7]
+                Finalizing: {R4}
+                Leaving: {R3} {R2} {R1}
+    }
+    .finally {R4}
+    {
+        Block[B4] - Block
+            Predecessors (0)
+            Statements (0)
+            Jump if True (Regular) to Block[B6]
+                IIsNullOperation (OperationKind.IsNull, Type: System.Boolean, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                  Operand: 
+                    ILocalReferenceOperation: o1 (OperationKind.LocalReference, Type: C1, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+            Next (Regular) Block[B5]
+        Block[B5] - Block
+            Predecessors: [B4]
+            Statements (1)
+                IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                  Instance Receiver: 
+                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                      Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: True, IsUserDefined: False) (MethodSymbol: null)
+                        (ImplicitReference)
+                      Operand: 
+                        ILocalReferenceOperation: o1 (OperationKind.LocalReference, Type: C1, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                  Arguments(0)
+            Next (Regular) Block[B6]
+        Block[B6] - Block
+            Predecessors: [B4] [B5]
+            Statements (0)
+            Next (StructuredExceptionHandling) Block[null]
+    }
+}
+Block[B7] - Exit
+    Predecessors: [B1] [B3]
+    Statements (0)
+";
+
+            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source, expectedFlowGraph, expectedDiagnostics);
+        }
+
+        [Fact]
+        public void UsingDeclaration_InsideForEmbeddedStatement()
+        {
+            var source = @"
+using System;
+using System.Collections;
+class C1 : IDisposable
+{
+    public void Dispose() { }
+}
+class C2
+{
+    public static void M()
+    /*<bind>*/{
+        for (;;)
+            using C1 o1 = new C1();
+    }/*</bind>*/
+}";
+
+            var expectedDiagnostics = new DiagnosticDescription[] {
+                // file.cs(13,13): error CS1023: Embedded statement cannot be a declaration or labeled statement
+                //             using C1 o1 = new C1();
+                Diagnostic(ErrorCode.ERR_BadEmbeddedStmt, "using C1 o1 = new C1();").WithLocation(13, 13)
+            };
+
+            var expectedFlowGraph = @"
+Block[B0] - Entry
+    Statements (0)
+    Next (Regular) Block[B1]
+        Entering: {R1}
+.locals {R1}
+{
+    Locals: [C1 o1]
+    Block[B1] - Block
+        Predecessors: [B0] [B6]
+        Statements (1)
+            ISimpleAssignmentOperation (OperationKind.SimpleAssignment, Type: C1, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+              Left: 
+                ILocalReferenceOperation: o1 (IsDeclaration: True) (OperationKind.LocalReference, Type: C1, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+              Right: 
+                IObjectCreationOperation (Constructor: C1..ctor()) (OperationKind.ObjectCreation, Type: C1, IsInvalid) (Syntax: 'new C1()')
+                  Arguments(0)
+                  Initializer: 
+                    null
+        Next (Regular) Block[B2]
+            Entering: {R2} {R3}
+    .try {R2, R3}
+    {
+        Block[B2] - Block
+            Predecessors: [B1]
+            Statements (0)
+            Next (Regular) Block[B6]
+                Finalizing: {R4}
+                Leaving: {R3} {R2} {R1}
+    }
+    .finally {R4}
+    {
+        Block[B3] - Block
+            Predecessors (0)
+            Statements (0)
+            Jump if True (Regular) to Block[B5]
+                IIsNullOperation (OperationKind.IsNull, Type: System.Boolean, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                  Operand: 
+                    ILocalReferenceOperation: o1 (OperationKind.LocalReference, Type: C1, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+            Next (Regular) Block[B4]
+        Block[B4] - Block
+            Predecessors: [B3]
+            Statements (1)
+                IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                  Instance Receiver: 
+                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                      Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: True, IsUserDefined: False) (MethodSymbol: null)
+                        (ImplicitReference)
+                      Operand: 
+                        ILocalReferenceOperation: o1 (OperationKind.LocalReference, Type: C1, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                  Arguments(0)
+            Next (Regular) Block[B5]
+        Block[B5] - Block
+            Predecessors: [B3] [B4]
+            Statements (0)
+            Next (StructuredExceptionHandling) Block[null]
+    }
+}
+Block[B6] - Block
+    Predecessors: [B2]
+    Statements (0)
+    Next (Regular) Block[B1]
+        Entering: {R1}
+Block[B7] - Exit [UnReachable]
+    Predecessors (0)
+    Statements (0)
+";
+
+            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source, expectedFlowGraph, expectedDiagnostics);
+        }
+
+        [Fact]
+        public void UsingDeclaration_InsideForEachEmbeddedStatement()
+        {
+            var source = @"
+using System;
+using System.Collections;
+class C1 : IDisposable
+{
+    public void Dispose() { }
+}
+class C2
+{
+    public static void M(IEnumerable e)
+    /*<bind>*/{
+        foreach (var o in e)
+            using C1 o1 = new C1();
+    }/*</bind>*/
+}";
+
+            var expectedDiagnostics = new DiagnosticDescription[] {
+                // file.cs(13,13): error CS1023: Embedded statement cannot be a declaration or labeled statement
+                //             using C1 o1 = new C1();
+                Diagnostic(ErrorCode.ERR_BadEmbeddedStmt, "using C1 o1 = new C1();").WithLocation(13, 13)
+            };
+
+            var expectedFlowGraph = @"
+Block[B0] - Entry
+    Statements (0)
+    Next (Regular) Block[B1]
+        Entering: {R1}
+.locals {R1}
+{
+    CaptureIds: [0]
+    Block[B1] - Block
+        Predecessors: [B0]
+        Statements (1)
+            IFlowCaptureOperation: 0 (OperationKind.FlowCapture, Type: null, IsImplicit) (Syntax: 'e')
+              Value: 
+                IInvocationOperation (virtual System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()) (OperationKind.Invocation, Type: System.Collections.IEnumerator, IsImplicit) (Syntax: 'e')
+                  Instance Receiver: 
+                    IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.Collections.IEnumerable, IsImplicit) (Syntax: 'e')
+                      Conversion: CommonConversion (Exists: True, IsIdentity: True, IsNumeric: False, IsReference: False, IsUserDefined: False) (MethodSymbol: null)
+                        (Identity)
+                      Operand: 
+                        IParameterReferenceOperation: e (OperationKind.ParameterReference, Type: System.Collections.IEnumerable) (Syntax: 'e')
+                  Arguments(0)
+        Next (Regular) Block[B2]
+            Entering: {R2} {R3}
+    .try {R2, R3}
+    {
+        Block[B2] - Block
+            Predecessors: [B1] [B5]
+            Statements (0)
+            Jump if False (Regular) to Block[B12]
+                IInvocationOperation (virtual System.Boolean System.Collections.IEnumerator.MoveNext()) (OperationKind.Invocation, Type: System.Boolean, IsImplicit) (Syntax: 'e')
+                  Instance Receiver: 
+                    IFlowCaptureReferenceOperation: 0 (OperationKind.FlowCaptureReference, Type: System.Collections.IEnumerator, IsImplicit) (Syntax: 'e')
+                  Arguments(0)
+                Finalizing: {R9}
+                Leaving: {R3} {R2} {R1}
+            Next (Regular) Block[B3]
+                Entering: {R4}
+        .locals {R4}
+        {
+            Locals: [System.Object o]
+            Block[B3] - Block
+                Predecessors: [B2]
+                Statements (1)
+                    ISimpleAssignmentOperation (OperationKind.SimpleAssignment, Type: null, IsImplicit) (Syntax: 'var')
+                      Left: 
+                        ILocalReferenceOperation: o (IsDeclaration: True) (OperationKind.LocalReference, Type: System.Object, IsImplicit) (Syntax: 'var')
+                      Right: 
+                        IPropertyReferenceOperation: System.Object System.Collections.IEnumerator.Current { get; } (OperationKind.PropertyReference, Type: System.Object, IsImplicit) (Syntax: 'var')
+                          Instance Receiver: 
+                            IFlowCaptureReferenceOperation: 0 (OperationKind.FlowCaptureReference, Type: System.Collections.IEnumerator, IsImplicit) (Syntax: 'e')
+                Next (Regular) Block[B4]
+                    Entering: {R5}
+            .locals {R5}
+            {
+                Locals: [C1 o1]
+                Block[B4] - Block
+                    Predecessors: [B3]
+                    Statements (1)
+                        ISimpleAssignmentOperation (OperationKind.SimpleAssignment, Type: C1, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                          Left: 
+                            ILocalReferenceOperation: o1 (IsDeclaration: True) (OperationKind.LocalReference, Type: C1, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                          Right: 
+                            IObjectCreationOperation (Constructor: C1..ctor()) (OperationKind.ObjectCreation, Type: C1, IsInvalid) (Syntax: 'new C1()')
+                              Arguments(0)
+                              Initializer: 
+                                null
+                    Next (Regular) Block[B5]
+                        Entering: {R6} {R7}
+                .try {R6, R7}
+                {
+                    Block[B5] - Block
+                        Predecessors: [B4]
+                        Statements (0)
+                        Next (Regular) Block[B2]
+                            Finalizing: {R8}
+                            Leaving: {R7} {R6} {R5} {R4}
+                }
+                .finally {R8}
+                {
+                    Block[B6] - Block
+                        Predecessors (0)
+                        Statements (0)
+                        Jump if True (Regular) to Block[B8]
+                            IIsNullOperation (OperationKind.IsNull, Type: System.Boolean, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                              Operand: 
+                                ILocalReferenceOperation: o1 (OperationKind.LocalReference, Type: C1, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                        Next (Regular) Block[B7]
+                    Block[B7] - Block
+                        Predecessors: [B6]
+                        Statements (1)
+                            IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                              Instance Receiver: 
+                                IConversionOperation (TryCast: False, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                                  Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: True, IsUserDefined: False) (MethodSymbol: null)
+                                    (ImplicitReference)
+                                  Operand: 
+                                    ILocalReferenceOperation: o1 (OperationKind.LocalReference, Type: C1, IsInvalid, IsImplicit) (Syntax: 'o1 = new C1()')
+                              Arguments(0)
+                        Next (Regular) Block[B8]
+                    Block[B8] - Block
+                        Predecessors: [B6] [B7]
+                        Statements (0)
+                        Next (StructuredExceptionHandling) Block[null]
+                }
+            }
+        }
+    }
+    .finally {R9}
+    {
+        CaptureIds: [1]
+        Block[B9] - Block
+            Predecessors (0)
+            Statements (1)
+                IFlowCaptureOperation: 1 (OperationKind.FlowCapture, Type: null, IsImplicit) (Syntax: 'e')
+                  Value: 
+                    IConversionOperation (TryCast: True, Unchecked) (OperationKind.Conversion, Type: System.IDisposable, IsImplicit) (Syntax: 'e')
+                      Conversion: CommonConversion (Exists: True, IsIdentity: False, IsNumeric: False, IsReference: True, IsUserDefined: False) (MethodSymbol: null)
+                        (ExplicitReference)
+                      Operand: 
+                        IFlowCaptureReferenceOperation: 0 (OperationKind.FlowCaptureReference, Type: System.Collections.IEnumerator, IsImplicit) (Syntax: 'e')
+            Jump if True (Regular) to Block[B11]
+                IIsNullOperation (OperationKind.IsNull, Type: System.Boolean, IsImplicit) (Syntax: 'e')
+                  Operand: 
+                    IFlowCaptureReferenceOperation: 1 (OperationKind.FlowCaptureReference, Type: System.IDisposable, IsImplicit) (Syntax: 'e')
+            Next (Regular) Block[B10]
+        Block[B10] - Block
+            Predecessors: [B9]
+            Statements (1)
+                IInvocationOperation (virtual void System.IDisposable.Dispose()) (OperationKind.Invocation, Type: System.Void, IsImplicit) (Syntax: 'e')
+                  Instance Receiver: 
+                    IFlowCaptureReferenceOperation: 1 (OperationKind.FlowCaptureReference, Type: System.IDisposable, IsImplicit) (Syntax: 'e')
+                  Arguments(0)
+            Next (Regular) Block[B11]
+        Block[B11] - Block
+            Predecessors: [B9] [B10]
+            Statements (0)
+            Next (StructuredExceptionHandling) Block[null]
+    }
+}
+Block[B12] - Exit
+    Predecessors: [B2]
+    Statements (0)
+";
+
+            VerifyFlowGraphAndDiagnosticsForTest<BlockSyntax>(source, expectedFlowGraph, expectedDiagnostics);
         }
     }
 }

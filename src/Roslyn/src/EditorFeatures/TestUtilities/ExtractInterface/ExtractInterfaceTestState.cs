@@ -8,12 +8,11 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
+using Microsoft.CodeAnalysis.Editor.UnitTests.CodeActions;
 using Microsoft.CodeAnalysis.ExtractInterface;
 using Microsoft.CodeAnalysis.Notification;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Shared.Extensions;
-using Microsoft.CodeAnalysis.Shared.Utilities;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.CodeAnalysis.Text;
 
@@ -25,22 +24,30 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.ExtractInterface
             typeof(TestExtractInterfaceOptionsService));
 
         private readonly TestHostDocument _testDocument;
-        public TestWorkspace Workspace { get; }
+        public EditorTestWorkspace Workspace { get; }
         public Document ExtractFromDocument { get; }
         public AbstractExtractInterfaceService ExtractInterfaceService { get; }
         public Solution OriginalSolution { get; }
         public string ErrorMessage { get; private set; }
         public NotificationSeverity ErrorSeverity { get; private set; }
 
-        public static ExtractInterfaceTestState Create(string markup, string languageName, CompilationOptions compilationOptions)
+        public static ExtractInterfaceTestState Create(
+            string markup,
+            string languageName,
+            CompilationOptions compilationOptions = null,
+            ParseOptions parseOptions = null,
+            OptionsCollection options = null)
         {
             var workspace = languageName == LanguageNames.CSharp
-                ? TestWorkspace.CreateCSharp(markup, composition: Composition, compilationOptions: (CSharpCompilationOptions)compilationOptions)
-                : TestWorkspace.CreateVisualBasic(markup, composition: Composition, compilationOptions: compilationOptions);
+                ? EditorTestWorkspace.CreateCSharp(markup, composition: Composition, compilationOptions: compilationOptions, parseOptions: parseOptions)
+                : EditorTestWorkspace.CreateVisualBasic(markup, composition: Composition, compilationOptions: compilationOptions, parseOptions: parseOptions);
+
+            options?.SetGlobalOptions(workspace.GlobalOptions);
+
             return new ExtractInterfaceTestState(workspace);
         }
 
-        public ExtractInterfaceTestState(TestWorkspace workspace)
+        public ExtractInterfaceTestState(EditorTestWorkspace workspace)
         {
             Workspace = workspace;
 
@@ -60,7 +67,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.ExtractInterface
         {
             get
             {
-                return (TestExtractInterfaceOptionsService)ExtractFromDocument.Project.Solution.Workspace.Services.GetService<IExtractInterfaceOptionsService>();
+                return (TestExtractInterfaceOptionsService)ExtractFromDocument.Project.Solution.Services.GetService<IExtractInterfaceOptionsService>();
             }
         }
 
@@ -70,6 +77,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.ExtractInterface
                 ExtractFromDocument,
                 _testDocument.CursorPosition.Value,
                 typeDiscoveryRule,
+                Workspace.GlobalOptions.CreateProvider(),
                 CancellationToken.None);
         }
 
@@ -78,6 +86,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.ExtractInterface
             return ExtractInterfaceService.ExtractInterfaceAsync(
                 ExtractFromDocument,
                 _testDocument.CursorPosition.Value,
+                Workspace.GlobalOptions.CreateProvider(),
                 (errorMessage, severity) =>
                 {
                     this.ErrorMessage = errorMessage;
@@ -91,7 +100,9 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.ExtractInterface
             var actions = await ExtractInterfaceService.GetExtractInterfaceCodeActionAsync(
                 ExtractFromDocument,
                 new TextSpan(_testDocument.CursorPosition.Value, 1),
+                Workspace.GlobalOptions.CreateProvider(),
                 CancellationToken.None);
+
             var action = actions.Single();
 
             var options = (ExtractInterfaceOptionsResult)action.GetOptions(CancellationToken.None);
@@ -100,9 +111,11 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.ExtractInterface
                 options.IncludedMembers,
                 options.InterfaceName,
                 options.FileName,
-                ExtractInterfaceOptionsResult.ExtractLocation.SameFile);
+                ExtractInterfaceOptionsResult.ExtractLocation.SameFile,
+                options.FallbackOptions);
 
-            var operations = await action.GetOperationsAsync(changedOptions, CancellationToken.None);
+            var operations = await action.GetOperationsAsync(
+                this.OriginalSolution, changedOptions, CodeAnalysisProgress.None, CancellationToken.None);
             foreach (var operation in operations)
             {
                 operation.Apply(Workspace, CancellationToken.None);
@@ -113,10 +126,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.ExtractInterface
 
         public void Dispose()
         {
-            if (Workspace != null)
-            {
-                Workspace.Dispose();
-            }
+            Workspace?.Dispose();
         }
     }
 }

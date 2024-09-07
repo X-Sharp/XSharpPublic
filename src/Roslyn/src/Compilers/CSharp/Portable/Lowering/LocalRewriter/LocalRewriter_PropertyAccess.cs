@@ -70,8 +70,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // This node will be rewritten with MakePropertyAssignment when rewriting the enclosing BoundAssignmentOperator.
 
                 return oldNodeOpt != null ?
-                    oldNodeOpt.Update(rewrittenReceiverOpt, propertySymbol, resultKind, type) :
-                    new BoundPropertyAccess(syntax, rewrittenReceiverOpt, propertySymbol, resultKind, type);
+                    oldNodeOpt.Update(rewrittenReceiverOpt, initialBindingReceiverIsSubjectToCloning: ThreeState.Unknown, propertySymbol, resultKind, type) :
+                    new BoundPropertyAccess(syntax, rewrittenReceiverOpt, initialBindingReceiverIsSubjectToCloning: ThreeState.Unknown, propertySymbol, resultKind, type);
             }
             else
             {
@@ -82,7 +82,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private BoundExpression MakePropertyGetAccess(SyntaxNode syntax, BoundExpression? rewrittenReceiver, PropertySymbol property, BoundPropertyAccess? oldNodeOpt)
         {
-            return MakePropertyGetAccess(syntax, rewrittenReceiver, property, ImmutableArray<BoundExpression>.Empty, null, oldNodeOpt);
+            return MakePropertyGetAccess(syntax, rewrittenReceiver, property, ImmutableArray<BoundExpression>.Empty, default, null, oldNodeOpt);
         }
 
         private BoundExpression MakePropertyGetAccess(
@@ -90,6 +90,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundExpression? rewrittenReceiver,
             PropertySymbol property,
             ImmutableArray<BoundExpression> rewrittenArguments,
+            ImmutableArray<RefKind> argumentRefKindsOpt,
             MethodSymbol? getMethodOpt = null,
             BoundPropertyAccess? oldNodeOpt = null)
         {
@@ -101,9 +102,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
             if (_inExpressionLambda && rewrittenArguments.IsEmpty)
             {
+                Debug.Assert(argumentRefKindsOpt.IsDefaultOrEmpty);
                 return oldNodeOpt != null ?
-                    oldNodeOpt.Update(rewrittenReceiver, property, LookupResultKind.Viable, property.Type) :
-                    new BoundPropertyAccess(syntax, rewrittenReceiver, property, LookupResultKind.Viable, property.Type);
+                    oldNodeOpt.Update(rewrittenReceiver, initialBindingReceiverIsSubjectToCloning: ThreeState.Unknown, property, LookupResultKind.Viable, property.Type) :
+                    new BoundPropertyAccess(syntax, rewrittenReceiver, initialBindingReceiverIsSubjectToCloning: ThreeState.Unknown, property, LookupResultKind.Viable, property.Type);
             }
             else
             {
@@ -123,8 +125,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return BoundCall.Synthesized(
                     syntax,
                     rewrittenReceiver,
+                    initialBindingReceiverIsSubjectToCloning: ThreeState.Unknown,
                     getMethod,
-                    rewrittenArguments);
+                    rewrittenArguments,
+                    argumentRefKindsOpt);
             }
         }
     }

@@ -5,7 +5,6 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
@@ -18,7 +17,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         protected readonly LambdaSymbol lambdaSymbol;
         protected readonly MultiDictionary<string, ParameterSymbol> parameterMap;
-        private SmallDictionary<string, ParameterSymbol> _definitionMap;
+        private readonly SmallDictionary<string, ParameterSymbol> _definitionMap;
 
         public WithLambdaParametersBinder(LambdaSymbol lambdaSymbol, Binder enclosing)
             : base(enclosing)
@@ -33,24 +32,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             var parameters = lambdaSymbol.Parameters;
             if (!parameters.IsDefaultOrEmpty)
             {
-                recordDefinitions(parameters);
-                foreach (var parameter in lambdaSymbol.Parameters)
+                _definitionMap = new SmallDictionary<string, ParameterSymbol>();
+                foreach (var parameter in parameters)
                 {
                     if (!parameter.IsDiscard)
                     {
-                        this.parameterMap.Add(parameter.Name, parameter);
-                    }
-                }
-            }
-
-            void recordDefinitions(ImmutableArray<ParameterSymbol> definitions)
-            {
-                var declarationMap = _definitionMap ??= new SmallDictionary<string, ParameterSymbol>();
-                foreach (var s in definitions)
-                {
-                    if (!s.IsDiscard && !declarationMap.ContainsKey(s.Name))
-                    {
-                        declarationMap.Add(s.Name, s);
+                        var name = parameter.Name;
+                        this.parameterMap.Add(name, parameter);
+                        if (!_definitionMap.ContainsKey(name))
+                        {
+                            _definitionMap.Add(name, parameter);
+                        }
                     }
                 }
             }
@@ -87,7 +79,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return TypeWithAnnotations.Create(CreateErrorType());
         }
 
-        protected override void ValidateYield(YieldStatementSyntax node, DiagnosticBag diagnostics)
+        protected override void ValidateYield(YieldStatementSyntax node, BindingDiagnosticBag diagnostics)
         {
             if (node != null)
             {
@@ -96,7 +88,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         internal override void LookupSymbolsInSingleBinder(
-            LookupResult result, string name, int arity, ConsList<TypeSymbol> basesBeingResolved, LookupOptions options, Binder originalBinder, bool diagnose, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+            LookupResult result, string name, int arity, ConsList<TypeSymbol> basesBeingResolved, LookupOptions options, Binder originalBinder, bool diagnose, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
         {
             Debug.Assert(result.IsClear);
 
@@ -107,11 +99,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             foreach (var parameterSymbol in parameterMap[name])
             {
-                result.MergeEqual(originalBinder.CheckViability(parameterSymbol, arity, options, null, diagnose, ref useSiteDiagnostics));
+                result.MergeEqual(originalBinder.CheckViability(parameterSymbol, arity, options, null, diagnose, ref useSiteInfo));
             }
         }
 
-        protected override void AddLookupSymbolsInfoInSingleBinder(LookupSymbolsInfo result, LookupOptions options, Binder originalBinder)
+        internal override void AddLookupSymbolsInfoInSingleBinder(LookupSymbolsInfo result, LookupOptions options, Binder originalBinder)
         {
             if (options.CanConsiderMembers())
             {
@@ -125,9 +117,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        private static bool ReportConflictWithParameter(ParameterSymbol parameter, Symbol newSymbol, string name, Location newLocation, DiagnosticBag diagnostics)
+        private static bool ReportConflictWithParameter(ParameterSymbol parameter, Symbol newSymbol, string name, Location newLocation, BindingDiagnosticBag diagnostics)
         {
-            var oldLocation = parameter.Locations[0];
+            var oldLocation = parameter.GetFirstLocation();
             if (oldLocation == newLocation)
             {
                 // a query variable and its corresponding lambda parameter, for example
@@ -167,7 +159,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        internal override bool EnsureSingleDefinition(Symbol symbol, string name, Location location, DiagnosticBag diagnostics)
+        internal override bool EnsureSingleDefinition(Symbol symbol, string name, Location location, BindingDiagnosticBag diagnostics)
         {
             ParameterSymbol existingDeclaration;
             var map = _definitionMap;
@@ -181,14 +173,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal override ImmutableArray<LocalSymbol> GetDeclaredLocalsForScope(SyntaxNode scopeDesignator)
         {
-            throw ExceptionUtilities.Unreachable;
+            throw ExceptionUtilities.Unreachable();
         }
 
         internal override ImmutableArray<LocalFunctionSymbol> GetDeclaredLocalFunctionsForScope(CSharpSyntaxNode scopeDesignator)
         {
-            throw ExceptionUtilities.Unreachable;
+            throw ExceptionUtilities.Unreachable();
         }
-
-        internal override uint LocalScopeDepth => Binder.TopLevelScope;
     }
 }

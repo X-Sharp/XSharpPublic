@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
 using System;
 using System.Collections.Immutable;
 using System.Composition;
@@ -18,70 +16,57 @@ using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 
-namespace Microsoft.CodeAnalysis.CSharp.MakeStructFieldsWritable
+namespace Microsoft.CodeAnalysis.CSharp.MakeStructFieldsWritable;
+
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = PredefinedCodeFixProviderNames.MakeStructFieldsWritable), Shared]
+internal class CSharpMakeStructFieldsWritableCodeFixProvider : SyntaxEditorBasedCodeFixProvider
 {
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = PredefinedCodeFixProviderNames.MakeStructFieldsWritable), Shared]
-    internal class CSharpMakeStructFieldsWritableCodeFixProvider : SyntaxEditorBasedCodeFixProvider
+    [ImportingConstructor]
+    [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
+    public CSharpMakeStructFieldsWritableCodeFixProvider()
     {
-        [ImportingConstructor]
-        [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
-        public CSharpMakeStructFieldsWritableCodeFixProvider()
+    }
+
+    public override ImmutableArray<string> FixableDiagnosticIds
+        => [IDEDiagnosticIds.MakeStructFieldsWritable];
+
+    public override Task RegisterCodeFixesAsync(CodeFixContext context)
+    {
+        RegisterCodeFix(context, CSharpAnalyzersResources.Make_readonly_fields_writable, nameof(CSharpAnalyzersResources.Make_readonly_fields_writable));
+        return Task.CompletedTask;
+    }
+
+    protected override Task FixAllAsync(
+        Document document,
+        ImmutableArray<Diagnostic> diagnostics,
+        SyntaxEditor editor,
+        CodeActionOptionsProvider fallbackOptions, CancellationToken cancellationToken)
+    {
+        foreach (var diagnostic in diagnostics)
         {
-        }
+            var diagnosticNode = diagnostic.Location.FindNode(cancellationToken);
 
-        public override ImmutableArray<string> FixableDiagnosticIds
-            => ImmutableArray.Create(IDEDiagnosticIds.MakeStructFieldsWritable);
-
-        internal sealed override CodeFixCategory CodeFixCategory => CodeFixCategory.CodeQuality;
-
-        public override Task RegisterCodeFixesAsync(CodeFixContext context)
-        {
-            context.RegisterCodeFix(new MyCodeAction(
-                c => FixAsync(context.Document, context.Diagnostics[0], c)),
-                context.Diagnostics);
-            return Task.CompletedTask;
-        }
-
-        protected override Task FixAllAsync(
-            Document document,
-            ImmutableArray<Diagnostic> diagnostics,
-            SyntaxEditor editor,
-            CancellationToken cancellationToken)
-        {
-            foreach (var diagnostic in diagnostics)
+            if (diagnosticNode is not StructDeclarationSyntax structDeclaration)
             {
-                var diagnosticNode = diagnostic.Location.FindNode(cancellationToken);
-
-                if (!(diagnosticNode is StructDeclarationSyntax structDeclaration))
-                {
-                    continue;
-                }
-
-                var fieldDeclarations = structDeclaration.Members
-                    .OfType<FieldDeclarationSyntax>();
-
-                foreach (var fieldDeclaration in fieldDeclarations)
-                {
-                    var fieldDeclarationModifiers = editor.Generator.GetModifiers(fieldDeclaration);
-                    var containsReadonlyModifier =
-                        (fieldDeclarationModifiers & DeclarationModifiers.ReadOnly) == DeclarationModifiers.ReadOnly;
-
-                    if (containsReadonlyModifier)
-                    {
-                        editor.SetModifiers(fieldDeclaration, fieldDeclarationModifiers.WithIsReadOnly(false));
-                    }
-                }
+                continue;
             }
 
-            return Task.CompletedTask;
-        }
+            var fieldDeclarations = structDeclaration.Members
+                .OfType<FieldDeclarationSyntax>();
 
-        private class MyCodeAction : CustomCodeActions.DocumentChangeAction
-        {
-            public MyCodeAction(Func<CancellationToken, Task<Document>> createChangedDocument)
-                : base(CSharpAnalyzersResources.Make_readonly_fields_writable, createChangedDocument)
+            foreach (var fieldDeclaration in fieldDeclarations)
             {
+                var fieldDeclarationModifiers = editor.Generator.GetModifiers(fieldDeclaration);
+                var containsReadonlyModifier =
+                    (fieldDeclarationModifiers & DeclarationModifiers.ReadOnly) == DeclarationModifiers.ReadOnly;
+
+                if (containsReadonlyModifier)
+                {
+                    editor.SetModifiers(fieldDeclaration, fieldDeclarationModifiers.WithIsReadOnly(false));
+                }
             }
         }
+
+        return Task.CompletedTask;
     }
 }

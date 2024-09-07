@@ -8,21 +8,21 @@ using Microsoft.CodeAnalysis.CSharp.Completion.Providers;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Xunit;
 
-namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Completion.ArgumentProviders
-{
-    [Trait(Traits.Feature, Traits.Features.Completion)]
-    public class ContextVariableArgumentProviderTests : AbstractCSharpArgumentProviderTests
-    {
-        internal override Type GetArgumentProviderType()
-            => typeof(ContextVariableArgumentProvider);
+namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Completion.ArgumentProviders;
 
-        [Theory]
-        [InlineData("string")]
-        [InlineData("bool")]
-        [InlineData("int?")]
-        public async Task TestLocalVariable(string type)
-        {
-            var markup = $@"
+[Trait(Traits.Feature, Traits.Features.Completion)]
+public class ContextVariableArgumentProviderTests : AbstractCSharpArgumentProviderTests
+{
+    internal override Type GetArgumentProviderType()
+        => typeof(ContextVariableArgumentProvider);
+
+    [Theory]
+    [InlineData("string")]
+    [InlineData("bool")]
+    [InlineData("int?")]
+    public async Task TestLocalVariable(string type)
+    {
+        var markup = $@"
 class C
 {{
     void Method()
@@ -37,17 +37,47 @@ class C
 }}
 ";
 
-            await VerifyDefaultValueAsync(markup, "arg");
-            await VerifyDefaultValueAsync(markup, expectedDefaultValue: null, previousDefaultValue: "prior");
-        }
+        await VerifyDefaultValueAsync(markup, "arg");
+        await VerifyDefaultValueAsync(markup, expectedDefaultValue: null, previousDefaultValue: "prior");
+    }
 
-        [Theory]
-        [InlineData("string")]
-        [InlineData("bool")]
-        [InlineData("int?")]
-        public async Task TestParameter(string type)
+    [Theory, CombinatorialData]
+    public async Task TestOutVariable(
+        [CombinatorialValues("string", "bool", "int?")] string type,
+        [CombinatorialValues("out", "ref", "in")] string modifier)
+    {
+        var markup = $@"
+class C
+{{
+    void Method()
+    {{
+        {type} arg;
+        this.Target($$);
+    }}
+
+    void Target({modifier} {type} arg)
+    {{
+    }}
+}}
+";
+
+        var generatedModifier = modifier switch
         {
-            var markup = $@"
+            "in" => "",
+            _ => $"{modifier} ",
+        };
+
+        await VerifyDefaultValueAsync(markup, $"{generatedModifier}arg");
+        await VerifyDefaultValueAsync(markup, expectedDefaultValue: null, previousDefaultValue: "prior");
+    }
+
+    [Theory]
+    [InlineData("string")]
+    [InlineData("bool")]
+    [InlineData("int?")]
+    public async Task TestParameter(string type)
+    {
+        var markup = $@"
 class C
 {{
     void Method({type} arg)
@@ -61,47 +91,128 @@ class C
 }}
 ";
 
-            await VerifyDefaultValueAsync(markup, "arg");
-            await VerifyDefaultValueAsync(markup, expectedDefaultValue: null, previousDefaultValue: "prior");
-        }
+        await VerifyDefaultValueAsync(markup, "arg");
+        await VerifyDefaultValueAsync(markup, expectedDefaultValue: null, previousDefaultValue: "prior");
+    }
 
-        [Theory]
-        [InlineData("string")]
-        [InlineData("bool")]
-        [InlineData("int?")]
-        public async Task TestInstanceVariable(string type)
-        {
-            var markup = $@"
+    [Theory]
+    [InlineData("string", "string")]
+    [InlineData("string", "IEnumerable<char>")]
+    [InlineData("bool", "bool")]
+    [InlineData("int?", "int?")]
+    [InlineData("int", "int?")]
+    public async Task TestInstanceVariable(string fieldType, string parameterType)
+    {
+        var markup = $@"
+using System.Collections.Generic;
 class C
 {{
-    {type} arg;
+    {fieldType} arg;
 
     void Method()
     {{
         this.Target($$);
     }}
 
-    void Target({type} arg)
+    void Target({parameterType} arg)
     {{
     }}
 }}
 ";
 
-            await VerifyDefaultValueAsync(markup, "arg");
-            await VerifyDefaultValueAsync(markup, expectedDefaultValue: null, previousDefaultValue: "prior");
-        }
+        await VerifyDefaultValueAsync(markup, "arg");
+        await VerifyDefaultValueAsync(markup, expectedDefaultValue: null, previousDefaultValue: "prior");
+    }
 
-        // Note: The current implementation checks for exact type and name match. If this changes, some of these tests
-        // may need to be updated to account for the new behavior.
-        [Theory]
-        [InlineData("object", "string")]
-        [InlineData("string", "object")]
-        [InlineData("bool", "bool?")]
-        [InlineData("bool", "int")]
-        [InlineData("int", "object")]
-        public async Task TestMismatchType(string parameterType, string valueType)
-        {
-            var markup = $@"
+    [Theory]
+    [InlineData("C")]
+    [InlineData("B")]
+    [InlineData("I")]
+    public async Task TestThisInstance(string parameterType)
+    {
+        var markup = $@"
+using System.Collections.Generic;
+interface I {{ }}
+
+class B {{ }}
+
+class C : B, I
+{{
+    void Method()
+    {{
+        this.Target($$);
+    }}
+
+    void Target({parameterType} arg)
+    {{
+    }}
+}}
+";
+
+        await VerifyDefaultValueAsync(markup, "this");
+        await VerifyDefaultValueAsync(markup, expectedDefaultValue: null, previousDefaultValue: "prior");
+    }
+
+    [Theory]
+    [InlineData("object")]
+    [InlineData("string")]
+    public async Task TestThisInstanceNotProvided1(string parameterType)
+    {
+        var markup = $@"
+using System.Collections.Generic;
+interface I {{ }}
+
+class B {{ }}
+
+class C : B, I
+{{
+    void Method()
+    {{
+        this.Target($$);
+    }}
+
+    void Target({parameterType} arg)
+    {{
+    }}
+}}
+";
+
+        await VerifyDefaultValueAsync(markup, null);
+    }
+
+    [Fact]
+    public async Task TestThisInstanceNotProvided2()
+    {
+        var markup = $@"
+using System.Collections.Generic;
+
+class C
+{{
+    static void Method()
+    {{
+        Target($$);
+    }}
+
+    static void Target(C arg)
+    {{
+    }}
+}}
+";
+
+        await VerifyDefaultValueAsync(markup, null);
+    }
+
+    // Note: The current implementation checks for exact type match for primitive types. If this changes, some of
+    // these tests may need to be updated to account for the new behavior.
+    [Theory]
+    [InlineData("object", "string")]
+    [InlineData("string", "object")]
+    [InlineData("bool", "bool?")]
+    [InlineData("bool", "int")]
+    [InlineData("int", "object")]
+    public async Task TestMismatchType(string parameterType, string valueType)
+    {
+        var markup = $@"
 class C
 {{
     void Method({valueType} arg)
@@ -115,7 +226,6 @@ class C
 }}
 ";
 
-            await VerifyDefaultValueAsync(markup, null);
-        }
+        await VerifyDefaultValueAsync(markup, null);
     }
 }

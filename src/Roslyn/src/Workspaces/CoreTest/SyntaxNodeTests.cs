@@ -50,7 +50,7 @@ namespace Microsoft.CodeAnalysis.UnitTests
             var tree = SyntaxFactory.ParseSyntaxTree(text);
             var root = tree.GetRoot();
 
-            var nodes = root.DescendantNodes().Where(n => n is VariableDeclaratorSyntax || n is ClassDeclarationSyntax).ToList();
+            var nodes = root.DescendantNodes().Where(n => n is VariableDeclaratorSyntax or ClassDeclarationSyntax).ToList();
             var computations = 0;
             var newRoot = await root.ReplaceNodesAsync(nodes, (o, n, c) =>
             {
@@ -103,7 +103,7 @@ namespace Microsoft.CodeAnalysis.UnitTests
             var cgenField = gen.FieldDeclaration("X", gen.TypeExpression(SpecialType.System_Int32), Accessibility.Private);
 
             var currentClassDecl = trackedRoot.GetCurrentNodes(classDecl).First();
-            var classDeclWithField = gen.InsertMembers(currentClassDecl, 0, new[] { cgenField });
+            var classDeclWithField = gen.InsertMembers(currentClassDecl, 0, [cgenField]);
 
             // we can find related bits even from sub-tree fragments
             var latestMethod = classDeclWithField.GetCurrentNodes(methodDecl).First();

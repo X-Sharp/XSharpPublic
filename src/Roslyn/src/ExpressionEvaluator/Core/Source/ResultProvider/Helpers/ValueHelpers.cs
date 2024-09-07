@@ -41,7 +41,7 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 #if XSHARP			
             return string.Format(XResources.ExceptionThrown, fullNameWithoutFormatSpecifiers, typeName);
 #else
-			return string.Format(Resources.ExceptionThrown, fullNameWithoutFormatSpecifiers, typeName);
+            return string.Format(Resources.ExceptionThrown, fullNameWithoutFormatSpecifiers, typeName);
 #endif	
         }
 

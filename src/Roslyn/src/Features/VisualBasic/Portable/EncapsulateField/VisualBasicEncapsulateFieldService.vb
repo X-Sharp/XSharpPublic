@@ -5,6 +5,7 @@
 Imports System.Collections.Immutable
 Imports System.Composition
 Imports System.Threading
+Imports Microsoft.CodeAnalysis.CodeGeneration
 Imports Microsoft.CodeAnalysis.EncapsulateField
 Imports Microsoft.CodeAnalysis.Formatting
 Imports Microsoft.CodeAnalysis.Host.Mef
@@ -21,11 +22,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.EncapsulateField
         Public Sub New()
         End Sub
 
-        Protected Overrides Async Function RewriteFieldNameAndAccessibilityAsync(originalFieldName As String,
-                                                        makePrivate As Boolean,
-                                                        document As Document,
-                                                        declarationAnnotation As SyntaxAnnotation,
-                                                        cancellationToken As CancellationToken) As Task(Of SyntaxNode)
+        Protected Overrides Async Function RewriteFieldNameAndAccessibilityAsync(
+                originalFieldName As String,
+                makePrivate As Boolean,
+                document As Document,
+                declarationAnnotation As SyntaxAnnotation,
+                fallbackOptions As CodeAndImportGenerationOptionsProvider,
+                cancellationToken As CancellationToken) As Task(Of SyntaxNode)
 
             Dim root = Await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(False)
 
@@ -127,11 +130,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.EncapsulateField
             Return NameGenerator.GenerateUniqueName(propertyName, containingTypeMemberNames.ToSet(), StringComparer.OrdinalIgnoreCase)
         End Function
 
-        Friend Overrides Function GetConstructorNodes(containingType As INamedTypeSymbol) As IEnumerable(Of SyntaxNode)
+        Protected Overrides Function GetConstructorNodes(containingType As INamedTypeSymbol) As IEnumerable(Of SyntaxNode)
             Return containingType.Constructors.SelectMany(Function(c As IMethodSymbol)
                                                               Return c.DeclaringSyntaxReferences.Select(Function(d) d.GetSyntax().Parent)
                                                           End Function)
         End Function
-
     End Class
 End Namespace

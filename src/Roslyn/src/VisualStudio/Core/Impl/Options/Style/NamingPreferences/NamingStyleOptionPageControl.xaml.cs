@@ -15,7 +15,6 @@ using Microsoft.CodeAnalysis.Diagnostics.Analyzers.NamingStyles;
 using Microsoft.CodeAnalysis.NamingStyles;
 using Microsoft.CodeAnalysis.Notification;
 using Microsoft.CodeAnalysis.PooledObjects;
-using Microsoft.CodeAnalysis.Simplification;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences;
 using Microsoft.VisualStudio.PlatformUI;
@@ -41,10 +40,10 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style
 
         private readonly NotificationOptionViewModel[] _notifications = new[]
         {
-            new NotificationOptionViewModel(NotificationOption.Silent, KnownMonikers.None),
-            new NotificationOptionViewModel(NotificationOption.Suggestion, KnownMonikers.StatusInformation),
-            new NotificationOptionViewModel(NotificationOption.Warning, KnownMonikers.StatusWarning),
-            new NotificationOptionViewModel(NotificationOption.Error, KnownMonikers.StatusError)
+            new NotificationOptionViewModel(NotificationOption2.Silent, KnownMonikers.None),
+            new NotificationOptionViewModel(NotificationOption2.Suggestion, KnownMonikers.StatusInformation),
+            new NotificationOptionViewModel(NotificationOption2.Warning, KnownMonikers.StatusWarning),
+            new NotificationOptionViewModel(NotificationOption2.Error, KnownMonikers.StatusError)
         };
 
         internal NamingStyleOptionPageControl(OptionStore optionStore, INotificationService notificationService, string languageName)
@@ -72,7 +71,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style
 
         private void ManageSpecificationsButton_Click(object sender, RoutedEventArgs e)
         {
-            var viewModel = new ManageSymbolSpecificationsDialogViewModel(_viewModel.Specifications, _viewModel.CodeStyleItems.ToList(), _languageName, _notificationService);
+            var viewModel = new ManageSymbolSpecificationsDialogViewModel(_viewModel.Specifications, [.. _viewModel.CodeStyleItems], _languageName, _notificationService);
             var dialog = new ManageNamingStylesInfoDialog(viewModel);
             if (dialog.ShowModal().Value == true)
             {
@@ -82,7 +81,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style
 
         private void ManageStylesButton_Click(object sender, RoutedEventArgs e)
         {
-            var viewModel = new ManageNamingStylesDialogViewModel(_viewModel.NamingStyles, _viewModel.CodeStyleItems.ToList(), _notificationService);
+            var viewModel = new ManageNamingStylesDialogViewModel(_viewModel.NamingStyles, [.. _viewModel.CodeStyleItems], _notificationService);
             var dialog = new ManageNamingStylesInfoDialog(viewModel);
             if (dialog.ShowModal().Value == true)
             {
@@ -123,7 +122,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style
         {
             if (CodeStyleMembers.SelectedIndex >= 0)
             {
-                if (!(CodeStyleMembers.ItemContainerGenerator.ContainerFromIndex(CodeStyleMembers.SelectedIndex) is DataGridRow row))
+                if (CodeStyleMembers.ItemContainerGenerator.ContainerFromIndex(CodeStyleMembers.SelectedIndex) is not DataGridRow row)
                 {
                     CodeStyleMembers.ScrollIntoView(CodeStyleMembers.SelectedItem);
                     row = CodeStyleMembers.ItemContainerGenerator.ContainerFromIndex(CodeStyleMembers.SelectedIndex) as DataGridRow;
@@ -132,10 +131,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style
                 if (row != null)
                 {
                     var cell = row.FindDescendant<DataGridCell>();
-                    if (cell != null)
-                    {
-                        cell.Focus();
-                    }
+                    cell?.Focus();
                 }
             }
         }
@@ -185,7 +181,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style
         {
             base.OnLoad();
 
-            var preferences = OptionStore.GetOption(NamingStyleOptions.NamingPreferences, _languageName);
+            var preferences = OptionStore.GetOption<NamingStylePreferences>(NamingStyleOptions.NamingPreferences, _languageName);
             if (preferences == null)
             {
                 return;

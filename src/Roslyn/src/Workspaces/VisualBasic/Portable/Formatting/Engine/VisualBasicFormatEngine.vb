@@ -2,36 +2,32 @@
 ' The .NET Foundation licenses this file to you under the MIT license.
 ' See the LICENSE file in the project root for more information.
 
-Imports Microsoft.CodeAnalysis.Diagnostics
+Imports System.Collections.Immutable
 Imports Microsoft.CodeAnalysis.Formatting
 Imports Microsoft.CodeAnalysis.Formatting.Rules
-Imports Microsoft.CodeAnalysis.LanguageServices
-Imports Microsoft.CodeAnalysis.VisualBasic.LanguageServices
+Imports Microsoft.CodeAnalysis.LanguageService
+Imports Microsoft.CodeAnalysis.VisualBasic.LanguageService
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Formatting
     Partial Friend Class VisualBasicFormatEngine
         Inherits AbstractFormatEngine
 
         Public Sub New(node As SyntaxNode,
-                       options As AnalyzerConfigOptions,
-                       formattingRules As IEnumerable(Of AbstractFormattingRule),
-                       token1 As SyntaxToken,
-                       token2 As SyntaxToken)
+                       options As SyntaxFormattingOptions,
+                       formattingRules As ImmutableArray(Of AbstractFormattingRule),
+                       startToken As SyntaxToken,
+                       endToken As SyntaxToken)
             MyBase.New(TreeData.Create(node),
                        options,
                        formattingRules,
-                       token1,
-                       token2)
+                       startToken,
+                       endToken)
         End Sub
 
-        Friend Overrides ReadOnly Property SyntaxFacts As ISyntaxFacts
-            Get
-                Return VisualBasicSyntaxFacts.Instance
-            End Get
-        End Property
+        Friend Overrides ReadOnly Property HeaderFacts As IHeaderFacts = VisualBasicHeaderFacts.Instance
 
         Protected Overrides Function CreateTriviaFactory() As AbstractTriviaDataFactory
-            Return New TriviaDataFactory(Me.TreeData, Me.Options)
+            Return New TriviaDataFactory(Me.TreeData, Me.Options.LineFormatting)
         End Function
 
         Protected Overrides Function CreateFormattingResult(tokenStream As TokenStream) As AbstractFormattingResult

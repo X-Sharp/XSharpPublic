@@ -12,19 +12,22 @@ using Microsoft.CodeAnalysis.Remote;
 using Microsoft.CodeAnalysis.SymbolSearch;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Microsoft.CodeAnalysis.AddImport
-{
-    internal interface IRemoteMissingImportDiscoveryService
-    {
-        internal interface ICallback
-        {
-            ValueTask<ImmutableArray<PackageWithTypeResult>> FindPackagesWithTypeAsync(RemoteServiceCallbackId callbackId, string source, string name, int arity, CancellationToken cancellationToken);
-            ValueTask<ImmutableArray<PackageWithAssemblyResult>> FindPackagesWithAssemblyAsync(RemoteServiceCallbackId callbackId, string source, string name, CancellationToken cancellationToken);
-            ValueTask<ImmutableArray<ReferenceAssemblyWithTypeResult>> FindReferenceAssembliesWithTypeAsync(RemoteServiceCallbackId callbackId, string name, int arity, CancellationToken cancellationToken);
-        }
+namespace Microsoft.CodeAnalysis.AddImport;
 
-        ValueTask<ImmutableArray<AddImportFixData>> GetFixesAsync(
-            PinnedSolutionInfo solutionInfo, RemoteServiceCallbackId callbackId, DocumentId documentId, TextSpan span, string diagnosticId, int maxResults,
-            bool placeSystemNamespaceFirst, bool allowInHiddenRegions, bool searchReferenceAssemblies, ImmutableArray<PackageSource> packageSources, CancellationToken cancellationToken);
+internal interface IRemoteMissingImportDiscoveryService
+{
+    internal interface ICallback
+    {
+        ValueTask<ImmutableArray<PackageWithTypeResult>> FindPackagesWithTypeAsync(RemoteServiceCallbackId callbackId, string source, string name, int arity, CancellationToken cancellationToken);
+        ValueTask<ImmutableArray<PackageWithAssemblyResult>> FindPackagesWithAssemblyAsync(RemoteServiceCallbackId callbackId, string source, string name, CancellationToken cancellationToken);
+        ValueTask<ImmutableArray<ReferenceAssemblyWithTypeResult>> FindReferenceAssembliesWithTypeAsync(RemoteServiceCallbackId callbackId, string name, int arity, CancellationToken cancellationToken);
     }
+
+    ValueTask<ImmutableArray<AddImportFixData>> GetFixesAsync(
+        Checksum solutionChecksum, RemoteServiceCallbackId callbackId, DocumentId documentId, TextSpan span, string diagnosticId, int maxResults,
+        AddImportOptions options, ImmutableArray<PackageSource> packageSources, CancellationToken cancellationToken);
+
+    ValueTask<ImmutableArray<AddImportFixData>> GetUniqueFixesAsync(
+        Checksum solutionChecksum, RemoteServiceCallbackId callbackId, DocumentId id, TextSpan span, ImmutableArray<string> diagnosticIds,
+        AddImportOptions options, ImmutableArray<PackageSource> packageSources, CancellationToken cancellationToken);
 }

@@ -11,7 +11,6 @@ using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Text;
-using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -37,6 +36,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private int _resetStart;
 
         private static readonly ObjectPool<BlendedNode[]> s_blendedNodesPool = new ObjectPool<BlendedNode[]>(() => new BlendedNode[32], 2);
+        private static readonly ObjectPool<ArrayElement<SyntaxToken>[]> s_lexedTokensPool = new ObjectPool<ArrayElement<SyntaxToken>[]>(() => new ArrayElement<SyntaxToken>[CachedTokenArraySize], 2);
+
+        // Array size held in token pool. This should be large enough to prevent most allocations, but
+        //  not so large as to be wasteful when not in use.
+        private const int CachedTokenArraySize = 4096;
+
+        // Maximum index where a value has been written in _lexedTokens. This will allow Dispose
+        //   to limit the range needed to clear when releasing the lexed token array back to the pool.
+        private int _maxWrittenLexedTokenIndex = -1;
 
         private BlendedNode[] _blendedTokens;
 
@@ -64,7 +72,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 _firstBlender = default(Blender);
-                _lexedTokens = new ArrayElement<SyntaxToken>[32];
+                _lexedTokens = s_lexedTokensPool.Allocate();
             }
 
 #if !XSHARP
@@ -96,6 +104,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     s_blendedNodesPool.ForgetTrackedObject(blendedTokens);
                 }
             }
+
+            var lexedTokens = _lexedTokens;
+            if (lexedTokens != null)
+            {
+                _lexedTokens = null;
+
+                ReturnLexedTokensToPool(lexedTokens);
+            }
         }
 
         protected void ReInitialize()
@@ -109,7 +125,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _prevTokenTrailingTrivia = null;
             if (this.IsIncremental || _allowModeReset)
             {
-                _firstBlender = new Blender(this.lexer, null, null);
+                _firstBlender = new Blender(this.lexer, oldTree: null, changes: null);
             }
         }
 
@@ -124,10 +140,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void PreLex()
         {
             // NOTE: Do not cancel in this method. It is called from the constructor.
-            var size = Math.Min(4096, Math.Max(32, this.lexer.TextWindow.Text.Length / 2));
-            _lexedTokens = new ArrayElement<SyntaxToken>[size];
+            var size = Math.Min(CachedTokenArraySize, this.lexer.TextWindow.Text.Length / 2);
             var lexer = this.lexer;
             var mode = _mode;
+
+            _lexedTokens ??= s_lexedTokensPool.Allocate();
 
             for (int i = 0; i < size; i++)
             {
@@ -370,6 +387,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 this.AddLexedTokenSlot();
             }
 
+            if (_tokenCount > _maxWrittenLexedTokenIndex)
+            {
+                _maxWrittenLexedTokenIndex = _tokenCount;
+            }
+
             _lexedTokens[_tokenCount].Value = token;
             _tokenCount++;
         }
@@ -377,7 +399,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void AddTokenSlot()
         {
             // shift tokens to left if we are far to the right
-            // don't shift if reset points have fixed locked tge starting point at the token in the window
+            // don't shift if reset points have fixed locked the starting point at the token in the window
             if (_tokenOffset > (_blendedTokens.Length >> 1)
                 && (_resetStart == -1 || _resetStart > _firstToken))
             {
@@ -405,7 +427,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void AddLexedTokenSlot()
         {
             // shift tokens to left if we are far to the right
-            // don't shift if reset points have fixed locked tge starting point at the token in the window
+            // don't shift if reset points have fixed locked the starting point at the token in the window
             if (_tokenOffset > (_lexedTokens.Length >> 1)
                 && (_resetStart == -1 || _resetStart > _firstToken))
             {
@@ -423,9 +445,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                var tmp = new ArrayElement<SyntaxToken>[_lexedTokens.Length * 2];
-                Array.Copy(_lexedTokens, tmp, _lexedTokens.Length);
-                _lexedTokens = tmp;
+                var lexedTokens = _lexedTokens;
+
+                Array.Resize(ref _lexedTokens, _lexedTokens.Length * 2);
+
+                ReturnLexedTokensToPool(lexedTokens);
+            }
+        }
+
+        private void ReturnLexedTokensToPool(ArrayElement<SyntaxToken>[] lexedTokens)
+        {
+            // Put lexedTokens back into the pool if it's correctly sized.
+            if (lexedTokens.Length == CachedTokenArraySize)
+            {
+                // Clear all written indexes in lexedTokens before releasing back to the pool
+                Array.Clear(lexedTokens, 0, _maxWrittenLexedTokenIndex + 1);
+
+                s_lexedTokensPool.Free(lexedTokens);
             }
         }
 
@@ -623,9 +659,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected virtual SyntaxDiagnosticInfo GetExpectedTokenError(SyntaxKind expected, SyntaxKind actual, int offset, int width)
         {
             var code = GetExpectedTokenErrorCode(expected, actual);
-            if (code == ErrorCode.ERR_SyntaxError || code == ErrorCode.ERR_IdentifierExpectedKW)
+            if (code == ErrorCode.ERR_SyntaxError)
             {
-                return new SyntaxDiagnosticInfo(offset, width, code, SyntaxFacts.GetText(expected), SyntaxFacts.GetText(actual));
+                return new SyntaxDiagnosticInfo(offset, width, code, SyntaxFacts.GetText(expected));
+            }
+            else if (code == ErrorCode.ERR_IdentifierExpectedKW)
+            {
+                return new SyntaxDiagnosticInfo(offset, width, code, /*unused*/string.Empty, SyntaxFacts.GetText(actual));
             }
             else
             {
@@ -720,6 +760,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected TNode AddError<TNode>(TNode node, ErrorCode code) where TNode : GreenNode
         {
             return AddError(node, code, Array.Empty<object>());
+        }
+
+        protected TNode AddErrorAsWarning<TNode>(TNode node, ErrorCode code, params object[] args) where TNode : GreenNode
+        {
+            Debug.Assert(!node.IsMissing);
+            return AddError(node, ErrorCode.WRN_ErrorOverride, MakeError(node, code, args), (int)code);
         }
 
         protected TNode AddError<TNode>(TNode node, ErrorCode code, params object[] args) where TNode : GreenNode
@@ -1068,7 +1114,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected static SyntaxToken ConvertToIdentifier(SyntaxToken token)
         {
             Debug.Assert(!token.IsMissing);
-            return SyntaxToken.Identifier(token.Kind, token.LeadingTrivia.Node, token.Text, token.ValueText, token.TrailingTrivia.Node);
+
+            var identifier = SyntaxToken.Identifier(token.Kind, token.LeadingTrivia.Node, token.Text, token.ValueText, token.TrailingTrivia.Node);
+            if (token.ContainsDiagnostics)
+                identifier = identifier.WithDiagnosticsGreen(token.GetDiagnostics());
+
+            return identifier;
         }
 
         internal DirectiveStack Directives
@@ -1087,24 +1138,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected TNode CheckFeatureAvailability<TNode>(TNode node, MessageID feature, bool forceWarning = false)
             where TNode : GreenNode
         {
-            LanguageVersion availableVersion = this.Options.LanguageVersion;
-            LanguageVersion requiredVersion = feature.RequiredVersion();
-
-            // There are special error codes for some features, so handle those separately.
-            switch (feature)
-            {
-                case MessageID.IDS_FeatureModuleAttrLoc:
-                    return availableVersion >= LanguageVersion.CSharp2
-                        ? node
-                        : this.AddError(node, ErrorCode.WRN_NonECMAFeature, feature.Localize());
-
-                case MessageID.IDS_FeatureAltInterpolatedVerbatimStrings:
-                    return availableVersion >= requiredVersion
-                        ? node
-                        : this.AddError(node, ErrorCode.ERR_AltInterpolatedVerbatimStringsNotAvailable,
-                            new CSharpRequiredLanguageVersion(requiredVersion));
-            }
-
             var info = feature.GetFeatureAvailabilityDiagnosticInfo(this.Options);
             if (info != null)
             {

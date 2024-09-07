@@ -2,7 +2,6 @@
 ' The .NET Foundation licenses this file to you under the MIT license.
 ' See the LICENSE file in the project root for more information.
 
-Imports System.Windows
 Imports Microsoft.CodeAnalysis
 Imports Microsoft.CodeAnalysis.Completion
 Imports Microsoft.VisualStudio.LanguageServices.Implementation.Options
@@ -15,35 +14,38 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.Options
             MyBase.New(optionStore)
             InitializeComponent()
 
-            BindToOption(Show_completion_list_after_a_character_is_typed, CompletionOptions.TriggerOnTypingLetters2, LanguageNames.VisualBasic)
-            Show_completion_list_after_a_character_is_deleted.IsChecked = Me.OptionStore.GetOption(
-                CompletionOptions.TriggerOnDeletion, LanguageNames.VisualBasic) <> False
+            BindToOption(Show_completion_list_after_a_character_is_typed, CompletionOptionsStorage.TriggerOnTypingLetters, LanguageNames.VisualBasic)
+            BindToOption(Show_completion_list_after_a_character_is_deleted, CompletionOptionsStorage.TriggerOnDeletion, LanguageNames.VisualBasic, onNullValue:=function() True)
 
-            BindToOption(Show_completion_item_filters, CompletionOptions.ShowCompletionItemFilters, LanguageNames.VisualBasic)
-            BindToOption(Highlight_matching_portions_of_completion_list_items, CompletionOptions.HighlightMatchingPortionsOfCompletionListItems, LanguageNames.VisualBasic)
+            BindToOption(Highlight_matching_portions_of_completion_list_items, CompletionViewOptionsStorage.HighlightMatchingPortionsOfCompletionListItems, LanguageNames.VisualBasic)
+            BindToOption(Show_completion_item_filters, CompletionViewOptionsStorage.ShowCompletionItemFilters, LanguageNames.VisualBasic)
 
-            BindToOption(Never_include_snippets, CompletionOptions.SnippetsBehavior, SnippetsRule.NeverInclude, LanguageNames.VisualBasic)
-            BindToOption(Always_include_snippets, CompletionOptions.SnippetsBehavior, SnippetsRule.AlwaysInclude, LanguageNames.VisualBasic)
-            BindToOption(Include_snippets_when_question_Tab_is_typed_after_an_identifier, CompletionOptions.SnippetsBehavior, SnippetsRule.IncludeAfterTypingIdentifierQuestionTab, LanguageNames.VisualBasic)
+            BindToOption(Never_include_snippets, CompletionOptionsStorage.SnippetsBehavior, SnippetsRule.NeverInclude, LanguageNames.VisualBasic)
+            BindToOption(Always_include_snippets, CompletionOptionsStorage.SnippetsBehavior, SnippetsRule.AlwaysInclude, LanguageNames.VisualBasic)
+            BindToOption(Include_snippets_when_question_Tab_is_typed_after_an_identifier, CompletionOptionsStorage.SnippetsBehavior, SnippetsRule.IncludeAfterTypingIdentifierQuestionTab, LanguageNames.VisualBasic)
+            SetSnippetDefaultBehavior()
 
-            BindToOption(Never_add_new_line_on_enter, CompletionOptions.EnterKeyBehavior, EnterKeyRule.Never, LanguageNames.VisualBasic)
-            BindToOption(Only_add_new_line_on_enter_with_whole_word, CompletionOptions.EnterKeyBehavior, EnterKeyRule.AfterFullyTypedWord, LanguageNames.VisualBasic)
-            BindToOption(Always_add_new_line_on_enter, CompletionOptions.EnterKeyBehavior, EnterKeyRule.Always, LanguageNames.VisualBasic)
+            BindToOption(Never_add_new_line_on_enter, CompletionOptionsStorage.EnterKeyBehavior, EnterKeyRule.Never, LanguageNames.VisualBasic)
+            BindToOption(Only_add_new_line_on_enter_with_whole_word, CompletionOptionsStorage.EnterKeyBehavior, EnterKeyRule.AfterFullyTypedWord, LanguageNames.VisualBasic)
+            BindToOption(Always_add_new_line_on_enter, CompletionOptionsStorage.EnterKeyBehavior, EnterKeyRule.Always, LanguageNames.VisualBasic)
+            SetEnterKeyDefaultBehavior()
 
-            Show_items_from_unimported_namespaces.IsChecked = Me.OptionStore.GetOption(CompletionOptions.ShowItemsFromUnimportedNamespaces, LanguageNames.VisualBasic)
+            BindToOption(Show_items_from_unimported_namespaces, CompletionOptionsStorage.ShowItemsFromUnimportedNamespaces, LanguageNames.VisualBasic, onNullValue:=function() True)
+            BindToOption(Tab_twice_to_insert_arguments, CompletionViewOptionsStorage.EnableArgumentCompletionSnippets, LanguageNames.VisualBasic, onNullValue:=function() False)
         End Sub
 
-        Private Sub Show_completion_list_after_a_character_is_deleted_Checked(sender As Object, e As RoutedEventArgs)
-            Me.OptionStore.SetOption(CompletionOptions.TriggerOnDeletion, LanguageNames.VisualBasic, value:=True)
+        Private Sub SetSnippetDefaultBehavior()
+            Dim snippetValue = Me.OptionStore.GetOption(CompletionOptionsStorage.SnippetsBehavior, LanguageNames.VisualBasic)
+            If snippetValue = SnippetsRule.Default Then
+                Include_snippets_when_question_Tab_is_typed_after_an_identifier.IsChecked = True
+            End If
         End Sub
 
-        Private Sub Show_completion_list_after_a_character_is_deleted_Unchecked(sender As Object, e As RoutedEventArgs)
-            Me.OptionStore.SetOption(CompletionOptions.TriggerOnDeletion, LanguageNames.VisualBasic, value:=False)
-        End Sub
-
-        Private Sub Show_items_from_unimported_namespaces_CheckedChanged(sender As Object, e As RoutedEventArgs)
-            Show_items_from_unimported_namespaces.IsThreeState = False
-            Me.OptionStore.SetOption(CompletionOptions.ShowItemsFromUnimportedNamespaces, LanguageNames.VisualBasic, Show_items_from_unimported_namespaces.IsChecked)
+        Private Sub SetEnterKeyDefaultBehavior()
+            Dim enterKeyRule = Me.OptionStore.GetOption(CompletionOptionsStorage.EnterKeyBehavior, LanguageNames.VisualBasic)
+            If enterKeyRule = EnterKeyRule.Default Then
+                Always_add_new_line_on_enter.IsChecked = True
+            End If
         End Sub
     End Class
 End Namespace

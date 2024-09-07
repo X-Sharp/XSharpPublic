@@ -24,7 +24,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         /// <returns>True if a diagnostic was reported</returns>
-        internal bool ReportUnsafeIfNotAllowed(SyntaxNode node, DiagnosticBag diagnostics, TypeSymbol sizeOfTypeOpt = null)
+        internal bool ReportUnsafeIfNotAllowed(SyntaxNode node, BindingDiagnosticBag diagnostics, TypeSymbol sizeOfTypeOpt = null)
         {
             Debug.Assert((node.Kind() == SyntaxKind.SizeOfExpression) == ((object)sizeOfTypeOpt != null), "Should have a type for (only) sizeof expressions.");
 #if XSHARP 
@@ -47,7 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         /// <returns>True if a diagnostic was reported</returns>
-        internal bool ReportUnsafeIfNotAllowed(Location location, DiagnosticBag diagnostics)
+        internal bool ReportUnsafeIfNotAllowed(Location location, BindingDiagnosticBag diagnostics)
         {
             var diagnosticInfo = GetUnsafeDiagnosticInfo(sizeOfTypeOpt: null);
             if (diagnosticInfo == null)
@@ -68,17 +68,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return null;
             }
-
 #if XSHARP
             else if (this.IsIndirectlyInIterator && (object)sizeOfTypeOpt == null)
 #else
-            else if (this.IsIndirectlyInIterator)
 #endif
-            {
-                // Spec 8.2: "An iterator block always defines a safe context, even when its declaration
-                // is nested in an unsafe context."
-                return new CSDiagnosticInfo(ErrorCode.ERR_IllegalInnerUnsafe);
-            }
 #if XSHARP
             // only a warning when not compiling for a specific platform 
             else if (!this.InUnsafeRegion && Compilation.Options.Platform != Platform.X86 && Compilation.Options.Platform != Platform.X64 )
@@ -93,6 +86,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     ? new CSDiagnosticInfo(ErrorCode.ERR_UnsafeNeeded)
 #endif
                     : new CSDiagnosticInfo(ErrorCode.ERR_SizeofUnsafe, sizeOfTypeOpt);
+            }
+            else if (this.IsIndirectlyInIterator && MessageID.IDS_FeatureRefUnsafeInIteratorAsync.GetFeatureAvailabilityDiagnosticInfo(Compilation) is { } unsafeInIteratorDiagnosticInfo)
+            {
+                return unsafeInIteratorDiagnosticInfo;
             }
             else
             {

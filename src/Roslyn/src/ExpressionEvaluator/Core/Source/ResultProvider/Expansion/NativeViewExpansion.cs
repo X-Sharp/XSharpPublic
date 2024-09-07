@@ -36,7 +36,7 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
         {
             if (InRange(startIndex, count, index))
             {
-                rows.Add(GetRow(inspectionContext, value, parent));
+                rows.Add(GetRow(inspectionContext, value));
             }
 
             index++;
@@ -44,8 +44,7 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 
         private EvalResult GetRow(
             DkmInspectionContext inspectionContext,
-            DkmClrValue comObject,
-            EvalResultDataItem parent)
+            DkmClrValue comObject)
         {
             try
             {

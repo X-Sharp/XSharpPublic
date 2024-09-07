@@ -79,7 +79,7 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
             {
                 if (InRange(startIndex, count, index))
                 {
-                    rows.Add(this.CreateRawViewRow(resultProvider, inspectionContext, parent, value));
+                    rows.Add(this.CreateRawViewRow(inspectionContext, parent, value));
                 }
 
                 index++;
@@ -201,9 +201,9 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
                     out parentFullName);
             }
             var fieldName = field.FieldInfo.Name;
-            fullName = (parentFullName == null) ?
-                null :
-                fullNameProvider.GetClrMemberName(
+            fullName = (parentFullName == null)
+                ? null
+                : fullNameProvider.GetClrMemberName(
                     inspectionContext,
                     parentFullName,
                     clrType: field.DeclaringTypeAndInfo.ClrType,
@@ -262,10 +262,7 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 
         private Fields GetFields()
         {
-            if (_lazyFields == null)
-            {
-                _lazyFields = GetFields(_typeAndInfo, _cardinality, _useRawView);
-            }
+            _lazyFields ??= GetFields(_typeAndInfo, _cardinality, _useRawView);
             return _lazyFields;
         }
 
@@ -366,7 +363,6 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
         }
 
         private EvalResult CreateRawViewRow(
-            ResultProvider resultProvider,
             DkmInspectionContext inspectionContext,
             EvalResultDataItem parent,
             DkmClrValue value)

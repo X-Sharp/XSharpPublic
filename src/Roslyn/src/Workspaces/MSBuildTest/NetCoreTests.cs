@@ -9,9 +9,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Test.Utilities;
-using Microsoft.CodeAnalysis.UnitTests;
 using Microsoft.CodeAnalysis.UnitTests.TestFiles;
+using Microsoft.CodeAnalysis.VisualBasic;
 using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
@@ -29,19 +30,19 @@ namespace Microsoft.CodeAnalysis.MSBuild.UnitTests
 
         private void RunDotNet(string arguments)
         {
-            Assert.NotNull(DotNetCoreSdk.ExePath);
-
             var environmentVariables = new Dictionary<string, string>()
             {
                 ["NUGET_PACKAGES"] = _nugetCacheDir.Path
             };
 
+            var dotNetExeName = "dotnet" + (Path.DirectorySeparatorChar == '/' ? "" : ".exe");
+
             var restoreResult = ProcessUtilities.Run(
-                DotNetCoreSdk.ExePath, arguments,
+                dotNetExeName, arguments,
                 workingDirectory: SolutionDirectory.Path,
                 additionalEnvironmentVars: environmentVariables);
 
-            Assert.True(restoreResult.ExitCode == 0, $"{DotNetCoreSdk.ExePath} failed with exit code {restoreResult.ExitCode}: {restoreResult.Output}");
+            Assert.True(restoreResult.ExitCode == 0, $"{dotNetExeName} failed with exit code {restoreResult.ExitCode}: {restoreResult.Output}");
         }
 
         private void DotNetRestore(string solutionOrProjectFileName)
@@ -62,38 +63,36 @@ namespace Microsoft.CodeAnalysis.MSBuild.UnitTests
             RunDotNet(arguments);
         }
 
-        [ConditionalFact(typeof(VisualStudioMSBuildInstalled), typeof(DotNetCoreSdk.IsAvailable))]
+        [ConditionalFact(typeof(DotNetSdkMSBuildInstalled))]
         [Trait(Traits.Feature, Traits.Features.MSBuildWorkspace)]
         [Trait(Traits.Feature, Traits.Features.NetCore)]
-        public async Task TestOpenProject_NetCoreApp2()
+        public async Task TestOpenProject_NetCoreApp()
         {
-            CreateFiles(GetNetCoreApp2Files());
+            CreateFiles(GetNetCoreAppFiles());
 
             var projectFilePath = GetSolutionFileName("Project.csproj");
 
             DotNetRestore("Project.csproj");
 
-            using (var workspace = CreateMSBuildWorkspace())
-            {
-                var project = await workspace.OpenProjectAsync(projectFilePath);
+            using var workspace = CreateMSBuildWorkspace();
+            var project = await workspace.OpenProjectAsync(projectFilePath);
 
-                // Assert that there is a single project loaded.
-                Assert.Single(workspace.CurrentSolution.ProjectIds);
+            // Assert that there is a single project loaded.
+            Assert.Single(workspace.CurrentSolution.ProjectIds);
 
-                // Assert that the project does not have any diagnostics in Program.cs
-                var document = project.Documents.First(d => d.Name == "Program.cs");
-                var semanticModel = await document.GetSemanticModelAsync();
-                var diagnostics = semanticModel.GetDiagnostics();
-                Assert.Empty(diagnostics);
-            }
+            // Assert that the project does not have any diagnostics in Program.cs
+            var document = project.Documents.First(d => d.Name == "Program.cs");
+            var semanticModel = await document.GetSemanticModelAsync();
+            var diagnostics = semanticModel.GetDiagnostics();
+            Assert.Empty(diagnostics);
         }
 
-        [ConditionalFact(typeof(VisualStudioMSBuildInstalled), typeof(DotNetCoreSdk.IsAvailable))]
+        [ConditionalFact(typeof(DotNetSdkMSBuildInstalled))]
         [Trait(Traits.Feature, Traits.Features.MSBuildWorkspace)]
         [Trait(Traits.Feature, Traits.Features.NetCore)]
-        public async Task TestOpenProjectTwice_NetCoreApp2AndLibrary()
+        public async Task TestOpenProjectTwice_NetCoreAppAndLibrary()
         {
-            CreateFiles(GetNetCoreApp2AndLibraryFiles());
+            CreateFiles(GetNetCoreAppAndLibraryFiles());
 
             var projectFilePath = GetSolutionFileName(@"Project\Project.csproj");
             var libraryFilePath = GetSolutionFileName(@"Library\Library.csproj");
@@ -125,12 +124,12 @@ namespace Microsoft.CodeAnalysis.MSBuild.UnitTests
             Assert.Equal(libraryProject.FilePath, workspace.CurrentSolution.GetProject(projectRefId).FilePath);
         }
 
-        [ConditionalFact(typeof(VisualStudioMSBuildInstalled), typeof(DotNetCoreSdk.IsAvailable))]
+        [ConditionalFact(typeof(DotNetSdkMSBuildInstalled))]
         [Trait(Traits.Feature, Traits.Features.MSBuildWorkspace)]
         [Trait(Traits.Feature, Traits.Features.NetCore)]
-        public async Task TestOpenProjectTwice_NetCoreApp2AndTwoLibraries()
+        public async Task TestOpenProjectTwice_NetCoreAppAndTwoLibraries()
         {
-            CreateFiles(GetNetCoreApp2AndTwoLibrariesFiles());
+            CreateFiles(GetNetCoreAppAndTwoLibrariesFiles());
 
             var projectFilePath = GetSolutionFileName(@"Project\Project.csproj");
             var library1FilePath = GetSolutionFileName(@"Library1\Library1.csproj");
@@ -139,30 +138,29 @@ namespace Microsoft.CodeAnalysis.MSBuild.UnitTests
             DotNetRestore(@"Project\Project.csproj");
             DotNetRestore(@"Library2\Library2.csproj");
 
-            using (var workspace = CreateMSBuildWorkspace())
-            {
-                var project = await workspace.OpenProjectAsync(projectFilePath);
+            // Warning: Found project reference without a matching metadata reference: Library1.csproj
+            using var workspace = CreateMSBuildWorkspace(throwOnWorkspaceFailed: false);
+            var project = await workspace.OpenProjectAsync(projectFilePath);
 
-                // Assert that there is are two projects loaded (Project.csproj references Library1.csproj).
-                Assert.Equal(2, workspace.CurrentSolution.ProjectIds.Count);
+            // Assert that there is are two projects loaded (Project.csproj references Library1.csproj).
+            Assert.Equal(2, workspace.CurrentSolution.ProjectIds.Count);
 
-                // Assert that the project does not have any diagnostics in Program.cs
-                var document = project.Documents.First(d => d.Name == "Program.cs");
-                var semanticModel = await document.GetSemanticModelAsync();
-                var diagnostics = semanticModel.GetDiagnostics();
-                Assert.Empty(diagnostics);
+            // Assert that the project does not have any diagnostics in Program.cs
+            var document = project.Documents.First(d => d.Name == "Program.cs");
+            var semanticModel = await document.GetSemanticModelAsync();
+            var diagnostics = semanticModel.GetDiagnostics();
+            Assert.Empty(diagnostics);
 
-                var library2 = await workspace.OpenProjectAsync(library2FilePath);
+            var library2 = await workspace.OpenProjectAsync(library2FilePath);
 
-                // Assert that there are now three projects loaded (Library2.csproj also references Library1.csproj)
-                Assert.Equal(3, workspace.CurrentSolution.ProjectIds.Count);
+            // Assert that there are now three projects loaded (Library2.csproj also references Library1.csproj)
+            Assert.Equal(3, workspace.CurrentSolution.ProjectIds.Count);
 
-                // Assert that there is a project reference between Project.csproj and Library1.csproj
-                AssertSingleProjectReference(project, library1FilePath);
+            // Assert that there is a project reference between Project.csproj and Library1.csproj
+            AssertSingleProjectReference(project, library1FilePath);
 
-                // Assert that there is a project reference between Library2.csproj and Library1.csproj
-                AssertSingleProjectReference(library2, library1FilePath);
-            }
+            // Assert that there is a project reference between Library2.csproj and Library1.csproj
+            AssertSingleProjectReference(library2, library1FilePath);
 
             static void AssertSingleProjectReference(Project project, string projectRefFilePath)
             {
@@ -173,7 +171,7 @@ namespace Microsoft.CodeAnalysis.MSBuild.UnitTests
             }
         }
 
-        [ConditionalFact(typeof(VisualStudioMSBuildInstalled), typeof(DotNetCoreSdk.IsAvailable))]
+        [ConditionalFact(typeof(DotNetSdkMSBuildInstalled))]
         [Trait(Traits.Feature, Traits.Features.MSBuildWorkspace)]
         [Trait(Traits.Feature, Traits.Features.NetCore)]
         public async Task TestOpenProject_NetCoreMultiTFM()
@@ -184,40 +182,38 @@ namespace Microsoft.CodeAnalysis.MSBuild.UnitTests
 
             DotNetRestore("Project.csproj");
 
-            using (var workspace = CreateMSBuildWorkspace())
+            using var workspace = CreateMSBuildWorkspace();
+            await workspace.OpenProjectAsync(projectFilePath);
+
+            // Assert that three projects have been loaded, one for each TFM.
+            Assert.Equal(3, workspace.CurrentSolution.ProjectIds.Count);
+
+            var projectPaths = new HashSet<string>();
+            var outputFilePaths = new HashSet<string>();
+
+            foreach (var project in workspace.CurrentSolution.Projects)
             {
-                await workspace.OpenProjectAsync(projectFilePath);
+                projectPaths.Add(project.FilePath);
+                outputFilePaths.Add(project.OutputFilePath);
+            }
 
-                // Assert that three projects have been loaded, one for each TFM.
-                Assert.Equal(3, workspace.CurrentSolution.ProjectIds.Count);
+            // Assert that the three projects share the same file path
+            Assert.Single(projectPaths);
 
-                var projectPaths = new HashSet<string>();
-                var outputFilePaths = new HashSet<string>();
+            // Assert that the three projects have different output file paths
+            Assert.Equal(3, outputFilePaths.Count);
 
-                foreach (var project in workspace.CurrentSolution.Projects)
-                {
-                    projectPaths.Add(project.FilePath);
-                    outputFilePaths.Add(project.OutputFilePath);
-                }
-
-                // Assert that the three projects share the same file path
-                Assert.Single(projectPaths);
-
-                // Assert that the three projects have different output file paths
-                Assert.Equal(3, outputFilePaths.Count);
-
-                // Assert that none of the projects have any diagnostics in Program.cs
-                foreach (var project in workspace.CurrentSolution.Projects)
-                {
-                    var document = project.Documents.First(d => d.Name == "Program.cs");
-                    var semanticModel = await document.GetSemanticModelAsync();
-                    var diagnostics = semanticModel.GetDiagnostics();
-                    Assert.Empty(diagnostics);
-                }
+            // Assert that none of the projects have any diagnostics in Program.cs
+            foreach (var project in workspace.CurrentSolution.Projects)
+            {
+                var document = project.Documents.First(d => d.Name == "Program.cs");
+                var semanticModel = await document.GetSemanticModelAsync();
+                var diagnostics = semanticModel.GetDiagnostics();
+                Assert.Empty(diagnostics);
             }
         }
 
-        [ConditionalFact(typeof(VisualStudioMSBuildInstalled), typeof(DotNetCoreSdk.IsAvailable))]
+        [ConditionalFact(typeof(DotNetSdkMSBuildInstalled))]
         [Trait(Traits.Feature, Traits.Features.MSBuildWorkspace)]
         [Trait(Traits.Feature, Traits.Features.NetCore)]
         public async Task TestOpenProject_NetCoreMultiTFM_ExtensionWithConditionOnTFM()
@@ -228,40 +224,38 @@ namespace Microsoft.CodeAnalysis.MSBuild.UnitTests
 
             DotNetRestore("Project.csproj");
 
-            using (var workspace = CreateMSBuildWorkspace())
+            using var workspace = CreateMSBuildWorkspace();
+            await workspace.OpenProjectAsync(projectFilePath);
+
+            // Assert that three projects have been loaded, one for each TFM.
+            Assert.Equal(3, workspace.CurrentSolution.ProjectIds.Count);
+
+            // Assert the TFM is accessible from project extensions.
+            // The test project extension sets the default namespace based on the TFM.  
+            foreach (var project in workspace.CurrentSolution.Projects)
             {
-                await workspace.OpenProjectAsync(projectFilePath);
-
-                // Assert that three projects have been loaded, one for each TFM.
-                Assert.Equal(3, workspace.CurrentSolution.ProjectIds.Count);
-
-                // Assert the TFM is accessible from project extensions.
-                // The test project extension sets the default namespace based on the TFM.  
-                foreach (var project in workspace.CurrentSolution.Projects)
+                switch (project.Name)
                 {
-                    switch (project.Name)
-                    {
-                        case "Project(netcoreapp2.1)":
-                            Assert.Equal("Project.NetCore", project.DefaultNamespace);
-                            break;
+                    case "Project(net6)":
+                        Assert.Equal("Project.NetCore", project.DefaultNamespace);
+                        break;
 
-                        case "Project(netstandard2.0)":
-                            Assert.Equal("Project.NetStandard", project.DefaultNamespace);
-                            break;
+                    case "Project(netstandard2.0)":
+                        Assert.Equal("Project.NetStandard", project.DefaultNamespace);
+                        break;
 
-                        case "Project(net461)":
-                            Assert.Equal("Project.NetFramework", project.DefaultNamespace);
-                            break;
+                    case "Project(net5)":
+                        Assert.Equal("Project.NetFramework", project.DefaultNamespace);
+                        break;
 
-                        default:
-                            Assert.True(false, $"Unexpected project: {project.Name}");
-                            break;
-                    }
+                    default:
+                        Assert.True(false, $"Unexpected project: {project.Name}");
+                        break;
                 }
             }
         }
 
-        [ConditionalFact(typeof(VisualStudioMSBuildInstalled), typeof(DotNetCoreSdk.IsAvailable))]
+        [ConditionalFact(typeof(DotNetSdkMSBuildInstalled))]
         [Trait(Traits.Feature, Traits.Features.MSBuildWorkspace)]
         [Trait(Traits.Feature, Traits.Features.NetCore)]
         public async Task TestOpenProject_NetCoreMultiTFM_ProjectReference()
@@ -278,98 +272,96 @@ namespace Microsoft.CodeAnalysis.MSBuild.UnitTests
 
         private static async Task AssertNetCoreMultiTFMProject(string projectFilePath)
         {
-            using (var workspace = CreateMSBuildWorkspace())
+            using var workspace = CreateMSBuildWorkspace();
+            await workspace.OpenProjectAsync(projectFilePath);
+
+            // Assert that four projects have been loaded, one for each TFM.
+            Assert.Equal(4, workspace.CurrentSolution.ProjectIds.Count);
+
+            var projectPaths = new HashSet<string>();
+            var outputFilePaths = new HashSet<string>();
+
+            foreach (var project in workspace.CurrentSolution.Projects)
             {
-                await workspace.OpenProjectAsync(projectFilePath);
+                projectPaths.Add(project.FilePath);
+                outputFilePaths.Add(project.OutputFilePath);
+            }
 
-                // Assert that four projects have been loaded, one for each TFM.
-                Assert.Equal(4, workspace.CurrentSolution.ProjectIds.Count);
+            // Assert that there are two project file path among the four projects
+            Assert.Equal(2, projectPaths.Count);
 
-                var projectPaths = new HashSet<string>();
-                var outputFilePaths = new HashSet<string>();
+            // Assert that the four projects each have different output file paths
+            Assert.Equal(4, outputFilePaths.Count);
 
-                foreach (var project in workspace.CurrentSolution.Projects)
+            var expectedNames = new HashSet<string>()
                 {
-                    projectPaths.Add(project.FilePath);
-                    outputFilePaths.Add(project.OutputFilePath);
-                }
-
-                // Assert that there are two project file path among the four projects
-                Assert.Equal(2, projectPaths.Count);
-
-                // Assert that the four projects each have different output file paths
-                Assert.Equal(4, outputFilePaths.Count);
-
-                var expectedNames = new HashSet<string>()
-                {
+                    "Project(net6)",
+                    "Project(net5)",
                     "Library(netstandard2",
-                    "Library(net461)",
-                    "Project(netcoreapp2",
-                    "Project(net461)"
+                    "Library(net5)"
                 };
 
-                var actualNames = new HashSet<string>();
+            var actualNames = new HashSet<string>();
 
-                foreach (var project in workspace.CurrentSolution.Projects)
+            foreach (var project in workspace.CurrentSolution.Projects)
+            {
+                var dotIndex = project.Name.IndexOf('.');
+                var projectName = dotIndex >= 0
+                    ? project.Name[..dotIndex]
+                    : project.Name;
+
+                actualNames.Add(projectName);
+                var fileName = PathUtilities.GetFileName(project.FilePath);
+
+                Document document;
+
+                switch (fileName)
                 {
-                    var dotIndex = project.Name.IndexOf('.');
-                    var projectName = dotIndex >= 0
-                        ? project.Name.Substring(0, dotIndex)
-                        : project.Name;
+                    case "Project.csproj":
+                        document = project.Documents.First(d => d.Name == "Program.cs");
+                        break;
 
-                    actualNames.Add(projectName);
-                    var fileName = PathUtilities.GetFileName(project.FilePath);
+                    case "Library.csproj":
+                        document = project.Documents.First(d => d.Name == "Class1.cs");
+                        break;
 
-                    Document document;
-
-                    switch (fileName)
-                    {
-                        case "Project.csproj":
-                            document = project.Documents.First(d => d.Name == "Program.cs");
-                            break;
-
-                        case "Library.csproj":
-                            document = project.Documents.First(d => d.Name == "Class1.cs");
-                            break;
-
-                        default:
-                            Assert.True(false, $"Encountered unexpected project: {project.FilePath}");
-                            return;
-                    }
-
-                    // Assert that none of the projects have any diagnostics in their primary .cs file.
-                    var semanticModel = await document.GetSemanticModelAsync();
-                    var diagnostics = semanticModel.GetDiagnostics();
-                    Assert.Empty(diagnostics);
+                    default:
+                        Assert.True(false, $"Encountered unexpected project: {project.FilePath}");
+                        return;
                 }
 
-                Assert.True(actualNames.SetEquals(expectedNames), $"Project names differ!{Environment.NewLine}Actual: {{{actualNames.Join(",")}}}{Environment.NewLine}Expected: {{{expectedNames.Join(",")}}}");
+                // Assert that none of the projects have any diagnostics in their primary .cs file.
+                var semanticModel = await document.GetSemanticModelAsync();
+                var diagnostics = semanticModel.GetDiagnostics();
+                Assert.Empty(diagnostics);
+            }
 
-                // Verify that the projects reference the correct TFMs
-                var projects = workspace.CurrentSolution.Projects.Where(p => p.FilePath.EndsWith("Project.csproj"));
-                foreach (var project in projects)
+            Assert.True(actualNames.SetEquals(expectedNames), $"Project names differ!{Environment.NewLine}Actual: {{{actualNames.Join(",")}}}{Environment.NewLine}Expected: {{{expectedNames.Join(",")}}}");
+
+            // Verify that the projects reference the correct TFMs
+            var projects = workspace.CurrentSolution.Projects.Where(p => p.FilePath.EndsWith("Project.csproj"));
+            foreach (var project in projects)
+            {
+                var projectReference = Assert.Single(project.ProjectReferences);
+
+                var referencedProject = workspace.CurrentSolution.GetProject(projectReference.ProjectId);
+
+                if (project.OutputFilePath.Contains("net6"))
                 {
-                    var projectReference = Assert.Single(project.ProjectReferences);
-
-                    var referencedProject = workspace.CurrentSolution.GetProject(projectReference.ProjectId);
-
-                    if (project.OutputFilePath.Contains("netcoreapp2"))
-                    {
-                        Assert.Contains("netstandard2", referencedProject.OutputFilePath);
-                    }
-                    else if (project.OutputFilePath.Contains("net461"))
-                    {
-                        Assert.Contains("net461", referencedProject.OutputFilePath);
-                    }
-                    else
-                    {
-                        Assert.True(false, "OutputFilePath with expected TFM not found.");
-                    }
+                    Assert.Contains("net5", referencedProject.OutputFilePath);
+                }
+                else if (project.OutputFilePath.Contains("net5"))
+                {
+                    Assert.Contains("net5", referencedProject.OutputFilePath);
+                }
+                else
+                {
+                    Assert.True(false, "OutputFilePath with expected TFM not found.");
                 }
             }
         }
 
-        [ConditionalFact(typeof(VisualStudioMSBuildInstalled), typeof(DotNetCoreSdk.IsAvailable), AlwaysSkip = "https://github.com/dotnet/roslyn/issues/41917")]
+        [ConditionalFact(typeof(DotNetSdkMSBuildInstalled))]
         [Trait(Traits.Feature, Traits.Features.MSBuildWorkspace)]
         [Trait(Traits.Feature, Traits.Features.NetCore)]
         public async Task TestOpenSolution_NetCoreMultiTFMWithProjectReferenceToFSharp()
@@ -380,24 +372,22 @@ namespace Microsoft.CodeAnalysis.MSBuild.UnitTests
 
             DotNetRestore("Solution.sln");
 
-            using (var workspace = CreateMSBuildWorkspace())
+            using var workspace = CreateMSBuildWorkspace(throwOnWorkspaceFailed: false, skipUnrecognizedProjects: true);
+            var solution = await workspace.OpenSolutionAsync(solutionFilePath);
+
+            var projects = solution.Projects.ToArray();
+
+            Assert.Equal(2, projects.Length);
+
+            foreach (var project in projects)
             {
-                var solution = await workspace.OpenSolutionAsync(solutionFilePath);
-
-                var projects = solution.Projects.ToArray();
-
-                Assert.Equal(2, projects.Length);
-
-                foreach (var project in projects)
-                {
-                    Assert.StartsWith("csharplib", project.Name);
-                    Assert.Empty(project.ProjectReferences);
-                    Assert.Single(project.AllProjectReferences);
-                }
+                Assert.StartsWith("csharplib", project.Name);
+                Assert.Empty(project.ProjectReferences);
+                Assert.Single(project.AllProjectReferences);
             }
         }
 
-        [ConditionalFact(typeof(VisualStudioMSBuildInstalled), typeof(DotNetCoreSdk.IsAvailable))]
+        [ConditionalFact(typeof(DotNetSdkMSBuildInstalled))]
         [Trait(Traits.Feature, Traits.Features.MSBuildWorkspace)]
         [Trait(Traits.Feature, Traits.Features.NetCore)]
         public async Task TestOpenProject_ReferenceConfigurationSpecificMetadata()
@@ -416,41 +406,86 @@ namespace Microsoft.CodeAnalysis.MSBuild.UnitTests
 
             var projectFilePath = GetSolutionFileName(@"InspectedLibrary\InspectedLibrary.csproj");
 
-            using (var workspace = CreateMSBuildWorkspace(("Configuration", "Release")))
-            {
-                workspace.LoadMetadataForReferencedProjects = true;
+            using var workspace = CreateMSBuildWorkspace(("Configuration", "Release"));
+            workspace.LoadMetadataForReferencedProjects = true;
 
-                var project = await workspace.OpenProjectAsync(projectFilePath);
+            var project = await workspace.OpenProjectAsync(projectFilePath);
 
-                Assert.Empty(project.ProjectReferences);
-                Assert.Empty(workspace.Diagnostics);
+            Assert.Empty(project.ProjectReferences);
+            Assert.Empty(workspace.Diagnostics);
 
-                var compilation = await project.GetCompilationAsync();
-            }
+            var compilation = await project.GetCompilationAsync();
         }
 
-        [ConditionalFact(typeof(VisualStudioMSBuildInstalled), typeof(DotNetCoreSdk.IsAvailable))]
+        [ConditionalFact(typeof(DotNetSdkMSBuildInstalled))]
         [Trait(Traits.Feature, Traits.Features.MSBuildWorkspace)]
         [Trait(Traits.Feature, Traits.Features.NetCore)]
         public async Task TestOpenProject_OverrideTFM()
         {
-            CreateFiles(GetNetCoreApp2AndLibraryFiles());
+            CreateFiles(GetNetCoreAppAndLibraryFiles());
 
             var projectFilePath = GetSolutionFileName(@"Library\Library.csproj");
 
             DotNetRestore(@"Library\Library.csproj");
 
             // Override the TFM properties defined in the file
-            using (var workspace = CreateMSBuildWorkspace((PropertyNames.TargetFramework, ""), (PropertyNames.TargetFrameworks, "netcoreapp2.1;net461")))
+            using var workspace = CreateMSBuildWorkspace(("TargetFramework", ""), ("TargetFrameworks", "net6;net5"));
+            await workspace.OpenProjectAsync(projectFilePath);
+
+            // Assert that two projects have been loaded, one for each TFM.
+            Assert.Equal(2, workspace.CurrentSolution.ProjectIds.Count);
+
+            Assert.Contains(workspace.CurrentSolution.Projects, p => p.Name == "Library(net6)");
+            Assert.Contains(workspace.CurrentSolution.Projects, p => p.Name == "Library(net5)");
+        }
+
+        [ConditionalFact(typeof(DotNetSdkMSBuildInstalled))]
+        [Trait(Traits.Feature, Traits.Features.MSBuildWorkspace)]
+        [Trait(Traits.Feature, Traits.Features.NetCore)]
+        public async Task TestOpenProject_VBNetCoreAppWithGlobalImportAndLibrary()
+        {
+            CreateFiles(GetVBNetCoreAppWithGlobalImportAndLibraryFiles());
+
+            var vbProjectFilePath = GetSolutionFileName(@"VBProject\VBProject.vbproj");
+            var libraryFilePath = GetSolutionFileName(@"Library\Library.csproj");
+
+            DotNetRestore(@"Library\Library.csproj");
+            DotNetRestore(@"VBProject\VBProject.vbproj");
+
+            // Warning:Found project reference without a matching metadata reference: Library.csproj
+            using var workspace = CreateMSBuildWorkspace(throwOnWorkspaceFailed: false);
+            var project = await workspace.OpenProjectAsync(vbProjectFilePath);
+
+            // Assert that there is are two projects loaded (VBProject.vbproj references Library.csproj).
+            Assert.Equal(2, workspace.CurrentSolution.ProjectIds.Count);
+
+            // Assert that there is a project reference between VBProject.vbproj and Library.csproj
+            AssertSingleProjectReference(project, libraryFilePath);
+
+            // Assert that the project does not have any diagnostics in Program.vb
+            var document = project.Documents.First(d => d.Name == "Program.vb");
+            var semanticModel = await document.GetSemanticModelAsync();
+            var diagnostics = semanticModel.GetDiagnostics();
+            Assert.Empty(diagnostics.Where(d => d.Severity >= DiagnosticSeverity.Warning));
+
+            var compilation = await project.GetCompilationAsync();
+            var option = compilation.Options as VisualBasicCompilationOptions;
+            Assert.Contains("LibraryHelperClass = Library.MyHelperClass", option.GlobalImports.Select(i => i.Name));
+
+            static void AssertSingleProjectReference(Project project, string projectRefFilePath)
             {
-                await workspace.OpenProjectAsync(projectFilePath);
+                var projectReference = Assert.Single(project.ProjectReferences);
 
-                // Assert that two projects have been loaded, one for each TFM.
-                Assert.Equal(2, workspace.CurrentSolution.ProjectIds.Count);
-
-                Assert.Contains(workspace.CurrentSolution.Projects, p => p.Name == "Library(netcoreapp2.1)");
-                Assert.Contains(workspace.CurrentSolution.Projects, p => p.Name == "Library(net461)");
+                var projectRefId = projectReference.ProjectId;
+                Assert.Equal(projectRefFilePath, project.Solution.GetProject(projectRefId).FilePath);
             }
+        }
+
+        [Fact]
+        public void BuildHostShipsDepsJsonFile()
+        {
+            var depsJsonFile = Path.ChangeExtension(BuildHostProcessManager.GetNetCoreBuildHostPath(), "deps.json");
+            Assert.True(File.Exists(depsJsonFile), $"{depsJsonFile} should exist, or it won't load on some runtimes.");
         }
     }
 }

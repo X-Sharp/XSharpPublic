@@ -7,6 +7,11 @@
         <target state="translated">粘贴时添加缺少的 imports</target>
         <note>'import' is a Visual Basic keyword and should not be localized</note>
       </trans-unit>
+      <trans-unit id="Collapse_imports_on_file_open">
+        <source>Collapse Imports on file open</source>
+        <target state="translated">打开文件时折叠导入</target>
+        <note />
+      </trans-unit>
       <trans-unit id="In_relational_binary_operators">
         <source>In relational operators:  =   &lt;&gt;   &lt;   &gt;   &lt;=   &gt;=   Like   Is</source>
         <target state="translated">在关系运算符中: =   &lt;&gt;   &lt;   &gt;   &lt;=   &gt;=   Like   Is</target>
@@ -51,6 +56,16 @@
         <source>Prefer 'Is Nothing' for reference equality checks</source>
         <target state="translated">引用相等检查偏好 “Is Nothing”</target>
         <note />
+      </trans-unit>
+      <trans-unit id="Prefer_simplified_object_creation">
+        <source>Prefer simplified object creation</source>
+        <target state="translated">更偏好简化的对象创建</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Remove_unnecessary_imports">
+        <source>Remove unnecessary imports</source>
+        <target state="translated">移除不必要的导入</target>
+        <note>{Locked="Import"} 'import' is a Visual Basic keyword and should not be localized</note>
       </trans-unit>
       <trans-unit id="Show_hints_for_New_expressions">
         <source>Show hints for 'New' expressions</source>
@@ -249,27 +264,12 @@
       </trans-unit>
       <trans-unit id="Always_add_new_line_on_enter">
         <source>_Always add new line on enter</source>
-        <target state="translated">按下 Enter 时始终添加新行(_A)</target>
+        <target state="translated">始终在按下 Enter 时添加新行(_A)</target>
         <note />
       </trans-unit>
       <trans-unit id="Never_add_new_line_on_enter">
         <source>_Never add new line on enter</source>
         <target state="translated">按下 Enter 时不添加新行(_N)</target>
-        <note />
-      </trans-unit>
-      <trans-unit id="Always_include_snippets">
-        <source>Always include snippets</source>
-        <target state="translated">始终包含片段</target>
-        <note />
-      </trans-unit>
-      <trans-unit id="Include_snippets_when_Tab_is_typed_after_an_identifier">
-        <source>Include snippets when ?-Tab is typed after an identifier</source>
-        <target state="translated">在标识符后键入 ?-Tab 时包含片段</target>
-        <note />
-      </trans-unit>
-      <trans-unit id="Never_include_snippets">
-        <source>Never include snippets</source>
-        <target state="translated">从不包含片段</target>
         <note />
       </trans-unit>
       <trans-unit id="Snippets_behavior">
@@ -290,11 +290,6 @@
       <trans-unit id="Unused_local">
         <source>Unused local</source>
         <target state="translated">未使用的本地</target>
-        <note />
-      </trans-unit>
-      <trans-unit id="VB_Coding_Conventions">
-        <source>VB Coding Conventions</source>
-        <target state="translated">vb 编码约定</target>
         <note />
       </trans-unit>
       <trans-unit id="nothing_checking_colon">

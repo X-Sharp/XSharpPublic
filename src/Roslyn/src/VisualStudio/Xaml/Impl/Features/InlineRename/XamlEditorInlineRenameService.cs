@@ -13,7 +13,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Host.Mef;
-using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Rename;
 using Microsoft.CodeAnalysis.Text;
 
@@ -29,6 +28,11 @@ namespace Microsoft.CodeAnalysis.Editor.Xaml.Features.InlineRename
         public XamlEditorInlineRenameService(IXamlRenameInfoService renameService)
         {
             _renameService = renameService;
+        }
+
+        public Task<ImmutableDictionary<string, ImmutableArray<string>>> GetRenameContextAsync(IInlineRenameInfo inlineRenameInfo, IInlineRenameLocationSet inlineRenameLocationSet, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(ImmutableDictionary<string, ImmutableArray<string>>.Empty);
         }
 
         public async Task<IInlineRenameInfo> GetRenameInfoAsync(Document document, int position, CancellationToken cancellationToken)
@@ -59,7 +63,7 @@ namespace Microsoft.CodeAnalysis.Editor.Xaml.Features.InlineRename
 
             public bool HasOverloads => false;
 
-            public bool ForceRenameOverloads => false;
+            public bool MustRenameOverloads => false;
 
             public string LocalizedErrorMessage => _renameInfo.LocalizedErrorMessage;
 
@@ -68,13 +72,13 @@ namespace Microsoft.CodeAnalysis.Editor.Xaml.Features.InlineRename
             // This property isn't currently supported in XAML since it would involve modifying the IXamlRenameInfo interface.
             public ImmutableArray<CodeAnalysis.DocumentSpan> DefinitionLocations => default;
 
-            public async Task<IInlineRenameLocationSet> FindRenameLocationsAsync(OptionSet optionSet, CancellationToken cancellationToken)
+            public async Task<IInlineRenameLocationSet> FindRenameLocationsAsync(SymbolRenameOptions options, CancellationToken cancellationToken)
             {
                 var references = new List<InlineRenameLocation>();
 
                 var renameLocations = await _renameInfo.FindRenameLocationsAsync(
-                    renameInStrings: optionSet.GetOption(RenameOptions.RenameInStrings),
-                    renameInComments: optionSet.GetOption(RenameOptions.RenameInComments),
+                    renameInStrings: options.RenameInStrings,
+                    renameInComments: options.RenameInComments,
                     cancellationToken: cancellationToken).ConfigureAwait(false);
 
                 references.AddRange(renameLocations.Select(
@@ -133,6 +137,9 @@ namespace Microsoft.CodeAnalysis.Editor.Xaml.Features.InlineRename
                 return glyph;
             }
 
+            public InlineRenameFileRenameInfo GetFileRenameInfo()
+                => InlineRenameFileRenameInfo.NotAllowed;
+
             private class InlineRenameLocationSet : IInlineRenameLocationSet
             {
                 private readonly IXamlRenameInfo _renameInfo;
@@ -152,13 +159,13 @@ namespace Microsoft.CodeAnalysis.Editor.Xaml.Features.InlineRename
                     return _renameInfo.IsReplacementTextValid(replacementText);
                 }
 
-                public async Task<IInlineRenameReplacementInfo> GetReplacementsAsync(string replacementText, OptionSet optionSet, CancellationToken cancellationToken)
+                public async Task<IInlineRenameReplacementInfo> GetReplacementsAsync(string replacementText, SymbolRenameOptions options, CancellationToken cancellationToken)
                 {
                     var newSolution = _oldSolution;
                     foreach (var group in Locations.GroupBy(l => l.Document))
                     {
                         var document = group.Key;
-                        var oldSource = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
+                        var oldSource = await document.GetValueTextAsync(cancellationToken).ConfigureAwait(false);
                         var newSource = oldSource.WithChanges(group.Select(l => new TextChange(l.TextSpan, replacementText)));
                         newSolution = newSolution.WithDocumentText(document.Id, newSource);
                     }

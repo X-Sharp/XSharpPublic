@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
 using System;
 using System.Composition;
 using System.Threading.Tasks;
@@ -40,7 +38,15 @@ namespace Microsoft.VisualStudio.IntegrationTest.Setup
                 return;
             }
 
+            if (exception is ObjectDisposedException objectDisposedException
+                && objectDisposedException.StackTrace.Contains("Microsoft.VisualStudio.Text.IntraTextTaggerAggregator.Implementation.IntraTextAdornmentTagger"))
+            {
+                // Workaround for https://devdiv.visualstudio.com/DevDiv/_workitems/edit/1935805
+                return;
+            }
+
             FatalError.ReportAndPropagate(exception);
+            TestTraceListener.Instance.AddException(exception);
         }
     }
 }

@@ -80,17 +80,8 @@ CLASS Test IMPLEMENTS ITest
         RETURN ""
     METHOD ITest.TestMe() AS OBJECT
         RETURN ""
-//  PROPERTY Foo[nItem AS LONG] AS STRING => nItem:ToString()
-    PROPERTY Foo[nItem AS LONG] AS STRING 
-	    GET
-		    RETURN nItem:ToString()
-	    END GET
-	END PROPERTY
-    PROPERTY Foo2(nItem AS LONG) AS STRING 
-    	GET
-	    	RETURN nItem:ToString()
-    	END GET
-    END PROPERTY
+    PROPERTY Foo[nItem AS LONG] AS STRING => nItem:ToString()
+	PROPERTY Foo2(nItem AS LONG) AS STRING GET nItem:ToString()
 END CLASS
 
 

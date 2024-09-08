@@ -1,7 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<!--
+﻿<!--
 ***********************************************************************************************
-XSharp.targets
+XSharp.CurrentVersion.targets
 
 WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
           created a backup copy.  Incorrect changes to this file will make it
@@ -12,15 +11,17 @@ For example, it contains the step that actually calls the C# compiler.  The rema
 of the build process is defined in Microsoft.Common.targets, which is imported by
 this file.
 
+inspired by Microsoft.CSharp.CurrentVersion.targets
+
 Copyright (c) XSharp B.V.  All Rights Reserved
 ***********************************************************************************************
 -->
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Condition="'$(XSharpDefaultTargets)' == ''" Project="$(MSBuildThisFileDirectory)\XSharp.Default.targets" />
+<Project>
     <PropertyGroup>
         <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
         <XSharpBuildAssemblyFile Condition=" '$(XSharpBuildAssemblyFile)' =='' ">$(MSBuildThisFileDirectory)XSharp.Build.dll</XSharpBuildAssemblyFile>
     </PropertyGroup>
+
 
   <UsingTask TaskName="XSharp.Build.Xsc"  AssemblyFile="$(XSharpBuildAssemblyFile)" />
   <UsingTask TaskName="CreateXSharpManifestResourceName" AssemblyFile="$(XSharpBuildAssemblyFile)" />
@@ -29,47 +30,47 @@ Copyright (c) XSharp B.V.  All Rights Reserved
   <UsingTask TaskName="WriteCodeFragment" AssemblyFile="$(XSharpBuildAssemblyFile)" />
 
   <PropertyGroup>
-    <!-- The next line takes care of automatically including all PRG files when building a SDK project -->
-    <EnableDefaultCompileItems>$(UsingNETSdkDefaults)</EnableDefaultCompileItems>
     <DefaultLanguageSourceExtension>.prg</DefaultLanguageSourceExtension>
-    <Language>XSharp</Language>
+    <Language>X#</Language>
     <TargetRuntime>Managed</TargetRuntime>
     <AlwaysUseNumericalSuffixInItemNames>true</AlwaysUseNumericalSuffixInItemNames>
     <DefineCommonItemSchemas Condition=" '$(DefineCommonItemSchemas)' == '' ">true</DefineCommonItemSchemas>
-    <!-- The next line triggers the import of all kind of XAML reference schemas from the Microsoft.Common.CurrentVersion.Targets -->
     <DefineCommonReferenceSchemas Condition=" '$(DefineCommonReferenceSchemas)' == '' ">true</DefineCommonReferenceSchemas>
-    <!-- The next line triggers the import of all kind of project capabilities from the Microsoft.Common.CurrentVersion.Targets -->
     <DefineCommonCapabilities Condition=" '$(DefineCommonCapabilities)' == '' ">true</DefineCommonCapabilities>
     <SynthesizeLinkMetadata Condition=" '$(SynthesizeLinkMetadata)' == '' and '$(HasSharedItems)' == 'true' ">true</SynthesizeLinkMetadata>
-    <!-- NoCompilerStandardLib maps to the compiler's /nostdlib option. By default we always
-           want that switch to be passed to the compiler so that either we or the user
-           provides the references
-           NoStdLib on the other hand indicates that the user doesn't want standard references
-           so only if NoStdLib isn't set to true, will we provide the standard references
-      -->
-    <NoCompilerStandardLib Condition=" '$(NoCompilerStandardLib)' == '' ">true</NoCompilerStandardLib>
-    <ErrorEndLocation Condition="'$(BuildingInsideVisualStudio)' == 'true' and '$(ErrorEndLocation)' == ''">true</ErrorEndLocation>
-    <!-- When building inside VS, by default use the same language for compiler messages as VS itself does. -->
-    <PreferredUILang Condition="'$(BuildingInsideVisualStudio)' == 'true' and '$(PreferredUILang)' == ''">$([System.Globalization.CultureInfo]::CurrentUICulture.Name)</PreferredUILang>
-    <!-- Add any "automatic" compiler references that need to be resolved when NoCompilerStandardLib is set
-         but the user hasn't told us to not include standard references -->
-
-    <!-- Make sure that we have full paths when compiling inside VS -->
-    <GenerateFullPaths Condition="'$(BuildingInsideVisualStudio)'=='true'">true</GenerateFullPaths>
-
+    <DefaultProjectTypeGuid Condition=" '$(DefaultProjectTypeGuid)' == '' ">{AA6C8D78-22FF-423A-9C7C-5F2393824E04}</DefaultProjectTypeGuid>
+    <AppDesignerFolder Condition="'$(AppDesignerFolder)' == ''">Properties</AppDesignerFolder>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(NoCompilerStandardLib)' == 'true' and '$(NoStdLib)' != 'true' ">
-    <!-- Note that unlike VB, X# does not automatically locate System.dll as a "standard library"
-           instead the reference is always passed from the project. Also, for mscorlib.dll
-           we need to provide the explicit location in order to maintain the correct behaviour
-      -->
-    <_ExplicitReference Include="$(FrameworkPathOverride)\mscorlib.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <AvailableItemName Include="NativeResource" />
-  </ItemGroup>
 
-  <!--
+  <ItemGroup Condition=" '$(DefineXSharpItemSchemas)' != 'false' ">
+        <PropertyPageSchema Include="$(XSharpXamlDir)ProjectItemsSchema.XSharp.xaml;"/>
+        <PropertyPageSchema Include="$(XSharpXamlDir)XSharp.xaml;">
+            <Context>File</Context>
+        </PropertyPageSchema>
+        <PropertyPageSchema Include="$(XSharpXamlDir)XSharp.BrowseObject.xaml;">
+            <Context>BrowseObject</Context>
+        </PropertyPageSchema>
+    <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.xaml;">
+            <Context>File</Context>
+        </PropertyPageSchema>
+        <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.BrowseObject.xaml;">
+            <Context>BrowseObject</Context>
+        </PropertyPageSchema>
+    <PropertyPageSchema Include="$(XSharpXamlDir)VOBinary.xaml;">
+            <Context>File</Context>
+        </PropertyPageSchema>
+        <PropertyPageSchema Include="$(XSharpXamlDir)VOBinary.BrowseObject.xaml;">
+            <Context>BrowseObject</Context>
+        </PropertyPageSchema>
+
+         <ProjectCapability Include="XSharp;Managed;SingleTargetBuildForStartupProjects"/>
+   </ItemGroup>
+
+    <ItemGroup Condition=" '$(DefineCommonCapabilities)' == 'true' ">
+      <ProjectCapability Include="ReferencesFolder;LanguageService" />
+    </ItemGroup>
+
+    <!--
     The CreateManifestResourceNames target create the manifest resource names from the .RESX
     files.
 
@@ -80,8 +81,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
         [OUT]
         @(EmbeddedResource) - EmbeddedResource items with metadata
 
-
-    For .NET applications the transformation is:
+    For X# applications the transformation is like:
 
         Resources1.resx => RootNamespace.Resources1 => Build into main assembly
         SubFolder\Resources1.resx => RootNamespace.SubFolder.Resources1 => Build into main assembly
@@ -100,7 +100,6 @@ Copyright (c) XSharp B.V.  All Rights Reserved
       Condition="'@(EmbeddedResource)' != '' "
       DependsOnTargets="$(CreateManifestResourceNamesDependsOn)"
   >
-
     <ItemGroup>
       <_Temporary Remove="@(_Temporary)" />
     </ItemGroup>
@@ -111,9 +110,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
           RootNamespace="$(RootNamespace)"
               UseDependentUponConvention="$(EmbeddedResourceUseDependentUponConvention)"
           Condition="'%(EmbeddedResource.ManifestResourceName)' == '' and ('%(EmbeddedResource.WithCulture)' == 'false' or '%(EmbeddedResource.Type)' == 'Resx')">
-
       <Output TaskParameter="ResourceFilesWithManifestResourceNames" ItemName="_Temporary" />
-
     </CreateXSharpManifestResourceName>
 
     <!-- Create manifest names for all culture non-resx resources -->
@@ -123,9 +120,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
           PrependCultureAsDirectory="false"
               UseDependentUponConvention="$(EmbeddedResourceUseDependentUponConvention)"
           Condition="'%(EmbeddedResource.ManifestResourceName)' == '' and '%(EmbeddedResource.WithCulture)' == 'true' and '%(EmbeddedResource.Type)' == 'Non-Resx'">
-
       <Output TaskParameter="ResourceFilesWithManifestResourceNames" ItemName="_Temporary" />
-
     </CreateXSharpManifestResourceName>
 
     <ItemGroup>
@@ -135,13 +130,8 @@ Copyright (c) XSharp B.V.  All Rights Reserved
     </ItemGroup>
 
   </Target>
-
-  <PropertyGroup>
-    <CoreCompileDependsOn>_ComputeNonExistentFileProperty;XsCoreGenerateAssemblyInfo</CoreCompileDependsOn>
-  </PropertyGroup>
-
   <Target Name="AfterResGen">
-
+    <!-- This X# specific target generates the file NativeResources.res from the .rc files -->
     <NativeResourceCompiler
        Sources="@(NativeResource)"
        IncludePaths="$(IncludePaths)"
@@ -159,19 +149,21 @@ Copyright (c) XSharp B.V.  All Rights Reserved
       <Output TaskParameter="Include" ItemName="FileWrites" />
 
     </CreateItem>
-
   </Target>
-  <!-- Fix up FrameworkPathOverride, which is primarily used to determine the location of mscorlib.dll in the
-        (relatively uncommon) situation where the reference assemblies, in which it's usually found, are not
-        installed. -->
-  <PropertyGroup Condition="'$(MSBuildAssemblyVersion)' == ''">
-    <FrameworkPathOverride Condition="!Exists('$(FrameworkPathOverride)\mscorlib.dll')">$(MSBuildFrameworkToolsPath)</FrameworkPathOverride>
-  </PropertyGroup>
 
-  <Target Name="GetTargetPath" DependsOnTargets="PrepareForBuild" Outputs="$(TargetPath)" />
-
-
-  <Target Condition =" '$(GenerateAssemblyInfo)' == 'True' and '$(UsingMicrosoftNETSdk)' == 'True' " 
+    <Target
+        Name="ResolveCodeAnalysisRuleSet"
+        Condition="'$(CodeAnalysisRuleSet)' != ''"
+        >
+        <ResolveCodeAnalysisRuleSet
+            CodeAnalysisRuleSet="$(CodeAnalysisRuleSet)"
+            CodeAnalysisRuleSetDirectories="$(CodeAnalysisRuleSetDirectories)"
+            MSBuildProjectDirectory="$(MSBuildProjectDirectory)">
+            <Output TaskParameter="ResolvedCodeAnalysisRuleSet" PropertyName="ResolvedCodeAnalysisRuleSet" />
+        </ResolveCodeAnalysisRuleSet>
+    </Target>
+    <!-- Our own GenerateAssemblyInfo task -->
+  <Target Condition =" '$(GenerateAssemblyInfo)' == 'true'  and '$(Language)'=='X#' and '$(UsingNETSdkDefaults)' == 'true'" 
           Name="XsCoreGenerateAssemblyInfo"
           DependsOnTargets="CreateGeneratedAssemblyInfoInputsCacheFile"
           Inputs="$(GeneratedAssemblyInfoInputsCacheFile)"
@@ -188,7 +180,39 @@ Copyright (c) XSharp B.V.  All Rights Reserved
   </Target>
 
 
-  <Target Name="CoreCompile"
+    <ItemGroup>
+        <!-- Activate CPS projects to track folder names in namespace. -->
+        <ProjectCapability Include="RelativePathDerivedDefaultNamespace"/>
+    </ItemGroup>
+  
+    <PropertyGroup>
+        <!-- Provide a facility to override UseHostCompilerIfAvailable-->
+        <UseHostCompilerIfAvailable Condition=" '$(UseHostCompilerIfAvailable)' == ''">true</UseHostCompilerIfAvailable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <DocFileItem Include="$(DocumentationFile)" Condition="'$(DocumentationFile)'!=''"/>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(_DebugSymbolsProduced)' == 'true' and '$(PdbFile)' != ''">
+        <_DebugSymbolsIntermediatePathTemporary Include="$(PdbFile)"/>
+        <!-- Add any missing .pdb extension, as the compiler does -->
+        <_DebugSymbolsIntermediatePath Include="@(_DebugSymbolsIntermediatePathTemporary->'%(RootDir)%(Directory)%(Filename).pdb')"/>
+    </ItemGroup>
+
+    <PropertyGroup>
+    	<!-- Include our own GenerateAssemblyInfo -->
+        <CoreCompileDependsOn>$(CoreCompileDependsOn);_ComputeNonExistentFileProperty;ResolveCodeAnalysisRuleSet;XsCoreGenerateAssemblyInfo</CoreCompileDependsOn>
+        <ExportWinMDFile Condition="'$(ExportWinMDFile)' == '' and '$(OutputType)' == 'WinMDObj'">true</ExportWinMDFile>
+    </PropertyGroup>
+
+<!--
+      The XamlPreCompile target must remain identical to
+      the CoreCompile target in Microsoft.CSharp.Core.targets.
+      Any updates to one must be made to the other.
+-->
+     <Target
+        Name="XamlPreCompile"
           Inputs="$(MSBuildAllProjects);
                 @(Compile);
                 @(_CoreCompileResourceInputs);
@@ -196,123 +220,156 @@ Copyright (c) XSharp B.V.  All Rights Reserved
                 $(AssemblyOriginatorKeyFile);
                 @(ReferencePath);
                 @(CompiledLicenseFile);
+                @(LinkResource);
                 @(EmbeddedDocumentation);
-                @(Win32Resource);
-                @(CustomAdditionalCompileInputs)"
+                $(Win32Resource);
+                $(Win32Manifest);
+                @(CustomAdditionalCompileInputs);
+                @(Page);
+                @(ApplicationDefinition);
+                $(ResolvedCodeAnalysisRuleSet)"
+
           Outputs="@(DocFileItem);
-                 @(IntermediateAssembly);
-                 @(IntermediateRefAssembly);
+                 @(XamlIntermediateAssembly);
                  @(_DebugSymbolsIntermediatePath);
                  $(NonExistentFile);
                  @(CustomAdditionalCompileOutputs)"
-          DependsOnTargets="$(CoreCompileDependsOn)"
+        Condition="'@(Page)' != '' Or '@(ApplicationDefinition)' != ''"
+        Returns=""
+        DependsOnTargets="$(CoreCompileDependsOn);GenerateMSBuildEditorConfigFile"
     >
-    <ItemGroup>
-      <_NonMacroReferencePath Include="@(ReferencePath)" Condition="%(ReferencePath.OutputItemType) != 'macro'" />
-      <_MacroProjectReferencePath Include="@(ReferencePath)" Condition="%(ReferencePath.OutputItemType) == 'macro'" />
-    </ItemGroup>
+       <!-- These two compiler warnings are raised when a reference is bound to a different version
+             than specified in the assembly reference version number.  MSBuild raises the same warning in this case,
+             so the compiler warning would be redundant. -->
+        <PropertyGroup Condition="('$(TargetFrameworkVersion)' != 'v1.0') and ('$(TargetFrameworkVersion)' != 'v1.1')">
+            <NoWarn>$(NoWarn);1701;1702</NoWarn>
+        </PropertyGroup>
+
+        <PropertyGroup>
+            <!-- To match historical behavior, when inside VS11+ disable the warning from csc.exe indicating that no sources were passed in-->
+            <NoWarn Condition=" '$(BuildingInsideVisualStudio)' == 'true' and '$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' > '10.0' ">$(NoWarn);2008</NoWarn>
+        </PropertyGroup>
+
+        <ItemGroup Condition="'$(TargetingClr2Framework)'=='true'">
+            <ReferencePath>
+                <EmbedInteropTypes/>
+            </ReferencePath>
+        </ItemGroup>
+
+        <PropertyGroup>
+            <!-- If the user has specified AppConfigForCompiler, we'll use it. If they have not, but they set UseAppConfigForCompiler,
+                 then we'll use AppConfig -->
+            <AppConfigForCompiler Condition="'$(AppConfigForCompiler)' == '' and '$(UseAppConfigForCompiler)' == 'true'">$(AppConfig)</AppConfigForCompiler>
+
+            <!-- If we are targeting winmdobj we want to specifically the pdbFile property since we do not want it to collide with the output of winmdexp-->
+            <PdbFile Condition="'$(PdbFile)' == '' and '$(OutputType)' == 'winmdobj' and '$(_DebugSymbolsProduced)' == 'true'">$(IntermediateOutputPath)$(TargetName).compile.pdb</PdbFile>
+        </PropertyGroup>
 
     <!-- Prefer32Bit was introduced in .NET 4.5. Set it to false if we are targeting 4.0 -->
     <PropertyGroup Condition="('$(TargetFrameworkVersion)' == 'v4.0')">
       <Prefer32Bit>false</Prefer32Bit>
     </PropertyGroup>
 
+        <ItemGroup Condition="('$(AdditionalFileItemNames)' != '')">
+          <AdditionalFileItems Include="$(AdditionalFileItemNames)" />
+          <AdditionalFiles Include="@(%(AdditionalFileItems.Identity))" />
+        </ItemGroup>
+
     <PropertyGroup Condition="'$(UseSharedCompilation)' == ''">
       <UseSharedCompilation>true</UseSharedCompilation>
     </PropertyGroup>
 
+       <!-- Condition is to filter out the _CoreCompileResourceInputs so that it doesn't pass in culture resources to the compiler -->
+       <!-- Don't run analyzers for Csc task on XamlPrecompile pass, we only want to run them on core compile. -->
     <Xsc Condition=" '%(_CoreCompileResourceInputs.WithCulture)' != 'true' "
-            AdditionalFiles="@(AdditionalFiles)"
             AdditionalLibPaths="$(AdditionalLibPaths)"
             AddModules="@(AddModules)"
-            AllowDot="$(AllowDot)"
-            AllowOldStyleAssignments="$(AllowOldStyleAssignments)"
+            AdditionalFiles="@(AdditionalFiles)"
             AllowUnsafeBlocks="$(Unsafe)"
+            AnalyzerConfigFiles="@(EditorConfigFiles)"
             Analyzers="@(Analyzer)"
             ApplicationConfiguration="$(AppConfigForCompiler)"
-            AZ="$(AZ)"
             BaseAddress="$(BaseAddress)"
             CheckForOverflowUnderflow="$(CheckForOverflowUnderflow)"
-            ChecksumAlgorithm="$(ChecksumAlgorithm)"
             CodeAnalysisRuleSet="$(ResolvedCodeAnalysisRuleSet)"
             CodePage="$(CodePage)"
-            CommandLineOption="$(CommandLineOption)"
             CompilerPath="$(XSharpPath)"
-            CS="$(CS)"
             DebugType="$(DebugType)"
             DefineConstants="$(DefineConstants)"
             DelaySign="$(DelaySign)"
-            Deterministic="$(Deterministic)"
-            Dialect="$(Dialect)"
             DisabledWarnings="$(DisabledWarnings)"
             DocumentationFile="@(DocFileItem)"
-            EmbedAllSources="$(EmbedAllSources)"
-            EmbeddedFiles="@(EmbeddedFiles)"
             EmitDebugInformation="$(EmitDebugInformation)"
-            EnforceOverride="$(EnforceOverride)"
-            EnforceSelf="$(EnforceSelf)"
             EnvironmentVariables="$(XscEnvironment)"
             ErrorEndLocation="$(ErrorEndLocation)"
             ErrorLog="$(ErrorLog)"
             ErrorReport="$(ErrorReport)"
-            Features="$(Features)"
             FileAlignment="$(FileAlignment)"
-            FOX1="$(FOX1)"
-            FOX2="$(FOX2)"
             GenerateFullPaths="$(GenerateFullPaths)"
             HighEntropyVA="$(HighEntropyVA)"
-            IncludePaths="$(IncludePaths)"
-            InitLocals="$(InitLocals)"
-            INS="$(INS)"
             KeyContainer="$(KeyContainerName)"
-            KeyFile="$(AssemblyOriginatorKeyFile)"
+            KeyFile="$(KeyOriginatorFile)"
             LangVersion="$(LangVersion)"
-            LB="$(LB)"
             LinkResources="@(LinkResource)"
             MainEntryPoint="$(StartupObject)"
-            MemVar="$(MemVar)"
-            ModernSyntax="$(ModernSyntax)"
             ModuleAssemblyName="$(ModuleAssemblyName)"
-            NamedArgs="$(NamedArgs)"
             NoConfig="true"
-            NoInit="$(NoInit)"
             NoLogo="$(NoLogo)"
-            NoStandardDefs="$(NoStandardDefs)"
             NoStandardLib="$(NoCompilerStandardLib)"
             NoWin32Manifest="$(NoWin32Manifest)"
-            NS="$(NS)"
+            Nullable="$(Nullable)"
             Optimize="$(Optimize)"
-            OutputAssembly="@(IntermediateAssembly)"
-			OutputRefAssembly="@(IntermediateRefAssembly)"
-            OVF="$(OVF)"
-            PathMap="$(PathMap)"
+            OutputAssembly="@(XamlIntermediateAssembly)"
             PdbFile="$(PdbFile)"
             Platform="$(PlatformTarget)"
-            PPO="$(PPO)"
             Prefer32Bit="$(Prefer32Bit)"
             PreferredUILang="$(PreferredUILang)"
-            PublicSign="$(PublicSign)"
-            References="@(_NonMacroReferencePath)"
+            References="@(ReferencePath)"
             ReportAnalyzer="$(ReportAnalyzer)"
             Resources="@(_CoreCompileResourceInputs);@(CompiledLicenseFile)"
             ResponseFiles="$(CompilerResponseFile)"
-            RootNamespace="$(RootNamespace)"
-            RuntimeMetadataVersion="$(RuntimeMetadataVersion)"
-            SharedCompilationId="$(SharedCompilationId)"
-            SkipCompilerExecution="$(SkipCompilerExecution)"
-            SourceLink="$(SourceLink)"
+            SkipAnalyzers="true"
             Sources="@(Compile)"
-            StandardDefs="$(StandardDefs)"
             SubsystemVersion="$(SubsystemVersion)"
             TargetType="$(OutputType)"
             ToolExe="$(XscToolExe)"
             ToolPath="$(XscToolPath)"
             TreatWarningsAsErrors="$(TreatWarningsAsErrors)"
-            Undeclared="$(Undeclared)"
             UseHostCompilerIfAvailable="$(UseHostCompilerIfAvailable)"
-            UseNativeVersion="$(UseNativeVersion)"
             UseSharedCompilation="$(UseSharedCompilation)"
             Utf8Output="$(Utf8Output)"
+            VsSessionGuid="$(VsSessionGuid)"
+            WarningLevel="$(WarningLevel)"
+            WarningsAsErrors="$(WarningsAsErrors)"
+            WarningsNotAsErrors="$(WarningsNotAsErrors)"
+            Win32Icon="$(ApplicationIcon)"
+            Win32Manifest="$(Win32Manifest)"
+            Win32Resource="$(Win32Resource)"
+            AllowDot="$(AllowDot)"
+            AllowOldStyleAssignments="$(AllowOldStyleAssignments)"
+            AZ="$(AZ)"
+            CommandLineOption="$(CommandLineOption)"
+            CS="$(CS)"
+            Dialect="$(Dialect)"
+            EnforceOverride="$(EnforceOverride)"
+            EnforceSelf="$(EnforceSelf)"
+            FOX1="$(FOX1)"
+            FOX2="$(FOX2)"
+            IncludePaths="$(IncludePaths)"
+            InitLocals="$(InitLocals)"
+            INS="$(INS)"
+            LB="$(LB)"
+            MemVar="$(MemVar)"
+            ModernSyntax="$(ModernSyntax)"
+            NamedArgs="$(NamedArgs)"
+            NoInit="$(NoInit)"
+            NoStandardDefs="$(NoStandardDefs)"
+            NS="$(NS)"
+            OVF="$(OVF)"
+            PPO="$(PPO)"
+            StandardDefs="$(StandardDefs)"
+            Undeclared="$(Undeclared)"
+            UseNativeVersion="$(UseNativeVersion)"
             VO1="$(VO1)"
             VO2="$(VO2)"
             VO3="$(VO3)"
@@ -330,27 +387,41 @@ Copyright (c) XSharp B.V.  All Rights Reserved
             VO15="$(VO15)"
             VO16="$(VO16)"
             VO17="$(VO17)"
-            VsSessionGuid="$(VsSessionGuid)"
             VulcanCompatibleResources="$(VulcanCompatibleResources)"
-            WarningLevel="$(WarningLevel)"
-            WarningsAsErrors="$(WarningsAsErrors)"
-            WarningsNotAsErrors="$(WarningsNotAsErrors)"
-            Win32Icon="$(ApplicationIcon)"
-            Win32Manifest="$(Win32Manifest)"
-            Win32Resource="@(Win32Resource)"
             XPP1="$(XPP1)"
-    />
+         SourceLink="$(SourceLink)" >
+      <Output TaskParameter="CommandLineArgs" ItemName="XscCommandLineArgs" />
+    </Xsc>
 
+<!-- Only Applicable to the regular CoreCompile:
     <ItemGroup>
       <_CoreCompileResourceInputs Remove="@(_CoreCompileResourceInputs)" />
     </ItemGroup>
 
     <CallTarget Targets="$(TargetsTriggeredByCompilation)" Condition="'$(TargetsTriggeredByCompilation)' != ''"/>
-  </Target>
+-->
+        <OnError Condition="'$(OnXamlPreCompileErrorTarget)' != ''" ExecuteTargets="$(OnXamlPreCompileErrorTarget)" />
+    </Target>
+
+    <PropertyGroup>
+        <!-- Design-time builds require a newer version than 1.0 to succeed, so override back to inbox in that case -->
+        <XSharpCoreTargetsPath Condition="'$(XSharpCoreTargetsPath)' == '' or '$(DesignTimeBuild)' == 'true'">$(XSharpMsBuildDir)\XSharp.Core.targets</XSharpCoreTargetsPath>
+    </PropertyGroup>
+
+    <Import Project="$(XSharpCoreTargetsPath)" />
+
+    <!-- Import design time targets for Roslyn Project System. These are only available if Visual Studio is installed. -->
+    <!-- Import design time targets before the common targets, which import targets from Nuget. -->
+    <PropertyGroup>
+       <XSharpDesignTimeTargetsPath Condition="'$(XSharpDesignTimeTargetsPath)'==''">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\XSharp.DesignTime.targets</XSharpDesignTimeTargetsPath>
+    </PropertyGroup>
 
     <Import Project="$(XSharpDesignTimeTargetsPath)" Condition="'$(XSharpDesignTimeTargetsPath)' != '' and Exists('$(XSharpDesignTimeTargetsPath)')" />
 
+    <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+
     <Import Project="$(MSBuildToolsPath)\Microsoft.ServiceModel.targets" Condition="('$(TargetFrameworkVersion)' != 'v2.0' and '$(TargetFrameworkVersion)' != 'v3.0' and '$(TargetFrameworkVersion)' != 'v3.5') and Exists('$(MSBuildToolsPath)\Microsoft.ServiceModel.targets')"/>
+
     <Target Name="_SetTargetFrameworkMonikerAttribute" BeforeTargets="GenerateTargetFrameworkMonikerAttribute">
        <PropertyGroup>
        <TargetFrameworkMonikerAssemblyAttributeText Condition="'$(TargetFrameworkMoniker)' != '' and '$(TargetingClr2Framework)' != 'true'">
@@ -387,4 +458,5 @@ using System.Runtime.Versioning
       -->
         <_ExplicitReference Include="$(FrameworkPathOverride)\mscorlib.dll" />
     </ItemGroup>
+
 </Project>

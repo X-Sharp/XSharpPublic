@@ -14,18 +14,112 @@
       <para styleclass="Heading1">版本历史</para>
     </header>
     <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="font-family:'Times New Roman'; font-weight:bold; text-decoration:none; vertical-align:baseline; color:#ff0000; background-color:#ffffff;">注：</text><text style="font-family:'Times New Roman'; text-decoration:none; vertical-align:baseline; color:#000000;">当一个项目有一个匹配的 GitHub 票据时，票据编号就会出现在项目后面的括号中，前缀为 #。</text></para>
+
     <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="font-family:'Times New Roman'; text-decoration:none; vertical-align:baseline; color:#000000;">您可以访问 https://github.com/X-Sharp/XSharpPublic/issues/nnn 其中 nnnn 是票据编号。</text></para>
     <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="font-family:'Times New Roman'; text-decoration:none; vertical-align:baseline; color:#000000;">如果您在 X# 中发现问题，我们建议您在 GitHub 上报告。我们会通知您问题的处理进度。</text></para>
     <para styleclass="Heading1">Changes in 2.x</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3">Bug 修复</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Fixed Internal Compiler Error with duplicate declaration of fields/memvars (#1475)</li>
+      <li styleclass="Normal">Fixed problem with Min/Max IEnumerable extension methods of FLOAT type (#1482)</li>
+      <li styleclass="Normal">Fixed a StackOverflowException on access/assign method in the XBase++ dialect (#1483)</li>
+      <li styleclass="Normal">Fixed problem reading clipper/harbour .prg files with end of file marker (#1485)</li>
+      <li styleclass="Normal">Fixed problem with the extended expression match marker in the preprocessor (#1487)</li>
+      <li styleclass="Normal">Fixed problem passing array reference or ivar by reference in the XBase++ dialect (#1492)</li>
+      <li styleclass="Normal">Fixed AmbiguousMatchException in Evaluate() function for methods included in an interface (#1494)</li>
+      <li styleclass="Normal">Fixed problem with /fox1 switch being ignored in some cases (#1496)</li>
+      <li styleclass="Normal">Fixed problem with /enforceself compiler option being ignored (#1503)</li>
+      <li styleclass="Normal">Fixed an ambiguity problem with same named namespace and property (#1515)</li>
+      <li styleclass="Normal">Fixed problem in TEXT TO/ENDTEXT with TEXTMERGE clause (#1517)</li>
+      <li styleclass="Normal">Fixed misleading line number reported in the compiler error about requiring the /memvar option (#1531)</li>
+    </list>
     <para styleclass="Heading3">新特性</para>
     <para styleclass="Heading2">运行时</para>
     <para styleclass="Heading3">Bug 修复</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Fixed some DBSetFilter() incompatibilities with VO (#1489)</li>
+      <li styleclass="Normal">Fixed problem with DBSetFilter() with no matching records causing subsequent calls to DBSetFilter() or DBClearFilter() to fail (#1493)</li>
+      <li styleclass="Normal">Fixed problem (missing implementation) with the WITH CDX clause in the FoxPro COPY command (#1497)</li>
+      <li styleclass="Normal">Fixed a problem in DbZap() with DBFNTX (#1509)</li>
+      <li styleclass="Normal">Fixed problem with SCATTER/GATHER MEMO MEMVAR (#1510, #1534)</li>
+      <li styleclass="Normal">Fixed problem with DBSetOrder(0) always returning FALSE in DBFNTX (#1520)</li>
+      <li styleclass="Normal">Fixed a problem with the Collection Class not increasing the Count property when adding an item (FoxPro dialect) (#1528)</li>
+      <li styleclass="Normal">Fixed problem with the APPEND FROM command with a FOR clause (#1529)</li>
+      <li styleclass="Normal">Fixed macro compiler problem with using Str() in the FoxPro dialect (was causing problems in the INDEX ON command) (#1535)</li>
+      <li styleclass="Normal">Suppressed runtime error when using FieldPut() when workarea is at EOF, for compatibility with VO (#1542)</li>
+    </list>
     <para styleclass="Heading3">新特性</para>
+    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Visual Studio 集成</para>
     <para styleclass="Heading3">Bug 修复</para>
-    <para styleclass="Heading3">新特性</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Fixed problem with saving/reading the OldStyleAssignment compiler option project setting (#1495)</li>
+      <li styleclass="Normal">Improved the Clone Window selection dialog in the VOWED (#1508)</li>
+      <li styleclass="Normal">In recent versions of VS Format Document and Commenting was no longer working. This has been fixed.</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">New features</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Now the TargetFramework attribute is automatically added to the assembly when building any project type in VS (#1507)</li>
+      <li styleclass="Normal">Implemented GoToBrace action in the VS editor (#1522)</li>
+      <li styleclass="Normal">The editor now has a combobox on the top left that shows the project in which the file is defined.</li>
+      <li styleclass="Normal">When a file is present in multiple projects (as Linked file) then the projects combobox will show all project names in which the file is used.</li>
+      <li styleclass="Normal">When you select a different project from this combobox then the buffer will be repainted, because conditional compilation symbols for each of the projects may be different.</li>
+      <li styleclass="Normal">When you use intellisense in the editor, then the lookup engine will use the project selected. So if a file is used in 2 projects, then the references and source files of the selected project will be used to find reference data.</li>
+    </list>
+    <para styleclass="Heading2">XIDE</para>
+    <para styleclass="Heading3">General</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Replaced System.Reflection with Mono.Cecil in intellisense for improved performance and stability</li>
+      <li styleclass="Normal">The Toolbox editor also now uses Mono.Cecil for reading controls from dlls</li>
+      <li styleclass="Normal">Improved support for standalone files, added options in the properties window for dialect, references etc</li>
+      <li styleclass="Normal">Changed default names of various XIDE support files to &quot;xi&quot; instead of &quot;vi&quot; (.xiaef, xiapp etc)</li>
+      <li styleclass="Normal">Fixed problem with accidentally calling older versions of the XIDE resource compiler and toolbox editor</li>
+      <li styleclass="Normal">Added &quot;%OUTPUTEXT% (extension of output assembly) macro in build events</li>
+      <li styleclass="Normal">Added option to change location of console &lt;------------NOT FINISHED!!!</li>
+      <li styleclass="Normal">Added support for /allowdot compiler option in the application properties</li>
+      <li styleclass="Normal">Fixed problem with not properly saving the compiler options /initlocals, /modernsyntax, /allowoldstyleassignments and /namedargs</li>
+      <li styleclass="Normal">Improved the About XIDE dialog</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">Editor</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Improved Recognition of keywords in the code</li>
+      <li styleclass="Normal">Fixed recognition of 2 letter long functions in code</li>
+      <li styleclass="Normal">Fixed problem with intellisense on functions defined in core dialect apps</li>
+      <li styleclass="Normal">Added intellisense support for FOREACH VAR</li>
+      <li styleclass="Normal">Fixed crash with VAR locals in the editor</li>
+      <li styleclass="Normal">Fixed several issues with LOCAL IMPLIED</li>
+      <li styleclass="Normal">Fixed problem with parsing modified classes in namespaces</li>
+      <li styleclass="Normal">Improved editor support for the FoxPro dialect</li>
+      <li styleclass="Normal">Added editor support for a lot of FoxPro keywords</li>
+      <li styleclass="Normal">Added editor support for FoxPro functions</li>
+      <li styleclass="Normal">The editor now recognizes &amp;&amp; for line comments marker in FoxPro dialect</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">Designers</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Now items in the properties window of the VOWED are sorted by name</li>
+      <li styleclass="Normal">Controls in the WED can now be resized through the keyboard with with SHIFT+Arrow keys</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">Debugger</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Exception dialog while debugging now properly shows the exception message</li>
+      <li styleclass="Normal">Fixed a common crash that could happen in the debugger</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Documentation</para>
+    <para styleclass="Heading3">Bug fixes</para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Made many corrections to the documentation (#1504, #1506, #1514)</li>
+    </list>
+    <para styleclass="Heading3">New Features</para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Several updates on the Chinese documentation</li>
+      <li styleclass="Normal"></li>
+    </list>
     <para styleclass="Heading1">Changes in 2.20.0.3</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3">Bug 修复</para>

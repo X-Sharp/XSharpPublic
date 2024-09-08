@@ -347,9 +347,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 addMacro("__XSHARP_RT__", XSharpLexer.TRUE_CONST);
             }
-            addMacro("__SYSDIR__", XSharpLexer.STRING_CONST, _options.SystemDir);
-            addMacro("__WINDIR__", XSharpLexer.STRING_CONST, _options.WindowsDir);
-            addMacro("__WINDRIVE__", XSharpLexer.STRING_CONST, _options.WindowsDir?.Substring(0, 2));
+            addMacro("__SYSDIR__", XSharpLexer.STRING_CONST, XSharpSpecificCompilationOptions.SystemDir);
+            addMacro("__WINDIR__", XSharpLexer.STRING_CONST, XSharpSpecificCompilationOptions.WindowsDir);
+            addMacro("__WINDRIVE__", XSharpLexer.STRING_CONST, XSharpSpecificCompilationOptions.WindowsDir?.Substring(0, 2));
             var options = new string[] { "__VO1__", "__VO2__", "__VO3__", "__VO4__", "__VO5__", "__VO6__", "__VO7__", "__VO8__", "__VO9__", "__VO10__",
                                         "__VO11__","__VO12__","__VO13__","__VO14__","__VO15__","__VO16__","__VO17__","__XPP1__", "__FOX1__","__FOX2__",
                                         "__MEMVAR__","__UNDECLARED__"};
@@ -574,9 +574,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #endif
             }
             // Add default IncludeDirs;
-            if (!string.IsNullOrEmpty(options.DefaultIncludeDir))
+            if (!string.IsNullOrEmpty(XSharpSpecificCompilationOptions.DefaultIncludeDir))
             {
-                string[] paths = options.DefaultIncludeDir.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] paths = XSharpSpecificCompilationOptions.DefaultIncludeDir.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var path in paths)
                 {
                     _includeDirs.Add(path);

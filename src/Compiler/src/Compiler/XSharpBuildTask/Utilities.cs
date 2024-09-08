@@ -66,7 +66,7 @@ namespace XSharp.Build
 
         internal static string VulcanIncludeDir()
         {
-            string vulcanIncludeDir ;
+            string vulcanIncludeDir;
             try
             {
                 string key;

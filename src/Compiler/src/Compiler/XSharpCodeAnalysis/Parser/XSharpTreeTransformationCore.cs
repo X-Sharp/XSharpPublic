@@ -3730,10 +3730,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                if (isAuto)
-                {
-                    ParseErrors.Add(new ParseErrorData(context.Auto, ErrorCode.ERR_SyntaxError, SyntaxFactory.MakeToken(SyntaxKind.GetKeyword)));
-                }
                 // Make sure that a property with the name "Item" is treated as a SELF property
                 // There is a lot of code in Roslyn that checks for this
                 string thisName = "";

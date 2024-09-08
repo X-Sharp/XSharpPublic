@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using Antlr4.Runtime;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+
 namespace Microsoft.CodeAnalysis.CSharp
 {
     /// <summary>
@@ -20,34 +21,72 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         public static readonly XSharpSpecificCompilationOptions Default = new();
 
-        static string _defaultIncludeDir;
-        static string _windir;
-        static string _sysdir;
-        public static void SetDefaultIncludeDir(string dir)
+        static XSharpSpecificCompilationOptions()
         {
-            _defaultIncludeDir = dir;
+
+            var includeDir = Environment.GetEnvironmentVariable("INCLUDE");
+#if NET472
+            string XSharpIncludeDir = String.Empty;
+            string VulcanIncludeDir = string.Empty;
+            try
+            {
+                string key;
+                if (Environment.Is64BitProcess)
+                    key = @"HKEY_LOCAL_MACHINE\" + global::XSharp.Constants.RegistryKey64;
+                else
+                    key = @"HKEY_LOCAL_MACHINE\" + global::XSharp.Constants.RegistryKey;
+                XSharpIncludeDir = (string)Microsoft.Win32.Registry.GetValue(key, global::XSharp.Constants.RegistryValue, "");
+            }
+            catch (Exception) { }
+            try
+            {
+                string key;
+                if (Environment.Is64BitProcess)
+                    key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Grafx\Vulcan.NET";
+                else
+                    key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Grafx\Vulcan.NET";
+                VulcanIncludeDir = (string)Microsoft.Win32.Registry.GetValue(key, "InstallPath", "");
+            }
+            catch (Exception) { }
+            if (!string.IsNullOrEmpty(XSharpIncludeDir))
+            {
+                XSharpIncludeDir = Path.Combine(XSharpIncludeDir, @"Include\");
+            }
+
+            if (!string.IsNullOrEmpty(VulcanIncludeDir))
+            {
+                VulcanIncludeDir = Path.Combine(VulcanIncludeDir, @"Include\");
+            }
+            if (string.IsNullOrEmpty(includeDir))
+                includeDir = XSharpIncludeDir;
+            else
+                includeDir += ";" + XSharpIncludeDir;
+            if (!string.IsNullOrEmpty(VulcanIncludeDir))
+                includeDir += ";" + VulcanIncludeDir;
+#endif
+            s_defaultIncludeDir = includeDir;
+            s_windowsdirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+            s_systemdirectory = Environment.GetFolderPath(Environment.SpecialFolder.System);
+
         }
-        public static void SetWinDir(string dir)
-        {
-            _windir = dir;
-        }
-        public static void SetSysDir(string dir)
-        {
-            _sysdir = dir;
-        }
+
+        static readonly string s_defaultIncludeDir;
+        static readonly string s_windowsdirectory;
+        static readonly string s_systemdirectory;
         public XSharpSpecificCompilationOptions()
         {
             // All defaults are set at property level
+            IncludePaths = s_defaultIncludeDir;
         }
         public bool AllowDotForInstanceMembers { get; internal set; } = false;
         public bool AllowOldStyleAssignments { get; internal set; } = false;
         public bool ArrayZero { get; internal set; } = false;
         public bool CaseSensitive { get; internal set; } = false;
         public int ClrVersion { get; internal set; } = 4;
-        public string DefaultIncludeDir { get; internal set; } = _defaultIncludeDir;
+        public static string DefaultIncludeDir { get; } = s_defaultIncludeDir;
         public XSharpDialect Dialect { get; internal set; } = XSharpDialect.Core;
-        public string WindowsDir { get; internal set; } = _windir;
-        public string SystemDir { get; internal set; } = _sysdir;
+        public static string WindowsDir { get; } = s_windowsdirectory;
+        public static string SystemDir { get; } = s_systemdirectory;
         public string IncludePaths { get; internal set; } = string.Empty;
         public bool ImplicitNameSpace { get; internal set; } = false;
         public bool InitLocals { get; internal set; } = false;

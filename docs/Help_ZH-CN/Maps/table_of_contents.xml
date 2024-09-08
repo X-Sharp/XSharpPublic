@@ -1388,6 +1388,9 @@
           <topicref type="topic" id="384615570493792" build="ALL" modified="2024-06-29T00:53:33.468Z" icon="0" href="command_RUN">
             <caption translate="true">RUN 命令</caption>
           </topicref>
+          <topicref type="topic" id="455395341716146" build="ALL" modified="2024-09-04T14:39:05.597Z" icon="0" href="SCAN-Command">
+            <caption translate="true">SCAN .. ENDSCAN 语句</caption>
+          </topicref>
           <topicref type="topic" id="43701717101438" build="ALL" modified="2024-06-29T00:53:44.210Z" icon="0" href="command_SWITCH">
             <caption translate="true">SWITCH 语句</caption>
           </topicref>

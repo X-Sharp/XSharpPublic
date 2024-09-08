@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Rule
+	Name="Language"
+	DisplayName="Language"
+	PageTemplate="generic"
+	Description="Language Settings"
+    Order="125"
+    SwitchPrefix="/"
+    xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
+  </Rule.DataSource>
+
+  <Rule.Categories>
+    <Category Name="General"          DisplayName="General"/>
+    <Category Name="Enhanced"         DisplayName="New Language Features"/>
+    <Category Name="MemVar"           DisplayName="Memory Variables"/>
+    <Category Name="NS"               DisplayName="Namespaces"/>
+    <Category Name="Preprocessor"     DisplayName="Preprocessor"/>
+  </Rule.Categories>
+
+  <EnumProperty Name="Dialect"
+                DisplayName="Dialect"
+                Description="Specifies the dialect of the application to build."
+                Category="General">
+    <EnumValue Name="Core"
+               DisplayName="Core" />
+    <EnumValue Name="VO"
+               DisplayName="Visual Objects" />
+    <EnumValue Name="Vulcan"
+               DisplayName="Vulcan.Net" />
+    <EnumValue Name="XPP"
+               DisplayName="XBase++" />
+    <EnumValue Name="FoxPro"
+               DisplayName="Visual FoxPro" />
+    <EnumValue Name="Harbour"
+               DisplayName="Harbour" />
+
+  </EnumProperty>
+
+  <BoolProperty   Category="General"       Name="NamedArgs"           DisplayName="Allow Named Arguments"                       Visible="True" Description="Allow Named Arguments (default = TRUE for dialect Core and FALSE for other dialects) (/namedargs)" Default="False"  Switch="namedargs"/>
+  <BoolProperty   Category="General"       Name="Unsafe"              DisplayName="Allow Unsafe Code"                           Visible="True" Description="Allow Unsafe code inside this assembly (/unsafe)"   Default="False"  Switch="unsafe"/>
+  <BoolProperty   Category="General"       Name="CS"                  DisplayName="Case Sensitive"                              Visible="True" Description="Enable/Disable case sensitivity (/cs)"  Default="False"  Switch="cs"/>
+  <BoolProperty   Category="General"       Name="InitLocals"          DisplayName="Initialize Local variables"                  Visible="True" Description="Automatically initialize local variables without initialization expression. Please note that for locals of type string the initial value will depend on the 'Initialize strings' setting from the Dialect page.(/initlocals)"  Switch="initlocals"/>
+  <BoolProperty   Category="General"       Name="OVF"                 DisplayName="Overflow Exceptions"                         Visible="True" Description="Check for Overflow and Underflow (like the CHECKED keyword, (/ovf))" Default="True"  Switch="ovf"/>
+  <BoolProperty   Category="General"       Name="AZ"                  DisplayName="Use Zero Based Arrays"                       Visible="True" Description="Zero Based Arrays (/az)"  Switch="az"/>
+
+  <BoolProperty   Category="Enhanced"       Name="EnforceSelf"         DisplayName="Enforce SELF to access instance members"     Visible="True" Description="Enforce the use of SELF: (or This. in the FoxPro dialect) to access instance members inside a class. (/enforceself)"  Switch="enforceself"/>
+  <BoolProperty   Category="Enhanced"       Name="AllowDot"            DisplayName="Allow DOT for instance members"              Visible="True" Description="Allow the DOT operator to access instance fields, properties and methods (/allowdot)" Default="False"  Switch="allowdot"/>
+  <BoolProperty   Category="Enhanced"       Name="EnforceOverride"     DisplayName="Enforce Virtual / Override"     			  Visible="True" Description="When checked then you MUST prefix methods with VIRTUAL and/or OVERRIDE when overriding methods in a parent class or when defining a new method that can be overridden. (/enforceoverride)"  Switch="enforceoverride"/>
+  <BoolProperty   Category="Enhanced"       Name="AllowoldStyleAssignments"     DisplayName="Allow Old Style Assignments"        Visible="True" Description="When checked then allow the use of the single equals operator (=) for assignments. Otherwise the Colon Equals (:=) operator is mandatory. (/allowoldstyleassignments)"  Switch="allowoldstyleassignments"/>
+  <BoolProperty   Category="Enhanced"       Name="ModernSyntax"        DisplayName="Modern Syntax"     			      Visible="True" Description="This options disables some old style features such as certain comment characters . (/modernsyntax)"  Switch="modernsyntax"/>
+
+
+  <BoolProperty   Category="MemVar"       Name="MemVar"               DisplayName="Enable Memvar support"                       Visible="True" Description="Enable support for memory variables (MEMVAR, PUBLIC, PRIVATE and PARAMETERS). (/memvar) &#13;Please note that this is NOT supported for the Core and Vulcan dialects (/memvar)" Default="False"  Switch="memvar">
+    <BoolProperty.Metadata>
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(not (has-evaluated-value "Language" "Dialect" "Core"))</NameValuePair.Value>
+      </NameValuePair>
+      <NameValuePair Name="DependsOn" Value="Language::Dialect" />
+    </BoolProperty.Metadata>
+  </BoolProperty>
+  <BoolProperty   Category="MemVar"
+  Name="Undeclared"
+  DisplayName="Enable Undeclared variables support"
+  Visible="True"
+  Description="Enable support for undeclared variables (these are resolved to MEMVARs). (/undeclared)&#13;Please note that this requires /memvar to be enabled as well. (/undeclared)"
+  Default="False"
+  Switch="undeclared">
+    <BoolProperty.Metadata>
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(has-evaluated-value "Language" "MemVar" true)</NameValuePair.Value>
+      </NameValuePair>
+      <NameValuePair Name="DependsOn" Value="Language::MemVar" />
+    </BoolProperty.Metadata>
+  </BoolProperty>
+
+
+  <StringProperty Category="NS"            Name="Ins"                 DisplayName="Enable Implicit Namespace lookup"            Visible="True" Description="Enable the implicit lookup of classes defined in assemblies with an Implicit Namespace attribute (/ins)"  Default="False"  Switch="ins"/>
+  <BoolProperty   Category="NS"            Name="Ns"                  DisplayName="Prefix classes with default Namespace"       Visible="True" Description="Prefix all classes that do not have a namespace prefix and are not in a begin namespace ... end namespace block with the namespace of the assembly (/ns:&lt;Namespace&gt;)"  Default="False" Switch="ns"/>
+
+  <StringProperty Category="Preprocessor"  Name="IncludePaths"        DisplayName="Additional Include paths"                    Visible="True" Description="Additional include paths for the preprocessor (it also looks through the folders set with the include environment variable) (/i)"  Default="" Switch="i"/>
+  <StringProperty Category="Preprocessor"  Name="Stddefs"             DisplayName="Alternate standard header file"              Visible="True" Description="Name of an alternative standard header file (alternative for XSharpDefs.xh)  (/stddefs)"  Default="" Switch="stddefs"/>
+  <BoolProperty   Category="Preprocessor"  Name="NoStandardDefs"      DisplayName="Suppress standard header file"               Visible="True" Description="Include the standard header file in every file (/nostddef)"  Default="False" Switch="i"/>
+  <BoolProperty   Category="Preprocessor"  Name="Ppo"                 DisplayName="Save Preprocessor Output"     			      Visible="True" Description="Save the output from the preprocessor to .ppo files. (/ppo)"  Switch="ppo"/>
+
+</Rule>
+

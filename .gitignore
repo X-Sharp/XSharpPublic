@@ -243,3 +243,4 @@ XSharp/src/Setup/Preprocessed.iss
 .antlr/
 /src/Tools/VFPXPorter/Source/VFPXPorterLib/Data/Templates/Tools/XSharp.VFP.UI.dll
 *.chw
+/src/Compiler/src/Compiler/XSharpBuildTask/XSharp.Build.dll

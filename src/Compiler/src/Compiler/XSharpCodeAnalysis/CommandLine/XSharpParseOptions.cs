@@ -119,9 +119,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         public XSharpTargetDLL TargetDLL { get; private set; }
         public bool DebugEnabled { get; private set; }
         public XSharpDialect Dialect { get; private set; }
-        public string DefaultIncludeDir { get; private set; } = string.Empty;
-        public string WindowsDir { get; private set; } = "";
-        public string SystemDir { get; private set; } = "";
         public bool NoStdDef { get; private set; }
         public bool DumpAST { get; private set; }
         public bool ShowDefs { get; private set; }
@@ -201,7 +198,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 CaseSensitive = opt.CaseSensitive;
                 ClrVersion = opt.ClrVersion;
                 ConsoleOutput = opt.ConsoleOutput;
-                DefaultIncludeDir = opt.DefaultIncludeDir;
                 DefaultNamespace = opt.NameSpace;
                 Dialect = opt.Dialect;
                 DumpAST = opt.DumpAST;
@@ -231,7 +227,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ShowIncludes = opt.ShowIncludes;
                 StdDefs = opt.StdDefs;
                 SuppressInit1 = opt.SuppressInit1;
-                SystemDir = opt.SystemDir;
                 TargetDLL = opt.TargetDLL;
                 UndeclaredMemVars = opt.UndeclaredMemVars;
                 Verbose = opt.Verbose;
@@ -252,7 +247,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOUntypedAllowed = opt.Vo15;
                 VOClipperConstructors = opt.Vo16;
                 VOBeginSequence = opt.Vo17;
-                WindowsDir = opt.WindowsDir;
                 XPPInheritFromAbstract = opt.Xpp1;
             }
             LanguageVersion = defaultLanguageVersion;
@@ -290,7 +284,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
             ConsoleOutput = opt.ConsoleOutput;
             DebugEnabled = opt.DebugEnabled;
-            DefaultIncludeDir = opt.DefaultIncludeDir;
             DefaultNamespace = opt.DefaultNamespace;
             Dialect = opt.Dialect;
             DumpAST = opt.DumpAST;
@@ -317,7 +310,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             ShowIncludes = opt.ShowIncludes;
             StdDefs = opt.StdDefs;
             SuppressInit1 = opt.SuppressInit1;
-            SystemDir = opt.SystemDir;
             TargetDLL = opt.TargetDLL;
             UndeclaredMemVars = opt.UndeclaredMemVars;
             Verbose = opt.Verbose;
@@ -338,7 +330,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOUntypedAllowed = opt.VOUntypedAllowed; // vo15
             VOClipperConstructors = opt.VOClipperConstructors; // vo16
             VOBeginSequence = opt.VOBeginSequence; // vo17
-            WindowsDir = opt.WindowsDir;
             XPPInheritFromAbstract = opt.XPPInheritFromAbstract; // xpp1
         }
 

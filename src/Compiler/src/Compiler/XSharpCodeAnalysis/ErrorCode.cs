@@ -2097,7 +2097,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_FileWideMemVarDuplicate = 9125,
         ERR_ClipperOverloaded = 9126,
         ERR_AutoPropertyParameters = 9127,
-        ERR_IndexPropertyLineAccessors = 9128,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

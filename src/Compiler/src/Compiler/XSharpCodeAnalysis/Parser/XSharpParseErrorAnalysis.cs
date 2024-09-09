@@ -1014,10 +1014,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_AbstractHasBody, "Property"));
                 }
             }
-            if (context.Auto != null && context.ParamList != null && context.ParamList._Params.Count > 0)
-            {
-                _parseErrors.Add(new ParseErrorData(context.Auto, ErrorCode.ERR_AutoPropertyParameters));
-            }
 
             if (isAbstract && isExtern)
             {
@@ -1027,11 +1023,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (context?._LineAccessors.Count != 0)
                 {
-                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_IndexPropertyLineAccessors));
+                    foreach (var acc in context._LineAccessors)
+                    {
+                        if (acc.Expr == null && acc.ExprList == null)
+                        {
+                            _parseErrors.Add(new ParseErrorData(acc, ErrorCode.ERR_AutoPropertyParameters));
+                        }
+                    }
                 }
-                else if (context?._Accessors.Count == 0)
+                else if (context.Auto != null)
                 {
-                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_PropertyWithNoAccessors, context.Id.GetText()));
+                    _parseErrors.Add(new ParseErrorData(context.Auto, ErrorCode.ERR_AutoPropertyParameters));
                 }
             }
         }

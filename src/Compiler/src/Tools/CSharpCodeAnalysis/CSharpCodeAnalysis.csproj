@@ -69,9 +69,9 @@
   
   <!-- Projects from the Core codeanalysis.dll -->
   <Import Project="$(CoreSource)..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
-  <Import Project="$(CoreSource)..\..\..\Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems" Label="Shared" />
-  <Import Project="$(CoreSource)..\..\..\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
-  <Import Project="$(CoreSource)..\..\..\Dependencies\Collections\Microsoft.CodeAnalysis.Collections.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)Dependencies\Collections\Microsoft.CodeAnalysis.Collections.projitems" Label="Shared" />
 
   <!-- End of Core includes-->
 
@@ -112,12 +112,6 @@
 
   <!-- End of CSharp includes-->
   
-  <ItemGroup>
-    <AdditionalFiles Remove="C:\XSharp\Dev\XSharp\build\Targets\..\config\BannedSymbols.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <AdditionalFiles Remove="C:\XSharp\Dev\XSharp\build\Targets\..\config\BannedSymbols.txt" />
-  </ItemGroup>
   <ItemGroup>
     <None Remove="$(CSharpSource)Syntax\Syntax.xsd" />
   </ItemGroup>

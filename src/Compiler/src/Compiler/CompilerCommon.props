@@ -55,11 +55,10 @@ See License.txt in the project root for license information.
 
     <XSharpCompilerSrc>$(Solutiondir)Compiler\src\Compiler\</XSharpCompilerSrc>
     <Configurations>Debug;Release;Public</Configurations>
-    <Langversion>preview</Langversion>
+    <Langversion>latest</Langversion>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
-    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
     <RuntimeFilesDir Condition="'$(RuntimeFilesDir)' == '' ">$(DevRtDir)Binaries\Debug\</RuntimeFilesDir>
     <DebugType>full</DebugType>

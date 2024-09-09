@@ -339,3 +339,4 @@ namespace Microsoft.CodeAnalysis
         }
     }
 }
+

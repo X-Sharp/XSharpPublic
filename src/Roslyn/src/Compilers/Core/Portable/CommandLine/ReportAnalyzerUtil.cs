@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis.Diagnostics;
 
+
 namespace Microsoft.CodeAnalysis
 {
     internal static class ReportAnalyzerUtil

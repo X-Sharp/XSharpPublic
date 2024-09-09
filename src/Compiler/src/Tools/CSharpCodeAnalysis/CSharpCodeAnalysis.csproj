@@ -1,24 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\Compiler\CompilerCommon.props" />
-  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.CodeAnalysis.CSharp</RootNamespace>
     <AssemblyName>CSharp.CodeAnalysis</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	<TargetFrameworks>net472</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <NoStdLib>true</NoStdLib>
 
     <DefineConstants>$(DefineConstants);COMPILERCORE;XSHARPPRE</DefineConstants>
-    <CodeAnalysisRuleSet>$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <ApplyNgenOptimization Condition="'$(TargetFramework)' == 'netstandard2.0'">partial</ApplyNgenOptimization>
+    <GeneratePerformanceSensitiveAttribute>false</GeneratePerformanceSensitiveAttribute>
     <!-- Enable output of generated files back into our Generated directory -->
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
-<ItemGroup>
+  <ItemGroup>
     <!--
       Analyzers that will be used to analyze projects that references 
       Microsoft.CodeAnalysis project or Microsoft.CodeAnalysis.Common package.
@@ -26,20 +26,57 @@
       Note: PrivateAssets="ContentFiles" ensures that projects referencing Microsoft.CodeAnalysis.Common package 
       will import everything but content files from Microsoft.CodeAnalysis.Analyzers, specifically, analyzers.
     -->
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="$(MicrosoftCodeAnalysisAnalyzersVersion)" Condition="'$(DotNetBuildFromSource)' != 'true'" PrivateAssets="ContentFiles" />
-    <PackageReference Include="System.Collections.Immutable" Version="$(SystemCollectionsImmutableVersion)" />
-    <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
-    <PackageReference Include="System.Reflection.Metadata" Version="$(SystemReflectionMetadataVersion)" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemRuntimeCompilerServicesUnsafeVersion)" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(SystemThreadingTasksExtensionsVersion)" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="$(SystemTextEncodingCodePagesVersion)" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Condition="'$(DotNetBuildFromSource)' != 'true'" PrivateAssets="ContentFiles" />
+    <PackageReference Include="System.Collections.Immutable" />
+    <PackageReference Include="System.Memory" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
+    <PackageReference Include="System.Reflection.Metadata" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Condition="'$(TargetFrameworkIdentifier)' != '.NETCoreApp'" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
   </ItemGroup>  
-  <ItemGroup>
-    <!-- Need to include the PerformanceSensitiveAttribute definition in source build, since we can't get it from the analyzer package. -->
-    <Compile Remove="$(CoreSource)InternalUtilities\PerformanceSensitiveAttribute.cs" Condition="'$(DotNetBuildFromSource)' != 'true'" />
-    <Compile Include="$(CoreSource)..\..\Shared\CoreClrShim.cs" Link="InternalUtilities\CoreClrShim.cs" />
- 
+  
+
+  <!-- Core files -->
+<ItemGroup>
+  <None Include="$(CoreSource)Operations\OperationInterfaces.xml">
+    <Link>Core\Operations\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+  </None>
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="$(CoreSource)InternalUtilities\PerformanceSensitiveAttribute.cs" Condition="'$(DotNetBuildFromSource)' != 'true'" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(CoreSource)..\CodeAnalysisRules.ruleset">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="$(CoreSource)RuleSet\RuleSetSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <Compile Include="$(CoreSource)**\*.cs">
+		<Link>Core\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+      </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="CodeAnalysisResources.resx" GenerateSource="true">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>Microsoft.CodeAnalysis</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(CoreSource)Resources\default.win32manifest" />
+  </ItemGroup>
+  
+  
+  <!-- Projects from the Core codeanalysis.dll -->
+  <Import Project="$(CoreSource)..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
+  <Import Project="$(CoreSource)..\..\..\Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems" Label="Shared" />
+  <Import Project="$(CoreSource)..\..\..\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
+  <Import Project="$(CoreSource)..\..\..\Dependencies\Collections\Microsoft.CodeAnalysis.Collections.projitems" Label="Shared" />
+
+  <!-- End of Core includes-->
+
+  <!-- CSharp  files -->
+
   <ItemGroup>
     <None Include="$(CSharpSource)BoundTree\BoundNodes.xml" />
     <None Include="$(CSharpSource)BoundTree\BoundNodes.xsd" />
@@ -49,35 +86,32 @@
     <None Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\BaseLine.txt" />
     <None Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\Run.bat" />
     <None Include="$(CSharpSource)FlowAnalysis\Flow Analysis Design.docx" />
-    <None Include="$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset">
+    <PublicAPI Include="$(CSharpSource)PublicAPI.Shipped.txt" />
+    <PublicAPI Include="$(CSharpSource)PublicAPI.Unshipped.txt" />
+    <!-- Don't include the output from a previous source generator execution into future runs; the */** trick here ensures that there's
+         at least one subdirectory, which is our key that it's coming from a source generator as opposed to something that is coming from
+         some other tool. -->
+    <Compile Remove="$(CompilerGeneratedFilesOutputPath)/*/**/*.cs" />
+
+    <None Include="$(CSharpSource)CSharpCodeAnalysisRules.ruleset">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+
   <ItemGroup>
-    <EmbeddedResource Update="CSharpResources.resx" GenerateSource="true" />
-    <EmbeddedResource Update="CodeAnalysisResources.resx" GenerateSource="false" />
-    <EmbeddedResource Include="$(CoreSource)Resources\default.win32manifest" />
-  </ItemGroup>
-  <ItemGroup>
+
   	<Compile Include="$(CSharpSource)**\*.cs">
 		<Link>CSharp\%(RecursiveDir)\%(Filename)%(Extension)</Link>
 	  </Compile>
-    <Compile Include="$(CoreSource)**\*.cs">
-		<Link>Core\%(RecursiveDir)\%(Filename)%(Extension)</Link>
-      </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="$(CoreSource)..\CodeAnalysisRules.ruleset">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="$(CoreSource)RuleSet\RuleSetSchema.xsd">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <Import Project="$(CSharpSource)..\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
-  <Import Project="$(CoreSource)..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
-  <Import Project="$(CoreSource)..\..\..\Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems" Label="Shared" />
-  <Import Project="$(CoreSource)..\..\..\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
+
+  <ItemGroup>
+    <EmbeddedResource Update="CSharpResources.resx" GenerateSource="true" />
+  </ItemGroup>
+
+  <!-- End of CSharp includes-->
+  
   <ItemGroup>
     <AdditionalFiles Remove="C:\XSharp\Dev\XSharp\build\Targets\..\config\BannedSymbols.txt" />
   </ItemGroup>
@@ -85,6 +119,13 @@
     <AdditionalFiles Remove="C:\XSharp\Dev\XSharp\build\Targets\..\config\BannedSymbols.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="C:\XSharp\Dev\XSharp\..\Roslyn\Src\Compilers\CSharp\Portable\SSyntax\Syntax.xsd" />
+    <None Remove="$(CSharpSource)Syntax\Syntax.xsd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="CodeAnalysisResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CodeAnalysisResources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

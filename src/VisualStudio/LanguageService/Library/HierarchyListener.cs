@@ -1,21 +1,12 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /*****************************************************************************
- *
- * Copyright(c) Microsoft Corporation.
- *
- * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
-* copy of the license can be found in the License.html file at the root of this distribution.If
-* you cannot locate the Apache License, Version 2.0, please send an email to
-* ironpy@microsoft.com.By using this source code in any fashion, you are agreeing to be bound 
- * by the terms of the Apache License, Version 2.0.
- *
- * You must not remove this notice, or any other, from this software.
-*
-****************************************************************************/
-/*****************************************************************************
-* XSharp.BV
 * Based on IronStudio/IronPythonTools/IronPythonTools/Navigation
-*
 ****************************************************************************/
+
 
 using System;
 using System.Collections.Generic;
@@ -27,41 +18,20 @@ using Microsoft.VisualStudio.TextManager.Interop;
 
 using VSConstants = Microsoft.VisualStudio.VSConstants;
 using Microsoft.VisualStudio.Shell;
+using XSharpModel;
 
 namespace XSharp.LanguageService
 {
 
     internal class HierarchyEventArgs : EventArgs
     {
-        private uint itemId;
-        private string fileName;
-        private IVsTextLines buffer;
+        internal uint ItemID { get; private set; }
+        internal XFile File { get; private set; }
 
-        public HierarchyEventArgs(uint itemId, string canonicalName)
+        public HierarchyEventArgs(uint itemId, XFile file)
         {
-            this.itemId = itemId;
-            this.fileName = canonicalName;
-        }
-
-        /// <summary>
-        /// Fullpath of the FileName associated with the ItemId
-        /// </summary>
-        public string CanonicalName
-        {
-            get { return fileName; }
-        }
-
-        /// <summary>
-        /// Unique Id of the Item (File) in the Hierarchy it belongs to
-        /// </summary>
-        public uint ItemID
-        {
-            get { return itemId; }
-        }
-        public IVsTextLines TextBuffer
-        {
-            get { return buffer; }
-            set { buffer = value; }
+            this.ItemID = itemId;
+            this.File = file;
         }
     }
 
@@ -174,7 +144,8 @@ namespace XSharp.LanguageService
             // This item is a PRG file, so we can notify that it is added to the hierarchy.
             if (null != onItemAdded)
             {
-                HierarchyEventArgs args = new HierarchyEventArgs(itemidAdded, name);
+                var file = XSolution.FindFile(name);
+                HierarchyEventArgs args = new HierarchyEventArgs(itemidAdded, file);
                 onItemAdded(hierarchy, args);
             }
             return VSConstants.S_OK;
@@ -191,7 +162,8 @@ namespace XSharp.LanguageService
             //}
             if (null != onItemDeleted)
             {
-                HierarchyEventArgs args = new HierarchyEventArgs(itemid, name);
+                var file = XSolution.FindFile(name);
+                HierarchyEventArgs args = new HierarchyEventArgs(itemid, file);
                 onItemDeleted(hierarchy, args);
             }
             return VSConstants.S_OK;
@@ -300,7 +272,8 @@ namespace XSharp.LanguageService
                 // IsPrgFile(currentItem, out itemName);
                 if ((null != onItemAdded) && ! string.IsNullOrEmpty(itemName))
                 {
-                    HierarchyEventArgs args = new HierarchyEventArgs(currentItem, itemName);
+                    var file = XSolution.FindFile(itemName);
+                    HierarchyEventArgs args = new HierarchyEventArgs(currentItem, file);
                     onItemAdded(hierarchy, args);
                 }
 

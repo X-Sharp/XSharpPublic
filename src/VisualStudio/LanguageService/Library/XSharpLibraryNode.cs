@@ -1,21 +1,12 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /*****************************************************************************
- *
- * Copyright(c) Microsoft Corporation.
- *
- * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
-* copy of the license can be found in the License.html file at the root of this distribution.If
-* you cannot locate the Apache License, Version 2.0, please send an email to
-* ironpy@microsoft.com.By using this source code in any fashion, you are agreeing to be bound 
- * by the terms of the Apache License, Version 2.0.
- *
- * You must not remove this notice, or any other, from this software.
-*
-****************************************************************************/
-/*****************************************************************************
-* XSharp.BV
 * Based on IronStudio/IronPythonTools/IronPythonTools/Navigation
-*
 ****************************************************************************/
+
 
 using System;
 using System.Globalization;
@@ -133,7 +124,6 @@ namespace XSharp.LanguageService
         private readonly Modifiers attributes;
         const string NEWLINE = "\n";
         const string CONSTRUCTOR = "Constructor";
-        const string DEFAULTNAMESPACE = "Default NameSpace";
         const string SUMMARY = "\nSummary:\n";
         const string PARAMETERS = "\nParameters:";
         const string RETURNS = "\nReturns:\n";
@@ -526,7 +516,7 @@ namespace XSharp.LanguageService
             {
                 // Need to retrieve the Project, then the File...
                 var file = XSolution.FindFile(editorInfo.FileName);
-                XSettings.OpenDocument(file.FullPath, editorInfo.Line, editorInfo.Column, true);
+                XSettings.ShellLink.OpenDocument(file.FullPath, editorInfo.Line, editorInfo.Column, true);
             }
         }
 
@@ -579,41 +569,37 @@ namespace XSharp.LanguageService
             pbstrText = descText;
         }
 
-        private void InitText(XSourceEntity member)
+        private void InitText(XSourceEntity entity)
         {
             string descText = this.Name;
-            //
-            if (member != null)
+            if (entity != null)
             {
-                if (member.Parent is XSourceTypeSymbol symbol)
+                if (entity.Parent is XSourceTypeSymbol symbol)
                 {
                     nameSpace = symbol.Namespace;
                     className = symbol.Name;
                 }
                 //
-                descText = member.Name;
-                if (member is XSourceMemberSymbol)
+                descText = entity.Name;
+                if (entity is XSourceMemberSymbol)
                 {
-                    var tm = member as XSourceMemberSymbol;
-                    descText = tm.Kind == Kind.Constructor ? CONSTRUCTOR : member.Name;
+                    var tm = entity as XSourceMemberSymbol;
+                    descText = tm.Kind == Kind.Constructor ? CONSTRUCTOR : entity.Name;
                     if (tm.Kind.HasParameters())
                     {
                         descText +=  tm.Kind == Kind.Constructor ? "{" : "( ";
                         if (tm.HasParameters)
                         {
-
-                            //
                             descText += tm.ParameterList;
                         }
                         descText +=  tm.Kind == Kind.Constructor ? "}" : ") ";
                     }
                 }
-                else if (member is XSourceTypeSymbol)
+                else if (entity is XSourceTypeSymbol tm)
                 {
-                    var tm = member as XSourceTypeSymbol;
-                    if ((tm.Kind == Kind.Namespace) && (String.IsNullOrEmpty(descText)))
+                    if ((tm.Kind == Kind.Namespace) && (string.IsNullOrEmpty(descText)))
                     {
-                        descText = DEFAULTNAMESPACE;
+                        descText = tm.Parent?.Name;
                     }
                 }
 

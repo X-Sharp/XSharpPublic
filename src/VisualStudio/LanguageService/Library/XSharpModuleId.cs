@@ -1,25 +1,14 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /*****************************************************************************
- *
- * Copyright(c) Microsoft Corporation.
- *
- * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
-* copy of the license can be found in the License.html file at the root of this distribution.If
-* you cannot locate the Apache License, Version 2.0, please send an email to
-* ironpy@microsoft.com.By using this source code in any fashion, you are agreeing to be bound 
- * by the terms of the Apache License, Version 2.0.
- *
- * You must not remove this notice, or any other, from this software.
-*
-****************************************************************************/
-
-/*****************************************************************************
-* XSharp.BV
 * Based on IronStudio/IronPythonTools/IronPythonTools/Navigation
-*
 ****************************************************************************/
 
-using System;
 using Microsoft.VisualStudio.Shell.Interop;
+using XSharpModel;
 
 namespace XSharp.LanguageService
 {
@@ -29,16 +18,9 @@ namespace XSharp.LanguageService
     /// </summary>
     internal sealed class XSharpModuleId
     {
-        private IVsHierarchy ownerHierarchy;
-        private uint itemId;
-
-        public XSharpModuleId(IVsHierarchy owner, uint id, string path)
-        {
-            this.ownerHierarchy = owner;
-            this.itemId = id;
-            this.Path = path;
-        }
-
+        private readonly IVsHierarchy ownerHierarchy;
+        private readonly uint itemId;
+        #region Properties
         public IVsHierarchy Hierarchy
         {
             get { return ownerHierarchy; }
@@ -47,9 +29,20 @@ namespace XSharp.LanguageService
         {
             get { return itemId; }
         }
-
         public uint ContentHashCode { get; set; }
-        public string Path { get; set; }
+        public XFile File { get; set; }
+        public string FileKey => File.Project.Id.ToString()+"|" + File.FullPath;
+
+
+        #endregion
+
+        public XSharpModuleId(IVsHierarchy owner, uint id, XFile file)
+        {
+            this.ownerHierarchy = owner;
+            this.itemId = id;
+            this.File = file;
+        }
+
 
         public override int GetHashCode()
         {

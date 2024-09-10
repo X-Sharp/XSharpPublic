@@ -4649,8 +4649,11 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>Evaluated value of property.</returns>
         public virtual string GetProjectProperty(string propertyName)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            return this.GetProjectProperty(propertyName, true);
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                return this.GetProjectProperty(propertyName, true);
+            });
         }
 
         /// <summary>

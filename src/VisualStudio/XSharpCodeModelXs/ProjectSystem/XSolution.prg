@@ -224,7 +224,11 @@ BEGIN NAMESPACE XSharpModel
         LOCAL project AS XProject
         projectFile := System.IO.Path.GetFileNameWithoutExtension(projectFile)
         project := NULL
-        IF _projects:TryGetValue(projectFile+":"+framework, OUT project) .AND. project != NULL
+        var key := projectFile
+        if !String.IsNullOrEmpty(framework)
+            key += ":" + framework
+        endif
+        IF _projects:TryGetValue(key, OUT project) .AND. project != NULL
             RETURN project
         ENDIF
         RETURN NULL

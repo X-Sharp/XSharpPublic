@@ -28,7 +28,6 @@ using XSharp.Settings;
 using File = System.IO.File;
 using MBC = Microsoft.Build.Construction;
 using MSBuild = Microsoft.Build.Evaluation;
-//using XSharp.LanguageService;
 
 namespace XSharp.Project
 {
@@ -1095,17 +1094,6 @@ namespace XSharp.Project
             // WAP ask the designer service for the CodeDomProvider corresponding to the project node.
             this.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
             this.OleServiceProvider.AddService(typeof(System.CodeDom.Compiler.CodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
-#if XSHARPLIBRARY
-            // This will call the callback in PojectPackage
-            IXSharpLibraryManager libraryManager = Site.GetService(typeof(IXSharpLibraryManager)) as IXSharpLibraryManager;
-            // Be sure we have External/system types for Intellisense
-            //UpdateAssemblyReferencesModel();
-            ThreadHelper.ThrowIfNotOnUIThread();
-            if (null != libraryManager)
-            {
-                libraryManager.RegisterHierarchy(this.InteropSafeHierarchy, this.ProjectModel, this);
-            }
-#endif
 
             CreateListManagers();
 
@@ -2183,16 +2171,6 @@ namespace XSharp.Project
             //
             ThreadHelper.ThrowIfNotOnUIThread();
             Logger.Debug("Close " + this.ProjectFile);
-            if (this.Site != null)
-            {
-#if XSHARPLIBRARY
-                IXSharpLibraryManager libraryManager = (IXSharpLibraryManager)Site.GetService(typeof(IXSharpLibraryManager));
-                if (libraryManager != null)
-                {
-                    libraryManager.UnregisterHierarchy(this.InteropSafeHierarchy);
-                }
-#endif
-            }
             // CleanUp the CodeModel
             if (projectModel != null)
             {

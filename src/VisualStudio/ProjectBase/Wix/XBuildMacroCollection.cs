@@ -247,29 +247,30 @@ namespace Microsoft.VisualStudio.Project
                     // this routine is called from InvokeMSBuild and we don't want that to fix because of
                     // some bug here, so this code is surrounded by try/catch until we figure this out
                     int hr = solutionBuildManager.FindActiveProjectCfg(IntPtr.Zero, IntPtr.Zero, hierarchy, projectCfgArray);
-                    ErrorHandler.ThrowOnFailure(hr);
-
-                    projectCfg2 = projectCfgArray[0] as IVsProjectCfg2;
-
-                    if (projectCfg2 != null)
+                    if (hr == 0)
                     {
-                        hr = projectCfg2.get_DisplayName(out configuration);
-                        if (hr != 0)
-                        {
-                            Marshal.ThrowExceptionForHR(hr);
-                        }
-                    }
+                        projectCfg2 = projectCfgArray[0] as IVsProjectCfg2;
 
-                    if (configuration != null)
-                    {
-                        if (configList.Length > 0)
+                        if (projectCfg2 != null)
                         {
-                            configList.Append(';');
+                            hr = projectCfg2.get_DisplayName(out configuration);
+                            if (hr != 0)
+                            {
+                                Marshal.ThrowExceptionForHR(hr);
+                            }
                         }
 
-                        configList.Append(referenceNode.ReferencedProjectName);
-                        configList.Append('=');
-                        configList.Append(configuration);
+                        if (configuration != null)
+                        {
+                            if (configList.Length > 0)
+                            {
+                                configList.Append(';');
+                            }
+
+                            configList.Append(referenceNode.ReferencedProjectName);
+                            configList.Append('=');
+                            configList.Append(configuration);
+                        }
                     }
                 }
                 catch (Exception)

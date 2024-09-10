@@ -1,5 +1,4 @@
-﻿#undef LIBRARYMANAGER
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -124,7 +123,7 @@ namespace XSharp.LanguageService
         }
 
 #if LIBRARYMANAGER
-        private object CreateLibraryService(IServiceContainer container, Type serviceType)
+        private object CreateLibraryService(IServiceContainer container, Type serviceType) 
         {
             if (typeof(IXSharpLibraryManager) == serviceType)
             {

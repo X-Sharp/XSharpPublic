@@ -1766,8 +1766,8 @@ STATIC CLASS XDatabase
         Log(i"GetNamespacesInFile returns {result.Count} matches")
         RETURN result
 
-    STATIC METHOD GetTypesInFile(sFileId AS STRING) AS IList<XDbResult>
-        VAR stmt := "Select * from ProjectTypes where IdFile = "+sFileId
+    STATIC METHOD GetTypesInFile(xFile AS XFile) AS IList<XDbResult>
+        VAR stmt := "Select * from ProjectTypes where IdFile = "+xFile:Id:ToString()+" and IdProject = "+xFile:Project:Id:ToString()
         VAR result := List<XDbResult>{}
         IF IsDbOpen
             BEGIN LOCK oConn
@@ -1806,8 +1806,8 @@ STATIC CLASS XDatabase
         Log(i"GetExtensionMethods '{TypeName}' returns {result.Count} matches")
         RETURN result
 
-    STATIC METHOD GetMembers(idType AS INT64) AS IList<XDbResult>
-        VAR stmt := "Select * from ProjectMembers where IdType ="+idType:ToString()
+    STATIC METHOD GetMembers(idType AS INT64, idProject as INT64) AS IList<XDbResult>
+        VAR stmt := "Select * from ProjectMembers where IdType ="+idType:ToString()+" and IdProject = "+idProject:ToString()
         stmt     += " order by idFile, idType"
         VAR result := List<XDbResult>{}
         IF IsDbOpen
@@ -1890,16 +1890,17 @@ STATIC CLASS XDatabase
         RETURN result
 
 
-    STATIC METHOD GetFunctions( sFileId AS STRING) AS IList<XDbResult>
+    STATIC METHOD GetFunctions( nFileId AS Int64, nProjectId as Int64) AS IList<XDbResult>
         //
         VAR result := List<XDbResult>{}
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
                     USING VAR oCmd := CreateCommand("SELECT 1", oConn)
-                    oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE IdFile = $idfile AND TypeName = $typename " + ;
+                    oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE IdFile = $idfile AND IdProject = $idproject and TypeName = $typename " + ;
                         " AND Kind in ($kind1, $kind2, $kind3, $kind4, $kind5)"
-                    oCmd:Parameters:AddWithValue("$idfile", sFileId)
+                    oCmd:Parameters:AddWithValue("$idfile", nFileId)
+                    oCmd:Parameters:AddWithValue("$idproject", nProjectId)
                     oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
                     oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
                     oCmd:Parameters:AddWithValue("$kind3", (INT) Kind.VODLL)

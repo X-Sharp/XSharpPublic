@@ -7,18 +7,17 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
-using TM=Microsoft.VisualStudio.TextManager.Interop;
+using Microsoft.VisualStudio.TextManager.Interop;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Windows.Shapes;
 using XSharp.Settings;
 using XSharpModel;
 using static XSharp.Parser.VsParser;
-using Microsoft.VisualStudio.TextManager.Interop;
+using TM = Microsoft.VisualStudio.TextManager.Interop;
 
 namespace XSharp.LanguageService
 {
@@ -39,6 +38,8 @@ namespace XSharp.LanguageService
                 VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
                 VS.Events.SolutionEvents.OnBeforeCloseProject += SolutionEvents_OnBeforeCloseProject;
                 VS.Events.SolutionEvents.OnAfterRenameProject += SolutionEvents_OnAfterRenameProject;
+                VS.Events.SolutionEvents.OnAfterLoadProject += SolutionEvents_OnAfterLoadProject;
+                VS.Events.SolutionEvents.OnBeforeUnloadProject += SolutionEvents_OnBeforeUnloadProject;
                 VS.Events.SolutionEvents.OnAfterBackgroundSolutionLoadComplete += SolutionEvents_OnAfterBackgroundSolutionLoadComplete;
                 VS.Events.BuildEvents.SolutionBuildStarted += BuildEvents_SolutionBuildStarted;
                 VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
@@ -54,6 +55,42 @@ namespace XSharp.LanguageService
                 }
             });
 
+        }
+
+        private void SolutionEvents_OnBeforeUnloadProject(Project project)
+        {
+#if LIBRARYMANAGER
+            IXSharpLibraryManager libraryManager = VS.GetRequiredService<IXSharpLibraryManager, IXSharpLibraryManager>();
+            if (libraryManager != null)
+            {
+                project.GetItemInfo(out var hier, out var id, out var parent);
+                libraryManager.UnregisterHierarchy(hier);
+            }
+#endif
+        }
+
+        private void SolutionEvents_OnAfterLoadProject(Project project)
+        {
+#if LIBRARYMANAGER
+            if (!IsXSharpProject(project.FullPath))
+                return;
+            var framework = "";
+            //ThreadHelper.JoinableTaskFactory.Run(async delegate
+            //{
+            //    framework = await project.GetAttributeAsync("TargetFramework");
+            //});
+            IXSharpLibraryManager libraryManager = VS.GetRequiredService<IXSharpLibraryManager, IXSharpLibraryManager>();
+            if (libraryManager != null)
+            {
+                project.GetItemInfo(out var hier, out var id, out var parent);
+                var prj = XSolution.FindProject(project.FullPath, framework);
+                if (prj != null)
+                {
+                    libraryManager.RegisterHierarchy(hier, prj, prj.ProjectNode);
+                }
+                
+            }
+#endif
         }
 
         #region DesignerWindows
@@ -205,13 +242,17 @@ namespace XSharp.LanguageService
             }
         }
 
-        private void SolutionEvents_OnBeforeCloseProject(Community.VisualStudio.Toolkit.Project project)
+        private void SolutionEvents_OnBeforeCloseProject(Project project)
         {
             //if (IsXSharpProject(project?.FullPath))
             {
                 Logger.SingleLine();
                 Logger.Information("Closing project: " + project.FullPath ?? "");
                 Logger.SingleLine();
+            }
+            if (IsXSharpProject(project?.FullPath))
+            {
+                SolutionEvents_OnBeforeUnloadProject(project);
             }
 
         }
@@ -308,6 +349,41 @@ namespace XSharp.LanguageService
             Logger.Information("Opened Solution: " + solution?.FullPath ?? "");
             Logger.SingleLine();
             solutionName = solution?.FullPath;
+#if LIBRARYMANAGER
+            var projects = GetProjects(solution);
+
+
+            foreach (var project in projects)
+            {
+                SolutionEvents_OnAfterLoadProject(project);
+            }
+
+#endif
+        }
+
+        private List<Project> GetProjects(SolutionItem parent)
+        {
+            var result = new List<Project>();
+            foreach (var item in parent.Children)
+            {
+                switch (item)
+                {
+                    case Project project:
+                        result.Add(project);
+                        break;
+                    case SolutionFolder folder:
+                        result.AddRange(GetProjects(folder));
+                        break;
+                    case PhysicalFolder physicalFolder:
+                        result.AddRange(GetProjects(physicalFolder));
+                        break;
+                    case PhysicalFile file:
+                        break;
+                    case SolutionItem solutionItem:
+                        break;
+                }
+            }
+            return result;
         }
 
         private void SolutionEvents_OnBeforeOpenSolution(string solutionFileName)

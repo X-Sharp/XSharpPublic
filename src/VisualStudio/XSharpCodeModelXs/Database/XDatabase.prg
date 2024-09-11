@@ -1667,7 +1667,7 @@ STATIC CLASS XDatabase
         RETURN result
 
     STATIC METHOD GetProjectNamespaces(sProjectIds AS STRING) AS IList<STRING>
-        VAR stmt := "Select Namespace from ProjectNamespaces where IdProject in ("+sProjectIds+")"
+        VAR stmt := "Select distinct Namespace from ProjectTypes where IdProject in ("+sProjectIds+")"
         VAR result := List<STRING>{}
         IF IsDbOpen
             BEGIN LOCK oConn

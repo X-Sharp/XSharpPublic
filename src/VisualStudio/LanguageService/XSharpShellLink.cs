@@ -38,8 +38,12 @@ namespace XSharp.LanguageService
                 VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
                 VS.Events.SolutionEvents.OnBeforeCloseProject += SolutionEvents_OnBeforeCloseProject;
                 VS.Events.SolutionEvents.OnAfterRenameProject += SolutionEvents_OnAfterRenameProject;
+
+#if LIBRARYMANAGER
+
                 VS.Events.SolutionEvents.OnAfterLoadProject += SolutionEvents_OnAfterLoadProject;
                 VS.Events.SolutionEvents.OnBeforeUnloadProject += SolutionEvents_OnBeforeUnloadProject;
+#endif
                 VS.Events.SolutionEvents.OnAfterBackgroundSolutionLoadComplete += SolutionEvents_OnAfterBackgroundSolutionLoadComplete;
                 VS.Events.BuildEvents.SolutionBuildStarted += BuildEvents_SolutionBuildStarted;
                 VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
@@ -56,22 +60,22 @@ namespace XSharp.LanguageService
             });
 
         }
-
+#if LIBRARYMANAGER
         private void SolutionEvents_OnBeforeUnloadProject(Project project)
         {
-#if LIBRARYMANAGER
+
             IXSharpLibraryManager libraryManager = VS.GetRequiredService<IXSharpLibraryManager, IXSharpLibraryManager>();
             if (libraryManager != null)
             {
                 project.GetItemInfo(out var hier, out var id, out var parent);
                 libraryManager.UnregisterHierarchy(hier);
             }
-#endif
+
         }
 
         private void SolutionEvents_OnAfterLoadProject(Project project)
         {
-#if LIBRARYMANAGER
+
             if (!IsXSharpProject(project.FullPath))
                 return;
             var framework = "";
@@ -90,10 +94,10 @@ namespace XSharp.LanguageService
                 }
                 
             }
-#endif
-        }
 
-        #region DesignerWindows
+        }
+#endif
+            #region DesignerWindows
         private CommandProgression CloseDesignerWindows()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -252,7 +256,9 @@ namespace XSharp.LanguageService
             }
             if (IsXSharpProject(project?.FullPath))
             {
+#if LIBRARYMANAGER
                 SolutionEvents_OnBeforeUnloadProject(project);
+#endif
             }
 
         }
@@ -284,7 +290,7 @@ namespace XSharp.LanguageService
             return string.Equals(System.IO.Path.GetExtension(fileName), ".xsproj", StringComparison.OrdinalIgnoreCase);
         }
 
-        #endregion
+#endregion
 
         #region Solution Events
 
@@ -636,16 +642,16 @@ namespace XSharp.LanguageService
 
             var file = XSolution.FindFullPath(fileName);
             var sb = new StringBuilder();
-            XParseOptions parseoptions;
+            XParseOptions parseOptions;
             if (file != null)
             {
-                parseoptions = file.Project.ParseOptions;
+                parseOptions = file.Project.ParseOptions;
             }
             else
-                parseoptions = XParseOptions.Default;
+                parseOptions = XParseOptions.Default;
             ITokenStream tokenStream;
             var reporter = new ErrorIgnorer();
-            bool ok = XSharp.Parser.VsParser.Lex(code, fileName, (XSharpParseOptions)parseoptions, reporter, out tokenStream, out _);
+            bool ok = Lex(code, fileName, (XSharpParseOptions)parseOptions, reporter, out tokenStream, out _);
             var stream = tokenStream as BufferedTokenStream;
             var tokens = stream.GetTokens();
             foreach (var token in tokens)

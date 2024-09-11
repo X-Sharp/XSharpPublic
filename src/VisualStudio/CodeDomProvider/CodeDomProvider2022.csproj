@@ -22,13 +22,13 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;XSHARPPROVIDER</DefineConstants>
     <NoWarn>1762;NU1603</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <DefineConstants>NDEBUG</DefineConstants>
+    <DefineConstants>NDEBUG;XSHARPPROVIDER</DefineConstants>
     <NoWarn>1762;NU1603</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -48,16 +48,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
+    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="$(CommonDir)Constants.cs">
+    <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
-    <Compile Include="$(CommonDir)constantsMethods.cs">
-      <Link>constantsMethods.cs</Link>
+    <Compile Include="..\..\Common\ConstantsMethods.cs">
+      <Link>ConstantsMethods.cs</Link>
     </Compile>
     <Compile Include="IProjectTypeHelper.cs" />
+    <Compile Include="ParserHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XCodeTypes.cs" />
     <Compile Include="XSharpCodeCompiler.cs" />

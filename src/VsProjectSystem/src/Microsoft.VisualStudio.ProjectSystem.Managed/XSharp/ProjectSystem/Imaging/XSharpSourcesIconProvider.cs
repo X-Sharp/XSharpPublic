@@ -2,7 +2,6 @@
 
 using Microsoft.VisualStudio.Imaging;
 
-
 namespace Microsoft.VisualStudio.ProjectSystem.Imaging.XSharp
 {
     [Export(typeof(IProjectTreePropertiesProvider))]

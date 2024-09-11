@@ -17,9 +17,7 @@
     <Summary>XSharp VisualStudio Managed Project System</Summary>
     <PackageTags>XSharp Roslyn Managed Project System VisualStudio</PackageTags>
     <NoWarn>$(NoWarn);NU5125</NoWarn>
-    <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
-    <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
-    <EnableNETAnalyzers>False</EnableNETAnalyzers>
+    <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == '$(NetCoreTargetFramework)'">
@@ -32,16 +30,8 @@
   <!-- TODO: Re-enable nullability and clean up warnings. -->
   <PropertyGroup Condition="'$(TargetFramework)' == '$(NetCoreTargetFramework)'">
     <Nullable>annotations</Nullable>
-    <NoWarn>$(NoWarn);RS0037</NoWarn>
+    <NoWarn>$(NoWarn);RS0037;IDE0270</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net472|AnyCPU'">
-    <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net472|AnyCPU'">
-    <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'" />
 
   <!-- TODO: Remove this once ILaunchSettingsUIProvider has been removed. -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
@@ -728,17 +718,12 @@
        CopyDesignTimeTargetsToOutputDirectory targets, which are defined in VisualStudio.XamlRules.targets.
   -->
   <ItemGroup>
-    <None Remove="XSharp\Images\XSharp.ico" />
-    <None Remove="XSharp\Images\XSharpImages.imagemanifest" />
-    <None Remove="XSharp\Images\XSharpProject.png" />
-    <Content Include="XSharp\Images\XSharp.ico" />
     <Resource Include="XSharp\Images\XSharpProject.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="XSharp\Images\XSharpDocument.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-
   </ItemGroup>
 
   <ItemGroup>
@@ -747,6 +732,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
   </ItemGroup>
 
 

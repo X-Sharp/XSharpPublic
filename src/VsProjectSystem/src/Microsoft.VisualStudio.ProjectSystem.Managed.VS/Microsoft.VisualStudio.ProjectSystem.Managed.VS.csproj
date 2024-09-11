@@ -21,16 +21,6 @@
     <Summary>XSharp VisualStudio Managed Project System </Summary>
     <PackageTags>XSharp Roslyn Managed Project System VisualStudio</PackageTags>
     <NoWarn>$(NoWarn);NU5125</NoWarn>
-    <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
-    <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
-    <EnableNETAnalyzers>False</EnableNETAnalyzers>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
   </PropertyGroup>
 
@@ -91,9 +81,9 @@
 
   <ItemGroup>
     <None Include="**\*.xlf" />
-    <Compile Remove="XSharp\Packaging\**" />
-    <EmbeddedResource Remove="XSharp\Packaging\**" />
-    <None Remove="XSharp\Packaging\**" />
+    <Compile Remove="ProjectSystem\VS\HotReload\**" />
+    <EmbeddedResource Remove="ProjectSystem\VS\HotReload\**" />
+    <None Remove="ProjectSystem\VS\HotReload\**" />
     <EmbeddedResource Update="ProjectSystem\VS\PropertyPages\PropertyPageResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>PropertyPageResources.Designer.cs</LastGenOutput>
@@ -130,8 +120,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="XSharp.CodeDomSupport">
+      <HintPath>..\..\..\..\Artifacts\Common\Debug\XSharp.CodeDomSupport.dll</HintPath>
+      <Private>True</Private>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Reference>
     <Reference Include="XSharp.CodeModel">
-      <HintPath>..\..\..\..\Artifacts\2022\Debug\XSharp.CodeModel.dll</HintPath>
+      <HintPath>..\..\..\..\Artifacts\Common\Debug\XSharp.CodeModel.dll</HintPath>
+      <Private>True</Private>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Reference>
   </ItemGroup>
 
@@ -223,19 +220,17 @@
 
   <!-- XSharp Remove CSharp, FSharp and Visual Basic files -->
   <!--<ItemGroup>
-    <Compile Remove="**\CSharp*.cs" />
     <Compile Remove="**\FSharp*.cs" />
     <Compile Remove="**\VisualBasic*.cs" />
     <Compile Remove="ProjectSystem\VS\Input\Commands\Ordering\MoveDownCommand.cs" />
     <Compile Remove="ProjectSystem\VS\Input\Commands\Ordering\MoveUpCommand.cs" />
-    <Compile Remove="ProjectSystem\VS\LanguageServices\Handlers\CommandLineNotificationHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Microsoft.VisualStudio.ProjectSystem.Managed.VS.pkgdef">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </None>
-  </ItemGroup>-->
+    <Compile Remove="**\CSharp*.cs" />
+    <Compile Remove="**\VisualBasic*.cs" />
+    <Compile Remove="ProjectSystem\VS\LanguageServices\Handlers\CommandLineNotificationHandler.cs" />
+  </ItemGroup>
+  -->
 
   <!-- This is required for SourceLink to find these .xaml files within the generated .g.cs files. -->
   <!-- Note that the filepath for the file MUST be nested within itself in the destination, as the .g.cs files include the relative nested path. -->

@@ -14,7 +14,7 @@ namespace Microsoft.VisualStudio
     /// </remarks>
     internal static class ProjectType
     {
-
+#if XSHARP
         /// <summary>
         ///     A <see cref="string"/> representing the legacy X# project type based on the native project system
         /// </summary>
@@ -34,7 +34,7 @@ namespace Microsoft.VisualStudio
         ///     A <see cref="Guid"/> representing the X# project type based on the Common Project System (CPS).
         /// </summary>
         public static readonly Guid XSharpGuid = new(XSharpCps);
-
+#endif
         /// <summary>
         ///     A <see cref="string"/> representing the Visual Basic project type based on the Common Project System (CPS).
         /// </summary>

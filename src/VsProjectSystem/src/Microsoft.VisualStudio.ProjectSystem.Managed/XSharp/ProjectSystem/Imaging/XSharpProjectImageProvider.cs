@@ -24,11 +24,11 @@ namespace Microsoft.VisualStudio.ProjectSystem.Imaging.XSharp
             return key switch
             {
                 ProjectImageKey.ProjectRoot => XSProjectNode,
-                //ProjectImageKey.ProjectRoot => XSharpImagesMonikers.ProjectImage.ToProjectSystemType(),
                 ProjectImageKey.SharedItemsImportFile or ProjectImageKey.SharedProjectRoot => KnownProjectImageMonikers.SharedProject,
                 _ => null
             };
         }
         public static ProjectImageMoniker XSProjectNode { get; } = KnownMonikers.PYProjectNode.ToProjectSystemType();
+        //public static ProjectImageMoniker XSProjectNode { get; } = XSharpImagesMonikers.ProjectImage.ToProjectSystemType();
     }
 }

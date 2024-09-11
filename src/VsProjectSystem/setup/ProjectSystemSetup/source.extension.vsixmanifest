@@ -2,7 +2,7 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
     <!-- The version number is supplied via GetVsixVersion in Directory.Build.targets. -->
-    <Identity Id="EDDCB5BE-3C18-444E-8E50-AE06CD345872" Version="|%CurrentProject%;GetVsixVersion|" Language="en-US" Publisher="XSharp" />
+    <Identity Id="EDDCB5BE-3C18-444E-8E50-AE06CD345872" Version="|%CurrentProject%;GetVsixVersion|" Language="en-US" Publisher="XSharp BV" />
     <DisplayName>XSharp Managed project system</DisplayName>
     <Description xml:space="preserve">XSharp managed projectsystem.</Description>
     <PackageId>Microsoft.VisualStudio.ProjectSystem.Managed</PackageId>
@@ -27,5 +27,6 @@
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharpProjectSelectors.pkgdef" />
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="Microsoft.VisualStudio.ProjectSystem.Managed.VS" Path="|Microsoft.VisualStudio.ProjectSystem.Managed.VS;PkgdefProjectOutputGroup|" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="XSharp.CodeDomSupport.dll" />
   </Assets>
 </PackageManifest>

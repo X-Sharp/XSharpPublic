@@ -3,7 +3,6 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using System;
 using Microsoft.VisualStudio.Imaging.Interop;
 
 namespace Microsoft.VisualStudio.ProjectSystem
@@ -14,7 +13,13 @@ namespace Microsoft.VisualStudio.ProjectSystem
 
         private const int ProjectIcon = 1;
         private const int ItemIcon = 2;
+        private static Stream s_stream;
+        static XSharpImagesMonikers()
+        {
+            Stream stream = typeof(XSharpImagesMonikers).Assembly.GetManifestResourceStream("Microsoft.VisualStudio.Resources.XSharpProjectImageList.bmp");
+            s_stream = stream;
 
+        }
         public static ImageMoniker ProjectImage
         {
             get
@@ -32,3 +37,4 @@ namespace Microsoft.VisualStudio.ProjectSystem
         }
     }
 }
+

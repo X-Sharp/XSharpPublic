@@ -21,6 +21,7 @@ namespace Microsoft.VisualStudio.ProjectSystem
 #if XSHARP		
         public const string CSharpOrVisualBasic = "(" + ProjectCapability.XSharp + " | " + ProjectCapabilities.CSharp + " | " + ProjectCapabilities.VB + ")";
         public const string CSharpOrVisualBasicOnly = "(" + ProjectCapabilities.CSharp + " | " + ProjectCapabilities.VB + ")";
+        public const string CSharpOrVisualBasicOnlyLanguageService = CSharpOrVisualBasicOnly + " & " + LanguageService;
 #else
         public const string CSharpOrVisualBasic = "(" + ProjectCapabilities.CSharp + " | " + ProjectCapabilities.VB + ")";
 #endif		

@@ -122,7 +122,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.VS.HotReload
 
         // IManagedHotReloadAgent
 
-        public async ValueTask ApplyUpdatesAsync(ImmutableArray<ManagedHotReloadUpdate> updates, CancellationToken cancellationToken)
+        public virtual async ValueTask ApplyUpdatesAsync(ImmutableArray<ManagedHotReloadUpdate> updates, CancellationToken cancellationToken)
         {
             if (!_sessionActive)
             {

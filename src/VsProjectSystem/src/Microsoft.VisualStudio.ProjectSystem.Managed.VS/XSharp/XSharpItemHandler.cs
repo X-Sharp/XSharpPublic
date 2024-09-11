@@ -1,8 +1,8 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information.
-#if FALSE
+
 using Microsoft.VisualStudio.LanguageServices.ProjectSystem;
 using Microsoft.VisualStudio.ProjectSystem.VS;
-
+using XSharpModel;
 namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices.Handlers
 {
     /// <summary>
@@ -12,8 +12,6 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices.Handlers
     [PartCreationPolicy(CreationPolicy.NonShared)]
     internal class XSharpItemHandler : IWorkspaceUpdateHandler, ISourceItemsHandler
     {
-        private string[] Extensions = new string[]{ ".xsfs", ".xsfrm",".xsmnu",".xsdbs",".xssql",".xsrep",
-            ".vnfs", ".vnfrm",".vnmnu",".vndbs", ".xh",".vh",".ch" };
         private readonly UnconfiguredProject _project;
         private readonly HashSet<string> _paths = new(StringComparers.Paths);
 
@@ -95,13 +93,22 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices.Handlers
 
         private bool IsDynamicFile(string includePath)
         {
-            foreach (var ext in Extensions)
+            var ft = XFileTypeHelpers.GetFileType(includePath);
+            switch (ft)
             {
-                if (includePath.EndsWith(ext, StringComparison.OrdinalIgnoreCase))
+                case XFileType.VODBServer:
+                case XFileType.VOFieldSpec:
+                case XFileType.VOForm:
+                case XFileType.VOIndex:
+                case XFileType.VOMenu:
+                case XFileType.VOOrder:
+                case XFileType.VOReport:
+                case XFileType.VOSqlTable:
+                case XFileType.NativeResource:
                     return true;
+                default:
+                    return false;
             }
-            return false;
         }
     }
 }
-#endif

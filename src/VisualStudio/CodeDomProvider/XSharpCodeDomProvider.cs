@@ -90,10 +90,10 @@ namespace XSharp.CodeDom
         }
 
     }
-    public class XSharpCodeDomHelper1
-    {
-        #region Dump Tools
 #if WRITE2LOGFILE
+    public class XSharpCodeDomHelper
+    {
+    #region Dump Tools
         static readonly String Delimiter = new String('-', 5);
         static void DumpUserData(IDictionary userData)
         {
@@ -410,7 +410,8 @@ namespace XSharp.CodeDom
             }
             return rstClass;
         }
-#endif
-        #endregion
+
+    #endregion
     }
+#endif
 }

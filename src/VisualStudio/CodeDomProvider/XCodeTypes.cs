@@ -53,7 +53,7 @@ namespace XSharp.CodeDom
     }
 
     [DebuggerDisplay("{FileName,nq}")]
-    public class XCodeCompileUnit : CodeCompileUnit, IXCodeObject
+    internal class XCodeCompileUnit : CodeCompileUnit, IXCodeObject
     {
         public string FileName { get; set; } = "";
         public string Source { get; set; } = "";
@@ -83,7 +83,7 @@ namespace XSharp.CodeDom
     }
 
     [DebuggerDisplay("MergedUnit: {FileName,nq}")]
-    public class XMergedCodeCompileUnit : XCodeCompileUnit, IXCodeObject
+    internal class XMergedCodeCompileUnit : XCodeCompileUnit, IXCodeObject
     {
         public XCodeCompileUnit FormUnit { get; set; }
         public XCodeCompileUnit DesignerUnit { get; set; }

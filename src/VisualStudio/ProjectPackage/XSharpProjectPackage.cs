@@ -212,6 +212,8 @@ namespace XSharp.Project
             }
             await this.RegisterCommandsAsync();
             await GetOptionsAsync();
+            XSettings.CodeDomProviderClass  = typeof(XSharp.CodeDom.XSharpCodeDomProvider);
+
         }
 
 

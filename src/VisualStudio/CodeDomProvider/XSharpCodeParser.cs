@@ -11,35 +11,50 @@ using LanguageService.SyntaxTree;
 using XSharp.Parser;
 using LanguageService.CodeAnalysis.Text;
 using LanguageService.CodeAnalysis.XSharp;
+using XSharpModel;
+using XSharp.Settings;
 
 namespace XSharp.CodeDom
 {
 
-   
-
-    public class ErrorIgnorer : IErrorListener
+    public class ErrorListener : IErrorListener
     {
+        public class XError
+        {
+            public string FileName { get; set; }
+            public LinePositionSpan Span { get; set; }
+            public string ErrorCode { get; set; }
+            public string Message { get; set; }
+            public object[] Args { get; set; }
+
+        }
         #region IErrorListener
+        private List<XError> errors = new List<XError>();
+        private List<XError> warnings = new List<XError>();
+
+        internal List<XError> Errors { get => errors; set => errors = value; }
+        internal List<XError> Warnings { get => warnings; set => warnings = value; }
+
         public void ReportError(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
         {
-            ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
+            errors.Add(new XError { FileName = fileName, Span = span, ErrorCode = errorCode, Message = message, Args = args });
         }
 
         public void ReportWarning(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
         {
-            ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
+            warnings.Add(new XError { FileName = fileName, Span = span, ErrorCode = errorCode, Message = message, Args = args });
         }
         #endregion
     }
     public class XSharpCodeParser : CodeParser
     {
-        IProjectTypeHelper _projectNode;
-        public XSharpCodeParser(IProjectTypeHelper projectNode)
+        XProject _projectNode;
+        public XSharpCodeParser(XProject projectNode)
         {
             this.FileName = "";
             _projectNode = projectNode;
         }
-        public XSharpCodeParser(IProjectTypeHelper projectNode, CodeTypeDeclaration formClass)
+        public XSharpCodeParser(XProject projectNode, CodeTypeDeclaration formClass)
         {
             this.FileName = "";
             _projectNode = projectNode;
@@ -80,10 +95,24 @@ namespace XSharp.CodeDom
             //
             try
             {
-                var reporter = new ErrorIgnorer();
+                var reporter = new ErrorListener();
                 ITokenStream tokenStream;
                 LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParserRuleContext xtree;
                 bool ok = XSharp.Parser.VsParser.Parse(source, this.FileName, (XSharpParseOptions)_projectNode.ParseOptions, reporter, out tokenStream, out xtree, out _);
+                if (reporter.Errors.Count > 0)
+                {
+                    foreach (var error in reporter.Errors)
+                    {
+                        XSettings.Logger.Debug($"Parser error: Line {error.Span.Line} column {error.Span.Column}, Code {error.ErrorCode}, {error.Message} ");
+                    }
+                }
+                if (reporter.Warnings.Count > 0)
+                {
+                    foreach (var error in reporter.Warnings)
+                    {
+                        XSettings.Logger.Debug($"Parser warning: Line {error.Span.Line} column {error.Span.Column}, Code {error.ErrorCode}, {error.Message} ");
+                    }
+                }
 
                 // We need to d 2 steps here:
                 // 1 - Scan for the fields , so we know the difference between fields and properties when we perform step 2

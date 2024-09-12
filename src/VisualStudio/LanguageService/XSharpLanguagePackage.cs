@@ -20,6 +20,7 @@ using System.Threading;
 using XSharp.LanguageService.OptionsPages;
 using XSharpModel;
 using XSharp.Settings;
+using XSharp.CodeDom;
 
 
 // The following lines ensure that the right versions of the various DLLs are loaded.
@@ -29,7 +30,7 @@ using XSharp.Settings;
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeModel")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.MonoCecil")]
-
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDomProvider")]
 namespace XSharp.LanguageService
 {
 
@@ -277,8 +278,8 @@ namespace XSharp.LanguageService
             await SaveCommand.InitializeAsync();
             await FormattingCommand.InitializeAsync();
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            XSettings.LanguageService = this;
             XSettings.ShellLink = new XSharpShellLink();
+            XSettings.CodeDomProviderClass  = typeof(XSharp.CodeDom.XSharpCodeDomProvider);
             StartLogging();
         }
 

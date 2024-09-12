@@ -27,7 +27,7 @@ namespace XSharp.Project
     }
     // Moved "special" VisualStudio  CodeDomProvider
     [PermissionSet(SecurityAction.InheritanceDemand, Name = "FullTrust"), PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
-    public class VSXSharpCodeDomProvider : XSharpCodeDomProvider
+    public class VSXSharpCodeDomProvider : XSharp.CodeDom.XSharpCodeDomProvider
     {
         private XSharpFileNode _fileNode;
 
@@ -36,7 +36,8 @@ namespace XSharp.Project
         public VSXSharpCodeDomProvider(XSharpFileNode fileNode)
         {
             _fileNode = fileNode;
-            _projectNode = fileNode.ProjectMgr as XSharpProjectNode;
+            var projectNode = fileNode.ProjectMgr as XSharpProjectNode;
+            _projectNode = projectNode.ProjectModel;
         }
 
         #region helper functions

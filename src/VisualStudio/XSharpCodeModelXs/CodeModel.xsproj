@@ -90,6 +90,7 @@
     <Compile Include="Formatting\XKeyword.prg" />
     <Compile Include="Formatting\XTokenType.prg" />
     <Compile Include="MetaData\BuiltInFunctions.prg" />
+    <Compile Include="Model\CodeDomProvider.prg" />
     <Compile Include="Model\XNamespaceSymbol.prg" />
     <Compile Include="Model\XKeywordSymbol.prg" />
     <Compile Include="Model\ClassGenerator.prg" />

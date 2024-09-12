@@ -41,7 +41,7 @@ STATIC CLASS XSettings
 
     PUBLIC STATIC PROPERTY ShellLink                        AS IXVsShellLink AUTO
     PUBLIC STATIC PROPERTY Logger                           AS XSharpModel.ILogger AUTO := DummyLogger{}
-    PUBLIC STATIC PROPERTY LanguageService                  AS OBJECT AUTO
+    PUBLIC STATIC PROPERTY CodeDomProviderClass             AS System.Type AUTO
 
     PUBLIC STATIC PROPERTY Disassembler AS STRING AUTO := ""
     PUBLIC STATIC PROPERTY HideIncludes AS LOGIC AUTO := FALSE
@@ -100,7 +100,7 @@ STATIC CLASS XSettings
         ENDIF
         RETURN 0
 
- 
+
 
     PUBLIC STATIC METHOD SetStatusBarText(cText AS STRING) AS VOID
         IF ShellLink != NULL_OBJECT
@@ -171,7 +171,7 @@ STATIC CLASS XDocuments
             XSettings.ShellLink:OpenDocument(file, line, column, lPreview)
         ENDIF
 
-        
+
 END CLASS
 
 

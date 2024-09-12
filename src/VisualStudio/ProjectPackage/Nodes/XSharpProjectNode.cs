@@ -38,7 +38,7 @@ namespace XSharp.Project
     [DebuggerDisplay("{Caption}")]
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
     public partial class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject,
-        /*IVsDesignTimeAssemblyResolution, */IVsProject5, IProjectTypeHelper, IXsProjectDesigner
+        /*IVsDesignTimeAssemblyResolution, */IVsProject5, IXsProjectDesigner
     , IVsReferenceManagerUser
     {
         static List<XSharpProjectNode> nodes = new List<XSharpProjectNode>();

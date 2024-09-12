@@ -8,8 +8,9 @@
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <ProjectGuid>{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}</ProjectGuid>
+    <CheckNewtonsoftJsonVersion>false</CheckNewtonsoftJsonVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <ExtensibilityEssentialsLevel>None</ExtensibilityEssentialsLevel>
+    <Ngen>false</Ngen>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -33,8 +34,7 @@
     <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
     <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
     <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
-    <PlatformTarget>x86</PlatformTarget>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartAction>Program</StartAction>
@@ -88,10 +88,12 @@
     </Reference>
     <Reference Include="XSharp.MonoCecil">
       <SpecificVersion>False</SpecificVersion>
+      <IncludeInVSIX>true</IncludeInVSIX>
       <HintPath>$(VsExternalDir)XSharp.MonoCecil.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+    <Reference Include="XSharp.Vsparser">
       <SpecificVersion>False</SpecificVersion>
+      <IncludeInVSIX>true</IncludeInVSIX>
       <HintPath>$(VsExternalDir)XSharp.Vsparser.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -113,9 +115,9 @@
     <Compile Include="Automation\OAXSharpProject.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs" />
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
+    <Compile Include="Commands\CommandGenerateWinForm.cs" />
     <Compile Include="Commands\CommandAddDesignerFile.cs" />
     <Compile Include="Commands\CommandConvertXsRuntime.cs" />
-    <Compile Include="Commands\CommandGenerateWinForm.cs" />
     <Compile Include="Commands\CommandRebuildIntellisense.cs" />
     <Compile Include="Commands\CommandEditProjectFile.cs" />
     <Compile Include="Commands\CommandViewInDisassembler.cs" />
@@ -158,7 +160,6 @@
     <Compile Include="List\ErrorList\ErrorListItem.cs" />
     <Compile Include="List\ErrorList\ErrorListManager.cs" />
     <Compile Include="List\ErrorList\ErrorListProvider.cs" />
-    <Compile Include="List\ErrorList\ErrorMessageUtil.cs" />
     <Compile Include="List\IListItem.cs" />
     <Compile Include="List\IListProvider.cs" />
     <Compile Include="List\IListSinkManager.cs" />
@@ -405,7 +406,10 @@
     <ZipItem Include="Templates\ProjectItems\Code\ClassFox\ClassFox.png" />
     <ZipItem Include="Templates\ProjectItems\Code\ClassFox\Class.prg" />
     <ZipItem Include="Templates\ProjectItems\Code\ClassFox\ClassFox.vstemplate" />
-    <Content Include="XSharp.Designers2022.pkgdef" />
+    <Content Include="XSharp.Designers.pkgdef">
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="XSharp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -414,10 +418,6 @@
       <Generator>VsctGenerator</Generator>
       <LastGenOutput>Menus.cs</LastGenOutput>
     </VSCTCompile>
-    <Content Include="XSharp.Designers.pkgdef">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="XSharpVSIXLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -667,7 +667,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CodeDomProvider\CodeDomProvider.csproj">
-      <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
+      <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b5}</Project>
       <Name>CodeDomProvider</Name>
     </ProjectReference>
     <ProjectReference Include="..\CodeGenerator\CodeGenerator.xsproj">

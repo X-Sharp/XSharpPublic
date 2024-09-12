@@ -18,6 +18,9 @@
     <PackageTags>XSharp Roslyn Managed Project System VisualStudio</PackageTags>
     <NoWarn>$(NoWarn);NU5125</NoWarn>
     <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
+    <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
+    <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
+    <EnableNETAnalyzers>False</EnableNETAnalyzers>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == '$(NetCoreTargetFramework)'">
@@ -686,7 +689,27 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
+  
+  <ItemGroup>
+    <Resource Include="XSharp\Images\XSharpProject.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="XSharp\Images\XSharpDocument.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="XSharp\Images\XSharpImages.imagemanifest">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
+  </ItemGroup>
   <Target Name="AddFilesForNpmPackage" DependsOnTargets="Build;SatelliteDllsProjectOutputGroup" Condition="'$(TargetFramework)' == '$(NetCoreTargetFramework)'">
     <ItemGroup>
       <NpmContent Include="exports.json" />
@@ -717,26 +740,7 @@
        Also note that this is implicitly dependent on the CopyXamlRulesToOutputDirectory and
        CopyDesignTimeTargetsToOutputDirectory targets, which are defined in VisualStudio.XamlRules.targets.
   -->
-  <ItemGroup>
-    <Resource Include="XSharp\Images\XSharpProject.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="XSharp\Images\XSharpDocument.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="XSharp\Images\XSharpImages.imagemanifest">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
-  </ItemGroup>
+ 
 
 
   <Target Name="AddXamlRulesToNuGetPackage" BeforeTargets="_GetPackageFiles">
@@ -748,12 +752,15 @@
     </ItemGroup>
   </Target>
   <!-- XSharp Remove CSharp, FSHarp and Visual basic files -->
-  <!--<ItemGroup>
-    <Compile Remove="**\CSharp*.cs" />
-    <Compile Remove="**\FSharp*.cs" />
-    <Compile Remove="**\VisualBasic*.cs" />
-    <Compile Remove="ProjectSystem\KnownProjectImageMonikers.cs" />
-    <Compile Remove="ProjectSystem\ProjectCapability.cs" />
-  </ItemGroup>-->
-
-</Project>
+  <ItemGroup>
+    <Compile Remove="**\**VisualBasic*.*" />
+    <Compile Remove="**\**CSharp*.*" />
+    <Compile Remove="**\**FSharp*.*" />
+    <XamlPropertyRule Remove="**\**VisualBasic*.*" />
+    <XamlPropertyRule Remove="**\**CSharp*.*" />
+    <XamlPropertyRule Remove="**\**FSharp*.*" />
+    <None Remove="**\**VisualBasic*.*" />
+    <None Remove="**\**CSharp*.*" />
+    <None Remove="**\**FSharp*.*" />
+  </ItemGroup>
+  </Project>

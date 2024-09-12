@@ -28,7 +28,6 @@ namespace Microsoft.VisualStudio.ProjectSystem.Imaging.XSharp
 
         //private static ProjectImageMoniker SourceIcon => XSharpImagesMonikers.FileImage.ToProjectSystemType();
         private static ProjectImageMoniker SourceIcon => KnownMonikers.PYSourceFile.ToProjectSystemType();
-        private static ProjectImageMoniker VOBinaryIcon => KnownMonikers.BinaryFile.ToProjectSystemType();
         private static ProjectImageMoniker FormIcon => KnownMonikers.WindowsForm.ToProjectSystemType();
         private static ProjectImageMoniker DatabaseIcon => KnownMonikers.Database.ToProjectSystemType();
         private static ProjectImageMoniker FieldIcon => KnownMonikers.Database.ToProjectSystemType();

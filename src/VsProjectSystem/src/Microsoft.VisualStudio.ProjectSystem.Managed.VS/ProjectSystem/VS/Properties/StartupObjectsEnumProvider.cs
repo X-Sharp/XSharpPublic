@@ -11,7 +11,11 @@ namespace Microsoft.VisualStudio.ProjectSystem.Properties
     /// Returns the set of Startup objects (or entry point types) in a project.
     /// </summary>
     [ExportDynamicEnumValuesProvider("StartupObjectsEnumProvider")]
+#if XSHARP
+    [AppliesTo(ProjectCapability.CSharpOrVisualBasicOrXSharp)]
+#else
     [AppliesTo(ProjectCapability.CSharpOrVisualBasic)]
+#endif
     internal class StartupObjectsEnumProvider : IDynamicEnumValuesProvider
     {
         private readonly Workspace _workspace;

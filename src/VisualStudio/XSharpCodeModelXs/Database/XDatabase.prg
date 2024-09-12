@@ -1849,7 +1849,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    var stmt := "select TypeName, Name, Attributes, Kind from ProjectMembers where Name like 'Start%' and ProjectFileName like '%" +projectFile+"'"
+                    var stmt := "select distinct TypeName, Name, Attributes, Kind from ProjectMembers where Name like 'Start%' and ProjectFileName like '%" +projectFile+"'"
                     USING VAR oCmd := CreateCommand(stmt, oConn)
                     USING VAR rdr := oCmd:ExecuteReader()
                     DO WHILE rdr:Read()

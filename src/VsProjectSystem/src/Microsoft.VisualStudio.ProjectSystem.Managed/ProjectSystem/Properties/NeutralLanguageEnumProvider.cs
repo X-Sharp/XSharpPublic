@@ -8,7 +8,11 @@ using Microsoft.VisualStudio.Threading;
 namespace Microsoft.VisualStudio.ProjectSystem.Properties
 {
     [ExportDynamicEnumValuesProvider(nameof(NeutralLanguageEnumProvider))]
+#if XSHARP
+    [AppliesTo(ProjectCapability.CSharpOrVisualBasicOrXSharp)]
+#else
     [AppliesTo(ProjectCapability.CSharpOrVisualBasic)]
+#endif
     internal class NeutralLanguageEnumProvider : IDynamicEnumValuesProvider
     {
         public Task<IDynamicEnumValuesGenerator> GetProviderAsync(IList<NameValuePair>? options)

@@ -1,47 +1,42 @@
-﻿// Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information.
-#if XSHARP
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Markup;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.LanguageServices.ProjectSystem;
-using Microsoft.Build.Execution;
 using Microsoft.VisualStudio.Shell.Interop;
 using XSharpModel;
 using Microsoft.VisualStudio.Shell;
 using XSharp;
 using System.Diagnostics;
-using System.Reflection;
+using Microsoft.VisualStudio.Threading;
 
 namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
 {
     [DebuggerDisplay("{XsDisplayName,nq}")]
     internal class XSharpWorkspaceProjectContext : IWorkspaceProjectContext, IXSharpProject
     {
-        private string _name;
+        private readonly string _name;
         public Guid Guid { get; set; }
         public Guid ProjectGuid { get; set; }
         public string? ProjectFilePath { get; set; }
         public bool LastDesignTimeBuildSucceeded { get; set; }
         public string? BinOutputPath { get; set; }
-        private string ? _IntermediateOutputPath;
-        private string? _RootNamespace;
-        private string? _version;
-        private string? _TargetFrameworkIdentifier;
+        private string? _rootNamespace;
+        private readonly string? _version;
+        private string? _targetFrameworkIdentifier;
         public bool IsPrimary { get; set; }
         public string DisplayName { get; set; }
         public string XsDisplayName { get; set; }
-        private IVsHierarchy? _vsHierarchy;
         private readonly Stack<BatchScope> _batchScopes = new();
         private XParseOptions _parseOptions = XParseOptions.Default;
-        private XProject? _xproject;
+        private XProject? _xSharpProject;
 
         public string FrameworkVersion => _version ?? "";
-        public string FrameworkIdentifier => _TargetFrameworkIdentifier ?? "";
+        public string FrameworkIdentifier => _targetFrameworkIdentifier ?? "";
 
         static XSharpWorkspaceProjectContext()
         {
@@ -56,7 +51,6 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
                 }
                 Environment.SetEnvironmentVariable("VSINSTALLDIR", installDir);
             }
-
         }
 
         internal XSharpWorkspaceProjectContext(Guid projectGuid, string? contextId, string languageName, 
@@ -68,27 +62,23 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
             _name = evaluationData.GetPropertyValue(BuildPropertyNames.AssemblyName);
             EnforceSelf = evaluationData.GetPropertyValue(XSharpProjectFileConstants.EnforceSelf)?.ToLower() == "true";
             ProjectFilePath = evaluationData.GetPropertyValue(BuildPropertyNames.MSBuildProjectFullPath);
-            _IntermediateOutputPath = evaluationData.GetPropertyValue(XSharpProjectFileConstants.IntermediateOutputPath);
-            _RootNamespace = evaluationData.GetPropertyValue(XSharpProjectFileConstants.RootNamespace);
+            _rootNamespace = evaluationData.GetPropertyValue(XSharpProjectFileConstants.RootNamespace);
             _version = evaluationData.GetPropertyValue(XSharpProjectFileConstants.TargetFramework);
             XsDisplayName = $"{_name} ({_version})";
             DisplayName = _name;
             LastDesignTimeBuildSucceeded = true;
             IsPrimary = true;
-            _vsHierarchy = hostObject as IVsHierarchy;
             Id = ProjectId.CreateNewId(DisplayName);
-            _xproject = XSolution.FindProject(ProjectFilePath, _version);
-            if (_xproject is null)
+            _xSharpProject = XSolution.FindProject(ProjectFilePath, _version);
+            if (_xSharpProject is null)
             {
-                _xproject = new XProject(this, _version);
+                _xSharpProject = new XProject(this, _version);
             }
             else
             {
                 ;
             }
         }
-
-
         public ProjectId Id { get; set; }
 
         public string IntermediateOutputPath => IntermediateOutputPath ?? "";
@@ -98,19 +88,17 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
 
         public bool PrefixClassesWithDefaultNamespace => _parseOptions.ImplicitNamespace;
 
-        public string RootNameSpace => _RootNamespace ?? "";
+        public string RootNameSpace => _rootNamespace ?? "";
 
         public string Url => ProjectFilePath ?? "";
 
         public XDialect Dialect => _parseOptions.Dialect;
-
-
         public bool EnforceSelf { get; set; }
 
         #region Add files
         public void AddAdditionalFile(string filePath, bool isInCurrentContext = true)
         {
-            _xproject?.AddFile(filePath);
+            _xSharpProject?.AddFile(filePath);
         }
 
         public void AddAdditionalFile(string filePath, IEnumerable<string> folderNames, bool isInCurrentContext = true)
@@ -130,22 +118,22 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
 
         public void AddDynamicFile(string filePath, IEnumerable<string>? folderNames = null)
         {
-            _xproject?.AddFile(filePath); 
+            _xSharpProject?.AddFile(filePath); 
         }
 
         public void AddMetadataReference(string referencePath, MetadataReferenceProperties properties)
         {
-            _xproject?.AddAssemblyReference(referencePath);
+            _xSharpProject?.AddAssemblyReference(referencePath);
         }
 
         public void AddProjectReference(IWorkspaceProjectContext project, MetadataReferenceProperties properties)
         {
-            _xproject?.AddProjectReference(project.ProjectFilePath);
+            _xSharpProject?.AddProjectReference(project.ProjectFilePath);
         }
 
         public void AddSourceFile(string filePath, bool isInCurrentContext = true, IEnumerable<string>? folderNames = null, SourceCodeKind sourceCodeKind = SourceCodeKind.Regular)
         {
-            _xproject?.AddFile(filePath);
+            _xSharpProject?.AddFile(filePath);
         }
         #endregion
         #region Scoping
@@ -159,24 +147,21 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
                 _activeBatchScopes++;
                 return new BatchScope(this);
             }
-
         }
 
         public async ValueTask<IAsyncDisposable> CreateBatchScopeAsync(CancellationToken cancellationToken)
         {
-            using (await _gate.DisposableWaitAsync(cancellationToken).ConfigureAwait(false))
-            {
-                _activeBatchScopes++;
-                return new BatchScope(this);
-            }
+            await TaskScheduler.Default;
+            _activeBatchScopes++;
+            return new BatchScope(this);
         }
 
         public void Dispose()
         {
-            if (_xproject != null)
+            if (_xSharpProject is object)
             {
-                _xproject.Close();
-                _xproject = null;
+                _xSharpProject.Close();
+                _xSharpProject = null;
             }
             return;
         }
@@ -191,7 +176,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
 
         public void RemoveAdditionalFile(string filePath)
         {
-            _xproject?.RemoveFile(filePath);
+            _xSharpProject?.RemoveFile(filePath);
         }
 
         public void RemoveAnalyzerConfigFile(string filePath)
@@ -206,22 +191,22 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
 
         public void RemoveDynamicFile(string filePath)
         {
-            _xproject?.RemoveFile(filePath);
+            _xSharpProject?.RemoveFile(filePath);
         }
 
         public void RemoveMetadataReference(string referencePath)
         {
-            _xproject?.RemoveAssemblyReference(referencePath); 
+            _xSharpProject?.RemoveAssemblyReference(referencePath); 
         }
 
         public void RemoveProjectReference(IWorkspaceProjectContext project)
         {
-            _xproject?.AddProjectReference(project.ProjectFilePath);  
+            _xSharpProject?.AddProjectReference(project.ProjectFilePath);  
         }
 
         public void RemoveSourceFile(string filePath)
         {
-            _xproject?.RemoveFile(filePath);
+            _xSharpProject?.RemoveFile(filePath);
         }
         #endregion
         #region Other
@@ -260,11 +245,11 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
             }
             var options = XParseOptions.FromVsValues(tmp);
             _parseOptions = options;
-            if (_xproject != null)
+            if (_xSharpProject is object)
             {
-                _xproject.ResetParseOptions(options);
+                _xSharpProject.ResetParseOptions(options);
             }
-            _RootNamespace = options.DefaultNamespace;  
+            _rootNamespace = options.DefaultNamespace;  
             EnforceSelf = options.EnforceSelf;
         }
 
@@ -273,10 +258,10 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
             switch (name.ToLower())
             {
                 case "rootnamespace":
-                    _RootNamespace = value;
+                    _rootNamespace = value;
                     break;
                 case "targetframeworkidentifier":
-                    _TargetFrameworkIdentifier = value;
+                    _targetFrameworkIdentifier = value;
                     break;
             }
         }
@@ -289,27 +274,23 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
         #region IXSharpProject
         public void AddFileNode(string fileName)
         {
-            if (! System.IO.File.Exists(fileName))
+            if (! File.Exists(fileName))
             {
-                System.IO.File.WriteAllBytes(fileName, new byte[0]);
+                File.WriteAllBytes(fileName, Array.Empty<byte>());
             }
         }
-
-
         public void DeleteFileNode(string fileName)
         {
-            if (System.IO.File.Exists(fileName))
+            if (File.Exists(fileName))
             {
-                System.IO.File.Delete(fileName);
+                File.Delete(fileName);
             }
         }
-
 
         public object? FindProject(string sUrl)
         {
             return null;
         }
-
         public bool HasFileNode(string fileName)
         {
             return false;
@@ -356,7 +337,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
 
         public static async ValueTask<SemaphoreDisposer> DisposableWaitAsync(this SemaphoreSlim semaphore, CancellationToken cancellationToken = default)
         {
-            await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+            await TaskScheduler.Default;
             return new SemaphoreDisposer(semaphore);
         }
 
@@ -392,4 +373,4 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
         }
     }
 }
-#endif
+

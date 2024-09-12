@@ -1,15 +1,13 @@
-﻿// Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information.
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
-using System.CodeDom;
 using System.CodeDom.Compiler;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using Microsoft.CSharp;
 using Microsoft.VisualStudio.Designer.Interfaces;
 using Microsoft.VisualStudio.Shell;
-using XSharp.CodeDom;
 
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDomSupport")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeModel")]
 
 namespace Microsoft.VisualStudio.ProjectSystem.VS.LanguageServices.XSharp
@@ -24,30 +22,12 @@ namespace Microsoft.VisualStudio.ProjectSystem.VS.LanguageServices.XSharp
     [ExportVsProfferedProjectService(typeof(CodeDomProvider))]
     [AppliesTo(ProjectCapability.XSharp)]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    internal class XSharpCodeProvider : CSharpCodeProvider
+    internal class XSharpCodeProvider : XSharpModel.XSharpCodeDomProvider
     {
-        private readonly CodeCompiler _generator;
         [ImportingConstructor]
-        public XSharpCodeProvider()
+        public XSharpCodeProvider() : base()
         {
-            _generator = new XSharpCodeGenerator();
-        }
-        public override string FileExtension => "prg";
 
-
-        [Obsolete("Callers should not use the ICodeGenerator interface and should instead use the methods directly on the CodeDomProvider class.")]
-        public override ICodeGenerator CreateGenerator()
-        {
-            return _generator;
-        }
-        [Obsolete("Callers should not use the ICodeCompiler interface and should instead use the methods directly on the CodeDomProvider class.")]
-        public override ICodeCompiler CreateCompiler()
-        {
-            return _generator;
-        }
-        public override void GenerateCodeFromMember(CodeTypeMember member, TextWriter writer, CodeGeneratorOptions options)
-        {
-            _generator.GenerateCodeFromMember(member, writer, options);
         }
     }
 }

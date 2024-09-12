@@ -1,0 +1,417 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>XSharp.CodeModel</name>
+    </assembly>
+    <members>
+        <member name="T:XSharp.Settings.KnownTypes">
+            <summary>
+            The KnownTypes class.
+            </summary>
+        </member>
+        <member name="T:XSharp.Settings.OptionsBase">
+            <summary>
+            The OptionsBase class.
+            </summary>
+        </member>
+        <member name="M:XSharp.Settings.OptionsBase.CreatePath">
+            <summary>
+            Create the path in the Roaming Appdata folder
+            </summary>
+        </member>
+        <member name="M:XSharp.Settings.OptionsBase.GetPath">
+            <summary>
+            Return the path to the Roaming Appdata folder
+            </summary>
+        </member>
+        <member name="T:XSharp.Settings.XDictionary`2">
+            <summary>
+            Special class that has check inside Add to prevent duplicate key exceptions
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <typeparam name="TValue"></typeparam>
+        </member>
+        <member name="M:XSharp.Settings.XDictionary`2.Add(`0,`1)">
+            <summary>
+            Add item to collection. If an item with the key already exists then nothing is added
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
+        </member>
+        <member name="T:XSharpModel.XDbResultHelpers">
+            <summary>
+            The XDbResultHelpers class.
+            </summary>
+        </member>
+        <member name="M:XSharpModel.XDbResultHelpers.BuildTypesInFile(XSharpModel.XFile,System.Collections.Generic.IList{XSharpModel.XDbResult})">
+            
+        </member>
+        <member name="T:XSharpModel.Formatting.XFormattingRules">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:XSharpModel.Formatting.XFormattingRules.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:XSharpModel.Formatting.XFormattingRules.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:XSharpModel.Formatting.XFormattingRules.Rules">
+             <summary>
+               Looks up a localized string similar to /*
+            Formattingrules.txt
+            Each line consists of one or more begin token(s) followed by a comma and the matching end token(s)
+            Tokens that are followed by a question mark are optional
+            After the end token there may be another comma and a list of &quot;options&quot;
+            These options can be:
+            - OPTIONAL (end token is optional)
+            - MIDDLE   (block with a middle token, such as DO CASE)
+            - CASE     (for special indenting rules for CASE blocks)
+            - SINGLE (for rules that may be single line such as property)
+            Section delimiters i [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="T:XSharpModel.XFormattingFlags">
+            <summary>
+            Flags that describe formatting rules
+            </summary>
+        </member>
+        <member name="F:XSharpModel.XFormattingFlags.Namespace">
+            <summary>
+            Namespace block
+            </summary>
+        </member>
+        <member name="F:XSharpModel.XFormattingFlags.Type">
+            <summary>
+            Type block.
+            </summary>
+        </member>
+        <member name="F:XSharpModel.XFormattingFlags.Member">
+            <summary>
+            Member Block
+            </summary>
+        </member>
+        <member name="F:XSharpModel.XFormattingFlags.Statement">
+            <summary>
+            Statement block
+            </summary>
+        </member>
+        <member name="F:XSharpModel.XFormattingFlags.Middle">
+            <summary>
+            Does the statement have Middle keywords
+            </summary>
+        </member>
+        <member name="F:XSharpModel.XFormattingFlags.Case">
+            <summary>
+            Does the statement have CASE / OTHERWISE labels and need to follow the indent CASE setting
+            </summary>
+        </member>
+        <member name="F:XSharpModel.XFormattingFlags.Preprocessor">
+            <summary>
+            block is a preprocessor block
+            </summary>
+        </member>
+        <member name="F:XSharpModel.XFormattingFlags.OptionalEnd">
+            <summary>
+            End keyword is optional
+            </summary>
+        </member>
+        <member name="F:XSharpModel.XFormattingFlags.SingleLine">
+            <summary>
+            Single line is also allowed (PROPERTY, EVENT, ADD etc)
+            </summary>
+        </member>
+        <member name="F:XSharpModel.XFormattingFlags.End">
+            <summary>
+            Does the rule allow to end with single END keyword
+            </summary>
+        </member>
+        <member name="F:XSharpModel.XFormattingFlags.Nested">
+            <summary>
+            (Combined with type) Can the type be nested
+            </summary>
+        </member>
+        <member name="F:XSharpModel.XFormattingFlags.Accessor">
+            <summary>
+             Token is an accessor
+            </summary>
+        </member>
+        <member name="F:XSharpModel.XFormattingFlags.Jump">
+            <summary>
+             Token is an Jump Statement (like EXIT or LOOP)
+            </summary>
+        </member>
+        <member name="T:XSharpModel.XFormattingRule">
+            <summary>
+            This type is used to store information about keyword pairs that are used during formatting
+            Each entry has a start token and an stop token and flags that indicate the type of pair
+            The flags entry also has a member that indicates that END without further keyword is allowd
+            and that the END is optional.
+            </summary>
+        </member>
+        <member name="M:XSharpModel.XFormattingRule.IndentKeywords">
+            <summary>
+            Return all start tokens from the rules list
+            </summary>
+            <returns>List of tokens</returns>
+        </member>
+        <member name="M:XSharpModel.XFormattingRule.OutdentKeywords">
+            <summary>
+            Return all end tokens from the rules list
+            </summary>
+            <returns>List of tokens</returns>
+        </member>
+        <member name="M:XSharpModel.XFormattingRule.MemberKeywords">
+            <summary>
+            Return all tokens that are the start of a Member
+            </summary>
+            <returns>List of tokens</returns>
+        </member>
+        <member name="M:XSharpModel.XFormattingRule.AllowEndKeywords">
+            <summary>
+            Return all tokens that can be closed with "just" an END
+            </summary>
+            <returns>List of tokens</returns>
+        </member>
+        <member name="M:XSharpModel.XFormattingRule.EndKeywords">
+            <summary>
+            Return end keywords that can match more than one start keyword
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:XSharpModel.XKeyword">
+            <summary>
+            This structure with the size of an Int is used to store
+            single token or double token keywords that are using
+            for the formatting code
+            </summary>
+        </member>
+        <member name="T:XSharpModel.XSharpCodeDomProvider">
+            <summary>
+            This class is a wrapper around the CodeDomProvider class that is used by the XSharpCodeModel
+            </summary>
+        </member>
+        <member name="T:XSharpModel.XSharpTokenList">
+            <summary>
+            The XSharpTokenList class. This class is used to process a list of tokens
+            without having to worry about the end of the list. You can safely access next items
+            through the La.. and Lt.. properties and methods.
+            </summary>
+        </member>
+        <member name="T:XSharpModel.XPETypeSymbol">
+            <summary>
+            Model for Namespace, Class, Interface, Structure, Enum
+            </summary>
+        </member>
+        <member name="T:XSharpModel.XInclude">
+            <summary>
+            This class stores the include files that the lexer and preprocessor processed
+            </summary>
+        </member>
+        <member name="T:XSharpModel.XSourceSymbol">
+            <summary>An symbol in the source code. Can be an entity but also a local or parameter</summary>
+        </member>
+        <member name="P:XSharpModel.XSourceSymbol.Range">
+            <summary>
+            Location in the source where the Symbol is in line/column
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:XSharpModel.XSourceSymbol.Prototype">
+            <summary>
+            Location in the source where the item is in start / end position
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:XSharpModel.XSourceSymbol.LineNumber">
+            <summary>
+            1 Based Line Number
+            </summary>
+        </member>
+        <member name="P:XSharpModel.XSourceSymbol.ColumnNumber">
+            <summary>
+            1 Based Column Number
+            </summary>
+        </member>
+        <member name="T:XSharpModel.XSourceEntity">
+            <summary>An entity in a source file. </summary>
+        </member>
+        <member name="T:XSharpModel.XSourceParameterSymbol">
+            <summary>Parameter Symbol in the source</summary>
+        </member>
+        <member name="T:XSharpModel.XSourceTypeSymbol">
+            <summary>
+            Model for Namespace, Class, Interface, Structure, Enum
+            </summary>
+        </member>
+        <member name="M:XSharpModel.XSourceTypeSymbol.#ctor(XSharpModel.XSourceTypeSymbol)">
+            <summary>
+            Duplicate the current Object, so we have the same properties in another object
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:XSharpModel.XSourceTypeSymbol.Merge(XSharpModel.XSourceTypeSymbol)">
+            <summary>
+            Merge two XSourceTypeSymbol Objects : Used to create the resulting  XSourceTypeSymbol from 2 or more partial classes
+            </summary>
+            <param name="otherType"></param>
+        </member>
+        <member name="P:XSharpModel.XSourceTypeSymbol.Clone">
+            <summary>
+            If this XSourceTypeSymbol is a Partial type, return a Copy of it, merged with all other informations
+            coming from other files.
+            </summary>
+        </member>
+        <member name="T:XSharpModel.XSourceVariableSymbol">
+            <summary>Local Variable Symbol in the source</summary>
+        </member>
+        <member name="P:XSharpModel.TextInterval.Start">
+            <summary>
+            0 based StartIndex
+            </summary>
+        </member>
+        <member name="P:XSharpModel.TextInterval.Stop">
+            <summary>
+            0 based StopIndex
+            </summary>
+        </member>
+        <member name="T:XSharpModel.TextRange">
+            <summary>
+            1 based TextRange
+            </summary>
+        </member>
+        <member name="M:XSharpModel.TextRange.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a TextRange
+            </summary>
+            <param name="sl">Zero based start line</param>
+            <param name="sc">Zero based start column</param>
+            <param name="el">Zero based end line</param>
+            <param name="ec">Zero based end column</param>
+        </member>
+        <member name="M:XSharpModel.TextRange.WithStart(LanguageService.SyntaxTree.IToken)">
+            <summary>
+            Return new range that is clone of this range with a different start
+            </summary>
+            <param name="startToken">Token to read line and column from</param>
+            <returns></returns>
+        </member>
+        <member name="M:XSharpModel.TextRange.WithEnd(LanguageService.SyntaxTree.IToken)">
+            <summary>
+            Return new range that is clone of this range with a different end
+            </summary>
+            <param name="startToken">Token to read line and column from</param>
+            <returns></returns>
+        </member>
+        <member name="P:XSharpModel.TextRange.Empty">
+            <summary>
+            Return an empty TextRange
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:XSharpModel.TextRange.StartLine">
+            <summary>
+            0 based Start Line
+            </summary>
+        </member>
+        <member name="P:XSharpModel.TextRange.EndLine">
+            <summary>
+            0 based End Line
+            </summary>
+        </member>
+        <member name="P:XSharpModel.TextRange.StartColumn">
+            <summary>
+            0 based Start Column
+            </summary>
+        </member>
+        <member name="P:XSharpModel.TextRange.EndColumn">
+            <summary>
+            0 based End Column
+            </summary>
+        </member>
+        <member name="M:XSharpModel.IXSharpProject.FindProject(System.String)">
+            <summary>
+            Return the EnvDte project for a url
+            </summary>
+            <param name="sUrl"></param>
+            <returns>EnvDte project</returns>
+        </member>
+        <member name="T:XSharpModel.IXVsShellLink">
+            <summary>This interface allows the code model to call back into the VS Shell</summary>
+        </member>
+        <member name="T:XSharpModel.SystemTypeController">
+            <summary>
+            We have one SystemTypeController in memory : It will handle all references types for all projects
+            Assemblies are stored inside a List of AssemblyInfo
+            </summary>
+        </member>
+        <member name="M:XSharpModel.XTypeExtensions.GetConstructors(XSharpModel.IXTypeSymbol,System.Boolean)">
+            <summary>
+            Return the instance constructors
+            </summary>
+            <param name="type">Type to search</param>
+            <param name="declaredOnly">Only constructors of the class itself. Exclude inherited constructors?</param>
+            <returns></returns>
+        </member>
+        <member name="M:XSharpModel.XTypeExtensions.GetConstructors(XSharpModel.IXTypeSymbol)">
+            <summary>
+            Return the instance constructors
+            </summary>
+            <param name="type">Type to search</param>
+            <returns></returns>
+        </member>
+        <member name="T:XSharpModel.IXSymbol">
+            <summary>Properties shared by all objects in the codemodel</summary>
+        </member>
+        <member name="T:XSharpModel.IXTypeSymbol">
+            <summary>Properties shared by types (both internal and external) </summary>
+        </member>
+        <member name="T:XSharpModel.IXMemberSymbol">
+            <summary>Properties shared by members (both internal and external) </summary>
+        </member>
+        <member name="T:XSharpModel.IXVariableSymbol">
+            <summary>Properties shared by variables (locals, parameters, both internal and external) </summary>
+        </member>
+        <member name="M:XSharpModel.XFile.FindMemberAtRow(System.Int32)">
+            
+             <Summary>Find member in file based on 0 based line number</Summary>
+            
+            
+        </member>
+        <member name="M:XSharpModel.XFile.FindMemberAtPosition(System.Int32)">
+            
+             <Summary>Find member in file based on 0 based position</Summary>
+            
+            
+        </member>
+        <member name="M:XSharpModel.XsParser.Matches(System.Int32)">
+            <summary>
+            return TRUE when the token matches the type
+            </summary>
+            <param name="nType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XSharpModel.XsParser.Matches(System.Int32[])">
+            <summary>
+            return TRUE when the one of the tokens matches the type
+            </summary>
+            <param name="nType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XSharpModel.XsParser.ExpectAssignOp">
+            <summary>
+            Return TRUE when next token = ':=' or '='
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Functions">
+            <summary>This compiler generated class contains all the functions, globals and defines that are defined in the XSharp.CodeModel.dll assembly. </summary>
+        </member>
+    </members>
+</doc>

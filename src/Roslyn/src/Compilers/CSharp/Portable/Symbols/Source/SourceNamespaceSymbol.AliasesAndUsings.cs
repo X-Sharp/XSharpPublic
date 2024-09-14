@@ -473,6 +473,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                     foreach (ExternAliasDirectiveSyntax aliasSyntax in syntaxList)
                     {
+#if XSHARP
+                        if (compilation.IsSubmission && !aliasSyntax.ExternKeyword.HasTrailingTrivia)
+                        {
+                            continue;
+                        }
+#endif
                         compilation.RecordImport(aliasSyntax);
                         bool skipInLookup = false;
 
@@ -487,7 +493,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             // some n^2 action, but n should be very small.
                             foreach (var existingAlias in builder)
                             {
+#if XSHARP
+                                if (XSharpString.Equals(existingAlias.Alias.Name, aliasSyntax.Identifier.ValueText))
+#else
                                 if (existingAlias.Alias.Name == aliasSyntax.Identifier.ValueText)
+#endif
                                 {
                                     diagnostics.Add(ErrorCode.ERR_DuplicateAlias, existingAlias.Alias.GetFirstLocation(), existingAlias.Alias.Name);
                                     break;
@@ -693,7 +703,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 // an O(m*n) algorithm here but n (number of extern aliases) will likely be very small.
                                 foreach (var externAlias in externAliases)
                                 {
+#if XSHARP
+                                    if (XSharpString.Equals(externAlias.Alias.Name, identifierValueText))
+#else
                                     if (externAlias.Alias.Name == identifierValueText)
+#endif
                                     {
                                         // The using alias '{0}' appeared previously in this namespace
                                         diagnostics.Add(ErrorCode.ERR_DuplicateAlias, usingDirective.Location, identifierValueText);
@@ -718,6 +732,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             {
                                 if (usingAliasesMap == null)
                                 {
+#if XSHARP
+// TODO nvk: case-insensitive map: usingAliases = ImmutableDictionary.CreateBuilder<string, AliasAndUsingDirective>(new AliasAndUsingDirectiveComparer());
+#endif
                                     usingAliasesMap = globalUsingAliasesMap.ToBuilder();
                                 }
 
@@ -732,6 +749,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 continue;
                             }
 
+#if XSHARP
+                            if (compilation.IsSubmission && !usingDirective.UsingKeyword.HasTrailingTrivia)
+                                continue;
+                            Binder usingsBinder;
+                            if (HandleXSharpImport(usingDirective, usingsBinder, usings, uniqueUsings, basesBeingResolved, compilation))
+                                continue;
+                            declarationBinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
+#endif
                             var flags = BinderFlags.SuppressConstraintChecks;
                             if (usingDirective.UnsafeKeyword != default)
                             {
@@ -776,6 +801,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 }
                                 else if (!getOrCreateUniqueUsings(ref uniqueUsings, globalUsingNamespacesOrTypes).Add(imported))
                                 {
+#if XSHARP
+                                    // No warnings for duplicate usings in XSharp VO Dialect or for generated code
+                                    if (!declarationSyntax.XGenerated && !compilation.Options.HasRuntime) 
+#endif
                                     diagnostics.Add(!globalUsingNamespacesOrTypes.IsEmpty && getOrCreateUniqueGlobalUsingsNotInTree(ref uniqueGlobalUsings, globalUsingNamespacesOrTypes, declarationSyntax.SyntaxTree).Contains(imported) ?
                                                             ErrorCode.HDN_DuplicateWithGlobalUsing :
                                                             ErrorCode.WRN_DuplicateUsing,
@@ -802,6 +831,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                                     if (!getOrCreateUniqueUsings(ref uniqueUsings, globalUsingNamespacesOrTypes).Add(importedType))
                                     {
+#if XSHARP
+                                        // No warnings for duplicate usings in XSharp VO Dialect or for generated code
+                                        if (!declarationSyntax.XGenerated && !compilation.Options.HasRuntime) 
+#endif
                                         diagnostics.Add(!globalUsingNamespacesOrTypes.IsEmpty && getOrCreateUniqueGlobalUsingsNotInTree(ref uniqueGlobalUsings, globalUsingNamespacesOrTypes, declarationSyntax.SyntaxTree).Contains(imported) ?
                                                             ErrorCode.HDN_DuplicateWithGlobalUsing :
                                                             ErrorCode.WRN_DuplicateUsing,

@@ -69,10 +69,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return null;
             }
 #if XSHARP
-            else if (this.IsIndirectlyInIterator && (object)sizeOfTypeOpt == null)
-#else
-#endif
-#if XSHARP
             // only a warning when not compiling for a specific platform 
             else if (!this.InUnsafeRegion && Compilation.Options.Platform != Platform.X86 && Compilation.Options.Platform != Platform.X64 )
 #else
@@ -87,7 +83,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
                     : new CSDiagnosticInfo(ErrorCode.ERR_SizeofUnsafe, sizeOfTypeOpt);
             }
+#if XSHARP
+            else if (this.IsIndirectlyInIterator && (object)sizeOfTypeOpt == null && MessageID.IDS_FeatureRefUnsafeInIteratorAsync.GetFeatureAvailabilityDiagnosticInfo(Compilation) is { } unsafeInIteratorDiagnosticInfo)
+#else
             else if (this.IsIndirectlyInIterator && MessageID.IDS_FeatureRefUnsafeInIteratorAsync.GetFeatureAvailabilityDiagnosticInfo(Compilation) is { } unsafeInIteratorDiagnosticInfo)
+#endif
             {
                 return unsafeInIteratorDiagnosticInfo;
             }

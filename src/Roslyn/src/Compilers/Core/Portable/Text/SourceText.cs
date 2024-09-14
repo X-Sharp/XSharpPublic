@@ -1276,7 +1276,11 @@ namespace Microsoft.CodeAnalysis.Text
                 return maxCharCount;
             }
 
+#if XSHARP
+            throw new IOException(LanguageService.CodeAnalysis.XSharp.XSharpResources.StreamIsTooLong);
+#else
             throw new IOException(CodeAnalysisResources.StreamIsTooLong);
+#endif
         }
     }
 }

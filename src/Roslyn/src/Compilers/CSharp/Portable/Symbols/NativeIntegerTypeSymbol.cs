@@ -137,7 +137,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
+#if XSHARP
+        public override ImmutableArray<Symbol> GetMembers(string name) => GetMembers().WhereAsArray((member, name) => XSharpString.Equals(member.Name, name), name);
+#else
         public override ImmutableArray<Symbol> GetMembers(string name) => GetMembers().WhereAsArray((member, name) => member.Name == name, name);
+#endif
 
         public override ImmutableArray<NamedTypeSymbol> GetTypeMembers() => ImmutableArray<NamedTypeSymbol>.Empty;
 

@@ -40,13 +40,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             private readonly MultiDictionary<string, Symbol> _nameToSymbols = new MultiDictionary<string, Symbol>();
 #endif
 
-            internal AnonymousTypeTemplateSymbol(AnonymousTypeManager manager, AnonymousTypeDescriptor typeDescr) :
-                base(manager, typeDescr.Location)
 #if XSHARP
             private readonly NamedTypeSymbol _baseType;
 
             internal bool IsCodeblock { get; }
 #endif
+            internal AnonymousTypeTemplateSymbol(AnonymousTypeManager manager, AnonymousTypeDescriptor typeDescr) :
+                base(manager, typeDescr.Location)
             {
                 this.TypeDescriptorKey = typeDescr.Key;
 
@@ -120,11 +120,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
 
             internal override string TypeDescriptorKey { get; }
-#if XSHARP
-                    Debug.Assert(oldValue == null ||
-                        (XSharpString.Equals(oldValue.Name, value.Name) && (oldValue.Index == value.Index)));
-#else
-#endif
 
             public override TypeKind TypeKind
             {
@@ -190,8 +185,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
 
 #if XSHARP
+            internal override NamedTypeSymbol GetDeclaredBaseType(ConsList<TypeSymbol> basesBeingResolved)
+            {
                 return _baseType;
-#else
+            }
 #endif
             internal override void AddSynthesizedAttributes(PEModuleBuilder moduleBuilder, ref ArrayBuilder<SynthesizedAttributeData> attributes)
             {

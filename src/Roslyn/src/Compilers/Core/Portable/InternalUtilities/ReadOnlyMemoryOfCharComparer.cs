@@ -19,11 +19,19 @@ namespace Microsoft.CodeAnalysis
         {
         }
 
+#if XSHARP
+        public static bool Equals(ReadOnlySpan<char> x, ReadOnlyMemory<char> y)
+            => XSharpString.Equals(x.ToString(), y.ToString());
+
+        public bool Equals(ReadOnlyMemory<char> x, ReadOnlyMemory<char> y)
+            => XSharpString.Equals(x.ToString(), y.ToString());
+#else
         public static bool Equals(ReadOnlySpan<char> x, ReadOnlyMemory<char> y)
             => x.SequenceEqual(y.Span);
 
         public bool Equals(ReadOnlyMemory<char> x, ReadOnlyMemory<char> y)
             => x.Span.SequenceEqual(y.Span);
+#endif
 
         public int GetHashCode(ReadOnlyMemory<char> obj)
         {

@@ -402,5 +402,10 @@ Global
 		Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{d0bc9be7-24f6-40ca-8dc6-fcb93bd44b34}*SharedItemsImports = 13
 		Roslyn\src\Compilers\Server\VBCSCompiler\VBCSCompilerCommandLine.projitems*{d8ef0777-9d65-4849-a7d6-ac81e58e2317}*SharedItemsImports = 13
 		Roslyn\Src\Dependencies\Collections\Microsoft.CodeAnalysis.Collections.projitems*{e919dd77-34f8-4f57-8058-4d3ff4c2b241}*SharedItemsImports = 13
+		Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{f738fd65-ffaf-4f52-8efc-5affd1c42846}*SharedItemsImports = 5
+		Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems*{f738fd65-ffaf-4f52-8efc-5affd1c42846}*SharedItemsImports = 5
+		Roslyn\Src\Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems*{f738fd65-ffaf-4f52-8efc-5affd1c42846}*SharedItemsImports = 5
+		Roslyn\Src\Dependencies\Collections\Microsoft.CodeAnalysis.Collections.projitems*{f738fd65-ffaf-4f52-8efc-5affd1c42846}*SharedItemsImports = 5
+		Roslyn\Src\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems*{f738fd65-ffaf-4f52-8efc-5affd1c42846}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

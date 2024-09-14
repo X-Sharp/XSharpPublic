@@ -13,9 +13,6 @@ using Microsoft.CodeAnalysis.CSharp.Emit;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
-#if XSHARP
-using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
-#endif
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
@@ -50,20 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                  modifiersAndFlags)
         {
             _name = name;
-#if XSHARP
-                    // additional checks to see if we are overriding clipper with non clipper etc.
-                    overriddenOrExplicitlyImplementedMethod = validateMethod(overriddenOrExplicitlyImplementedMethod, diagnostics, location);
-
-#else
-#endif
         }
-#if XSHARP
-                if (this.HasClipperCallingConvention() != overriddenOrExplicitlyImplementedMethod.HasClipperCallingConvention())
-                {
-                    diagnostics.Add(ErrorCode.ERR_InterfaceImplementationDifferentCallingConvention, Locations[0], this,overriddenOrExplicitlyImplementedMethod);
-                    overriddenOrExplicitlyImplementedMethod = null;
-                }
-#endif
 
         protected sealed override void LazyAsyncMethodChecks(CancellationToken cancellationToken)
         {
@@ -116,32 +100,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal abstract override OneOrMany<SyntaxList<AttributeListSyntax>> GetAttributeDeclarations();
 
-#if XSHARP
-            else if (IsOverride && IsNew)
-#else
-#endif
-#if !XSHARP // TODO nvk: Possibly add this check after the other errors have been added, only if /vo3 is not used (it is a warning in X#)
-#endif
-#if XSHARP
-                var syntax = this.DeclaringSyntaxReferences[0].GetSyntax();
-                bool wasExplicitVirtual = !this.DeclaringCompilation.Options.VirtualInstanceMethods;
-                var node = syntax.XNode;
-                if (node is not XP.IMemberContext ent)
-                {
-                    ent = node.GetChild(0) as XP.IMemberContext;
-                }
-                if (ent != null)
-                {
-                    wasExplicitVirtual = ent.Data.HasExplicitVirtual;
-                }
-                // Disable warning when compiling with /vo3
-                if (wasExplicitVirtual)
-                {
-                   // '{0}' is a new virtual member in sealed type '{1}'
-                   diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);
-                }
-#else
-#endif
         internal override void AddSynthesizedAttributes(PEModuleBuilder moduleBuilder, ref ArrayBuilder<SynthesizedAttributeData> attributes)
         {
             base.AddSynthesizedAttributes(moduleBuilder, ref attributes);

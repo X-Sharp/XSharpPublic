@@ -2112,6 +2112,12 @@ namespace Microsoft.Cci
             foreach (var parent in parentList)
             {
                 if (parent.IsEncDeleted)
+                {
+                    // Custom attributes are not needed for EnC definition deletes
+                    continue;
+                }
+
+                EntityHandle parentHandle = getDefinitionHandle(parent);
 #if XSHARP
                 var attribs = parent.GetAttributes(Context);
                 if (parent is SourceConstructorSymbol)
@@ -2119,19 +2125,10 @@ namespace Microsoft.Cci
                     var ctorSym = parent as SourceConstructorSymbol;
                     attribs = ctorSym.GetConstructorAttributes(attribs);
                 }
-                foreach (ICustomAttribute customAttribute in attribs)
-                {
-                    AddCustomAttributeToTable(parentHandle, customAttribute);
-                }
+                AddCustomAttributesToTable(parentHandle, attribs);
 #else
-                {
-                    // Custom attributes are not needed for EnC definition deletes
-                    continue;
-#endif
-                }
-
-                EntityHandle parentHandle = getDefinitionHandle(parent);
                 AddCustomAttributesToTable(parentHandle, parent.GetAttributes(Context));
+#endif
             }
         }
 
@@ -3425,10 +3422,10 @@ namespace Microsoft.Cci
 
 #if XSHARP
 #if DEBUG
-                // Vulcan parameters for Eval() have IsConst modifier !
-                Debug.Assert(parameterTypeInformation.RefCustomModifiers.Length == 0 || parameterTypeInformation.IsByReference  
-                    || (parameterTypeInformation is ParameterSymbolAdapter psa && 
-                        psa.AdaptedParameterSymbol is AnonymousTypeManager.CodeBlockEvalMethodParameterSymbol));
+            // Vulcan parameters for Eval() have IsConst modifier !
+            Debug.Assert(parameterTypeInformation.RefCustomModifiers.Length == 0 || parameterTypeInformation.IsByReference
+                || (parameterTypeInformation is ParameterSymbolAdapter psa && 
+                    psa.AdaptedParameterSymbol is AnonymousTypeManager.CodeBlockEvalMethodParameterSymbol));
 #endif
 #else
             Debug.Assert(parameterTypeInformation.RefCustomModifiers.Length == 0 || parameterTypeInformation.IsByReference);

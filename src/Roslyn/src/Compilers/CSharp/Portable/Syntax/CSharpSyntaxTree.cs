@@ -687,10 +687,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </returns>
         /// <remarks>The values are not affected by line mapping directives (<c>#line</c>).</remarks>
         public override FileLinePositionSpan GetLineSpan(TextSpan span, CancellationToken cancellationToken = default)
-            => new(FilePath, GetLinePosition(span.Start, cancellationToken), GetLinePosition(span.End, cancellationToken));
 #if XSHARP
-            return GetXNodeSpan(span);
+            => GetXNodeSpan(span);
 #else
+            => new(FilePath, GetLinePosition(span.Start, cancellationToken), GetLinePosition(span.End, cancellationToken));
 #endif
 
         /// <summary>
@@ -710,16 +710,16 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </para>
         /// </returns>
         public override FileLinePositionSpan GetMappedLineSpan(TextSpan span, CancellationToken cancellationToken = default)
-            => GetDirectiveMap().TranslateSpan(GetText(cancellationToken), this.FilePath, span);
 #if XSHARP
-            return GetXNodeSpan(span);
+            => GetXNodeSpan(span);
 #else
+            => GetDirectiveMap().TranslateSpan(GetText(cancellationToken), this.FilePath, span);
 #endif
 
         /// <inheritdoc/>
         public override LineVisibility GetLineVisibility(int position, CancellationToken cancellationToken = default)
 #if XSHARP
-            => return GetXNodeVisibility(position);
+            => GetXNodeVisibility(position);
 #else
             => GetDirectiveMap().GetLineVisibility(GetText(cancellationToken), position);
 
@@ -741,11 +741,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// <param name="isHiddenPosition">When the method returns, contains a boolean value indicating whether this span is considered hidden or not.</param>
         /// <returns>A resulting <see cref="FileLinePositionSpan"/>.</returns>
         internal override FileLinePositionSpan GetMappedLineSpanAndVisibility(TextSpan span, out bool isHiddenPosition)
-            => GetDirectiveMap().TranslateSpanAndVisibility(GetText(), FilePath, span, out isHiddenPosition);
 #if XSHARP
+        {
             isHiddenPosition = GetXNodeVisibility(span.Start) == LineVisibility.Hidden;
             return GetXNodeSpan(span);
+        }
 #else
+            => GetDirectiveMap().TranslateSpanAndVisibility(GetText(), FilePath, span, out isHiddenPosition);
 #endif
 
         /// <summary>
@@ -811,10 +813,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         private GeneratedKind _lazyIsGeneratedCode = GeneratedKind.Unknown;
 
         private LinePosition GetLinePosition(int position, CancellationToken cancellationToken)
-            => GetText(cancellationToken).Lines.GetLinePosition(position);
 #if XSHARP
-            return GetXNodePosition(position);
+            => GetXNodePosition(position);
 #else
+            => GetText(cancellationToken).Lines.GetLinePosition(position);
 #endif
 
         /// <summary>

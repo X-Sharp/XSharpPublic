@@ -95,22 +95,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return (properties, members, specialMembers);
         }
 
-        internal (ImmutableArray<Symbol>, ImmutableArray<AnonymousTypePropertySymbol>, AnonymousTypeDescriptor)
+        internal AnonymousTypeDescriptor
             CreateCodeBlockType(AnonymousTypePublicSymbol codeblockSymbol, TypeSymbol[] codeblockParams,
-            Location location, MultiDictionary<string, Symbol> nameToSymbols)
+            Location location, MultiDictionary<string, Symbol> nameToSymbols, out ImmutableArray<Symbol> amembers, out ImmutableArray<AnonymousTypePropertySymbol> properties)
         {
             Debug.Assert(codeblockParams.Length > 0);
 
             var fields = ArrayBuilder<AnonymousTypeField>.GetInstance(codeblockParams.Length + 2);
             for (int i = 0; i < codeblockParams.Length; i++)
             {
-                fields.Add(new AnonymousTypeField(XSharpSpecialNames.CodeBlockParameter + i, location, TypeWithAnnotations.Create(codeblockParams[i])));
+                fields.Add(new AnonymousTypeField(XSharpSpecialNames.CodeBlockParameter + i, location, TypeWithAnnotations.Create(codeblockParams[i]), RefKind.None, ScopedKind.None));
             }
             var typeDescriptor = new AnonymousTypeDescriptor(fields.ToImmutable(), location);
             var codeblockDelegate = SynthesizeDelegate(codeblockParams.Length - 1, default, false, 0).Construct(codeblockParams);
-            var lambda = new AnonymousTypeField(XSharpSpecialNames.CodeBlockLambda, location, TypeWithAnnotations.Create(codeblockDelegate));
-            var source = new AnonymousTypeField(XSharpSpecialNames.CodeBlockSource, location, TypeWithAnnotations.Create(System_String));
-            var properties = new[] {
+            var lambda = new AnonymousTypeField(XSharpSpecialNames.CodeBlockLambda, location, TypeWithAnnotations.Create(codeblockDelegate), RefKind.None, ScopedKind.None);
+            var source = new AnonymousTypeField(XSharpSpecialNames.CodeBlockSource, location, TypeWithAnnotations.Create(System_String), RefKind.None, ScopedKind.None);
+            properties = new[] {
                     new AnonymousTypePropertySymbol(codeblockSymbol, lambda,0),
                     new AnonymousTypePropertySymbol(codeblockSymbol, source,0)
                 }.AsImmutableOrNull();
@@ -122,7 +122,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             members[memberIndex++] = new AnonymousTypeConstructorSymbol(codeblockSymbol, properties);
             members[memberIndex++] = new CodeblockEvalMethod(codeblockSymbol);
 
-            var amembers = members.AsImmutableOrNull();
+            amembers = members.AsImmutableOrNull();
             Debug.Assert(memberIndex == members.Length);
 
             //  fill nameToSymbols map
@@ -131,7 +131,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 nameToSymbols.Add(symbol.Name, symbol);
             }
 
-            return (amembers, properties, typeDescriptor);
+            return typeDescriptor;
 
         }
     }

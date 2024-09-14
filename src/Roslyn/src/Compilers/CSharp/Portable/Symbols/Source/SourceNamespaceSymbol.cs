@@ -253,9 +253,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // NOTE: type of the array, see comments in MakeNameToMembersMap() for details
                 Interlocked.CompareExchange(
                     ref _nameToTypeMembersMap,
+#if XSHARP
+                    ImmutableArrayExtensions.GetTypesFromMemberMap<ReadOnlyMemory<char>, NamespaceOrTypeSymbol, NamedTypeSymbol>(
+                        GetNameToMembersMap(), XSharpString.Comparer),
+                    comparand: null);
+#else
                     ImmutableArrayExtensions.GetTypesFromMemberMap<ReadOnlyMemory<char>, NamespaceOrTypeSymbol, NamedTypeSymbol>(
                         GetNameToMembersMap(), ReadOnlyMemoryOfCharComparer.Instance),
                     comparand: null);
+#endif
             }
 
             return _nameToTypeMembersMap;
@@ -263,10 +269,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         private Dictionary<ReadOnlyMemory<char>, ImmutableArray<NamespaceOrTypeSymbol>> MakeNameToMembersMap(BindingDiagnosticBag diagnostics)
         {
-#if XSHARP
-            var dictionary = new Dictionary<string, ImmutableArray<NamedTypeSymbol>>(XSharpString.Comparer);
-#else
-#endif
             // NOTE: Even though the resulting map stores ImmutableArray<NamespaceOrTypeSymbol> as
             // NOTE: values if the name is mapped into an array of named types, which is frequently
             // NOTE: the case, we actually create an array of NamedTypeSymbol[] and wrap it in
@@ -504,13 +506,5 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             return false;
         }
-#if XSHARP
-                _dictionary = new Dictionary<string, object>(capacity, XSharpString.Comparer);
-#else
-#endif
-#if XSHARP
-                var result = new Dictionary<String, ImmutableArray<NamespaceOrTypeSymbol>>(_dictionary.Count, XSharpString.Comparer);
-#else
-#endif
     }
 }

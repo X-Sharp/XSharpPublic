@@ -182,21 +182,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 _name = _lazySourceName = memberName;
             }
 #if XSHARP
-            _sourceName = memberName;
+            _lazySourceName = memberName;
             // For indexed properties the name is in the ThisKeyword
             // For SELF properties the ThisKeyword has an empty name
             if (syntax is IndexerDeclarationSyntax ids && IsIndexedProperty)
             {
-                _sourceName = ids.ThisKeyword.ValueText;
+                _lazySourceName = ids.ThisKeyword.ValueText;
             }
             if (_isIndexedProperty)
             {
                 // Check to see if we have an explicit interface
-                _name = ExplicitInterfaceHelpers.GetMemberName(_sourceName, _explicitInterfaceType, aliasQualifierOpt);
+                _name = ExplicitInterfaceHelpers.GetMemberName(_lazySourceName, _explicitInterfaceType, aliasQualifierOpt);
             }
             else
             {
-                _name = isIndexer ? ExplicitInterfaceHelpers.GetMemberName(WellKnownMemberNames.Indexer, _explicitInterfaceType, aliasQualifierOpt) : _sourceName;
+                _name = isIndexer ? ExplicitInterfaceHelpers.GetMemberName(WellKnownMemberNames.Indexer, _explicitInterfaceType, aliasQualifierOpt) : _lazySourceName;
             }
 #endif
 
@@ -215,18 +215,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 _getMethod = CreateGetAccessorSymbol(isAutoPropertyAccessor: isAutoProperty, diagnostics);
             }
-#if XSHARP
-        internal virtual void validateProperty(PropertySymbol overriddenProperty, DiagnosticBag diagnostics)
-        {
-            // implemented in SourcePropertySymbol
-        }
-#endif
 
             if (hasSetAccessor)
             {
                 _setMethod = CreateSetAccessorSymbol(isAutoPropertyAccessor: isAutoProperty, diagnostics);
             }
         }
+
+#if XSHARP
+        internal virtual void validateProperty(PropertySymbol overriddenProperty, DiagnosticBag diagnostics)
+        {
+            // implemented in SourcePropertySymbol
+        }
+#endif
 
         private void EnsureSignatureGuarded(BindingDiagnosticBag diagnostics)
         {
@@ -272,7 +273,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     string interfacePropertyName;
                     if (_isIndexedProperty)
                     {
-                        interfacePropertyName = _sourceName;
+                        interfacePropertyName = _lazySourceName;
                     }
                     else if (IsIndexer)
                     {

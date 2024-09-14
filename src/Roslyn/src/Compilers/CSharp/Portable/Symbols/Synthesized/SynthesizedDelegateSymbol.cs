@@ -11,13 +11,6 @@ using Roslyn.Utilities;
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal sealed class SynthesizedDelegateConstructor : SynthesizedInstanceConstructor
-#if XSHARP
-            return
-                XSharpString.Equals(name, _constructor.Name) ? ImmutableArray.Create<Symbol>(_constructor) :
-                XSharpString.Equals(name, _invoke.Name) ? ImmutableArray.Create<Symbol>(_invoke) :
-                ImmutableArray<Symbol>.Empty;
-#else
-#endif
     {
         private readonly ImmutableArray<ParameterSymbol> _parameters;
 

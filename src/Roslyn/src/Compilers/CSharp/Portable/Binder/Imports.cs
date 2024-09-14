@@ -81,28 +81,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         }
 
-#if XSHARP
-                                if (XSharpString.Equals(externAlias.Alias.Name, identifierValueText))
-#else
-#endif
-#if XSHARP
-                                usingAliases = ImmutableDictionary.CreateBuilder<string, AliasAndUsingDirective>(new AliasAndUsingDirectiveComparer());
-#else
-#endif
-#if XSHARP
-                        if (compilation.IsSubmission && !usingDirective.UsingKeyword.HasTrailingTrivia)
-                            continue;
-                        if (HandleXSharpImport(usingDirective,usingsBinder, usings, uniqueUsings, basesBeingResolved, compilation))
-                            continue;
-#endif
-#if XSHARP
-                                // No warnings for duplicate usings in XSharp VO Dialect or for generated code
-                                if (!declarationSyntax.XGenerated && !compilation.Options.HasRuntime)
-#endif
-#if XSHARP
-                                    // No warnings for duplicate usings in XSharp VO Dialect or for generated code
-                                    if (!declarationSyntax.XGenerated && !compilation.Options.HasRuntime) 
-#endif
         // TODO (https://github.com/dotnet/roslyn/issues/5517): skip namespace expansion if references haven't changed.
         internal static Imports ExpandPreviousSubmissionImports(Imports previousSubmissionImports, CSharpCompilation newSubmission)
         {
@@ -253,20 +231,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             return externs1.WhereAsArray((e, replacedExternAliases) => !replacedExternAliases.Contains(e.Alias.Name), replacedExternAliases).AddRange(externs2);
         }
 
-#if XSHARP
-                if (compilation.IsSubmission && !aliasSyntax.ExternKeyword.HasTrailingTrivia)
-                {
-                    continue;
-                }
-#endif
-#if XSHARP
-                    if (XSharpString.Equals(existingAlias.Alias.Name, aliasSyntax.Identifier.ValueText))
-#else
-#endif
-#if XSHARP
-                if (XSharpString.Equals(a.Alias.Name, name))
-#else
-#endif
         private class UsingTargetComparer : IEqualityComparer<NamespaceOrTypeAndUsingDirective>
         {
             public static readonly IEqualityComparer<NamespaceOrTypeAndUsingDirective> Instance = new UsingTargetComparer();

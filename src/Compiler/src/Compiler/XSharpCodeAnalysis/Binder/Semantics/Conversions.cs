@@ -53,9 +53,9 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     internal sealed partial class Conversions
     {
-        public override bool HasBoxingConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        public override bool HasBoxingConversion(TypeSymbol source, TypeSymbol destination, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
         {
-            bool result = base.HasBoxingConversion(source, destination, ref useSiteDiagnostics);
+            bool result = base.HasBoxingConversion(source, destination, ref useSiteInfo);
 
             if (!result && _binder.Compilation.Options.HasRuntime && destination is { } && source is NamedTypeSymbol)
             {
@@ -70,7 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             && !destFrom.IsArrayType()
                             && !destFrom.IsCodeblockType()
                             && !destination.IsIFormatProvider()
-                            && destFrom.IsDerivedFrom(_binder.Compilation.CodeBlockType(), TypeCompareKind.IgnoreDynamicAndTupleNames, ref useSiteDiagnostics) != true
+                            && destFrom.IsDerivedFrom(_binder.Compilation.CodeBlockType(), TypeCompareKind.IgnoreDynamicAndTupleNames, ref useSiteInfo) != true
                             && !IsClipperArgsType(destination);
                     }
                     else if (destination.IsPointerType())
@@ -132,9 +132,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return ConversionKind.NoConversion;
         }
 
-        public override LambdaConversionResult IsAnonymousFunctionCompatibleWithType(UnboundLambda anonymousFunction, TypeSymbol type)
+        public override LambdaConversionResult IsAnonymousFunctionCompatibleWithType(UnboundLambda anonymousFunction, TypeSymbol type, CSharpCompilation compilation)
         {
-            var res = base.IsAnonymousFunctionCompatibleWithType(anonymousFunction, type);
+            var res = base.IsAnonymousFunctionCompatibleWithType(anonymousFunction, type, compilation);
 
             if (res == LambdaConversionResult.BadTargetType && _binder.Compilation.Options.HasRuntime)
             {

@@ -176,6 +176,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return (modifiers & (DeclarationModifiers.Abstract | DeclarationModifiers.Virtual | DeclarationModifiers.Override)) != 0;
             }
 
+#if XSHARP
+            internal void SetDeclarationModifiers(bool isExplicitInterfaceImplementation, DeclarationModifiers declarationModifiers)
+            {
+                bool isMetadataVirtual = (isExplicitInterfaceImplementation && (declarationModifiers & DeclarationModifiers.Static) == 0) || ModifiersRequireMetadataVirtual(declarationModifiers);
+                if (isMetadataVirtual)
+                    ThreadSafeFlagOperations.Set(ref _flags, IsMetadataVirtualIgnoringInterfaceChangesBit | IsMetadataVirtualBit);
+                else
+                    ThreadSafeFlagOperations.Clear(ref _flags, IsMetadataVirtualIgnoringInterfaceChangesBit | IsMetadataVirtualBit);
+            }
+#endif
             public Flags(
                 MethodKind methodKind,
                 RefKind refKind,

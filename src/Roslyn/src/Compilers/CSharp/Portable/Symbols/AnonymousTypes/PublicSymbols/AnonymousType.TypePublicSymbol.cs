@@ -69,15 +69,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
             }
 
-            internal override NamedTypeSymbol MapToImplementationSymbol()
 #if XSHARP
             // Additional constructor, used by codeblock subclass
-            protected AnonymousTypePublicSymbol(AnonymousTypeManager manager, TypeSymbol[] codeblockParams, Location location)
+            internal AnonymousTypePublicSymbol(AnonymousTypeManager manager, TypeSymbol[] codeblockParams, Location location) :
+                base(manager, null)
             {
-                this.Manager = manager;
-                (_members, Properties, TypeDescriptor) = manager.CreateCodeBlockType(this, codeblockParams, location, _nameToSymbols);
+                TypeDescriptor = manager.CreateCodeBlockType(this, codeblockParams, location, _nameToSymbols, out _members, out Properties);
             }
 #endif
+            internal override NamedTypeSymbol MapToImplementationSymbol()
             {
                 return Manager.ConstructAnonymousTypeImplementationSymbol(this);
             }

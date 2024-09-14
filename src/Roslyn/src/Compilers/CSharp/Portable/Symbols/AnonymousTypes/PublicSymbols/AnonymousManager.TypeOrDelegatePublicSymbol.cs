@@ -54,7 +54,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return this.GetMembers(name);
             }
 
+#if XSHARP
+            public override Symbol ContainingSymbol
+#else
             public sealed override Symbol ContainingSymbol
+#endif
             {
                 get { return this.Manager.Compilation.SourceModule.GlobalNamespace; }
             }
@@ -253,7 +257,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return AttributeUsageInfo.Null;
             }
 
+#if XSHARP
+            internal override NamedTypeSymbol GetDeclaredBaseType(ConsList<TypeSymbol> basesBeingResolved)
+#else
             internal sealed override NamedTypeSymbol GetDeclaredBaseType(ConsList<TypeSymbol> basesBeingResolved)
+#endif
             {
                 return BaseTypeNoUseSiteDiagnostics;
             }

@@ -255,6 +255,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return Cci.TypeMemberVisibility.Public;
 
                     case Accessibility.Private:
+#if XSHARP
+                        // Allow private structs and classes and treat them as internal
+                        if (symbol.ContainingType is null)
+                        {
+                            if (symbol.ContainingAssembly.IsInteractive)
+                            {
+                                // top-level or nested internal member:
+                                return Cci.TypeMemberVisibility.Public;
+                            }
+                            else
+                            {
+                                return Cci.TypeMemberVisibility.Assembly;
+                            }
+                        }
+#endif
                         if (ContainingType?.TypeKind == TypeKind.Submission)
                         {
                             // top-level private member:

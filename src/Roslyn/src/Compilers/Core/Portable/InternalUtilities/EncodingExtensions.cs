@@ -9,10 +9,6 @@ namespace Microsoft.CodeAnalysis
 {
     internal static partial class EncodingExtensions
     {
-#if XSHARP
-            throw new IOException(LanguageService.CodeAnalysis.XSharp.XSharpResources.StreamIsTooLong);
-#else
-#endif
         internal static bool TryGetMaxCharCount(this Encoding encoding, long length, out int maxCharCount)
         {
             maxCharCount = 0;

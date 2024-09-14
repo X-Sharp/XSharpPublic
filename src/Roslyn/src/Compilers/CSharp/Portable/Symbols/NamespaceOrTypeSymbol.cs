@@ -19,8 +19,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     /// </summary>
     internal abstract class NamespaceOrTypeSymbol : Symbol, INamespaceOrTypeSymbolInternal
     {
+#if XSHARP
+        protected static readonly ObjectPool<PooledDictionary<ReadOnlyMemory<char>, object>> s_nameToObjectPool =
+            PooledDictionary<ReadOnlyMemory<char>, object>.CreatePool(XSharpString.Comparer);
+#else
         protected static readonly ObjectPool<PooledDictionary<ReadOnlyMemory<char>, object>> s_nameToObjectPool =
             PooledDictionary<ReadOnlyMemory<char>, object>.CreatePool(ReadOnlyMemoryOfCharComparer.Instance);
+#endif
 
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // Changes to the public interface of this class should remain synchronized with the VB version.

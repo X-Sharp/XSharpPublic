@@ -565,11 +565,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             ImmutableArray<BoundExpression> arguments,
             ImmutableArray<RefKind> refKinds,
             BindingDiagnosticBag diagnostics,
-            CSharpSyntaxNode? queryClause)
 #if XSHARP
-			CSharpSyntaxNode queryClause, 
+            CSharpSyntaxNode? queryClause,
             bool lateBound = false)
 #else
+            CSharpSyntaxNode? queryClause)
 #endif
         {
             bool hasErrors = false;

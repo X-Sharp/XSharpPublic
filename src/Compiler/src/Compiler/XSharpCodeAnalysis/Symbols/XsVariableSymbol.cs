@@ -101,6 +101,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal override bool MustCallMethodsDirectly => true;
 
         internal override ObsoleteAttributeData ObsoleteAttributeData => throw new System.NotImplementedException();
+
+        internal override bool IsRequired => false;
+
+        internal override bool HasUnscopedRefAttribute => false;
+
         internal new string GetDebuggerDisplay()
         {
             if (string.IsNullOrEmpty(Alias))

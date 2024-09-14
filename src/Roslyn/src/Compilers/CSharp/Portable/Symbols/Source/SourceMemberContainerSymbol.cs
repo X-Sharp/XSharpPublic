@@ -1365,11 +1365,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 Debug.Assert(s_emptyTypeMembers.Count == 0);
                 return symbols.Count > 0 ?
-#if XSHARP
-					symbols.ToDictionary(s => s.Name.AsMemory(), XSharpString.Comparer) : 
-#else
                     symbols.ToDictionary(s => s.Name.AsMemory(), ReadOnlyMemoryOfCharComparer.Instance) :
-#endif
                     s_emptyTypeMembers;
             }
             finally
@@ -1589,25 +1585,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 if (!membersAndInitializers.HaveIndexers)
                 {
-#if XSHARP
-                    membersByName = membersAndInitializers.NonTypeNonIndexerMembers.ToDictionary(s => s.Name, XSharpString.Comparer);
-#else
                     membersByName = ToNameKeyedDictionary(membersAndInitializers.NonTypeMembers);
-#endif
                 }
                 else
                 {
                     // We can't include indexer symbol yet, because we don't know
                     // what name it will have after attribute binding (because of
                     // IndexerNameAttribute).
-#if XSHARP
-TODO nvk!
                     membersByName = ToNameKeyedDictionary(membersAndInitializers.NonTypeMembers.
                         WhereAsArray(s => !s.IsIndexer() && (!s.IsAccessor() || ((MethodSymbol)s).AssociatedSymbol?.IsIndexer() != true)));
-#else
-                    membersByName = ToNameKeyedDictionary(membersAndInitializers.NonTypeMembers.
-                        WhereAsArray(s => !s.IsIndexer() && (!s.IsAccessor() || ((MethodSymbol)s).AssociatedSymbol?.IsIndexer() != true)));
-#endif
                 }
 
                 AddNestedTypesToDictionary(membersByName, GetTypeMembersDictionary());
@@ -2891,7 +2877,7 @@ TODO nvk!
 #if XSHARP
             if ((this as SourceNamedTypeSymbol)?.IsSourceVoStructOrUnion == true && DeclaringCompilation.Options.HasRuntime)
             {
-                foreach (var m in membersAndInitializers.NonTypeNonIndexerMembers)
+                foreach (var m in membersAndInitializers.NonTypeMembers)
                 {
                     if (m.Kind == SymbolKind.Field)
                     {
@@ -3542,7 +3528,11 @@ TODO nvk!
                     continue;
                 }
 
+#if XSHARP
+                if (XSharpString.Equals(member.Name, name))
+#else
                 if (member.Name == name)
+#endif
                 {
                     memberBuilder ??= ArrayBuilder<Symbol>.GetInstance(types.Length + 1);
                     memberBuilder.Add(member);
@@ -3687,12 +3677,7 @@ TODO nvk!
 
             //key and value will be the same object
 
-#if XSHARP
-TODO nvk!
-			var membersBySignature = new Dictionary<Symbol, Symbol>(XSharpString.Comparer);
-#else
             var membersBySignature = new Dictionary<Symbol, Symbol>(MemberSignatureComparer.PartialMethodsComparer);
-#endif
 
             foreach (var name in memberNames)
             {

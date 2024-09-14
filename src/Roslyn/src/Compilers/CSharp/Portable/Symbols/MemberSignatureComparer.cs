@@ -68,7 +68,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             considerTypeConstraints: false, // constraints are checked by caller instead
             considerCallingConvention: true,
 #if XSHARP
-            considerRefKindDifferences: false,
+            refKindCompareMode: RefKindCompareMode.DoNotConsiderDifferences | RefKindCompareMode.AllowRefReadonlyVsInMismatch,
 #else
             refKindCompareMode: RefKindCompareMode.ConsiderDifferences | RefKindCompareMode.AllowRefReadonlyVsInMismatch,
 #endif
@@ -463,11 +463,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #endif
             }
 
-            // NB: up to, and including, this check, we have not actually forced the (type) parameters
-            // to be expanded - we're only using the counts.
-            if (_considerArity && (member1.GetMemberArity() != member2.GetMemberArity()))
 #if XSHARP
-            if (arity != member2.GetMemberArity())
+            if (_considerArity && (member1.GetMemberArity() != member2.GetMemberArity()))
                 return false;
             // When one or both are clipper then we see it as a match. We will report an error later
             if (member1.HasClipperCallingConvention() || member2.HasClipperCallingConvention())
@@ -478,6 +475,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             if (!TypeSymbol.Equals(member1.ContainingType,member2.ContainingType) && (member1.ContainingType.TypesChanged() || member2.ContainingType.TypesChanged()))
                 return true;
 #else
+            // NB: up to, and including, this check, we have not actually forced the (type) parameters
+            // to be expanded - we're only using the counts.
+            if (_considerArity && (member1.GetMemberArity() != member2.GetMemberArity()))
             {
                 return false;
             }
@@ -502,8 +502,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 compareKind |= TypeCompareKind.IgnoreCustomModifiersAndArraySizesAndLowerBounds;
             }
-            if (member1.GetParameterCount() > 0 && !HaveSameParameterTypes(member1.GetParameters(), typeMap1, member2.GetParameters(), typeMap2,
-                                                                           _considerRefKindDifferences, compareKind ))
+            if (member1.GetParameterCount() > 0 && !HaveSameParameterTypes(member1.GetParameters().AsSpan(), typeMap1, member2.GetParameters().AsSpan(), typeMap2,
+                                                                           _refKindCompareMode, compareKind))
 #else
             if (member1.GetParameterCount() > 0 && !HaveSameParameterTypes(member1.GetParameters().AsSpan(), typeMap1, member2.GetParameters().AsSpan(), typeMap2,
                                                                            _refKindCompareMode, _typeComparison))

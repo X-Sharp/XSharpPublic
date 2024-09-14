@@ -79,8 +79,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {
                     Debug.Assert(value != null);
                     var oldValue = Interlocked.CompareExchange(ref _nameAndIndex, value, null);
+#if XSHARP
+                    Debug.Assert(oldValue == null ||
+                        (XSharpString.Equals(oldValue.Name, value.Name) && (oldValue.Index == value.Index)));
+#else
                     Debug.Assert(oldValue == null ||
                         ((oldValue.Name == value.Name) && (oldValue.Index == value.Index)));
+#endif
                 }
             }
 
@@ -229,7 +234,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             internal abstract override NamedTypeSymbol BaseTypeNoUseSiteDiagnostics { get; }
 
+#if XSHARP
+            internal override NamedTypeSymbol GetDeclaredBaseType(ConsList<TypeSymbol> basesBeingResolved)
+#else
             internal sealed override NamedTypeSymbol GetDeclaredBaseType(ConsList<TypeSymbol> basesBeingResolved)
+#endif
             {
                 return this.Manager.System_Object;
             }

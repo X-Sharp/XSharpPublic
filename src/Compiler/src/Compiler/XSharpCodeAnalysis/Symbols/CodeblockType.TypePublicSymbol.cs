@@ -124,7 +124,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
             }
 
-            internal override void GenerateMethodBody(TypeCompilationState compilationState, DiagnosticBag diagnostics)
+            internal override void GenerateMethodBody(TypeCompilationState compilationState, BindingDiagnosticBag diagnostics)
             {
                 AnonymousTypeManager manager = ((AnonymousTypeTemplateSymbol)this.ContainingType).Manager;
                 SyntheticBoundNodeFactory F = this.CreateBoundNodeFactory(compilationState, diagnostics);
@@ -171,9 +171,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal sealed class CodeBlockEvalMethodParameterSymbol: SynthesizedParameterSymbolBase
+        internal sealed class CodeBlockEvalMethodParameterSymbol : SynthesizedParameterSymbolBase
         {
-            ImmutableArray<CustomModifier> _customModifiers;
+            readonly ImmutableArray<CustomModifier> _customModifiers;
 
             public CodeBlockEvalMethodParameterSymbol(
                 MethodSymbol container,
@@ -182,13 +182,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 RefKind refKind,
                 string name = "",
                 ImmutableArray<CustomModifier> customModifiers = default)
-                    : base(container, type, ordinal, refKind, name)
+                    : base(container, type, ordinal, refKind, ScopedKind.None, name)
             {
                 _customModifiers = customModifiers;
 
             }
 
-            public override bool IsParams
+            public override bool IsParamsArray
             {
                 get { return true; }
             }
@@ -205,6 +205,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     return null;
                 }
             }
+
+            internal override bool IsMetadataIn => RefKind is RefKind.In or RefKind.RefReadOnlyParameter;
+
+            internal override bool IsMetadataOut => RefKind is RefKind.Out;
+
+            internal override bool HasUnscopedRefAttribute => false;
+
             internal sealed override void AddSynthesizedAttributes(Emit.PEModuleBuilder modulebuilder, ref ArrayBuilder<SynthesizedAttributeData> attributes)
             {
                 base.AddSynthesizedAttributes(modulebuilder, ref attributes);

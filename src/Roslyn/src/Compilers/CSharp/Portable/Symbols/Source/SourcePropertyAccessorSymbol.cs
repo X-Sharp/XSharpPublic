@@ -240,12 +240,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 // Private accessors cannot be virtual.
                 declarationModifiers &= ~DeclarationModifiers.Virtual;
-#if XSHARP
-                else
-                {
-                    this.RemoveModifier(DeclarationModifiers.Override);
-                }
-#endif
             }
 
             // ReturnsVoid property is overridden in this class so
@@ -306,7 +300,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         this.RemoveModifier(DeclarationModifiers.Override);
                     }
 
-                    flags = new Flags(flags.MethodKind, this.DeclarationModifiers , this.ReturnsVoid, flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual(true));
+                    flags.SetDeclarationModifiers(this.IsExplicitInterfaceImplementation, this.DeclarationModifiers);
                 }
 #endif
             }
@@ -753,6 +747,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             // We should copy the name so that the runtime will recognize this as an override.
                             name = overriddenMethod.Name;
                         }
+#if XSHARP
+                        else
+                        {
+                            this.RemoveModifier(DeclarationModifiers.Override);
+                        }
+#endif
                     }
 
                     if (name is null)

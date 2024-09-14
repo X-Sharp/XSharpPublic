@@ -226,7 +226,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             public override ImmutableArray<Symbol> GetMembers() => _members;
 
+#if XSHARP
+            public override ImmutableArray<Symbol> GetMembers(string name) => GetMembers().WhereAsArray((member, name) => XSharpString.Equals(member.Name, name), name);
+#else
             public override ImmutableArray<Symbol> GetMembers(string name) => GetMembers().WhereAsArray((member, name) => member.Name == name, name);
+#endif
 
             internal override IEnumerable<FieldSymbol> GetFieldsToEmit() => SpecializedCollections.EmptyEnumerable<FieldSymbol>();
 

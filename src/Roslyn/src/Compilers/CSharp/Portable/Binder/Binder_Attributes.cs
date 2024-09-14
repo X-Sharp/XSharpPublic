@@ -767,10 +767,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             return reorderedArguments.AsImmutable();
         }
 
-#if XSHARP
-                if (XSharpString.Equals(name, parameterName))
-#else
-#endif
         #endregion
 
         #region AttributeExpressionVisitor

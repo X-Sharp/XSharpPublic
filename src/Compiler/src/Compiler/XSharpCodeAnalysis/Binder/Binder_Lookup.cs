@@ -22,18 +22,18 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// <remarks>
         /// Makes a second attempt if the results are not viable, in order to produce more detailed failure information (symbols and diagnostics).
         /// </remarks>
-        private Binder XSLookupSymbolsWithFallback(LookupResult result, string name, int arity, ref HashSet<DiagnosticInfo> useSiteDiagnostics, ConsList<TypeSymbol> basesBeingResolved = null, LookupOptions options = LookupOptions.Default)
+        private Binder XSLookupSymbolsWithFallback(LookupResult result, string name, int arity, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo, ConsList<TypeSymbol> basesBeingResolved = null, LookupOptions options = LookupOptions.Default)
         {
             Debug.Assert(options.AreValid());
 
             // don't create diagnosis instances unless lookup fails
-            var binder = this.LookupSymbolsInternal(result, name, arity, basesBeingResolved, options, diagnose: false, useSiteDiagnostics: ref useSiteDiagnostics);
+            var binder = this.LookupSymbolsInternal(result, name, arity, basesBeingResolved, options, diagnose: false, useSiteInfo: ref useSiteInfo);
             FilterResults(result, options);
             if (result.Kind != LookupResultKind.Viable && result.Kind != LookupResultKind.Empty)
             {
                 result.Clear();
                 // retry to get diagnosis
-                var otherBinder = this.LookupSymbolsInternal(result, name, arity, basesBeingResolved, options, diagnose: true, useSiteDiagnostics: ref useSiteDiagnostics);
+                var otherBinder = this.LookupSymbolsInternal(result, name, arity, basesBeingResolved, options, diagnose: true, useSiteInfo: ref useSiteInfo);
                 Debug.Assert(binder == otherBinder);
             }
 
@@ -41,7 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return binder;
         }
         private Binder XSLookupSymbolsInternal(
-            LookupResult result, string name, int arity, ConsList<TypeSymbol> basesBeingResolved, LookupOptions options, bool diagnose, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+            LookupResult result, string name, int arity, ConsList<TypeSymbol> basesBeingResolved, LookupOptions options, bool diagnose, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
         {
             Debug.Assert(result.IsClear);
             Debug.Assert(options.AreValid());
@@ -60,7 +60,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         if (scope is InContainerBinder && scope.ContainingType is null) // at the namespace level, so outside of all types
                         {
-                            scope.LookupSymbolsInSingleBinder(result, name, arity, basesBeingResolved, funcOptions, this, diagnose, ref useSiteDiagnostics);
+                            scope.LookupSymbolsInSingleBinder(result, name, arity, basesBeingResolved, funcOptions, this, diagnose, ref useSiteInfo);
                             FilterResults(result, options);
                             if (!result.IsClear)
                             {
@@ -96,14 +96,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (binder != null)
                 {
                     var tmp = LookupResult.GetInstance();
-                    scope.LookupSymbolsInSingleBinder(tmp, name, arity, basesBeingResolved, options, this, diagnose, ref useSiteDiagnostics);
+                    scope.LookupSymbolsInSingleBinder(tmp, name, arity, basesBeingResolved, options, this, diagnose, ref useSiteInfo);
                     FilterResults(tmp, options);
                     result.MergeEqual(tmp);
                     tmp.Free();
                 }
                 else
                 {
-                    scope.LookupSymbolsInSingleBinder(result, name, arity, basesBeingResolved, options, this, diagnose, ref useSiteDiagnostics);
+                    scope.LookupSymbolsInSingleBinder(result, name, arity, basesBeingResolved, options, this, diagnose, ref useSiteInfo);
                     FilterResults(result, options);
                     if (!result.IsClear)
                     {
@@ -155,11 +155,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (!ignore)
                         {
                             var args = new object[] { name, func, meth };
-                            if (useSiteDiagnostics == null)
+                            if (useSiteInfo == null)
                             {
-                                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                                useSiteInfo = new HashSet<DiagnosticInfo>();
                             }
-                            useSiteDiagnostics.Add(new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods, args));
+                            useSiteInfo.Add(new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods, args));
                         }
                     }
                 }

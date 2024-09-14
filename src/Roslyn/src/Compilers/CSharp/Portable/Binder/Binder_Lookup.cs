@@ -61,7 +61,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private Binder LookupSymbolsWithFallback(LookupResult result, string name, int arity, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo, ConsList<TypeSymbol> basesBeingResolved = null, LookupOptions options = LookupOptions.Default)
         {
 #if XSHARP
-            return XSLookupSymbolsWithFallback(result, name, arity, ref useSiteDiagnostics, basesBeingResolved, options);
+            return XSLookupSymbolsWithFallback(result, name, arity, ref useSiteInfo, basesBeingResolved, options);
 #else
             Debug.Assert(options.AreValid());
 
@@ -86,7 +86,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             LookupResult result, string name, int arity, ConsList<TypeSymbol> basesBeingResolved, LookupOptions options, bool diagnose, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
         {
 #if XSHARP
-            return XSLookupSymbolsInternal(result, name, arity, basesBeingResolved, options, diagnose, ref useSiteDiagnostics);
+            return XSLookupSymbolsInternal(result, name, arity, basesBeingResolved, options, diagnose, ref useSiteInfo);
 #else
             Debug.Assert(result.IsClear);
             Debug.Assert(options.AreValid());
@@ -432,7 +432,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             foreach (var a in externAliases)
             {
+#if XSHARP
+                if (!a.SkipInLookup && XSharpString.Equals(a.Alias.Name, name))
+#else
                 if (!a.SkipInLookup && a.Alias.Name == name)
+#endif
                 {
                     // Found a match in our list of extern aliases.  Mark the extern alias as being
                     // seen so that it won't be reported to the user as something that can be
@@ -1463,9 +1467,12 @@ symIsHidden:;
                                         RefineAccessThroughType(options, accessThroughType),
                                         out inaccessibleViaQualifier,
                                         ref useSiteInfo,
-                                        basesBeingResolved))
 #if XSHARP
+                                        basesBeingResolved)
                     && (!Compilation.Options.HasRuntime || !inaccessibleViaQualifier)
+                    )
+#else
+                                        basesBeingResolved))
 #endif
             {
                 if (!diagnose)

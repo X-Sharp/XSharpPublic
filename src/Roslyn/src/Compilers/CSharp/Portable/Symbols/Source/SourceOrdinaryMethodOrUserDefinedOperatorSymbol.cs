@@ -108,12 +108,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     // on the assumption that they will be updated appropriately.
                     overriddenOrExplicitlyImplementedMethod = this.OverriddenMethod;
 
+#if XSHARP
+                    // additional checks to see if we are overriding clipper with non clipper etc.
+                    overriddenOrExplicitlyImplementedMethod = validateMethod(overriddenOrExplicitlyImplementedMethod, diagnostics, location);
+
+#else
                     if ((object)overriddenOrExplicitlyImplementedMethod != null)
                     {
                         CustomModifierUtils.CopyMethodCustomModifiers(overriddenOrExplicitlyImplementedMethod, this, out _lazyReturnType,
                                                                       out _lazyRefCustomModifiers,
                                                                       out _lazyParameters, alsoCopyParamsModifier: true);
                     }
+#endif
                 }
                 else if (RefKind == RefKind.RefReadOnly)
                 {
@@ -127,6 +133,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 //do this last so that it can assume the method symbol is constructed (except for ExplicitInterfaceImplementation)
                 overriddenOrExplicitlyImplementedMethod = FindExplicitlyImplementedMethod(diagnostics);
 
+#if XSHARP
+                if (this.HasClipperCallingConvention() != overriddenOrExplicitlyImplementedMethod.HasClipperCallingConvention())
+                {
+                    diagnostics.Add(ErrorCode.ERR_InterfaceImplementationDifferentCallingConvention, Locations[0], this, overriddenOrExplicitlyImplementedMethod);
+                    overriddenOrExplicitlyImplementedMethod = null;
+                }
+#endif
                 if (overriddenOrExplicitlyImplementedMethod is not null)
                 {
                     Debug.Assert(_lazyExplicitInterfaceImplementations.IsDefault);

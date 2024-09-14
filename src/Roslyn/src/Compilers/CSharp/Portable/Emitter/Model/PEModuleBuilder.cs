@@ -1204,21 +1204,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
             return _embeddedTypesManagerOpt?.EmbedFieldIfNeedTo(fieldSymbol.GetCciAdapter(), syntaxNodeOpt, diagnostics) ?? fieldSymbol.GetCciAdapter();
         }
 
-#if XSHARP
-                    // Allow private structs and classes and treat them as internal
-                    if (symbol.ContainingType is null)
-                    {
-                        if (symbol.ContainingAssembly.IsInteractive)
-                        {
-                            // top-level or nested internal member:
-                            return Cci.TypeMemberVisibility.Public;
-                        }
-                        else
-                        {
-                            return Cci.TypeMemberVisibility.Assembly;
-                        }
-                    }
-#endif
         internal sealed override Cci.IMethodReference Translate(MethodSymbol symbol, DiagnosticBag diagnostics, bool needDeclaration)
         {
             return Translate(symbol, null, diagnostics, null, needDeclaration);

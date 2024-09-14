@@ -3478,13 +3478,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 BoundExpression argument = arguments[arg];
 
-#if XSHARP
-TODO nvk!
-                    TypeWithAnnotations parameterTypeWithAnnotations = XsGetCorrespondingParameterType(ref result, parameterTypes, arg);
-                    argument = XsFixPszArgumentProblems(argument, parameterTypeWithAnnotations, ref kind);
-//#else
-//                    TypeWithAnnotations parameterTypeWithAnnotations = GetCorrespondingParameterTypeWithAnnotations(ref result, parameters, arg);
-#endif
                 if (argument is BoundArgListOperator)
                 {
                     Debug.Assert(result.ConversionForArg(arg).IsIdentity);
@@ -3601,6 +3594,10 @@ TODO nvk!
             {
                 var result = methodResult.Result;
                 var kind = result.ConversionForArg(arg);
+#if XSHARP
+                parameterTypeWithAnnotations = XsGetCorrespondingParameterType(ref result, parameterTypes, arg);
+                argument = XsFixPszArgumentProblems(argument, parameterTypeWithAnnotations, ref kind);
+#endif
                 BoundExpression coercedArgument = argument;
 
                 if (kind.IsInterpolatedStringHandler)
@@ -3615,7 +3612,6 @@ TODO nvk!
                     reportUnsafeIfNeeded(methodResult, diagnostics, argument, parameterTypeWithAnnotations);
 
 #if XSHARP
-TODO nvk!
                     // Do not add Conversions for BoundAddressOf operator when compiling with /vo7+
                     if (argument is BoundAddressOfOperator bad &&
                         this.Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, argument.Syntax) &&
@@ -3626,7 +3622,7 @@ TODO nvk!
                     else
                     {
                         bool cast = (argument.Syntax is CastExpressionSyntax);
-                        arguments[arg] = CreateConversion(
+                        coercedArgument = CreateConversion(
                             syntax: argument.Syntax,
                             source: argument,
                             conversion: kind,
@@ -5058,8 +5054,13 @@ TODO nvk!
                                     allowProtectedConstructorsOfBaseType: true,
                                     out CompoundUseSiteInfo<AssemblySymbol> overloadResolutionUseSiteInfo);
 
+#if XSHARP
+                return BindConstructorInitializerCoreContinued(found, initializerArgumentListOpt, constructor, analyzedArguments, constructorReturnType,
+                    initializerType, isBaseConstructorInitializer, nonNullSyntax, errorLocation, enableCallerInfo, memberResolutionResult, candidateConstructors, in overloadResolutionUseSiteInfo, voDefaultCtorCall, diagnostics);
+#else
                 return BindConstructorInitializerCoreContinued(found, initializerArgumentListOpt, constructor, analyzedArguments, constructorReturnType,
                     initializerType, isBaseConstructorInitializer, nonNullSyntax, errorLocation, enableCallerInfo, memberResolutionResult, candidateConstructors, in overloadResolutionUseSiteInfo, diagnostics);
+#endif
             }
             finally
             {
@@ -5081,6 +5082,9 @@ TODO nvk!
             MemberResolutionResult<MethodSymbol> memberResolutionResult,
             ImmutableArray<MethodSymbol> candidateConstructors,
             in CompoundUseSiteInfo<AssemblySymbol> overloadResolutionUseSiteInfo,
+#if XSHARP
+            bool voDefaultCtorCall,
+#endif
             BindingDiagnosticBag diagnostics)
         {
             ReportConstructorUseSiteDiagnostics(errorLocation, diagnostics, suppressUnsupportedRequiredMembersError: true, in overloadResolutionUseSiteInfo);
@@ -5172,11 +5176,10 @@ TODO nvk!
                 BindDefaultArguments(nonNullSyntax, resultMember.Parameters, analyzedArguments.Arguments, analyzedArguments.RefKinds, analyzedArguments.Names, ref argsToParamsOpt, out var defaultArguments, expanded, enableCallerInfo, diagnostics);
 
 #if XSHARP
-                    if (voDefaultCtorCall && resultMember?.ParameterCount > 0)
-                    {
-                        
-                        diagnostics.Add(ErrorCode.WRN_ImplicitParentConstructorInitializer, nonNullSyntax.GetLocation());
-                    }
+                if (voDefaultCtorCall && resultMember?.ParameterCount > 0)
+                {
+                    diagnostics.Add(ErrorCode.WRN_ImplicitParentConstructorInitializer, nonNullSyntax.GetLocation());
+                }
 #endif
                 var arguments = analyzedArguments.Arguments.ToImmutable();
                 var refKinds = analyzedArguments.RefKinds.ToImmutableOrNull();
@@ -7575,12 +7578,12 @@ TODO nvk!
             // SPEC: static members and nested types of E where a compile-time error would otherwise have occurred. 
 
             var valueDiagnostics = BindingDiagnosticBag.GetInstance(diagnostics);
-            var boundValue = BindIdentifier(left, invoked: false, indexed: false, diagnostics: valueDiagnostics);
-
 #if XSHARP
-                var boundValue = BindXSIdentifier(node, invoked: false, indexed: false, diagnostics: valueDiagnostics, bindMethod: false);
+            var boundValue = BindXSIdentifier(node, invoked: false, indexed: false, diagnostics: valueDiagnostics, bindMethod: false);
 #else
+            var boundValue = BindIdentifier(left, invoked: false, indexed: false, diagnostics: valueDiagnostics);
 #endif
+
             Symbol leftSymbol;
             if (boundValue.Kind == BoundKind.Conversion)
             {
@@ -7607,7 +7610,7 @@ TODO nvk!
 
                         var leftName = left.Identifier.ValueText;
 #if XSHARP
-                            if (XSharpString.Equals(leftType.Name, leftName) || IsUsingAliasInScope(leftName))
+                        if (XSharpString.Equals(leftType.Name, leftName) || IsUsingAliasInScope(leftName))
 #else
                         if (leftType.Name == leftName || IsUsingAliasInScope(leftName))
 #endif
@@ -8207,7 +8210,7 @@ TODO nvk!
                 else if (boundLeft.Kind == BoundKind.TypeExpression ||
                     boundLeft.Kind == BoundKind.BaseReference ||
 #if XSHARP
-                    node.Kind() == SyntaxKind.AwaitExpression && XSharpString.Equals(plainName, WellKnownMemberNames.GetResult) ||
+                    (node.Kind() == SyntaxKind.AwaitExpression && XSharpString.Equals(plainName, WellKnownMemberNames.GetResult)) ||
 #else
                     (node.Kind() == SyntaxKind.AwaitExpression && plainName == WellKnownMemberNames.GetResult) ||
 #endif

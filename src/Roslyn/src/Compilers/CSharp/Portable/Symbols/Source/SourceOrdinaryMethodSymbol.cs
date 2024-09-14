@@ -14,11 +14,14 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
+#if XSHARP
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+#endif
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
 #if XSHARP
-    internal sealed partial class SourceOrdinaryMethodSymbol : SourceOrdinaryMethodSymbolBase
+    internal abstract partial class SourceOrdinaryMethodSymbol : SourceOrdinaryMethodSymbolBase
 #else
     internal abstract class SourceOrdinaryMethodSymbol : SourceOrdinaryMethodSymbolBase
 #endif
@@ -433,10 +436,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             return ModifierUtils.MakeAndCheckNonTypeMemberModifiers(isOrdinaryMethod: true, isForInterfaceMember: containingType.IsInterface,
                                                                     syntax.Modifiers, defaultAccess: DeclarationModifiers.None, allowedModifiers, location, diagnostics, out _);
-#if XSHARP
-                    if (XSharpString.Equals(name, result[i].Name))
-#else
-#endif
         }
 
         internal sealed override void ForceComplete(SourceLocation locationOpt, Predicate<Symbol> filter, CancellationToken cancellationToken)
@@ -839,16 +838,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 diagnostics.Add(ErrorCode.ERR_VirtualPrivate, location, this);
             }
+#if XSHARP
+            else if (IsOverride && IsNew)
+#else
             else if (IsOverride && (IsNew || IsVirtual))
+#endif
             {
                 // A member '{0}' marked as override cannot be marked as new or virtual
                 diagnostics.Add(ErrorCode.ERR_OverrideNotNew, location, this);
             }
+#if !XSHARP // TODO nvk: Possibly add this check after the other errors have been added, only if /vo3 is not used (it is a warning in X#)
             else if (IsSealed && !IsOverride && !(isExplicitInterfaceImplementationInInterface && IsAbstract))
             {
                 // '{0}' cannot be sealed because it is not an override
                 diagnostics.Add(ErrorCode.ERR_SealedNonOverride, location, this);
             }
+#endif
             else if (IsSealed && ContainingType.TypeKind == TypeKind.Struct)
             {
                 // The modifier '{0}' is not valid for this item
@@ -893,8 +898,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             else if (IsVirtual && ContainingType.IsSealed)
             {
+#if XSHARP
+                var syntax = this.DeclaringSyntaxReferences[0].GetSyntax();
+                bool wasExplicitVirtual = !this.DeclaringCompilation.Options.VirtualInstanceMethods;
+                var node = syntax.XNode;
+                if (node is not XP.IMemberContext ent)
+                {
+                    ent = node.GetChild(0) as XP.IMemberContext;
+                }
+                if (ent != null)
+                {
+                    wasExplicitVirtual = ent.Data.HasExplicitVirtual;
+                }
+                // Disable warning when compiling with /vo3
+                if (wasExplicitVirtual)
+                {
+                    // '{0}' is a new virtual member in sealed type '{1}'
+                    diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);
+                }
+#else
                 // '{0}' is a new virtual member in sealed type '{1}'
                 diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);
+#endif
             }
             else if (!HasAnyBody && IsAsync)
             {
@@ -1143,7 +1168,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                     for (int i = 0; i < result.Count; i++)
                     {
+#if XSHARP
+                        if (XSharpString.Equals(name, result[i].Name))
+#else
                         if (name == result[i].Name)
+#endif
                         {
                             diagnostics.Add(ErrorCode.ERR_DuplicateTypeParameter, location, name);
                             break;

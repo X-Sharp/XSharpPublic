@@ -37,11 +37,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
 #nullable enable
-#if !XSHARP
         protected override CSharpCompilation Compilation { get { return _binder.Compilation; } }
-#else
-        internal override CSharpCompilation Compilation { get { return _binder.Compilation; } }
-#endif
+
         protected override ConversionsBase WithNullabilityCore(bool includeNullability)
         {
             Debug.Assert(IncludeNullability != includeNullability);

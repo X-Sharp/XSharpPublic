@@ -7267,6 +7267,7 @@ namespace Microsoft.VisualStudio.Project
 
             // Other misc properties
             this.buildProject.SetGlobalProperty(GlobalProperty.BuildingInsideVisualStudio.ToString(), "true");
+            this.buildProject.SetGlobalProperty(GlobalProperty.UseHostCompilerIfAvailable.ToString(), "false");
             this.buildProject.SetGlobalProperty(GlobalProperty.Configuration.ToString(), ProjectConfig.Debug);
             this.buildProject.SetGlobalProperty(GlobalProperty.Platform.ToString(), ProjectConfig.AnyCPU);
 

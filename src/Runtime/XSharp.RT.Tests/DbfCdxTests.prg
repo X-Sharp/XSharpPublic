@@ -6014,14 +6014,14 @@ RETURN
 			FieldPut(1,"213223213231")
 			DbAppend()
 			FieldPut(1,"v")
-			
+
 			DbCloseArea()
-				
+
 			DbUseArea(TRUE,, cDbf)
 			DbSetIndex( cDbf,"LANDLORD" )
-			
+
 			DbZap()
-			
+
 			DbAppend()
 			FieldPut(1,"a")
 			DbAppend()
@@ -6031,12 +6031,12 @@ RETURN
 			DbAppend()
 			FieldPut(1,"d")
 			DbCommit()
-			
+
 			DbCloseArea()
-				
+
 			DbUseArea(TRUE,, cDbf)
 			DbSetIndex( cDbf,"LANDLORD" )
-			
+
 			DbGoTop()
 
 			Assert.Equal(4, RecCount())
@@ -6049,7 +6049,7 @@ RETURN
 			ENDDO
 			Assert.Equal("abcd", cOutput)
 			DbCloseArea()
-			
+
 		RETURN
 
         [Fact, Trait("Category", "DBF")];
@@ -6064,12 +6064,12 @@ RETURN
 			LOCAL aKeywords AS ARRAY
 			LOCAL cField AS STRING
 			LOCAL n AS INT
-			
+
 			aKeywords := {"CLASS","METHOD","AND", "OR", "REF", "IS","_CAST","IF","FIELD","DEFAULT","IIF","CHECKED","UNCHECKED"}
 			FOR n := 1 UPTO ALen(aKeywords)
 				AAdd(aStruct , {aKeywords[n] , "N" , 10 ,0})
 			NEXT
-			
+
 			DbfTests.CreateDatabase(cDbf, aStruct)
 
 			DbCreate(cDbf, aStruct)
@@ -6082,16 +6082,16 @@ RETURN
 			FOR n := 1 UPTO ALen(aKeywords)
 				FieldPut(n,1)
 			NEXT
-			
+
 			FOR n := 1 UPTO ALen(aKeywords)
 				cField := aKeywords[n]
 				Assert.True( DbCreateOrder(cField, cDbf, cField) )
 				DbSetOrder(1)
 				DbSetOrder(n)
 				DbGoTop()
-				Assert.Equal(2, RecNo())
+				Assert.Equal(2u, RecNo())
 			NEXT
-			
+
 			DbCloseArea()
 		RETURN
 

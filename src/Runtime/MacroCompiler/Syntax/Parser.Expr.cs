@@ -211,10 +211,10 @@ namespace XSharp.MacroCompiler
                     return ParseLiteralArrayOrCodeblock();
                 case TokenType.LT:
                     return ParseTypedLiteralArray();
-                case TokenType.IF:
-                case TokenType.IIF:
+                case TokenType.IF when La(2) == TokenType.LPAREN:
+                case TokenType.IIF when La(2) == TokenType.LPAREN:
                     return ParseIif();
-                case TokenType.FIELD:
+                case TokenType.FIELD when La(2) == TokenType.ALIAS:
                     return ParseFieldAlias();
                 // TODO nvk: PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
                 case TokenType.ARGLIST:

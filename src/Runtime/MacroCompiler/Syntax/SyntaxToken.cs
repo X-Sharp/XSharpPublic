@@ -886,8 +886,10 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.FUNC] = true;
             softKws[(int)TokenType.IN] = true;
             softKws[(int)TokenType.INSTANCE] = true;
+            softKws[(int)TokenType.IS] = true;
             softKws[(int)TokenType.PASCAL] = true;
             softKws[(int)TokenType.PROC] = true;
+            softKws[(int)TokenType.REF] = true;
             softKws[(int)TokenType.SEQUENCE] = true;
             softKws[(int)TokenType.STEP] = true;
             softKws[(int)TokenType.STRICT] = true;
@@ -899,6 +901,7 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.UPTO] = true;
             softKws[(int)TokenType.USING] = true;
             softKws[(int)TokenType.WINCALL] = true;
+
 
             // fox soft KWs
             softKws[(int)TokenType.M] = true;

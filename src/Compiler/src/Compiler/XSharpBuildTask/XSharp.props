@@ -31,9 +31,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Nologo>true</Nologo>
+	<UseHostCompilerIfAvailable>false</UseHostCompilerIfAvailable>
     <UseSharedCompilation>true</UseSharedCompilation>
     <WarningLevel>4</WarningLevel>
 	<XSharpXamlDir>$(XSharpMsBuildDir)\Rules\</XSharpXamlDir>
+	
   </PropertyGroup>
   <!-- Set defaults for Configuration, Platform, Optimize and PDB generation -->
   <PropertyGroup>

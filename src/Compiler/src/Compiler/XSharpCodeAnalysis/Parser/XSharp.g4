@@ -213,7 +213,7 @@ methodtype          : Token=(METHOD | ACCESS | ASSIGN )
 
 // Convert to constant on Globals class. Expression must be resolvable at compile time
 vodefine            : (Modifiers=funcprocModifiers)?
-                      D=DEFINE Id=identifier Op=assignoperator Expr=expression (AS DataType=typeName)? end=EOS
+                      D=DEFINE Id=identifier Op=assignoperator Expr=expression (AS DataType=datatype)? end=EOS
                     ;
 
 vostruct            : (Modifiers=votypeModifiers)?

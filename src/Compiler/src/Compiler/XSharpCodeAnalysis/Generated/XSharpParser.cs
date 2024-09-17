@@ -2992,7 +2992,7 @@ public partial class XSharpParser : Parser {
 		public IdentifierContext Id;
 		public AssignoperatorContext Op;
 		public ExpressionContext Expr;
-		public TypeNameContext DataType;
+		public DatatypeContext DataType;
 		public IToken end;
 		public ITerminalNode DEFINE() { return GetToken(XSharpParser.DEFINE, 0); }
 		public IdentifierContext identifier() {
@@ -3009,8 +3009,8 @@ public partial class XSharpParser : Parser {
 		public FuncprocModifiersContext funcprocModifiers() {
 			return GetRuleContext<FuncprocModifiersContext>(0);
 		}
-		public TypeNameContext typeName() {
-			return GetRuleContext<TypeNameContext>(0);
+		public DatatypeContext datatype() {
+			return GetRuleContext<DatatypeContext>(0);
 		}
 		public VodefineContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -3054,7 +3054,7 @@ public partial class XSharpParser : Parser {
 			if (_la==AS) {
 				{
 				State = 777; Match(AS);
-				State = 778; _localctx.DataType = typeName();
+				State = 778; _localctx.DataType = datatype();
 				}
 			}
 
@@ -24973,7 +24973,7 @@ public partial class XSharpParser : Parser {
 		"\x2\x2\x302\x303\t\v\x2\x2\x303\x35\x3\x2\x2\x2\x304\x306\x5,\x17\x2\x305"+
 		"\x304\x3\x2\x2\x2\x305\x306\x3\x2\x2\x2\x306\x307\x3\x2\x2\x2\x307\x308"+
 		"\a\x11\x2\x2\x308\x309\x5\x13C\x9F\x2\x309\x30A\x5\xCCg\x2\x30A\x30D\x5"+
-		"\xCEh\x2\x30B\x30C\a\x6\x2\x2\x30C\x30E\x5\x102\x82\x2\x30D\x30B\x3\x2"+
+		"\xCEh\x2\x30B\x30C\a\x6\x2\x2\x30C\x30E\x5\xFE\x80\x2\x30D\x30B\x3\x2"+
 		"\x2\x2\x30D\x30E\x3\x2\x2\x2\x30E\x30F\x3\x2\x2\x2\x30F\x310\a\x15E\x2"+
 		"\x2\x310\x37\x3\x2\x2\x2\x311\x313\x5> \x2\x312\x311\x3\x2\x2\x2\x312"+
 		"\x313\x3\x2\x2\x2\x313\x314\x3\x2\x2\x2\x314\x316\au\x2\x2\x315\x317\x5"+

@@ -63279,7 +63279,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDot=0
+AllowDot=1
 ResponseOnly=0
 [C525 - Name conflict between CLASS and LOCAL when used with "." Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -84935,7 +84935,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDot=0
+AllowDot=1
 ResponseOnly=0
 [R701 FoxPro MemberAccess Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -85055,7 +85055,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDot=0
+AllowDot=1
 ResponseOnly=0
 [C697 - Cannot pass PUBLIC/PRIVATE by reference Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -88507,7 +88507,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDot=0
+AllowDot=1
 ResponseOnly=0
 [R708 - Empty class & AddProperty Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -88630,7 +88630,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDot=0
+AllowDot=1
 ResponseOnly=0
 [R709 TEXT ENDText and MessageBox() Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -91018,7 +91018,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDot=0
+AllowDot=1
 ResponseOnly=0
 [C729 - Problems with macro substitution Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -93524,7 +93524,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDot=0
+AllowDot=1
 ResponseOnly=0
 [R742 - FoxPro with parenthesized Arrays Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -94122,7 +94122,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDot=0
+AllowDot=1
 ResponseOnly=0
 [R748 - FoxPro Declare DLL Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -105088,7 +105088,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDot=0
+AllowDot=1
 ResponseOnly=0
 [R799 - Store Date in VOStruct & Union Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -111454,7 +111454,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDot=0
+AllowDot=1
 ResponseOnly=0
 [C832 - Incompatibilities with Type() function Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -116372,7 +116372,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDot=0
+AllowDot=1
 ResponseOnly=0
 [R851 - Latebound property access of a FoxPro Property was translated to Workarea.Field Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -118402,7 +118402,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDot=0
+AllowDot=1
 ResponseOnly=0
 [R861 - FoxPro ThisForm chained dot operators Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -123777,7 +123777,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDot=0
+AllowDot=1
 ResponseOnly=0
 [R884 - _DLL with quoted entrypoint name Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -127740,7 +127740,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDot=0
+AllowDot=1
 ResponseOnly=0
 [R910 - Dimension on Class member Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -129309,7 +129309,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDot=0
+AllowDot=1
 ResponseOnly=0
 [C896 - Various FoxPro commands Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -132465,7 +132465,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C912_helper
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C913 - More VFP UDC tests *************
 Application = C913 - More VFP UDC tests
 IDEVersion = 1.06
@@ -132946,7 +132946,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R927 - VFP Error line number
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C914 - Problems using the Str() functioon in the macrocompiler in the FoxPro dialect *************
 Application = C914 - Problems using the Str() functioon in the macrocompiler in the FoxPro dialect
 IDEVersion = 1.06
@@ -133184,7 +133184,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C915 - Namespace vs. property confuses the compiler
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C916 - Some issues with indexed PROPERTY SET and ASSIGN *************
 Application = C916 - Some issues with indexed PROPERTY SET and ASSIGN
 IDEVersion = 1.06
@@ -133304,7 +133304,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C916 - Some issues with indexed PROPERTY SET and ASSIGN
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C917 - Some issues with /allowdot- *************
 Application = C917 - Some issues with /allowdot-
 IDEVersion = 1.06
@@ -133422,7 +133422,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C917 - Some issues with /allowdot-
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C918 - Failed to emit module error with /allowdot- *************
 Application = C918 - Failed to emit module error with /allowdot-
 IDEVersion = 1.06

@@ -989,7 +989,7 @@ namespace XSharp.Project
             return newNode;
         }
 
-        protected override Microsoft.VisualStudio.Project.ProjectElement AddFileToMsBuild(string file)
+        protected override ProjectElement AddFileToMsBuild(string file)
         {
 
             string itemPath = PackageUtilities.MakeRelativeIfRooted(file, this.BaseURI);
@@ -1037,15 +1037,15 @@ namespace XSharp.Project
         /// <returns>True = items of this type should be included in the project</returns>
         protected override bool IsItemTypeFileType(string type)
         {
-            if (String.Compare(type, ProjectFileConstants.Compile, StringComparison.OrdinalIgnoreCase) == 0          // prg
-                || String.Compare(type, ProjectFileConstants.None, StringComparison.OrdinalIgnoreCase) == 0          // none
-                || String.Compare(type, ProjectFileConstants.Resource, StringComparison.OrdinalIgnoreCase) == 0           // resource file
-                || String.Compare(type, ProjectFileConstants.EmbeddedResource, StringComparison.OrdinalIgnoreCase) == 0  // resx
-                || String.Compare(type, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase) == 0          // xaml page/window
-                || String.Compare(type, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) == 0     // xaml application definition
-                || String.Compare(type, ProjectFileConstants.NativeResource, StringComparison.OrdinalIgnoreCase) == 0           // rc file
-                || String.Compare(type, ProjectFileConstants.VOBinary, StringComparison.OrdinalIgnoreCase) == 0           // vobinary file
-                )
+            if (string.Compare(type, ProjectFileConstants.Compile, StringComparison.OrdinalIgnoreCase) == 0          // prg
+                || string.Compare(type, ProjectFileConstants.None, StringComparison.OrdinalIgnoreCase) == 0          // none
+                || string.Compare(type, ProjectFileConstants.Resource, StringComparison.OrdinalIgnoreCase) == 0           // resource file
+                || string.Compare(type, ProjectFileConstants.EmbeddedResource, StringComparison.OrdinalIgnoreCase) == 0  // resx
+                || string.Compare(type, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase) == 0          // xaml page/window
+                || string.Compare(type, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) == 0     // xaml application definition
+                || string.Compare(type, ProjectFileConstants.NativeResource, StringComparison.OrdinalIgnoreCase) == 0           // rc file
+                || string.Compare(type, ProjectFileConstants.VOBinary, StringComparison.OrdinalIgnoreCase) == 0           // vobinary file
+                )  
             {
                 return true;
             }
@@ -1069,18 +1069,15 @@ namespace XSharp.Project
                 {
                     if (!IsXSharpProjectFile(url) && this.BuildProject != null)
                     {
-                        var xnode = this.URLNodes[url] as XSharpFileNode;
-                        if (xnode != null && !xnode.IsNonMemberItem)
+                        if (this.URLNodes[url] is XSharpFileNode node && !node.IsNonMemberItem)
                         {
                             if (File.Exists(url))
                             {
-                                //this.ProjectModel.AddFile(url);
                                 base.ObserveItem(url);
                             }
                         }
                     }
                 }
-                //this.ProjectModel.Walk();
             }
         }
 
@@ -1456,7 +1453,7 @@ namespace XSharp.Project
             RefreshIncludeFiles();
         }
 
-        public override void AddURL(String url, HierarchyNode node)
+        public override void AddURL(string url, HierarchyNode node)
         {
             //
             base.AddURL(url, node);
@@ -1475,8 +1472,7 @@ namespace XSharp.Project
             }
             else
             {
-                var xnode = node as XSharpFileNode;
-                if (xnode != null && !xnode.IsNonMemberItem)
+                if (node is XSharpFileNode xNode && !xNode.IsNonMemberItem)
                 {
                     if (File.Exists(url))
                     {
@@ -1786,21 +1782,33 @@ namespace XSharp.Project
             return base.Save(fileToBeSaved, remember, formatIndex);
         }
 
+        internal class FileToMove
+        {
+            internal XSharpFileNode Node;
+            internal string ParentName;
+            internal string SubType;
+            internal FileToMove(XSharpFileNode node, string parentName, string subType)
+            {
+                Node = node;
+                ParentName = parentName;
+                SubType = subType;
+            }
+        }
+
         protected virtual internal bool ResetDependencies()
         {
             bool bMoved = false;
-            List<Tuple<XSharpFileNode, String, String>> FilesToMove = new List<Tuple<XSharpFileNode, String, String>>();
-            foreach (KeyValuePair<string, HierarchyNode> pair in URLNodes)
+            var FilesToMove = new List<FileToMove>();
+            foreach (var pair in URLNodes)
             {
-                XSharpFileNode vnode = pair.Value as XSharpFileNode;
-                if (vnode != null)
+                if (pair.Value is XSharpFileNode node && ! node.IsNonMemberItem)
                 {
-                    string parent = vnode.GetParentName();
+                    string parent = node.GetParentName();
                     if (!string.IsNullOrEmpty(parent))
                     {
-                        if (!(vnode.Parent is XSharpFileNode))
+                        if (!(node.Parent is XSharpFileNode))
                         {
-                            FilesToMove.Add(new Tuple<XSharpFileNode, string, string>(vnode, parent, vnode.SubType));
+                            FilesToMove.Add(new FileToMove(node, parent, node.SubType));
                         }
                     }
                 }
@@ -1809,14 +1817,11 @@ namespace XSharp.Project
             foreach (var element in FilesToMove)
             {
 
-                var NodeToMove = element.Item1;
-                var parentName = element.Item2;
-                var subType = element.Item3;
-                var parentNode = FindURL(parentName);
-                if (parentNode != null && parentNode is XSharpFileNode parent)
+                var parentNode = FindURL(element.ParentName);
+                if (parentNode is XSharpFileNode parent)
                 {
-                    parent.AddDependant(NodeToMove);
-                    NodeToMove.SubType = subType;
+                    parent.AddDependent(element.Node);
+                    element.Node.SubType = element.SubType;
                     bMoved = true;
                 }
             }
@@ -1855,10 +1860,10 @@ namespace XSharp.Project
                     break;
             }
             var model = this.ProjectModel;
-            var myusings = new List<string>();
-            myusings.AddRange(usings);
-            myusings.AddUnique("System");
-            return model.FindSystemType(name, myusings);
+            var myUsings = new List<string>();
+            myUsings.AddRange(usings);
+            myUsings.AddUnique("System");
+            return model.FindSystemType(name, myUsings);
         }
 
         public XSourceTypeSymbol ResolveXType(string name, IList<string> usings)
@@ -1871,6 +1876,7 @@ namespace XSharp.Project
         }
 
 
+        [Obsolete("Use ResolveXType instead")]
         public XSourceTypeSymbol ResolveReferencedType(string name, IList<string> usings)
         {
             // identical but may be used by others

@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
+using System.Linq;
 using XSharpModel;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
@@ -45,10 +45,10 @@ namespace XSharp.Project
             AddExtension(".xsdbs", KnownMonikers.Database);
             AddExtension(".vnfs", KnownMonikers.ValidationRule);
             AddExtension(".xsfs", KnownMonikers.ValidationRule);
-            AddExtension(".xssql", KnownMonikers.ValidationRule);
-            AddExtension(".xsrep", KnownMonikers.ValidationRule);
-            AddExtension(".vnsqs", KnownMonikers.ValidationRule);
-            AddExtension(".vnrep", KnownMonikers.ValidationRule);
+            AddExtension(".xssql", KnownMonikers.SQLDatabase);
+            AddExtension(".xsrep", KnownMonikers.Report);
+            AddExtension(".vnsqs", KnownMonikers.SQLDatabase);
+            AddExtension(".vnrep", KnownMonikers.Report);
             AddExtension(".xaml", KnownMonikers.WPFFile);
         }
 
@@ -150,10 +150,10 @@ namespace XSharp.Project
         {
             int result = base.IncludeInProject();
             DetermineSubType();
-            //if (this.FileType == XFileType.SourceCode)
+            if (this.ProjectMgr is XSharpProjectNode prjNode)
             {
-                var prjNode = this.ProjectMgr as XSharpProjectNode;
                 prjNode.ProjectModel.AddFile(this.Url);
+                prjNode.ResetDependencies();
             }
             return result;
         }
@@ -188,80 +188,73 @@ namespace XSharp.Project
 
         internal void DetermineSubType()
         {
-
             // Parse the contents of the file and see if we have a windows form or a windows control
             XSharpProjectNode projectNode = ProjectMgr as XSharpProjectNode;
-            XSharpModel.XFile xfile = projectNode.ProjectModel.FindXFile(this.Url);
-            if (xfile == null)
+            XSharpModel.XFile xFile = projectNode.ProjectModel.FindXFile(this.Url);
+            if (xFile == null)
             {
                 projectNode.ProjectModel.AddFile(this.Url);
-                xfile = projectNode.ProjectModel.FindXFile(this.Url);
+                xFile = projectNode.ProjectModel.FindXFile(this.Url);
             }
-            if (xfile != null)
+            if (xFile != null)
             {
-                xfile.ParseContents();
-            }
-            // (something that inherits from system.windows.forms.form or system.windows.forms.usercontrol
-            // We should do this with proper parsing. For now we simply test the first word after the INHERIT keyword
-            // and then parse and bind to see if we can find the first type in the file.
-            if (this.FileType == XFileType.SourceCode && this.Url.IndexOf(".designer.", StringComparison.OrdinalIgnoreCase) == -1)
-            {
-                string SubType = "";
-                string token = "INHERIT";
-                string source = System.IO.File.ReadAllText(this.Url);
-                int pos = source.IndexOf(token, StringComparison.OrdinalIgnoreCase);
-                if (pos > 0)
+                xFile.ParseContents();
+                // (something that inherits from system.windows.forms.form or system.windows.forms.usercontrol
+                if (this.FileType == XFileType.SourceCode && this.Url.IndexOf(".designer.", StringComparison.OrdinalIgnoreCase) == -1)
                 {
-                    source = source.Substring(pos + token.Length);
-                    var words = source.Split(new char[] { ';', '\t', ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (words.Length > 0)
+                    var classes = XDatabase.GetTypesInFile(xFile);
+                    if (classes.Count > 0)
                     {
-                        var parentclass = words[0].ToLower();
-                        SubType = typeNameToSubtype(parentclass);
-                        if (string.IsNullOrEmpty(SubType))
+                        var first = classes.FirstOrDefault(c => c.TypeName != XLiterals.GlobalName);
+                        if (first != null)
                         {
-                            var usings = new List<string>();
-                            if (xfile != null)
+                            var parentClass = first.BaseTypeName;
+                            SubType = typeNameToSubtype(parentClass);
+                            if (string.IsNullOrEmpty(SubType))
                             {
-                                usings.AddRange(xfile.Usings);
-                                usings.AddRange(xfile.StaticUsings);
-                            }
-                            var mgr = this.ProjectMgr as XSharpProjectNode;
-                            var type = mgr.ResolveExternalType(parentclass, usings);
-                            if (type != null)
-                            {
-                                while (type?.BaseType != null)
+                                var usings = new List<string>();
+                                if (xFile != null)
                                 {
-                                    var btName = type.BaseTypeName;
-                                    SubType = typeNameToSubtype(btName);
-                                    if (!String.IsNullOrEmpty(SubType))
-                                        break;
-                                    type = mgr.ResolveExternalType(btName, usings);
+                                    usings.AddRange(xFile.Usings);
+                                    usings.AddRange(xFile.StaticUsings);
                                 }
-                            }
-                            else
-                            {
-                                var xtype = mgr.ResolveXType(parentclass, usings);
-                                if (xtype != null)
+                                var mgr = this.ProjectMgr as XSharpProjectNode;
+                                var type = mgr.ResolveExternalType(parentClass, usings);
+                                if (type != null)
                                 {
-                                    while (xtype != null && !String.IsNullOrEmpty(xtype.ParentName))
+                                    while (type?.BaseType != null)
                                     {
-                                        var parent = xtype.ParentName;
-                                        SubType = typeNameToSubtype(parent);
-                                        if (!String.IsNullOrEmpty(SubType))
+                                        var btName = type.BaseTypeName;
+                                        SubType = typeNameToSubtype(btName);
+                                        if (!string.IsNullOrEmpty(SubType))
                                             break;
-                                        xtype = mgr.ResolveXType(parent, usings);
+                                        type = mgr.ResolveExternalType(btName, usings);
                                     }
                                 }
-                            }
+                                else
+                                {
+                                    var xType = mgr.ResolveXType(parentClass, usings);
+                                    if (xType != null)
+                                    {
+                                        while (xType != null && !string.IsNullOrEmpty(xType.ParentName))
+                                        {
+                                            var parent = xType.ParentName;
+                                            SubType = typeNameToSubtype(parent);
+                                            if (!string.IsNullOrEmpty(SubType))
+                                                break;
+                                            xType = mgr.ResolveXType(parent, usings);
+                                        }
+                                    }
+                                }
 
-                        }
-                        if (SubType != null && this.ItemNode.GetMetadata(ProjectFileConstants.SubType) != SubType)
-                        {
-                            this.ItemNode.SetMetadata(ProjectFileConstants.SubType, SubType);
-                            this.ItemNode.RefreshProperties();
-                            this.UpdateHasDesigner();
-                            this.ReDraw(UIHierarchyElement.Icon);
+                            }
+                            if (SubType != null && this.ItemNode.GetMetadata(ProjectFileConstants.SubType) != SubType)
+                            {
+                                this.ItemNode.SetMetadata(ProjectFileConstants.SubType, SubType);
+                                this.ItemNode.RefreshProperties();
+                                this.UpdateHasDesigner();
+                                this.ReDraw(UIHierarchyElement.Icon);
+                            }
                         }
                     }
                 }
@@ -303,7 +296,20 @@ namespace XSharp.Project
                 case XFileType.ManagedResource:
                     path = Path.ChangeExtension(path, ".prg");
                     if (project.FindURL(folder + path) == null)
-                        path = null;
+                    {
+                        // this could be Form1.Language.resx
+                        // so strip the last part and try again
+                        if (relationIndex >= 0)
+                        {
+                            path = path.Substring(0, relationIndex) + ".prg";
+                            if (project.FindURL(folder + path) == null)
+                                path = null;
+                        }
+                        else
+                        {
+                            path = null;
+                        }
+                    }
                     break;
                 case XFileType.VODBServer:
                 case XFileType.VOFieldSpec:
@@ -353,9 +359,9 @@ namespace XSharp.Project
                     }
                     break;
             }
-            if (!String.IsNullOrEmpty(path))
+            if (!string.IsNullOrEmpty(path))
             {
-                String dir = Path.GetDirectoryName(this.Url);
+                string dir = Path.GetDirectoryName(this.Url);
                 if (dir.EndsWith("\\resources"))
                 {
                     dir = dir.Substring(0, dir.Length - "\\resources".Length);
@@ -373,15 +379,15 @@ namespace XSharp.Project
 
 
         /// <summary>
-        /// This method is used to move dependant items from the main level (1st level below project node) to
+        /// This method is used to move dependent items from the main level (1st level below project node) to
         /// and make them children of the modules they belong to.
         /// </summary>
         /// <param name="child"></param>
         /// <returns></returns>
-        internal bool AddDependant(HierarchyNode child)
+        internal bool AddDependent(HierarchyNode child)
         {
             // If the file is not a XSharpFileNode then drop it and create a new XSharpFileNode
-            XSharpFileNode dependant;
+            XSharpFileNode dependent;
             String fileName = child.Url;
             try
             {
@@ -391,7 +397,7 @@ namespace XSharp.Project
             {
                 Logger.Exception(e, "AddDependant failed");
             }
-            dependant = (XSharpFileNode)ProjectMgr.CreateDependentFileNode(fileName);
+            dependent = (XSharpFileNode)ProjectMgr.CreateDependentFileNode(fileName);
 
             // Like the C# project system we do not put a path in front of the parent name, even when we are in a subfolder
             // but we do put a path before the parent name when the parent is in a different folder
@@ -401,10 +407,10 @@ namespace XSharp.Project
             if (!this.IsNonMemberItem)
             {
                 string parentPath = Path.GetDirectoryName(Path.GetFullPath(this.Url));
-                string childPath = Path.GetDirectoryName(Path.GetFullPath(dependant.Url));
-                if (String.Equals(parentPath, childPath, StringComparison.OrdinalIgnoreCase))
+                string childPath = Path.GetDirectoryName(Path.GetFullPath(dependent.Url));
+                if (string.Equals(parentPath, childPath, StringComparison.OrdinalIgnoreCase))
                 {
-                    dependant.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parent);
+                    dependent.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parent);
                 }
                 else
                 {
@@ -412,20 +418,20 @@ namespace XSharp.Project
                     Uri projectFolder = new Uri(projectPath);
                     Uri relative = projectFolder.MakeRelativeUri(new Uri(parentPath));
                     parentPath = relative.ToString() + Path.DirectorySeparatorChar;
-                    dependant.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parentPath + parent);
+                    dependent.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parentPath + parent);
                 }
             }
             // Make the item a dependent item
-            dependant.HasParentNodeNameRelation = true;
+            dependent.HasParentNodeNameRelation = true;
             // Insert in the list of children
-            dependant.NextSibling = this.FirstChild;
-            this.FirstChild = dependant;
+            dependent.NextSibling = this.FirstChild;
+            this.FirstChild = dependent;
             ProjectMgr.OnItemsAppended(this);
-            this.OnItemAdded(this, dependant);
+            this.OnItemAdded(this, dependent);
             // Set parent and inherit the NonMember Status
-            dependant.Parent = this;
-            dependant.IsDependent = true;
-            dependant.IsNonMemberItem = this.IsNonMemberItem;
+            dependent.Parent = this;
+            dependent.IsDependent = true;
+            dependent.IsNonMemberItem = this.IsNonMemberItem;
             return true;
         }
 

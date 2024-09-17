@@ -25,6 +25,60 @@ namespace Microsoft.CodeAnalysis.CSharp
     internal partial class Binder
     {
 
+        private BoundExpression BindXsQualifiedName(QualifiedNameSyntax node, DiagnosticBag diagnostics)
+        {
+            var bag = DiagnosticBag.GetInstance();
+            var left = Compilation.Options.HasOption(CompilerOption.AllowDotForInstanceMembers, node.Left)
+                        ? BindLeftOfPotentialColorColorMemberAccess(node.Left, bag)
+                        : BindNamespaceOrType(node.Left, bag);
+            if (left != null && left.HasAnyErrors &&
+                bag.AsEnumerable().First().Code == (int) ErrorCode.ERR_BadSKknown)
+            {
+                // We always allow the '.' operator for members of structures like in VO
+                var newBag = DiagnosticBag.GetInstance();
+                var newLeft = BindLeftOfPotentialColorColorMemberAccess(node.Left, newBag);
+                if (newLeft != null && !newLeft.HasAnyErrors)
+                {
+                    var t = newLeft.Type;
+                    if (t is PointerTypeSymbol pts)
+                    {
+                        t = pts.PointedAtType;
+                    }
+                    if (t.IsVoStructOrUnion())
+                    {
+                        left = newLeft;
+                        bag.Clear();
+                    }
+                }
+            }
+            if (left != null && !left.HasErrors && !(left.ExpressionSymbol is NamespaceOrTypeSymbol) &&
+                left.Type?.IsVoStructOrUnion() != true)
+            {
+                if ((left.Type as PointerTypeSymbol)?.PointedAtType.IsVoStructOrUnion() == true)
+                {
+                    // Then try pointerMemberAccess resolution...
+                    TypeSymbol pointedAtType;
+                    bool hasErrors;
+                    BindPointerIndirectionExpressionInternal(node, left, bag, out pointedAtType, out hasErrors);
+                    if (!ReferenceEquals(pointedAtType, null)) // do not raise an error if it was not a pointer type
+                    {
+                        left = new BoundPointerIndirectionOperator(node.Left, left, pointedAtType, hasErrors)
+                        {
+                            WasCompilerGenerated = true, // don't interfere with the type info for exprSyntax.
+                        };
+                    }
+                }
+                else
+                {
+                    if (bag.HasAnyErrors())
+                        bag.Clear();
+                    left = this.BindNamespaceOrType(node.Left, bag);
+                }
+            }
+            diagnostics.AddRangeAndFree(bag);
+            return BindMemberAccessWithBoundLeft(node, left, node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
+        }
+
         private bool BindVOPointerDereference(CastExpressionSyntax node, TypeWithAnnotations targetType, BoundExpression operand,
             DiagnosticBag diagnostics, out BoundExpression expression)
         {

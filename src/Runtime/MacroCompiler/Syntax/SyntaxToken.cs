@@ -821,6 +821,7 @@ namespace XSharp.MacroCompiler.Syntax
 
             // X# soft KWs
             softKws[(int)TokenType.ADD] = true;
+            softKws[(int)TokenType.AS] = true;
             softKws[(int)TokenType.ARGLIST] = true;
             softKws[(int)TokenType.ASCENDING] = true;
             softKws[(int)TokenType.ASSEMBLY] = true;
@@ -897,10 +898,12 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.PROC] = true;
             softKws[(int)TokenType.REF] = true;
             softKws[(int)TokenType.SEQUENCE] = true;
+            softKws[(int)TokenType.SIZEOF] = true;
             softKws[(int)TokenType.STEP] = true;
             softKws[(int)TokenType.STRICT] = true;
             softKws[(int)TokenType.TO] = true;
             softKws[(int)TokenType.THEN] = true;
+            softKws[(int)TokenType.TYPEOF] = true;
             softKws[(int)TokenType.THISCALL] = true;
             softKws[(int)TokenType.UNCHECKED] = true;
             softKws[(int)TokenType.UNION] = true;

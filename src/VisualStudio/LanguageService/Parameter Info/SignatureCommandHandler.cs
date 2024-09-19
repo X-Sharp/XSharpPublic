@@ -10,7 +10,6 @@ using LanguageService.SyntaxTree;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Language.Intellisense;
-using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
@@ -55,25 +54,21 @@ namespace XSharp.LanguageService
                     SignatureHelpBroker));
         }
     }
-    internal class XSharpSignatureHelpCommandHandler : IOleCommandTarget
+    internal class XSharpSignatureHelpCommandHandler : AbstractCommandHandler
     {
         readonly ITextView _textView;
         readonly ISignatureHelpBroker _signatureBroker;
-        readonly IOleCommandTarget m_nextCommandHandler;
         ISignatureHelpSession _signatureSession = null;
-#if !ASYNCCOMPLETION
-        XSharpCompletionCommandHandler _completionCommandHandler = null;
-#endif
-        internal XSharpSignatureHelpCommandHandler(IVsTextView textViewAdapter, ITextView textView, ISignatureHelpBroker broker)
+        readonly XDocument _doc;
+        internal XSharpSignatureHelpCommandHandler(IVsTextView textViewAdapter, ITextView textView, ISignatureHelpBroker broker) : base(textViewAdapter)
         {
             this._textView = textView;
             this._signatureBroker = broker;
-            //add this to the filter chain
-            textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
+            _doc = textView.TextBuffer.GetDocument();   
         }
 
 
-        public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
+        public override int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdExecOpt, IntPtr pvaIn, IntPtr pvaOut)
         {
             char typedChar = char.MinValue;
             int result = VSConstants.S_OK;
@@ -135,9 +130,8 @@ namespace XSharp.LanguageService
                         break;
                 }
             }
-            var completionActive = IsCompletionActive();
             // 2. Let others do their thing
-            result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+            result = base.Exec(ref cmdGroup, nCmdID, nCmdExecOpt, pvaIn, pvaOut);
             // 3. Post process
             if (ErrorHandler.Succeeded(result) && !XEditorSettings.DisableParameterInfo)
             {
@@ -188,7 +182,7 @@ namespace XSharp.LanguageService
                             }
                             break;
                         case (int)VSConstants.VSStd2KCmdID.RETURN:
-                            if (!completionActive)
+                            if (_doc.CompletionSession == null)
                             {
                                 CancelSignatureSession();
                             }
@@ -279,26 +273,7 @@ namespace XSharp.LanguageService
             return level > 0;
         }
 
-        bool IsCompletionActive()
-        {
-#if !ASYNCCOMPLETION
-            if (_completionCommandHandler == null)
-            {
-                _textView.Properties.TryGetProperty(typeof(XSharpCompletionCommandHandler), out _completionCommandHandler);
-            }
-            if (_completionCommandHandler != null)
-            {
-                return _completionCommandHandler.HasActiveSession;
-            }
-#endif
-            return false;
-
-        }
-        public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            return m_nextCommandHandler.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
-        }
+ 
         IXMemberSymbol findElementAt(bool command, char triggerChar, SnapshotPoint ssp, XSharpSignatureProperties props)
         {
             // when coming from the completion list then there is no need to check a lot of stuff

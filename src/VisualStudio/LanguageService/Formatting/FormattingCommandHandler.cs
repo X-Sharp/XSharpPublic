@@ -21,10 +21,9 @@ using XSharpModel;
 
 namespace XSharp.LanguageService
 {
-    internal partial class XSharpFormattingCommandHandler : IOleCommandTarget
+    internal partial class XSharpFormattingCommandHandler : AbstractCommandHandler
     {
         readonly ITextView _textView;
-        readonly IOleCommandTarget m_nextCommandHandler;
         readonly ConcurrentDictionary<int, int> _linesToSync;
         readonly XFile _file;
         private readonly ITextBuffer _buffer;
@@ -36,7 +35,7 @@ namespace XSharp.LanguageService
         bool _suspendSync = false;
         int currentLine = -1;
         internal XSharpFormattingCommandHandler(IVsTextView textViewAdapter, ITextView textView,
-            IBufferTagAggregatorFactoryService _)
+            IBufferTagAggregatorFactoryService _) : base(textViewAdapter)
         {
             this._textView = textView;
             this._textView.Closed += OnClosed;
@@ -57,7 +56,6 @@ namespace XSharp.LanguageService
                 EditorConfigReader.ReadSettings(_buffer, _file.FullPath);
             }
 
-            textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
             registerClassifier();
             _lineFormatter = new LineFormatter(_buffer);
 
@@ -101,7 +99,7 @@ namespace XSharp.LanguageService
                 _completionCommandHandler = _textView.Properties.GetProperty<XSharpCompletionCommandHandler>(typeof(XSharpCompletionCommandHandler));
             if (_completionCommandHandler != null)
             {
-                return _completionCommandHandler.HasActiveSession;
+                return _completionCommandHandler.CompletionActive;
             }
 #endif
             return false;
@@ -138,15 +136,14 @@ namespace XSharp.LanguageService
             }
         }
 
-        public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
+        public override int Exec(ref Guid cmdGroup, uint nCmdID, uint nCmdExecOpt, IntPtr pvaIn, IntPtr pvaOut)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            Guid cmdGroup = pguidCmdGroup;
             bool completionActive = false;
             registerClassifier();
             // 1. Pre-process
            
-            if (pguidCmdGroup == VSConstants.VSStd2K)
+            if (cmdGroup == VSConstants.VSStd2K)
             {
                 switch (nCmdID)
                 {
@@ -159,11 +156,11 @@ namespace XSharp.LanguageService
             }
             // 2. Let others do their thing
             // Let others do their thing
-            int result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+            int result = base.Exec(ref cmdGroup, nCmdID, nCmdExecOpt, pvaIn, pvaOut);
             // 3. Post process
             if (!XEditorSettings.DisableCodeCompletion)
             {
-                if (pguidCmdGroup == VSConstants.VSStd2K)
+                if (cmdGroup == VSConstants.VSStd2K)
                 {
                     
                     switch (nCmdID)
@@ -205,11 +202,6 @@ namespace XSharp.LanguageService
                 XSettings.ShowMessageBox("Cannot edit source code while debugging");
                 e.Cancel();
             }
-        }
-        public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            return m_nextCommandHandler.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
         }
         internal void WriteOutputMessage(string strMessage)
         {

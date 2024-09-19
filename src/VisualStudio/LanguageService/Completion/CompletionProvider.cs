@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using XSharp.Settings;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.Text.Operations;
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 #if !ASYNCCOMPLETION
 namespace XSharp.LanguageService
@@ -29,7 +30,8 @@ namespace XSharp.LanguageService
         internal ICompletionBroker CompletionBroker { get; set; }
         [Import]
         internal IBufferTagAggregatorFactoryService BufferTagAggregatorFactoryService { get; set; }
-        public void VsTextViewCreated(IVsTextView textViewAdapter)
+
+          public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
             if (XEditorSettings.DisableCodeCompletion)
                 return;
@@ -40,8 +42,7 @@ namespace XSharp.LanguageService
                  () => new XSharpCompletionCommandHandler(textViewAdapter,
                     textView,
                     CompletionBroker,
-                    BufferTagAggregatorFactoryService
-                    ));
+                    BufferTagAggregatorFactoryService));
         }
     }
 }

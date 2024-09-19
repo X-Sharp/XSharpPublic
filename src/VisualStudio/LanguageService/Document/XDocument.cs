@@ -7,8 +7,10 @@ using LanguageService.CodeAnalysis.Text;
 using LanguageService.CodeAnalysis.XSharp;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
+using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.TextManager.Interop;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -57,6 +59,8 @@ namespace XSharp.LanguageService
         internal IDictionary<string, IList<IToken>> Identifiers => _identifiers;
         internal IList<XSourceBlock> Blocks => _blocks;
         internal ITextBuffer Buffer => _buffer;
+        internal IVsExpansionSession ExpansionSession { get; set; }
+        internal ICompletionSession CompletionSession { get; set; }
 
         #endregion
 

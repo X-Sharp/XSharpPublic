@@ -1,14 +1,7 @@
 ﻿
 using Community.VisualStudio.Toolkit;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Tagging;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using XSharp.LanguageService.Commands;
 using Task = System.Threading.Tasks.Task;
 
@@ -20,7 +13,7 @@ namespace XSharp.LanguageService
         public static async Task InitializeAsync()
         {
             await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.HELPKEYWORD, () => Execute(Help));
-            await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.HELP, () => Execute(Help));
+            await VS.Commands.InterceptAsync(VSConstants.VSStd97CmdID.F1Help, () => Execute(Help));
         }
        
         private static void Help(DocumentView doc)

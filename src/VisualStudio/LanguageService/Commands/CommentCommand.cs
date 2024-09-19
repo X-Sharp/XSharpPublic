@@ -2,14 +2,8 @@
 using Community.VisualStudio.Toolkit;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Tagging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
 using XSharp.LanguageService.Commands;
 using Task = System.Threading.Tasks.Task;
 

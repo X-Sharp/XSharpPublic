@@ -21,6 +21,7 @@ using XSharp.LanguageService.OptionsPages;
 using XSharpModel;
 using XSharp.Settings;
 using XSharp.CodeDom;
+using XSharp.LanguageService.Commands;
 
 
 // The following lines ensure that the right versions of the various DLLs are loaded.
@@ -39,6 +40,15 @@ namespace XSharp.LanguageService
     /// </summary>
     /// <remarks>
     ///
+    //[ProvideLanguageCodeExpansion(
+    // typeof(XSharpLanguagePackage),
+    // XSharpConstants.LanguageName,  // Name of language used as registry key.
+    // 1,         // Resource ID of localized name of language service.
+    // XSharpConstants.LanguageName,  // language key used in snippet templates.
+    // @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\SnippetsIndex.xml",  // Path to snippets index
+    // SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\Snippets;" +
+    //          @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
+    // )]
 
     [Guid(XSharpConstants.guidXSharpLanguageServicePkgString)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
@@ -89,16 +99,6 @@ namespace XSharp.LanguageService
                          ShowHotURLs = true,
                          SupportCopyPasteOfHTML = true
                  )]
-    [ProvideLanguageCodeExpansion(
-         typeof(XSharpLanguagePackage),
-         XSharpConstants.LanguageName,  // Name of language used as registry key.
-         1,         // Resource ID of localized name of language service.
-         XSharpConstants.LanguageName,  // language key used in snippet templates.
-         @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\SnippetsIndex.xml",  // Path to snippets index
-         SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\Snippets;" +
-                  @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
-         )]
-
     //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
     [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), XSharpConstants.LanguageName, null, "Formatting", pageNameResourceId: "202", keywordListResourceId: 302)]
     [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), XSharpConstants.LanguageName, null, "Options", pageNameResourceId: "203", keywordListResourceId: 303)]
@@ -218,7 +218,7 @@ namespace XSharp.LanguageService
             options.WriteToRegistry();
             return;
         }
-        
+
 
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
@@ -239,13 +239,17 @@ namespace XSharp.LanguageService
             }
             XSettings.Version = await VS.Shell.GetVsVersionAsync();
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
-            IServiceContainer serviceContainer = this as IServiceContainer;
+
+            // The language service is really only used for the Debugger
+            IServiceContainer serviceContainer = this;
+            
             XSharpLanguageService languageService = new XSharpLanguageService(serviceContainer);
             languageService.SetSite(this);
 
             serviceContainer.AddService(typeof(XSharpLanguageService),
                                         languageService,
                                         true);
+            
 #if LIBRARYMANAGER
             if (!XSettings.DisableClassViewObjectView)
             {
@@ -272,12 +276,7 @@ namespace XSharp.LanguageService
                 int hr = _oleComponentManager.FRegisterComponent(this, crinfo, out m_componentID);
             }
             GetIntellisenseSettings(true);
-            await CommentCommand.InitializeAsync();
-            await GotoCommand.InitializeAsync();
-            await HelpCommand.InitializeAsync();
-            await SaveCommand.InitializeAsync();
-            await FormattingCommand.InitializeAsync();
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            AbstractCommand.InitializeCommands();
             XSettings.ShellLink = new XSharpShellLink();
             XSettings.CodeDomProviderClass  = typeof(XSharp.CodeDom.XSharpCodeDomProvider);
             StartLogging();
@@ -297,7 +296,7 @@ namespace XSharp.LanguageService
 #endif
                 if (_oleComponentManager != null)
                 {
-                    ThreadHelper.JoinableTaskFactory.Run(async ( )=>
+                    ThreadHelper.JoinableTaskFactory.Run(async () =>
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         _oleComponentManager.FRevokeComponent(m_componentID);

@@ -31,6 +31,8 @@ namespace XSharp.LanguageService
         internal static bool Active => active;
         internal static void Start()
         {
+            try
+            { 
             if (!active ||
                 log2debugger != XSettings.EnableDebugLogging ||
                 log2file != XSettings.EnableFileLogging)
@@ -146,6 +148,11 @@ namespace XSharp.LanguageService
             }
             // Force all Logging options to be enabled
             XSettings.EnableAll();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
         }
 
         static IList<SolutionItem> EnumChildren(SolutionItem item, SolutionItemType type)

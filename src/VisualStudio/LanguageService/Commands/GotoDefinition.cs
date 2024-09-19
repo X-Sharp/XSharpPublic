@@ -3,13 +3,10 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text.Editor;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using XSharpModel;
-using static System.Windows.Forms.AxHost;
 using File = System.IO.File;
 using XSharp.Settings;
-using System.Linq;
 
 namespace XSharp.LanguageService
 {

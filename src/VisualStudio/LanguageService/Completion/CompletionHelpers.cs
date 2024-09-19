@@ -14,10 +14,124 @@ using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.CodeAnalysis.XSharp;
 using XSharp.Settings;
+using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio.TextManager.Interop;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Editor;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
+
 namespace XSharp.LanguageService
 {
     internal class CompletionHelpers
     {
+        /// <summary>
+        /// This structure is used to facilitate the interop calls with IVsExpansionEnumeration.
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential)]
+        private struct VsExpansionWithIntPtrs
+        {
+            public IntPtr PathPtr;
+            public IntPtr TitlePtr;
+            public IntPtr ShortcutPtr;
+            public IntPtr DescriptionPtr;
+        }
+        internal static VsExpansion[] FindSnippets(string matching)
+        {
+            var list = new List<VsExpansion>();
+            foreach (var snippet in snippets)
+            {
+                if (snippet.shortcut.IndexOf(matching, 0, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    snippet.title.IndexOf(matching, 0, StringComparison.OrdinalIgnoreCase) >= 0)
+                { 
+                    list.Add(snippet);
+                }
+            }
+            return list.ToArray();
+        }
+        internal static VsExpansion[] FindExact(string matching)
+        {
+            var list = new List<VsExpansion>();
+            foreach (var snippet in snippets)
+            {
+                if (snippet.shortcut == matching)
+                    list.Add(snippet);
+            }
+            return list.ToArray();
+        }
+        static VsExpansion[] snippets = null;
+        internal static void GetSnippets()
+        {
+            if (snippets != null)
+                return;
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
+            {
+                var txtManager = await VS.GetServiceAsync<SVsTextManager, IVsTextManager2>();
+                if (txtManager.GetExpansionManager(out var expansionManager) == VSConstants.S_OK)
+                {
+                    var manager = (IExpansionManager)expansionManager;
+                    var expansionEnumerator = await manager.EnumerateExpansionsAsync(
+                        XSharpConstants.guidLanguageService,
+                        0, // shortCutOnly
+                        Array.Empty<string>(), // types
+                        0, // countTypes
+                        1, // includeNULLTypes
+                        1 // includeDulicates: Allows snippets with the same title but different shortcuts
+                        ).ConfigureAwait(false);
+
+                    var snippetInfo = new VsExpansion();
+                    var pSnippetInfo = new IntPtr[1];
+                    var list = new List<VsExpansion>();
+                    try
+                    {
+
+                        pSnippetInfo[0] = Marshal.AllocCoTaskMem(Marshal.SizeOf(snippetInfo));
+                        expansionEnumerator.GetCount(out var count);
+                        for (uint i = 0; i < count; i++)
+                        {
+                            expansionEnumerator.Next(1, pSnippetInfo, out var fetched);
+                            if (fetched > 0)
+                            {
+                                snippetInfo = ConvertToVsExpansionAndFree(pSnippetInfo[0]);
+
+                                list.Add(snippetInfo);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        Marshal.FreeCoTaskMem(pSnippetInfo[0]);
+                    }
+                    snippets = list.ToArray();
+
+                }
+            });
+        }
+
+        private static VsExpansion ConvertToVsExpansionAndFree(IntPtr expansionPtr)
+        {
+            var buffer = (VsExpansionWithIntPtrs)Marshal.PtrToStructure(expansionPtr, typeof(VsExpansionWithIntPtrs));
+            var expansion = new VsExpansion();
+
+            ConvertToStringAndFree(ref buffer.DescriptionPtr, ref expansion.description);
+            ConvertToStringAndFree(ref buffer.PathPtr, ref expansion.path);
+            ConvertToStringAndFree(ref buffer.ShortcutPtr, ref expansion.shortcut);
+            ConvertToStringAndFree(ref buffer.TitlePtr, ref expansion.title);
+
+            return expansion;
+        }
+        private static void ConvertToStringAndFree(ref IntPtr ptr, ref string str)
+        {
+            if (ptr != IntPtr.Zero)
+            {
+                str = Marshal.PtrToStringBSTR(ptr);
+                Marshal.FreeBSTR(ptr);
+                ptr = IntPtr.Zero;
+            }
+        }
+
+
         internal IGlyphService _glyphService = null;
         private XDialect _dialect;
         private XFile _file;
@@ -88,8 +202,8 @@ namespace XSharp.LanguageService
                 if (isHiddenTypeSymbol(type, out var displayName))
                     continue;
 
-                if (!afterDot && !displayName.StartsWith(startWith,StringComparison.OrdinalIgnoreCase) &&
-                    ! type.FullName.StartsWith(startWith, StringComparison.OrdinalIgnoreCase))
+                if (!afterDot && !displayName.StartsWith(startWith, StringComparison.OrdinalIgnoreCase) &&
+                    !type.FullName.StartsWith(startWith, StringComparison.OrdinalIgnoreCase))
                     continue;
                 var typeAnalysis = new XTypeAnalysis(type);
 
@@ -130,7 +244,7 @@ namespace XSharp.LanguageService
                 return true;
             if (realTypeName.IndexOf('$') >= 0)
                 return true;
-            if (realTypeName.StartsWith("<") )
+            if (realTypeName.StartsWith("<"))
                 return true;
             return false;
         }
@@ -182,7 +296,19 @@ namespace XSharp.LanguageService
             foreach (var kw in XSharpSyntax.GetKeywords().Where(ti => nameStartsWith(ti.Name, startWith)))
             {
                 ImageSource icon = _glyphService.GetGlyph(kw.getGlyphGroup(), kw.getGlyphItem());
-                compList.Add(new XSCompletion(kw.Name, kw.Name, kw.Prototype, icon, null, Kind.Keyword, ""));
+                var item = new XSCompletion(kw.Name, kw.Name, kw.Prototype, icon, null, Kind.Keyword, "");
+                compList.Add(item);
+            }
+        }
+        internal void AddSnippets(XCompletionList compList, string startWith)
+        {
+            var snippets = CompletionHelpers.FindSnippets(startWith);
+            foreach (var snippet in snippets)
+            {
+                ImageSource icon = _glyphService.GetGlyph(StandardGlyphGroup.GlyphCSharpExpansion, StandardGlyphItem.GlyphItemPublic);
+                var item = new XSCompletion(snippet.title, "", snippet.description, icon, null, Kind.Snippet, snippet.shortcut);
+                item.Properties.AddProperty(typeof(VsExpansion), snippet);
+                compList.Add(item,false, true);
             }
         }
 
@@ -193,7 +319,7 @@ namespace XSharp.LanguageService
             var list = location.Project.GetTypesLike(startWith, usings);
             foreach (var typeInfo in list)
             {
-                 if (String.Compare(typeInfo.FullName, NameToExclude) == 0)
+                if (String.Compare(typeInfo.FullName, NameToExclude) == 0)
                     continue;
 
                 // Then remove it
@@ -279,7 +405,7 @@ namespace XSharp.LanguageService
             }
             if (XEditorSettings.CompleteSnippets)
             {
-                // todo: Add Snippets
+                AddSnippets(compList, startWith);
             }
             if (XEditorSettings.CompleteKeywords)
             {
@@ -336,7 +462,7 @@ namespace XSharp.LanguageService
                     displayName = displayName.Substring(0, dotPos);
                 //
                 XSCompletion item;
-                if (! compList.ContainsKey(displayName))
+                if (!compList.ContainsKey(displayName))
                 {
                     if (displayName.IndexOf("<") > 0)
                     {
@@ -410,7 +536,7 @@ namespace XSharp.LanguageService
             }
         }
 
-        internal void AddGenericSelfMembersLike(XCompletionList compList, XSharpSearchLocation location, string startWith )
+        internal void AddGenericSelfMembersLike(XCompletionList compList, XSharpSearchLocation location, string startWith)
         {
             if (location.Member == null)
             {
@@ -480,8 +606,8 @@ namespace XSharp.LanguageService
                     else
                         baseType = "System.Object";
                 }
-               var parentType = sourceType.File.FindType(baseType, sourceType.Namespace);
-               if (parentType != null && parentType.FullName == sourceType.FullName)
+                var parentType = sourceType.File.FindType(baseType, sourceType.Namespace);
+                if (parentType != null && parentType.FullName == sourceType.FullName)
                 {
                     ; // recursion !
                     WriteOutputMessage("*** Recursion detected *** " + sourceType.FullName + " inherits from " + parentType.FullName);
@@ -509,7 +635,7 @@ namespace XSharp.LanguageService
             if (type is XPETypeSymbol && type.Children.Count > 0)
             {
                 // Add nested types. They start with the typename +"."
-                AddTypeNamesLike(compList, location, type.FullName+".", false);
+                AddTypeNamesLike(compList, location, type.FullName + ".", false);
             }
             if (type is XSourceTypeSymbol)
             {

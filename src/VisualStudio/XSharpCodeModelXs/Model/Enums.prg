@@ -152,6 +152,7 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Undeclared  :=  40
       MEMBER @@TypeParameter  :=  41
       MEMBER @@Include     := 42
+      MEMBER @@Snippet    := 43
    END ENUM
 
    [Flags];

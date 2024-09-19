@@ -1,10 +1,6 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace XSharp.LanguageService.Commands
 {
@@ -25,5 +21,40 @@ namespace XSharp.LanguageService.Commands
                 return CommandProgression.Continue;
             });
         }
+        protected static CommandProgression Execute(Func<DocumentView, CommandProgression> action)
+        {
+            return ThreadHelper.JoinableTaskFactory.Run(async () =>
+            {
+                DocumentView doc = await VS.Documents.GetActiveDocumentViewAsync();
+
+                if (doc?.TextBuffer != null && doc.TextBuffer.ContentType.IsOfType(Constants.LanguageName))
+                {
+                    return action(doc);
+                }
+
+                return CommandProgression.Continue;
+            });
+        }
+        public static void InitializeCommands()
+        {
+            System.Threading.Tasks.Task result = null;
+            foreach (var type in typeof(AbstractCommand).Assembly.GetTypes())
+            {
+                if (type.IsSubclassOf(typeof(AbstractCommand)))
+                {
+                    var m = type.GetMethod("InitializeAsync");
+                    if (m != null)
+                    {
+                        result = (System.Threading.Tasks.Task)m.Invoke(null, null);
+                    }
+                }
+            }
+            return;
+        }
+        protected static void DoNothing(DocumentView view)
+        {
+
+        }
     }
+
 }

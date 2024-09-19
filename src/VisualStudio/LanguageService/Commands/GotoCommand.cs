@@ -1,18 +1,13 @@
 ﻿
 using Community.VisualStudio.Toolkit;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Windows.Forms;
 using XSharp.LanguageService.Commands;
 using XSharpModel;
-using static LanguageService.SyntaxTree.Atn.SemanticContext;
 using Task = System.Threading.Tasks.Task;
 
 namespace XSharp.LanguageService
@@ -39,16 +34,16 @@ namespace XSharp.LanguageService
 
         private static void GotoBraceWorker(DocumentView doc, bool ext)
         {
-            var xdoc = doc.TextBuffer.GetDocument();
+            var xDocument = doc.TextBuffer.GetDocument();
             var currentChar = doc.TextView.Caret.Position.BufferPosition;
             int currentLine = currentChar.GetContainingLine().LineNumber;
             int tokenLine = currentLine + 1;// our tokens have 1 based line numbers
-            var blocks = xdoc.Blocks.Where(b => b.Token.Line <= tokenLine && b.Last.Token.Line >= tokenLine);
+            var blocks = xDocument.Blocks.Where(b => b.Token.Line <= tokenLine && b.Last.Token.Line >= tokenLine);
             var foundSpans = KeywordMatchingTagger.GetBlockSpans(blocks, currentChar, doc.TextBuffer);
             if (foundSpans == null || foundSpans.Count == 0)
             {
-                var ents = xdoc.Entities.Where(e => e.Range.StartLine <= currentLine && e.Range.EndLine >= currentLine);
-                foundSpans = KeywordMatchingTagger.GetEntitySpans(ents, currentChar, doc.TextBuffer);
+                var entities = xDocument.Entities.Where(e => e.Range.StartLine <= currentLine && e.Range.EndLine >= currentLine);
+                foundSpans = KeywordMatchingTagger.GetEntitySpans(entities, currentChar, doc.TextBuffer);
             }
             if (foundSpans != null)
             {
@@ -187,18 +182,18 @@ namespace XSharp.LanguageService
 
         private static int findCurrentEntity(DocumentView doc)
         {
-            var xdoc = doc.TextBuffer.GetDocument();
-            var currentEntity = xdoc.GetCurrentEntity(doc.TextView);
+            var xDocument = doc.TextBuffer.GetDocument();
+            var currentEntity = xDocument.GetCurrentEntity(doc.TextView);
             if (currentEntity == null)
                 return -1;
-            return xdoc.Entities.IndexOf(currentEntity);
+            return xDocument.Entities.IndexOf(currentEntity);
         }
 
         private static void GotoNextMethod(DocumentView doc)
         {
-            var xdoc = doc.TextBuffer.GetDocument();
+            var xDocument = doc.TextBuffer.GetDocument();
             var pos = findCurrentEntity(doc);
-            var entities = xdoc.Entities;
+            var entities = xDocument.Entities;
             if (pos >= 0 && pos < entities.Count - 1)
             {
                 GotoEntity(doc, entities[pos + 1]);
@@ -215,11 +210,11 @@ namespace XSharp.LanguageService
 
         private static void GotoPreviousMethod(DocumentView doc)
         {
-            var xdoc = doc.TextBuffer.GetDocument();
+            var xDocument = doc.TextBuffer.GetDocument();
             var pos = findCurrentEntity(doc);
             if (pos > 0 )
             {
-                var entities = xdoc.Entities;
+                var entities = xDocument.Entities;
                 GotoEntity(doc, entities[pos - 1]);
             }
         }

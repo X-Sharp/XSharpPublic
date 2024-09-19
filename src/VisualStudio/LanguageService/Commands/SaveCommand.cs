@@ -4,7 +4,6 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using System;
-using System.Runtime;
 using XSharp.LanguageService.Commands;
 using XSharp.Settings;
 using Task = System.Threading.Tasks.Task;

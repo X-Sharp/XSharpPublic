@@ -65,12 +65,12 @@ namespace XSharp.LanguageService
                                                                     ));
             IVsTextBuffer textBuffer = EditorAdaptersFactoryService.GetBufferAdapter(textView.TextBuffer);
             textView.TextBuffer.Properties.TryGetProperty(typeof(ITextDocument), out ITextDocument document);
-            textViewAdapter.GetBuffer(out var textlines);
-            if (textlines != null)
+            textViewAdapter.GetBuffer(out var textLines);
+            if (textLines != null)
             {
                 XFile file = null;
-                string fileName = FilePathUtilities.GetFilePath(textlines);
-                textlines.GetLanguageServiceID(out var langId);
+                string fileName = FilePathUtilities.GetFilePath(textLines);
+                textLines.GetLanguageServiceID(out var langId);
                 // Note that this may get called after the classifier has been instantiated
 
                 if (langId == XSharpConstants.guidLanguageService)          // is our language service active ?
@@ -94,15 +94,15 @@ namespace XSharp.LanguageService
                         {
                             ThreadHelper.JoinableTaskFactory.Run(async delegate
                             {
-                                var proj = await VS.Solutions.GetActiveProjectAsync();
-                                if (proj != null)
+                                var project = await VS.Solutions.GetActiveProjectAsync();
+                                if (project != null)
                                 {
-                                    var xproj = XSolution.FindProjectByFileName(proj.FullPath);
-                                    if (xproj != null)
+                                    var currentProject = XSolution.FindProjectByFileName(project.FullPath);
+                                    if (currentProject != null)
                                     {
-                                        if (file.Project.FileName != xproj.FileName)
+                                        if (file.Project.FileName != currentProject.FileName)
                                         {
-                                            file.Project = xproj;
+                                            file.Project = currentProject;
                                         }
                                     }
                                 }

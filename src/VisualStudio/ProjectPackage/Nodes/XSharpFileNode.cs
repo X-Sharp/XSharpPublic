@@ -45,9 +45,9 @@ namespace XSharp.Project
             AddExtension(".xsdbs", KnownMonikers.Database);
             AddExtension(".vnfs", KnownMonikers.ValidationRule);
             AddExtension(".xsfs", KnownMonikers.ValidationRule);
-            AddExtension(".xssql", KnownMonikers.SQLDatabase);
+            AddExtension(".xssql", KnownMonikers.Database);
             AddExtension(".xsrep", KnownMonikers.Report);
-            AddExtension(".vnsqs", KnownMonikers.SQLDatabase);
+            AddExtension(".vnsqs", KnownMonikers.Database);
             AddExtension(".vnrep", KnownMonikers.Report);
             AddExtension(".xaml", KnownMonikers.WPFFile);
         }

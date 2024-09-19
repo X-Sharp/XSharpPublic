@@ -78,8 +78,7 @@ namespace XSharp.LanguageService
         public override string Name => XSharpConstants.LanguageName;
         public override ViewFilter CreateViewFilter(CodeWindowManager mgr, IVsTextView newView)
         {
-            // still needed for snippets. Once that is moved to MEF then this can disappear
-            return new XSharpViewFilter(mgr, newView);
+            return base.CreateViewFilter(mgr, newView); 
         }
 
         public int UpdateLanguageContext(uint dwHint, Microsoft.VisualStudio.TextManager.Interop.IVsTextLines pBuffer, Microsoft.VisualStudio.TextManager.Interop.TextSpan[] ptsSelection, object pUC)
@@ -103,32 +102,12 @@ namespace XSharp.LanguageService
             // This is called from the New Project and new Item dialogs
             return base.CreateExpansionProvider(src);
         }
-
-        int classcounter = 0;
-        public override ExpansionFunction CreateExpansionFunction(ExpansionProvider provider, string functionName)
+        public override Source CreateSource(IVsTextLines buffer)
         {
-            ExpansionFunction  function = null;
-
-            if (functionName == "ClassName")
-            {
-                function = new ClassNameExpansionFunction(provider, ++classcounter);
-            }
-            else if (functionName == "GenerateSwitchCases")
-            {
-                function = new GenerateSwitchCasesExpansionFunction(provider);
-            }
-            else if (functionName == "SimpleTypeName")
-            {
-                function = new SimpleTypeNameExpansionFunction(provider);
-            }
-            else if (functionName == "InitProcType")
-            {
-                function = new InitProcTypeExpansionFunction(provider);
-            }
-
-            return function;
+            return base.CreateSource(buffer);
         }
 
+        //int classcounter = 0;
 
         public int QueryInvalidEncoding(uint Format, out string pbstrMessage)
         {

@@ -238,6 +238,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Token.Text, context.T.Token.Text));
             }
+            if (context.T1 != null)
+            {
+                var ok = true;
+                string expected = "";
+                if (context.T.Token.Type == XSharpParser.PROCEDURE && context.T1.Type != XSharpParser.ENDPROC)
+                {
+                    ok = false;
+                    expected = "ENDPROC or END PROCEDURE";
+                }
+                else if (context.T.Token.Type == XSharpParser.FUNCTION && context.T1.Type != XSharpParser.ENDFUNC)
+                {
+                    ok = false;
+                    expected = "ENDFUNC or END FUNCTION";
+                }
+                if (!ok)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T1.Text, expected));
+                }
+            }
+
         }
 
         public override void ExitLocalvar([NotNull] XSharpParser.LocalvarContext context)

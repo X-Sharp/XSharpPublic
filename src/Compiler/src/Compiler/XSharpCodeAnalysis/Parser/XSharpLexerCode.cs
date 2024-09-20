@@ -1705,8 +1705,18 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case REPEAT:
                 case UNTIL:
                 case YIELD:
-                case ENDDEFINE:
+                // XPP tokens at start of line only
                 case ENDCLASS:
+                case ENDSEQUENCE:
+                // FoxPro tokens at start of line only
+                case SCAN:
+                case ENDSCAN:
+                case ENDDEFINE:
+                case ENDFOR:
+                case ENDFUNC:
+                case ENDPROC:
+                case ENDTRY:
+                case ENDWITH:
                 case DIMENSION:
                 case DECLARE:
                 case LPARAMETERS:
@@ -2207,7 +2217,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 var xppKeywords = new XSharpKeywords
                 {
                     // normal keywords
-                    // {"ENDSEQUENCE", END }, Xbase++ redefines ENDSEQUENCE to END in STD.CH
                     // We handle that in XBasePPCmd.xh
                     // class keywords
                     {"ENDCLASS",ENDCLASS},
@@ -2226,6 +2235,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 };
                 var xppKeyWordAbbrev = new XSharpKeywords
                 {
+                    {"ENDFOR", ENDFOR },
+                    {"ENDSEQUENCE",ENDSEQUENCE},
                     {"RETURN ",RETURN },
                     {"PRIVATE ",PRIVATE  },
                     {"PUBLIC",  PUBLIC },
@@ -2275,7 +2286,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 };
                 var vfpKeyWordAbbrev = new XSharpKeywords
                 {
-                    {"ENDDEFINE", ENDDEFINE },
+                    {"SCAN", SCAN },
+                    {"ENDSCAN", ENDSCAN },
+                    {"ENDFOR", ENDFOR },
+                    {"ENDFUNC", ENDFUNC },
+                    {"ENDPROC", ENDPROC },
+                    {"ENDTRY", ENDTRY },
+                    {"ENDWITH", ENDWITH },
+                    {"EACH", EACH },
                     {"LPARAMETERS",   LPARAMETERS },
                     {"EXCLUDE", EXCLUDE },
                     {"OLEPUBLIC", OLEPUBLIC },

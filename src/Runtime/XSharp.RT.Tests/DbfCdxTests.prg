@@ -5959,7 +5959,7 @@ RETURN
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBSetFilter_with_whitespace() AS VOID
 			// https://github.com/X-Sharp/XSharpPublic/issues/1489
-			LOCAL cDbf,cIndex AS STRING
+			LOCAL cDbf AS STRING
 			RddSetDefault( "DBFCDX" )
 
 			cDbf := DbfTests.GetTempFileName()

@@ -131,7 +131,7 @@ INTERNAL FUNCTION __DbFieldListHelper(aFieldList AS ARRAY, cIncludedFields AS ST
         IF !String.IsNullOrEmpty(cIncludedFields) .or. !String.IsNullOrEmpty(cExcludedFields)
             Throw Error.ArgumentError(__FUNCTION__, "FIELDNAMES", __VfpStr(VFPErrors.VFP_INVALID_FIELD_SPEC))
         ENDIF
-        foreach var cField in aFieldList
+        foreach cField as STRING in aFieldList
             aFields:Add(cField:ToUpperInvariant())
         next
     ENDIF

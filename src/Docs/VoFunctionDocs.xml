@@ -6452,103 +6452,19 @@
         <param name="kInfoType">
             Specifies the type of information.<br/>
             The constants are described in the Constants section below.  Note, however, that not all constants are supported for all RDDs.<br/>
-
-            &#0009;Important!  DBI_USER is a constant that returns the minimum value that third-party RDD developers can use for defining new <paramref name="kInfoType" /> parameters.  Values less than DBI_USER are reserved for Computer Associates development.
         </param>
         <param name="uNewSetting">
             If specified, this parameter is used to change the value of a setting.<br/>
             The data type (and whether <paramref name="uNewSetting" /> can be specified), depends on the <paramref name="kInfoType" /> constant and is documented in the Constants section below.<br/>
-
-            &#0009;<br/>
-
-            &#0009;DBI_ALIAS&#0009;Returns the alias name of the work area as a string.<br/>
-
-            &#0009;DBI_BLOB_HANDLE&#0009;Returns an integer representing the DOS file handle for a BLOB file.<br/>
-            The constant is most often used in conjunction with DBFieldInfo(DBS_BLOB_LEN, ...) and DBFieldInfo(DBS_BLOB_POINTER, ...) to directly access BLOB fields using low-level functions, such as FRead().<br/>
-
-            &#0009;DBI_BLOB_INTEGRITY&#0009;&#0009;Tests a BLOB file for the integrity of its internal tables and returns a logical value indicating the success (TRUE) or failure (FALSE) of the integrity check.<br/>
-            This should not generally be necessary, but it is handy if the file's integrity is in question for any reason.<br/>
-            This function does not test the integrity between the .DBF and the BLOB file.<br/>
-
-            &#0009;If the integrity check fails, you can run DBInfo(DBI_BLOB_RECOVER), which will automatically correct the BLOB file's tables, however, it will abandon some space within the file that would otherwise be reused.<br/>
-
-            &#0009;Important!  DBInfo(DBI_BLOB_INTEGRITY) is a disk intensive operation and may slow down processing of the work area significantly, especially on a busy network.<br/>
-
-            &#0009;DBI_BLOB_RECOVER&#0009;Recovers a damaged BLOB file by correcting its internal tables and returns NIL.  You should run this function only if DBInfo(DBI_BLOB_INTEGRITY) returns FALSE.  Note that after running DBInfo(DBI_BLOB_RECOVER), the BLOB file loses some size efficiency.<br/>
-
-            &#0009;DBI_BOF&#0009;Returns a logical value indicating the work area's beginning-of-file status (see BOF()).<br/>
-
-            &#0009;DBI_CANPUTREC&#0009;Returns a logical value indicating whether the work area supports putting records.<br/>
-
-            &#0009;<br/>
-
-            &#0009;DBI_CHILDCOUNT&#0009;Returns the number of relations set from this work area.<br/>
-
-            &#0009;BI_DB_VERSION&#0009;Returns the version number of the host RDD (CAVORDDB.DLL or CAVORDD.DLL).<br/>
-
-            &#0009;DBI_DBFILTER&#0009;Returns the filter expression as a string (see DBFilter()).<br/>
-
-            &#0009;DBI_EOF&#0009;Returns a logical value indicating the work area's end-of-file status (see EOF()).<br/>
-
-            &#0009;DBI_FCOUNT&#0009;Returns the number of fields (see FCount()).<br/>
-
-            &#0009;DBI_FILEHANDLE&#0009;Returns an integer representing the DOS file handle for this database file.<br/>
-
-            &#0009;DBI_FOUND&#0009;Returns a logical value indicating the success or failure of the last seek operation in the work area (see Found()).<br/>
-
-            &#0009;DBI_FULLPATH&#0009;Returns the full path name of opened database file.<br/>
-
-            &#0009;DBI_GETDELIMITER&#0009;Returns the default delimiter.<br/>
-
-            &#0009;DBI_GETHEADERSIZE<br/>
-
-            &#0009;Returns the header size of the file (see Header()).<br/>
-
-            &#0009;DBI_GETLOCKARRAY&#0009;Returns the array of locked records.<br/>
-
-            &#0009;DBI_GETRECSIZE&#0009;Returns the record size of the file (see RecSize()).<br/>
-
-            &#0009;DBI_GETSCOPE&#0009;Returns the locate condition as a code block.<br/>
-
-            &#0009;DBI_ISANSI&#0009;Returns the ANSI flag of the database file (TRUE for ANSI and FALSE for OEM).<br/>
-
-            &#0009;DBI_ISDBF&#0009;Returns a logical value indicating whether the RDD provides support for the .DBF file format.<br/>
-
-            &#0009;DBI_ISFLOCK&#0009;Returns the file lock status.<br/>
-
-            &#0009;DBI_LASTUPDATE&#0009;Returns the last date on which the file was updated (see LUpdate()).<br/>
-
-            &#0009;DBI_LOCKCOUNT&#0009;Returns the number of locked records.<br/>
-
-            &#0009;DBI_LOCKOFFSET&#0009;Returns the current locking offset as a numeric value.<br/>
-
-            &#0009;DBI_MEMOBLOCKSIZE<br/>
-
-            &#0009;Returns the block size for the memo file associated with this database.<br/>
-
-            &#0009;DBI_MEMOEXT&#0009;Returns the default extension for the memo file associated with this database.<br/>
-
-            &#0009;DBI_MEMOHANDLE&#0009;Returns an integer representing the DOS file handle for the memo file associated with this database file.<br/>
-
-            &#0009;DBI_RDD_LIST&#0009;Returns the _RDDLIST structure containing the list of RDDs used for the current workarea.<br/>
-
-            &#0009;DBI_RDD_VERSION&#0009;Returns the version number of the RDD for this database.<br/>
-
-            &#0009;DBI_SETDELIMITER&#0009;Sets the default delimiter.<br/>
-
-            &#0009;DBI_SHARED&#0009;Returns the shared flag value.<br/>
-
-            &#0009;DBI_TABLEEXT&#0009;Returns the database file extension.<br/>
-
-            &#0009;DBI_VALIDBUFFER&#0009;Returns a logical value indicating whether the current buffer is valid.
         </param>
         <returns>
             If <paramref name="uNewSetting" /> is not specified, RDDInfo() returns the current setting.<br/>
             If <paramref name="uNewSetting" /> is specified, the previous setting is returned.
         </returns>
-        <remarks>
-            <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
-        </remarks>
+      <remarks>
+        <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
+        <include file="RTComments.xml" path="Comments/DBI_Constants/*"  />
+      </remarks>
         <example>
             The following examples return work area information:
             <code language="X#">
@@ -6731,81 +6647,14 @@
         <param name="uNewSetting">
             If specified, this parameter is used to change the value of a setting.<br/>
             The data type (and whether <paramref name="uNewSetting" /> can be specified), depends on the <paramref name="kInfoType" /> constant and is documented in the Constants section below.<br/>
-
-            &#0009;DBOI_BAGEXT&#0009;Returns the default order bag file extension as a string. This is similar to DBOI_INDEXEXT except it applies only to those RDD's supporting multiple orders such as DBFCDX.<br/>
-
-            &#0009;DBOI_BAGNAME&#0009;Returns the name of the specified order bag file as a string. This is similar to DBOI_INDEXNAME except it applies only to those RDD's supporting multiple orders such as DBFCDX.<br/>
-
-            &#0009;DBOI_CONDITION&#0009;Returns the for condition of the specified order as a string.<br/>
-
-            &#0009;DBOI_CUSTOM&#0009;Returns and optionally sets the logical flag indicating whether the specified order is custom built (for RDDs that support custom built orders).  Note that although you can turn the custom built flag on for a standard order by specifying TRUE for the <paramref name="uNewSetting" /> argument, you cannot turn a custom built order into a standard order.  Specifying FALSE for <paramref name="uNewSetting" /> is the same as not specifying the argument at all — both return the current setting.<br/>
-
-            &#0009;DBOI_EXPRESSION&#0009;Returns the order key expression of the specified order as a string.<br/>
-
-            &#0009;<br/>
-
-            &#0009;DBOI_FULLPATH&#0009;Returns the full path of the specified index file as a string.<br/>
-
-            &#0009;DBOI_HPLOCKING&#0009;Returns a logical flag indicating whether the specified index file uses the high performance index locking schema (see IndexHPLock() function).<br/>
-
-            &#0009;DBOI_INDEXEXT&#0009;Returns the default index file extension as a string.<br/>
-
-            &#0009;DBOI_INDEXNAME&#0009;Returns the name of the specified index file as a string.<br/>
-
-            &#0009;DBOI_ISCOND&#0009;Returns a logical flag that determines whether the specified order was defined using a for condition.<br/>
-
-            &#0009;DBOI_ISDESC&#0009;Returns the logical flag that determines if the specified order is descending.<br/>
-            For drivers that support dynamically setting the descending flag at runtime, specify the new value as a logical, using DBOrderInfo(DBOI_ISDESC, [<paramref name="cIndexFile" />], [<paramref name="cOrder" /> | <paramref name="nPosition" />], <paramref name="lNewSetting" />).<br/>
-            The current setting is returned before it is changed.<br/>
-
-            &#0009;DBOI_KEYCOUNT&#0009;Returns the number of keys in the specified order.<br/>
-
-            &#0009;DBOI_KEYDEC&#0009;Returns the number of decimals in the key of the specified order.<br/>
-
-            &#0009;DBOI_KEYSINCLUDED<br/>
-
-            &#0009;Returns the number of keys included in the specified order so far.<br/>
-            This is primarily useful for conditional orders.<br/>
-            It can be used during the status display process (with the EVAL clause of the INDEX command).<br/>
-
-            &#0009;DBOI_KEYSIZE&#0009;Returns the size of the key in the specified order as a number.<br/>
-
-            &#0009;DBOI_KEYTYPE&#0009;Returns the data type of the key in the specified order as a string.<br/>
-
-            &#0009;DBOI_KEYVAL&#0009;Returns the key value of the current record in the specified order.<br/>
-
-            &#0009;DBOI_LOCKOFFSET&#0009;Returns the locking offset (see NewIndexLock() function) for the specified index file as a numeric value.<br/>
-
-            &#0009;DBOI_NAME&#0009;Returns the name of the specified order as a string.<br/>
-
-            &#0009;DBOI_NUMBER&#0009;Returns the numeric position of the specified order in the order list.<br/>
-
-            &#0009;DBOI_ORDERCOUNT<br/>
-
-            &#0009;Returns the number of orders defined in the specified index file.<br/>
-
-            &#0009;DBOI_POSITION&#0009;Returns the logical record number of the current record within the specified order.<br/>
-
-            &#0009;DBOI_RECNO&#0009;Returns the physical record number of the current record within the specified order.<br/>
-
-            &#0009;DBOI_SCOPEBOTTOM<br/>
-
-            &#0009;Returns the bottom boundary of the scope for the specified order.<br/>
-
-            &#0009;DBOI_SCOPETOP&#0009;Returns the top boundary of the scope for the specified order.<br/>
-
-            &#0009;DBOI_SETCODEBLOCK<br/>
-
-            &#0009;Returns the key for the specified order as a code block.<br/>
-
-            &#0009;DBOI_UNIQUE&#0009;Returns a logical flag indicating whether the specified order has the unique attribute set.
         </param>
         <returns>
             If <paramref name="uNewSetting" /> is not specified, DBOrderInfo() returns the current setting.<br/>
             If <paramref name="uNewSetting" /> is specified, the previous setting is returned.
         </returns>
         <remarks>
-            <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
+          <include file="RTComments.xml" path="Comments/DBOI_Constants/*"  />
+          <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
         </remarks>
         <example>
             This example uses DBOI_NAME to save the current controlling order.<br/>
@@ -6977,18 +6826,10 @@
         <param name="uNewValue">This parameter is reserved for RDDs that allow you to change the information rather than just retrieve it.  None of the supplied RDDs support this argument.  Either omit the argument or specify it as NIL.</param>
         <returns>
         </returns>
-        <remarks>
-            DBRecordInfo() retrieves information about the state of a record (row).<br/>
-            The type of information retrieved is specified as <paramref name="kInfoType" />:
-            Constant&#0009;Return Value&#0009;
-            DBRI_BUFFPTR&#0009;Pointer to current record buffer&#0009;
-            DBRI_DELETED&#0009;Get deleted flag of record&#0009;
-            DBRI_LOCKED&#0009;Is given record locked ?&#0009;
-            DBRI_RECSIZE&#0009;Length of record&#0009;
-            DBRI_RECNO&#0009;Get records position&#0009;
-            DBRI_UPDATED&#0009;Force to rewrite buffer&#0009;
-            Important!  DBRI_USER is a constant that returns the minimum value that third-party RDD developers can use for defining new <paramref name="kInfoType" /> parameters.  Values less than DBRI_USER are reserved for Computer Associates development.
-        </remarks>
+          <remarks>
+            <include file="RTComments.xml" path="Comments/DBRI_Constants/*"  />
+          </remarks>
+
         <example>
             The following examples retrieve record information:
             <code language="X#">
@@ -26578,8 +26419,7 @@
         <summary>
             Return information about index files and the orders in them.
         </summary>
-
-        <param name="kInfoType">Determines what type of information is retrieved.</param>
+        <param name="kInfoType">Determines what type of information is retrieved. This should be one of the DBOI_ constants listed in the remarks section</param>
         <param name="cIndexFile">
             The name of an open index file (only the eight-letter file name is needed).<br/>
             Use this argument with <paramref name="cOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.<br/>
@@ -26604,6 +26444,8 @@
             VODBOrderInfo() is similar to DBOrderInfo().<br/>
             This function, however, does not call the error handler and will not, therefore, produce a runtime error message or create an error object if it fails.  Thus, it may be important to check the return value to determine if the function succeeded.<br/>
             The global structure, StrucErrInfo, will contain needed information regarding any error that occurs.  See DBOrderInfo() for more information.
+          <include file="RTComments.xml" path="Comments/DBOI_Constants/*"  />
+
         </remarks>
         <example>
             The following examples return order access information:

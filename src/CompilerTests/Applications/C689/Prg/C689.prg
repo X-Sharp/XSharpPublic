@@ -4,15 +4,15 @@ FUNCTION Start() AS VOID
 
 	LOCAL n AS INT
 	n := 123
-	s := i"{n:0000}" //ok
+	s := i"{n::0000}" //ok
 	? s
-	
+
 	LOCAL dData AS DateTime
 	dData := DateTime{2019,11,09}
-	s := i"{dData:yyyy-MM-dd}" // error XS0103
+	s := i"{dData::yyyy-MM-dd}" // error XS0103
 	? s
 	xAssert(s == "2019-11-09")
-	s := i"{dData:yyyy\/MM\/dd}"
+	s := i"{dData::yyyy\/MM\/dd}"
 	xAssert(s == "2019/11/09")
 RETURN
 

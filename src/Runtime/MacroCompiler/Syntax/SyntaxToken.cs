@@ -821,6 +821,7 @@ namespace XSharp.MacroCompiler.Syntax
 
             // X# soft KWs
             softKws[(int)TokenType.ADD] = true;
+            softKws[(int)TokenType.AS] = true;
             softKws[(int)TokenType.ARGLIST] = true;
             softKws[(int)TokenType.ASCENDING] = true;
             softKws[(int)TokenType.ASSEMBLY] = true;
@@ -875,30 +876,42 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.VOSTRUCT] = true;
             softKws[(int)TokenType.ALIGN] = true;
             softKws[(int)TokenType.CALLBACK] = true;
+            softKws[(int)TokenType.CAST] = true;
+            softKws[(int)TokenType.CHECKED] = true;
             softKws[(int)TokenType.CLIPPER] = true;
             softKws[(int)TokenType.DECLARE] = true;
+            softKws[(int)TokenType.DEFAULT] = true;
             softKws[(int)TokenType.DIM] = true;
             softKws[(int)TokenType.DIMENSION] = true;
             softKws[(int)TokenType.DOWNTO] = true;
             softKws[(int)TokenType.DLLEXPORT] = true;
             softKws[(int)TokenType.EVENT] = true;
             softKws[(int)TokenType.FASTCALL] = true;
+            softKws[(int)TokenType.FIELD] = true;
             softKws[(int)TokenType.FUNC] = true;
+            softKws[(int)TokenType.IIF] = true;
+            softKws[(int)TokenType.IF] = true;
             softKws[(int)TokenType.IN] = true;
             softKws[(int)TokenType.INSTANCE] = true;
+            softKws[(int)TokenType.IS] = true;
             softKws[(int)TokenType.PASCAL] = true;
             softKws[(int)TokenType.PROC] = true;
+            softKws[(int)TokenType.REF] = true;
             softKws[(int)TokenType.SEQUENCE] = true;
+            softKws[(int)TokenType.SIZEOF] = true;
             softKws[(int)TokenType.STEP] = true;
             softKws[(int)TokenType.STRICT] = true;
             softKws[(int)TokenType.TO] = true;
             softKws[(int)TokenType.THEN] = true;
+            softKws[(int)TokenType.TYPEOF] = true;
             softKws[(int)TokenType.THISCALL] = true;
+            softKws[(int)TokenType.UNCHECKED] = true;
             softKws[(int)TokenType.UNION] = true;
             softKws[(int)TokenType.UNTIL] = true;
             softKws[(int)TokenType.UPTO] = true;
             softKws[(int)TokenType.USING] = true;
             softKws[(int)TokenType.WINCALL] = true;
+
 
             // fox soft KWs
             softKws[(int)TokenType.M] = true;

@@ -1355,12 +1355,8 @@ ASSIGN Bold(lEnabled)
 	RETURN lBold := lEnabled
 
 
-/// <include file="Gui.xml" path="doc/TreeViewItem.Collapse/*" />
+/// <include file="Gui.xml" path="doc/TreeView.Collapse/*" />
 METHOD Collapse(lAll, lForceNotify)
-
-
-
-
 	IF (oTVControl != NULL_OBJECT)
 		RETURN oTVControl:Collapse(symName,NIL , lAll, lForceNotify)
 	ENDIF
@@ -1407,7 +1403,7 @@ ASSIGN DropTarget(lEnabled)
 	RETURN lDropTarget := lEnabled
 
 
-/// <include file="Gui.xml" path="doc/TreeViewItem.Expand/*" />
+/// <include file="Gui.xml" path="doc/TreeView.Expand/*" />
 METHOD Expand(lAll, lForceNotify)
 
 

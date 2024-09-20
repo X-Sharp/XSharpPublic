@@ -123,38 +123,41 @@ FUNCTION __DbFieldWild(includedFields, excludedFields, lIncludeMemo) AS ARRAY CL
     RETURN acFields
 
 INTERNAL FUNCTION __DbFieldListHelper(aFieldList AS ARRAY, cIncludedFields AS STRING, cExcludedFields AS STRING, lIncludeMemo AS LOGIC) AS IList<String>
-    VAR allfields := List<string>{}	// Contains all fields in UPPER case
+    var aFields   := List<String>{}	// Contains aFieldList in UPPER case
+    VAR allfields := List<string>{}	// Contains fields from DBF in UPPER case
     VAR selected := List<string>{}
     LOCAL lAll as LOGIC
     if ALen(aFieldList) > 0
         IF !String.IsNullOrEmpty(cIncludedFields) .or. !String.IsNullOrEmpty(cExcludedFields)
             Throw Error.ArgumentError(__FUNCTION__, "FIELDNAMES", __VfpStr(VFPErrors.VFP_INVALID_FIELD_SPEC))
         ENDIF
+        foreach var cField in aFieldList
+            aFields:Add(cField:ToUpperInvariant())
+        next
     ENDIF
     lAll := ALen(aFieldList) == 0 .and. String.IsNullOrEmpty(cIncludedFields)
     LOCAL fCount as DWORD
     fCount := FCount()
     FOR VAR nFld := 1u to fCount
         LOCAL lInclude AS LOGIC
-        LOCAL cType := NIL as USUAL
-        VoDb.FieldInfo(DBS_TYPE, nFld,@cType)
-        SWITCH (STRING) cType
+        LOCAL oVar := NULL AS OBJECT
+        VoDb.FieldInfo( DBS_STRUCT, nFld, REF oVar)
+        VAR oFld := (RddFieldInfo) oVar
+        local fldName as STRING
+        IF oFld:Alias != NULL
+            fldName := oFld:Alias:ToUpperInvariant()
+        ELSE
+            fldName := oFld:Name:ToUpperInvariant()
+        ENDIF
+        SWITCH (STRING) oFld:FieldTypeStr
             CASE "M"
-                lInclude := lIncludeMemo
             CASE "G"
-                lInclude := FALSE
+                lInclude := lIncludeMemo .or. aFields:IndexOf(fldName) > -1
             OTHERWISE
                 lInclude := TRUE
         END SWITCH
         IF lInclude
-            LOCAL oVar := NULL AS OBJECT
-            VoDb.FieldInfo( DBS_STRUCT, nFld, REF oVar)
-            VAR oFld := (RddFieldInfo) oVar
-            IF oFld:Alias != NULL
-                allfields:Add(oFld:Alias:ToUpperInvariant())
-            ELSE
-                allfields:Add(oFld:Name:ToUpperInvariant())
-            ENDIF
+            allfields:Add(fldName)
         ENDIF
     NEXT
     IF lAll
@@ -464,6 +467,9 @@ FUNCTION DbUseAreaFox(uArea, cDataFile, cAlias, lShared, lReadOnly, ;
     lOnline, lAdmin, lAgain, lNoData, lNoRequery, nDataSession, uConnection) AS LOGIC CLIPPER
 
 LOCAL cDriver := "DBFVFP" AS STRING
+IF !IsNil(uArea)
+    DbSelectArea(uArea)
+ENDIF
 IF !IsNil(lAgain) .and. lAgain
     // select other area where cDataFile is open and copy lShared, lReadonly
     var ext := System.IO.Path.GetExtension(cDataFile)

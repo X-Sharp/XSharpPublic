@@ -1,5 +1,5 @@
 #translate DBFDebug(<c1> [, <cn>]) =>
-#pragma options ("enforceself", on)
+
 /// <include file="Rdd.xml" path="doc/DbServer/*" />
 PARTIAL CLASS DbServer INHERIT DataServer
 	PROTECT lShared AS LOGIC
@@ -235,10 +235,10 @@ METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
 		DO WHILE ! VODBEof( )
-			IF lWhile .AND. ! Eval( uCobWhile )
+			IF lWhile .AND. ! Functions.Eval( uCobWhile )
 				EXIT
 			ENDIF
-			IF ( ! lFor .OR. Eval( uCobFor ) ) .AND. lBlock
+			IF ( ! lFor .OR. Functions.Eval( uCobFor ) ) .AND. lBlock
 				IF lCC
 					IF nEffectiveCCMode = ccOptimistic
 						IF lCCUpdate .AND. ! uFLock
@@ -265,7 +265,7 @@ METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
 				ENDIF
 
 
-				uRC := Eval( uBlock )
+				uRC := Functions.Eval( uBlock )
 				IF lCC .AND. nEffectiveCCMode = ccOptimistic .AND. lCCUpdate .AND. ! uFLock
 					VODBUnlock( nCurrRec )
 				ENDIF

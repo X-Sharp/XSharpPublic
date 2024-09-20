@@ -1,5 +1,5 @@
 #translate DBFDebug(<c1> [, <cn>]) =>
-#pragma options ("enforceself", on)
+
 PARTIAL CLASS DbServer
 
 
@@ -105,7 +105,7 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cDriver,
 					lRetCode := __DBSDBCopy( cTarget,  ;
 						aFieldNames,  ;
 						NIL,  ;
-						{ | | Eval( cbKey ) = uValue },  ;
+						{ | | Functions.Eval( cbKey ) = uValue },  ;
 						NIL,  ;
 						NIL,  ;
 						TRUE,  ;
@@ -273,7 +273,7 @@ METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBloc
 				IF VODBSeek( uSelectionValue, FALSE )
 					lRetCode := __DBSDBCOPYDELIM( cTarget, cDelimiter,  aFieldNames,  ;
 						NIL,  ;
-						{ || Eval( cbKey ) = uValue },  ;
+						{ || Functions.Eval( cbKey ) = uValue },  ;
 						NIL,  ;
 						NIL,  ;
 						TRUE,  ;
@@ -430,7 +430,7 @@ METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )
 				IF VODBSeek( uSelectionValue, FALSE )
 					lRetCode := __DBSDBCOPYSDF( cTarget, aFieldNames,  ;
 						NIL,  ;
-						{ || Eval( cbKey ) = uValue },  ;
+						{ || Functions.Eval( cbKey ) = uValue },  ;
 						NIL,  ;
 						NIL,  ;
 						TRUE,  ;
@@ -694,7 +694,7 @@ METHOD Count( cbForBlock, cbWhileBlock, uScope )
 			IF VODBSeek( uSelectionValue, FALSE )
 				SELF:__DBServerEval( { || iTally++ },  ;
 					NIL,  ;
-					{ || Eval( cbKey ) = uValue },  ;
+					{ || Functions.Eval( cbKey ) = uValue },  ;
 					NIL,  ;
 					NIL,  ;
 					TRUE,  ;
@@ -1153,7 +1153,7 @@ METHOD DeleteAll( )
 				IF VODBSeek( uSelectionValue, FALSE )
 					lRetCode := SELF:__DBServerEval( { || VODBDelete( ) },  ;
 						NIL,  ;
-						{ || Eval( cbKey ) = uValue },  ;
+						{ || Functions.Eval( cbKey ) = uValue },  ;
 						NIL,  ;
 						NIL,  ;
 						TRUE,  ;
@@ -1304,7 +1304,7 @@ METHOD Error( oError, symMethod )
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
 	IF lErrorProcessingSemaphor
-		Eval( ErrorBlock( ), oError )
+		Functions.Eval( ErrorBlock( ), oError )
 	ELSE
 		lErrorProcessingSemaphor := TRUE
 
@@ -1334,7 +1334,7 @@ METHOD Error( oError, symMethod )
 			Send(aClients[1],#Error, oErr )
 		ELSE
 			lErrorProcessingSemaphor := FALSE
-			Eval( ErrorBlock( ), oErr )
+			Functions.Eval( ErrorBlock( ), oErr )
 		ENDIF
 
 
@@ -1412,7 +1412,7 @@ METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )
 				IF VODBSeek( uSelectionValue, FALSE )
 					lRetCode := SELF:__DBServerEval( cbBlock,  ;
 						NIL,  ;
-						{ || Eval( cbKey ) = uValue },  ;
+						{ || Functions.Eval( cbKey ) = uValue },  ;
 						NIL,  ;
 						NIL,  ;
 						TRUE,  ;
@@ -1770,7 +1770,7 @@ METHOD FieldName( nFieldPosition )
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		IF nFieldPosition > 0 .AND. nFieldPosition <= wFieldCount
-			uRetVal := FieldName( nFieldPosition )
+			uRetVal := Functions.FieldName( nFieldPosition )
 		ELSE
 			SELF:__SetStatusHL ( #FieldName, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ) )
 			uRetVal := NULL_STRING
@@ -1884,7 +1884,7 @@ METHOD FIELDPUT( uField, uValue )
 				BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 			ENDIF
 		ENDIF
-      symFieldName := FieldSym(wPos)
+      symFieldName := Functions.FieldSym(wPos)
 		SELF:Notify( NotifyFieldChange, symFieldName )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 
@@ -1927,7 +1927,7 @@ METHOD FieldPutBytes( uField AS USUAL, bValue AS BYTE[])  AS BYTE[]
 		IF ! VODBFieldPutBytes( wPos, bValue )
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
-      symFieldName := FieldSym(wPos)
+      symFieldName := Functions.FieldSym(wPos)
 		SELF:Notify( NotifyFieldChange, symFieldName )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 
@@ -2062,7 +2062,7 @@ METHOD FieldSym( uField )
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF (wPos := __GetFldPos( uField, wFieldCount )) > 0
-			uRetVal := FieldSym( wPos )
+			uRetVal := Functions.FieldSym( wPos )
 		ELSE
 			SELF:__SetStatusHL( #FieldSym, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ) )
 			uRetVal := NULL_SYMBOL

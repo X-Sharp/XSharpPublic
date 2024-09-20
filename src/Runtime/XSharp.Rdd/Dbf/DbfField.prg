@@ -52,7 +52,7 @@ STRUCTURE DbfField
         GET
             LOCAL fieldName := BYTE[]{DbfField.NAME_SIZE} AS BYTE[]
             Array.Copy( Buffer, OFFSET_NAME, fieldName, 0, DbfField.NAME_SIZE )
-            LOCAL count := Array.FindIndex<BYTE>( fieldName, 0, { sz => sz == 0 } ) AS INT
+            LOCAL count := System.Array.IndexOf<BYTE>( fieldName, 0,0, DbfField.NAME_SIZE ) AS INT
             IF count == -1
                 count := DbfField.NAME_SIZE
             ENDIF

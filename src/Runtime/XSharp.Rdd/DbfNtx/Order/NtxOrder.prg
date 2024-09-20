@@ -78,6 +78,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
         #endregion
         #region properties
+        INTERNAL PROPERTY RDD as DBFNTX GET _oRdd
         INTERNAL PROPERTY Expression AS STRING GET _KeyExpr
         INTERNAL PROPERTY KeyCodeBlock AS ICodeblock GET _KeyCodeBlock
         INTERNAL PROPERTY KeyLength     AS WORD GET _keySize
@@ -478,7 +479,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 IF text:Length > sLen
                     sBuilder := StringBuilder{}
                     text := sBuilder:Insert(0, "*", sLen):ToString()
-                    SELF:_oRdd:_Encoding:GetBytes( text, 0, sLen, buffer, 0)
+                    SELF:_oRdd:_GetBytes(text, buffer, 0, sLen)
                     resultLength := text:Length
                     RETURN FALSE
                 ENDIF
@@ -510,7 +511,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 IF length > sLen
                     sBuilder := StringBuilder{}
                     text := sBuilder:Insert(0, "*", sLen):ToString()
-                    SELF:_oRdd:_Encoding:GetBytes( text, 0, sLen, buffer, 0)
+                    SELF:_oRdd:_GetBytes(text, buffer, 0, sLen)
                     resultLength := text:Length
                     RETURN FALSE
                 ENDIF

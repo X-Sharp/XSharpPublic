@@ -173,9 +173,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
                 SELF:_focusNtx := 0
                 SELF:_currentOrder := NULL
-                SELF:_focusNtx := SELF:FindOrder(oi)
-                isOk := FALSE
-                IF (SELF:_focusNtx > 0)
+                isOk := SELF:FindOrder(oi, out var newOrder)
+                IF (isOk)
+                    SELF:_focusNtx := SELF:OrderPos(newOrder)
                     isOk := SELF:_oRdd:GoCold()
                     IF currentOrder != NULL_OBJECT
                         currentOrder:SetOffLine()
@@ -184,12 +184,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         IF SELF:_focusNtx == 0
                             _currentOrder := NULL
                         ELSE
-                            SELF:_currentOrder := SELF:_Orders[SELF:_focusNtx - 1]
+                            SELF:_currentOrder := newOrder
                             SELF:_currentOrder:SetOffLine()
                         ENDIF
                     ENDIF
                 ELSE
-                    isOk := FALSE
                     SELF:_oRdd:_dbfError(Subcodes.ERDD_INVALID_ORDER, Gencode.EG_NOORDER,  NULL)
                 ENDIF
                 RETURN isOk
@@ -234,31 +233,29 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
                 RETURN isOk
 
-            INTERNAL METHOD FindOrder(info AS DbOrderInfo ) AS LONG
-                LOCAL result AS LONG
-                LOCAL num AS LONG
+            INTERNAL METHOD FindOrder(info AS DbOrderInfo, order OUT NtxOrder) AS LOGIC
                 //
-                result := -1
+                order := NULL
                 IF info == null .or. info:IsEmpty
-                    RETURN SELF:_focusNtx
+                    order := SELF:CurrentOrder
+                    RETURN TRUE
                 ENDIF
                 //
-                BEGIN SWITCH Type.GetTypeCode(info:Order:GetType())
-                CASE TypeCode.String
-                    result := SELF:__GetNamePos((STRING)info:Order)
-                CASE TypeCode.Int16
-                CASE TypeCode.Int32
-                CASE TypeCode.Int64
-                CASE TypeCode.Single
-                CASE TypeCode.Double
-                    num := Convert.ToInt32(info:Order)
-                    IF ((num >= 0) .AND. (num <= SELF:_Orders:Count))
-                        result := num
+                IF info:Order is STRING VAR name
+                    if SELF:FindOrderByName(name, out order)
+                        RETURN TRUE
+                    endif
+                ELSEIF info:Order is LONG VAR number
+                    IF number > 0 .AND. number <= SELF:_Orders:Count
+                        order := SELF:_Orders[number - 1]
+                        RETURN TRUE
+                    ELSEIF number == 0
+                        RETURN TRUE
                     ENDIF
-                OTHERWISE
-                    result := -1
-                END SWITCH
-            RETURN result
+                ELSE
+                    order := NULL
+                ENDIF
+            RETURN FALSE
 
 
         INTERNAL METHOD Flush() AS LOGIC
@@ -309,19 +306,17 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN isOk
 
 
-        PRIVATE METHOD __GetNamePos(orderName AS STRING ) AS LONG
-            LOCAL i AS LONG
-            LOCAL ntxIndex AS NtxOrder
-            //
+        PRIVATE METHOD FindOrderByName(orderName AS STRING, order OUT NtxOrder ) AS LOGIC
+            order := NULL
             IF (SELF:_Orders:Count > 0)
-                FOR i := 0 TO SELF:_Orders:Count-1
-                    ntxIndex := SELF:_Orders[i]
-                    IF (String.Compare(ntxIndex:OrderName, orderName, TRUE) == 0)
-                        RETURN i + 1
+                FOREACH var ntxIndex IN SELF:_Orders
+                    IF String.Compare(ntxIndex:OrderName, orderName, TRUE) == 0
+                        order := ntxIndex
+                        RETURN TRUE
                     ENDIF
                 NEXT
             ENDIF
-            RETURN 0
+            RETURN FALSE
 
 
     END CLASS

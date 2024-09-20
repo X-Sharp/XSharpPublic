@@ -1,4 +1,4 @@
-#pragma options ("enforceself", on)
+
 STATIC DEFINE TAB_SYMBOL := 1
 STATIC DEFINE TAB_INDEX  := 2
 STATIC DEFINE TAB_PAGE   := 3
@@ -171,7 +171,7 @@ METHOD __FocusPage(nIndex AS INT) AS VOID STRICT
 		IF SELF:IsVisible()
 			oCurrentPage:Show()
 			IF lSelfFocus
-				SetFocus(hwnd)
+				Win32SetFocus(hwnd)
 			ELSE
 				oCurrentPage:SetFocus()
 			ENDIF

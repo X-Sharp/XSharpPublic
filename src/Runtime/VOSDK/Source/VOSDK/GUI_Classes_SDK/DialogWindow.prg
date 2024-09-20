@@ -1,4 +1,4 @@
-#pragma options ("enforceself", on)
+
 #ifdef __VULCAN__
    USING System.Runtime.InteropServices
 #endif
@@ -419,7 +419,7 @@ METHOD EndDialog(iResult)
 
 
 	if oParent is Window var oWin
-		SetFocus(oWin:Handle())
+		Win32SetFocus(oWin:Handle())
 	ENDIF
 
 
@@ -692,7 +692,7 @@ METHOD ShowModal(lActive)
 	//hHandle := GetFocus()
 	hHandle := GetActiveWindow()
 	IF (hHandle == 0) .OR. !(hHandle == hWnd .OR. IsChild(hWnd, hHandle))
-		SetFocus(hWnd)
+		Win32SetFocus(hWnd)
 	ENDIF
 
 

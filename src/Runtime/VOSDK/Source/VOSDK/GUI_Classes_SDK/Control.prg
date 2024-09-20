@@ -1,4 +1,4 @@
-#pragma options ("enforceself", on)
+
 /// <include file="Gui.xml" path="doc/Control/*" />
 CLASS Control INHERIT VObject
 	PROTECT hWnd AS PTR
@@ -1833,7 +1833,7 @@ METHOD SetFocus()
 		IF oParent IS DialogWindow
 			SendMessage(oParent:Handle(), WM_NEXTDLGCTL, DWORD(_CAST, SELF:Handle()), 1L)
 		ELSE
-			SetFocus(SELF:Handle())
+			Win32SetFocus(SELF:Handle())
 		ENDIF
 	ENDIF
 
@@ -1855,7 +1855,7 @@ METHOD HasStyle(kStyle AS LONG)
 
 /// <include file="Gui.xml" path="doc/Control.SetParent/*" />
 METHOD SetParent( hWndNewParent AS PTR)  AS VOID
-	SetParent( SELF:Handle() , hWndNewParent  )
+	Win32SetParent( SELF:Handle() , hWndNewParent  )
 	RETURN
 
 

@@ -113,14 +113,14 @@ namespace XSharp.MacroCompiler.Syntax
         private ForStmt(Token t, Token dir, Expr final, Expr step, Stmt s) : base(t) { ForDecl = null; AssignExpr = null;  Dir = dir; Final = final; Step = step; Stmt = s; }
         internal ForStmt(Token t, AssignExpr a, Token dir, Expr final, Expr step, Stmt s) : this(t, dir, final, step, s) { AssignExpr = a; }
         internal ForStmt(Token t, VarDecl d, Token dir, Expr final, Expr step, Stmt s) : this(t, dir, final, step, s) { ForDecl = d; }
-        public override string ToString() => "FOR " + (AssignExpr?.ToString() ?? ((ForDecl is ImpliedVarDecl ? "VAR " : "LOCAL ") + ForDecl.ToString())) + " " + Dir.Type + " " + Final + (Step != null ? " STEP " + Step : "") + "\n  " + Stmt.ToString().Replace("\n", "\n  ") + "\nEND FOR";
+        public override string ToString() => "FOR " + (AssignExpr?.ToString() ?? ((ForDecl is ImpliedVarDecl ? "VAR " : "LOCAL ") + ForDecl.ToString())) + " " + Dir.Type + " " + Final + (Step != null ? " STEP " + Step : "") + "\n  " + Stmt.ToString().Replace("\n", "\n  ") + "\nNEXT";
     }
     internal partial class ForeachStmt : ForBaseStmt
     {
         internal VarDecl ForDecl;
         internal Expr Expr;
         internal ForeachStmt(Token t, VarDecl d, Expr e, Stmt s) : base(t) { ForDecl = d; Expr = e; Stmt = s; }
-        public override string ToString() => "FOREACH " + (ForDecl is ImpliedVarDecl ? "VAR " : "") + ForDecl.ToString() + " IN " + Expr + "\n  " + Stmt.ToString().Replace("\n", "\n  ") + "\nEND FOREACH";
+        public override string ToString() => "FOREACH " + (ForDecl is ImpliedVarDecl ? "VAR " : "") + ForDecl.ToString() + " IN " + Expr + "\n  " + Stmt.ToString().Replace("\n", "\n  ") + "\nNEXT";
     }
     internal partial class IfStmt : Stmt
     {

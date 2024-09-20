@@ -53,7 +53,7 @@ namespace XSharp.MacroCompiler.Syntax
         NAMESPACE, NEW, OPERATOR, PARTIAL, PROPERTY, SEALED, SET, STRUCTURE, UNICODE, UNTIL, VALUE, VIRTUAL, VOSTRUCT,
 
         // New Vulcan Keywords (no 4 letter abbreviations) [statement]
-        CONST, EACH, FOREACH, IMPLICIT, IMPLIED, LOCK, OUT, REPEAT, SCOPE, TRY,
+        CONST, FOREACH, IMPLICIT, IMPLIED, LOCK, OUT, REPEAT, SCOPE, TRY,
 
         // New Vulcan expr Keywords (no 4 letter abbreviations)
         DEFAULT,
@@ -67,9 +67,11 @@ namespace XSharp.MacroCompiler.Syntax
 
         //// New XSharp expr Keywords (no 4 letter abbreviations)
         AWAIT, ASYNC, ASTYPE, CHECKED, UNCHECKED,
-
-        // Fox kws
-        M, 
+        // Foxpro kws
+        M,
+        EACH, SCAN, ENDSCAN, ENDDEFINE, ENDFUNC, ENDPROC, ENDTRY, ENDWITH,
+        // XPP keywords
+        ENDCLASS, ENDSEQUENCE,
 
         LAST_POSITIONAL_KEYWORD,
 
@@ -537,7 +539,6 @@ namespace XSharp.MacroCompiler.Syntax
                 {"CONST", TokenType.CONST},
                 {"FINALLY", TokenType.FINALLY},
                 {"FOREACH", TokenType.FOREACH},
-                {"EACH", TokenType.EACH},
                 {"IMPLIED", TokenType.IMPLIED},
                 {"LOCK", TokenType.LOCK},
                 {"ON", TokenType.ON},
@@ -582,6 +583,18 @@ namespace XSharp.MacroCompiler.Syntax
                 // FoxPro keywords
                 {"PARAMETERS", TokenType.PARAMETERS},
                 {"LPARAMETERS", TokenType.LPARAMETERS},
+                {"SCAN", TokenType.SCAN},
+                {"ENDDEFINE", TokenType.ENDDEFINE},
+                {"ENDSCAN", TokenType.ENDSCAN},
+                {"ENDFOR", TokenType.NEXT},
+                {"ENDFUNC", TokenType.ENDFUNC},
+                {"ENDPROC", TokenType.ENDPROC},
+                {"ENDTRY", TokenType.ENDTRY},
+                {"ENDWITH", TokenType.ENDWITH},
+                {"EACH", TokenType.EACH},
+                // XPP Keywords
+                {"ENDCLASS", TokenType.ENDCLASS},
+                {"ENDSEQUENCE", TokenType.ENDSEQUENCE},
             };
 
             var Keywords = new Dictionary<string, TokenType>
@@ -915,6 +928,12 @@ namespace XSharp.MacroCompiler.Syntax
 
             // fox soft KWs
             softKws[(int)TokenType.M] = true;
+            softKws[(int)TokenType.SCAN] = true;
+            softKws[(int)TokenType.ENDSCAN] = true;
+            softKws[(int)TokenType.ENDFUNC] = true;
+            softKws[(int)TokenType.ENDPROC] = true;
+            softKws[(int)TokenType.ENDTRY] = true;
+            softKws[(int)TokenType.ENDWITH] = true;
 
             for (var i = (int)TokenType.FIRST_POSITIONAL_KEYWORD + 1; i < (int)TokenType.LAST_POSITIONAL_KEYWORD; i++)
             {

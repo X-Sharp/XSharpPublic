@@ -209,34 +209,10 @@
     <value>An array containing the structure of the DBF file.</value>
     <remarks>
       An array containing the structure of the DBF file.
-      The structure of the current database file in an array whose length is equal to the number of fields in the database file. Each element of the array is a subarray containing information for one field. The subarrays have the following format:
-      <list type="table">
-        <listheader>
-          <term>Constant</term>
-          <description>Description</description>
-        </listheader>
-        <item>
-          <term>DBS_NAME</term>
-          <description>cName</description>
-        </item>
-        <item>
-          <term>DBS_TYPE</term>
-          <description>cType</description>
-        </item>
-        <item>
-          <term>DBS_LEN</term>
-          <description>nLength</description>
-        </item>
-        <item>
-          <term>DBS_DEC</term>
-          <description>nDecimals</description>
-        </item>
-        <item>
-          <term>DBS_ALIAS</term>
-          <description>cAlias</description>
-        </item>
-      </list>
-    </remarks>
+      The structure of the current database file in an array whose length is equal to the number of fields in the database file. 
+      Each element of the array is a subarray containing information for one field. The subarrays have the following format:
+      <include file="RTComments.xml" path="Comments/DbStruct_Constants/*"  />
+  </remarks>
   </DbFileSpec.DbStruct>
   <DbFileSpec.Delete>
     <summary>
@@ -1739,32 +1715,7 @@
     <remarks>
       An array containing the structure of this data server, whose length (that is, number of elements) is equal to the number of fields in the server.
       Each sub-array is comprised of five elements, which contain the following information, in this order:
-      <list type="table">
-        <listheader>
-          <term>Constant</term>
-          <description>Description</description>
-        </listheader>
-        <item>
-          <term>DBS_NAME</term>
-          <description>cName</description>
-        </item>
-        <item>
-          <term>DBS_TYPE</term>
-          <description>cType</description>
-        </item>
-        <item>
-          <term>DBS_LEN</term>
-          <description>nLength</description>
-        </item>
-        <item>
-          <term>DBS_DEC</term>
-          <description>nDecimals</description>
-        </item>
-        <item>
-          <term>DBS_ALIAS</term>
-          <description>cAlias</description>
-        </item>
-      </list>
+      <include file="RTComments.xml" path="Comments/DbStruct_Constants/*"  />
     </remarks>
     <example>
       This example opens a database file, then creates an array containing the database structure using DBServer:DBStruct within an aliased expression. The field names are then listed using AEval():
@@ -2065,109 +2016,7 @@
       If <paramref name="uNewSetting" /> is not specified, DBServer:FieldInfo() returns the current setting. If <paramref name="uNewSetting" /> is specified, the previous setting is returned.
     </returns>
     <remarks>
-      <list type="table">
-        <listheader>
-          <term>Constants</term>
-          <description>Description</description>
-        </listheader>
-        <item>
-          <term>DBS_ALIAS</term>
-          <description>
-            Returns and optionally changes an alternate name (or alias) by which a field can be referenced (by default, same as DBS_NAME). Using the <paramref name="uNewSetting" /> argument, you can specify a string that you can subsequently use to access the indicated field.
-          </description>
-        </item>
-        <item>
-          <term>DBS_BLOB_DIRECT_LEN</term>
-          <description>
-            Returns the length of data in a BLOB as an unsigned long integer, without referencing a particular memo field. For strings, the return value is the length of the string in bytes; for arrays, it is the number of elements in the first dimension; for all other data types, it returns -1. With this constant, you must specify the BLOB using a numeric pointer obtained from DBServer:BLOBDirectPut(), DBServer:BLOBDirectImport(), or DBServer:FieldInfo(DBS_BLOB_POINTER, <paramref name="uFieldPos" />).
-          </description>
-        </item>
-        <item>
-          <term>DBS_BLOB_DIRECT_TYPE</term>
-          <description>
-            To determine the data type of BLOB data, without reference to a particular memo field, use DBServer:FieldInfo(DBS_BLOB_DIRECT_TYPE, ...). With this constant, you must specify the BLOB using a numeric pointer obtained from DBServer:BLOBDirectPut(), DBServer:BLOBDirectImport(), or DBServer:FieldInfo(DBS_BLOB_POINTER, <paramref name="uFieldPos" />).
-          </description>
-        </item>
-        <item>
-          <term></term>
-          <description>See DBS_BLOB_TYPE for a table of possible return values.</description>
-        </item>
-        <item>
-          <term>DBS_BLOB_LEN</term>
-          <description>
-            Returns the length of the BLOB data in a memo field as an unsigned long integer. For strings, the return value is the length of the string in bytes; for arrays, it is the number of elements in the first dimension; for all other data types, it returns -1.
-            <note type="tip">DBServer:FieldInfo(DBS_BLOB_LEN, ...) has a performance advantage over the Len() function.,</note>
-          </description>
-        </item>
-        <item>
-          <term>DBS_BLOB_POINTER</term>
-          <description>Returns a numeric pointer to the BLOB data associated with a memo field.</description>
-        </item>
-        <item>
-          <term>DBS_BLOB_TYPE</term>
-          <description>Unlike memo fields maintained in .DBT files, BLOB files allow you to store many different types of data in memo fields. However, the standard functions for determining data types, such as ValType(), simply treat BLOB fields as regular memo fields. To determine the actual type of BLOB data stored in a memo field, use DBServer:FieldInfo(DBS_BLOB_TYPE, ...). </description>
-        </item>
-        <item>
-          <term></term>
-          <description>The data type of the return value is string and can be interpreted using this table:</description>
-        </item>
-        <item>
-          <term>Returns</term>
-          <description>Meaning</description>
-        </item>
-        <item>
-          <term>?</term>
-          <description>Blank (empty/uninitialized field)</description>
-        </item>
-        <item>
-          <term>A</term>
-          <description>Array</description>
-        </item>
-        <item>
-          <term>C</term>
-          <description>String</description>
-        </item>
-        <item>
-          <term>D</term>
-          <description>Date</description>
-        </item>
-        <item>
-          <term>E</term>
-          <description>Error</description>
-        </item>
-        <item>
-          <term>L</term>
-          <description>Logical</description>
-        </item>
-        <item>
-          <term>N</term>
-          <description>Numeric</description>
-        </item>
-        <item>
-          <term>U</term>
-          <description>Undefined (NIL was stored)</description>
-        </item>
-        <item>
-          <term>DBS_DEC</term>
-          <description>Returns the number of decimal places for the field.</description>
-        </item>
-        <item>
-          <term>DBS_LEN</term>
-          <description>Returns the length of the field.</description>
-        </item>
-        <item>
-          <term>DBS_NAME</term>
-          <description>Returns the name of the field.</description>
-        </item>
-        <item>
-          <term>DBS_PROPERTIES</term>
-          <description>Returns the number of properties defined for a field.</description>
-        </item>
-        <item>
-          <term>DBS_TYPE</term>
-          <description>Returns the data type of the field.</description>
-        </item>
-      </list>
+      <include file="RTComments.xml" path="Comments/DBS_Constants/*"  />
 
       DBServer:FieldInfo() retrieves information about the state of a field (column).
       The field information that is available is defined by the RDD. In the DBF model, this is limited to the information stored in the DBF file structure (that is, name, length, number of decimals, and data type) plus the field alias that can be changed at runtime.

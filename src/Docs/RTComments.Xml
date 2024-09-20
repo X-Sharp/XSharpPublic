@@ -1,5 +1,161 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Comments>
+  <DbStruct_Constants>
+    <span>
+      <list type="table">
+        <listheader>
+          <term>Constant</term>
+          <description>Description</description>
+        </listheader>
+   <item>
+     <term>DBS_NAME</term>
+     <description>Returns the name of the field.</description>
+   </item>
+   <item>
+     <term>DBS_TYPE</term>
+     <description>Returns the data type of the field.</description>
+   </item>
+   <item>
+     <term>DBS_LEN</term>
+     <description>Returns the length of the field.</description>
+   </item>
+   <item>
+     <term>DBS_DEC</term>
+     <description>Returns the number of decimal places for the field.</description>
+   </item>
+        <item>
+          <term>DBS_ALIAS</term>
+          <description>cAlias</description>
+        </item>
+ </list>      
+    </span>
+  </DbStruct_Constants>
+  <DBS_Constants>
+    <span>
+      <list type="table">
+        <listheader>
+          <term>Constants</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>DBS_ALIAS</term>
+          <description>
+            Returns and optionally changes an alternate name (or alias) by which a field can be referenced 
+            (by default, same as DBS_NAME). Using the <paramref name="uNewSetting" /> argument, you can 
+            specify a string that you can subsequently use to access the indicated field.
+          </description>
+        </item>
+        <item>
+          <term>DBS_BLOB_DIRECT_LEN</term>
+          <description>
+            Returns the length of data in a BLOB as an unsigned long integer, without referencing a particular memo field.
+            For strings, the return value is the length of the string in bytes;
+            for arrays, it is the number of elements in the first dimension; for all other data types, it returns -1.
+            With this constant, you must specify the BLOB using a numeric pointer obtained from BLOBDirectPut(), BLOBDirectImport(), or
+            FieldInfo(DBS_BLOB_POINTER, .../>).
+          </description>
+        </item>
+        <item>
+          <term>DBS_BLOB_DIRECT_TYPE</term>
+          <description>
+            To determine the data type of BLOB data, without reference to a particular memo field, use DBS_BLOB_DIRECT_TYPE.
+            With this constant, you must specify the BLOB using a numeric pointer obtained from BLOBDirectPut(), 
+            BLOBDirectImport(), or FieldInfo(DBS_BLOB_POINTER, ...).
+          </description>
+        </item>
+        <item>
+          <term></term>
+          <description>See DBS_BLOB_TYPE for a table of possible return values.</description>
+        </item>
+        <item>
+          <term>DBS_BLOB_LEN</term>
+          <description>
+            Returns the length of the BLOB data in a memo field as an unsigned long integer. For strings, the return value is the length of the string in bytes; for arrays, it is the number of elements in the first dimension; for all other data types, it returns -1.
+            <note type="tip">Using DBS_BLOB_LEN has a performance advantage over retrieving the value and using the Len() function.</note>
+          </description>
+        </item>
+        <item>
+          <term>DBS_BLOB_POINTER</term>
+          <description>Returns a numeric pointer to the BLOB data associated with a memo field.</description>
+        </item>
+        <item>
+          <term>DBS_BLOB_TYPE</term>
+          <description>
+            Unlike memo fields maintained in .DBT files, BLOB files allow you to store many different types of data in memo fields. 
+            However, the standard functions for determining data types, such as ValType(), simply treat BLOB fields as regular memo 
+            fields. To determine the actual type of BLOB data stored in a memo field, use DBS_BLOB_TYPE.<br/>
+            The data type of the return value is string and can be interpreted using this table:
+          </description>
+          <list type="table">
+            <listheader>
+              <term>Returns</term>
+              <description>Meaning</description>
+            </listheader>
+            <item>
+              <term>?</term>
+              <description>Blank (empty/uninitialized field)</description>
+            </item>
+            <item>
+              <term>A</term>
+              <description>Array</description>
+            </item>
+            <item>
+              <term>C</term>
+              <description>String</description>
+            </item>
+            <item>
+              <term>D</term>
+              <description>Date</description>
+            </item>
+            <item>
+              <term>E</term>
+              <description>Error</description>
+            </item>
+            <item>
+              <term>L</term>
+              <description>Logical</description>
+            </item>
+            <item>
+              <term>N</term>
+              <description>Numeric</description>
+            </item>
+            <item>
+              <term>U</term>
+              <description>Undefined (NIL was stored)</description>
+            </item>
+          </list>
+        </item>
+        <item>
+          <term>DBS_DEC</term>
+          <description>Returns the number of decimal places for the field.</description>
+        </item>
+        <item>
+          <term>DBS_LEN</term>
+          <description>Returns the length of the field.</description>
+        </item>
+        <item>
+          <term>DBS_NAME</term>
+          <description>Returns the name of the field.</description>
+        </item>
+        <item>
+          <term>DBS_PROPERTIES</term>
+          <description>Returns the number of properties defined for a field.</description>
+        </item>
+        <item>
+          <term>DBS_TYPE</term>
+          <description>Returns the data type of the field.</description>
+        </item>
+        <item>
+          <term>DBS_USER</term>
+          <description>Start of user defined values.</description>
+        </item>
+      </list>
+      <note type="tip">
+        DBS_USER is a constant that returns the minimum value that third-party RDD developers can use for customizations.
+        Values less than DBS_USER are reserved for X# development.
+      </note>
+    </span>
+  </DBS_Constants>
   <DBI_Constants>
     <span>
       <list type="table">
@@ -13,15 +169,20 @@
         </item>
         <item>
           <term>DBI_BLOB_HANDLE</term>
-          <description>Returns an integer representing the DOS file handle for a BLOB file. The constant is most often used in conjunction with DBServer:FieldInfo(DBS_BLOB_LEN, ...) and DBServer:FieldInfo(DBS_BLOB_POINTER, ...) to directly access BLOB fields using low-level functions, such as FRead().</description>
+          <description>
+            Returns an IntPtr representing the file handle for a BLOB file.
+            The constant is most often used in conjunction with FieldInfo(DBS_BLOB_LEN, ...) and
+            FieldInfo(DBS_BLOB_POINTER, ...) to directly access BLOB fields using low-level functions, such as FRead().</description>
         </item>
         <item>
           <term>DBI_BLOB_INTEGRITY</term>
-          <description>Tests a BLOB file for the integrity of its internal tables and returns a logical value indicating the success (TRUE) or failure (FALSE) of the integrity check. This should not generally be necessary, but it is handy if the file's integrity is in question for any reason. This does not test the integrity between the .DBF and the BLOB file.</description>
+          <description>Tests a BLOB file for the integrity of its internal tables and returns a logical value indicating the success (TRUE) or failure (FALSE) of the integrity check. This should not generally be necessary, but it is handy if the file's integrity is in question for any reason. 
+          This does not test the integrity between the .DBF and the BLOB file.</description>
         </item>
         <item>
           <term></term>
-          <description>If the integrity check fails, you can run DBServer:Info(DBI_BLOB_RECOVER), which will automatically correct the BLOB file's tables, however, it will abandon some space within the file that would otherwise be reused.</description>
+          <description>If the integrity check fails, you can run Info(DBI_BLOB_RECOVER), which will automatically correct the 
+          BLOB file's tables, however, it will abandon some space within the file that would otherwise be reused.</description>
         </item>
         <item>
           <term></term>
@@ -517,7 +678,8 @@
   <SerializeConstructor>
     <summary>Construct a value from serialized data</summary>
     <param name="info">A SerializationInfo object containing information required to construct value.</param>
-    <param name="context">A StreamingContext object containing the source and destination of the serialized stream associated with the value.</param>
+    <param name="context">A StreamingContext object containing the source and destination of the serialized stream 
+    associated with the value.</param>
   </SerializeConstructor>
   <RddInfoParam>
     <span>

@@ -119393,7 +119393,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C866_helper
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 4913BA1E-7338-4E92-9D0A-7C3EABF0B562
 ; ************** APPLICATION R867 - Runtime error about overloaded method in late bound call *************
 Application = R867 - Runtime error about overloaded method in late bound call
 IDEVersion = 1.06
@@ -125611,7 +125611,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R895 - Preprocessor Repeat marker with non repeated element
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 1BBEE766-1BC4-4BAE-9C98-BAEB270E8A0F
 ; ************** APPLICATION R896 - Property to access super class properties and methods *************
 Application = R896 - Property to access super class properties and methods
 IDEVersion = 1.06
@@ -130541,7 +130541,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C904 - Problems with memvar pragma option
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C905 - Problem using symbol literals #NULL_STRING, #NULL_DATE etc *************
 Application = C905 - Problem using symbol literals #NULL_STRING, #NULL_DATE etc
 IDEVersion = 1.06
@@ -131261,7 +131261,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C908 - Internal Compiler Error with duplicate declaring of fields/memvars
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C909 - VFP: Bogus warning when calling a function with /fox2+ *************
 Application = C909 - VFP: Bogus warning when calling a function with /fox2+
 IDEVersion = 1.06
@@ -131362,7 +131362,7 @@ AppConfig = Debug,11111111-1111-1111-1111-111111111111
   DefineDebug=1
   DefineTrace=0
   SyntaxOnly=0
-  WarningsErrors=0
+  WarningsErrors=1
   ForceConsole=0
   ForceX86=0
   Optimize=0
@@ -131376,7 +131376,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   DefineDebug=0
   DefineTrace=0
   SyntaxOnly=0
-  WarningsErrors=0
+  WarningsErrors=1
   ForceConsole=0
   ForceX86=0
   Optimize=0
@@ -132704,7 +132704,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R925 - Namespace - Property resolution
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 1BBEE766-1BC4-4BAE-9C98-BAEB270E8A0F
 ; ************** APPLICATION R926 - TextMerge and function parameters *************
 Application = R926 - TextMerge and function parameters
 IDEVersion = 1.06
@@ -133540,7 +133540,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C918 - Failed to emit module error with /allowdot-
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C919 - Problems with /vo9 in the FoxPro dialect *************
 Application = C919 - Problems with /vo9 in the FoxPro dialect
 IDEVersion = 1.06
@@ -133661,7 +133661,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C919 - Problems with /vo9 in the FoxPro dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C920 - Problem with /vo9 in the VO dialect *************
 Application = C920 - Problem with /vo9 in the VO dialect
 IDEVersion = 1.06

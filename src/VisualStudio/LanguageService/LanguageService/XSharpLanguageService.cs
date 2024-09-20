@@ -17,6 +17,15 @@ using Microsoft.VisualStudio.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Diagnostics;
 using XSharp.Settings;
+#if DEV17
+using System.Threading;
+using Microsoft.VisualStudio.Shell;
+using System.Threading.Tasks;
+#endif
+
+// Note: This class inherits the base LanguageService from VS
+// Roslyn implements a complete new LanguageService, we may want to do that
+// later.
 
 namespace XSharp.LanguageService
 {
@@ -25,13 +34,26 @@ namespace XSharp.LanguageService
     {
         private readonly IVsEditorAdaptersFactoryService _editorAdaptersFactoryService;
         private LanguagePreferences m_preferences;
-
         public XSharpLanguageService(object serviceContainer) : base()
         {
             var componentModel = XSharpLanguagePackage.GetComponentModel();
             _editorAdaptersFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
             base.SetSite(serviceContainer);
         }
+#if DEV17
+        internal object ComAggregate { get; private set; }
+
+        internal async Task SetupAsync(CancellationToken cancellationToken)
+        {
+
+            // Start off a background task to prime some components we'll need for editing.
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+
+            // Creating the com aggregate has to happen on the UI thread.
+            this.ComAggregate = Interop.ComAggregate.CreateAggregatedObject(this);
+        }
+
+#endif
 
         public override string GetFormatFilterList()
         {
@@ -76,15 +98,20 @@ namespace XSharp.LanguageService
         public override IScanner GetScanner(IVsTextLines buffer) => null;
         public override AuthoringScope ParseSource(ParseRequest req) => null;
         public override string Name => XSharpConstants.LanguageName;
-        public override ViewFilter CreateViewFilter(CodeWindowManager mgr, IVsTextView newView)
-        {
-            return base.CreateViewFilter(mgr, newView); 
-        }
 
         public int UpdateLanguageContext(uint dwHint, Microsoft.VisualStudio.TextManager.Interop.IVsTextLines pBuffer, Microsoft.VisualStudio.TextManager.Interop.TextSpan[] ptsSelection, object pUC)
         {
             // This called for the online help
             return VSConstants.S_OK;
+        }
+
+        public override  Colorizer GetColorizer(IVsTextLines buffer)
+        {
+            return null;
+        }
+        public override CodeWindowManager CreateCodeWindowManager(IVsCodeWindow codeWindow, Source source)
+        {
+            return base.CreateCodeWindowManager(codeWindow, source);
         }
 
         public int CurFileExtensionFormat(string bstrFileName, out uint pdwExtnIndex)
@@ -96,15 +123,6 @@ namespace XSharp.LanguageService
             else
                 pdwExtnIndex = 1;
             return VSConstants.S_OK;
-        }
-        public override ExpansionProvider CreateExpansionProvider(Source src)
-        {
-            // This is called from the New Project and new Item dialogs
-            return base.CreateExpansionProvider(src);
-        }
-        public override Source CreateSource(IVsTextLines buffer)
-        {
-            return base.CreateSource(buffer);
         }
 
         //int classcounter = 0;

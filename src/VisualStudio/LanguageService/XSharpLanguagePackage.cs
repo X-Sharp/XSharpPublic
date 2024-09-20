@@ -22,7 +22,10 @@ using XSharpModel;
 using XSharp.Settings;
 using XSharp.CodeDom;
 using XSharp.LanguageService.Commands;
-
+#if DEV17
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.Threading;
+#endif
 
 // The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
@@ -116,6 +119,11 @@ namespace XSharp.LanguageService
 #endif
         private uint m_componentID;
         private IOleComponentManager _oleComponentManager = null;
+#if DEV17
+        private void RegisterLanguageService(Type t, Func<CancellationToken, Task<object>> serviceCreator)
+             => AddService(t, async (container, cancellationToken, type) => await serviceCreator(cancellationToken).ConfigureAwait(true), promote: true);
+
+#endif
 
 
         public static XSharpLanguagePackage Instance
@@ -242,14 +250,32 @@ namespace XSharp.LanguageService
 
             // The language service is really only used for the Debugger
             IServiceContainer serviceContainer = this;
-            
+
+#if DEV17
+            RegisterLanguageService(typeof(XSharpLanguageService), async cToken =>
+            {
+                // Ensure we're on the BG when creating the language service.
+                await TaskScheduler.Default;
+
+                // Create the language service, tell it to set itself up, then store it in a field
+                // so we can notify it that it's time to clean up.
+                var languageService = new XSharpLanguageService(serviceContainer);
+                await languageService.SetupAsync(cToken).ConfigureAwait(false);
+                return languageService.ComAggregate;
+            });
+#else
             XSharpLanguageService languageService = new XSharpLanguageService(serviceContainer);
             languageService.SetSite(this);
 
             serviceContainer.AddService(typeof(XSharpLanguageService),
                                         languageService,
                                         true);
-            
+#endif
+
+
+
+
+
 #if LIBRARYMANAGER
             if (!XSettings.DisableClassViewObjectView)
             {

@@ -63,6 +63,10 @@
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\GotoCommand.cs" />
     <Compile Include="Commands\CommentCommand.cs" />
+    <Compile Include="Interop\ComAggregate.cs" />
+    <Compile Include="Interop\ComHandle.cs" />
+    <Compile Include="Interop\IComWrapperFixed.cs" />
+    <Compile Include="Interop\WrapperPolicy.cs" />
     <Compile Include="LanguageService\XSharpEditorFactory.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MatchingTokens\AbstractMatching.cs" />

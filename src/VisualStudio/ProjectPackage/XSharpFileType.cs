@@ -63,6 +63,8 @@ namespace XSharp.Project
                 case XFileType.VOMenu:
                 case XFileType.VOIndex:
                 case XFileType.VOOrder:
+                case XFileType.VOSqlTable:
+                case XFileType.VOReport:
                     return ProjectFileConstants.VOBinary;
                 case XFileType.ManagedResource:
                     return ProjectFileConstants.Resource;
@@ -125,6 +127,12 @@ namespace XSharp.Project
                     break;
                 case XFileType.VOFieldSpec:
                     ret = XSharpImageListIndex.FieldSpec + XProjectNode.imageOffset;
+                    break;
+                case XFileType.VOSqlTable:
+                    ret = XSharpImageListIndex.SQLTable + XProjectNode.imageOffset;
+                    break;
+                case XFileType.VOReport:
+                    ret = XSharpImageListIndex.Report + XProjectNode.imageOffset;
                     break;
                 default:
                     ret = -1;

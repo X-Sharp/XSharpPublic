@@ -223,7 +223,7 @@ END CLASS
 
 FUNCTION GetConfigFiles AS List<STRING>
     VAR aFiles := System.Collections.Generic.List<STRING>{}
-    VAR sFile := System.Runtime.InteropServices.RuntimeEnvironment.SystemConfigurationFile:tolower()
+    VAR sFile := System.Runtime.InteropServices.RuntimeEnvironment.SystemConfigurationFile
     VAR aVersion := <STRING>{"v1.0.3705","v1.1.4322", "v2.0.50727","v4.0.30319"}
     VAR sMask := ""
     VAR Is64Bits := FALSE
@@ -239,16 +239,23 @@ FUNCTION GetConfigFiles AS List<STRING>
     ENDIF
     FOREACH VAR sVersion IN aVersion
         VAR sSearch := sFile:Replace(sMask, sVersion)
+        local sSearch2 as STRING
+
         IF System.IO.File.Exists(sSearch)
             aFiles:Add(sSearch)
         ENDIF
         IF Is64Bits
-            sSearch := sSearch:Replace("\framework64","\framework")
+            sSearch2 := sSearch:Replace("\Framework64","\FrameworkArm64")
+            sSearch  := sSearch:Replace("\Framework64","\Framework")
         ELSE
-            sSearch := sSearch:Replace("\framework","\framework64")
+            sSearch2 := sSearch:Replace("\Framework","\FrameworkArm64")
+            sSearch  := sSearch:Replace("\Framework","\Framework64")
         ENDIF
         IF System.IO.File.Exists(sSearch)
             aFiles:Add(sSearch)
+        ENDIF
+        IF System.IO.File.Exists(sSearch2)
+            aFiles:Add(sSearch2)
         ENDIF
     NEXT
 

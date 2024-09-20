@@ -170,6 +170,14 @@ http://www.xsharp.eu</value>
     <value>XSharp VO FieldSpec Editor</value>
     <comment>Text that apears in Open With dialog editors list</comment>
   </data>
+  <data name="80114" xml:space="preserve">
+    <value>XSharp VO SQL Editor</value>
+    <comment>Text that apears in Open With dialog editors list</comment>
+  </data>
+  <data name="80115" xml:space="preserve">
+    <value>XSharp VO Report Editor</value>
+    <comment>Text that apears in Open With dialog editors list</comment>
+  </data>
   <data name="80200" xml:space="preserve">
     <value>[Read Only]</value>
     <comment>Read-only text in file caption</comment>

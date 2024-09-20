@@ -83,9 +83,9 @@ namespace XSharp
         public const int FieldSpec = 4;
         public const int Menu = 5;
         internal const int VO = 6;
-        //public const int Grid = 7;
+        public const int SQLTable = 7;
         //public const int Test = 8;
-        //public const int Properties = 9;
+        public const int Report = 9;
         //public const int Reference = 10;
         //public const int DanglingReference = 11;
         internal const int TabOrder = 12;

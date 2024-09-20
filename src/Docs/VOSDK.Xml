@@ -172,38 +172,21 @@
                 The default is all records.
             </param>
             <param name="uScope">
-                The range of records to process, providing the same functionality as the ALL, REST and NEXT clauses of record processing commands.
-                <list type="table">
-                    <listheader>
-                        <term>Value</term>
-                        <description>Description</description>
-                    </listheader>
-                    <item>
-                        <term>DBSCOPEALL</term>
-                        <description>The scope is all the records in the table. This is the default, although if a WHILE condition is specified, the scope becomes DBSCOPEREST.</description>
-                    </item>
-                    <item>
-                        <term>DBSCOPEREST</term>
-                        <description>The scope is the remaining records in the table from the current position.</description>
-                    </item>
-                    <item>
-                        <term>&lt;nRecords&gt;</term>
-                        <description>
-                            The scope is the next <paramref name="nRecords" /> records.
-                        </description>
-                    </item>
-                </list>
+              The range of records to process, providing the same functionality as the ALL, REST and NEXT clauses of record processing commands.
+              <include file="RTComments.xml" path="Comments/Scope_Constants/*"  />
             </param>
             <param name="cDriver">The name of the RDD that will service the data server. If not specified, the default RDD as determined by RDDSetDefault() is used.</param>
             <param name="aRDD">
                 A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality. This allows you to use RDDs with special capabilities, like encryption or decryption, for different data servers with different database drivers. These RDDs overlay special functions of the main RDD (specified with the <paramref name="cDriver" /> argument). If multiple RDDs (specified with this argument) implement the same function, the function associated with the last RDD in the list takes precedence. If <paramref name="aRdds" /> is omitted, no additional RDDs are assumed.
             </param>
             <param name="nNext">
-                The number of records to process, starting at <paramref name="nRecord" />.  Specify 0 to ignore this argument.
+                The number of records to process, starting at <paramref name="nRecord" />.  
+                Specify 0 to ignore this argument.
             </param>
             <param name="nRecord">A single record number to process.  Specify 0 to ignore this argument.</param>
             <param name="lRest">
-                TRUE processes only records from <paramref name="nStart" /> to the end of the file.  FALSE processes all records.
+                TRUE processes only records from <paramref name="nStart" /> to the end of the file.  
+                FALSE processes all records.
             </param>
             <param name="lNoOpt" >Disable (Rushmore) optimizations (not supported yet).</param>
         </scopeparams>

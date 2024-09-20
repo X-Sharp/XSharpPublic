@@ -1,5 +1,79 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Comments>
+  <CollationTable>
+    <span>
+      <summary>
+        A localized collation table of type System.Byte[].
+      </summary>
+    </span>
+  </CollationTable>
+  <FileAtrChanged>
+    <span>
+      Compared to earlier Xbase versions the return value of Directory() has changed: <br />
+      each subarray returned from Directory() now contains some extra values, such as creation date and
+      last access date. The normal F_DATE and F_TIME elements represent the last written date and time.
+    </span>
+  </FileAtrChanged>
+  
+  <FileAttributes>
+    <span>
+      <include file="RTComments.xml" path="Comments/FileAtrChanged/*"  />
+      <list type="table">
+        <listheader>
+          <term>Constant</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>F_ATTR</term>
+          <description>File attributes (as a string)</description>
+        </item>
+        <item>
+          <term>F_DATE</term>
+          <description>Date of last update (as a date)</description>
+        </item>
+        <item>
+          <term>F_NAME</term>
+          <description>Name of file (as a string)</description>
+        </item>
+        <item>
+          <term>F_SIZE</term>
+          <description>Size of file (as a numeric)</description>
+        </item>
+        <item>
+          <term>F_TIME</term>
+          <description>Time of last update (as a string)</description>
+        </item>
+        <item>
+          <term>F_WRITE_DATE</term>
+          <description>Time of last file write date (as a date)</description>
+        </item>
+        <item>
+          <term>F_WRITE_TIME</term>
+          <description>Time of last file write time (as a string)</description>
+        </item>
+        <item>
+          <term>F_CREATION_DATE</term>
+          <description>Time of file creation date (as a date)</description>
+        </item>
+        <item>
+          <term>F_CREATION_TIME</term>
+          <description>Time of file creation time (as a string)</description>
+        </item>
+        <item>
+          <term>F_ACCESS_DATE</term>
+          <description>Time of last access date (as a date)</description>
+        </item>
+        <item>
+          <term>F_ACCESS_TIME</term>
+          <description>Time of last access time (as a string)</description>
+        </item>
+        <item>
+          <term>F_EA_SIZE</term>
+          <description>.Net File attributes for the file</description>
+        </item>
+      </list>
+    </span>
+  </FileAttributes>
   <DbStruct_Constants>
     <span>
       <list type="table">
@@ -85,7 +159,6 @@
             However, the standard functions for determining data types, such as ValType(), simply treat BLOB fields as regular memo 
             fields. To determine the actual type of BLOB data stored in a memo field, use DBS_BLOB_TYPE.<br/>
             The data type of the return value is string and can be interpreted using this table:
-          </description>
           <list type="table">
             <listheader>
               <term>Returns</term>
@@ -124,6 +197,7 @@
               <description>Undefined (NIL was stored)</description>
             </item>
           </list>
+          </description>
         </item>
         <item>
           <term>DBS_DEC</term>
@@ -510,6 +584,51 @@
       </note>
     </span>
   </DBRI_Constants>
+  <Scope_Constants>
+    <span>
+      <list type="table">
+        <listheader>
+          <term>Constant</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>DBSCOPEALL</term>
+          <description>
+            The scope is all the records in the table. This is the <b>default</b>, although if a WHILE condition is specified, the scope becomes DBSCOPEREST.
+          </description>
+        </item>
+        <item>
+          <term>DBSCOPEREST</term>
+          <description>The scope is the remaining records in the table from the current position.</description>
+        </item>
+      </list>
+    </span>
+  </Scope_Constants>
+
+  <OrderScope_Constants>
+    <span>
+      <list type="table">
+        <listheader>
+          <term>Constant</term>
+          <description>Returned Value</description>
+        </listheader>
+        <item>
+          <term>SCOPE_TOP</term>
+          <description>The top scope.</description>
+        </item>
+        <item>
+          <term>SCOPE_BOTTOM</term>
+          <description>The bottom scope.</description>
+        </item>
+        <item>
+          <term>SCOPE_BOTH</term>
+          <description>
+            The top and also the bottom scope. This is the <em>default</em>.
+          </description>
+        </item>
+      </list>
+    </span>
+  </OrderScope_Constants>
   <StaticMemory>
     <remarks>
       <note type="tip">
@@ -622,28 +741,18 @@
   </ZeroBasedIndexProperty>
   <ScopeParams>
     <span>
-      <list type="table">
-        <listheader>
-          <term>DEFINE</term>
-          <description>Description</description>
-        </listheader>
-        <item>
-          <term>SCOPE_TOP</term>
-          <description>The top scope.</description>
-        </item>
-        <item>
-          <term>SCOPE_BOTTOM</term>
-          <description>The bottom scope.</description>
-        </item>
-        <item>
-          <term>SCOPE_BOTH</term>
-          <description>
-            The top and also the bottom scope. This is the <em>default</em>.
-          </description>
-        </item>
-      </list>
+      The range of records to process, providing the same functionality as the ALL,
+      REST and NEXT clauses of record processing commands.
+      
     </span>
   </ScopeParams>
+  <OrderScopeParams>
+    <span>
+      The range of records to process, providing the same functionality as the ALL,
+      REST and NEXT clauses of record processing commands.
+      <include file="RTComments.xml" path="Comments/OrderScope_Constants/*"  />
+    </span>
+  </OrderScopeParams>
   <ScopeReturn>
     <span>
       The return value depends on the parameter that is passed in:<br/>

@@ -204,13 +204,15 @@
   </DbFileSpec.DBFTime>
   <DbFileSpec.DbStruct>
     <summary>
-      An array containing the structure of the DBF file.
+      Returns an array containing the structure of the DBF file.
     </summary>
     <value>An array containing the structure of the DBF file.</value>
     <remarks>
-      An array containing the structure of the DBF file.
-      The structure of the current database file in an array whose length is equal to the number of fields in the database file. 
-      Each element of the array is a subarray containing information for one field. The subarrays have the following format:
+      Returns an array containing the structure of the DBF file.
+      The structure of the current database file in an array whose length is equal to 
+      the number of fields in the database file. 
+      Each element of the array is a subarray containing information for one field. 
+      The subarrays have the following format:
       <include file="RTComments.xml" path="Comments/DbStruct_Constants/*"  />
   </remarks>
   </DbFileSpec.DbStruct>
@@ -3301,22 +3303,7 @@
     <value>The "scope" component of the "general server scope," which affects several bulk processing methods if they are called with no explicit scope. The initial value of the scope is NIL.</value>
     <remarks>
       The following constants represent the range of records to process, providing the same functionality as the ALL, REST and NEXT clauses of record processing commands:
-      <list type="table">
-        <listheader>
-          <term>Constant</term>
-          <description>Description</description>
-        </listheader>
-        <item>
-          <term>DBSCOPEALL</term>
-          <description>
-            The scope is all the records in the table. This is the <b>default</b>, although if a WHILE condition is specified, the scope becomes DBSCOPEREST.
-          </description>
-        </item>
-        <item>
-          <term>DBSCOPEREST</term>
-          <description>The scope is the remaining records in the table from the current position.</description>
-        </item>
-      </list>
+      
     </remarks>
     <example>
       This example illustrates how various Scope values affect the extent of a recall operation:

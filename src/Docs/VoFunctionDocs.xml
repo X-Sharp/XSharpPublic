@@ -8464,7 +8464,11 @@
       If you do not specify a drive and directory, the Windows defaults are used.
     </param>
     <param name="uAttributes">
-      Specifies inclusion of files with special attributes in the returned information.  <paramref name="uAttributes" /> can be a string or a numeric.  When specified as a string it can contain one or more of the characters listed in the table below.  When specified as a numeric it can contain one or more of the constants listed in the following table:<br/>
+      Specifies inclusion of files with special attributes in the returned information.  
+      <paramref name="uAttributes" /> can be a string or a numeric.  When specified as a 
+      string it can contain one or more of the characters listed in the table below.  
+      When specified as a numeric it can contain one or more of the constants listed in 
+      the following table:<br/>
 
       <list type="table">
         <listheader>
@@ -8499,33 +8503,9 @@
     <returns>
       An array of subarrays, with each subarray containing information about each file matching <paramref name="cFileSpec" />.<br/>
       The subarray elements are referenced as follows (see example below):
-      <list type="table">
-        <listheader>
-          <term>Constant</term>
-          <description>Description</description>
-        </listheader>
-        <item>
-          <term>F_ATTR</term>
-          <description>File attributes (as a string)</description>
-        </item>
-        <item>
-          <term>F_DATE</term>
-          <description>Date of last update (as a date)</description>
-        </item>
-        <item>
-          <term>F_NAME</term>
-          <description>Name of file (as a string)</description>
-        </item>
-        <item>
-          <term>F_SIZE</term>
-          <description>Size of file (as a numeric)</description>
-        </item>
-        <item>
-          <term>F_TIME</term>
-          <description>Time of last update (as a string)</description>
-        </item>
-      </list>
-      If no files are found matching <paramref name="cFileSpec" /> or if <paramref name="cFileSpec" /> is an illegal path or file specification, Directory() returns an empty array.
+      <include file="RTComments.xml" path="Comments/FileAttributes/*"  />
+      If no files are found matching <paramref name="cFileSpec" /> or if <paramref name="cFileSpec" /> 
+      is an illegal path or file specification, Directory() returns an empty array.
     </returns>
     <remarks>
       Directory() returns information about files in the current or specified directory.  You can use it to perform actions on groups of files.  In combination with AEval(), you can define a block that can be applied to all files matching the specified <paramref name="cFileSpec" />.

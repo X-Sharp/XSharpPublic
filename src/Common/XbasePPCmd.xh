@@ -20,16 +20,12 @@
 #xcommand REQUEST  <id1> [,<idn> ]   =>
 #xcommand ANNOUNCE <id1> [,<idn> ]   =>
 
-// XBase++ Allows ENDSEQUENCE as alternative for END SEQUENCE
-// Same for ENDCLASS and ENDFOR
-// In the Xbase++ header file this is mapped to END, but we prefer to match it to END SEQUENCE
-#xcommand ENDSEQUENCE  [<*any*>]  => END SEQUENCE
-// Do not map this to END CLASS
+#xcommand ENDSEQUENCE  [<*any*>]  => ENDSEQUENCE
+// Do not map next token to END CLASS
 // Otherwise simple classes may be picked up by the normal class rule.
 // ENDCLASS is then the only distinguishing factor
 #xcommand ENDCLASS <*any*>        => ENDCLASS
-#xcommand ENDFOR [<*any*>]        => NEXT
-
+#xcommand ENDFOR [<*any*>]        => ENDFOR
 
 // Override COMMIT for Xbase++ compatibility
 #command COMMIT                 => DbCommitAll()

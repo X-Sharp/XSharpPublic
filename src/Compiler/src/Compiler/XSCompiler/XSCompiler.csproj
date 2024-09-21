@@ -9,12 +9,14 @@
     <OutputType>Exe</OutputType>
     <AssemblyName>XSCompiler</AssemblyName>
     <LargeAddressAware>true</LargeAddressAware>
+    <TargetFrameworks>net472</TargetFrameworks>
     <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants)NET46;NET472</DefineConstants>
     <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <!--Use the C# compiler created in this solution-->
     <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
+    <UseAppHost>false</UseAppHost>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
@@ -24,6 +26,7 @@
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(DefineConstants);TRACE;DEBUG;XSHARP;COMMITHASH;NETCOREAPP</DefineConstants>
+    <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'">
     <DefineConstants>$(DefineConstants);TRACE;XSHARP;COMMITHASH;</DefineConstants>
@@ -53,7 +56,7 @@
     <Link>Server\%(RecursiveDir)\%(Filename).%(Extension)</Link>
   </Compile>
   </ItemGroup>
-  <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="VBCSCompilerCommandLine.projitems" Label="Shared" />
   <Import Project="$(RepositoryEngineeringDir)targets\DiaSymReaderNative.targets" />
   <PropertyGroup>
     <PreBuildEvent>taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe" &gt; NUL</PreBuildEvent>

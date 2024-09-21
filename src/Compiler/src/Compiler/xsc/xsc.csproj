@@ -14,6 +14,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <LargeAddressAware>true</LargeAddressAware>
     <ServerGarbageCollection>true</ServerGarbageCollection>
+    <TargetFrameworks>net472</TargetFrameworks>
     <UseAppHost>false</UseAppHost>
     <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);NET46;NET472;COMMITHASH</DefineConstants>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
@@ -67,7 +68,7 @@
   <ItemGroup>
     <Compile Remove="$(CscSource)Program.cs" />
   </ItemGroup>
-  <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="XscCommandLine.projitems" Label="Shared" />
   <Import Project="$(RepositoryEngineeringDir)targets\DiaSymReaderNative.targets" />
   
   <Target Name="DeleteCSFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != ''">

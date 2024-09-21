@@ -387,7 +387,7 @@ Global
 		SolutionGuid = {D6C5EA9B-5C56-4A01-9A3B-E59B1566BE3A}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Roslyn\src\Compilers\Core\CommandLine\CommandLine.projitems*{2175700a-1aae-4204-a89a-054c5ab9a21a}*SharedItemsImports = 5
+		Compiler\src\Compiler\xsc\XscCommandLine.projitems*{2175700a-1aae-4204-a89a-054c5ab9a21a}*SharedItemsImports = 5
 		Compiler\src\Tools\csc\CscCommandLine.projitems*{4b45ca0c-03a0-400f-b454-3d4bcb16af38}*SharedItemsImports = 5
 		Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems*{54e08bf5-f819-404f-a18d-0ab9ea81ea04}*SharedItemsImports = 13
 		Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 5
@@ -396,7 +396,7 @@ Global
 		Roslyn\Src\Dependencies\Collections\Microsoft.CodeAnalysis.Collections.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 5
 		Roslyn\Src\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 5
 		Compiler\src\Tools\CSCompiler\VBCSCompilerCommandLine.projitems*{9508f118-f62e-4c16-a6f4-7c3b56e166ad}*SharedItemsImports = 5
-		Roslyn\src\Compilers\Core\CommandLine\CommandLine.projitems*{9d02e3f9-7157-46b7-9e97-f62010e4b3f2}*SharedItemsImports = 5
+		Compiler\src\Compiler\XSCompiler\VBCSCompilerCommandLine.projitems*{9d02e3f9-7157-46b7-9e97-f62010e4b3f2}*SharedItemsImports = 5
 		Roslyn\src\Compilers\CSharp\csc\CscCommandLine.projitems*{b021ccbc-b2af-4560-af28-ed055f0ed696}*SharedItemsImports = 13
 		Roslyn\Src\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems*{c1930979-c824-496b-a630-70f5369a636f}*SharedItemsImports = 13
 		Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{d0bc9be7-24f6-40ca-8dc6-fcb93bd44b34}*SharedItemsImports = 13

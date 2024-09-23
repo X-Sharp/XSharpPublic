@@ -1754,7 +1754,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     break;
                 // Next tokens only at Start of Line or after STATIC or INTERNAL
                 case DEFINE:
-                    if (!StartOfLine(lastToken) && !IsModifier(lastToken) && lastToken != END)
+                    if (!StartOfLine(lastToken) && !IsModifier(lastToken) && lastToken != END && lastToken != RBRKT)
                     {
                         return ID;
                     }

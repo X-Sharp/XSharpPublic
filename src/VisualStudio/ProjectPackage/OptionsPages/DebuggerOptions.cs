@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using XSharpModel;
-using XD = LanguageService.CodeAnalysis.XSharp;
 using XSharp.Settings;
 namespace XSharp.Project.Options
 {
@@ -17,8 +16,8 @@ namespace XSharp.Project.Options
         [Category(DllOptions)]
         [DisplayName(GeneralPropertyPagePanel.captDialect)]
         [Description(GeneralPropertyPagePanel.descDialect)]
-        [DefaultValue(XD.XSharpDialect.VO)]
-        public XD.XSharpDialect Dialect { get; set; } = XD.XSharpDialect.VO;
+        [DefaultValue(XDialect.VO)]
+        public XDialect Dialect { get; set; } = XDialect.VO;
         [Category(DllOptions)]
         [DisplayName(LanguagePropertyPagePanel.AZCaption)]
         [Description(LanguagePropertyPagePanel.AZDescription)]

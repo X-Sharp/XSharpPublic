@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-09-05T23:43:54.213+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-23T10:19:11.111+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -14,7 +14,7 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Body Text" style="tabstops:96px left,144px left,240px left,488px left,1998px left ;">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue.</para>
-    <para styleclass="Heading1">Changes in 2.21.0.1</para>
+    <para styleclass="Heading1">Changes in 2.21.0.0</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -30,8 +30,12 @@
       <li styleclass="Normal">Fixed an ambiguity problem with same named namespace and property (#1515)</li>
       <li styleclass="Normal">Fixed problem in TEXT TO/ENDTEXT with TEXTMERGE clause (#1517)</li>
       <li styleclass="Normal">Fixed misleading line number reported in the compiler error about requiring the /memvar option (#1531)</li>
+      <li styleclass="Normal">We have fixed an issue in the build system that would sometimes lead to a recompilation, even when nothing was changed.</li>
     </list>
     <para styleclass="Heading3">New features</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The Build System now automatically adds a TargetFramework Attribute to assemblies compiled with X# (#1507)</li>
+    </list>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -45,6 +49,8 @@
       <li styleclass="Normal">Fixed problem with the APPEND FROM command with a FOR clause (#1529)</li>
       <li styleclass="Normal">Fixed macro compiler problem with using Str() in the FoxPro dialect (was causing problems in the INDEX ON command) (#1535)</li>
       <li styleclass="Normal">Suppressed runtime error when using FieldPut() when workarea is at EOF, for compatibility with VO (#1542)</li>
+      <li styleclass="Normal">Fixed problems reading variable length fields for DBF files stored with MultiByte encoding.</li>
+      <li styleclass="Normal">Fixed a problem where DBFs encoded with Simplified Chines were interpreted as Kantonese.</li>
     </list>
     <para styleclass="Heading3">New features</para>
     <para styleclass="Normal"></para>
@@ -54,7 +60,12 @@
       <li styleclass="Normal">Fixed problem with saving/reading the OldStyleAssignment compiler option project setting (#1495)</li>
       <li styleclass="Normal">Improved the Clone Window selection dialog in the VOWED (#1508)</li>
       <li styleclass="Normal">In recent versions of VS Format Document and Commenting was no longer working. This has been fixed.</li>
+      <li styleclass="Normal">Fixed an issue in VS2022 where several features in the editor were no longer working because of a change in VS (#1545)</li>
+      <li styleclass="Normal">Fixed an issue where language specific ResX files were not correctly added as a child of the Form that they belong to (#1560)</li>
+      <li styleclass="Normal">Fixed a problem where the &apos;Old Style Assignment&apos; property on the Project Properties dialog was not correctly saved (#1495)</li>
+      <li styleclass="Normal">Fix a problem with indenting lines with end keywords, such as NEXT and ENDDO, when these keywords were following by &apos;garbage&apos;.</li>
     </list>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">New features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -64,6 +75,13 @@
       <li styleclass="Normal">When a file is present in multiple projects (as Linked file) then the projects combobox will show all project names in which the file is used.</li>
       <li styleclass="Normal">When you select a different project from this combobox then the buffer will be repainted, because conditional compilation symbols for each of the projects may be different.</li>
       <li styleclass="Normal">When you use intellisense in the editor, then the lookup engine will use the project selected. So if a file is used in 2 projects, then the references and source files of the selected project will be used to find reference data.</li>
+      <li styleclass="Normal">Added support for the GotoBrace command.This works for normal braces but also for keyword pairs such as IF .. ENDIF (#1522)</li>
+      <li styleclass="Normal">Added support for correct indentation with FoxPro variations of closing keywords, such as ENDFOR and ENDWITH</li>
+      <li styleclass="Normal">We have moved several X# language related features from the Project System to the Language Service to prepare for the new Project System for SDK projects</li>
+      <li styleclass="Normal">We have added support for Snippets in the CompletionLists at &quot;file&quot; level</li>
+      <li styleclass="Normal">We no longer create an X# intellisense database for solutions that do not have any X# projects</li>
+      <li styleclass="Normal">We have made several changes to the X# intellisense database structure. When you open a solution with an existing database, then the database will be deleted and all source files will be rescanned (only once).</li>
+      <li styleclass="Normal">The X# source code editor now has an extra combobox on the top that lists the projects where a file is included. When a file is included in more than one project then you can see all the projects. Switching to a new project will change the &apos;evaluation context&apos;. Conditional compiles (#ifdef) will reflect the change in the editor.</li>
     </list>
     <para styleclass="Heading2">XIDE</para>
     <para styleclass="Heading3">General</para>

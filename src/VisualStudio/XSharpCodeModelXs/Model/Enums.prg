@@ -6,6 +6,7 @@
 
 USING System
 USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
+USING LanguageService.CodeAnalysis.XSharp
 
 BEGIN NAMESPACE XSharpModel
    INTERNAL ENUM ImageListKind AS Int32
@@ -151,6 +152,7 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Undeclared  :=  40
       MEMBER @@TypeParameter  :=  41
       MEMBER @@Include     := 42
+      MEMBER @@Snippet    := 43
    END ENUM
 
    [Flags];
@@ -248,6 +250,18 @@ BEGIN NAMESPACE XSharpModel
         MEMBER OutParam     := 5     // Int32.TryParse("123", OUT VAR name)  // need to detect the type of the method and get the parametertype. Whole line until closing paren in the Expression
         MEMBER Using        := 6     // (BEGIN) USING VAR name := Expression   variation of VAR Name := Expression
     END ENUM
+
+    ENUM XDialect
+        MEMBER Core := XSharpDialect.Core
+        MEMBER VO := XSharpDialect.VO
+        MEMBER Vulcan := XSharpDialect.Vulcan
+        MEMBER Harbour := XSharpDialect.Harbour
+        MEMBER FoxPro := XSharpDialect.FoxPro
+        MEMBER XPP := XSharpDialect.XPP
+        MEMBER dBase := XSharpDialect.dBase
+        MEMBER Last := XSharpDialect.Last
+    END ENUM
+
 
 END NAMESPACE
 Function EscapeKeyword(sName as STRING) AS STRING

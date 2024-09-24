@@ -12,7 +12,7 @@ namespace Microsoft.VisualStudio.Project
     using System.IO;
     using System.Text;
     using System.Text.RegularExpressions;
-
+    using XSharp.VisualStudio.Project;
     /// <summary>
     /// Class to handle validation of the different types of votive project properties
     /// </summary>

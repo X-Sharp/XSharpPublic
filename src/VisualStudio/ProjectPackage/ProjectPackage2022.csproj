@@ -5,9 +5,9 @@
     <!--Visual Studio will use the value of will use MinimumVisualStudioVersion to detect if a project needs to be updated.
     To allow the project to be loaded in multiple VS versions, conditionally check the project -->
     <MinimumVisualStudioVersion Condition="'$(VisualStudioVersion)' == '15.0'">15.0</MinimumVisualStudioVersion>
-    <MinimumVisualStudioVersion Condition="'$(VisualStudioVersion)' != '15.0'">14.0</MinimumVisualStudioVersion>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ProjectGuid>{F4ADEBDB-CD20-4532-B4E3-FE7424F5369D}</ProjectGuid>
     <CheckNewtonsoftJsonVersion>false</CheckNewtonsoftJsonVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Ngen>false</Ngen>
@@ -18,15 +18,11 @@
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <RootNamespace>XSharp.Project</RootNamespace>
     <AssemblyName>XSharp.Project2022</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <TargetFrameworkMoniker>.NETFramework,Version=v4.8</TargetFrameworkMoniker>
-    <RuntimeIdentifier>win</RuntimeIdentifier>
-    <ProjectGuid>{F4ADEBDB-CD20-4532-B4E3-FE7424F5369D}</ProjectGuid>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
-    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
@@ -56,7 +52,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>true</UseVSHostingProcess>
-    <NoWarn>1762;VSTHRD010</NoWarn>
+    <NoWarn>1762;VSTHRD010;NU1903</NoWarn>
     <DeployExtension>True</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -159,7 +155,6 @@
     <Compile Include="List\ErrorList\ErrorListItem.cs" />
     <Compile Include="List\ErrorList\ErrorListManager.cs" />
     <Compile Include="List\ErrorList\ErrorListProvider.cs" />
-    <Compile Include="List\ErrorList\ErrorMessageUtil.cs" />
     <Compile Include="List\IListItem.cs" />
     <Compile Include="List\IListProvider.cs" />
     <Compile Include="List\IListSinkManager.cs" />
@@ -171,7 +166,6 @@
     <Compile Include="List\TaskList\TaskListItem.cs" />
     <Compile Include="List\TaskList\TaskListManager.cs" />
     <Compile Include="List\TaskList\TaskListProvider.cs" />
-    <Compile Include="Logger.cs" />
     <Compile Include="Nodes\XSharpIncludeContainerNode.cs" />
     <Compile Include="Nodes\XSharpProjectNodeReferenceManager.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
@@ -422,13 +416,6 @@
       <Generator>VsctGenerator</Generator>
       <LastGenOutput>Menus.cs</LastGenOutput>
     </VSCTCompile>
-    <Content Include="XSharp.Designers.pkgdef">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="XSharp.ProjectSelectors.pkgdef">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="XSharpVSIXLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -449,7 +436,6 @@
     </Compile>
     <Compile Include="XSharpFileType.cs" />
     <Compile Include="XSharpOutputPane.cs" />
-    <Compile Include="XSharpShellLink.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
@@ -458,6 +444,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Menus.vsct</DependentUpon>
     </Compile>
+    <Compile Include="XSharpShellEvents.cs" />
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />
     <Compile Include="WPF\XSharpWPFFlavor.cs" />
@@ -677,9 +664,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CodeDomProvider\CodeDomProvider2022.csproj">
-      <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b5}</Project>
-      <Name>CodeDomProvider2022</Name>
+    <ProjectReference Include="..\CodeDomProvider\CodeDomProvider.csproj">
+      <Project>{7b7d9574-66a7-4719-aa48-c2386d7bf153}</Project>
+      <Name>CodeDomProvider</Name>
     </ProjectReference>
     <ProjectReference Include="..\CodeGenerator\CodeGenerator.xsproj">
       <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
@@ -711,12 +698,6 @@
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c696}</Project>
       <Name>ProjectBase2022</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
-    </ProjectReference>
-    <ProjectReference Include="..\ProjectPackageCPS\ProjectPackageCPS2022.csproj">
-      <Project>{679502ac-264c-40ac-9e3a-587f2a27f08b}</Project>
-      <Name>ProjectPackageCPS2022</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
@@ -764,7 +745,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.507</Version>
+      <Version>17.0.522</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>
@@ -772,28 +753,22 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Data.Sqlite">
-      <Version>8.0.1</Version>
+      <Version>8.0.8</Version>
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools">
-      <Version>17.8.2365</Version>
+      <Version>17.11.435</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" GeneratePathProperty="true">
-      <Version>2.1.6</Version>
+      <Version>2.1.9</Version>
       <IncludeAssets>all</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.DiaSymReader">
       <Version>2.0.0</Version>
       <IncludeAssets>all</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Serilog.Sinks.Debug">
-      <Version>2.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="Serilog.Sinks.File">
-      <Version>5.0.0</Version>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
       <IncludeAssets>all</IncludeAssets>

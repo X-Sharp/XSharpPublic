@@ -7,6 +7,7 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree.Misc;
 using System.Linq;
 using System.CodeDom;
+using XSharpModel;
 namespace XSharp.CodeDom
 {
     internal class XSharpFieldsDiscover : XSharpBaseDiscover
@@ -14,7 +15,7 @@ namespace XSharp.CodeDom
 
         
 
-        internal XSharpFieldsDiscover(IProjectTypeHelper projectNode, CodeTypeDeclaration typeInOtherFile) : base(projectNode, typeInOtherFile)
+        internal XSharpFieldsDiscover(XProject projectNode, CodeTypeDeclaration typeInOtherFile) : base(projectNode, typeInOtherFile)
         {
         }
 

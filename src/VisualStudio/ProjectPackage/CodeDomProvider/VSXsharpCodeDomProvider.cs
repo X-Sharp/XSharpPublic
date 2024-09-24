@@ -27,7 +27,7 @@ namespace XSharp.Project
     }
     // Moved "special" VisualStudio  CodeDomProvider
     [PermissionSet(SecurityAction.InheritanceDemand, Name = "FullTrust"), PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
-    public class VSXSharpCodeDomProvider : XSharpCodeDomProvider
+    public class VSXSharpCodeDomProvider : XSharp.CodeDom.XSharpCodeDomProvider
     {
         private XSharpFileNode _fileNode;
 
@@ -36,7 +36,8 @@ namespace XSharp.Project
         public VSXSharpCodeDomProvider(XSharpFileNode fileNode)
         {
             _fileNode = fileNode;
-            _projectNode = fileNode.ProjectMgr as XSharpProjectNode;
+            var projectNode = fileNode.ProjectMgr as XSharpProjectNode;
+            _projectNode = projectNode.ProjectModel;
         }
 
         #region helper functions
@@ -136,20 +137,19 @@ namespace XSharp.Project
         }
         private void SaveSource(string filename, string source, Encoding encoding, bool SaveToDisk = true)
         {
-            source = this._projectNode.SynchronizeKeywordCase(source, filename);
+            source = XSettings.SynchronizeKeywordCase(source, filename);
 
             XSharpFileNode node = _fileNode.FindChild(filename) as XSharpFileNode;
             bool done = false;
             if (node != null)
             {
                 // assign the source to the open buffer when possible
-                if (node.DocumentSetText(source))
+                if (XDocuments.IsOpen(node.Url))
                 {
-                    // then use automation to save the file, because that is much easier
-                    // since we do not have to worry about the docdata etc.
-                    var oaFile = (OAXSharpFileItem)node.GetAutomationObject();
-                    oaFile.Save(filename);
-                    done = true;
+                    if (XDocuments.SetText(node.Url, source))
+                    {
+                        done = true;
+                    }
                 }
             }
             if (!done && SaveToDisk)

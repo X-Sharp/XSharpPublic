@@ -24,7 +24,7 @@ CLASS XSourceEntity INHERIT XSourceSymbol IMPLEMENTS IXSymbol, IXSourceSymbol
     PROPERTY ParentName              AS STRING           GET SELF:Parent?:FullName
     PROPERTY ComboPrototype          AS STRING           GET SELF:FullName
     PROPERTY Prototype               AS STRING           GET SELF:FullName
-    PROPERTY Dialect                 AS XSharpDialect    AUTO
+    PROPERTY Dialect                 AS XDialect         AUTO
     PROPERTY CustomAttributes        AS STRING           AUTO
     PROPERTY SingleLine              AS LOGIC            AUTO
     PROPERTY Value                   AS STRING           AUTO
@@ -43,7 +43,7 @@ CLASS XSourceEntity INHERIT XSourceSymbol IMPLEMENTS IXSymbol, IXSourceSymbol
 
     CONSTRUCTOR(Name AS STRING, kind AS Kind, attributes AS Modifiers, range AS TextRange, interval AS TextInterval)
         SUPER(Name, kind, attributes, range, interval)
-        SELF:Dialect := XSharpDialect.Core
+        SELF:Dialect := XDialect.Core
 
     METHOD IncludesLine(nLine as LONG ) AS LOGIC
         RETURN SELF:Range:StartLine <= nLine .and. SELF:Range:EndLine >= nLine

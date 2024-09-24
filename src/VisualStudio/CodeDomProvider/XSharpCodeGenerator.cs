@@ -293,11 +293,13 @@ namespace XSharp.CodeDom
         }
         protected override string CreateEscapedIdentifier(string value)
         {
-            // Is is a reserved Keyword ?
+#if XSHARPPROVIDER
+            // Is it a reserved Keyword ?
             if (XSharpKeywords.Contains(value))
             {
                 value = "@@" + value;
             }
+#endif
             return value;
         }
        
@@ -1063,7 +1065,7 @@ namespace XSharp.CodeDom
 
             _using.Clear();
             base.GenerateCompileUnitStart(e);
-            if (e is XCodeCompileUnit xcu && ! xcu.GenerateHeader)
+            if (e is XCodeCompileUnit xcu && !xcu.GenerateHeader)
             {
                 generateComment = false;
             }

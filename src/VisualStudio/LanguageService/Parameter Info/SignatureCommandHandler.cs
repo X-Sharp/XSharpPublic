@@ -61,13 +61,12 @@ namespace XSharp.LanguageService
         readonly ISignatureHelpBroker _signatureBroker;
         readonly IOleCommandTarget m_nextCommandHandler;
         ISignatureHelpSession _signatureSession = null;
-#if !ASYNCCOMPLETION
-        XSharpCompletionCommandHandler _completionCommandHandler = null;
-#endif
+        readonly XDocument _doc;
         internal XSharpSignatureHelpCommandHandler(IVsTextView textViewAdapter, ITextView textView, ISignatureHelpBroker broker)
         {
             this._textView = textView;
             this._signatureBroker = broker;
+            _doc = textView.TextBuffer.GetDocument();   
             //add this to the filter chain
             textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
         }
@@ -135,7 +134,6 @@ namespace XSharp.LanguageService
                         break;
                 }
             }
-            var completionActive = IsCompletionActive();
             // 2. Let others do their thing
             result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             // 3. Post process
@@ -188,7 +186,7 @@ namespace XSharp.LanguageService
                             }
                             break;
                         case (int)VSConstants.VSStd2KCmdID.RETURN:
-                            if (!completionActive)
+                            if (_doc.CompletionSession == null)
                             {
                                 CancelSignatureSession();
                             }
@@ -279,21 +277,6 @@ namespace XSharp.LanguageService
             return level > 0;
         }
 
-        bool IsCompletionActive()
-        {
-#if !ASYNCCOMPLETION
-            if (_completionCommandHandler == null)
-            {
-                _textView.Properties.TryGetProperty(typeof(XSharpCompletionCommandHandler), out _completionCommandHandler);
-            }
-            if (_completionCommandHandler != null)
-            {
-                return _completionCommandHandler.HasActiveSession;
-            }
-#endif
-            return false;
-
-        }
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
         {
             ThreadHelper.ThrowIfNotOnUIThread();

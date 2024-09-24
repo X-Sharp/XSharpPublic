@@ -2180,6 +2180,23 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"FALSE", FALSE_CONST},
                 {"TRUE", TRUE_CONST},
 
+#if VSPARSER
+                    // XPP Keywords
+                    {"ENDFOR", ENDFOR },
+                    {"ENDSEQUENCE",ENDSEQUENCE},
+
+                    // VFP Keywords
+                    {"SCAN", SCAN },
+                    {"ENDSCAN", ENDSCAN },
+                    //{"ENDFOR", ENDFOR },
+                    {"ENDFUNC", ENDFUNC },
+                    {"ENDPROC", ENDPROC },
+                    {"ENDTRY", ENDTRY },
+                    {"ENDWITH", ENDWITH },
+                    {"EACH", EACH },
+
+#endif
+
                 };
             }
             if (!dialect.AllowFourLetterAbbreviations())
@@ -2235,8 +2252,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 };
                 var xppKeyWordAbbrev = new XSharpKeywords
                 {
+#if !VSPARSER
                     {"ENDFOR", ENDFOR },
                     {"ENDSEQUENCE",ENDSEQUENCE},
+#endif
                     {"RETURN ",RETURN },
                     {"PRIVATE ",PRIVATE  },
                     {"PUBLIC",  PUBLIC },
@@ -2286,6 +2305,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 };
                 var vfpKeyWordAbbrev = new XSharpKeywords
                 {
+#if ! VSPARSER
                     {"SCAN", SCAN },
                     {"ENDSCAN", ENDSCAN },
                     {"ENDFOR", ENDFOR },
@@ -2294,6 +2314,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"ENDTRY", ENDTRY },
                     {"ENDWITH", ENDWITH },
                     {"EACH", EACH },
+#endif
                     {"LPARAMETERS",   LPARAMETERS },
                     {"EXCLUDE", EXCLUDE },
                     {"OLEPUBLIC", OLEPUBLIC },
@@ -2653,7 +2674,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
-        #endregion
+#endregion
         public static XSharpLexer Create(string text, string fileName, CSharpParseOptions options = null)
         {
             var stream = new AntlrInputStream(text)

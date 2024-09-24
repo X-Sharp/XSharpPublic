@@ -17,6 +17,15 @@ using Microsoft.VisualStudio.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Diagnostics;
 using XSharp.Settings;
+#if DEV17
+using System.Threading;
+using Microsoft.VisualStudio.Shell;
+using System.Threading.Tasks;
+#endif
+
+// Note: This class inherits the base LanguageService from VS
+// Roslyn implements a complete new LanguageService, we may want to do that
+// later.
 
 namespace XSharp.LanguageService
 {
@@ -25,13 +34,26 @@ namespace XSharp.LanguageService
     {
         private readonly IVsEditorAdaptersFactoryService _editorAdaptersFactoryService;
         private LanguagePreferences m_preferences;
-
         public XSharpLanguageService(object serviceContainer) : base()
         {
             var componentModel = XSharpLanguagePackage.GetComponentModel();
             _editorAdaptersFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
             base.SetSite(serviceContainer);
         }
+#if DEV17
+        internal object ComAggregate { get; private set; }
+
+        internal async Task SetupAsync(CancellationToken cancellationToken)
+        {
+
+            // Start off a background task to prime some components we'll need for editing.
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+
+            // Creating the com aggregate has to happen on the UI thread.
+            this.ComAggregate = Interop.ComAggregate.CreateAggregatedObject(this);
+        }
+
+#endif
 
         public override string GetFormatFilterList()
         {
@@ -104,30 +126,30 @@ namespace XSharp.LanguageService
             return base.CreateExpansionProvider(src);
         }
 
-        int classcounter = 0;
-        public override ExpansionFunction CreateExpansionFunction(ExpansionProvider provider, string functionName)
-        {
-            ExpansionFunction  function = null;
+        //int classcounter = 0;
+        //public override ExpansionFunction CreateExpansionFunction(ExpansionProvider provider, string functionName)
+        //{
+        //    ExpansionFunction  function = null;
 
-            if (functionName == "ClassName")
-            {
-                function = new ClassNameExpansionFunction(provider, ++classcounter);
-            }
-            else if (functionName == "GenerateSwitchCases")
-            {
-                function = new GenerateSwitchCasesExpansionFunction(provider);
-            }
-            else if (functionName == "SimpleTypeName")
-            {
-                function = new SimpleTypeNameExpansionFunction(provider);
-            }
-            else if (functionName == "InitProcType")
-            {
-                function = new InitProcTypeExpansionFunction(provider);
-            }
+        //    if (functionName == "ClassName")
+        //    {
+        //        function = new ClassNameExpansionFunction(provider, ++classcounter);
+        //    }
+        //    else if (functionName == "GenerateSwitchCases")
+        //    {
+        //        function = new GenerateSwitchCasesExpansionFunction(provider);
+        //    }
+        //    else if (functionName == "SimpleTypeName")
+        //    {
+        //        function = new SimpleTypeNameExpansionFunction(provider);
+        //    }
+        //    else if (functionName == "InitProcType")
+        //    {
+        //        function = new InitProcTypeExpansionFunction(provider);
+        //    }
 
-            return function;
-        }
+        //    return function;
+        //}
 
 
         public int QueryInvalidEncoding(uint Format, out string pbstrMessage)

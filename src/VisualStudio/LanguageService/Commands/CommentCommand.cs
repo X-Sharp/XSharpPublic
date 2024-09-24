@@ -2,14 +2,13 @@
 using Community.VisualStudio.Toolkit;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
-using System;
+using Microsoft.VisualStudio.Text.Editor;
 using Task = System.Threading.Tasks.Task;
 
-namespace XSharp.LanguageService
+namespace XSharp.LanguageService.Commands
 {
-    internal class Commenting
+    internal class CommentCommand : AbstractCommand
     {
         readonly static string[] CommentChars = new[] { "//", "&&", "*" };
 
@@ -17,24 +16,11 @@ namespace XSharp.LanguageService
         {
             // We need to manually intercept the commenting command, because language services swallow these commands.
             await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.COMMENT_BLOCK, () => Execute(Comment));
+            await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.COMMENTBLOCK, () => Execute(Comment));
             await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.UNCOMMENT_BLOCK, () => Execute(Uncomment));
+            await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.UNCOMMENTBLOCK, () => Execute(Uncomment));
         }
 
-        private static CommandProgression Execute(Action<DocumentView> action)
-        {
-            return ThreadHelper.JoinableTaskFactory.Run(async () =>
-            {
-                DocumentView doc = await VS.Documents.GetActiveDocumentViewAsync();
-
-                if (doc?.TextBuffer != null && doc.TextBuffer.ContentType.IsOfType(Constants.LanguageName))
-                {
-                    action(doc);
-                    return CommandProgression.Stop;
-                }
-
-                return CommandProgression.Continue;
-            });
-        }
         private static (int, int) swapNumbers(int start, int end)
         {
             if (start > end)
@@ -50,6 +36,10 @@ namespace XSharp.LanguageService
             // in that case surround with /* */
             var snapshot = doc.TextBuffer.CurrentSnapshot;
             var sel = doc.TextView.Selection;
+            if (sel.Mode == TextSelectionMode.Box)
+            {
+                return;
+            }
             var (start, end) = swapNumbers(sel.Start.Position.Position, sel.End.Position.Position);
             using (var editsession = doc.TextBuffer.CreateEdit())
             {
@@ -82,6 +72,10 @@ namespace XSharp.LanguageService
         {
             var snapshot = doc.TextBuffer.CurrentSnapshot;
             var sel = doc.TextView.Selection;
+            if (sel.Mode == TextSelectionMode.Box)
+            {
+                return;
+            }
             var (start, end) = swapNumbers(sel.Start.Position.Position, sel.End.Position.Position);
             using (var editsession = doc.TextBuffer.CreateEdit())
             {

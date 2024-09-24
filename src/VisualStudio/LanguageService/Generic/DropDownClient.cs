@@ -47,32 +47,56 @@ namespace XSharp.LanguageService
 
     public class XSharpDropDownClient : IVsDropdownBarClient
     {
+        const int PROJECTINDEX = 0;
+        const int TYPEINDEX = 1;
+        const int MEMBERINDEX = 2;
 
         static readonly ImageList _imageList = new ImageList();
         private IVsDropdownBar _dropDownBar;
         readonly Dictionary<ITextView, ITextView> _textViews;
         ITextView _activeView = null;
         readonly IVsDropdownBarManager _manager;
+#if XDEBUG
         XSourceEntity _lastSelected = null;
+#endif
         XSourceEntity _lastType = null;
-
         readonly List<XDropDownMember> _members = null;
         readonly Dictionary<string, int> _membersDict = null;	// to speed up the lookup of members
         readonly List<XDropDownMember> _types = null;
-        readonly XFile _file = null;
+        readonly List<XProject> _projects = null;   
+        XFile _file = null;
         uint _lastHashCode = 0;
         private int _lastLine;
         private int _selectedMemberIndex = -1;
         private int _selectedTypeIndex = -1;
+        private int _selectedProjectIndex = -1;
         private DropdownSettings _settings;
         private List<string> _relatedFiles;
         private DateTime _lastFileChanged = DateTime.MinValue;
+        private static readonly int projectIcon = -1;
+        private XDocument _document;
+        XProject ActiveProject
+        {
+            get
+            {
+                if (_selectedProjectIndex >= 0 && _selectedProjectIndex < _projects.Count)
+                {
+                    return _projects[_selectedProjectIndex];
+                }
+                return null;
+            }
+        }
 
         static XSharpDropDownClient()
         {
+            // Load images from Microsoft and Our project system (linked resource file)
             Stream stream = typeof(MVP.LanguageService).Assembly.GetManifestResourceStream("Resources.completionset.bmp");
             _imageList.ImageSize = new Size(16, 16);
             _imageList.TransparentColor = Color.FromArgb(255, 0, 255);
+            _imageList.Images.AddStrip(new Bitmap(stream));
+            // the project Icon is the first in the ImageList from the project package
+            projectIcon = _imageList.Images.Count;
+            stream = typeof(XSharpDropDownClient).Assembly.GetManifestResourceStream("XSharp.LanguageService.Resources.XSharpProjectImageList.bmp");
             _imageList.Images.AddStrip(new Bitmap(stream));
         }
 
@@ -88,6 +112,36 @@ namespace XSharp.LanguageService
             }
             _types = new List<XDropDownMember>();
             _members = new List<XDropDownMember>();
+            _projects = new List<XProject>
+            {
+                _file.Project
+            };
+            var projects = XDatabase.GetProjectsPerFile(_file);
+            if (projects?.Count > 1)
+            {
+#if DEBUG
+                Logger.Information($"DropdownClient: Found {projects.Count} projects for file {_file.FullPath}");
+#endif
+                foreach (var proj in projects)
+                {
+                    if (proj != _file.Project.Id)
+                    {
+                        var project = XSolution.FindProject(proj);
+                        if (project != null)
+                            _projects.Add(project);
+                    }
+                }
+            }
+
+            if (_projects.Count > 1)
+            {
+                _projects.Sort( (a, b) => string.Compare(a.DisplayName, b.DisplayName, true));
+                _selectedProjectIndex = _projects.IndexOf(_file.Project);
+            }
+            else
+            {
+                _selectedProjectIndex = 0;
+            }
             _membersDict = new Dictionary<string, int>();
             _saveSettings();
             _lastLine = -1;
@@ -104,11 +158,13 @@ namespace XSharp.LanguageService
             if (!_textViews.ContainsKey(textView))
             {
                 _textViews.Add(textView, textView);
+                this._document = textView.TextBuffer.GetDocument();
+                _file.Project = ActiveProject;
                 textView.GotAggregateFocus += TextView_GotAggregateFocus;
                 textView.LostAggregateFocus += TextView_LostAggregateFocus;
                 textView.Closed += TextView_Closed;
                 StartOnIdleAsync(textViewAdapter).FireAndForget();
-
+                
 
             }
         }
@@ -198,8 +254,8 @@ namespace XSharp.LanguageService
                 _lastLine = newLine;
             }
 #if XDEBUG
-            Logger.Information($"Caret_PositionChanged {newLine} Types: {_types.Count} Members: {_members.Count}");
-            Logger.Information($"Caret_PositionChanged {newLine} Entity: {_lastSelected} Type: {_selectedTypeIndex}, Member: {_selectedMemberIndex} ");
+            Logger.Information($"DropdownClient: Caret_PositionChanged {newLine} Types: {_types.Count} Members: {_members.Count}");
+            Logger.Information($"DropdownClient: Caret_PositionChanged {newLine} Entity: {_lastSelected} Type: {_selectedTypeIndex}, Member: {_selectedMemberIndex} ");
 #endif
             if (_lastLine != -1)
             {
@@ -341,7 +397,9 @@ namespace XSharp.LanguageService
                 refreshCombos();
             }
             _lastHashCode = _file.ContentHashCode;
+#if XDEBUG
             _lastSelected = selectedElement;
+#endif
             _lastType = parentType;
             return;
         }
@@ -633,10 +691,12 @@ namespace XSharp.LanguageService
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 if (_dropDownBar != null)
                 {
+                    if (_selectedProjectIndex != -1)
+                        _dropDownBar.RefreshCombo(PROJECTINDEX, _selectedProjectIndex);
                     if (_selectedTypeIndex != -1)
-                        _dropDownBar.RefreshCombo(0, _selectedTypeIndex);
+                        _dropDownBar.RefreshCombo(TYPEINDEX, _selectedTypeIndex);
                     if (_selectedMemberIndex != -1)
-                        _dropDownBar.RefreshCombo(1, _selectedMemberIndex);
+                        _dropDownBar.RefreshCombo(MEMBERINDEX, _selectedMemberIndex);
                 }
             });
         }
@@ -712,11 +772,14 @@ namespace XSharp.LanguageService
             entryType = (uint)(DROPDOWNENTRYTYPE.ENTRY_ATTR | DROPDOWNENTRYTYPE.ENTRY_IMAGE | DROPDOWNENTRYTYPE.ENTRY_TEXT);
             switch (combo)
             {
-                case 0: // types
+                case TYPEINDEX: // types
                     entries = (uint)_types.Count;
                     break;
-                case 1: // members
+                case MEMBERINDEX: // members
                     entries = (uint)_members.Count;
+                    break;
+                case PROJECTINDEX: // projects
+                    entries = (uint)_projects.Count; ;
                     break;
                 default:
                     return VSConstants.E_INVALIDARG;
@@ -739,13 +802,16 @@ namespace XSharp.LanguageService
             }
             switch (combo)
             {
-                case 0:
+                case TYPEINDEX:
                     if (index < _types.Count)
                         attr = (uint)_types[index].FontAttr;
                     break;
-                case 1:
+                case MEMBERINDEX:
                     if (index < _members.Count)
                         attr = (uint)_members[index].FontAttr;
+                    break;
+                case PROJECTINDEX: // projects
+                    attr = 0;
                     break;
                 default:
                     return VSConstants.E_INVALIDARG;
@@ -763,13 +829,16 @@ namespace XSharp.LanguageService
             }
             switch (combo)
             {
-                case 0: // types
+                case TYPEINDEX: // types
                     if (index < _types.Count)
                         imageIndex = _types[index].Glyph;
                     break;
-                case 1: // members
+                case MEMBERINDEX: // members
                     if (index < _members.Count)
                         imageIndex = _members[index].Glyph;
+                    break;
+                case PROJECTINDEX: // projects
+                    imageIndex = projectIcon; 
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -787,13 +856,17 @@ namespace XSharp.LanguageService
             }
             switch (combo)
             {
-                case 0: // types
+                case TYPEINDEX: // types
                     if (index < _types.Count)
                         text = _types[index].Label;
                     break;
-                case 1: // members
+                case MEMBERINDEX: // members
                     if (index < _members.Count)
                         text = _members[index].Label;
+                    break;
+                case PROJECTINDEX: // projects
+                    if (index < _projects.Count)
+                        text = _projects[index].DisplayName;
                     break;
                 default:
                     return VSConstants.E_INVALIDARG;
@@ -815,13 +888,16 @@ namespace XSharp.LanguageService
                 index = 0;
             switch (combo)
             {
-                case 0:
+                case TYPEINDEX:
                     if (index < _types.Count)
                         entity = _types[index].Entity;
                     break;
-                case 1:
+                case MEMBERINDEX:
                     if (index < _members.Count)
                         entity = _members[index].Entity;
+                    break;
+                case PROJECTINDEX: // projects
+                    // process project selection
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -878,10 +954,22 @@ namespace XSharp.LanguageService
 
         public int OnItemSelected(int iCombo, int iIndex)
         {
-            if (iCombo == 0)
+            if (iCombo == TYPEINDEX)
                 _selectedTypeIndex = iIndex;
-            if (iCombo == 1)
+            if (iCombo == MEMBERINDEX)
                 _selectedMemberIndex = iIndex;
+            if (iCombo == PROJECTINDEX)
+            {
+                _selectedProjectIndex = iIndex;
+                _file.Project = ActiveProject;
+                var classifier = _document.Buffer.GetClassifier();
+                if (classifier != null)
+                {
+                    _ = classifier.ForceClassifyAsync();
+                    classifier.TriggerRepaint(classifier.Snapshot);
+                }
+
+            }
             return VSConstants.S_OK;
         }
 

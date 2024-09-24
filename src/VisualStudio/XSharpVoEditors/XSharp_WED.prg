@@ -368,12 +368,12 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
             NEXT
         ENDIF
         lOpen := FALSE
-        VAR source := oProject:ProjectNode:DocumentGetText(oFile:FullPath, REF lOpen)
+        VAR source := XDocuments.GetText(oFile:FullPath, REF lOpen)
 
         IF .NOT. lOpen
-            XSettings.OpenDocument(oFile:FullPath, 0,0, false)
+            XDocuments.Open(oFile:FullPath, 0,0, false)
         END IF
-        source := oProject:ProjectNode:DocumentGetText(oFile:FullPath, REF lOpen)
+        source := XDocuments.GetText(oFile:FullPath, REF lOpen)
         IF .NOT. lOpen .OR. source == NULL
             RETURN
         END IF
@@ -390,9 +390,9 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
         FOR LOCAL nTemplateLine :=  aLines:Count - 1 AS INT DOWNTO 0
             LOCAL cLine := aLines[nTemplateLine] AS STRING
             LOCAL cNew := VOWindowEditor.SubStituteTpl(cLine, cClass, oWindowDesign:cInitParams) AS STRING
-            oFile:Project:ProjectNode:DocumentInsertLine(oFile:FullPath, nLine, cNew)
+            XDocuments.InsertLine(oFile:FullPath, nLine, cNew)
         NEXT
-        XSettings.OpenDocument(oFile:FullPath, nLine-1,0, false)
+        XDocuments.Open(oFile:FullPath, nLine-1,0, false)
         XSharpModel.XSolution.WalkFile(oFile:FullPath)
         RETURN
 

@@ -206,10 +206,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 FoxInheritUnknown = opt.Fox1;
                 FoxArraySupport = opt.Fox2;
                 ImplicitNamespace = opt.ImplicitNameSpace;
+                var paths = opt.IncludePaths;
+                paths ??= "";
 #if !VSPARSER
-                IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
+                IncludePaths = paths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
 #else
-                IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                IncludePaths = paths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 #endif
                 InitLocals = opt.InitLocals;
                 LateBinding = opt.LateBinding;

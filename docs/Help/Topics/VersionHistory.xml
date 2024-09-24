@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-09-20T16:13:05.529+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-24T13:06:41.854+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -34,7 +34,6 @@
       <li styleclass="Normal">Fixed some issues with defining indexed properties (#1543)</li>
       <li styleclass="Normal">Fixed several issues with the /vo9 (handle missing RETURN statements and return values) compiler option (#1544)</li>
     </list>
-    <para styleclass="Heading3">New features</para>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -50,7 +49,6 @@
       <li styleclass="Normal">Suppressed runtime error when using FieldPut() when workarea is at EOF, for compatibility with VO (#1542)</li>
       <li styleclass="Normal">Fixed a macro compiler problem with some language keywords (like REF, FIELD, DEFAULT) used as identifiers (#1557)</li>
     </list>
-    <para styleclass="Heading3">New features</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Visual Studio integration</para>
     <para styleclass="Heading3">Bug fixes</para>
@@ -98,12 +96,13 @@
       <li styleclass="Normal">Fixed crash with VAR locals in the editor</li>
       <li styleclass="Normal">Fixed several issues with LOCAL IMPLIED</li>
       <li styleclass="Normal">Fixed problem with parsing modified classes in namespaces</li>
-      <li styleclass="Normal">Improved editor support for the FoxPro dialect</li>
+      <li styleclass="Normal">Improved editor support for the FoxPro, Harbour and XBase++ dialects</li>
       <li styleclass="Normal">Added editor support for a lot of FoxPro keywords</li>
       <li styleclass="Normal">Added editor support for FoxPro functions</li>
       <li styleclass="Normal">The editor now recognizes &amp;&amp; for line comments marker in FoxPro dialect</li>
       <li styleclass="Normal">Added intellisense support for Nullable types specified with the ? postfix, for example INT?</li>
       <li styleclass="Normal">Added intellisense support for the ?: operator</li>
+      <li styleclass="Normal">Added intellisense support for IF &lt;identifier&gt; IS &lt;type&gt; VAR &lt;local&gt;</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">Designers</para>

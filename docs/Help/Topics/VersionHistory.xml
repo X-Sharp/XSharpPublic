@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-09-23T10:19:11.111+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-20T16:13:05.529+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -19,6 +19,7 @@
     <para styleclass="Heading3">Bug fixes</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Fixed Internal Compiler Error with duplicate declaration of fields/memvars (#1475)</li>
+      <li styleclass="Normal">Fixed a bogus warning when calling a function with in VFP dialect with /fox2 enabled (#1476)</li>
       <li styleclass="Normal">Fixed problem with Min/Max IEnumerable extension methods of FLOAT type (#1482)</li>
       <li styleclass="Normal">Fixed a StackOverflowException on access/assign method in the XBase++ dialect (#1483)</li>
       <li styleclass="Normal">Fixed problem reading clipper/harbour .prg files with end of file marker (#1485)</li>
@@ -27,9 +28,11 @@
       <li styleclass="Normal">Fixed AmbiguousMatchException in Evaluate() function for methods included in an interface (#1494)</li>
       <li styleclass="Normal">Fixed problem with /fox1 switch being ignored in some cases (#1496)</li>
       <li styleclass="Normal">Fixed problem with /enforceself compiler option being ignored (#1503)</li>
-      <li styleclass="Normal">Fixed an ambiguity problem with same named namespace and property (#1515)</li>
+      <li styleclass="Normal">Fixed an ambiguity problem with same named namespace and property and several issues when the /allowdot option is disabled (#1515)</li>
       <li styleclass="Normal">Fixed problem in TEXT TO/ENDTEXT with TEXTMERGE clause (#1517)</li>
       <li styleclass="Normal">Fixed misleading line number reported in the compiler error about requiring the /memvar option (#1531)</li>
+      <li styleclass="Normal">Fixed some issues with defining indexed properties (#1543)</li>
+      <li styleclass="Normal">Fixed several issues with the /vo9 (handle missing RETURN statements and return values) compiler option (#1544)</li>
       <li styleclass="Normal">We have fixed an issue in the build system that would sometimes lead to a recompilation, even when nothing was changed.</li>
     </list>
     <para styleclass="Heading3">New features</para>
@@ -49,6 +52,7 @@
       <li styleclass="Normal">Fixed problem with the APPEND FROM command with a FOR clause (#1529)</li>
       <li styleclass="Normal">Fixed macro compiler problem with using Str() in the FoxPro dialect (was causing problems in the INDEX ON command) (#1535)</li>
       <li styleclass="Normal">Suppressed runtime error when using FieldPut() when workarea is at EOF, for compatibility with VO (#1542)</li>
+      <li styleclass="Normal">Fixed a macro compiler problem with some language keywords (like REF, FIELD, DEFAULT) used as identifiers (#1557)</li>
       <li styleclass="Normal">Fixed problems reading variable length fields for DBF files stored with MultiByte encoding.</li>
       <li styleclass="Normal">Fixed a problem where DBFs encoded with Simplified Chines were interpreted as Kantonese.</li>
     </list>
@@ -61,11 +65,10 @@
       <li styleclass="Normal">Improved the Clone Window selection dialog in the VOWED (#1508)</li>
       <li styleclass="Normal">In recent versions of VS Format Document and Commenting was no longer working. This has been fixed.</li>
       <li styleclass="Normal">Fixed an issue in VS2022 where several features in the editor were no longer working because of a change in VS (#1545)</li>
-      <li styleclass="Normal">Fixed an issue where language specific ResX files were not correctly added as a child of the Form that they belong to (#1560)</li>
+      <li styleclass="Normal">Fixed a problem with putting the .resx file for windows forms user controls in an incorrect location in the Solution Explorer (#1560)</li>
       <li styleclass="Normal">Fixed a problem where the &apos;Old Style Assignment&apos; property on the Project Properties dialog was not correctly saved (#1495)</li>
       <li styleclass="Normal">Fix a problem with indenting lines with end keywords, such as NEXT and ENDDO, when these keywords were following by &apos;garbage&apos;.</li>
-    </list>
-    <para styleclass="Normal"></para>
+   </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">New features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -98,6 +101,7 @@
       <li styleclass="Normal">The Clipboard item in the main XIDE window statusbar now shows the current clipboard contents in a tooltip </li>
       <li styleclass="Normal">The Clipboard selection context menu now displays also the contents of every virtual clipboard</li>
       <li styleclass="Normal">Some small corrections to the Plugin System (you may need to recompile your plugins)</li>
+      <li styleclass="Normal">Added Open Bin Folder context menu option for the project node in the Project tool window</li>
       <li styleclass="Normal">Improved the About XIDE dialog</li>
     </list>
     <para styleclass="Normal"></para>
@@ -114,6 +118,8 @@
       <li styleclass="Normal">Added editor support for a lot of FoxPro keywords</li>
       <li styleclass="Normal">Added editor support for FoxPro functions</li>
       <li styleclass="Normal">The editor now recognizes &amp;&amp; for line comments marker in FoxPro dialect</li>
+      <li styleclass="Normal">Added intellisense support for Nullable types specified with the ? postfix, for example INT?</li>
+      <li styleclass="Normal">Added intellisense support for the ?: operator</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">Designers</para>
@@ -138,8 +144,9 @@
     <para styleclass="Heading3">New Features</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Several updates on the Chinese documentation</li>
-      <li styleclass="Normal"></li>
+      <li styleclass="Normal">Added missing SCAN...ENDSCAN documentation (#1548)</li>
     </list>
+    <para styleclass="Normal"></para>
     <para styleclass="Heading1">Changes in 2.20.0.3</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="Heading3">Bug fixes</para>
@@ -202,6 +209,7 @@
       <li styleclass="Normal">Fixed problem with the code generator for types in external assemblies not generating parameters for Indexed properties (#1442)</li>
       <li styleclass="Normal">Fixed problem with the VODBServer editor not saving access/assigns and other entities of the [DBSERVER] section in CAVOFED.TPL (#1452)</li>
       <li styleclass="Normal">Fixed problem with loading supplemental files provided in the cavowed.inf file for the VO Window Editor with absolute or relative paths (#1470)</li>
+      <li styleclass="Normal">Fixed some indentation issues in the editor (#1541)</li>
       <li styleclass="Normal">Fixed a problem in the VS2022 Debugger when different DLLs contained the same namespace with different case.</li>
       <li styleclass="Normal">Fixed a problem where the entity parser inside the editor did not correctly determine the end of an entity that contains a local function or procedure</li>
       <li styleclass="Normal">Fixed a problem where the entity parser inside the editor would choke on a param token at the start of the line when the /memvars compiler option was NOT enabled.</li>

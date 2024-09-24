@@ -62,6 +62,9 @@
     <None Include="XSharp.Common.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="XSharp.Core.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="XSharp.CrossTargeting.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -69,6 +72,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
     </None>
     <None Include="XSharp.Default.targets">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="XSharp.DesignTime.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Xsharp.Net.Sdk.props">
@@ -92,19 +98,19 @@
     <Content Include="XSharpProject.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Xaml\xsharp.browseobject.xaml">
+    <None Include="Rules\xsharp.browseobject.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Xaml\xsharp.xaml">
+    <None Include="Rules\xsharp.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Xaml\NativeResource.xaml">
+    <None Include="Rules\NativeResource.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Xaml\VoBinary.xaml">
+    <None Include="Rules\VoBinary.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -121,43 +127,43 @@
     <PackageReference Include="System.Security.AccessControl" Version="$(SystemSecurityAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Xaml\ApplicationPropertyPage.XSharp.xaml">
+    <None Include="Rules\ApplicationPropertyPage.XSharp.xaml">
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Xaml\BuildPropertyPage.XSharp.xaml">
+    <None Include="Rules\BuildPropertyPage.XSharp.xaml">
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Xaml\Compile.BrowseObject.xaml">
+    <None Include="Rules\Compile.BrowseObject.xaml">
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Xaml\Compile.xaml">
+    <None Include="Rules\Compile.xaml">
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Xaml\DialectPage.XSharp.xaml">
+    <None Include="Rules\DialectPage.XSharp.xaml">
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Xaml\LanguagePage.XSharp.xaml">
+    <None Include="Rules\LanguagePage.XSharp.xaml">
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Xaml\NativeResource.BrowseObject.xaml">
+    <None Include="Rules\NativeResource.BrowseObject.xaml">
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Xaml\ProjectItemsSchema.XSharp.xaml">
+    <None Include="Rules\ProjectItemsSchema.XSharp.xaml">
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Xaml\ReferencesPage.XSharp.xaml">
+    <None Include="Rules\ReferencesPage.XSharp.xaml">
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Xaml\VOBinary.BrowseObject.xaml">
+    <None Include="Rules\VOBinary.BrowseObject.xaml">
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

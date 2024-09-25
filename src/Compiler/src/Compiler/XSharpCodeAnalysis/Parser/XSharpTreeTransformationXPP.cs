@@ -267,6 +267,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: null,
+                parameterList: null, //TODO nvk
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                 constraintClauses: null,
                 openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -1008,7 +1009,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 // update class declaration, add external methods
                 classdecl = classdecl.Update(classdecl.AttributeLists, classdecl.Modifiers,
-                    classdecl.Keyword, classdecl.Identifier, classdecl.TypeParameterList, classdecl.BaseList,
+                    classdecl.Keyword, classdecl.Identifier, classdecl.TypeParameterList, null /* TODO nvk */, classdecl.BaseList,
                     classdecl.ConstraintClauses, classdecl.OpenBraceToken, members, classdecl.CloseBraceToken, classdecl.SemicolonToken);
                 _pool.Free(members);
 

@@ -28,7 +28,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     internal partial class Binder
     {
 
-        ArrayBuilder<BoundExpression> XsGetDefaultArguments(ArrayBuilder<BoundExpression> arguments, ImmutableArray<ParameterSymbol> parameters, DiagnosticBag diagnostics)
+        ArrayBuilder<BoundExpression> XsGetDefaultArguments(ArrayBuilder<BoundExpression> arguments, ImmutableArray<ParameterSymbol> parameters, BindingDiagnosticBag diagnostics)
         {
             if (parameters.Length == 0)
             {
@@ -64,7 +64,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
 
-private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxNode syntax, CSharpCompilation compilation,DiagnosticBag diagnostics)
+private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxNode syntax, CSharpCompilation compilation, BindingDiagnosticBag diagnostics)
         {
             TypeSymbol parameterType = parameter.Type;
             var defaultExpr = parameter.GetVODefaultParameter(syntax, compilation);
@@ -83,7 +83,7 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
                 if (implicitop != null)
                 {
                     var args = ImmutableArray.Create(defaultExpr);
-                    var mcall = new BoundCall(syntax, null, implicitop, args, default, default, false, false, false, default, default, default, parameterType);
+                    var mcall = new BoundCall(syntax, null, ThreeState.False, implicitop, args, default, default, false, false, false, default, default, default, parameterType);
                     return mcall;
                 }
             }
@@ -121,11 +121,11 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
         }
         private BoundExpression BindXsInvocationExpression(
             InvocationExpressionSyntax node,
-            DiagnosticBag diagnostics)
+            BindingDiagnosticBag diagnostics)
         {
             // Handle PCall() and Chr() in this special method
             BoundExpression result;
-            var originalErrors = diagnostics.AsEnumerable().ToArray();
+            var originalErrors = diagnostics.DiagnosticBag.AsEnumerable().ToArray();
             if (TryBindNameofOperator(node, diagnostics, out result))
             {
                 return result; // all of the binding is done by BindNameofOperator
@@ -150,17 +150,17 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
                 BoundLambda boundLambda = unboundLambda.BindForReturnTypeInference(action);
                 ts[1] = boundLambda.InferredReturnType.TypeWithAnnotations;
                 action = Compilation.GetWellKnownType(WellKnownType.System_Func_T2).ConstructIfGeneric(ts.ToImmutableArray());
-                BoundExpression boundLambdaExpression = unboundLambda.Bind(action);
-                BoundExpression boundExpression = new BoundDelegateCreationExpression(node, boundLambdaExpression, methodOpt: null, isExtensionMethod: false, type: action);
+                BoundExpression boundLambdaExpression = unboundLambda.Bind(action, isExpressionTree: false);
+                BoundExpression boundExpression = new BoundDelegateCreationExpression(node, boundLambdaExpression, methodOpt: null, isExtensionMethod: false, wasTargetTyped: false, type: action);
                 boundExpression = CheckValue(boundExpression, BindValueKind.RValueOrMethodGroup, diagnostics);
                 string name = boundExpression.Kind == BoundKind.MethodGroup ? GetName(node.Expression) : null;
                 result = BindInvocationExpression(node, node.Expression, name, boundExpression, analyzedArguments, diagnostics);
             }
             else
             {
-                if (node.XIsChr && analyzedArguments.Arguments.Count == 1 && analyzedArguments.Arguments[0].ConstantValue != null)
+                if (node.XIsChr && analyzedArguments.Arguments.Count == 1 && analyzedArguments.Arguments[0].ConstantValueOpt != null)
                 {
-                    var value = analyzedArguments.Arguments[0].ConstantValue.Int32Value;
+                    var value = analyzedArguments.Arguments[0].ConstantValueOpt.Int32Value;
                     var str = new string((char)value, 1);
                     result = new BoundLiteral(node, ConstantValue.Create(str), Compilation.GetSpecialType(SpecialType.System_String));
                 }
@@ -216,7 +216,7 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
             // See https://github.com/X-Sharp/XSharpPublic/issues/1211
             if (diagnostics.HasAnyErrors() && Compilation.Options.HasOption(CompilerOption.VOSignedUnsignedConversion, node))
             {
-                var hasAmbigCall = diagnostics.AsEnumerable().Where(e => e.Code == (int)ErrorCode.ERR_AmbigCall).Any();
+                var hasAmbigCall = diagnostics.DiagnosticBag.AsEnumerable().Where(e => e.Code == (int)ErrorCode.ERR_AmbigCall).Any();
                 if (hasAmbigCall)
                 {
                     // We have saved errors that were there before resolving the invocation expression in an array
@@ -237,7 +237,7 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
 
         }
 
-        private BoundExpression BindFoxProArrayPossibleAccess(InvocationExpressionSyntax node, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
+        private BoundExpression BindFoxProArrayPossibleAccess(InvocationExpressionSyntax node, AnalyzedArguments analyzedArguments, BindingDiagnosticBag diagnostics)
         {
 
             if (node.XGenerated)
@@ -285,7 +285,7 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
             }
             if (node.Expression is SimpleNameSyntax simple)
             {
-                var bag = DiagnosticBag.GetInstance();
+                var bag = BindingDiagnosticBag.GetInstance();
                 var idVar = BindXSIdentifier(simple, invoked: false, indexed: true, diagnostics: bag, bindMethod: false,
                     bindSafe: Compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, node));
                 if (idVar != null && (idVar.Type.IsFoxArrayType() || idVar.Type.IsArrayType()))
@@ -342,7 +342,7 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
                 // we have to decide at runtime
 
 
-                var bag = DiagnosticBag.GetInstance();
+                var bag = BindingDiagnosticBag.GetInstance();
                 var idVar = BindXSIdentifier(ins, invoked: false, indexed: false, diagnostics: bag, bindMethod: false, bindSafe: false);
                 if (idVar.Type.IsUsualType() || idVar.Type.IsObjectType())
                 {
@@ -363,7 +363,7 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
             }
             return null;
         }
-        private void BindPCall(InvocationExpressionSyntax node, DiagnosticBag diagnostics, AnalyzedArguments analyzedArguments)
+        private void BindPCall(InvocationExpressionSyntax node, BindingDiagnosticBag diagnostics, AnalyzedArguments analyzedArguments)
         {
             if (node.XPCall && node.Expression is GenericNameSyntax)
             {
@@ -411,7 +411,7 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
             return null;
         }
         private void BindCallAndDelegate(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args,
-                DiagnosticBag diagnostics, TypeSyntax type, bool pcall)
+                BindingDiagnosticBag diagnostics, TypeSyntax type, bool pcall)
         {
             var XNode = node.XNode as XP.MethodCallContext;
             string method = XNode?.Expr.GetText();
@@ -459,10 +459,10 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
                 return;
             }
             var lookupResult = LookupResult.GetInstance();
-            HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+            var useSiteInfo = new CompoundUseSiteInfo<AssemblySymbol>(null, Compilation.Assembly);
             LookupOptions options = LookupOptions.AllMethodsOnArityZero;
             options |= LookupOptions.MustNotBeInstance;
-            this.LookupSymbolsWithFallback(lookupResult, methodName, arity: 0, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
+            this.LookupSymbolsWithFallback(lookupResult, methodName, arity: 0, useSiteInfo: ref useSiteInfo, options: options);
             SourceMethodSymbol methodSym = null;
             if (lookupResult.IsClear)
             {
@@ -502,7 +502,6 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
                             ordinal: par.Ordinal,
                             refKind: par.RefKind,
                             name: par.Name,
-                            isDiscard: false,
                             locations: par.Locations);
                         builder.Add(parameter);
                     }
@@ -523,9 +522,9 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
             var lookupResult = LookupResult.GetInstance();
             try
             {
-                HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+                var useSiteInfo = new CompoundUseSiteInfo<AssemblySymbol>(null, Compilation.Assembly);
                 LookupOptions options = LookupOptions.NamespacesOrTypesOnly;
-                this.LookupSymbolsSimpleName(lookupResult, null, type.Identifier.Text, 0, null, options, false, ref useSiteDiagnostics);
+                this.LookupSymbolsSimpleName(lookupResult, null, type.Identifier.Text, 0, null, options, false, ref useSiteInfo);
                 if (lookupResult.IsSingleViable)
                 {
                     return lookupResult.Symbols[0] as TypeSymbol;
@@ -540,7 +539,7 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
         }
 
         private bool ValidatePCallArguments(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args,
-                DiagnosticBag diagnostics, string method)
+                BindingDiagnosticBag diagnostics, string method)
         {
             bool ok = args.Count == 1;
             if (ok)
@@ -558,7 +557,7 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
         }
 
         private void BindCallNativeAndDelegate(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args,
-                DiagnosticBag diagnostics, TypeSyntax type, bool pcall)
+                BindingDiagnosticBag diagnostics, TypeSyntax type, bool pcall)
         {
             var XNode = node.XNode as XP.MethodCallContext;
             string method = XNode?.Expr.GetText();
@@ -592,7 +591,6 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
                             ordinal: i,
                             refKind: delparams[i].RefKind,
                             name: delparams[i].Name,
-                            isDiscard: false,
                             locations: delparams[i].Locations);
                         builder.Add(parameter);
                         i++;

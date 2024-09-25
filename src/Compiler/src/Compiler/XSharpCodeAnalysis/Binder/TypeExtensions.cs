@@ -30,11 +30,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (node is BoundCall || node is BoundDynamicInvocation || node is not BoundExpression)
                     return null;
-                if (node is BoundExpression expr && expr.ConstantValue != null && !expr.ConstantValue.IsBad)
+                if (node is BoundExpression expr && expr.ConstantValueOpt != null && !expr.ConstantValueOpt.IsBad)
                 {
-                    if (expr.ConstantValue.SpecialType == SpecialType.System_String)
+                    if (expr.ConstantValueOpt.SpecialType == SpecialType.System_String)
                         hasStringConstant = true;
-                    if (expr.ConstantValue.SpecialType.IsNumericType())
+                    if (expr.ConstantValueOpt.SpecialType.IsNumericType())
                         hasNumericConstant = true;
                     return node;
                 }
@@ -178,14 +178,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal static TypeSymbol ConstantType(this BoundExpression expression, Compilation compilation)
         {
             var type = expression.Type;
-            if (expression.ConstantValue == null)
+            if (expression.ConstantValueOpt == null)
                 return type;
-            if (!expression.ConstantValue.IsIntegral)
+            if (!expression.ConstantValueOpt.IsIntegral)
                 return type;
             var stype = type.SpecialType;
             if (type.SpecialType.IsSignedIntegralType())
             {
-                var value = expression.ConstantValue.Int64Value;
+                var value = expression.ConstantValueOpt.Int64Value;
                 if (value == 0)
                 {
                     stype = SpecialType.System_Byte;
@@ -220,7 +220,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             else
             {
                 // UnSigned
-                var uvalue = expression.ConstantValue.UInt64Value;
+                var uvalue = expression.ConstantValueOpt.UInt64Value;
                 if (uvalue <= (ulong)sbyte.MaxValue)
                     stype = SpecialType.System_SByte;
                 else if (uvalue <= (ulong)byte.MaxValue)

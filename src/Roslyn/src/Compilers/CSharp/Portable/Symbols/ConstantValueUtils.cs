@@ -138,7 +138,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         var binderFactory = compilation.GetBinderFactory((SyntaxTree)thisSymbol.Locations[0].SourceTree);
                         var binder = binderFactory.GetBinder(boundValue.Syntax);
                         boundValue = binder.BindValue(es, diagnostics, Binder.BindValueKind.RValue);
-                        constantValue = boundValue.ConstantValue;
+                        constantValue = boundValue.ConstantValueOpt;
                     }
 
                     if ((boundValue as BoundFieldAccess)?.FieldSymbol.Type.SpecialType == SpecialType.System_IntPtr && 

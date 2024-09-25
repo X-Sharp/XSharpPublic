@@ -1137,7 +1137,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if !XSHARP
             return Conversion.NoConversion;
 #else
-            return ClassifyXSImplicitBuiltInConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
+            return ClassifyXSImplicitBuiltInConversionFromExpression(sourceExpression, source, destination, ref useSiteInfo);
 #endif
         }
 
@@ -1421,7 +1421,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (sourceType is { })
             {
 #if XSHARP
-                var xsConversion = ClassifyXSExplicitBuiltInConversionFromExpression(sourceExpression, sourceType, destination, forCast, ref useSiteDiagnostics);
+                var xsConversion = ClassifyXSExplicitBuiltInConversionFromExpression(sourceExpression, sourceType, destination, forCast, ref useSiteInfo);
                 if (xsConversion.Exists)
                 {
                     return xsConversion;

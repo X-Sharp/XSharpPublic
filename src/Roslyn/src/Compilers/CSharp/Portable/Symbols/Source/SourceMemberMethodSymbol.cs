@@ -299,7 +299,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         protected SymbolCompletionState state;
 
+#if XSHARP
+        protected DeclarationModifiers DeclarationModifiers;
+#else
         protected readonly DeclarationModifiers DeclarationModifiers;
+#endif
         protected Flags flags;
 
         private readonly NamedTypeSymbol _containingType;

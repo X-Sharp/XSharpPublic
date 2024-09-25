@@ -1344,7 +1344,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (valOverInPreference == BetterResult.Neither)
             {
-                return VoBetterOperator(op1, op2, left, right, ref useSiteDiagnostics);
+                return VoBetterOperator(op1, op2, left, right, ref useSiteInfo);
             }
 #endif
             return valOverInPreference;

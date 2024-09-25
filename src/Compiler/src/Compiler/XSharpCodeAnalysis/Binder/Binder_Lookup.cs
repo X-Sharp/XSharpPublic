@@ -155,11 +155,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (!ignore)
                         {
                             var args = new object[] { name, func, meth };
-                            if (useSiteInfo == null)
-                            {
-                                useSiteInfo = new HashSet<DiagnosticInfo>();
-                            }
-                            useSiteInfo.Add(new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods, args));
+                            DiagnosticInfo diagInfo = new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods, args);
+                            useSiteInfo.Add(new UseSiteInfo<AssemblySymbol>(diagInfo));
                         }
                     }
                 }
@@ -199,11 +196,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // we only want to add this for internal fields (globals)
                 if (result.Symbols[0].Kind == SymbolKind.Field)
                 {
-                    if (useSiteDiagnostics == null)
-                    {
-                        useSiteDiagnostics = new HashSet<DiagnosticInfo>();
-                    }
-                    useSiteDiagnostics.Add(result.Error);
+                    useSiteInfo.Add(new UseSiteInfo<AssemblySymbol>(result.Error));
                 }
             }
             if (otherResults != null)

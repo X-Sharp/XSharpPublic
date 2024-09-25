@@ -62,8 +62,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             var tDelegate = TypeWithAnnotations.Create(cbDelegate);
             var tSource = TypeWithAnnotations.Create(this.System_String);
             // Add properties
-            var eval = new AnonymousTypePropertySymbol(template, new AnonymousTypeField(XSharpSpecialNames.CodeBlockLambda, typeDescr.Location, tDelegate), tDelegate, 0);
-            var source = new AnonymousTypePropertySymbol(template, new AnonymousTypeField(XSharpSpecialNames.CodeBlockSource, typeDescr.Location, tSource), tSource, 0);
+            // TODO nvk: refKind, scopde of AnonymousTypeField() below
+            var eval = new AnonymousTypePropertySymbol(template, new AnonymousTypeField(XSharpSpecialNames.CodeBlockLambda, typeDescr.Location, tDelegate, refKind: RefKind.None, scope: ScopedKind.None), tDelegate, 0);
+            var source = new AnonymousTypePropertySymbol(template, new AnonymousTypeField(XSharpSpecialNames.CodeBlockSource, typeDescr.Location, tSource, refKind: RefKind.None, scope: ScopedKind.None), tSource, 0);
 
             ImmutableArray<AnonymousTypePropertySymbol> properties = new[] { eval, source }.ToImmutableArray();
 

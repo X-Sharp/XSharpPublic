@@ -21,7 +21,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public FixedStatementBinder(Binder enclosing, FixedStatementSyntax syntax)
 #if XSHARP
-            : base(enclosing, BinderFlags.AllowManagedAddressOf)
+            : base(enclosing, BinderFlags.AllowMoveableAddressOf)
 #else
             : base(enclosing)
 #endif

@@ -200,10 +200,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 string? value;
                 string? valueMemoryString() => valueMemory is { } m ? m.Span.ToString() : null;
-#if XSHARP
-                if (ParseXSharpArgument(ref name, ref value, arg, diagnostics))
-                    continue;
-#endif
 
                 // The main 'switch' for argument handling forces an allocation of the option name field. For the most 
                 // common options we special case the handling below to avoid this allocation as it can contribute significantly 
@@ -264,6 +260,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
                 string name = nameMemory.Span.ToString().ToLowerInvariant();
+#if XSHARP
+                value = null;
+                if (ParseXSharpArgument(ref name, ref value, arg, diagnostics))
+                    continue;
+#endif
                 switch (name)
                 {
                     case "?":

@@ -72,7 +72,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
             // Additional constructor, used by codeblock subclass
             internal AnonymousTypePublicSymbol(AnonymousTypeManager manager, TypeSymbol[] codeblockParams, Location location) :
-                base(manager, null)
+                base(manager)
             {
                 TypeDescriptor = manager.CreateCodeBlockType(this, codeblockParams, location, _nameToSymbols, out _members, out Properties);
             }

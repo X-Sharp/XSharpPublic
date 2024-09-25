@@ -253,15 +253,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // NOTE: type of the array, see comments in MakeNameToMembersMap() for details
                 Interlocked.CompareExchange(
                     ref _nameToTypeMembersMap,
-#if XSHARP
-                    ImmutableArrayExtensions.GetTypesFromMemberMap<ReadOnlyMemory<char>, NamespaceOrTypeSymbol, NamedTypeSymbol>(
-                        GetNameToMembersMap(), XSharpString.Comparer),
-                    comparand: null);
-#else
                     ImmutableArrayExtensions.GetTypesFromMemberMap<ReadOnlyMemory<char>, NamespaceOrTypeSymbol, NamedTypeSymbol>(
                         GetNameToMembersMap(), ReadOnlyMemoryOfCharComparer.Instance),
                     comparand: null);
-#endif
             }
 
             return _nameToTypeMembersMap;
@@ -295,7 +289,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
 
 #if XSHARP
-        private void CheckMembers(NamespaceSymbol @namespace, Dictionary<string, ImmutableArray<NamespaceOrTypeSymbol>> result, BindingDiagnosticBag diagnostics)
+        private void CheckMembers(NamespaceSymbol @namespace, Dictionary<ReadOnlyMemory<char>, ImmutableArray<NamespaceOrTypeSymbol>> result, BindingDiagnosticBag diagnostics)
 #else
         private static void CheckMembers(NamespaceSymbol @namespace, Dictionary<ReadOnlyMemory<char>, ImmutableArray<NamespaceOrTypeSymbol>> result, BindingDiagnosticBag diagnostics)
 #endif

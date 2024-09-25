@@ -15,7 +15,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundStatement body, 
             int methodOrdinal,
             TypeCompilationState compilationState,
-            DiagnosticBag diagnostics)
+            BindingDiagnosticBag diagnostics)
         {
 
             switch (method.Name)

@@ -947,7 +947,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // check to see if any of the parameters were missing
                 foreach (var arg in arguments.Arguments)
                 {
-                    if (arg.Syntax is DefaultExpressionSyntax)
+                    if (arg.Syntax is Syntax.DefaultExpressionSyntax)
                     {
                         code = ErrorCode.ERR_NoOverloadFoundThatAllowsMissingArguments;
                     }

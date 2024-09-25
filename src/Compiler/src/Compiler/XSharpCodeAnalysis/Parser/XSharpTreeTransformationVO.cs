@@ -73,6 +73,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: null,
+                parameterList: null, //TODO nvk
                 baseList: null,
                 constraintClauses: null,
                 openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -181,6 +182,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: null,
+                parameterList: null, //TODO nvk
                 baseList: null,
                 constraintClauses: null,
                 openBraceToken: SyntaxFactory.OpenBraceToken,

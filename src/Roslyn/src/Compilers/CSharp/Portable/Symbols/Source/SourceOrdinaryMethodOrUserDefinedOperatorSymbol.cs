@@ -14,7 +14,11 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
+#if XSHARP
+    internal abstract partial class SourceOrdinaryMethodOrUserDefinedOperatorSymbol : SourceMemberMethodSymbol
+#else
     internal abstract class SourceOrdinaryMethodOrUserDefinedOperatorSymbol : SourceMemberMethodSymbol
+#endif
     {
         private ImmutableArray<MethodSymbol> _lazyExplicitInterfaceImplementations;
         private ImmutableArray<CustomModifier> _lazyRefCustomModifiers;
@@ -110,7 +114,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
 #if XSHARP
                     // additional checks to see if we are overriding clipper with non clipper etc.
-                    overriddenOrExplicitlyImplementedMethod = validateMethod(overriddenOrExplicitlyImplementedMethod, diagnostics, location);
+                    overriddenOrExplicitlyImplementedMethod = validateMethod(overriddenOrExplicitlyImplementedMethod, diagnostics, _location);
 
 #else
                     if ((object)overriddenOrExplicitlyImplementedMethod != null)

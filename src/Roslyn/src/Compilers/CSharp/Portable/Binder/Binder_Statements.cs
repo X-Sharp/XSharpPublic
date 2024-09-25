@@ -1091,7 +1091,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     initializerOpt = BindPossibleArrayInitializer(
                         SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal("")), 
-                        declTypeOpt.Type, valueKind, new DiagnosticBag());
+                        declTypeOpt.Type, valueKind, BindingDiagnosticBag.GetInstance());
                     initializerOpt.WasCompilerGenerated = true;
                 }
 #endif
@@ -1987,12 +1987,15 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             var xsresult = XsHandleNullPsz(targetType, expression);
             if (xsresult != null)
+            {
+                conversion = Conversion.Identity;
                 return xsresult;
+            }
 #endif
 
             CompoundUseSiteInfo<AssemblySymbol> useSiteInfo = GetNewCompoundUseSiteInfo(diagnostics);
 #if XSHARP
-            XsCheckConversionForAssignment(targetType, ref expression, diagnostics, isDefaultParameter, isRefAssignment);
+            XsCheckConversionForAssignment(targetType, ref expression, diagnostics, (flags & ConversionForAssignmentFlags.DefaultParameter) != 0, (flags & ConversionForAssignmentFlags.RefAssignment) != 0);
 #endif
 
             conversion = (flags & ConversionForAssignmentFlags.IncrementAssignment) == 0 ?

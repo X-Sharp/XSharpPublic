@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
                 else
                 {
-                    call = MethodCompiler.GenerateBaseParameterlessConstructorInitializer(this, diagnostics);
+                    call = Binder.GenerateBaseParameterlessConstructorInitializer(this, diagnostics);
                 }
 #else
                 Debug.Assert(ContainingType.BaseTypeNoUseSiteDiagnostics.SpecialType == SpecialType.System_Object);

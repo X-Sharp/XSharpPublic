@@ -358,7 +358,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ImmutableArray<BoundExpression> argArray = BuildArgumentsForDynamicInvocation(analyzedArguments, diagnostics);
                 var refKindsArray = analyzedArguments.RefKinds.ToImmutableOrNull();
 
-                bool hasErrors = ReportBadDynamicArguments(node, argArray, refKindsArray, diagnostics, queryClause, lateBound : true);
+                bool hasErrors = ReportBadDynamicArguments(node, null /* TODO nvk (receiver) */, argArray, refKindsArray, diagnostics, queryClause, lateBound : true);
                 result = new BoundDynamicInvocation(
                     syntax: node,
                     expression: boundExpression,

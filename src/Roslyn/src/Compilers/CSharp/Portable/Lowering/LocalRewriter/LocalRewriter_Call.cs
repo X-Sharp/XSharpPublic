@@ -1029,7 +1029,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool isComReceiver = false;
             if (!_compilation.Options.HasRuntime)
             {
-                if (CanSkipRewriting(rewrittenArguments, methodOrIndexer, expanded, argsToParamsOpt, invokedAsExtensionMethod, false, out isComReceiver))
+                if (CanSkipRewriting(rewrittenArguments, methodOrIndexer, argsToParamsOpt, invokedAsExtensionMethod, false, out isComReceiver))
 #else
             if (CanSkipRewriting(rewrittenArguments, methodOrIndexer, argsToParamsOpt, invokedAsExtensionMethod, false, out var isComReceiver))
 #endif

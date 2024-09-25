@@ -1549,7 +1549,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     foreach (var u in element.Usings)
                     {
                         var green = u.Green as UsingDirectiveSyntax;
-                        this.AddUsingWhenMissing(usingslist, green.Name, green.StaticKeyword != null, green.Alias);
+                        this.AddUsingWhenMissing(usingslist, green.NamespaceOrType, green.StaticKeyword != null, green.Alias);
                     }
                 }
             }
@@ -1643,6 +1643,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         classdecl.Keyword,
                         classdecl.Identifier,
                         classdecl.TypeParameterList,
+                        null, // TODO nvk
                         classdecl.BaseList,
                         classdecl.ConstraintClauses,
                         classdecl.OpenBraceToken,
@@ -4352,7 +4353,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // alias can be a literal, or variable
                 // __AreaEval ( alias, { => Expr })
                 expr = _syntaxFactory.ParenthesizedLambdaExpression(
+                        attributeLists: default, // TODO nvk
                         modifiers: default,
+                        returnType: default, // TODO nvk
                         parameterList: EmptyParameterList(),
                         arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                         block: null,
@@ -4381,7 +4384,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             MakeSimpleMemberAccess(
                 MakeCastTo(CodeblockType,
                     _syntaxFactory.ParenthesizedLambdaExpression(
+                        attributeLists: default, // TODO nvk
                         modifiers: default,
+                        returnType: default, // TODO nvk
                         parameterList: EmptyParameterList(),
                         arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                         block: MakeBlock(MakeList<StatementSyntax>(

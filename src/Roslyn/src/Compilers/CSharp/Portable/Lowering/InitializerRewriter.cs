@@ -119,9 +119,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 { WasCompilerGenerated = true };
                 initValue = new BoundNullCoalescingOperator(syntax: syntax,
                                                     leftOperand: fldaccess,
+                                                    leftPlaceholder: null, // TODO nvk
                                                     rightOperand: initValue,
-                                                    leftConversion: Conversion.Identity,
+                                                    leftConversion: null, // TODO nvk (was Conversion.Identity)
                                                     operatorResultKind: BoundNullCoalescingOperatorResultKind.LeftType,
+                                                    @checked: false,
                                                     type: fieldInit.Field.Type)
                 { WasCompilerGenerated = true };
             }

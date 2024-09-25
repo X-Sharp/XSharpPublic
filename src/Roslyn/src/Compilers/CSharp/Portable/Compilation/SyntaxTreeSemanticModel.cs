@@ -387,7 +387,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     else
                     {
 #if XSHARP
-                            return binder.XsBindNamespaceOrTypeOrAliasSymbol(type, diagnostics, basesBeingResolved, basesBeingResolved != null).Symbol;
+                        return binder.XsBindNamespaceOrTypeOrAliasSymbol(type, BindingDiagnosticBag.Discarded, basesBeingResolved, basesBeingResolved != null).Symbol;
 #else
                         return binder.BindNamespaceOrTypeOrAliasSymbol(type, BindingDiagnosticBag.Discarded, basesBeingResolved, basesBeingResolved != null).Symbol;
 #endif

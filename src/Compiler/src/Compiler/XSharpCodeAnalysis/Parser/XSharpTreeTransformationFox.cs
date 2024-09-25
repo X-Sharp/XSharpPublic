@@ -920,6 +920,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: getTypeParameters(context.TypeParameters),
+                parameterList: null, //TODO nvk
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 openBraceToken: SyntaxFactory.OpenBraceToken,

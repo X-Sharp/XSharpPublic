@@ -330,7 +330,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // p is initialized to zero; it is ok for a named argument to "correspond" to
                     // _any_ parameter (not just the parameters past the point of positional arguments)
 #if XSHARP
-                    if (XSharpString.Equals(memberParameters[p].Name, name.Identifier.ValueText))
+                    if (XSharpString.Equals(memberParameters[p].Name, name))
 #else
                     if (memberParameters[p].Name == name)
 #endif

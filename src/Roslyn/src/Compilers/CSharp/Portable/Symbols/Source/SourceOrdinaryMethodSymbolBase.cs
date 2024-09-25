@@ -29,6 +29,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     {
 #if XSHARP
         private string _name;
+        protected override void UpdateNameAfterCheck(string name) { _name = name; }
 #else
         private readonly string _name;
 #endif

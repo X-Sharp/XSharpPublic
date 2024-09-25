@@ -17,7 +17,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     internal partial class Binder
     {
 
-        internal void XsCheckPsz2String(SyntaxNode node, BoundExpression op1, DiagnosticBag diagnostics)
+        internal void XsCheckPsz2String(SyntaxNode node, BoundExpression op1, BindingDiagnosticBag diagnostics)
         {
             var assignment = node as AssignmentExpressionSyntax;
             if (assignment.Right.XIsString2Psz)
@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        internal BoundExpression XsBindFoxArrayAssign(SyntaxNode node, BoundExpression op1, BoundExpression op2, DiagnosticBag diagnostics)
+        internal BoundExpression XsBindFoxArrayAssign(SyntaxNode node, BoundExpression op1, BoundExpression op2, BindingDiagnosticBag diagnostics)
         {
             // nothing to do for Variable Symbols
             bool needsWork = false;
@@ -86,6 +86,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 args.Add(CreateConversion(op2, Compilation.UsualType(), diagnostics));
                 var call = new BoundCall(syntax: node,
                         receiverOpt: null,
+                        initialBindingReceiverIsSubjectToCloning: ThreeState.False,
                         method: (MethodSymbol)syms1[0],
                         arguments: args.ToImmutableArray(),
                         argumentNamesOpt: default,
@@ -108,6 +109,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 args.Add(CreateConversion(op2, Compilation.UsualType(), diagnostics));
                 var call = new BoundCall(syntax: node,
                         receiverOpt: null,
+                        initialBindingReceiverIsSubjectToCloning: ThreeState.False,
                         method: (MethodSymbol)syms2[0],
                         arguments: args.ToImmutableArray(),
                         argumentNamesOpt: default,
@@ -124,7 +126,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return op2;
         }
-        internal BoundExpression XsBindUsualCollectionEnumerator(BoundExpression collection, DiagnosticBag diagnostics)
+        internal BoundExpression XsBindUsualCollectionEnumerator(BoundExpression collection, BindingDiagnosticBag diagnostics)
         {
             if (!collection.Type.IsUsualType())
                 return collection;
@@ -138,6 +140,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     args.Add(collection);
                     var call = new BoundCall(syntax: collection.Syntax,
                         receiverOpt: null,
+                        initialBindingReceiverIsSubjectToCloning: ThreeState.False,
                         method: (MethodSymbol)syms[0],
                         arguments: args.ToImmutableArray(),
                         argumentNamesOpt: default,
@@ -163,7 +166,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                    diagnostics: diagnostics);
         }
 
-        BoundExpression XsCreateConversionNonIntegralNumeric(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
+        BoundExpression XsCreateConversionNonIntegralNumeric(TypeSymbol targetType, BoundExpression expression, BindingDiagnosticBag diagnostics, Conversion conversion)
         {
             if (Compilation.Options.HasOption(CompilerOption.VOArithmeticConversions, expression.Syntax)
                 && expression.Type.IsXNumericType() && targetType.IsXNumericType())
@@ -196,6 +199,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 args.Add(expression);
                 return new BoundCall(syntax: expression.Syntax,
                     receiverOpt: expression,
+                    initialBindingReceiverIsSubjectToCloning: ThreeState.False,
                     method: (MethodSymbol)mem,
                     arguments: args.ToImmutableArray(),
                     argumentNamesOpt: default,
@@ -229,7 +233,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return null;
         }
 
-        BoundExpression CreateXsConversion(BoundExpression expression, Conversion conversion, TypeSymbol targetType, DiagnosticBag diagnostics)
+        BoundExpression CreateXsConversion(BoundExpression expression, Conversion conversion, TypeSymbol targetType, BindingDiagnosticBag diagnostics)
         {
             var result = CreateConversion(syntax: expression.Syntax,
                                             source: expression,
@@ -242,7 +246,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return result;
         }
 
-        BoundExpression XsHandleExplicitConversion(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
+        BoundExpression XsHandleExplicitConversion(TypeSymbol targetType, BoundExpression expression, BindingDiagnosticBag diagnostics, Conversion conversion)
         {
             if (conversion.IsExplicit && !TypeSymbol.Equals(expression.Type, targetType))
             {
@@ -274,9 +278,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // on the conversion routines for the USUAL type
                         MethodSymbol ctor = FindConstructor(Compilation.UsualType(), 1, Compilation.GetSpecialType(SpecialType.System_Object));
                         expression = new BoundObjectCreationExpression(expression.Syntax, ctor, expression);
-                        HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-                        conversion = Conversions.ClassifyImplicitConversionFromExpression(expression, targetType, ref useSiteDiagnostics);
-                        diagnostics.Add(expression.Syntax, useSiteDiagnostics);
+                        var useSiteInfo = new CompoundUseSiteInfo<AssemblySymbol>(diagnostics, Compilation.Assembly);
+                        conversion = Conversions.ClassifyImplicitConversionFromExpression(expression, targetType, ref useSiteInfo);
 
                         return CreateXsConversion(expression, conversion, targetType, diagnostics);
                     }
@@ -335,8 +338,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         bool XsLiteralIIfFitsInTarget(BoundConditionalOperator bco, TypeSymbol targetType)
         {
             var target = targetType.SpecialType;
-            var trueConst = bco.Consequence.ConstantValue;
-            var falseConst = bco.Alternative.ConstantValue;
+            var trueConst = bco.Consequence.ConstantValueOpt;
+            var falseConst = bco.Alternative.ConstantValueOpt;
             if (trueConst == null || falseConst == null)
             {
                 return false;
@@ -348,7 +351,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        void XsCheckConversionForAssignment(TypeSymbol targetType, ref BoundExpression expression, DiagnosticBag diagnostics, bool isDefaultParameter = false, bool isRefAssignment = false)
+        void XsCheckConversionForAssignment(TypeSymbol targetType, ref BoundExpression expression, BindingDiagnosticBag diagnostics, bool isDefaultParameter = false, bool isRefAssignment = false)
         {
             if (expression.Kind == BoundKind.UnboundLambda)
             {
@@ -368,7 +371,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 rhsType.SpecialType.IsIntegralType())
             {
                 bool ok = false;
-                if (expression.ConstantValue != null)
+                if (expression.ConstantValueOpt != null)
                 {
                     // warnings for literals that are too big are generated later
                     ok = true;

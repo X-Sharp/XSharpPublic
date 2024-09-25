@@ -98,6 +98,9 @@ namespace Microsoft.CodeAnalysis.CommandLine
                 // server simply isn't running.
                 return true;
             }
+#if XSHARP
+            XSharpString.CaseSensitive = pipeName.EndsWith("__CS");
+#endif
 
             try
             {
@@ -555,13 +558,13 @@ namespace Microsoft.CodeAnalysis.CommandLine
             }
 
             var userName = Environment.UserName;
-            return GetPipeName(userName, isAdmin, clientDirectory);
 #if XSHARP
-            var pipeName = GetPipeName(userName, isAdmin, compilerExeDirectory);
+            var pipeName = GetPipeName(userName, isAdmin, clientDirectory);
             if (XSharpString.CaseSensitive)
                 pipeName += "__CS";
-			return pipeName;
+            return pipeName;
 #else
+            return GetPipeName(userName, isAdmin, clientDirectory);
 #endif
         }
 

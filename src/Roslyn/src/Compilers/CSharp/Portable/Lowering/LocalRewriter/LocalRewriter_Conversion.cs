@@ -85,7 +85,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return this.MakePsz(rewrittenOperand);
                 }
             }
-            var result = MakeConversionNode(node, node.Syntax, rewrittenOperand!, node.Conversion, node.Checked, node.ExplicitCastInCode, node.ConstantValue, rewrittenType);
+            var result = MakeConversionNode(node, node.Syntax, rewrittenOperand!, node.Conversion, node.Checked, node.ExplicitCastInCode, node.ConstantValueOpt, rewrittenType);
 #else
             var result = MakeConversionNode(node, node.Syntax, rewrittenOperand, node.Conversion, node.Checked, node.ExplicitCastInCode, node.ConstantValueOpt, rewrittenType);
 #endif

@@ -1,49 +1,47 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <UseXSharpKey>true</UseXSharpKey>
-  </PropertyGroup>
-  <Import Project="..\CompilerCommon.props" />
+  <Import Project="..\..\Compiler\CompilerCommon.props" />
   <Import Project="$(MSBuildThisFileDirectory)Antlr.props" />  
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <AssemblyName>XSharp.CodeAnalysis</AssemblyName>
-    <RootNamespace>LanguageService.CodeAnalysis.XSharp</RootNamespace>
+    <RootNamespace>Microsoft.CodeAnalysis.CSharp</RootNamespace>
+    <AssemblyName>CSharp.CodeAnalysis</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <NoWarn>1591,1573,1701,3021,RS0016</NoWarn> 
-    <!--<CodeAnalysisRuleSet>$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>-->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <NoStdLib>true</NoStdLib>
-    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+    <DefineConstants>$(DefineConstants);COMPILERCORE;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE;NETSTANDARD20;NETSTANDARD;COMMITHASH;XSHARP</DefineConstants>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <ApplyNgenOptimization Condition="'$(TargetFramework)' == 'netstandard2.0'">partial</ApplyNgenOptimization>
     <GeneratePerformanceSensitiveAttribute>false</GeneratePerformanceSensitiveAttribute>
-    <!-- This is required to prevent downgrade references from CscCore/VbcCode since we must
-         reference Microsoft.NETCore.App to target the shared framework (bug
-         https://github.com/dotnet/sdk/issues/1159) and NETCore.App
-         contains a reference to C# + VB CodeAnalysis. This ensures that the project
-         reference is a higher version than the NuGet reference. -->
-    <Version>$(NuGetPerBuildPreReleaseVersion)</Version>
-    <!--Use the C# compiler created in this solution-->
-    <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
+    <!--Use the C# compiler created in this solution
+    <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>-->
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
-    <GenericDefines>COMPILERCORE;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE;NETSTANDARD20;NETSTANDARD;COMMITHASH;XSHARP</GenericDefines>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Configurations>Debug;Release;Public</Configurations>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
+    <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" >
-    <DefineConstants>$(Genericdefines);DEBUG;TRACE;</DefineConstants>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DefineConstants>$(DefineConstants);DEBUG;TRACE;</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Public'" >
-    <DefineConstants>$(Genericdefines);TRACE;</DefineConstants>
+  <PropertyGroup Condition="'$(Configuration)'=='Public'">
+    <DefineConstants>$(DefineConstants);TRACE;</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'" >
-    <DefineConstants>$(Genericdefines);NDEBUG;TRACE;</DefineConstants>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DefineConstants>$(DefineConstants);NDEBUG;TRACE;</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
+    <!--
+      Analyzers that will be used to analyze projects that references 
+      Microsoft.CodeAnalysis project or Microsoft.CodeAnalysis.Common package.
+      
+      Note: PrivateAssets="ContentFiles" ensures that projects referencing Microsoft.CodeAnalysis.Common package 
+      will import everything but content files from Microsoft.CodeAnalysis.Analyzers, specifically, analyzers.
+    -->
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Condition="'$(DotNetBuildFromSource)' != 'true'" PrivateAssets="ContentFiles" />
     <PackageReference Include="System.Collections.Immutable" />
     <PackageReference Include="System.Memory" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
@@ -51,45 +49,46 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Condition="'$(TargetFrameworkIdentifier)' != '.NETCoreApp'" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
     <PackageReference Include="System.Text.Encoding.CodePages" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
-  </ItemGroup>
+  </ItemGroup>  
+
 
   <!-- Core files -->
-  <ItemGroup>
-    <None Include="$(CoreSource)Operations\OperationInterfaces.xml">
-      <Link>Core\Operations\%(RecursiveDir)\%(Filename)%(Extension)</Link>
-    </None>
+<ItemGroup>
+  <None Include="$(CoreSource)Operations\OperationInterfaces.xml">
+    <Link>Core\Operations\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+  </None>
   </ItemGroup>
+
   <ItemGroup>
-    <!-- Need to include the PerformanceSensitiveAttribute definition in source build, since we can't get it from the analyzer package. -->
     <Compile Remove="$(CoreSource)InternalUtilities\PerformanceSensitiveAttribute.cs" Condition="'$(DotNetBuildFromSource)' != 'true'" />
-    <Compile Include="$(CoreSource)..\..\Shared\CoreClrShim.cs" Link="InternalUtilities\CoreClrShim.cs" />
   </ItemGroup>
+
   <ItemGroup>
-    <!-- <None Include="$(CoreSource)..\CodeAnalysisRules.ruleset">
+    <None Include="$(CoreSource)..\CodeAnalysisRules.ruleset">
       <SubType>Designer</SubType>
-    </None> -->
-    <!-- <None Include="$(CoreSource)RuleSet\RuleSetSchema.xsd">
+    </None>
+    <None Include="$(CoreSource)RuleSet\RuleSetSchema.xsd">
       <SubType>Designer</SubType>
-    </None> -->
+    </None>
     <Compile Include="$(CoreSource)**\*.cs">
-      <Link>Core\%(RecursiveDir)\%(Filename)%(Extension)</Link>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="$(CoreSource)CodeAnalysisResources.Designer.cs" />
-    <EmbeddedResource Remove="CodeAnalysisResources.resx" />
+		<Link>Core\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+      </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(CoreSource)Resources\default.win32manifest" />
   </ItemGroup>
+  
+  
   <!-- Projects from the Core codeanalysis.dll -->
   <Import Project="$(CoreSource)..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
   <Import Project="$(RoslynSrc)Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems" Label="Shared" />
   <Import Project="$(RoslynSrc)Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
   <Import Project="$(RoslynSrc)Dependencies\Collections\Microsoft.CodeAnalysis.Collections.projitems" Label="Shared" />
+
   <!-- End of Core includes-->
 
   <!-- CSharp  files -->
+
   <ItemGroup>
     <None Include="$(CSharpSource)BoundTree\BoundNodes.xml" />
     <None Include="$(CSharpSource)BoundTree\BoundNodes.xsd" />
@@ -99,22 +98,21 @@
     <None Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\BaseLine.txt" />
     <None Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\Run.bat" />
     <None Include="$(CSharpSource)FlowAnalysis\Flow Analysis Design.docx" />
+    <Compile Remove="$(CompilerGeneratedFilesOutputPath)/*/**/*.cs" />
+
     <None Include="$(CSharpSource)CSharpCodeAnalysisRules.ruleset">
       <SubType>Designer</SubType>
     </None>
-    <Compile Remove="$(CompilerGeneratedFilesOutputPath)/*/**/*.cs" />
   </ItemGroup>
+
   <ItemGroup>
   	<Compile Include="$(CSharpSource)**\*.cs">
 		<Link>CSharp\%(RecursiveDir)\%(Filename)%(Extension)</Link>
 	  </Compile>
-    <Compile Remove="$(CSharpSource)Errors\ErrorCode.cs" />
-    <Compile Remove="$(CSharpSource)CSharpResources.Designer.cs" />
-    <Compile Remove="$(CSharpSource)Generated\ErrorFacts.Generated.cs" />
   </ItemGroup>
   <Import Project="$(CSharpSource)..\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
   <!-- End of CSharp includes-->
-
+  
   <!-- XSharp  files -->
   <ItemGroup>
     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
@@ -125,33 +123,40 @@
     </Compile>
     <Compile Remove="CodeAnalysisResources.Designer.cs" />
     <Compile Remove="Properties\AssemblyInfoPortable.cs" />
-    <Compile Remove="XSharpResources.Designer.cs" />
+    <Compile Remove="$(CSharpSource)Errors\ErrorCode.cs" />
+    <Compile Remove="$(CSharpSource)CSharpResources.Designer.cs" />
+    <Compile Remove="$(CSharpSource)Generated\ErrorFacts.Generated.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(NuGetPackageRoot)\Microsoft.DiaSymReader.Native\$(MicrosoftDiaSymReaderNativeVersion)\runtimes\win\native\Microsoft.DiaSymReader.Native.x86.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>false</Visible>
-    </Content>
-    <Content Include="$(NuGetPackageRoot)\Microsoft.DiaSymReader.Native\$(MicrosoftDiaSymReaderNativeVersion)\runtimes\win\native\Microsoft.DiaSymReader.Native.amd64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>false</Visible>
-    </Content>
     <Content Include="Preprocessor\harbourppdoc.txt" />
     <Content Include="Preprocessor\preprocessor.txt" />
     <Content Include="Symbols\CodeBlock.txt" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Update="XSharpResources.resx" GenerateSource="true" />
     <EmbeddedResource Include="$(CommonDir)StandardHeaders.resx" Link="Preprocessor\StandardHeaders.resx" />
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Remove="BannedSymbols.txt" />
-    <Compile Remove="Declarations\**" />
     <Compile Remove="VsParser\**" />
-    <EmbeddedResource Remove="Declarations\**" />
     <EmbeddedResource Remove="VsParser\**" />
   </ItemGroup>
   <!-- End of XSharp includes-->
 
-  <Import Project="Extra.Targets" />
+  <ItemGroup>
+    <None Remove="$(CSharpSource)Syntax\Syntax.xsd" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <EmbeddedResource Update="XSharpResources.resx" GenerateSource="true">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>LanguageService.CodeAnalysis.XSharp</CustomToolNamespace>
+      <LastGenOutput>XSharpResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="XSharpResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>XSharpResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

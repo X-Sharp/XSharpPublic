@@ -1548,11 +1548,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return m;
 
         }
-        protected internal void AddUsingWhenMissing(NameSyntax usingName, bool bStatic, NameEqualsSyntax alias)
+        protected internal void AddUsingWhenMissing(TypeSyntax usingName, bool bStatic, NameEqualsSyntax alias)
         {
             AddUsingWhenMissing(GlobalEntities.Usings, usingName, bStatic, alias);
         }
-        protected internal void AddUsingWhenMissing(SyntaxListBuilder<UsingDirectiveSyntax> usings, NameSyntax usingName, bool bStatic, NameEqualsSyntax alias)
+        protected internal void AddUsingWhenMissing(SyntaxListBuilder<UsingDirectiveSyntax> usings, TypeSyntax usingName, bool bStatic, NameEqualsSyntax alias)
         {
             bool found = false;
             for (int i = 0; i < usings.Count; i++)
@@ -1562,13 +1562,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     // match alias AND name
                     if (u.Alias != null && XSharpString.Compare(u.Alias.Name.ToString(), alias.Name.ToString()) == 0
-                        && XSharpString.Compare(u.Name.ToString(), usingName.ToString()) == 0)
+                        && XSharpString.Compare(u.NamespaceOrType?.ToString(), usingName.ToString()) == 0)
                     {
                         found = true;
                         break;
                     }
                 }
-                else if (XSharpString.Compare(u.Name.ToString(), usingName.ToString()) == 0)
+                else if (XSharpString.Compare(u.NamespaceOrType?.ToString(), usingName.ToString()) == 0)
                 {
                     found = true;
                     break;
@@ -1581,8 +1581,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (bStatic)
                     tokenStatic = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword);
 
-                usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
+                usings.Add(_syntaxFactory.UsingDirective(null,
+                    SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
                     tokenStatic,
+                    null, // TODO nvk: unsafeKeyword
                     alias,
                     usingName,
                     SyntaxFactory.SemicolonToken));
@@ -1638,6 +1640,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: SyntaxFactory.Identifier(className),
                 typeParameterList: null,
+                parameterList: null, // TODO nvk: parameterList
                 baseList: null, // BaseListSyntax baseList = _syntaxFactory.BaseList(colon, list)
                 constraintClauses: default,
                 openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -1697,6 +1700,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: SyntaxFactory.Identifier(className),
                 typeParameterList: null,
+                parameterList: null, // TODO nvk: parameterList
                 baseList: null, // BaseListSyntax baseList = _syntaxFactory.BaseList(colon, list)
                 constraintClauses: default,
                 openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -2346,7 +2350,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (s is UsingDirectiveSyntax)
                 {
                     var u = s as UsingDirectiveSyntax;
-                    AddUsingWhenMissing(u.Name, u.StaticKeyword != null, u.Alias);
+                    AddUsingWhenMissing(u.NamespaceOrType, u.StaticKeyword != null, u.Alias);
                 }
                 else if (s is AttributeListSyntax)
                 {
@@ -2457,7 +2461,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (body != null || expr != null)
                 {
                     e = _syntaxFactory.ParenthesizedLambdaExpression(
+                        attributeLists: default, // TODO nvk
                         modifiers: default,
+                        returnType: default, // TODO nvk
                         parameterList: EmptyParameterList(),
                         arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                         block: body,
@@ -2467,7 +2473,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (e == null)
             {
                 e = _syntaxFactory.ParenthesizedLambdaExpression(
+                    attributeLists: default, // TODO nvk
                     modifiers: default,
+                    returnType: default, // TODO nvk
                     parameterList: EmptyParameterList(),
                     arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                     block: null,
@@ -2524,7 +2532,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else if (s is UsingDirectiveSyntax)
             {
                 var u = s as UsingDirectiveSyntax;
-                AddUsingWhenMissing(u.Name, u.StaticKeyword != null, u.Alias);
+                AddUsingWhenMissing(u.NamespaceOrType, u.StaticKeyword != null, u.Alias);
             }
             else if (s is AttributeListSyntax)
             {
@@ -2776,10 +2784,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitUsing_([NotNull] XP.Using_Context context)
         {
-            context.Put(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
+            context.Put(_syntaxFactory.UsingDirective(
+                globalKeyword: default, // TODO nvk
+                usingKeyword: SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
                 staticKeyword: context.Static?.SyntaxKeyword(),
+                unsafeKeyword: default, // TODO nvk
                 alias: context.Alias == null ? null : _syntaxFactory.NameEquals(context.Alias.Get<IdentifierNameSyntax>(), SyntaxFactory.EqualsToken),
-                name: context.Name.Get<NameSyntax>(),
+                namespaceOrType: context.Name.Get<NameSyntax>(),
                 semicolonToken: SyntaxFactory.SemicolonToken));
         }
 
@@ -2991,6 +3002,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.InterfaceKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: getTypeParameters(context.TypeParameters),
+                parameterList: default, // TODO nvk
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3077,6 +3089,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: getTypeParameters(context.TypeParameters),
+                parameterList: default, // TODO nvk
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3148,6 +3161,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: getTypeParameters(context.TypeParameters),
+                parameterList: default, // TODO nvk
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3922,6 +3936,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: identifier,
                 typeParameterList: null,
+                parameterList: default, // TODO nvk
                 baseList: null,
                 constraintClauses: default,
                 openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -4458,7 +4473,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     attributeLists: getAttributes(context.Attributes),
                     modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword),
                     implicitOrExplicitKeyword: context.Conversion.Get<SyntaxToken>(),
+                    explicitInterfaceSpecifier: null, // TODO nvk
                     operatorKeyword: SyntaxFactory.MakeToken(SyntaxKind.OperatorKeyword),
+                    checkedKeyword: null, // TODO nvk
                     type: getReturnType(context),
                     parameterList: getParameters(context.ParamList),
                     body: body,
@@ -4487,8 +4504,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     attributeLists: getAttributes(context.Attributes),
                     modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword),
                     returnType: getReturnType(context),
+                    explicitInterfaceSpecifier: null, // TODO nvk
                     operatorKeyword: SyntaxFactory.MakeToken(SyntaxKind.OperatorKeyword),
                     operatorToken: opToken,
+                    checkedKeyword: null, // TODO nvk
                     parameterList: getParameters(context.ParamList),
                     body: body,
                     expressionBody: expressionBody,
@@ -5150,7 +5169,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if (hasParamArrayAttribute)
             {
-                par = par.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExplicitParamArray));
+                par = par.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExplicitParamArrayOrCollection));
             }
             context.Put(par);
         }
@@ -7589,7 +7608,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var expr = context.Right.Get<ExpressionSyntax>();
             var e = _syntaxFactory.ParenthesizedLambdaExpression(
+                attributeLists: default, //TODO nvk
                 modifiers: default,
+                returnType: default, // TODO nvk
                 parameterList: MakeParameterList(new List<ParameterSyntax>() { MakeParameter("__this", null) }),
                 arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                 block: null,
@@ -9885,7 +9906,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 body = MakeBlock(newstmts);
             }
             var node = _syntaxFactory.ParenthesizedLambdaExpression(
+                attributeLists: default, // TODO nvk
                 modifiers: default,
+                returnType: default, // TODO nvk
                 parameterList: paramList,
                 arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                 block: body as BlockSyntax,

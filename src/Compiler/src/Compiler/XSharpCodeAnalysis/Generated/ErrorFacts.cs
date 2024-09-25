@@ -20,8 +20,8 @@
                 case ErrorCode.ERR_BadVisBaseInterface:
                 case ErrorCode.ERR_UseDefViolation:
                 case ErrorCode.ERR_UseDefViolationField:
-                case ErrorCode.ERR_UnassignedThis:
-                case ErrorCode.ERR_UseDefViolationThis:
+                case ErrorCode.ERR_UnassignedThisUnsupportedVersion:
+                case ErrorCode.ERR_UseDefViolationThisUnsupportedVersion:
                 case ErrorCode.ERR_OperatorNeedsMatch:
                 case ErrorCode.ERR_SizeofUnsafe:
                 case ErrorCode.ERR_SealedNonOverride:
@@ -31,7 +31,7 @@
                 case ErrorCode.ERR_NewVirtualInSealed:
                 case ErrorCode.ERR_CantCallSpecialMethod:
                 case ErrorCode.ERR_ProtectedInStruct:
-                case ErrorCode.ERR_ExplicitParamArray:
+                case ErrorCode.ERR_ExplicitParamArrayOrCollection:
                 case ErrorCode.ERR_ProtectedInStatic:
                 case ErrorCode.ERR_UseDefViolationProperty:
                 case ErrorCode.ERR_ConversionWithBase:

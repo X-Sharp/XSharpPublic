@@ -18,7 +18,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             internal readonly AnonymousTypeManager Manager;
 
             /// <summary> Anonymous type descriptor </summary>
+#if XSHARP
+            internal AnonymousTypeDescriptor TypeDescriptor;
+            internal AnonymousTypeOrDelegatePublicSymbol(AnonymousTypeManager manager)
+            {
+                this.Manager = manager;
+            }
+#else
             internal readonly AnonymousTypeDescriptor TypeDescriptor;
+#endif
 
             internal AnonymousTypeOrDelegatePublicSymbol(AnonymousTypeManager manager, AnonymousTypeDescriptor typeDescr)
             {

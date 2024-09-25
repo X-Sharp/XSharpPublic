@@ -316,7 +316,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 // Keep track of namespaces that only differ in casing.
                 // we link these namespaces with eachother so the type 
                 // lookup or member lookup on one returns the elements of all
-                var namespaces = new Dictionary<string, PENestedNamespaceSymbol>(XSharpString.Comparer);
+                var namespaces = new Dictionary<ReadOnlyMemory<char>, PENestedNamespaceSymbol>(ReadOnlyMemoryOfCharComparer.Instance);
                 var duplicates = new Dictionary<string, List<PENestedNamespaceSymbol>>(XSharpString.Comparer);
                 var list = new List<PENestedNamespaceSymbol>();
 #else
@@ -327,16 +327,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 {
                     var c = new PENestedNamespaceSymbol(child.Key, this, child.Value);
 #if XSHARP
-                    if (!namespaces.ContainsKey(c.Name))
+                    if (!namespaces.ContainsKey(c.Name.AsMemory()))
                     {
-                        namespaces.Add(c.Name, c);
+                        namespaces.Add(c.Name.AsMemory(), c);
                     }
                     else
                     {
                         List<PENestedNamespaceSymbol> dups;
                         if (!duplicates.ContainsKey(c.Name))
                         {
-                            dups = new List<PENestedNamespaceSymbol>() { namespaces[c.Name] };
+                            dups = new List<PENestedNamespaceSymbol>() { namespaces[c.Name.AsMemory()] };
                             duplicates.Add(c.Name, dups);
                         }
                         else
@@ -410,11 +410,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                     }
                 }
 
-#if XSHARP
-                var typesDict = children.ToDictionary(c => c.Name.AsMemory(), XSharpString.Comparer);
-#else
                 var typesDict = children.ToDictionary(c => c.Name.AsMemory(), ReadOnlyMemoryOfCharComparer.Instance);
-#endif
                 children.Free();
 
                 if (noPiaLocalTypes != null)

@@ -203,7 +203,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             (isPredefinedOperator ? ConversionForAssignmentFlags.PredefinedOperator : ConversionForAssignmentFlags.None));
 
 #if XSHARP
-            if (finalConversion.IsValid)
+            if (!finalConversion.HasErrors)
             {
                 if (!isPredefinedOperator && leftType.SpecialType.IsNumericType())
                 {
@@ -236,7 +236,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Conversion rightToLeftConversion = this.Conversions.ClassifyConversionFromExpression(right, leftType, isChecked: CheckOverflowAtRuntime, ref useSiteInfo);
 #if XSHARP
                 bool vo4 = Compilation.Options.HasOption(CompilerOption.Vo4, node);
-                if (finalConversion.IsExplicit && !rightToLeftConversion.IsConstantExpression && vo4)
+                if (final.Conversion.IsExplicit && !rightToLeftConversion.IsConstantExpression && vo4)
                 {
                     // with /vo4 we make the conversion implicit but we generate a warning
                     hasError = false;
@@ -1511,7 +1511,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (tryAgain)
                 {
-                    possiblyBest = this.BinaryOperatorOverloadResolution(kind, left, right, node, diagnostics, out resultKind, out originalUserDefinedOperators);
+                    possiblyBest = this.BinaryOperatorOverloadResolution(kind, false, left, right, node, diagnostics, out resultKind, out originalUserDefinedOperators);
                 }
             }
 #endif
@@ -2718,18 +2718,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             ManagedKind managedKind = operandType.GetManagedKind(ref useSiteInfo);
             diagnostics.Add(node, useSiteInfo);
 
-#if XSHARP
-            if (Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, node))
-                allowManagedAddressOf = true;
-            if (Compilation.Options.HasRuntime && Compilation.Options.AllowUnsafe)
-                allowManagedAddressOf = true;
-#endif
             if (!hasErrors)
             {
                 hasErrors = CheckManagedAddr(Compilation, operandType, managedKind, node.Location, diagnostics);
             }
 
             bool allowManagedAddressOf = Flags.Includes(BinderFlags.AllowMoveableAddressOf);
+#if XSHARP
+            if (Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, node))
+                allowManagedAddressOf = true;
+            if (Compilation.Options.HasRuntime && Compilation.Options.AllowUnsafe)
+                allowManagedAddressOf = true;
+#endif
             if (!hasErrors && !allowManagedAddressOf)
             {
                 if (IsMoveableVariable(operand, accessedLocalOrParameterOpt: out _) != isFixedStatementAddressOfExpression)
@@ -2996,7 +2996,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 resultOperatorKind.WithOverflowChecksIfApplicable(CheckOverflowAtRuntime),
                 resultOperand,
                 resultConstant,
-                resultMethod,
+                signature.Method,
+                signature.ConstrainedToTypeOpt, // TODO nvk
                 resultKind,
                 resultType);
             if (!TypeSymbol.Equals(resultType, operand.Type))

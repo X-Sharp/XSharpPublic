@@ -153,9 +153,6 @@ namespace Microsoft.CodeAnalysis.CompilerServer
 
         internal int RunShutdown(string pipeName, int? timeoutOverride = null, CancellationToken cancellationToken = default) =>
             RunShutdownAsync(pipeName, waitForProcess: true, timeoutOverride, cancellationToken).GetAwaiter().GetResult();
-#if XSHARP
-                XSharpString.CaseSensitive = pipeName.EndsWith("__CS");
-#endif
 
         internal async Task<int> RunShutdownAsync(string pipeName, bool waitForProcess, int? timeoutOverride, CancellationToken cancellationToken = default)
         {

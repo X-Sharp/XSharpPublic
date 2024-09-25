@@ -2134,11 +2134,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 return s_emptyNestedTypes;
             }
 
-#if XSHARP
-            return symbols.ToDictionary(s => s.Name.AsMemory(), XSharpString.Comparer);
-#else
             return symbols.ToDictionary(s => s.Name.AsMemory(), ReadOnlyMemoryOfCharComparer.Instance);
-#endif
         }
 
         internal override UseSiteInfo<AssemblySymbol> GetUseSiteInfo()

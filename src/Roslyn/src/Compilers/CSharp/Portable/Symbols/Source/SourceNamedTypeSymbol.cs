@@ -928,9 +928,9 @@ next:;
                 return (null, null);
             }
 #if XSHARP
-            var att = this.XsDecodeWellKnownAttribute(ref arguments);
-            if (att != null)
-                return att;
+            var (ad, ba) = this.XsDecodeWellKnownAttribute(ref arguments);
+            if (ad != null)
+                return (ad, ba);
 #endif
             if (CSharpAttributeData.IsTargetEarlyAttribute(arguments.AttributeType, arguments.AttributeSyntax, AttributeDescription.CodeAnalysisEmbeddedAttribute))
             {

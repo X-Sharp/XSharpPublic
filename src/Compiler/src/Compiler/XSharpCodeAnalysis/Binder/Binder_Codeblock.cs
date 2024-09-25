@@ -15,7 +15,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal partial class Binder
     {
-        private BoundExpression BindCodeblock(SyntaxNode syntax, UnboundLambda unboundLambda, Conversion conversion, bool isCast, TypeSymbol destination, DiagnosticBag diagnostics)
+        private BoundExpression BindCodeblock(SyntaxNode syntax, UnboundLambda unboundLambda, Conversion conversion, bool isCast, TypeSymbol destination, BindingDiagnosticBag diagnostics)
         {
             if (!Compilation.Options.HasRuntime)
                 return null;
@@ -36,9 +36,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             Conversion conv = Conversion.ImplicitReference;
             if (destination.IsCodeblockType() && !destination.IsObjectType())
             {
-                HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-                conv = Conversions.ClassifyConversionFromType(Compilation.CodeBlockType(), destination, ref useSiteDiagnostics);
-                diagnostics.Add(syntax, useSiteDiagnostics);
+                var useSiteInfo = new CompoundUseSiteInfo<AssemblySymbol>(diagnostics, Compilation.Assembly);
+                conv = Conversions.ClassifyConversionFromType(Compilation.CodeBlockType(), destination, false, ref useSiteInfo);
             }
             if (Compilation.Options.HasRuntime)
             {
@@ -64,7 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Create the delegate for the Lambda Property
             NamedTypeSymbol cbType = manager.ConstructCodeblockTypeSymbol(delegateSignature, syntax.Location);
             var delType = manager.GetCodeblockDelegateType(cbType);
-            var _boundLambda = unboundLambda.Bind(delType);
+            var _boundLambda = unboundLambda.Bind(delType, isExpressionTree: false);
             diagnostics.AddRange(_boundLambda.Diagnostics);
             var cbDel = new BoundConversion(
                 syntax,
@@ -124,7 +123,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 type: destination)
             { WasCompilerGenerated = unboundLambda.WasCompilerGenerated };
         }
-        internal static BoundBlock FixCodeBlockProblems(LambdaSymbol lambdaSymbol, Binder lambdaBodyBinder, BoundBlock block, DiagnosticBag diagnostics)
+        internal static BoundBlock FixCodeBlockProblems(LambdaSymbol lambdaSymbol, Binder lambdaBodyBinder, BoundBlock block, BindingDiagnosticBag diagnostics)
         {
             // check for a Lambda that returns a USUAL
             if (lambdaSymbol.ReturnType.IsNotUsualType())
@@ -138,8 +137,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (count == 0)
             {
                 var result = new BoundDefaultExpression(block.Syntax, usualType);
-                newlist.Add(new BoundReturnStatement(block.Syntax, RefKind.None, result));
-                block = block.Update(block.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, newlist.ToImmutableArray<BoundStatement>());
+                newlist.Add(new BoundReturnStatement(block.Syntax, RefKind.None, result, @checked: false));
+                block = block.Update(block.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, block.HasUnsafeModifier, block.Instrumentation, newlist.ToImmutableArray<BoundStatement>());
             }
             else
             {
@@ -160,7 +159,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             var errors = diagnostics.ToReadOnly();
                             diagnostics.Clear();
-                            foreach (var error in errors)
+                            foreach (var error in errors.Diagnostics)
                             {
                                 if (error.Code != (int)ErrorCode.ERR_NoImplicitConv &&
                                     error.Code != (int)ErrorCode.ERR_CantConvAnonMethReturns)
@@ -172,7 +171,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                             newlist.Add(new BoundExpressionStatement(stmt.Syntax, operand));
                             var result = new BoundDefaultExpression(stmt.Syntax, usualType);
-                            newlist.Add(new BoundReturnStatement(stmt.Syntax, RefKind.None, result));
+                            newlist.Add(new BoundReturnStatement(stmt.Syntax, RefKind.None, result, @checked: false));
                             block = new BoundBlock(block.Syntax, block.Locals, newlist.ToImmutableArray<BoundStatement>());
                         }
                     }

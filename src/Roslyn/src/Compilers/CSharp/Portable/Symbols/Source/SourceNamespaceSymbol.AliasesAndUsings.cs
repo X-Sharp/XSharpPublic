@@ -749,14 +749,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 continue;
                             }
 
-#if XSHARP
-                            if (compilation.IsSubmission && !usingDirective.UsingKeyword.HasTrailingTrivia)
-                                continue;
-                            Binder usingsBinder;
-                            if (HandleXSharpImport(usingDirective, usingsBinder, usings, uniqueUsings, basesBeingResolved, compilation))
-                                continue;
-                            declarationBinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
-#endif
                             var flags = BinderFlags.SuppressConstraintChecks;
                             if (usingDirective.UnsafeKeyword != default)
                             {
@@ -788,6 +780,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             Debug.Assert(directiveDiagnostics.DependenciesBag is object);
 
                             declarationBinder ??= compilation.GetBinderFactory(declarationSyntax.SyntaxTree).GetBinder(usingDirective.NamespaceOrType).WithAdditionalFlags(flags);
+#if XSHARP
+                            if (compilation.IsSubmission && !usingDirective.UsingKeyword.HasTrailingTrivia)
+                                continue;
+                            if (Imports.HandleXSharpImport(usingDirective, declarationBinder, usings, uniqueUsings, basesBeingResolved, compilation))
+                                continue;
+#endif
                             var imported = declarationBinder.BindNamespaceOrTypeSymbol(usingDirective.NamespaceOrType, directiveDiagnostics, basesBeingResolved).NamespaceOrTypeSymbol;
                             bool addDirectiveDiagnostics = true;
 
@@ -803,7 +801,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 {
 #if XSHARP
                                     // No warnings for duplicate usings in XSharp VO Dialect or for generated code
-                                    if (!declarationSyntax.XGenerated && !compilation.Options.HasRuntime) 
+                                    if (!declarationSyntax.XGenerated && !compilation.Options.HasRuntime)
 #endif
                                     diagnostics.Add(!globalUsingNamespacesOrTypes.IsEmpty && getOrCreateUniqueGlobalUsingsNotInTree(ref uniqueGlobalUsings, globalUsingNamespacesOrTypes, declarationSyntax.SyntaxTree).Contains(imported) ?
                                                             ErrorCode.HDN_DuplicateWithGlobalUsing :

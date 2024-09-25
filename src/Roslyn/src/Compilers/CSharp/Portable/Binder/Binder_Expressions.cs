@@ -1367,7 +1367,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindQualifiedName(QualifiedNameSyntax node, BindingDiagnosticBag diagnostics)
         {
 #if XSHARP
-            var bag = DiagnosticBag.GetInstance();
+            var bag = BindingDiagnosticBag.GetInstance();
             var left = this.BindExpression(node.Left, bag);
             if (left != null && !left.HasErrors && !(left.ExpressionSymbol is NamespaceOrTypeSymbol) &&
                 left.Type?.IsVoStructOrUnion() != true)
@@ -1380,7 +1380,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     BindPointerIndirectionExpressionInternal(node, left, bag, out pointedAtType, out hasErrors);
                     if (!ReferenceEquals(pointedAtType, null)) // do not raise an error if it was not a pointer type
                     {
-                        left = new BoundPointerIndirectionOperator(node.Left, left, pointedAtType, hasErrors)
+                        left = new BoundPointerIndirectionOperator(node.Left, left, refersToLocation: false, pointedAtType, hasErrors) // TODO nvk (refersToLocation)
                         {
                             WasCompilerGenerated = true, // don't interfere with the type info for exprSyntax.
                         };
@@ -2756,7 +2756,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             return CreateConversion(boundOperand, conversion, indexType, diagnostics);
         }
 
+#if XSHARP
+        private BoundExpression BindCastCore(SyntaxNode node, BoundExpression operand, TypeWithAnnotations targetTypeWithAnnotations, bool wasCompilerGenerated, BindingDiagnosticBag diagnostics)
+#else
         private BoundExpression BindCastCore(ExpressionSyntax node, BoundExpression operand, TypeWithAnnotations targetTypeWithAnnotations, bool wasCompilerGenerated, BindingDiagnosticBag diagnostics)
+#endif
         {
             TypeSymbol targetType = targetTypeWithAnnotations.Type;
             CompoundUseSiteInfo<AssemblySymbol> useSiteInfo = GetNewCompoundUseSiteInfo(diagnostics);
@@ -3074,12 +3078,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (argumentSyntax.NameColon != null)
                 {
                     var argName = argumentSyntax.NameColon.Name;
-                    DiagnosticBag tempDiagnostics = new DiagnosticBag();
+                    BindingDiagnosticBag tempDiagnostics = BindingDiagnosticBag.GetInstance();
                     var local = BindExpression(argName, tempDiagnostics);
                     if (local.Kind == BoundKind.Local)
                     {
                         // Generate warning
-						hadError = true;
+                        hadError = true;
                         Error(diagnostics, ErrorCode.WRN_ArgumentNameLocalNamePossibleConflict, argumentSyntax, argName);
                     }
                 }
@@ -7486,7 +7490,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             // First attempt simpleMemberAccess resolution ...
             // NOTE: CheckValue will be called explicitly in BindMemberAccessWithBoundLeft.
-            var diag = DiagnosticBag.GetInstance();
+            var diag = BindingDiagnosticBag.GetInstance();
             boundLeft = BindLeftOfPotentialColorColorMemberAccess(exprSyntax, diag);
             if (!boundLeft.Type.IsPointerType())
             {
@@ -7501,7 +7505,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 BindPointerIndirectionExpressionInternal(node, boundLeft, diagnostics, out pointedAtType, out hasErrors);
                 if (!ReferenceEquals(pointedAtType, null)) // do not raise an error if it was not a pointer type
                 {
-                    boundLeft = new BoundPointerIndirectionOperator(exprSyntax, boundLeft, pointedAtType, hasErrors)
+                    boundLeft = new BoundPointerIndirectionOperator(exprSyntax, boundLeft, false /* TODO nvk */, pointedAtType, hasErrors)
                     {
                         WasCompilerGenerated = true, // don't interfere with the type info for exprSyntax.
                     };
@@ -7579,7 +7583,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var valueDiagnostics = BindingDiagnosticBag.GetInstance(diagnostics);
 #if XSHARP
-            var boundValue = BindXSIdentifier(node, invoked: false, indexed: false, diagnostics: valueDiagnostics, bindMethod: false);
+            var boundValue = BindXSIdentifier(left, invoked: false, indexed: false, diagnostics: valueDiagnostics, bindMethod: false);
 #else
             var boundValue = BindIdentifier(left, invoked: false, indexed: false, diagnostics: valueDiagnostics);
 #endif
@@ -7769,9 +7773,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            BoundExpression result = TryBindLateBoundCall(node, boundLeft, leftType, right, invoked, indexed, diagnostics);
-            if (result != null)
-                return result;
+            BoundExpression xresult = TryBindLateBoundCall(node, boundLeft, leftType, right, invoked, indexed, diagnostics);
+            if (xresult != null)
+                return xresult;
 
 #endif
             // No member accesses on void
@@ -9884,7 +9888,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //X# allows default values for properties, including callermembername
             if (result is BoundIndexerAccess indexer)
             {
-                result = BindIndexerDefaultArguments(indexer, BindValueKind.RValue, diagnostics);
+                result = BindIndexerDefaultArgumentsAndParamsCollection(indexer, BindValueKind.RValue, diagnostics);
             }
 #endif
             properties.Free();
@@ -9959,7 +9963,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ref useSiteInfo);
             diagnostics.Add(syntax, useSiteInfo);
 #if XSHARP
-            if (overloadResolutionResult.Succeeded && overloadResolutionResult.ValidResult.Result.HasAnyRefOmittedArgument && !receiverOpt.IsExpressionOfComImportType())
+            if (overloadResolutionResult.Succeeded && overloadResolutionResult.ValidResult.Result.HasAnyRefOmittedArgument && !receiver.IsExpressionOfComImportType())
             {
                 CheckValidRefOmittedArguments(overloadResolutionResult, analyzedArguments, diagnostics);
             }
@@ -10670,7 +10674,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                 if (result.Succeeded && result.ValidResult.Result.HasAnyRefOmittedArgument && !methodGroup.Receiver.IsExpressionOfComImportType())
                 {
-                    DiagnosticBag diagnostics = DiagnosticBag.GetInstance();
+                    BindingDiagnosticBag diagnostics = BindingDiagnosticBag.GetInstance();
                     CheckValidRefOmittedArguments(result, analyzedArguments, diagnostics);
                     sealedDiagnostics = diagnostics.ToReadOnlyAndFree();
                 }

@@ -27,6 +27,18 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
         }
 
+        private sealed class SpecialUncommonData : UncommonData
+        {
+#if XSHARP
+            internal bool IsSpecial
+            {
+                get
+                {
+                    return true;
+                }
+            }
+#endif
+        }
         private sealed class MethodUncommonData : UncommonData
         {
             public static readonly MethodUncommonData NoApplicableOperators = new MethodUncommonData(
@@ -36,9 +48,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 conversionMethod: null);
 
             public MethodUncommonData(
-#if XSHARP
-                bool isSpecial,
-#endif
                 bool isExtensionMethod,
                 bool isArrayIndex,
                 UserDefinedConversionResult conversionResult,
@@ -52,13 +61,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     _flags |= IsArrayIndexMask;
                 }
-#if XSHARP
-                if (isSpecial)
-                {
-                    _flags |= IsSpecialMask;
-                }
-
-#endif
             }
 
             internal readonly MethodSymbol? _conversionMethod;
@@ -68,9 +70,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             private const byte IsExtensionMethodMask = 1 << 0;
             private const byte IsArrayIndexMask = 1 << 1;
-#if XSHARP
-            private const byte IsSpecialMask = 1 << 2;
-#endif
             private readonly byte _flags;
 
             internal bool IsExtensionMethod
@@ -89,24 +88,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return (_flags & IsArrayIndexMask) != 0;
                 }
             }
-#if XSHARP
-            internal bool IsSpecial
-            {
-                get
-                {
-                    return (_flags & IsSpecialMask) != 0;
-                }
-            }
-#endif
         }
 
         private class NestedUncommonData : UncommonData
         {
             public NestedUncommonData(ImmutableArray<Conversion> nestedConversions)
-#if XSHARP
-                : base(isSpecial: false, isExtensionMethod: false, isArrayIndex: false, conversionResult: default, conversionMethod: null, nestedConversions)
-#else
-#endif
             {
                 _nestedConversionsOpt = nestedConversions;
             }
@@ -179,9 +165,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             _uncommonData = conversionResult.Kind == UserDefinedConversionResultKind.NoApplicableOperators && conversionResult.Results.IsEmpty
                 ? MethodUncommonData.NoApplicableOperators
                 : new MethodUncommonData(
-#if XSHARP
-                isSpecial: false,
-#endif
                     isExtensionMethod: false,
                     isArrayIndex: false,
                     conversionResult: conversionResult,
@@ -193,9 +176,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             this._kind = kind;
             _uncommonData = new MethodUncommonData(
-#if XSHARP
-                isSpecial: false,
-#endif
                 isExtensionMethod: isExtensionMethod,
                 isArrayIndex: false,
                 conversionResult: default,
@@ -206,9 +186,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             this._kind = kind;
             _uncommonData = new NestedUncommonData(
-#if XSHARP
-                isSpecial: false,
-#endif
                 nestedConversions: nestedConversions);
         }
 
@@ -240,9 +217,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             return new Conversion(
                 _kind,
                 new MethodUncommonData(
-#if XSHARP
-                    isSpecial: false,
-#endif
                     isExtensionMethod: false,
                     isArrayIndex: true,
                     conversionResult: default,
@@ -257,13 +231,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             return new Conversion(
                 _kind,
-                new UncommonData(
-                    isExtensionMethod: false,
-                    isArrayIndex: false,
-                    isSpecial: true,
-                    conversionResult: default,
-                    conversionMethod: null,
-                    nestedConversions: default));
+                new SpecialUncommonData());
         }
 #endif
         [Conditional("DEBUG")]
@@ -453,7 +421,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             get
             {
-                return _uncommonData?.IsSpecial == true;
+                return _uncommonData is SpecialUncommonData { IsSpecial: true };
             }
         }
 #endif

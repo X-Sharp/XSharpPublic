@@ -257,9 +257,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case Accessibility.Private:
 #if XSHARP
                         // Allow private structs and classes and treat them as internal
-                        if (symbol.ContainingType is null)
+                        if (ContainingType is null)
                         {
-                            if (symbol.ContainingAssembly.IsInteractive)
+                            if (ContainingAssembly.IsInteractive)
                             {
                                 // top-level or nested internal member:
                                 return Cci.TypeMemberVisibility.Public;

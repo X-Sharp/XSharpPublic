@@ -228,7 +228,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if ((options & LookupOptions.MustBeInvocableIfMember) == 0 || parameterSymbol.Type.TypeKind == TypeKind.Delegate)
                 {
-                    result.MergeEqual(originalBinder.CheckViability(parameterSymbol, arity, options, null, diagnose, ref useSiteDiagnostics));
+                    result.MergeEqual(originalBinder.CheckViability(parameterSymbol, arity, options, null, diagnose, ref useSiteInfo));
                 }
             }
 #else

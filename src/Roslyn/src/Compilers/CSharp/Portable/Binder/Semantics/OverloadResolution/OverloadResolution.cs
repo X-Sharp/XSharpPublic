@@ -819,7 +819,7 @@ outerDefault:
             var normalResult = IsConstructorApplicableInNormalForm(constructor, arguments, completeResults, ref useSiteInfo);
             var result = normalResult;
 #if XSHARP
-            normalResult = XsAddConstructorToCandidateSet(result, constructor, arguments, completeResults, ref useSiteDiagnostics);
+            normalResult = XsAddConstructorToCandidateSet(result, constructor, arguments, completeResults, ref useSiteInfo);
 #endif
             if (!normalResult.IsValid)
             {
@@ -1071,7 +1071,7 @@ outerDefault:
 
 #if XSHARP
             // Check for Clipper calling convention and other things
-            normalResult = XsCheckMemberResolution(allowUnexpandedForm, normalResult, leastOverriddenMember, member, arguments);
+            normalResult = XsCheckMemberResolution((options & Options.IgnoreNormalFormIfHasValidParamsParameter) != 0, normalResult, leastOverriddenMember, member, arguments);
 #endif
             var result = normalResult;
             if (!normalResult.Result.IsValid)
@@ -1962,7 +1962,7 @@ outerDefault:
 
             BetterResult result = BetterResult.Neither;
 #if XSHARP
-            result = XsBetterFunctionMember(m1, m2, arguments, out useSiteDiagnostics);
+            result = XsBetterFunctionMember(m1, m2, arguments, ref useSiteInfo);
             if (result != BetterResult.Neither)
             {
                 return result;
@@ -2344,10 +2344,10 @@ outerDefault:
             }
 
 #if XSHARP
-            result = PreferValOverInParameters(arguments, m1, m1LeastOverriddenParameters, m2, m2LeastOverriddenParameters);
+            result = PreferValOverInOrRefInterpolatedHandlerParameters(arguments, m1, m1LeastOverriddenParameters, m2, m2LeastOverriddenParameters);
             if (result == BetterResult.Neither)
             {
-                result = XsPreferMostDerived(arguments, m1, m2, ref useSiteDiagnostics);
+                result = XsPreferMostDerived(arguments, m1, m2, ref useSiteInfo);
             }
             return result;
 #else
@@ -3159,7 +3159,7 @@ outerDefault:
                 return BetterResult.Neither;
             }
 #if XSHARP
-            if (Conversions.Compilation.Options.HasRuntime)
+            if (Compilation.Options.HasRuntime)
             {
                 // Prefer Object over Usual
                 if (type1.IsUsualType() && type2.IsObjectType())
@@ -3639,7 +3639,7 @@ outerDefault:
             }
 
 #if XSHARP
-            if (allowRefOmittedArguments && paramRefKind == RefKind.Out && 
+            if ((options & Options.AllowRefOmittedArguments) != 0 && paramRefKind == RefKind.Out && 
                 (argRefKind == RefKind.None || argRefKind == RefKind.Ref || argRefKind == RefKind.In) && !binder.InAttributeArgument)
             {
                 hasAnyRefOmittedArgument = argRefKind == RefKind.None;
@@ -4166,7 +4166,7 @@ outerDefault:
                     else
                     {
                         conversion = XsIsApplicable(candidate, arguments, ref argument, argsToParameters,
-                            argumentPosition, parameters, completeResults, ref argumentRefKind, ref useSiteDiagnostics);
+                            argumentPosition, parameters, completeResults, ref argumentRefKind, ref useSiteInfo);
                     }
                     if (conversion.Kind == ConversionKind.NoConversion)
                     {

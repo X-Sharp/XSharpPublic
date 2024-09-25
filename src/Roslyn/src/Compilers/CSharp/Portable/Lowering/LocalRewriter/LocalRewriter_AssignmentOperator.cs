@@ -353,8 +353,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     initialBindingReceiverIsSubjectToCloning: ThreeState.Unknown,
                     setMethod,
 #if XSHARP
-                    setMethod.IsAccessor() ? AppendToPossibleNull(rewrittenArguments, rhsAssignment) :
-                        rewrittenArguments.NullToEmpty().Insert(0, rhsAssignment));
+                    setMethod.IsAccessor() ? AppendToPossibleNull(arguments, rhsAssignment) :
+                        arguments.NullToEmpty().Insert(0, rhsAssignment));
 #else
                     AppendToPossibleNull(arguments, rhsAssignment));
 #endif
@@ -374,8 +374,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     initialBindingReceiverIsSubjectToCloning: ThreeState.Unknown,
                     setMethod,
 #if XSHARP
-                    setMethod.IsAccessor() ? AppendToPossibleNull(rewrittenArguments, rewrittenRight) :
-                        rewrittenArguments.NullToEmpty().Insert(0, rewrittenRight));
+                    setMethod.IsAccessor() ? AppendToPossibleNull(arguments, rewrittenRight) :
+                        arguments.NullToEmpty().Insert(0, rewrittenRight));
 #else
                     AppendToPossibleNull(arguments, rewrittenRight));
 #endif

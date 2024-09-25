@@ -50,7 +50,7 @@ See License.txt in the project root for license information.
     <BinariesDir>$(ArtifactsDir)bin\</BinariesDir>
     <ZipsDir>$(ArtifactsDir)Zips\</ZipsDir>
     <VsExternalDir>$(ArtifactsDir)Shared\$(Configuration)</VsExternalDir>
-    <GeneratedCompilerPath>$(BinariesDir)csc\$(Configuration)\net472\</GeneratedCompilerPath>
+    <GeneratedCompilerPath>$(BinariesDir)csc\Release\net472\</GeneratedCompilerPath>
     <XscToolPath Condition="'$(XscToolPath)' == '' ">$(BinariesDir)xsc\$(Configuration)\net472</XscToolPath>
 
     <XSharpCompilerSrc>$(Solutiondir)Compiler\src\Compiler\</XSharpCompilerSrc>

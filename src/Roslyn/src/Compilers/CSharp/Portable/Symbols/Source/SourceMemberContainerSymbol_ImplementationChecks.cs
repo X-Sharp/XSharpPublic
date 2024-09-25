@@ -1202,7 +1202,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
                 // When we added a warning about CLIPPER methods that override a STRICT method we do not want additional
                 // warnings
-                if (diagnostics.Count > 0) 
+                if (diagnostics.DiagnosticBag.Count > 0) 
                     return;
 #endif
                 if (checkParameters && RequiresValidScopedOverrideForRefSafety(overriddenMethod))
@@ -1303,7 +1303,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             if (baseMethod.HasClipperCallingConvention() != overrideMethod.HasClipperCallingConvention())
             {
                 // An error message has been generated elsewhere. No need to continue
-                return;
+                return false;
             }
 #endif
             if (!PerformValidNullableOverrideCheck(compilation, baseMethod, overrideMethod))

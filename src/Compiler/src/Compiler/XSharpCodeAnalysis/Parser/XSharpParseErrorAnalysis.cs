@@ -175,10 +175,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _parseErrors.Add(new ParseErrorData(param.Stop, ErrorCode.ERR_TypeExpected));
 
                     }
-                    if (param.Attributes != null)
-                    {
-                        _parseErrors.Add(new ParseErrorData(param.Stop, ErrorCode.ERR_AttributesInLocalFuncDecl));
-                    }
+                    //if (param.Attributes != null)
+                    //{
+                    //    _parseErrors.Add(new ParseErrorData(param.Stop, ErrorCode.ERR_AttributesInLocalFuncDecl));
+                    //}
                 }
             }
         }

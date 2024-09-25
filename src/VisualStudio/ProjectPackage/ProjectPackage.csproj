@@ -787,7 +787,7 @@
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <!-- This import the files which makes up the project base classes -->
   <PropertyGroup>
@@ -805,6 +805,9 @@
     <PreBuildEvent>
     copy $(ProjectDir)source.extension.2019.vsixmanifest  $(ProjectDir)source.extension.vsixmanifest
 	</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>"c:\Program Files\7-Zip\7z.exe" d $(Targetdir)$(TargetName).vsix *.pdb &gt;nul</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

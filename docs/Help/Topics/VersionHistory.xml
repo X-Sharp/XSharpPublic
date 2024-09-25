@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-09-20T16:13:05.529+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-25T17:43:57.737+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -33,10 +33,8 @@
       <li styleclass="Normal">Fixed misleading line number reported in the compiler error about requiring the /memvar option (#1531)</li>
       <li styleclass="Normal">Fixed some issues with defining indexed properties (#1543)</li>
       <li styleclass="Normal">Fixed several issues with the /vo9 (handle missing RETURN statements and return values) compiler option (#1544)</li>
+      <li styleclass="Normal">Fixed problem with using attributes in CLASS Statement in the FoxPro dialect (#1566)</li>
       <li styleclass="Normal">We have fixed an issue in the build system that would sometimes lead to a recompilation, even when nothing was changed.</li>
-    </list>
-    <para styleclass="Heading3">New features</para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">The Build System now automatically adds a TargetFramework Attribute to assemblies compiled with X# (#1507)</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
@@ -54,22 +52,20 @@
       <li styleclass="Normal">Suppressed runtime error when using FieldPut() when workarea is at EOF, for compatibility with VO (#1542)</li>
       <li styleclass="Normal">Fixed a macro compiler problem with some language keywords (like REF, FIELD, DEFAULT) used as identifiers (#1557)</li>
       <li styleclass="Normal">Fixed problems reading variable length fields for DBF files stored with MultiByte encoding.</li>
-      <li styleclass="Normal">Fixed a problem where DBFs encoded with Simplified Chines were interpreted as Kantonese.</li>
+      <li styleclass="Normal">Fixed a problem where DBFs encoded with Simplified Chinese were interpreted as Kantonese.</li>
     </list>
-    <para styleclass="Heading3">New features</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Visual Studio integration</para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Fixed problem with saving/reading the OldStyleAssignment compiler option project setting (#1495)</li>
       <li styleclass="Normal">Improved the Clone Window selection dialog in the VOWED (#1508)</li>
-      <li styleclass="Normal">In recent versions of VS Format Document and Commenting was no longer working. This has been fixed.</li>
-      <li styleclass="Normal">Fixed an issue in VS2022 where several features in the editor were no longer working because of a change in VS (#1545)</li>
+      <li styleclass="Normal">Fixed editor indentation problem with SCAN...END SCAN (#1549)</li>
       <li styleclass="Normal">Fixed a problem with putting the .resx file for windows forms user controls in an incorrect location in the Solution Explorer (#1560)</li>
+      <li styleclass="Normal">Fixed problem with editor snippets no longer working in VS 2022 version 17.11 (#1564)</li>
+      <li styleclass="Normal">Fixed an issue in VS2022 where several features in the editor were no longer working because of a change in VS (#1545)</li>
       <li styleclass="Normal">Fixed a problem where the &apos;Old Style Assignment&apos; property on the Project Properties dialog was not correctly saved (#1495)</li>
       <li styleclass="Normal">Fix a problem with indenting lines with end keywords, such as NEXT and ENDDO, when these keywords were following by &apos;garbage&apos;.</li>
-   </list>
-    <para styleclass="Normal"></para>
+    </list>
     <para styleclass="Heading3">New features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Now the TargetFramework attribute is automatically added to the assembly when building any project type in VS (#1507)</li>
@@ -104,7 +100,6 @@
       <li styleclass="Normal">Added Open Bin Folder context menu option for the project node in the Project tool window</li>
       <li styleclass="Normal">Improved the About XIDE dialog</li>
     </list>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading3">Editor</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Improved Recognition of keywords in the code</li>
@@ -114,12 +109,13 @@
       <li styleclass="Normal">Fixed crash with VAR locals in the editor</li>
       <li styleclass="Normal">Fixed several issues with LOCAL IMPLIED</li>
       <li styleclass="Normal">Fixed problem with parsing modified classes in namespaces</li>
-      <li styleclass="Normal">Improved editor support for the FoxPro dialect</li>
+      <li styleclass="Normal">Improved editor support for the FoxPro, Harbour and XBase++ dialects</li>
       <li styleclass="Normal">Added editor support for a lot of FoxPro keywords</li>
       <li styleclass="Normal">Added editor support for FoxPro functions</li>
       <li styleclass="Normal">The editor now recognizes &amp;&amp; for line comments marker in FoxPro dialect</li>
       <li styleclass="Normal">Added intellisense support for Nullable types specified with the ? postfix, for example INT?</li>
       <li styleclass="Normal">Added intellisense support for the ?: operator</li>
+      <li styleclass="Normal">Added intellisense support for IF &lt;identifier&gt; IS &lt;type&gt; VAR &lt;local&gt;</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">Designers</para>
@@ -145,6 +141,7 @@
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Several updates on the Chinese documentation</li>
       <li styleclass="Normal">Added missing SCAN...ENDSCAN documentation (#1548)</li>
+      <li styleclass="Normal">Added missing available constants for DBOrderInfo() function topic (#1565)</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading1">Changes in 2.20.0.3</para>

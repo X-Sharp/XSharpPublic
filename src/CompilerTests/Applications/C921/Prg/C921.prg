@@ -10,7 +10,7 @@ MEMBER x AS INT
 MEMBER v IS _VOSTRUCT
 
 GLOBAL gis IS _VOSTRUCT
-
+GLOBAL gas AS _VOSTRUCT
 FUNCTION Start() AS VOID
 LOCAL vas AS _VOSTRUCT
 LOCAL vis IS _VOSTRUCT
@@ -36,6 +36,13 @@ gis:m := 2 // error XS0246: The type or namespace name 'gis' could not be found
 gis.n := 3
 ? gis.m * gis:n // error XS0246: The type or namespace name 'gis' could not be found
 xAssert(gis.m * gis:n == 6)
+
+gas := @gis
+gas:m := 2 // error XS0246: The type or namespace name 'gis' could not be found
+gas.n := 3
+? gas.m * gas:n // error XS0246: The type or namespace name 'gis' could not be found
+xAssert(gas.m * gas:n == 6)
+
 
 LOCAL IMPLIED o := TestClass{}
 o:cis:m := 123

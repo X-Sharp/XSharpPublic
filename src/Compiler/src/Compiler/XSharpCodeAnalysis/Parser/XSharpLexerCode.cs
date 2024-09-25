@@ -2306,9 +2306,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 };
                 var vfpKeyWordAbbrev = new XSharpKeywords
                 {
-#if ! VSPARSER
+#if !VSPARSER
                     {"SCAN", SCAN },
                     {"ENDSCAN", ENDSCAN },
+                    {"ENDDEFINE", ENDDEFINE },
                     {"ENDFOR", ENDFOR },
                     {"ENDFUNC", ENDFUNC },
                     {"ENDPROC", ENDPROC },

@@ -133784,7 +133784,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C920 - Problem with /vo9 in the VO dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C921 - Problems with accessing VOSTRUCT members with the dot operator *************
 Application = C921 - Problems with accessing VOSTRUCT members with the dot operator
 IDEVersion = 1.06

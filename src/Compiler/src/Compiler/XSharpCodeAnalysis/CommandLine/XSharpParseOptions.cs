@@ -51,7 +51,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     public enum XSharpTargetDLL : Byte
     {
         Other = 0,
-        Core, 
+        Core,
         Data,
         RDD,
         RT,
@@ -207,7 +207,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 FoxArraySupport = opt.Fox2;
                 ImplicitNamespace = opt.ImplicitNameSpace;
                 var paths = opt.IncludePaths;
-                paths ??= "";
+                if (paths == null)
+                    paths = "";
 #if !VSPARSER
                 IncludePaths = paths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
 #else

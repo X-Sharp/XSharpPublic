@@ -37,7 +37,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         #region constants
         public const int VO_AND = BIT_AND;
         public const int VO_NOT = BIT_NOT;
-        public const int VO_OR  = BIT_OR ;
+        public const int VO_OR = BIT_OR;
         public const int VO_XOR = BIT_XOR;
         #endregion                          
         #region Static Helper Methods
@@ -203,7 +203,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         bool _newLine = false;
 
         static readonly object kwlock = new();
-        static IDictionary<XSharpDialect, XSharpKeywords> _kwids = null ;       // for each dialect its own _kwids
+        static IDictionary<XSharpDialect, XSharpKeywords> _kwids = null;       // for each dialect its own _kwids
         static XSharpKeywords _symPPIds = null;
 
         #endregion
@@ -435,7 +435,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return;
         }
 
-
         void parseToEol()
         {
             var la1 = La(1);
@@ -448,7 +447,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         bool tryParseNewLine()
         {
-            if (ExpectAny('\n','\r'))
+            if (ExpectAny('\n', '\r'))
             {
                 if (Expect('\r', '\n'))
                 {
@@ -506,7 +505,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     parseOne();
                 }
             }
-             parseType(ML_COMMENT);
+            parseType(ML_COMMENT);
             if (!Eof())
             {
                 // Eat the */
@@ -560,8 +559,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return;
                     break;
             }
-
-
 
             var c = La(1);
             if (c > 0 && IsIdentifierStartCharacter((char)c))
@@ -1187,7 +1184,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case '*':
                         parseOne(MULT);
-                        if (AllowOldStyleComments && StartOfLine(LastToken) )
+                        if (AllowOldStyleComments && StartOfLine(LastToken))
                             parseSlComment();
                         else if (Expect('='))
                             parseOne(ASSIGN_MUL);
@@ -1655,7 +1652,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case PUBLIC:
                 case SEALED:
                 case STATIC:
-                case UNSAFE: 
+                case UNSAFE:
                 case VIRTUAL:
                 case VOLATILE:
 
@@ -1709,7 +1706,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case ENDCLASS:
                 case ENDSEQUENCE:
                 // FoxPro tokens at start of line only
-                case SCAN:
                 case ENDSCAN:
                 case ENDDEFINE:
                 case ENDFOR:
@@ -1768,6 +1764,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     break;
                 // Next tokens only at Start of Line or after END
                 case TRY:
+                case SCAN:
+                case WITH:
                     if (!StartOfLine(lastToken) && lastToken != END)
                     {
                         return ID;
@@ -1793,6 +1791,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case SCOPE:
                 case LOCK:
                     if (lastToken != BEGIN && lastToken != END)
+                    {
+                        return ID;
+                    }
+                    break;
+                case EACH:
+                    if (lastToken != FOR)
                     {
                         return ID;
                     }
@@ -1988,7 +1992,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         private XSharpKeywords _getIds(XSharpDialect dialect)
         {
-            var ids = new XSharpKeywords(); ;
+            var ids = new XSharpKeywords();
 
             XSharpKeywords voKeywords;
             if (IsMacroLexer)
@@ -2188,7 +2192,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     // VFP Keywords
                     {"SCAN", SCAN },
                     {"ENDSCAN", ENDSCAN },
-                    //{"ENDFOR", ENDFOR },
+                    {"ENDDEFINE", ENDDEFINE },
+                    //{"ENDFOR", ENDFOR },      // Also defined for XPP
                     {"ENDFUNC", ENDFUNC },
                     {"ENDPROC", ENDPROC },
                     {"ENDTRY", ENDTRY },
@@ -2308,6 +2313,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #if ! VSPARSER
                     {"SCAN", SCAN },
                     {"ENDSCAN", ENDSCAN },
+                    {"ENDDEFINE", ENDDEFINE },
                     {"ENDFOR", ENDFOR },
                     {"ENDFUNC", ENDFUNC },
                     {"ENDPROC", ENDPROC },
@@ -2580,7 +2586,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     if (_kwids == null)
                         _kwids = new Dictionary<XSharpDialect, XSharpKeywords>();
                     if (_kwids.ContainsKey(Dialect))
-                        ids = _kwids[Dialect] ;
+                        ids = _kwids[Dialect];
                 }
                 if (ids == null)
                 {
@@ -2655,7 +2661,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
-            return symIds ;
+            return symIds;
         }
 
         public XSharpKeywords SymPPIds
@@ -2674,7 +2680,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
-#endregion
+        #endregion
         public static XSharpLexer Create(string text, string fileName, CSharpParseOptions options = null)
         {
             var stream = new AntlrInputStream(text)

@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 namespace XSharp.LanguageService
 {
     [Guid(XSharpConstants.guidXSharpLanguageServicePkgString)]
-    public class XSharpLanguageService: Microsoft.VisualStudio.Package.LanguageService, IVsLanguageDebugInfo, IVsLanguageTextOps
+    public class XSharpLanguageService: Microsoft.VisualStudio.Package.LanguageService, IVsLanguageDebugInfo, IVsLanguageTextOps, IVsLanguageDebugInfo2
     {
         private readonly IVsEditorAdaptersFactoryService _editorAdaptersFactoryService;
         private LanguagePreferences m_preferences;
@@ -98,11 +98,11 @@ namespace XSharp.LanguageService
         public override IScanner GetScanner(IVsTextLines buffer) => null;
         public override AuthoringScope ParseSource(ParseRequest req) => null;
         public override string Name => XSharpConstants.LanguageName;
-        public override ViewFilter CreateViewFilter(CodeWindowManager mgr, IVsTextView newView)
-        {
-            // still needed for snippets. Once that is moved to MEF then this can disappear
-            return new XSharpViewFilter(mgr, newView);
-        }
+        //public override ViewFilter CreateViewFilter(CodeWindowManager mgr, IVsTextView newView)
+        //{
+        //    // still needed for snippets. Once that is moved to MEF then this can disappear
+        //    return new XSharpViewFilter(mgr, newView);
+        //}
 
         public int UpdateLanguageContext(uint dwHint, Microsoft.VisualStudio.TextManager.Interop.IVsTextLines pBuffer, Microsoft.VisualStudio.TextManager.Interop.TextSpan[] ptsSelection, object pUC)
         {
@@ -206,10 +206,7 @@ namespace XSharp.LanguageService
             var buffer = _editorAdaptersFactoryService.GetDataBuffer(pBuffer);
             if (buffer != null)
             {
-                if (buffer.Properties.TryGetProperty<XFile>(typeof(XSharpModel.XFile), out var file))
-                {
-                    return file;
-                }
+                return buffer.GetFile();
             }
             return null;
         }
@@ -448,6 +445,21 @@ namespace XSharp.LanguageService
         public int Format(IVsTextLayer pTextLayer, TextSpan[] ptsSel)
         {
             return VSConstants.E_NOTIMPL;
+        }
+
+        public int QueryCommonLanguageBlock(IVsTextBuffer pBuffer, int iLine, int iCol, uint dwFlag, out int pfInBlock)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int ValidateInstructionpointLocation(IVsTextBuffer pBuffer, int iLine, int iCol, TextSpan[] pCodeSpan)
+        {
+            return VSConstants.E_NOTIMPL;
+        }
+
+        public int QueryCatchLineSpan(IVsTextBuffer pBuffer, int iLine, int iCol, out int pfIsInCatch, TextSpan[] ptsCatchLine)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

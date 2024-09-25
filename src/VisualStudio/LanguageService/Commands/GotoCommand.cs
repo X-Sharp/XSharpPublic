@@ -58,6 +58,7 @@ namespace XSharp.LanguageService.Commands
                     bool reversed = false;
                     start = target = foundSpans[0].Start;
                     end = foundSpans[foundSpans.Count - 1].End;
+                    end -= 1;
                     if (foundSpans[0].Contains(currentChar))
                     {
                         target = end;
@@ -80,7 +81,9 @@ namespace XSharp.LanguageService.Commands
 
                                 }
                                 start = foundSpans[i].Start;
-                                target = end = foundSpans[i + 1].End;
+                                end = foundSpans[i].End;
+                                end -= 1;
+                                target = end;
                                 break;
                             }
                         }
@@ -93,7 +96,7 @@ namespace XSharp.LanguageService.Commands
             if (GetTaggerType(doc) != null)
             {
                 object property = null;
-                doc.TextView.Properties.TryGetProperty(TaggerType, out property);
+                doc.TextBuffer.Properties.TryGetProperty(TaggerType, out property);
                 if (property != null)
                 {
                     var span = new SnapshotSpan(doc.TextBuffer.CurrentSnapshot, currentChar.Position, 1);
@@ -149,15 +152,12 @@ namespace XSharp.LanguageService.Commands
         {
             if (_taggerType == null)
             {
-                foreach (var prop in doc.TextView.Properties.PropertyList)
+                foreach (var prop in doc.TextBuffer.Properties.PropertyList)
                 {
-                    if (prop.Key is Type type)
+                    if (prop.Key is Type type && type.Name.Contains("Brace"))
                     {
-                        if (type.Name == "BraceMatchingTagger")
-                        {
-                            _taggerType = type;
-                            break;
-                        }
+                        _taggerType = prop.Key as System.Type;
+                        break;
                     }
                 }
             }

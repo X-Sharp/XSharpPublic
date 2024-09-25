@@ -222,6 +222,11 @@ ENUM XSharpModel.XTokenType AS SHORT
     MEMBER @@Fox_m:= XSharpLexer.FOX_M
     MEMBER @@Last_keyword:= XSharpLexer.LAST_KEYWORD
     MEMBER @@First_null:= XSharpLexer.FIRST_NULL
+    MEMBER @@Scan := XSharpLexer.SCAN
+    MEMBER @@EndScan := XSharpLexer.ENDSCAN
+    MEMBER @@EndFor := XSharpLexer.ENDFOR
+    MEMBER @@EndTry := XSharpLexer.ENDTRY
+    MEMBER @@Each := XSharpLexer.EACH
     MEMBER @@Nil:= XSharpLexer.NIL
     MEMBER @@Null:= XSharpLexer.NULL
     MEMBER @@Null_array:= XSharpLexer.NULL_ARRAY

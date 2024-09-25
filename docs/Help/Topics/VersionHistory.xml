@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-09-24T13:06:41.854+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-25T16:04:29.208+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -33,6 +33,7 @@
       <li styleclass="Normal">Fixed misleading line number reported in the compiler error about requiring the /memvar option (#1531)</li>
       <li styleclass="Normal">Fixed some issues with defining indexed properties (#1543)</li>
       <li styleclass="Normal">Fixed several issues with the /vo9 (handle missing RETURN statements and return values) compiler option (#1544)</li>
+      <li styleclass="Normal">Fixed problem with using attributes in CLASS Statement in the FoxPro dialect (#1566)</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="Heading3">Bug fixes</para>
@@ -55,8 +56,10 @@
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Fixed problem with saving/reading the OldStyleAssignment compiler option project setting (#1495)</li>
       <li styleclass="Normal">Improved the Clone Window selection dialog in the VOWED (#1508)</li>
-      <li styleclass="Normal">In recent versions of VS Format Document and Commenting was no longer working. This has been fixed.</li>
-      <li styleclass="Normal">Fixed a problem with putting the .resx file for windows forms user controls in an incorrect location in the Solution Explorer (#1560)</li>
+      <li styleclass="Normal">In recent versions of VS Format Document and Commenting was no longer working. This has been fixed &#160;(#1545)</li>
+      <li styleclass="Normal">Fixed editor indentation problem with SCAN...END SCAN (#1549)</li>
+      <li styleclass="Normal">Fixed problem with putting the .resx file for windows forms user controls in an incorrect location in the Solution Explorer (#1560)</li>
+      <li styleclass="Normal">Fixed problem with editor snippets no longer working in VS 2022 version 17.11 (#1564)</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">New features</para>
@@ -128,6 +131,7 @@
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Several updates on the Chinese documentation</li>
       <li styleclass="Normal">Added missing SCAN...ENDSCAN documentation (#1548)</li>
+      <li styleclass="Normal">Added missing available constants for DBOrderInfo() function topic (#1565)</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading1">Changes in 2.20.0.3</para>

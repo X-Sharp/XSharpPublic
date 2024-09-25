@@ -2183,11 +2183,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #if VSPARSER
                     // XPP Keywords
                     {"ENDFOR", ENDFOR },
-                    {"ENDSEQUENCE",ENDSEQUENCE},
+                    {"ENDSEQUENCE", ENDSEQUENCE},
 
                     // VFP Keywords
                     {"SCAN", SCAN },
                     {"ENDSCAN", ENDSCAN },
+                    {"ENDDEFINE", ENDDEFINE },
                     //{"ENDFOR", ENDFOR },
                     {"ENDFUNC", ENDFUNC },
                     {"ENDPROC", ENDPROC },

@@ -7726,9 +7726,6 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
    <data name="ERR_AutoPropertyParameters" xml:space="preserve">
   <value>Indexed properties cannot be an AUTO property.</value>
  </data>
- <data name="ERR_IndexPropertyLineAccessors" xml:space="preserve">
-  <value>Indexed properties cannot be declared with single line GET/SET Accessors.</value>
- </data>
 
 </root>
 

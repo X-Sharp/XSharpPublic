@@ -2531,7 +2531,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 if (expr == null && _options.HasOption(CompilerOption.AllowMissingReturns, context, PragmaOptions) && !ent.Data.MustBeVoid)
                 {
-                    if (_options.Dialect != XSharpDialect.FoxPro)
+                    if (ent is XP.PropertyAccessorContext pac && pac.Key.Type == XSharpLexer.GET)
+                    {
+                        errcode = ErrorCode.WRN_MissingReturnValue;
+                    }
+                    else if (_options.Dialect != XSharpDialect.FoxPro)
                     {
                         errcode = ErrorCode.WRN_MissingReturnValue;
                     }

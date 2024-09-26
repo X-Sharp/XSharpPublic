@@ -1277,36 +1277,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindQualifiedName(QualifiedNameSyntax node, DiagnosticBag diagnostics)
         {
 #if XSHARP
-            var bag = DiagnosticBag.GetInstance();
-            var left = Compilation.Options.HasOption(CompilerOption.AllowDotForInstanceMembers, node.Left)
-                        ? BindLeftOfPotentialColorColorMemberAccess(node.Left, bag)
-                        : BindNamespaceOrType(node.Left, bag);
-            if (left != null && !left.HasErrors && !(left.ExpressionSymbol is NamespaceOrTypeSymbol) &&
-                left.Type?.IsVoStructOrUnion() != true)
-            {
-                if ((left.Type as PointerTypeSymbol)?.PointedAtType.IsVoStructOrUnion() == true)
-                {
-                    // Then try pointerMemberAccess resolution...
-                    TypeSymbol pointedAtType;
-                    bool hasErrors;
-                    BindPointerIndirectionExpressionInternal(node, left, bag, out pointedAtType, out hasErrors);
-                    if (!ReferenceEquals(pointedAtType, null)) // do not raise an error if it was not a pointer type
-                    {
-                        left = new BoundPointerIndirectionOperator(node.Left, left, pointedAtType, hasErrors)
-                        {
-                            WasCompilerGenerated = true, // don't interfere with the type info for exprSyntax.
-                        };
-                    }
-                }
-                else
-                {
-                    if (bag.HasAnyErrors())
-                        bag.Clear();
-                    left = this.BindNamespaceOrType(node.Left, bag);
-                }
-            }
-            diagnostics.AddRangeAndFree(bag);
-            return BindMemberAccessWithBoundLeft(node, left, node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
+            return BindXsQualifiedName(node, diagnostics);
 #else
             return BindMemberAccessWithBoundLeft(node, this.BindLeftOfPotentialColorColorMemberAccess(node.Left, diagnostics), node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
 #endif

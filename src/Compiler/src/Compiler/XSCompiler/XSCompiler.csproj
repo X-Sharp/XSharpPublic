@@ -10,6 +10,7 @@
     <LargeAddressAware>true</LargeAddressAware>
     <AssemblyName>XSCompiler</AssemblyName>
     <TargetFrameworks>net472</TargetFrameworks>
+    <NoWarn>8032,1573</NoWarn>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <UseAppHost>false</UseAppHost>

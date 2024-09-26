@@ -5,10 +5,11 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.CodeAnalysis.CSharp</RootNamespace>
-    <AssemblyName>CSharp.CodeAnalysis</AssemblyName>
+    <AssemblyName>XSharp.CodeAnalysis</AssemblyName>
+    <RootNamespace>LanguageService.CodeAnalysis.XSharp</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <NoWarn>1591,1573,1701,3021,RS0016</NoWarn> 
+    <NoWarn>1591,1573,1701,3021,RS0016,8032</NoWarn> 
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <NoStdLib>true</NoStdLib>
     <DefineConstants>$(DefineConstants);COMPILERCORE;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE;NETSTANDARD20;NETSTANDARD;COMMITHASH;XSHARP</DefineConstants>
@@ -74,9 +75,6 @@
 		<Link>Core\%(RecursiveDir)\%(Filename)%(Extension)</Link>
       </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="$(CoreSource)Resources\default.win32manifest" />
-  </ItemGroup>
   
   
   <!-- Projects from the Core codeanalysis.dll -->
@@ -104,6 +102,12 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="XSharpResources.resx" GenerateSource="true" />
+    <EmbeddedResource Include="$(CoreSource)Resources\default.win32manifest" />
+    <EmbeddedResource Include="$(CommonDir)StandardHeaders.resx" Link="Preprocessor\StandardHeaders.resx" />
+  </ItemGroup>
+
 
   <ItemGroup>
   	<Compile Include="$(CSharpSource)**\*.cs">
@@ -133,12 +137,10 @@
     <Content Include="Symbols\CodeBlock.txt" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(CommonDir)StandardHeaders.resx" Link="Preprocessor\StandardHeaders.resx" />
-  </ItemGroup>
-  <ItemGroup>
     <AdditionalFiles Remove="BannedSymbols.txt" />
     <Compile Remove="VsParser\**" />
     <EmbeddedResource Remove="VsParser\**" />
+    <EmbeddedResource Remove="CodeAnalysisResources.resx" />
   </ItemGroup>
   <!-- End of XSharp includes-->
 
@@ -148,15 +150,5 @@
 
 
   <ItemGroup>
-    <EmbeddedResource Update="XSharpResources.resx" GenerateSource="true">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <CustomToolNamespace>LanguageService.CodeAnalysis.XSharp</CustomToolNamespace>
-      <LastGenOutput>XSharpResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <Compile Update="XSharpResources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>XSharpResources.resx</DependentUpon>
-    </Compile>
   </ItemGroup>
 </Project>

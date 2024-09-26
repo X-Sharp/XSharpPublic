@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-24T12:42:32.730+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-24T11:18:51.899+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>方言</title>
   <body>
     <header>
@@ -150,7 +150,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">ARRAY</text> 类型，包括 Array 子面量和 NULL_ARRAY，包括缺失元素(的 Array)</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">ARRAY</text> 类型，包括 Array 字面量和 NULL_ARRAY，包括缺失元素(的 Array)</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>

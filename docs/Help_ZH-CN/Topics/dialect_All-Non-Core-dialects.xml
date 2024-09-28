@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-24T12:50:03.448+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-29T00:04:04.461+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>所有非 Core 方言</title>
   <body>
     <header>
@@ -83,7 +83,7 @@
     <para styleclass="Normal"><tab />&lt;AssemblyName&gt;.Exe.$&lt;ModuleName&gt;$.Functions<tab />用于静态函数和全局</para>
     <para styleclass="Normal"></para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">编译器会添加几个属性(在 XSharp.Core 中定义)，用于描述默认命名空间和编译器版本。</li>
+      <li styleclass="Normal">编译器会添加几个特性(attribute)(在 XSharp.Core 中定义)，用于描述默认命名空间和编译器版本。</li>
     </list>
     <para styleclass="Normal"></para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

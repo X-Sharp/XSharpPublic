@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-09-24T11:18:51.899+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-28T23:57:57.161+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>方言</title>
   <body>
     <header>
@@ -521,7 +521,7 @@
           <para styleclass="Normal"><text style="font-weight:bold;">MACRO </text>编译器</para>
         </td>
         <td style="width:71px;">
-          <para styleclass="Normal">- <text style="font-weight:bold;">13</text></para>
+          <para styleclass="Normal">- <text style="font-size:7pt; font-weight:bold; vertical-align:super;">13</text></para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -613,10 +613,10 @@
           <para styleclass="Normal"><text style="font-weight:bold;">NULL_STRING</text></para>
         </td>
         <td style="width:71px;">
-          <para styleclass="Normal">Yes 9</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">9</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 9</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">9</text></para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -679,7 +679,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">USUAL</text> 类型，包括 NIL 字面量 (1,2)</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">USUAL</text> 类型，包括 NIL 字面量 <text style="font-size:7pt; vertical-align:super;">(1,2)</text></para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -697,7 +697,7 @@
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 15</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">15</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -745,7 +745,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">VOSTRUCT </text><text style="font-weight:normal;">和 </text><text style="font-weight:bold;">AS / IS </text><text style="font-weight:normal;">语法 (10)</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">VOSTRUCT </text><text style="font-weight:normal;">和 </text><text style="font-weight:bold;">AS / IS </text><text style="font-weight:normal;">语法 </text><text style="font-size:7pt; font-weight:normal; vertical-align:super;">(10)</text></para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -768,7 +768,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">UNION </text><text style="font-weight:normal;">和 </text><text style="font-weight:bold;">AS / IS 语法</text><text style="font-weight:normal;"> (10)</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">UNION </text><text style="font-weight:normal;">和 </text><text style="font-weight:bold;">AS / IS 语法</text><text style="font-size:7pt; font-weight:normal; vertical-align:super;"> (10)</text></para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -797,10 +797,10 @@
           <para styleclass="Normal">-</para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 8</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">8</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 8</para>
+          <para styleclass="Normal">Yes<text style="font-size:7pt; vertical-align:super;"> 8</text></para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -820,10 +820,10 @@
           <para styleclass="Normal">-</para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 3</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">3</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 3</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">3</text></para>
         </td>
         <td>
           <para styleclass="Normal">Yes</para>
@@ -837,7 +837,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal">函数/方法调用中允许缺少参数 MyFunc(1,,2)</para>
+          <para styleclass="Normal">函数/方法调用中允许缺少参数 MyFunc<text style="font-size:7pt; vertical-align:super;">(1,,2)</text></para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -886,19 +886,19 @@
           <para styleclass="Normal">-</para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 4</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">4</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 4</para>
+          <para styleclass="Normal">Yes<text style="font-size:7pt; vertical-align:super;"> 4</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 4</para>
+          <para styleclass="Normal">Yes<text style="font-size:7pt; vertical-align:super;"> 4</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 4</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">4</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 4</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">4</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -909,19 +909,19 @@
           <para styleclass="Normal">-</para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 5</para>
+          <para styleclass="Normal">Yes<text style="font-size:7pt; vertical-align:super;"> 5</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 5</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">5</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 5</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">5</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 5</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">5</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 5</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">5</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -955,19 +955,19 @@
           <para styleclass="Normal">-</para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 6</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">6</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 6</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">6</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 6</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">6</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 6</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">6</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Yes 6</para>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; vertical-align:super;">6</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1090,7 +1090,7 @@
     </list>
     <para styleclass="Normal"></para>
     <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">VOSTRUCT 和 UNION 可以用标准的 .NET 结构代替。对于 Union，您需要在结构体上使用 [StructLayout(LayoutKind.Explicit)] 属性，并在每个字段上使用 [FieldOffSet()] 属性来明确定义字段的位置。</li>
+      <li styleclass="Normal">VOSTRUCT 和 UNION 可以用标准的 .NET 结构代替。对于 Union，您需要在结构体上使用 [StructLayout(LayoutKind.Explicit)] 特性(attribute)，并在每个字段上使用 [FieldOffSet()] 特性(attribute)来明确定义字段的位置。</li>
     </list>
     <para styleclass="Normal"></para>
     <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">

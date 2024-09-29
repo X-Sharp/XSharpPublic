@@ -514,6 +514,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 s = s.Replace("(Resources.", "(LanguageService.CodeAnalysis.XSharp.XSharpResources.");
                 s = s.Replace("Antlr4.Runtime", "LanguageService.SyntaxTree");
                 s = s.Replace("XSHARP_RUNTIME", "true");
+                s = s.Replace("Microsoft.VisualStudio.ProjectSystem", "XSharp.VisualStudio.ProjectSystem");
                 text = SourceText.From(s, text.Encoding);
             }
 #endif

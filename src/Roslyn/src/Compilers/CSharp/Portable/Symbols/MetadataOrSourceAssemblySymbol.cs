@@ -238,7 +238,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             // We have an easy out here. Suppose the assembly wanting access is 
             // being compiled as a module. You can only strong-name an assembly. So we are going to optimistically 
             // assume that it is going to be compiled into an assembly with a matching strong name, if necessary.
+#if XSHARPPRE
+            // We are not checking for matching keys here.
+            if (publicKeys.Any()) // && this.IsNetModule())
+#else
             if (publicKeys.Any() && this.IsNetModule())
+#endif
             {
                 return IVTConclusion.Match;
             }

@@ -8,7 +8,9 @@
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using System;
+using System.Windows.Shapes;
 using XSharp.Settings;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 namespace XSharp.LanguageService
 {
     partial class XSharpFormattingCommandHandler
@@ -28,6 +30,41 @@ namespace XSharp.LanguageService
                 }
             }
             return true;
+        }
+        internal void FormatLines(int iStart, int iEnd)
+        {
+            using (var editSession = _buffer.CreateEdit())
+            {
+                try
+                {
+                    switch ((EnvDTE.vsIndentStyle)Settings.IndentStyle)
+                    {
+                        case EnvDTE.vsIndentStyle.vsIndentStyleSmart:
+                            if (iEnd < _buffer.CurrentSnapshot.LineCount)
+                                iEnd += 1;
+                            for (int i = iStart; i <= iEnd; i++)
+                            {
+                                var line = _buffer.CurrentSnapshot.GetLineFromLineNumber(i);
+                                _lineFormatter.FormatLine(editSession, line);
+                            }
+                            break;
+                        case EnvDTE.vsIndentStyle.vsIndentStyleDefault:
+                        case EnvDTE.vsIndentStyle.vsIndentStyleNone:
+                            break;
+                    }
+                }
+                finally
+                {
+                    if (editSession.HasEffectiveChanges)
+                    {
+                        editSession.Apply();
+                    }
+                    else
+                    {
+                        editSession.Cancel();
+                    }
+                }
+            }
         }
         internal void FormatLine()
         {
@@ -119,7 +156,7 @@ namespace XSharp.LanguageService
             WriteOutputMessage("FormatDocument() <<--");
         }
 
-        private void FormatSpan(int startLine, int endLine, int startIndent)
+        internal void FormatSpan(int startLine, int endLine, int startIndent)
         {
             var lines = _buffer.CurrentSnapshot.Lines;
             ITextEdit editSession = null;

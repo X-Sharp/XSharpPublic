@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using MSXML;
 using System;
 using System.Windows.Diagnostics;
+using System.Windows.Documents;
 using XSharp.LanguageService.Commands;
 using XSharp.Settings;
 using Task = System.Threading.Tasks.Task;
@@ -25,44 +26,16 @@ namespace XSharp.LanguageService
             // We need to manually intercept the commenting command, because language services swallow these commands.
             await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.INSERTSNIPPET, () => Execute(InsertSnippet));
             await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.SURROUNDWITH, () => Execute(SurroundWith));
-            await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.TAB, () => Execute(Tab));
-            await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.BACKTAB, () => Execute(BackTab));
+            //await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.TAB, () => DoSomething());
+            //await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.BACKTAB, () => DoSomething());
         }
         private static void InsertSnippet(DocumentView doc)
         {
-            doc.TextBuffer.Properties.TryGetProperty<XSharpCompletionProvider>(typeof(XSharpCompletionProvider), out var textView);
             var res = InvokeDialog(doc, type1, "Insert Snippet");
         }
         private static void SurroundWith(DocumentView doc)
         {
             var res = InvokeDialog(doc, type2, "Surround with");
-        }
-
-        private static CommandProgression BackTab(DocumentView doc)
-        {
-            var xDocument = doc.TextBuffer.GetDocument();
-            if (xDocument != null && xDocument.ExpansionSession != null)
-            {
-                xDocument.ExpansionSession.GoToPreviousExpansionField();
-                return CommandProgression.Stop;
-            }
-            return CommandProgression.Continue;
-        }
-        private static CommandProgression Tab(DocumentView doc)
-        {
-            var xDocument = doc.TextBuffer.GetDocument();
-            if (xDocument != null && xDocument.ExpansionSession != null)
-            {
-                var res = xDocument.ExpansionSession.GoToNextExpansionField(1);
-                if (res != VSConstants.S_OK)
-                {
-                    xDocument.ExpansionSession.EndCurrentExpansion(fLeaveCaret: 1);
-                    xDocument.ExpansionSession = null;
-                }
-                return CommandProgression.Stop;
-            }
-            return CommandProgression.Continue;
-
         }
 
         private static int InvokeDialog(DocumentView doc, string[] type, string caption)

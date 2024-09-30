@@ -93,8 +93,28 @@ namespace XSharp.LanguageService
                     case (int)VSConstants.VSStd2KCmdID.RETURN:
                         handled = CompleteCompletionSession('\0');
                         break;
+                    case (int)VSConstants.VSStd2KCmdID.BACKTAB:
+                        if (_doc.ExpansionSession != null)
+                        {
+                            var res = _doc.ExpansionSession.GoToPreviousExpansionField();
+                            handled = true;
+                        }
+                        break;
                     case (int)VSConstants.VSStd2KCmdID.TAB:
+                        if (_doc.ExpansionSession != null)
+                        {
+                            var res = _doc.ExpansionSession.GoToNextExpansionField(1);
+                            if (res != VSConstants.S_OK)
+                            {
+                                _doc.ExpansionSession.EndCurrentExpansion(fLeaveCaret: 1);
+                                _doc.ExpansionSession = null;
+                            }
+                            handled = true;
+                        }
+                        else if (_doc.CompletionSession != null)
+                        {
                         handled = CompleteCompletionSession('\t');
+                        }
                         break;
                     case (int)VSConstants.VSStd2KCmdID.CANCEL:
                         handled = CancelCompletionSession();

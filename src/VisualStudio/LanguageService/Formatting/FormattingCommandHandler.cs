@@ -58,6 +58,7 @@ namespace XSharp.LanguageService
             textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
             registerClassifier();
             _lineFormatter = new LineFormatter(_buffer);
+            _document.FormattingCommandHandler = this;  
 
         }
 

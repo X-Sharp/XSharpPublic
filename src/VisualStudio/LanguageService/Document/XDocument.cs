@@ -61,6 +61,7 @@ namespace XSharp.LanguageService
         internal ITextBuffer Buffer => _buffer;
         internal IVsExpansionSession ExpansionSession { get; set; }
         internal ICompletionSession CompletionSession { get; set; }
+        internal XSharpFormattingCommandHandler FormattingCommandHandler {get; set;}
 
         #endregion
 

@@ -846,7 +846,7 @@ localfuncproc       :  (Modifiers=localfuncprocModifiers)?
                         LOCAL T=funcproctype Sig=signature
                         end=eos
                         StmtBlk=statementBlock
-                        END T2=funcproctype  EOS
+                        (T1=(ENDFUNC|ENDPROC) | (END T2=funcproctype)) EOS
                      ;
 
 localfuncprocModifiers : ( Tokens+=(UNSAFE | ASYNC) )+
@@ -1496,7 +1496,7 @@ foxmethod           : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       (ThisAccess=THISACCESS LPAREN MemberId=identifier RPAREN)?
                       end=eos
                       StmtBlk=statementBlock
-                      (END T2=funcproctype  EOS)?
+                      ( (T1=(ENDFUNC|ENDPROC) | (END T2=funcproctype)) EOS)?
                     ;
 
 foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)?

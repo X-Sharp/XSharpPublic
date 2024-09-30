@@ -215,6 +215,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             Debug.Assert(visited == null
                          || visited.HasErrors
+                         || node.Type.SpecialType == SpecialType.System_Void        // NeedsAccessToLocals for VOID function
                          || ReferenceEquals(visited.Type, node.Type)
                          || visited.Type is { } && visited.Type.Equals(node.Type, TypeCompareKind.IgnoreDynamicAndTupleNames)
                          || IsUnusedDeconstruction(node)

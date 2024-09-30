@@ -128,17 +128,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 // we need an array of the local symbols for the sequence
                 var locals = ImmutableArray.CreateBuilder<LocalSymbol>();
-                var tempSym = _factory.SynthesizedLocal(expression.Type ?? _compilation.GetSpecialType(SpecialType.System_Object));
+                var type = expression.Type ?? _compilation.GetSpecialType(SpecialType.System_Object);
+                var isVoid = type.SpecialType == SpecialType.System_Void;
+                var tempSym = _factory.SynthesizedLocal(type);
                 locals.Add(tempSym);
                 var tempLocal = _factory.Local(tempSym);
-
-                // var temp := <original expression>
-                var callorig = _factory.AssignmentExpression(tempLocal, expression);
-                exprs.Add(callorig);
-
+                if (!isVoid)
+                {
+                    var callorig = _factory.AssignmentExpression(tempLocal, expression);
+                    exprs.Add(callorig);
+                }
+                else
+                {
+                    exprs.Add(expression);
+                }
                 if (writeAccess)
                 {
-
                     // create condition  __LocalsUpdated()
                     var cond = _factory.StaticCall(rtType, ReservedNames.LocalsUpdated);
                     var t = _factory.Literal(true);

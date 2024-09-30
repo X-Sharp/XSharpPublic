@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T02:06:30.381+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-24T11:29:23.717+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>安装</title>
   <keywords>
     <keyword>component</keyword>
@@ -46,7 +46,7 @@
         </td>
         <td style="width:666px;">
           <para styleclass="Normal">可在 Visual Studio 内部的&quot;添加引用&quot;对话框中选择的运行时程序集。</para>
-          <para styleclass="Normal">请注意，这是 Redist 文件夹中文件夹的子集。在部署应用程序时，请使用 Redist 文件夹中的文件。在未来版本中，该文件夹可能包含所谓的参考程序集(只有元数据而无代码的程序集)。</para>
+          <para styleclass="Normal">请注意，这是 Redist 文件夹中文件夹的子集。在部署应用程序时，请使用 Redist 文件夹中的文件。在未来版本中，该文件夹可能包含所谓的引用程序集(只有元数据而无代码的程序集)。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -266,11 +266,11 @@
         <td style="width:562px;">
           <para styleclass="Body Text"><text styleclass="Heading3">Visual Studio 2015</text><br/><text styleclass="Normal">假设您已将 VS 2015 安装在默认位置：c:\Program Files (x86)\Microsoft Visual Studio 14.0</text></para>
           <para styleclass="Normal">X# 將会在以下子文件夹中</para>
-          <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+          <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Normal">Common7\IDE\Extensions\XSharp</li>
           </list>
           <para styleclass="Normal">MSBuild 整合將在以下文件夾中</para>
-          <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+          <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Normal">c:\Program Files (x86)\MSBuild\XSharp</li>
           </list>
         </td>
@@ -286,10 +286,10 @@
           <para styleclass="Body Text"><text styleclass="Heading3">Visual Studio 2017 和/或 2019</text><br/><text styleclass="Normal">假设您已将 VS 2017 安装在默认位置：</text></para>
           <para styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio\<text style="font-weight:bold;">&lt;number&gt;</text>\<text style="font-weight:bold; font-style:italic;">&lt;Version&gt;</text></para>
           <para styleclass="Normal">那么 X# 将位于以下子文件夹中</para>
-          <list id="2" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+          <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Normal">Common7\IDE\Extensions\XSharp</li>
           </list>
-          <list id="3" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+          <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Normal">MSBuild\XSharp</li>
           </list>
         </td>
@@ -297,18 +297,18 @@
           <para styleclass="Normal">main\vs1 .. <br/>main\vs6</para>
         </td>
         <td style="width:666px;">
-          <list id="4" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+          <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Normal"><text style="font-weight:bold;">&lt;number&gt; </text>为 2017 或 2019。</li>
             <li styleclass="Normal"><text style="font-weight:bold;">&lt;Version&gt; </text>可以是专业版、社区版、企业版或 Buildtools 版之一。</li>
           </list>
-          <para styleclass="Normal">    您的计算机上可能有多个 VS2017/VS2019 版本。自 X# 2.4 起，安装程序将显示检测到的所有实例。.</para>
+          <para styleclass="Normal"> &#160; &#160;您的计算机上可能有多个 VS2017/VS2019 版本。自 X# 2.4 起，安装程序将显示检测到的所有实例。.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:562px;">
           <para styleclass="Body Text"><text styleclass="Heading3">Registry</text></para>
           <para styleclass="Normal">安装程序还会在注册表中写入一些更改：</para>
-          <list id="5" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+          <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Normal">HKLM\Software\XSharp</li>
             <li styleclass="Normal">HKLM\Software\Microsoft\.NETFramework\v4.0.30319\AssemblyFoldersEx\XSharp</li>
             <li styleclass="Normal">HKCR\.ppo</li>
@@ -344,6 +344,6 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">请参阅主题  <link displaytype="text" defaultstyle="true" type="topiclink" href="Building-XSharp-apps-with-Visu">使用 Visual Studio 和/或 MsBuild 生成 XSharp 应用程序</link>，了解各种注册表设置和文件夹如何与 MsBuild 和 Visual Studio 的生成过程相关联。</para>
+    <para styleclass="Normal">请参阅主题 &#160;<link displaytype="text" defaultstyle="true" type="topiclink" href="Building-XSharp-apps-with-Visu">使用 Visual Studio 和/或 MsBuild 生成 XSharp 应用程序</link>，了解各种注册表设置和文件夹如何与 MsBuild 和 Visual Studio 的生成过程相关联。</para>
   </body>
 </topic>

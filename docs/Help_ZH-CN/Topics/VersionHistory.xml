@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2024-09-30T16:00:42.814+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+
   <title>版本历史</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -27,11 +28,11 @@
       <li styleclass="Normal">修正了预处理器中扩展表达式匹配标记的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1487" target="_blank">#1487</link>)</li>
       <li styleclass="Normal">修正了在 XBase++ 方言中通过引用传递数组引用或 ivar 的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1492" target="_blank">#1492</link>)</li>
       <li styleclass="Normal">修正了针对包含在接口中的方法的 Evaluate() 函数中的 AmbiguousMatchException。 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1494" target="_blank">#1494</link>)</li>
-      <li styleclass="Normal">修正了 /fox1 开关在某些情况下被忽略的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1496" target="_blank">#1496</link>)</li>
-      <li styleclass="Normal">修正了 /enforceself 编译器选项被忽略的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1503" target="_blank">#1503</link>)</li>
+      <li styleclass="Normal">修正了 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox1">/fox1</link> 开关在某些情况下被忽略的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1496" target="_blank">#1496</link>)</li>
+      <li styleclass="Normal">修正了 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-enforceself">/enforceself</link> 编译器选项被忽略的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1503" target="_blank">#1503</link>)</li>
       <li styleclass="Normal">修正了命名空间和属性同名时的歧义问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1515" target="_blank">#1515</link>)</li>
       <li styleclass="Normal">修正了带有 TEXTMERGE 子句的 TEXT TO/ENDTEXT 中的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1517" target="_blank">#1517</link>)</li>
-      <li styleclass="Normal">修正了编译器错误报告中关于需要 /memvar 选项的误导性行号 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1531" target="_blank">#1531</link>)</li>
+      <li styleclass="Normal">修正了编译器错误报告中关于需要 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">/memvar</link> 选项的误导性行号 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1531" target="_blank">#1531</link>)</li>
     </list>
     <para styleclass="Heading3">新特性</para>
     <para styleclass="Heading2">运行时</para>
@@ -63,7 +64,7 @@
       <li styleclass="Normal">现在，在 VS 中构建任何项目类型时，TargetFramework 属性都会自动添加到程序集中 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1507" target="_blank">#1507</link>)</li>
       <li styleclass="Normal">在 VS 编辑器中执行 GoToBrace 操作 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1522" target="_blank">#1522</link>)</li>
       <li styleclass="Normal">现在，编辑器左上方有一个组合框，显示定义文件的项目。</li>
-      <li styleclass="Normal">如果文件存在于多个项目中（作为链接文件），那么项目组合框将显示使用该文件的所有项目名称。</li>
+      <li styleclass="Normal">如果文件存在于多个项目中(作为链接文件)，那么项目组合框将显示使用该文件的所有项目名称。</li>
       <li styleclass="Normal">从组合框中选择不同的项目时，缓冲区将重新绘制，因为每个项目的条件编译符号可能不同。</li>
       <li styleclass="Normal">在编辑器中使用 intellisense 时，查找引擎将使用所选的项目。因此，如果一个文件在 2 个项目中使用，那么将使用所选项目的引用和源文件来查找引用数据。</li>
     </list>
@@ -175,7 +176,7 @@
     <para styleclass="Heading3">Bug 修复</para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">修复了 VS 2019 中“跳转到文件”命令的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1146" target="_blank">#1146</link>) </li>
-      <li styleclass="Normal">修复了本地函数的“转到定义”功能不工作的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1415" target="_blank">#1415</link>)</li>
+      <li styleclass="Normal">修复了局部函数的“转到定义”功能不工作的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1415" target="_blank">#1415</link>)</li>
       <li styleclass="Normal">修复了在某些情况下类导航框显示错误当前条目的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1426" target="_blank">#1426</link>)</li>
       <li styleclass="Normal">修复了设置 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-namedargs">-namedargs(</link>启用命名参数)选项在项目设置中存在的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1431" target="_blank">#1431</link>) </li>
       <li styleclass="Normal">修复了外部程序集中的类型的代码生成器未为索引属性生成参数的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1442" target="_blank">#1442</link>) </li>
@@ -183,7 +184,7 @@
       <li styleclass="Normal">修复了在 VO 窗口编辑器中加载 cavowed.inf 文件提供的带有绝对或相对路径的补充文件的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1470" target="_blank">#1470</link>)</li>
       <li styleclass="Normal">修复了 VS2022 调试器中不同 DLL 包含相同命名空间但大小写不同时的问题。</li>
       <li styleclass="Normal">修复了编辑器内的实体解析器未能正确确定包含本地函数或过程的实体结束的问题 </li>
-      <li styleclass="Normal">修复了编辑器内的实体解析器在未启用 /memvars 编译选项时，遇到行首的 param 标记时会出错的问题。</li>
+      <li styleclass="Normal">修复了编辑器内的实体解析器在未启用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">/memvars</link> 编译选项时，遇到行首的 param 标记时会出错的问题。</li>
     </list>
     <para styleclass="Heading3">新特性</para>
     <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -303,8 +304,8 @@
     <para styleclass="Heading3">Bug 修复</para>
     <list id="20" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">修复了通过静态使用引用的类型中查找公共静态字段的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1307" target="_blank">#1307</link>)</li>
-      <li styleclass="Normal">修复了在块语句内定义的局部变量的智能感知问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1345" target="_blank">#1345</link>)</li>
-      <li styleclass="Normal">修复了智能感知不正确地将代码中指定的类型解析为 usings 列表中的另一个类型的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1363" target="_blank">#1363</link>)</li>
+      <li styleclass="Normal">修复了在块语句内定义的局部变量的 intellisense 问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1345" target="_blank">#1345</link>)</li>
+      <li styleclass="Normal">修复了 intellisense 不正确地将代码中指定的类型解析为 usings 列表中的另一个类型的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1363" target="_blank">#1363</link>)</li>
       <li styleclass="Normal">修复了在输入冒号后不正确显示静态方法的成员完成问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1379" target="_blank">#1379</link>)</li>
       <li styleclass="Normal">修复了特定代码导致编辑器冻结的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1380" target="_blank">#1380</link>)</li>
       <li styleclass="Normal">修复了在某些情况下类导航栏未显示方法名称的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1381" target="_blank">#1381</link>)</li>
@@ -313,8 +314,8 @@
     <list id="21" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">增加了对 IEnumerable 和 DataTable 调试可视化器的支持 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1373" target="_blank">#1373</link>)。<br/>请注意，当浏览 X# 数组时，可视化器中的结果看起来非常丑陋，因为可视化器忽略了隐藏属性和字段的属性，以用于我们的 USUAL 类。</li>
       <li styleclass="Normal">调整了 Globals、Workareas 等调试器窗口，以遵循在 VS 中选择的全局主题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1375" target="_blank">#1375</link>)。还向 Workarea 窗口添加了状态面板，这样您可以查看工作区状态或字段名称/值。</li>
-      <li styleclass="Normal">为使用 USING VAR 或 USING (LOCAL) IMPLIED 声明的局部变量添加了智能感知支持 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1390" target="_blank">#1390</link>)。</li>
-      <li styleclass="Normal">现在智能感知数据库使用了一个具有 ARM 支持的 SQLite 包，因此它也将在 Mac 和其他平台上工作 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1397" target="_blank">#1397</link>)。</li>
+      <li styleclass="Normal">为使用 USING VAR 或 USING (LOCAL) IMPLIED 声明的局部变量添加了 intellisense 支持 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1390" target="_blank">#1390</link>)。</li>
+      <li styleclass="Normal">现在 intellisense 数据库使用了一个具有 ARM 支持的 SQLite 包，因此它也将在 Mac 和其他平台上工作 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1397" target="_blank">#1397</link>)。</li>
     </list>
     <para styleclass="Heading2">VOXporter</para>
     <para styleclass="Heading3">修复</para>
@@ -493,16 +494,16 @@
       <li styleclass="Body Text">修正了 Type[,] 数组的成员完成问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/980" target="_blank">#980</link>)</li>
       <li styleclass="Body Text">修正了当同名类不存在命名空间时命名空间内类的成员补全缺失 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1204" target="_blank">#1204</link>)</li>
       <li styleclass="Body Text">修正了当实体在预处理行中有属性时自动缩进的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1210" target="_blank">#1210</link>)</li>
-      <li styleclass="Body Text">修正了某些情况下静态成员的智能感知问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1212" target="_blank">#1212</link>)</li>
-      <li styleclass="Body Text">修正了代码或声明跨多行时的一些智能感知问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1221" target="_blank">#1221</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1260" target="_blank">#1260</link>)</li>
-      <li styleclass="Body Text">修正了命名空间内嵌套类的智能感知问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1222" target="_blank">#1222</link>)</li>
+      <li styleclass="Body Text">修正了某些情况下静态成员的 intellisense 问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1212" target="_blank">#1212</link>)</li>
+      <li styleclass="Body Text">修正了代码或声明跨多行时的一些 intellisense 问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1221" target="_blank">#1221</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1260" target="_blank">#1260</link>)</li>
+      <li styleclass="Body Text">修正了命名空间内嵌套类的 intellisense 问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1222" target="_blank">#1222</link>)</li>
       <li styleclass="Body Text">当使用类型转换时，修正了对 VAR local 类型的错误解析 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1224" target="_blank">#1224</link>)</li>
       <li styleclass="Body Text">修正了编辑器中折叠/展开代码的几个问题 （<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1233" target="_blank">#1233</link>)</li>
       <li styleclass="Body Text">修正了显示未知类型的假成员完成列表 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1255" target="_blank">#1255</link>)</li>
       <li styleclass="Body Text">修复了使用 Ctrl + 空格键自动键入文本的一些问题(完整 Word) (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1256" target="_blank">#1256</link>)</li>
       <li styleclass="Body Text">修正了 Text .. EndText 语句的着色问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1257" target="_blank">#1257</link>)</li>
       <li styleclass="Body Text">修正了泛型的工具提示提示的几个问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1258" target="_blank">#1258</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1259" target="_blank">#1259</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1273" target="_blank">#1273</link>)</li>
-      <li styleclass="Body Text">修正了委托签名不显示在智能感知工具提示中的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1265" target="_blank">#1265</link>)</li>
+      <li styleclass="Body Text">修正了委托签名不显示在 intellisense 工具提示中的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1265" target="_blank">#1265</link>)</li>
       <li styleclass="Body Text">修正了带有多行注释的代码的无效着色 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1269" target="_blank">#1269</link>)</li>
       <li styleclass="Body Text">修正了键入 “self. ”后成员完成中的无效条目。(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1270" target="_blank">#1270</link>)</li>
       <li styleclass="Body Text">修正了在选项 X# Custom Editors\Other Editors\Disassembler 中指定的路径带有空格时调用反汇编器的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1271" target="_blank">#1271</link>)</li>
@@ -560,7 +561,7 @@
       <li styleclass="Body Text">修正了预处理器中的一个问题，即在结果流中两个相邻的标记没有合并为一个标记 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1247" target="_blank">#1247</link>)</li>
       <li styleclass="Body Text">修正了预处理器中的一个问题，即当元素以左括号开始时，预处理器无法检测到可选元素 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1250" target="_blank">#1250</link>)</li>
       <li styleclass="Body Text">修正了包含字面双引号的内插字符串的问题，如 <text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">i</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#0000ff;">&quot;SomeText&quot;&quot;{iNum}&quot;&quot; &quot;</text></li>
-      <li styleclass="Body Text">修正了 2.16 早期版本中引入的本地函数/程序问题。</li>
+      <li styleclass="Body Text">修正了 2.16 早期版本中引入的局部函数/程序问题。</li>
       <li styleclass="Body Text">在解析时生成的警告可能会导致另一个关于预处理器定义的警告，即使在不需要预处理器定义的情况下也是如此。这一问题已得到修复。</li>
       <li styleclass="Body Text">修正了 2.16 早期版本中引入的以 “a := NIL,b := NIL as USUAL” 声明的参数的默认参数值问题</li>
       <li styleclass="Body Text">修复了 2.16 早期版本中调试器行为不稳定的问题。</li>
@@ -668,18 +669,18 @@
     <list id="27" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">当使用光标键在编辑器中移动到不同行时，修正了之前被破坏的自动同步大小写问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/722" target="_blank">#722</link>)</li>
       <li styleclass="Body Text">修正了使用 Control+Space 完成代码时的一些问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1044" target="_blank">#1044</link>, <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1140" target="_blank">#1140</link>)</li>
-      <li styleclass="Body Text">修正了在某些情况下输入“<text style="font-weight:bold;">:</text>” 时的智能感知问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1061" target="_blank">#1061</link>)</li>
+      <li styleclass="Body Text">修正了在某些情况下输入“<text style="font-weight:bold;">:</text>” 时的 intellisense 问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1061" target="_blank">#1061</link>)</li>
       <li styleclass="Body Text">修复了多行表达式(方法/函数调用)中的参数工具提示 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1135" target="_blank">#1135</link>)</li>
       <li styleclass="Body Text">修正了格式文档和 PUBLIC 修饰符的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1137" target="_blank">#1137</link>)</li>
       <li styleclass="Body Text">修正了在同一文件中定义多个分部类时转到定义无法正常工作的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1141" target="_blank">#1141</link>)</li>
       <li styleclass="Body Text">修正了自动缩进的一些问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1142" target="_blank">#1142</link>, <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1143" target="_blank">#1143</link>)</li>
       <li styleclass="Body Text">修正了调试时在新行开头不显示标识符值的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1157" target="_blank">#1157</link>)</li>
-      <li styleclass="Body Text">修正了某些情况下 LOGIC 的智能感知问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1185" target="_blank">#1185</link>)</li>
+      <li styleclass="Body Text">修正了某些情况下 LOGIC 的 intellisense 问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1185" target="_blank">#1185</link>)</li>
       <li styleclass="Body Text">修正了一个问题，即完成列表可能包含从显示完成列表的位置不可见的方法 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1188" target="_blank">#1188</link>)</li>
       <li styleclass="Body Text">修正了编辑器中嵌套类型的显示问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1198" target="_blank">#1198</link>)</li>
       <li styleclass="Body Text">清理了多个 X# 项目模板，修复了调试/输出文件夹位置不正确的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1201" target="_blank">#1201</link>)</li>
       <li styleclass="Body Text">在 VS 编辑器中撤销大小写同步不起作用，因为编辑器会立即再次同步大小写 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1205" target="_blank">#1205</link>)</li>
-      <li styleclass="Body Text">重建智能感知数据库不再重启 Visual Studio (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1206" target="_blank">#1206</link>)</li>
+      <li styleclass="Body Text">重建 intellisense 数据库不再重启 Visual Studio (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1206" target="_blank">#1206</link>)</li>
       <li styleclass="Body Text">现在，“VO 菜单编辑器” 使用与原始 VO 应用程序中相同的菜单项 “定义值”(需要重新导入应用程序才能生效) (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1207" target="_blank">#1207</link>)</li>
       <li styleclass="Body Text">对我们的项目系统和语言服务的更改可能会导致 Visual Studio 某些版本中的 “在文件中查找 ”功能被破坏。 这一问题已得到修复。</li>
       <li styleclass="Body Text">修正了转到定义对 protected 或 private 成员不起作用的问题</li>
@@ -725,7 +726,7 @@
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="28" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">修正了当类型和本地具有相同名称时解析方法的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/922" target="_blank">#922</link>)</li>
+      <li styleclass="Body Text">修正了当类型和局部变量具有相同名称时解析方法的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/922" target="_blank">#922</link>)</li>
       <li styleclass="Body Text">改进了编译器隐式生成的方法(INIT、隐式构造函数)的 XML 文档消息 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1128" target="_blank">#1128</link>)</li>
       <li styleclass="Body Text">修正了带有默认参数值的 DELEGATE 的内部编译器错误 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1129" target="_blank">#1129</link>)</li>
       <li styleclass="Body Text">修正了获取结构元素指针时内存地址偏移计算不正确的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1132" target="_blank">#1132</link>)</li>
@@ -775,7 +776,7 @@
       <li styleclass="Body Text">WinForms 设计器现在可忽略 form.prg 和 designer.prg 文件中指定的名称空间的差异(使用 form.prg 中的名称空间) (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/464" target="_blank">#464</link>)</li>
       <li styleclass="Body Text">修正了某些情况下类的鼠标下工具提示不正确的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/871" target="_blank">#871</link>)</li>
       <li styleclass="Body Text">修正了带有扩展方法的枚举类型的代码完成问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1027" target="_blank">#1027</link>)</li>
-      <li styleclass="Body Text">修正了枚举的一些智能感知问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1064" target="_blank">#1064</link>)</li>
+      <li styleclass="Body Text">修正了枚举的一些 intellisense 问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1064" target="_blank">#1064</link>)</li>
       <li styleclass="Body Text">修正了 VS 2022 中 Nuget 软件包导致首次尝试生成项目失败的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1114" target="_blank">#1114</link>)</li>
       <li styleclass="Body Text">修正了 XML 文档工具提示中的格式问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1127" target="_blank">#1127</link>)</li>
       <li styleclass="Body Text">修正了在编辑器的代码完成列表中包含虚假的额外静态成员的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1130" target="_blank">#1130</link>)</li>
@@ -838,7 +839,7 @@
     </list>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="30" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text styleclass="Body Text">在未选择 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar" styleclass="Body Text">/memvar</link><text styleclass="Body Text"> 编译器选项的情况下，PUBLIC 和 PRIVATE 关键字有时会被误解为内存变量声明。我们添加了解析器规则以防止这种情况发生：当未选择 /memvar 时，PUBLIC 和 PRIVATE 仅用作可见性修饰符</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">在未选择 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar" styleclass="Body Text">/memvar</link><text styleclass="Body Text"> 编译器选项的情况下，PUBLIC 和 PRIVATE 关键字有时会被误解为内存变量声明。我们添加了解析器规则以防止这种情况发生：当未选择 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar" styleclass="Body Text">/memvar</link><text styleclass="Body Text"> 时，PUBLIC 和 PRIVATE 仅用作可见性修饰符</text></li>
       <li styleclass="Normal">修复选择函数和方法重载时出现的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1096" target="_blank">#1096</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1101" target="_blank">#1101</link>)</li>
       <li styleclass="Normal">2.13.2.0 版引入了一个问题，可能会导致超大源文件出现严重的性能问题。2.13.2.1 版已修复了这一问题。</li>
     </list>
@@ -884,7 +885,7 @@
     <para styleclass="Heading2">Visual Studio 集成</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">新特性</text></para>
     <list id="27" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">现在，VS 项目树（在一个特殊节点中）显示项目使用的包含文件 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/906" target="_blank">#906</link> )<br/>这包括项目本身的包含文件，也包括 XSharp 文件夹或 Vulcan 文件夹中的包含文件(如适用)。</li>
+      <li styleclass="Body Text">现在，VS 项目树(在一个特殊节点中)显示项目使用的包含文件 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/906" target="_blank">#906</link> )<br/>这包括项目本身的包含文件，也包括 XSharp 文件夹或 Vulcan 文件夹中的包含文件(如适用)。</li>
       <li styleclass="Body Text">我们尽可能在项目树和其他几个位置使用 Visual Studio 的内置镜像。</li>
       <li styleclass="Body Text">现在，我们在 VS 中的后台分析程序会在生成过程中暂停，以减少对生成的干扰。</li>
       <li styleclass="Body Text">我们在缩进选项中添加了一个设置，这样您就可以控制类字段和属性的缩进，并将其与方法分开。<br/>因此，您可以选择缩进字段和属性，而不缩进方法。这一点也已添加到 <link displaytype="text" defaultstyle="true" type="topiclink" href="_EditorConfig-files">.editorconfig</link> 文件中</li>
@@ -894,7 +895,7 @@
       <li styleclass="Body Text">修正了 “速览定义” 和 “转到定义” 的问题</li>
       <li styleclass="Body Text">在查找函数时，我们有时会(意外地)将其他类中的静态方法也包括在内。</li>
       <li styleclass="Body Text">在解析 QuickInfo 和速览定义的标记时，如果方法名称之后和开放括号之前有空格，则无法找到方法名称。</li>
-      <li styleclass="Body Text">修正了一个问题，即在保存时，项目范围内的资源和设置（从项目属性页面添加）无法获得文件后面的代码</li>
+      <li styleclass="Body Text">修正了一个问题，即在保存时，项目范围内的资源和设置(从项目属性页面添加)无法获得文件后面的代码</li>
       <li styleclass="Body Text">调用构造函数的行上的 “快速信息 ”和 “转到 ”定义现在将显示/转到该类型的第一个构造函数，而不再显示/转到类型声明</li>
       <li styleclass="Body Text">当项目的生成过程因缺少资源或其他资源相关问题而失败时，错误列表不会正确更新。这一问题已得到修复 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1102" target="_blank">#1102</link>)</li>
       <li styleclass="Body Text">XSharpDebugger.DLL 未正确安装到 VS2017 和 VS2019 中。</li>
@@ -921,7 +922,7 @@
       <li styleclass="Body Text">修正了根据 DEFINE 出现的顺序计算 DEFINE 的一些问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/866" target="_blank">#866</link>，<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1057" target="_blank">#1057</link>)</li>
       <li styleclass="Body Text">修正了嵌套 BEGIN SEQUENCE ... END SEQUENCE 语句的编译器错误 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1055" target="_blank">#1055</link>)</li>
       <li styleclass="Body Text">修正了包含复杂表达式的代码块的一些问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1056" target="_blank">#1056</link>)</li>
-      <li styleclass="Body Text">当启用 /undeclared+ 时，修正了将函数分配给委托的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1051" target="_blank">#1051</link>)</li>
+      <li styleclass="Body Text">当启用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-undeclared">/undeclared</link>+ 时，修正了将函数分配给委托的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1051" target="_blank">#1051</link>)</li>
       <li styleclass="Body Text">修正了在 Fox 方言中定义 LOCAL FUNCTION 时的错误警告 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1017" target="_blank">#1017</link>)</li>
       <li styleclass="Body Text">修正了 FLOAT 值上的 Linq 操作 Sum 的一个问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/965" target="_blank">#965</link>)</li>
       <li styleclass="Body Text">修正了在匿名方法/lamda 表达式中使用 SELF 的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1058" target="_blank">#1058</link>)</li>
@@ -970,8 +971,8 @@
     <para styleclass="Heading2">Visual Studio 集成</para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">新特性</text></para>
     <list id="27" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">现在，您可以通过工具/选项文本编辑器/X# 选项页面控制缩排方式。我们添加了多个选项来控制源代码的缩进。如果你想在公司内部执行缩进规则，也可以通过 <link displaytype="text" defaultstyle="true" type="topiclink" href="_EditorConfig-files">.editorconfig</link> 文件设置这些选项。</li>
-      <li styleclass="Body Text">我们现已在源代码编辑器中添加了大量代码格式化选项。有关可用选项，请参见工具/选项/文本编辑器/X#/缩进 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/430" target="_blank">#430</link>)</li>
+      <li styleclass="Body Text">现在，您可以通过 工具/选项文本编辑器/X# 选项 页面控制缩排方式。我们添加了多个选项来控制源代码的缩进。如果你想在公司内部执行缩进规则，也可以通过 <link displaytype="text" defaultstyle="true" type="topiclink" href="_EditorConfig-files">.editorconfig</link> 文件设置这些选项。</li>
+      <li styleclass="Body Text">我们现已在源代码编辑器中添加了大量代码格式化选项。有关可用选项，请参见 工具/选项/文本编辑器/X#/缩进 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/430" target="_blank">#430</link>)</li>
       <li styleclass="Body Text">我们实施了 “标识符大小写同步” 选项。其工作原理如下： 编辑器会拾取源文件中首次出现的标识符(类名、变量名等)，并确保同一源文件中所有其他出现的标识符都使用相同的大小写。这不会在源文件中强制使用大小写(那样会太慢)</li>
       <li styleclass="Body Text">我们在 VS 颜色对话框中为匹配大括号、匹配关键字和匹配标识符添加了颜色设置。打开 “工具/选项 ”对话框，选择 “环境/字体和颜色”，然后在列表框中查找以 “X#”开头的颜色。您可以根据自己的喜好自定义这些颜色。</li>
       <li styleclass="Body Text">使用 Vulcan 运行时的 X# 项目现在有了一个上下文菜单项，可以将其转换为 X# 运行时。标准 Vulcan 程序集将被替换为等效的 X# 运行时程序集。如果使用第三方组件，如 bBrowser 或 ReportPro，则需要自行替换这些组件的引用(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/32" target="_blank">#32</link>)。</li>
@@ -986,7 +987,7 @@
       <li styleclass="Body Text">修正了 DO WHILE 的格式问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/923" target="_blank">#923</link>)</li>
       <li styleclass="Body Text">修正了灯泡 “生成默认构造函数” 功能的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1034" target="_blank">#1034</link>)</li>
       <li styleclass="Body Text">修复了调试器中工具提示的问题。现在我们解析从第一个标记到光标位置的完整表达式。(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1015" target="_blank">#1015</link>)</li>
-      <li styleclass="Body Text">修正了使用 VAR 定义的 .Net 数组局部的一些剩余的智能感知问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/569" target="_blank">#569</link>)</li>
+      <li styleclass="Body Text">修正了使用 VAR 定义的 .Net 数组局部的一些剩余的 intellisense 问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/569" target="_blank">#569</link>)</li>
       <li styleclass="Body Text">修正了缩进在某些情况下无法正常工作的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/421" target="_blank">#421</link>)</li>
       <li styleclass="Body Text">修正了自动排版的一个问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/919" target="_blank">#919</link>)</li>
       <li styleclass="Body Text">关键字配对匹配的若干改进 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/904" target="_blank">#904</link>)</li>
@@ -1021,7 +1022,7 @@
     <para styleclass="Heading3">新特性</para>
     <list id="33" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">我们已在所有方言中添加了对 TEXT ... ENDTEXT 命令的支持。请注意，该命令有多种变体。其中一种变体适用于所有方言(TEXT TO varName)。其他变体取决于所选择的方言。我们已将对 TEXT ... ENDTEXT 的支持从编译器转移到预处理器。这意味着还有 2 个新的预处理器指令： <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Text">#text</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endtext">#endtext</link> (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/977" target="_blank">#977</link>, <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1029" target="_blank">#1029</link>)</li>
-      <li styleclass="Body Text">启用了新的编译器选项 /vo17，为 BEGIN SEQUENCE...RECOVER 命令实现了与 VO 更为兼容的行为 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/111" target="_blank">#111</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/881" target="_blank">#881</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/916" target="_blank">#916</link>)：</li>
+      <li styleclass="Body Text">启用了新的编译器选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo17">/vo17</link>，为 BEGIN SEQUENCE...RECOVER 命令实现了与 VO 更为兼容的行为 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/111" target="_blank">#111</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/881" target="_blank">#881</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/916" target="_blank">#916</link>)：</li>
       <list id="33" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Body Text">对于包含 RECOVER USING 的代码，将检查是否存在封装异常。如果异常不是封装异常，运行时将调用一个函数（<text style="font-weight:bold; color:#ff0000;">FUNCTION</text> _SequenceError(e <text style="font-weight:bold; color:#ff0000;">AS</text> Exception) <text style="font-weight:bold; color:#ff0000;">AS</text>&#32;<text style="font-weight:bold; color:#ff0000;">USUAL</text>）来处理该错误。例如，它可以调用错误处理程序，或抛出错误</li>
         <li styleclass="Body Text">如果没有 RECOVER USING 子句，编译器就会生成一个子句，并在生成的子句中检测 RECOVER 是在包裹异常还是正常异常的情况下完成的。对于包裹异常，编译器会获取值并在运行时调用一个特殊函数（<text style="font-weight:bold; color:#ff0000;">FUNCTION</text> _SequenceRecover(uBreakValue <text style="font-weight:bold; color:#ff0000;">AS USUAL</text>) <text style="font-weight:bold; color:#ff0000;">AS</text>&#32;<text style="font-weight:bold; color:#ff0000;">VOID</text>）。如果在调用生成的恢复时出现了 “正常 ”异常，则会调用上一小节中的 _SequenceError 函数。</li>
@@ -1105,12 +1106,12 @@
       <li styleclass="Body Text">当编辑器加载源文件时，直到光标在缓冲区中移动之前，类型和成员的组合框才会被激活。(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/995" target="_blank">#995</link>)</li>
       <li styleclass="Body Text">编辑器中的成员组合框容易与包含本地函数或本地过程的代码混淆。</li>
       <li styleclass="Body Text">修正了转换或带关键字的转换(如 DWORD( SomeExpression))中表达式的查找问题。转换括号内的表达式没有快速信息提示(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/997" target="_blank">#997</link>)</li>
-      <li styleclass="Body Text">修正了 DATATYPE(&lt;expression&gt;) 转换表达式的智能感知问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/997" target="_blank">#997</link>)</li>
+      <li styleclass="Body Text">修正了 DATATYPE(&lt;expression&gt;) 转换表达式的 intellisense 问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/997" target="_blank">#997</link>)</li>
       <li styleclass="Body Text">修正了在属性实现中使用 =&gt; 符号声明属性时导致导航栏内容不完整的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1008" target="_blank">#1008</link>)</li>
       <li styleclass="Body Text">修复了代码折叠和格式化中的几个问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/975" target="_blank">#975</link>)</li>
       <li styleclass="Body Text">修正了在参数列表内键入逗号不会调用参数工具提示的问题(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1019" target="_blank">#1019</link>)</li>
       <li styleclass="Body Text">修正了检测 VAR 关键字的变量类型时出现的一些问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/903" target="_blank">#903</link>)</li>
-      <li styleclass="Body Text">修正了在字符串字面内部输入“: ”或“. ”时的智能感知问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1021" target="_blank">#1021</link>)</li>
+      <li styleclass="Body Text">修正了在字符串字面内部输入“: ”或“. ”时的 intellisense 问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1021" target="_blank">#1021</link>)</li>
       <li styleclass="Body Text">修正了未知标识符有时会导致显示假成员完成列表的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1022" target="_blank">#1022</link>)</li>
       <li styleclass="Body Text">在编辑器中按 CTRL+SPACE 现在总是调用代码完成列表 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/957" target="_blank">#957</link>)</li>
     </list>
@@ -1178,7 +1179,7 @@
       <li styleclass="Body Text">修正了在出现无法识别的标识符后快速信息工具提示的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/894" target="_blank">#894</link>)</li>
       <li styleclass="Body Text">修正了编辑器在自动键入属性后错误添加括号的问题(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/974" target="_blank">#974</link>)</li>
       <li styleclass="Body Text">修正了在 #endif 指令后创建新行时编辑器反应极慢的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/970" target="_blank">#970</link>)</li>
-      <li styleclass="Body Text">修复了 .Net 数组类型的一些智能感知问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/569" target="_blank">#569</link>)</li>
+      <li styleclass="Body Text">修复了 .Net 数组类型的一些 intellisense 问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/569" target="_blank">#569</link>)</li>
       <li styleclass="Body Text">修复了设计时 DevExpress DocumentManager 控件的一个问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/976" target="_blank">#976</link>)</li>
       <li styleclass="Body Text">当 “显示来自......的输出 ”设置为 “扩展 ”时，修正了输出窗口中的参数为空异常 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/940" target="_blank">#940</link>)</li>
     </list>
@@ -1263,8 +1264,8 @@
       <li styleclass="Body Text"><text style="font-style:normal; color:#000000;">我们新增了对</text><text style="font-weight:bold; font-style:normal; color:#000000;">软件包引用</text><text style="font-style:normal; color:#000000;">的支持</text></li>
       <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">现在，当用户键入“///”时，编辑器会自动插入 XML 注释。(</text><link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/867" target="_blank" style="font-weight:normal; font-style:normal; color:#000000;">#867</link><text style="font-weight:normal; font-style:normal; color:#000000;">, </text><link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/887" target="_blank" style="font-weight:normal; font-style:normal; color:#000000;">#887</link><text style="font-weight:normal; font-style:normal; color:#000000;">) &#160;条件：</text></li>
       <list id="27" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Body Text"><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">Cursor 必须位于实体开始前的一行上</text></li>
-        <li styleclass="Body Text"><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">Cursor 不得位于注释行之前</text></li>
+        <li styleclass="Body Text"><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">光标必须位于实体开始前的一行上</text></li>
+        <li styleclass="Body Text"><tab />光标<text style="font-weight:normal; font-style:normal; color:#000000;">不得位于注释行之前</text></li>
       </list>
     </list>
     <list id="27" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -1287,7 +1288,7 @@
       <li styleclass="Body Text">修正了忽略 XML 注释中换行符的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/858" target="_blank">#858</link>)</li>
       <li styleclass="Body Text">修正了一些有关 CHAR 属性的 WinForms 设计器问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/859" target="_blank">#859</link>)</li>
       <li styleclass="Body Text">修正了调用 SUPER() 构造函数时转到定义无法正常工作的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/862" target="_blank">#862</link>)</li>
-      <li styleclass="Body Text">当解决方案路径中包含空格时，修复了重建智能感知数据库命令的错误 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/865" target="_blank">#865</link>)</li>
+      <li styleclass="Body Text">当解决方案路径中包含空格时，修复了重建 intellisense 数据库命令的错误 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/865" target="_blank">#865</link>)</li>
       <li styleclass="Body Text">当同时运行多个 VS 版本时，外部程序集类型的转到定义失败。</li>
       <li styleclass="Body Text">修正了 VOSTRUCT 有时会混淆解析器的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/868" target="_blank">#868</link>)</li>
       <li styleclass="Body Text">修正了更多有关 quickinfo 和成员完成的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/870" target="_blank">#870</link>)</li>
@@ -1298,7 +1299,7 @@
       <li styleclass="Body Text">在编辑器中，不平衡的大括号有时会与关键字匹配。这一问题已得到修复 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/892" target="_blank">#892</link>)</li>
       <li styleclass="Body Text">分隔线有时会闪烁。这一问题已得到修复(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/792" target="_blank">#792</link>)</li>
       <li styleclass="Body Text">在解析局部变量时，我们没有处理包含文件。这可能导致在条件块 (#ifdef SOMEVAR) 中声明的局部变量找不到。这一问题已得到修复。现在，即使在解析源文件的一部分时，编辑器解析器也会包含头文件以及代码中的 #defines 和 #undefines (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/893" target="_blank">#893</link>)</li>
-      <li styleclass="Body Text">#include 行现在包含在编辑器的字段/成员组合框中(当字段显示时)。它们也会保存到智能感知数据库中。</li>
+      <li styleclass="Body Text">#include 行现在包含在编辑器的字段/成员组合框中(当字段显示时)。它们也会保存到 intellisense 数据库中。</li>
       <li styleclass="Body Text">当光标停留在非活动预处理器区域 (#ifdef) 上时，编辑器会尝试显示 QuickInfo 工具提示。现在这种情况不再发生。</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">运行时</text></para>
@@ -1364,9 +1365,9 @@
     <para styleclass="Heading3">新特性</para>
     <list id="27" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">我们在解决方案资源管理器的项目上下文菜单中添加了一个上下文项，用于编辑项目文件。这将在需要时卸载项目，然后打开文件进行编辑。</li>
-      <li styleclass="Body Text">现在，“工具/XSharp ”菜单中的 “重建智能感知数据库” 菜单选项会卸载当前解决方案，删除智能感知数据库，然后重新打开解决方案，以确保数据库正确重建。</li>
+      <li styleclass="Body Text">现在，“工具/XSharp ”菜单中的 “重建 intellisense 数据库” 菜单选项会卸载当前解决方案，删除 intellisense 数据库，然后重新打开解决方案，以确保数据库正确重建。</li>
       <li styleclass="Body Text">我们对在后台解析解决方案源代码的过程进行了一些更改。</li>
-      <li styleclass="Body Text">泛型名现在以 Name`n 格式存储在智能感知数据库中，例如 IList`1 表示 IList&lt;T&gt;</li>
+      <li styleclass="Body Text">泛型名现在以 Name`n 格式存储在 intellisense 数据库中，例如 IList`1 表示 IList&lt;T&gt;</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">运行时</text></para>
     <para styleclass="Heading3">新特性</para>
@@ -1414,9 +1415,9 @@
     <para styleclass="Body Text"><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#ff0000;">STORE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &lt;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">value</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&gt; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">ARRAY</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &lt;arrayName&gt;</text></para>
     <para styleclass="Body Text"></para>
     <list id="27" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">创建包含 DATE 字段的 VOSTRUCT 或 UNION 时，编译器现在将使用新的 __WinDate 结构，该结构与 Visual Objects 中 VOSTRUCT 或 UNION 中的 DATE 值存储方式二进制兼容 (#773)</li>
+      <li styleclass="Body Text">创建包含 DATE 字段的 VOSTRUCT 或 UNION 时，编译器现在将使用新的 __WinDate 结构，该结构与 Visual Objects 中 VOSTRUCT 或 UNION 中的 DATE 值存储方式二进制兼容 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/773" target="_blank">#773</link>)</li>
       <li styleclass="Body Text">现在可以在 FoxPro 方言中使用括号(而不是方括号)访问 ARRAY 元素。必须启用编译器选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">/fox2</link> 才能起作用 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/746" target="_blank">#746</link>)</li>
-      <li styleclass="Body Text">我们增加了对在调用函数/方法代码中访问 WITH 块表达式的支持(仅适用于 FoxPro 方言)。因此，您可以在调用代码中键入 .SomeProperty 并访问属于 WITH BLOCK 表达式的属性。要使用此功能，必须启用 “后期绑定”，因为编译器不知道调用代码中表达式的类型(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/811" target="_blank">#811</link>)。</li>
+      <li styleclass="Body Text">我们增加了对在调用函数/方法代码中访问 WITH 块表达式的支持(仅适用于 FoxPro 方言)。因此，您可以在调用代码中键入 .SomeProperty 并访问属于 WITH BLOCK 表达式的属性。要使用此功能，必须启用 “<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-lb">后期绑定</link>”，因为编译器不知道调用代码中表达式的类型(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/811" target="_blank">#811</link>)。</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Bug 修复</text></para>
@@ -1455,7 +1456,7 @@
     <para styleclass="Body Text"></para>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="27" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text"><text style="color:#000000;">修正了 Descend() 函数中的一个问题(与 VO 不兼容)(</text><link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/779" target="_blank" style="color:#000000;">#779</link><text style="color:#000000;">)</text><text style="font-weight:bold; color:#ff0000;"> - 重要提示：如果在 dbf 索引表达式中使用 Descend()，则需要重新索引这些索引！</text></li>
+      <li styleclass="Body Text"><text style="color:#000000;">修正了 Descend() 函数中的一个问题(与 VO 不兼容)(</text><link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/779" target="_blank" style="color:#000000;">#779</link><text style="color:#000000;">)</text><text style="font-weight:bold; color:#ff0000;"> - 重要提示：如果在 dbf 索引表达式中使用 Descend()，则需要重键这些索引！</text></li>
       <li styleclass="Body Text">返回 PSZ 值的后期绑定代码没有正确地将该值存储在 USUAL 内(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/603" target="_blank">#603</link>)</li>
       <li styleclass="Body Text">修正了缓存 IO 中可能导致低级文件 IO 问题的一个问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/724" target="_blank">#724</link>)</li>
       <li styleclass="Body Text">在未打开表的区域调用 VODbAlias() 函数时，现在会返回 String.Empty，而不是 NULL。(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/733" target="_blank">#733</link>)</li>
@@ -1505,8 +1506,8 @@
     </list>
     <list id="27" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">现在，VS 内的各种代码生成器都遵循源代码编辑器的大写规则。</li>
-      <li styleclass="Body Text">现在，智能感知数据库的视图可返回源代码和外部程序集中的唯一命名空间</li>
-      <li styleclass="Body Text">工具菜单中的 X# 特定菜单点已移至单独的子菜单中。</li>
+      <li styleclass="Body Text">现在， intellisense 数据库的视图可返回源代码和外部程序集中的唯一命名空间</li>
+      <li styleclass="Body Text">工具菜单中的 X# 特定菜单项已移至单独的子菜单中。</li>
       <li styleclass="Body Text">为 WinForms 设计器添加了选项，以便在保存时生成 form.prg 和 form.designer.prg 文件的备份(.bak)文件 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/799" target="_blank">#799</link>)</li>
     </list>
     <para styleclass="Heading3">Bug 修复</para>
@@ -1525,7 +1526,7 @@
         <li styleclass="Body Text">修复了打开文件时的一个问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/742" target="_blank">#742</link>)</li>
         <li styleclass="Body Text">修复了默认值 NULL、NULL_DATE 和 NULL_OBJECT 的参数提示显示 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/743" target="_blank">#743</link>)</li>
         <li styleclass="Body Text">修复构造函数的参数提示错误 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/744" target="_blank">#744</link>)</li>
-        <li styleclass="Body Text">嵌套类并非总能被智能感知正确处理(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/745" target="_blank">#745</link>)</li>
+        <li styleclass="Body Text">嵌套类并非总能被 intellisense 正确处理(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/745" target="_blank">#745</link>)</li>
         <li styleclass="Body Text">修正了使用 ARRAY OF &lt;something&gt; 声明的变量的类型查找问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/749" target="_blank">#749</link>)</li>
         <li styleclass="Body Text">当缓冲区包含无效代码时，编辑器有时会 “冻结”(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/751" target="_blank">#751</link>)</li>
         <li styleclass="Body Text">不存在的命名空间会产生错误的完成列表(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/760" target="_blank">#760</link>)</li>
@@ -1603,11 +1604,11 @@
       <li styleclass="Body Text">修正了赋值语句后的完成列表不正确的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/658" target="_blank">#658</link>)</li>
       <li styleclass="Body Text">修正了编辑器中删除代码后出现的异常 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/674" target="_blank">#674</link>)</li>
       <li styleclass="Body Text">修正了将文件附加到外壳窗口时 VS IDE 中的 “冻结 ”问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/676" target="_blank">#676</link>)</li>
-      <li styleclass="Body Text">修正了在使用 AllowDot 的 VO Dialect 中用圆点代替冒号时出现的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/679" target="_blank">#679</link>)</li>
+      <li styleclass="Body Text">修正了在使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-allowdot">AllowDot</link> 的 VO Dialect 中用圆点代替冒号时出现的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/679" target="_blank">#679</link>)</li>
       <li styleclass="Body Text">修正了在类内显示完成列表的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/685" target="_blank">#685</link>)</li>
       <li styleclass="Body Text">修复了编辑器中的一个性能问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/689" target="_blank">#689</link>)</li>
       <li styleclass="Body Text">修正了在编辑器中显示函数重载的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/692" target="_blank">#692</link>)</li>
-      <li styleclass="Body Text">修正了智能感知 在 !、.NOT.或其他运算符之后出现的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/693" target="_blank">#693</link>)</li>
+      <li styleclass="Body Text">修正了 intellisense &#160;在 !、.NOT.或其他运算符之后出现的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/693" target="_blank">#693</link>)</li>
       <li styleclass="Body Text">修正了完成列表中显示不正确方法的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/695" target="_blank">#695</link>)</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">工具</text></para>
@@ -1625,7 +1626,7 @@
       <li styleclass="Body Text">FoxPro LOCAL ARRAY 生成的不是 LOCAL 变量，而是 PRIVATE 变量。</li>
       <li styleclass="Body Text">XSharp.RT 中的函数如果在 XSharp.VO、XSharp.VFP 或 XSharp.RT 中被覆盖，将不再产生警告。不在 XSharp.RT 中的版本将优先使用</li>
       <li styleclass="Body Text">在 FOREACH 循环中枚举 USUAL 变量时，现在会调用一个运行时函数，该函数会返回 USUAL 中的 ARRAY，否则会出错。</li>
-      <li styleclass="Body Text">启用 /vo7 时，现在支持从 OBJECT -&gt; NUMERIC 的隐式转换。 </li>
+      <li styleclass="Body Text">启用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7">/vo7</link> 时，现在支持从 OBJECT -&gt; NUMERIC 的隐式转换。 </li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">运行时</text></para>
     <list id="27" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -1654,7 +1655,7 @@
     <list id="27" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">修复了 VS 内部 “生成” 页面上的一个异常 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/654" target="_blank">#654</link>)</li>
       <li styleclass="Body Text">项目系统没有为 XML 文档生成写回正确的属性 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/654" target="_blank">#654</link>)</li>
-      <li styleclass="Body Text">头文件中的智能感知可能会崩溃(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/657" target="_blank">#657</link>)</li>
+      <li styleclass="Body Text">头文件中的 intellisense 可能会崩溃(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/657" target="_blank">#657</link>)</li>
       <li styleclass="Body Text">我们在编辑器的成员组合框中添加了 #defines 和用户定义的命令(#command、#translate)，作为全局类型的成员。现在，您还可以对使用 #define 定义的值执行转到定义。</li>
       <li styleclass="Body Text">我们更正了枚举的成员完成问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/656" target="_blank">#656</link>)</li>
       <li styleclass="Body Text">我们修复了 Windows 窗体编辑器中的一个问题，如果另一个 VS 扩展加载了旧版本的 Mono.Cecil (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/661" target="_blank">#661</link>)</li>
@@ -1675,7 +1676,7 @@
     <list id="27" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">修正了插值字符串的问题(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/598" target="_blank">#598</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/622" target="_blank">#622</link>)：</li>
       <list id="27" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Body Text">脚本编译器现在能正确设置运行时中当前活动方言的 AllowDot 编译器选项(Core 和 FoxPro：AllowDot = true)</li>
+        <li styleclass="Body Text">脚本编译器现在能正确设置运行时中当前活动方言的 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-allowdot">AllowDot</link> 编译器选项(Core 和 FoxPro：AllowDot = true)</li>
         <li styleclass="Body Text">当使用 DOT(.) 作为实例方法分隔符进行编译时，插值字符串内部会使用“: ”字符作为格式字符串的前缀。</li>
         <li styleclass="Body Text">使用 COLON (:) 作为实例方法分隔符进行编译时，冒号不能用于分隔表达式和插值字符串内的格式字符串。在这种情况下，我们现在支持在表达式和格式字符串之间使用双冒号(::)。例如</li>
       </list>
@@ -1739,7 +1740,7 @@
     <list id="27" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">我们已迁移到最新版本的 Roslyn 源代码。</li>
       <li styleclass="Body Text">通过引用将类型化变量传递给具有 clipper 调用约定(未类型化参数)的函数/方法时，无法更新局部变量。这一问题已得到修复。</li>
-      <li styleclass="Body Text">当 /vo7 编译器选项未启用时，在 VO 方言的程序中使用 @ 操作符可能会生成产生 “无法装箱 ”错误的代码。(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/551" target="_blank">#551</link>)</li>
+      <li styleclass="Body Text">当 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7">/vo7</link> 编译器选项未启用时，在 VO 方言的程序中使用 @ 操作符可能会生成产生 “无法装箱 ”错误的代码。(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/551" target="_blank">#551</link>)</li>
       <li styleclass="Body Text">已优化 NULL_PSZ 和 NULL_SYMBOL 的生成代码 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/398" target="_blank">#398</link>)</li>
       <li styleclass="Body Text">当使用 PSZ 类型的元素时，结构和 UNIONS 上生成的 VoStructAttribute 大小错误。这一问题已得到修复。</li>
       <li styleclass="Body Text">修正了将 NULL 转换为 LOGIC 时的内部编译器错误</li>
@@ -1778,7 +1779,7 @@
     <para styleclass="Code Example" style="margin-left:50px;"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> s := </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NULL</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">s := s </text><text style="font-weight:bold; font-style:normal; color:#000000;">??</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &quot;abc&quot; &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// ?? 是 NULL 合并操作符</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">s </text><text style="font-weight:bold; font-style:normal; color:#000000;">??=</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &quot;abc&quot; &#160; &#160; &#160; &#160; &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// 这与之前的结果相同，但更紧凑</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? s</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// 因此，这将无法编译</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> i := 0 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LONG</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">i := i ?? 42 &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// 操作符“?? ”不能应用于 “int ”和 “int ”类型的操作数</text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// 但这可以编译</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> i := </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NULL</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LONG</text><text style="font-weight:normal; font-style:normal; color:#000000;">? &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// Nullable LONG</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">i := i ?? 42 &#160; &#160; &#160;</text></para>
     <list id="42" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Code Example" style="margin-top:0px; margin-bottom:0px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Code Example" style="margin-top:0px; margin-bottom:0px;"><text styleclass="Body Text">我们为</text><text styleclass="Body Text" style="font-weight:bold;">带有 INIT 访问器的属性</text><text styleclass="Body Text">添加了支持。通过这些访问器，您可以为属性赋值，但只能在构造函数中进行。该属性只能在类/结构的构造函数之外读取。</text></li>
-      <li styleclass="Body Text">我们添加了一个新的编译器选项 /enforceself。使用该选项后，类内对实例方法的所有调用都必须以 SELF(或 SUPER)作为前缀。在 FoxPro 方言中，也支持此选项。请注意，某些生成的代码(如 Windows 窗体编辑器中的代码)并不使用 SELF：，应用此编译器选项可能会迫使您更改生成的代码，或者可能会迫使您在代码中添加 #pragma options(“enforceself”, disable) 以禁用该文件的选项。</li>
+      <li styleclass="Body Text">我们添加了一个新的编译器选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-enforceself">/enforceself</link>。使用该选项后，类内对实例方法的所有调用都必须以 SELF(或 SUPER)作为前缀。在 FoxPro 方言中，也支持此选项。请注意，某些生成的代码(如 Windows 窗体编辑器中的代码)并不使用 SELF：，应用此编译器选项可能会迫使您更改生成的代码，或者可能会迫使您在代码中添加 #pragma options(“enforceself”, disable) 以禁用该文件的选项。</li>
       <li styleclass="Body Text">我们添加了一个新的编译器选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-allowdot">/allowdot</link> 。通过该选项，您可以控制是否允许使用 DOT(“.”)运算符访问实例成员。Core 和 FoxPro 方言的默认值是 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-allowdot">/allowdot</link>+。其他方言的默认值为 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-allowdot">/allowdot</link>-。也可以通过 #pragma 来使用： #pragma options(“allowdot”, enable)</li>
       <li styleclass="Body Text">源代码中的 XML 注释不再需要完全限定的 cref 名称(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/467" target="_blank">#467</link>)</li>
     </list>
@@ -1795,7 +1796,7 @@
       <li styleclass="Body Text">上一个版本中添加的允许将括号作为 FoxPro 方言数组分隔符的功能有太多副作用。我们暂时删除了这一功能。您必须再次使用带方括号的数组参数。</li>
     </list>
     <list id="27" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">不再需要 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">/fox2</link> 编译器选项(编译器会忽略该选项)。<br/>编译器现在会检查运行时函数是否被标记为 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_Internal_NeedsAccessToLocalsAttribute.htm" domain="XSharpRef.chm">NeedsAccessToLocalsAttribute</link>,(XSharp.Internal 名称空间中定义的 NeedsAccessToLocalsAttribute)。<br/>如果编译器发现一个函数标有此属性，如 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Type.htm" domain="XSharpRef.chm">Type()</link> 函数或 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_VFP_Functions_SqlExec.htm" domain="XSharpRef.chm">SQLExec</link>() 函数，那么它将在函数调用前后添加一些代码，以允许这些函数访问堆栈上的局部(变量)。只有启用了 /memvar 编译器选项，并且仅在 FoxPro 方言中才会发生这种情况。 <br/><link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_Internal_NeedsAccessToLocalsAttribute.htm" domain="XSharpRef.chm">NeedsAccessToLocalsAttribute</link> 有一个强制参数，用于指示函数是要写入局部(变量)还是只读取局部(变量)。<br/>当函数需要写入局部(变量)时，编译器会在调用后生成额外的代码，以确保在需要时更新局部(变量)。</li>
+      <li styleclass="Body Text">不再需要 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">/fox2</link> 编译器选项(编译器会忽略该选项)。<br/>编译器现在会检查运行时函数是否被标记为 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_Internal_NeedsAccessToLocalsAttribute.htm" domain="XSharpRef.chm">NeedsAccessToLocalsAttribute</link>,(XSharp.Internal 名称空间中定义的 NeedsAccessToLocalsAttribute)。<br/>如果编译器发现一个函数标有此属性，如 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Type.htm" domain="XSharpRef.chm">Type()</link> 函数或 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_VFP_Functions_SqlExec.htm" domain="XSharpRef.chm">SQLExec</link>() 函数，那么它将在函数调用前后添加一些代码，以允许这些函数访问堆栈上的局部(变量)。只有启用了 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">/memvar</link> 编译器选项，并且仅在 FoxPro 方言中才会发生这种情况。 <br/><link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_Internal_NeedsAccessToLocalsAttribute.htm" domain="XSharpRef.chm">NeedsAccessToLocalsAttribute</link> 有一个强制参数，用于指示函数是要写入局部(变量)还是只读取局部(变量)。<br/>当函数需要写入局部(变量)时，编译器会在调用后生成额外的代码，以确保在需要时更新局部(变量)。</li>
     </list>
     <list id="43" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">我们为 FoxPro 嵌入式 SQL 语句添加了一个标准头文件。该头文件应能解析嵌入式 SQL，但会输出尚未支持嵌入式 SQL 的警告。</li>
@@ -1851,7 +1852,7 @@
     </list>
     <para styleclass="Heading3">FoxPro 方言</para>
     <list id="27" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">为 /fox2 编译器选项添加了 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_Internal_NeedsAccessToLocalsAttribute.htm" domain="XSharpRef.chm">NeedsAccessToLocalsAttribute</link> 属性</li>
+      <li styleclass="Body Text">为 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">/fox2</link> 编译器选项添加了 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_Internal_NeedsAccessToLocalsAttribute.htm" domain="XSharpRef.chm">NeedsAccessToLocalsAttribute</link> 属性</li>
       <li styleclass="Body Text">调整了向 Type() 和 SqlExec() 等函数公开 LOCAL 变量值的代码。</li>
       <li styleclass="Body Text">有几个函数已经标记了新属性，这样它们就能 “看到” 局部变量。</li>
       <li styleclass="Body Text">添加了带单个参数的 TransForm() 重载。</li>
@@ -1872,13 +1873,13 @@
       <li styleclass="Body Text">在子文件夹中生成的新代码模板的命名空间名称以 “global:: ”开头。这一问题已得到修复。</li>
       <li styleclass="Body Text">已添加对 LOCAL FUNCTION 和 LOCAL PROCEDURE 的支持。</li>
       <li styleclass="Body Text">从文件夹中的类模板添加项目时，命名空间前缀为 “global::”。这一问题已得到修复。</li>
-      <li styleclass="Body Text">当磁盘上的智能感知数据库文件损坏时，就会发生错误。现在该文件已被删除，所有代码信息都已重新收集。</li>
+      <li styleclass="Body Text">当磁盘上的 intellisense 数据库文件损坏时，就会发生错误。现在该文件已被删除，所有代码信息都已重新收集。</li>
       <li styleclass="Body Text">工具/选项 “对话框中的 ”编辑器 “选项现在标记为 ”X#“，而不再是 ”XSharp&quot;。</li>
       <li styleclass="Body Text">我们在 “工具/选项 ”下添加了一个窗口，您可以在这里为我们的 VO 兼容编辑器设置几个值，如 grid 大小、粘贴偏移等。请在工具选项对话框中查找 X#。</li>
       <li styleclass="Body Text">我们在编辑器的格式选项中添加了两个新选项：“修剪尾部空白 ”和 “插入最后换行符”。</li>
       <li styleclass="Body Text">加载 MsTest 项目并不总是有效。打开项目时将调整 MsTest 项目的项目文件。(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/563" target="_blank">#563</link>)</li>
       <li styleclass="Body Text">我们新增了对 t4 模板(扩展名为 .tt 的文本文件，其中包含用于生成代码的脚本)的支持 </li>
-      <li styleclass="Body Text">添加现有 .resx 文件不会使其成为父 form.prg 的子窗体 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/197" target="_blank">#197</link>)</li>
+      <li styleclass="Body Text">添加现有 .resx 文件不会使其成为父 form.prg 的子节点 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/197" target="_blank">#197</link>)</li>
       <li styleclass="Body Text">项目属性对话框已完全重新设计。</li>
     </list>
     <para styleclass="Body Text"></para>
@@ -1890,7 +1891,7 @@
       <li styleclass="Body Text">修正了项目引用的成员完成问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/540" target="_blank">#540</link>)</li>
       <li styleclass="Body Text">修正了在取消注释行块时出现的异常，如果行块中有一行是空行。</li>
       <li styleclass="Body Text">我们增加了对 .editorconfig 文件的支持。请参阅文档文件中有关 <link displaytype="text" defaultstyle="true" type="topiclink" href="_EditorConfig-files">.editorconfig files 的章节。</link></li>
-      <li styleclass="Body Text">折叠最后一个实体 om 编辑器无法正常工作(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/564" target="_blank">#564</link>)</li>
+      <li styleclass="Body Text">折叠最后一个实体 om 后编辑器无法正常工作(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/564" target="_blank">#564</link>)</li>
       <li styleclass="Body Text">修正了续行注释后语法高亮显示的问题(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/556" target="_blank">#556</link>)</li>
       <li styleclass="Body Text">为委托添加了参数补全(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/581" target="_blank">#581</link>)</li>
       <li styleclass="Body Text">修正了 QuickInfo 工具提示中某些西里尔字符的问题(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/504" target="_blank">#504</link>)</li>
@@ -1977,7 +1978,7 @@
       <li styleclass="Body Text">后期绑定代码中的异常并不总是显示错误发生的正确位置。这一问题已得到修复。</li>
       <li styleclass="Body Text">我们增加了对 DataSessions 的支持。运行时中打开的工作区/cursor列表现在称为 “DataSession”(旧名称 “工作区 ”仍然可用)。<br/>您可以拥有多个 datasessions。您还可以使用 RuntimeState 类上的一个新方法 SetDataSession 来切换 RuntimeState 中的 “活动” datasessions。<br/>FoxPro 数据库在自己的 datasession 中打开。<br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">通过添加观察表达式，可以在调试器中检查打开的 DataSessions： XSharp.RDD.DataSession.Sessions</text><br/>每个 DataSession 都与一个线程相关联。当线程停止或中止时，DataSession 将被关闭，同时也会关闭其所有表。<br/>程序关闭时，所有 DataSessions 都会关闭，包括它们的表。这是通过 AppDomain:ProcessExit 事件处理程序完成的。</li>
       <li styleclass="Body Text">在独占模式下打开文件的低级文件 IO 函数(包括 RDD 系统)现在使用 “缓冲 IO”。这将提高性能。</li>
-      <li styleclass="Body Text">删除了将 Stream 从 MemoryStream 转换为 MemoryStream 的函数(未注明)。取而代之的是上一条中的缓冲区 I/O。</li>
+      <li styleclass="Body Text">删除了 Stream 和 MemoryStream 相互转换的函数(未文档化)。取而代之的是上一条中的缓冲区 I/O。</li>
       <li styleclass="Body Text">我们为 FoxPro CursorProperties、DatabaseProperties 和 SQLProperties 添加了 System.Enum 类型。</li>
       <li styleclass="Body Text">我们添加了一个 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_RDD_DatabasePropertyCollection.htm" domain="XSharpRef.chm">DatabasePropertyCollection</link> 类型。该类型用于向字段添加 “附加 ”属性，如 FoxPro 表的 DBF 字段。. </li>
     </list>
@@ -2092,7 +2093,7 @@
     <para styleclass="Heading1"><text styleclass="Heading2">运行时</text></para>
     <list id="59" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">延迟绑定代码中的错误信息并不总是显示导致异常的错误。我们现在检索 “最内部 ”异常，因此信息会显示抛出的第一个异常。</li>
-      <li styleclass="Body Text">我们添加了 Set.Safety 和 Set.Compatible 的运行时状态设置，以及 SetCompatible 和 SetSafety 的函数</li>
+      <li styleclass="Body Text">我们添加了 Set.Safety 和 Set.Compatible 的运行时状态设置，以及 SetCompatible 和 SetSafety 函数。</li>
     </list>
     <list id="60" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">用于为各种 Db..()函数保存和恢复工作区的 UDC 不正确，导致在函数调用后选择了错误的区域。这一问题已得到修复。</li>
@@ -2229,7 +2230,7 @@
       <li styleclass="Normal"><text styleclass="Body Text">如果外部程序集包含两种类型，而这两种类型的名称只是大小写不同，则读取外部程序集的类型信息将失败。</text></li>
       <li styleclass="Normal"><text styleclass="Body Text">实体解析器无法识别前缀为可见性修饰符(PROTECTED SET)的 GET 和 SET 访问器</text></li>
       <li styleclass="Normal"><text styleclass="Body Text">实体解析器无法识别不以 MEMBER 关键字开头的 ENUM 成员</text></li>
-      <li styleclass="Normal"><text styleclass="Body Text">已添加对 Visual Studio 任务窗口的支持。包含 TODO 或 HACK(可在工具/选项窗口中配置)字样的源代码注释现在会添加到任务列表中。这些任务会保存在智能感知数据库中，因此在打开解决方案后，所有任务都会立即显示，而无需(重新)扫描源文件。</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">已添加对 Visual Studio 任务窗口的支持。包含 TODO 或 HACK(可在工具/选项窗口中配置)字样的源代码注释现在会添加到任务列表中。这些任务会保存在 intellisense 数据库中，因此在打开解决方案后，所有任务都会立即显示，而无需(重新)扫描源文件。</text></li>
       <li styleclass="Normal"><text styleclass="Body Text">修正了 WIndows 窗体编辑器的类型和成员查找中的一个问题</text></li>
       <li styleclass="Normal"><text styleclass="Body Text">修正了 VS 调试器中的一个问题，即在数组和集合的索引操作符中减去 1。这显然是不正确的。</text></li>
     </list>
@@ -2345,7 +2346,7 @@
       <li styleclass="Body Text">我们现在使用 SQLite 数据库在会话之间持久保存代码模型。这减少了 X# 项目系统所需的内存。我们不再将整个代码模型保存在内存中。</li>
       <li styleclass="Body Text">这也意味着，当您重新打开现有解决方案时，我们只需解析自上次处理以来已更改的文件。这将加快大型 VS 解决方案的加载速度。</li>
       <li styleclass="Body Text">现在，我们还使用 Mono.Cecil 库，而不是 System.Reflection 命名空间中的类，从外部代码(程序集引用和非 X# 项目的项目引用)中读取类型信息。这样做速度更快，占用内存更少，最重要的是，当程序集发生变化时，我们可以轻松卸载和重新加载程序集。</li>
-      <li styleclass="Body Text">综上所述，打开 VS 解决方案的速度应该会更快，“锁定 ”VS 的情况也会减少(希望完全不会)。此外，代码自动补全和其他智能感知功能也会得到改进。</li>
+      <li styleclass="Body Text">综上所述，打开 VS 解决方案的速度应该会更快，“锁定 ”VS 的情况也会减少(希望完全不会)。此外，代码自动补全和其他 intellisense 功能也会得到改进。</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading3">源代码编辑器</para>
@@ -2373,7 +2374,7 @@
     <para styleclass="Heading1">Changes in 2.4.1.0 (Bandol GA 2.4a)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <list id="48" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Core 方言现在不再支持括号字符串，以避免在 GET 和 SET 关键字之间包含属性的单行外部属性声明出现问题</li>
+      <li styleclass="Body Text">Core 方言现在不再支持括号字符串，以避免在 GET 和 SET 关键字之间包含属性的单行外部特性(<text styleclass="f_bodytext" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">attributes</text>)声明出现问题</li>
       <li styleclass="Body Text">在 EXTERN 修饰符之后，PROPERTY 关键字不能被正确识别。</li>
       <li styleclass="Body Text">修正了包含 2 个数字常量的 IIF 表达式的 XS9021 警告</li>
       <li styleclass="Body Text">在 FoxPro 方言中，现在总是允许对某些类型(即使未启用 /lb 编译器选项)进行后期绑定调用，例如 USUAL 和 Empty 类。 这些类型在运行时都标有 AllowLateBound 属性。<br/>它们会生成新的编译器警告 (<link displaytype="text" defaultstyle="true" type="topiclink" href="XS9098">XS9098</link>).</li>
@@ -2548,7 +2549,7 @@
       <li styleclass="Body Text">已添加对 BRACKETED_STRING 常量着色的支持</li>
       <li styleclass="Body Text">修正了关键字大小写同步代码中的一个错误。</li>
       <li styleclass="Body Text">VS 表单编辑器后面的代码在声明没有返回类型的方法时存在问题。因此无法打开表单。这一问题已得到修复。</li>
-      <li styleclass="Body Text">改进了定义和枚举成员的智能感知信息</li>
+      <li styleclass="Body Text">改进了定义和枚举成员的 intellisense 信息</li>
       <li styleclass="Body Text">现在，您可以在项目属性对话框中启用/禁用 &#160;<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo11">/vo11</link></li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">VOXporter</text></para>
@@ -2691,7 +2692,7 @@
     </list>
     <list id="73" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text"><text styleclass="List1">&quot;格式化文档&quot;的速度有了很大提高。</text></li>
-      <li styleclass="Body Text"><text styleclass="List1">现在，“工具/选项 ”中的 XSharp智能感知选项页面在需要时会显示滚动条。</text></li>
+      <li styleclass="Body Text"><text styleclass="List1">现在，“工具/选项 ”中的 XSharp intellisense 选项页面在需要时会显示滚动条。</text></li>
       <li styleclass="Body Text"><text styleclass="List1">VO 窗口编辑器中的工具调色板现在有了图标</text></li>
     </list>
     <list id="74" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -2764,7 +2765,7 @@
       <li styleclass="List1">之前的更改修正了 Set() 函数在使用字符串 “On ”或 “Off ”为逻辑设置值时出现的问题。由于某些设置未使用逻辑初始化，因此无法正常工作。</li>
       <li styleclass="List1">使用 SetCollation(#Ordinal) 创建索引时，速度会更快一些。</li>
       <li styleclass="List1">runtimestate 现在有一个 EOF 设置。当设置为 “true ”时(FoxPro 方言会自动这样做)，MemoWrit() 将在文本文件后写入一个 ^Z (chr(26))，而 MemoRead()在找到该字符时会将其删除。</li>
-      <li styleclass="List1">runtimestate 现在有了 EOL 设置。默认值为 CR - LF (chr(13+chr(10))。使用 FWriteLine() 写入文件时，该设置用于行分隔符。</li>
+      <li styleclass="List1">runtimestate 现在有了 EOL 设置。默认值为 CR - LF (chr(13)+chr(10))。使用 FWriteLine() 写入文件时，该设置用于行分隔符。</li>
     </list>
     <para styleclass="Heading2">RDD 系统</para>
     <para styleclass="Normal"></para>
@@ -2842,7 +2843,7 @@
     <list id="79" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">我们为函数和方法调用中的未类型化参数添加了对引用参数的支持</li>
       <li styleclass="List1">在 Xbase++ 和 FoxPro 方言中，用“@”传递的参数总是被视为 BY REF 参数，因为这些方言不支持 “AddressOf” 功能。</li>
-      <li styleclass="List1">当使用 /undeclared 时，如果实体添加了一个新的 private 属性，那么当实体退出作用域时，该 private 属性不会被清除。这一问题已得到修复。</li>
+      <li styleclass="List1">当使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-undeclared">/undeclared</link> 时，如果实体添加了一个新的 private 属性，那么当实体退出作用域时，该 private 属性不会被清除。这一问题已得到修复。</li>
       <li styleclass="List1">编译器未正确处理编译 oObject?:Variable</li>
       <li styleclass="List1">修正了调用 SELF:Axit() 时的内部编译器错误 </li>
       <li styleclass="List1">DO 语句的参数现在通过引用传递</li>
@@ -3024,7 +3025,7 @@
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">在 FoxPro 方言中，您现在可以在文件的第一个实体之前加入语句。编译器会识别这些语句，并自动以源文件的名称创建一个函数，并将这些语句中的代码添加到该函数的主体中。</text></li>
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">启用 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7" style="font-weight:normal; font-style:normal; color:#000000;">/vo7</link><text style="font-weight:normal; font-style:normal; color:#000000;"> 后，编译器现在允许将整数表达式转换为逻辑表达式。对于整数类型的表达式，始终支持 LOGIC(_CAST。</text></li>
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">现在，编译器能更早地检测到语言功能的错误使用(如在 Core 或 FoxPro 方言中使用 VOSTRUCT)，从而加快了错误代码的编译速度。</text></li>
-      <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">现在，当启用 /vo2 时，编译器也会使用空字符串初始化多维字符串数组，就像下面的代码一样：</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> TestClass</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">EXPORT</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">DIM</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> aDim[3,3] </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text></li>
+      <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">现在，当启用 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2" style="font-weight:normal; font-style:normal; color:#000000;">/vo2</link><text style="font-weight:normal; font-style:normal; color:#000000;"> 时，编译器也会使用空字符串初始化多维字符串数组，就像下面的代码一样：</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> TestClass</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">EXPORT</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">DIM</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> aDim[3,3] </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text></li>
     </list>
     <list id="82" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1"><text style="font-weight:normal; font-style:normal; color:#000000;">在以前的版本中，如果调用 SELF() 或 SUPER() 的源代码行紧跟在 CONSTRUCTOR() 之后，则无法在该行上设置断点。这一问题已得到修复。</text></li>
@@ -3300,7 +3301,7 @@
       <li styleclass="List">修复了 WCF service 模板中的一个问题</li>
       <li styleclass="List">对使用属性的代码的多行缩进进行更正</li>
       <li styleclass="List">新事件处理程序的代码生成现在包括 RETURN 语句，即使 VS 没有在语句列表中添加该语句也是如此</li>
-      <li styleclass="List">已禁用智能感知选项 “在每个字符后显示完成列表”，因为它会对性能产生负面影响，而且还会插入前面带有 @@ 字符的关键字。</li>
+      <li styleclass="List">已禁用 intellisense 选项 “在每个字符后显示完成列表”，因为它会对性能产生负面影响，而且还会插入前面带有 @@ 字符的关键字。</li>
       <li styleclass="List">对 Windows 窗体编辑器的代码分析进行了几处修改。现在，注释和区域以及类的属性都可以保存和重新生成。此外，还修正了项目资源中图像的代码生成，以及同一程序集中声明的静态字段和枚举器的解析。<br/><text style="font-weight:bold;">请注意 ：</text>如果使用的值来自与表单定义在同一程序集中的类型，则需要先对程序集进行(重新)编译，然后才能在 Windows 窗体编辑器中成功打开表单。</li>
       <li styleclass="List">现在，从 Windows 窗体编辑器生成的新方法将带有结尾 RETURN 语句。</li>
       <li styleclass="List">我们对源代码编辑器中 QuickInfo 的显示方式进行了一些改进。</li>
@@ -3321,7 +3322,7 @@
       <li styleclass="List">修正了预处理器中的一个异常</li>
     </list>
     <list id="86" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">添加了对 FoxPro 运行时 DLL 的支持。</li>
+      <li styleclass="List">添加了对 FoxPro 运行时 DLL 的支持(译者注：该 DLL 指 XSharp.VFP.DLL)。</li>
     </list>
     <list id="79" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">不再支持 ANY 关键字(USUAL 的别名)。</li>
@@ -3450,9 +3451,9 @@
     <list id="92" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">现在，您可以指定多行语句应在第二行及以后各行缩进。</li>
       <li styleclass="List1">BEGIN NAMESPACE ... END NAMESPACE 中函数的类型查找不包括该命名空间中的类型。</li>
-      <li styleclass="List1">为 Xbase++ 方言中的 INLINE 方法启动智能感知功能</li>
-      <li styleclass="List1">修正了智能感知中的几个问题</li>
-      <li styleclass="List1">改进了 FOREACH 循环中声明的 VAR 关键字的智能感知功能</li>
+      <li styleclass="List1">为 Xbase++ 方言中的 INLINE 方法启动 intellisense 功能</li>
+      <li styleclass="List1">修正了 intellisense 中的几个问题</li>
+      <li styleclass="List1">改进了 FOREACH 循环中声明的 VAR 关键字的 intellisense 功能</li>
       <li styleclass="List1">其他几项(较小的)改进。</li>
     </list>
     <para styleclass="Heading2">工具</para>
@@ -3516,19 +3517,19 @@
     <list id="79" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修正了键入 VAR 表达式时可能出现的异常</li>
       <li styleclass="List1">在项目系统备份项目文件时，我们会确保在写入或删除现有文件前清除只读标记。</li>
-      <li styleclass="List1">从 C++ 项目读取智能感知数据可能会使智能感知引擎陷入无限循环。这一问题已得到修复。</li>
+      <li styleclass="List1">从 C++ 项目读取 intellisense 数据可能会使 intellisense 引擎陷入无限循环。这一问题已得到修复。</li>
       <li styleclass="List1">现在，对 Form.Designer.prg 的更改会立即写入磁盘，以确保在窗体编辑器窗口中按下 “运行” 或 “调试” 键时，窗体的更改会被重新编译。</li>
-      <li styleclass="List1">改进了对 VAR 关键字的智能感知支持。</li>
+      <li styleclass="List1">改进了对 VAR 关键字的 intellisense 支持。</li>
       <li styleclass="List1">在 “项目属性 ”页面上添加了对 FoxPro 的支持，以便为 FoxPro 的编译器和运行时更改做好准备。</li>
       <li styleclass="List1">.CH 文件现在也能在 Visual Studio 中被识别为 “X#”文件。</li>
-      <li styleclass="List1">现在，您可以控制从 “完成列表 ”中选择条目的字符。例如，DOT 和 COLON 现在也可以选择当前选定的元素。完整列表请参见工具-选项-文本编辑器-XSharp-Intellisense 页面。</li>
+      <li styleclass="List1">现在，您可以控制从 “完成列表 ”中选择条目的字符。例如，DOT(.) 和 COLON(:) 现在也可以选择当前选定的元素。完整列表请参见工具-选项-文本编辑器-XSharp-Intellisense 页面。</li>
       <li styleclass="List1">添加到项目中的程序集在下一次加载项目时才会被正确解析。这一问题已得到修复。</li>
       <li styleclass="List1">修复了为 Windows 表单编辑器提供数据的 codedom 分析器中的一个问题。现在可以从同一程序集中的另一个窗体继承窗体。当然，您必须先编译项目。</li>
       <li styleclass="List1">现在，.CH 扩展名也注册为 X# 项目系统的相关扩展名。</li>
       <li styleclass="List1">更改了 #ifdef 命令的自动缩进</li>
       <li styleclass="List1">修正了在加载带有 COM 引用的项目文件时可能出现的异常。</li>
       <li styleclass="List1">已为 XPP 和 VO Dialect 中的类库添加模板</li>
-      <li styleclass="List1">有时会在注释区域内触发智能感知的类型查找。这一问题已得到修复。</li>
+      <li styleclass="List1">有时会在注释区域内触发 intellisense 的类型查找。这一问题已得到修复。</li>
     </list>
     <para styleclass="Heading2">工具</para>
     <list id="79" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -3555,7 +3556,7 @@
       <li styleclass="List1">重复的包含文件不再产生错误，而是发出警告</li>
       <li styleclass="List1">修复默认参数值后缀为 “L ”或 “U ”的问题</li>
       <li styleclass="List1">为使用 clipper 调用约定的方法/函数指定默认参数值时添加了编译器错误</li>
-      <li styleclass="List1">当指定 /vo2 时，STRING 的 DIM 数组未用 &quot;&quot; 初始化。该问题已得到修复。</li>
+      <li styleclass="List1">当指定 -<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">vo2</link> 时，STRING 的 DIM 数组未用 &quot;&quot; 初始化。该问题已得到修复。</li>
       <li styleclass="List1">新增了对 Dbase 风格内存变量(MEMVAR、PUBLIC、PRIVATE、PARAMETERS)的支持。更多信息，请参阅帮助文件中的 &#160;<link displaytype="text" defaultstyle="true" type="topiclink" href="Memory-Variables">MEMVAR</link> 这仅适用于某些方言，还需要使用<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar"> /memvar</link> 命令行选项</li>
       <li styleclass="List1">新增了对未声明变量的支持(不建议使用！)。这仅适用于某些方言，需要使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar"> /memvar</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-undeclared">/undeclared</link> 命令行选项 </li>
       <li styleclass="List1">修正了 USUAL 变量和 STRING 变量之间的比较问题</li>
@@ -3599,7 +3600,7 @@
     </list>
     <list id="97" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">我们还在语言页面上添加了一个项目属性，用于指定其他标准头文件(而不是 XSharpDefs.xh)。</li>
-      <li styleclass="List1">在智能感知中显示的 XSharp.__Array 类型的名称是错误的</li>
+      <li styleclass="List1">在 intellisense 中显示的 XSharp.__Array 类型的名称是错误的</li>
       <li styleclass="List1">我们在 “项目属性 ”对话页面上添加了条目，以启用 MEMVAR 支持和启用未声明变量</li>
       <li styleclass="List1">修正了 CodeDom 提供程序(Windows 窗体编辑器使用)中的一个问题，即在写回源代码时，带有数组类型的字段会丢失数组括号。</li>
       <li styleclass="List1">从窗口窗体编辑器写入更改时，我们不再写入磁盘，而是写入打开的(有时是不可见的).designer.prg 窗口。这样就可以避免在 Visual Studio 外部更改 .designer.prg 文件时出现警告信息。</li>
@@ -3745,7 +3746,7 @@
       <li styleclass="List1">修正了编辑器中的 null 引用异常</li>
       <li styleclass="List1">修正了在编辑器中取消代码注释时出现的问题</li>
       <li styleclass="List1">改进了具有许多依赖关系的大型解决方案的加载时间性能。</li>
-      <li styleclass="List1">修正了智能感知引擎可能锁定项目引用或程序集引用使用的 DLL 的问题。</li>
+      <li styleclass="List1">修正了 intellisense 引擎可能锁定项目引用或程序集引用使用的 DLL 的问题。</li>
       <li styleclass="List1">修正了一个问题，即在 windows 窗体编辑器中打开窗体时，缺少引用(例如未在开发人员机器上安装的 COM 引用)可能会导致类型查找问题。</li>
       <li styleclass="List1">在项目属性页面添加了选择 Harbour 方言的选项。</li>
     </list>
@@ -3767,7 +3768,7 @@
       <li styleclass="List1">某些低级文件功能的 Oem2Ansi 转换不正确。</li>
       <li styleclass="List1">我们在后期绑定支持方面做了一些调整 </li>
       <li styleclass="List1">所有字符串 - PSZ 例程(String2PSz()、StringAlloc() 等)现在都使用 Windows Codepage 将 unicode 字符串转换为 ansi。</li>
-      <li styleclass="List1">如果您的程序库在编译时使用了 “兼容字符串比较”，但主应用程序没有使用，那么程序库中的字符串比较将遵循与主应用程序相同的规则，因为主应用程序在运行时注册了 /vo13 设置。运行时中的 “兼容 ”字符串比较例程现在会检测到主程序不想进行 VO 兼容字符串比较，并将简单地调用正常的 .Net 比较例程。<br/>因此，我们建议第三方产品在其代码中始终使用兼容字符串比较。</li>
+      <li styleclass="List1">如果您的程序库在编译时使用了 “兼容字符串比较”，但主应用程序没有使用，那么程序库中的字符串比较将遵循与主应用程序相同的规则，因为主应用程序在运行时注册了 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo13">/vo13</link> 设置。运行时中的 “兼容 ”字符串比较例程现在会检测到主程序不想进行 VO 兼容字符串比较，并将简单地调用正常的 .Net 比较例程。<br/>因此，我们建议第三方产品在其代码中始终使用兼容字符串比较。</li>
     </list>
     <list id="101" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">根据源代码注释生成了运行时的初步文档，并将其作为本文档的一个章节。</li>
@@ -3825,7 +3826,7 @@
     </list>
     <para styleclass="Heading2">生成系统</para>
     <list id="99" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List1">VO15 的默认值已从 false 改回未定义。</li>
+      <li styleclass="List1"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo15">VO15</link> 的默认值已从 false 改回未定义。</li>
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
@@ -3903,7 +3904,7 @@
     <list id="99" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">改进了关键字大小写同步和缩进。打开源文件时也会同步 “关键字大小写”。</li>
       <li styleclass="List1">双击查找结果窗口打开源文件，不再为同一源文件打开新窗口</li>
-      <li styleclass="List1">提高了智能感知的类型查找速度</li>
+      <li styleclass="List1">提高了 intellisense 的类型查找速度</li>
       <li styleclass="List1">修正了一个问题，该问题会导致无法查找同一命名空间中的类型</li>
       <li styleclass="List1">修复最新 Visual Studio 2017 版本中引入的 QuickInfo 问题</li>
       <li styleclass="List1">调试器中不再显示与调试器工具提示重叠的 QuickInfo 提示</li>
@@ -3987,7 +3988,7 @@
     </list>
     <para styleclass="Heading2">Visual Studio 集成</para>
     <list id="99" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List1">版本 1.2.1 引入了一个问题，可能导致输出文件被智能感知引擎锁定。现已修复</li>
+      <li styleclass="List1">版本 1.2.1 引入了一个问题，可能导致输出文件被 intellisense 引擎锁定。现已修复</li>
       <li styleclass="List1">编辑器解析器在处理嵌套类型时出现问题。现已修复</li>
       <li styleclass="List1">X# 项目内的枚举代码完成中未包含枚举成员</li>
       <li styleclass="List1">代码重新格式化方面的一些改进</li>
@@ -4071,7 +4072,7 @@
     <list id="99" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">子类中的重载方法，如果其签名与其重载的父类方法相同，则在完成列表中不再被视为重载方法</li>
       <li styleclass="List1">缺少一个引用 DLL 可能会 “杀死 ”intellisense 引擎。现在这种情况不再发生。当然，缺失的引用 DLL 的类型信息不会包含在内。</li>
-      <li styleclass="List1">生成的 XAML 代码源文件(OBJ 文件夹中的 .g.prg 文件)中的属性和方法现在也会被解析，并包含在智能感知以及类浏览器和对象浏览器窗口中的完成列表中。</li>
+      <li styleclass="List1">生成的 XAML 代码源文件(OBJ 文件夹中的 .g.prg 文件)中的属性和方法现在也会被解析，并包含在intellisense以及类浏览器和对象浏览器窗口中的完成列表中。</li>
     </list>
     <para styleclass="Heading2"><text style="font-weight:bold;">VOXPorter</text></para>
     <list id="99" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -4145,7 +4146,7 @@
       <li styleclass="List1">修正了调试器序列点(调试器步进)的一个问题</li>
       <li styleclass="List1">X# 生成的 pdb 文件现在标有 X# 语言 GUID，因此在 VS 调试器中可识别为 X# 文件</li>
       <li styleclass="List1">DATETIME (26) 和 DECIMAL (27) 作为 UsualType 添加到编译器中，为允许使用这些类型的 usuals 类型的 X# 运行时做准备。</li>
-      <li styleclass="List1">编译器选项 /VO15 和 /VO16 现在在 VO/Vulcan 方言之外使用时会产生错误信息</li>
+      <li styleclass="List1">编译器选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo15">/VO15</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo16">/VO16</link> 现在在 VO/Vulcan 方言之外使用时会产生错误信息</li>
       <li styleclass="List1">在类外声明的方法(VO 风格代码)将声明 private 类，而不是 public 类</li>
       <li styleclass="List1">ASTYPE 已改为位置关键字</li>
       <li styleclass="List1">修正了 Chr() 和 _Chr() 函数在字面数字大于 127 时的一个问题</li>
@@ -4160,9 +4161,9 @@
       <li styleclass="List1">改进函数和过程的信息提示</li>
       <li styleclass="List1">改进的大小写同步</li>
       <li styleclass="List1">添加了第一版智能缩进</li>
-      <li styleclass="List1">修正了智能感知引擎中可能锁死 VS 的查找问题</li>
+      <li styleclass="List1">修正了intellisense引擎中可能锁死 VS 的查找问题</li>
       <li styleclass="List1">编译器生成的类型现在不会出现在完成列表中。</li>
-      <li styleclass="List1">已为 LOCAL IMPLIED 和 VAR 变量的智能感知添加部分支持</li>
+      <li styleclass="List1">已为 LOCAL IMPLIED 和 VAR 变量的intellisense添加部分支持</li>
       <li styleclass="List1">已添加对格式化文档的支持。这也会根据工具/选项菜单中定义的工具设置标识符的情况</li>
       <li styleclass="List1">改进后台文件扫描器的性能。在编译过程中，该扫描器也会暂停，以提高编译速度。 </li>
     </list>
@@ -4208,7 +4209,7 @@
       <li styleclass="List1">添加了在 XSharp 之后(重新)安装 Vulcan 时的警告，这可能会导致 Visual Studio 集成出现问题</li>
       <li styleclass="List1">VS 解析器将接口标记为结构而非接口。这一问题已得到修复。</li>
       <li styleclass="List1">在 VS 工具菜单中，XPorter 工具有了更好的名称</li>
-      <li styleclass="List1">在查找类型信息时暂停 VS 后台分析器，以提高智能感知速度</li>
+      <li styleclass="List1">在查找类型信息时暂停 VS 后台分析器，以提高intellisense速度</li>
       <li styleclass="List1">对 X# 附带的模板进行了几处修改</li>
     </list>
     <para styleclass="Heading2">XPorter</para>
@@ -4321,21 +4322,21 @@
     <list id="110" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">为 “Using Static”类中的函数和方法添加了参数提示</li>
       <li styleclass="Normal">为 Clipper调用约定函数和方法添加了参数提示</li>
-      <li styleclass="Normal">在智能感知中添加了对泛型的支持</li>
-      <li styleclass="Normal">Intellisense 将显示关键字，而不是本地类型名称(例如 WORD，而不是 System.UInt16)</li>
+      <li styleclass="Normal">在intellisense中添加了对泛型的支持</li>
+      <li styleclass="Normal">intellisense将显示关键字，而不是本地类型名称(例如 WORD，而不是 System.UInt16)</li>
       <li styleclass="Normal">现在，当用户输入开头的“(”或“{”以及逗号“, ”时，都会显示参数提示。</li>
       <li styleclass="Normal">参数提示会显示 REF OUT 和 AS 修饰符</li>
       <li styleclass="Normal">为 COM 引用(包括普通 COM 引用和主要互操作程序集)添加了智能提示。此外，已实现接口中的成员现在也包含在内嵌代码自动完成中(这在 COM 中非常常见)。</li>
       <li styleclass="Normal">改进了其他语言(如 C# 和 VB)项目引用的直观显示。</li>
-      <li styleclass="Normal">为引用项目中的函数和引用的 Vulcan 和/或 X# 程序集添加了智能感知功能</li>
-      <li styleclass="Normal">抑制智能感知列表中的 &quot;特殊类型名称”</li>
+      <li styleclass="Normal">为引用项目中的函数和引用的 Vulcan 和/或 X# 程序集添加了intellisense功能</li>
+      <li styleclass="Normal">抑制intellisense列表中的 &quot;特殊类型名称”</li>
       <li styleclass="Normal">已添加对 “VulcanClassLibrary ”属性的支持，以帮助查找类型和函数</li>
       <li styleclass="Normal">本地资源编译器的错误现在也包含在错误列表中</li>
       <li styleclass="Normal">修正了构造函数参数提示的问题</li>
       <li styleclass="Normal">已为 X# 类型关键字(如 STRING、REAL4 等)添加成员列表支持。</li>
       <li styleclass="Normal">修正了 Windows 窗体编辑器中与 ActiveX 控件有关的几个问题</li>
       <li styleclass="Normal">添加了启动 VO Xporter 工具的菜单选项</li>
-      <li styleclass="Normal">添加了依赖项后台扫描功能，确保新生成的代码经过扫描后可用于 intellisense。</li>
+      <li styleclass="Normal">添加了依赖项后台扫描功能，确保新生成的代码经过扫描后可用于intellisense</li>
       <li styleclass="Normal">对 Windows 窗体编辑器和项目系统进行了多项修改：</li>
       <list id="110" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">添加了对添加 ActiveX 控件的支持</li>
@@ -4395,14 +4396,14 @@
     </list>
     <para styleclass="List1"><tab /><tab />cb := { |x| x[1] == 1 }</para>
     <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List1">由于 /vo16 编译器选项有太多副作用，目前已被禁用(不起任何作用)。</li>
+      <li styleclass="List1">由于 /vo16 编译器选项有太多副作用，目前已(译者注：暂时)被禁用(不起任何作用)。</li>
     </list>
     <para styleclass="Heading2">Visual Studio 集成</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">删除的文件和文件夹会被移动到回收站。</li>
       <li styleclass="List1">修正了 XAML 编辑器中的intellisense问题</li>
       <li styleclass="List1">添加了对不同 X# 项目之间代码完成的支持</li>
-      <li styleclass="List1">为 VB 和 C# 项目中的源代码添加了对代码完成和其他智能感知功能的支持</li>
+      <li styleclass="List1">为 VB 和 C# 项目中的源代码添加了对代码完成和其他intellisense功能的支持</li>
       <li styleclass="List1">已添加对参数信息的支持</li>
     </list>
     <para styleclass="Heading2">文档</para>
@@ -4417,7 +4418,7 @@
     <list id="116" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">改进了某些错误信息，例如未终止字符串的错误信息</li>
       <li styleclass="List1">已添加对 /s(仅限语法检查)命令行选项的支持</li>
-      <li styleclass="List1">已添加对 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-parseonly">/parseonly</link> 命令行选项的支持，该选项用于智能感知解析器</li>
+      <li styleclass="List1">已添加对 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-parseonly">/parseonly</link> 命令行选项的支持，该选项用于intellisense解析器</li>
     </list>
     <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">针对无效代码添加了一些编译器错误和警告</li>
@@ -4479,7 +4480,7 @@
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">我们扩展了预处理器 。它现在支持 #command、#translate、#xcommand 和 #xtranslate。此外，还支持 “伪函数” 定义，如 ：</text><br/><br/><tab /><text styleclass="Code Example" style="font-weight:bold;">#define MAX(x,y) IIF((x) &gt; (y), (x), (y))</text><br/><br/><text styleclass="Normal">其工作原理与 #xtranslate 相同，但定义是区分大小写的(除非启用了 “VO 兼容预处理器 ”选项 (/</text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo8" styleclass="Normal">vo8</link><text styleclass="Normal">).</text><br/><text styleclass="Normal">预处理器中</text><text styleclass="Normal" style="font-weight:bold;">唯一不起作用</text><text styleclass="Normal">的是</text><text styleclass="Normal" style="font-weight:bold;">重复结果标记</text><text styleclass="Normal">。</text></li>
       <li styleclass="Normal"><text style="font-weight:normal;">在 VO/Vulcan 模式下，编译器现在可以接受ENDIF 和 NEXT 等关键字与语句结尾之间的 “垃圾”，就像 VO 编译器一样。</text><br/><text style="font-weight:normal;">因此，您不必再删除 NEXT 或 ENDIF 之后的 “注释 ”标记。这将在不更改 VO 和 Vulcan 方言的情况下进行编译：</text><br/><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> X == Y</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; DoSomething()</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> X == Y</text><br/>或<br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">FOR</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> I := 1 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">to</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> 10</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;DoSomething()</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">NEXT</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> I</text><br/>我们不推荐这种编码方式，但这种代码非常常见...</li>
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal" style="font-weight:normal;">修正了单引号字符串的识别问题。现在这些字符串被视为 STRING_CONST，编译器后台也进行了调整，以便在需要时将 STRING 字面量转换为 CHAR 字面量。</text></li>
-      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal" style="font-weight:normal;">在 VO 和 Vulcan 方言中，当使用编译器选项 /vo1 时，Init() 和 Axit() 方法允许使用不带值或返回值为 SELF 的 RETURN 语句。其他返回值将触发编译器警告并被忽略。</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal" style="font-weight:normal;">在 VO 和 Vulcan 方言中，当使用编译器选项 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo1" styleclass="Normal" style="font-weight:normal;">/vo1</link><text styleclass="Normal" style="font-weight:normal;"> 时，Init() 和 Axit() 方法允许使用不带值或返回值为 SELF 的 RETURN 语句。其他返回值将触发编译器警告并被忽略。</text></li>
     </list>
     <para styleclass="Heading3"><text style="font-weight:bold;">新特性 / 更改的行为：</text></para>
     <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
@@ -4585,7 +4586,7 @@
     </list>
     <para styleclass="Heading3"><text style="font-weight:bold;">Bug 修复</text></para>
     <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">现在，只有启用 /ins 编译器选项时，才会使用隐式命名空间。在 Vulcan 方言中，命名空间 Vulcan 总是包含在内。</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">现在，只有启用 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ins" styleclass="Normal">/ins</link><text styleclass="Normal"> 编译器选项时，才会使用隐式命名空间。在 Vulcan 方言中，命名空间 Vulcan 总是包含在内。</text></li>
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">修正了 @ 操作符和 VOSTRUCT 类型的几个问题</text></li>
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">修复了 VOSTRUCT 类型的 DIM 数组的一个问题</text></li>
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">修正了 VOSTRUCT 和 UNION 类型中 LOGIC 值的问题</text></li>
@@ -4666,7 +4667,7 @@
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">默认参数现在可以像 VO 和 Vulcan 一样处理。这意味着您也可以将日期常量、符号常量等作为默认参数</text></li>
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">字符串 “单个等号” 规则现在与 “可视对象” 100% 相同。我们发现有一种情况，Vulcan 返回的结果与 Visual Objects 不一致。我们选择与 VO 兼容。</text></li>
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">在 VO/Vulcan 模式下编译时，将自动调用 VO SDK 库中的启动程序。您不必再在代码中调用这些程序。 此外，主程序集中的初始程序也会在启动时被调用。</text></li>
-      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">实现了 /vo7 编译器选项(隐式转换)。这还包括支持在 REF 参数中使用 @ 符号</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">实现了 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7" styleclass="Normal">/vo7</link><text styleclass="Normal"> 编译器选项(隐式转换)。这还包括支持在 REF 参数中使用 @ 符号</text></li>
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">现在，您可以使用 DOT 操作符访问 VOSTRUCT 变量中的成员了</text></li>
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">我们修复了几个 USUAL - 其他类型转换问题，这些问题在以前的版本中需要进行转换</text></li>
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">现在，编译器可以正确解析包含 DECLARE METHOD、DECLARE ACCESS 和 DECLARE ASSIGN 语句的 VO 代码，并忽略这些语句。</text></li>
@@ -4704,7 +4705,7 @@
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">修正了子类中的虚方法会隐藏父类方法的问题</text></li>
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">自动返回值生成也会生成 ASSIGN 方法的返回值。这一问题已得到修复。</text></li>
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">我们修复了 LINQ 表达式的连接子句中一个会导致编译器异常的问题</text></li>
-      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">/vo10(兼容 iif)编译器选项不再在 Core 方言中添加强制转换。只有 VO/Vulcan 方言才会这样做</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo10" styleclass="Normal">/vo10</link><text styleclass="Normal">(兼容 iif)编译器选项不再在 Core 方言中添加强制转换。只有 VO/Vulcan 方言才会这样做</text></li>
     </list>
     <para styleclass="Heading2">Visual Studio 集成</para>
     <para styleclass="Normal"><text style="font-weight:normal;">我们更改了错误列表和输出窗口的更新方式。在以前的版本中，输出窗口中可能会缺少某些行，而且错误代码列是空的。现在应该可以正常工作了。</text></para>
@@ -4771,13 +4772,13 @@
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">现在允许在 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SWITCH" styleclass="Normal">SWITCH</link><text styleclass="Normal"> 语句中使用空开关标签。它们可以与下一个标签共享执行。 </text><br/><text styleclass="Normal">新增了错误 9024(SWITCH 语句内不允许使用 EXIT 语句)，如果尝试退出围绕 switch 语句的循环，则会出现该错误。</text><br/><text styleclass="Normal">这是不允许的。</text></li>
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">已添加对多个 /vo 编译器选项的支持：</text><br/><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo8" styleclass="Normal">- vo8</link><text styleclass="Normal">(兼容预处理器行为)。这使得预处理器定义不区分大小写。此外，值为 FALSE 或 0 的定义将被视为 “未定义”。</text><br/><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo9" styleclass="Normal">- vo9</link><text styleclass="Normal">(允许缺失 Return 语句)编译器选项。使用 /vo9 时也允许缺少返回值。 </text><br/><text styleclass="Normal">新增警告 9025(缺少 RETURN 语句)和 9026(缺少 RETURN 值)。</text><br/><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo12" styleclass="Normal">- vo12</link><text styleclass="Normal">(Clipper 整数除法)</text></li>
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">现在，预处理器会自动定义从 __VO1__ 到 __VO15__ 的</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Compiler-Macros" styleclass="Body Text">宏</link><text styleclass="Normal">，根据编译器选项的设置，宏值为 TRUE 或 FALSE。</text></li>
-      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">FOX 版本的编译器现在以 Release 模式发布，速度更快。此外，还安装了调试版本的编译器，以便在需要时帮助查找编译器问题。</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">FOX 订阅版本的编译器现在以 Release 模式发布，速度更快。此外，还安装了调试版本的编译器，以便在需要时帮助查找编译器问题。</text></li>
     </list>
     <para styleclass="Heading3">更改的行为</para>
     <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text"><text style="font-weight:normal;">编译器为 Core 方言生成的 Globals 类现在称为 Functions，而不再是 Xs$Globals。 </text></li>
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">现在，重载 VulcanRTFuncs 中的函数无需指定命名空间：</text><br/><text styleclass="Normal">当编译器找到两个候选函数，其中一个在 VulcanRTFuncs 中，那么就会选择不在 VulcanRTFuncs 中的函数。</text></li>
-      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">现在，VO/Vulcan 方言的 9001 号警告(隐含不安全修饰符)已被抑制。不过，如果编译不安全代码，必须通过 /unsafe 编译器选项！</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">现在，VO/Vulcan 方言的 9001 号警告(隐含不安全修饰符)已被抑制。不过，如果编译不安全代码，必须通过 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-unsafe" styleclass="Normal">/unsafe</link><text styleclass="Normal"> 编译器选项！</text></li>
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">改进了编译器发布模式的错误信息</text></li>
     </list>
     <para styleclass="Heading3">Bug 修复</para>
@@ -4851,7 +4852,7 @@
     </list>
     <para styleclass="Heading2">生成系统</para>
     <list id="127" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List1">添加了对新的 /vo15 命令行开关的支持。</li>
+      <li styleclass="List1">添加了对新的 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo15">/vo15</link> 命令行开关的支持。</li>
       <li styleclass="List1">添加了对编译本地资源的支持。</li>
     </list>
     <para styleclass="Heading2">编译器</para>
@@ -4960,7 +4961,7 @@
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; font-style:italic; color:#008000; background-color:#ffffff;">// do the work</text></para>
     <para styleclass="" style="text-align:left; text-indent:35px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff; background-color:#ffffff;">END</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000; background-color:#ffffff;">&#32;</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff; background-color:#ffffff;">USING</text></para>
     <list id="132" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">已添加对 /vo10(兼容 IIF 行为)的支持。在 VO 和 Vulcan 方言中，表达式被转换为 USUAL。在 Core 方言中，表达式被转换为 OBJECT。</text></li>
+      <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">已添加对 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo10" styleclass="Normal">/vo10</link><text styleclass="Normal">(兼容 IIF 行为)的支持。在 VO 和 Vulcan 方言中，表达式被转换为 USUAL。在 Core 方言中，表达式被转换为 OBJECT。</text></li>
     </list>
     <para styleclass="Heading2"> VO 和 Vulcan 方言的新语言特性</para>
     <list id="140" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -4997,7 +4998,7 @@
       <li styleclass="List1">运行共享编译器时，命令行选项未正确重置。这一问题已得到修复。</li>
     </list>
     <list id="144" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List1">生成系统会将传给 Visual Studio 的错误数量限制为每个项目最多 500 个。每个项目最多 500 个。命令行编译器仍会显示所有错误。</li>
+      <li styleclass="List1">生成系统会将传给 Visual Studio 的错误数量限制为每个项目最多 500 个。命令行编译器仍会显示所有错误。</li>
     </list>
     <para styleclass="Heading2">编译器</para>
     <list id="144" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -5017,7 +5018,7 @@
       <li styleclass="List1">正确解析 XBase 类型名称(ARRAY、DATE、SYMBOL、USUAL 等)</li>
       <li styleclass="List1">现在可正确解决字面值问题(ARRAY、DATE、SYMBOL)</li>
       <li styleclass="List1">NULL_ 字面已正确解析(NULL_STRING 遵循 /vo2 编译器选项、NULL_DATE、NULL_SYMBOL)。</li>
-      <li styleclass="List1">已启用 /vo14 编译器选项(浮点字面量)</li>
+      <li styleclass="List1">已启用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo14">/vo14</link> 编译器选项(浮点字面量)</li>
       <li styleclass="List1">编译器会自动在每个程序中插入 “Using Vulcan ”和 “using static VulcanRtFuncs.Functions”。</li>
       <li styleclass="List1">您必须在项目中添加对 VulcanRTFuncs 和 VulcanRT 程序集的引用。这可能是 Vulcan 3 和 Vulcan 4 版本的运行时。也许 Vulcan 2 也能运行，但我们没有测试过。</li>
       <li styleclass="List1">使用 Clipper 调用约定调用方法的效果符合预期。</li>
@@ -5046,7 +5047,7 @@
       <li styleclass="Normal"><text style="font-weight:normal;">添加了一个 </text><text style="font-weight:bold;">NOP</text><text style="font-weight:normal;"> 关键字，您可以在故意为空的代码(例如 case 语句的其他分支)中使用该关键字。如果在代码中插入 NOP 关键字，编译器将不再对空代码块发出警告。</text></li>
       <li styleclass="Normal"><text style="font-weight:bold;">On</text><text style="font-weight:normal;"> 和 </text><text style="font-weight:bold;">Off</text><text style="font-weight:normal;"> 关键字可能会导致问题，因为它们不是位置关键字(它们是 pragma 语句的一部分)。这一问题已得到解决。</text></li>
       <li styleclass="Normal"><text style="font-weight:normal;">带有一个参数的 </text><text style="font-weight:bold;">_AND()</text><text style="font-weight:normal;"> 和 </text><text style="font-weight:bold;">_OR()</text><text style="font-weight:normal;"> 表达式现在会引发编译器错误。</text></li>
-      <li styleclass="Normal"><text style="font-weight:normal;">编译器现在可以识别 /VO14(将字面量存储为浮点数)编译器开关(尚未实施)。</text></li>
+      <li styleclass="Normal"><text style="font-weight:normal;">编译器现在可以识别 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo14" style="font-weight:normal;">/VO14</link><text style="font-weight:normal;">(将字面量存储为浮点数)编译器开关(尚未实施)。</text></li>
       <li styleclass="Normal"><text style="font-weight:normal;">添加了 ** 操作符作为 ^(指数)操作符的别名。</text></li>
       <li styleclass="Normal"><text style="font-weight:normal;">在字符串上使用减运算符时，添加了 “不支持 ”错误。</text></li>
       <li styleclass="Normal"><text style="font-weight:normal;">修正了编译器中的一个 “堆栈溢出” 错误，该错误可能会在很长的表达式中出现。</text></li>
@@ -5088,10 +5089,10 @@
     <para styleclass="Heading1">Changes in 0.1.6</para>
     <list id="147" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">该版本现在附带安装程序</li>
-      <li styleclass="List1">该版本包含 Visual Studio 集成的第一个版本。您可以在 Visual Studio 中进行编辑、生成、运行和调试。没有 “智能感知 ”功能。</li>
-      <li styleclass="List1">编译器现在使用以 1 为基础的数组，“az ”编译器选项可将编译器切换为使用以 0 为基础的数组。</li>
+      <li styleclass="List1">该版本包含 Visual Studio 集成的第一个版本。您可以在 Visual Studio 中进行编辑、生成、运行和调试。没有 “intellisense ”功能。</li>
+      <li styleclass="List1">编译器现在使用以 1 为基础的数组，“<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-az">az</link> ”编译器选项可将编译器切换为使用以 0 为基础的数组。</li>
       <li styleclass="List1">实现了 “<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">vo2</link>” 编译器选项(用 String.Empty 初始化字符串变量)。</li>
-      <li styleclass="List1">请注意，VS 项目属性对话框中还没有 az 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">vo2</link> 编译器选项。您可以使用 “附加编译器选项 ”来指定这些编译器选项。</li>
+      <li styleclass="List1">请注意，VS 项目属性对话框中还没有 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-az">az</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">vo2</link> 编译器选项。您可以使用 “附加编译器选项 ”来指定这些编译器选项。</li>
       <li styleclass="List1">错误信息中的 “this ”和 “base ”已更改为 “SELF ”和 “SUPER”。</li>
       <li styleclass="List1">&quot;可见性&quot; 类型的错误(例如暴露 private 或 internal 类型的 public 属性)已改为警告</li>
       <li styleclass="List1">修正了 TRY ... ENDTRY 语句中不包含 CATCH 子句的问题</li>
@@ -5114,7 +5115,7 @@
       <li styleclass="List1">为实现与 VO 兼容的 _OR、_AND、_NOT 和 _XOR 操作而做的几处修改</li>
       <li styleclass="List1">修复 interface/abstract VO 属性</li>
       <li styleclass="List1">只有在未明确声明的情况下，才插入隐式 &quot;USING SYSTEM&quot;</li>
-      <li styleclass="List1">错误 542 转为警告(成员名称不能与它们的封闭类型相同)</li>
+      <li styleclass="List1">错误 0542 转为警告(成员名称不能与它们的封闭类型相同)</li>
       <li styleclass="List1">.XOR.表达式定义的变化</li>
       <li styleclass="List1">修复 CHAR_CONST 词法规则中的双引号</li>
       <li styleclass="List1">允许在类/结构等名称中声明命名空间(CLASS Foo.Bar)</li>
@@ -5122,7 +5123,7 @@
       <li styleclass="List1">预处理器关键字无法在空格后识别，只能在行首识别。这一问题已得到解决。</li>
       <li styleclass="List1">防止属性 GET SET 被解析为表达式正文</li>
       <li styleclass="List1">修复接口事件的默认可见性</li>
-      <li styleclass="List1">使用 /unsafe 选项时，不安全错误变为警告，PTR 为 void*</li>
+      <li styleclass="List1">使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-unsafe">/unsafe</link> 选项时，不安全错误变为警告，PTR 为 void*</li>
       <li styleclass="List1">修复 dim 数组字段的声明</li>
       <li styleclass="List1">初步支持 VO cast 和 VO 转换规则(TYPE(_CAST, Expression) 和 TYPE(Expression))。_CAST 始终 unchecked(LONG(_CAST, dwValue))，而转换则遵循 checked/unchecked 规则(LONG(dwValue))</li>
       <li styleclass="List1">修复了参数列表为空的代码块问题</li>

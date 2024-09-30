@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T02:20:12.717+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-27T11:54:54.566+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Dialect(方言)</title>
   <keywords>
     <keyword>-fox1</keyword>
@@ -123,7 +123,7 @@
         </td>
         <td style="width:701px;">
           <para styleclass="Normal">将字符串初始化为空字符串(String.Empty)。</para>
-          <para styleclass="Normal">请注意，在 .NET 中，NULL_STRING 与长度为 0 的字符串不同。 启用后，无论 Language 页面中的 &quot;Initialize Local variables&quot;(初始化局部变量 )设置如何，都将初始化本地字符串变量。</para>
+          <para styleclass="Normal">请注意，在 .NET 中，NULL_STRING 与长度为 0 的字符串不同。 启用后，无论 Language 页面中的 &quot;<link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Initialize Local variables</link>&quot;(初始化局部变量 )设置如何，都将初始化本地字符串变量。</para>
         </td>
         <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">-vo2</link></para>

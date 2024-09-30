@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-12T16:24:57.194+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-27T12:52:32.422+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>CLEAR ALL 命令</title>
   <keywords>
     <keyword>CLEAR ALL command</keyword>
@@ -24,8 +24,8 @@
     <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">CLEAR ALL</para>
     <para styleclass="Heading1">备注</para>
-    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">已声明变量：CLEAR ALL 不会释放已声明的变量或常量。</text></para>
-    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">可以使用 CLOSE 命令的各种形式之一关闭与工作区相关的文件。 可以使用 RELEASE 命令释放私有变量和公用变量，但大多数情况下不鼓励明确释放变量。 </text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">已声明变量：CLEAR ALL 不会释放已声明的变量或常量。</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">可以使用 CLOSE 命令的各种形式之一关闭与工作区相关的文件。 可以使用 RELEASE 命令释放私有变量和公用变量，但大多数情况下不鼓励明确释放变量。 </text></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
     <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLEAR_MEMORY">CLEAR MEMORY</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE">CLOSE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCloseArea.htm" domain="XSharpRef.chm">DBCloseArea()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_Core_Functions_FClose.htm" domain="XSharpRef.chm">FClose()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RELEASE">RELEASE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Select.htm" domain="XSharpRef.chm">Select()</link>,</para>

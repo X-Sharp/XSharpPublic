@@ -1453,7 +1453,10 @@ namespace XSharp.Project
             string editorCaption = "";
             if (_isFileReadOnly)
                 editorCaption = this.GetResourceString("@80200");
+            if (frame != null)
+            {
             ErrorHandler.ThrowOnFailure(frame.SetProperty((int)__VSFPROPID.VSFPROPID_EditorCaption, editorCaption));
+            }
             backupObsolete = true;
         }
 

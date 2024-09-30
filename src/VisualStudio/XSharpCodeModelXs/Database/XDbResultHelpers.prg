@@ -70,26 +70,27 @@ BEGIN NAMESPACE XSharpModel
                     // If we don't set Interactive, the EntityList will be emptied after the Parse() operation
                     file:Interactive := TRUE
                     file:Id        := element:IdFile
-                    VAR members := XDatabase.GetMembers(element:IdType)
+                    VAR members := XDatabase.GetMembers(element:IdType, origin:Project:Id)
                     // now create a temporary source for the parser
                     VAR source     := XSourceTypeSymbol.GetTypeSource(element, members, file)
                     VAR walker := SourceWalker{file, FALSE}
                     walker:Parse(source)
                     IF walker:EntityList:Count > 0
-                        VAR xElement      := walker:EntityList:First()
-                        IF xElement IS XSourceTypeSymbol VAR xtype
-                            xElement:CopyValuesFrom(element)
-                            VAR xmembers := xtype:XMembers
-                            IF xmembers:Count == members:Count
-                                LOCAL i AS INT
-                                FOR i := 0 TO members:Count-1
-                                    VAR xmember := (XSourceMemberSymbol) xmembers[i]
-                                    VAR melement := members[i]
-                                    xmember:CopyValuesFrom(melement)
-                                NEXT
+                        foreach var xElement in walker:EntityList
+                            IF xElement IS XSourceTypeSymbol VAR xtype
+                                xElement:CopyValuesFrom(element)
+                                VAR xmembers := xtype:XMembers
+                                IF xmembers:Count == members:Count
+                                    LOCAL i AS INT
+                                    FOR i := 0 TO members:Count-1
+                                        VAR xmember := (XSourceMemberSymbol) xmembers[i]
+                                        VAR melement := members[i]
+                                        xmember:CopyValuesFrom(melement)
+                                    NEXT
+                                ENDIF
+                                result:Add(xtype)
                             ENDIF
-                            result:Add(xtype)
-                        ENDIF
+                        next
                     ENDIF
                 NEXT
             CATCH e AS Exception
@@ -119,10 +120,13 @@ BEGIN NAMESPACE XSharpModel
                 file:Interactive := TRUE
                 file:Id         := element:IdFile
                 VAR walker      := SourceWalker{file, FALSE}
-                IF walker:EntityList:Count > 0 .AND. ( walker:EntityList:Count == found:Count )
+                walker:Parse(source)
+                var entities := walker:EntityList.Where ( { e => e:Kind == Kind.Function .or. e:Kind == Kind.Procedure}).ToList()
+                found := found:Where ( { e => e:Kind == Kind.Function .or. e:Kind == Kind.Procedure}).ToList()
+                IF entities:Count == found:Count
                     LOCAL i AS INT
                     FOR i := 0 TO found:Count-1
-                        VAR entity := walker:EntityList[i]
+                        VAR entity := entities[i]
                         IF entity IS XSourceMemberSymbol VAR xMember
                             VAR melement := found[i]
                             xMember:CopyValuesFrom(melement)

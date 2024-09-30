@@ -18,7 +18,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	/// </summary>
 	INTERNAL SEALED CLASS CdxTagList INHERIT CdxLeafPage
         PRIVATE _tags AS List<CdxTag>
-        INTERNAL PROPERTY Encoding as System.Text.Encoding GET _bag:Encoding
 
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS WORD)
             SUPER(bag, nPage, buffer, nKeyLen)
@@ -33,7 +32,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             FOR VAR nI := 0 TO SELF:NumKeys-1
                 LOCAL nRecno    := SELF:GetRecno(nI) AS Int32
                 LOCAL bName     := SELF:GetKey(nI)  AS BYTE[]
-                LOCAL cName     := SELF:Encoding:GetString( bName, 0, bName:Length) AS STRING
+                LOCAL cName     := SELF:RDD:_GetString( bName, 0, bName:Length) AS STRING
                 cName           := cName:TrimEnd(<CHAR>{'\0'})
                 VAR tag         := CdxTag{_bag,  nRecno, cName:Trim()}
                 _tags:Add(tag)
@@ -93,7 +92,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR name := tag:OrderName
             	// Be sure to fill the Buffer with 0
 				MemSet( bytes, 0, KeyLength, 0)
-                SELF:Encoding:GetBytes( name, 0, Math.Min(KeyLength,name:Length), bytes, 0)
+                SELF:RDD:_GetBytes( name, bytes, 0, Math.Min(KeyLength,name:Length))
 				_hot := TRUE
 
                 LOCAL action := SELF:Add(tag:Header:PageNo, bytes) AS CdxAction

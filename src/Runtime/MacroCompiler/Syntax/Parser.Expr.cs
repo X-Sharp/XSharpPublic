@@ -118,27 +118,27 @@ namespace XSharp.MacroCompiler
                     return new SelfExpr(ConsumeAndGet());
                 case TokenType.SUPER:
                     return new SuperExpr(ConsumeAndGet());
-                case TokenType.CHECKED:
+                case TokenType.CHECKED when La(2) == TokenType.LPAREN:
                     {
                         var o = ConsumeAndGet();
                         return new CheckedExpr(ParseParenExpr(), o);
                     }
-                case TokenType.UNCHECKED:
+                case TokenType.UNCHECKED when La(2) == TokenType.LPAREN:
                     {
                         var o = ConsumeAndGet();
                         return new UncheckedExpr(ParseParenExpr(), o);
                     }
-                case TokenType.TYPEOF:
+                case TokenType.TYPEOF when La(2) == TokenType.LPAREN:
                     {
                         var o = ConsumeAndGet();
                         return new TypeOfExpr(ParseParenType(), o);
                     }
-                case TokenType.SIZEOF:
+                case TokenType.SIZEOF when La(2) == TokenType.LPAREN:
                     {
                         var o = ConsumeAndGet();
                         return new SizeOfExpr(ParseParenType(), o);
                     }
-                case TokenType.DEFAULT:
+                case TokenType.DEFAULT when La(2) == TokenType.LPAREN:
                     {
                         var o = ConsumeAndGet();
                         return new DefaultExpr(ParseParenType(), o);
@@ -211,10 +211,10 @@ namespace XSharp.MacroCompiler
                     return ParseLiteralArrayOrCodeblock();
                 case TokenType.LT:
                     return ParseTypedLiteralArray();
-                case TokenType.IF:
-                case TokenType.IIF:
+                case TokenType.IF when La(2) == TokenType.LPAREN:
+                case TokenType.IIF when La(2) == TokenType.LPAREN:
                     return ParseIif();
-                case TokenType.FIELD:
+                case TokenType.FIELD when La(2) == TokenType.ALIAS:
                     return ParseFieldAlias();
                 // TODO nvk: PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
                 case TokenType.ARGLIST:

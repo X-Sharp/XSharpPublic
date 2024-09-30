@@ -1527,34 +1527,10 @@
         </summary>
         <value>An array containing the structure of this data server.</value>
         <remarks>
-            An array containing the structure of this data server, whose length (that is, number of elements) is equal to the number of columns in the server.
-            Each subarray is comprised of five elements, which contain the following information, in this order:
-            <list type="table">
-                <listheader>
-                    <term>Constant</term>
-                    <description>Description</description>
-                </listheader>
-                <item>
-                    <term>DBS_NAME</term>
-                    <description>cName</description>
-                </item>
-                <item>
-                    <term>DBS_TYPE</term>
-                    <description>cType</description>
-                </item>
-                <item>
-                    <term>DBS_LEN</term>
-                    <description>nLength</description>
-                </item>
-                <item>
-                    <term>DBS_DEC</term>
-                    <description>nDecimals</description>
-                </item>
-                <item>
-                    <term>DBS_ALIAS</term>
-                    <description>cAlias</description>
-                </item>
-            </list>
+          An array containing the structure of this data server, whose length (that is, number of elements) is equal to the number of columns in the server.
+          Each subarray is comprised of five elements, which contain the following information, in this order:
+          <include file="RTComments.xml" path="Comments/DbStruct_Constants/*"  />
+
         </remarks>
     </SQLSelect.DBStruct>
     <SQLSelect.Delete>

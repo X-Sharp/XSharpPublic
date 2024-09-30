@@ -60,9 +60,9 @@ BEGIN NAMESPACE XSharp.RDD
 
         MEMBER CP_INI_WIN_THAI          := 874   // Thai Windows
         MEMBER CP_INI_WIN_JAPANESE      := 932   // Japanese Windows
-        MEMBER CP_INI_WIN_CHINESE1      := 936   // Chinese (PRC, Singapore) Windows
+        MEMBER CP_INI_WIN_CHINESE1      := 950   // Chinese (PRC, Singapore) Windows
         MEMBER CP_INI_WIN_KOREAN        := 949   // Korean Windows
-        MEMBER CP_INI_WIN_CHINESE2      := 950   // Chinese (Hong Kong SAR, Taiwan) Windows
+        MEMBER CP_INI_WIN_CHINESE2      := 936   // Chinese (Hong Kong SAR, Taiwan) Windows
 
         MEMBER CP_INI_WIN_EEUROPEAN     := 1250  // Eastern European Windows
         MEMBER CP_INI_WIN_RUSSIAN       := 1251  // Russian Windows

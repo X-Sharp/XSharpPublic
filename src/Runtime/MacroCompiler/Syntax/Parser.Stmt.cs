@@ -59,6 +59,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.REPEAT:
                     return ParseRepeatStmt();
                 case TokenType.FOR:
+                    // FoxPro allows FOR EACH as separate keywords
                     if (La(2) == TokenType.EACH)
                         return ParseForeachStmt();
                     return ParseForStmt();
@@ -502,12 +503,7 @@ namespace XSharp.MacroCompiler
             }
             parseEos();
             var s = ParseStatementBlock();
-            if (Expect(TokenType.END))
-            {
-                Expect(TokenType.FOR);
-            }
-            else
-                Require(Expect(TokenType.NEXT), ErrorCode.Expected, "END FOR");
+            Require(Expect(TokenType.NEXT), ErrorCode.Expected, "NEXT");
             parseEos();
             return a != null ? new ForStmt(t, a, dir, final, step, s)
                 : new ForStmt(t, d, dir, final, step, s);
@@ -610,9 +606,14 @@ namespace XSharp.MacroCompiler
                 parseEos();
                 fb = new FinallyBlock(ft, ParseStatementBlock());
             }
-
-            Require(TokenType.END);
-            Expect(TokenType.TRY);
+            if (Expect(TokenType.END))
+            {
+                Expect(TokenType.TRY);
+            }
+            else
+            {
+                Require(TokenType.ENDTRY);
+            }
             parseEos();
 
             return new TryStmt(t, s, cb.ToArray(), fb);
@@ -652,6 +653,7 @@ namespace XSharp.MacroCompiler
 
         internal ForeachStmt ParseForeachStmt()
         {
+            // FoxPro allows FOR EACH. Other dialects use FOREACH
             Token r = ExpectToken(TokenType.FOR) ?? RequireAndGet(TokenType.FOREACH);
             if (r.Type == TokenType.FOR)
                 Require(TokenType.EACH);
@@ -677,11 +679,7 @@ namespace XSharp.MacroCompiler
 
             var s = ParseStatementBlock();
 
-            if (!Expect(TokenType.NEXT))
-            {
-                Require(TokenType.END);
-                ExpectAny(TokenType.FOR, TokenType.FOREACH);
-            }
+            Require(TokenType.NEXT);
             parseEos();
 
             return new ForeachStmt(r, v, e, s);
@@ -767,8 +765,14 @@ namespace XSharp.MacroCompiler
                 parseEos();
                 f = ParseStatementBlock();
             }
-            Require(TokenType.END);
-            Expect(TokenType.SEQUENCE);
+            if (Expect(TokenType.END))
+            {
+                Expect(TokenType.SEQUENCE);
+            }
+            else
+            {
+                Require(TokenType.ENDSEQUENCE);
+            }
             parseEos();
 
             return new SequenceStmt(t, s, n, r, f);

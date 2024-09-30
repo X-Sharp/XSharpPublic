@@ -240,8 +240,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 for (HierarchyNode child = this.FirstChild; child != null; child = child.NextSibling)
                 {
-                    IProjectSourceNode node = child as IProjectSourceNode;
-                    if (node != null)
+                    if (child is IProjectSourceNode node)
                     {
                         int result = node.ExcludeFromProject();
                         if (result != VSConstants.S_OK)

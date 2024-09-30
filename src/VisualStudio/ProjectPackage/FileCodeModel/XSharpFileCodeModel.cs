@@ -11,7 +11,7 @@ using System;
 using System.CodeDom.Compiler;
 using System.IO;
 using System.Text;
-using XSharp.CodeDom;
+using XSharp.Settings;
 
 namespace XSharp.Project.FileCodeModel
 {
@@ -58,9 +58,8 @@ namespace XSharp.Project.FileCodeModel
             {
                 if (forceInit || (CompileUnit == null))
                 {
-                    var xproject = xfileNode.ProjectMgr as XSharpProjectNode;
                     bool isOpen = false;
-                    var text = xproject.DocumentGetText(xfileNode.Url, ref isOpen);
+                    var text = XDocuments.GetText(xfileNode.Url, ref isOpen);
                     if (!isOpen)
                     {
                         text = File.ReadAllText(xfileNode.Url);
@@ -110,30 +109,22 @@ namespace XSharp.Project.FileCodeModel
 
         private void SaveSource(string filename, string source, Encoding encoding, bool SaveToDisk = true)
         {
-            if (_fileNode is XSharpFileNode xfileNode)
+            source = XSettings.SynchronizeKeywordCase(source, filename);
+
+
+            bool done = false;
+            // assign the source to the open buffer when possible
+            if (XDocuments.IsOpen(filename))
             {
-                if (xfileNode.ProjectMgr is IProjectTypeHelper _projectNode)
-                    _projectNode.SynchronizeKeywordCase(source, filename);
-
-
-                bool done = false;
-                // assign the source to the open buffer when possible
-                if (xfileNode.DocumentSetText(source))
-                {
-                    // then use automation to save the file, because that is much easier
-                    // since we do not have to worry about the docdata etc.
-                    var oaFile = (OAXSharpFileItem)xfileNode.GetAutomationObject();
-                    oaFile.Save(filename);
-                    done = true;
-                }
-                if (!done && SaveToDisk)
-                {
-                    // File is not open in editor, so write to disk
-                    var designerStream = new StreamWriter(filename, false, encoding);
-                    designerStream.Write(source);
-                    designerStream.Flush();
-                    designerStream.Close();
-                }
+                done = XDocuments.SetText(filename, source);
+            }
+            if (!done && SaveToDisk)
+            {
+                // File is not open in editor, so write to disk
+                var designerStream = new StreamWriter(filename, false, encoding);
+                designerStream.Write(source);
+                designerStream.Flush();
+                designerStream.Close();
             }
         }
     }

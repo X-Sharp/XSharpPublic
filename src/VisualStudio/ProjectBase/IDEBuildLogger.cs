@@ -341,10 +341,7 @@ namespace Microsoft.VisualStudio.Project
             if (this.OutputWindowPane != null)
             {
                 // Enqueue the output text
-                lock (outputQueue)
-                {
-                    this.outputQueue.Enqueue(new OutputQueueEntry(text, OutputWindowPane));
-                }
+                this.outputQueue.Enqueue(new OutputQueueEntry(text, OutputWindowPane));
                 // We want to interactively report the output. But we dont want to dispatch
                 // more than one at a time, otherwise we might overflow the main thread's
                 // message queue. So, we only report the output if the queue was empty.
@@ -377,20 +374,22 @@ namespace Microsoft.VisualStudio.Project
         internal void FlushBuildOutput()
         {
             OutputQueueEntry output;
-            lock (outputQueue)
+            if (!outputQueue.IsEmpty)
             {
-                if (!outputQueue.IsEmpty)
+                while (this.outputQueue.TryDequeue(out output))
                 {
-                    while (this.outputQueue.TryDequeue(out output))
+                    if (output.Pane is IVsOutputWindowPaneNoPump nopump)
                     {
-                        if (output.Pane is IVsOutputWindowPaneNoPump nopump)
+                        ThreadHelper.JoinableTaskFactory.Run(async delegate
                         {
+                            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                             nopump.OutputStringNoPump(output.Message);
-                        }
-                        else
-                        {
+                        });
+                    }
+                    else
+                    {
 #if DEV17
-                            output.Pane.OutputStringThreadSafe(output.Message);
+                        output.Pane.OutputStringThreadSafe(output.Message);
 #else
                             ThreadHelper.JoinableTaskFactory.Run(async delegate
                             {
@@ -398,7 +397,6 @@ namespace Microsoft.VisualStudio.Project
                                 output.Pane.OutputString(output.Message);
                             });
 #endif
-                        }
                     }
                 }
             }

@@ -11,6 +11,9 @@
     <Category Name="ManagedResources"
               DisplayName="Managed Resources"
               Description="Managed Resource settings for the application." />
+    <Category Name="Packaging"
+              DisplayName="Packaging"
+              Description="Packaging settings for the application." />
   </Rule.Categories>
 
   <EnumProperty Name="ResourceSpecificationKind"

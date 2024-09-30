@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-#pragma options ("enforceself", on)
+
 /// <include file="Rdd.xml" path="doc/DBSelectionIndex/*" />
 [XSharp.Internal.TypesChanged];
 CLASS DBSelectionIndex
@@ -20,7 +20,7 @@ METHOD Eval( ) AS USUAL
 
 
 	VoDbSelect( DWORD(SELF:nSelect), OUT nOldSelect )
-	xRet := Eval( SELF:cbExpression )
+	xRet := XSharp.RT.Functions.Eval( SELF:cbExpression )
 	VoDbSetSelect( LONGINT(nOldSelect) )
 	RETURN xRet
 

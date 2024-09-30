@@ -8,7 +8,7 @@ USING System.IO
 USING System.Text
 USING Xide
 USING XSharpModel
-
+using XSharp.Settings
 // inherits from vulcan's EditorStream
 // represents contents of file that can be read/saved directly on disk or
 // through an open editor buffer in VS
@@ -29,7 +29,6 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 	VIRTUAL METHOD Load(cFileName AS STRING) AS VOID
 		LOCAL aLines := NULL AS List<STRING>
 		LOCAL oFile AS XSharpModel.XFile
-		LOCAL oProject AS XSharpModel.XProject
 		LOCAL cSource AS STRING
 		_fileName := cFileName
 		TRY
@@ -37,8 +36,7 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 			// Note this will not work yet for RC or .VNFrm files. These are not in the codemodel
 			oFile := XSharpModel.XSolution.FindFile(cFileName)
 			IF oFile != NULL_OBJECT
-				oProject := oFile:Project
-				cSource := oProject:ProjectNode:DocumentGetText(cFileName, REF lOpenInVS)
+				cSource := XDocuments.GetText(cFileName, REF lOpenInVS)
 				IF lOpenInVs
 					SELF:eType := EditorStreamType.Module
 					BEGIN USING VAR oReader := StringReader{cSource}
@@ -90,19 +88,11 @@ CLASS XSharp_EditorStream INHERIT EditorStream
             RETURN FALSE
         ENDIF
         IF oFile:XFileType == XFileType.SourceCode
-            IF oFile:Project != NULL .and. oFile:Project:ProjectNode != NULL
-                source := oFile:Project:ProjectNode:SynchronizeKeywordCase(source, oFile:FullPath)
-            ENDIF
+            source := XSettings.SynchronizeKeywordCase(source, oFile:FullPath)
         ENDIF
 
 		IF SELF:eType == EditorStreamType.Module
-			VAR oProject := oFile:Project
-			IF oProject != NULL_OBJECT
-				lSuccess := oProject:ProjectNode:DocumentSetText(oFile:FullPath, source)
-		    ELSE
-		        // Write to disk
-		        File.WriteAllText(oFile:FullPath, source)
-			ENDIF
+			lSuccess := XDocuments.SetText(oFile:FullPath, source)
 		ELSE
 			TRY
 				SELF:oStream:SetLength(0)

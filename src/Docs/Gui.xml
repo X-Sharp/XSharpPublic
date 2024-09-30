@@ -389,6 +389,11 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
   </ReturnsLogic>
+  <ReturnsString>
+    <returns>
+      String containing the specified value, if successful; otherwise, NULL_STRING.
+    </returns>
+  </ReturnsString>
   <Accelerator>
     <summary>
       Create an accelerator table.
@@ -433,9 +438,7 @@
       Adds all accelerator keys of one accelerator object to another
     </summary>
     <param name="oAccelerator">Existing Accelerator objects, whose accelerator keys are copied. </param>
-    <returns>
-      TRUE when successful, FALSE when not, for example because the object not dynamic anymore
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     <remarks>
       This method copies the accelerator keys from one accelerator object to another.
       <note type="tip">
@@ -452,9 +455,7 @@
     <param name="lCtrl">When TRUE, the CTRL key must be held down when the accelerator key is pressed.</param>
     <param name="lAlt">When TRUE, the ALT key must be held down when the accelerator key is pressed.</param>
     <param name="lShift">When TRUE, the SHIFT key must be held down when the accelerator key is pressed.</param>
-    <returns>
-      TRUE when successful, FALSE when not, for example because the object not dynamic anymore
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     <remarks>
       <note type="tip">
         After the first use of a dynamic accelerator object, no more accelerators can be added..
@@ -4451,9 +4452,7 @@
       Turn column titles on or off for the entire browser.
     </summary>
     <param name="lEnable">TRUE shows column titles; FALSE hides them. The default is TRUE. </param>
-    <returns>
-      A logical value indicating whether or not the operation was successful.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     <remarks>
       This method has been introduced to replace the functionality of calling DataColumn:SetCaption with a NIL argument, which is documented as removing the caption area from the column. Since column caption areas cannot be removed from single columns, it must be done globally for the entire browser.
     </remarks>
@@ -5238,10 +5237,7 @@
     <summary>
       Delete all items in a data list view.
     </summary>
-    <returns>
-      TRUE if all items were deleted successfully; otherwise, FALSE.
-    </returns>
-  </DataListView.DeleteAll>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />  </DataListView.DeleteAll>
   <DataListView.Destroy>
     <summary>
       Provide a method to de-instantiate a DataListView object.
@@ -5294,9 +5290,7 @@
       Associate a data server with the data list view.
     </summary>
     <param name="oNewServer">The data server to be associated with the data list view.</param>
-    <returns>
-      TRUE, if the server could be assigned successfully; otherwise, FALSE.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     <remarks>
       This method is equivalent to the DataListView:Server assign, which associates a data server with the data list view.
     </remarks>
@@ -6318,17 +6312,13 @@
     <summary>
       Move to the next record (identical to Skip(1)).
     </summary>
-    <returns>
-      TRUE if operation was successful; otherwise, FALSE.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
   </DataWindow.SkipNext>
   <DataWindow.SkipPrevious>
     <summary>
       Move to the previous record (identical to Skip(-1)).
     </summary>
-    <returns>
-      TRUE if operation was successful; otherwise, FALSE.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />  
   </DataWindow.SkipPrevious>
   <DataWindow.Status>
     <summary>
@@ -9534,9 +9524,7 @@
     </summary>
     <param name="pBuffer">Pointer to the buffer area which is to receive the requested information. </param>
     <param name="nSize">Numeric value indicating the number of bytes available in the buffer. </param>
-    <returns>
-      TRUE, if the read operation was successful; otherwise, FALSE.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     <remarks>
       ReadClient() reads information from the body of the Web client's HTTP request. It can be used to read data from an HTML form that uses the POST method. The Init() method uses ReadClient() internally to read data for a POST request and stores them into the property, aArgs, which can be retrieved by the GetParams() method.
     </remarks>
@@ -9546,9 +9534,7 @@
       Send the raw HTTP entity data to the client.
     </summary>
     <param name="cHTTPEntity">String containing data that has to be sent to the client's Internet browser. If omitted, a line break, '&lt;br&gt;', is sent.</param>
-    <returns>
-      TRUE, if the write operation was successful; otherwise, FALSE.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     <remarks>
       This method sends data present in the given buffer to the client that made the request.
     </remarks>
@@ -9572,9 +9558,7 @@
       Send the raw HTTP entity data to the client.
     </summary>
     <param name="cHTTPEntity">String containing data that has to be sent to the client's Internet browser.</param>
-    <returns>
-      TRUE, if the write operation was successful; otherwise, FALSE.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     <remarks>
       This method sends data present in the given buffer to the client that made the request.
     </remarks>
@@ -9751,9 +9735,7 @@
     <param name="nPosition">
       Integer value determining the occurrence of the parameter within the query string. The default value is 1, if <paramref name="nPosition" /> is not specified.
     </param>
-    <returns>
-      String containing the specified value, if successful; otherwise, NULL_STRING.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsString/*" />
     <remarks>
       GetParamValue() parses all values of the query string and returns the value of <paramref name="nPosition" />, i.e., the nth occurrence of <paramref name="cValueName" /> within the query string.
     </remarks>
@@ -9778,9 +9760,7 @@
       Retrieve a specified environment value of the current Internet server.
     </summary>
     <param name="cValueName">String containing the name of the sought after environment variable.</param>
-    <returns>
-      String containing the specified value, if successful; otherwise, NULL_STRING.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsString/*" />
     <remarks>
       GetServerVariable() returns the current environment setting specified by <paramref name="cValueName" />.
     </remarks>
@@ -10020,9 +10000,7 @@
       Retrieve a specified environment value from the current Internet server.
     </summary>
     <param name="cValueName">String containing the name of the sought after environment variable.</param>
-    <returns>
-      String containing the specified value if successful; otherwise, NULL_STRING.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsString/*" />
     <remarks>
       GetServerVariable() returns the current environment setting specified by <paramref name="cValueName" />.
     </remarks>
@@ -10036,9 +10014,7 @@
     </summary>
     <param name="pBuffer">Pointer to the buffer area which is to receive the requested information. </param>
     <param name="nSize">Numeric value indicating the number of bytes available in the buffer. </param>
-    <returns>
-      TRUE, if the read operation was successful; otherwise, FALSE.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
   </HTTPExtensionContext.ReadClient>
   <HTTPExtensionContext.ServerSupportFunction>
     <summary>
@@ -10113,9 +10089,7 @@
       Send the HTTP entity, including the response header, to the client.
     </summary>
     <param name="cHTTPEntity">String containing data that has to be sent to the client's Internet browser.</param>
-    <returns>
-      TRUE, if the write operation was successful; otherwise, FALSE.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     <remarks>
       This method sends a complete HTTP server response header—including the status, server version, message time, and MIME version—to the client followed by HTTP data specified by <paramref name="cHTTPEntity" />.
     </remarks>
@@ -10133,9 +10107,7 @@
       The I/O operation should be done synchronously. This is the default value.
       The I/O operation should be done asynchronously. The ISAPI application should have made a call to the ServerSupportFunction(HSE_REQ_IO_COMPLETION) method, and submitted a callback function and context value for handling completion of asynchronous operations.
     </param>
-    <returns>
-      TRUE, if the write operation was successful; otherwise, FALSE.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     <remarks>
       This method sends data present in the given buffer to the client that made the request.
     </remarks>
@@ -10318,9 +10290,7 @@
       Retrieve a specified environment value from the current Internet server.
     </summary>
     <param name="cValueName">String containing the name of the sought after environment variable.</param>
-    <returns>
-      String containing the specified value, if successful; otherwise, NULL_STRING.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     <remarks>
       This method returns the current environment setting specified by <paramref name="cValueName" />.
     </remarks>
@@ -23749,9 +23719,7 @@
     </summary>
     <param name="symParentName">The symbolic name of the parent tree view item. This can be the symbolic name of any tree view item or one of the following items: #Root, #First, #Last, and, if the tree view style is sorted, #Sort.</param>
     <param name="oTreeViewItem">The tree view item to add.</param>
-    <returns>
-      TRUE if the item was added successfully; otherwise, FALSE.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
   </TreeView.AddItem>
   <TreeView.Collapse>
     <summary>
@@ -23771,9 +23739,7 @@
     <summary>
       Delete all items of the tree view.
     </summary>
-    <returns>
-      TRUE if all items were deleted successfully; otherwise, FALSE.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
   </TreeView.DeleteAll>
   <TreeView.DeleteItem>
     <summary>
@@ -23785,9 +23751,7 @@
       New logic parameter which defaults to FALSE.
       If lChildrenOnly is TRUE only the child items are deleted
     </param>
-    <returns>
-      TRUE if the item was deleted successfully; otherwise, FALSE.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
   </TreeView.DeleteItem>
   <TreeView.Destroy>
     <exclude />
@@ -23815,9 +23779,7 @@
       Enable or disable drag-and-drop of items for the tree view.
     </summary>
     <param name="lEnable">A logical value that determines whether drag-and-drop is enabled or disabled.</param>
-    <returns>
-      TRUE if drag-and-drop could be enabled or disabled; otherwise, FALSE.
-    </returns>
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
   </TreeView.EnableDragDrop>
   <TreeView.EnableSort>
     <summary>
@@ -24240,14 +24202,6 @@
     </summary>
     <value>A logical value that is TRUE if the text of the tree view item is bold.</value>
   </TreeViewItem.Bold>
-  <TreeViewItem.Collapse>
-    <summary>
-      Collapse the tree view item, hiding its child items.
-    </summary>
-    <param name="lAll">** missing parameter documentation **</param>
-    <param name="lForceNotify">** missing parameter documentation **</param>
-    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
-  </TreeViewItem.Collapse>
   <TreeViewItem.Delete>
     <summary>
       Delete the tree view item.
@@ -24270,14 +24224,6 @@
     </summary>
     <value>A logical value that is TRUE if the tree view item is highlighted as the target of a drag-and-drop operation.</value>
   </TreeViewItem.DropTarget>
-  <TreeViewItem.Expand>
-    <summary>
-      Expand the tree view item, showing its child items.
-    </summary>
-    <param name="lAll">** missing parameter documentation **</param>
-    <param name="lForceNotify">** missing parameter documentation **</param>
-    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
-  </TreeViewItem.Expand>
   <TreeViewItem.Expanded>
     <summary>
       A logical value that determines if the tree view item is expanded or collapsed.

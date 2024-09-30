@@ -91,6 +91,15 @@
   </Target>  
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>  
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net472|AnyCPU'">
+    <DefineConstants>$(DefineConstants);NET472</DefineConstants>
+  </PropertyGroup>  
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net472|AnyCPU'">
+    <DefineConstants>$(DefineConstants);NET472</DefineConstants>
+  </PropertyGroup>  
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Public|net472|AnyCPU'">
+    <DefineConstants>$(DefineConstants);NET472</DefineConstants>
   </PropertyGroup> 
 
 </Project> 

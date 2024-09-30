@@ -24,6 +24,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ClassType    AS INT AUTO
       PROPERTY FileName     AS STRING AUTO
       PROPERTY Project      AS STRING AUTO
+      PROPERTY Framework    AS STRING AUTO
       PROPERTY StartLine    AS INT AUTO
       PROPERTY StartColumn  AS INT AUTO
       PROPERTY EndLine      AS INT AUTO

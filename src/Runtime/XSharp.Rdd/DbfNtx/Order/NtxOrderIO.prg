@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -18,18 +18,18 @@ USING System.Runtime.CompilerServices
 
 BEGIN NAMESPACE XSharp.RDD.NTX
 
-    
-    INTERNAL PARTIAL SEALED CLASS NtxOrder 
+
+    INTERNAL PARTIAL SEALED CLASS NtxOrder
 
         INTERNAL METHOD WritePage(page AS NtxPage) AS LOGIC
-            RETURN _oStream:SafeSetPos(page:PageOffset) .AND. _oStream:SafeWrite(page:Bytes) 
+            RETURN _oStream:SafeWriteAt(page:PageOffset, page:Bytes)
 
 
         INTERNAL METHOD ReadPage(page AS NtxPage) AS LOGIC
-            RETURN _oStream:SafeSetPos(page:PageOffset) .AND. _oStream:SafeRead(page:Bytes) 
+            RETURN _oStream:SafeReadAt(page:PageOffset, page:Bytes)
 
     END CLASS
-    
+
 END NAMESPACE
 
 

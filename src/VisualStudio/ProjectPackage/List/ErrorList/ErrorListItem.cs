@@ -30,7 +30,7 @@ namespace XSharp.Project
         /// <summary>
         /// Severity of the error item
         /// </summary>
-        MessageSeverity Severity { get; set; }
+        __VSERRORCATEGORY Severity { get; set; }
 
         /// <summary>
         /// Error source
@@ -84,7 +84,7 @@ namespace XSharp.Project
 
         public string ProjectName { get; set; }
 
-        public MessageSeverity Severity { get; set; }
+        public __VSERRORCATEGORY Severity { get; set; }
         public string ErrorCategory { get; set; }
         public string BuildTool { get; set; }
 

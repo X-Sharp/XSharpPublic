@@ -66,7 +66,7 @@ namespace XSharp.CodeDom
         public List<CodeObject> globalmembers;
         public bool IsNested => CurrentTypeStack.Count > 0;
 
-        public XSharpClassDiscover(IProjectTypeHelper projectNode, CodeTypeDeclaration typeInOtherFile) : base(projectNode, typeInOtherFile)
+        public XSharpClassDiscover(XProject projectNode, CodeTypeDeclaration typeInOtherFile) : base(projectNode, typeInOtherFile)
         {
             // The default (empty) CodeCompileUnit, so we can work if none is provided
             this.CodeCompileUnit = new XCodeCompileUnit();

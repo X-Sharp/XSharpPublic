@@ -10,41 +10,53 @@
 //    wp /sf /m a,b,c
 //    return
 
-procedure Main()
-    local o
+PROCEDURE Main()
+    LOCAL o
 
     o := DerivedExample896():new()
     ? o:a
+    xAssert( o:a == 4 )
     ? o:Example896:a // Runtime error in X# 2.14
+    xAssert( o:Example896:a == 5 )
     ? o:Name()
+    xAssert( o:Name() == "DerivedExample" )
     ? o:Example896:Name() // Runtime error in X# 2.14
+    xAssert( o:Example896:Name() == "Example" )
 
-    return
+    RETURN
 
-class DerivedExample896 from Example896
+CLASS DerivedExample896 FROM Example896
 exported:
-    inline method Init()
-        super:Init()
+    inline METHOD Init()
+        SUPER:Init()
         ::a := 4
-        super:a := 5
-        return self
+        SUPER:a := 5
+        RETURN SELF
 
-    inline method Name()
-        return "DerivedExample"
+    inline METHOD Name()
+        RETURN "DerivedExample"
 
-    new var a
+    NEW VAR a
 endclass
 
 
-class Example896
+CLASS Example896
 exported:
-    inline method Init()
+    inline METHOD Init()
         ::a := 3
-        return self
+        RETURN SELF
 
-    inline method Name()
-        return "Example"
+    inline METHOD Name()
+        RETURN "Example"
 
-    var a
+    VAR a
 endclass
 
+PROC xAssert(l AS LOGIC)  AS VOID
+	IF l
+		? "assertion passed"
+	ELSE
+		? "Assertion failed"
+		THROW Exception{"Incorrect result"}
+	END IF   
+RETURN

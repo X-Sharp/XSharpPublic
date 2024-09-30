@@ -19,7 +19,7 @@
     <DefineConstants>TRACE;DEBUG;XSHARP;DEV17</DefineConstants>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
-    <NoWarn>1762;VSSDK006;NU1603</NoWarn>
+    <NoWarn>1762;VSSDK006;NU1603;NU1903</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -197,13 +197,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.507</Version>
+      <Version>17.0.522</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build">
-      <Version>17.4.0</Version>
+      <Version>17.10.4</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build.Tasks.Core">
-      <Version>17.4.0</Version>
+      <Version>17.10.4</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>

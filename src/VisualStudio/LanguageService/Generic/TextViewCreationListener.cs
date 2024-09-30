@@ -4,26 +4,29 @@
 // See License.txt in the project root for license information.
 //
 
-using System;
-using System.ComponentModel.Composition;
-using Microsoft.VisualStudio.OLE.Interop;
+using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio.Editor;
+using Microsoft.VisualStudio.Package;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Utilities;
-using Microsoft.VisualStudio.Package;
-using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Text;
-using XSharpModel;
+using System;
 using System.Collections.Generic;
-
+using System.ComponentModel.Composition;
+using XSharpModel;
+#pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 namespace XSharp.LanguageService
 {
-
+    [Name(nameof(XSharpEditorCommandProvider))]
     [Export(typeof(IVsTextViewCreationListener))]
     [ContentType(Constants.LanguageName)]
     [TextViewRole(PredefinedTextViewRoles.Document)]
+    [TextViewRole(PredefinedTextViewRoles.Editable)]
 
-    internal class XSharpEditorCommandProvider: IVsTextViewCreationListener
+    internal class XSharpEditorCommandProvider : IVsTextViewCreationListener
     {
 
         [Import]
@@ -39,47 +42,63 @@ namespace XSharp.LanguageService
         internal static Dictionary<string, List<IWpfTextView>> _textViews = new Dictionary<string, List<IWpfTextView>>(StringComparer.OrdinalIgnoreCase);
 
         private XSharpDropDownClient dropdown;
+  
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
             IWpfTextView textView = EditorAdaptersFactoryService.GetWpfTextView(textViewAdapter);
+            if (textView == null)
+                return;
+            // Create command handler for Formatting (case sync and indenting)
+            textView.Properties.GetOrCreateSingletonProperty(() => new XSharpFormattingCommandHandler(textViewAdapter,
+                                                                 textView));
             IVsTextBuffer textBuffer = EditorAdaptersFactoryService.GetBufferAdapter(textView.TextBuffer);
             textView.TextBuffer.Properties.TryGetProperty(typeof(ITextDocument), out ITextDocument document);
-            textViewAdapter.GetBuffer(out var textlines);
-            if (textlines != null)
+            textViewAdapter.GetBuffer(out var textLines);
+            if (textLines != null)
             {
                 XFile file = null;
-                string fileName = FilePathUtilities.GetFilePath(textlines);
-                textlines.GetLanguageServiceID(out var langId);
+                string fileName = FilePathUtilities.GetFilePath(textLines);
+                textLines.GetLanguageServiceID(out var langId);
                 // Note that this may get called after the classifier has been instantiated
 
                 if (langId == XSharpConstants.guidLanguageService)          // is our language service active ?
                 {
-
                     // Get XFile and assign it to the TextBuffer
                     if (!textView.TextBuffer.Properties.TryGetProperty(typeof(XFile), out file))
                     {
                         file = XSolution.FindFile(fileName);
+
                         if (file == null)
                         {
                             XSolution.OrphanedFilesProject.AddFile(fileName);
                             file = XSolution.FindFile(fileName);
                         }
-                        if (file != null)
-                        {
-                            textView.TextBuffer.Properties.AddProperty(typeof(XFile), file);
-                        }
+                        
                     }
-
                     if (file != null)
                     {
+                        var projects = XDatabase.GetProjectsPerFile(file);
+                        if (projects.Count > 1)
+                        {
+                            ThreadHelper.JoinableTaskFactory.Run(async delegate
+                            {
+                                var project = await VS.Solutions.GetActiveProjectAsync();
+                                if (project != null)
+                                {
+                                    var currentProject = XSolution.FindProjectByFileName(project.FullPath);
+                                    if (currentProject != null)
+                                    {
+                                        if (file.Project.FileName != currentProject.FileName)
+                                        {
+                                            file.Project = currentProject;
+                                        }
+                                    }
+                                }
+                            });
+                        }
                         file.Interactive = true;
                         textView.Properties.AddProperty(typeof(XFile), file);
                     }
-                    var filter = new XSharpEditorCommandHandler(textView);
-                    IOleCommandTarget next;
-                    textViewAdapter.AddCommandFilter(filter, out next);
-
-                    filter.Next = next;
                 }
                 // For VS 2017 we look for Microsoft.VisualStudio.Editor.Implementation.VsCodeWindowAdapter
                 // For VS 2019 we look for Microsoft.VisualStudio.TextManager.Interop.IVsCodeWindow
@@ -114,17 +133,18 @@ namespace XSharp.LanguageService
                 {
                     dropdown = new XSharpDropDownClient(dropDownBarManager, file);
                     dropDownBarManager.RemoveDropdownBar();
-                    dropDownBarManager.AddDropdownBar(2, dropdown);
+                    dropDownBarManager.AddDropdownBar(3, dropdown);
                     _dropDowns.Add(fileName, dropdown);
                     dropdown.addTextView(textView, textViewAdapter);
                 }
                 if (!_textViews.ContainsKey(fileName))
                 {
-                    _textViews.Add( fileName, new List<IWpfTextView>());
+                    _textViews.Add(fileName, new List<IWpfTextView>());
                 }
                 _textViews[fileName].Add(textView);
                 textView.Closed += TextView_Closed;
             }
+
         }
 
         private void TextView_Closed(object sender, EventArgs e)

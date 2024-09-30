@@ -17,6 +17,7 @@ using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.VisualStudio.Shell;
+using XSharp.VisualStudio.Project;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -523,7 +524,14 @@ namespace Microsoft.VisualStudio.Project
             int result = base.Save(fileToBeSaved, remember, formatIndex);
             if (NativeMethods.S_OK == result && this.userBuildProject != null)
             {
-                this.userBuildProject.Save(this.UserFileName);
+                try
+                {
+                    this.userBuildProject.Save(this.UserFileName);
+                }
+                catch (Exception)
+                {
+                    // If the save of the user file fails, we should not prevent the project from saving.
+                }   
             }
 
             return result;

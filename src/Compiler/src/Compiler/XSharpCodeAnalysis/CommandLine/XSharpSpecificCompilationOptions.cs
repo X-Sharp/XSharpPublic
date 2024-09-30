@@ -25,7 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
 
             var includeDir = Environment.GetEnvironmentVariable("INCLUDE");
-#if NET472
+#if !NETCOREAPP3_0_OR_GREATER
             string XSharpIncludeDir = String.Empty;
             string VulcanIncludeDir = string.Empty;
             try
@@ -63,6 +63,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 includeDir += ";" + XSharpIncludeDir;
             if (!string.IsNullOrEmpty(VulcanIncludeDir))
                 includeDir += ";" + VulcanIncludeDir;
+#else
+            if (string.IsNullOrEmpty(includeDir))
+                includeDir = "";
 #endif
             s_defaultIncludeDir = includeDir;
             s_windowsdirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);

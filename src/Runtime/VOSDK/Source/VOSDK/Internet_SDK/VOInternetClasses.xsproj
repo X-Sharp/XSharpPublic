@@ -8,10 +8,9 @@
     <AssemblyName>VOInternetClasses</AssemblyName>
     <Name>VOInternetClasses</Name>
     <OutputName>VOInternetClasses</OutputName>
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
-    
     <vo9>false</vo9>
     <vo10>false</vo10>
+    <NamedArgs>False</NamedArgs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
@@ -91,5 +90,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-<Import Project="..\VOSDKDocs.Targets" />
+  <Import Project="..\VOSDKDocs.Targets" />
 </Project>

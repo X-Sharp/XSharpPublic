@@ -37,7 +37,7 @@ namespace XSharp.LanguageService
 
         private XFile _file;
         private IBufferTagAggregatorFactoryService aggregator;
-        private XSharpDialect _dialect;
+        private XDialect _dialect;
 
 
         internal static bool StringEquals(string lhs, string rhs)

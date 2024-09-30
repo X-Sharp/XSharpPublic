@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-#pragma options ("enforceself", on)
+
 /// <include file="System.xml" path="doc/FieldSpec/*" />
 [XSharp.Internal.TypesChanged];
 CLASS FieldSpec
@@ -507,9 +507,9 @@ METHOD Transform( uValue AS USUAL) AS STRING
 	IF cPicture == NULL_STRING
 		IF lNumeric
 			IF SELF:wDecimals=0
-				cResult := Transform(uValue,Replicate("9",SELF:wLength))
+				cResult := XSharp.RT.Functions.Transform(uValue,Replicate("9",SELF:wLength))
 			ELSE
-				cResult := Transform(uValue,Replicate("9",SELF:wLength-SELF:wDecimals-1)+"."+Replicate("9",SELF:wDecimals))
+				cResult := XSharp.RT.Functions.Transform(uValue,Replicate("9",SELF:wLength-SELF:wDecimals-1)+"."+Replicate("9",SELF:wDecimals))
 			ENDIF
 
 
@@ -542,7 +542,7 @@ METHOD Transform( uValue AS USUAL) AS STRING
 			cResult := AsString(uValue)
 		ENDIF
 	ELSE
-		cResult := Transform(uValue,cPicture)
+		cResult := XSharp.RT.Functions.Transform(uValue,cPicture)
 	ENDIF
 
 

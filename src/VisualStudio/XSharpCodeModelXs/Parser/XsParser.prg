@@ -39,7 +39,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
     PRIVATE  _collectBlocks AS LOGIC
     PRIVATE  _errors        AS IList<XError>
     PRIVATE  _globalType    AS XSourceTypeSymbol
-    PRIVATE  _dialect       AS XSharpDialect
+    PRIVATE  _dialect       AS XDialect
     PRIVATE  _xppVisibility AS Modifiers
     PRIVATE  _commentTasks  AS IList<XCommentTask>
     PRIVATE  _modifiers     AS IList<IToken>
@@ -65,15 +65,15 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
     END PROPERTY
     PRIVATE PROPERTY CurrentBlock       AS XSourceBlock   GET IIF(_BlockStack:Count > 0, _BlockStack:Peek(), NULL_OBJECT)
     PRIVATE PROPERTY CurrentEntityKind  AS Kind     GET IIF(CurrentEntity != null , CurrentEntity:Kind, Kind.Unknown)
-    PRIVATE PROPERTY InFoxClass AS LOGIC GET CurrentType != NULL .AND. CurrentType:ClassType == XSharpDialect.FoxPro
-    PRIVATE PROPERTY InXppClass AS LOGIC GET CurrentType != NULL .AND. CurrentType:ClassType == XSharpDialect.XPP
+    PRIVATE PROPERTY InFoxClass AS LOGIC GET CurrentType != NULL .AND. CurrentType:ClassType == XDialect.FoxPro
+    PRIVATE PROPERTY InXppClass AS LOGIC GET CurrentType != NULL .AND. CurrentType:ClassType == XDialect.XPP
     PROPERTY EntityList AS IList<XSourceEntity>  GET _EntityList
     PROPERTY BlockList  AS IList<XSourceBlock>   GET _BlockList
     PROPERTY Locals     AS IList<XSourceVariableSymbol> GET _locals
     PROPERTY SaveToDisk AS LOGIC AUTO
     PROPERTY SupportsMemVars as LOGIC GET _file:Project:ParseOptions:SupportsMemvars
 
-    CONSTRUCTOR(oFile AS XFile, dialect AS XSharpDialect)
+    CONSTRUCTOR(oFile AS XFile, dialect AS XDialect)
         SELF:SaveToDisk := TRUE
         _errors        := List<XError>{}
         _usings        := List<STRING>{}
@@ -95,7 +95,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         endif
         _missingType := XLiterals.ObjectType
         _modifiers     := List<IToken>{}
-        IF SELF:_file:Project != NULL .AND. SELF:_file:Project:ParseOptions:Dialect != XSharpDialect.Core
+        IF SELF:_file:Project != NULL .AND. SELF:_file:Project:ParseOptions:Dialect != XDialect.Core
             _missingType := XLiterals.UsualType
         ENDIF
 
@@ -633,6 +633,16 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 token:Type := XSharpLexer.PP_ENDTEXT
                 return
             otherwise
+                var xt := GetNextKeyword()
+                if XFormattingRule.IsStartKeyword(xt)
+                    RETURN
+                ENDIF
+                if XFormattingRule.IsMiddleKeyword(xt)
+                    RETURN
+                ENDIF
+                if XFormattingRule.IsEndKeyword(xt)
+                    RETURN
+                ENDIF
                 SELF:Consume()
             end switch
         ENDDO
@@ -820,7 +830,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             // define class ?
             IF SELF:IsId(SELF:La2)
                 entityKind := Kind.VODefine
-            ELSEIF _dialect == XSharpDialect.FoxPro
+            ELSEIF _dialect == XDialect.FoxPro
                 entityKind := Kind.Class
             ENDIF
         CASE XSharpLexer.VOSTRUCT
@@ -1043,6 +1053,24 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ENDIF
         RETURN
 
+    PRIVATE METHOD GetNextKeyword() AS XKeyword
+        var oLt1 := Lt1
+        var oLt2 := Lt2
+        if oLt1:Type == XSharpLexer.UDC_KEYWORD
+            oLt1 := oLt1:Original
+        ENDIF
+        if oLt2:Type == XSharpLexer.UDC_KEYWORD
+            oLt2 := oLt2:Original
+        ENDIF
+        local xt as XKeyword
+        if XFormattingRule.IsSingleKeyword(oLt1:Type)
+            xt := XKeyword{oLt1:Type}
+        elseif XSharpLexer.IsKeyword(oLt2:Type)
+            xt := XKeyword{oLt1:Type, oLt2:Type}
+        else
+            xt := XKeyword{oLt1:Type}
+        endif
+        return xt
     PRIVATE METHOD ParseBlock() AS VOID
         // Adds, updates or removes block token on the block tokens stack
         // Start of block is also added to the _BlockList
@@ -1053,13 +1081,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         endif
         local xt as XKeyword
         LOCAL rule as XFormattingRule
-        if XFormattingRule.IsSingleKeyword(La1)
-            xt := XKeyword{SELF:La1}
-        elseif XSharpLexer.IsKeyword(La2)
-            xt := XKeyword{SELF:La1, SELF:La2}
-        else
-            xt := XKeyword{SELF:La1}
-        endif
+        xt := SELF:GetNextKeyword()
         rule := XFormattingRule.GetFirstRuleByStart(xt)
         if rule != null
             SELF:ParseBlockStart(rule, xt)
@@ -1226,9 +1248,9 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
     PRIVATE PROPERTY La1 AS INT => _list:La1
     PRIVATE PROPERTY La2 AS INT => _list:La2
     PRIVATE PROPERTY La3 AS INT => _list:La3
-    PRIVATE PROPERTY Lt1 AS IToken => _list:Lt1
-    PRIVATE PROPERTY Lt2 AS IToken => _list:Lt2
-    PRIVATE PROPERTY Lt3 AS IToken => _list:Lt3
+    PRIVATE PROPERTY Lt1 AS XSharpToken => (XSharpToken) _list:Lt1
+    PRIVATE PROPERTY Lt2 AS XSharpToken => (XSharpToken) _list:Lt2
+    PRIVATE PROPERTY Lt3 AS XSharpToken => (XSharpToken) _list:Lt3
     PRIVATE PROPERTY LastToken AS IToken => _list:LastReadToken
     PRIVATE METHOD La(nToken AS LONG) AS LONG => _list:La(nToken)
     PRIVATE METHOD Lt(nToken AS LONG) AS IToken => _list:Lt(nToken)
@@ -1347,7 +1369,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             IF SELF:Matches(XSharpLexer.DEFINE)
                 result := SELF:ParseFoxClass()
             ELSE
-                IF _dialect == XSharpDialect.XPP .AND. SELF:HasXppEndClass()
+                IF _dialect == XDialect.XPP .AND. SELF:HasXppEndClass()
                     result := SELF:ParseXppClass()
                 ELSE
                     result := SELF:ParseTypeDef()
@@ -1360,26 +1382,26 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         CASE Kind.Delegate
             result := SELF:ParseDelegate()
         CASE Kind.Access
-            IF InXppClass .AND. _dialect == XSharpDialect.XPP
+            IF InXppClass .AND. _dialect == XDialect.XPP
                 result := SELF:ParseXppProperty()
             ELSE
                 result := SELF:ParseMethod()
             ENDIF
         CASE Kind.Assign
-            IF InXppClass .AND. _dialect == XSharpDialect.XPP
+            IF InXppClass .AND. _dialect == XDialect.XPP
                 result := SELF:ParseXppProperty()
             ELSE
                 result := SELF:ParseMethod()
             ENDIF
         CASE Kind.Method
-            IF SELF:_dialect == XSharpDialect.XPP
+            IF SELF:_dialect == XDialect.XPP
                 result := SELF:ParseXppMethod()
             ELSE
                 result := SELF:ParseMethod()
             ENDIF
         CASE Kind.Function
         CASE Kind.Procedure
-            IF InFoxClass .AND. _dialect == XSharpDialect.FoxPro
+            IF InFoxClass .AND. _dialect == XDialect.FoxPro
                 result := SELF:ParseFoxMethod()
             ELSE
                 result := SELF:ParseFuncProc()
@@ -1418,13 +1440,13 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             result := SELF:ParseDestructor()
 
         CASE Kind.Field
-            IF InXppClass .AND. _dialect == XSharpDialect.XPP
+            IF InXppClass .AND. _dialect == XDialect.XPP
                 IF SELF:Matches(XSharpLexer.COLON)
                     result := SELF:ParseXppVisibility()
                 ELSE
                     result := SELF:ParseXppClassVars()
                 ENDIF
-            ELSEIF InFoxClass .AND. _dialect == XSharpDialect.FoxPro
+            ELSEIF InFoxClass .AND. _dialect == XDialect.FoxPro
                 result := SELF:ParseFoxFields()
             ELSE
                 result := SELF:ParseClassVars()
@@ -2990,7 +3012,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             if !lStatic
                 lStatic  := SELF:Expect(XSharpLexer.STATIC)
             ENDIF
-            IF SELF:La1 == XSharpLexer.ARRAY .and. _dialect == XSharpDialect.FoxPro
+            IF SELF:La1 == XSharpLexer.ARRAY .and. _dialect == XDialect.FoxPro
                 SELF:Consume()
             ENDIF
         ELSEIF SELF:Expect(XSharpLexer.STATIC)
@@ -3234,7 +3256,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         dimensionVar        : Id=identifierName  ( LBRKT ArraySub=arraysub RBRKT | LPAREN ArraySub=arraysub RPAREN ) (AS DataType=datatype)?
         ;
         */
-        IF _dialect == XSharpDialect.FoxPro
+        IF _dialect == XDialect.FoxPro
             IF ! SELF:ExpectAny(XSharpLexer.DIMENSION, XSharpLexer.DECLARE)
                 RETURN
             ENDIF
@@ -3360,7 +3382,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 xType:AddTypeParameter(typepar)
             NEXT
         ENDIF
-        xType:ClassType := XSharpDialect.FoxPro
+        xType:ClassType := XDialect.FoxPro
         SELF:AddAsChild(xType)
         RETURN <XSourceEntity>{xType}
 
@@ -3439,7 +3461,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ;
         */
 
-        IF CurrentType == NULL .OR. CurrentType:ClassType != XSharpDialect.FoxPro
+        IF CurrentType == NULL .OR. CurrentType:ClassType != XDialect.FoxPro
             RETURN NULL
         ENDIF
         VAR typedef := CurrentType
@@ -3616,7 +3638,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             xType:BaseTypeName := baseType
         ENDIF
         xType:IsPartial := _attributes:HasFlag(Modifiers.Partial)
-        xType:ClassType := XSharpDialect.XPP
+        xType:ClassType := XDialect.XPP
         _xppVisibility := Modifiers.Public
         SELF:AddAsChild(xType)
         RETURN <XSourceEntity>{xType}
@@ -3947,7 +3969,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         FOR VAR i := start DOWNTO 0
             VAR element := _EntityList[i]
             IF element IS XSourceTypeSymbol VAR typedef
-                IF typedef:ClassType == XSharpDialect.XPP
+                IF typedef:ClassType == XDialect.XPP
                     IF String.IsNullOrEmpty(sName)
                         RETURN typedef
                     ELSEIF String.Compare(typedef:Name, sName, TRUE) == 0
@@ -4076,7 +4098,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         RETURN FALSE
 
     PRIVATE METHOD IsKeywordXpp(token AS LONG) AS LOGIC
-        if _dialect != XSharpDialect.XPP
+        if _dialect != XDialect.XPP
             RETURN FALSE
         ENDIF
         SWITCH token
@@ -4091,7 +4113,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         RETURN FALSE
 
     PRIVATE METHOD IsKeywordFox(token AS LONG) AS LOGIC
-        if _dialect != XSharpDialect.FoxPro
+        if _dialect != XDialect.FoxPro
             RETURN FALSE
         ENDIF
         SWITCH token

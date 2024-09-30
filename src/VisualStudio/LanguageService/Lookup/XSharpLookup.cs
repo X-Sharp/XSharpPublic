@@ -1239,7 +1239,7 @@ namespace XSharp.LanguageService
                 if (result.Count == 0 && currentType != null)
                 {
                     // no method lookup when enforceself is enabled
-                    if (!location.Project.ProjectNode.EnforceSelf)
+                    if (!location.Project.ParseOptions.EnforceSelf)
                         result.AddRange(SearchMethod(location, currentType, currentName, visibility, false));
                 }
                 if (result.Count == 0)

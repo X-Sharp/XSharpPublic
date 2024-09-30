@@ -5,14 +5,12 @@
 //
 //------------------------------------------------------------------------------
 
-using LanguageService.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using System;
-using XSharp.Parser;
-using XSharpModel;
-using static XSharp.Parser.VsParser;
+using System.Windows.Shapes;
 using XSharp.Settings;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 namespace XSharp.LanguageService
 {
     partial class XSharpFormattingCommandHandler
@@ -33,7 +31,42 @@ namespace XSharp.LanguageService
             }
             return true;
         }
-        private void FormatLine()
+        internal void FormatLines(int iStart, int iEnd)
+        {
+            using (var editSession = _buffer.CreateEdit())
+            {
+                try
+                {
+                    switch ((EnvDTE.vsIndentStyle)Settings.IndentStyle)
+                    {
+                        case EnvDTE.vsIndentStyle.vsIndentStyleSmart:
+                            if (iEnd < _buffer.CurrentSnapshot.LineCount)
+                                iEnd += 1;
+                            for (int i = iStart; i <= iEnd; i++)
+                            {
+                                var line = _buffer.CurrentSnapshot.GetLineFromLineNumber(i);
+                                _lineFormatter.FormatLine(editSession, line);
+                            }
+                            break;
+                        case EnvDTE.vsIndentStyle.vsIndentStyleDefault:
+                        case EnvDTE.vsIndentStyle.vsIndentStyleNone:
+                            break;
+                    }
+                }
+                finally
+                {
+                    if (editSession.HasEffectiveChanges)
+                    {
+                        editSession.Apply();
+                    }
+                    else
+                    {
+                        editSession.Cancel();
+                    }
+                }
+            }
+        }
+        internal void FormatLine()
         {
 
             SnapshotPoint caret = this._textView.Caret.Position.BufferPosition;
@@ -78,7 +111,7 @@ namespace XSharp.LanguageService
             }
         }
 
-        private bool CanEdit
+        internal bool CanEdit
         {
             get
             {
@@ -101,7 +134,7 @@ namespace XSharp.LanguageService
         /// <summary>
         /// Format document, evaluating line after line
         /// </summary>
-        private void FormatDocument()
+        private void FormatDocumentWorker()
         {
             if (!CanEdit)
                 return;
@@ -123,7 +156,7 @@ namespace XSharp.LanguageService
             WriteOutputMessage("FormatDocument() <<--");
         }
 
-        private void FormatSpan(int startLine, int endLine, int startIndent)
+        internal void FormatSpan(int startLine, int endLine, int startIndent)
         {
             var lines = _buffer.CurrentSnapshot.Lines;
             ITextEdit editSession = null;
@@ -175,7 +208,7 @@ namespace XSharp.LanguageService
         /// <summary>
         /// Format the current selection
         /// </summary>
-        private void FormatSelection()
+        internal void FormatSelectionWorker()
         {
             if (!CanEdit)
                 return;
@@ -188,22 +221,6 @@ namespace XSharp.LanguageService
             //
             FormatSpan(startLine, endLine, 0);
         }
-    }
-
-
-    public class ErrorIgnorer : IErrorListener
-    {
-        #region IErrorListener
-        public void ReportError(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
-        {
-            ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
-        }
-
-        public void ReportWarning(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
-        {
-            ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
-        }
-        #endregion
     }
 
 

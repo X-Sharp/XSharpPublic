@@ -1,7 +1,7 @@
 GLOBAL DefaultFormFrameClassName := #__FormFrame AS SYMBOL
 
 
-#pragma options ("enforceself", on)
+
  /// <exclude />
 CLASS __FormFrame INHERIT ChildAppWindow
 	PROTECT lAutoLayout AS LOGIC
@@ -685,7 +685,7 @@ METHOD CreateSubform(nResourceID, oResID)
 
 	// Reactivate previously active form
 	IF (oFocus != NULL_OBJECT)
-		SetFocus(hFocus)
+		Win32SetFocus(hFocus)
 		SendMessage(oFocus:Handle(), WM_ACTIVATE, WA_ACTIVE, 0 )
 	ENDIF
 
@@ -1015,7 +1015,7 @@ METHOD SetFocusToForm ( )
 	// If focus is not returning to any specific control then set
 	// to the last active control (if any)
 	IF (oBrowser != NULL_OBJECT) .AND. lViewingGBrowse
-		SetFocus(oBrowser:Handle())
+		Win32SetFocus(oBrowser:Handle())
 		RETURN SELF
 	ENDIF
 

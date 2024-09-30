@@ -6,64 +6,24 @@
 //------------------------------------------------------------------------------
 
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.Threading;
-using Microsoft.VisualStudio.Utilities;
 using System;
 using System.Collections.Concurrent;
-using System.ComponentModel.Composition;
 using System.Linq;
 using XSharpModel;
 using XSharp.Settings;
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 namespace XSharp.LanguageService
 {
-    [Export(typeof(IVsTextViewCreationListener))]
-    [Name("XSharp Formatting Provider")]
-    [TextViewRole(PredefinedTextViewRoles.Editable)]
-    [ContentType(XSharpConstants.LanguageName)]
-    internal class XSharpFormattingProvider : IVsTextViewCreationListener
-    {
-        [Import] IEditorOptionsFactoryService editorOptionsService;
-
-        private IEditorOptions editorOptions;
-
-        [Import]
-        internal IVsEditorAdaptersFactoryService AdapterService;
-
-        [Import]
-        internal IBufferTagAggregatorFactoryService BufferTagAggregatorFactoryService { get; set; }
-        public void VsTextViewCreated(IVsTextView textViewAdapter)
-        {
-            ITextView textView = AdapterService.GetWpfTextView(textViewAdapter);
-            if (textView == null)
-                return;
-            editorOptions = editorOptionsService.GetOptions(textView);
-            editorOptions.OptionChanged += EditorOptions_OptionChanged;
-            textView.Properties.GetOrCreateSingletonProperty(
-                 () => new XSharpFormattingCommandHandler(textViewAdapter,
-                    textView,
-                    BufferTagAggregatorFactoryService
-                    ));
-        }
-
-        private void EditorOptions_OptionChanged(object sender, EditorOptionChangedEventArgs e)
-        {
-            return;
-        }
-    }
     internal partial class XSharpFormattingCommandHandler : IOleCommandTarget
     {
         readonly ITextView _textView;
         readonly IOleCommandTarget m_nextCommandHandler;
-        readonly IBufferTagAggregatorFactoryService _aggregator;
         readonly ConcurrentDictionary<int,int> _linesToSync;
         readonly XFile _file;
         private readonly ITextBuffer _buffer;
@@ -74,6 +34,33 @@ namespace XSharp.LanguageService
 
         bool _suspendSync = false;
         int currentLine = -1;
+        internal XSharpFormattingCommandHandler(IVsTextView textViewAdapter, ITextView textView)
+        {
+            this._textView = textView;
+            this._textView.Closed += OnClosed;
+            //add this to the filter chain
+            _linesToSync = new ConcurrentDictionary<int, int>();
+            //
+            _buffer = _textView.TextBuffer;
+            if (_buffer != null)
+            {
+                _buffer.ChangedLowPriority += Textbuffer_Changed;
+                _buffer.Changing += Textbuffer_Changing;
+                _file = _buffer.GetFile();
+
+                _document = _buffer.GetDocument();
+            }
+            if (_file != null)
+            {
+                EditorConfigReader.ReadSettings(_buffer, _file.FullPath);
+            }
+
+            textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
+            registerClassifier();
+            _lineFormatter = new LineFormatter(_buffer);
+            _document.FormattingCommandHandler = this;  
+
+        }
 
         private void registerClassifier()
         {
@@ -102,76 +89,51 @@ namespace XSharp.LanguageService
             }
 
         }
-        internal XSharpFormattingCommandHandler(IVsTextView textViewAdapter, ITextView textView,
-            IBufferTagAggregatorFactoryService aggregator)
-        {
-            this._textView = textView;
-            this._textView.Closed += OnClosed;
-            this._aggregator = aggregator;
-            //add this to the filter chain
-            _linesToSync = new ConcurrentDictionary<int, int>();
-            //
-            _buffer = _textView.TextBuffer;
-            if (_buffer != null)
-            {
-                _buffer.ChangedLowPriority += Textbuffer_Changed;
-                _buffer.Changing += Textbuffer_Changing;
-                _file = _buffer.GetFile();
 
-                _document = _buffer.GetDocument();
-            }
-            if (_file != null)
-            {
-                EditorConfigReader.ReadSettings(_buffer, _file.FullPath);
-            }
 
-            textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
-            registerClassifier();
-            _lineFormatter = new LineFormatter(_buffer);
-
-        }
-
-#if !ASYNCCOMPLETION
-        XSharpCompletionCommandHandler _completionCommandHandler = null;
-#endif
         bool IsCompletionActive()
         {
-#if !ASYNCCOMPLETION
-            if (_completionCommandHandler == null)
-                _completionCommandHandler = _textView.Properties.GetProperty<XSharpCompletionCommandHandler>(typeof(XSharpCompletionCommandHandler));
-            if (_completionCommandHandler != null)
-            {
-                return _completionCommandHandler.HasActiveSession;
-            }
-#endif
-            return false;
-
+            return _document.CompletionSession != null;
         }
 
-        public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
+       internal void FormatDocument()
+        {
+            try
+            {
+                _linesToSync.Clear();
+                _suspendSync = true;
+                FormatDocumentWorker();
+            }
+            finally
+            {
+                _linesToSync.Clear();
+                _suspendSync = false;
+            }
+        }
+
+        internal void FormatSelection()
+        {
+            try
+            {
+                _linesToSync.Clear();
+                _suspendSync = true;
+                FormatSelectionWorker();
+            }
+            finally
+            {
+                _linesToSync.Clear();
+                _suspendSync = false;
+            }
+        }
+
+        public int Exec(ref Guid cmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            Guid cmdGroup = pguidCmdGroup;
             bool completionActive = false;
             registerClassifier();
             // 1. Pre-process
-            if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
-            {
-                switch (nCmdID)
-                {
-                    case (int)VSConstants.VSStd97CmdID.Save:
-                    case (int)VSConstants.VSStd97CmdID.SaveAs:
-                    case (int)VSConstants.VSStd97CmdID.SaveProjectItem:
-                        if (Settings.InsertFinalNewline || Settings.TrimTrailingWhiteSpace)
-                        {
-                            adjustWhiteSpace();
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-            else if (pguidCmdGroup == VSConstants.VSStd2K)
+
+            if (cmdGroup == VSConstants.VSStd2K)
             {
                 switch (nCmdID)
                 {
@@ -188,42 +150,11 @@ namespace XSharp.LanguageService
             // 3. Post process
             if (ErrorHandler.Succeeded(result) && !XEditorSettings.DisableCodeCompletion)
             {
-                if (pguidCmdGroup == VSConstants.VSStd2K)
+                if (cmdGroup == VSConstants.VSStd2K)
                 {
 
                     switch (nCmdID)
                     {
-                        case (int)VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
-                            try
-                            {
-                                _linesToSync.Clear();
-                                _suspendSync = true;
-                                // todo: Use Command for formatting
-                                // see https://github.com/madskristensen/PkgdefLanguage/blob/master/src/Commands/Formatting.cs
-
-                                FormatDocument();
-                            }
-                            finally
-                            {
-                                _linesToSync.Clear();
-                                _suspendSync = false;
-                            }
-                            break;
-
-                        case (int)VSConstants.VSStd2KCmdID.FORMATSELECTION:
-                            try
-                            {
-                                _suspendSync = true;
-                                // todo: Use Command for formatting
-                                // see https://github.com/madskristensen/PkgdefLanguage/blob/master/src/Commands/Formatting.cs
-                                FormatSelection();
-                            }
-                            finally
-                            {
-                                _suspendSync = false;
-                            }
-                            break;
-
                         case (int)VSConstants.VSStd2KCmdID.RETURN:
                             if (!completionActive)
                             {
@@ -264,7 +195,6 @@ namespace XSharp.LanguageService
         }
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             return m_nextCommandHandler.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
         }
         internal void WriteOutputMessage(string strMessage)
@@ -273,56 +203,6 @@ namespace XSharp.LanguageService
             {
                 Logger.Information("XSharp.Formatting:" + strMessage);
             }
-        }
-        private void adjustWhiteSpace()
-        {
-
-            ThreadHelper.JoinableTaskFactory.Run(async ()=>
-            {
-
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                using (var editSession = _buffer.CreateEdit())
-                {
-                    var settings = Settings;
-                    try
-                    {
-                        var snapshot = editSession.Snapshot;
-                        if (settings.InsertFinalNewline)
-                        {
-                            var text = snapshot.GetText();
-                            if (!text.EndsWith(Environment.NewLine))
-                            {
-                                var line = snapshot.GetLineFromLineNumber(snapshot.LineCount - 1);
-                                editSession.Insert(line.End.Position, Environment.NewLine);
-                            }
-
-                        }
-                        if (settings.TrimTrailingWhiteSpace)
-                        {
-                            foreach (var line in snapshot.Lines)
-                            {
-                                var text = line.GetText();
-                                if (text.Length > 0)
-                                {
-                                    var last = text[text.Length - 1];
-                                    if (last == ' ' || last == '\t')
-                                    {
-                                        editSession.Replace(line.Start.Position, line.Length, text.TrimEnd());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        editSession.Cancel();
-                    }
-                    finally
-                    {
-                        ApplyChanges(editSession);
-                    }
-                }
-            });
         }
 
         private void ApplyChanges(ITextEdit editSession)

@@ -783,7 +783,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
                             if (compilation.IsSubmission && !usingDirective.UsingKeyword.HasTrailingTrivia)
                                 continue;
-                            if (Imports.HandleXSharpImport(usingDirective, declarationBinder, usings, uniqueUsings, basesBeingResolved, compilation))
+                            if (Imports.HandleXSharpImport(usingDirective, declarationBinder, getOrCreateUsingsBuilder(ref usings, globalUsingNamespacesOrTypes), getOrCreateUniqueUsings(ref uniqueUsings, globalUsingNamespacesOrTypes), basesBeingResolved, compilation))
                                 continue;
 #endif
                             var imported = declarationBinder.BindNamespaceOrTypeSymbol(usingDirective.NamespaceOrType, directiveDiagnostics, basesBeingResolved).NamespaceOrTypeSymbol;

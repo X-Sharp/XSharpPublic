@@ -402,9 +402,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             _typeComparison = typeComparison;
             Debug.Assert((_typeComparison & TypeCompareKind.FunctionPointerRefMatchesOutInRefReadonly) == 0,
                          $"Rely on the {nameof(refKindCompareMode)} flag to set this to ensure all cases are handled.");
+#if !XSHARP
             Debug.Assert(_refKindCompareMode == RefKindCompareMode.DoNotConsiderDifferences ||
                 (_refKindCompareMode & RefKindCompareMode.ConsiderDifferences) != 0,
                 $"Cannot set {nameof(RefKindCompareMode)} flags without {nameof(RefKindCompareMode.ConsiderDifferences)}.");
+#endif
             if ((refKindCompareMode & RefKindCompareMode.ConsiderDifferences) == 0)
             {
                 _typeComparison |= TypeCompareKind.FunctionPointerRefMatchesOutInRefReadonly;

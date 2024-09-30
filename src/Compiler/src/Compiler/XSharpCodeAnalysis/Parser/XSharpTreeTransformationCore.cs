@@ -1627,12 +1627,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string nameSpace;
             splitClassNameAndNamespace(ref className, out nameSpace);
             SyntaxListBuilder modifiers = _pool.Allocate();
-            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword));
             if (bInternalClass)
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword));
             else
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
+            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword));
             MemberDeclarationSyntax r =
                 _syntaxFactory.ClassDeclaration(
                 attributeLists: withAttribs ? MakeCompilerGeneratedAttribute() : default,
@@ -1687,12 +1687,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     );
             }
             SyntaxListBuilder modifiers = _pool.Allocate();
-            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword));
             if (internalClass)
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword));
             else
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
+            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword));
             MemberDeclarationSyntax classdecl =
                 _syntaxFactory.ClassDeclaration(
                 attributeLists: withAttribs ? MakeCompilerGeneratedAttribute() : default,

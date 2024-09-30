@@ -21309,6 +21309,7 @@ public partial class XSharpParser : Parser {
 		public ITerminalNode UPTO() { return GetToken(XSharpParser.UPTO, 0); }
 		public ITerminalNode USING() { return GetToken(XSharpParser.USING, 0); }
 		public ITerminalNode WINCALL() { return GetToken(XSharpParser.WINCALL, 0); }
+		public ITerminalNode WITH() { return GetToken(XSharpParser.WITH, 0); }
 		public ITerminalNode DEFINE() { return GetToken(XSharpParser.DEFINE, 0); }
 		public ITerminalNode TRY() { return GetToken(XSharpParser.TRY, 0); }
 		public ITerminalNode SWITCH() { return GetToken(XSharpParser.SWITCH, 0); }
@@ -21363,7 +21364,7 @@ public partial class XSharpParser : Parser {
 			State = 3439;
 			_localctx.Token = _input.Lt(1);
 			_la = _input.La(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ALIGN) | (1L << CALLBACK) | (1L << CLIPPER) | (1L << DECLARE) | (1L << DEFINE) | (1L << DIM) | (1L << DLLEXPORT) | (1L << DOWNTO) | (1L << FASTCALL) | (1L << FIELD) | (1L << GLOBAL) | (1L << INHERIT) | (1L << INIT1) | (1L << INIT2) | (1L << INIT3) | (1L << INSTANCE) | (1L << IN) | (1L << MEMVAR) | (1L << NAMEOF) | (1L << PARAMETERS) | (1L << PASCAL) | (1L << SEQUENCE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (STEP - 64)) | (1L << (STRICT - 64)) | (1L << (THISCALL - 64)) | (1L << (TO - 64)) | (1L << (UNION - 64)) | (1L << (UPTO - 64)) | (1L << (USING - 64)) | (1L << (WINCALL - 64)) | (1L << (ABSTRACT - 64)) | (1L << (AUTO - 64)) | (1L << (CONST - 64)) | (1L << (DEFAULT - 64)) | (1L << (DELEGATE - 64)) | (1L << (ENUM - 64)) | (1L << (EVENT - 64)) | (1L << (EXPLICIT - 64)) | (1L << (FOREACH - 64)) | (1L << (GET - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IMPLICIT - 64)) | (1L << (IMPLIED - 64)) | (1L << (INITONLY - 64)) | (1L << (INTERFACE - 64)) | (1L << (INTERNAL - 64)) | (1L << (LOCK - 64)) | (1L << (NAMESPACE - 64)) | (1L << (NEW - 64)) | (1L << (OPERATOR - 64)) | (1L << (OUT - 64)) | (1L << (PARTIAL - 64)) | (1L << (PROPERTY - 64)) | (1L << (SCOPE - 64)) | (1L << (SEALED - 64)) | (1L << (SET - 64)) | (1L << (STRUCTURE - 64)) | (1L << (TRY - 64)) | (1L << (TUPLE - 64)) | (1L << (UNTIL - 64)) | (1L << (VALUE - 64)) | (1L << (VIRTUAL - 64)) | (1L << (VOSTRUCT - 64)) | (1L << (ADD - 64)) | (1L << (ARGLIST - 64)) | (1L << (ASCENDING - 64)) | (1L << (ASYNC - 64)) | (1L << (ASTYPE - 64)) | (1L << (AWAIT - 64)) | (1L << (BY - 64)) | (1L << (CHECKED - 64)) | (1L << (DESCENDING - 64)) | (1L << (EQUALS - 64)) | (1L << (EXTERN - 64)) | (1L << (FIXED - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (FROM - 128)) | (1L << (GROUP - 128)) | (1L << (INIT - 128)) | (1L << (INTO - 128)) | (1L << (JOIN - 128)) | (1L << (LET - 128)) | (1L << (NOP - 128)) | (1L << (OF - 128)) | (1L << (ON - 128)) | (1L << (ORDERBY - 128)) | (1L << (OVERRIDE - 128)) | (1L << (PARAMS - 128)) | (1L << (REMOVE - 128)) | (1L << (SELECT - 128)) | (1L << (STACKALLOC - 128)) | (1L << (SWITCH - 128)) | (1L << (UNCHECKED - 128)) | (1L << (UNSAFE - 128)) | (1L << (VAR - 128)) | (1L << (VOLATILE - 128)) | (1L << (WHEN - 128)) | (1L << (WHERE - 128)) | (1L << (YIELD - 128)) | (1L << (REF - 128)) | (1L << (CHAR - 128)) | (1L << (DYNAMIC - 128)) | (1L << (DECIMAL - 128)) | (1L << (DATETIME - 128)) | (1L << (CURRENCY - 128)) | (1L << (BINARY - 128)) | (1L << (NINT - 128)) | (1L << (NUINT - 128)))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ALIGN) | (1L << CALLBACK) | (1L << CLIPPER) | (1L << DECLARE) | (1L << DEFINE) | (1L << DIM) | (1L << DLLEXPORT) | (1L << DOWNTO) | (1L << FASTCALL) | (1L << FIELD) | (1L << GLOBAL) | (1L << INHERIT) | (1L << INIT1) | (1L << INIT2) | (1L << INIT3) | (1L << INSTANCE) | (1L << IN) | (1L << MEMVAR) | (1L << NAMEOF) | (1L << PARAMETERS) | (1L << PASCAL) | (1L << SEQUENCE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (STEP - 64)) | (1L << (STRICT - 64)) | (1L << (THISCALL - 64)) | (1L << (TO - 64)) | (1L << (UNION - 64)) | (1L << (UPTO - 64)) | (1L << (USING - 64)) | (1L << (WINCALL - 64)) | (1L << (ABSTRACT - 64)) | (1L << (AUTO - 64)) | (1L << (CONST - 64)) | (1L << (DEFAULT - 64)) | (1L << (DELEGATE - 64)) | (1L << (ENUM - 64)) | (1L << (EVENT - 64)) | (1L << (EXPLICIT - 64)) | (1L << (FOREACH - 64)) | (1L << (GET - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IMPLICIT - 64)) | (1L << (IMPLIED - 64)) | (1L << (INITONLY - 64)) | (1L << (INTERFACE - 64)) | (1L << (INTERNAL - 64)) | (1L << (LOCK - 64)) | (1L << (NAMESPACE - 64)) | (1L << (NEW - 64)) | (1L << (OPERATOR - 64)) | (1L << (OUT - 64)) | (1L << (PARTIAL - 64)) | (1L << (PROPERTY - 64)) | (1L << (SCOPE - 64)) | (1L << (SEALED - 64)) | (1L << (SET - 64)) | (1L << (STRUCTURE - 64)) | (1L << (TRY - 64)) | (1L << (TUPLE - 64)) | (1L << (UNTIL - 64)) | (1L << (VALUE - 64)) | (1L << (VIRTUAL - 64)) | (1L << (VOSTRUCT - 64)) | (1L << (ADD - 64)) | (1L << (ARGLIST - 64)) | (1L << (ASCENDING - 64)) | (1L << (ASYNC - 64)) | (1L << (ASTYPE - 64)) | (1L << (AWAIT - 64)) | (1L << (BY - 64)) | (1L << (CHECKED - 64)) | (1L << (DESCENDING - 64)) | (1L << (EQUALS - 64)) | (1L << (EXTERN - 64)) | (1L << (FIXED - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (FROM - 128)) | (1L << (GROUP - 128)) | (1L << (INIT - 128)) | (1L << (INTO - 128)) | (1L << (JOIN - 128)) | (1L << (LET - 128)) | (1L << (NOP - 128)) | (1L << (OF - 128)) | (1L << (ON - 128)) | (1L << (ORDERBY - 128)) | (1L << (OVERRIDE - 128)) | (1L << (PARAMS - 128)) | (1L << (REMOVE - 128)) | (1L << (SELECT - 128)) | (1L << (STACKALLOC - 128)) | (1L << (SWITCH - 128)) | (1L << (UNCHECKED - 128)) | (1L << (UNSAFE - 128)) | (1L << (VAR - 128)) | (1L << (VOLATILE - 128)) | (1L << (WHEN - 128)) | (1L << (WHERE - 128)) | (1L << (YIELD - 128)) | (1L << (WITH - 128)) | (1L << (REF - 128)) | (1L << (CHAR - 128)) | (1L << (DYNAMIC - 128)) | (1L << (DECIMAL - 128)) | (1L << (DATETIME - 128)) | (1L << (CURRENCY - 128)) | (1L << (BINARY - 128)) | (1L << (NINT - 128)) | (1L << (NUINT - 128)))) != 0)) ) {
 				_localctx.Token = _errHandler.RecoverInline(this);
 			} else {
 				if (_input.La(1) == TokenConstants.Eof) {
@@ -21683,7 +21684,7 @@ public partial class XSharpParser : Parser {
 		public IToken _FINAL;
 		public IToken _SEALED;
 		public IToken _ABSTRACT;
-		public IToken _tset11260;
+		public IToken _tset11264;
 		public ITerminalNode[] STATIC() { return GetTokens(XSharpParser.STATIC); }
 		public ITerminalNode STATIC(int i) {
 			return GetToken(XSharpParser.STATIC, i);
@@ -21734,10 +21735,10 @@ public partial class XSharpParser : Parser {
 				{
 				{
 				State = 3495;
-				_localctx._tset11260 = _input.Lt(1);
+				_localctx._tset11264 = _input.Lt(1);
 				_la = _input.La(1);
 				if ( !(((((_la - 63)) & ~0x3f) == 0 && ((1L << (_la - 63)) & ((1L << (STATIC - 63)) | (1L << (ABSTRACT - 63)) | (1L << (SEALED - 63)))) != 0) || _la==FREEZE || _la==FINAL) ) {
-					_localctx._tset11260 = _errHandler.RecoverInline(this);
+					_localctx._tset11264 = _errHandler.RecoverInline(this);
 				} else {
 					if (_input.La(1) == TokenConstants.Eof) {
 						matchedEOF = true;
@@ -21746,7 +21747,7 @@ public partial class XSharpParser : Parser {
 					_errHandler.ReportMatch(this);
 					Consume();
 				}
-				_localctx._Tokens.Add(_localctx._tset11260);
+				_localctx._Tokens.Add(_localctx._tset11264);
 				}
 				}
 				State = 3498;
@@ -22312,7 +22313,7 @@ public partial class XSharpParser : Parser {
 		public IToken _UNSAFE;
 		public IToken _EXTERN;
 		public IToken _VIRTUAL;
-		public IToken _tset11498;
+		public IToken _tset11502;
 		public ITerminalNode[] DEFERRED() { return GetTokens(XSharpParser.DEFERRED); }
 		public ITerminalNode DEFERRED(int i) {
 			return GetToken(XSharpParser.DEFERRED, i);
@@ -22395,10 +22396,10 @@ public partial class XSharpParser : Parser {
 				{
 				{
 				State = 3560;
-				_localctx._tset11498 = _input.Lt(1);
+				_localctx._tset11502 = _input.Lt(1);
 				_la = _input.La(1);
 				if ( !(_la==CLASS || _la==STATIC || ((((_la - 79)) & ~0x3f) == 0 && ((1L << (_la - 79)) & ((1L << (ABSTRACT - 79)) | (1L << (NEW - 79)) | (1L << (VIRTUAL - 79)) | (1L << (ASYNC - 79)) | (1L << (EXTERN - 79)) | (1L << (OVERRIDE - 79)))) != 0) || ((((_la - 145)) & ~0x3f) == 0 && ((1L << (_la - 145)) & ((1L << (UNSAFE - 145)) | (1L << (DEFERRED - 145)) | (1L << (FINAL - 145)) | (1L << (INTRODUCE - 145)) | (1L << (SYNC - 145)))) != 0)) ) {
-					_localctx._tset11498 = _errHandler.RecoverInline(this);
+					_localctx._tset11502 = _errHandler.RecoverInline(this);
 				} else {
 					if (_input.La(1) == TokenConstants.Eof) {
 						matchedEOF = true;
@@ -22407,7 +22408,7 @@ public partial class XSharpParser : Parser {
 					_errHandler.ReportMatch(this);
 					Consume();
 				}
-				_localctx._Tokens.Add(_localctx._tset11498);
+				_localctx._Tokens.Add(_localctx._tset11502);
 				}
 				}
 				State = 3563;
@@ -22750,7 +22751,7 @@ public partial class XSharpParser : Parser {
 		public IToken _ACCESS;
 		public IList<IToken> _Tokens = new List<IToken>();
 		public IToken _ASSIGN;
-		public IToken _tset11732;
+		public IToken _tset11736;
 		public ITerminalNode[] ACCESS() { return GetTokens(XSharpParser.ACCESS); }
 		public ITerminalNode ACCESS(int i) {
 			return GetToken(XSharpParser.ACCESS, i);
@@ -22789,10 +22790,10 @@ public partial class XSharpParser : Parser {
 				{
 				{
 				State = 3620;
-				_localctx._tset11732 = _input.Lt(1);
+				_localctx._tset11736 = _input.Lt(1);
 				_la = _input.La(1);
 				if ( !(_la==ACCESS || _la==ASSIGN) ) {
-					_localctx._tset11732 = _errHandler.RecoverInline(this);
+					_localctx._tset11736 = _errHandler.RecoverInline(this);
 				} else {
 					if (_input.La(1) == TokenConstants.Eof) {
 						matchedEOF = true;
@@ -22801,7 +22802,7 @@ public partial class XSharpParser : Parser {
 					_errHandler.ReportMatch(this);
 					Consume();
 				}
-				_localctx._Tokens.Add(_localctx._tset11732);
+				_localctx._Tokens.Add(_localctx._tset11736);
 				}
 				}
 				State = 3623;
@@ -24900,7 +24901,7 @@ public partial class XSharpParser : Parser {
 		"\x6\b\n\f\xE\x13\x13\x15\x15\x17\x1E!\"$&,,.\x30\x32\x32\x34\x35\x38>"+
 		"@@\x44\x44GGKKMNTTXXkkpp\xA7\xA7\x107\x10A\x1A\x2\x5\x5\v\v\xF\x12\x14"+
 		"\x14\x16\x16\x1F ##\'+--\x31\x31\x33\x33\x36\x37??\x42\x43\x45\x46HJL"+
-		"LQRUWYjl\x98\xAA\xAA\xB1\xB1\xB4\xBA\x5\x2\xBF\xBF\xC3\xC3\xC8\xCB\x4"+
+		"LQRUWYjl\x99\xAA\xAA\xB1\xB1\xB4\xBA\x5\x2\xBF\xBF\xC3\xC3\xC8\xCB\x4"+
 		"\x2\x82\x82\xCA\xCA\x6\x2\x41\x41QQmm\xC4\xC5\a\x2$$\x38\x38:;\x63\x63"+
 		"\xC3\xC3\xF\x2\xE\xE\x41\x41QQ\x66\x66ttyy\x80\x80\x8C\x8C\x93\x93\xC0"+
 		"\xC0\xC5\xC5\xC7\xC7\xCC\xCC\x4\x2\x4\x4\b\b\x6\x2\xCF\xD2\xD4\xD6\xDE"+

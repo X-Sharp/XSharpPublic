@@ -39,7 +39,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var mods = mds.Modifiers;
                 isStatic = mods.Any(SyntaxKind.StaticKeyword);
             }
-            // check if MethodSymbol has the NeedAccessToLocals attribute combined with /fox2
+            // check if MethodSymbol has the NeedAccessToLocals attribute combined with /memvars and the FoxPro Dialect
             // if that is the case then the node is registered  in the FunctionsThatNeedAccessToLocals dictionary
             if (root.GetLocalsForFunction(expression.Syntax.CsNode, out var writeAccess,
                 out var localsymbols) )

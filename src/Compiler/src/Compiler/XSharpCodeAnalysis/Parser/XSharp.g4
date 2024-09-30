@@ -1323,7 +1323,7 @@ keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     // The following 'old' keywords are never used 'alone' and are harmless as identifiers
                     | ALIGN | CALLBACK | CLIPPER  | DIM | DOWNTO | DLLEXPORT
                     | FASTCALL | IN | INIT1 | INIT2 | INIT3 | INSTANCE | PASCAL |  SEQUENCE
-                    | STEP | STRICT | TO | THISCALL | TUPLE |  UPTO | USING | WINCALL
+                    | STEP | STRICT | TO | THISCALL | TUPLE |  UPTO | USING | WINCALL | WITH
                     // The following keywords are handled in the fixPositionalKeyword() method of the lexer and will only be keywords at the right place
                     // but when they code event->(DoSomething()) we still need them in this rule...
                     | DEFINE | TRY | SWITCH | EVENT| EXPLICIT | FIELD | FOREACH | UNTIL | PARAMETERS | YIELD | MEMVAR | NOP

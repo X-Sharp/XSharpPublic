@@ -26,7 +26,7 @@ FUNCTION MemVarBlock(cMemvarName AS STRING) AS OBJECT
 FUNCTION MemVarGet(cVarName AS STRING) AS USUAL
     RETURN XSharp.MemVar.Get(cVarName)
 
-
+[NeedsAccessToLocals(FALSE)];
 FUNCTION MemVarTryGet(cVarName AS STRING, uValue OUT USUAL) AS LOGIC
     RETURN XSharp.MemVar.TryGet(cVarName, OUT uValue)
 
@@ -69,23 +69,27 @@ FUNCTION MemVarRelease(symVar AS STRING) AS VOID
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/varget/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+[NeedsAccessToLocals(FALSE)];
 FUNCTION VarGet(cVarName AS STRING) AS USUAL
     RETURN __VarGet(cVarName)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/varput/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+[NeedsAccessToLocals(TRUE)];
 FUNCTION VarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
     RETURN __VarPut(cVarName, uValue)
 
 
 /// <inheritdoc cref='VarGet' />
 /// <param name="symVar">The name of the variable .</param>
+[NeedsAccessToLocals(FALSE)];
 FUNCTION VarGetSym(symVar AS SYMBOL) AS USUAL
     RETURN __VarGet(symVar)
 
 /// <inheritdoc cref='VarPut' />
 /// <param name="symVar">The name of the variable .</param>
+[NeedsAccessToLocals(TRUE)];
 FUNCTION VarPutSym(symVar AS SYMBOL,uValue AS USUAL) AS USUAL
     RETURN __VarPut(symVar, uValue)
 
@@ -96,11 +100,13 @@ FUNCTION MemVarBlockSym(symMemvarName AS SYMBOL) AS OBJECT
 
 /// <inheritdoc cref='MemVarGet' />
 /// <param name="symVar">The name of the variable .</param>
+[NeedsAccessToLocals(FALSE)];
 FUNCTION MemVarGetSym(symVar AS SYMBOL) AS USUAL
     RETURN XSharp.MemVar.Get(symVar)
 
 /// <inheritdoc cref='MemVarPut' />
 /// <param name="symVar">The name of the variable you want to assign to.</param>
+[NeedsAccessToLocals(TRUE)];
 FUNCTION MemVarPutSym(symVar AS SYMBOL, uValue AS USUAL) AS USUAL
     RETURN XSharp.MemVar.Put(symVar, uValue)
 

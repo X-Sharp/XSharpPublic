@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-08T17:19:36.434+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Intellisense(智能感知)</title>
+<topic template="Default" modified="2024-09-27T12:07:09.963+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Intellisense(智能感应))</title>
   <keywords>
     <keyword>Intellisense</keyword>
     <keyword>Options</keyword>
@@ -9,7 +9,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Intellisense(智能感知)</para>
+      <para styleclass="Heading1">Intellisense(智能感应)</para>
     </header>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">本页包含与代码自动补全和编辑器下拉菜单有关的特定 X# 设置。</para>

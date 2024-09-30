@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T02:38:20.586+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-27T12:05:49.843+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Quick Info(快速信息)</title>
   <keywords>
     <keyword>Quick Info</keyword>
@@ -14,7 +14,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">您可以通过选择 &quot;编辑&quot;&gt;&quot;智能感知&quot;&gt;&quot;快速信息&quot;、按 Ctrl+I 或选择编辑器工具栏上的 &quot;快速信息&quot; 按钮手动调用快速信息。</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">如果函数被重载，智能感知可能不会显示重载的所有形式的信息。</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">如果函数被重载，Intellisense 可能不会显示重载的所有形式的信息。</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="Quick Info.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;" figurelistinclude="0"></image></para>

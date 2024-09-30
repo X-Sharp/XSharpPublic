@@ -3,11 +3,8 @@
 <topic template="Default" modified="2024-09-25T17:43:57.737+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
-    <keyword>/shared</keyword>
     <keyword>Changes</keyword>
     <keyword>Runtime chapter</keyword>
-    <keyword>STACKALLOC</keyword>
-    <keyword>XS9082</keyword>
   </keywords>
   <body>
     <header>
@@ -97,7 +94,10 @@
       <li styleclass="Normal">The Clipboard item in the main XIDE window statusbar now shows the current clipboard contents in a tooltip </li>
       <li styleclass="Normal">The Clipboard selection context menu now displays also the contents of every virtual clipboard</li>
       <li styleclass="Normal">Some small corrections to the Plugin System (you may need to recompile your plugins)</li>
+      <li styleclass="Normal">Added option to the windows resource editor to include strings and text files</li>
       <li styleclass="Normal">Added Open Bin Folder context menu option for the project node in the Project tool window</li>
+      <li styleclass="Normal">Fixed a problem with incorrectly breaking on excluded handled exceptions</li>
+      <li styleclass="Normal">Added application templates for FoxPro, XBase++ and Harbour dialects</li>
       <li styleclass="Normal">Improved the About XIDE dialog</li>
     </list>
     <para styleclass="Heading3">Editor</para>
@@ -123,7 +123,10 @@
       <li styleclass="Normal">Now items in the properties window of the VOWED are sorted by name</li>
       <li styleclass="Normal">Controls in the WED can now be resized through the keyboard with with SHIFT+Arrow keys</li>
       <li styleclass="Normal">When loading a WindowsForms form in the designer, all TabControls now have their first TabPage initially selected</li>
+      <li styleclass="Normal">Auto-generated eventhandler method names now include an underscore between the control and event part of the name</li>
       <li styleclass="Normal">Added option (Preferences/Designers) to add an END (METHOD, CONSTRUCTOR etc) statement in generated code</li>
+      <li styleclass="Normal">Added option (Preferences/Designers) to enter current OS scaling setting (fixes problem with showing lasso lines at the wrong place when creating/moving controls in non-default settings)</li>
+      <li styleclass="Normal">Fixed problem with setting the Text property of strip items to empty</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">Debugger</para>

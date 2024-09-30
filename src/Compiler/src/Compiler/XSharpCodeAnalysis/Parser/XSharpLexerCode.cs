@@ -1765,7 +1765,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 // Next tokens only at Start of Line or after END
                 case TRY:
                 case SCAN:
-                case WITH:
                     if (!StartOfLine(lastToken) && lastToken != END)
                     {
                         return ID;

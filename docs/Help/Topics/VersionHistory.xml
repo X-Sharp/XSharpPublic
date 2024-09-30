@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-09-25T17:43:57.737+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-30T17:22:10.382+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -25,6 +25,7 @@
       <li styleclass="Normal">Fixed AmbiguousMatchException in Evaluate() function for methods included in an interface (#1494)</li>
       <li styleclass="Normal">Fixed problem with /fox1 switch being ignored in some cases (#1496)</li>
       <li styleclass="Normal">Fixed problem with /enforceself compiler option being ignored (#1503)</li>
+      <li styleclass="Normal">The Build System now automatically adds a TargetFramework Attribute to assemblies compiled with X# (#1507)</li>
       <li styleclass="Normal">Fixed an ambiguity problem with same named namespace and property and several issues when the /allowdot option is disabled (#1515)</li>
       <li styleclass="Normal">Fixed problem in TEXT TO/ENDTEXT with TEXTMERGE clause (#1517)</li>
       <li styleclass="Normal">Fixed misleading line number reported in the compiler error about requiring the /memvar option (#1531)</li>
@@ -32,7 +33,6 @@
       <li styleclass="Normal">Fixed several issues with the /vo9 (handle missing RETURN statements and return values) compiler option (#1544)</li>
       <li styleclass="Normal">Fixed problem with using attributes in CLASS Statement in the FoxPro dialect (#1566)</li>
       <li styleclass="Normal">We have fixed an issue in the build system that would sometimes lead to a recompilation, even when nothing was changed.</li>
-      <li styleclass="Normal">The Build System now automatically adds a TargetFramework Attribute to assemblies compiled with X# (#1507)</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="Heading3">Bug fixes</para>
@@ -56,22 +56,20 @@
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Fixed problem with saving/reading the OldStyleAssignment compiler option project setting (#1495)</li>
       <li styleclass="Normal">Improved the Clone Window selection dialog in the VOWED (#1508)</li>
+      <li styleclass="Normal">Fixed an issue in VS2022 where several features in the editor were no longer working because of a change in VS (#1545)</li>
       <li styleclass="Normal">Fixed editor indentation problem with SCAN...END SCAN (#1549)</li>
       <li styleclass="Normal">Fixed a problem with putting the .resx file for windows forms user controls in an incorrect location in the Solution Explorer (#1560)</li>
       <li styleclass="Normal">Fixed problem with editor snippets no longer working in VS 2022 version 17.11 (#1564)</li>
-      <li styleclass="Normal">Fixed an issue in VS2022 where several features in the editor were no longer working because of a change in VS (#1545)</li>
-      <li styleclass="Normal">Fixed a problem where the &apos;Old Style Assignment&apos; property on the Project Properties dialog was not correctly saved (#1495)</li>
       <li styleclass="Normal">Fix a problem with indenting lines with end keywords, such as NEXT and ENDDO, when these keywords were following by &apos;garbage&apos;.</li>
     </list>
     <para styleclass="Heading3">New features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Now the TargetFramework attribute is automatically added to the assembly when building any project type in VS (#1507)</li>
-      <li styleclass="Normal">Implemented GoToBrace action in the VS editor (#1522)</li>
+      <li styleclass="Normal">Added support for the GotoBrace command.This works for normal braces but also for keyword pairs such as IF .. ENDIF (#1522)</li>
       <li styleclass="Normal">The editor now has a combobox on the top left that shows the project in which the file is defined.</li>
       <li styleclass="Normal">When a file is present in multiple projects (as Linked file) then the projects combobox will show all project names in which the file is used.</li>
       <li styleclass="Normal">When you select a different project from this combobox then the buffer will be repainted, because conditional compilation symbols for each of the projects may be different.</li>
       <li styleclass="Normal">When you use intellisense in the editor, then the lookup engine will use the project selected. So if a file is used in 2 projects, then the references and source files of the selected project will be used to find reference data.</li>
-      <li styleclass="Normal">Added support for the GotoBrace command.This works for normal braces but also for keyword pairs such as IF .. ENDIF (#1522)</li>
       <li styleclass="Normal">Added support for correct indentation with FoxPro variations of closing keywords, such as ENDFOR and ENDWITH</li>
       <li styleclass="Normal">We have moved several X# language related features from the Project System to the Language Service to prepare for the new Project System for SDK projects</li>
       <li styleclass="Normal">We have added support for Snippets in the CompletionLists at &quot;file&quot; level</li>

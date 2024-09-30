@@ -197,7 +197,7 @@ namespace XSharp.LanguageService
                 return;
             var locale = dte.LocaleID;
             var culture = System.Globalization.CultureInfo.GetCultureInfo(locale);
-            if (culture.TwoLetterISOLanguageName == "zh")
+            if (culture.TwoLetterISOLanguageName == "zh" && File.Exists(CNHelp))
             {
                 help = CNHelp;
             }

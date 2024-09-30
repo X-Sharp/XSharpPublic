@@ -27,46 +27,13 @@ namespace XSharp.Project
 
         private XSharpProjectNode _prjNode;
         internal ConfigCanonicalName ConfigCanonicalName { get; set; }
-        public XSharpParseOptions ParseOptions { get; private set;}
+        public XParseOptions ParseOptions { get; private set;}
         public XSharpProjectOptions(XSharpProjectNode prjNode) : base()
         {
             _prjNode = prjNode;
 
         }
-        static string _includedirs;
-        internal static string REG_KEY = @"HKEY_LOCAL_MACHINE\" + (IntPtr.Size == 8 ? Constants.RegistryKey64 : Constants.RegistryKey);
-        static XSharpProjectOptions()
-        {
-            //xsCmdLineparser = XSharpCommandLineParser.Default;
-            _includedirs = "";
-            var path = (string)Registry.GetValue(REG_KEY, Constants.RegistryValue, "");
-            if (!string.IsNullOrEmpty(path))
-            {
-                if (!path.EndsWith("\\"))
-                    path += @"\";
-                path += @"Include\";
-                _includedirs += path;
-            }
-            // Check for Vulcan path
-            var key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Grafx\Vulcan.NET";
-            if (IntPtr.Size == 8)
-            {
-                key = @"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Grafx\Vulcan.NET";
-            }
-
-            path = (string)Registry.GetValue(key, "InstallPath", "");
-            if (!string.IsNullOrEmpty(path))
-            {
-                if (!path.EndsWith("\\"))
-                    path += @"\";
-                path += @"Include\";
-                _includedirs += ";" + path;
-            }
-            XSharpSpecificCompilationOptions.SetDefaultIncludeDir(_includedirs);
-            XSharpSpecificCompilationOptions.SetWinDir(Environment.GetFolderPath(Environment.SpecialFolder.Windows));
-            XSharpSpecificCompilationOptions.SetSysDir(Environment.GetFolderPath(Environment.SpecialFolder.System));
-        }
-
+        
         public void BuildCommandLine()
         {
             //List<String> args = new List<String>();
@@ -110,11 +77,11 @@ namespace XSharp.Project
             var include = _prjNode.GetProjectProperty(XSharpProjectFileConstants.IncludePaths);
             if (!string.IsNullOrEmpty(include))
             {
-                include = include + ";" + _includedirs;
+                include = include + ";" + XParseOptions.DefaultIncludeDir;
             }
             else
             {
-                include = _includedirs;
+                include = XParseOptions.DefaultIncludeDir;
             }
             options.Add("i:" + include);
             var ns = _prjNode.GetLogicProjectProperty(XSharpProjectFileConstants.NS);
@@ -177,8 +144,7 @@ namespace XSharp.Project
             {
                 options.Add("nostddefs-");
             }
-
-            ParseOptions = XSharpParseOptions.FromVsValues(options);
+            ParseOptions = XParseOptions.FromVsValues(options);
             if (this.ConfigCanonicalName != null && ConfigCanonicalName.ConfigName.ToUpper() == "DEBUG")
             {
                 // dirty trick to set property with private setter
@@ -190,7 +156,6 @@ namespace XSharp.Project
 
             }
             _prjNode.ProjectModel.ResetParseOptions(ParseOptions);
-            _prjNode.EnforceSelf = _prjNode.GetLogicProjectProperty(XSharpProjectFileConstants.EnforceSelf);
         }
 
     }

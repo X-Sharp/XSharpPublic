@@ -39,6 +39,7 @@ INTERNAL CLASS FlexArea
 #endif
     PROTECT _lockScheme AS DbfLocking
     PROTECT _blockSize  AS WORD
+
     internal property LenIndexRoot AS DWORD
         GET
             return (DWORD) _flexHeader:IndexLength
@@ -69,15 +70,6 @@ INTERNAL CLASS FlexArea
     INTERNAL PROPERTY ReadOnly   AS LOGIC GET _oRdd:ReadOnly
     INTERNAL PROPERTY Shared     AS LOGIC GET _oRdd:Shared
     INTERNAL PROPERTY NextFree   AS DWORD GET _nextFree
-    INTERNAL PROPERTY Encoding   AS Encoding
-        GET
-            IF _oRdd is DBF var oDbf
-                RETURN oDbf:_Encoding
-            ENDIF
-            RETURN Encoding.Default
-        END GET
-    END PROPERTY
-
     INTERNAL PROPERTY IsFlex AS LOGIC GET _isFlex
     INTERNAL PROPERTY ExportMode as INT AUTO
 
@@ -93,6 +85,23 @@ INTERNAL CLASS FlexArea
         SELF:LenIndex     := LengthIndex{}
         SELF:LocIndex     := LocationIndex{}
 #endif
+#region String Encoding
+   PROTECTED METHOD _GetBytes(sValue as STRING) AS BYTE[]
+        local bytes as byte[]
+        IF SELF:_oRdd IS DBF var oDBF
+            bytes := byte[]{sValue:Length}
+            oDBF:_GetBytes(sValue, bytes, 0, sValue:Length)
+        else
+            bytes := RuntimeState.WinEncoding:GetBytes(sValue)
+        endif
+        return bytes
+
+    protected method _GetString(buffer as byte[], nOffSet as LONG, nLength as LONG) as string
+        IF SELF:_oRdd IS DBF var DBF
+            return DBF:_GetString(buffer,nOffSet, nLength)
+        endif
+        RETURN RuntimeState.WinEncoding:GetString(buffer,nOffSet, nLength)
+#endregion
 
     INTERNAL METHOD Error(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID
         SELF:_oRdd:_dbfError(ex, iSubCode, iGenCode,strFunction)
@@ -927,9 +936,9 @@ INTERNAL CLASS FlexArea
             // Some drivers are stupid enough to allocate blocks in the FPT with a zero length..
             IF token:Length > 0
                 IF bData[bData:Length-1] == 0
-                    RETURN SELF:Encoding:GetString(bData,8, bData:Length-9)
+                    return SELF:_GetString(bData,8, bData:Length-9)
                 ELSE
-                    RETURN SELF:Encoding:GetString(bData,8, bData:Length-8)
+                    return SELF:_GetString(bData,8, bData:Length-8)
                 ENDIF
             ENDIF
             RETURN ""
@@ -1016,12 +1025,12 @@ INTERNAL CLASS FlexArea
             CASE FlexArrayTypes.String32
                 Length := BitConverter.ToInt32(bData,nOffset)
                 nOffset += 4
-                element := SELF:Encoding:GetString(bData, nOffset, Length)
+                element := SELF:_GetString(bData,nOffset, Length)
                 nOffset += Length
             CASE FlexArrayTypes.String16
                 Length := BitConverter.ToInt16(bData,nOffset)
                 nOffset += 2
-                element := SELF:Encoding:GetString(bData, nOffset, Length)
+                element := SELF:_GetString(bData,nOffset, Length)
                 nOffset += Length
             CASE FlexArrayTypes.Float
                 element := 0.0
@@ -1134,7 +1143,7 @@ INTERNAL CLASS FlexArea
             token := FlexMemoToken{bData, _oStream}
             token:DataType := FlexFieldType.String
             token:Length   := sValue:Length
-            VAR bytes := SELF:Encoding:GetBytes(sValue)
+            var bytes := SELF:_GetBytes(sValue)
             System.Array.Copy(bytes,0, bData,FlexMemoToken.TokenLength, bytes:Length)
             RETURN bData
         CASE TypeCode.Object

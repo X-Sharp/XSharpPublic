@@ -60,12 +60,12 @@ FUNCTION ScriptTests AS VOID
         "x"}),Args(), 11, typeof(int))
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         "y := 0",;
-        "FOR x := 1 TO 10",;
-            "y += 1",;
-        "END FOR",;
         "FOR x := 1 UPTO 10",;
             "y += 1",;
         "NEXT",;
+        "FOR x := 1 TO 10",;
+            "y += 1",;
+        "ENDFOR",;
         "FOR x := 10 DOWNTO 1",;
             "y += 1",;
         "NEXT",;

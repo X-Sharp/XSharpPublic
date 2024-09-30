@@ -19,25 +19,22 @@
     <InitLocals>false</InitLocals>
     <StartupObject />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" >
     <DisabledWarnings />
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" >
     <DisabledWarnings />
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>XSharp.RT.Xml</DocumentationFile>
     <DefineConstants>DEBUG;TRACE;RUNTIME;DOCUMENTATION</DefineConstants>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
@@ -106,7 +103,6 @@
     <Compile Include="Types\Float.prg" />
     <Compile Include="Types\Interfaces.prg" />
     <Compile Include="Types\MemVar.prg" />
-    <Compile Include="Types\NestedMacros.prg" />
     <Compile Include="Types\PSZ.prg" />
     <Compile Include="Types\FixedMemory.prg" />
     <Compile Include="Types\Symbol.prg" />

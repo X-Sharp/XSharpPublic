@@ -1,24 +1,35 @@
-FUNCTION Start( ) AS VOID
-	TestClass{}:TestProp[TRUE,"b",1] := 123
-	TestClass{}:TestAssign[TRUE,"b",1] := 123 // No overload for method 'TestClass.TestAssign[string, int]' takes 3 arguments
-	//TestClass{}:TestPropEmpty[TRUE,"b",1] := 123
-RETURN
-
-CLASS TestClass
-
-	//PROPERTY TestPropCrash[c1 AS LOGIC , c2 AS STRING, nValue AS INT] AS INT SET // compiler crash (if other errors are resolved)
-	//PROPERTY TestPropEmpty[c1 AS LOGIC , c2 AS STRING, nValue AS INT] AS INT SET NOP // error XS0103: The name 'NOP' does not exist in the current context
-
-	PROPERTY TestProp[c1 AS LOGIC , c2 AS STRING, nValue AS INT] AS INT
-	SET
-		? c1,c2,nValue, value
-	END SET
-	END PROPERTY
-
-	ASSIGN TestAssign(iValue as INT, c1 AS LOGIC , c2 AS STRING, nValue AS INT) AS VOID
-		? c1,c2,nValue, iValue
-	RETURN
+// Class1.prg
+// Created by    : robert
+// Creation Date : 9/23/2024 9:33:04 AM
+// Created for   :
+// WorkStation   : LEDA
 
 
-END CLASS
+USING System
+USING System.Collections.Generic
+USING System.Linq
+USING System.Text
+
+BEGIN NAMESPACE ClassLibrary1
+
+	/// <summary>
+    /// The Class1 class.
+    /// </summary>
+    [ComVisible(TRUE)];
+    DEFINE CLASS Class1  AS Custom
+    PROTECTED prop1         AS STRING // X# allows types
+    HIDDEN hiddenprop1      AS DATE
+    // CONSTRUCTOR
+    PROCEDURE Init(p1, p2)
+        prop1 := p1
+        hiddenprop1 := p2
+		RETURN
+
+
+    FUNCTION Compare (p1 as STRING, p2 as DATE) AS LOGIC
+        ? p1, p2
+        RETURN p1 == prop1 AND p2 == hiddenprop1
+
+	END DEFINE
+END NAMESPACE // ClassLibrary1
 

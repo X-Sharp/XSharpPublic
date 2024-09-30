@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using XSharpModel;
 using System.Collections.Concurrent;
 using XSharp.Settings;
+using Microsoft.VisualStudio.Shell.Interop;
 namespace XSharp.Project
 {
 
@@ -83,7 +84,7 @@ namespace XSharp.Project
         }
 
         private IErrorListItem CreateItem(string file, int line, int column, int length, string errCode,
-            string message, MessageSeverity sev, ErrorSource errorSource, string projectName)
+            string message, __VSERRORCATEGORY sev, ErrorSource errorSource, string projectName)
         {
             var item = new ErrorListItem()
             {
@@ -103,7 +104,7 @@ namespace XSharp.Project
         }
 
         internal void AddBuildError(string file, int line, int column, string errCode,
-            string message, MessageSeverity sev)
+            string message, __VSERRORCATEGORY sev)
         {
 
             var item = this.CreateItem(file, line, column, 1, errCode, message, sev, ErrorSource.Build, Project.Caption);
@@ -111,7 +112,7 @@ namespace XSharp.Project
         }
 
         internal void AddIntellisenseError(string file, int line, int column, int length, string errCode,
-            string message, MessageSeverity sev)
+            string message, __VSERRORCATEGORY sev)
         {
             var item = this.CreateItem(file, line, column, length, errCode, message, sev, ErrorSource.Other, Project.Caption);
             this.AddItem(item);
@@ -165,7 +166,7 @@ namespace XSharp.Project
                 }
                 else
                 {
-                    isOpen = XSettings.IsDocumentOpen(file);
+                    isOpen = XDocuments.IsOpen(file);
                     filenames.Add(file, isOpen);
                 }
                 if (isOpen && !keys.Contains(key))
@@ -208,7 +209,7 @@ namespace XSharp.Project
                     }
                     else
                     {
-                        isOpen = XSettings.IsDocumentOpen(file);
+                        isOpen = XDocuments.IsOpen(file);
                         filenames.Add(file, isOpen);
                     }
                     if (isOpen && !keys.ContainsKey(key) && (file == fileName))

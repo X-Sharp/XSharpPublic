@@ -119,7 +119,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nStart AS INT
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_HEADERLEN + nPos * _dataLen
-            RETURN SELF:_GetBytes( nStart, _keyLen)
+            RETURN SELF:_CopyBytes( nStart, _keyLen)
 
         [INLINE];
         INTERNAL OVERRIDE METHOD GetRecno(nPos AS Int32) AS Int32

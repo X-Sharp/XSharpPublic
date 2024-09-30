@@ -866,6 +866,9 @@ OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
     IF ! SELF:GoHot()
         RETURN FALSE
     ENDIF
+    IF SELF:EoF
+        RETURN TRUE
+    ENDIF
     var column := SELF:_GetColumn(nFldPos)
     if column != null
         RETURN column:PutValue(oValue)

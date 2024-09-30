@@ -1,12 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using XSharp.LanguageService;
 using XSharp.Project.Options;
-using XSharpModel;
 using XSharp.Settings;
 namespace XSharp.Project
 {

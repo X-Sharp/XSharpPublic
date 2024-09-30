@@ -114,7 +114,7 @@ namespace XSharp.LanguageService
                 var lineTokens = _document.GetTokensInLineAndFollowing(currentLine);
                 foreach (var token in lineTokens)
                 {
-                    if (token.Type == XSharpLexer.ID && matchesPosition(token))
+                    if (token.Type == XSharpLexer.ID && matchesPosition(token, _currentChar))
                     {
                         // find all matching identifiers
                         // when the classifier is "behind" then we may not find the token yet

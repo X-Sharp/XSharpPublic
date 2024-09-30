@@ -11,7 +11,6 @@ BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFDBT RDD. For DBF/DBT. No index support at this level</summary>
     CLASS DBFDBT INHERIT DBF IMPLEMENTS IRawData
         PRIVATE _oDbtMemo AS DBTMemo
-        PROPERTY Encoding AS Encoding GET SUPER:_Encoding
         PROPERTY ReturnRawData as LOGIC AUTO
 
         CONSTRUCTOR
@@ -31,7 +30,7 @@ BEGIN NAMESPACE XSharp.RDD
                         RETURN buffer
                     ENDIF
                     LOCAL str AS STRING
-                    str :=  SELF:Encoding:GetString(buffer)
+                    str := SELF:_GetString(buffer, 0, buffer:Length)
                     // Convert to String and return
                     RETURN str
                 ELSE

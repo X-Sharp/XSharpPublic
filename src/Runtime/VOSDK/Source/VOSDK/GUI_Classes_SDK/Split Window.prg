@@ -1,5 +1,5 @@
 GLOBAL DefaultSplitViewClassName := #__SplitView AS SYMBOL
-#pragma options ("enforceself", ON)
+
  /// <exclude />
 CLASS __SplitView INHERIT Control
 	PROTECT	dwDeferPaintCount	AS DWORD
@@ -796,7 +796,7 @@ METHOD Dispatch(oEvent)
 	ELSEIF (oEvt:uMsg == WM_SETFOCUS) .AND. !lInDestroy .AND. (oSplitView != NULL_OBJECT)
 		oPane := oSplitView:GetPaneClient(1)
 		IF (oPane != NULL_OBJECT) .AND. IsWindow(oPane:Handle()) .AND. !IsInstanceOf(oPane, #DialogWindow)
-			SetFocus(Send(oPane, #Handle))
+			Win32SetFocus(Send(oPane, #Handle))
 		ENDIF
 	ENDIF
 

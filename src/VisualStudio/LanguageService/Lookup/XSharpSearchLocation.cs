@@ -25,13 +25,13 @@ namespace XSharp.LanguageService
         internal XFile File { get;  private set; }
         internal XSourceMemberSymbol Member { get; private set; }
         internal List<string> Usings { get; private set; }
-        internal XSharpDialect Dialect
+        internal XDialect Dialect
         {
             get
             {
                 if (Project != null)
                     return Project.Dialect;
-                return XSharpDialect.Core;
+                return XDialect.Core;
             }
         }
         internal XProject Project

@@ -3,8 +3,8 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
-namespace Microsoft.VisualStudio.Project
+#pragma warning disable RS0016
+namespace XSharp.VisualStudio.Project
 {
     using Microsoft.Build.Tasks;
     using System;

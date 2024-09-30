@@ -28,11 +28,22 @@ BEGIN NAMESPACE XSharpModel
     STATIC PROPERTY IsShuttingDown  AS LOGIC AUTO
 
         // OrphanedFiles Project is always open, so at least 1
-    STATIC PROPERTY HasProject AS  LOGIC GET _projects:Count > 1
     STATIC PROPERTY FileName AS STRING GET _fileName
     STATIC PROPERTY BuiltInFunctions AS STRING AUTO
     STATIC PROPERTY CommentTokens AS IList<XCommentToken> GET _commentTokens
     STATIC PROPERTY Projects AS IList<XProject> get _projects:Values:ToArray()
+    STATIC PROPERTY HasProjects as LOGIC
+        GET
+            FOREACH var project IN _projects:Values
+                IF project != _orphanedFilesProject
+                    RETURN TRUE
+                ENDIF
+            NEXT
+            RETURN FALSE
+        END GET
+
+    END PROPERTY
+
 
         // Methods
     STATIC CONSTRUCTOR
@@ -124,7 +135,7 @@ BEGIN NAMESPACE XSharpModel
             XDatabase.Read(project)
             ModelWalker.AddProject(project)
             FOREACH VAR dbproject  in dbprojectList
-                if String.Compare(dbproject, project:FileName, StringComparison.OrdinalIgnoreCase) == 0
+                if String.Compare(dbproject, project:FileName+"|"+project:Framework, StringComparison.OrdinalIgnoreCase) == 0
                     dbprojectList:Remove(dbproject)
                     EXIT
                 ENDIF
@@ -146,7 +157,8 @@ BEGIN NAMESPACE XSharpModel
 
 
     INTERNAL STATIC METHOD Add(project AS XProject) AS LOGIC
-        RETURN @@Add(project:Name, project)
+        RETURN XSolution.Add(project:NameId, project)
+
 
     INTERNAL STATIC METHOD Add(projectName AS STRING, project AS XProject) AS LOGIC
         XSettings.Information("XModel.Solution.Add() "+projectName+" "+project.FileName)
@@ -200,13 +212,34 @@ BEGIN NAMESPACE XSharpModel
         NEXT
         RETURN NULL
 
-    STATIC METHOD FindProject(projectFile AS STRING) AS XProject
+    STATIC METHOD FindProject(idProject as INT64) AS XProject
+        FOREACH VAR project IN _projects:Values
+            IF project:Id == idProject
+                RETURN project
+            ENDIF
+        NEXT
+        RETURN NULL
+
+    STATIC METHOD FindProject(projectFile AS STRING, framework as STRING) AS XProject
         LOCAL project AS XProject
         projectFile := System.IO.Path.GetFileNameWithoutExtension(projectFile)
         project := NULL
-        IF _projects:TryGetValue(projectFile, OUT project) .AND. project != NULL
+        var key := projectFile
+        if !String.IsNullOrEmpty(framework)
+            key += ":" + framework
+        endif
+        IF _projects:TryGetValue(key, OUT project) .AND. project != NULL
             RETURN project
         ENDIF
+        RETURN NULL
+
+
+    STATIC METHOD FindProjectByFileName(projectFile AS STRING) AS XProject
+        FOREACH var project in _projects:Values
+            IF String.Compare(project:FileName, projectFile, StringComparison.OrdinalIgnoreCase) == 0
+                RETURN project
+            ENDIF
+        NEXT
         RETURN NULL
 
     INTERNAL STATIC METHOD Remove(projectName AS STRING) AS LOGIC
@@ -233,7 +266,7 @@ BEGIN NAMESPACE XSharpModel
 
     INTERNAL STATIC METHOD Remove(project AS XProject) AS LOGIC
         IF project != NULL .AND. project:ProjectNode != NULL  .AND. _projects:Count > 0
-            RETURN XSolution.Remove(project:Name)
+            RETURN XSolution.Remove(project:NameId)
         ENDIF
         RETURN FALSE
 
@@ -247,6 +280,7 @@ BEGIN NAMESPACE XSharpModel
     STATIC METHOD CreateOrphanedFilesProject() AS VOID
         var prj := OrphanedFilesProject{}
         _orphanedFilesProject := XProject{prj}
+        _orphanedFilesProject:Name := prj:Name
         VAR projectNode := (OrphanedFilesProject)(_orphanedFilesProject:ProjectNode)
         projectNode:Project := _orphanedFilesProject
         IF _projects:TryAdd(prj:Name, _orphanedFilesProject)

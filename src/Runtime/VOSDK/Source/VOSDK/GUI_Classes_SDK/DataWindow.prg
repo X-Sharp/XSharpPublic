@@ -1,4 +1,4 @@
-#pragma options ("enforceself", on)
+
 /// <include file="Gui.xml" path="doc/DataWindow/*" />
 CLASS DataWindow INHERIT ChildAppWindow
 	PROTECT sCurrentView AS SYMBOL
@@ -1472,7 +1472,7 @@ METHOD Close(oEvent)
 		SELF:__Unlink()
 	ENDIF
 	// Workaround for TreeView Control Loosing focus bug
-	SetFocus(GetParent(hwnd))
+	Win32SetFocus(GetParent(hwnd))
 	SUPER:Close(oEvent)
 
 
@@ -3320,7 +3320,7 @@ METHOD Show(nShowState)
 				oFormFrame:Show(SHOWNORMAL)
 			ELSE // DataDialog
 				oFormFrame:Show(SHOWNORMAL)
-				SetFocus(oSurface:Handle())
+				Win32SetFocus(oSurface:Handle())
 				SUPER:Show(nShowState)
 				RETURN SELF
 			ENDIF

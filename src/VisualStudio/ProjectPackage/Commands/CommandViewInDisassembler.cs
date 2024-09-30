@@ -22,7 +22,7 @@ namespace XSharp.Project
         {
             var project = await VS.Solutions.GetActiveProjectAsync();
             var path = project.FullPath;
-            var xsproject = XSolution.FindProject(path);
+            var xsproject = XSolution.FindProjectByFileName(path);
             if (xsproject != null)
             {
                 path = xsproject.ProjectNode.OutputFile;

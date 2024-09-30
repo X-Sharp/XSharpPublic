@@ -490,7 +490,6 @@ STATIC CLASS RDDExtensions
         CASE DbFieldType.Picture
         CASE DbFieldType.Blob
         CASE DbFieldType.VarBinary
-        CASE DbFieldType.VarChar
         CASE DbFieldType.DateTime
             RETURN TRUE
         END SWITCH

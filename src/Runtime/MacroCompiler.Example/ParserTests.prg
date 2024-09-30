@@ -1,7 +1,7 @@
 ﻿// ParserTests.prg
 // Created by    : nvk
 // Creation Date : 2/6/2021 11:31:16 AM
-// Created for   : 
+// Created for   :
 // WorkStation   : I7
 
 
@@ -57,11 +57,11 @@ FUNCTION ParserTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
             "FOR x := 1 downto 10 step -1",;
                 "FOR VAR y := 1 to 10",;
                     "y:=x+1",;
-                "END",;
+                "ENDFOR",;
                 "FOR LOCAL y := 1 as int to 10",;
                     "y:=x+1",;
-                "END",;
-            "END FOR";
+                "ENDFOR",;
+            "NEXT";
             }))
         ParseScript(mc, String.Join(e"\n",<STRING>{;
             "IF x > 0",;
@@ -90,10 +90,10 @@ FUNCTION ParserTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         ParseScript(mc, String.Join(e"\n",<STRING>{;
             "FOREACH VAR x IN list",;
                 "exit",;
-            "END",;
+            "ENDFOR",;
             "FOREACH IMPLIED x IN list",;
                 "write(x)",;
-            "END FOR",;
+            "ENDFOR",;
             "FOR EACH x AS INT IN list",;
                 "loop",;
             "NEXT";

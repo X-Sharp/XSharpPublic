@@ -5,10 +5,11 @@
 //
 
 USING System.Collections.Generic
-
+USING XSharp.Internal
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/massign/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+[NeedsAccessToLocals(TRUE)];
 FUNCTION MAssign(cExp AS STRING,uValue AS USUAL) AS USUAL
     RETURN MemVarPutSym(cExp, uValue)
 
@@ -21,10 +22,11 @@ FUNCTION MemVarBlock(cMemvarName AS STRING) AS OBJECT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memvarget/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+[NeedsAccessToLocals(FALSE)];
 FUNCTION MemVarGet(cVarName AS STRING) AS USUAL
     RETURN XSharp.MemVar.Get(cVarName)
 
-
+[NeedsAccessToLocals(FALSE)];
 FUNCTION MemVarTryGet(cVarName AS STRING, uValue OUT USUAL) AS LOGIC
     RETURN XSharp.MemVar.TryGet(cVarName, OUT uValue)
 
@@ -32,6 +34,7 @@ FUNCTION MemVarTryGet(cVarName AS STRING, uValue OUT USUAL) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memvarput/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+[NeedsAccessToLocals(TRUE)];
 FUNCTION MemVarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
     RETURN XSharp.MemVar.Put(cVarName, uValue)
 
@@ -45,6 +48,7 @@ FUNCTION MemVarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
 /// The value of this variable will be set to NIL. The variable is NOT deleted.
 /// </remarks>
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+[NeedsAccessToLocals(TRUE)];
 FUNCTION MemVarClear(symVar AS STRING) AS VOID
 	XSharp.MemVar.Put(symVar, NIL)
 	RETURN
@@ -56,6 +60,7 @@ FUNCTION MemVarClear(symVar AS STRING) AS VOID
 /// </summary>
 /// <param name="symVar">The name of the variable you want to release. </param>
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+[NeedsAccessToLocals(TRUE)];
 FUNCTION MemVarRelease(symVar AS STRING) AS VOID
 	XSharp.MemVar.Release(symVar)
 	RETURN
@@ -64,23 +69,27 @@ FUNCTION MemVarRelease(symVar AS STRING) AS VOID
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/varget/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+[NeedsAccessToLocals(FALSE)];
 FUNCTION VarGet(cVarName AS STRING) AS USUAL
     RETURN __VarGet(cVarName)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/varput/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+[NeedsAccessToLocals(TRUE)];
 FUNCTION VarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
     RETURN __VarPut(cVarName, uValue)
 
 
 /// <inheritdoc cref='VarGet' />
 /// <param name="symVar">The name of the variable .</param>
+[NeedsAccessToLocals(FALSE)];
 FUNCTION VarGetSym(symVar AS SYMBOL) AS USUAL
     RETURN __VarGet(symVar)
 
 /// <inheritdoc cref='VarPut' />
 /// <param name="symVar">The name of the variable .</param>
+[NeedsAccessToLocals(TRUE)];
 FUNCTION VarPutSym(symVar AS SYMBOL,uValue AS USUAL) AS USUAL
     RETURN __VarPut(symVar, uValue)
 
@@ -91,11 +100,13 @@ FUNCTION MemVarBlockSym(symMemvarName AS SYMBOL) AS OBJECT
 
 /// <inheritdoc cref='MemVarGet' />
 /// <param name="symVar">The name of the variable .</param>
+[NeedsAccessToLocals(FALSE)];
 FUNCTION MemVarGetSym(symVar AS SYMBOL) AS USUAL
     RETURN XSharp.MemVar.Get(symVar)
 
 /// <inheritdoc cref='MemVarPut' />
 /// <param name="symVar">The name of the variable you want to assign to.</param>
+[NeedsAccessToLocals(TRUE)];
 FUNCTION MemVarPutSym(symVar AS SYMBOL, uValue AS USUAL) AS USUAL
     RETURN XSharp.MemVar.Put(symVar, uValue)
 
@@ -104,6 +115,7 @@ FUNCTION MemVarPutSym(symVar AS SYMBOL, uValue AS USUAL) AS USUAL
 /// Clear all memory variables (all public variables and the private variables of the current thread)
 /// </summary>
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+[NeedsAccessToLocals(TRUE)];
 FUNCTION _MClear() AS VOID STRICT
 	XSharp.MemVar.ClearAll()
 	RETURN
@@ -120,6 +132,7 @@ FUNCTION _MClear() AS VOID STRICT
 /// The variables are not removed but their values are replaced with NIL.
 /// </remarks>
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+[NeedsAccessToLocals(TRUE)];
 FUNCTION _MxRelease (var1, var2, var3, var4, varn) AS VOID CLIPPER
 	LOCAL nCount AS LONG
 	LOCAL name AS USUAL
@@ -146,6 +159,7 @@ FUNCTION _MxRelease (var1, var2, var3, var4, varn) AS VOID CLIPPER
 /// For most dialects the variables are not removed but their values are replaced with NIL.
 /// </remarks>
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+[NeedsAccessToLocals(TRUE)];
 FUNCTION _MRelease(cMask AS STRING, lMatch AS LOGIC)	AS VOID
 	LOCAL cName AS STRING
     LOCAL lFoxPro as LOGIC

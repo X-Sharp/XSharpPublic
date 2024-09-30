@@ -38,7 +38,6 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
         }
         */
 
-
         internal static int Run(string[] args, BuildPaths buildPaths, TextWriter textWriter, IAnalyzerAssemblyLoader analyzerLoader)
         {
 #if DEBUG && DUMP_TRACE
@@ -51,8 +50,6 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
 
             return result;
         }
-
     }
-    
 }
 

@@ -1,16 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Rule
-	Name="VOBinary"
-	DisplayName="VO Compatible Binary"
+	Name="NativeResource"
+	DisplayName="Native Resource"
 	PageTemplate="generic"
-        PropertyPagesHidden="true"
 	xmlns="http://schemas.microsoft.com/build/2009/properties">
   <Rule.DataSource>
     <DataSource HasConfigurationCondition="False"
-                ItemType="VOBinary"
+                ItemType="NativeResource"
                 Persistence="ProjectFile"
                 SourceOfDefaultValue="AfterContext" />
   </Rule.DataSource>
+  <BoolProperty Name="ExcludeFromCurrentConfiguration"
+                Visible="False" />
+
   <DynamicEnumProperty Name="{}{ItemType}"
                        EnumProvider="ItemTypes" />
 
@@ -27,7 +29,7 @@
                   Visible="false">
     <StringProperty.DataSource>
       <DataSource HasConfigurationCondition="False"
-                  ItemType="None"
+                  ItemType="NativeResource"
                   PersistedName="Generator"
                   Persistence="ProjectFile"
                   SourceOfDefaultValue="AfterContext" />
@@ -79,22 +81,10 @@
                   Visible="false">
     <StringProperty.DataSource>
       <DataSource Persistence="DesignTimeItemPropertiesStorage"
-                  ItemType="None"
+                  ItemType="NativeResource"
                   PersistedName="SubType"
                   HasConfigurationCondition="false"/>
     </StringProperty.DataSource>
-  </StringProperty>
-
-  <StringProperty Name="TargetPath"
-                  Visible="false">
-    <StringProperty.DataSource>
-      <DataSource PersistenceStyle="Attribute"
-                  SourceOfDefaultValue="AfterContext" />
-    </StringProperty.DataSource>
-    <StringProperty.Metadata>
-      <NameValuePair Name="DoNotCopyAcrossProjects"
-                     Value="true" />
-    </StringProperty.Metadata>
   </StringProperty>
 
   <BoolProperty Name="Visible"

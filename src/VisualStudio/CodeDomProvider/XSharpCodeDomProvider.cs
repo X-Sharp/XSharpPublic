@@ -11,6 +11,7 @@ using System.Collections;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
+using XSharpModel;
 
 namespace XSharp.CodeDom
 {
@@ -22,7 +23,7 @@ namespace XSharp.CodeDom
         protected XSharpCodeGenerator xsGenerator;
 
         // The Tab setting is shared by all instance of our CodeDomProvider
-        protected IProjectTypeHelper _projectNode;
+        protected XProject _projectNode;
         public string FileName { get; set; }
 
         public XSharpCodeDomProvider()
@@ -89,10 +90,10 @@ namespace XSharp.CodeDom
         }
 
     }
-    public class XSharpCodeDomHelper1
-    {
-        #region Dump Tools
 #if WRITE2LOGFILE
+    public class XSharpCodeDomHelper
+    {
+    #region Dump Tools
         static readonly String Delimiter = new String('-', 5);
         static void DumpUserData(IDictionary userData)
         {
@@ -409,7 +410,8 @@ namespace XSharp.CodeDom
             }
             return rstClass;
         }
-#endif
-        #endregion
+
+    #endregion
     }
+#endif
 }

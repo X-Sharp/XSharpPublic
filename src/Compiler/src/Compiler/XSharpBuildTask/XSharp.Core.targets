@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- This file is inspired by "..\MSBuild\Current\Bin\Roslyn\Microsoft.CSharp.Core.targets" . -->
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(RoslynTargetsPath)\Microsoft.Managed.Core.targets"/> 
+  <Import Project="$(RoslynTargetsPath)\Microsoft.Managed.Core.targets"/>
 
   <PropertyGroup>
     <!-- .NETCoreApp < 3.0, .NETStandard < 2.1, or any other target framework -->
     <_MaxSupportedLangVersion Condition="('$(TargetFrameworkIdentifier)' != '.NETCoreApp' OR '$(_TargetFrameworkVersionWithoutV)' &lt; '3.0') AND
                                          ('$(TargetFrameworkIdentifier)' != '.NETStandard' OR '$(_TargetFrameworkVersionWithoutV)' &lt; '2.1')">7.3</_MaxSupportedLangVersion>
-    
+
     <!-- .NETCoreApp < 5.0, .NETStandard == 2.1 -->
     <_MaxSupportedLangVersion Condition="(('$(TargetFrameworkIdentifier)' == '.NETCoreApp' AND '$(_TargetFrameworkVersionWithoutV)' &lt; '5.0') OR
                                           ('$(TargetFrameworkIdentifier)' == '.NETStandard' AND '$(_TargetFrameworkVersionWithoutV)' == '2.1')) AND
@@ -20,28 +20,33 @@
     <!-- We need to adjust these langversion later when the compiler is synchronized with the current Roslyn. Our MaxSupportedLangVersion = 9.0 -->
     <!-- .NETCoreApp == 6.0 -->
     <_MaxSupportedLangVersion Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp' AND '$(_TargetFrameworkVersionWithoutV)' == '6.0' AND
-                                         '$(_MaxSupportedLangVersion)' == ''">9.0</_MaxSupportedLangVersion> <!-- 10.0 -->
+                                         '$(_MaxSupportedLangVersion)' == ''">9.0</_MaxSupportedLangVersion>
+    <!-- 10.0 -->
 
     <!-- .NETCoreApp == 7.0 -->
     <_MaxSupportedLangVersion Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp' AND '$(_TargetFrameworkVersionWithoutV)' == '7.0' AND
-                                         '$(_MaxSupportedLangVersion)' == ''">9.0</_MaxSupportedLangVersion> <!-- 11.0 -->
+                                         '$(_MaxSupportedLangVersion)' == ''">9.0</_MaxSupportedLangVersion>
+    <!-- 11.0 -->
 
     <!-- .NETCoreApp == 8.0 -->
     <_MaxSupportedLangVersion Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp' AND '$(_TargetFrameworkVersionWithoutV)' == '8.0' AND
-                                         '$(_MaxSupportedLangVersion)' == ''">9.0</_MaxSupportedLangVersion> <!-- 12.0 -->
+                                         '$(_MaxSupportedLangVersion)' == ''">9.0</_MaxSupportedLangVersion>
+    <!-- 12.0 -->
 
     <!-- .NETCoreApp == 9.0 -->
     <_MaxSupportedLangVersion Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp' AND '$(_TargetFrameworkVersionWithoutV)' == '9.0' AND
-                                         '$(_MaxSupportedLangVersion)' == ''">9.0</_MaxSupportedLangVersion> <!-- 13.0 -->
+                                         '$(_MaxSupportedLangVersion)' == ''">9.0</_MaxSupportedLangVersion>
+    <!-- 13.0 -->
 
     <MaxSupportedLangVersion>$(_MaxSupportedLangVersion)</MaxSupportedLangVersion>
     <LangVersion Condition="'$(LangVersion)' == '' AND '$(_MaxSupportedLangVersion)' != ''">$(_MaxSupportedLangVersion)</LangVersion>
-	
+
   </PropertyGroup>
 
   <ItemGroup>
-     <ProjectCapability Include="XSharp;Managed;SingleTargetBuildForStartupProjects"/>
+    <ProjectCapability Include="XSharp;Managed;SingleTargetBuildForStartupProjects"/>
   </ItemGroup>
+ 
   <Target Name="CoreCompile"
           Inputs="$(MSBuildAllProjects);
                   @(Compile);
@@ -52,7 +57,7 @@
                   @(CompiledLicenseFile);
                   @(LinkResource);
                   @(EmbeddedDocumentation);
-                  $(Win32Resource);
+                  @(Win32Resource);
                   $(Win32Manifest);
                   @(CustomAdditionalCompileInputs);
                   $(ResolvedCodeAnalysisRuleSet);
@@ -174,7 +179,7 @@
             WarningsNotAsErrors="$(WarningsNotAsErrors)"
             Win32Icon="$(ApplicationIcon)"
             Win32Manifest="$(Win32Manifest)"
-            Win32Resource="$(Win32Resource)"
+            Win32Resource="@(Win32Resource)"
             PathMap="$(PathMap)"
             AllowDot="$(AllowDot)"
             AllowOldStyleAssignments="$(AllowOldStyleAssignments)"

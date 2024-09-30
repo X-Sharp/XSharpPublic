@@ -76,23 +76,15 @@ entity              : namespace_
 eos                 : EOS+
                     ;
 
-funcproc              : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
+funcproc              : (Attributes=attributes)?
+                        (Modifiers=funcprocModifiers)?
+                        InitExit=(INIT|EXIT)?               // XPP style
                         T=funcproctype Sig=signature
-                        InitExit=(INIT1|INIT2|INIT3|EXIT)?
+                        InitExit=(INIT1|INIT2|INIT3|EXIT)?  // VO Style
                         vodummyclauses
                         end=eos
                         StmtBlk=statementBlock
-                        (END T2=funcproctype EOS )?
-                       |
-                        // Clipper/XBase++ INIT PROC. InitExit is not optional
-                        // otherwise this may be ambigous with alternative 1
-                        // also there are no modifiers here
-                        (Attributes=attributes)? 
-                        InitExit=(INIT|EXIT) T=funcproctype
-                        Sig=signature
-                        end=eos
-                        StmtBlk=statementBlock 
-                        (END T2=funcproctype EOS )?
+                        ( (T1=(ENDFUNC|ENDPROC) | (END T2=funcproctype)) EOS)?
                       ;
 
 funcproctype          : Token=(FUNCTION|PROCEDURE)
@@ -617,7 +609,7 @@ statement           : Decl=localdecl                            #declarationStmt
                       Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
                       (STEP Step=expression)? end=eos
                       StmtBlk=statementBlock
-                      (e = NEXT | e = END FOR) eos	                  #forStmt
+                      (e = NEXT | e=ENDFOR) eos	                  #forStmt
 
                     | i=IF IfBlocks += condBlock[$i]
                       (e=ELSEIF IfBlocks += condBlock[$e])*
@@ -641,7 +633,7 @@ statement           : Decl=localdecl                            #declarationStmt
                       StmtBlk=statementBlock
                       (RECOVER RecoverBlock=recoverBlock)?
                       (F=FINALLY eos FinBlock=statementBlock)?
-                      e=END (SEQUENCE)? eos                             #seqStmt
+                      ((e=END (SEQUENCE)?)| e=ENDSEQUENCE) eos         #seqStmt
                     //
                     // New in Vulcan 
                     //
@@ -650,7 +642,7 @@ statement           : Decl=localdecl                            #declarationStmt
                       UNTIL Expr=expression
                       eos                                               #repeatStmt
 
-                    | f=FOREACH
+                    | (f=FOREACH| f=FOR EACH)
                       a=AWAIT?
                       ( V=IMPLIED Id=varidentifier
                       | Id=varidentifier (AS Type=datatype)?
@@ -658,14 +650,14 @@ statement           : Decl=localdecl                            #declarationStmt
                       )
                       IN Container=expression end=eos
                       StmtBlk=statementBlock
-                      (e=NEXT |e=END FOR) eos	                          #foreachStmt
+                      (e=NEXT | e=ENDFOR) eos	              #foreachStmt
 
                     | Key=THROW Expr=expression? end=eos                #jumpStmt
 
                     | T=TRY end=eos StmtBlk=statementBlock
                       (CATCH CatchBlock+=catchBlock?)*
                       (F=FINALLY eos FinBlock=statementBlock)?
-                      e=END TRY? eos								                    #tryStmt
+                      (e=END TRY? | e=ENDTRY) eos								        #tryStmt
 
                     | BEGIN Key=LOCK Expr=expression end=eos
                       StmtBlk=statementBlock
@@ -687,7 +679,7 @@ statement           : Decl=localdecl                            #declarationStmt
 
                     | WITH Expr=expression (As=AS DataType=datatype foxclasslib?  )?  end=eos
                       StmtBlk=statementBlock
-                      e=END WITH? eos                                  #withBlock
+                      (e=END WITH? |e=ENDWITH) eos                         #withBlock
 
                     | BEGIN Key1=blockTokens end=eos
                       StmtBlk=statementBlock
@@ -854,7 +846,7 @@ localfuncproc       :  (Modifiers=localfuncprocModifiers)?
                         LOCAL T=funcproctype Sig=signature
                         end=eos
                         StmtBlk=statementBlock
-                        END T2=funcproctype  EOS
+                        (T1=(ENDFUNC|ENDPROC) | (END T2=funcproctype)) EOS
                      ;
 
 localfuncprocModifiers : ( Tokens+=(UNSAFE | ASYNC) )+
@@ -1331,7 +1323,7 @@ keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     // The following 'old' keywords are never used 'alone' and are harmless as identifiers
                     | ALIGN | CALLBACK | CLIPPER  | DIM | DOWNTO | DLLEXPORT
                     | FASTCALL | IN | INIT1 | INIT2 | INIT3 | INSTANCE | PASCAL |  SEQUENCE
-                    | STEP | STRICT | TO | THISCALL | TUPLE |  UPTO | USING | WINCALL
+                    | STEP | STRICT | TO | THISCALL | TUPLE |  UPTO | USING | WINCALL | WITH
                     // The following keywords are handled in the fixPositionalKeyword() method of the lexer and will only be keywords at the right place
                     // but when they code event->(DoSomething()) we still need them in this rule...
                     | DEFINE | TRY | SWITCH | EVENT| EXPLICIT | FIELD | FOREACH | UNTIL | PARAMETERS | YIELD | MEMVAR | NOP
@@ -1344,8 +1336,8 @@ keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
 
 keywordxpp         : Token=(SHARING| SHARED| ASSIGNMENT| EXPORTED| READONLY| NOSAVE )
                    ;
-                   // context sensitive keywords
-                   // ENDCLASS, FREEZE, FINAL, INTRODUCE, SYNC, DEFERRED, INLINE
+                   // context sensitive keywords. No need to include these. They are recognized in context by the lexer.
+                   // ENDCLASS, ENDSEQUENCE, FREEZE, FINAL, INTRODUCE, SYNC, DEFERRED, INLINE
                     
 
 
@@ -1456,9 +1448,9 @@ xppinlineMethod     : Attributes=attributes?                                 // 
 
 
 /// FoxPro Parser definities
-keywordfox          :  Token=( OLEPUBLIC | EXCLUDE| THISACCESS| HELPSTRING| NOINIT | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR | THEN | FOX_M)
+keywordfox          :  Token=( OLEPUBLIC | EXCLUDE| THISACCESS| HELPSTRING| NOINIT | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR | THEN | FOX_M| EACH )
                       // These tokens are already marked as 'only valid in a certain context ' in the lexer
-                      // ENDDEFINE | DIMENSION | LPARAMETERS
+                      // ENDDEFINE | DIMENSION | LPARAMETERS | ENDFOR | SCAN | ENDSCAN | ENDTRY | ENDPROC | ENDFUNC | ENDWITH | ENDDEFINE
                     ;
 // class declaration
 // text ... endtext
@@ -1504,7 +1496,7 @@ foxmethod           : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       (ThisAccess=THISACCESS LPAREN MemberId=identifier RPAREN)?
                       end=eos
                       StmtBlk=statementBlock
-                      (END T2=funcproctype  EOS)?
+                      ( (T1=(ENDFUNC|ENDPROC) | (END T2=funcproctype)) EOS)?
                     ;
 
 foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)?

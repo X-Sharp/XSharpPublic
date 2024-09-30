@@ -1,5 +1,7 @@
 // Parser for VO code, taken from XIDE
-
+#pragma warnings disable: 170 //Use of possibly unassigned field
+#pragma warnings disable: 219 //The variable is assigned but its value is never used
+#pragma warnings disable: 162 //Unreachable Code
 USING System.Collections.Generic
 USING System.Collections
 

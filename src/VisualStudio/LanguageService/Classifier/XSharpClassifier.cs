@@ -63,6 +63,7 @@ namespace XSharp.LanguageService
         private bool IsLexing = false;
         private bool IsStarted = false;
         private bool _needsKeywords = false;
+        private bool forceRepaint = false;
 
         #endregion
 
@@ -189,6 +190,7 @@ namespace XSharp.LanguageService
 
         public async Task ForceClassifyAsync()
         {
+            forceRepaint = true;
             var _ = await LexAsync();
         }
         public async Task ClassifyWhenNeededAsync()
@@ -242,7 +244,7 @@ namespace XSharp.LanguageService
                 return result;
             var snapshot = _buffer.CurrentSnapshot;
             XDocument xDocument = GetDocument();
-            if (xDocument == null || xDocument.SnapShot.Version != snapshot.Version)
+            if (xDocument == null || xDocument.SnapShot.Version != snapshot.Version || forceRepaint)
             {
                 _lineState = new XSharpLineState();
                 _lineKeywords = new XSharpLineKeywords();
@@ -266,11 +268,12 @@ namespace XSharp.LanguageService
             }
             BuildColorClassifications();
             Debug("Ending classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+            forceRepaint = false;
             result = true;
             return result;
         }
 
-        private void TriggerRepaint(ITextSnapshot snapshot)
+        internal void TriggerRepaint(ITextSnapshot snapshot)
         {
             if (ClassificationChanged != null)
             {

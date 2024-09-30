@@ -31,8 +31,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var left = Compilation.Options.HasOption(CompilerOption.AllowDotForInstanceMembers, node.Left)
                         ? BindLeftOfPotentialColorColorMemberAccess(node.Left, bag)
                         : BindNamespaceOrType(node.Left, bag);
-            if (left != null && left.HasAnyErrors &&
-                bag.AsEnumerable().First().Code == (int) ErrorCode.ERR_BadSKknown)
+            if (left != null && left.HasAnyErrors)
             {
                 // We always allow the '.' operator for members of structures like in VO
                 var newBag = DiagnosticBag.GetInstance();

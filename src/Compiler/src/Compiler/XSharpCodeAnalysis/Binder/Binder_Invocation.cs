@@ -183,7 +183,7 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
                     if (result is BoundCall bc)
                     {
 
-                        // check if MethodSymbol has the NeedAccessToLocals attribute combined with /fox2
+                        // check if MethodSymbol has the NeedAccessToLocals attribute combined with /memvars and the FoxPro Dialect
                         if (Compilation.Options.Dialect == XSharpDialect.FoxPro &&
                             Compilation.Options.HasOption(CompilerOption.MemVars, node) &&
                             bc.Method.NeedAccessToLocals(out var writeAccess))

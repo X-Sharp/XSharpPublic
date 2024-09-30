@@ -1240,7 +1240,19 @@ CLASS ApplicationDescriptor
 								BinaryEntity.SaveMenuToXml(cBinary, oDesigner:Bytes)
 							ELSE
 								File.WriteAllBytes(cBinary , oDesigner:Bytes)
-							END IF
+                     END IF
+                  ELSEIF oDesigner:Type == BINARY_SED
+// 							IF xPorter.ExportWedToXml
+// 								BinaryEntity.SaveMenuToXml(cBinary, oDesigner:Bytes)
+// 							ELSE
+								File.WriteAllBytes(cBinary , oDesigner:Bytes)
+//							END IF
+                  ELSEIF oDesigner:Type == BINARY_REP
+// 							IF xPorter.ExportWedToXml
+// 								BinaryEntity.SaveMenuToXml(cBinary, oDesigner:Bytes)
+// 							ELSE
+								File.WriteAllBytes(cBinary , oDesigner:Bytes)
+//							END IF
 						ELSE
 							// Necessary for both VS and XIDE, deleteded later if not needed anymore for VS
 							File.WriteAllBytes(cBinary , oDesigner:Bytes)
@@ -2490,7 +2502,7 @@ CLASS EntityDescriptor
 
 		cLine := oLine:LineText
 		cLineUpper := cLine:ToUpper():Trim()
-		
+
 		IF cLine:Contains("{VOXP:")
 			LOCAL nCommentMarker := -1 AS INT
 			DO CASE

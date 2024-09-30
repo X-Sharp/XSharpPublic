@@ -18,6 +18,11 @@
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <PropertyGroup>
+    <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
+  </PropertyGroup>
+
+
   <Import Project="Microsoft.Managed.DesignTime.targets" />
 
   <!-- Properties -->

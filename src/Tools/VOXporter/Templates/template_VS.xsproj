@@ -38,7 +38,7 @@
     <MemVar>%option_undeclared%</MemVar>
     <Undeclared>%option_undeclared%</Undeclared>
     <NoStandardDefs>false</NoStandardDefs>
-    <EnforceSelf>True</EnforceSelf>
+    <EnforceSelf>false</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>

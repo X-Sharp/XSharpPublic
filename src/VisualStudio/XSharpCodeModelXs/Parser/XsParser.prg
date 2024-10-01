@@ -1221,22 +1221,21 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             EntityKind := Kind.Class
             RETURN TRUE
 
-        CASE XSharpLexer.UDC_KEYWORD
-            IF String.Equals(SELF:Lt1.Text, "ENDFUNC", StringComparison.OrdinalIgnoreCase)
-                IF InFoxClass
-                    EntityKind := Kind.Method
-                ELSE
-                    EntityKind := Kind.Function
-                ENDIF
-                RETURN TRUE
-            ELSEIF String.Equals(SELF:Lt1.Text, "ENDPROC",StringComparison.OrdinalIgnoreCase)
-                IF InFoxClass
-                    EntityKind := Kind.Method
-                ELSE
-                    EntityKind := Kind.Procedure
-                ENDIF
-                RETURN TRUE
+        CASE XSharpLexer.ENDPROC
+            IF InFoxClass
+                EntityKind := Kind.Method
+            ELSE
+                EntityKind := Kind.Procedure
             ENDIF
+            RETURN TRUE
+
+        CASE XSharpLexer.ENDFUNC
+            IF InFoxClass
+                EntityKind := Kind.Method
+            ELSE
+                EntityKind := Kind.Function
+            ENDIF
+            RETURN TRUE
         END SWITCH
         EntityKind := Kind.Unknown
         RETURN FALSE

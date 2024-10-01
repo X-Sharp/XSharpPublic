@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-09-30T17:22:10.382+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-01T13:01:58.486+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -87,20 +87,20 @@
       <li styleclass="Normal">Changed default names of various XIDE support files to &quot;xi&quot; instead of &quot;vi&quot; (.xiaef, xiapp etc)</li>
       <li styleclass="Normal">Fixed problem with accidentally calling older versions of the XIDE resource compiler and toolbox editor</li>
       <li styleclass="Normal">Added &quot;%OUTPUTEXT% (extension of output assembly) macro in build events</li>
-      <li styleclass="Normal">Added support for /allowdot compiler option in the application properties</li>
+      <li styleclass="Normal">Added support for the /allowdot compiler option in the application properties, enabled by default in all applications</li>
       <li styleclass="Normal">Fixed problem with not properly saving the compiler options /initlocals, /modernsyntax, /allowoldstyleassignments and /namedargs</li>
       <li styleclass="Normal">The Clipboard item in the main XIDE window statusbar now shows the current clipboard contents in a tooltip </li>
       <li styleclass="Normal">The Clipboard selection context menu now displays also the contents of every virtual clipboard</li>
       <li styleclass="Normal">Some small corrections to the Plugin System (you may need to recompile your plugins)</li>
-      <li styleclass="Normal">Added option to the windows resource editor to include strings and text files</li>
       <li styleclass="Normal">Added Open Bin Folder context menu option for the project node in the Project tool window</li>
-      <li styleclass="Normal">Fixed a problem with incorrectly breaking on excluded handled exceptions</li>
+      <li styleclass="Normal">Added option to the windows resource editor to include strings and text files</li>
       <li styleclass="Normal">Added application templates for FoxPro, XBase++ and Harbour dialects</li>
+      <li styleclass="Normal">Now application templates shown in the New Application dialog are sorted by the GalleryIndex setting of each gallery file template </li>
       <li styleclass="Normal">Improved the About XIDE dialog</li>
     </list>
     <para styleclass="Heading3">Editor</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Improved Recognition of keywords in the code</li>
+      <li styleclass="Normal">Improved Recognition of positional keywords in the code</li>
       <li styleclass="Normal">Fixed recognition of 2 letter long functions in code</li>
       <li styleclass="Normal">Fixed problem with intellisense on functions defined in core dialect apps</li>
       <li styleclass="Normal">Added intellisense support for FOREACH VAR</li>
@@ -124,12 +124,15 @@
       <li styleclass="Normal">Auto-generated eventhandler method names now include an underscore between the control and event part of the name</li>
       <li styleclass="Normal">Added option (Preferences/Designers) to add an END (METHOD, CONSTRUCTOR etc) statement in generated code</li>
       <li styleclass="Normal">Added option (Preferences/Designers) to enter current OS scaling setting (fixes problem with showing lasso lines at the wrong place when creating/moving controls in non-default settings)</li>
+      <li styleclass="Normal">Added toolbar button to Lock/Unlock controls in the Windows.Forms and VO Window editors</li>
+      <li styleclass="Normal">Locked state of controls is now preserved in the Windows.Forms designer (needs a Save Form to apply)</li>
       <li styleclass="Normal">Fixed problem with setting the Text property of strip items to empty</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">Debugger</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Exception dialog while debugging now properly shows the exception message</li>
+      <li styleclass="Normal">Fixed a problem with incorrectly breaking on excluded handled exceptions</li>
       <li styleclass="Normal">Fixed a common crash that could happen in the debugger</li>
     </list>
     <para styleclass="Normal"></para>

@@ -1,12 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-10-02T20:10:15.927+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>版本历史</title>
   <keywords>
-    <keyword>/shared</keyword>
     <keyword>Changes</keyword>
     <keyword>Runtime chapter</keyword>
-    <keyword>STACKALLOC</keyword>
-    <keyword>XS9082</keyword>
   </keywords>
   <body>
     <header>
@@ -20,6 +18,7 @@
     <para styleclass="Heading3">Bug 修复</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">修正了字段/内存变量重复声明时的内部编译器错误 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1475" target="_blank">#1475</link>)</li>
+      <li styleclass="Normal">修正了在启用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">/fox2</link> 的 VFP 方言中调用函数时的错误警告 (#1476)</li>
       <li styleclass="Normal">修正了 FLOAT 类型的最小/最大 IEnumerable 扩展方法的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1482" target="_blank">#1482</link>)</li>
       <li styleclass="Normal">修正了 XBase++ 方言中acess/assign方法的 StackOverflowException 异常 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1483" target="_blank">#1483</link>)</li>
       <li styleclass="Normal">修复了读取带有文件结束标记的 clipper/harbour .prg 文件的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1485" target="_blank">#1485</link>)</li>
@@ -28,11 +27,15 @@
       <li styleclass="Normal">修正了针对包含在接口中的方法的 Evaluate() 函数中的 AmbiguousMatchException。 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1494" target="_blank">#1494</link>)</li>
       <li styleclass="Normal">修正了 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox1">/fox1</link> 开关在某些情况下被忽略的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1496" target="_blank">#1496</link>)</li>
       <li styleclass="Normal">修正了 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-enforceself">/enforceself</link> 编译器选项被忽略的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1503" target="_blank">#1503</link>)</li>
-      <li styleclass="Normal">修正了命名空间和属性同名时的歧义问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1515" target="_blank">#1515</link>)</li>
+      <li styleclass="Normal">编译系统现在会自动为使用 X# 编译的程序集添加 TargetFramework 属性 (#1507)</li>
+      <li styleclass="Normal">修正了命名空间和属性同名时的歧义问题，以及禁用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-allowdot">/allowdot</link> 选项时的若干问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1515" target="_blank">#1515</link>)</li>
       <li styleclass="Normal">修正了带有 TEXTMERGE 子句的 TEXT TO/ENDTEXT 中的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1517" target="_blank">#1517</link>)</li>
       <li styleclass="Normal">修正了编译器错误报告中关于需要 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">/memvar</link> 选项的误导性行号 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1531" target="_blank">#1531</link>)</li>
+      <li styleclass="Normal">修正了与定义索引属性有关的一些问题 (#1543)</li>
+      <li styleclass="Normal">修正了<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo9"> /vo9</link>(处理丢失的 RETURN 语句和返回值)编译器选项的若干问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1544" target="_blank">#1544</link>)</li>
+      <li styleclass="Normal">修正了在 FoxPro 方言的 CLASS 语句中使用特性(attributes)的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1566" target="_blank">#1566</link>)</li>
+      <li styleclass="Normal">我们修正了编译系统中的一个问题，该问题有时会导致重新编译，即使没有更改任何内容。</li>
     </list>
-    <para styleclass="Heading3">新特性</para>
     <para styleclass="Heading2">运行时</para>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -46,38 +49,57 @@
       <li styleclass="Normal">修正了带有 FOR 子句的 APPEND FROM 命令的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href=" https://github.com/X-Sharp/XSharpPublic/issues/1529" target="_blank">#1529</link>)</li>
       <li styleclass="Normal">修正了在 FoxPro 方言中使用 Str() 时的宏编译器问题(导致 INDEX ON 命令出现问题)(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1535" target="_blank">#1535</link>)</li>
       <li styleclass="Normal">为与 VO 兼容，当工作区处于 EOF 时使用 FieldPut() 时，消除了运行时错误 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1542" target="_blank">#1542</link>)</li>
+      <li styleclass="Normal">修正了宏编译器在使用某些语言关键字(如 REF、FIELD、DEFAULT)作为标识符时出现的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1557" target="_blank">#1557</link>)</li>
+      <li styleclass="Normal">修正了读取使用多字节编码存储的 DBF 文件的可变长度字段的问题。</li>
+      <li styleclass="Normal">修正了用简体中文编码的 DBF 文件被解释为粤语的问题。</li>
     </list>
-    <para styleclass="Heading3">新特性</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Visual Studio 集成</para>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">修复了保存/读取 OldStyleAssignment 编译器选项项目设置的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1495" target="_blank">#1495</link>)</li>
       <li styleclass="Normal">改进了 VOWED 中的 “克隆窗口”(Clone Window)选择对话框 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1508" target="_blank">#1508</link>)</li>
-      <li styleclass="Normal">在最近的 VS 版本中格式化文档和注释不再起作用。现已修复。</li>
+      <li styleclass="Normal">修正了 VS2022 中的一个问题，即由于 VS 中的一个更改，编辑器中的几个功能不再工作 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1545" target="_blank">#1545</link>)</li>
+      <li styleclass="Normal">修正了编辑器中 SCAN...END SCAN 的缩进问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1549" target="_blank">#1549</link>)</li>
+      <li styleclass="Normal">修正了将 Windows 窗体用户控件的 .resx 文件放在解决方案资源管理器中不正确位置的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1560" target="_blank">#1560</link>)</li>
+      <li styleclass="Normal">修复了编辑器中代码片段在 VS 2022 17.11 版中不再工作的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1564" target="_blank">#1564</link>)</li>
+      <li styleclass="Normal">修复了带有结束关键字（如 NEXT 和 ENDDO）的缩进行的问题(当这些关键字后跟有 “垃圾 ”时)。</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">新特性</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">现在，在 VS 中构建任何项目类型时，TargetFramework 属性都会自动添加到程序集中 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1507" target="_blank">#1507</link>)</li>
-      <li styleclass="Normal">在 VS 编辑器中执行 GoToBrace 操作 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1522" target="_blank">#1522</link>)</li>
+      <li styleclass="Normal">已添加对 GotoBrace 命令的支持，该命令不仅适用于普通括号，还适用于 IF ... ENDIF 等关键字对 &#160;(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1522" target="_blank">#1522</link>)</li>
       <li styleclass="Normal">现在，编辑器左上方有一个组合框，显示定义文件的项目。</li>
       <li styleclass="Normal">如果文件存在于多个项目中(作为链接文件)，那么项目组合框将显示使用该文件的所有项目名称。</li>
       <li styleclass="Normal">从组合框中选择不同的项目时，缓冲区将重新绘制，因为每个项目的条件编译符号可能不同。</li>
       <li styleclass="Normal">在编辑器中使用 intellisense 时，查找引擎将使用所选的项目。因此，如果一个文件在 2 个项目中使用，那么将使用所选项目的引用和源文件来查找引用数据。</li>
+      <li styleclass="Normal">添加了对 FoxPro 关闭关键字变化(如ENDFOR 和 ENDWITH)的正确缩进支持</li>
+      <li styleclass="Normal">我们已将项目系统中与 X# 语言相关的若干功能移至语言服务，以便为 SDK 项目的新项目系统做好准备。</li>
+      <li styleclass="Normal">我们在 “文件” 级别的完成列表中添加了对片段的支持</li>
+      <li styleclass="Normal">我们不再为没有任何 X# 项目的解决方案创建 X# intellisense 数据库</li>
+      <li styleclass="Normal">我们对 X# intellisense 数据库结构做了一些更改。当您打开一个已有数据库的解决方案时，数据库将被删除，所有源文件将被重新扫描（仅一次）。</li>
+      <li styleclass="Normal">X# 源代码编辑器顶部现在多了一个组合框，可列出包含文件的项目。当一个文件包含在多个项目中时，你可以看到所有项目。切换到新项目将改变 “评估上下文”。条件编译（#ifdef）会在编辑器中反映出变化。</li>
     </list>
     <para styleclass="Heading2">XIDE</para>
     <para styleclass="Heading3">常规</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">在 intellisense 中用 Mono.Cecil 代替 System.Reflection，以提高性能和稳定性</li>
       <li styleclass="Normal">工具箱编辑器现在还使用 Mono.Cecil 从 dlls 中读取控件</li>
+      <li styleclass="Normal">现在，在打开文件后直接关闭文件时(没有激活另一个文件)，焦点会在打开新文件前返回到之前激活的文件。</li>
       <li styleclass="Normal">改进了对独立文件的支持，在属性窗口中增加了方言、引用等选项</li>
       <li styleclass="Normal">将各种 XIDE 支持文件的默认名称从 “vi ”改为 “xi”（.xiaef、xiapp 等）</li>
       <li styleclass="Normal">修正了意外调用旧版本 XIDE 资源编译器和工具箱编辑器的问题</li>
       <li styleclass="Normal">在生成(build)事件中添加了&quot;%OUTPUTEXT%（输出程序集扩展名）宏</li>
-      <li styleclass="Normal">添加了更改控制台位置的选项 &lt;------------NOT FINISHED!!！</li>
-      <li styleclass="Normal">在应用程序属性中添加了对 /allowdot 编译器选项的支持</li>
-      <li styleclass="Normal">修正了无法正确保存编译器选项 /initlocals、/modernsyntax、/allowoldstyleassignments 和 /namedargs 的问题。</li>
+      <li styleclass="Normal">在应用程序属性中添加了对 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-allowdot">-allowdot</link> 编译器选项的支持</li>
+      <li styleclass="Normal">修正了无法正确保存编译器选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-initlocals">/initlocals</link>、<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-modernsyntax">/modernsyntax</link>、<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-allowoldstyleassignments">/allowoldstyleassignments</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-namedargs">/namedargs</link> 的问题。</li>
+      <li styleclass="Normal">XIDE 主窗口状态栏中的剪贴板项现在可在工具提示中显示当前剪贴板内容 </li>
+      <li styleclass="Normal">剪贴板选择上下文菜单现在也可显示每个虚拟剪贴板的内容</li>
+      <li styleclass="Normal">插件系统的一些小修正(您可能需要重新编译您的插件)</li>
+      <li styleclass="Normal">为窗口资源编辑器添加了包含字符串和文本文件的选项</li>
+      <li styleclass="Normal">为 “项目工具 ”窗口中的项目节点添加了 “打开备用文件夹 ”上下文菜单选项</li>
+      <li styleclass="Normal">修复了在排除处理异常时错误中断的问题</li>
+      <li styleclass="Normal">为FoxPro、XBase++和Harbour方言添加了应用程序模板</li>
       <li styleclass="Normal">改进了 “About XIDE”对话框</li>
     </list>
     <para styleclass="Normal"></para>
@@ -87,19 +109,27 @@
       <li styleclass="Normal">修复了代码中 2 个字母长函数的识别问题</li>
       <li styleclass="Normal">修正了 core 方言应用程序中定义的函数的 intellisense 问题</li>
       <li styleclass="Normal">已为 FOREACH VAR 添加 intellisense 支持</li>
-      <li styleclass="Normal">修复了编辑器中本地 VAR 崩溃的问题</li>
+      <li styleclass="Normal">修复了编辑器中 VAR locals 崩溃的问题</li>
       <li styleclass="Normal">修正了 LOCAL IMPLIED 的几个问题</li>
       <li styleclass="Normal">修正了在名称空间中解析已修改类的问题</li>
-      <li styleclass="Normal">改进编辑器对 FoxPro 方言的支持</li>
+      <li styleclass="Normal">改进编辑器对 FoxPro、Harbour 和 XBase++ 方言的支持</li>
       <li styleclass="Normal">添加了对大量 FoxPro 关键字的编辑器支持</li>
       <li styleclass="Normal">添加了对 FoxPro 函数的编辑器支持</li>
       <li styleclass="Normal">编辑器现在可识别 FoxPro 方言中的行注释标记 &amp;&amp;</li>
+      <li styleclass="Normal">添加了对使用 ? 后缀指定的可空类型(例如 INT?)的 intellisense 支持。</li>
+      <li styleclass="Normal">已添加对 ?: 操作符的 intellisense 支持</li>
+      <li styleclass="Normal">已添加对 IF &lt;identifier&gt; IS &lt;type&gt; VAR &lt;local&gt; 的 intellisense 支持</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">设计器</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">现在，VOWED 属性窗口中的项目按名称排序</li>
       <li styleclass="Normal">现在可通过键盘上的 SHIFT+ 箭头键调整 WED 中控件的大小</li>
+      <li styleclass="Normal">在设计器中加载 WindowsForms 表单时，所有 TabControl 现在都会初始选择其第一个 TabPage</li>
+      <li styleclass="Normal">自动生成的事件处理程序方法名称现在在控件和名称中的事件部分之间包含下划线</li>
+      <li styleclass="Normal">已添加选项(首选项/设计器)，可在生成的代码中添加END（方法、构造函数等）语句</li>
+      <li styleclass="Normal">已添加选项(首选项/设计器)以输入当前操作系统缩放设置（修复了在非默认设置下创建/移动控件时在错误位置显示套索线的问题）</li>
+      <li styleclass="Normal">修正了将 strip items 的 Text 属性设置为空的问题</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">调试器</para>
@@ -116,7 +146,8 @@
     <para styleclass="Heading3">新特性</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">中文文档的多处更新</li>
-      <li styleclass="Normal"></li>
+      <li styleclass="Normal">添加了丢失的 SCAN...ENDSCAN 文档 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1548" target="_blank">#1548</link>)</li>
+      <li styleclass="Normal">为 DBOrderInfo() 函数主题添加了缺失的可用常量 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1565" target="_blank">#1565</link>)</li>
     </list>
     <para styleclass="Heading1">Changes in 2.20.0.3</para>
     <para styleclass="Heading2">编译器</para>

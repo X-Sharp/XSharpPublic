@@ -486,7 +486,7 @@ METHOD __CommandFromEvent(oEvent AS OBJECT) AS LOGIC STRICT
     elseif oEvent is ControlEvent var oCE
         symNameSym := oCE:NameSym
     ELSE
-        symNameSym := IVarGet(oCE,#NameSym)
+        symNameSym := IVarGet(oEvent,#NameSym)
     ENDIF
     oWindow := SELF
 

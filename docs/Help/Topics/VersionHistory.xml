@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-01T13:01:58.486+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-03T12:30:35.838+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -76,6 +76,7 @@
       <li styleclass="Normal">We no longer create an X# intellisense database for solutions that do not have any X# projects</li>
       <li styleclass="Normal">We have made several changes to the X# intellisense database structure. When you open a solution with an existing database, then the database will be deleted and all source files will be rescanned (only once).</li>
       <li styleclass="Normal">The X# source code editor now has an extra combobox on the top that lists the projects where a file is included. When a file is included in more than one project then you can see all the projects. Switching to a new project will change the &apos;evaluation context&apos;. Conditional compiles (#ifdef) will reflect the change in the editor.</li>
+      <li styleclass="Normal">We have added support for the commands Edit.NextMethod and Edit.PreviousMethod in the editor. There usually is no shortcut for these commands, but you can assign them with the &quot;Customize&quot; option on the Toolbar in Visual Studio. You could assign Ctrl-DownArrow and Ctl-UpArrow for example.</li>
     </list>
     <para styleclass="Heading2">XIDE</para>
     <para styleclass="Heading3">General</para>

@@ -205,7 +205,8 @@
                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                ))
 
-
+// This variant moves the ALL clause to the end. This is needed because the WITH clause is declared as non optional
+#command REPLACE <*clauses*> ALL <*moreclauses*> => REPLACE <clauses> <moreclauses> ALL
 
 #command DELETE                                                         ;
          [FOR <lfor>]                                                   ;
@@ -237,6 +238,7 @@
                  {|| __DbRecall()},                                     ;
                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                ))
+
 
 #command LOCATE                                                         ;
          [FOR <lfor>]                                                   ;

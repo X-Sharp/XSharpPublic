@@ -51,6 +51,7 @@ namespace XSharp.LanguageService
         private readonly SourceWalker _sourceWalker;
         private readonly ITextBuffer _buffer;
         private XDocument _document = null;
+        private XFile _file = null;
 
         private XClassificationSpans _colorTags = new XClassificationSpans();
         private IList<ClassificationSpan> _lexerRegions = null;
@@ -100,6 +101,7 @@ namespace XSharp.LanguageService
             {
                 return;
             }
+            _file = file;
             // we do not check for the existence of the XDocument here.
             // The classifier may be called before the XDocument was created
             //
@@ -802,7 +804,7 @@ namespace XSharp.LanguageService
                                 case XSharpLexer.PP_DEFINE:
                                     ScanForRegion(token, iToken, tokens, ref iLastPPDefine, snapshot, regionTags);
                                     break;
-                                case XSharpLexer.DEFINE:
+                                case XSharpLexer.DEFINE when _file.Project.ParseOptions.Dialect != XDialect.FoxPro:
                                     ScanForRegion(token, iToken, tokens, ref iLastDefine, snapshot, regionTags);
                                     break;
                                 case XSharpLexer.SL_COMMENT:

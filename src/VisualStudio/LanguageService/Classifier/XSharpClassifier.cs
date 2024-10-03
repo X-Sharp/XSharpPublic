@@ -666,6 +666,17 @@ namespace XSharp.LanguageService
             
             if (kw.IsEmpty)
                 return;
+            var isContinued = _document.HasLineState(iLine, LineFlags.IsContinued);
+            
+            if ( isContinued)
+            {
+                var afterAttribute = _document.HasLineState(iLine-1, LineFlags.StartsWithAttribute);
+                if ( ! afterAttribute)
+                {
+                    // prevent IF( at the start of a continued line to be recognized as a block
+                    return;
+                }
+            }
             var isStart = kw.IsStart();
             var isEnd = kw.IsStop();
             var isMiddle = kw.IsMiddle();

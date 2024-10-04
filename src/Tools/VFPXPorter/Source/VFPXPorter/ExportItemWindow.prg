@@ -17,7 +17,7 @@ PUBLIC PARTIAL CLASS ExportItemWindow	;
     PROPERTY Settings AS XPorterSettings AUTO
 
     PUBLIC CONSTRUCTOR() STRICT //ExportWindow
-        InitializeComponent()
+        SELF:InitializeComponent()
         extension := "scx"
         RETURN
 
@@ -33,7 +33,7 @@ PUBLIC PARTIAL CLASS ExportItemWindow	;
             MessageBox.Show( "Error during Component processing.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error )
             RETURN
         ENDIF
-        DoExport()
+        SELF:DoExport()
 
     PUBLIC METHOD DoExport() AS VOID
         // DoBackup, ProcessFirst

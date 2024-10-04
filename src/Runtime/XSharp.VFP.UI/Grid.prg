@@ -253,13 +253,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 
         PRIVATE _VFPAfterRowColChange AS VFPOverride
-        PROPERTY vfpAfterRowColChange AS STRING GET _VFPAfterRowColChange?:SendTo SET Set_AfterRowColChange( VFPOverride{SELF, VALUE} )
+        PROPERTY vfpAfterRowColChange AS STRING GET _VFPAfterRowColChange?:SendTo SET SELF:Set_AfterRowColChange( VFPOverride{SELF, VALUE} )
 
         METHOD Set_AfterRowColChange( methodCall AS VFPOverride ) AS VOID
             SELF:_VFPAfterRowColChange := methodCall
 
         PRIVATE _VFPBeforeRowColChange AS VFPOverride
-        PROPERTY vfpBeforeRowColChange AS STRING GET _VFPBeforeRowColChange?:SendTo SET Set_BeforeRowColChange( VFPOverride{SELF, VALUE} )
+        PROPERTY vfpBeforeRowColChange AS STRING GET _VFPBeforeRowColChange?:SendTo SET SELF:Set_BeforeRowColChange( VFPOverride{SELF, VALUE} )
 
         METHOD Set_BeforeRowColChange( methodCall AS VFPOverride ) AS VOID
             SELF:_VFPBeforeRowColChange := methodCall

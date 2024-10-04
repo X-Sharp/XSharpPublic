@@ -35,6 +35,8 @@
     <CS>False</CS>
     <NoStandardDefs>False</NoStandardDefs>
     <OutPutCopy>$(SolutionDir)Tools\VFPXPorter\Source\VFPXPorterLib\Data\Templates\Tools\$(TargetFileName)</OutPutCopy>
+    <Allowdot>True</Allowdot>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DisabledWarnings>108,114</DisabledWarnings>

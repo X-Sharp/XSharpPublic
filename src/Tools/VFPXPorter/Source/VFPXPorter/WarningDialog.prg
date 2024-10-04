@@ -14,7 +14,7 @@ BEGIN NAMESPACE VFPXPorter
 			INHERIT System.Windows.Forms.Form
 
 		public constructor() strict
-			InitializeComponent()
+			SELF:InitializeComponent()
 			return
 		end constructor
 		PRIVATE METHOD buttonAgreed_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT

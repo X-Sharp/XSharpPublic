@@ -201,7 +201,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		PRIVATE _VFPLoad AS VFPOverride
 		[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the Load method. Occurs just before an object is created.")];
-		PROPERTY vfpLoad AS STRING GET _VFPLoad?:SendTo SET Set_Load( VFPOverride{SELF, VALUE} )
+		PROPERTY vfpLoad AS STRING GET _VFPLoad?:SendTo SET SELF:Set_Load( VFPOverride{SELF, VALUE} )
 
 		METHOD Set_Load( methodCall AS VFPOverride ) AS VOID
 			SELF:Load += System.EventHandler{ SELF, @OnVFPLoadCall() }
@@ -215,7 +215,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		PRIVATE _VFPQueryUnload AS VFPOverride
 		[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the QueryUnload method. Occurs before a form is unloaded.")];
-		PROPERTY vfpQueryUnLoad AS STRING GET _VFPQueryUnload?:SendTo SET Set_QueryUnload( VFPOverride{SELF, VALUE} )
+		PROPERTY vfpQueryUnLoad AS STRING GET _VFPQueryUnload?:SendTo SET SELF:Set_QueryUnload( VFPOverride{SELF, VALUE} )
 
 		METHOD Set_QueryUnload( methodCall AS VFPOverride ) AS VOID
 			SELF:FormClosing += System.Windows.Forms.FormClosingEventHandler{ SELF, @OnVFPQueryUnload() }

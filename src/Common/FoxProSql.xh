@@ -53,18 +53,26 @@
 #command INSERT INTO <(table)> FROM NAME <ObjectName>   => ;
     __SqlInsertFromObject(<"table"> , <ObjectName> )
 
-#command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )] <s:Select> <*moreclauses*>   => ;
-    __NOFOXPROSQL__ <(udc)>  // __SqlInsertFromSQL(<"udc">, <"table"> , { <"f1"> [, <"fn"> ] },  <"s">+" "+<"moreclauses"> )
+#command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )] <s:SELECT> <*moreclauses*>   => ;
+    __NOFOXPROSQL__ "SELECT Clause not yet available for INSERT command"`  // __SqlInsertFromSQL(<"udc">, <"table"> , { <"f1"> [, <"fn"> ] },  <"s">+" "+<"moreclauses"> )
 
-
-// SQL Delete
-#command DELETE [<*tableName*>] FROM  <*clauses*>           => __NOFOXPROSQL__ <(udc)> //  __SqlDelete(<"udc">)
-#command DELETE TRIGGER  <*clauses*>                        => #error "DELETE TRIGGER is not supported "
+// SQL Delete, mapped to normal delete
+#command DELETE [<*clauses*>] WHERE [<*moreclauses*>] => DELETE <clauses> FOR <moreclauses>
+#command DELETE FROM <(a)> [<*clauses*>] => DELETE <clauses> IN <a>
+// Subselect is not supported
+#command DELETE [<*clauses*>] SELECT <*moreclauses*> => __NOFOXPROSQL__ <(udc)>
 
 // SQL Update Commands
-#command UPDATE [<*tableName*>] SET <*setclauses*> ;
-  [FROM <*fromclause*>] [JOIN <*joinclause*>]  ;
-  [WHERE <*whereclause*>]                                   => __NOFOXPROSQL__ <(udc)> // __SqlUpdate(<"udc">)
+#command UPDATE [<*clauses*>] SET <*setclauses*> JOIN <*rest*>  => __NOFOXPROSQL__ <(udc)> // __SqlUpdate(<"udc">)
+// Subselect is not supported
+#command UPDATE [<*clauses*>] SELECT <*moreclauses*> => __NOFOXPROSQL__ <(udc)>
+
+#command UPDATE <(a)> SET <(f1)> = <x1> [, <(fn)> = <xn>]               ;
+         [WHERE <lfor>]                                                   ;
+      => (<(a)>)->(DbEval(                                              ;
+                 {||DbAutoLock(), __FieldSet(<(f1)>,<x1>) [, __FieldSet(<(fn)>, <xn>)], DbAutoUnLock()},    ;
+                 <{lfor}>))
+
 
 // SQL Select commands. Separate commands for TO and 3 different INTO variations
 

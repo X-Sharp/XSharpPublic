@@ -348,7 +348,9 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                         LOOP
                     ENDIF
                     top:BlockTokens:Add(end1)
-                    top:BlockTokens:Add(end2)
+                    if (end2:Type != XSharpLexer.EOS)
+                        top:BlockTokens:Add(end2)
+                    endif
                     top:Range       := top:Range:WithEnd(SELF:Lt2)
                     top:Interval    := top:Interval:WithEnd(SELF:Lt2)
                     EXIT
@@ -1221,22 +1223,21 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             EntityKind := Kind.Class
             RETURN TRUE
 
-        CASE XSharpLexer.UDC_KEYWORD
-            IF String.Equals(SELF:Lt1.Text, "ENDFUNC", StringComparison.OrdinalIgnoreCase)
-                IF InFoxClass
-                    EntityKind := Kind.Method
-                ELSE
-                    EntityKind := Kind.Function
-                ENDIF
-                RETURN TRUE
-            ELSEIF String.Equals(SELF:Lt1.Text, "ENDPROC",StringComparison.OrdinalIgnoreCase)
-                IF InFoxClass
-                    EntityKind := Kind.Method
-                ELSE
-                    EntityKind := Kind.Procedure
-                ENDIF
-                RETURN TRUE
+        CASE XSharpLexer.ENDPROC
+            IF InFoxClass
+                EntityKind := Kind.Method
+            ELSE
+                EntityKind := Kind.Procedure
             ENDIF
+            RETURN TRUE
+
+        CASE XSharpLexer.ENDFUNC
+            IF InFoxClass
+                EntityKind := Kind.Method
+            ELSE
+                EntityKind := Kind.Function
+            ENDIF
+            RETURN TRUE
         END SWITCH
         EntityKind := Kind.Unknown
         RETURN FALSE
@@ -3342,11 +3343,12 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ;
 
         */
-        _modifiers:Add(SELF:Lt1)
+        var def := SELF:Lt1
         IF ! SELF:Expect(XSharpLexer.DEFINE)
             RETURN NULL
         ENDIF
         VAR mods := SELF:ParseVisibilityAndModifiers()
+        _modifiers.Add(def)
         _modifiers:Add(SELF:Lt1)
         IF ! SELF:Expect(XSharpLexer.CLASS)
             RETURN NULL

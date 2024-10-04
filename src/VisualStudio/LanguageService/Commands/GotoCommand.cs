@@ -36,6 +36,14 @@ namespace XSharp.LanguageService.Commands
         {
             var xDocument = doc.TextBuffer.GetDocument();
             var currentChar = doc.TextView.Caret.Position.BufferPosition;
+            if (char.IsWhiteSpace(currentChar.GetChar()))
+            {
+                // Cursor after keyword?
+                var prevChar = currentChar - 1;
+                if (!char.IsWhiteSpace(prevChar.GetChar()))
+                    currentChar = prevChar; 
+            }
+
             int currentLine = currentChar.GetContainingLine().LineNumber;
             int tokenLine = currentLine + 1;// our tokens have 1 based line numbers
             var blocks = xDocument.Blocks.Where(b => b.Token.Line <= tokenLine && b.Last.Token.Line >= tokenLine);
@@ -58,7 +66,6 @@ namespace XSharp.LanguageService.Commands
                     bool reversed = false;
                     start = target = foundSpans[0].Start;
                     end = foundSpans[foundSpans.Count - 1].End;
-                    end -= 1;
                     if (foundSpans[0].Contains(currentChar))
                     {
                         target = end;
@@ -80,9 +87,8 @@ namespace XSharp.LanguageService.Commands
                                     break;
 
                                 }
-                                start = foundSpans[i].Start;
-                                end = foundSpans[i].End;
-                                end -= 1;
+                                start = foundSpans[i+1].Start;
+                                end = foundSpans[i+1].End;
                                 target = end;
                                 break;
                             }

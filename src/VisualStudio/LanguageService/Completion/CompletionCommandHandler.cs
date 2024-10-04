@@ -18,6 +18,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using XSharpModel;
 using XSharp.Settings;
+using Community.VisualStudio.Toolkit;
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 #if !ASYNCCOMPLETION
 namespace XSharp.LanguageService
@@ -31,7 +32,6 @@ namespace XSharp.LanguageService
         private readonly ITagAggregator<IClassificationTag> _tagAggregator;
         private readonly IVsTextView _textViewAdapter;
         bool completionWasSelected = false;
-        XSharpSignatureHelpCommandHandler _signatureCommandHandler = null;
 
         internal XSharpCompletionCommandHandler(IVsTextView textViewAdapter, ITextView textView,
             ICompletionBroker completionBroker, IBufferTagAggregatorFactoryService aggregator)
@@ -74,6 +74,7 @@ namespace XSharp.LanguageService
             int result = VSConstants.S_OK;
             bool handled = false;
             Guid cmdGroup = pguidCmdGroup;
+            bool triggerSignature = false;
             // 1. Pre-process before anybody else has a chance
             if (XEditorSettings.DisableCodeCompletion)
             {
@@ -91,7 +92,10 @@ namespace XSharp.LanguageService
                         handled = StartCompletionSession(nCmdID, '\0', true);
                         break;
                     case (int)VSConstants.VSStd2KCmdID.RETURN:
-                        handled = CompleteCompletionSession('\0');
+                        if (_doc.CompletionSession != null)
+                        {
+                            handled = CompleteCompletionSession('\r', out triggerSignature);
+                        }
                         break;
                     case (int)VSConstants.VSStd2KCmdID.BACKTAB:
                         if (_doc.ExpansionSession != null)
@@ -113,7 +117,7 @@ namespace XSharp.LanguageService
                         }
                         else if (_doc.CompletionSession != null)
                         {
-                        handled = CompleteCompletionSession('\t');
+                            handled = CompleteCompletionSession('\t', out triggerSignature);
                         }
                         break;
                     case (int)VSConstants.VSStd2KCmdID.CANCEL:
@@ -134,7 +138,7 @@ namespace XSharp.LanguageService
                                     CancelCompletionSession();
                                     break;
                                 case '.':
-                                    handled = CompleteCompletionSession(ch);
+                                    handled = CompleteCompletionSession(ch, out triggerSignature);
                                     break;
                                 case ':':
                                     if (nextChar() == '=')
@@ -143,7 +147,7 @@ namespace XSharp.LanguageService
                                     }
                                     else
                                     {
-                                        handled = CompleteCompletionSession(ch);
+                                        handled = CompleteCompletionSession(ch, out triggerSignature);
                                     }
                                     break;
                                 default:
@@ -153,7 +157,7 @@ namespace XSharp.LanguageService
                                     }
                                     else if (XEditorSettings.CommitChars.Contains(ch))
                                     {
-                                        handled = CompleteCompletionSession(ch);
+                                        handled = CompleteCompletionSession(ch, out triggerSignature);
                                     }
                                     else
                                     {
@@ -196,6 +200,7 @@ namespace XSharp.LanguageService
                 }
                 result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             }
+            
             // 3. Post process
             if (!handled && ErrorHandler.Succeeded(result) && !XEditorSettings.DisableCodeCompletion)
             {
@@ -240,6 +245,15 @@ namespace XSharp.LanguageService
 
                     }
                 }
+            }
+
+            if (triggerSignature)
+            {
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    _doc.SignatureStarting = true;
+                    _ = await VS.Commands.ExecuteAsync(KnownCommands.Edit_ParameterInfo);
+                });
             }
 
             return result;
@@ -345,8 +359,9 @@ namespace XSharp.LanguageService
             CompletionSession.Dismiss();
             return true;
         }
-        bool CompleteCompletionSession(char ch)
+        bool CompleteCompletionSession(char ch, out bool triggerSignatureHelp)
         {
+            triggerSignatureHelp = false;
             if (!CompletionActive || CompletionSession.SelectedCompletionSet == null)
             {
                 return false;
@@ -367,12 +382,11 @@ namespace XSharp.LanguageService
             WriteOutputMessage("CompleteCompletionSession()");
             bool addClose = false;
             Kind kind = Kind.Unknown;
-            if (completion is XSCompletion xscompletion)
+            if (completion is XSCompletion xsCompletion)
             {
-                kind = xscompletion.Kind;
+                kind = xsCompletion.Kind;
             }
             bool ctor = false;
-            bool triggerSignatureHelp = false;
             // some tokens need to be added to the insertion text.
             switch (kind)
             {
@@ -443,29 +457,35 @@ namespace XSharp.LanguageService
                     addClose = true;
                 }
             }
-            if (addClose)
+            var len = completion.InsertionText.Length;
+            if ( len > 0)
             {
-                if (completion.InsertionText.EndsWith("("))
+                var lastChar = completion.InsertionText[len-1];
+                switch (lastChar)
                 {
-                    completion.InsertionText += ")";
-                    triggerSignatureHelp = true;
+                    case '(':
+                        triggerSignatureHelp = true;
+                        if (addClose)
+                            completion.InsertionText += ")";
+                        break;
+                    case '{':
+                        triggerSignatureHelp = true;
+                        if (addClose)
+                            completion.InsertionText += "}";
+                        break;
+                    case '[':
+                        triggerSignatureHelp = true;
+                        if (addClose)
+                            completion.InsertionText += "]";
+                        break;
+                    default:
+                        triggerSignatureHelp = false;
+                        break;
                 }
-                else if (completion.InsertionText.EndsWith("{"))
-                {
-                    completion.InsertionText += "}";
-                    triggerSignatureHelp = true;
-                }
-                else if (completion.InsertionText.EndsWith("["))
-                {
-                    completion.InsertionText += "]";
-                    triggerSignatureHelp = false;
-                }
-
             }
             WriteOutputMessage(" --> Commit");
             var props = session.GetCompletionProperties();
             var type = props.Type;
-            var triggerChar = props.Char;
             string insertionText = completion.InsertionText;
             // When completing by typing '.' or ':' we want to add that token as well
             if (ch == '.' || ch == ':')
@@ -477,11 +497,9 @@ namespace XSharp.LanguageService
             }
             session.Commit();
             // if a method or constructor was chosen, then trigger the signature help
-            if (triggerSignatureHelp)
+            if (triggerSignatureHelp && addClose)
             {
-                if (addClose)
-                    caret.MoveToPreviousCaretPosition();
-                TriggerSignatureHelp(type, insertionText, triggerChar);
+                caret.MoveToPreviousCaretPosition();
             }
             return true;
         }
@@ -549,41 +567,6 @@ namespace XSharp.LanguageService
             client.InsertAnyExpansion(null, snippet.title, snippet.path);
        }
 
-        private void TriggerSignatureHelp(IXTypeSymbol type, string method, char triggerChar)
-        {
-            // it MUST be the case....
-            WriteOutputMessage("OnCompletionSessionCommitted()");
-
-            if (triggerChar == '{' || triggerChar == '}')
-            {
-                if (method.EndsWith("{}"))
-                    method = method.Substring(0, method.Length - 2);
-                else if (method.EndsWith("{"))
-                    method = method.Substring(0, method.Length - 1);
-                //triggerChar = '{';
-            }
-            else
-            {
-                if (method.EndsWith("()"))
-                    method = method.Substring(0, method.Length - 2);
-                else if (method.EndsWith("("))
-                    method = method.Substring(0, method.Length - 1);
-                //triggerChar = '(';
-            }
-
-            // send command to editor to Signature Helper
-            if (_signatureCommandHandler == null)
-            {
-                _signatureCommandHandler = _textView.Properties.GetProperty<XSharpSignatureHelpCommandHandler>(typeof(XSharpSignatureHelpCommandHandler));
-            }
-            if (_signatureCommandHandler != null)
-            {
-                _signatureCommandHandler.StartSignatureSession(type, method, triggerChar);
-            }
-
-            //
-            //
-        }
         private void OnCompletionSessionDismiss(object sender, EventArgs e)
         {
             if (CompletionSession.SelectedCompletionSet != null)

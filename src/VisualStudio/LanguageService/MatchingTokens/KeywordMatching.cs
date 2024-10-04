@@ -137,21 +137,28 @@ namespace XSharp.LanguageService
             }
 
             oStart = DateTime.Now;
-
-            if (spans.Count == 0 || _currentChar == null)   //there is no content in the buffer
-                yield break;
-
             //don't do anything if the current SnapshotPoint is not initialized or at the end of the buffer
-            if (!_currentChar.HasValue || _currentChar.Value.Position >= _currentChar.Value.Snapshot.Length)
+            if (spans.Count == 0 || _currentChar == null || !_currentChar.HasValue)   //there is no content in the buffer
                 yield break;
 
-            SnapshotPoint currentChar = _currentChar.Value;
-            if (spans[0].Snapshot != currentChar.Snapshot)
+            var snapshot = _currentChar.Value.Snapshot;
+            if (spans[0].Snapshot != snapshot || _currentChar.Value.Position > snapshot.Length)
             {
                 yield break;
             }
+
+            SnapshotPoint currentChar = _currentChar.Value;
+            // Cursor after keyword before EOF?
+            if (currentChar.Position == snapshot.Length)
+                currentChar -= 1;
+           
             //hold on to a snapshot of the current character
             var ch = currentChar.GetChar();
+            if (char.IsWhiteSpace(ch))
+            { 
+                currentChar -= 1;
+            }
+            ch = currentChar.GetChar();
             if (char.IsWhiteSpace(ch))
                 yield break;
 

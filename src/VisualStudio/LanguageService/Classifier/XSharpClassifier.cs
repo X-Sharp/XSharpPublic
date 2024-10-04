@@ -51,6 +51,7 @@ namespace XSharp.LanguageService
         private readonly SourceWalker _sourceWalker;
         private readonly ITextBuffer _buffer;
         private XDocument _document = null;
+        private XFile _file = null;
 
         private XClassificationSpans _colorTags = new XClassificationSpans();
         private IList<ClassificationSpan> _lexerRegions = null;
@@ -100,6 +101,7 @@ namespace XSharp.LanguageService
             {
                 return;
             }
+            _file = file;
             // we do not check for the existence of the XDocument here.
             // The classifier may be called before the XDocument was created
             //
@@ -143,11 +145,7 @@ namespace XSharp.LanguageService
                 if (!IsStarted)
                 {
                     IsStarted = true;
-#if DEV17
-                    _ = ThreadHelper.JoinableTaskFactory.StartOnIdle(LexAsync,VsTaskRunContext.UIThreadIdlePriority);
-#else
-                    _ = ThreadHelper.JoinableTaskFactory.StartOnIdleShim(StartLex, VsTaskRunContext.UIThreadIdlePriority);
-#endif
+                    _ = ThreadHelper.JoinableTaskFactory.StartOnIdleShim(StartLex,VsTaskRunContext.UIThreadIdlePriority);
                 }
             }
             else
@@ -155,14 +153,14 @@ namespace XSharp.LanguageService
                 Debug("Buffer_Changed: Suppress lexing because classifier is active");
             }
     }
-#if !DEV17
+
 #pragma warning disable VSTHRD100 // Avoid async void methods
         public async void StartLex()
 #pragma warning restore VSTHRD100 // Avoid async void methods
         {
             await LexAsync();
         }
-#endif
+
         private XDocument GetDocument()
         {
             lock (gate)
@@ -666,6 +664,17 @@ namespace XSharp.LanguageService
             
             if (kw.IsEmpty)
                 return;
+            var isContinued = _document.HasLineState(iLine, LineFlags.IsContinued);
+            
+            if ( isContinued)
+            {
+                var afterAttribute = _document.HasLineState(iLine-1, LineFlags.StartsWithAttribute);
+                if ( ! afterAttribute)
+                {
+                    // prevent IF( at the start of a continued line to be recognized as a block
+                    return;
+                }
+            }
             var isStart = kw.IsStart();
             var isEnd = kw.IsStop();
             var isMiddle = kw.IsMiddle();
@@ -791,7 +800,7 @@ namespace XSharp.LanguageService
                                 case XSharpLexer.PP_DEFINE:
                                     ScanForRegion(token, iToken, tokens, ref iLastPPDefine, snapshot, regionTags);
                                     break;
-                                case XSharpLexer.DEFINE:
+                                case XSharpLexer.DEFINE when _file.Project.ParseOptions.Dialect != XDialect.FoxPro:
                                     ScanForRegion(token, iToken, tokens, ref iLastDefine, snapshot, regionTags);
                                     break;
                                 case XSharpLexer.SL_COMMENT:

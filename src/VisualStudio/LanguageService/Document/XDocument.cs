@@ -62,6 +62,7 @@ namespace XSharp.LanguageService
         internal IVsExpansionSession ExpansionSession { get; set; }
         internal ICompletionSession CompletionSession { get; set; }
         internal XSharpFormattingCommandHandler FormattingCommandHandler {get; set;}
+        internal bool SignatureStarting { get; set; }
 
         #endregion
 

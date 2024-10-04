@@ -32,7 +32,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CreateDBFNtx() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-            InitTest()
+            SELF:InitTest()
             VAR dbInfo := DbOpenInfo{ TempFileName(), "TestNtx1", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF AS DbfNtx
@@ -70,7 +70,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("DbfNtx", "Open")];
 		METHOD OpenDBFNtx() AS VOID
 			// ID,N,5,0;NAME,C,20,0
-            InitTest()
+            SELF:InitTest()
             LOCAL cSource := TempFileName() as string
 			VAR dbInfo := DbOpenInfo{ cSource, "customer", 1, FALSE, FALSE }
 			//
@@ -98,7 +98,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("DbfNtx", "CreateAppend")];
 		METHOD CreateAppend() AS VOID
 			// Create the DBF, Define a Ntx, then add a some Data
-            InitTest()
+            SELF:InitTest()
             local cSource := TempFileName() AS STRING
             SELF:CreateAppendData( cSource )
 			// Now, Verify
@@ -107,7 +107,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("DbfNtx", "CreateAppendSkipZero")];
 		METHOD CreateAppendSkipZero() AS VOID
 			// Create the DBF, Define a Ntx, then add a some Data
-            InitTest()
+            SELF:InitTest()
             VAR cSource := TempFileName()
 			SELF:CreateAppendData( cSource )
 			//
@@ -148,7 +148,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CreateAppendData( baseFileName AS STRING ) AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-            InitTest()
+            SELF:InitTest()
             VAR dbInfo := DbOpenInfo{ baseFileName, "" , 1, FALSE, FALSE }
 			//
 			LOCAL myDBF AS DbfNtx
@@ -204,7 +204,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
             local cSource := TempFileName() as STRING
-            InitTest()
+            SELF:InitTest()
 			VAR dbInfo := DbOpenInfo{ cSource, "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF AS DbfNtx
@@ -263,7 +263,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			LOCAL myDBF AS DbfNtx
 			myDBF := DbfNtx{}
-            InitTest()
+            SELF:InitTest()
 			VAR success := myDBF:Open( dbInfo )
 			Assert.Equal( TRUE, success )
 			// WE HAVE TO SET THE WORKAREA INFO !!!!

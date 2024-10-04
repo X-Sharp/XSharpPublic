@@ -389,7 +389,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement IMPLEMENTS IDbConnectionClient
                 IF cursorNo != 0
                     CursorName += cursorNo:ToString()
                 ENDIF
-                VAR oRDD := CreateArea(oDataReader, CursorName)
+                VAR oRDD := SELF:CreateArea(oDataReader, CursorName)
                 aResults:Add(oRDD)
                 IF SELF:_aSyncState == AsyncState.Cancelling
                     EXIT
@@ -525,7 +525,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement IMPLEMENTS IDbConnectionClient
                 CursorName += cursorNo:ToString()
             ENDIF
             oDataReader := SELF:Connection:Factory:AfterOpen(oDataReader)
-            VAR oRDD := CreateArea(oDataReader, CursorName)
+            VAR oRDD := SELF:CreateArea(oDataReader, CursorName)
             AAdd(result, {oRDD:Alias, oRDD:RecCount})
             cursorNo += 1
             IF ! SELF:BatchMode

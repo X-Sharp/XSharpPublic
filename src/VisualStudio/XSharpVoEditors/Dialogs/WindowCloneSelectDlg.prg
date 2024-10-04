@@ -19,7 +19,7 @@ BEGIN NAMESPACE XSharp.VOEditors.Dialogs
         PRIVATE cSelected := NULL AS STRING
 
         public constructor(file AS XFile, cFileName AS STRING) strict
-            InitializeComponent()
+            SELF:InitializeComponent()
 
             VAR fileNames := file:Project:GetFilesOfType(XFileType.VOForm, TRUE)
             FOREACH VAR filename IN fileNames

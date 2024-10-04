@@ -9,6 +9,7 @@
     <Name>VOSQLClasses</Name>
     <OutputName>VOSQLClasses</OutputName>
     <NamedArgs>False</NamedArgs>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>

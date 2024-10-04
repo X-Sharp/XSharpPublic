@@ -19,6 +19,8 @@
     <StandardDefs />
     <StartupObject />
     <Unsafe>True</Unsafe>
+    <Allowdot>True</Allowdot>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DisabledWarnings />

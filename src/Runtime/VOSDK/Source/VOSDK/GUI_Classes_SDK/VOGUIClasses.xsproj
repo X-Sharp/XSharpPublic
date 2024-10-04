@@ -10,6 +10,7 @@
     <OutputName>VOGUIClasses</OutputName>
     <LB>true</LB>
     <NamedArgs>False</NamedArgs>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>

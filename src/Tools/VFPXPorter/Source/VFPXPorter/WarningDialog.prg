@@ -31,7 +31,7 @@ BEGIN NAMESPACE VFPXPorter
 // 				SELF:rtfWarning:Text += "so, depending on the size and type of your application(s), a small or larger amount of changes need to be made to your code, "
 // 				SELF:rtfWarning:Text += "in order to allow it to compile and execute properly in X#."
                 
-                SELF:rtfWarning:Text := VFPXPorter.Properties.Resources.Warning
+                SELF:rtfWarning:Rtf := VFPXPorter.Properties.Resources.Warning
                 
 				SELF:buttonAgreed:Enabled := TRUE
 				SELF:checkDontShow:Enabled := TRUE

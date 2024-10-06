@@ -2718,7 +2718,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             ManagedKind managedKind = operandType.GetManagedKind(ref useSiteInfo);
             diagnostics.Add(node, useSiteInfo);
 
+#if XSHARP
+            if (!hasErrors && !Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, node))
+#else
             if (!hasErrors)
+#endif
             {
                 hasErrors = CheckManagedAddr(Compilation, operandType, managedKind, node.Location, diagnostics);
             }
@@ -2735,11 +2739,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (IsMoveableVariable(operand, accessedLocalOrParameterOpt: out _) != isFixedStatementAddressOfExpression)
                 {
 #if XSHARP
-                        if (!isFixedStatementAddressOfExpression)
-                        {
-                            Error(diagnostics, ErrorCode.WRN_AddrOfMovable, node);
-                            hasErrors = false;
-                        }
+                    if (!isFixedStatementAddressOfExpression)
+                    {
+                        Error(diagnostics, ErrorCode.WRN_AddrOfMovable, node);
+                        hasErrors = false;
+                    }
 #else
                     Error(diagnostics, isFixedStatementAddressOfExpression ? ErrorCode.ERR_FixedNotNeeded : ErrorCode.ERR_FixedNeeded, node);
                     hasErrors = true;

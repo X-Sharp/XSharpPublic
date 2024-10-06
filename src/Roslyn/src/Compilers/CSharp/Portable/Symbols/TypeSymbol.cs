@@ -1903,6 +1903,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     var (implementedParameter, implementingType) = arg;
                                     var location = GetImplicitImplementationDiagnosticLocation(implementedMethod, implementingType, implementingMethod);
                                     // Reference kind modifier of parameter '{0}' doesn't match the corresponding parameter '{1}' in overridden or implemented member.
+#if XSHARP
+                                    if (!(implementingParameter.RefKind == RefKind.Ref && implementedParameter.RefKind == RefKind.Out))
+#endif
                                     diagnostics.Add(ErrorCode.WRN_OverridingDifferentRefness, location, implementingParameter, implementedParameter);
                                 },
                                 implementingType,

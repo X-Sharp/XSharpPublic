@@ -1238,6 +1238,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         {
                             var (overriddenParameter, location) = arg;
                             // Reference kind modifier of parameter '{0}' doesn't match the corresponding parameter '{1}' in overridden or implemented member.
+#if XSHARP
+                            if (!(overridingParameter.RefKind == RefKind.Ref && overriddenParameter.RefKind == RefKind.Out))
+#endif
                             diagnostics.Add(ErrorCode.WRN_OverridingDifferentRefness, location, overridingParameter, overriddenParameter);
                         },
                         overridingMemberLocation,

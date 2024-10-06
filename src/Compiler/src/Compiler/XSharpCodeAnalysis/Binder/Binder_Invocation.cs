@@ -265,15 +265,15 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
                     return null;
                 }
             }
-            var count = diagnostics.Count;
+            var count = diagnostics.DiagnosticBag.Count;
             var expression = BindExpression(node.Expression, diagnostics);
             // A function call Test() should not throw an error when the function exists and no variable name 'Test' has been defined.
-            if (diagnostics.Count != count)
+            if (diagnostics.DiagnosticBag.Count != count)
             {
                 var tmp = DiagnosticBag.GetInstance();
-                tmp.AddRange(diagnostics.AsEnumerable().Where(d => d.Code != (int)ErrorCode.WRN_UndeclaredVariable));
+                tmp.AddRange(diagnostics.DiagnosticBag.AsEnumerable().Where(d => d.Code != (int)ErrorCode.WRN_UndeclaredVariable));
                 diagnostics.Clear();
-                diagnostics.AddRangeAndFree(tmp);
+                diagnostics.DiagnosticBag.AddRangeAndFree(tmp);
             }
             if (node.Parent is AssignmentExpressionSyntax aes && aes.Left == node)
             {

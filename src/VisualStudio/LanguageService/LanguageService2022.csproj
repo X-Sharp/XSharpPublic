@@ -57,8 +57,21 @@
       <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="BraceCompletion\BraceCompletion.cs" />
-    <Compile Include="Commands\Commenting.cs" />
+    <Compile Include="Commands\AbstractCommand.cs" />
+    <Compile Include="Commands\CommentCommand.cs" />
+    <Compile Include="Commands\FormattingCommand.cs" />
+    <Compile Include="Commands\GotoCommand.cs" />
+    <Compile Include="Commands\GotoDefinition.cs" />
+    <Compile Include="Commands\HelpCommand.cs" />
+    <Compile Include="Commands\HelpViewer.cs" />
+    <Compile Include="Commands\SaveCommand.cs" />
+    <Compile Include="Generic\TextViewCreationListener.cs" />
+    <Compile Include="Interop\ComAggregate.cs" />
+    <Compile Include="Interop\ComHandle.cs" />
+    <Compile Include="Interop\IComWrapperFixed.cs" />
+    <Compile Include="Interop\WrapperPolicy.cs" />
     <Compile Include="LanguageService\XSharpEditorFactory.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="MatchingTokens\AbstractMatching.cs" />
     <Compile Include="MatchingTokens\IdentifierMatching.cs" />
     <Compile Include="MatchingTokens\KeywordMatching.cs" />
@@ -87,8 +100,6 @@
     <Compile Include="Completion\XSharpGlyphTools.cs" />
     <Compile Include="Formatting\FormattingCommandHandler.cs" />
     <Compile Include="Formatting\LineFormatter.cs" />
-    <Compile Include="Generic\GotoDefinition.cs" />
-    <Compile Include="Generic\HelpViewer.cs" />
     <Compile Include="LightBulb\CommonAction.cs" />
     <Compile Include="LightBulb\CommonActionProvider.cs" />
     <Compile Include="LightBulb\ConstructorAction.cs" />
@@ -108,18 +119,15 @@
     <Compile Include="LineSeparators\LineSeparatorTag.cs" />
     <Compile Include="Lookup\XSharpSearchLocation.cs" />
     <Compile Include="Lookup\XSharpLookup.cs" />
-    <Compile Include="Generic\EditorCommandHandler.cs" />
     <Compile Include="Lookup\AnalysisClasses.cs" />
     <Compile Include="Completion\XAMLCompletionSource.cs" />
     <Compile Include="Completion\XSharpCompletionSource.cs" />
     <Compile Include="Errors\XSharpErrorColorizer.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Formatting\Formatting.cs" />
-    <Compile Include="LanguageService\ExpansionFunctions.cs" />
     <Compile Include="LanguageService\XSharpLanguageService.cs" />
     <Compile Include="EventHandlers.cs" />
     <Compile Include="Generic\DropDownClient.cs" />
-    <Compile Include="LanguageService\XSharpViewFilter.cs" />
     <Compile Include="LightBulb\CreateStubAction.cs" />
     <Compile Include="LightBulb\CreateStubProvider.cs" />
     <Compile Include="LightBulb\ImplementInterfaceAction.cs" />
@@ -198,6 +206,9 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Parameter Info\SignatureCommandHandler.cs" />
+    <Compile Include="Snippets\SnippetHelpers.cs" />
+    <Compile Include="Snippets\ExpansionFunctions.cs" />
+    <Compile Include="Snippets\SnippetCommand.cs" />
     <Compile Include="XSharpLanguagePackage.cs" />
     <Compile Include="Parameter Info\SignatureHelpSource.cs" />
     <Compile Include="Parameter Info\SignatureHelpSourceProvider.cs" />
@@ -208,10 +219,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuickInfo\XSharpQuickInfo.cs" />
     <Compile Include="Tokenizer\Tokenizer.cs" />
-    <Compile Include="Generic\EditorCommandProvider.cs" />
     <Compile Include="XMLDoc\XSharpXMLDoc.cs" />
     <Compile Include="Outlining\XSharpOutlining.cs" />
     <Compile Include="Document\XDocument.cs" />
+    <Compile Include="XSharpShellLink.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -229,7 +240,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.507</Version>
+      <Version>17.0.522</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.15.0</Version>
@@ -239,6 +250,12 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop.12.0">
       <Version>17.4.33103.184</Version>
+    </PackageReference>
+    <PackageReference Include="Serilog.Sinks.Debug">
+      <Version>2.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Serilog.Sinks.File">
+      <Version>5.0.0</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
@@ -274,12 +291,19 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CodeDomProvider\CodeDomProvider.csproj">
+      <Project>{7b7d9574-66a7-4719-aa48-c2386d7bf153}</Project>
+      <Name>CodeDomProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>CodeModel</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\ProjectPackage\Resources\XSharpProjectImageList.bmp">
+      <Link>Resources\XSharpProjectImageList.bmp</Link>
+    </EmbeddedResource>
     <Content Include="Completion\Notes.txt" />
     <Content Include="Lookup\Notes.txt" />
     <Content Include="Parameter Info\Notes.txt" />
@@ -374,8 +398,21 @@
     <Content Include="Snippets\Snippets\while.snippet">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Snippets\Snippets\exitproc.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\ifelse.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\ifelseif.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Snippets\Snippets\interface.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
- 
 </Project>

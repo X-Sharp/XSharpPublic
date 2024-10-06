@@ -2483,7 +2483,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return result;
         }
 
-        protected override BlockSyntax AddMissingReturnStatement(BlockSyntax body, XP.StatementBlockContext stmtBlock, TypeSyntax returnType)
+        protected override BlockSyntax AddMissingReturnStatement(BlockSyntax body, XP.StatementBlockContext stmtBlock, TypeSyntax returnType, bool warning = true)
         {
             if (CurrentMember != null && !CurrentMember.Data.HasYield)
             {
@@ -2496,11 +2496,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var statements = _pool.Allocate<StatementSyntax>();
                         statements.AddRange(body.Statements);
                         statements.Add(GenerateReturn(result));
-
-                        body = MakeBlock(statements).WithAdditionalDiagnostics(
+                        body = MakeBlock(statements);
+                        if (warning)
+                        {
+                            body = body.WithAdditionalDiagnostics(
                                     new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnStatement));
+                        }
                         _pool.Free(statements);
-
                     }
                 }
             }
@@ -2532,7 +2534,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 if (expr == null && _options.HasOption(CompilerOption.AllowMissingReturns, context, PragmaOptions) && !ent.Data.MustBeVoid)
                 {
-                    if (_options.Dialect != XSharpDialect.FoxPro)
+                    if (ent is XP.PropertyAccessorContext pac && pac.Key.Type == XSharpLexer.GET)
+                    {
+                        errcode = ErrorCode.WRN_MissingReturnValue;
+                    }
+                    else if (_options.Dialect != XSharpDialect.FoxPro)
                     {
                         errcode = ErrorCode.WRN_MissingReturnValue;
                     }

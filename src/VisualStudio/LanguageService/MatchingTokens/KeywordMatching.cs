@@ -59,10 +59,10 @@ namespace XSharp.LanguageService
             _prefix = "Keyword Matching: ";
         }
     
-        private IList<SnapshotSpan> GetSpansForBlock(XSourceBlock b)
+        static private IList<SnapshotSpan> GetSpansForBlock(XSourceBlock b, ITextBuffer buffer)
         {
             var spans = new List<SnapshotSpan>();
-            var snapshot = _buffer.CurrentSnapshot;
+            var snapshot = buffer.CurrentSnapshot;
             spans.Add(MakeSnapshotSpan(b.Token, snapshot));
             foreach (var child in b.Children)
             {
@@ -71,29 +71,29 @@ namespace XSharp.LanguageService
             return spans;
         }
 
-        IList<SnapshotSpan> GetBlockSpans(IEnumerable<XSourceBlock> blocks)
+        internal static IList<SnapshotSpan> GetBlockSpans(IEnumerable<XSourceBlock> blocks, SnapshotPoint? currentChar, ITextBuffer buffer)
         {
             foreach (var block in blocks)
             {
-                if (matchesPosition(block.Token))
+                if (matchesPosition(block.Token, currentChar))
                 {
-                    return GetSpansForBlock(block);
+                    return GetSpansForBlock(block, buffer);
                 }
-                if (matchesPosition(block.Last.Token))
+                if (matchesPosition(block.Last.Token, currentChar))
                 {
-                    return GetSpansForBlock(block);
+                    return GetSpansForBlock(block, buffer);
                 }
                 foreach (var child in block.Children)
                 {
-                    if (matchesPosition(child.Token))
+                    if (matchesPosition(child.Token, currentChar))
                     {
-                        return GetSpansForBlock(block);
+                        return GetSpansForBlock(block, buffer);
                     }
                 }
             }
             return null;
         }
-        IList<SnapshotSpan> GetEntitySpans(IEnumerable<XSourceEntity> entities)
+        internal static IList<SnapshotSpan> GetEntitySpans(IEnumerable<XSourceEntity> entities, SnapshotPoint? currentChar, ITextBuffer buffer)
         {
             // The blockTokens contains the start and end tokens for an entity
             // like CLASS .. END CLASS
@@ -102,10 +102,10 @@ namespace XSharp.LanguageService
             {
                 foreach (var token in entity.BlockTokens)
                 {
-                    if (matchesPosition(token))
+                    if (matchesPosition(token, currentChar))
                     {
                         var spans = new List<SnapshotSpan>();
-                        var snapshot = _buffer.CurrentSnapshot;
+                        var snapshot = buffer.CurrentSnapshot;
                         foreach (var t in entity.BlockTokens)
                         {
                             spans.Add(MakeSnapshotSpan(t, snapshot));
@@ -137,21 +137,28 @@ namespace XSharp.LanguageService
             }
 
             oStart = DateTime.Now;
-
-            if (spans.Count == 0 || _currentChar == null)   //there is no content in the buffer
-                yield break;
-
             //don't do anything if the current SnapshotPoint is not initialized or at the end of the buffer
-            if (!_currentChar.HasValue || _currentChar.Value.Position >= _currentChar.Value.Snapshot.Length)
+            if (spans.Count == 0 || _currentChar == null || !_currentChar.HasValue)   //there is no content in the buffer
                 yield break;
 
-            SnapshotPoint currentChar = _currentChar.Value;
-            if (spans[0].Snapshot != currentChar.Snapshot)
+            var snapshot = _currentChar.Value.Snapshot;
+            if (spans[0].Snapshot != snapshot || _currentChar.Value.Position > snapshot.Length)
             {
                 yield break;
             }
+
+            SnapshotPoint currentChar = _currentChar.Value;
+            // Cursor after keyword before EOF?
+            if (currentChar.Position == snapshot.Length)
+                currentChar -= 1;
+           
             //hold on to a snapshot of the current character
             var ch = currentChar.GetChar();
+            if (char.IsWhiteSpace(ch))
+            { 
+                currentChar -= 1;
+            }
+            ch = currentChar.GetChar();
             if (char.IsWhiteSpace(ch))
                 yield break;
 
@@ -162,11 +169,11 @@ namespace XSharp.LanguageService
             {
                 // get all the blocks that surround the current position
                 var blocks = _document.Blocks.Where(b => b.Token.Line <= tokenLine && b.Last.Token.Line >= tokenLine);
-                IList<SnapshotSpan> foundSpans = GetBlockSpans(blocks);
+                IList<SnapshotSpan> foundSpans = GetBlockSpans(blocks, currentChar, _buffer);
                 if (foundSpans == null)
                 {
                     var ents = _document.Entities.Where(e => e.Range.StartLine <= currentLine && e.Range.EndLine >= currentLine); // && e.BlockTokens.Count > 1);
-                    foundSpans = GetEntitySpans(ents);
+                    foundSpans = GetEntitySpans(ents,currentChar, _buffer);
                 }
                
                 if (foundSpans != null)

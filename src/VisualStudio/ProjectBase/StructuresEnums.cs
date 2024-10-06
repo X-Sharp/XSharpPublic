@@ -347,6 +347,8 @@ namespace Microsoft.VisualStudio.Project
         /// The VisualStudioStyleErrors property
         /// </summary>
         VisualStudioStyleErrors,
+
+        UseHostCompilerIfAvailable
     }
     #endregion
 

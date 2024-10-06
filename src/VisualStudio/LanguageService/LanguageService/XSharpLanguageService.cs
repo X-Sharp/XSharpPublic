@@ -17,21 +17,43 @@ using Microsoft.VisualStudio.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Diagnostics;
 using XSharp.Settings;
+#if DEV17
+using System.Threading;
+using Microsoft.VisualStudio.Shell;
+using System.Threading.Tasks;
+#endif
+
+// Note: This class inherits the base LanguageService from VS
+// Roslyn implements a complete new LanguageService, we may want to do that
+// later.
 
 namespace XSharp.LanguageService
 {
     [Guid(XSharpConstants.guidXSharpLanguageServicePkgString)]
-    public class XSharpLanguageService: Microsoft.VisualStudio.Package.LanguageService, IVsLanguageDebugInfo, IVsLanguageTextOps
+    public class XSharpLanguageService: Microsoft.VisualStudio.Package.LanguageService, IVsLanguageDebugInfo, IVsLanguageTextOps, IVsLanguageDebugInfo2
     {
         private readonly IVsEditorAdaptersFactoryService _editorAdaptersFactoryService;
         private LanguagePreferences m_preferences;
-
         public XSharpLanguageService(object serviceContainer) : base()
         {
             var componentModel = XSharpLanguagePackage.GetComponentModel();
             _editorAdaptersFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
             base.SetSite(serviceContainer);
         }
+#if DEV17
+        internal object ComAggregate { get; private set; }
+
+        internal async Task SetupAsync(CancellationToken cancellationToken)
+        {
+
+            // Start off a background task to prime some components we'll need for editing.
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+
+            // Creating the com aggregate has to happen on the UI thread.
+            this.ComAggregate = Interop.ComAggregate.CreateAggregatedObject(this);
+        }
+
+#endif
 
         public override string GetFormatFilterList()
         {
@@ -76,11 +98,11 @@ namespace XSharp.LanguageService
         public override IScanner GetScanner(IVsTextLines buffer) => null;
         public override AuthoringScope ParseSource(ParseRequest req) => null;
         public override string Name => XSharpConstants.LanguageName;
-        public override ViewFilter CreateViewFilter(CodeWindowManager mgr, IVsTextView newView)
-        {
-            // still needed for snippets. Once that is moved to MEF then this can disappear
-            return new XSharpViewFilter(mgr, newView);
-        }
+        //public override ViewFilter CreateViewFilter(CodeWindowManager mgr, IVsTextView newView)
+        //{
+        //    // still needed for snippets. Once that is moved to MEF then this can disappear
+        //    return new XSharpViewFilter(mgr, newView);
+        //}
 
         public int UpdateLanguageContext(uint dwHint, Microsoft.VisualStudio.TextManager.Interop.IVsTextLines pBuffer, Microsoft.VisualStudio.TextManager.Interop.TextSpan[] ptsSelection, object pUC)
         {
@@ -104,30 +126,30 @@ namespace XSharp.LanguageService
             return base.CreateExpansionProvider(src);
         }
 
-        int classcounter = 0;
-        public override ExpansionFunction CreateExpansionFunction(ExpansionProvider provider, string functionName)
-        {
-            ExpansionFunction  function = null;
+        //int classcounter = 0;
+        //public override ExpansionFunction CreateExpansionFunction(ExpansionProvider provider, string functionName)
+        //{
+        //    ExpansionFunction  function = null;
 
-            if (functionName == "ClassName")
-            {
-                function = new ClassNameExpansionFunction(provider, ++classcounter);
-            }
-            else if (functionName == "GenerateSwitchCases")
-            {
-                function = new GenerateSwitchCasesExpansionFunction(provider);
-            }
-            else if (functionName == "SimpleTypeName")
-            {
-                function = new SimpleTypeNameExpansionFunction(provider);
-            }
-            else if (functionName == "InitProcType")
-            {
-                function = new InitProcTypeExpansionFunction(provider);
-            }
+        //    if (functionName == "ClassName")
+        //    {
+        //        function = new ClassNameExpansionFunction(provider, ++classcounter);
+        //    }
+        //    else if (functionName == "GenerateSwitchCases")
+        //    {
+        //        function = new GenerateSwitchCasesExpansionFunction(provider);
+        //    }
+        //    else if (functionName == "SimpleTypeName")
+        //    {
+        //        function = new SimpleTypeNameExpansionFunction(provider);
+        //    }
+        //    else if (functionName == "InitProcType")
+        //    {
+        //        function = new InitProcTypeExpansionFunction(provider);
+        //    }
 
-            return function;
-        }
+        //    return function;
+        //}
 
 
         public int QueryInvalidEncoding(uint Format, out string pbstrMessage)
@@ -184,10 +206,7 @@ namespace XSharp.LanguageService
             var buffer = _editorAdaptersFactoryService.GetDataBuffer(pBuffer);
             if (buffer != null)
             {
-                if (buffer.Properties.TryGetProperty<XFile>(typeof(XSharpModel.XFile), out var file))
-                {
-                    return file;
-                }
+                return buffer.GetFile();
             }
             return null;
         }
@@ -426,6 +445,21 @@ namespace XSharp.LanguageService
         public int Format(IVsTextLayer pTextLayer, TextSpan[] ptsSel)
         {
             return VSConstants.E_NOTIMPL;
+        }
+
+        public int QueryCommonLanguageBlock(IVsTextBuffer pBuffer, int iLine, int iCol, uint dwFlag, out int pfInBlock)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int ValidateInstructionpointLocation(IVsTextBuffer pBuffer, int iLine, int iCol, TextSpan[] pCodeSpan)
+        {
+            return VSConstants.E_NOTIMPL;
+        }
+
+        public int QueryCatchLineSpan(IVsTextBuffer pBuffer, int iLine, int iCol, out int pfIsInCatch, TextSpan[] ptsCatchLine)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

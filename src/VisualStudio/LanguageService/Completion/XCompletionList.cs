@@ -37,16 +37,24 @@ namespace XSharp.LanguageService
             _file = startLocation;
         }
         internal XFile File => _file;
-        public bool Add(XSCompletion item, bool overwrite = false)
+        public bool Add(XSCompletion item, bool overwrite = false, bool addDuplicate = false)
         {
             if (item.KeyText.StartsWith("("))
                 return false;
-
-            if (overwrite && ContainsKey(item.KeyText))
+            var key = item.KeyText;
+            var contains = ContainsKey(key);
+            if (overwrite && contains)
             {
                 Remove(item.KeyText);
             }
-            if (ContainsKey(item.KeyText))
+            int counter = 0;
+            if (addDuplicate && contains)
+            {
+                ++counter;
+                key = item.KeyText + counter.ToString();
+                contains = ContainsKey(key);
+            }
+            if (ContainsKey(key))
             {
                 // only methods have overloads
                 // we do not want to the overloads message for partial classes that appear in more than 1 file
@@ -64,7 +72,7 @@ namespace XSharp.LanguageService
                 return true;
 
             }
-            if (!string.IsNullOrEmpty(item.KeyText))
+            if (!string.IsNullOrEmpty(key))
             {
                 switch (item.Kind)
                 {
@@ -112,7 +120,7 @@ namespace XSharp.LanguageService
                             HasTypes = true;
                         break;
                 }
-                base.Add(item.KeyText, item);
+                base.Add(key, item);
             }
             return true;
         }

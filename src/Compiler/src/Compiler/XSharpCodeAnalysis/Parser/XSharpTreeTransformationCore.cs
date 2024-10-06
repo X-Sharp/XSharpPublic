@@ -435,7 +435,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return name;
 
         }
-        protected virtual BlockSyntax AddMissingReturnStatement(BlockSyntax body, XP.StatementBlockContext block, TypeSyntax returnType)
+        protected virtual BlockSyntax AddMissingReturnStatement(BlockSyntax body, XP.StatementBlockContext block, TypeSyntax returnType, bool warning = true)
         {
             return body;
         }
@@ -4107,8 +4107,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var nobody = context.ExpressionBody != null;
             var body = nobody ? null : processEntityBody(context);
             var expressionBody = GetExpressionBody(context.ExpressionBody);
-            TypeSyntax returntype = null;
+            var parent = context.Parent as XP.PropertyContext;
+            var returntype = getReturnType(parent);
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+            if (body != null && context.Key.Type == XSharpLexer.GET)
+            {
+                body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
+            }
 
             context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
                 attributeLists: attributes,

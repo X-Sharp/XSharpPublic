@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-#pragma options ("enforceself", on)
+
 #pragma warnings(165, off)
 
 
@@ -167,7 +167,7 @@ METHOD RecallAll() AS LOGIC
 				IF VoDbSeek( uSelectionValue, FALSE )
 					lRetCode := SELF:__DbServerEval( { || VoDbRecall() },  ;
 						NIL,  ;
-						{ || Eval( cbKey ) = uValue },  ;
+						{ || XSharp.RT.Functions.Eval( cbKey ) = uValue },  ;
 						NIL,  ;
 						NIL,  ;
 						TRUE,  ;
@@ -1114,7 +1114,7 @@ METHOD Skip( nRecordCount := 1 AS LONG) AS LOGIC
 						siSelectionStatus := DBSELECTIONNULL
 						FOR i :=1 UPTO iRecords
 							__DBSSkip(1, nTries )
-							IF VoDbEof() .OR. ! ( Eval( cbSelectionIndexingExpression ) = uSelectionValue )
+							IF VoDbEof() .OR. ! ( XSharp.RT.Functions.Eval( cbSelectionIndexingExpression ) = uSelectionValue )
 								siSelectionStatus := DBSELECTIONEOF
 								IF ! VoDbEof()
 									wLastSelectionRec := VoDbRecno() - 1
@@ -1134,14 +1134,14 @@ METHOD Skip( nRecordCount := 1 AS LONG) AS LOGIC
 							ELSE
 								__DBSSeek(uSelectionValue, NIL, FALSE, nTries)
 							ENDIF
-							WHILE !VoDbEof() .AND. Eval(cbSelectionIndexingExpression) = uSelectionValue
+							WHILE !VoDbEof() .AND. XSharp.RT.Functions.Eval(cbSelectionIndexingExpression) = uSelectionValue
 								__DBSSkip(1, nTries)
 							ENDDO
 						ENDIF
 						siSelectionStatus := DBSELECTIONNULL
 						FOR i :=1 UPTO -iRecords
 							__DBSSkip(-1, nTries)
-							IF VoDbBof() .OR. ! ( Eval( cbSelectionIndexingExpression ) = uSelectionValue )
+							IF VoDbBof() .OR. ! ( XSharp.RT.Functions.Eval( cbSelectionIndexingExpression ) = uSelectionValue )
 								siSelectionStatus := DBSELECTIONBOF
 								IF !VoDbBof()
 									__DBSSkip(1, nTries)
@@ -1262,7 +1262,7 @@ METHOD Sort(cTarget AS STRING,aFieldList AS ARRAY,cbForBlock := NIL AS USUAL,cbW
             IF VoDbSeek( uSelectionValue, FALSE )
                 lRetCode := __DBSDBSORT( cTarget,   aFieldNames,    ;
                     NIL,                ;               // For
-                {| | Eval( cbKey ) = uValue },  ;   // While
+                {| | XSharp.RT.Functions.Eval( cbKey ) = uValue },  ;   // While
                 NIL,                ;               // Next
                 NIL,                ;               // Record #
                 TRUE,               ;               // lRest
@@ -1415,7 +1415,7 @@ METHOD Sum(acbExpression := NIL AS USUAL,cbForBlock := NIL  AS USUAL,cbWhileBloc
 			IF VoDbSeek( uSelectionValue, FALSE )
 				SELF:__DbServerEval( { || iCount += 1, __IterateForSum( acbExpr, aResults ) },  ;
 					NIL,       ;
-					{| | Eval( cbKey ) = uValue },     ;
+					{| | XSharp.RT.Functions.Eval( cbKey ) = uValue },     ;
 					NIL,       ;
 					NIL,       ;
 					TRUE,   ;
@@ -1598,7 +1598,7 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope) AS 
 				IF VoDbSeek( uSelectionValue, FALSE )
 					lRetCode := __DBSDBTOTAL( cTarget, cbKeyField, aFieldNames,     ;
 						{||TRUE},   ;
-						{| | Eval( cbKey ) = uValue },     ;
+						{| | XSharp.RT.Functions.Eval( cbKey ) = uValue },     ;
 						-1,         ;
 						NIL,        ;
 						TRUE,       ;

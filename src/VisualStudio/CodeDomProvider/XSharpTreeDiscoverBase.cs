@@ -27,7 +27,7 @@ namespace XSharp.CodeDom
     {
         protected CodeTypeDeclaration _typeInOtherFile = null;
 
-        protected IProjectTypeHelper _projectNode;
+        protected XProject _projectNode;
         private Dictionary<string, IXTypeSymbol> _types;    // type cache
         private List<string> _usings;          // uses for type lookup
         protected IList<IToken> _tokens;          // used to find comments
@@ -57,7 +57,7 @@ namespace XSharp.CodeDom
             return new CodeSnippetExpression(context.SourceText());
         }
 
-        internal XSharpBaseDiscover(IProjectTypeHelper projectNode, CodeTypeDeclaration otherType) : base()
+        internal XSharpBaseDiscover(XProject projectNode, CodeTypeDeclaration otherType) : base()
         {
             FieldList = new Dictionary<ParserRuleContext, List<XCodeMemberField>>();
             _projectNode = projectNode;
@@ -1751,13 +1751,13 @@ namespace XSharp.CodeDom
             IXTypeSymbol type;
             var myusings = usings.ToArray();
             // this looks up the type in the current project and all the dependent X# projects
-            type = _projectNode.ResolveXType(typeName, myusings);
+            type = _projectNode.FindType(typeName, myusings);
             if (type != null)
             {
                 _types.Add(typeName, type);
                 return type;
             }
-            type = _projectNode.ResolveExternalType(typeName, myusings);
+            type = _projectNode.FindSystemType(typeName,myusings);
             if (type != null)
             {
                 _types.Add(typeName, type);
@@ -1786,7 +1786,7 @@ namespace XSharp.CodeDom
             var parent = findType(name);
             if (parent == null)
             {
-                parent = _projectNode.ResolveXType(name, usings.ToArray());
+                parent = _projectNode.FindType(name, usings.ToArray());
             }
             return parent;
 

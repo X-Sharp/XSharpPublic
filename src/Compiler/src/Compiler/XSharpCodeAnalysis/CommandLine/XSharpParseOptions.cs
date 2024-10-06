@@ -51,7 +51,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     public enum XSharpTargetDLL : Byte
     {
         Other = 0,
-        Core, 
+        Core,
         Data,
         RDD,
         RT,
@@ -209,7 +209,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if !VSPARSER
                 IncludePaths = opt.IncludePaths?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray() ?? ImmutableArray<string>.Empty;
 #else
-                IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                var paths = opt.IncludePaths;
+                if (paths == null)
+                    paths = "";
+                IncludePaths = paths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 #endif
                 InitLocals = opt.InitLocals;
                 LateBinding = opt.LateBinding;

@@ -3,28 +3,36 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using LanguageService.CodeAnalysis.Text;
 using LanguageService.CodeAnalysis.XSharp;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
+using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.TextManager.Interop;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Controls;
 using XSharpModel;
+using static XSharp.Parser.VsParser;
 namespace XSharp.LanguageService
 {
     /// <summary>
     /// This type stores tokens and the snapshot that they are based on the TextBuffer of an open editor window
     /// It also stores (after parsing) the list of Entities in the buffer
     /// </summary>
-    internal class XDocument
+    internal class XDocument : IErrorListener
     {
-        public XDocument(ITextBuffer buffer,IList<IToken> tokens, ITextSnapshot snapshot)
+        public XDocument(ITextBuffer buffer, IList<IToken> tokens, ITextSnapshot snapshot)
         {
             _buffer = buffer;
             _tokens = tokens;
             _snapShot = snapshot;
-            _entities = new List<XSourceEntity>() ;
+            _entities = new List<XSourceEntity>();
             _blocks = new List<XSourceBlock>();
             _tokensPerLine = new Dictionary<int, IList<IToken>>();
             _lineState = new XSharpLineState();
@@ -32,14 +40,14 @@ namespace XSharp.LanguageService
         }
 
         #region fields
-        private IList<IToken> _tokens;
-        private IList<XSourceEntity> _entities;
-        private Dictionary<int, IList<IToken>> _tokensPerLine;
+        private readonly IList<IToken> _tokens;
+        private readonly IList<XSourceEntity> _entities;
+        private readonly Dictionary<int, IList<IToken>> _tokensPerLine;
         private XSharpLineState _lineState;
         private ITextSnapshot _snapShot;
-        private ConcurrentDictionary<string, IList<IToken>> _identifiers;
-        private ITextBuffer _buffer;
-        private IList<XSourceBlock> _blocks;
+        private readonly ConcurrentDictionary<string, IList<IToken>> _identifiers;
+        private readonly ITextBuffer _buffer;
+        private readonly IList<XSourceBlock> _blocks;
 
         #endregion
         #region Properties
@@ -50,6 +58,12 @@ namespace XSharp.LanguageService
         internal XSharpLineState LineState => _lineState;
         internal IDictionary<string, IList<IToken>> Identifiers => _identifiers;
         internal IList<XSourceBlock> Blocks => _blocks;
+        internal ITextBuffer Buffer => _buffer;
+        internal IVsExpansionSession ExpansionSession { get; set; }
+        internal ICompletionSession CompletionSession { get; set; }
+        internal XSharpFormattingCommandHandler FormattingCommandHandler {get; set;}
+        internal bool SignatureStarting { get; set; }
+
         #endregion
 
 
@@ -69,7 +83,7 @@ namespace XSharp.LanguageService
 
         internal bool HasLineState(int line, LineFlags flag)
         {
-            return LineState.Get(line, out var flags ) && flags.HasFlag(flag);
+            return LineState.Get(line, out var flags) && flags.HasFlag(flag);
         }
         internal bool LineAfterAttribute(int line)
         {
@@ -88,13 +102,18 @@ namespace XSharp.LanguageService
         {
             lock (this)
             {
-                _tokensPerLine = tokens;
+                _tokensPerLine.Clear();
+                _tokensPerLine.AddRange(tokens);
             }
         }
 
         internal void SetBlocks(IList<XSourceBlock> blocks)
         {
-            _blocks = blocks;
+            lock (this)
+            {
+                _blocks.Clear();
+                _blocks.AddRange(blocks);
+            }
         }
 
         internal void SetState(XSharpLineState state, ITextSnapshot ss)
@@ -110,7 +129,8 @@ namespace XSharp.LanguageService
         {
             lock (this)
             {
-                _identifiers = ids;
+                _identifiers.Clear();
+                _identifiers.AddRange(ids);
             }
         }
 
@@ -118,14 +138,16 @@ namespace XSharp.LanguageService
         {
             lock (this)
             {
-                this._entities = entities;
+                this._entities.Clear();
+                this._entities.AddRange(entities);
             }
         }
         internal void SetTokens(IList<IToken> tokens, ITextSnapshot ss)
         {
             lock (this)
             {
-                _tokens = tokens;
+                _tokens.Clear();
+                _tokens.AddRange(tokens);
                 _snapShot = ss;
             }
         }
@@ -156,7 +178,7 @@ namespace XSharp.LanguageService
 
         internal IList<IToken> GetTokensInSingleLine(ITextSnapshotLine line, bool allowCached)
         {
-            List<IToken> tokens = new List<IToken>(); 
+            List<IToken> tokens = new List<IToken>();
             if (line.Length == 0)
                 return tokens;
             if (line.Snapshot.Version == this.SnapShot.Version && allowCached)
@@ -184,6 +206,20 @@ namespace XSharp.LanguageService
             return tokens;
 
         }
+        internal XSourceEntity GetCurrentEntity(IWpfTextView textView)
+        {
+            var currentChar = textView.Caret.Position.BufferPosition;
+            int currentLine = currentChar.GetContainingLine().LineNumber;
+            // LastOrDefault because we want the innermost entity
+            // CLASS
+            // METHOD
+            // line        this line is both inside the class and the method. We want the method
+            // END METHOD
+            // END CLASS
+            var currentEntity = _entities.LastOrDefault(e => e.Range.StartLine <= currentLine && e.Range.EndLine >= currentLine);
+            return currentEntity;
+
+        }
         internal IList<IToken> GetTokens(string text)
         {
             var tokens = new List<IToken>();
@@ -199,8 +235,7 @@ namespace XSharp.LanguageService
                 {
                     fileName = "MissingFile.prg";
                 }
-                var reporter = new ErrorIgnorer();
-                bool ok = Parser.VsParser.Lex(text, fileName, this.ParseOptions, reporter, out ITokenStream tokenStream);
+                bool ok = Parser.VsParser.Lex(text, fileName, (XSharpParseOptions) ParseOptions, this, out ITokenStream tokenStream, out var _);
                 var stream = tokenStream as BufferedTokenStream;
                 tokens.AddRange(stream.GetTokens());
                 return tokens;
@@ -211,23 +246,36 @@ namespace XSharp.LanguageService
             }
             return tokens;
         }
-        private XSharpParseOptions ParseOptions
+        private XParseOptions ParseOptions
         {
             get
             {
-                XSharpParseOptions parseoptions;
                 var file = _buffer.GetFile();
+                XParseOptions parseOptions ;
                 if (file != null)
                 {
-                    parseoptions = file.Project.ParseOptions;
+                    parseOptions = file.Project.ParseOptions;
                 }
                 else
                 {
-                    parseoptions = XSharpParseOptions.Default;
+                    parseOptions = XParseOptions.Default;
                 }
-                return parseoptions;
+                return parseOptions;
             }
         }
+
+        #region IErrorListener
+        public void ReportError(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
+        {
+            ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
+        }
+
+        public void ReportWarning(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
+        {
+            ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
+        }
+        #endregion
+
 
 
     }

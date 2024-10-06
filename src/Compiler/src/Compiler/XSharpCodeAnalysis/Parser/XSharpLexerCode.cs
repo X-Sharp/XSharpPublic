@@ -37,7 +37,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         #region constants
         public const int VO_AND = BIT_AND;
         public const int VO_NOT = BIT_NOT;
-        public const int VO_OR  = BIT_OR ;
+        public const int VO_OR = BIT_OR;
         public const int VO_XOR = BIT_XOR;
         #endregion                          
         #region Static Helper Methods
@@ -203,7 +203,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         bool _newLine = false;
 
         static readonly object kwlock = new();
-        static IDictionary<XSharpDialect, XSharpKeywords> _kwids = null ;       // for each dialect its own _kwids
+        static IDictionary<XSharpDialect, XSharpKeywords> _kwids = null;       // for each dialect its own _kwids
         static XSharpKeywords _symPPIds = null;
 
         #endregion
@@ -435,7 +435,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return;
         }
 
-
         void parseToEol()
         {
             var la1 = La(1);
@@ -448,7 +447,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         bool tryParseNewLine()
         {
-            if (ExpectAny('\n','\r'))
+            if (ExpectAny('\n', '\r'))
             {
                 if (Expect('\r', '\n'))
                 {
@@ -506,7 +505,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     parseOne();
                 }
             }
-             parseType(ML_COMMENT);
+            parseType(ML_COMMENT);
             if (!Eof())
             {
                 // Eat the */
@@ -560,8 +559,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return;
                     break;
             }
-
-
 
             var c = La(1);
             if (c > 0 && IsIdentifierStartCharacter((char)c))
@@ -1187,7 +1184,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case '*':
                         parseOne(MULT);
-                        if (AllowOldStyleComments && StartOfLine(LastToken) )
+                        if (AllowOldStyleComments && StartOfLine(LastToken))
                             parseSlComment();
                         else if (Expect('='))
                             parseOne(ASSIGN_MUL);
@@ -1655,7 +1652,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case PUBLIC:
                 case SEALED:
                 case STATIC:
-                case UNSAFE: 
+                case UNSAFE:
                 case VIRTUAL:
                 case VOLATILE:
 
@@ -1705,8 +1702,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case REPEAT:
                 case UNTIL:
                 case YIELD:
-                case ENDDEFINE:
+                // XPP tokens at start of line only
                 case ENDCLASS:
+                case ENDSEQUENCE:
+                // FoxPro tokens at start of line only
+                case ENDSCAN:
+                case ENDDEFINE:
+                case ENDFOR:
+                case ENDFUNC:
+                case ENDPROC:
+                case ENDTRY:
+                case ENDWITH:
                 case DIMENSION:
                 case DECLARE:
                 case LPARAMETERS:
@@ -1744,7 +1750,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     break;
                 // Next tokens only at Start of Line or after STATIC or INTERNAL
                 case DEFINE:
-                    if (!StartOfLine(lastToken) && !IsModifier(lastToken) && lastToken != END)
+                    if (!StartOfLine(lastToken) && !IsModifier(lastToken) && lastToken != END && lastToken != RBRKT)
                     {
                         return ID;
                     }
@@ -1758,6 +1764,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     break;
                 // Next tokens only at Start of Line or after END
                 case TRY:
+                case SCAN:
                     if (!StartOfLine(lastToken) && lastToken != END)
                     {
                         return ID;
@@ -1783,6 +1790,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case SCOPE:
                 case LOCK:
                     if (lastToken != BEGIN && lastToken != END)
+                    {
+                        return ID;
+                    }
+                    break;
+                case EACH:
+                    if (lastToken != FOR)
                     {
                         return ID;
                     }
@@ -1978,7 +1991,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         private XSharpKeywords _getIds(XSharpDialect dialect)
         {
-            var ids = new XSharpKeywords(); ;
+            var ids = new XSharpKeywords();
 
             XSharpKeywords voKeywords;
             if (IsMacroLexer)
@@ -2170,6 +2183,24 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"FALSE", FALSE_CONST},
                 {"TRUE", TRUE_CONST},
 
+#if VSPARSER
+                    // XPP Keywords
+                    {"ENDFOR", ENDFOR },
+                    {"ENDSEQUENCE", ENDSEQUENCE},
+
+                    // VFP Keywords
+                    {"SCAN", SCAN },
+                    {"ENDSCAN", ENDSCAN },
+                    {"ENDDEFINE", ENDDEFINE },
+                    //{"ENDFOR", ENDFOR },      // Also defined for XPP
+                    {"ENDFUNC", ENDFUNC },
+                    {"ENDPROC", ENDPROC },
+                    {"ENDTRY", ENDTRY },
+                    {"ENDWITH", ENDWITH },
+                    {"EACH", EACH },
+
+#endif
+
                 };
             }
             if (!dialect.AllowFourLetterAbbreviations())
@@ -2207,7 +2238,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 var xppKeywords = new XSharpKeywords
                 {
                     // normal keywords
-                    // {"ENDSEQUENCE", END }, Xbase++ redefines ENDSEQUENCE to END in STD.CH
                     // We handle that in XBasePPCmd.xh
                     // class keywords
                     {"ENDCLASS",ENDCLASS},
@@ -2226,6 +2256,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 };
                 var xppKeyWordAbbrev = new XSharpKeywords
                 {
+#if !VSPARSER
+                    {"ENDFOR", ENDFOR },
+                    {"ENDSEQUENCE",ENDSEQUENCE},
+#endif
                     {"RETURN ",RETURN },
                     {"PRIVATE ",PRIVATE  },
                     {"PUBLIC",  PUBLIC },
@@ -2275,7 +2309,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 };
                 var vfpKeyWordAbbrev = new XSharpKeywords
                 {
+#if !VSPARSER
+                    {"SCAN", SCAN },
+                    {"ENDSCAN", ENDSCAN },
                     {"ENDDEFINE", ENDDEFINE },
+                    {"ENDFOR", ENDFOR },
+                    {"ENDFUNC", ENDFUNC },
+                    {"ENDPROC", ENDPROC },
+                    {"ENDTRY", ENDTRY },
+                    {"ENDWITH", ENDWITH },
+                    {"EACH", EACH },
+#endif
                     {"LPARAMETERS",   LPARAMETERS },
                     {"EXCLUDE", EXCLUDE },
                     {"OLEPUBLIC", OLEPUBLIC },
@@ -2541,7 +2585,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     if (_kwids == null)
                         _kwids = new Dictionary<XSharpDialect, XSharpKeywords>();
                     if (_kwids.ContainsKey(Dialect))
-                        ids = _kwids[Dialect] ;
+                        ids = _kwids[Dialect];
                 }
                 if (ids == null)
                 {
@@ -2616,7 +2660,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
-            return symIds ;
+            return symIds;
         }
 
         public XSharpKeywords SymPPIds

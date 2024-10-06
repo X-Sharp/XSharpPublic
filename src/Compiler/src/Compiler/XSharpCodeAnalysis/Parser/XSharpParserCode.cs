@@ -773,8 +773,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             readonly MemberData _data = new();
             public MemberData Data => _data;
 #endif
-            public ParameterListContext Params => null;
-            public DatatypeContext ReturnType => null;
+            public ParameterListContext Params => ((Event_Context)parent).Params;
+            public DatatypeContext ReturnType => ((Event_Context)parent).ReturnType;
             public string Name => ParentName + Key.Text;
             public string ShortName => ParentName + Key.Text;
             public StatementBlockContext Statements => StmtBlk;
@@ -788,8 +788,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             readonly MemberData _data = new();
             public MemberData Data => _data;
 #endif
-            public ParameterListContext Params => null;
-            public DatatypeContext ReturnType => null;
+            public ParameterListContext Params => ((PropertyContext)parent).Params;
+            public DatatypeContext ReturnType => ((PropertyContext)parent).ReturnType;
             public string Name => ParentName + Key.Text;
             public string ShortName => ParentName + Key.Text;
             public StatementBlockContext Statements => StmtBlk;
@@ -802,8 +802,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public MemberData Data => _data;
 #endif
             public CallingconventionContext CC => null;
-            public ParameterListContext Params => null;
-            public DatatypeContext ReturnType => null;
+            public ParameterListContext Params => ((PropertyContext)parent).Params;
+            public DatatypeContext ReturnType => ((PropertyContext)parent).ReturnType;
             public string Name => ParentName + Key.Text;
             public string ShortName => ParentName + Key.Text;
         }
@@ -853,7 +853,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public MemberData Data => _data;
 #endif
             public ParameterListContext Params => null;
-            public DatatypeContext ReturnType => null;
+            public DatatypeContext ReturnType => this.DataType;
             public string Name => ParentName + ShortName;
             public string ShortName => Id.GetText();
             public FuncprocModifiersContext FuncProcModifiers => Modifiers;

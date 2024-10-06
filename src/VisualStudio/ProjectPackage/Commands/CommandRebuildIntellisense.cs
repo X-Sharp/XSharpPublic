@@ -17,7 +17,7 @@ namespace XSharp.Project
         }
         protected override void BeforeQueryStatus(EventArgs e)
         {
-            Command.Enabled = XSolution.HasProject;
+            Command.Enabled = XSolution.HasProjects;
             base.BeforeQueryStatus(e);
         }
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
@@ -53,7 +53,8 @@ namespace XSharp.Project
                 }
                 _ = await VS.Commands.ExecuteAsync(KnownCommands.Window_CloseAllDocuments);
                 ModelWalker.Stop();
-                var solFile = XSolution.FileName;
+                var solution = await VS.Solutions.GetCurrentSolutionAsync();
+                var solFile = solution.FullPath;
                 var projects = XSharpProjectNode.AllProjects;
                 XSolution.Close();
                 XSolution.Open(solFile);

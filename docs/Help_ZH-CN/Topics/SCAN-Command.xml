@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-09-04T14:50:27.780+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-08T20:52:55.629+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SCAN .. ENDSCAN Command</title>
   <keywords>
     <keyword>ENDSCAN</keyword>
@@ -10,36 +10,39 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">SCAN ... ENDSCAN Command</para>
+      <para styleclass="Heading1">SCAN ... ENDSCAN 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Body Text">Moves the record pointer through the currently selected table and executes a block of commands for each record that meets the specified conditions.</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Body Text">在当前选定的表中移动记录指针，并为符合指定条件的每条记录执行一组命令。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">SCAN [NOOPTIMIZE] [Scope] [FOR lExpression1] [WHILE lExpression2]<br/> &#160; [Commands]<br/> &#160; [LOOP]<br/> &#160; [EXIT] <br/>ENDSCAN</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">NOOPTIMIZE <tab />Prevents Rushmore Query Optimization of SCAN.<br/>For more information, see SET OPTIMIZE Command and Using Rushmore Query Optimization to Speed Data Access. </para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">NOOPTIMIZE <tab />阻止 SCAN 的 Rushmore 查询优化。</para>
+    <para styleclass="List"><tab />更多信息，请参阅 SET OPTIMIZE 命令和使用 Rushmore 查询优化加快数据访问速度。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">Scope <tab />Specifies a range of records to be scanned. Only the records within the range are scanned. The scope clauses are: ALL, NEXT nRecords, RECORD nRecordNumber, and REST. For more information on scope clauses, see the Scope Clauses online topic. The default scope for SCAN is all records (ALL). <br/></para>
-    <para styleclass="List">FOR lExpression1 <tab />Executes commands only for records for which lExpression1 evaluates to true (.T.). Including the FOR clause lets you filter out records you don&apos;t want scanned.<br/>Rushmore optimizes a query created with SCAN ... FOR if lExpression1 is an optimizable expression. For best performance, use an optimizable expression in the FOR clause. <br/>For more information, see SET OPTIMIZE Command and Using Rushmore Query Optimization to Speed Data Access. </para>
+    <para styleclass="List">Scope <tab />指定要扫描的记录范围。只扫描范围内的记录。范围子句有 ALL、NEXT nRecords、RECORD nRecordNumber 和 REST。有关范围子句的更多信息，请参阅 Scope 子句联机主题。SCAN 的默认范围是所有记录 (ALL)。<br/></para>
+    <para styleclass="List">FOR lExpression1 <tab />仅对 lExpression1 值为 true (.T.) 的记录执行命令。使用 FOR 子句可以过滤掉不想扫描的记录。</para>
+    <para styleclass="List"><tab />如果 lExpression1 是一个可优化的表达式，Rushmore 会优化用 SCAN ... FOR &#160;创建的查询。为获得最佳性能，请在 FOR 子句中使用可优化表达式。</para>
+    <para styleclass="List"><tab />更多信息，请参阅 SET OPTIMIZE 命令和使用 Rushmore 查询优化来加快数据访问速度。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">WHILE lExpression2 <tab />Specifies a condition whereby the commands are executed for as long as lExpression2 evaluates to true (.T.).</para>
+    <para styleclass="List">WHILE lExpression2 <tab />指定一个条件，只要 lExpression2 的值为 true (.T.) 就执行命令。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">Commands <tab />Specifies the Visual FoxPro commands to be executed.</para>
+    <para styleclass="List">Commands <tab />指定要执行的 Visual FoxPro 命令。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">LOOP <tab />Returns control directly back to SCAN. LOOP can be placed anywhere between SCAN and ENDSCAN.</para>
+    <para styleclass="List">LOOP <tab />将控制直接返回 SCAN。LOOP 可以放在 SCAN 和 ENDSCAN 之间的任何位置。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">EXIT <tab />Transfers program control from within the SCAN ... ENDSCAN loop to the first command following ENDSCAN. EXIT can be placed anywhere between SCAN and ENDSCAN.</para>
+    <para styleclass="List">EXIT <tab />将 SCAN ... ENDSCAN 循环内的程序控制转移到 ENDSCAN 之后的第一条命令。EXIT 可以放在 SCAN 和 ENDSCAN 之间的任何位置。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">ENDSCAN <tab />Indicates the end of the SCAN procedure.</para>
-    <para styleclass="Heading1">Remarks</para>
-    <para styleclass="Heading1"><text styleclass="Body Text">SCAN automatically advances the record pointer to the next record that meets the specified conditions and executes the block of commands.</text></para>
-    <para styleclass="Body Text">You can place comments after ENDSCAN on the same line. The comments are ignored during program compilation and execution.</para>
+    <para styleclass="List">ENDSCAN <tab />表示 SCAN 程序结束。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Heading1"><text styleclass="Body Text">SCAN 会自动将记录指针移动到符合指定条件的下一条记录，并执行命令块。</text></para>
+    <para styleclass="Body Text">您可以在同一行的ENDSCAN后面添加注释。在程序编译和执行过程中，注释将被忽略。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">SCAN ... ENDSCAN ensures that, upon reaching ENDSCAN, Visual FoxPro reselects the table that was current when the SCAN ... ENDSCAN loop began.</para>
+    <para styleclass="Body Text">SCAN ... ENDSCAN确保在达到ENDSCAN时，Visual FoxPro 重新选择 SCAN ... ENDSCAN循环开始时的当前表。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Heading1">Example</para>
-    <para styleclass="Body Text">The following example uses a SCAN ... ENDSCAN loop to display all the companies in Sweden.</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Body Text">下面的示例使用 SCAN ... ENDSCAN 循环显示在 Sweden(瑞典) 的所有公司。</para>
     <para styleclass="Code Example"><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> customer &#160;&amp;&amp; Opens Customer table</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLEAR</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">SCAN</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FOR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> UPPER(country) = &apos;SWEDEN&apos;</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; ? contact, company, city</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">ENDSCAN</text></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
     <para styleclass="Heading1">See Also</para>

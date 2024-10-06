@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Exit Procedure</Title>
+      <Shortcut>exitproc</Shortcut>
+      <Description>Code snippet for an EXIT Procedure</Description>
+      <Author>XSharp B.V.</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>name</ID>
+          <ToolTip>Name of procedure</ToolTip>
+          <Default>MyExitProc</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="XSharp"><![CDATA[
+PROCEDURE $name$() AS VOID EXIT
+   $end$
+RETURN
+]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

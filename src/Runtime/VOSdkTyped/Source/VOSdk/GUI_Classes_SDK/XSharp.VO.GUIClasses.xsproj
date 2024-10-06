@@ -22,7 +22,7 @@
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
     <Vo14>False</Vo14>
-    <EnforceSelf>True</EnforceSelf>
+    <EnforceSelf>False</EnforceSelf>
     <EnforceOverride>False</EnforceOverride>
     <Vo7>True</Vo7>
     <Vo5>False</Vo5>

@@ -66,13 +66,14 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
 	PROTECT _Hot            AS LOGIC
 	PROTECT _lockScheme     AS DbfLocking
 	PROTECT _NewRecord      AS LOGIC
-    PROTECT INTERNAL _NullColumn    AS DbfNullColumn            // Column definition for _NullFlags, used in DBFVFP driver
-    PROTECT INTERNAL _NullCount      := 0 AS LONG   // to count the NULL and Length bits for DBFVFP
 
+
+    VIRTUAL PROPERTY NullColumn as DbfNullColumn => NULL_OBJECT
     PROTECT INTERNAL PROPERTY FullPath AS STRING GET _FileName
     PROTECT INTERNAL PROPERTY Header AS DbfHeader GET _Header
     PROTECT INTERNAL _Ansi          AS LOGIC
     PROTECT INTERNAL _Encoding      AS Encoding
+    PROTECT INTERNAL _OemConvert    AS LOGIC
     PROTECT INTERNAL _numformat AS NumberFormatInfo
     PROTECT PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
     PROTECT PROPERTY HasMemo AS LOGIC GET SELF:_HasMemo
@@ -939,10 +940,10 @@ OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
 	ENDIF
     //
 	SELF:_Hot := FALSE
-	SELF:_FileName := SELF:_OpenInfo:FullName
-	SELF:_Alias := SELF:_OpenInfo:Alias
-	SELF:_Shared := SELF:_OpenInfo:Shared
-	SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
+	SELF:_FileName  := SELF:_OpenInfo:FullName
+	SELF:_Alias     := SELF:_OpenInfo:Alias
+	SELF:_Shared    := SELF:_OpenInfo:Shared
+	SELF:_ReadOnly  := SELF:_OpenInfo:ReadOnly
     //
 #ifdef INPUTBUFFER
 	SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE | FO_UNBUFFERED)
@@ -955,21 +956,21 @@ OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
         SELF:_FileName   := _oStream:Name
 		LOCAL fieldCount :=  SELF:_Fields:Length AS INT
 		LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
-		LOCAL codePage AS LONG
-        IF XSharp.RuntimeState.Ansi
-			SELF:_Ansi := TRUE
-			codePage := XSharp.RuntimeState.WinCodePage
-		ELSE
-			SELF:_Ansi := FALSE
-			codePage := XSharp.RuntimeState.DosCodePage
-		ENDIF        // First, just the Header
-		SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage )
+		LOCAL codePage AS LONG  // Codepage Needed for the DBF header
+    	SELF:_Ansi    := XSharp.RuntimeState.Ansi
+        IF SELF:_Ansi
+            codePage            := XSharp.RuntimeState.WinCodePage
+            SELF:_Encoding      := RuntimeState.WinEncoding
+            SELF:_OemConvert    := FALSE
+        ELSE
+            codePage            := XSharp.RuntimeState.DosCodePage
+            SELF:_Encoding      := RuntimeState.DosEncoding
+            SELF:_OemConvert    := TRUE
+        ENDIF        // First, just the Header
 
 		SELF:_Header:HeaderLen := SHORT(DbfHeader.SIZE + fieldDefSize + 2 )
 		SELF:_Header:isHot := TRUE
         //
-
-
 		IF SELF:_Ansi
 			SELF:_lockScheme:Initialize( DbfLockingModel.VoAnsi )
 		ELSE
@@ -979,18 +980,8 @@ OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
         //
         // Convert the Windows CodePage to a DBF CodePage
 		SELF:_Header:CodePage := CodePageExtensions.ToHeaderCodePage( (OsCodepage)codePage )
-        // Init Header version, should it be a parameter ?
-        LOCAL lSupportAnsi := FALSE AS LOGIC
-        SWITCH RuntimeState.Dialect
-            CASE XSharpDialect.VO
-            CASE XSharpDialect.Vulcan
-            CASE XSharpDialect.Core
-                lSupportAnsi := TRUE
-            OTHERWISE
-                lSupportAnsi := FALSE
-        END SWITCH
 
-		IF SELF:_Ansi .and. lSupportAnsi
+		IF SELF:_Ansi .and. RuntimeState.Dialect:SupportsAnsi()
 			SELF:_Header:Version := IIF(SELF:_HasMemo, DBFVersion.VOWithMemo , DBFVersion.VO )
 		ELSE
 			SELF:_Header:Version := IIF(SELF:_HasMemo, DBFVersion.FoxBaseDBase3WithMemo , DBFVersion.FoxBaseDBase3NoMemo )
@@ -1083,7 +1074,18 @@ PROTECTED VIRTUAL METHOD _writeFieldsHeader() AS LOGIC
 		SELF:_dbfError( FException(), ERDD.WRITE, XSharp.Gencode.EG_WRITE )
     ENDIF
     //
-RETURN isOK
+    RETURN isOK
+
+PROTECTED VIRTUAL METHOD _determineCodePage() AS VOID
+	SELF:_Ansi := SELF:_Header:IsAnsi
+    var codePage := CodePageExtensions.ToCodePage( SELF:_Header:CodePage )
+    if ! SELF:_Ansi .and. RuntimeState.Ansi
+        SELF:_Encoding   := RuntimeState.DosEncoding
+        SELF:_OemConvert := TRUE
+    ELSE
+        SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage )
+        SELF:_OemConvert := FALSE
+    ENDIF
 
     /// <inheritdoc />
 OVERRIDE METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
@@ -1119,8 +1121,7 @@ OVERRIDE METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
 			ENDIF
 			SELF:GoTop()
             //
-			SELF:_Ansi := SELF:_Header:IsAnsi
-			SELF:_Encoding := System.Text.Encoding.GetEncoding( CodePageExtensions.ToCodePage( SELF:_Header:CodePage )  )
+            SELF:_determineCodePage()
             //
 		ELSE
 			SELF:_dbfError( ERDD.CORRUPT_HEADER, XSharp.Gencode.EG_CORRUPTION )
@@ -1174,7 +1175,6 @@ PROTECTED METHOD _readFieldsHeader() AS LOGIC
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
-	SELF:_NullCount := 0
     // Read full Fields Header
 	VAR fieldsBuffer := BYTE[]{ fieldDefSize }
     isOK   := _oStream:SafeReadAt(DbfHeader.SIZE, fieldsBuffer,fieldDefSize)
@@ -1221,6 +1221,35 @@ INTERNAL METHOD _writeField(nOffSet AS LONG, oField AS DbfField) AS LOGIC
     // Write single field in header. Called from AutoIncrement code to update the counter value
     RETURN  _oStream:SafeWriteAt(nOffSet, oField:Buffer, DbfField.SIZE)
 
+// Methods to encode and decode strings
+
+PROTECTED INTERNAL METHOD _GetString(buffer AS BYTE[], nOffset as LONG, nLength as LONG) AS STRING
+    // The default implementation returns the part of the buffer as a string
+    local result as string
+    // when the table is Not Ansi and the runtimestate is Ansi then VO
+    // encodes the string in the DBF as OEM characters
+    // It uses the current Windows Codepage and not the Codepage of the table
+
+    if SELF:_OemConvert
+         var tmp := Byte[]{nLength}
+         Array.Copy(buffer, nOffset, tmp, 0, nLength)
+         Ansi2OemA(tmp)
+         result := SELF:_Encoding:GetString(tmp, 0, nLength)
+    else
+         result := SELF:_Encoding:GetString(buffer, nOffset, nLength)
+    endif
+    return result
+
+PROTECTED INTERNAL METHOD _GetBytes(strValue AS STRING, buffer AS BYTE[], nOffset as LONG, nLength as LONG) AS VOID
+    if SELF:_OemConvert
+        var tmp := Byte[]{nLength}
+        SELF:_Encoding:GetBytes(strValue, 0, nLength, tmp, 0)
+        Oem2AnsiA(tmp)
+        Array.Copy(tmp, 0, buffer, nOffset, nLength)
+    ELSE
+        SELF:_Encoding:GetBytes(strValue, 0, nLength, buffer, nOffset)
+    endif
+    RETURN
 
 
     // Write the DBF file Header : Last DateTime of modification (now), Current Reccount
@@ -1665,7 +1694,7 @@ OVERRIDE METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
         SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
     ENDIF
     IF SELF:EoF
-        RETURN FALSE
+        RETURN TRUE
     ENDIF
     SELF:ForceRel()
 	IF SELF:_readRecord()

@@ -189,7 +189,7 @@ namespace XSharp.Project
             {
                 mustRefresh = true;
                 string msg = $"{args.File} {args.LineNumber} {args.ColumnNumber} {args.Code} {args.Message}";
-                errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, MessageSeverity.Error);
+                errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, __VSERRORCATEGORY.EC_ERROR);
                 Logger.Debug("Build Error: "+ msg);
             }
             catch (Exception e)
@@ -203,7 +203,7 @@ namespace XSharp.Project
             {
                 mustRefresh = true;
                 string msg = $"{args.File} {args.LineNumber} {args.ColumnNumber} {args.Code} {args.Message}";
-                errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, MessageSeverity.Warning);
+                errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, __VSERRORCATEGORY.EC_WARNING);
                 Logger.Debug("Build Warning: " + msg);
             }
             catch (Exception e)

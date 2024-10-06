@@ -11,7 +11,7 @@ USING System.Linq
 USING System.Diagnostics
 USING System.Text
 USING System.Threading
-
+USING XSharp.Internal
 
 // Class that holds the memvars for a certain level on the callstack
 [DebuggerDisplay("{DebuggerDisplay(),nq}")];
@@ -288,23 +288,27 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
         RETURN GetHigherLevelPrivate(name)
 
     /// <summary>Release a private variable</summary>
-    STATIC METHOD Release(name AS STRING) AS VOID
+    STATIC METHOD Release(cName AS STRING) AS VOID
         // release variable
-        VAR oMemVar := PrivateFind(name)
+        VAR oMemVar := PrivateFind(cName)
+        VAR wasLocal := FALSE
         IF oMemVar == NULL
-            oMemVar := PublicFind(name)
+            oMemVar := PublicFind(cName)
             IF oMemVar != NULL
                 Publics:Remove(oMemVar:Name)
+            ELSEIF LocalFind(cName, OUT VAR _ , OUT VAR oLevel)
+                wasLocal := TRUE
+                oLevel:UpdateLocal(cName, NIL)
             ENDIF
         ELSE
-            LOCAL level AS MemVarLevel
-            level := oMemVar:Level
-            level:Remove(oMemVar:Name)
+            LOCAL oLevel AS MemVarLevel
+            oLevel := oMemVar:Level
+            oLevel:Remove(oMemVar:Name)
         ENDIF
         IF oMemVar != NULL
             oMemVar:Value := NIL
-        ELSE
-            THROW Exception{"Variable "+name:ToString()+" does not exist"}
+        ELSEIF ! wasLocal
+            THROW Exception{i"Variable {cName} does not exist"}
         ENDIF
         RETURN
 

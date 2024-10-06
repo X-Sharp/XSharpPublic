@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-11T16:55:35.001+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-27T12:49:39.296+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>BEGIN LOCK</title>
   <keywords>
     <keyword>BEGIN</keyword>
@@ -33,7 +33,7 @@
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">建议使用 <text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text>，而不是直接使用 Monitor(监视器) 类，因为这样代码更简洁，即使在保护块内出现异常，也能确保 Monitor(监视器) 对象被释放。</para>
     <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text> 提供的功能类似于 Windows API 函数 EnterCriticalSection() 和 LeaveCriticalSection()。不过，锁定对象可以使用任何引用类型的实例，而不是使用由 InitializeCriticalSection() 创建的对象。</para>
-    <para styleclass="Body Text">有关详细信息，请参阅 System.Threading.Monitor 类的文档。</para>
+    <para styleclass="Body Text">有关详细信息，请参阅 <link displaytype="text" defaultstyle="true" type="weblink" href="https://learn.microsoft.com/zh-cn/dotnet/api/system.threading.monitor?view=netframework-4.8" target="_blank">System.Threading.Monitor</link> 类的文档。</para>
     <para styleclass="Body Text"></para>
   </body>
 </topic>

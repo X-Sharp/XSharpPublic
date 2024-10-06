@@ -20,10 +20,13 @@ CLASS TestClass
 		GET
 			RETURN // warning XS9026: Missing RETURN value (OK)
 		END GET
-	END PROPERTY 
+	END PROPERTY
 	PROPERTY TestProperty2 AS INT
 		GET
 //			RETURN // error XS0161: 'TestClass.TestProperty2.get': not all code paths return a value
 		END GET
-	END PROPERTY 
+		SET
+//			RETURN // error XS0161: 'TestClass.TestProperty2.get': not all code paths return a value
+		END SET
+	END PROPERTY
 END CLASS

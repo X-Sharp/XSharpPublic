@@ -14,14 +14,15 @@
 #ifndef FOXPROCMD_XH
 #define FOXPROCMD_XH
 
-#xcommand FOR EACH <*any*> => FOREACH <any>
-#xcommand ENDDEFINE [<*any*>] => END DEFINE
-#xcommand ENDFOR [<*any*>]   => NEXT
-#xcommand ENDFUNC [<*any*>] => END FUNCTION
-#xcommand ENDPROC [<*any*>] => END PROCEDURE
-#xcommand ENDSCAN [<*any*>] => END SCAN
-#xcommand ENDTRY  [<*any*>] => END TRY
-#xcommand ENDWITH [<*any*>] => END WITH
+// These keywords are now defined in the compiler. But we still need them here to remove same line comments
+#xcommand ENDDEFINE <*any*> => ENDDEFINE
+#xcommand ENDFOR <*any*]    => ENDFOR
+#xcommand ENDFUNC <*any*>   => ENDFUNC
+#xcommand ENDPROC <*any*>   => ENDPROC
+#xcommand ENDSCAN <*any*>   => ENDSCAN
+#xcommand ENDTRY  <*any*>   => ENDTRY
+#xcommand ENDWITH <*any*>   => ENDWITH
+
 
 #xcommand STORE <value> TO ARRAY <VAR> => __FoxFillArray( <VAR>, <value> )
 
@@ -204,7 +205,8 @@
                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                ))
 
-
+// This variant moves the ALL clause to the end. This is needed because the WITH clause is declared as non optional
+#command REPLACE <*clauses*> ALL <*moreclauses*> => REPLACE <clauses> <moreclauses> ALL
 
 #command DELETE                                                         ;
          [FOR <lfor>]                                                   ;
@@ -236,6 +238,7 @@
                  {|| __DbRecall()},                                     ;
                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                ))
+
 
 #command LOCATE                                                         ;
          [FOR <lfor>]                                                   ;
@@ -384,6 +387,7 @@
 						DO WHILE found()
 
 #command END SCAN => DbContinue(); ENDDO
+#command ENDSCAN => DbContinue(); ENDDO
 
 
 #command COPY TO ARRAY <arrayName>   ;

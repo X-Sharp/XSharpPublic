@@ -12,17 +12,18 @@ using XSharpModel;
 using System.Windows.Media;
 using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using LanguageService.CodeAnalysis.XSharp;
 using XSharp.Settings;
+using Microsoft.VisualStudio.TextManager.Interop;
+
 namespace XSharp.LanguageService
 {
     internal class CompletionHelpers
     {
         internal IGlyphService _glyphService = null;
-        private XSharpDialect _dialect;
+        private XDialect _dialect;
         private XFile _file;
         private bool _settingIgnoreCase;
-        internal CompletionHelpers(XSharpDialect dialect, IGlyphService glyphService, XFile file, bool ignoreCase)
+        internal CompletionHelpers(XDialect dialect, IGlyphService glyphService, XFile file, bool ignoreCase)
         {
             _dialect = dialect;
             _glyphService = glyphService;
@@ -182,7 +183,19 @@ namespace XSharp.LanguageService
             foreach (var kw in XSharpSyntax.GetKeywords().Where(ti => nameStartsWith(ti.Name, startWith)))
             {
                 ImageSource icon = _glyphService.GetGlyph(kw.getGlyphGroup(), kw.getGlyphItem());
-                compList.Add(new XSCompletion(kw.Name, kw.Name, kw.Prototype, icon, null, Kind.Keyword, ""));
+                var item = new XSCompletion(kw.Name, kw.Name, kw.Prototype, icon, null, Kind.Keyword, "");
+                compList.Add(item);
+            }
+        }
+        internal void AddSnippets(XCompletionList compList, string startWith)
+        {
+            var snippets = SnippetHelpers.FindSnippets(startWith);
+            foreach (var snippet in snippets)
+            {
+                ImageSource icon = _glyphService.GetGlyph(StandardGlyphGroup.GlyphCSharpExpansion, StandardGlyphItem.GlyphItemPublic);
+                var item = new XSCompletion(snippet.title, "", snippet.description, icon, null, Kind.Snippet, snippet.shortcut);
+                item.Properties.AddProperty(typeof(VsExpansion), snippet);
+                compList.Add(item,false, true);
             }
         }
 
@@ -279,7 +292,7 @@ namespace XSharp.LanguageService
             }
             if (XEditorSettings.CompleteSnippets)
             {
-                // todo: Add Snippets
+                AddSnippets(compList, startWith);
             }
             if (XEditorSettings.CompleteKeywords)
             {

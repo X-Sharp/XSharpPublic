@@ -151,6 +151,9 @@
                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
 
+// This variant moves the ALL clause to the end. This is needed because the WITH clause is declared as non optional
+#command REPLACE <*clauses*> ALL <*moreclauses*> => REPLACE <clauses> <moreclauses> ALL
+
 // Single record replace
 #command REPLACE <(f1)> WITH <v1> [, <(fN)> WITH <vN> ]                     ;
       => DbAutoLock(); __FieldSet(<(f1)>,<v1>) [;__FieldSet(<(fN)>,<vN>)]; DbAutoUnLock()
@@ -186,7 +189,8 @@
       => DBEval(                                                        ;
                  {|| __DbRecall()},                                       ;
                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
-               )
+                  )
+
 // Single record RECALL
 #command RECALL                     =>  __DbRecall()
 

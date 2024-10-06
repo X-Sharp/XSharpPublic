@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T02:27:15.326+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-27T12:01:17.216+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>引用</title>
   <keywords>
     <keyword>References to External .Net Assemblies</keyword>
@@ -24,6 +24,6 @@
     </list>
     <para styleclass="Heading2">对非托管代码的引用</para>
     <para styleclass="Normal">您不能使用 &quot;项目引用&quot; 为非托管代码添加引用。</para>
-    <para styleclass="Normal">要调用非托管代码，您必须声明带有 _DLL 前缀的函数或过程，或者声明静态方法或函数，并为其添加特殊的 [DllImport()] 属性。</para>
+    <para styleclass="Normal">要调用非托管代码，您必须声明带有 _DLL 前缀的函数或过程，或者声明静态方法或函数，并为其添加特殊的 [DllImport()] 特性(attribute)。</para>
   </body>
 </topic>

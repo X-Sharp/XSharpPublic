@@ -12,7 +12,7 @@ See License.txt in the project root for license information.
   -->
   <PropertyGroup>
     <MajorVersion>2</MajorVersion>
-    <MinorVersion>20</MinorVersion>
+    <MinorVersion>21</MinorVersion>
     <PatchVersion>0</PatchVersion>
     <PreReleaseVersionLabel>0</PreReleaseVersionLabel>
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>

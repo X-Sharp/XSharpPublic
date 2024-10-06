@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-#pragma options ("enforceself", on)
+
 #pragma warnings(165, off)
 
 PARTIAL CLASS DbServer
@@ -108,7 +108,7 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cDriver,
 					lRetCode := __DBSDBCopy( cTarget,  ;
 						aFieldNames,  ;
 						NIL,  ;
-						{ | | Eval( cbKey ) = uValue },  ;
+						{ | | XSharp.RT.Functions.Eval( cbKey ) = uValue },  ;
 						NIL,  ;
 						NIL,  ;
 						TRUE,  ;
@@ -272,7 +272,7 @@ METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBloc
 				IF VoDbSeek( uSelectionValue, FALSE )
 					lRetCode := __DBSDBCOPYDELIM( cTarget, cDelimiter,  aFieldNames,  ;
 						NIL,  ;
-						{ || Eval( cbKey ) = uValue },  ;
+						{ || XSharp.RT.Functions.Eval( cbKey ) = uValue },  ;
 						NIL,  ;
 						NIL,  ;
 						TRUE,  ;
@@ -425,7 +425,7 @@ METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )   AS L
 				IF VoDbSeek( uSelectionValue, FALSE )
 					lRetCode := __DBSDBCOPYSDF( cTarget, aFieldNames,  ;
 						NIL,  ;
-						{ || Eval( cbKey ) = uValue },  ;
+						{ || XSharp.RT.Functions.Eval( cbKey ) = uValue },  ;
 						NIL,  ;
 						NIL,  ;
 						TRUE,  ;
@@ -667,7 +667,7 @@ METHOD Count( cbForBlock := NIL AS USUAL, cbWhileBlock := NIL AS USUAL, uScope :
 			IF VoDbSeek( uSelectionValue, FALSE )
 				SELF:__DbServerEval( { || iTally++ },  ;
 					NIL,  ;
-					{ || Eval( cbKey ) = uValue },  ;
+					{ || XSharp.RT.Functions.Eval( cbKey ) = uValue },  ;
 					NIL,  ;
 					NIL,  ;
 					TRUE,  ;
@@ -1104,7 +1104,7 @@ METHOD DeleteAll( )   AS LOGIC STRICT
 				IF VoDbSeek( uSelectionValue, FALSE )
 					lRetCode := SELF:__DbServerEval( { || VoDbDelete( ) },  ;
 						NIL,  ;
-						{ || Eval( cbKey ) = uValue },  ;
+						{ || XSharp.RT.Functions.Eval( cbKey ) = uValue },  ;
 						NIL,  ;
 						NIL,  ;
 						TRUE,  ;
@@ -1242,7 +1242,7 @@ METHOD Error( oError AS Error, symMethod AS SYMBOL) AS USUAL
 
 
 	IF lErrorProcessingSemaphor
-		Eval( ErrorBlock( ), oError )
+		XSharp.RT.Functions.Eval( ErrorBlock( ), oError )
 	ELSE
 		lErrorProcessingSemaphor := TRUE
 
@@ -1272,7 +1272,7 @@ METHOD Error( oError AS Error, symMethod AS SYMBOL) AS USUAL
 			Send(aClients[1],#Error, oErr )
 		ELSE
 			lErrorProcessingSemaphor := FALSE
-			Eval( ErrorBlock( ), oErr )
+			XSharp.RT.Functions.Eval( ErrorBlock( ), oErr )
 		ENDIF
 
 
@@ -1344,7 +1344,7 @@ METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )   AS LOGIC CLIPPER
 				IF VoDbSeek( uSelectionValue, FALSE )
 					lRetCode := SELF:__DbServerEval( cbBlock,  ;
 						NIL,  ;
-						{ || Eval( cbKey ) = uValue },  ;
+						{ || XSharp.RT.Functions.Eval( cbKey ) = uValue },  ;
 						NIL,  ;
 						NIL,  ;
 						TRUE,  ;
@@ -1642,7 +1642,7 @@ METHOD FieldName( nFieldPosition AS USUAL ) AS STRING
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		IF nFieldPosition > 0 .AND. nFieldPosition <= wFieldCount
-			uRetVal := FieldName( nFieldPosition )
+			uRetVal := XSharp.RT.Functions.FieldName( nFieldPosition )
 		ELSE
 			SELF:__SetStatusHL ( #FieldName, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ) )
 			uRetVal := NULL_STRING
@@ -1734,7 +1734,7 @@ METHOD FieldPut( uField AS USUAL, uValue AS USUAL)  AS USUAL
 				BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 			ENDIF
 		ENDIF
-      symFieldName := FieldSym(wPos)
+      symFieldName := XSharp.RT.Functions.FieldSym(wPos)
 		SELF:Notify( Notify.FieldChange, symFieldName )
 		__DBSSetSelect( dwCurrentWorkArea )
 
@@ -1771,7 +1771,7 @@ METHOD FieldPutBytes( uField AS USUAL, bValue AS BYTE[])  AS BYTE[]
 		IF ! VoDbFieldPutBytes( wPos, bValue )
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 		ENDIF
-      symFieldName := FieldSym(wPos)
+      symFieldName := XSharp.RT.Functions.FieldSym(wPos)
 		SELF:Notify( Notify.FieldChange, symFieldName )
 		__DBSSetSelect( dwCurrentWorkArea )
 
@@ -1879,7 +1879,7 @@ METHOD FieldSym( uField AS USUAL) AS SYMBOL
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF (wPos := __GetFldPos( uField, wFieldCount )) > 0
-			uRetVal := FieldSym( wPos )
+			uRetVal := XSharp.RT.Functions.FieldSym( wPos )
 		ELSE
 			SELF:__SetStatusHL( #FieldSym, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ) )
 			uRetVal := NULL_SYMBOL

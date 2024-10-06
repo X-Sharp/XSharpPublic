@@ -8,8 +8,7 @@
     <AssemblyName>VOWin32APILibrary</AssemblyName>
     <Name>VOWin32APILibrary</Name>
     <OutputName>VOWin32APILibrary</OutputName>
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
-    
+    <NamedArgs>False</NamedArgs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
   </PropertyGroup>

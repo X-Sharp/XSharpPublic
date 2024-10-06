@@ -1,5 +1,5 @@
 #translate DBFDebug(<c1> [, <cn>]) =>
-#pragma options ("enforceself", on)
+
 
 PARTIAL CLASS DbServer
 
@@ -539,7 +539,7 @@ METHOD Average( acbExpression, cbForBlock, cbWhileBlock, uScope )
 			ENDIF
 			SELF:__DBServerEval( { || iCount += 1, __IterateForSum( acbExpr, aResults ) },  ;
 				NIL,                   ;
-				{| | Eval( cbKey ) = uValue },  ;
+				{| | Functions.Eval( cbKey ) = uValue },  ;
 				NIL,                   ;
 				NIL,                   ;
 				TRUE,  ;
@@ -924,7 +924,7 @@ METHOD BLOBImport( uField, oFSSource )
 		ELSE
 			cTarget := oFSSource
 		ENDIF
-		symFieldName:= FieldSym( wPos )
+		symFieldName:= Functions.FieldSym( wPos )
 		IF nEffectiveCCMode == ccOptimistic .AND. ( nCurRec := VODBRecno( ) ) <= VODBLastRec( )
 			IF SELF:__RLockVerify( )
 				lRetCode := VODBFilePut( wPos, cTarget )
@@ -1507,7 +1507,7 @@ METHOD Continue( )
 
 
 			IF lSelectionActive
-				IF Eval( cbSelectionIndexingExpression ) = uSelectionValue
+				IF Functions.Eval( cbSelectionIndexingExpression ) = uSelectionValue
 					siSelectionStatus := DBSELECTIONFOUND
 				ELSE
 					siSelectionStatus := DBSELECTIONEOF

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Popup" modified="2024-05-26T10:53:20.538+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Popup" modified="2024-09-26T17:41:21.783+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>__IncludeAttributes</title>
   <body>
-    <para styleclass="List">Attributes<tab />一个可选的属性列表，用于描述实体的元信息，例如在 MsTest 类库中包含测试的方法/函数上的 [TestMethod] 属性。请注意，当属性写在关键字上方的行时，属性必须在同一行或以分号结尾。</para>
+    <para styleclass="List">Attributes<tab />一个可选的特性列表，用于描述实体的元信息，例如在 MsTest 类库中包含测试的方法/函数上的 [TestMethod] 属性。请注意，当特性写在关键字上方的行时，特性必须在同一行或以分号结尾。</para>
     <para styleclass="List"></para>
   </body>
 </topic>

@@ -46,16 +46,21 @@ namespace XSharp.VisualStudio.ProjectSystem
             // Get access to global MEF services.
             IComponentModel componentModel = await this.GetServiceAsync<SComponentModel, IComponentModel>();
 
+
+            // Get access to project services scope services.
+            IProjectServiceAccessor projectServiceAccessor = componentModel.GetService<IProjectServiceAccessor>();
+
             // Find package services in global scope.
             IEnumerable<IPackageService> globalPackageServices = componentModel.GetExtensions<IPackageService>();
 
+            // Find package services in project service scope.
+            IEnumerable<IPackageService> projectServicesPackageServices = projectServiceAccessor.GetProjectService().Services.ExportProvider.GetExportedValues<IPackageService>(ExportContractNames.Scopes.ProjectService);
+
+
             await JoinableTaskFactory.SwitchToMainThreadAsync();
 
- 			await Task.WhenAll(globalPackageServices.Select(s => s.InitializeAsync(this)));
-
-            var context = JoinableTaskFactory.Context;
-            var selector = new XSharpProjectSelector(context);
-            await selector.InitializeAsync(this);
+            // Initialize all services concurrently.
+            await Task.WhenAll(globalPackageServices.Concat(projectServicesPackageServices).Select(s => s.InitializeAsync(this)));
 
         }
     }

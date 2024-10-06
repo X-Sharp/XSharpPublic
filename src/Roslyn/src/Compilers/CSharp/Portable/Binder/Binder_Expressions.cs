@@ -1368,7 +1368,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
 #if XSHARP
             var bag = BindingDiagnosticBag.GetInstance();
-            var left = this.BindExpression(node.Left, bag);
+            var left = Compilation.Options.HasOption(CompilerOption.AllowDotForInstanceMembers, node.Left)
+                        ? BindLeftOfPotentialColorColorMemberAccess(node.Left, bag)
+                        : BindNamespaceOrType(node.Left, bag);
             if (left != null && !left.HasErrors && !(left.ExpressionSymbol is NamespaceOrTypeSymbol) &&
                 left.Type?.IsVoStructOrUnion() != true)
             {
@@ -1394,8 +1396,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 diagnostics.AddRange(bag.DiagnosticBag);
                 bag.Free();
-
             }
+            diagnostics.AddRangeAndFree(bag);
             return BindMemberAccessWithBoundLeft(node, left, node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
 #else
             return BindMemberAccessWithBoundLeft(node, this.BindLeftOfPotentialColorColorMemberAccess(node.Left, diagnostics), node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);

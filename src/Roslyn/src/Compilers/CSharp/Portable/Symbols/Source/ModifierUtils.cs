@@ -127,6 +127,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         private static void ReportPartialError(Location errorLocation, BindingDiagnosticBag diagnostics, SyntaxTokenList? modifierTokens)
         {
+#if !XSHARP
             // If we can find the 'partial' token, report it on that.
             if (modifierTokens != null)
             {
@@ -139,6 +140,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
 
             diagnostics.Add(ErrorCode.ERR_PartialMisplaced, errorLocation);
+#endif
         }
 
         internal static void ReportDefaultInterfaceImplementationModifiers(
@@ -408,12 +410,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     // backcompat.
                     var isLast = i == modifiers.Count - 1;
                     var isPartialAsyncMethod = isOrdinaryMethod && i == modifiers.Count - 2 && modifiers[i + 1].ContextualKind() is SyntaxKind.AsyncKeyword;
+#if !XSHARP
                     if (!isLast && !isPartialAsyncMethod)
                     {
                         diagnostics.Add(
                             ErrorCode.ERR_PartialMisplaced,
                             modifier.GetLocation());
                     }
+#endif
                 }
 
                 result |= one;

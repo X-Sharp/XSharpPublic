@@ -25,7 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
 
             var includeDir = Environment.GetEnvironmentVariable("INCLUDE");
-#if !NETCOREAPP3_0_OR_GREATER
+#if false
             string XSharpIncludeDir = String.Empty;
             string VulcanIncludeDir = string.Empty;
             try

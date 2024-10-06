@@ -697,7 +697,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     newDiag.Add(error);
                             }
                             diagnostics.Clear();
-                            diagnostics.AddRange(newDiag);
+                            diagnostics.AddRange(newDiag.DiagnosticBag);
                         }
                     }
                 }
@@ -933,7 +933,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
             var name = node.Identifier.ValueText;
-            var useSiteInfo = new CompoundUseSiteInfo<AssemblySymbol>(diagnostics, Compilation.Assembly);
+            var useSiteInfo = GetNewCompoundUseSiteInfo(diagnostics);
             var memvarorfield = name.IndexOf("->") > 0;
             // no need to look for our special names
             if (!memvarorfield)
@@ -976,7 +976,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         // This uses the 'original' BindIdentifier lookup mechanism
                         options = originalOptions;
-                        useSiteInfo = new CompoundUseSiteInfo<AssemblySymbol>(null, Compilation.Assembly);
+                        useSiteInfo = GetNewCompoundUseSiteInfo(diagnostics);
                         lookupResult.Clear();
                         this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteInfo: ref useSiteInfo, options: options);
                     }

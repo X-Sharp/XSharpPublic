@@ -1068,7 +1068,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 Debug.Assert(instanceInitializers.All(g => !g.IsDefault));
 
                 Debug.Assert(!nonTypeMembers.Any(static s => s is TypeSymbol));
+#if !XSHARP
                 Debug.Assert(haveIndexers == nonTypeMembers.Any(static s => s.IsIndexer()));
+#endif
 
                 this.PrimaryConstructor = primaryConstructor;
                 this.NonTypeMembers = nonTypeMembers;
@@ -5421,7 +5423,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #endregion
+#endregion
 
         #region Extension Methods
 

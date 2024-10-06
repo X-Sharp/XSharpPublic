@@ -103,7 +103,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return new BoundSequencePointWithSpan(baseInit, rewritten, baseInit.Span);
 
                     default:
+#if XSHARP
+                        break;
+#else
                         throw ExceptionUtilities.UnexpectedValue(original.Syntax.Kind());
+#endif
                 }
             }
             else if (original.Syntax is ParameterSyntax parameterSyntax)

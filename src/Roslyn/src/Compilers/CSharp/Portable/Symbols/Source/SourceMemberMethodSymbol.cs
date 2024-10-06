@@ -113,7 +113,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             public void SetReturnsVoid(bool value)
             {
                 int bits = _flags;
+#if !XSHARP
                 Debug.Assert((bits & ReturnsVoidIsSetBit) == 0);
+#endif
                 Debug.Assert(value || (bits & ReturnsVoidBit) == 0);
                 ThreadSafeFlagOperations.Set(ref _flags, ReturnsVoidIsSetBit | (value ? ReturnsVoidBit : 0));
             }

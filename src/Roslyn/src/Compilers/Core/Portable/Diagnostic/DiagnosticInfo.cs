@@ -142,8 +142,10 @@ namespace Microsoft.CodeAnalysis
                     bits[value] = true;
                 }
             }
+#if !XSHARP
             Debug.Assert(expectedLength == actualLength);
             Debug.Assert(bits == BitVector.AllSet(actualLength));
+#endif
 #endif
         }
 

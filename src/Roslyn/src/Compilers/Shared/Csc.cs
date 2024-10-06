@@ -22,7 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
 
         internal static int Run(string[] args, BuildPaths buildPaths, TextWriter textWriter, IAnalyzerAssemblyLoader analyzerLoader)
         {
-#if DEBUG && DUMP_TRACE && XSHARP
+#if ( DEBUG || DUMP_TRACE ) && XSHARP
             Trace.Listeners.Add(new ConsoleTraceListener());
 #endif
             FatalError.SetHandlers(FailFast.Handler, nonFatalHandler: null);

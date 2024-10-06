@@ -1497,7 +1497,7 @@ namespace Microsoft.CodeAnalysis
                     return;
                 }
 #if XSHARP
-                    Microsoft.CodeAnalysis.CSharp.CSharpCompilationOptions.FixResources(Arguments, compilation);
+                Microsoft.CodeAnalysis.CSharp.CSharpCompilationOptions.FixResources(Arguments, compilation);
 #endif
             }
             finally

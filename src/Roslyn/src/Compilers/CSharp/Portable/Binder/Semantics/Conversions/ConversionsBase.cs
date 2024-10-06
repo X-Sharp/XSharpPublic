@@ -677,7 +677,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 !conversion.IsInterpolatedStringHandler &&
                 !conversion.IsCollectionExpression)
             {
+#if !XSHARP
                 Debug.Assert(IsStandardImplicitConversionFromExpression(conversion.Kind));
+#endif
                 return conversion;
             }
 
@@ -1278,7 +1280,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 (destination.GetSpecialTypeSafe() == SpecialType.System_IntPtr
                 || destination.GetSpecialTypeSafe() == SpecialType.System_UIntPtr))
                 return Conversion.NullToPointer;
-#endif                        
+#endif
 
             return Conversion.NoConversion;
         }

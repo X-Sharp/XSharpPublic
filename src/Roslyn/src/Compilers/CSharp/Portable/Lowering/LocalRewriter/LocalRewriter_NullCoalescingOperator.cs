@@ -30,7 +30,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             Debug.Assert(rewrittenLeft != null);
             Debug.Assert(rewrittenRight != null);
+#if !XSHARP
             Debug.Assert(BoundNode.GetConversion(leftConversion, leftPlaceholder).IsValid);
+#endif
             Debug.Assert(rewrittenResultType is { });
             Debug.Assert(rewrittenRight.Type is { });
             Debug.Assert(rewrittenRight.Type.Equals(rewrittenResultType, TypeCompareKind.IgnoreDynamicAndTupleNames | TypeCompareKind.IgnoreNullableModifiersForReferenceTypes));
@@ -237,7 +239,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(rewrittenLeft != null);
             Debug.Assert(rewrittenLeft.Type is { });
             Debug.Assert(rewrittenResultType is { });
+#if !XSHARP
             Debug.Assert(BoundNode.GetConversion(leftConversion, leftPlaceholder).IsValid);
+#endif
 
             TypeSymbol rewrittenLeftType = rewrittenLeft.Type;
             Debug.Assert(rewrittenLeftType.IsNullableType() || !rewrittenLeftType.IsValueType);

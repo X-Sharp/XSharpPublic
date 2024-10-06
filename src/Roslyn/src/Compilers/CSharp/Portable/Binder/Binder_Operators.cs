@@ -4550,12 +4550,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundExpression falseExpr = BindValue(whenFalse, diagnostics, BindValueKind.RValue);
             CompoundUseSiteInfo<AssemblySymbol> useSiteInfo = GetNewCompoundUseSiteInfo(diagnostics);
             ConstantValue? constantValue = null;
-            TypeSymbol? bestType = BestTypeInferrer.InferBestTypeForConditionalOperator(trueExpr, falseExpr, this.Conversions, out bool hadMultipleCandidates, ref useSiteInfo);
-            diagnostics.Add(node, useSiteInfo);
-
 #if XSHARP
             VODetermineIIFTypes(node, diagnostics, ref trueExpr, ref falseExpr);
 #endif
+            TypeSymbol? bestType = BestTypeInferrer.InferBestTypeForConditionalOperator(trueExpr, falseExpr, this.Conversions, out bool hadMultipleCandidates, ref useSiteInfo);
+            diagnostics.Add(node, useSiteInfo);
+
             if (bestType is null)
             {
                 ErrorCode noCommonTypeError = hadMultipleCandidates ? ErrorCode.ERR_AmbigQM : ErrorCode.ERR_InvalidQM;

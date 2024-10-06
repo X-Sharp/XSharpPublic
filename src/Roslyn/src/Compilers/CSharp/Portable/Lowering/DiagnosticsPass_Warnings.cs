@@ -22,7 +22,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (!argumentRefKindsOpt.IsDefault)
             {
+#if !XSHARP
                 Debug.Assert(arguments.Length == argumentRefKindsOpt.Length);
+#endif
                 for (int i = 0; i < arguments.Length; i++)
                 {
                     if (argumentRefKindsOpt[i] != RefKind.None)

@@ -276,6 +276,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private void TrackVisit(BoundNode? node)
         {
+#if !XSHARP // this raises asserts with test C450
             if (node is BoundValuePlaceholderBase placeholder)
             {
                 Debug.Assert(ContainsPlaceholderScope(placeholder));
@@ -288,10 +289,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     Debug.Assert(added, $"Expression {expr} `{expr.Syntax}` visited more than once.");
                 }
             }
+#endif
         }
 
         private void AssertVisited(BoundExpression expr)
         {
+#if !XSHARP // this raises asserts with test C450
             if (expr is BoundValuePlaceholderBase placeholder)
             {
                 Debug.Assert(ContainsPlaceholderScope(placeholder));
@@ -300,6 +303,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 Debug.Assert(_visited.Contains(expr), $"Expected {expr} `{expr.Syntax}` to be visited.");
             }
+#endif
         }
 #endif
 

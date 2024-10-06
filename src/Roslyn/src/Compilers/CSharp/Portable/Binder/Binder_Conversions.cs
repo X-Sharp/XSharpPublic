@@ -272,12 +272,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 ConstantValue? constantValue = this.FoldConstantConversion(syntax, source, conversion, destination, diagnostics);
 #if XSHARP
-            // This is a last resort to convert to PSZ. Should normally never be called
-            if (BindStringToPsz((CSharpSyntaxNode)syntax, ref source, destination, ref conversion, diagnostics))
-            {
-                constantValue = null;
-                wasCompilerGenerated = true;
-            }
+                // This is a last resort to convert to PSZ. Should normally never be called
+                if (BindStringToPsz((CSharpSyntaxNode)syntax, ref source, destination, ref conversion, diagnostics))
+                {
+                    constantValue = null;
+                    wasCompilerGenerated = true;
+                }
 #endif
                 if (conversion.Kind == ConversionKind.DefaultLiteral)
                 {

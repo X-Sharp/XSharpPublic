@@ -1392,7 +1392,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         bag.Clear();
                     left = this.BindNamespaceOrType(node.Left, bag);
                 }
-                diagnostics.AddRangeAndFree(bag);
+                diagnostics.AddRange(bag.DiagnosticBag);
+                bag.Free();
 
             }
             return BindMemberAccessWithBoundLeft(node, left, node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
@@ -1750,7 +1751,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (symbol.ContainingSymbol is NamedTypeSymbol { OriginalDefinition: var symbolContainerDefinition } &&
                     ContainingType is SourceMemberContainerTypeSymbol { IsRecord: false, IsRecordStruct: false, PrimaryConstructor: SynthesizedPrimaryConstructor { ParameterCount: not 0 } primaryConstructor, OriginalDefinition: var containingTypeDefinition } &&
                     this.ContainingMember() is { Kind: not SymbolKind.NamedType, IsStatic: false } && // We are in an instance member
+#if XSHARP
+                    primaryConstructor.Parameters.Any(static (p, name) => XSharpString.Equals(p.Name, name), name) &&
+#else
                     primaryConstructor.Parameters.Any(static (p, name) => p.Name == name, name) &&
+#endif
                     // And not shadowed by a member in the same type
                     symbolContainerDefinition != (object)containingTypeDefinition &&
                     !members.Any(static (m, containingTypeDefinition) => m.ContainingSymbol.OriginalDefinition == (object)containingTypeDefinition, containingTypeDefinition))
@@ -3579,7 +3584,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 createParamsCollection(node, in methodResult, receiver, parameters, analyzedArguments, firstParamsArgument, paramsArgsBuilder, ref argsToParamsOpt, diagnostics);
             }
 
+#if !XSHARP
             Debug.Assert(analyzedArguments.RefKinds.Count == 0 || analyzedArguments.RefKinds.Count == arguments.Count);
+#endif
             Debug.Assert(analyzedArguments.Names.Count == 0 || analyzedArguments.Names.Count == arguments.Count);
             Debug.Assert(argsToParamsOpt.IsDefault || argsToParamsOpt.Length == arguments.Count);
 
@@ -3756,10 +3763,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     Debug.Assert(argsToParamsBuilder is not null || argsToParamsOpt.IsDefault);
                     argsToParamsBuilder?.RemoveAt(i);
 
+#if !XSHARP
                     if (analyzedArguments.RefKinds is { Count: > 0 } refKindsBuilder)
                     {
                         refKindsBuilder.RemoveAt(i);
                     }
+#endif
 
                     if (analyzedArguments.Names is { Count: > 0 } namesBuilder)
                     {
@@ -6516,7 +6525,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 d.Free();
             }
-#endif 
+#endif
             return result;
 
             BoundExpression bindCollectionInitializerElementAddMethod(
@@ -7482,7 +7491,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             BindingDiagnosticBag diagnostics)
         {
             Debug.Assert(node != null);
+#if !XSHARP
             Debug.Assert(invoked == SyntaxFacts.IsInvoked(node));
+#endif
 
             BoundExpression boundLeft;
 
@@ -7494,7 +7505,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             boundLeft = BindLeftOfPotentialColorColorMemberAccess(exprSyntax, diag);
             if (!boundLeft.Type.IsPointerType())
             {
-                diagnostics.AddRange(diag);
+                diagnostics.AddRange(diag.DiagnosticBag);
             }
             else
             {
@@ -7652,8 +7663,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             string name = id.Identifier.ValueText;
 
+#if XSHARP
+            return (XSharpString.Equals(type.Name, name) || IsUsingAliasInScope(name)) &&
+                   TypeSymbol.Equals(BindNamespaceOrType(id, BindingDiagnosticBag.Discarded).Type, type, TypeCompareKind.AllIgnoreOptions);
+#else
             return (type.Name == name || IsUsingAliasInScope(name)) &&
                    TypeSymbol.Equals(BindNamespaceOrType(id, BindingDiagnosticBag.Discarded).Type, type, TypeCompareKind.AllIgnoreOptions);
+#endif
         }
 
         // returns true if name matches a using alias in scope

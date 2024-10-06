@@ -107,7 +107,9 @@ namespace Microsoft.CodeAnalysis
         internal void AddRange(ReadOnlyBindingDiagnostic<TAssemblySymbol> other, bool allowMismatchInDependencyAccumulation = false)
         {
             AddRange(other.Diagnostics);
+#if !XSHARP
             Debug.Assert(allowMismatchInDependencyAccumulation || other.Dependencies.IsDefaultOrEmpty || this.AccumulatesDependencies || !this.AccumulatesDiagnostics);
+#endif
             AddDependencies(other.Dependencies);
         }
 

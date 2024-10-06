@@ -1533,7 +1533,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (!haveDefaultArguments && !expanded)
             {
                 Debug.Assert(argumentsBuilder.Count >= parameters.Length); // Accounting for arglist cases
+#if !XSHARP
                 Debug.Assert(argumentRefKindsBuilder is null || argumentRefKindsBuilder.Count == 0 || argumentRefKindsBuilder.Count == argumentsBuilder.Count);
+#endif
                 Debug.Assert(namesBuilder is null || namesBuilder.Count == 0 || namesBuilder.Count == argumentsBuilder.Count);
                 Debug.Assert(argsToParamsOpt.IsDefault || argsToParamsOpt.Length == argumentsBuilder.Count);
                 defaultArguments = default;
@@ -1668,7 +1670,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (defaultValue != null)
                         return defaultValue;
                 }
-#endif          
+#endif
                 if (callerSourceLocation is object && parameter.IsCallerLineNumber)
                 {
                     int line = callerSourceLocation.SourceTree.GetDisplayLineNumber(callerSourceLocation.SourceSpan);

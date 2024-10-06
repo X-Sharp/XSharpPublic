@@ -1148,17 +1148,6 @@ namespace Microsoft.CodeAnalysis
                     0,                                                                                                      // Method Signature
                     (byte)SignatureTypeCode.TypeHandle, (byte)SpecialType.System_Void, // Return Type
 
-#if XSHARP
-                // System_String__Compare
-                (byte)(MemberFlags.Method | MemberFlags.Static),                                                            // Flags
-                (byte)SpecialType.System_String,                                                                            // DeclaringTypeId
-                0,                                                                                                          // Arity
-                    2,                                                                                                      // Method Signature
-                    (byte)SignatureTypeCode.TypeHandle, (byte)SpecialType.System_Int32,
-                    (byte)SignatureTypeCode.TypeHandle, (byte)SpecialType.System_String,
-                    (byte)SignatureTypeCode.TypeHandle, (byte)SpecialType.System_String,
-#endif
-
                 // System_Runtime_CompilerServices_InlineArrayAttribute__ctor
                 (byte)MemberFlags.Constructor,                                                                              // Flags
                 (byte)SpecialType.System_Runtime_CompilerServices_InlineArrayAttribute,                                     // DeclaringTypeId
@@ -1324,6 +1313,17 @@ namespace Microsoft.CodeAnalysis
                     1,                                                                                                      // Method Signature
                     (byte)SignatureTypeCode.TypeHandle, (byte)InternalSpecialType.System_Type, // Return Type
                     (byte)SignatureTypeCode.TypeHandle, (byte)SpecialType.System_RuntimeTypeHandle,
+
+#if XSHARP
+                // System_String__Compare
+                (byte)(MemberFlags.Method | MemberFlags.Static),                                                            // Flags
+                (byte)SpecialType.System_String,                                                                            // DeclaringTypeId
+                0,                                                                                                          // Arity
+                    2,                                                                                                      // Method Signature
+                    (byte)SignatureTypeCode.TypeHandle, (byte)SpecialType.System_Int32,
+                    (byte)SignatureTypeCode.TypeHandle, (byte)SpecialType.System_String,
+                    (byte)SignatureTypeCode.TypeHandle, (byte)SpecialType.System_String,
+#endif
             };
 
             string[] allNames = new string[(int)SpecialMember.Count]
@@ -1464,9 +1464,6 @@ namespace Microsoft.CodeAnalysis
                 "ByRefFields",                              // System_Runtime_CompilerServices_RuntimeFeature__ByRefFields
                 "ByRefLikeGenerics",                        // System_Runtime_CompilerServices_RuntimeFeature__ByRefLikeGenerics
                 ".ctor",                                    // System_Runtime_CompilerServices_PreserveBaseOverridesAttribute__ctor
-#if XSHARP
-                "Compare",                                   // System_String__Compare
-#endif
                 ".ctor",                                    // System_Runtime_CompilerServices_InlineArrayAttribute__ctor
                 ".ctor",                                    // System_ReadOnlySpan_T__ctor_Reference
                 "Count",                                    // System_Collections_Generic_IReadOnlyCollection_T__Count,
@@ -1488,6 +1485,9 @@ namespace Microsoft.CodeAnalysis
                 "Empty",                                    // System_Array__Empty
                 "SetValue",                                 // System_Array__SetValue
                 "GetTypeFromHandle",                        // System_Type__GetTypeFromHandle
+#if XSHARP
+                "Compare",                                  // System_String__Compare
+#endif
             };
 
             s_descriptors = MemberDescriptor.InitializeFromStream(new System.IO.MemoryStream(initializationBytes, writable: false), allNames);

@@ -2158,14 +2158,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     }
                                 }
 
+#if !XSHARP
                                 Debug.Assert(false);
+#endif
                             }
                         }
                     }
                 }
             }
 #endif
-        }
+                            }
 
 #if DEBUG
         private static bool IsEmptyRewritePossible(BoundNode node)

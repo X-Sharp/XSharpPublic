@@ -35,10 +35,14 @@ namespace Microsoft.CodeAnalysis
 
         public int GetHashCode(ReadOnlyMemory<char> obj)
         {
+#if XSHARP
+            return obj.Span.ToString().ToLower().GetHashCode();
+#else
 #if NET
             return string.GetHashCode(obj.Span);
 #else
             return Hash.GetFNVHashCode(obj.Span);
+#endif
 #endif
         }
     }

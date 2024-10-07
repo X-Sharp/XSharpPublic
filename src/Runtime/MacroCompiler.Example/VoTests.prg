@@ -70,8 +70,6 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "{|c|Send(c,#testmethodlate,@x), x}", Args(c), "b", typeof(STRING))
         x := "a"
         TestMacro(mc, "{|c|Send(c,#testmethodlate,ref x), x}", Args(c), "b", typeof(STRING))
-        TestMacro(mc,"{|a,b| a + b }", Args(1,2), 3, typeof(INT))
-        TestMacro(mc,"{|a as int,b as int| a + b }", Args(1,2), 3, typeof(INT))
         RETURN
 
 
@@ -690,7 +688,10 @@ BEGIN NAMESPACE MacroCompilerTest
         //TestMacro(mc, "{ || FloatNext(0) } ", Args(), null, null, ErrorCode.NotAMethod)
         //System.Reflection.Assembly.Load("XSharp.VO")
         //TestMacro(mc, "{ || FloatNext(0) } ", Args(), 0.0, typeof(float))
-
+        //typed and untyped parameters        
+        TestMacro(mc,"{|a,b| a + b }", Args(1,2), 3, typeof(INT))
+        TestMacro(mc,"{|a as int,b as int| a + b }", Args(1,2), 3, typeof(INT))
+        
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         RETURN
 

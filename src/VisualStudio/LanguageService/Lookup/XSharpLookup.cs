@@ -564,7 +564,8 @@ namespace XSharp.LanguageService
                 // Could be USING or USING STATIC statement.
                 // We allow the lookup of Namespaces or Types
                 //
-                if (!state.HasFlag(CompletionState.Namespaces) && !state.HasFlag(CompletionState.Types))
+                if (!state.HasFlag(CompletionState.Namespaces) && !state.HasFlag(CompletionState.Types)
+                    && !state.HasFlag(CompletionState.General))
                     return result;
                 StringBuilder sb = new StringBuilder();
                 foreach (var token in xtokenList)
@@ -572,11 +573,11 @@ namespace XSharp.LanguageService
                     sb.Append(token.Text);
                 }
                 var name = sb.ToString();
-                if (state.HasFlag(CompletionState.Namespaces))
+                if (state.HasFlag(CompletionState.Namespaces) || state.HasFlag(CompletionState.General))
                 {
                     result.AddRange(SearchNamespaces(location, name));
                 }
-                if (state.HasFlag(CompletionState.Types))
+                if (state.HasFlag(CompletionState.Types) || state.HasFlag(CompletionState.General))
                 {
                     result.AddRange(SearchType(location, name));
                 }

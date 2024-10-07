@@ -343,42 +343,50 @@ BEGIN NAMESPACE XSharpModel
         ENDIF
         TRY
             _resolvingReferences := TRUE
-            IF SELF:hasUnprocessedReferences
-                IF ! SELF:RefCheckTimeOut
-                    RETURN
-                ENDIF
-                SELF:LogReferenceMessage("<<-- ResolveReferences()")
-                XSolution.SetStatusBarText(String.Format("Loading referenced types for project {0}", SELF:Name))
+            IF SELF:RefCheckTimeOut
+                IF SELF:hasUnprocessedReferences
+                    SELF:LogReferenceMessage("<<-- ResolveReferences()")
+                    XSolution.SetStatusBarText(String.Format("Loading referenced types for project {0}", SELF:Name))
 
-                TRY
-                    SELF:ResolveUnprocessedAssemblyReferences()
-                    SELF:ResolveUnprocessedProjectReferences()
-                    SELF:ResolveUnprocessedStrangerReferences()
-                    FOREACH DLL AS STRING IN SELF:_projectOutputDLLs:Values:ToArray()
-                        VAR fullName := SystemTypeController.FindAssemblyByLocation(DLL)
-                        LOCAL asm := NULL as XAssembly
-                        if ! String.IsNullOrEmpty(fullName)
-                            asm      := SystemTypeController.FindAssembly(fullName)
-                        ENDIF
-                        local lAdd := TRUE as LOGIC
-                        IF asm != NULL .and. SELF:AssemblyReferences:Contains(asm)
-                            lAdd := FALSE
-                        ENDIF
-                        IF lAdd
-                            SELF:AddAssemblyReference(DLL)
-                        ENDIF
-                    NEXT
-                    // repeat the assemblyreferences because we can have _projectOutputDLLs added to the list
-                    SELF:ResolveUnprocessedAssemblyReferences()
-                CATCH
-                    NOP
-                END TRY
-                SELF:LogReferenceMessage(">>-- ResolveReferences()")
+                    TRY
+                        SELF:ResolveUnprocessedAssemblyReferences()
+                        SELF:ResolveUnprocessedProjectReferences()
+                        SELF:ResolveUnprocessedStrangerReferences()
+                        FOREACH DLL AS STRING IN SELF:_projectOutputDLLs:Values:ToArray()
+                            VAR fullName := SystemTypeController.FindAssemblyByLocation(DLL)
+                            LOCAL asm := NULL as XAssembly
+                            if ! String.IsNullOrEmpty(fullName)
+                                asm      := SystemTypeController.FindAssembly(fullName)
+                            ENDIF
+                            local lAdd := TRUE as LOGIC
+                            IF asm != NULL .and. SELF:AssemblyReferences:Contains(asm)
+                                lAdd := FALSE
+                            ENDIF
+                            IF lAdd
+                                SELF:AddAssemblyReference(DLL)
+                            ENDIF
+                        NEXT
+                        // repeat the assemblyreferences because we can have _projectOutputDLLs added to the list
+                        SELF:ResolveUnprocessedAssemblyReferences()
+                    CATCH
+                        NOP
+                    END TRY
+                    SELF:LogReferenceMessage(">>-- ResolveReferences()")
+                ENDIF
+                SELF:RefreshAssemblyReferences()
             ENDIF
         FINALLY
             _resolvingReferences := FALSE
         END TRY
         RETURN
+
+    METHOD RefreshAssemblyReferences as VOID
+        FOREACH asm as XAssembly in SELF:AssemblyReferences:ToArray()
+            if asm:IsModifiedOnDisk
+                asm:Read()
+                SELF:_AssemblyTypeCache?:Clear()
+            endif
+        NEXT
 
     METHOD UpdateAssemblyReference(fileName AS STRING) AS VOID
         IF ! XSettings.DisableAssemblyReferences .AND. ! String.IsNullOrEmpty(fileName)
@@ -522,9 +530,6 @@ BEGIN NAMESPACE XSharpModel
         VAR outputFile := ""
         TRY
             // p is the Community Toolkit Project object here
-            if (! p.IsLoaded)
-                return null
-            endif
             outputFile := p:GetAttributeAsync("TargetPath").Result
         CATCH Exception AS Exception
             XSettings.Exception(Exception,__FUNCTION__)
@@ -558,7 +563,7 @@ BEGIN NAMESPACE XSharpModel
 
     METHOD RefreshStrangerProjectDLLOutputFiles_Worker AS VOID
         FOREACH proj as Dynamic IN SELF:_StrangerProjects:ToArray()
-            LOCAL sProjectURL := proj:FullName AS STRING
+            LOCAL sProjectURL := proj:FullPath AS STRING
             VAR mustAdd     := FALSE
             LOCAL outputFile  := SELF:GetStrangerOutputDLL(sProjectURL, proj) AS STRING
             IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
@@ -920,6 +925,7 @@ BEGIN NAMESPACE XSharpModel
         type := peTypes:FirstOrDefault()
         IF type != NULL
             SELF:LogTypeMessage("FindSystemType() "+name+" found "+type:FullName)
+
         ELSE
             SELF:LogTypeMessage("FindSystemType() "+name+" not found ")
         ENDIF

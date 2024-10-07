@@ -8,7 +8,7 @@
 // Note that not all properties are in the correct alphabetical order.
 // We try to keep them in the same order as in the ManagedCompiler class from Roslyn
 
-
+#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Globalization;

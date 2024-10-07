@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+#nullable disable
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using System;
@@ -98,7 +99,7 @@ namespace XSharp.Build
 
         private string FindRc(string toolName)
         {
-            return Path.Combine(Utilities.XSharpBinPath(), ToolName);
+            return Path.Combine(Utilities.XSharpBinDir(), ToolName);
         }
 
         /// <summary>

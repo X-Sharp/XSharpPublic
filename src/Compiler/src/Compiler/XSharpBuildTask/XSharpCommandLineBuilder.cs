@@ -105,7 +105,7 @@ namespace XSharp.Build
             }
         }
 
-        public new void AppendSwitchUnquotedIfNotNull(string switchName, string parameter)
+        public new void AppendSwitchUnquotedIfNotNull(string switchName, string? parameter)
         {
             if (parameter != null)
             {
@@ -132,7 +132,7 @@ namespace XSharp.Build
         }
 
         internal override void AppendSwitchIfNotNull(string switchName,
-            ITaskItem[] parameters, string[] metadataNames, bool[] treatAsFlags)      // May be null. In this case no metadata are treated as flags.
+            ITaskItem[] parameters, string[]? metadataNames, bool[]? treatAsFlags)      // May be null. In this case no metadata are treated as flags.
         {
             if (parameters != null)
             {

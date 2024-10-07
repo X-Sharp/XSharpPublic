@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+#nullable disable
 namespace XSharp.Build
 {
     internal class PropertyDictionary : Dictionary<string, object>

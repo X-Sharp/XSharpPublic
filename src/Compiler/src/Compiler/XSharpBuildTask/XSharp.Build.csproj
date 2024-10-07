@@ -4,7 +4,6 @@
     <UseXSharpKey>true</UseXSharpKey>
   </PropertyGroup>  
   <Import Project="..\CompilerCommon.props" />
-  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
@@ -13,13 +12,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.Build</RootNamespace>
     <AssemblyName>XSharp.Build</AssemblyName>
-    <TargetFrameworks>net472</TargetFrameworks>
+    <TargetFrameworks>net8.0;net472</TargetFrameworks>
     <DefaultLanguage>en-US</DefaultLanguage>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <ApplicationIcon>$(CommonDir)XSharpProject.ico</ApplicationIcon>
     <NoWarn>$(NoWarn);1573;1591;1701;RS0016</NoWarn>
   </PropertyGroup>
@@ -116,15 +115,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <PackageReference Include="System.Runtime" Version="4.3.1" />
-    <PackageReference Include="Microsoft.Build.Framework" Version="$(MicrosoftBuildFrameworkVersion)" ExcludeAssets="Runtime" />
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(MicrosoftBuildTasksCoreVersion)" ExcludeAssets="Runtime" />
-    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
-     <PackageReference Include="Microsoft.Win32.Registry" Version="4.3.0" />
-    <PackageReference Include="System.Security.AccessControl" Version="$(SystemSecurityAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+    <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="Runtime" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" ExcludeAssets="Runtime" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Rules\ApplicationPropertyPage.XSharp.xaml">

@@ -28,6 +28,7 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___popWorkarea)
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet)
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut)
+
     FUNCTION TestByRefPriv() AS VOID
         PRIVATE x
         VAR mc := CreateMacroCompiler()
@@ -69,6 +70,10 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "{|c|Send(c,#testmethodlate,@x), x}", Args(c), "b", typeof(STRING))
         x := "a"
         TestMacro(mc, "{|c|Send(c,#testmethodlate,ref x), x}", Args(c), "b", typeof(STRING))
+        TestMacro(mc,"{|a,b| a + b }", Args(1,2), 3, typeof(INT))
+        TestMacro(mc,"{|a as int,b as int| a + b }", Args(1,2), 3, typeof(INT))
+        RETURN
+
 
     FUNCTION VoTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         Console.WriteLine("Running VO tests ...")

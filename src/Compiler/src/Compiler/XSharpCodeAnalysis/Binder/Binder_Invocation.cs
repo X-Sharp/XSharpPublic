@@ -125,7 +125,7 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
         {
             // Handle PCall() and Chr() in this special method
             BoundExpression result;
-            var originalErrors = diagnostics.DiagnosticBag.AsEnumerable().ToArray();
+            var originalErrors = diagnostics.DiagnosticBag?.AsEnumerable().ToArray();
             if (TryBindNameofOperator(node, diagnostics, out result))
             {
                 return result; // all of the binding is done by BindNameofOperator
@@ -214,10 +214,10 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
             // Sometimes the /vo4 rules cause an ERR_AmbigCall
             // When there was no other error then we try again
             // See https://github.com/X-Sharp/XSharpPublic/issues/1211
-            if (diagnostics.HasAnyErrors() && Compilation.Options.HasOption(CompilerOption.VOSignedUnsignedConversion, node))
+            if (diagnostics.DiagnosticBag?.HasAnyErrors() is true && Compilation.Options.HasOption(CompilerOption.VOSignedUnsignedConversion, node))
             {
-                var hasAmbigCall = diagnostics.DiagnosticBag.AsEnumerable().Where(e => e.Code == (int)ErrorCode.ERR_AmbigCall).Any();
-                if (hasAmbigCall)
+                var hasAmbigCall = diagnostics.DiagnosticBag?.AsEnumerable().Where(e => e.Code == (int)ErrorCode.ERR_AmbigCall).Any();
+                if (hasAmbigCall is true)
                 {
                     // We have saved errors that were there before resolving the invocation expression in an array
                     try
@@ -228,7 +228,8 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
                     }
                     finally
                     {
-                        diagnostics.AddRange(originalErrors);
+                        if (originalErrors is not null)
+                            diagnostics.AddRange(originalErrors);
                         Compilation.Options.SuppressVo4 = false;
                     }
                 }

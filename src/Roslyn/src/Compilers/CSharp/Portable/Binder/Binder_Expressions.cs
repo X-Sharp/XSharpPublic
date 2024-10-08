@@ -7449,6 +7449,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindCheckedExpression(CheckedExpressionSyntax node, BindingDiagnosticBag diagnostics)
         {
             var binder = this.GetBinder(node);
+#if XSHARP
+            if (binder is null)
+                binder = this;
+#endif
             return binder.BindParenthesizedExpression(node.Expression, diagnostics);
         }
 

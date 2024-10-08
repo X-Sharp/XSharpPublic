@@ -585,7 +585,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             checkRefKinds(arguments, refKinds, exprs, rewrittenArgs, argTemps, argBoundTemps, properties, expanded, out var hasRef);
 
-            var rewrittenArgumentRefKindsOpt = argumentRefKindsOpt.Where((r,i) => i < origArgs.Length - 1).ToImmutableArray();
+            var rewrittenArgumentRefKindsOpt = argumentRefKindsOpt.IsDefault ? argumentRefKindsOpt : argumentRefKindsOpt.Where((r,i) => i < origArgs.Length - 1).ToImmutableArray();
             var rewrittenArguments = rewrittenArgs.ToImmutable();
             var aTemps = ArrayBuilder<LocalSymbol>.GetInstance();
             rewrittenArguments = collapseArguments(rewrittenArguments, origArgs, expanded);

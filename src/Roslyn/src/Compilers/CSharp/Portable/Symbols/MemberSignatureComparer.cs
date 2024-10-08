@@ -500,7 +500,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
 #if XSHARP
             TypeCompareKind compareKind = _typeComparison;
-            if (member1.Name == "Eval" && (member1.ContainingType.Name == "Codeblock" || member2.ContainingType.Name == "Codeblock"))
+            if ((member1.ContainingType.Name == "Codeblock" || member2.ContainingType.Name == "Codeblock") && member1.Name == "Eval")
             {
                 compareKind |= TypeCompareKind.IgnoreCustomModifiersAndArraySizesAndLowerBounds;
             }

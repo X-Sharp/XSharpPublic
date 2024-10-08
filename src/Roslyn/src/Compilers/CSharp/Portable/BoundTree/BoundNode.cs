@@ -435,6 +435,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     if (!boundConversion.Conversion.IsUserDefined)
                     {
+#if XSHARP
+                        if (boundConversion.Conversion == Conversion.ImplicitReference && boundConversion.WasCompilerGenerated &&
+                            boundConversion.Operand is BoundObjectCreationExpression o && o.Type.IsPszType())
+                        {
+                            return boundConversion.Conversion;
+                        }
+#endif
                         boundConversion = (BoundConversion)boundConversion.Operand;
                     }
 

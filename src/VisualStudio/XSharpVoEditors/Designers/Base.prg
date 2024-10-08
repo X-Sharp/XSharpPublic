@@ -221,11 +221,11 @@ CLASS DesignerBase
     			RETURN
     		ENDIF
     		IF lShow
-    			oGridForm:Show()
+                oGridForm:Show()
     			oToolForm:Show()
     			SELF:GiveFocus()
     		ELSE
-    			IF !SELF:oSurface:ContainsFocus
+    			IF !SELF:oSurface:CanFocus
     				oGridForm:Hide()
     				oToolForm:Hide()
     			END IF

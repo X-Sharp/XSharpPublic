@@ -14,7 +14,21 @@ VOSTRUCT testStruc
 	MEMBER n AS INT
 	MEMBER m AS INT
 
+#pragma options (allowdot, on)
+CLASS TestClass
+	PROPERTY System AS LOGIC AUTO
+	CONSTRUCTOR()
+		System.Diagnostics.Debug.WriteLine( "Hi" )
+END CLASS
+
 #pragma options (allowdot, off)
+CLASS TestClass2
+	PROPERTY System AS LOGIC AUTO
+	CONSTRUCTOR()
+		System.Diagnostics.Debug.WriteLine( "Hi" )
+END CLASS
+
+#pragma options (allowdot, on)
 FUNCTION Start( ) AS VOID
 	LOCAL testStruc IS testStruc
 	testStruc.n := 123 // error XS0120
@@ -25,8 +39,15 @@ FUNCTION Start( ) AS VOID
 	? bitmap.m // error XS0117
 RETURN
 
-CLASS TestClass
-	PROPERTY System AS LOGIC AUTO
-	CONSTRUCTOR()
-		System.Diagnostics.Debug.WriteLine( "Hi" )
-END CLASS
+#pragma options (allowdot, off)
+FUNCTION Start2( ) AS VOID
+	LOCAL testStruc IS testStruc
+	testStruc.n := 123 // error XS0120
+	? testStruc.n // error XS0120
+	
+	LOCAL bitmap IS testStruc
+	bitmap.m := 456 // error XS0117
+	? bitmap.m // error XS0117
+RETURN
+
+

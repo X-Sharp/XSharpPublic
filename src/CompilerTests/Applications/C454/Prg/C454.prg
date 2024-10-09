@@ -1,5 +1,7 @@
 // 454. error XS9002: Parser: unexpected input 'TEST'
 
+#pragma warnings(78, off) // 'l' suffix is easily confused with '1'
+
 #command TEST <expr> [OPTION <opt>] => DoTest(<expr> , <opt>)
 FUNCTION DoTest(a,b)
 	? a,b

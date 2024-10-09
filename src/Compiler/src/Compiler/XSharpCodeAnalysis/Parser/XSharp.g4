@@ -260,7 +260,7 @@ class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
                       END CLASS End=EOS
                     ;
 
-classModifiers      : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
+classModifiers      : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL | LOCAL) )+
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 

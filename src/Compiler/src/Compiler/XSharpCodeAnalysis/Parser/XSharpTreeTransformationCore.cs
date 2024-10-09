@@ -5228,6 +5228,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                     modifiers.AddCheckUnique(kw);
+                if (kw.Kind == SyntaxKind.FileKeyword)
+                    fixDefault = false;
             }
             if (fixDefault)
             {

@@ -1789,7 +1789,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case NAMESPACE:
                 case SCOPE:
                 case LOCK:
-                    if (lastToken != BEGIN && lastToken != END)
+                    if (lastToken != BEGIN && lastToken != END && !StartOfLine(lastToken))
                     {
                         return ID;
                     }

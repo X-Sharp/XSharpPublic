@@ -232,6 +232,8 @@ votypeModifiers     : ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE | STATIC ) 
 namespace_          : BEGIN NAMESPACE Name=name e=eos
                       (Entities+=entity)*
                       (END NAMESPACE End=EOS)?
+                    | NAMESPACE Name=name e=eos
+                      (Entities+=entity)*
                     ;
 
 interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?

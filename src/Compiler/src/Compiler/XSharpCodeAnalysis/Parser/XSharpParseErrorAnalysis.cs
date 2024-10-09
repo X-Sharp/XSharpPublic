@@ -968,7 +968,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitNamespace_([NotNull] XSharpParser.Namespace_Context context)
         {
-            checkMissingKeyword(context.End, context, "END NAMESPACE");
+            if (context.BEGIN() != null)
+                checkMissingKeyword(context.End, context, "END NAMESPACE");
         }
 
         public override void ExitClassvar([NotNull] XSharpParser.ClassvarContext context)

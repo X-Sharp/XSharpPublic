@@ -1648,6 +1648,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var parameterDefaultValue = parameter.ExplicitDefaultConstantValue;
                 if (InAttributeArgument && parameterDefaultValue?.IsBad == true)
                 {
+#if XSHARP
+                    Debug.Assert(false);
+#endif
                     diagnostics.Add(ErrorCode.ERR_BadAttributeArgument, syntax.Location);
                     return BadExpression(syntax).MakeCompilerGenerated();
                 }

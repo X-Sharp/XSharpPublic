@@ -255,7 +255,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 #if XSHARP
-            if (TypeSymbol.Equals(attributeType , Compilation.GetWellKnownType(WellKnownType.XSharp_Internal_DefaultParameterValueAttribute)) && analyzedArguments.ConstructorArguments.Arguments.Count == 2)
+            if (TypeSymbol.Equals(attributeType, Compilation.GetWellKnownType(WellKnownType.XSharp_Internal_DefaultParameterValueAttribute)) && analyzedArguments.ConstructorArguments.Arguments.Count == 2)
             {
                 var ca = analyzedArguments.ConstructorArguments.Arguments;
                 if (ca[0] is BoundConversion bcv && bcv.Operand is BoundFieldAccess bfa && bfa.FieldSymbol != null)
@@ -264,10 +264,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         var dv = new BoundLiteral(ca[0].Syntax, ConstantValue.Create(0L), Compilation.GetSpecialType(SpecialType.System_Int64));
                         ca[0] = new BoundConversion(ca[0].Syntax, dv, Conversion.Boxing, false, false,
-                            conversionGroupOpt: default, 
-                            constantValueOpt: default,
+                            conversionGroupOpt: null,
+                            constantValueOpt: null,
                             Compilation.ObjectType);
                         ca[1] = new BoundLiteral(ca[1].Syntax, ConstantValue.Create(5), Compilation.GetSpecialType(SpecialType.System_Int32));
+                        boundConstructorArguments = analyzedArguments.ConstructorArguments.Arguments.ToImmutable();
                     }
                 }
             }
@@ -767,7 +768,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return reorderedArguments.AsImmutable();
         }
 
-        #endregion
+#endregion
 
         #region AttributeExpressionVisitor
 

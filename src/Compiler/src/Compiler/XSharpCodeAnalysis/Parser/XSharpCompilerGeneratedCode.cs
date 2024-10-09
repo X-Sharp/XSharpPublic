@@ -315,7 +315,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var u in tmpUsings)
             {
                 var green = u.Green as UsingDirectiveSyntax;
-                trans.AddUsingWhenMissing(usingslist, green.NamespaceOrType, green.StaticKeyword != null, green.Alias);
+                trans.AddUsingWhenMissing(usingslist, green);
             }
 
             // For each unique name add a property

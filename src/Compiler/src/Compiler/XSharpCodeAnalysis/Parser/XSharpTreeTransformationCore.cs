@@ -1548,11 +1548,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return m;
 
         }
-        protected internal void AddUsingWhenMissing(TypeSyntax usingName, bool bStatic, NameEqualsSyntax alias)
+        protected internal void AddUsingWhenMissing(TypeSyntax usingName, bool bStatic, bool bGlobal, bool bUnsafe, NameEqualsSyntax alias)
         {
-            AddUsingWhenMissing(GlobalEntities.Usings, usingName, bStatic, alias);
+            AddUsingWhenMissing(GlobalEntities.Usings, usingName, bStatic, bGlobal, bUnsafe, alias);
         }
-        protected internal void AddUsingWhenMissing(SyntaxListBuilder<UsingDirectiveSyntax> usings, TypeSyntax usingName, bool bStatic, NameEqualsSyntax alias)
+        protected internal void AddUsingWhenMissing(SyntaxListBuilder<UsingDirectiveSyntax> usings, TypeSyntax usingName, bool bStatic, bool bGlobal, bool bUnsafe, NameEqualsSyntax alias)
         {
             bool found = false;
             for (int i = 0; i < usings.Count; i++)
@@ -1581,19 +1581,44 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (bStatic)
                     tokenStatic = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword);
 
-                usings.Add(_syntaxFactory.UsingDirective(null,
+                var u = _syntaxFactory.UsingDirective(
+                    bGlobal ? SyntaxFactory.MakeToken(SyntaxKind.GlobalKeyword) : null,
                     SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
                     tokenStatic,
-                    null, // TODO nvk: unsafeKeyword
+                    bUnsafe ? SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword) : null,
                     alias,
                     usingName,
-                    SyntaxFactory.SemicolonToken));
+                    SyntaxFactory.SemicolonToken);
+
+                if (bGlobal) // Global usings must come before local ones!
+                {
+                    for (int i = 0; i < usings.Count; i++)
+                    {
+                        if (usings[i].GlobalKeyword == null)
+                        {
+                            var t = usings[i];
+                            usings[i] = u;
+                            u = t;
+                        }
+                    }
+                }
+
+                usings.Add(u);
             }
+        }
+        protected internal void AddUsingWhenMissing(SyntaxListBuilder<UsingDirectiveSyntax> usings, UsingDirectiveSyntax u)
+        {
+            AddUsingWhenMissing(usings, u.NamespaceOrType, u.StaticKeyword != null, u.GlobalKeyword != null, u.UnsafeKeyword != null, u.Alias);
+        }
+
+        protected void AddUsingWhenMissing(UsingDirectiveSyntax u)
+        {
+            AddUsingWhenMissing(GlobalEntities.Usings, u);
         }
         protected void AddUsingWhenMissing(string name, bool bStatic, NameEqualsSyntax alias)
         {
             NameSyntax usingName = GenerateQualifiedName(name);
-            AddUsingWhenMissing(usingName, bStatic, alias);
+            AddUsingWhenMissing(usingName, bStatic, false, false, alias);
         }
 
         protected NamespaceDeclarationSyntax GenerateNamespace(string name, SyntaxList<MemberDeclarationSyntax> members)
@@ -2270,7 +2295,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var s = context.GetType().ToString();
             s = s.Substring(s.LastIndexOfAny(".+".ToCharArray())+1);
             s = s.Replace("Context","");
-            Trace.WriteLine(string.Format("{0}=> ({1},{2}) {3} [{4}] <{5}>",new string(' ',context.Depth()),context.Start.Line,context.Start.Column,s,context.Start.Text,XP.DefaultVocabulary.GetSymbolicName(context.Start.Type)));
+            System.Diagnostics.Trace.WriteLine(string.Format("{0}=> ({1},{2}) {3} [{4}] <{5}>",new string(' ',context.Depth()),context.Start.Line,context.Start.Column,s,context.Start.Text,XP.DefaultVocabulary.GetSymbolicName(context.Start.Type)));
 #endif
 
             if (context is XP.IEntityContext ent)
@@ -2350,7 +2375,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (s is UsingDirectiveSyntax)
                 {
                     var u = s as UsingDirectiveSyntax;
-                    AddUsingWhenMissing(u.NamespaceOrType, u.StaticKeyword != null, u.Alias);
+                    AddUsingWhenMissing(u);
                 }
                 else if (s is AttributeListSyntax)
                 {
@@ -2532,7 +2557,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else if (s is UsingDirectiveSyntax)
             {
                 var u = s as UsingDirectiveSyntax;
-                AddUsingWhenMissing(u.NamespaceOrType, u.StaticKeyword != null, u.Alias);
+                AddUsingWhenMissing(u);
             }
             else if (s is AttributeListSyntax)
             {
@@ -2785,7 +2810,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitUsing_([NotNull] XP.Using_Context context)
         {
             context.Put(_syntaxFactory.UsingDirective(
-                globalKeyword: default, // TODO nvk
+                globalKeyword: context.Global?.SyntaxKeyword(),
                 usingKeyword: SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
                 staticKeyword: context.Static?.SyntaxKeyword(),
                 unsafeKeyword: default, // TODO nvk

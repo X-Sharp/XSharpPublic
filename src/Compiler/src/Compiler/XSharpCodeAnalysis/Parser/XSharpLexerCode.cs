@@ -1876,7 +1876,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     return ID;
 
                 case GLOBAL:
-                    if (keyword == CONST)    // GLOBAL CONST Id
+                    if (keyword == CONST || keyword == USING)    // GLOBAL CONST Id
                         return keyword;
                     return ID;
 

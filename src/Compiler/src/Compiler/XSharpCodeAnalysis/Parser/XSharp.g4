@@ -174,7 +174,7 @@ funcprocModifiers   : ( Tokens+=(STATIC | INTERNAL | PUBLIC | EXPORT | UNSAFE | 
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 
-using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoperator)? Name=name EOS
+using_              : (Global=GLOBAL)? USING (Static=STATIC)? (Alias=identifierName Op=assignoperator)? Name=name EOS
                     ;
 
 

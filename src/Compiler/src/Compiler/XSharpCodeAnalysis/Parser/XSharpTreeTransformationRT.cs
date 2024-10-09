@@ -498,7 +498,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var arrayName = _syntaxFactory.IdentifierName(arrayId);
                 var typeparam = _syntaxFactory.TypeArgumentList(SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
                     MakeSeparatedList(UsualType), SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken));
-                AddUsingWhenMissing(GenerateQualifiedName("System.Collections.Generic"), false, null);
+                AddUsingWhenMissing(GenerateQualifiedName("System.Collections.Generic"), false, false, false, null);
 
                 var genlist = _syntaxFactory.GenericName(SyntaxFactory.Identifier("List"), typeparam);
                 var createExpr = _syntaxFactory.ObjectCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
@@ -1549,7 +1549,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     foreach (var u in element.Usings)
                     {
                         var green = u.Green as UsingDirectiveSyntax;
-                        this.AddUsingWhenMissing(usingslist, green.NamespaceOrType, green.StaticKeyword != null, green.Alias);
+                        this.AddUsingWhenMissing(usingslist, green);
                     }
                 }
             }

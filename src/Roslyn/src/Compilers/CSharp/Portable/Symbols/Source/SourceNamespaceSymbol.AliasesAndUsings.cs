@@ -732,10 +732,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             {
                                 if (usingAliasesMap == null)
                                 {
-#if XSHARP
-// TODO nvk: case-insensitive map: usingAliases = ImmutableDictionary.CreateBuilder<string, AliasAndUsingDirective>(new AliasAndUsingDirectiveComparer());
-#endif
                                     usingAliasesMap = globalUsingAliasesMap.ToBuilder();
+#if XSHARP
+                                    usingAliasesMap.KeyComparer = new AliasAndUsingDirectiveComparer();
+#endif
                                 }
 
                                 usingAliasesMap.Add(identifierValueText, aliasAndDirective);

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-03T02:42:10.989+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-09T19:43:46.628+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -96,10 +96,13 @@
       <li styleclass="Normal">The Clipboard item in the main XIDE window statusbar now shows the current clipboard contents in a tooltip </li>
       <li styleclass="Normal">The Clipboard selection context menu now displays also the contents of every virtual clipboard</li>
       <li styleclass="Normal">Some small corrections to the Plugin System (you may need to recompile your plugins)</li>
+      <li styleclass="Normal">Added Plugin:OnAfterCompileApplication(oApp AS Application, eResult AS CompileResult) callback method in the plugin system</li>
       <li styleclass="Normal">Added Open Bin Folder context menu option for the project node in the Project tool window</li>
       <li styleclass="Normal">Added option to the windows resource editor to include strings and text files</li>
       <li styleclass="Normal">Added application templates for FoxPro, XBase++ and Harbour dialects</li>
       <li styleclass="Normal">Now application templates shown in the New Application dialog are sorted by the GalleryIndex setting of each gallery file template </li>
+      <li styleclass="Normal">Implemented new menu options View|Load/Save/Reset Layout, for switching between different layouts for the IDE window and tool windows</li>
+      <li styleclass="Normal">Added some new templates (code snippets) in template.cfg</li>
       <li styleclass="Normal">Improved the About XIDE dialog</li>
     </list>
     <para styleclass="Heading3">Editor</para>
@@ -118,6 +121,8 @@
       <li styleclass="Normal">Added intellisense support for Nullable types specified with the ? postfix, for example INT?</li>
       <li styleclass="Normal">Added intellisense support for the ?: operator</li>
       <li styleclass="Normal">Added intellisense support for IF &lt;identifier&gt; IS &lt;type&gt; VAR &lt;local&gt;</li>
+      <li styleclass="Normal">Added option (Preferences/Editor/Edit) to automatically adjust numeric literals containing underscores</li>
+      <li styleclass="Normal">Added context menu Surround with options for REPEAT..UNTIL and BEGIN SCOPE...END</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">Designers</para>

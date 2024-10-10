@@ -2343,14 +2343,6 @@ outerDefault:
                 return (m1ModifierCount < m2ModifierCount) ? BetterResult.Left : BetterResult.Right;
             }
 
-#if XSHARP
-            result = PreferValOverInOrRefInterpolatedHandlerParameters(arguments, m1, m1LeastOverriddenParameters, m2, m2LeastOverriddenParameters);
-            if (result == BetterResult.Neither)
-            {
-                result = XsPreferMostDerived(arguments, m1, m2, ref useSiteInfo);
-            }
-            return result;
-#else
             // Otherwise, prefer methods with 'val' parameters over 'in' parameters and over 'ref' parameters when the argument is an interpolated string handler.
             result = PreferValOverInOrRefInterpolatedHandlerParameters(arguments, m1, m1LeastOverriddenParameters, m2, m2LeastOverriddenParameters);
 
@@ -2358,7 +2350,6 @@ outerDefault:
             {
                 return result;
             }
-#endif
 
             // Params collection better-ness
             if (m1.Result.Kind == MemberResolutionKind.ApplicableInExpandedForm && m2.Result.Kind == MemberResolutionKind.ApplicableInExpandedForm)
@@ -2397,6 +2388,13 @@ outerDefault:
                 }
             }
 
+#if XSHARP
+            result = XsPreferMostDerived(arguments, m1, m2, ref useSiteInfo);
+            if (result != BetterResult.Neither)
+            {
+                return result;
+            }
+#endif
             return BetterResult.Neither;
 
             // Returns the parameter type (considering params).

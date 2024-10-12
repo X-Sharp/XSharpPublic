@@ -7440,7 +7440,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             context.StmtBlk.Get<BlockSyntax>());
                         break;
                     case XP.USING:
-                        node = _syntaxFactory.UsingStatement(attributeLists: default, awaitKeyword: null, token.SyntaxKeyword(),
+                        node = _syntaxFactory.UsingStatement(attributeLists: default,
+                               awaitKeyword: context.a?.SyntaxKeyword(),
+                               token.SyntaxKeyword(),
                                SyntaxFactory.OpenParenToken,
                                context.VarDecl?.Get<VariableDeclarationSyntax>(),
                                context.Expr?.Get<ExpressionSyntax>(),

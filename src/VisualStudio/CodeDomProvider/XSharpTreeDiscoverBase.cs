@@ -261,42 +261,34 @@ namespace XSharp.CodeDom
         }
         #endregion
 
-        private void _EnterSource(IToken start)
+
+        private void _EnterSource(IList<XSharpParser.EntityContext> entities, IToken start)
         {
+            foreach (var ent in entities)
+            {
+                var sourcefile = ent.Start.TokenSource.SourceName;
+                if (string.Compare(sourcefile, CurrentFile, true) == 0)
+                {
+                    start = ent.Start;
+                    break;
+                }
+            }
             var source = (XSharpLexer)start.TokenSource;
             source.Reset();
             _tokens = source.GetAllTokens();
-
         }
-
         public override void EnterSource([NotNull] XSharpParser.SourceContext context)
         {
             // fetch the first token that is from OUR file (exclude tokens from the header files)
-            IToken start= context.Start;
-            foreach (var ent in context._Entities)
-            {
-                var sourcefile = ent.Start.TokenSource.SourceName;
-                if (string.Compare(sourcefile, CurrentFile, true) == 0)
-                {
-                    start = ent.Start;
-                    break;
-                }
-            }
-            _EnterSource(start);
+            IToken start = context.Start;
+            _EnterSource(context._Entities, start);
         }
+
+
         public override void EnterFoxsource([NotNull] XSharpParser.FoxsourceContext context)
         {
             IToken start = context.Start;
-            foreach (var ent in context._Entities)
-            {
-                var sourcefile = ent.Start.TokenSource.SourceName;
-                if (string.Compare(sourcefile, CurrentFile, true) == 0)
-                {
-                    start = ent.Start;
-                    break;
-                }
-            }
-            _EnterSource(start);
+            _EnterSource(context._Entities, start);
         }
 
 

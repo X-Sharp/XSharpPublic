@@ -271,11 +271,32 @@ namespace XSharp.CodeDom
 
         public override void EnterSource([NotNull] XSharpParser.SourceContext context)
         {
-            _EnterSource(context.Start);
+            // fetch the first token that is from OUR file (exclude tokens from the header files)
+            IToken start= context.Start;
+            foreach (var ent in context._Entities)
+            {
+                var sourcefile = ent.Start.TokenSource.SourceName;
+                if (string.Compare(sourcefile, CurrentFile, true) == 0)
+                {
+                    start = ent.Start;
+                    break;
+                }
+            }
+            _EnterSource(start);
         }
         public override void EnterFoxsource([NotNull] XSharpParser.FoxsourceContext context)
         {
-            _EnterSource(context.Start);
+            IToken start = context.Start;
+            foreach (var ent in context._Entities)
+            {
+                var sourcefile = ent.Start.TokenSource.SourceName;
+                if (string.Compare(sourcefile, CurrentFile, true) == 0)
+                {
+                    start = ent.Start;
+                    break;
+                }
+            }
+            _EnterSource(start);
         }
 
 

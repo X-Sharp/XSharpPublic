@@ -66,14 +66,16 @@ FUNCTION Start() AS VOID STRICT
     ENDIF
 
         DELETE FROM employee where EmpID = 1
-        DELETE FROM Database!employee where EmpID = 1
+    
+        //DELETE FROM Database!employee where EmpID = 1
+        
         DELETE  MyProducts FROM MSRPList ;
            WHERE MSRPList.ProdID = MyProducts.ProdID;
             AND MSRPList.discontinued = .t.
 
-        DELETE  DB!MyProducts FROM DB!MSRPList ;
-           WHERE MSRPList.ProdID = MyProducts.ProdID;
-            AND MSRPList.discontinued = .t.
+//         DELETE  DB!MyProducts FROM DB!MSRPList ;
+//            WHERE MSRPList.ProdID = MyProducts.ProdID;
+//             AND MSRPList.discontinued = .t.
 
         UPDATE MyProducts SET MSRP=MyUpdates.MSRP FROM MyUpdates WHERE MyProducts.ProdID=MyUpdates.ProdID
         UPDATE products ;

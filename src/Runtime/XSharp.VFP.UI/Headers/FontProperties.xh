@@ -43,7 +43,8 @@
 				SELF:Font := newFont
 			ENDIF
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Font is bold")];
-		PROPERTY FontBold AS LOGIC
+		[System.ComponentModel.DefaultValue(FALSE)];
+        PROPERTY FontBold AS LOGIC
 			GET
 				VAR ft := SELF:Font
 				IF ft != NULL
@@ -59,6 +60,7 @@
 
 		// Todo
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Font is italic")];
+        [System.ComponentModel.DefaultValue(FALSE)];
 		PROPERTY FontItalic AS LOGIC
 			GET
 				VAR ft := SELF:Font
@@ -75,7 +77,8 @@
 
 		// Todo
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Font is underline")];
-		PROPERTY FontUnderline AS LOGIC
+        [System.ComponentModel.DefaultValue(FALSE)];
+        PROPERTY FontUnderline AS LOGIC
 			GET
 				VAR ft := SELF:Font
 				IF ft != NULL
@@ -91,7 +94,8 @@
 
 		// Todo
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Font is strikethru")];
-		PROPERTY FontStrikeThru AS LOGIC
+		[System.ComponentModel.DefaultValue(FALSE)];
+        PROPERTY FontStrikeThru AS LOGIC
 			GET
 				VAR ft := SELF:Font
 				IF ft != NULL
@@ -107,7 +111,8 @@
 
 		// Todo
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the Font size")];
-		PROPERTY FontSize AS Single
+		[System.ComponentModel.DefaultValue(9)];
+        PROPERTY FontSize AS Single
 			GET
 				VAR ft := SELF:Font
 				IF ft != NULL
@@ -127,7 +132,8 @@
 
 		// Todo
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the Font Name")];
-		PROPERTY FontName AS STRING
+		[System.ComponentModel.DefaultValue("Arial")];
+        PROPERTY FontName AS STRING
 			GET
 				VAR ft := SELF:Font
 				IF ft != NULL

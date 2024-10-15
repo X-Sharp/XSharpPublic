@@ -5,7 +5,8 @@
 
 
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Activate the ToolTip")];
-		PROPERTY ShowTips AS LOGIC
+		[System.ComponentModel.DefaultValue(TRUE)];
+        PROPERTY ShowTips AS LOGIC
 			GET
 				IF SELF:_vfpToolTip != NULL
 					RETURN SELF:_vfpToolTip:Active

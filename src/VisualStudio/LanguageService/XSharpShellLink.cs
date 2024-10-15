@@ -542,6 +542,8 @@ namespace XSharp.LanguageService
         {
             foreach(var child in parent.Children)
             {
+                if (child is null)
+                    continue;
                 if (child is Project project)
                 {
                     if (string.Compare(project.FullPath, sUrl, StringComparison.OrdinalIgnoreCase) == 0)

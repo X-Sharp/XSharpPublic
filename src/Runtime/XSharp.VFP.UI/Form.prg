@@ -56,19 +56,24 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the Text of the Form (Title)")];
-		PROPERTY Caption AS STRING GET SELF:Text SET SELF:Text :=VALUE
+[System.ComponentModel.DefaultValue("")];
+        PROPERTY Caption AS STRING GET SELF:Text SET SELF:Text :=VALUE
 
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Map to MaximizeBox")];
-		PROPERTY MaxButton AS LOGIC GET SELF:MaximizeBox SET SELF:MaximizeBox := VALUE
+        [System.ComponentModel.DefaultValue(true)];
+        PROPERTY MaxButton AS LOGIC GET SELF:MaximizeBox SET SELF:MaximizeBox := VALUE
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Map to MinimizeBox")];
-		PROPERTY MinButton AS LOGIC GET SELF:MinimizeBox SET SELF:MinimizeBox := VALUE
+        [System.ComponentModel.DefaultValue(true)];
+        PROPERTY MinButton AS LOGIC GET SELF:MinimizeBox SET SELF:MinimizeBox := VALUE
 
 			// Todo Add/Remove the Close item to the System Menu
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Indicate if ControlBox is visible")];
-		PROPERTY Closable AS LOGIC GET SELF:ControlBox SET SELF:ControlBox := VALUE
+        [System.ComponentModel.DefaultValue(true)];
+        PROPERTY Closable AS LOGIC GET SELF:ControlBox SET SELF:ControlBox := VALUE
 
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Set the FormBorderStyle")];
-		PROPERTY TitleBar AS INT
+        [System.ComponentModel.DefaultValue(1)];
+        PROPERTY TitleBar AS INT
 		SET
 			IF ( VALUE == 0 )
 				SELF:FormBorderStyle := FormBorderStyle.None
@@ -79,7 +84,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		END PROPERTY
 
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Indicate if the Form is MDI")];
-		PROPERTY MDIForm AS LOGIC AUTO := FALSE
+        [System.ComponentModel.DefaultValue(false)];
+        PROPERTY MDIForm AS LOGIC AUTO := FALSE
 
 		// Ok,BindControls, but it seems that Grids are Binding based on RecordSource setting..??
 		PROPERTY BindControls AS LOGIC AUTO
@@ -201,7 +207,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		PRIVATE _VFPLoad AS VFPOverride
 		[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the Load method. Occurs just before an object is created.")];
-		PROPERTY vfpLoad AS STRING GET _VFPLoad?:SendTo SET SELF:Set_Load( VFPOverride{SELF, VALUE} )
+        [System.ComponentModel.DefaultValue("")];
+        PROPERTY vfpLoad AS STRING GET _VFPLoad?:SendTo SET Set_Load( VFPOverride{SELF, VALUE} )
 
 		METHOD Set_Load( methodCall AS VFPOverride ) AS VOID
 			SELF:Load += System.EventHandler{ SELF, @OnVFPLoadCall() }
@@ -215,7 +222,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		PRIVATE _VFPQueryUnload AS VFPOverride
 		[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the QueryUnload method. Occurs before a form is unloaded.")];
-		PROPERTY vfpQueryUnLoad AS STRING GET _VFPQueryUnload?:SendTo SET SELF:Set_QueryUnload( VFPOverride{SELF, VALUE} )
+        [System.ComponentModel.DefaultValue("")];
+        PROPERTY vfpQueryUnLoad AS STRING GET _VFPQueryUnload?:SendTo SET Set_QueryUnload( VFPOverride{SELF, VALUE} )
 
 		METHOD Set_QueryUnload( methodCall AS VFPOverride ) AS VOID
 			SELF:FormClosing += System.Windows.Forms.FormClosingEventHandler{ SELF, @OnVFPQueryUnload() }

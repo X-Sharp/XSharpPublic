@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-15T12:36:44.691+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-15T13:29:46.758+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -32,6 +32,7 @@
       <li styleclass="Normal">Fixed several issues with the /vo9 (handle missing RETURN statements and return values) compiler option (#1544)</li>
       <li styleclass="Normal">Fixed problem with using attributes in CLASS Statement in the FoxPro dialect (#1566)</li>
       <li styleclass="Normal">We have fixed an issue in the build system that would sometimes lead to a recompilation, even when nothing was changed.</li>
+      <li styleclass="Normal">The compiler could crash when building a solution that has a .editorconfig file</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="Heading3">Bug fixes</para>

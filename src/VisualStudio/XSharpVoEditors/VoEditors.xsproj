@@ -17,6 +17,7 @@
     <VO3>true</VO3>
     <NamedArgs>False</NamedArgs>
     <StartupObject />
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <WarningLevel>4</WarningLevel>

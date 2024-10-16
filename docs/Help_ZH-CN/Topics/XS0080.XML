@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-20T13:40:38.929+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0080</title>
   <keywords>
     <keyword>XS0080</keyword>
@@ -9,7 +9,8 @@
     <header>
       <para styleclass="Heading1">Error XS0080</para>
     </header>
-    <para styleclass="Normal">Constraints are not allowed on non-generic declarations</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在非泛型声明上不允许使用约束</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

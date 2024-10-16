@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-29T22:42:18.842+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T11:45:43.252+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SWITCH 语句</title>
   <keywords>
     <keyword>Branching</keyword>
@@ -38,7 +38,7 @@
     </list>
     <para styleclass="Body Text">这两种类型的 SWITCH 语句都可以通过 WHEN 过滤器来增强。</para>
     <para styleclass="Body Text">如果没有 WHEN 过滤器，则每个 CASE 行必须是 &quot;唯一 &quot;的，因此没有两个 CASE 可以具有相同的常量值或相同的数据类型。如果添加了 WHEN 过滤器，就可以做到这一点。</para>
-    <para styleclass="Body Text">编译器在生成代码时可能（也会）重新排列 CASE 标签的顺序，例如将两个具有相同常量值和 WHEN 过滤器的 CASE 合并。这些标签可以合并为一个带有嵌入式 IF 语句的 CASE 标签。</para>
+    <para styleclass="Body Text">编译器在生成代码时可能(也会)重新排列 CASE 标签的顺序，例如将两个具有相同常量值和 WHEN 过滤器的 CASE 合并。这些标签可以合并为一个带有嵌入式 IF 语句的 CASE 标签。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">执行一直进行到遇到下一个 CASE、OTHERWISE 或 END SWITCH，然后控制分支到下一个 ENDCASE 语句后的第一个语句。</para>
     <para styleclass="Body Text">控制结构可以嵌套到任何深度。唯一的要求是每个控制结构都必须正确嵌套。</para>

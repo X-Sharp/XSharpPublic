@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-28T01:14:44.588+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T11:41:44.022+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>MEMVAR 语句</title>
   <keywords>
     <keyword>Compiledeclaration</keyword>
@@ -25,7 +25,7 @@
     <para styleclass="Normal">当使用 MEMVAR 语句声明变量时，对 &lt;idMemvarList&gt; 中变量的无标记引用将被视为在其前面使用了特殊的内存变量别名 </para>
     <para styleclass="Normal">(_MEMVAR-&gt;)。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">与其他变量声明语句（如 LOCAL 和 FIELD）一样，必须将 MEMVAR 语句放在所定义例程的任何可执行语句（包括 PRIVATE、PUBLIC 和 PARAMETERS）之前。 MEMVAR 语句对宏运算符没有影响，宏运算符总是假定内存变量。</para>
+    <para styleclass="Normal">与其他变量声明语句(如 LOCAL 和 FIELD)一样，必须将 MEMVAR 语句放在所定义例程的任何可执行语句(包括 PRIVATE、PUBLIC 和 PARAMETERS)之前。 MEMVAR 语句对宏运算符没有影响，宏运算符总是假定内存变量。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">MEMVAR 语句既不创建变量，也不验证变量的存在。 其主要目的是确保正确引用运行时已知存在的变量。 如果在变量创建之前试图访问它们，将引发运行时错误。</para>
     <para styleclass="Heading1">示例</para>

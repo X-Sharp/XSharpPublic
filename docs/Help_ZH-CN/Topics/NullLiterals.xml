@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-10T21:20:01.234+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-27T12:45:54.904+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Null 字面量</title>
   <keywords>
     <keyword>Literals</keyword>
@@ -118,7 +118,7 @@
           <para styleclass="Body Text">NULL_STRING</para>
         </td>
         <td style="width:561px;">
-          <para styleclass="Normal">字符串的 NULL 引用。当使用编译器选项 /vo2 时，这将等同于 String.Empty</para>
+          <para styleclass="Normal">字符串的 NULL 引用。当使用编译器选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">/vo2</link> 时，这将等同于 String.Empty</para>
         </td>
         <td>
           <para styleclass="Normal">N</para>

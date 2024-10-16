@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-08T10:42:10.957+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:21:28.071+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Build Events(生成事件)()</title>
   <body>
     <header>
       <para styleclass="Heading1">Build Events(生成事件)()</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">在 &quot;生成事件 &quot;属性页面，你可以指定需要在编译过程之前或之后运行的命令行。</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">在 &quot;生成事件&quot; 属性页面，你可以指定需要在编译过程之前或之后运行的命令行。</text></para>
     <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">例如，您可以用它来运行一个生成源代码的工具，或将输出 DLL 复制到另一个文件夹。</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Image Caption">s</text><image src="ProjectPropertiesBuildEvent.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>

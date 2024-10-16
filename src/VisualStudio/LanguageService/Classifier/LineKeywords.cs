@@ -25,8 +25,13 @@ namespace XSharp.LanguageService
             IToken lastModifier = null;
             if (tokens?.Count > 0)
             {
-                foreach (var token in tokens)
+                foreach (var t in tokens)
                 {
+                    var token = t;
+                    if ( token.Type == XSharpLexer.UDC_KEYWORD)
+                    {
+                        token = ((XSharpToken)token).Original;
+                    }
                     if (token.Type == XSharpLexer.LBRKT)
                     {
                         firstkw = token;

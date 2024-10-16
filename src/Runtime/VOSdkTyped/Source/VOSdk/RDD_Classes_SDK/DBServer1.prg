@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-#pragma options ("enforceself", on)
+
 #pragma warnings(165, off)
 
 PARTIAL CLASS DbServer
@@ -500,7 +500,7 @@ METHOD Average( acbExpression AS USUAL, cbForBlock := NIL AS USUAL, cbWhileBlock
 			ENDIF
 			SELF:__DbServerEval( { || iCount += 1, __IterateForSum( acbExpr, aResults ) },  ;
 				NIL,                   ;
-				{| | Eval( cbKey ) = uValue },  ;
+				{| | XSharp.RT.Functions.Eval( cbKey ) = uValue },  ;
 				NIL,                   ;
 				NIL,                   ;
 				TRUE,  ;
@@ -585,7 +585,7 @@ DESTRUCTOR( )
 
 /// <include file="Rdd.xml" path="doc/DbServer.BLOBDirectExport/*" />
 METHOD BLOBDirectExport( nPointer AS LONG, oFSTarget AS FileSpec, kMode := BLOB_EXPORT_OVERWRITE AS LONG) AS USUAL
-    RETURN BLOBDirectExport(nPointer, oFSTarget:FullPath, kMode)
+    RETURN XSharp.RT.Functions.BLOBDirectExport(nPointer, oFSTarget:FullPath, kMode)
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.BLOBDirectExport/*" />
@@ -647,7 +647,7 @@ METHOD BLOBDirectGet( nPointer AS LONG, nStart AS LONG, nCount AS LONG) AS USUAL
 
 /// <include file="Rdd.xml" path="doc/DbServer.BLOBDirectImport/*" />
 METHOD BLOBDirectImport( nPointer AS LONG, oFSSource AS FileSpec) AS USUAL
-    RETURN BLOBDirectImport(nPointer, oFSSource:FullPath)
+    RETURN XSharp.RT.Functions.BLOBDirectImport(nPointer, oFSSource:FullPath)
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.BLOBDirectImport/*" />
@@ -818,7 +818,7 @@ METHOD BLOBImport( uField, oFSSource ) AS LOGIC CLIPPER
 		ELSE
 			cTarget := oFSSource
 		ENDIF
-		symFieldName:= FieldSym( wPos )
+		symFieldName:= XSharp.RT.Functions.FieldSym( wPos )
 		IF nEffectiveCCMode == ccOptimistic .AND. ( nCurRec := VoDbRecno( ) ) <= VoDbLastRec( )
 			IF SELF:__RLockVerify( )
 				lRetCode := VoDbFilePut( wPos, cTarget )
@@ -1285,7 +1285,7 @@ METHOD Continue( ) AS LOGIC STRICT
 
 
 			IF lSelectionActive
-				IF Eval( cbSelectionIndexingExpression ) = uSelectionValue
+				IF XSharp.RT.Functions.Eval( cbSelectionIndexingExpression ) = uSelectionValue
 					siSelectionStatus := DBSELECTIONFOUND
 				ELSE
 					siSelectionStatus := DBSELECTIONEOF

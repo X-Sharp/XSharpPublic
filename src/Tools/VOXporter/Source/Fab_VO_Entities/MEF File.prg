@@ -9,11 +9,13 @@ USING System.Text
 USING FabToolsNS
 
 DEFINE BINARY_WED := 10
-DEFINE BINARY_MED := 16
-DEFINE BINARY_FED := 14
 DEFINE BINARY_DED := 11
 DEFINE BINARY_FLD := 12
 DEFINE BINARY_IND := 13
+DEFINE BINARY_FED := 14
+DEFINE BINARY_SED := 15 // SQL Editor
+DEFINE BINARY_MED := 16
+DEFINE BINARY_REP := 17 // Caret Report
 DEFINE BINARY_ORD := 30
 
 CLASS Designer
@@ -56,7 +58,9 @@ CLASS Designer
 			CASE BINARY_WED		// Window
 			CASE BINARY_MED		// Menu
 			CASE BINARY_FED		// FieldSpec
-			CASE BINARY_DED		// DBServer
+         CASE BINARY_DED		// DBServer
+         CASE BINARY_SED
+         CASE BINARY_REP
 				RETURN TRUE
 			END SWITCH
 			RETURN FALSE
@@ -82,6 +86,10 @@ CLASS Designer
 				RETURN ".xsmnu"
 			CASE BINARY_FED
 				RETURN ".xsfs"
+			CASE BINARY_SED
+				RETURN ".xssql"
+			CASE BINARY_REP
+				RETURN ".xsrep"
 			CASE BINARY_DED
 				RETURN ".xsdbs"
 			CASE BINARY_FLD
@@ -432,7 +440,8 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 				    ? nCurrentType
 				    IF nCurrentType == BINARY_MED .OR. nCurrentType == BINARY_WED .OR. ;
 				    	 nCurrentType == BINARY_DED .OR. nCurrentType == BINARY_FED .OR. ;
-				    	 nCurrentType == BINARY_FLD .OR. nCurrentType == BINARY_IND .OR. nCurrentType == BINARY_ORD
+                   nCurrentType == BINARY_FLD .OR. nCurrentType == BINARY_IND .OR. ;
+                   nCurrentType == BINARY_ORD .OR. nCurrentType == BINARY_SED .OR. nCurrentType == BINARY_REP
 				    	oCurrentDesigner := Designer{cCurrentName , nCurrentType}
 				    	SELF:aDesigners:Add(oCurrentDesigner)
 				    END IF

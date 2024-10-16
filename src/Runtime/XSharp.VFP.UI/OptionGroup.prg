@@ -58,7 +58,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 
 		CONSTRUCTOR(  )
-			InitializeComponent()
+			SELF:InitializeComponent()
 			//
             SELF:buttons := List<OptionButton>{}
             SELF:Size := Size{10,15}

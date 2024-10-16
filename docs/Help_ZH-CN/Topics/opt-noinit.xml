@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-01T19:55:44.825+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.340+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-noinit</title>
   <keywords>
     <keyword>$Exit</keyword>
@@ -30,6 +30,6 @@
     <para styleclass="Normal">这种机制还能保证引用程序集中的类在运行时可用，即使你没有在代码中明确引用这些类，你也可以用 CreateInstance() 来实例化这些类。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">编译器选项 -noinit 会抑制空 $Init1() 和 $Exit() 函数的生成。因此，如果不引用这些程序集的代码，就不会出现与外部程序集的硬链接。</para>
-    <para styleclass="Normal">如果在只包含定义的程序集中使用这些编译器选项，那么定义将在编译时解析，运行时无需包含程序集（除非这些定义包含需要在运行时解析的值，如符号或日期值）。</para>
+    <para styleclass="Normal">如果在只包含定义的程序集中使用这些编译器选项，那么定义将在编译时解析，运行时无需包含程序集(除非这些定义包含需要在运行时解析的值，如符号或日期值)。</para>
   </body>
 </topic>

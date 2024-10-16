@@ -20,11 +20,11 @@ STATIC METHOD SqlConnect(nStatementHandle AS LONG) AS LONG
     LOCAL oStmt AS XSharp.VFP.SQLStatement
     oStmt := SQLSupport.FindStatement(nStatementHandle)
     IF oStmt == NULL_OBJECT
-        THROW Error{oVFPErrorMessage(VFPErrors.STATEMENT_HANDLE_INVALID, nStatementHandle)}
+        THROW Error{oVFPErrorMessage(VFPErrors.VFP_STATEMENT_HANDLE_INVALID, nStatementHandle)}
     ENDIF
     // This should open a connection automatically since the previous connection as already validated
     IF ! oStmt:Connection:Shared
-        THROW Error{oVFPErrorMessage(VFPErrors.STATEMENT_HANDLE_NOTSHARED, nStatementHandle)}
+        THROW Error{oVFPErrorMessage(VFPErrors.VFP_STATEMENT_HANDLE_NOTSHARED, nStatementHandle)}
     ENDIF
     oStmt := XSharp.VFP.SQLStatement{oStmt:Connection}
     nStatementHandle := SQLSupport.AddStatement(oStmt)
@@ -93,7 +93,7 @@ STATIC METHOD SqlExec( nStatementHandle AS LONG, cSQLCommand := "" AS STRING, cC
     IF oStmt != NULL
         IF String.IsNullOrEmpty(cSQLCommand)
             IF ! oStmt:Prepared .AND. ! oStmt:Asynchronous
-                VAR cMessage := oVFPErrorMessage(VFPErrors.COMMAND_PARAMETER_REQUIRED)
+                VAR cMessage := oVFPErrorMessage(VFPErrors.VFP_COMMAND_PARAMETER_REQUIRED)
                 THROW Error{cMessage}
             ENDIF
             prepared := TRUE
@@ -148,7 +148,7 @@ STATIC METHOD SqlPrepare( nStatementHandle AS LONG, cSQLCommand AS STRING, cCurs
     VAR oStmt := GetStatement(nStatementHandle)
     IF oStmt != NULL
         IF String.IsNullOrEmpty(cSQLCommand)
-            VAR cMessage := oVFPErrorMessage(VFPErrors.COMMAND_PARAMETER_REQUIRED)
+            VAR cMessage := oVFPErrorMessage(VFPErrors.VFP_COMMAND_PARAMETER_REQUIRED)
             THROW Error{cMessage}
         ENDIF
         VAR result := oStmt:Prepare(cSQLCommand, cCursorName)
@@ -233,7 +233,7 @@ STATIC METHOD SqlColumns( nStatementHandle AS LONG, cTableName AS STRING, cType 
     IF oStmt != NULL
        cType := cType:Trim():ToUpper()
        IF cType != "FOXPRO"  .AND. cType != "NATIVE"
-            VAR cMessage := oVFPErrorMessage(VFPErrors.SQLCOLUMNS_CTYPE)
+            VAR cMessage := oVFPErrorMessage(VFPErrors.VFP_SQLCOLUMNS_CTYPE)
             THROW Error{cMessage}
        ENDIF
        oStmt:GetColumns(cTableName, cType, cCursorName)

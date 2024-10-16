@@ -240,8 +240,26 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             IF hIndex == IntPtr.Zero
                 info:Result := FALSE
             ELSE
+                local hasNewDesc as LOGIC
+                local newDesc    as LOGIC
+                if info:Result is LOGIC var lResult
+                    hasNewDesc := TRUE
+                    newDesc := lResult
+                ELSE
+                    hasNewDesc := FALSE
+                    newDesc := FALSE
+                endif
                 SELF:_CheckError(ACE.AdsIsIndexDescending(hIndex, OUT VAR wDescending), EG_ARG)
-                info:Result:= wDescending > 0
+                local oldDesc := wDescending == ACE.ADS_TRUE as LOGIC
+                info:Result := oldDesc
+                if hasNewDesc
+                    if newDesc != oldDesc
+                        // the parameter usReverseDirection indicates that the direction should be reversed.
+                        // so this does NOT specify descending or ascending.
+                        SELF:_CheckError(ACE.AdsSetIndexDirection(hIndex, ACE.ADS_TRUE), EG_ARG)
+                    endif
+                endif
+
             ENDIF
 
         CASE DBOI_KEYADD
@@ -327,7 +345,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
                 //  SELF:_CheckError(ACE.AdsExtractKey(hIndex, chars, REF num), EG_CORRUPTION)
                 //  info:Result  := STRING{chars, 0, num}
                 // So we retrieve the key expression and compile it
-                IF OrderInfo(DBOI_EXPRESSION, info) IS LOGIC VAR lResult
+                IF SELF:OrderInfo(DBOI_EXPRESSION, info) IS LOGIC VAR lResult
                     IF lResult .and. info:Result is string var strKey .and. strKey:Length > 0
                          var mi  := SELF:_GetMCompile()
                          if mi != null

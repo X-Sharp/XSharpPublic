@@ -1,5 +1,5 @@
 #translate DBFDebug(<c1> [, <cn>]) =>
-#pragma options ("enforceself", on)
+
 PARTIAL CLASS DbServer
 
 
@@ -183,7 +183,7 @@ METHOD RecallAll()
 				IF VODBSeek( uSelectionValue, FALSE )
 					lRetCode := SELF:__DBServerEval( { || VODBRecall() },  ;
 						NIL,  ;
-						{ || Eval( cbKey ) = uValue },  ;
+						{ || Functions.Eval( cbKey ) = uValue },  ;
 						NIL,  ;
 						NIL,  ;
 						TRUE,  ;
@@ -1324,7 +1324,7 @@ METHOD Skip( nRecordCount )
 						siSelectionStatus := DBSELECTIONNULL
 						FOR i :=1 UPTO iRecords
 							__DBSSkip(1, nTries )
-							IF VODBEof() .OR. ! ( Eval( cbSelectionIndexingExpression ) = uSelectionValue )
+							IF VODBEof() .OR. ! ( Functions.Eval( cbSelectionIndexingExpression ) = uSelectionValue )
 								siSelectionStatus := DBSELECTIONEOF
 								IF ! VODBEof()
 									wLastSelectionRec := (int) VODBRecno() - 1
@@ -1344,14 +1344,14 @@ METHOD Skip( nRecordCount )
 							ELSE
 								__DBSSeek(uSelectionValue, NIL, FALSE, nTries)
 							ENDIF
-							WHILE !VODBEof() .AND. Eval(cbSelectionIndexingExpression) = uSelectionValue
+							WHILE !VODBEof() .AND. Functions.Eval(cbSelectionIndexingExpression) = uSelectionValue
 								__DBSSkip(1, nTries)
 							ENDDO
 						ENDIF
 						siSelectionStatus := DBSELECTIONNULL
 						FOR i :=1 UPTO -iRecords
 							__DBSSkip(-1, nTries)
-							IF VODBBof() .OR. ! ( Eval( cbSelectionIndexingExpression ) = uSelectionValue )
+							IF VODBBof() .OR. ! ( Functions.Eval( cbSelectionIndexingExpression ) = uSelectionValue )
 								siSelectionStatus := DBSELECTIONBOF
 								IF !VODBBof()
 									__DBSSkip(1, nTries)
@@ -1481,7 +1481,7 @@ METHOD Sort(oFSTarget,aFieldList,cbForBlock,cbWhileBlock,uScope)
             IF VODBSeek( uSelectionValue, FALSE )
                 lRetCode := __DBSDBSORT( cTarget,   aFieldNames,    ;
                     NIL,                ;               // For
-                {| | Eval( cbKey ) = uValue },  ;   // While
+                {| | Functions.Eval( cbKey ) = uValue },  ;   // While
                 NIL,                ;               // Next
                 NIL,                ;               // Record #
                 TRUE,               ;               // lRest
@@ -1640,7 +1640,7 @@ METHOD Sum(acbExpression,cbForBlock,cbWhileBlock,uScope)
 			IF VODBSeek( uSelectionValue, FALSE )
 				SELF:__DBServerEval( { || iCount += 1, __IterateForSum( acbExpr, aResults ) },  ;
 					NIL,       ;
-					{| | Eval( cbKey ) = uValue },     ;
+					{| | Functions.Eval( cbKey ) = uValue },     ;
 					NIL,       ;
 					NIL,       ;
 					TRUE,   ;
@@ -1838,7 +1838,7 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope)
 				IF VODBSeek( uSelectionValue, FALSE )
 					lRetCode := __DBSDBTOTAL( cTarget, cbKeyField, aFieldNames,     ;
 						{||TRUE},   ;
-						{| | Eval( cbKey ) = uValue },     ;
+						{| | Functions.Eval( cbKey ) = uValue },     ;
 						-1,         ;
 						NIL,        ;
 						TRUE,       ;

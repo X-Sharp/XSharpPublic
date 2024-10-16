@@ -159,7 +159,7 @@ BEGIN NAMESPACE XSharp.Parsers
             RETURN FALSE
 
       METHOD Expect(cText AS STRING) AS LOGIC
-         IF Matches(cText)
+         IF SELF:Matches(cText)
             SELF:Consume()
             RETURN TRUE
          ENDIF

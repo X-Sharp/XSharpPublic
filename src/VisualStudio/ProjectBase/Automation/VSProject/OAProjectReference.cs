@@ -50,32 +50,38 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                ThreadHelper.ThrowIfNotOnUIThread();
-                return BaseReferenceNode.ReferencedProjectOutputPath;
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+               {
+                   await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                   var file = BaseReferenceNode.ReferencedProjectOutputPath;
+                   return file;
+               });
             }
         }
         public override EnvDTE.Project SourceProject
         {
             get
             {
-                ThreadHelper.ThrowIfNotOnUIThread();
-
                 if (Guid.Empty == BaseReferenceNode.ReferencedProjectGuid)
                 {
                     return null;
                 }
-                IVsHierarchy hierarchy = VsShellUtilities.GetHierarchy(BaseReferenceNode.ProjectMgr.Site, BaseReferenceNode.ReferencedProjectGuid);
-                if(null == hierarchy)
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    IVsHierarchy hierarchy = VsShellUtilities.GetHierarchy(BaseReferenceNode.ProjectMgr.Site, BaseReferenceNode.ReferencedProjectGuid);
+                    if (null == hierarchy)
+                    {
+                        return null;
+                    }
+                    object extObject;
+                    if (Microsoft.VisualStudio.ErrorHandler.Succeeded(
+                            hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out extObject)))
+                    {
+                        return extObject as EnvDTE.Project;
+                    }
                     return null;
-                }
-                object extObject;
-                if(Microsoft.VisualStudio.ErrorHandler.Succeeded(
-                        hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out extObject)))
-                {
-                    return extObject as EnvDTE.Project;
-                }
-                return null;
+                });
             }
         }
         public override prjReferenceType Type
@@ -92,9 +98,12 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                ThreadHelper.ThrowIfNotOnUIThread();
-                var project = SourceProject;
-                return project.Properties.Item("TargetFrameworkVersion").Value.ToString();
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    var project = SourceProject;
+                    return project.Properties.Item("TargetFrameworkVersion").Value.ToString();
+                });
             }
         }
         #endregion

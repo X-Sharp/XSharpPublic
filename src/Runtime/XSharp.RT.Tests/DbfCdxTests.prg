@@ -2907,7 +2907,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			DbCloseArea()
 			DbUseArea(,,cDbf,,FALSE)
 			DbSetIndex(cCdx)
-           SET(_SET_SOFTSEEK, "on")
+           Set(_SET_SOFTSEEK, "on")
             DbSeek(100)
             Assert.Equal(123, (INT)FieldGet(1))
             Assert.Equal(FALSE, Eof())
@@ -2930,7 +2930,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
             Assert.Equal(456, (INT)FieldGet(1))
             Assert.Equal(FALSE, Eof())
             Assert.Equal(FALSE, Found())
-           SET(_SET_SOFTSEEK, "off")
+           Set(_SET_SOFTSEEK, "off")
             DbSeek(200)
             Assert.Equal(0, (INT)FieldGet(1))
             Assert.Equal(TRUE, Eof())
@@ -2973,7 +2973,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
             Assert.Equal(TRUE, Eof())
             Assert.Equal(FALSE, Found())
 
-           SET(_SET_SOFTSEEK, "on")
+           Set(_SET_SOFTSEEK, "on")
             DbSeek("aaaaa")
             Assert.Equal("bbbbb", (STRING)FieldGet(1))
             Assert.Equal(FALSE, Eof())
@@ -2982,7 +2982,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
             Assert.Equal("kkkkk", (STRING)FieldGet(1))
             Assert.Equal(FALSE, Eof())
             Assert.Equal(FALSE, Found())
-           SET(_SET_SOFTSEEK, "off")
+           Set(_SET_SOFTSEEK, "off")
             DbSeek("ccccc")
             Assert.Equal("     ", (STRING)FieldGet(1))
             Assert.Equal(TRUE, Eof())
@@ -5170,14 +5170,14 @@ RETURN
 		[Fact, Trait("Category", "DBF")];
 		METHOD VariousFptTests() AS VOID
 			LOCAL wBlockSize AS WORD
-			DoFptTest(100)
+			SELF:DoFptTest(100)
 			wBlockSize := RuntimeState.MemoBlockSize
 			RuntimeState.MemoBlockSize := 64
-			DoFptTest(10)
+			SELF:DoFptTest(10)
 			RuntimeState.MemoBlockSize := 20
-			DoFptTest(10)
+			SELF:DoFptTest(10)
 			RuntimeState.MemoBlockSize := 10
-			DoFptTest(10)
+			SELF:DoFptTest(10)
 			RuntimeState.MemoBlockSize := wBlockSize
 
 		METHOD DoFptTest(nRecords AS DWORD) AS VOID
@@ -5959,7 +5959,7 @@ RETURN
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBSetFilter_with_whitespace() AS VOID
 			// https://github.com/X-Sharp/XSharpPublic/issues/1489
-			LOCAL cDbf,cIndex AS STRING
+			LOCAL cDbf AS STRING
 			RddSetDefault( "DBFCDX" )
 
 			cDbf := DbfTests.GetTempFileName()
@@ -5991,6 +5991,109 @@ RETURN
 			Assert.Equal("aaa", AllTrim(FieldGet(1)) )
 
 			DbCloseArea()
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD TestCdxZap() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/958
+			LOCAL cDbf AS STRING
+			cDbf := DbfTests.GetTempFileName()
+
+			RddSetDefault("DBFCDX")
+
+			DbfTests.CreateDatabase(cDbf, {{"FLD","C",10,0}})
+
+			DbUseArea(TRUE,, cDbf)
+			DbCreateIndex( cDbf,"FLD" )
+			DbAppend()
+			FieldPut(1,"asddadas")
+			DbAppend()
+			FieldPut(1,"qweqwewqeqwe")
+			DbAppend()
+			FieldPut(1,"a")
+			DbAppend()
+			FieldPut(1,"213223213231")
+			DbAppend()
+			FieldPut(1,"v")
+
+			DbCloseArea()
+
+			DbUseArea(TRUE,, cDbf)
+			DbSetIndex( cDbf,"LANDLORD" )
+
+			DbZap()
+
+			DbAppend()
+			FieldPut(1,"a")
+			DbAppend()
+			FieldPut(1,"b")
+			DbAppend()
+			FieldPut(1,"c")
+			DbAppend()
+			FieldPut(1,"d")
+			DbCommit()
+
+			DbCloseArea()
+
+			DbUseArea(TRUE,, cDbf)
+			DbSetIndex( cDbf,"LANDLORD" )
+
+			DbGoTop()
+
+			Assert.Equal(4, RecCount())
+
+			LOCAL cOutput := "" AS STRING
+			DbGoTop()
+			DO WHILE !Eof()
+				cOutput += AllTrim(FieldGet(1))
+				DbSkip()
+			ENDDO
+			Assert.Equal("abcd", cOutput)
+			DbCloseArea()
+
+		RETURN
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD KeywordsInIndexExpression() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/1557
+			LOCAL cDbf AS STRING
+			cDbf := DbfTests.GetTempFileName()
+
+			RddSetDefault("DBFCDX")
+
+			LOCAL aStruct := {} AS ARRAY
+			LOCAL aKeywords AS ARRAY
+			LOCAL cField AS STRING
+			LOCAL n AS INT
+
+			aKeywords := {"CLASS","METHOD","AND", "OR", "REF", "IS","_CAST","IF","FIELD","DEFAULT","IIF","CHECKED","UNCHECKED"}
+			FOR n := 1 UPTO ALen(aKeywords)
+				AAdd(aStruct , {aKeywords[n] , "N" , 10 ,0})
+			NEXT
+
+			DbfTests.CreateDatabase(cDbf, aStruct)
+
+			DbCreate(cDbf, aStruct)
+			DbUseArea(TRUE,"DBFCDX",cDbf)
+			DbAppend()
+			FOR n := 1 UPTO ALen(aKeywords)
+				FieldPut(n,2)
+			NEXT
+			DbAppend()
+			FOR n := 1 UPTO ALen(aKeywords)
+				FieldPut(n,1)
+			NEXT
+
+			FOR n := 1 UPTO ALen(aKeywords)
+				cField := aKeywords[n]
+				Assert.True( DbCreateOrder(cField, cDbf, cField) )
+				DbSetOrder(1)
+				DbSetOrder(n)
+				DbGoTop()
+				Assert.Equal(2u, RecNo())
+			NEXT
+
+			DbCloseArea()
+		RETURN
 
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING

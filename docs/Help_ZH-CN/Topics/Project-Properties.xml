@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-06T16:16:52.563+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:13:54.564+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>项目属性</title>
   <body>
     <header>
@@ -12,7 +12,7 @@
     <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal">项目菜单中有一个 &lt;Myprojectname&gt; 属性菜单选项</li>
       <li styleclass="Normal">在 &quot;解决方案资源管理器&quot; 中的项目图标上有一个上下文菜单选项 &quot;属性“</li>
-      <li styleclass="Normal">在 &quot;解决方案资源管理器 &quot;中项目图标下方的 &quot;属性 &quot;文件夹上选择上下文菜单选项 &quot;打开&quot;。</li>
+      <li styleclass="Normal">在 &quot;解决方案资源管理器&quot; 中项目图标下方的 &quot;属性&quot; 文件夹上选择上下文菜单选项 &quot;打开&quot;。</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">所有这些选项的作用相同，都是打开项目属性对话框。该对话框有多个页面。</para>

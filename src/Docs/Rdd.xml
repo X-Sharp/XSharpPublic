@@ -204,39 +204,17 @@
   </DbFileSpec.DBFTime>
   <DbFileSpec.DbStruct>
     <summary>
-      An array containing the structure of the DBF file.
+      Returns an array containing the structure of the DBF file.
     </summary>
     <value>An array containing the structure of the DBF file.</value>
     <remarks>
-      An array containing the structure of the DBF file.
-      The structure of the current database file in an array whose length is equal to the number of fields in the database file. Each element of the array is a subarray containing information for one field. The subarrays have the following format:
-      <list type="table">
-        <listheader>
-          <term>Constant</term>
-          <description>Description</description>
-        </listheader>
-        <item>
-          <term>DBS_NAME</term>
-          <description>cName</description>
-        </item>
-        <item>
-          <term>DBS_TYPE</term>
-          <description>cType</description>
-        </item>
-        <item>
-          <term>DBS_LEN</term>
-          <description>nLength</description>
-        </item>
-        <item>
-          <term>DBS_DEC</term>
-          <description>nDecimals</description>
-        </item>
-        <item>
-          <term>DBS_ALIAS</term>
-          <description>cAlias</description>
-        </item>
-      </list>
-    </remarks>
+      Returns an array containing the structure of the DBF file.
+      The structure of the current database file in an array whose length is equal to 
+      the number of fields in the database file. 
+      Each element of the array is a subarray containing information for one field. 
+      The subarrays have the following format:
+      <include file="RTComments.xml" path="Comments/DbStruct_Constants/*"  />
+  </remarks>
   </DbFileSpec.DbStruct>
   <DbFileSpec.Delete>
     <summary>
@@ -1739,32 +1717,7 @@
     <remarks>
       An array containing the structure of this data server, whose length (that is, number of elements) is equal to the number of fields in the server.
       Each sub-array is comprised of five elements, which contain the following information, in this order:
-      <list type="table">
-        <listheader>
-          <term>Constant</term>
-          <description>Description</description>
-        </listheader>
-        <item>
-          <term>DBS_NAME</term>
-          <description>cName</description>
-        </item>
-        <item>
-          <term>DBS_TYPE</term>
-          <description>cType</description>
-        </item>
-        <item>
-          <term>DBS_LEN</term>
-          <description>nLength</description>
-        </item>
-        <item>
-          <term>DBS_DEC</term>
-          <description>nDecimals</description>
-        </item>
-        <item>
-          <term>DBS_ALIAS</term>
-          <description>cAlias</description>
-        </item>
-      </list>
+      <include file="RTComments.xml" path="Comments/DbStruct_Constants/*"  />
     </remarks>
     <example>
       This example opens a database file, then creates an array containing the database structure using DBServer:DBStruct within an aliased expression. The field names are then listed using AEval():
@@ -2051,9 +2004,7 @@
       Return and optionally change information about a field.
     </summary>
     <param name="kFieldInfoType">
-      Specifies the type of information. The constants are described in the Constants section below. Note, however, that not all constants are supported for all RDDs.
-      <br />Important! DBS_USER is a constant that returns the minimum value that third-party RDD developers can use for defining new <paramref name="kInfoType" /> parameters.
-      Values less than DBS_USER are reserved for development.
+      Specifies the type of information. The constants are described in the Remarks section below. Note, however, that not all constants are supported for all RDDs.
     </param>
     <param name="uField">
       The name, number, or symbol representing the position of the field in the database file structure or a numeric pointer to a BLOB.
@@ -2067,109 +2018,7 @@
       If <paramref name="uNewSetting" /> is not specified, DBServer:FieldInfo() returns the current setting. If <paramref name="uNewSetting" /> is specified, the previous setting is returned.
     </returns>
     <remarks>
-      <list type="table">
-        <listheader>
-          <term>Constants</term>
-          <description>Description</description>
-        </listheader>
-        <item>
-          <term>DBS_ALIAS</term>
-          <description>
-            Returns and optionally changes an alternate name (or alias) by which a field can be referenced (by default, same as DBS_NAME). Using the <paramref name="uNewSetting" /> argument, you can specify a string that you can subsequently use to access the indicated field.
-          </description>
-        </item>
-        <item>
-          <term>DBS_BLOB_DIRECT_LEN</term>
-          <description>
-            Returns the length of data in a BLOB as an unsigned long integer, without referencing a particular memo field. For strings, the return value is the length of the string in bytes; for arrays, it is the number of elements in the first dimension; for all other data types, it returns -1. With this constant, you must specify the BLOB using a numeric pointer obtained from DBServer:BLOBDirectPut(), DBServer:BLOBDirectImport(), or DBServer:FieldInfo(DBS_BLOB_POINTER, <paramref name="uFieldPos" />).
-          </description>
-        </item>
-        <item>
-          <term>DBS_BLOB_DIRECT_TYPE</term>
-          <description>
-            To determine the data type of BLOB data, without reference to a particular memo field, use DBServer:FieldInfo(DBS_BLOB_DIRECT_TYPE, ...). With this constant, you must specify the BLOB using a numeric pointer obtained from DBServer:BLOBDirectPut(), DBServer:BLOBDirectImport(), or DBServer:FieldInfo(DBS_BLOB_POINTER, <paramref name="uFieldPos" />).
-          </description>
-        </item>
-        <item>
-          <term></term>
-          <description>See DBS_BLOB_TYPE for a table of possible return values.</description>
-        </item>
-        <item>
-          <term>DBS_BLOB_LEN</term>
-          <description>
-            Returns the length of the BLOB data in a memo field as an unsigned long integer. For strings, the return value is the length of the string in bytes; for arrays, it is the number of elements in the first dimension; for all other data types, it returns -1.
-            <note type="tip">DBServer:FieldInfo(DBS_BLOB_LEN, ...) has a performance advantage over the Len() function.,</note>
-          </description>
-        </item>
-        <item>
-          <term>DBS_BLOB_POINTER</term>
-          <description>Returns a numeric pointer to the BLOB data associated with a memo field.</description>
-        </item>
-        <item>
-          <term>DBS_BLOB_TYPE</term>
-          <description>Unlike memo fields maintained in .DBT files, BLOB files allow you to store many different types of data in memo fields. However, the standard functions for determining data types, such as ValType(), simply treat BLOB fields as regular memo fields. To determine the actual type of BLOB data stored in a memo field, use DBServer:FieldInfo(DBS_BLOB_TYPE, ...). </description>
-        </item>
-        <item>
-          <term></term>
-          <description>The data type of the return value is string and can be interpreted using this table:</description>
-        </item>
-        <item>
-          <term>Returns</term>
-          <description>Meaning</description>
-        </item>
-        <item>
-          <term>?</term>
-          <description>Blank (empty/uninitialized field)</description>
-        </item>
-        <item>
-          <term>A</term>
-          <description>Array</description>
-        </item>
-        <item>
-          <term>C</term>
-          <description>String</description>
-        </item>
-        <item>
-          <term>D</term>
-          <description>Date</description>
-        </item>
-        <item>
-          <term>E</term>
-          <description>Error</description>
-        </item>
-        <item>
-          <term>L</term>
-          <description>Logical</description>
-        </item>
-        <item>
-          <term>N</term>
-          <description>Numeric</description>
-        </item>
-        <item>
-          <term>U</term>
-          <description>Undefined (NIL was stored)</description>
-        </item>
-        <item>
-          <term>DBS_DEC</term>
-          <description>Returns the number of decimal places for the field.</description>
-        </item>
-        <item>
-          <term>DBS_LEN</term>
-          <description>Returns the length of the field.</description>
-        </item>
-        <item>
-          <term>DBS_NAME</term>
-          <description>Returns the name of the field.</description>
-        </item>
-        <item>
-          <term>DBS_PROPERTIES</term>
-          <description>Returns the number of properties defined for a field.</description>
-        </item>
-        <item>
-          <term>DBS_TYPE</term>
-          <description>Returns the data type of the field.</description>
-        </item>
-      </list>
+      <include file="RTComments.xml" path="Comments/DBS_Constants/*"  />
 
       DBServer:FieldInfo() retrieves information about the state of a field (column).
       The field information that is available is defined by the RDD. In the DBF model, this is limited to the information stored in the DBF file structure (that is, name, length, number of decimals, and data type) plus the field alias that can be changed at runtime.
@@ -2562,166 +2411,7 @@
       If <paramref name="uInfo" /> is not specified, DBServer:RDDInfo() returns the current setting. If <paramref name="uInfo" /> is specified, the previous setting is returned.
     </returns>
     <remarks>
-      <list type="table">
-        <listheader>
-          <term>Constant</term>
-          <description>Description</description>
-        </listheader>
-        <item>
-          <term>DBI_ALIAS</term>
-          <description>Returns the alias name of the work area as a string.</description>
-        </item>
-        <item>
-          <term>DBI_BLOB_HANDLE</term>
-          <description>Returns an integer representing the DOS file handle for a BLOB file. The constant is most often used in conjunction with DBServer:FieldInfo(DBS_BLOB_LEN, ...) and DBServer:FieldInfo(DBS_BLOB_POINTER, ...) to directly access BLOB fields using low-level functions, such as FRead().</description>
-        </item>
-        <item>
-          <term>DBI_BLOB_INTEGRITY</term>
-          <description>Tests a BLOB file for the integrity of its internal tables and returns a logical value indicating the success (TRUE) or failure (FALSE) of the integrity check. This should not generally be necessary, but it is handy if the file's integrity is in question for any reason. This does not test the integrity between the .DBF and the BLOB file.</description>
-        </item>
-        <item>
-          <term></term>
-          <description>If the integrity check fails, you can run DBServer:Info(DBI_BLOB_RECOVER), which will automatically correct the BLOB file's tables, however, it will abandon some space within the file that would otherwise be reused.</description>
-        </item>
-        <item>
-          <term></term>
-          <description>
-            <br />Important! DBServer:Info(DBI_BLOB_INTEGRITY) is a disk intensive operation and may slow down processing of the data server significantly, especially on a busy network.
-          </description>
-        </item>
-        <item>
-          <term>DBI_BLOB_RECOVER</term>
-          <description>Recovers a damaged BLOB file by correcting its internal tables and returns NIL. You should run this only if DBServer:Info(DBI_BLOB_INTEGRITY) returns FALSE. Note that after running DBServer:Info(DBI_BLOB_RECOVER), the BLOB file loses some size efficiency.</description>
-        </item>
-        <item>
-          <term>DBI_BOF</term>
-          <description>Returns a logical value indicating the data server's beginning-of-file status (see DBServer:BOF).</description>
-        </item>
-        <item>
-          <term>DBI_CANPUTREC</term>
-          <description>Returns a logical value indicating whether the data server supports putting records.</description>
-        </item>
-        <item>
-          <term>DBI_CHILDCOUNT</term>
-          <description>Returns the number of relations set from this data server.</description>
-        </item>
-        <item>
-          <term>DBI_DB_VERSION</term>
-          <description>Returns the version number of the host RDD (CAVORDDB.DLL or CAVORDD.DLL).</description>
-        </item>
-        <item>
-          <term>DBI_DBFILTER</term>
-          <description>Returns the filter expression as a string (see DBServer:Filter).</description>
-        </item>
-        <item>
-          <term>DBI_EOF</term>
-          <description>Returns a logical value indicating the data server's end-of-file status (see DBServer:EOF).</description>
-        </item>
-        <item>
-          <term>DBI_FCOUNT</term>
-          <description>Returns the number of fields (see DBServer:FCount).</description>
-        </item>
-        <item>
-          <term>DBI_FILEHANDLE</term>
-          <description>Returns an IntPtr representing the file handle for this database file.</description>
-        </item>
-        <item>
-          <term>DBI_FILESTREAM</term>
-          <description>Returns a stream object representing the file stream for this database file.</description>
-        </item>
-        <item>
-          <term>DBI_FOUND</term>
-          <description>Returns a logical value indicating the success or filure of the last seek operation for this data server (see DBServer:Found).</description>
-        </item>
-        <item>
-          <term>DBI_FULLPATH</term>
-          <description>Returns the full path name of opened database file.</description>
-        </item>
-        <item>
-          <term>DBI_GETDELIMITER</term>
-          <description>Returns the default delimiter.</description>
-        </item>
-        <item>
-          <term>DBI_GETHEADERSIZE</term>
-          <description>Returns the header size of the file (see DBServer:Header).</description>
-        </item>
-        <item>
-          <term>DBI_GETLOCKARRAY</term>
-          <description>Returns the array of locked records.</description>
-        </item>
-        <item>
-          <term>DBI_GETRECSIZE</term>
-          <description>Returns the record size of the file (see DBServer:RecSize).</description>
-        </item>
-        <item>
-          <term>DBI_GETSCOPE</term>
-          <description>Returns the locate condition as a code block.</description>
-        </item>
-        <item>
-          <term>DBI_ISANSI</term>
-          <description>Returns the ANSI flag of the database file (TRUE for ANSI and FALSE for OEM).</description>
-        </item>
-        <item>
-          <term>DBI_ISDBF</term>
-          <description>Returns a logical value indicating whether the RDD provides support for the .DBF file format.</description>
-        </item>
-        <item>
-          <term>DBI_ISFLOCK</term>
-          <description>Returns the file lock status.</description>
-        </item>
-        <item>
-          <term>DBI_LASTUPDATE</term>
-          <description>Returns the last date on which the file was updated (see DBServer:LUpdate).</description>
-        </item>
-        <item>
-          <term>DBI_LOCKCOUNT</term>
-          <description>Returns the number of locked records.</description>
-        </item>
-        <item>
-          <term>DBI_LOCKOFFSET</term>
-          <description>Returns the current locking offset as a numeric value.</description>
-        </item>
-        <item>
-          <term>DBI_MEMOBLOCKSIZE</term>
-          <description>Returns the block size for the memo file associated with this database.</description>
-        </item>
-        <item>
-          <term>DBI_MEMOEXT</term>
-          <description>Returns the default extension for the memo file associated with this database.</description>
-        </item>
-        <item>
-          <term>DBI_MEMOHANDLE</term>
-          <description>Returns an intptr representing the DOS file handle for the memo file associated with this database file.</description>
-        </item>
-        <item>
-          <term>DBI_MEMOSTREAM</term>
-          <description>Returns a stream object representing the file stream for the memo file associated with this database file.</description>
-        </item>
-        <item>
-          <term>DBI_MEMOPATH</term>
-          <description>Returns the full path name of opened memo file.</description>
-        </item>
-        <item>
-          <term>DBI_RDD_VERSION</term>
-          <description>Returns the version number of the RDD for this database.</description>
-        </item>
-        <item>
-          <term>DBI_SETDELIMITER</term>
-          <description>Sets the default delimiter.</description>
-        </item>
-        <item>
-          <term>DBI_SHARED</term>
-          <description>Returns the shared flag value.</description>
-        </item>
-        <item>
-          <term>DBI_TABLEEXT</term>
-          <description>Returns the database file extension.</description>
-        </item>
-        <item>
-          <term>DBI_VALIDBUFFER</term>
-          <description>Returns a logical value indicating whether the current buffer is valid.</description>
-        </item>
-      </list>
+    <include file="RTComments.xml" path="Comments/DBI_Constants/*"  />
     </remarks>
     <example>
       The following examples return data server information:
@@ -2933,7 +2623,7 @@
     </summary>
     <param name="kOrderInfoType">
       Specifies the type of information. The constants are listed below. Note, however, that not all constants are supported for all RDDs.
-      <br />Important! DBOI_USER is a constant that returns the minimum value that third-party RDD developers can use for defining new <paramref name="kInfoType" /> parameters. Values less than DBOI_USER are reserved for VO development.
+      This should be one of the DBOI_ constants listed in the remarks section.
     </param>
     <param name="oFSIndex">
       A string or filespec object that specifies the name of an index file, including an optional drive and directory (no extension should be specified). Use this argument with <paramref name="cOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
@@ -2950,122 +2640,7 @@
       If <paramref name="uNewSetting" /> is not specified, DBServer:OrderInfo() returns the current setting. If <paramref name="uNewSetting" /> is specified, the previous setting is returned.
     </returns>
     <remarks>
-      <list type="table">
-        <listheader>
-          <term>Constant</term>
-          <description>Description</description>
-        </listheader>
-        <item>
-          <term>DBOI_CONDITION</term>
-          <description>Returns the for condition of the specified order as a string.</description>
-        </item>
-        <item>
-          <term>DBOI_CUSTOM</term>
-          <description>
-            Returns and optionally sets the logical flag indicating whether the specified order is custom built (for RDDs that support custom built orders). Note that although you can turn the custom built flag on for a standard order by specifying TRUE for the <paramref name="uNewSetting" /> argument, you cannot turn a custom built order into a standard order. Specifying FALSE for <paramref name="uNewSetting" /> is the same as not specifying the argument at all—both return the current setting.
-          </description>
-        </item>
-        <item>
-          <term>DBOI_EXPRESSION</term>
-          <description>Returns the order key expression of the specified order as a string.</description>
-        </item>
-        <item>
-          <term>DBOI_FILEHANDLE</term>
-          <description>Returns the handle of the specified index file as an IntPtr.</description>
-        </item>
-        <item>
-          <term>DBOI_FILESTREAM</term>
-          <description>Returns the filestream of the specified index file.</description>
-        </item>
-        <item>
-          <term>DBOI_FULLPATH</term>
-          <description>Returns the full path of the specified index file as a string.</description>
-        </item>
-        <item>
-          <term>DBOI_HPLOCKING</term>
-          <description>Returns a logical flag indicating whether the specified index file uses the high performance index locking schema (see IndexHPLock() function).</description>
-        </item>
-        <item>
-          <term>DBOI_INDEXEXT</term>
-          <description>Returns the default index file extension as a string.</description>
-        </item>
-        <item>
-          <term>DBOI_INDEXNAME</term>
-          <description>Returns the name of the specified index file as a string.</description>
-        </item>
-        <item>
-          <term>DBOI_ISCOND</term>
-          <description>Returns a logical flag that determines whether the specified order was defined using a for condition.</description>
-        </item>
-        <item>
-          <term>DBOI_ISDESC</term>
-          <description>Returns the logical flag that determines if the specified order is descending. For drivers that support dynamically setting the descending flag at runtime, specify the new value as a logical, using DBServer:OrderInfo(DBOI_ISDESC, [&lt;oFSIndexFile&gt; | &lt;cIndexFile&gt;], [&lt;cOrder&gt; | &lt;nPosition&gt;], &lt;lNewSetting&gt;). The current setting is returned before it is changed.</description>
-        </item>
-        <item>
-          <term>DBOI_KEYCOUNT</term>
-          <description>Returns the number of keys in the specified order.</description>
-        </item>
-        <item>
-          <term>DBOI_KEYDEC</term>
-          <description>Returns the number of decimals in the key of the specified order.</description>
-        </item>
-        <item>
-          <term>DBOI_KEYSINCLUDED</term>
-          <description>Returns the number of keys included in the specified order so far. This is primarily useful for conditional orders. It can be used during the status display process (with the EVAL clause of the INDEX command). </description>
-        </item>
-        <item>
-          <term>DBOI_KEYSIZE</term>
-          <description>Returns the size of the key in the specified order as a number.</description>
-        </item>
-        <item>
-          <term>DBOI_KEYTYPE</term>
-          <description>Returns the data type of the key in the specified order as a string.</description>
-        </item>
-        <item>
-          <term>DBOI_KEYVAL</term>
-          <description>Returns the key value of the current record in the specified order.</description>
-        </item>
-        <item>
-          <term>DBOI_LOCKOFFSET</term>
-          <description>Returns the locking offset (see NewIndexLock() function) for the specified index file as a numeric value.</description>
-        </item>
-        <item>
-          <term>DBOI_NAME</term>
-          <description>Returns the name of the specified order as a string.</description>
-        </item>
-        <item>
-          <term>DBOI_NUMBER</term>
-          <description>Returns the numeric position of the specified order in the order list.</description>
-        </item>
-        <item>
-          <term>DBOI_ORDERCOUNT</term>
-          <description>Returns the number of orders defined in the specified index file.</description>
-        </item>
-        <item>
-          <term>DBOI_POSITION</term>
-          <description>Returns the logical record number of the current record within the specified order.</description>
-        </item>
-        <item>
-          <term>DBOI_RECNO</term>
-          <description>Returns the physical record number of the current record within the specified order.</description>
-        </item>
-        <item>
-          <term>DBOI_SCOPEBOTTOMs</term>
-          <description>Returns the bottom boundary of the scope for the specified order.</description>
-        </item>
-        <item>
-          <term>DBOI_SCOPETOP</term>
-          <description>Returns the top boundary of the scope for the specified order.</description>
-        </item>
-        <item>
-          <term>DBOI_SETCODEBLOCK</term>
-          <description>Returns the key for the specified order as a code block.</description>
-        </item>
-        <item>
-          <term>DBOI_UNIQUE</term>
-          <description>Returns a logical flag indicating whether the specified order has the unique attribute set.</description>
-        </item>
-      </list>
+      <include file="RTComments.xml" path="Comments/DBOI_Constants/*"  />      
     </remarks>
     <example>
       This example uses DBOI_NAME to save the current controlling order. After changing to a new controlling order, it uses the saved value to restore the original order:
@@ -3577,54 +3152,15 @@
     </summary>
     <param name="kRecInfoType">
       The information retrieved depends on the constant specified
-      <list type="table">
-        <listheader>
-          <term>Constant</term>
-          <description>Returned Value</description>
-        </listheader>
-
-        <item>
-          <term>
-            DBRI_BUFFPTR
-          </term>
-          <description>Pointer to current record buffer</description>
-        </item>
-        <item>
-          <term>
-            DBRI_DELETED
-          </term>
-          <description>Is record deleted?</description>
-        </item>
-        <item>
-          <term>DBRI_DELETED</term>
-          <description>Is record deleted?</description>
-        </item>
-        <item>
-          <term>
-            DBRI_RECSIZE
-          </term>
-          <description>
-            Record length.
-          </description>
-        </item>
-        <item>
-          <term>DBRI_LOCKED</term>
-          <description>
-            Is record locked?
-          </description>
-        </item>
-        <item>
-          <term>DBRI_RECNO</term>
-          <description>Record position (like the RecNo access).</description>
-        </item>
-      </list>
-      <br />Important! DBRI_USER is a constant that returns the minimum value that third-party RDD developers can use for defining new <paramref name="kInfoType" /> parameters. Values less than DBRI_USER are reserved for X# development.
     </param>
     <param name="nRecordNumber">Indicates the record for which information is to be retrieved; if 0 or omitted, refers to the current record.</param>
     <param name="uRecVal">This parameter is reserved for RDDs that allow you to change the information rather than just retrieve it. None of the supplied RDDs (as outlined in the 'RDD Specifics' appendix in the Programmer's Guide) support this argument. Either omit the argument or specify it as NIL.</param>
     <returns>
       The data type of the return value depends on the value requested.
     </returns>
+    <remarks>
+      <include file="RTComments.xml" path="Comments/DBRI_Constants/*"  />
+    </remarks>
   </DbServer.RecordInfo>
   <DbServer.RecSize>
     <summary>
@@ -3767,22 +3303,7 @@
     <value>The "scope" component of the "general server scope," which affects several bulk processing methods if they are called with no explicit scope. The initial value of the scope is NIL.</value>
     <remarks>
       The following constants represent the range of records to process, providing the same functionality as the ALL, REST and NEXT clauses of record processing commands:
-      <list type="table">
-        <listheader>
-          <term>Constant</term>
-          <description>Description</description>
-        </listheader>
-        <item>
-          <term>DBSCOPEALL</term>
-          <description>
-            The scope is all the records in the table. This is the <b>default</b>, although if a WHILE condition is specified, the scope becomes DBSCOPEREST.
-          </description>
-        </item>
-        <item>
-          <term>DBSCOPEREST</term>
-          <description>The scope is the remaining records in the table from the current position.</description>
-        </item>
-      </list>
+      
     </remarks>
     <example>
       This example illustrates how various Scope values affect the extent of a recall operation:

@@ -9,6 +9,8 @@
     <Name>VOGUIClasses</Name>
     <OutputName>VOGUIClasses</OutputName>
     <LB>true</LB>
+    <NamedArgs>False</NamedArgs>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
@@ -178,6 +180,7 @@
     <Compile Include="Window.prg" />
     <Compile Include="WindowScrollBar.prg" />
     <Compile Include="XP Theme Support.prg" />
+    <Compile Include="_Win32.prg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\VoRedist\CaPaint.dll">

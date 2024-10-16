@@ -21,8 +21,8 @@ begin namespace $rootnamespace$
     public partial class $safeitemname$ INHERIT UserControl
 
         public CONSTRUCTOR()  STRICT  //$safeitemname$()
-            InitializeComponent()
-			RETURN
+            SELF:InitializeComponent()
+            RETURN
 
 
     end class

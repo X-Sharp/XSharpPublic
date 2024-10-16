@@ -89,7 +89,7 @@ namespace XSharp.Build
             set { _store[nameof(CodePage)] = value; }
             get { return _store.GetOrDefault(nameof(CodePage), 0); }
         }
-		
+
         [Output]
         public ITaskItem[] CommandLineArgs
         {
@@ -104,7 +104,7 @@ namespace XSharp.Build
             set { _store[nameof(DebugType)] = value; }
             get { return (string)_store[nameof(DebugType)]; }
         }
-		
+
         public string SourceLink
         {
             set { _store[nameof(SourceLink)] = value; }
@@ -260,15 +260,13 @@ namespace XSharp.Build
             get { return (ITaskItem)_store[nameof(OutputAssembly)]; }
         }
 
-
-
 		[Output]
         public ITaskItem OutputRefAssembly
         {
             set { _store[nameof(OutputRefAssembly)] = value; }
             get { return (ITaskItem)_store[nameof(OutputRefAssembly)]; }
         }
-		
+
         public string Platform
         {
             set { _store[nameof(Platform)] = value; }
@@ -862,7 +860,7 @@ namespace XSharp.Build
             AddEmbeddedFilesToCommandLine(commandLine);
             AddAnalyzerConfigFilesToCommandLine(commandLine);
         }
-		
+
         /// <summary>
         /// Adds a "/features:" switch to the command line for each provided feature.
         /// </summary>

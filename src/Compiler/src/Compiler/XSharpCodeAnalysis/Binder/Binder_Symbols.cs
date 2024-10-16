@@ -98,6 +98,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                 }
+                if (first.Kind == SymbolKind.Namespace)
+                {
+                    warning = false;
+                    return false;
+                }
             }
             if (second.Kind == SymbolKind.NamedType)
             {

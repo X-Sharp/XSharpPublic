@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-13T03:16:15.716+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Warning XS9070</title>
   <keywords>
     <keyword>XS9070</keyword>
@@ -9,6 +9,7 @@
     <header>
       <para styleclass="Heading1">Warning XS9070</para>
     </header>
-    <para styleclass="Normal">The compiler generated an implicit cast to a smaller type from type &apos;{0}&apos; to &apos;{1}&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">编译器生成了从类型 &apos;{0}&apos; 到 &apos;{1}&apos; 的隐式类型转换。</para>
   </body>
 </topic>

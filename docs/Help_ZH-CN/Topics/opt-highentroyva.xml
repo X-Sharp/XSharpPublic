@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-08T09:28:06.304+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.143+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-highentropyva</title>
   <keywords>
     <keyword>-highentropyva</keyword>
@@ -10,11 +10,11 @@
       <para styleclass="Heading1">-highentropyva</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-highentropyva编译器选项会告诉Windows内核某个可执行文件是否支持地址空间布局随机化（ASLR）。</para>
+    <para styleclass="Normal">-highentropyva编译器选项会告诉Windows内核某个可执行文件是否支持地址空间布局随机化(ASLR)。</para>
     <para styleclass="Heading2">语法</para>
-    <para styleclass="Code with box">-highentropyva[+ | -] <text styleclass="Normal">&#32;</text></para>
+    <para styleclass="Code with box">-highentropyva[+ | -] <text styleclass="Normal"> </text></para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">+ | -</text><tab />该选项指定 64 位可执行文件或由 -platform:anycpu 编译器选项标记的可执行文件支持地址空间布局随机化。该选项默认为禁用。使用 -highentropyva+ 或 -highentropyva 可启用该选项。</para>
+    <para styleclass="List"><text styleclass="Code Example">+ | -</text><tab/>该选项指定 64 位可执行文件或由 -platform:anycpu 编译器选项标记的可执行文件支持地址空间布局随机化。该选项默认为禁用。使用 -highentropyva+ 或 -highentropyva 可启用该选项。</para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">作为 ASLR 的一部分，-highentropyva 选项可使兼容版本的 Windows 内核在随机化进程的地址空间布局时使用更高的熵值。使用更高的熵值意味着可以为堆栈和堆等内存区域分配更多地址。因此，猜测特定内存区域的位置会更加困难。</para>
     <para styleclass="Normal"></para>

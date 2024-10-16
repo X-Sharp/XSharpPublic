@@ -25,7 +25,7 @@ namespace XSharp.VisualStudio.ProjectSystem
 {
     [Export(typeof(IPackageService))]
     [Guid(XSharpConstants.guidProjectSelectorString)]
-    [ProvideObject(typeof(XSharpProjectSelector), RegisterUsing = RegistrationMethod.CodeBase)]
+    [ProvideObject(typeof(XSharpProjectSelector), RegisterUsing = RegistrationMethod.Assembly)]
     internal sealed class XSharpProjectSelector : IVsProjectSelector, IDisposable, IPackageService
     {
         private const string MSBuildXmlNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";

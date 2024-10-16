@@ -2096,6 +2096,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_ParenthesizedExpressionList = 9224,
         WRN_FileWideMemVarDuplicate = 9125,
         ERR_ClipperOverloaded = 9126,
+        ERR_AutoPropertyParameters = 9127,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

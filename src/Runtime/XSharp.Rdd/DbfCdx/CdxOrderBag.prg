@@ -29,7 +29,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _hFile     AS IntPtr
         INTERNAL _stream    AS FileStream
         INTERNAL _OpenInfo	AS DbOpenInfo
-        INTERNAL _Encoding  AS Encoding
         INTERNAL _PageList  AS CdxPageList
         INTERNAL PROPERTY Shared    AS LOGIC GET _OpenInfo:Shared
         INTERNAL PROPERTY ReadOnly  AS LOGIC GET _OpenInfo:ReadOnly
@@ -47,7 +46,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY TagList AS CdxTagList GET _tagList
         INTERNAL PROPERTY Structural AS LOGIC AUTO
         INTERNAL PROPERTY Root      AS CdxFileHeader GET _root
-        INTERNAL PROPERTY Encoding AS System.Text.Encoding GET _oRdd:_Encoding
         INTERNAL CONSTRUCTOR(oRDD AS DBFCDX )
             SUPER( oRDD )
             SELF:_oRdd     := oRDD
@@ -312,7 +310,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:_stream != NULL_OBJECT
                 SELF:FullPath := SELF:_stream:Name
             ENDIF
-            SELF:_Encoding := _oRdd:_Encoding
             _root := CdxFileHeader{SELF}
             _root:Read()
             SELF:SetPage(_root)

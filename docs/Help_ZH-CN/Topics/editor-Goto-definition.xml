@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-08T17:37:36.589+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:40:03.553+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Goto definition(转到定义)</title>
   <keywords>
     <keyword>Goto definition</keyword>
@@ -10,7 +10,7 @@
       <para styleclass="Heading1">Goto definition(转到定义)</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Visual Studio 编辑器可以方便地检查类型、方法等的定义。一种方法是导航到包含定义的文件，例如选择 &quot;转到定义 &quot;或在任何引用符号的地方按 F12 键。</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Visual Studio 编辑器可以方便地检查类型、方法等的定义。一种方法是导航到包含定义的文件，例如选择 &quot;转到定义&quot; 或在任何引用符号的地方按 F12 键。</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">为此，右键单击任何出现的字符串，然后从内容菜单中选择 &quot;转到定义&quot;。或者按 Alt+F12。</text></para>
     <para styleclass="Normal"></para>

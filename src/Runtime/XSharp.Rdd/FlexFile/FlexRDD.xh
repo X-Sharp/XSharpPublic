@@ -53,6 +53,7 @@ BEGIN NAMESPACE XSharp.RDD
                      SELF:_Header:Version := XSharp.RDD.DBFVersion.FoxBaseDBase3NoMemo
                   ENDIF
 #endif
+               NOP                  
 	    ENDIF
             RETURN lOk
 

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-01T19:41:51.332+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:06:31.329+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-moduleassemblyname</title>
   <keywords>
     <keyword>-moduleassemblyname</keyword>
@@ -12,20 +12,20 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">指定 .netmodule 可以访问其非公共类型的程序集。</para>
     <para styleclass="Heading2">语法</para>
-    <para styleclass="Code with box">-moduleassemblyname:assembly_name &#160;</para>
+    <para styleclass="Code with box">-moduleassemblyname:assembly_name  </para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">assembly_name</text><tab />.netmodule 可以访问其非公共类型的程序集名称。</para>
+    <para styleclass="List"><text styleclass="Code Example">assembly_name</text><tab/>.netmodule 可以访问其非公共类型的程序集名称。</para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">在构建 .netmodule 时，如果以下条件为真，则应使用 -moduleassemblyname：</para>
+    <para styleclass="Normal">在生成 .netmodule 时，如果以下条件为真，则应使用 -moduleassemblyname：</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">.netmodule 需要访问现有程序集中的非公共类型。</li>
       <li styleclass="Normal" style="margin-left:13px;">您知道 .netmodule 将被编译到的程序集名称。</li>
       <li styleclass="Normal" style="margin-left:13px;">现有程序集已授予友元程序集访问 .netmodule 的权限。</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Normal">有关构建 .netmodule 的更多信息，请参阅 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-target">-target:module</link>.</para>
+    <para styleclass="Normal">有关生成 .netmodule 的更多信息，请参阅 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-target">-target:module</link>.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">有关友元程序集的更多信息，请参阅友元程序集。</para>
     <para styleclass="Normal"></para>
@@ -34,14 +34,14 @@
     <para styleclass="Normal">该编译器选项在 Visual Studio 中不可用，也不能通过编程更改。</para>
     <para styleclass="Heading2">示例</para>
     <para styleclass="Normal">此示例创建了一个具有私有类型的程序集，并允许友元程序集访问名为 csman_an_assembly 的程序集。</para>
-    <para styleclass="Code with box">-/ moduleassemblyname_1.prg &#160;<br/>-/ compile with: -target:library &#160;<br/>using System; &#160;<br/>using System.Runtime.CompilerServices; &#160;<br/><br/> &#160;[assembly:InternalsVisibleTo (&quot;csman_an_assembly&quot;)] &#160;<br/><br/> &#160;class An_Internal_Class &#160;<br/><br/>{ &#160;<br/> &#160; &#160;public void Test() &#160; <br/> &#160; &#160;{ &#160; <br/><br/> &#160; &#160; &#160; &#160;Console.WriteLine(&quot;An_Internal_Class.Test called&quot;); &#160; <br/> &#160; &#160;} &#160;<br/>} &#160;<br/></para>
+    <para styleclass="Code with box">-/ moduleassemblyname_1.prg  <br/>-/ compile with: -target:library  <br/>using System;  <br/>using System.Runtime.CompilerServices;  <br/><br/>  [assembly:InternalsVisibleTo (&quot;csman_an_assembly&quot;)]  <br/><br/>  class An_Internal_Class  <br/><br/>{  <br/>    public void Test()   <br/>    {   <br/><br/>        Console.WriteLine(&quot;An_Internal_Class.Test called&quot;);   <br/>    }  <br/>}  <br/></para>
     <para styleclass="Heading2">示例</para>
-    <para styleclass="Normal">本示例将构建一个 .netmodule，该模块将访问程序集 moduleassemblyname_1.dll 中的非公共类型。我们知道该 .netmodule 将被内置到名为 csman_an_assembly 的程序集中，因此可以指定 -moduleassemblyname，允许 .netmodule 访问已授予 csman_an_assembly 友元程序集访问权限的程序集中的非公共类型。</para>
-    <para styleclass="Code with box">-/ moduleassemblyname_2.prg &#160;<br/>-/ compile with: -moduleassemblyname:csman_an_assembly -target:module -reference:moduleassemblyname_1.dll &#160;<br/>class B { &#160;<br/> &#160; &#160;public void Test() { &#160;<br/> &#160; &#160; &#160; &#160;An_Internal_Class x = new An_Internal_Class(); &#160;<br/> &#160; &#160; &#160; &#160;x.Test(); &#160;<br/> &#160; &#160;} &#160;<br/>} &#160;</para>
+    <para styleclass="Normal">本示例将生成一个 .netmodule，该模块将访问程序集 moduleassemblyname_1.dll 中的非公共类型。我们知道该 .netmodule 将被内置到名为 csman_an_assembly 的程序集中，因此可以指定 -moduleassemblyname，允许 .netmodule 访问已授予 csman_an_assembly 友元程序集访问权限的程序集中的非公共类型。</para>
+    <para styleclass="Code with box">-/ moduleassemblyname_2.prg  <br/>-/ compile with: -moduleassemblyname:csman_an_assembly -target:module -reference:moduleassemblyname_1.dll  <br/>class B {  <br/>    public void Test() {  <br/>        An_Internal_Class x = new An_Internal_Class();  <br/>        x.Test();  <br/>    }  <br/>}  </para>
     <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">此代码示例将引用先前构建的程序集和 .netmodule 来构建程序集 csman_an_assembly。</para>
-    <para styleclass="Code with box">-/ csman_an_assembly.prg &#160;<br/>-/ compile with: -addmodule:moduleassemblyname_2.netmodule -reference:moduleassemblyname_1.dll &#160;<br/>class A { &#160;<br/> &#160; &#160;public static void Main() { &#160;<br/> &#160; &#160; &#160; &#160;B bb = new B(); &#160;<br/> &#160; &#160; &#160; &#160;bb.Test(); &#160;<br/> &#160; &#160;} &#160;<br/>} &#160;</para>
+    <para styleclass="Normal">此代码示例将引用先前生成的程序集和 .netmodule 来生成程序集 csman_an_assembly。</para>
+    <para styleclass="Code with box">-/ csman_an_assembly.prg  <br/>-/ compile with: -addmodule:moduleassemblyname_2.netmodule -reference:moduleassemblyname_1.dll  <br/>class A {  <br/>    public static void Main() {  <br/>        B bb = new B();  <br/>        bb.Test();  <br/>    }  <br/>}  </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

@@ -1,5 +1,6 @@
-#pragma options ("enforceself", on)
+
 /// <include file="System.xml" path="doc/FieldSpec/*" />
+#pragma options ("enforceself", on)
 CLASS FieldSpec
     // Class that contains a number of properties of database fields and form fields ( controls )
     // HyperLabel   describes the FieldSpec
@@ -43,21 +44,21 @@ CLASS FieldSpec
     /// <exclude />
     method __GetHLRange  as void strict
         //RvdH-030916 Strong typing
-        IF oHLRange == NULL_OBJECT
-            IF IsNil(uMin) .AND. IsNil(uMax)
+        IF SELF:oHLRange == NULL_OBJECT
+            IF IsNil(SELF:uMin) .AND. IsNil(SELF:uMax)
                 RETURN
             ENDIF
-            IF IsNil(uMin) .AND. !IsNil(uMax)
-                oHLRange := HyperLabel{ #FieldSpecRange, ,  ;
-                    VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDMAX,oHyperLabel:Name,AsString( uMax ) ) }
+            IF IsNil(SELF:uMin) .AND. !IsNil(SELF:uMax)
+                SELF:oHLRange := HyperLabel{ #FieldSpecRange, ,  ;
+                    VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDMAX,SELF:oHyperLabel:Name,AsString( SELF:uMax ) ) }
             ENDIF
-            IF !IsNil(uMin) .AND. IsNil(uMax)
-                oHLRange := HyperLabel{ #FieldSpecRange, ,  ;
-                    VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDMIN,oHyperLabel:Name,AsString( uMin ) ) }
+            IF !IsNil(SELF:uMin) .AND. IsNil(SELF:uMax)
+                SELF:oHLRange := HyperLabel{ #FieldSpecRange, ,  ;
+                    VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDMIN,SELF:oHyperLabel:Name,AsString( SELF:uMin ) ) }
             ENDIF
-            IF !IsNil(uMin) .AND. !IsNil(uMax)
-                oHLRange := HyperLabel{ #FieldSpecRange, ,  ;
-                    VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDRANGE,oHyperLabel:Name,AsString(uMin),AsString( uMax )) }
+            IF !IsNil(SELF:uMin) .AND. !IsNil(SELF:uMax)
+                SELF:oHLRange := HyperLabel{ #FieldSpecRange, ,  ;
+                    VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDRANGE,SELF:oHyperLabel:Name,AsString(SELF:uMin),AsString(SELF:uMax )) }
             ENDIF
         ENDIF
         RETURN
@@ -65,13 +66,13 @@ CLASS FieldSpec
 
     /// <include file="System.xml" path="doc/FieldSpec.AsString/*" />
     method AsString( )
-        RETURN oHyperLabel:Caption
+        RETURN SELF:oHyperLabel:Caption
 
 
     /// <include file="System.xml" path="doc/FieldSpec.Decimals/*" />
     access Decimals
         // Returns the number of decimals
-        RETURN wDecimals
+        RETURN SELF:wDecimals
 
 
 
@@ -81,9 +82,9 @@ CLASS FieldSpec
 
 
         IF IsNil(uDecimals )
-            wDecimals := 0
+            SELF:wDecimals := 0
         ELSEIF IsNumeric( uDecimals )
-            wDecimals := uDecimals
+            SELF:wDecimals := uDecimals
         ELSE
             DbError{ SELF, #Decimals, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADDECIMALS), uDecimals, "uDecimals" }:Throw()
         ENDIF
@@ -92,11 +93,11 @@ CLASS FieldSpec
 
     /// <exclude />
     ACCESS __HyperLabel as HyperLabel
-        RETURN oHyperLabel
+        RETURN SELF:oHyperLabel
     /// <include file="System.xml" path="doc/FieldSpec.HyperLabel/*" />
     access HyperLabel
         // Returns the HyperLabel object
-        RETURN oHyperLabel
+        RETURN SELF:oHyperLabel
 
 
     /// <include file="System.xml" path="doc/FieldSpec.ctor/*" />
@@ -108,9 +109,9 @@ CLASS FieldSpec
         // uLength          ( required for some data types, not for LOGIC for example )
         // uDecimals        ( optional ) defaults to 0
         if oHLName is HyperLabel
-            oHyperLabel := oHLName
+            SELF:oHyperLabel := oHLName
         ELSEIF IsSymbol( oHLName ) .OR. IsString( oHLName )
-            oHyperLabel := HyperLabel{ oHLName }
+            SELF:oHyperLabel := HyperLabel{ oHLName }
         ELSE
             DbError{SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADNAME), oHLName, "oHLName" }:Throw()
         ENDIF
@@ -121,7 +122,7 @@ CLASS FieldSpec
         endif
 
         IF IsNumeric( uLength )
-            wLength := uLength
+            SELF:wLength := uLength
         ELSE
             IF SELF:lNumeric .OR. SELF:cType="C"
                 //  UH 12/16/1999
@@ -131,9 +132,9 @@ CLASS FieldSpec
 
 
         IF IsNil(uDecimals )
-            wDecimals := 0
+            SELF:wDecimals := 0
         ELSEIF IsNumeric( uDecimals )
-            wDecimals := uDecimals
+            SELF:wDecimals := uDecimals
         ELSE
             DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADDECIMALS), uDecimals, "uDecimals" }:Throw()
         ENDIF
@@ -145,22 +146,22 @@ CLASS FieldSpec
     /// <include file="System.xml" path="doc/FieldSpec.Length/*" />
     ACCESS Length
         // Returns the length of the field
-        RETURN wLength
+        RETURN SELF:wLength
 
 
     /// <include file="System.xml" path="doc/FieldSpec.Maximum/*" />
     ACCESS Maximum
-        RETURN uMax
+        RETURN SELF:uMax
 
 
     /// <include file="System.xml" path="doc/FieldSpec.Minimum/*" />
     ACCESS Minimum
-        RETURN uMin
+        RETURN SELF:uMin
 
 
     /// <include file="System.xml" path="doc/FieldSpec.MinLength/*" />
     ACCESS MinLength
-        RETURN wMinLength
+        RETURN SELF:wMinLength
 
 
     /// <include file="System.xml" path="doc/FieldSpec.Nullable/*" />
@@ -183,7 +184,7 @@ CLASS FieldSpec
         LOCAL cDecSep, cTmp   AS STRING
 
 
-        oHLStatus := NULL_OBJECT
+        SELF:oHLStatus := NULL_OBJECT
 
 
         //  UH 01/31/1997
@@ -195,13 +196,13 @@ CLASS FieldSpec
         if (IsString(uValue) .and. Empty(AllTrim(uValue))) .or. ;
                 (IsDate(uValue) .and. uValue == null_date)
             // Check required
-            IF lRequired
-                IF IsNil(oHLRequired)
-                    oHLRequired := HyperLabel{ #FieldSpecRequired, , VO_Sprintf(__CAVOSTR_DBFCLASS_REQUIRED,oHyperLabel:Name) }
+            IF SELF:lRequired
+                IF IsNil(SELF:oHLRequired)
+                    SELF:oHLRequired := HyperLabel{ #FieldSpecRequired, , VO_Sprintf(__CAVOSTR_DBFCLASS_REQUIRED,SELF:oHyperLabel:Name) }
                 ENDIF
 
 
-                oHLStatus := oHLRequired
+                SELF:oHLStatus := SELF:oHLRequired
                 RETURN FALSE
             ENDIF
         ELSE
@@ -212,11 +213,11 @@ CLASS FieldSpec
 
 
             // Check data type (no conversions here!)
-            IF !(UsualType(uValue) == wType .OR. (SELF:lNumeric .AND. IsNumeric(uValue)) .OR. ((wType == TYPE_MULTIMEDIA) .AND. IsString(uValue)))
-                IF oHLType == NULL_OBJECT
-                    oHLType := HyperLabel{ #FieldSpecType, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDTYPE,oHyperLabel:Name,TypeAsString(wType)) }
+            IF !(UsualType(uValue) == SELF:wType .OR. (SELF:lNumeric .AND. IsNumeric(uValue)) .OR. ((SELF:wType == TYPE_MULTIMEDIA) .AND. IsString(uValue)))
+                IF SELF:oHLType == NULL_OBJECT
+                    SELF:oHLType := HyperLabel{ #FieldSpecType, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDTYPE,SELF:oHyperLabel:Name,TypeAsString(SELF:wType)) }
                 ENDIF
-                oHLStatus := oHLType
+                SELF:oHLStatus := SELF:oHLType
 
 
                 RETURN FALSE
@@ -267,7 +268,7 @@ CLASS FieldSpec
 
                     ENDIF
                 ENDIF
-            ELSEIF wType == STRING
+            ELSEIF SELF:wType == STRING
                 cValue := uValue
             ENDIF
 
@@ -275,44 +276,44 @@ CLASS FieldSpec
             wLen := SLen(cValue)
 
 
-            IF wLen > wLength .AND. ;
+            IF wLen > SELF:wLength .AND. ;
                     !(SELF:cType == "M" /*.AND. wLength == 10 .AND. !wLength > 65536*/ )
 
 
-                IF oHLLength == NULL_OBJECT
-                    oHLLength := HyperLabel{ #FieldSpecLength, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDLENGTH,oHyperLabel:Name,Str( wLength ) ) }
+                IF SELF:oHLLength == NULL_OBJECT
+                    SELF:oHLLength := HyperLabel{ #FieldSpecLength, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDLENGTH,SELF:oHyperLabel:Name,Str( SELF:wLength ) ) }
                 ENDIF
 
 
-                oHLStatus := oHLLength
+                SELF:oHLStatus := SELF:oHLLength
                 RETURN FALSE
 
 
-            ELSEIF wType == STRING .AND. wLen < wMinLength
-                IF  oHLMinLength = NULL_OBJECT
-                    oHLMinLength := HyperLabel{ #FieldSpecMinLength, ,  ;
-                        VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDMINLENGTH,oHyperLabel:Name,Str( wMinLength ) ) }
+            ELSEIF SELF:wType == STRING .AND. wLen < SELF:wMinLength
+                IF SELF:oHLMinLength = NULL_OBJECT
+                    SELF:oHLMinLength := HyperLabel{ #FieldSpecMinLength, ,  ;
+                        VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDMINLENGTH,SELF:oHyperLabel:Name,Str( SELF:wMinLength ) ) }
                 ENDIF
-                oHLStatus := oHLMinLength
+                SELF:oHLStatus := SELF:oHLMinLength
                 RETURN FALSE
             ENDIF
 
 
             // Check range
-            IF !IsNil(uMin) .AND. uValue < uMin
-                IF IsNil(oHLRange)
+            IF !IsNil(SELF:uMin) .AND. uValue < SELF:uMin
+                IF IsNil(SELF:oHLRange)
                     SELF:__GetHLRange( )
                 ENDIF
-                oHLStatus := oHLRange
+                SELF:oHLStatus := SELF:oHLRange
                 RETURN FALSE
             ENDIF
 
 
-            IF !IsNil(uMax) .AND. uValue > uMax
-                IF IsNil(oHLRange)
+            IF !IsNil(SELF:uMax) .AND. uValue > SELF:uMax
+                IF IsNil(SELF:oHLRange)
                     SELF:__GetHLRange( )
                 ENDIF
-                oHLStatus := oHLRange
+                SELF:oHLStatus := SELF:oHLRange
 
 
                 RETURN FALSE
@@ -322,11 +323,11 @@ CLASS FieldSpec
 
         // Check validation method or codeblock
         IF !SELF:Validate(uValue, arg)
-            IF oHLStatus == NULL_OBJECT
-                IF oHLValidation == NULL_OBJECT
-                    oHLValidation := HyperLabel{ #FieldSpecValidate, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDVALUE,oHyperLabel:Name) }
+            IF SELF:oHLStatus == NULL_OBJECT
+                IF SELF:oHLValidation == NULL_OBJECT
+                    SELF:oHLValidation := HyperLabel{ #FieldSpecValidate, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDVALUE,SELF:oHyperLabel:Name) }
                 ENDIF
-                oHLStatus := oHLValidation      // Fill in status if not done by client code
+                SELF:oHLStatus := SELF:oHLValidation      // Fill in status if not done by client code
             ENDIF
 
 
@@ -339,18 +340,18 @@ CLASS FieldSpec
 
     /// <include file="System.xml" path="doc/FieldSpec.Picture/*" />
     ACCESS Picture
-        RETURN cPicture
+        RETURN SELF:cPicture
 
 
     /// <include file="System.xml" path="doc/FieldSpec.Picture/*" />
     assign Picture( cNewPicture )
         //ASSERT _DYNCHECKERRORBOX( )
-        RETURN cPicture := cNewPicture
+        RETURN SELF:cPicture := cNewPicture
 
 
     /// <include file="System.xml" path="doc/FieldSpec.Required/*" />
     ACCESS Required
-        RETURN lRequired
+        RETURN SELF:lRequired
 
 
     /// <include file="System.xml" path="doc/FieldSpec.SetLength/*" />
@@ -361,14 +362,14 @@ CLASS FieldSpec
         // Both parameters are optional, if one is not provided the corresponding value is not changed
         IF !IsNil( w )
             IF IsNumeric( w )
-                wLength := w
+                SELF:wLength := w
             ELSE
                 DbError{ SELF, #SetLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADSI), w, "w" }:Throw()
             ENDIF
         ENDIF
         IF oHL # NIL
             IF oHL IS HyperLabel
-                oHLLength := oHL
+                SELF:oHLLength := oHL
             ELSE
                 DbError{ SELF, #SetLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
             ENDIF
@@ -383,14 +384,14 @@ CLASS FieldSpec
         // Both parameters are optional, if one is not provided the corresponding value is not changed
         IF !IsNil( w )
             IF IsNumeric( w )
-                wMinLength := w
+                SELF:wMinLength := w
             ELSE
                 DbError{ SELF, #SetMinLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADSI), w, "w" }:Throw()
             ENDIF
         ENDIF
         IF !IsNil(oHL)
             if oHL is HyperLabel
-                oHLMinLength := oHL
+                SELF:oHLMinLength := oHL
             ELSE
                 DbError{ SELF, #SetMinLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
             ENDIF
@@ -403,14 +404,14 @@ CLASS FieldSpec
         // Sets the range and the HyperLabel for the range check error message
         // All parameters are optional, if one is not provided the corresponding value is not changed
         IF !IsNil(uMinimum)
-            uMin := uMinimum
+            SELF:uMin := uMinimum
         ENDIF
         IF !IsNil(uMaximum)
-            uMax := uMaximum
+            SELF:uMax := uMaximum
         ENDIF
         IF !IsNil(oHL)
             if IsObject(oHL) .and. __Usual.ToObject(oHL) is HyperLabel
-                oHLRange := oHL
+                SELF:oHLRange := oHL
             ELSE
                 DbError{ SELF, #SetRange, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
             ENDIF
@@ -425,15 +426,15 @@ CLASS FieldSpec
         // Both parameters are optional; if lReq is omitted TRUE is assumed;
         // if the HyperLabel is not provided the current value is not changed
         IF IsNil(lReq)
-            lRequired := TRUE
+            SELF:lRequired := TRUE
         ELSEIF IsLogic( lReq )
-            lRequired := lReq
+            SELF:lRequired := lReq
         ELSE
             DbError{ SELF, #SetRequired, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADLREQ), lReq, "lReq" }:Throw()
         ENDIF
         IF !IsNil(oHL)
             if oHL is HyperLabel
-                oHLRequired := oHL
+                SELF:oHLRequired := oHL
             ELSE
                 DbError{ SELF, #SetRequired, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
             ENDIF
@@ -459,7 +460,7 @@ CLASS FieldSpec
                     SELF:lNumeric:=TRUE
                     SELF:cType := "N"
                 case "L"
-                    wType := LOGIC
+                    SELF:wType := LOGIC
                 CASE "D"                // Date
                 CASE "T"                // DateTime
                     SELF:wType := DATE
@@ -475,7 +476,7 @@ CLASS FieldSpec
                     SELF:cType := "M"
 
                 CASE "X"
-                    wType := TYPE_MULTIMEDIA
+                    SELF:wType := TYPE_MULTIMEDIA
 
                 case "0"
                     SELF:cType := ""
@@ -489,7 +490,7 @@ CLASS FieldSpec
                     SELF:cType := "C"
                 ELSEIF SELF:wType = LOGIC
                     SELF:cType := "L"
-                ELSEIF wType = DATE
+                ELSEIF SELF:wType = DATE
                     SELF:cType := "D"
                 elseif SELF:wType=int   .or.; // also Long
                        SELF:wType=float .or.;
@@ -521,9 +522,9 @@ CLASS FieldSpec
         SELF:_SetType(uType, #SetType)
         IF !IsNil(oHL)
             if oHL is HyperLabel
-                oHLType := oHL
+                SELF:oHLType := oHL
             ELSEIF IsSymbol( oHL ) .OR. IsString( oHL )
-                oHLType := HyperLabel{ oHL }
+                SELF:oHLType := HyperLabel{ oHL }
             ELSE
                 DbError{ SELF, #SetType, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
             ENDIF
@@ -544,16 +545,16 @@ CLASS FieldSpec
             //  UH 04/10/2000
             //  IF IsCodeBlock( cb )
             IF __CanEval( cb )
-                cbValidation := cb
+                SELF:cbValidation := cb
             ELSEIF IsString( cb )
-                cbValidation := &( "{ | |" + cb + " }" )
+                SELF:cbValidation := &( "{ | |" + cb + " }" )
             ELSE
                 DbError{ SELF, #SetValidation, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADCB), cb, "cb" }:Throw()
             ENDIF
         ENDIF
         IF !IsNil(oHL)
             IF oHL IS HyperLabel
-                oHLValidation := oHL
+                SELF:oHLValidation := oHL
             ELSE
                 DbError{ SELF, #SetValidation, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
             ENDIF
@@ -567,13 +568,13 @@ CLASS FieldSpec
     access Status
         // Returns the Status HyperLabel object; NIL if status is OK. Status reflects the
         // most recently made validation ( see METHOD PerformValidations ).
-        RETURN oHLStatus
+        RETURN SELF:oHLStatus
 
 
     /// <include file="System.xml" path="doc/FieldSpec.Status/*" />
     ASSIGN Status (oHL)
         IF oHL IS HyperLabel
-            oHLStatus := oHL
+            SELF:oHLStatus := oHL
         ELSE
             DbError{ SELF, #Status, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
         ENDIF
@@ -594,12 +595,12 @@ CLASS FieldSpec
         local lZero :=false   as logic
 
 
-        IF cPicture == NULL_STRING
-            if lNumeric
-                IF wDecimals=0
-                    cResult := Transform(uValue,Replicate("9",wLength))
+        IF SELF:cPicture == NULL_STRING
+            if SELF:lNumeric
+                IF SELF:wDecimals=0
+                    cResult := Transform(uValue,Replicate("9",SELF:wLength))
                 ELSE
-                    cResult := Transform(uValue,Replicate("9",wLength-wDecimals-1)+"."+Replicate("9",wDecimals))
+                    cResult := Transform(uValue,Replicate("9",SELF:wLength-SELF:wDecimals-1)+"."+Replicate("9",SELF:wDecimals))
                 ENDIF
 
 
@@ -607,32 +608,32 @@ CLASS FieldSpec
                     lScience := SetScience(TRUE)
                     cTemp := AsString(uValue)
                     SetScience(lScience)
-                    IF SLen(cTemp)>wLength //if<overall length, trim it.
+                    IF SLen(cTemp)>SELF:wLength //if<overall length, trim it.
                         cTemp:=AllTrim(StrTran(cTemp,Chr(0)))
-                        IF SLen(cTemp)>wLength
+                        IF SLen(cTemp)>SELF:wLength
                             IF lZero //Still too long
                                 cResult:=StrTran(cResult,"0","*")
                             ENDIF
                         ELSE
                             // PadL() not available yet
                             //            cResult:=PadL(cTemp,wLength)
-                            IF SLen(cTemp) <= wLength
-                                cResult := Left(cTemp, wLength)
+                            IF SLen(cTemp) <= SELF:wLength
+                                cResult := Left(cTemp, SELF:wLength)
                             ELSE
-                                cResult := Space(wLength - SLen(cTemp))+cTemp
+                                cResult := Space(SELF:wLength - SLen(cTemp))+cTemp
                             ENDIF
                         ENDIF
                     ELSE
                         cResult:=cTemp
                     ENDIF
                 ENDIF
-            elseif uValue==nil .and. wType==string
+            elseif uValue==nil .and. SELF:wType==string
                 cResult := null_string
             ELSE
                 cResult := AsString(uValue)
             ENDIF
         ELSE
-            cResult := Transform(uValue,cPicture)
+            cResult := Functions.Transform(uValue,SELF:cPicture)
         ENDIF
 
 
@@ -644,7 +645,7 @@ CLASS FieldSpec
     /// <include file="System.xml" path="doc/FieldSpec.UsualType/*" />
     access UsualType
         // Returns the storage type as a keyword (INT, STRING, etc.)
-        RETURN wType
+        RETURN SELF:wType
 
 
     /// <include file="System.xml" path="doc/FieldSpec.Val/*" />
@@ -661,40 +662,40 @@ CLASS FieldSpec
         ENDIF
 
 
-        IF lNumeric
+        IF SELF:lNumeric
             IF SELF:lNullable
                 cType1 := "N0"
             ELSE
                 cType1 := "N"
             ENDIF
-            xRet := Unformat( cString, cPicture, cType1)
+            xRet := Unformat( cString, SELF:cPicture, cType1)
 
 
-        ELSEIF wType = DATE
+        ELSEIF SELF:wType = DATE
             IF SELF:lNullable
                 cType1 := "D0"
             ELSE
                 cType1 := "D"
             ENDIF
-            xRet := Unformat( cString, cPicture, cType1)
+            xRet := Unformat( cString, SELF:cPicture, cType1)
 
 
-        ELSEIF wType = LOGIC
+        ELSEIF SELF:wType = LOGIC
             IF SELF:lNullable
                 cType1 := "L0"
             ELSE
                 cType1 := "L"
             ENDIF
-            xRet := Unformat( cString, cPicture, cType1)
+            xRet := Unformat( cString, SELF:cPicture, cType1)
 
 
-        ELSEIF wType = STRING
+        ELSEIF SELF:wType = STRING
             IF SELF:lNullable
                 cType1 := "C0"
             ELSE
                 cType1 := "C"
             ENDIF
-            xRet := Unformat( cString, cPicture, cType1)
+            xRet := Unformat( cString, SELF:cPicture, cType1)
         ENDIF
 
 
@@ -705,18 +706,18 @@ CLASS FieldSpec
     method Validate( uValue, arg )
 
 
-        RETURN cbValidation = NIL .OR. Eval( cbValidation, uValue, arg )
+        RETURN SELF:cbValidation = NIL .OR. Eval( SELF:cbValidation, uValue, arg )
 
 
     /// <include file="System.xml" path="doc/FieldSpec.Validation/*" />
     access Validation
-        RETURN cbValidation
+        RETURN SELF:cbValidation
 
 
     /// <include file="System.xml" path="doc/FieldSpec.ValType/*" />
     access ValType
         // Returns the storage type as a keyword (INT, STRING, etc.)
-        RETURN cType
+        RETURN SELF:cType
 
 
 
@@ -724,22 +725,22 @@ CLASS FieldSpec
         //RvdH 2010-12-03: Some extra accesses
     /// <include file="System.xml" path="doc/FieldSpec.MinLengthHL/*" />
     access MinLengthHL
-        RETURN oHLMinLength
+        RETURN SELF:oHLMinLength
 
 
     /// <include file="System.xml" path="doc/FieldSpec.RangeHL/*" />
     access RangeHL
-        RETURN oHLRange
+        RETURN SELF:oHLRange
 
 
     /// <include file="System.xml" path="doc/FieldSpec.RequiredHL/*" />
     access RequiredHL
-        RETURN oHLRequired
+        RETURN SELF:oHLRequired
 
 
     /// <include file="System.xml" path="doc/FieldSpec.ValidationHL/*" />
     access ValidationHL
-        RETURN oHLValidation
+        RETURN SELF:oHLValidation
 
 
 

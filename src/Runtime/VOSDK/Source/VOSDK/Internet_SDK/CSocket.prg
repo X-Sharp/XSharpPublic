@@ -1,4 +1,4 @@
-#pragma options ("enforceself", on)
+
 /// <include file="Internet.xml" path="doc/CSocket/*" />
 CLASS CSocket
 	PROTECT nSocket AS DWORD
@@ -388,7 +388,7 @@ METHOD accept() AS CSocket STRICT
 	//
 	// do not get the address of remote end.
 	//
-	nSock := accept(SELF:nSocket, NULL, NULL)
+	nSock := VOWin32APILibrary.Functions.accept(SELF:nSocket, NULL, NULL)
 
 
 	IF (nSock != INVALID_SOCKET)
@@ -448,7 +448,7 @@ METHOD bind(nPort AS WORD, cIP AS STRING, nFamily AS SHORTINT) AS LOGIC STRICT
 	sin:sin_port := htons(nPort)
 
 
-	IF bind(SELF:nSocket, @sin, nSize) == SOCKET_ERROR
+	IF Win32bind(SELF:nSocket, @sin, nSize) == SOCKET_ERROR
 		SELF:__SetErrorVars(ProcName(), ProcLine())
 		RETURN FALSE
 	ENDIF
@@ -744,7 +744,7 @@ METHOD getpeername(cName REF STRING, nPort REF INT) AS LOGIC STRICT
 	MemSet(@sin, 0, DWORD(nSize))
 
 
-	IF getpeername(SELF:nSocket, @sin, @nSize) = 0
+	IF Win32getpeername(SELF:nSocket, @sin, @nSize) = 0
 		nPort := ntohs(sin:sin_port)
 		cName := Psz2String(inet_ntoa(sin:sin_addr))
 		lRet := .T.
@@ -922,7 +922,7 @@ METHOD getsockname(cName REF STRING, nPort REF INT) AS LOGIC STRICT
 	MemSet(@sin, 0, DWORD(nSize))
 
 
-	IF getsockname(SELF:nSocket, @sin, @nSize) = 0
+	IF Win32getsockname(SELF:nSocket, @sin, @nSize) = 0
 		nPort := ntohs(sin:sin_port)
 		cName := Psz2String(inet_ntoa(sin:sin_addr))
 		lRet := .T.
@@ -1016,7 +1016,7 @@ METHOD listen(nBackLog AS INT) AS LOGIC STRICT
 	ENDIF
 
 
-	IF listen(SELF:nSocket, nBackLog) == SOCKET_ERROR
+	IF Win32listen(SELF:nSocket, nBackLog) == SOCKET_ERROR
 		SELF:__SetErrorVars(ProcName(), ProcLine())
 		RETURN FALSE
 	ENDIF
@@ -1357,3 +1357,11 @@ DEFINE WS_VERSION_MAJOR := 1
 DEFINE WS_VERSION_MINOR := 1
 DEFINE WS_VERSION_REQUIRED := 0x0101
 #endregion
+
+_DLL FUNCTION Win32bind(s AS DWORD,  _Addr AS _WINsockaddr, namelen AS INT);
+	AS INT PASCAL:WSOCK32.bind
+_DLL FUNCTION Win32listen( s AS DWORD, backlog AS INT) AS INT PASCAL:WSOCK32.listen
+_DLL FUNCTION Win32getpeername( s AS DWORD, name AS _winsockaddr_in , namelen AS INT PTR ) AS INT PASCAL:WSOCK32.getpeername
+_DLL FUNCTION Win32getsockname( s AS DWORD, name AS _winsockaddr_in, namelen AS INT PTR ) AS INT PASCAL:WSOCK32.getsockname
+
+

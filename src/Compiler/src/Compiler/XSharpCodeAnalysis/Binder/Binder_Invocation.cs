@@ -64,7 +64,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
 
-        private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxNode syntax, CSharpCompilation compilation,DiagnosticBag diagnostics)
+private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxNode syntax, CSharpCompilation compilation,DiagnosticBag diagnostics)
         {
             TypeSymbol parameterType = parameter.Type;
             var defaultExpr = parameter.GetVODefaultParameter(syntax, compilation);
@@ -183,18 +183,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (result is BoundCall bc)
                     {
 
-                        // check if MethodSymbol has the NeedAccessToLocals attribute combined with /fox2
+                        // check if MethodSymbol has the NeedAccessToLocals attribute combined with /memvars and the FoxPro Dialect
                         if (Compilation.Options.Dialect == XSharpDialect.FoxPro &&
                             Compilation.Options.HasOption(CompilerOption.MemVars, node) &&
                             bc.Method.NeedAccessToLocals(out var writeAccess))
                         {
-                            var localsymbols = new List<LocalSymbol>();
+                            var localsymbols = new List<Symbol>();
                             var binder = this;
                             while (binder != null)
                             {
                                 localsymbols.AddRange(binder.Locals);
-                                if (binder is InMethodBinder)
+                                if (binder is InMethodBinder imb)
+                                {
+                                    var ms = imb.ContainingMemberOrLambda as MethodSymbol;
+                                    localsymbols.AddRange(ms.Parameters);
                                     break;
+                                }
                                 binder = binder.Next;
                             }
                             var root = node.SyntaxTree.GetRoot() as CompilationUnitSyntax;
@@ -261,7 +265,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return null;
                 }
             }
+            var count = diagnostics.Count;
             var expression = BindExpression(node.Expression, diagnostics);
+            // A function call Test() should not throw an error when the function exists and no variable name 'Test' has been defined.
+            if (diagnostics.Count != count)
+            {
+                var tmp = DiagnosticBag.GetInstance();
+                tmp.AddRange(diagnostics.AsEnumerable().Where(d => d.Code != (int)ErrorCode.WRN_UndeclaredVariable));
+                diagnostics.Clear();
+                diagnostics.AddRangeAndFree(tmp);
+            }
             if (node.Parent is AssignmentExpressionSyntax aes && aes.Left == node)
             {
                 // a(1,2) := something

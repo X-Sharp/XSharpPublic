@@ -1,4 +1,4 @@
-#pragma options ("enforceself", on)
+
 /// <include file="Gui.xml" path="doc/DateTimePicker/*" />
 CLASS DateTimePicker INHERIT TextControl
     HIDDEN _lNoAssign AS LOGIC
@@ -214,7 +214,7 @@ METHOD ParentNotify(nCode, lParam)
 
    IF nCode = DTN_CLOSEUP
       IF GetFocus() != SELF:Handle()
-         SetFocus(SELF:Handle())
+         Win32SetFocus(SELF:Handle())
       ENDIF
       keybd_event(VK_RIGHT, 0, 0, 0)
    ENDIF

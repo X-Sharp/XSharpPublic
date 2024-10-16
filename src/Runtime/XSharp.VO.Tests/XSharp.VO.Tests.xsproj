@@ -22,6 +22,8 @@
     <VO14>true</VO14>
     <VO15>true</VO15>
     <Nostandarddefs>true</Nostandarddefs>
+    <StartupObject />
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DefineConstants>DEBUG;TRACE</DefineConstants>

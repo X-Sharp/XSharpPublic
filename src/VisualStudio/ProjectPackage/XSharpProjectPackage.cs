@@ -118,6 +118,8 @@ namespace XSharp.Project
     [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".xsmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
     [ProvideEditorExtension(typeof(VODBServerEditorFactory), ".xsdbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
     [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".xsfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
+    //[ProvideEditorExtension(typeof(VOSQLServerEditorFactory), ".xssql", 0x42, DefaultName = "XSharp VO SQL Editor", NameResourceID = 80114)]
+    //[ProvideEditorExtension(typeof(VOReportEditorFactory), ".xsrep", 0x42, DefaultName = "XSharp VO Report Editor", NameResourceID = 80115)]
     [ProvideEditorLogicalView(typeof(VOFormEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
     [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
     [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
@@ -127,6 +129,8 @@ namespace XSharp.Project
     [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".vnmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
     [ProvideEditorExtension(typeof(VODBServerEditorFactory), ".vndbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
     [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".vnfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
+    //[ProvideEditorExtension(typeof(VOSQLServerEditorFactory), ".vnsqs", 0x42, DefaultName = "XSharp VO SQL Editor", NameResourceID = 80114)]
+    //[ProvideEditorExtension(typeof(VOReportEditorFactory), ".vnrep", 0x42, DefaultName = "XSharp VO Report Editor", NameResourceID = 80115)]
 
     [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
     [Guid(XSharpConstants.guidXSharpProjectPkgString)]
@@ -162,7 +166,7 @@ namespace XSharp.Project
         }
 
 
-
+        XSharpShellEvents _shellEvents;
         #region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -171,7 +175,7 @@ namespace XSharp.Project
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             // Give the codemodel a way to talk to the VS Shell
-            XSettings.ShellLink = new XSharpShellLink();
+            _shellEvents = new XSharpShellEvents();
 
             this.RegisterToolWindows();
 
@@ -208,6 +212,8 @@ namespace XSharp.Project
             }
             await this.RegisterCommandsAsync();
             await GetOptionsAsync();
+            XSettings.CodeDomProviderClass  = typeof(XSharp.CodeDom.XSharpCodeDomProvider);
+
         }
 
 
@@ -261,23 +267,11 @@ namespace XSharp.Project
                 await options.OtherEditorOptions.SaveAsync();
             }
             options.WriteToSettings();
-            StartLogging();
             return true;
         }
+
         
-	 private void StartLogging()
-        {
-            int FileLogging = (int)Constants.GetSetting("Log2File", XSettings.EnableFileLogging? 1 : 0);
-            int DebugLogging = (int)Constants.GetSetting("Log2Debug", XSettings.EnableDebugLogging ? 1 : 0);
-
-            XSettings.EnableFileLogging = FileLogging != 0;
-            XSettings.EnableDebugLogging = DebugLogging != 0;
-            if (XSettings.EnableFileLogging || XSettings.EnableDebugLogging)
-                Logger.Start();
-            else
-                Logger.Stop();
-
-        }
+        
 		
         /// <summary>
         /// Read the comment tokens from the Tools/Options dialog and pass them to the CodeModel assembly
@@ -326,7 +320,6 @@ namespace XSharp.Project
 
         public void Dispose()
         {
-            Logger.Stop();
             if (shell != null)
             {
                 JoinableTaskFactory.Run(async delegate
@@ -338,6 +331,20 @@ namespace XSharp.Project
             }
         }
     }
-    
+    internal static class Logger
+    {
+        internal static void Exception(Exception e, string msg)
+        {
+            XSettings.Logger.Exception(e, msg);
+        }
+        internal static void Information(string msg)
+        {
+            XSettings.Logger.Information(msg);
+        }
+        internal static void Debug(string msg)
+        {
+            XSettings.Logger.Debug(msg);
+        }
+    }
 
 }

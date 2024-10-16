@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-05T22:55:42.854+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T01:58:19.899+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# 脚本</title>
   <keywords>
     <keyword>#LOAD</keyword>
@@ -20,382 +20,382 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">本次会议的示例在安装 X# 时保存在 c:\Users\Public\Documents\XSharp\Scripting 文件夹中。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2">Why endorse scripting?</para>
+    <para styleclass="Heading2">为什么要支持脚本?</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Heading1 Black" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Heading1 Black"><text styleclass="Normal">Dynamic behavior at runtime </text></li>
+      <li styleclass="Heading1 Black"><text styleclass="Normal">运行时的动态特性 </text></li>
       <list id="0" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Extensibility and flexibility </li>
-        <li styleclass="Normal">User-defined behavior </li>
+        <li styleclass="Normal">可扩展性和灵活性 </li>
+        <li styleclass="Normal">用户自定义行为 </li>
       </list>
     </list>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Platform independence </li>
+      <li styleclass="Normal">平台的独立性 </li>
       <list id="0" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">System operations defined in a script </li>
+        <li styleclass="Normal">在脚本中定义的系统操作 </li>
       </list>
     </list>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Behavior as data </li>
+      <li styleclass="Normal">行为即数据 </li>
       <list id="0" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Stored in files, database, cloud </li>
-        <li styleclass="Normal">Updated at runtime </li>
+        <li styleclass="Normal">存储在文件、数据库和云端</li>
+        <li styleclass="Normal">运行时更新 </li>
       </list>
     </list>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Rapid prototyping</li>
+      <li styleclass="Normal">快速原型设计</li>
     </list>
-    <para styleclass="Heading2">Scripting is...</para>
+    <para styleclass="Heading2">脚本是...</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Expression evaluation </li>
+      <li styleclass="Normal">表达式评估 </li>
     </list>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <list id="1" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Built-in interpreter </li>
-        <li styleclass="Normal">Self-contained functionality </li>
-        <li styleclass="Normal">Simple expressions or full statements </li>
+        <li styleclass="Normal">内置解释器 </li>
+        <li styleclass="Normal">自带功能</li>
+        <li styleclass="Normal">简单表达或完整陈述 </li>
       </list>
     </list>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Source file(s) without a project </li>
+      <li styleclass="Normal">无项目的源文件 </li>
     </list>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <list id="3" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Single file (multiple sources may be loaded by a single script) </li>
-        <li styleclass="Normal">No need for a full IDE or SDK </li>
-        <li styleclass="Normal">Dynamic compilation without an IDE </li>
-        <li styleclass="Normal">Definition of complex structures, classes</li>
+        <li styleclass="Normal">单个文件(单个脚本可加载多个数据源)</li>
+        <li styleclass="Normal">无需完整的集成开发环境或 SDK </li>
+        <li styleclass="Normal">无需集成开发环境的动态编译 </li>
+        <li styleclass="Normal">复杂结构、类的定义</li>
       </list>
     </list>
-    <para styleclass="Heading2">X# as a scripting language</para>
+    <para styleclass="Heading2">作为脚本语言的 X#</para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Roslyn script engine </li>
+      <li styleclass="Normal">Roslyn 脚本引擎</li>
       <list id="4" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">C# scripting </li>
+        <li styleclass="Normal">C# 脚本 </li>
       </list>
     </list>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Standalone expressions </li>
+      <li styleclass="Normal">独立表达式 </li>
       <list id="4" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">No START function </li>
-        <li styleclass="Normal">Global statements, expressions </li>
-        <li styleclass="Normal">Similar to the macro compiler (but not the same!) </li>
-        <li styleclass="Normal">Host object maintains state</li>
+        <li styleclass="Normal">无 START 函数 </li>
+        <li styleclass="Normal">全局语句、表达式 </li>
+        <li styleclass="Normal">与宏编译器类似(但并不相同！)。 </li>
+        <li styleclass="Normal">主机对象维持状态</li>
       </list>
     </list>
-    <para styleclass="Heading2">X# as a scripting language</para>
+    <para styleclass="Heading2">作为脚本语言的 X#</para>
     <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Complex declarations allowed </li>
+      <li styleclass="Normal">允许使用复杂的声明 </li>
       <list id="5" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Types, functions can be declared </li>
-        <li styleclass="Normal">No namespaces! </li>
+        <li styleclass="Normal">可以声明类型、函数 </li>
+        <li styleclass="Normal">没有命名空间！ </li>
       </list>
     </list>
     <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">External references </li>
+      <li styleclass="Normal">外部引用 </li>
       <list id="5" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Loading assemblies </li>
-        <li styleclass="Normal">No implicit access to host assembly </li>
-        <li styleclass="Normal">No isolation (e.g. separate AppDomain)</li>
+        <li styleclass="Normal">加载组件 </li>
+        <li styleclass="Normal">无法隐式访问主机程序集 </li>
+        <li styleclass="Normal">无隔离(例如单独的 AppDomain)</li>
       </list>
     </list>
-    <para styleclass="Heading2">The X-Sharp interpreter (xsi.exe)</para>
+    <para styleclass="Heading2">X-Sharp 解释器 (xsi.exe)</para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Read-Eval-Print Loop (REPL) </li>
-      <li styleclass="Normal">Console application </li>
-      <li styleclass="Normal">Return values are printed to the console </li>
+      <li styleclass="Normal">读取-评估-打印循环 (REPL) </li>
+      <li styleclass="Normal">控制台应用程序 </li>
+      <li styleclass="Normal">返回值将打印到控制台 </li>
       <list id="6" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">With pretty formatting! </li>
+        <li styleclass="Normal">具有漂亮的格式！</li>
       </list>
     </list>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Maintain context </li>
-      <li styleclass="Normal">Declare LOCAL variables</li>
+      <li styleclass="Normal">保持上下文 </li>
+      <li styleclass="Normal">声明局部变量</li>
     </list>
-    <para styleclass="Heading2">The X-Sharp interpreter (xsi.exe)</para>
+    <para styleclass="Heading2">X-Sharp 解释器 (xsi.exe)</para>
     <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Can load assemblies, script files </li>
+      <li styleclass="Normal">可加载程序集和脚本文件 </li>
       <list id="7" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">.PRGX extension </li>
-        <li styleclass="Normal">#R directive </li>
-        <li styleclass="Normal">#LOAD directive </li>
+        <li styleclass="Normal">.PRGX 扩展 </li>
+        <li styleclass="Normal">#R 指令 </li>
+        <li styleclass="Normal">#LOAD 指令 </li>
       </list>
     </list>
     <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Can runs scripts from command line </li>
+      <li styleclass="Normal">可从命令行运行脚本 </li>
       <list id="7" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Xsi.exe &lt;script.prgx&gt; </li>
       </list>
     </list>
     <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Passes command-line arguments to scripts </li>
+      <li styleclass="Normal">向脚本传递命令行参数 </li>
       <list id="7" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Xsi.exe &lt;script.prgx&gt; &lt;arg&gt; ...</li>
       </list>
     </list>
-    <para styleclass="Heading2">Alternative ways to run scripts</para>
+    <para styleclass="Heading2">运行脚本的其他方法</para>
     <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Setting xsi.exe as default app for .prgx </li>
+      <li styleclass="Normal">将 xsi.exe 设置为 .prgx 的默认应用程序 </li>
       <list id="8" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Also creates file association, but without args </li>
-        <li styleclass="Normal">Edit file association in registry </li>
+        <li styleclass="Normal">也会创建文件关联，但没有参数</li>
+        <li styleclass="Normal">编辑注册表中的文件关联 </li>
       </list>
     </list>
     <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Manually setting file association </li>
+      <li styleclass="Normal">手动设置文件关联 </li>
       <list id="8" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">assoc, ftype </li>
       </list>
     </list>
     <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Invoking without the .prgx extension </li>
+      <li styleclass="Normal">调用时不使用 .prgx 扩展名 </li>
       <list id="8" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">PATHEXT </li>
       </list>
     </list>
     <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Run without console? </li>
+      <li styleclass="Normal">不在控制台运行？</li>
       <list id="8" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Not possible with xsi.exe since it is a console application</li>
+        <li styleclass="Normal">无法使用 xsi.exe，因为它是一个控制台应用程序</li>
       </list>
     </list>
-    <para styleclass="Heading2">Scripting internals: the submission</para>
+    <para styleclass="Heading2">脚本内核：子任务(submission)</para>
     <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Every script is compiled into a “submission” </li>
+      <li styleclass="Normal">每个脚本都被编译为“子任务”</li>
       <list id="9" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Roslyn terminology </li>
-      </list>
-    </list>
-    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Every line given to the xsi prompt creates a new submission </li>
-      <list id="9" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Inherits previous submission </li>
-        <li styleclass="Normal">Previously declared variables remain visible </li>
+        <li styleclass="Normal">Roslyn 术语 </li>
       </list>
     </list>
     <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Cannot be inspected directly </li>
+      <li styleclass="Normal">在 xsi 提示符下输入的每一行都会创建一个新的子任务</li>
       <list id="9" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">“SELF” and “SUPER” are not accessible</li>
+        <li styleclass="Normal">继承之前提交的子任务 </li>
+        <li styleclass="Normal">之前已声明的变量仍然可见 </li>
       </list>
     </list>
-    <para styleclass="Heading2">Scripting internals: the global object</para>
+    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">不能直接检查</li>
+      <list id="9" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+        <li styleclass="Normal">“SELF“ 和 ”SUPER&quot; 无法访问</li>
+      </list>
+    </list>
+    <para styleclass="Heading2">脚本内部结构：全局对象</para>
     <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Statements execute in the context of the global object </li>
-      <li styleclass="Normal">Generated by xsi.exe </li>
+      <li styleclass="Normal">语句在全局对象上下文中执行 </li>
+      <li styleclass="Normal">由 xsi.exe 生成 </li>
       <list id="10" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">InteractiveScriptGlobals class </li>
+        <li styleclass="Normal">InteractiveScriptGlobals 类 </li>
       </list>
     </list>
     <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Provides access to command-line arguments </li>
-      <li styleclass="Normal">Print function with pretty-formatting options</li>
+      <li styleclass="Normal">提供对命令行参数的访问 </li>
+      <li styleclass="Normal">带有漂亮格式选项的打印功能</li>
     </list>
-    <para styleclass="Heading2">Scripting internals: script declarations</para>
+    <para styleclass="Heading2">脚本内核：脚本声明</para>
     <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Are LOCALs declared in a script really local? </li>
+      <li styleclass="Normal">脚本中声明的 LOCAL 真的是局部的吗？</li>
       <list id="11" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Not when they are declared outside of a method </li>
-        <li styleclass="Normal">They become fields of the submission class </li>
+        <li styleclass="Normal">在方法之外声明时则不会</li>
+        <li styleclass="Normal">它们会成为 submission 类的字段 </li>
       </list>
     </list>
     <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">What about FUNCTIONs and PROCEDUREs? </li>
+      <li styleclass="Normal">那么 FUNCTION 和 PROCEDURE 呢？</li>
       <list id="11" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">They become methods of the submission class </li>
+        <li styleclass="Normal">它们会成为 submission 类的方法 </li>
       </list>
     </list>
     <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Declared types? (CLASSes, STRUCTUREs, ENUMs) </li>
+      <li styleclass="Normal">声明类型？(类型、结构、枚举)</li>
       <list id="11" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">They become nested types in the submission class </li>
-        <li styleclass="Normal">Not possible to have extension methods!</li>
+        <li styleclass="Normal">它们会成为 submission 类的嵌套类型 </li>
+        <li styleclass="Normal">不能有扩展方法！</li>
       </list>
     </list>
-    <para styleclass="Heading2">Application scripting: the first steps</para>
+    <para styleclass="Heading2">应用程序脚本：第一步</para>
     <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Add scripting capabilities to your application! </li>
-      <li styleclass="Normal">Reference the script hosting and code analysis assemblies </li>
+      <li styleclass="Normal">为您的应用程序添加脚本功能！</li>
+      <li styleclass="Normal">引用脚本托管和代码分析程序集 </li>
       <list id="12" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">XSharp.CodeAnalysis.dll </li>
         <li styleclass="Normal">XSharp.Scripting.dll </li>
       </list>
     </list>
     <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Important namespaces </li>
+      <li styleclass="Normal">重要的命名空间</li>
       <list id="12" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">LanguageService.CodeAnalysis.Scripting </li>
         <li styleclass="Normal">LanguageService.CodeAnalysis.Xsharp.Scripting </li>
       </list>
     </list>
     <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Run a script </li>
+      <li styleclass="Normal">运行脚本</li>
       <list id="12" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">XSharpScript.RunAsync(&quot;? &apos;HELLO&apos;&quot;) </li>
-        <li styleclass="Normal">CompilationErrorException is thrown if the source has errors</li>
+        <li styleclass="Normal">如果源代码有错误，会抛出 CompilationErrorException(编译错误异常)。</li>
       </list>
     </list>
-    <para styleclass="Heading2">Problem: how to pass arguments to a script?</para>
+    <para styleclass="Heading2">问题：如何向脚本传递参数？</para>
     <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Passing arguments: the globals object</li>
-      <li styleclass="Normal">The script can access public members of the globals object </li>
+      <li styleclass="Normal">传递参数：globals 对象</li>
+      <li styleclass="Normal">脚本可以访问 globals 对象的 public 成员 </li>
       <list id="13" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">The type of the globals object can be custom </li>
+        <li styleclass="Normal">globals 对象的类型可以是自定义的 </li>
       </list>
     </list>
     <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">An instance of the globals object can be passed to RunAsync() </li>
+      <li styleclass="Normal">可以将 globals 对象的实例传递给 RunAsync() </li>
       <list id="13" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Public fields of the globals object can be used to pass arguments to the script </li>
-        <li styleclass="Normal">The script will access them as variables</li>
+        <li styleclass="Normal">globals 对象的 public 字段可用于向脚本传递参数 </li>
+        <li styleclass="Normal">脚本将把它们作为变量来访问</li>
       </list>
     </list>
-    <para styleclass="Heading1">Problem: how to provide an API to the script?</para>
-    <para styleclass="Heading2">Script API: the globals object</para>
+    <para styleclass="Heading1">问题：如何为脚本提供 API？</para>
+    <para styleclass="Heading2">Script API: globals 对象</para>
     <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Public members of the globals object are accessible by the script </li>
+      <li styleclass="Normal">脚本可访问 globals 对象的 public 成员 </li>
       <list id="14" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Remember: the script is compiled and executed in a different assembly in-memory! </li>
+        <li styleclass="Normal">切记：脚本是在内存中的不同程序集中编译和执行的！</li>
       </list>
     </list>
     <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Not an elegant method to give access to types </li>
+      <li styleclass="Normal">提供类型访问权限的方法并不优雅 </li>
       <list id="14" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">But excellent for a function-based API </li>
-        <li styleclass="Normal">Self-contained, not prone to errors </li>
+        <li styleclass="Normal">但对于基于函数的 API 来说，这一点非常出色</li>
+        <li styleclass="Normal">自成一体(Self-contained)、不易出错</li>
       </list>
     </list>
     <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">The script does not have direct access to all application types </li>
-      <li styleclass="Normal" style="margin-left:13px;">Not a security measure! </li>
+      <li styleclass="Normal" style="margin-left:13px;">脚本无法直接访问所有应用程序类型 </li>
+      <li styleclass="Normal" style="margin-left:13px;">不是安全措施！ </li>
       <list id="14" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal" style="margin-left:13px;">The script is run in the same AppDomain (in a dynamic assembly)</li>
+        <li styleclass="Normal" style="margin-left:13px;">脚本在同一 &#160;AppDomain(动态程序集)中运行</li>
       </list>
     </list>
-    <para styleclass="Heading2">Script API: using a common assembly</para>
+    <para styleclass="Heading2">Script API: 使用通用组件</para>
     <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Scripts can reference assemblies </li>
+      <li styleclass="Normal">脚本可以引用程序集 </li>
       <list id="15" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Through the #R directive </li>
-        <li styleclass="Normal">Through the options passed to the RunAsync() call </li>
+        <li styleclass="Normal">通过 #R 指令 </li>
+        <li styleclass="Normal">通过传递给 RunAsync() 调用的选项 </li>
       </list>
     </list>
     <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Move functions and types that should be accessible by the script to a separate assembly </li>
+      <li styleclass="Normal">将脚本可访问的函数和类型移至单独的程序集 </li>
       <list id="15" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">The assembly can then be referenced by the script </li>
+        <li styleclass="Normal">然后脚本就可以引用该程序集了</li>
       </list>
     </list>
     <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Can be used in conjunction with the globals object</li>
+      <li styleclass="Normal">可与 globals 对象结合使用</li>
     </list>
-    <para styleclass="Heading1">Problem: how to get results back from a script?</para>
-    <para styleclass="Heading2">Script result: return value</para>
+    <para styleclass="Heading1">问题：如何从脚本返回结果？</para>
+    <para styleclass="Heading2">Script 结果: 返回值</para>
     <list id="16" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Scripts can return a value with a RETURN statement </li>
+      <li styleclass="Normal">脚本可以使用 RETURN 语句返回值 </li>
       <list id="16" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">...or from a standalone expression! </li>
-        <li styleclass="Normal">EvalAsync() returns that value </li>
-        <li styleclass="Normal">RunAsync() returns a ScriptState object, from which the return value can also be fetched</li>
+        <li styleclass="Normal">...或独立表达式！</li>
+        <li styleclass="Normal">EvalAsync() 返回该值 </li>
+        <li styleclass="Normal">RunAsync() 返回一个 ScriptState 对象，也可以从中获取返回值</li>
       </list>
     </list>
-    <para styleclass="Heading2">Script result: examine script state</para>
+    <para styleclass="Heading2">Script 结果: 检查脚本状态</para>
     <list id="17" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Variables declared by the script can be examined </li>
+      <li styleclass="Normal">可以检查脚本声明的变量 </li>
       <list id="17" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">The ScriptState object returned by RunAsync() includes methods to examine the variables </li>
+        <li styleclass="Normal">RunAsync() 返回的 ScriptState 对象包含用于检查变量的方法 </li>
       </list>
     </list>
     <list id="17" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">ScriptState.GetVariable(string name)</li>
     </list>
-    <para styleclass="Heading2">Advanced topics: handling errors</para>
+    <para styleclass="Heading2">高级主题：处理错误</para>
     <list id="18" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Compilation errors </li>
+      <li styleclass="Normal">编译错误 </li>
       <list id="18" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">CompilationErrorException thrown </li>
-        <li styleclass="Normal">Roslyn API provides access to compilation messages </li>
-        <li styleclass="Normal">Create script object with XsharpScript.Create() </li>
-        <li styleclass="Normal">Compile with script:Compile() </li>
+        <li styleclass="Normal">抛出 CompilationErrorException</li>
+        <li styleclass="Normal">Roslyn API 提供对编译信息的访问 </li>
+        <li styleclass="Normal">使用 XsharpScript.Create() 创建 script 对象 </li>
+        <li styleclass="Normal">使用 script:Compile() 进行编译 </li>
       </list>
     </list>
     <list id="18" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Returns list of diagnostic messages </li>
-      <li styleclass="Normal">Runtime errors </li>
+      <li styleclass="Normal" style="margin-left:13px;">返回诊断信息列表 </li>
+      <li styleclass="Normal">运行时错误 </li>
       <list id="18" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Exception is thrown </li>
+        <li styleclass="Normal">抛出异常 </li>
       </list>
     </list>
     <list id="18" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">AggregateException because script is ran as a Task </li>
-      <li styleclass="Normal" style="margin-left:13px;">e:InnerException property contains the real exception</li>
+      <li styleclass="Normal" style="margin-left:13px;">因为脚本是作为任务(Task)运行的，所以会出现 AggregateException 异常 </li>
+      <li styleclass="Normal" style="margin-left:13px;">e:InnerException 属性包含真正的异常</li>
     </list>
-    <para styleclass="Heading2">Advanced topics: strong-typed return value</para>
+    <para styleclass="Heading2">高级主题：强类型返回值</para>
     <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">By default a script returns OBJECT </li>
-      <li styleclass="Normal">Custom return type can be specified </li>
+      <li styleclass="Normal">默认情况下，脚本会返回 OBJECT </li>
+      <li styleclass="Normal">可指定自定义返回类型 </li>
       <list id="19" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Create&lt;T&gt;() </li>
         <li styleclass="Normal">RunAsync&lt;T&gt;() </li>
         <li styleclass="Normal">EvaluateAsync&lt;T&gt;()</li>
       </list>
     </list>
-    <para styleclass="Heading2">Advanced topics: performance tuning</para>
+    <para styleclass="Heading2">高级主题：性能调整</para>
     <list id="20" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Pre-compile scripts </li>
+      <li styleclass="Normal">预编译脚本 </li>
       <list id="20" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Script:Compile() </li>
-        <li styleclass="Normal">Compiled scripts can be ran multiple times </li>
-        <li styleclass="Normal">Similar to macros </li>
+        <li styleclass="Normal">编译后的脚本可多次运行 </li>
+        <li styleclass="Normal">与宏类似 </li>
       </list>
     </list>
     <list id="20" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Delegate can be created with script:CreateDelegate() </li>
-      <li styleclass="Normal">Native image with ngen.exe </li>
+      <li styleclass="Normal">可使用 script:CreateDelegate() 创建委托 </li>
+      <li styleclass="Normal">使用 ngen.exe 生成本地图像</li>
       <list id="20" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal" style="margin-left:13px;">Speed-up initial compilation </li>
-        <li styleclass="Normal" style="margin-left:13px;">64-bit version of ngen must be used for 64-bit CLR!!! </li>
-        <li styleclass="Normal" style="margin-left:13px;">Useful for command-line scripts (xsi.exe)</li>
+        <li styleclass="Normal" style="margin-left:13px;">加快初次编译</li>
+        <li styleclass="Normal" style="margin-left:13px;">64 位 CLR 必须使用 64 位版本的 ngen！！！</li>
+        <li styleclass="Normal" style="margin-left:13px;">适用于命令行脚本 (xsi.exe)</li>
       </list>
     </list>
-    <para styleclass="Heading2">Advanced topics: functional scripts</para>
+    <para styleclass="Heading2">高级主题：功能脚本</para>
     <list id="21" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">A script cannot be used exactly like a function </li>
+      <li styleclass="Normal">脚本不能像函数一样使用 </li>
       <list id="21" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Does not accept arguments </li>
+        <li styleclass="Normal">不接受参数</li>
       </list>
     </list>
     <list id="21" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Instead, it needs a global object instance </li>
+      <li styleclass="Normal" style="margin-left:13px;">相反，它需要一个全局对象实例 </li>
       <list id="21" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Is run via a script hosting object </li>
+        <li styleclass="Normal">通过脚本托管对象运行 </li>
       </list>
     </list>
     <list id="21" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Additional overhead </li>
-      <li styleclass="Normal">But scripts can evaluate to functions! </li>
+      <li styleclass="Normal" style="margin-left:13px;">额外开销 </li>
+      <li styleclass="Normal">但脚本可以对函数进行求值！</li>
       <list id="21" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">Lamda functions or delegates as return type</li>
+        <li styleclass="Normal">Lamda 函数或委托作为返回类型</li>
       </list>
     </list>
-    <para styleclass="Heading2">Advanced topics: accessing application</para>
+    <para styleclass="Heading2">高级主题：访问应用程序</para>
     <list id="22" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Provide a reference to current assembly inmemory </li>
+      <li styleclass="Normal">提供内存中当前程序集的引用 </li>
       <list id="22" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Assembly.GetExecutingAssembly() </li>
-        <li styleclass="Normal">Does not work with CoreCLR </li>
+        <li styleclass="Normal">不能与 CoreCLR 一起使用 </li>
       </list>
     </list>
     <list id="22" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Entities declared in current assembly can be used </li>
+      <li styleclass="Normal">可使用当前程序集中声明的实体 </li>
       <list id="22" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Functions &amp; procedures </li>
-        <li styleclass="Normal">Types (classes, structures, etc.) </li>
-        <li styleclass="Normal">Namespaces</li>
+        <li styleclass="Normal">类型(类、结构等)</li>
+        <li styleclass="Normal">命名空间</li>
       </list>
     </list>
-    <para styleclass="Heading2">Advanced topics: support for dynamics</para>
+    <para styleclass="Heading2">高级主题：支持动态</para>
     <list id="23" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Need to reference the proper assembly </li>
+      <li styleclass="Normal">需要引用适当的程序集 </li>
       <list id="23" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Microsoft.Csharp.dll</li>
       </list>

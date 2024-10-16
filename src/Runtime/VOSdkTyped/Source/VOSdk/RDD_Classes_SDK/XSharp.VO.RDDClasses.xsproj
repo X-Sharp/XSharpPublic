@@ -8,7 +8,6 @@
     <AssemblyName>XSharp.VORDDClasses</AssemblyName>
     <Name>XSharp.VO.RDDClasses</Name>
     <OutputName>XSharpRDDClasses</OutputName>
-    <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Unsafe>false</Unsafe>
@@ -22,8 +21,12 @@
     <NoWin32Manifest>False</NoWin32Manifest>
     <VO5>false</VO5>
     <cs>true</cs>
+    <NamedArgs>False</NamedArgs>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <WarningsAsErrors />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <DocumentationFile>XSharp.VORDDClasses.Xml</DocumentationFile>
@@ -87,5 +90,4 @@
     <RunPostBuildEvent />
   </PropertyGroup>
   <Import Project="..\VOSDKDocs.Targets" />
-
 </Project>

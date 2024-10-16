@@ -19,7 +19,7 @@
 // cost of servicing or repair. No oral or written information or advice given
 // by an Extended Systems Inc. representative shall create a warranty or in any
 // way increase the scope of this warranty.
-#pragma options ("enforceself", on)
+
 
 
 //#include "VOSystemLibrary.vh"
@@ -34,7 +34,7 @@ CLASS AdsSQLServer INHERIT DbServer
 
     // Set the query text, this is necessary because the VO runtime doesn't like
     // some of the special characters that are used in SQL queries
-    RddInfo( _SET_SQL_QUERY, oFile )
+    XSharp.RT.Functions.RddInfo( _SET_SQL_QUERY, oFile )
 
         SELF:_SetParameters(aParams)
     // Some VO libraries have trouble with the alias as is.  So for the SQL RDDS,
@@ -97,6 +97,6 @@ CLASS AdsSQLServer INHERIT DbServer
         ELSE
             oParameters := <OBJECT>{}
         ENDIF
-        RddInfo( _SET_SQL_PARAMETERS, oParameters )
+        XSharp.RT.Functions.RddInfo( _SET_SQL_PARAMETERS, oParameters )
         RETURN
 END CLASS

@@ -8,7 +8,6 @@
     <AssemblyName>VOConsoleClasses</AssemblyName>
     <Name>VOConsoleClasses</Name>
     <OutputName>VOConsoleClasses</OutputName>
-    <XSharpProjectversion>2.8.0.10</XSharpProjectversion>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <VO15>false</VO15>
     <FOX1>false</FOX1>
@@ -22,6 +21,8 @@
     <VO9>false</VO9>
     <VO10>false</VO10>
     <StartupObject />
+    <NamedArgs>False</NamedArgs>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
@@ -79,5 +80,4 @@
     <RunPostBuildEvent />
   </PropertyGroup>
   <Import Project="..\VOSDKDocs.Targets" />
-
 </Project>

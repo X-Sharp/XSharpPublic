@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-04T11:44:57.355+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-25T20:47:48.934+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# 团队成员</title>
   <body>
     <header>
       <para styleclass="Heading1">X# 团队成员</para>
     </header>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">X# 项目的创始人于 2015 年夏天启动了 X# 项目。</para>
+    <para styleclass="Body Text">X# 项目的创始人于 <text style="font-weight:bold; color:#ff0000;">2015</text> 年夏天启动了 X# 项目。</para>
     <para styleclass="Body Text">他们在 xBase 语言方面拥有丰富的经验。他们都曾在 Visual Objects 和/或 Vulcan.NET 开发团队工作过，其中一些人还为 Visual Objects 和/或 Vulcan.NET 创建了第三方附加组件，或为 VO 和 Vulcan 开发人员创建了工具。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">他们按字母顺序排列：</para>

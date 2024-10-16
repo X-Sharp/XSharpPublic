@@ -137,6 +137,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             };
         }
 
+        private static SyntaxToken DecodeReadonlyVisibility(int vis)
+        {
+            return vis switch
+            {
+                XP.EXPORTED or XP.PUBLIC => SyntaxFactory.MakeToken(SyntaxKind.ProtectedKeyword, "READONLY"),
+                XP.PROTECTED => SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword, "READONLY"),
+                XP.INTERNAL => SyntaxFactory.MakeToken(SyntaxKind.ProtectedKeyword, "READONLY"),
+                _ => SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword, "HIDDEN"),
+            };
+        }
+
         private XppClassInfo FindClassInfo(string name)
         {
             foreach (var info in _xppClasses)
@@ -423,7 +434,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // when they are we do not generate variables
             var varType = getDataType(context.DataType);
             varType.XCanBeVoStruct = true;
-            var fieldList = new List<FieldDeclarationSyntax>();
+            var fieldList = new List<MemberDeclarationSyntax>();
             var attributeLists = _pool.Allocate<AttributeListSyntax>();
             if (context.Nosave != null)
             {
@@ -432,17 +443,53 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var id in context._Vars)
             {
                 varList.Clear();
-                var variable = GenerateVariable(id.Get<SyntaxToken>());
+                var idToken = id.Get<SyntaxToken>();
+                var variable = GenerateVariable(idToken);
                 varList.Add(variable);
                 SyntaxToken isReadonly = null;
-                if (context.ReadOnly != null)
-                {
-                    isReadonly = SyntaxFactory.MakeToken(SyntaxKind.ReadOnlyKeyword, context.ReadOnly.Text);
-                }
                 // calculate modifiers
                 // each field is added separately so we can later decide which field to keep and which one to delete when they are duplicated by a 
                 var modifiers = decodeXppMemberModifiers(context, context.Visibility, false,
                     context.Modifiers?._Tokens, false, isReadonly);
+                if (context.Assignment != null || context.ReadOnly != null)
+                {
+                    var setvis = context.Assignment?.xppvisibility().Token.SyntaxKeyword() ?? DecodeReadonlyVisibility(context.Visibility);
+                    var acclist = MakeAccessorList(
+                                _syntaxFactory.AccessorDeclaration(
+                                    kind: SyntaxKind.GetAccessorDeclaration,
+                                    attributeLists: default,
+                                    modifiers: null,
+                                    keyword: SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
+                                    body: null,
+                                    expressionBody: null,
+                                    semicolonToken: SyntaxFactory.SemicolonToken
+                                    ),
+                                _syntaxFactory.AccessorDeclaration(
+                                    kind: SyntaxKind.SetAccessorDeclaration,
+                                    attributeLists: default,
+                                    modifiers: setvis,
+                                    keyword: SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),
+                                    body: null,
+                                    expressionBody: null,
+                                    semicolonToken: SyntaxFactory.SemicolonToken));
+                    var initValue = GenerateInitializer(context.DataType, false);
+                    var initializer = initValue == null ? null :
+                        _syntaxFactory.EqualsValueClause(SyntaxFactory.EqualsToken, initValue);
+                    var fdecl = _syntaxFactory.PropertyDeclaration(
+                        attributeLists: attributeLists,
+                        modifiers: modifiers,
+                        type: varType,
+                        explicitInterfaceSpecifier: null,
+                        identifier: idToken,
+                        accessorList: acclist,
+                        expressionBody: null,
+                        initializer: initializer,
+                        semicolonToken: SyntaxFactory.SemicolonToken);
+                    fdecl.XNode = id;
+                    ClassEntities.Peek().Members.Add(fdecl);
+                    fieldList.Add(fdecl);
+                    varList.Clear();
+                }
                 if (varList.Count > 0)
                 {
                     var decl = _syntaxFactory.VariableDeclaration(

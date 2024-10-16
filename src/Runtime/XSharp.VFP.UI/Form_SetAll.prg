@@ -28,9 +28,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			//
 			VAR lookFor := String.Empty
 			IF cClass IS STRING VAR strClass
-				IF SELF:_typeConvert:ContainsKey( strClass:ToUpper() )
-					lookFor := SELF:_typeConvert[ strClass:ToUpper() ]
-				ENDIF
+				SELF:_typeConvert:TryGetValue( strClass:ToUpper() , out lookFor)
 			ENDIF
 			FOREACH VAR ctl IN SELF:Controls
 				// Looking for a specific Type ?

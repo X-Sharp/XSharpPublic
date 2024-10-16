@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-04T08:07:28.500+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-24T13:48:43.149+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>鸣谢</title>
   <body>
     <header>
       <para styleclass="Heading1">鸣谢</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">没有他人的（源代码）贡献，我们不可能完成这个项目。</para>
+    <para styleclass="Normal">没有他人的(源代码)贡献，我们不可能完成这个项目。</para>
     <para styleclass="Normal"><br/>以下是我们在编译器和 Visual Studio 集成中使用的贡献：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
@@ -107,7 +107,7 @@
           <para styleclass="Body Text">António Lopes (葡萄牙)</para>
         </td>
         <td>
-          <para styleclass="Body Text">为 FoxPro 函数库贡献功能。</para>
+          <para styleclass="Body Text">为 FoxPro 函数库贡献函数。</para>
         </td>
       </tr>
     </table></para>

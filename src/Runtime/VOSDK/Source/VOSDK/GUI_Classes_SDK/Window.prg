@@ -1,5 +1,5 @@
 //#pragma options("lb", off)
-#pragma options ("enforceself", on)
+
  /// <exclude />
 CLASS __ForeignWindow INHERIT Window
 
@@ -278,7 +278,7 @@ METHOD __AlignControls() AS Window STRICT
     dwCount := ALen(aAlignes)
 
 
-    IF dwCount < 1 .OR. hWnd=NULL_PTR .OR. IsIconic(hWnd)
+    IF dwCount < 1 .OR. hWnd=NULL_PTR .OR. Win32IsIconic(hWnd)
         RETURN  SELF
     ENDIF
 
@@ -486,7 +486,7 @@ METHOD __CommandFromEvent(oEvent AS OBJECT) AS LOGIC STRICT
     elseif oEvent is ControlEvent var oCE
         symNameSym := oCE:NameSym
     ELSE
-        symNameSym := IVarGet(oCE,#NameSym)
+        symNameSym := IVarGet(oEvent,#NameSym)
     ENDIF
     oWindow := SELF
 
@@ -2688,7 +2688,7 @@ METHOD EnableHelpCursor()
 /// <include file="Gui.xml" path="doc/Window.EnableThemeDialogTexture/*" />
 METHOD EnableThemeDialogTexture(dwStyle)
     //PP-030909
-    RETURN EnableThemeDialogTexture(SELF,dwStyle)
+    RETURN VOGuiClasses.Functions.EnableThemeDialogTexture(SELF,dwStyle)
 
 
 
@@ -3246,7 +3246,7 @@ METHOD IsEnabled()
 
 /// <include file="Gui.xml" path="doc/Window.IsIconic/*" />
 METHOD IsIconic()
-    RETURN IsIconic(hWnd)
+    RETURN Win32IsIconic(hWnd)
 
 
 
@@ -3260,7 +3260,7 @@ METHOD IsVisible()
 
 /// <include file="Gui.xml" path="doc/Window.IsZoomed/*" />
 METHOD IsZoomed()
-    RETURN IsZoomed(hWnd)
+    RETURN Win32IsZoomed(hWnd)
 
 
 
@@ -3292,13 +3292,13 @@ METHOD LineTo(oPoint)
         DCPenNeeded := TRUE
         IF (SELF:__GetDC() != NULL_PTR)
             IF oPoint is Point var pt
-                LineTo(hDC, pt:x, pt:y)
+                Win32LineTo(hDC, pt:x, pt:y)
             ELSE
                 aPt := oPoint
                 dwLen := ALen(aPt)
                 FOR i:=1 UPTO dwLen
                     oPt := aPt[i]
-                    LineTo(hDC, oPT:x, oPT:y)
+                    Win32LineTo(hDC, oPT:x, oPT:y)
                 NEXT
             ENDIF
         ENDIF
@@ -4322,7 +4322,7 @@ METHOD SetExStyle(dwSetStyle, lEnable)
 METHOD SetFocus()
 
 
-    SetFocus(hWnd)
+    Win32SetFocus(hWnd)
     RETURN SELF
 
 

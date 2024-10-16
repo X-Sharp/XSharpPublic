@@ -2,22 +2,43 @@
 #ifndef VFP_CONTROL_XH
 #define VFP_CONTROL_XH
 METHOD Drag(nAction) AS USUAL CLIPPER
-	RETURN NIL
-PROPERTY DragIcon AS STRING AUTO
+    RETURN NIL
+
+[System.ComponentModel.DefaultValue("")];
+    PROPERTY DragIcon AS STRING AUTO
+
+[System.ComponentModel.DefaultValue(0)];
 PROPERTY DragMode AS LONG AUTO
 
+[System.ComponentModel.DefaultValue(0)];
 PROPERTY HelpContextID AS LONG AUTO
+
+[System.ComponentModel.DefaultValue("")];
 PROPERTY MouseIcon AS STRING AUTO
 
 
 METHOD OLEDrag(lDetectDrag) AS USUAL CLIPPER
-	RETURN NIL
-PROPERTY OLEDragMode AS LONG AUTO
-PROPERTY OLEDragPicture AS STRING AUTO
+    RETURN NIL
+
+[System.ComponentModel.DefaultValue(0)];
+PROPERTY OLEDragMode AS USUAL AUTO
+
+[System.ComponentModel.DefaultValue("")];
+PROPERTY OLEDragPicture AS USUAL AUTO
+
+[System.ComponentModel.DefaultValue(0)];
 PROPERTY OLEDropEffects AS LONG AUTO
+
+[System.ComponentModel.DefaultValue(0)];
 PROPERTY OLEDropHasData AS LONG AUTO
+
+[System.ComponentModel.DefaultValue(0)];
 PROPERTY OLEDropMode AS LONG AUTO
-PROPERTY Themes as LOGIC AUTO
+
+[System.ComponentModel.DefaultValue(false)];
+PROPERTY Themes AS LOGIC AUTO
+
+[System.ComponentModel.DefaultValue(0)];
 PROPERTY WhatsThisHelpID AS LONG AUTO
 
 

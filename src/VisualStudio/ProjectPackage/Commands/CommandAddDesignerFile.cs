@@ -68,7 +68,7 @@ namespace XSharp.Project
                 XSharpProjectNode projectNode = null;
                 if (project != null)
                 {
-                    var xproject = XSolution.FindProject(project.FullPath);
+                    var xproject = XSolution.FindProjectByFileName(project.FullPath);
                     if (xproject != null)
                     {
                         xproject.ProjectNode.AddFileNode(newfile);

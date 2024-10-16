@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T22:48:56.788+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.717+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-vo5</title>
   <keywords>
     <keyword>-vo5</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo5<tab /><tab />隐式 CLIPPER 调用约定 </para>
+      <para styleclass="Heading1">-vo5<tab/><tab/>隐式 CLIPPER 调用约定 </para>
     </header>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">对于声明为零参数且没有显式调用约定的函数，-vo5 选项指示编译器隐式使用 CLIPPER 调用约定。</para>
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-vo5[+|-]</para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List">+ | - <tab />指定 + 或只指定 -vo5，可指示编译器隐式使用 CLIPPER 调用约定，用于声明参数为零且没有显式调用约定的函数、方法和构造函数。</para>
+    <para styleclass="List">+ | - <tab/>指定 + 或只指定 -vo5，可指示编译器隐式使用 CLIPPER 调用约定，用于声明参数为零且没有显式调用约定的函数、方法和构造函数。</para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">为了与 Clipper 兼容，Visual Objects 对所有声明为零参数且没有显式调用约定的函数和方法使用 CLIPPER 调用约定。可以使用 STRICT 关键字来覆盖默认设置，并使函数使用 STRICT 调用约定。</para>
     <para styleclass="Normal"></para>
@@ -28,15 +28,15 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
       <li styleclass="Normal" style="margin-left:13px;">点击 Dialect 选项卡 </li>
       <li styleclass="Normal" style="margin-left:13px;">更改值</li>
       <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">查看属性页</link></li>
     </list>
     <para styleclass="Heading2">示例</para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo() </text><text style="font-weight:bold; font-style:italic; color:#339966;">// CLIPPER</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? pcount(), _getFParam( 1 )</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">foo( 1 )</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
-    <para styleclass="Normal">如果使用了 -vo5，或者在 FUNCTION foo() 声明的末尾添加了 CLIPPER 关键字，上述示例就能正确编译和运行。否则，在调用 foo() 以及调用 pcount() 和 _getFParam()（这在 STRICT 调用约定函数中是非法的）时将产生编译器错误。</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo() </text><text style="font-weight:bold; font-style:italic; color:#339966;">// CLIPPER</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? pcount(), _getFParam( 1 )</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">foo( 1 )</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
+    <para styleclass="Normal">如果使用了 -vo5，或者在 FUNCTION foo() 声明的末尾添加了 CLIPPER 关键字，上述示例就能正确编译和运行。否则，在调用 foo() 以及调用 pcount() 和 _getFParam()(这在 STRICT 调用约定函数中是非法的)时将产生编译器错误。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

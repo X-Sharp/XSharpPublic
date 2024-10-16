@@ -4,7 +4,6 @@
 // See License.txt in the project root for license information.
 //
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using LanguageService.SyntaxTree;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -12,10 +11,7 @@ using Microsoft.VisualStudio.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using XSharpModel;
 using XSharp.Settings;
-using Microsoft.VisualStudio.Language.StandardClassification;
-using Microsoft.VisualStudio.Text.Classification;
 
 namespace XSharp.LanguageService
 {
@@ -84,28 +80,24 @@ namespace XSharp.LanguageService
 
             oStart = DateTime.Now;
 
-            if (spans.Count == 0 || _currentChar == null)   //there is no content in the buffer
+            if (spans.Count == 0 || _point == null)   //there is no content in the buffer
                 yield break;
 
-            SnapshotPoint currentChar = _currentChar.Value;
-            if (currentChar.Position == currentChar.Snapshot.Length)
-                yield break;
-
-            //hold on to a snapshot of the current character
-            var ch = currentChar.GetChar();
-            if (char.IsWhiteSpace(ch))
+            SnapshotPoint point = _point.Value;
+            if (point.AtEnd())
                 yield break;
 
             // Verify that the document and spans have the right version 
-            if (currentChar.Snapshot.Version != _document.SnapShot.Version || spans[0].Snapshot != currentChar.Snapshot)
-                yield break;
-
-            // don't do anything if the current SnapshotPoint is not initialized or at the end of the buffer
-            if (currentChar.Position >= currentChar.Snapshot.Length )
+            if (point.Snapshot.Version != _document.SnapShot.Version || spans[0].Snapshot != point.Snapshot)
                 yield break;
 
 
-            int currentLine = _currentChar.Value.GetContainingLine().LineNumber; 
+            var ch = point.GetChar();
+            if (char.IsWhiteSpace(ch))
+                yield break;
+
+
+            int currentLine = point.GetContainingLine().LineNumber; 
             IList<ITagSpan<TextMarkerTag>> result = new List<ITagSpan<TextMarkerTag>>();
             try
             {
@@ -114,7 +106,7 @@ namespace XSharp.LanguageService
                 var lineTokens = _document.GetTokensInLineAndFollowing(currentLine);
                 foreach (var token in lineTokens)
                 {
-                    if (token.Type == XSharpLexer.ID && matchesPosition(token))
+                    if (token.Type == XSharpLexer.ID && matchesPosition(token, point))
                     {
                         // find all matching identifiers
                         // when the classifier is "behind" then we may not find the token yet

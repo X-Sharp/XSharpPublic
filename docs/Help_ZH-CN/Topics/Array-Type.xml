@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-04T23:10:43.948+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T01:47:09.532+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Array 类型</title>
   <keywords>
     <keyword>ARRAY</keyword>
@@ -11,7 +11,7 @@
       <para styleclass="Heading1">Array 类型</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">它实现了所谓的 &quot;锯齿状 &quot;数组。</para>
+    <para styleclass="Normal">它实现了所谓的 &quot;锯齿状&quot; 数组。</para>
     <para styleclass="Normal"><br/>内部类型名是 XSharp.__Array</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><snippet src="ARRAY" inline="false"/></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-30T12:51:11.430+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:00:04.933+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>模式匹配</title>
   <keywords>
     <keyword>&lt;#idMarker&gt;</keyword>
@@ -23,7 +23,7 @@
     </list>
     <para styleclass="Normal"></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">单词是关键字和有效标识符，根据 dBASE 惯例（不区分大小写、前四个字母必须为必填项等）进行比较。 匹配模式必须以 Word 开头。</li>
+      <li styleclass="Normal">单词是关键字和有效标识符，根据 dBASE 惯例(不区分大小写、前四个字母必须为必填项等)进行比较。 匹配模式必须以 Word 开头。</li>
     </list>
     <para styleclass="Normal"></para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -31,7 +31,7 @@
     </list>
     <para styleclass="Normal"></para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">匹配标记是用角括号（&lt;&gt;）分隔的标签和可选符号，它提供了在 &lt;resultPattern&gt; 中使用的替代值（idMarker），并标识了其替代的子句。 标记名是标识符，因此必须遵循 xBase 标识符命名规则。 简而言之，名称必须以字母或下划线字符开头，后面可以是字母数字或下划线字符。</li>
+      <li styleclass="Normal">匹配标记是用角括号(&lt;&gt;)分隔的标签和可选符号，它提供了在 &lt;resultPattern&gt; 中使用的替代值(idMarker)，并标识了其替代的子句。 标记名是标识符，因此必须遵循 xBase 标识符命名规则。 简而言之，名称必须以字母或下划线字符开头，后面可以是字母数字或下划线字符。</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">本表介绍了所有模式匹配形式：</para>
@@ -139,7 +139,7 @@
       <li styleclass="Normal"><text style="font-weight:bold;">可选匹配子句</text>是匹配模式中用方括号（[ ]）括起来的部分。它们指定匹配模式中可能缺失的部分。可选子句可以包含在&lt;matchPattern&gt;中允许的任何组件，包括其他可选子句。<br/><br/>可选匹配子句可以出现在匹配模式中的任何位置和任何顺序，并仍然匹配输入文本。每个匹配子句在输入文本中只能出现一次。可选匹配子句有两种类型：一种是关键字后跟匹配标记，另一种是单独的关键字。这两种类型的可选匹配子句可以匹配典型的xBase命令集中的所有传统命令子句。</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"> &#160; 可选匹配子句使用正则或列表匹配标记进行定义，以便匹配输入文本，如果子句由参数或关键字后跟参数组成（请参阅Std.ch中USE命令的INDEX子句）。如果可选匹配子句仅由关键字本身组成，则使用受限制的匹配标记进行匹配（请参阅Std.ch中USE命令的EXCLUSIVE或SHARED子句）。</para>
+    <para styleclass="Normal"> &#160; 可选匹配子句使用正则或列表匹配标记进行定义，以便匹配输入文本，如果子句由参数或关键字后跟参数组成(请参阅Std.ch中USE命令的INDEX子句)。如果可选匹配子句仅由关键字本身组成，则使用受限制的匹配标记进行匹配(请参阅Std.ch中USE命令的EXCLUSIVE或SHARED子句)。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"> &#160; &#160;在任何匹配模式中，您不能指定仅由匹配标记组成的相邻可选匹配子句，否则会生成编译器错误。您可以在输入文本中重复任意次数的可选子句，只要它不与其他可选子句相邻。要将重复的匹配子句写入结果文本，请在&lt;resultPattern&gt;定义中使用重复的结果子句。</para>
   </body>

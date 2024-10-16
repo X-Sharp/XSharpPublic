@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Installer Command Line options</title>
+<topic template="Default" modified="2024-07-26T12:07:31.770+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>安装程序命令行选项</title>
   <keywords>
     <keyword>/closeapplications</keyword>
     <keyword>/components</keyword>
@@ -30,18 +30,20 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Installer Command Line options</para>
+      <para styleclass="Heading1">安装程序命令行选项</para>
     </header>
-    <para styleclass="Normal">Our installer was created with the product Inno Setup. We are supporting the &quot;normal&quot; Inno Setup command line options and the following extra options.<br/>Some options are not installed because these are not relevant for our installer, such as /lang and /password.</para>
-    <para styleclass="Heading2">Custom Setup commandline options</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">我们的安装程序是使用 Inno Setup 产品创建的。我们支持 &quot;常规 &quot;Inno Setup 命令行选项和以下额外选项。</para>
+    <para styleclass="Normal">有些选项没有安装，因为它们与我们的安装程序无关，例如 /lang 和 /password。</para>
+    <para styleclass="Heading2">自定义设置命令行选项</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="2">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Option</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">选项</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">描述</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -49,19 +51,23 @@
           <para styleclass="Body Text"><text style="font-weight:bold;">/nouninstall</text></para>
         </td>
         <td>
-          <para styleclass="Body Text">This option exists since X# 2.4.<br/>This suppresses uninstalling the previous version.<br/>When you choose this you can install 2 different versions of X# side by side, assuming you choose different installation folders.<br/>Please note that if both versions install into the same Visual Studio version then the latest installation &quot;wins&quot;.<br/>If you want to switch to another version of the VS integration or MsBuild support files you should run the &quot;deployvs<text style="font-weight:bold;">&lt;num&gt;</text>&quot;.cmd files in the Uninst folder of the installation that you want to activate.</para>
+          <para styleclass="Body Text">该选项从 X# 2.4 版开始使用。</para>
+          <para styleclass="Body Text">该选项可禁止卸载上一版本。</para>
+          <para styleclass="Body Text">选择该选项后，您可以同时安装两个不同版本的 X#，前提是您选择了不同的安装文件夹。</para>
+          <para styleclass="Body Text">请注意，如果两个版本都安装到同一个 Visual Studio 版本中，则最新安装的版本 &quot;胜出&quot;。</para>
+          <para styleclass="Body Text">如果要切换到另一个版本的 VS 集成或 MsBuild 支持文件，则应在要激活的安装的 Uninst 文件夹中运行 &quot;deployvs&lt;num&gt;&quot;.cmd 文件。</para>
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2">Standard Inno Setup commandline options</para>
+    <para styleclass="Heading2">标准 Inno 设置命令行选项</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="21" colcount="2">
       <tr style="vertical-align:top">
         <td style="width:33%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Option</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">选项</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">描述</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -69,7 +75,7 @@
           <para styleclass="Body Text">/help, /?</para>
         </td>
         <td>
-          <para styleclass="Body Text">Shows a summary of this information. Ignored if the UseSetupLdr [Setup] section directive was set to no.</para>
+          <para styleclass="Body Text">显示该信息的摘要。如果 UseSetupLdr [Setup] 部分指令设置为 &quot;否&quot;，则忽略。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -77,8 +83,8 @@
           <para styleclass="Body Text">/silent, /verysilent</para>
         </td>
         <td>
-          <para styleclass="Body Text">Instructs Setup to be silent or very silent. When Setup is silent the wizard and the background window are not displayed but the installation progress window is. When a setup is very silent this installation progress window is not displayed. Everything else is normal so for example error messages during installation are displayed and the startup prompt is (if you haven&apos;t disabled it with DisableStartupPrompt or the &apos;/SP-&apos; command line option explained above).</para>
-          <para styleclass="Body Text">If a restart is necessary and the &apos;/norestart command isn&apos;t used (see below) and Setup is silent, it will display a Reboot now? message box. If it&apos;s very silent it will reboot without asking.</para>
+          <para styleclass="Body Text">指示安装程序保持静默或彻底静默。当设置为静默安装时，不显示向导和背景窗口，但会显示安装进度窗口。当设置为彻底静默时，则不显示安装进度窗口。其他一切正常，例如安装过程中的错误信息会显示，启动提示也会显示(如果您没有使用 DisableStartupPrompt 或上文解释的&quot;/SP-&quot;命令行选项禁用的话)。</para>
+          <para styleclass="Body Text">如果需要重启，但未使用&quot;/norestart &quot;命令(见下文)，且安装程序处于静默状态，则会显示 &quot;现在重启？&quot;消息框。如果彻底静默安装，则无需询问即可重启。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -86,24 +92,27 @@
           <para styleclass="Body Text">/suppressmsgboxes</para>
         </td>
         <td>
-          <para styleclass="Body Text">Instructs Setup to suppress message boxes. Only has an effect when combined with &apos;/silent or &apos;/verysilent.</para>
-          <para styleclass="Body Text">The default response in situations where there&apos;s a choice is:</para>
-          <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <li styleclass="Body Text">Yes in a &apos;Keep newer file?&apos; situation. </li>
-            <li styleclass="Body Text">No in a &apos;File exists, confirm overwrite.&apos; situation. </li>
-            <li styleclass="Body Text">Abort in Abort/Retry situations. </li>
-            <li styleclass="Body Text">Cancel in Retry/Cancel situations. </li>
-            <li styleclass="Body Text">Yes (=continue) in a DiskSpaceWarning/DirExists/DirDoesntExist/NoUninstallWarning/ExitSetupMessage/ConfirmUninstall situation. </li>
-            <li styleclass="Body Text">Yes (=restart) in a FinishedRestartMessage/UninstalledAndNeedsRestart situation. </li>
-            <li styleclass="Body Text">The recommended choice in a PrivilegesRequiredOverridesAllowed=dialog situation.</li>
+          <para styleclass="Body Text">指示设置抑制消息框。只有与&quot;/silent&quot;或&quot;/verysilent&quot;结合使用时才有效。</para>
+          <para styleclass="Body Text">在有选择的情况下，默认响应为：</para>
+          <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+            <li styleclass="Body Text">YES                   在 “Keep newer file?”(保留较新的文件)</li>
+            <li styleclass="Body Text">NO                     在 “&apos;File exists, confirm overwrite”(文件已存在，确认覆盖)</li>
+            <li styleclass="Body Text">Abort                  在 Abort/Retry</li>
+            <li styleclass="Body Text">Cancel                在 Retry/Cancel</li>
+            <li styleclass="Body Text">YES(=continue)   在“DiskSpaceWarning/DirExists/DirDoesntExist/NoUninstallWarning/ExitSetupMessage/ConfirmUninstall”(磁盘空间警告/目录存在/目录不存在/未卸载警告/退出设置消息/确认卸载)</li>
+            <li styleclass="Body Text">YES(=restart)     在&quot;FinishedRestartMessage/UninstalledAndNeedsRestart&quot;(完成重启/已卸载并需要重启)</li>
+            <li styleclass="Body Text">在 PrivilegesRequiredOverridesAllowed=dialog 情况下的建议选择。</li>
           </list>
-          <para styleclass="Body Text">5 message boxes are not suppressible:</para>
-          <list id="1" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-            <li styleclass="Body Text">The About Setup message box. </li>
-            <li styleclass="Body Text">The Exit Setup? message box. </li>
-            <li styleclass="Body Text">The FileNotInDir2 message box displayed when Setup requires a new disk to be inserted and the disk was not found. </li>
-            <li styleclass="Body Text">Any (error) message box displayed before Setup (or Uninstall) could read the command line parameters. </li>
-            <li styleclass="Body Text">Any task dialog or message box displayed by [Code] support functions TaskDialogMsgBox and MsgBox.</li>
+          <para styleclass="Body Text"></para>
+          <para styleclass="Body Text">5 种消息框不可抑制：</para>
+          <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+            <list id="1" level="1" type="ul" listtype="bullet" formatstring="o" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:'Courier New'; font-size:11pt; color:#000000;">
+              <li styleclass="Body Text">About Setup 消息框 </li>
+              <li styleclass="Body Text">Exit Setup? 消息框 </li>
+              <li styleclass="Body Text">当设置要求插入新磁盘但未找到磁盘时，会显示 FileNotInDir2 消息框。</li>
+              <li styleclass="Body Text">安装(或卸载)前显示的任何(错误)消息框都可以读取命令行参数。</li>
+              <li styleclass="Body Text">通过 [Code] 支持函数 TaskDialogMsgBox 和 MsgBox 显示的任何任务对话框或消息框。</li>
+            </list>
           </list>
         </td>
       </tr>
@@ -112,7 +121,7 @@
           <para styleclass="Body Text">/log=&quot;filename&quot;</para>
         </td>
         <td>
-          <para styleclass="Body Text">This allows you to specify a fixed path/filename to use for the log file. If a file with the specified name already exists it will be overwritten. If the file cannot be created, Setup will abort with an error message. If you do not specify this command line option then the installer will log to a file with the name &quot;Setup Log &lt;date&gt;#&lt;number&gt;.txt&quot; in the current users TEMP folder.</para>
+          <para styleclass="Body Text">这样就可以为日志文件指定一个固定的路径/文件名。如果指定名称的文件已经存在，它将被覆盖。如果无法创建该文件，安装程序将终止并提示错误信息。如果不指定此命令行选项，安装程序将把日志记录到当前用户 TEMP 文件夹中名称为 &quot;Setup Log &lt;date&gt;#&lt;number&gt;.txt&quot; 的文件中。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -120,7 +129,7 @@
           <para styleclass="Body Text">/nocancel</para>
         </td>
         <td>
-          <para styleclass="Body Text">Prevents the user from canceling during the installation process, by disabling the Cancel button and ignoring clicks on the close button. Useful along with &apos;/silent or &apos;/verysilent.</para>
+          <para styleclass="Body Text">通过禁用 &quot;取消 &quot;按钮和忽略点击 &quot;关闭 &quot;按钮，防止用户在安装过程中取消安装。与&quot;/silent &quot;或&quot;/verysilent &quot;一起使用时非常有用。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -128,7 +137,7 @@
           <para styleclass="Body Text">/norestart</para>
         </td>
         <td>
-          <para styleclass="Body Text">Prevents Setup from restarting the system following a successful installation, or after a Preparing to Install failure that requests a restart. Typically used along with /silent or /verysilent.</para>
+          <para styleclass="Body Text">防止安装程序在安装成功后或在 &quot;准备安装 &quot;失败要求重启后重启系统。通常与 /silent 或 /verysilent 一起使用。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -136,7 +145,7 @@
           <para styleclass="Body Text">/restartexitcode=exit code</para>
         </td>
         <td>
-          <para styleclass="Body Text">Specifies a custom exit code that Setup is to return when the system needs to be restarted following a successful installation. (By default, 0 is returned in this case.) Typically used along with /norestart. </para>
+          <para styleclass="Body Text">指定自定义退出代码，当安装成功后需要重启系统时，Setup 将返回该代码(默认情况下返回 0)。通常与 /norestart 一起使用。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -144,7 +153,7 @@
           <para styleclass="Body Text">/closeapplications</para>
         </td>
         <td>
-          <para styleclass="Body Text">Instructs Setup to close applications using files that need to be updated by Setup if possible.</para>
+          <para styleclass="Body Text">指示 Setup 尽可能关闭使用需要被 Setup 更新的文件的应用程序。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -152,7 +161,7 @@
           <para styleclass="Body Text">/nocloseapplications</para>
         </td>
         <td>
-          <para styleclass="Body Text">Prevents Setup from closing applications using files that need to be updated by Setup. If /closeapplications was also used, this command line parameter is ignored.</para>
+          <para styleclass="Body Text">防止 Setup 关闭使用需要 Setup 更新的文件的应用程序。如果同时使用了 /closeapplications，该命令行参数将被忽略。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -160,7 +169,7 @@
           <para styleclass="Body Text">/forcecloseapplications</para>
         </td>
         <td>
-          <para styleclass="Body Text">Instructs Setup to force close when closing applications.</para>
+          <para styleclass="Body Text">指示 Setup 程序在关闭应用程序时强制关闭。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -168,7 +177,7 @@
           <para styleclass="Body Text">/noforcecloseapplications</para>
         </td>
         <td>
-          <para styleclass="Body Text">Prevents Setup from force closing when closing applications. If /forcecloseapplications was also used, this command line parameter is ignored.</para>
+          <para styleclass="Body Text">防止 Setup 程序在关闭应用程序时强制关闭。如果同时使用了 /forcecloseapplications，该命令行参数将被忽略。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -176,7 +185,7 @@
           <para styleclass="Body Text">/restartapplications</para>
         </td>
         <td>
-          <para styleclass="Body Text">Instructs Setup to restart applications if possible. Only has an effect when combined with &apos;/closeapplications.</para>
+          <para styleclass="Body Text">指示设置尽可能重启应用程序。只有与 &quot;/closeapplications&quot; 结合使用时才有效。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -184,7 +193,7 @@
           <para styleclass="Body Text">/norestartapplications</para>
         </td>
         <td>
-          <para styleclass="Body Text">Prevents Setup from restarting applications. If /restartapplications was also used, this command line parameter is ignored.</para>
+          <para styleclass="Body Text">防止 Setup 程序重启应用程序。如果同时使用了 /restartapplications，该命令行参数将被忽略。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -192,7 +201,7 @@
           <para styleclass="Body Text">/loadinf=&quot;filename&quot;</para>
         </td>
         <td>
-          <para styleclass="Body Text">Instructs Setup to load the settings from the specified file after having checked the command line. This file can be prepared using the &apos;/saveinf=&apos; command as explained below.Don&apos;t forget to use quotes if the filename contains spaces.</para>
+          <para styleclass="Body Text">在检查命令行后，指示 Setup 从指定文件加载设置。该文件可使用&quot;/saveinf=&quot;命令准备，如下所述。如果文件名包含空格，请不要忘记使用引号。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -200,7 +209,7 @@
           <para styleclass="Body Text">/saveinf=&quot;filename&quot;</para>
         </td>
         <td>
-          <para styleclass="Body Text">Instructs Setup to save installation settings to the specified file. Don&apos;t forget to use quotes if the filename contains spaces.</para>
+          <para styleclass="Body Text">指示 Setup 将安装设置保存到指定文件。如果文件名包含空格，不要忘记使用引号。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -208,7 +217,7 @@
           <para styleclass="Body Text">/dir=&quot;x:\dirname&quot;</para>
         </td>
         <td>
-          <para styleclass="Body Text">Overrides the default directory name displayed on the Select Destination Location wizard page. A fully qualified pathname must be specified. May include an &quot;expand:&quot; prefix which instructs Setup to expand any constants in the name. For example: &apos;/dir=expand:{autopf}\My Program&apos;.</para>
+          <para styleclass="Body Text">覆盖 &quot;选择目标位置&quot; 向导页面上显示的默认目录名。必须指定完全限定的路径名。可包含 &quot;expand: &quot;前缀，指示 Setup 扩展名称中的任何常量。例如：&quot;/dir=expand:{autopf}/My Program&quot;。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -216,7 +225,7 @@
           <para styleclass="Body Text">/group=&quot;folder name&quot;</para>
         </td>
         <td>
-          <para styleclass="Body Text">Overrides the default folder name displayed on the Select Start Menu Folder wizard page. May include an &quot;expand:&quot; prefix, see &apos;/dir=&apos;. If the [Setup] section directive DisableProgramGroupPage was set to yes, this command line parameter is ignored.</para>
+          <para styleclass="Body Text">覆盖 &quot;选择开始菜单文件夹&quot; 向导页面上显示的默认文件夹名称。可包含 &quot;expand: &quot;前缀，请参阅&quot;/dir=&quot;。如果 [Setup] 部分指令 DisableProgramGroupPage 设置为 yes，则此命令行参数将被忽略。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -224,7 +233,7 @@
           <para styleclass="Body Text">/noicons</para>
         </td>
         <td>
-          <para styleclass="Body Text">Instructs Setup to initially check the Don&apos;t create a Start Menu folder check box on the Select Start Menu Folder wizard page.</para>
+          <para styleclass="Body Text">指示设置在 &quot;选择开始菜单文件夹&quot; 向导页面上选中 &quot;不创建开始菜单文件夹 &quot;复选框。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -232,9 +241,11 @@
           <para styleclass="Body Text">/type=type name</para>
         </td>
         <td>
-          <para styleclass="Body Text">Overrides the default setup type.</para>
-          <para styleclass="Body Text"><br/>If the specified type exists and isn&apos;t a custom type, then any /components parameter will be ignored.</para>
-          <para styleclass="Body Text"><br/><text style="font-weight:bold; font-style:italic;">The types in the X# installer are: full, compact, custom</text><br/></para>
+          <para styleclass="Body Text">覆盖默认安装类型。</para>
+          <para styleclass="Body Text"></para>
+          <para styleclass="Body Text">如果指定的类型已存在且不是自定义类型，那么任何 /components 参数都将被忽略。</para>
+          <para styleclass="Body Text"></para>
+          <para styleclass="Body Text"><text style="font-weight:bold; font-style:italic;">X# 安装程序中的类型有：full, compact, custom</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -242,19 +253,21 @@
           <para styleclass="Body Text">/components=<br/>&quot;comma separated list of component names&quot;</para>
         </td>
         <td>
-          <para styleclass="Body Text">Overrides the default component settings. Using this command line parameter causes Setup to automatically select a custom type. If no custom type is defined, this parameter is ignored.</para>
-          <para styleclass="Body Text">Only the specified components will be selected; the rest will be deselected.</para>
-          <para styleclass="Body Text">If a component name is prefixed with a &quot;*&quot; character, any child components will be selected as well (except for those that include the dontinheritcheck flag). If a component name is prefixed with a &quot;!&quot; character, the component will be deselected.</para>
-          <para styleclass="Body Text">This parameter does not change the state of components that include the fixed flag.</para>
-          <para styleclass="Body Text">Example:Deselect all components, then select the &quot;help&quot; and &quot;plugins&quot; components:<br/>/components=&quot;help,plugins&quot; </para>
-          <para styleclass="Body Text">Example:Deselect all components, then select a parent component and all of its children with the exception of one:<br/>/components=&quot;*parent,!parent\child&quot; <br/><br/><text style="font-weight:bold; font-style:italic;">The components in the X# installer are:</text></para>
+          <para styleclass="Body Text">覆盖默认组件设置。使用此命令行参数可使设置程序自动选择自定义类型。如果没有定义自定义类型，该参数将被忽略。</para>
+          <para styleclass="Body Text">只有指定的组件会被选中，其他组件将被取消选中。</para>
+          <para styleclass="Body Text">如果组件名称前缀为 &quot;*&quot;字符，则所有子组件也将被选中(包含 dontinheritcheck 标记的组件除外)。如果组件名称前缀为&quot;！&quot;字符，则该组件将被取消选择。</para>
+          <para styleclass="Body Text">该参数不会改变包含固定标记的组件的状态。</para>
+          <para styleclass="Body Text">示例：取消选择所有组件，然后选择 &quot;help &quot;和 &quot;plugins &quot;组件：</para>
+          <para styleclass="Body Text">/components=&quot;help,plugins&quot; </para>
+          <para styleclass="Body Text">示例：取消选择所有组件，然后选择父组件及其所有子组件，只有一个除外：</para>
+          <para styleclass="Body Text">/components=&quot;*parent,!parent\child&quot; <br/><br/><text style="font-weight:bold; font-style:italic;">X# 安装程序的组件：</text></para>
           <para styleclass="Body Text"><table styleclass="Default" rowcount="11" colcount="2">
             <tr style="vertical-align:top">
               <td>
-                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Component</text></para>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">组件</text></para>
               </td>
               <td>
-                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Description</text></para>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">描述</text></para>
               </td>
             </tr>
             <tr style="vertical-align:top">
@@ -262,7 +275,7 @@
                 <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">main</text></para>
               </td>
               <td>
-                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">The XSharp Compiler and Build System</text></para>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">XSharp 编译器和生成系统</text></para>
               </td>
             </tr>
             <tr style="vertical-align:top">
@@ -270,7 +283,7 @@
                 <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">main\script</text></para>
               </td>
               <td>
-                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Register .prgx as X# Script extension</text></para>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">将 .prgx 注册为 X# 脚本扩展名</text></para>
               </td>
             </tr>
             <tr style="vertical-align:top">
@@ -278,7 +291,7 @@
                 <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">main\ngen</text></para>
               </td>
               <td>
-                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Optimize performance by generating native images</text></para>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">生成本地图像，优化性能</text></para>
               </td>
             </tr>
             <tr style="vertical-align:top">
@@ -286,7 +299,7 @@
                 <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">main\gac</text></para>
               </td>
               <td>
-                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Register runtime DLLs in the GAC (recommended !)</text></para>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">在 GAC 中注册运行时 DLL(推荐！)。</text></para>
               </td>
             </tr>
             <tr style="vertical-align:top">
@@ -294,7 +307,7 @@
                 <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">main\examples</text></para>
               </td>
               <td>
-                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Install the Xsharp Examples</text></para>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">安装 Xsharp 示例</text></para>
               </td>
             </tr>
             <tr style="vertical-align:top">
@@ -302,7 +315,7 @@
                 <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">vs</text></para>
               </td>
               <td>
-                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Visual Studio Integration</text></para>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Visual Studio 集成</text></para>
               </td>
             </tr>
             <tr style="vertical-align:top">
@@ -334,7 +347,7 @@
                 <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">xide</text></para>
               </td>
               <td>
-                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Include the XIDE installer</text></para>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">包含 XIDE 安装</text></para>
               </td>
             </tr>
           </table></para>

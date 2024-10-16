@@ -18,6 +18,9 @@
     <NoStandardDefs>true</NoStandardDefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <StartupObject />
+    <Allowdot>True</Allowdot>
+    <NamedArgs>True</NamedArgs>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <EmitDebugInformation>true</EmitDebugInformation>
@@ -48,12 +51,12 @@
       <Link>Properties\constants.prg</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.prg" />
-   <Compile Include="Program.prg" />
+    <Compile Include="Program.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
-    <ItemGroup>
+  <ItemGroup>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
     </PackageReference>

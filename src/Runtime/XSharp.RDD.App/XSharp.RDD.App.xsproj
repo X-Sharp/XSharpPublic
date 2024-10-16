@@ -17,9 +17,10 @@
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <TargetFrameworkProfile />
-    <NamedArgs />
+    <NamedArgs>False</NamedArgs>
     <Includepaths />
     <Nostandarddefs />
+    <NS>True</NS>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-30T00:47:07.660+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T11:51:18.202+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>LPARAMETERS 语句</title>
   <keywords>
     <keyword>Declaration statements</keyword>
@@ -30,7 +30,7 @@
     <para styleclass="List"><tab /><text styleclass="Normal">&lt;ClassLibrary&gt; 会被忽略，但 &lt;Type&gt; 会被执行。</text></para>
     <para styleclass="Heading1">描述</para>
     <para styleclass="Body Text">LPARAMETERS 语句执行时，参数列表中的所有变量都会创建为局部变量。</para>
-    <para styleclass="Body Text">如果将参数指定为 PROCEDURE 或 FUNCTION 声明语句的一部分，也可以将参数声明为局部变量（请参阅示例）。以这种方式指定的参数称为形参。需要注意的是，在过程或函数定义中不能同时指定形参和 PARAMETERS 语句。</para>
+    <para styleclass="Body Text">如果将参数指定为 PROCEDURE 或 FUNCTION 声明语句的一部分，也可以将参数声明为局部变量(请参阅示例)。以这种方式指定的参数称为形参。需要注意的是，在过程或函数定义中不能同时指定形参和 PARAMETERS 语句。</para>
     <para styleclass="Body Text">否则会导致编译器出错。</para>
     <para styleclass="Body Text">接收变量的数量不必与调用例程传递的参数数量一致。如果指定的参数多于参数，多余的参数将被忽略。如果指定的参数少于参数，多余的参数将以 NIL 值创建。如果跳过一个参数，相应的参数将被初始化为 NIL。</para>
     <para styleclass="Body Text">PCount() 函数返回参数列表中最后一个参数的位置。这与传递的参数数不同，因为它包括跳过的参数。</para>

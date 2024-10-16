@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <Import Project="..\Tools.props" />
-   <PropertyGroup>
+  <PropertyGroup>
     <Name>XPorter</Name>
     <ProjectGuid>8a49a47c-ade7-416c-8b28-cd3b401cbc25</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -40,6 +40,8 @@
     <DisabledWarnings>1591</DisabledWarnings>
     <NamedArgs>True</NamedArgs>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <Allowdot>True</Allowdot>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <EmitDebugInformation>true</EmitDebugInformation>

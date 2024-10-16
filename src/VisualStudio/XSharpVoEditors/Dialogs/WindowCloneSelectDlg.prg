@@ -26,7 +26,7 @@ PUBLIC PARTIAL CLASS WindowCloneSelectDlg	;
 
 
     public constructor(file AS XFile, cFileName AS STRING) strict
-        InitializeComponent()
+        SELF:InitializeComponent()
         Self:cCompareFileName := cFileName
         Self:listedFileNames:=  List<string>{}
         local fiProjectFile := FileInfo{file:Project:FileName} as FileInfo
@@ -58,7 +58,7 @@ PUBLIC PARTIAL CLASS WindowCloneSelectDlg	;
         RETURN
     END METHOD
     PRIVATE METHOD SearchButton_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
-        ListBoxSearch()
+        SELF:ListBoxSearch()
         RETURN
     END METHOD
 

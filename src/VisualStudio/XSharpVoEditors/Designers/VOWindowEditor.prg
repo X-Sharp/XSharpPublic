@@ -3566,7 +3566,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         SELF:BeginAction()
         SELF:DoAction(DesignerActionType.DeSelectAll)
 
-        neworder := GetAllDesignItemsByCreationOrder():Count
+        neworder := SELF:GetAllDesignItemsByCreationOrder():Count
         FOR n := 0 UPTO Clipboard:Count - 1
             oEntry := Clipboard:GetEntry(n)
             lNameConflict := SELF:NameExists(oEntry:cName)

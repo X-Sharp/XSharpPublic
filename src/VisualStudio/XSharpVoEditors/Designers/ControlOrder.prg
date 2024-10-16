@@ -28,6 +28,8 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
     PROTECT oTimer AS Timer
     PROTECT nMouseIndex AS INT
 
+
+
     CONSTRUCTOR(_oEditor AS VOWindowEditor , aDesign AS ArrayList)
 
         SUPER()
@@ -135,6 +137,7 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
         SELF:oCancelButton:Size := System.Drawing.Size{ 75 , 23 }
         SELF:oCancelButton:Text := "&Cancel"
         SELF:oCancelButton:TabIndex := 5
+        SELF:oCancelButton:Click += System.EventHandler{ SELF , @CancelButtonClick() }
         SELF:oCancelButton:Anchor := System.Windows.Forms.AnchorStyles.Bottom + System.Windows.Forms.AnchorStyles.Right
         SELF:Controls:Add(SELF:oCancelButton)
 
@@ -234,10 +237,18 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
         RETURN
 
     PROTECTED METHOD UseMouseButtonClick(o AS OBJECT , e AS EventArgs) AS VOID
-        SELF:oEditor:SelectMainItem()
-        SELF:lUsingMouse := TRUE
-        SELF:nMouseIndex := 0
-        SELF:oTimer:Start()
+
+        if SELF:nMouseIndex>0
+            SELF:lUsingMouse := TRUE
+            SELF:oTimer:Start()
+        else
+            SELF:oEditor:SelectMainItem()
+            SELF:lUsingMouse := TRUE
+            SELF:nMouseIndex := 0
+            SELF:oTimer:Start()
+        endif
+
+
         RETURN
     METHOD TimerTicked(o AS OBJECT , e AS EventArgs) AS VOID
         IF SELF:lUsingMouse
@@ -349,7 +360,17 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
             SELF:aNewOrder:Add(oItem:Tag ASTYPE DesignWindowItem)
         NEXT
         SELF:DialogResult := DialogResult.OK
+
+        Self:Close()
         RETURN
+
+
+    PROTECTED METHOD CancelButtonClick(o AS OBJECT , e AS System.EventArgs) AS VOID
+        SELF:DialogResult := DialogResult.Cancel
+        Self:Close()
+        RETURN
+
+
 
 END CLASS
 

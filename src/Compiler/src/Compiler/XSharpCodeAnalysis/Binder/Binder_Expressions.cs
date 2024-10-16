@@ -143,8 +143,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             var left = index;
             var leftType = left.Type;
             Debug.Assert(leftType.Equals(Compilation.GetWellKnownType(WellKnownType.System_Index)));
+            var int32type = Compilation.GetSpecialType(SpecialType.System_Int32);
 
-            var right = new BoundLiteral(syntax, ConstantValue.Create(1), index.Type) { WasCompilerGenerated = true };
+            var right = new BoundLiteral(syntax, ConstantValue.Create(1), int32type) { WasCompilerGenerated = true };
 
             BoundExpression isFromEnd;
             {
@@ -161,12 +162,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             var opKind = BinaryOperatorKind.IntSubtraction;
             var resultConstant = FoldBinaryOperator(syntax, opKind, leftValue, right, leftValue.Type, diagnostics);
             var sig = this.Compilation.BuiltInOperators.GetSignature(opKind);
-            BoundExpression whenFalse = new BoundBinaryOperator(syntax, kind, leftValue, right, resultConstant, sig.Method, null,
+            BoundExpression whenFalse = new BoundBinaryOperator(syntax, opKind, leftValue, right, resultConstant, sig.Method, null,
                 resultKind: LookupResultKind.Viable,
                 originalUserDefinedOperatorsOpt: ImmutableArray<MethodSymbol>.Empty,
-                type: index.Type,
+                type: int32type,
                 hasErrors: false)
             { WasCompilerGenerated = true };
+            whenFalse = CreateConversion(whenFalse, index.Type, diagnostics);
+            whenFalse.WasCompilerGenerated = true;
 
             var whenTrue = index;
 

@@ -53,7 +53,7 @@ namespace XSharp.MacroCompiler.Syntax
         NAMESPACE, NEW, OPERATOR, PARTIAL, PROPERTY, SEALED, SET, STRUCTURE, UNICODE, UNTIL, VALUE, VIRTUAL, VOSTRUCT,
 
         // New Vulcan Keywords (no 4 letter abbreviations) [statement]
-        CONST, EACH, FOREACH, IMPLICIT, IMPLIED, LOCK, OUT, REPEAT, SCOPE, TRY,
+        CONST, FOREACH, IMPLICIT, IMPLIED, LOCK, OUT, REPEAT, SCOPE, TRY,
 
         // New Vulcan expr Keywords (no 4 letter abbreviations)
         DEFAULT,
@@ -67,9 +67,11 @@ namespace XSharp.MacroCompiler.Syntax
 
         //// New XSharp expr Keywords (no 4 letter abbreviations)
         AWAIT, ASYNC, ASTYPE, CHECKED, UNCHECKED,
-
-        // Fox kws
-        M, 
+        // Foxpro kws
+        M,
+        EACH, SCAN, ENDSCAN, ENDDEFINE, ENDFUNC, ENDPROC, ENDTRY, ENDWITH,
+        // XPP keywords
+        ENDCLASS, ENDSEQUENCE,
 
         LAST_POSITIONAL_KEYWORD,
 
@@ -333,7 +335,6 @@ namespace XSharp.MacroCompiler.Syntax
 
             var VoKeywordsStmt = new Dictionary<string, TokenType>
             {
-                {"AS", TokenType.AS},
                 {"BEGIN", TokenType.BEGIN},
                 {"BREAK", TokenType.BREAK},
                 {"CASE", TokenType.CASE},
@@ -377,6 +378,7 @@ namespace XSharp.MacroCompiler.Syntax
 
             var VoKeywords = new Dictionary<string, TokenType>
             {
+                {"AS", TokenType.AS},
                 {"_AND", TokenType.BIT_AND},
                 {"_CAST", TokenType.CAST},
                 {"FIELD", TokenType.FIELD},
@@ -537,7 +539,6 @@ namespace XSharp.MacroCompiler.Syntax
                 {"CONST", TokenType.CONST},
                 {"FINALLY", TokenType.FINALLY},
                 {"FOREACH", TokenType.FOREACH},
-                {"EACH", TokenType.EACH},
                 {"IMPLIED", TokenType.IMPLIED},
                 {"LOCK", TokenType.LOCK},
                 {"ON", TokenType.ON},
@@ -582,6 +583,18 @@ namespace XSharp.MacroCompiler.Syntax
                 // FoxPro keywords
                 {"PARAMETERS", TokenType.PARAMETERS},
                 {"LPARAMETERS", TokenType.LPARAMETERS},
+                {"SCAN", TokenType.SCAN},
+                {"ENDDEFINE", TokenType.ENDDEFINE},
+                {"ENDSCAN", TokenType.ENDSCAN},
+                {"ENDFOR", TokenType.NEXT},
+                {"ENDFUNC", TokenType.ENDFUNC},
+                {"ENDPROC", TokenType.ENDPROC},
+                {"ENDTRY", TokenType.ENDTRY},
+                {"ENDWITH", TokenType.ENDWITH},
+                {"EACH", TokenType.EACH},
+                // XPP Keywords
+                {"ENDCLASS", TokenType.ENDCLASS},
+                {"ENDSEQUENCE", TokenType.ENDSEQUENCE},
             };
 
             var Keywords = new Dictionary<string, TokenType>
@@ -821,6 +834,7 @@ namespace XSharp.MacroCompiler.Syntax
 
             // X# soft KWs
             softKws[(int)TokenType.ADD] = true;
+            softKws[(int)TokenType.AS] = true;
             softKws[(int)TokenType.ARGLIST] = true;
             softKws[(int)TokenType.ASCENDING] = true;
             softKws[(int)TokenType.ASSEMBLY] = true;
@@ -875,33 +889,51 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.VOSTRUCT] = true;
             softKws[(int)TokenType.ALIGN] = true;
             softKws[(int)TokenType.CALLBACK] = true;
+            softKws[(int)TokenType.CAST] = true;
+            softKws[(int)TokenType.CHECKED] = true;
             softKws[(int)TokenType.CLIPPER] = true;
             softKws[(int)TokenType.DECLARE] = true;
+            softKws[(int)TokenType.DEFAULT] = true;
             softKws[(int)TokenType.DIM] = true;
             softKws[(int)TokenType.DIMENSION] = true;
             softKws[(int)TokenType.DOWNTO] = true;
             softKws[(int)TokenType.DLLEXPORT] = true;
             softKws[(int)TokenType.EVENT] = true;
             softKws[(int)TokenType.FASTCALL] = true;
+            softKws[(int)TokenType.FIELD] = true;
             softKws[(int)TokenType.FUNC] = true;
+            softKws[(int)TokenType.IIF] = true;
+            softKws[(int)TokenType.IF] = true;
             softKws[(int)TokenType.IN] = true;
             softKws[(int)TokenType.INSTANCE] = true;
+            softKws[(int)TokenType.IS] = true;
             softKws[(int)TokenType.PASCAL] = true;
             softKws[(int)TokenType.PROC] = true;
+            softKws[(int)TokenType.REF] = true;
             softKws[(int)TokenType.SEQUENCE] = true;
+            softKws[(int)TokenType.SIZEOF] = true;
             softKws[(int)TokenType.STEP] = true;
             softKws[(int)TokenType.STRICT] = true;
             softKws[(int)TokenType.TO] = true;
             softKws[(int)TokenType.THEN] = true;
+            softKws[(int)TokenType.TYPEOF] = true;
             softKws[(int)TokenType.THISCALL] = true;
+            softKws[(int)TokenType.UNCHECKED] = true;
             softKws[(int)TokenType.UNION] = true;
             softKws[(int)TokenType.UNTIL] = true;
             softKws[(int)TokenType.UPTO] = true;
             softKws[(int)TokenType.USING] = true;
             softKws[(int)TokenType.WINCALL] = true;
 
+
             // fox soft KWs
             softKws[(int)TokenType.M] = true;
+            softKws[(int)TokenType.SCAN] = true;
+            softKws[(int)TokenType.ENDSCAN] = true;
+            softKws[(int)TokenType.ENDFUNC] = true;
+            softKws[(int)TokenType.ENDPROC] = true;
+            softKws[(int)TokenType.ENDTRY] = true;
+            softKws[(int)TokenType.ENDWITH] = true;
 
             for (var i = (int)TokenType.FIRST_POSITIONAL_KEYWORD + 1; i < (int)TokenType.LAST_POSITIONAL_KEYWORD; i++)
             {

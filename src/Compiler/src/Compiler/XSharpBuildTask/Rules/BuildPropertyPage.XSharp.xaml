@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Rule Name="Build"
+      OverrideMode="Extend"
+      xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+  <StringProperty Name="OtherFlags"
+                DisplayName="Other flags"
+                Description="Additional compiler flags. Separate flags with whitespace."
+                Category="Advanced" />
+
+  <BoolProperty   Category="Advanced"
+        Name="UseShared"
+        DisplayName="Use the shared compiler"
+        Visible="True"
+        Default = "True"
+        Description="Use the shared compiler. This usually results in faster compilation because metadata from referenced assemblies is cached by the shared compiler.(/shared)"  Switch="shared"/>
+  <EnumProperty Name="WarningLevel"
+                  DisplayName="Warning level"
+                  Description="Specifies the level to display for compiler warnings. Higher levels produce more warnings, and include all warnings from lower levels."
+                  HelpUrl="https://go.microsoft.com/fwlink/?linkid=2146798"
+                  Category="ErrorsAndWarnings">
+    <EnumProperty.Metadata>
+      <NameValuePair Name="EditabilityCondition">
+        <NameValuePair.Value>
+          (has-evaluated-value "Build" "WarningLevelOverridden" false)
+        </NameValuePair.Value>
+      </NameValuePair>
+    </EnumProperty.Metadata>
+    <EnumValue Name="0"
+               DisplayName="0 - Fewest warnings, including most severe issues" />
+    <EnumValue Name="1"
+               DisplayName="1" />
+    <EnumValue Name="2"
+               DisplayName="2" />
+    <EnumValue Name="3"
+               DisplayName="3 - Default warning level" />
+    <EnumValue Name="4"
+               DisplayName="4" />
+    <EnumValue Name="5"
+               DisplayName="5 - Most warnings, including less severe issues" />
+  </EnumProperty>
+
+  <BoolProperty Name="AllowUnsafeBlocks" Visible="False" />
+
+  <StringProperty Name="LangVersion" Visible="False" />
+
+  <BoolProperty   Name="CheckForOverflowUnderflow" Visible="False" />
+
+  <EnumProperty Name="ErrorReport" Visible="False" />
+
+  <EnumProperty Name="FileAlignment" Visible="False" />
+
+</Rule>

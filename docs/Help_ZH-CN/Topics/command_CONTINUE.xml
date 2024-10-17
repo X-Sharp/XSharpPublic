@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-12T16:35:59.775+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:39:02.386+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>CONTINUE 命令</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -20,7 +20,7 @@
     <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">CONTINUE</para>
     <para styleclass="Heading1">描述</para>
-    <para styleclass="Normal">CONTINUE 从当前记录位置开始搜索符合当前工作区最近执行的定位条件的下一条记录（可以使用 LOCATE 命令或 VODBLocate() 或 VODBSetLocate() 函数设置定位条件）。 (您可以使用 LOCATE 命令或 VODBLocate() 或 VODBSetLocate() 函数设置定位条件）。</para>
+    <para styleclass="Normal">CONTINUE 从当前记录位置开始搜索符合当前工作区最近执行的定位条件的下一条记录(可以使用 LOCATE 命令或 VODBLocate() 或 VODBSetLocate() 函数设置定位条件)。(您可以使用 LOCATE 命令或 VODBLocate() 或 VODBSetLocate() 函数设置定位条件)。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">搜索在找到匹配记录或遇到文件结束时终止。 如果 CONTINUE 成功，匹配记录将成为当前记录， <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Found.htm" domain="XSharpRef.chm">Found()</link> 返回 TRUE；如果不成功，Found() 返回 FALSE。</para>
     <para styleclass="Normal">每个工作区都可以有一个激活的定位条件。 在指定新的定位条件之前，定位条件一直处于待定状态。</para>

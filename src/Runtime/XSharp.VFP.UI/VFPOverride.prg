@@ -43,7 +43,7 @@ CLASS VFPOverride
                 IF IsMethod( _owner, _sendTo )
                     RETURN Send( _owner, _sendTo, args )
                 ELSE
-                    CallParent( args )
+                    SELF:CallParent( args )
                 ENDIF
             ELSE
                 RETURN NULL
@@ -64,7 +64,7 @@ CLASS VFPOverride
                 IF IsMethod( _owner, _sendTo )
                     RETURN Send( _owner, _sendTo )
                 ELSE
-                    CallParent( NULL )
+                    SELF:CallParent( NULL )
                 ENDIF
             ELSE
                 RETURN NULL

@@ -1,5 +1,7 @@
 // Parser for VO code, taken from XIDE
-
+#pragma warnings disable: 170 //Use of possibly unassigned field
+#pragma warnings disable: 219 //The variable is assigned but its value is never used
+#pragma warnings disable: 162 //Unreachable Code
 USING System.Collections.Generic
 USING System.Collections
 
@@ -1660,7 +1662,7 @@ CLASS VoBuffer
 					lEscapedWord := FALSE
 					LOOP
 				CASE .not. (_lEntities .or. _lRetrieveEntities .or. _lRetrieveLocals) .and. .not. _lTokens
-
+                    NOP
 				CASE lAllowEntityParse .and. state:lEntityFound .and. state:lNameFound .and. cUpperWord == "PASCAL" .and. .not. lEscapedWord .and. ;
 					(oInfo:eType == EntityType._Method .or. oInfo:eType == EntityType._Access .or. oInfo:eType == EntityType._Assign .or. ;
 					oInfo:eType == EntityType._Function .or. oInfo:eType == EntityType._Procedure)

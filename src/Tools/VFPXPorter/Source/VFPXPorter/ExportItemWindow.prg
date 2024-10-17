@@ -13,14 +13,14 @@ PUBLIC PARTIAL CLASS ExportItemWindow	;
         INHERIT System.Windows.Forms.Form
     PROPERTY xPorter AS IXPorter AUTO
     PROPERTY extension AS STRING AUTO
-
+        
     PROPERTY Settings AS XPorterSettings AUTO
-
+        
     PUBLIC CONSTRUCTOR() STRICT //ExportWindow
-        InitializeComponent()
+        SELF:InitializeComponent()
         extension := "scx"
         RETURN
-
+        
     PRIVATE METHOD exportButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID
         // Check what we try to export
         SELF:infoStripError:Text := ""
@@ -33,19 +33,19 @@ PUBLIC PARTIAL CLASS ExportItemWindow	;
             MessageBox.Show( "Error during Component processing.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error )
             RETURN
         ENDIF
-        DoExport()
-
+        SELF:DoExport()
+        
     PUBLIC METHOD DoExport() AS VOID
         // DoBackup, ProcessFirst
         SELF:Processing( TRUE )
         SELF:backgroundExport:RunWorkerAsync()
         RETURN
-
+        
     METHOD Processing( state AS LOGIC ) AS VOID
         SELF:exportButton:Enabled := !state
         SELF:cancelBtn:Visible := state
-
-
+        
+        
     PRIVATE METHOD scxButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
         LOCAL ofd AS OpenFileDialog
         //
@@ -158,7 +158,7 @@ PUBLIC PARTIAL CLASS ExportItemWindow	;
     PRIVATE METHOD cancelBtn_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
         SELF:backgroundExport:CancelAsync()
         RETURN
-
-
+        
+        
 END CLASS
 END NAMESPACE

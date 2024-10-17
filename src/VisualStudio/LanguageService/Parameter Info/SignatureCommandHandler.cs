@@ -21,8 +21,8 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.InteropServices;
-using XSharpModel;
 using XSharp.Settings;
+using XSharpModel;
 
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 namespace XSharp.LanguageService
@@ -61,13 +61,12 @@ namespace XSharp.LanguageService
         readonly ISignatureHelpBroker _signatureBroker;
         readonly IOleCommandTarget m_nextCommandHandler;
         ISignatureHelpSession _signatureSession = null;
-#if !ASYNCCOMPLETION
-        XSharpCompletionCommandHandler _completionCommandHandler = null;
-#endif
+        readonly XDocument _doc;
         internal XSharpSignatureHelpCommandHandler(IVsTextView textViewAdapter, ITextView textView, ISignatureHelpBroker broker)
         {
             this._textView = textView;
             this._signatureBroker = broker;
+            _doc = textView.TextBuffer.GetDocument();
             //add this to the filter chain
             textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
         }
@@ -108,11 +107,12 @@ namespace XSharp.LanguageService
                         if (HasActiveSignatureSession)
                         {
                             SnapshotPoint ssp = _textView.Caret.Position.BufferPosition;
-                            if (ssp.Position > 0)
+                            if (!ssp.AtStart())
                             {
-                                // get previous char
-                                var previous = _textView.TextBuffer.CurrentSnapshot.GetText().Substring(ssp.Position - 1, 1);
-                                if (previous == "(" || previous == "{")
+                                // get preceding character
+                                ssp -= 1;
+                                var previous = ssp.GetChar();
+                                if (previous == '(' || previous == '{')
                                 {
                                     _signatureSession.Dismiss();
                                 }
@@ -135,7 +135,6 @@ namespace XSharp.LanguageService
                         break;
                 }
             }
-            var completionActive = IsCompletionActive();
             // 2. Let others do their thing
             result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             // 3. Post process
@@ -186,20 +185,22 @@ namespace XSharp.LanguageService
                                     break;
 
                             }
+                            _doc.SignatureStarting = false;
                             break;
-                        case (int)VSConstants.VSStd2KCmdID.RETURN:
-                            if (!completionActive)
+                        case (int)VSConstants.VSStd2KCmdID.RETURN when !_doc.SignatureStarting:
+                            if (_doc.CompletionSession == null)
                             {
                                 CancelSignatureSession();
                             }
                             break;
+
 
                         case (int)VSConstants.VSStd2KCmdID.LEFT:
                         case (int)VSConstants.VSStd2KCmdID.RIGHT:
                         case (int)VSConstants.VSStd2KCmdID.BACKSPACE:
                             if (HasActiveSignatureSession)
                             {
-                               MoveSignature();
+                                MoveSignature();
                             }
                             break;
                         case (int)VSConstants.VSStd2KCmdID.UP:
@@ -229,10 +230,9 @@ namespace XSharp.LanguageService
             var level = 0;
             bool done = false;
             bool inString = false;
-            char closechar = '\0';
-            int pos = ssp.Position;
+            char closeChar = '\0';
             int curLine = ssp.GetContainingLine().LineNumber;
-            while (!done && pos > 0)
+            while (!done && !ssp.AtStart())
             {
                 int line = ssp.GetContainingLine().LineNumber;
                 if (line != curLine)
@@ -245,8 +245,6 @@ namespace XSharp.LanguageService
                     }
                     curLine = line;
                 }
-                if (ssp.Position == 0)
-                    break;
                 ssp = ssp - 1;
                 var ch = ssp.GetChar();
                 {
@@ -257,15 +255,15 @@ namespace XSharp.LanguageService
                             if (!inString)
                             {
                                 inString = true;
-                                closechar = ch;
+                                closeChar = ch;
                             }
-                            else if (closechar == ch)
+                            else if (closeChar == ch)
                             {
                                 inString = false;
-                                closechar = '\0';
+                                closeChar = '\0';
                             }
                             break;
-                        case '(' when ! inString:
+                        case '(' when !inString:
                         case '{' when !inString:
                             level += 1;
                             break;
@@ -279,24 +277,8 @@ namespace XSharp.LanguageService
             return level > 0;
         }
 
-        bool IsCompletionActive()
-        {
-#if !ASYNCCOMPLETION
-            if (_completionCommandHandler == null)
-            {
-                _textView.Properties.TryGetProperty(typeof(XSharpCompletionCommandHandler), out _completionCommandHandler);
-            }
-            if (_completionCommandHandler != null)
-            {
-                return _completionCommandHandler.HasActiveSession;
-            }
-#endif
-            return false;
-
-        }
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             return m_nextCommandHandler.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
         }
         IXMemberSymbol findElementAt(bool command, char triggerChar, SnapshotPoint ssp, XSharpSignatureProperties props)
@@ -318,7 +300,7 @@ namespace XSharp.LanguageService
             // Check if we can get the member where we are
 
             var tokenList = XSharpTokenTools.GetTokenListBeforeCaret(location, out var state);
-            // tokenlist may look like ID1 ( ID2 ( e1 , e2)
+            // tokenList may look like ID1 ( ID2 ( e1 , e2)
             // after the closing paren we come here and want to completely remove the  ID2 ( e1, e2 ) part
             // when we have this ID1 ( e1 ) then there should be no parameter completion at all
             // The same for ID1 { e1 }
@@ -386,7 +368,7 @@ namespace XSharp.LanguageService
             }
             if (comma || command)
             {
-                // check to see if there is a lparen or lcurly before the comma
+                // check to see if there is a LPAREN or LCURLY before the comma
                 bool done = false;
                 nested = 0;
                 while (tokenList.Count > 0 && !done)
@@ -468,10 +450,13 @@ namespace XSharp.LanguageService
             bool command = triggerchar == '\0';
             IXMemberSymbol currentElement = null;
             SnapshotPoint ssp = this._textView.Caret.Position.BufferPosition;
-            if (triggerchar == '(' && ssp.Position < ssp.Snapshot.Length && ssp.GetChar() == ')')
-                ssp -= 1;
-            if (triggerchar == '{' && ssp.Position < ssp.Snapshot.Length && ssp.GetChar() == '}')
-                ssp -= 1;
+            if (!ssp.AtStart())
+            {
+                if (triggerchar == '(' && !ssp.AtEnd() && ssp.GetChar() == ')')
+                    ssp -= 1;
+                if (triggerchar == '{' && !ssp.AtEnd() && ssp.GetChar() == '}')
+                    ssp -= 1;
+            }
             var location = _textView.FindLocation(ssp);
             if (location == null || location.Member == null)
                 return false;
@@ -480,9 +465,9 @@ namespace XSharp.LanguageService
 
             var props = new XSharpSignatureProperties(location);
             props.triggerChar = triggerchar;
-            var bufpos = this._textView.Caret.Position.BufferPosition;
-            props.triggerPosition = bufpos.Position;
-            props.triggerLine = bufpos.GetContainingLine().LineNumber;
+            var bufferPos = this._textView.Caret.Position.BufferPosition;
+            props.triggerPosition = bufferPos.Position;
+            props.triggerLine = bufferPos.GetContainingLine().LineNumber;
             props.Visibility = Modifiers.Public;
             if (type != null)
             {
@@ -548,7 +533,7 @@ namespace XSharp.LanguageService
                 return false;
 
             SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
-            ITextSnapshot caretsnapshot = caret.Snapshot;
+            ITextSnapshot caretSnapshot = caret.Snapshot;
             //
             if (_signatureBroker.IsSignatureHelpActive(_textView))
             {
@@ -556,7 +541,7 @@ namespace XSharp.LanguageService
             }
             else
             {
-                _signatureSession = _signatureBroker.CreateSignatureHelpSession(_textView, caretsnapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), false);
+                _signatureSession = _signatureBroker.CreateSignatureHelpSession(_textView, caretSnapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), false);
             }
             _signatureSession.Properties[typeof(XSharpSignatureProperties)] = props;
 
@@ -635,7 +620,7 @@ namespace XSharp.LanguageService
                 return false;
             SnapshotPoint ssp = this._textView.Caret.Position.BufferPosition;
             var line = ssp.GetContainingLine().LineNumber;
-            if ( line != props.triggerLine)
+            if (line != props.triggerLine)
             {
                 var doc = this._textView.TextBuffer.GetDocument();
                 LineFlags flags;

@@ -33,6 +33,7 @@
     <Fox2>True</Fox2>
     <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
     <StartupObject />
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DefineConstants>DEBUG;TRACE;NOASSERT</DefineConstants>

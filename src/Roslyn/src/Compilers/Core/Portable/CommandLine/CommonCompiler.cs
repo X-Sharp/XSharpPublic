@@ -787,8 +787,13 @@ namespace Microsoft.CodeAnalysis
                 }
 
                 globalConfigOptions = analyzerConfigSet.GlobalConfigOptions;
+#if XSHARP
+                var ar = Arguments.SourceFiles.ToList();
+                ar.Add(new CommandLineSourceFile("generatedcode.prg", false));
+                sourceFileAnalyzerConfigOptions = ar.SelectAsArray(f => analyzerConfigSet.GetOptionsForSourcePath(f.Path));
+#else
                 sourceFileAnalyzerConfigOptions = Arguments.SourceFiles.SelectAsArray(f => analyzerConfigSet.GetOptionsForSourcePath(f.Path));
-
+#endif
                 foreach (var sourceFileAnalyzerConfigOption in sourceFileAnalyzerConfigOptions)
                 {
                     diagnostics.AddRange(sourceFileAnalyzerConfigOption.Diagnostics);

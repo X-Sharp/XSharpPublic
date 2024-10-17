@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T19:43:29.517+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:45:31.342+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>REPLACE 命令</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -29,7 +29,7 @@
     <para styleclass="Heading1">描述</para>
     <para styleclass="Normal">REPLACE 与赋值运算符（:=）的功能相同，只是它假设的是字段变量。 </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">警告！</text><text styleclass="Italic"> &#160;REPLACE 关键字段时，索引会被更新，索引中记录指针的相对位置也会改变。 这意味着用作用域或条件替换关键字段可能会产生错误的结果。 要更新关键字段，请在 REPLACE 之前抑制控制顺序（例如，使用 SET ORDER TO 0 或 DBSetOrder(0)）。 这样可以确保记录指针按自然顺序依次移动，并正确更新顺序列表中的所有顺序。</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">警告！</text><text styleclass="Italic"> &#160;REPLACE 关键字段时，索引会被更新，索引中记录指针的相对位置也会改变。 这意味着用作用域或条件替换关键字段可能会产生错误的结果。 要更新关键字段，请在 REPLACE 之前抑制控制顺序(例如，使用 SET ORDER TO 0 或 DBSetOrder(0))。 这样可以确保记录指针按自然顺序依次移动，并正确更新顺序列表中的所有顺序。</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">共享模式： &#160;</text>对于共享数据库，该命令需要锁定其操作的所有记录。 可以使用一个或多个记录锁或文件锁来实现这一要求，具体取决于命令的范围。 </para>
     <para styleclass="Heading1">示例</para>

@@ -6,9 +6,16 @@
 #define VFP_OBJECT_XH
 // Common properties that all VFP Objects support.
 // Some are only necessary in a design environment like VFP
+[System.ComponentModel.DefaultValue("")];
 PROPERTY BaseClass AS STRING AUTO
+
+[System.ComponentModel.DefaultValue("")];
 PROPERTY Class AS STRING AUTO
+
+[System.ComponentModel.DefaultValue("")];
 PROPERTY ClassLibrary AS STRING AUTO
+
+[System.ComponentModel.DefaultValue("")];
 PROPERTY Comment AS STRING AUTO
 
 [Obsolete];

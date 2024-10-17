@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T21:40:30.196+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.628+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-vo13</title>
   <keywords>
     <keyword>-vo13</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo13<tab />兼容字符串比较 </para>
+      <para styleclass="Heading1">-vo13<tab/>兼容字符串比较 </para>
     </header>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">使用 -vo13 选项可以进行与 VO 兼容的字符串比较</para>
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-vo13[+|-]</para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List">+ | - <tab />指定 + 或 -vo13，会告诉编译器字符串比较的执行方式与在 VO 和 RDD 中相同，在 RDD 中，比较取决于 SetCollation() 设置。 如果指定了 - 或未指定 -vo13，代码中的字符串比较将使用 String.Compare() </para>
+    <para styleclass="List">+ | - <tab/>指定 + 或 -vo13，会告诉编译器字符串比较的执行方式与在 VO 和 RDD 中相同，在 RDD 中，比较取决于 SetCollation() 设置。 如果指定了 - 或未指定 -vo13，代码中的字符串比较将使用 String.Compare() </para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">当启用此选项时，字符串比较与 VO 和 RDDs 兼容，并依赖于 SetCollation() 如下：</para>
     <para styleclass="Normal"></para>
@@ -24,7 +24,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">当 collation=#Unicode 时，比较将使用使用当前区域设置的常规 String.Compare() 例程进行。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">当 collation=#Ordinal 时，比较将使用使用基于序数的比较的常规 String.Compare() 例程进行（这是最快的）。</para>
+    <para styleclass="Normal">当 collation=#Ordinal 时，比较将使用使用基于序数的比较的常规 String.Compare() 例程进行(这是最快的)。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">当未启用 -v013 时，字符串比较使用 String.Compare() 执行，其中比较根据当前选择的区域设置的具有文化敏感排序规则。</para>
     <para styleclass="Normal"></para>
@@ -34,7 +34,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
       <li styleclass="Normal" style="margin-left:13px;">点击 Dialect 选项卡 </li>
       <li styleclass="Normal" style="margin-left:13px;">更改值</li>

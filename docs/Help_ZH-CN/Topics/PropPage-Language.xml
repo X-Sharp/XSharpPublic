@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-06T23:20:32.131+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-27T11:51:40.362+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Language(语言)</title>
   <keywords>
     <keyword>Additional Include paths</keyword>
@@ -194,7 +194,7 @@
           <para styleclass="Normal">如果选中，则允许在赋值中使用单个等号运算符 (<text style="font-weight:bold;">=</text>)。否则，必须使用冒号等号运算符(<text style="font-weight:bold;">:=</text>)。</para>
         </td>
         <td style="width:180px;">
-          <para styleclass="Normal">/allowoldstyleassignments</para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-allowoldstyleassignments">/allowoldstyleassignments</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -217,7 +217,7 @@
         </td>
         <td style="width:780px;">
           <para styleclass="Normal">启用对未声明变量的支持(这些变量被解析为 MEMVAR)。</para>
-          <para styleclass="Normal">请注意，这需要同时启用 /memvar。</para>
+          <para styleclass="Normal">请注意，这需要同时启用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">/memvar</link> 。</para>
         </td>
         <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-undeclared">/undeclared</link></para>

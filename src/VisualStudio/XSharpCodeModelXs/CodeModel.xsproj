@@ -23,6 +23,8 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <EnforceSelf>True</EnforceSelf>
+    <Allowdot>True</Allowdot>
+    <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
@@ -89,10 +91,12 @@
     <Compile Include="Formatting\XKeyword.prg" />
     <Compile Include="Formatting\XTokenType.prg" />
     <Compile Include="MetaData\BuiltInFunctions.prg" />
+    <Compile Include="Model\CodeDomProvider.prg" />
     <Compile Include="Model\XNamespaceSymbol.prg" />
     <Compile Include="Model\XKeywordSymbol.prg" />
     <Compile Include="Model\ClassGenerator.prg" />
     <Compile Include="Model\CommentTask.prg" />
+    <Compile Include="Parser\ParseOptions.prg" />
     <Compile Include="Parser\XSharpTokenList.prg" />
     <Compile Include="PE\XPEEventSymbol.prg" />
     <Compile Include="PE\XPEFieldSymbol.prg" />
@@ -175,11 +179,11 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite">
-      <Version>8.0.1</Version>
+      <Version>8.0.8</Version>
       <IncludeAssets>all</IncludeAssets>
     </PackageReference>
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3">
-      <Version>2.1.6</Version>
+      <Version>2.1.9</Version>
       <IncludeAssets>all</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
@@ -202,4 +206,4 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  </Project>
+</Project>

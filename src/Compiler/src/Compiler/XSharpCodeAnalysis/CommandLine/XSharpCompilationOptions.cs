@@ -196,7 +196,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Fox2: // Fox Array Support
                     return CheckOption(option, FoxArraySupport, syntax);
 
-
                 // other options are not handled or only handled during parsing
                 case CompilerOption.Vo8: //  Compatible Preprocessor
                 case CompilerOption.Vo16: // DefaultClipperContructors: 

@@ -64,6 +64,8 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 return -1;
             }
             SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
+            if (caret.AtEnd())
+                return caret.Snapshot.LineCount-1;
             ITextSnapshotLine line = caret.GetContainingLine();
             //
             var lineNumber = line.LineNumber;

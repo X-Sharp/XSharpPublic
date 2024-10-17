@@ -34,12 +34,12 @@ namespace XSharp.CodeDom
 
         static XSharpKeywords()
         {
-            var kwds = XSharpLexer.DefaultVocabulary;
-            for (int i = 1; i < kwds.MaxTokenType; i++)
+            var keywords = XSharpLexer.DefaultVocabulary;
+            for (int i = 1; i < keywords.MaxTokenType; i++)
             {
                 if (XSharpLexer.IsKeyword(i) )
                 {
-                    string name = kwds.GetSymbolicName(i);
+                    string name = keywords.GetSymbolicName(i);
                     if (name.IndexOf("_") == -1)
                     {
                         _keywords.Add(name);

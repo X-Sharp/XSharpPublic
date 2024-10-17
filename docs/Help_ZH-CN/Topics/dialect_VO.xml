@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-30T22:27:32.167+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-24T12:51:19.825+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Visual Objects</title>
   <keywords>
     <keyword>&amp;&amp;</keyword>
@@ -19,23 +19,23 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">这种方言具有“<link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_All-Non-Core-dialects">所有非 Core 方言</link>”的特征。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">编译器和运行时在编译“Visual Objects”方言时具有以下“特殊”行为。</para>
+    <para styleclass="Normal">编译器和运行时在编译 “Visual Objects” 方言时具有以下“特殊”行为。</para>
     <para styleclass="Heading2">编译器</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Allows 4 letter abbreviations of some older keywords</li>
-      <li styleclass="Normal">Allows &quot;&amp;&amp;&quot; as same line comment characters, just like &quot;//&quot;</li>
-      <li styleclass="Normal">When a reference to XSharp.VO is added then certain functions that are VO specific are enabled, such as RtRegString() </li>
+      <li styleclass="Normal">允许使用 4 个字母缩写某些旧关键词</li>
+      <li styleclass="Normal">允许使用“&amp;&amp;”作为同行注释字符，就像使用“//”一样</li>
+      <li styleclass="Normal">如果添加了对 XSharp.VO 的引用，就会启用某些特定于 VO 的函数，例如 RtRegString() </li>
     </list>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Supports the use of &apos;@&apos; to retrieve the address of a variable. This may also be used for REF variables if the compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7">-vo7</link> is used.</li>
-      <li styleclass="Normal">The preprocessor adds a define __VO__ with a value of TRUE</li>
-      <li styleclass="Normal">Adds the VOSTRUCT and UNION entity types</li>
-      <li styleclass="Normal">Uses the _WINBOOL type for logical values inside VOSTRUCT and UNION entities</li>
-      <li styleclass="Normal">The indexer on PSZ types start with element 1</li>
+      <li styleclass="Normal">支持使用“@”来获取变量的地址。如果使用编译器选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7">-vo7</link>，这也可以用于 REF 变量。</li>
+      <li styleclass="Normal">预处理器添加了一个值为 TRUE 的定义 __VO__</li>
+      <li styleclass="Normal">添加 VOSTRUCT 和 UNION 实体类型</li>
+      <li styleclass="Normal">将 _WINBOOL 类型用于 VOSTRUCT 和 UNION 实体内的逻辑值</li>
+      <li styleclass="Normal">PSZ 类型的索引器从元素 1 开始</li>
     </list>
     <para styleclass="Heading2">运行时(Runtime)</para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">When running in Ansi more (SetAnsi(TRUE), which is the default) then the DBF header for DBFNTX gets the Ansi bit set</li>
+      <li styleclass="Normal">当以 Ansi More（SetAnsi(TRUE)，即默认值）运行时，DBFNTX 的 DBF 头会设置 Ansi 位</li>
     </list>
   </body>
 </topic>

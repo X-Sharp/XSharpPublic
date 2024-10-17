@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-26T10:45:23.844+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-24T11:26:17.133+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>__FieldList_2</title>
   <body>
     <header>
@@ -11,7 +11,7 @@
     <para styleclass="List"></para>
     <para styleclass="List">FIELDS LIKE &lt;<text styleclass="Body Text">Skeleton</text>&gt;<tab /><tab />可以使用通配符指定字段名称，例如 FIELDS LIKE *name</para>
     <para styleclass="List"></para>
-    <para styleclass="List">FIELDS EXCEPT &lt;<text styleclass="Body Text">Skeleton</text>&gt;<tab />可以排除主键等字段： FIELDS EXCEPT Id<br/><tab />&lt;Skeleton&gt; 支持使用通配符（* 和 ?）。 例如，要替换所有以字母 A 和 P 开头的字段，请使用<text styleclass="Body Text">&#32;</text><text styleclass="Code Example">FIELDS LIKE A*,P*</text></para>
+    <para styleclass="List">FIELDS EXCEPT &lt;<text styleclass="Body Text">Skeleton</text>&gt;<tab />可以排除主键等字段： FIELDS EXCEPT Id<br/><tab />&lt;Skeleton&gt; 支持使用通配符(* 和 ?)。 例如，要替换所有以字母 A 和 P 开头的字段，请使用<text styleclass="Body Text">&#32;</text><text styleclass="Code Example">FIELDS LIKE A*,P*</text></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
     <para styleclass="List">请注意，您可以将 FIELDS LIKE 和 FIELDS EXCEPT 结合使用，但不能将字段列表与 LIKE 和 EXCEPT 子句结合使用。</para>
     <para styleclass="List"></para>

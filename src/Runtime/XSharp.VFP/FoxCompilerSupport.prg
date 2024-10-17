@@ -156,9 +156,9 @@ FUNCTION __FoxArrayAccess(cName AS STRING, uValue AS USUAL, nIndex1 AS USUAL, nI
         RETURN _CallClipFunc(cName, {nIndex1, nIndex2})
     ENDIF
     IF XSharp.MemVar.TryGet(cName, OUT VAR _)
-        THROW Error{__VfpStr(VFPErrors.VARIABLE_NOT_ARRAY, cName)}
+        THROW Error{__VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, cName)}
     ELSE
-        THROW Error{__VfpStr(VFPErrors.VARIABLE_DOES_NOT_EXIST, cName)}
+        THROW Error{__VfpStr(VFPErrors.VFP_VARIABLE_DOES_NOT_EXIST, cName)}
     ENDIF
 
 /// <summary>
@@ -172,9 +172,9 @@ FUNCTION __FoxArrayAccess(cName AS STRING, uValue AS USUAL, nIndex1 AS USUAL) AS
         RETURN _CallClipFunc(cName, {nIndex1})
     ENDIF
     IF XSharp.MemVar.TryGet(cName, OUT VAR _)
-        THROW Error{__VfpStr(VFPErrors.VARIABLE_NOT_ARRAY, cName)}
+        THROW Error{__VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, cName)}
     ELSE
-        THROW Error{__VfpStr(VFPErrors.VARIABLE_DOES_NOT_EXIST, cName)}
+        THROW Error{__VfpStr(VFPErrors.VFP_VARIABLE_DOES_NOT_EXIST, cName)}
     ENDIF
 
 /// <summary>
@@ -206,7 +206,7 @@ FUNCTION __FoxPopWithBlock() AS OBJECT
     if stack:Count > 0
         return stack:Pop()
     ENDIF
-    var error := Error{__VfpStr(VFPErrors.WITH_STACK_EMPTY)}
+    var error := Error{__VfpStr(VFPErrors.VFP_WITH_STACK_EMPTY)}
     error:Gencode := EG_NULLVAR
     error:FuncSym := ProcName(1)
     error:SetStackTrace(ErrorStack(1))
@@ -219,7 +219,7 @@ FUNCTION __FoxGetWithExpression() AS OBJECT
     IF stack:Count > 0
         RETURN stack:Peek()
     ENDIF
-    VAR error := Error{__VfpStr(VFPErrors.WITH_STACK_EMPTY)}
+    VAR error := Error{__VfpStr(VFPErrors.VFP_WITH_STACK_EMPTY)}
     error:Gencode := EG_NULLVAR
     error:FuncSym := ProcName(1)
     error:SetStackTrace(ErrorStack(1))

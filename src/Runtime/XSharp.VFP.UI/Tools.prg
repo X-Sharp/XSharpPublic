@@ -3,6 +3,7 @@
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
+USING XSharp.VFP.UI
 
 FUNCTION VFPAlignmentConvert( n AS INT ) AS System.Drawing.ContentAlignment
     VAR convert := System.Drawing.ContentAlignment.MiddleLeft
@@ -53,11 +54,11 @@ FUNCTION VFPAlignmentConvert( convert AS System.Drawing.ContentAlignment ) AS IN
     RETURN n
 
 FUNCTION VFPImageStrechConvert( n AS INT ) AS System.Windows.Forms.PictureBoxSizeMode
-    RETURN VFPTools.ImageStrechConvert( n )
+    RETURN XSharp.VFP.UI.VFPTools.ImageStrechConvert( n )
 
 
 FUNCTION VFPTextAlignmentConvert( n AS INT ) AS System.Windows.Forms.HorizontalAlignment
-    RETURN VFPTools.TextAlignmentConvert( n )
+    RETURN XSharp.VFP.UI.VFPTools.TextAlignmentConvert( n )
 
 
 FUNCTION VFPGuessType( uValue AS USUAL ) AS STRING
@@ -87,7 +88,7 @@ FUNCTION VFPGuessType( uValue AS USUAL ) AS STRING
 /// </summary>
 /// <returns></returns>
 FUNCTION VFPImageFromFile( filename AS STRING ) AS System.Drawing.Image
-    RETURN VFPTools.ImageFromFile( filename )
+    RETURN XSharp.VFP.UI.VFPTools.ImageFromFile( filename )
 
 /// <summary>
 /// Check if we are running in Visual Studio (devenv.exe)

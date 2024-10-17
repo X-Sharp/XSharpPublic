@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-06T16:39:12.598+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-27T11:45:59.826+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Application(应用程序)</title>
   <keywords>
     <keyword>Application Icon</keyword>
@@ -63,7 +63,7 @@
           <para styleclass="Normal">(方言)</para>
         </td>
         <td style="width:465px; height:19px;">
-          <para styleclass="Normal">选择编译此项目时要使用的编译器方言。更改方言也可能会更改语言页面上的&apos;Allow Named Arguments&apos;(允许命名参数)设置。</para>
+          <para styleclass="Normal">选择编译此项目时要使用的编译器方言。更改方言也可能会更改语言页面上的 <link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">&apos;Allow Named Arguments&apos;</link> (允许命名参数)设置。</para>
         </td>
         <td style="height:19px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-dialect">-dialect</link></para>
@@ -136,7 +136,7 @@
           <para styleclass="Normal">(项目文件)</para>
         </td>
         <td style="width:465px; height:19px;">
-          <para styleclass="Normal">包含项目的构建、配置和其他信息的文件名。</para>
+          <para styleclass="Normal">包含项目的生成、配置和其他信息的文件名。</para>
         </td>
         <td style="height:19px;">
           <para styleclass="Normal">这是当前项目的名称</para>
@@ -196,7 +196,7 @@
           <para styleclass="Normal">(Vulcan 兼容管理资源)</para>
         </td>
         <td style="width:465px; height:19px;">
-          <para styleclass="Normal">使用 Vulcan 兼容托管资源(当为 &quot;真 &quot;时，资源文件包含在程序集中，不带命名空间前缀。当 &quot;为假 &quot;时，资源文件将以应用程序的命名空间作为前缀，就像其他 .Net 语言一样，如 C# 语言)</para>
+          <para styleclass="Normal">使用 Vulcan 兼容托管资源(当为 TRUE 时，资源文件包含在程序集中，不带命名空间前缀。当为 FALSE 时，资源文件将以应用程序的命名空间作为前缀，就像其他 .Net 语言一样，如 C# 语言)</para>
         </td>
         <td style="height:19px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">-resource</link></para>

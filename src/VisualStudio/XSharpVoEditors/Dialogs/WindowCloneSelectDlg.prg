@@ -1,5 +1,7 @@
 ﻿USING System
+
 USING System.IO
+
 USING System.Collections.Generic
 USING System.ComponentModel
 USING System.Data
@@ -13,6 +15,7 @@ USING XSharpModel
 USING XSharp.Settings
 
 BEGIN NAMESPACE XSharp.VOEditors.Dialogs
+
 
 PUBLIC PARTIAL CLASS WindowCloneSelectDlg	;
         INHERIT System.Windows.Forms.Form
@@ -121,4 +124,5 @@ PUBLIC PARTIAL CLASS WindowCloneSelectDlg	;
     END METHOD
 
 END CLASS
+
 END NAMESPACE

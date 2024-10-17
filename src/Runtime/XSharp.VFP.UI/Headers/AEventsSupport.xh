@@ -46,7 +46,7 @@ METHOD AMOUSEOBJ( arrayName AS USUAL, uMode := 0 AS USUAL ) AS INT
 
 METHOD BINDEVENT( oEventSource AS USUAL, cEvent AS USUAL, oEventHandler AS USUAL, cDelegate AS USUAL, nFlags := 0 AS USUAL ) AS INT
     IF IsNumeric( oEventSource )
-        RETURN BindEvent2( oEventSource, cEvent, oEventHandler, cDelegate, nFlags )
+        RETURN SELF:BindEvent2( oEventSource, cEvent, oEventHandler, cDelegate, nFlags )
     ENDIF
     IF IsObject( oEventSource ) .AND. IsString( cEvent ) .AND. IsObject( oEventHandler ) .AND. IsString( cDelegate )
         // Does the cDelegate exists ?

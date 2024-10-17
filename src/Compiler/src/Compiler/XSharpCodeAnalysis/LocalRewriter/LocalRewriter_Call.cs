@@ -39,15 +39,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var mods = mds.Modifiers;
                 isStatic = mods.Any(SyntaxKind.StaticKeyword);
             }
-            // check if MethodSymbol has the NeedAccessToLocals attribute combined with /fox2
+            // check if MethodSymbol has the NeedAccessToLocals attribute combined with /memvars and the FoxPro Dialect
             // if that is the case then the node is registered  in the FunctionsThatNeedAccessToLocals dictionary
             if (root.GetLocalsForFunction(expression.Syntax.CsNode, out var writeAccess,
                 out var localsymbols) )
             {
                 int count = 0;
-                foreach (var localsym in localsymbols)
+                foreach (var sym in localsymbols)
                 {
-                    if (localsym.Name.IndexOf("$") == -1)
+                    if (sym.Name.IndexOf("$") == -1)
                         count++;
                 }
                 if (count == 0 && isStatic)
@@ -88,12 +88,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                     exprs.Add(mcall);
                 }
 
-                foreach (var localsym in localsymbols)
+                foreach (var symbol in localsymbols)
                 {
-                    var name = localsym.Name;
+                    var name = symbol.Name;
                     if (name.IndexOf("$") >= 0)
                         continue;
-                    var localvar = _factory.Local(localsym);
+                    BoundExpression? localvar = null;
+                    if (symbol is LocalSymbol ls)
+                    {
+                        localvar = _factory.Local(ls);
+                    }
+                    else if (symbol is ParameterSymbol ps)
+                    {
+                        localvar = _factory.Parameter(ps);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                    var varType = localvar.Type;
                     var localname = _factory.Literal(name);
                     count++;
                     // __LocalPut("name", (USUAL) localvar)
@@ -107,7 +120,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // LocalVar := (CorrectType) __LocalGet("name")
                     mcall = _factory.StaticCall(rtType, ReservedNames.LocalGet, localname);
                     mcall.WasCompilerGenerated = true;
-                    value = MakeConversionNode(mcall, localsym.Type, false);
+                    value = MakeConversionNode(mcall, localvar.Type!, false);
                     value.WasCompilerGenerated = true;
                     var ass = _factory.AssignmentExpression(localvar, value);
                     ass.WasCompilerGenerated = true;
@@ -115,17 +128,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 // we need an array of the local symbols for the sequence
                 var locals = ImmutableArray.CreateBuilder<LocalSymbol>();
-                var tempSym = _factory.SynthesizedLocal(expression.Type ?? _compilation.GetSpecialType(SpecialType.System_Object));
+                var type = expression.Type ?? _compilation.GetSpecialType(SpecialType.System_Object);
+                var isVoid = type.SpecialType == SpecialType.System_Void;
+                var tempSym = _factory.SynthesizedLocal(type);
                 locals.Add(tempSym);
                 var tempLocal = _factory.Local(tempSym);
-
-                // var temp := <original expression>
-                var callorig = _factory.AssignmentExpression(tempLocal, expression);
-                exprs.Add(callorig);
-
+                if (!isVoid)
+                {
+                    var callorig = _factory.AssignmentExpression(tempLocal, expression);
+                    exprs.Add(callorig);
+                }
+                else
+                {
+                    exprs.Add(expression);
+                }
                 if (writeAccess)
                 {
-
                     // create condition  __LocalsUpdated()
                     var cond = _factory.StaticCall(rtType, ReservedNames.LocalsUpdated);
                     var t = _factory.Literal(true);

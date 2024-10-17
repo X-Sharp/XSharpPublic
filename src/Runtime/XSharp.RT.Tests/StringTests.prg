@@ -197,14 +197,15 @@ BEGIN NAMESPACE XSharp.RT.Tests
 
 		[Fact, Trait("Category", "Str")];
 		METHOD Str_With_SetFixed_TRUE() AS VOID
+		   LOCAL set_decimal,set_digit,set_fixed,set_digitfixed AS USUAL
 
 		   SetDecimalSep(Asc("."))
 		   SetThousandSep(Asc(","))
-		   SetDecimal(3)
-		   SetDigit(12)
+		   set_decimal := SetDecimal(3)
+		   set_digit := SetDigit(12)
 
-		   SetFixed(TRUE)
-		   SetDigitFixed(TRUE)
+		   set_fixed := SetFixed(TRUE)
+		   set_digitfixed := SetDigitFixed(TRUE)
 
 		   Assert.Equal( Str(12.34)            		, "          12.340")
 		   Assert.Equal( Str1(12.34)          		, "          12.340")
@@ -256,18 +257,25 @@ BEGIN NAMESPACE XSharp.RT.Tests
 		   Assert.Equal( Str(123456.1)		, "  123456,10")
 		   Assert.Equal(Str1(123456.1)		, "  123456,10")
 
+
+		   SetDecimal(set_decimal)
+		   SetDigit(set_digit)
+		   SetFixed(set_fixed)
+		   SetDigitFixed(set_digitfixed)
+
 		RETURN
 
 		[Fact, Trait("Category", "Str")];
 		METHOD Str_With_SetFixed_FALSE() AS VOID
+		   LOCAL set_decimal,set_digit,set_fixed,set_digitfixed AS USUAL
 
 		   SetDecimalSep(Asc("."))
 		   SetThousandSep(Asc(","))
-		   SetDecimal(3)
-		   SetDigit(12)
-
-		   SetFixed(FALSE)
-		   SetDigitFixed(FALSE)
+		   set_decimal := SetDecimal(3)
+		   set_digit := SetDigit(12)
+     
+		   set_fixed := SetFixed(FALSE)
+		   set_digitfixed := SetDigitFixed(FALSE)
 
 		   Assert.Equal( Str(12.34)            		, "          12.34")
 		   Assert.Equal( Str1(12.34)          		, "          12.34")
@@ -313,6 +321,11 @@ BEGIN NAMESPACE XSharp.RT.Tests
 		   Assert.Equal( "12.34" , Str(12.34 , -1))
 		   Assert.Equal( "12.3400" , Str(12.34 , -1 , 4))
 		   Assert.Equal( "1.1" , Str(1.1 , -1 , 1))
+
+		   SetDecimal(set_decimal)
+		   SetDigit(set_digit)
+		   SetFixed(set_fixed)
+		   SetDigitFixed(set_digitfixed)
 
             [Fact, Trait("Category", "Str")];
 		    METHOD Pad_Test() AS VOID

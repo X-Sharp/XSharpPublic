@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-29T22:01:34.280+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T11:44:39.223+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>FOR 语句</title>
   <keywords>
     <keyword>Branching</keyword>
@@ -40,10 +40,10 @@
     <para styleclass="Heading1">描述</para>
     <para styleclass="Normal">控制结构从 &lt;idCounter&gt; 的初始值循环到 &lt;nEnd&gt; 指定的边界，在控制变量的取值范围内移动，增量由 &lt;nDelta&gt; 指定。 循环的每次迭代都要重新评估 FOR 语句中的所有表达式。 因此，&lt;nStart&gt; 和 &lt;nEnd&gt; 值可以随着控制结构的运行而改变。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">FOR 循环一直运行到 &lt;idCounter&gt; 大于或小于 &lt;nEnd&gt;（取决于是向上计数还是向下计数）或遇到 EXIT 语句为止。 然后，控制将分支到相应 NEXT 语句后面的语句。 如果遇到 LOOP 语句，控制会分支回当前的 FOR 语句。</para>
+    <para styleclass="Normal">FOR 循环一直运行到 &lt;idCounter&gt; 大于或小于 &lt;nEnd&gt;(取决于是向上计数还是向下计数)或遇到 EXIT 语句为止。 然后，控制将分支到相应 NEXT 语句后面的语句。 如果遇到 LOOP 语句，控制会分支回当前的 FOR 语句。</para>
     <para styleclass="Normal">控制结构可以嵌套到任意深度。 唯一的要求是每个控制结构都要正确嵌套。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">提示 &#160;虽然 FOR 循环对遍历数组很有用（如下例所示），但如果有一个相应的数组函数来实现你想要的功能，你的代码会更有效率。</para>
+    <para styleclass="Normal">提示 &#160;虽然 FOR 循环对遍历数组很有用(如下例所示)，但如果有一个相应的数组函数来实现你想要的功能，你的代码会更有效率。</para>
     <para styleclass="Heading1">示例</para>
     <para styleclass="Normal">此示例以升序遍历数组：</para>
     <para styleclass="Code Example">nLenArray := ALen(aArray)<br/>FOR i := 1 UPTO nLenArray<br/><tab />&lt;Statements&gt;...<br/>NEXT</para>

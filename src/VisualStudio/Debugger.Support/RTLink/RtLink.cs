@@ -28,6 +28,7 @@ namespace XSharp.Debugger.Support
         static Type stateType = null;
         public static readonly BindingFlags BFPublicStatic = BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase;
         public static readonly BindingFlags BFPublicInstance= BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase;
+        public static readonly BindingFlags BFPrivateInstance = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
 
         static RtLink()
         {
@@ -276,7 +277,7 @@ namespace XSharp.Debugger.Support
                 if (was == null)
                     return CouldNotReadDataSession;
                 var type = was.GetType();
-                var propRDDs = type.FindProperty("OpenRDDs",BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy, out error);
+                var propRDDs = type.FindProperty("OpenRDDs",BFPrivateInstance, out error);
                 if (propRDDs == null)
                     return error;
                 var rdds = propRDDs.GetValue(was, null);
@@ -321,7 +322,7 @@ namespace XSharp.Debugger.Support
             if (was == null)
                 return CouldNotReadDataSession;
             var type = was.GetType();
-            var propRDDs = type.FindProperty("OpenRDDs", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy, out error);
+            var propRDDs = type.FindProperty("OpenRDDs", BFPrivateInstance, out error);
             if (propRDDs == null)
                 return error;
             var rdds = propRDDs.GetValue(was, null);
@@ -347,7 +348,7 @@ namespace XSharp.Debugger.Support
             {
                 var result = new NameValueItems { Sorted = true };
                 var atype = area.GetType();
-                var props = atype.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy).ToArray();
+                var props = atype.GetProperties(BFPublicInstance).ToArray();
                 foreach (var property in props)
                 {
                     if (property.CanRead)

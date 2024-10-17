@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-04T14:48:47.781+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>TEXT Command (FoxPro)</title>
   <body>
     <header>
@@ -139,7 +139,7 @@
     <para styleclass="Normal">The code opens the customer table and outputs the names of the first ten contacts to CotactList.txt. </para>
     <para styleclass="Normal">The code outputs the text and results of the functions to the text file. </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><snippet src="__TextMerge-Example" inline="false"/><br/><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
+    <para styleclass="Normal"><snippet src="__TextMerge-Example" inline="false"/><br/><br/></para>
     <para styleclass="Heading1">Example 2 </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The following example shows a custom procedure that uses TEXT...ENDTEXT to store an XML DataSet to a variable. In the example, all spaces, tabs, and carriage returns are eliminated.</para>

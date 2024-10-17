@@ -45,6 +45,9 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageIcon>XSharp.png</PackageIcon>
     <PackageIconUrl />
+    <Title>XSharp Compler</Title>
+    <Description>This package contains the X# compiler and build tools</Description>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -79,6 +82,10 @@
     <None Include="build\XSharp.Compiler.Tools.props" />
     <Compile Remove="**/*assemblyinfo.cs" />
     <None Include="build\XSharp.Compiler.Tools.targets" />
+    <None Include="readme.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="XSharp.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>

@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>Error XS9099</title>
-<keywords>
-<keyword>XS9099</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">Error XS9099</para>
-  </header>
-  <para styleclass="Normal">Public declarations cannot have both an array specification and an initialization value.</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-07-15T00:28:39.522+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Error XS9099</title>
+  <keywords>
+    <keyword>XS9099</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9099</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Public 声明不能同时包含数组规范和初始化值。</para>
+  </body>
 </topic>

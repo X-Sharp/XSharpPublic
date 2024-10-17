@@ -34,7 +34,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
     PROPERTY HasParseErrors AS LOGIC AUTO
 
     PRIVATE PROPERTY ProjectNode as IXSharpProject GET SELF:_file?:Project?:ProjectNode
-    PRIVATE PROPERTY ParseOptions AS XSharpParseOptions GET SELF:ProjectNode?:ParseOptions
+    PRIVATE PROPERTY ParseOptions AS XParseOptions GET SELF:ProjectNode?:ParseOptions
 
     PROPERTY SourcePath AS STRING AUTO  // Save it because calculation the XAML source path is a bit expensive
     PROPERTY IncludeFiles AS IList<string>      GET _includeFiles
@@ -81,7 +81,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         SELF:_errors := List<XError>{}
         LOCAL stream := NULL AS ITokenStream
         TRY
-            XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, SELF:ParseOptions, SELF, OUT stream, OUT VAR includeFiles)
+            XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, (XSharpParseOptions) SELF:ParseOptions, SELF, OUT stream, OUT VAR includeFiles)
             SELF:AddIncludes(includeFiles)
         CATCH e AS Exception
             WriteOutputMessage("Lex() Failed:")
@@ -138,9 +138,9 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
             startLine   -= nLines
             sb:AppendLine(source)
             sb:AppendLine()
-            IF td:ClassType == XSharpDialect.XPP
+            IF td:ClassType == XDialect.XPP
                 sb:AppendLine("ENDCLASS")
-            ELSEIF td:ClassType == XSharpDialect.FoxPro
+            ELSEIF td:ClassType == XDialect.FoxPro
                 sb:AppendLine("ENDDEFINE")
             ELSE
                 sb:AppendLine("END CLASS")
@@ -251,7 +251,6 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         SELF:_prjNode:AddIntellisenseError(sourcePath, (start:Line + 1), (start:Character + 1), length, error:ErrCode, error:ToString(), error:Severity)
         NEXT
         ENDIF
-        SELF:_prjNode:ShowIntellisenseErrors()
         END LOCK
         WriteOutputMessage("<<-- ShowErrorsAsync() "+_file:FullPath)
         ENDIF

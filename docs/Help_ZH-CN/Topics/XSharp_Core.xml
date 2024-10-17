@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-04T09:22:41.072+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-25T20:38:53.973+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XSharp.Core</title>
   <keywords>
     <keyword>XSharp.Core</keyword>
@@ -28,6 +28,6 @@
       <li styleclass="Normal">低级文件/IO</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="List">该程序集可用于所有 X# 方言.</para>
+    <para styleclass="List"><text style="font-weight:bold; color:#ff0000;">该程序集可用于所有 X# 方言.</text></para>
   </body>
 </topic>

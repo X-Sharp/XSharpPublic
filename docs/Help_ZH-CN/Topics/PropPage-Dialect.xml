@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-08T10:21:30.728+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-27T11:54:54.566+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Dialect(方言)</title>
   <keywords>
     <keyword>-fox1</keyword>
@@ -123,7 +123,7 @@
         </td>
         <td style="width:701px;">
           <para styleclass="Normal">将字符串初始化为空字符串(String.Empty)。</para>
-          <para styleclass="Normal">请注意，在 .NET 中，NULL_STRING 与长度为 0 的字符串不同。 启用后，无论 Language 页面中的 &quot;Initialize Local variables&quot;(初始化局部变量 )设置如何，都将初始化本地字符串变量。</para>
+          <para styleclass="Normal">请注意，在 .NET 中，NULL_STRING 与长度为 0 的字符串不同。 启用后，无论 Language 页面中的 &quot;<link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Initialize Local variables</link>&quot;(初始化局部变量 )设置如何，都将初始化本地字符串变量。</para>
         </td>
         <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">-vo2</link></para>
@@ -220,7 +220,7 @@
           <para styleclass="Normal">(缺失类型常规处理为 USUAL)</para>
         </td>
         <td style="width:701px;">
-          <para styleclass="Normal">局部变量、实例变量和参数的缺失类型子句被视为 USUAL（VO 和 Vulcan 方言）。VO 方言的默认值 = TRUE，其他方言的默认值 = FALSE。强烈建议将其设置为 FALSE，因为这将帮助您查找代码中的问题和非最佳代码。如果必须使用 USUAL 类型，我们建议将变量和参数显式声明为 USUAL。</para>
+          <para styleclass="Normal">局部变量、实例变量和参数的缺失类型子句被视为 USUAL(VO 和 Vulcan 方言)。VO 方言的默认值 = TRUE，其他方言的默认值 = FALSE。强烈建议将其设置为 FALSE，因为这将帮助您查找代码中的问题和非最佳代码。如果必须使用 USUAL 类型，我们建议将变量和参数显式声明为 USUAL。</para>
         </td>
         <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo15">-vo15</link></para>
@@ -247,7 +247,7 @@
           <para styleclass="Normal">生成代码以完全实现与 VO 兼容的 BEGIN SEQUENCE ... END SEQUENCE。编译器会生成对运行时函数 _SequenceError 和 _SequenceRecover 的调用，您可以在自己的代码中覆盖这些函数。</para>
         </td>
         <td style="width:131px;">
-          <para styleclass="Normal">-vo17</para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo17">-vo17</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -268,8 +268,8 @@
           <para styleclass="Normal">(兼容数组处理)</para>
         </td>
         <td style="width:701px;">
-          <para styleclass="Body Text">兼容 FoxPro 的数组处理（允许使用括号数组和为数组赋值以填充所有元素）。</para>
-          <para styleclass="Body Text">警告 允许使用括号数组可能会减慢程序的执行速度 !(/fox2)</para>
+          <para styleclass="Body Text">兼容 FoxPro 的数组处理(允许使用括号数组和为数组赋值以填充所有元素)。</para>
+          <para styleclass="Body Text">警告 允许使用括号数组可能会减慢程序的执行速度 !(<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">/fox2</link>)</para>
         </td>
         <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">-fox2</link></para>

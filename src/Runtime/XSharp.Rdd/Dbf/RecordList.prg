@@ -24,8 +24,8 @@ PUBLIC CLASS RecordList
 
     PRIVATE _bits AS BitArray
 
-    PUBLIC PROPERTY Items[recNo AS LONG] AS RecordState GET GetRecState(recNo) SET SetRecState(recNo,VALUE)
-    PUBLIC PROPERTY Length               AS LONG GET _bits:Length/2 SET SetLength(VALUE)
+    PUBLIC PROPERTY Items[recNo AS LONG] AS RecordState GET SELF:GetRecState(recNo) SET SELF:SetRecState(recNo,VALUE)
+    PUBLIC PROPERTY Length               AS LONG GET _bits:Length/2 SET SELF:SetLength(VALUE)
 
     PUBLIC CONSTRUCTOR()
         SELF:_bits := BitArray{0}

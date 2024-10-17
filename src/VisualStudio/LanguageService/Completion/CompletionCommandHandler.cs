@@ -18,6 +18,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using XSharpModel;
 using XSharp.Settings;
+using Community.VisualStudio.Toolkit;
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 #if !ASYNCCOMPLETION
 namespace XSharp.LanguageService
@@ -26,22 +27,46 @@ namespace XSharp.LanguageService
     {
         readonly ITextView _textView;
         readonly ICompletionBroker _completionBroker;
-        private ICompletionSession _completionSession;
+        private readonly XDocument _doc;
         private readonly IOleCommandTarget m_nextCommandHandler;
         private readonly ITagAggregator<IClassificationTag> _tagAggregator;
+        private readonly IVsTextView _textViewAdapter;
         bool completionWasSelected = false;
-        XSharpSignatureHelpCommandHandler _signatureCommandHandler = null;
 
         internal XSharpCompletionCommandHandler(IVsTextView textViewAdapter, ITextView textView,
             ICompletionBroker completionBroker, IBufferTagAggregatorFactoryService aggregator)
         {
             this._textView = textView;
             this._completionBroker = completionBroker;
-            this._completionSession = null;
+            this._doc = textView.TextBuffer.GetDocument();
+            this._textViewAdapter = textViewAdapter;
+            this._doc.CompletionSession = null;
             this._tagAggregator = aggregator.CreateTagAggregator<IClassificationTag>(_textView.TextBuffer);
             //add this to the filter chain
             textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
         }
+		
+		public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] commands, IntPtr pCmdText)
+        {
+            if (pguidCmdGroup == VSConstants.VSStd2K && cCmds > 0)
+            {
+                // make the commands appear on the context menu
+                for (var i = 0; i < cCmds; i++)
+                {
+                    switch ((VSConstants.VSStd2KCmdID)commands[i].cmdID)
+                    {
+                        case VSConstants.VSStd2KCmdID.COMPLETEWORD:
+                        case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
+                        case VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
+                            commands[i].cmdf = (int)(OLECMDF.OLECMDF_ENABLED | OLECMDF.OLECMDF_SUPPORTED);
+                            return VSConstants.S_OK;
+                    }
+                }
+            }
+
+            return m_nextCommandHandler.QueryStatus(ref pguidCmdGroup, cCmds, commands, pCmdText);
+        }
+
 
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
@@ -49,12 +74,13 @@ namespace XSharp.LanguageService
             int result = VSConstants.S_OK;
             bool handled = false;
             Guid cmdGroup = pguidCmdGroup;
+            bool triggerSignature = false;
             // 1. Pre-process before anybody else has a chance
             if (XEditorSettings.DisableCodeCompletion)
             {
                 ;
             }
-            else if (pguidCmdGroup == VSConstants.VSStd2K)
+            else if (cmdGroup == VSConstants.VSStd2K)
             {
                 switch (nCmdID)
                 {
@@ -66,17 +92,40 @@ namespace XSharp.LanguageService
                         handled = StartCompletionSession(nCmdID, '\0', true);
                         break;
                     case (int)VSConstants.VSStd2KCmdID.RETURN:
-                        handled = CompleteCompletionSession('\0');
+                        if (_doc.CompletionSession != null)
+                        {
+                            handled = CompleteCompletionSession('\r', out triggerSignature);
+                        }
+                        break;
+                    case (int)VSConstants.VSStd2KCmdID.BACKTAB:
+                        if (_doc.ExpansionSession != null)
+                        {
+                            var res = _doc.ExpansionSession.GoToPreviousExpansionField();
+                            handled = true;
+                        }
                         break;
                     case (int)VSConstants.VSStd2KCmdID.TAB:
-                        handled = CompleteCompletionSession('\t');
+                        if (_doc.ExpansionSession != null)
+                        {
+                            var res = _doc.ExpansionSession.GoToNextExpansionField(1);
+                            if (res != VSConstants.S_OK)
+                            {
+                                _doc.ExpansionSession.EndCurrentExpansion(fLeaveCaret: 1);
+                                _doc.ExpansionSession = null;
+                            }
+                            handled = true;
+                        }
+                        else if (_doc.CompletionSession != null)
+                        {
+                            handled = CompleteCompletionSession('\t', out triggerSignature);
+                        }
                         break;
                     case (int)VSConstants.VSStd2KCmdID.CANCEL:
                         handled = CancelCompletionSession();
                         break;
                     case (int)VSConstants.VSStd2KCmdID.TYPECHAR:
                         char ch = GetTypeChar(pvaIn);
-                        if (_completionSession != null)
+                        if (CompletionActive)
                         {
                             switch (ch)
                             {
@@ -89,7 +138,7 @@ namespace XSharp.LanguageService
                                     CancelCompletionSession();
                                     break;
                                 case '.':
-                                    handled = CompleteCompletionSession(ch);
+                                    handled = CompleteCompletionSession(ch, out triggerSignature);
                                     break;
                                 case ':':
                                     if (nextChar() == '=')
@@ -98,7 +147,7 @@ namespace XSharp.LanguageService
                                     }
                                     else
                                     {
-                                        handled = CompleteCompletionSession(ch);
+                                        handled = CompleteCompletionSession(ch, out triggerSignature);
                                     }
                                     break;
                                 default:
@@ -108,7 +157,7 @@ namespace XSharp.LanguageService
                                     }
                                     else if (XEditorSettings.CommitChars.Contains(ch))
                                     {
-                                        handled = CompleteCompletionSession(ch);
+                                        handled = CompleteCompletionSession(ch, out triggerSignature);
                                     }
                                     else
                                     {
@@ -125,7 +174,7 @@ namespace XSharp.LanguageService
                         break;
                 }
             }
-            else if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
+            else if (cmdGroup == VSConstants.GUID_VSStandardCommandSet97)
             {
                 switch (nCmdID)
                 {
@@ -142,19 +191,20 @@ namespace XSharp.LanguageService
             // Let others do their thing
             if (!handled)
             {
-                if (_completionSession != null)
+                if (CompletionActive)
                 {
-                    if (_completionSession.SelectedCompletionSet != null)
+                    if (CompletionSession.SelectedCompletionSet != null)
                     {
-                        completionWasSelected = _completionSession.SelectedCompletionSet.SelectionStatus.IsSelected;
+                        completionWasSelected = CompletionSession.SelectedCompletionSet.SelectionStatus.IsSelected;
                     }
                 }
                 result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             }
+            
             // 3. Post process
             if (!handled && ErrorHandler.Succeeded(result) && !XEditorSettings.DisableCodeCompletion)
             {
-                if (pguidCmdGroup == VSConstants.VSStd2K)
+                if (cmdGroup == VSConstants.VSStd2K)
                 {
                     switch (nCmdID)
                     {
@@ -169,7 +219,7 @@ namespace XSharp.LanguageService
 
                         case (int)VSConstants.VSStd2KCmdID.TYPECHAR:
                             char ch = GetTypeChar(pvaIn);
-                            if (_completionSession == null)
+                            if (!CompletionActive)
                             {
                                 switch (ch)
                                 {
@@ -195,6 +245,15 @@ namespace XSharp.LanguageService
 
                     }
                 }
+            }
+
+            if (triggerSignature)
+            {
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    _doc.SignatureStarting = true;
+                    _ = await VS.Commands.ExecuteAsync(KnownCommands.Edit_ParameterInfo);
+                });
             }
 
             return result;
@@ -256,50 +315,58 @@ namespace XSharp.LanguageService
             }
         }
 #endif
+        internal bool CompletionActive => _doc.CompletionSession != null;
+        ICompletionSession CompletionSession
+        {
+            get => _doc.CompletionSession;
+            set => _doc.CompletionSession = value;
+        }
+            
         private void FilterCompletionSession(char ch)
         {
-            
+
             WriteOutputMessage("FilterCompletionSession()");
-            if (_completionSession == null)
+            if (!CompletionActive)
                 return;
 
             WriteOutputMessage(" --> in Filter");
-            if (_completionSession.SelectedCompletionSet != null)
+            if (CompletionSession.SelectedCompletionSet != null)
             {
                 WriteOutputMessage(" --> Filtering ?");
-                _completionSession.SelectedCompletionSet.Filter();
-                if (_completionSession.SelectedCompletionSet.Completions.Count == 0)
+                CompletionSession.SelectedCompletionSet.Filter();
+                if (CompletionSession.SelectedCompletionSet.Completions.Count == 0)
                 {
                     CancelCompletionSession();
                 }
                 else
                 {
-                    var props = _completionSession.GetCompletionProperties();
+                    var props = CompletionSession.GetCompletionProperties();
                     if (ch != '\0')
                         props.Filter += ch;
                     WriteOutputMessage(" --> Selecting ");
-                    _completionSession.SelectedCompletionSet.SelectBestMatch();
-                    _completionSession.SelectedCompletionSet.Recalculate();
+                    CompletionSession.SelectedCompletionSet.SelectBestMatch();
+                    CompletionSession.SelectedCompletionSet.Recalculate();
                 }
             }
 
         }
         bool CancelCompletionSession()
         {
-            if (_completionSession == null)
+            if (!CompletionActive)
             {
                 return false;
             }
-            _completionSession.Dismiss();
+            CompletionSession.Dismiss();
             return true;
         }
-        bool CompleteCompletionSession(char ch)
+        bool CompleteCompletionSession(char ch, out bool triggerSignatureHelp)
         {
-            if (_completionSession == null || _completionSession.SelectedCompletionSet == null)
+            triggerSignatureHelp = false;
+            if (!CompletionActive || CompletionSession.SelectedCompletionSet == null)
             {
                 return false;
             }
-            var session = _completionSession;
+            var session = CompletionSession;
             if (!session.SelectedCompletionSet.SelectionStatus.IsSelected)
             {
                 CancelCompletionSession();
@@ -315,15 +382,18 @@ namespace XSharp.LanguageService
             WriteOutputMessage("CompleteCompletionSession()");
             bool addClose = false;
             Kind kind = Kind.Unknown;
-            if (completion is XSCompletion xscompletion)
+            if (completion is XSCompletion xsCompletion)
             {
-                kind = xscompletion.Kind;
+                kind = xsCompletion.Kind;
             }
             bool ctor = false;
-            bool triggerSignatureHelp = false;
             // some tokens need to be added to the insertion text.
             switch (kind)
             {
+                case Kind.Snippet:
+                    session.Commit();
+                    InsertSnippet((XSCompletion)completion);
+                    return true;
                 case Kind.Keyword:
                     formatKeyword(completion);
                     break;
@@ -383,49 +453,53 @@ namespace XSharp.LanguageService
                 }
                 if (XEditorSettings.CompletionAutoPairs)
                 {
-                    caret = _completionSession.TextView.Caret;
+                    caret = CompletionSession.TextView.Caret;
                     addClose = true;
                 }
             }
-            if (addClose)
+            var len = completion.InsertionText.Length;
+            if ( len > 0)
             {
-                if (completion.InsertionText.EndsWith("("))
+                var lastChar = completion.InsertionText[len-1];
+                switch (lastChar)
                 {
-                    completion.InsertionText += ")";
-                    triggerSignatureHelp = true;
+                    case '(':
+                        triggerSignatureHelp = true;
+                        if (addClose)
+                            completion.InsertionText += ")";
+                        break;
+                    case '{':
+                        triggerSignatureHelp = true;
+                        if (addClose)
+                            completion.InsertionText += "}";
+                        break;
+                    case '[':
+                        triggerSignatureHelp = true;
+                        if (addClose)
+                            completion.InsertionText += "]";
+                        break;
+                    default:
+                        triggerSignatureHelp = false;
+                        break;
                 }
-                else if (completion.InsertionText.EndsWith("{"))
-                {
-                    completion.InsertionText += "}";
-                    triggerSignatureHelp = true;
-                }
-                else if (completion.InsertionText.EndsWith("["))
-                {
-                    completion.InsertionText += "]";
-                    triggerSignatureHelp = false;
-                }
-
             }
             WriteOutputMessage(" --> Commit");
             var props = session.GetCompletionProperties();
             var type = props.Type;
-            var triggerChar = props.Char;
             string insertionText = completion.InsertionText;
             // When completing by typing '.' or ':' we want to add that token as well
             if (ch == '.' || ch == ':')
             {
-                if (insertionText.IndexOfAny(new char[] { '(', '{' } ) == -1)
+                if (insertionText.IndexOfAny(new char[] { '(', '{' }) == -1)
                 {
                     completion.InsertionText += ch;
                 }
             }
             session.Commit();
             // if a method or constructor was chosen, then trigger the signature help
-            if (triggerSignatureHelp)
+            if (triggerSignatureHelp && addClose)
             {
-                if (addClose)
-                    caret.MoveToPreviousCaretPosition();
-                TriggerSignatureHelp(type, insertionText, triggerChar);
+                caret.MoveToPreviousCaretPosition();
             }
             return true;
         }
@@ -433,29 +507,31 @@ namespace XSharp.LanguageService
         {
             WriteOutputMessage("StartCompletionSession()");
 
-            if (_completionSession != null)
+            if (CompletionActive)
             {
-                if (!_completionSession.IsDismissed)
+                if (!CompletionSession.IsDismissed)
                     return false;
             }
             if (!CompletionAllowed(typedChar, !autoType))
                 return false;
+
+
             SnapshotPoint point = _textView.Caret.Position.BufferPosition;
             ITextSnapshot snapshot = point.Snapshot;
 
             if (!_completionBroker.IsCompletionActive(_textView))
             {
-                _completionSession = _completionBroker.CreateCompletionSession(_textView, snapshot.CreateTrackingPoint(point, PointTrackingMode.Positive), true);
+                _doc.CompletionSession = _completionBroker.CreateCompletionSession(_textView, snapshot.CreateTrackingPoint(point, PointTrackingMode.Positive), true);
             }
             else
             {
-                _completionSession = _completionBroker.GetSessions(_textView)[0];
+                _doc.CompletionSession = _completionBroker.GetSessions(_textView)[0];
             }
 
-            _completionSession.Dismissed += OnCompletionSessionDismiss;
+            CompletionSession.Dismissed += OnCompletionSessionDismiss;
             //_completionSession.Committed += OnCompletionSessionCommitted;
-            _completionSession.SelectedCompletionSetChanged += SelectedCompletionSetChanged;
-            var props = _completionSession.GetCompletionProperties();
+            CompletionSession.SelectedCompletionSetChanged += SelectedCompletionSetChanged;
+            var props = CompletionSession.GetCompletionProperties();
             props.Command = nCmdId;
             props.Position = point;
             props.Char = typedChar;
@@ -466,9 +542,9 @@ namespace XSharp.LanguageService
             props.NumCharsToDelete = 0;
             try
             {
-                _completionSession.Start();
+                CompletionSession.Start();
                 if (!CompletionAllowed(typedChar, !autoType))
-                    _completionSession.Dismiss();
+                    CompletionSession.Dismiss();
             }
             catch (Exception e)
             {
@@ -476,7 +552,6 @@ namespace XSharp.LanguageService
             }
             return true;
         }
-        internal bool HasActiveSession => _completionSession != null;
         private void SelectedCompletionSetChanged(object sender, ValueChangedEventArgs<CompletionSet> e)
         {
             if (e.NewValue.SelectionStatus.IsSelected == false)
@@ -484,56 +559,24 @@ namespace XSharp.LanguageService
                 ;
             }
         }
-        private void TriggerSignatureHelp(IXTypeSymbol type, string method, char triggerChar)
+        private void InsertSnippet(XSCompletion completion)
         {
-            // it MUST be the case....
-            WriteOutputMessage("OnCompletionSessionCommitted()");
+            if (!completion.Properties.TryGetProperty<VsExpansion>(typeof(VsExpansion), out var snippet))
+                return;
+            var client = new ExpansionClient(_doc, _textViewAdapter);
+            client.InsertAnyExpansion(null, snippet.title, snippet.path);
+       }
 
-            if (triggerChar == '{' || triggerChar == '}')
-            {
-                if (method.EndsWith("{}"))
-                    method = method.Substring(0, method.Length - 2);
-                else if (method.EndsWith("{"))
-                    method = method.Substring(0, method.Length - 1);
-                //triggerChar = '{';
-            }
-            else
-            {
-                if (method.EndsWith("()"))
-                    method = method.Substring(0, method.Length - 2);
-                else if (method.EndsWith("("))
-                    method = method.Substring(0, method.Length - 1);
-                //triggerChar = '(';
-            }
-
-            // send command to editor to Signature Helper
-            if (_signatureCommandHandler == null)
-            {
-                _signatureCommandHandler = _textView.Properties.GetProperty<XSharpSignatureHelpCommandHandler>(typeof(XSharpSignatureHelpCommandHandler));
-            }
-            if (_signatureCommandHandler != null)
-            {
-                _signatureCommandHandler.StartSignatureSession(type, method, triggerChar);
-            }
-
-            //
-            //
-        }
         private void OnCompletionSessionDismiss(object sender, EventArgs e)
         {
-            if (_completionSession.SelectedCompletionSet != null)
+            if (CompletionSession.SelectedCompletionSet != null)
             {
-                _completionSession.SelectedCompletionSet.Filter();
+                CompletionSession.SelectedCompletionSet.Filter();
             }
             //
-            _completionSession.Dismissed -= OnCompletionSessionDismiss;
-            _completionSession.SelectedCompletionSetChanged -= SelectedCompletionSetChanged;
-            _completionSession = null;
-        }
-        public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
-        {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            return m_nextCommandHandler.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
+            CompletionSession.Dismissed -= OnCompletionSessionDismiss;
+            CompletionSession.SelectedCompletionSetChanged -= SelectedCompletionSetChanged;
+            CompletionSession = null;
         }
         internal void WriteOutputMessage(string strMessage)
         {

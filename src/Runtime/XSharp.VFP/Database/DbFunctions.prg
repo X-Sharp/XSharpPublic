@@ -22,11 +22,11 @@ USING XSharp.RDD.Support
 /// <seealso cref="DbcField" />
 FUNCTION DbGetProp( cName AS STRING, cType AS STRING, cProperty AS STRING)  AS USUAL
     IF ! Dbc.IsValidObjectType(cType)
-        THROW Error.ArgumentError(__FUNCTION__, nameof(cType), __VfpStr(VFPErrors.INVALID_DB_OBJECT, cType))
+        THROW Error.ArgumentError(__FUNCTION__, nameof(cType), __VfpStr(VFPErrors.VFP_INVALID_DB_OBJECT, cType))
     ENDIF
     IF ! Dbc.IsValidPropertyName(cProperty)
 
-        THROW Error.ArgumentError(__FUNCTION__, nameof(cProperty), __VfpStr(VFPErrors.INVALID_DB_PROPERTY_NAME, cProperty))
+        THROW Error.ArgumentError(__FUNCTION__, nameof(cProperty), __VfpStr(VFPErrors.VFP_INVALID_DB_PROPERTY_NAME, cProperty))
     ENDIF
     VAR oDb := Dbc.GetCurrent()
     IF oDb == NULL_OBJECT
@@ -45,10 +45,10 @@ FUNCTION DbGetProp( cName AS STRING, cType AS STRING, cProperty AS STRING)  AS U
 /// <seealso cref="DbcField" />
 FUNCTION DbSetProp(cName AS STRING, cType AS STRING, cProperty AS STRING, ePropertyValue AS USUAL) AS USUAL
     IF ! Dbc.IsValidObjectType(cType)
-        THROW Error.ArgumentError(__FUNCTION__, nameof(cType), __VfpStr(VFPErrors.INVALID_DB_OBJECT, cType))
+        THROW Error.ArgumentError(__FUNCTION__, nameof(cType), __VfpStr(VFPErrors.VFP_INVALID_DB_OBJECT, cType))
     ENDIF
     IF ! Dbc.IsValidPropertyName(cProperty)
-        THROW Error.ArgumentError(__FUNCTION__, nameof(cProperty),  __VfpStr(VFPErrors.INVALID_DB_PROPERTY_NAME, cProperty))
+        THROW Error.ArgumentError(__FUNCTION__, nameof(cProperty),  __VfpStr(VFPErrors.VFP_INVALID_DB_PROPERTY_NAME, cProperty))
     ENDIF
     VAR oDb := Dbc.GetCurrent()
     IF oDb == NULL_OBJECT
@@ -123,38 +123,41 @@ FUNCTION __DbFieldWild(includedFields, excludedFields, lIncludeMemo) AS ARRAY CL
     RETURN acFields
 
 INTERNAL FUNCTION __DbFieldListHelper(aFieldList AS ARRAY, cIncludedFields AS STRING, cExcludedFields AS STRING, lIncludeMemo AS LOGIC) AS IList<String>
-    VAR allfields := List<string>{}	// Contains all fields in UPPER case
+    var aFields   := List<String>{}	// Contains aFieldList in UPPER case
+    VAR allfields := List<string>{}	// Contains fields from DBF in UPPER case
     VAR selected := List<string>{}
     LOCAL lAll as LOGIC
     if ALen(aFieldList) > 0
         IF !String.IsNullOrEmpty(cIncludedFields) .or. !String.IsNullOrEmpty(cExcludedFields)
-            Throw Error.ArgumentError(__FUNCTION__, "FIELDNAMES", __VfpStr(VFPErrors.INVALID_FIELD_SPEC))
+            Throw Error.ArgumentError(__FUNCTION__, "FIELDNAMES", __VfpStr(VFPErrors.VFP_INVALID_FIELD_SPEC))
         ENDIF
+        foreach cField as STRING in aFieldList
+            aFields:Add(cField:ToUpperInvariant())
+        next
     ENDIF
     lAll := ALen(aFieldList) == 0 .and. String.IsNullOrEmpty(cIncludedFields)
     LOCAL fCount as DWORD
     fCount := FCount()
     FOR VAR nFld := 1u to fCount
         LOCAL lInclude AS LOGIC
-        LOCAL cType := NIL as USUAL
-        VoDb.FieldInfo(DBS_TYPE, nFld,@cType)
-        SWITCH (STRING) cType
+        LOCAL oVar := NULL AS OBJECT
+        VoDb.FieldInfo( DBS_STRUCT, nFld, REF oVar)
+        VAR oFld := (RddFieldInfo) oVar
+        local fldName as STRING
+        IF oFld:Alias != NULL
+            fldName := oFld:Alias:ToUpperInvariant()
+        ELSE
+            fldName := oFld:Name:ToUpperInvariant()
+        ENDIF
+        SWITCH (STRING) oFld:FieldTypeStr
             CASE "M"
-                lInclude := lIncludeMemo
             CASE "G"
-                lInclude := FALSE
+                lInclude := lIncludeMemo .or. aFields:IndexOf(fldName) > -1
             OTHERWISE
                 lInclude := TRUE
         END SWITCH
         IF lInclude
-            LOCAL oVar := NULL AS OBJECT
-            VoDb.FieldInfo( DBS_STRUCT, nFld, REF oVar)
-            VAR oFld := (RddFieldInfo) oVar
-            IF oFld:Alias != NULL
-                allfields:Add(oFld:Alias:ToUpperInvariant())
-            ELSE
-                allfields:Add(oFld:Name:ToUpperInvariant())
-            ENDIF
+            allfields:Add(fldName)
         ENDIF
     NEXT
     IF lAll
@@ -163,7 +166,7 @@ INTERNAL FUNCTION __DbFieldListHelper(aFieldList AS ARRAY, cIncludedFields AS ST
         FOREACH cName AS STRING in aFieldList
             var cField := cName:ToUpper()
             IF allfields:IndexOf(cField) == -1
-                Throw Error.ArgumentError(__FUNCTION__, "FIELDNAME", __VfpStr(VFPErrors.INVALID_FIELDNAME, cField))
+                Throw Error.ArgumentError(__FUNCTION__, "FIELDNAME", __VfpStr(VFPErrors.VFP_INVALID_FIELDNAME, cField))
             ENDIF
             selected:Add(cField)
         NEXT
@@ -200,6 +203,9 @@ FUNCTION DbCopyFox(cTargetFile, cType, aFields, cbForCondition, ;
     cbWhileCondition, nNext,nRecord, lRest, nCodePage, cDbName, cLongTableName, lCdx, lNoOptimize)   AS LOGIC CLIPPER
     local cOutPutType as STRING
     LOCAL result as LOGIC
+    EnforceType(REF lCdx, __UsualType.Logic)
+    EnforceType(REF lRest, __UsualType.Logic)
+    EnforceType(REF lNoOptimize, __UsualType.Logic)
     VAR aFieldNames := __BuildFieldList(aFields, TRUE)
     LOCAL acFields := {} AS ARRAY
     FOREACH var cField in aFieldNames
@@ -222,15 +228,15 @@ FUNCTION DbCopyFox(cTargetFile, cType, aFields, cbForCondition, ;
             endif
             result := DbCopySDF(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)
         CASE "dbf"
-            result := DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)
+            result := DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, RddSetDefault(),,,lCdx)
         CASE "foxplus"
         CASE "fox2x"
-            result := DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest,"DBFCDX")
+            result := DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest,"DBFCDX",,, lCdx)
 
         OTHERWISE
             // Other Formats
             // DIF,MOD,SYLK,WK1,WKS,WR1,WRK,XLS,XL5
-            Throw NotSupportedException{__VfpStr(VFPErrors.INVALID_FORMAT, "output", cOutPutType)}
+            Throw NotSupportedException{__VfpStr(VFPErrors.VFP_INVALID_FORMAT, "output", cOutPutType)}
         END SWITCH
     FINALLY
         RuntimeState.DelimRDD   := cDelim
@@ -348,7 +354,7 @@ INTERNAL FUNCTION DbCopyToArraySingleRecord(aFields as IList<string> ) AS ARRAY
 
 FUNCTION DbAppendFromArray(aValues, aFieldList, cbForCondition) AS LOGIC CLIPPER
     IF ! IsArray(aValues)
-        THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.MULTI_DIM_EXPECTED,nameof(aValues))  , 1, {aValues})
+        THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.VFP_MULTI_DIM_EXPECTED,nameof(aValues))  , 1, {aValues})
     ENDIF
     VAR aFields := __BuildFieldList(aFieldList, FALSE)
     LOCAL oForCondition   := NULL   AS ICodeblock
@@ -363,11 +369,11 @@ FUNCTION DbAppendFromArray(aValues, aFieldList, cbForCondition) AS LOGIC CLIPPER
         ENDIF
         FOREACH var u in (ARRAY) aValues
             IF !IsArray(u)
-                THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.MULTI_DIM_EXPECTED,nameof(aValues)), 1, {aValues})
+                THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.VFP_MULTI_DIM_EXPECTED,nameof(aValues)), 1, {aValues})
             ENDIF
             local aElement := u as ARRAY
             IF aElement:Length < aFields:Count
-                THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.SUBARRAY_TOO_SMALL ) , 1, {u})
+                THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.VFP_SUBARRAY_TOO_SMALL ) , 1, {u})
             ENDIF
             DbAppend()
             // Todo Evaluate FOR clause
@@ -413,7 +419,7 @@ FUNCTION DbAppFox(cSourceFile, cType, aFields, cbForCondition, cbWhileCondition,
         OTHERWISE
             // Other Formats
             // DIF,MOD,SYLK,WK1,WKS,WR1,WRK,XLS,XL5, XL8
-            Throw NotSupportedException{__VfpStr(VFPErrors.INVALID_FORMAT, "input", cInPutType)}
+            Throw NotSupportedException{__VfpStr(VFPErrors.VFP_INVALID_FORMAT, "input", cInPutType)}
         END SWITCH
     FINALLY
         RuntimeState.DelimRDD   := cDelim
@@ -460,10 +466,10 @@ FUNCTION DbSortFox(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNex
 FUNCTION DbUseAreaFox(uArea, cDataFile, cAlias, lShared, lReadOnly, ;
     lOnline, lAdmin, lAgain, lNoData, lNoRequery, nDataSession, uConnection) AS LOGIC CLIPPER
 
-IF ! IsNil(uArea)
+LOCAL cDriver := "DBFVFP" AS STRING
+IF !IsNil(uArea)
     DbSelectArea(uArea)
 ENDIF
-LOCAL cDriver := "DBFVFP" AS STRING
 IF !IsNil(lAgain) .and. lAgain
     // select other area where cDataFile is open and copy lShared, lReadonly
     var ext := System.IO.Path.GetExtension(cDataFile)
@@ -520,12 +526,23 @@ FUNCTION DbCopyStructFox(cTargetFile, aFields, lCdx) AS LOGIC CLIPPER
     ELSE
         acStruct := NULL_ARRAY
     ENDIF
+    VAR siFrom   := VoDbGetSelect()
     var result := DbCreate(cTargetFile, VoDb.FieldList(DbStruct(), acStruct, NULL_ARRAY) )
     IF IsLogic(lCdx) .and. lCdx
-        // Create index later
+        local aOrders := {} AS ARRAY
+        aOrders := __DbGetTags()
+        result  := DbUseArea(TRUE, ,cTargetFile,__UniqueAlias(cTargetFile),FALSE,FALSE)
+        IF result
+            result := __DbCreateTags(aOrders)
+            VoDbCloseArea()
+        ENDIF
     ENDIF
+    VoDbSetSelect((INT) siFrom)
     return result
 
 
 FUNCTION DbCopyXStructFox(cTargetFile AS STRING) AS LOGIC
     return DbCopyXStruct(cTargetFile)
+
+
+

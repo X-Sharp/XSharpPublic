@@ -8,8 +8,8 @@
     <AssemblyName>VOSQLClasses</AssemblyName>
     <Name>VOSQLClasses</Name>
     <OutputName>VOSQLClasses</OutputName>
-    <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
-    
+    <NamedArgs>False</NamedArgs>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
@@ -101,5 +101,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-<Import Project="..\VOSDKDocs.Targets" />
+  <Import Project="..\VOSDKDocs.Targets" />
 </Project>

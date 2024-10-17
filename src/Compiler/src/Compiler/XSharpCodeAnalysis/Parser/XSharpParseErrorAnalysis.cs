@@ -10,6 +10,7 @@ using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Collections.Generic;
 using System.Linq;
+using static Microsoft.CodeAnalysis.FlowAnalysis.ControlFlowGraphBuilder;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -146,10 +147,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitLocalfuncproc([NotNull] XSharpParser.LocalfuncprocContext context)
         {
-            if (context.T2 != null && context.T2.Token.Type != context.T.Token.Type)
-            {
-                _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Token.Text, context.T.Token.Text));
-            }
+
+            ValidateFuncProcEnd(context.T.Token, context.T1, context.T2?.Token);
             if (context.T.Token.Type == XSharpParser.PROCEDURE)
             {
                 if (context.Sig.Type != null && context.Sig.Type.Start.Type != XSharpLexer.VOID)
@@ -212,6 +211,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        private void ValidateFuncProcEnd(IToken T, IToken T1, IToken T2)
+        {
+            if (T2 != null && T2.Type != T.Type)
+            {
+                _parseErrors.Add(new ParseErrorData(T2, ErrorCode.ERR_UnExpectedExpected, T2.Text, T.Text));
+            }
+            var ok = true;
+            string expected = "";
+            if (T.Type == XSharpParser.PROCEDURE && T1 != null && T1.Type != XSharpParser.ENDPROC)
+            {
+                ok = false;
+                expected = "ENDPROC or END PROCEDURE";
+            }
+            else if (T.Type == XSharpParser.FUNCTION && T1 != null && T1.Type != XSharpParser.ENDFUNC)
+            {
+                ok = false;
+                expected = "ENDFUNC or END FUNCTION";
+            }
+            if (!ok)
+            {
+                _parseErrors.Add(new ParseErrorData(T2, ErrorCode.ERR_UnExpectedExpected, T1.Text, expected));
+            }
+        }
+
         public override void ExitFuncproc([NotNull] XSharpParser.FuncprocContext context)
         {
             if (context.InitExit != null)
@@ -233,11 +256,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
-
-            if (context.T2 != null && context.T2.Token.Type != context.T.Token.Type)
-            {
-                _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Token.Text, context.T.Token.Text));
-            }
+            ValidateFuncProcEnd(context.T.Token, context.T1, context.T2?.Token);
         }
 
         public override void ExitLocalvar([NotNull] XSharpParser.LocalvarContext context)
@@ -635,10 +654,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.ThisAccess, ErrorCode.WRN_FoxUnsupportedClause, "THISACCESS"));
             }
-            if (context.T2 != null && context.T2.Token.Type != context.T.Token.Type)
-            {
-                _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Token.Text, context.T.Token.Text));
-            }
+            ValidateFuncProcEnd(context.T.Token, context.T1, context.T2?.Token);
         }
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
         {
@@ -985,7 +1001,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitProperty([NotNull] XSharpParser.PropertyContext context)
         {
-            //var isInInterface = context.isInInterface();
+            var isInInterface = context.isInInterface();
             var isExtern = context.Modifiers?.EXTERN().Length > 0;
             var isAbstract = context.Modifiers?.ABSTRACT().Length > 0;
             bool HasBody = (context.Auto != null || context.Multi != null);
@@ -1014,9 +1030,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_AbstractHasBody, "Property"));
                 }
             }
+
             if (isAbstract && isExtern)
             {
                 _parseErrors.Add(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern));
+            }
+            if (!isAbstract && !isExtern && !isInInterface && context.ParamList?._Params.Count > 0)
+            {
+                if (context?._LineAccessors.Count != 0)
+                {
+                    foreach (var acc in context._LineAccessors)
+                    {
+                        if (acc.Expr == null && acc.ExprList == null)
+                        {
+                            _parseErrors.Add(new ParseErrorData(acc, ErrorCode.ERR_AutoPropertyParameters));
+                        }
+                    }
+                }
+                else if (context.Auto != null)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.Auto, ErrorCode.ERR_AutoPropertyParameters));
+                }
             }
         }
 

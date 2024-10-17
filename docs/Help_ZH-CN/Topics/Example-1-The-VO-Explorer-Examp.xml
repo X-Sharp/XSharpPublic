@@ -1,28 +1,29 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Example 1: The VO Explorer Example</title>
+<topic template="Default" modified="2024-07-26T02:06:30.485+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>示例 1: VO Explorer 示例</title>
   <body>
     <header>
-      <para styleclass="Heading1">Example 1: The VO Explorer Example</para>
+      <para styleclass="Heading1">示例 1: VO Explorer 示例</para>
     </header>
-    <para styleclass="Body Text">Please note: This example assumes that you have installed X# with the default installation options, and that the X# runtime is installed in the GAC.</para>
-    <para styleclass="Body Text">If you have not done that then the example won&apos;t run. Please <link displaytype="text" defaultstyle="true" type="topiclink" href="RuntimeInstallationintheGAC">see the chapter about this</link> in this documentation</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">As first example of XPorting VO apps we take the VO Explorer example.</para>
-    <para styleclass="Body Text">Start the VO Xporter program and point it to the VO Explorer example:</para>
+    <para styleclass="Body Text">请注意：本例假定您已使用默认安装选项安装了 X#，并且 X# 运行时已安装在 GAC 中。</para>
+    <para styleclass="Body Text">如果没有安装，则无法运行该示例。请参阅<link displaytype="text" defaultstyle="true" type="topiclink" href="RuntimeInstallationintheGAC">本文档中的相关章节</link>。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">作为 XPorting VO 应用程序的第一个示例，我们以 VO Explorer 为例。</para>
+    <para styleclass="Body Text">启动 VO Xporter 程序并将其指向 VO Explorer 示例：</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
-    <para styleclass="" style="text-align:center; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><image src="xportexplorer.png" scale="-99.90%" width="658" height="466" styleclass="Image Caption"></image></para>
+    <para styleclass="" style="text-align:center; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><image src="xportexplorer.png" scale="-99.90%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:24px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
-    <para styleclass="Body Text">On my machine the VO installation is in the C:\Cavo28SP3 folder. That may be different on your machine of course. </para>
-    <para styleclass="Body Text">I have not changed any or the xPort options. The options are:</para>
+    <para styleclass="Body Text">在我的机器上，VO 安装在 C:\Cavo28SP3 文件夹中。当然，这在你的机器上可能有所不同。</para>
+    <para styleclass="Body Text">我没有更改任何 xPort 选项。这些选项是</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table styleclass="Default" rowcount="17" colcount="2" style="width:auto;">
       <tr style="vertical-align:top">
         <td style="width:30%;">
-          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">Option</text></para>
+          <para styleclass="" style="text-align:center; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">选项</text></para>
         </td>
         <td>
-          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">Description</text></para>
+          <para styleclass="" style="text-align:center; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">描述</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -30,7 +31,7 @@
           <para styleclass="Body Text">RemoveClassClause</para>
         </td>
         <td>
-          <para styleclass="Body Text"> Remove the “Class Clause” for methods and accesses/assigns. This will group all methods inside a CLASS .. END CLASS block and then the CLASS clause at the method level is no longer required</para>
+          <para styleclass="Body Text">删除方法和 accesses/assigns 赋值的 “Class 子句”。这将在 CLASS ... END CLASS 块中对所有方法进行分组，然后就不再需要方法级的 CLASS 子句了</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -38,9 +39,9 @@
           <para styleclass="Body Text">ChangeInitAxitToCtorDtor</para>
         </td>
         <td>
-          <para styleclass="Body Text">Init and Axit are reserved method names in VO. In DotNet these names are often used by classes. Vulcan and X# have introduced new keywords CONSTRUCTOR and DESTRUCTOR. This option automatically renames the Init and Axit Methods. Example<text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">:</text></para>
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">METHOD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Init(oOwner) &#160;</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> MyClass </text></para>
-          <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">becomes</text></para>
+          <para styleclass="Body Text">Init 和 Axit 是 VO 中的保留方法名。在 DotNet 中，这些名称经常被类使用。Vulcan 和 X# 引入了新的关键字 CONSTRUCTOR 和 DESTRUCTOR。该选项会自动重命名 Init 和 Axit 方法。示例</para>
+          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">METHOD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Init(oOwner)  </text><text style="font-weight:normal; font-style:normal; color:#3366ff;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> MyClass </text></para>
+          <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">会转换为</text></para>
           <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">CONSTRUCTOR</text><text style="font-weight:normal; font-style:normal; color:#000000;">(oOwner)</text></para>
         </td>
       </tr>
@@ -49,7 +50,7 @@
           <para styleclass="Body Text">RemoveDeclareMethod</para>
         </td>
         <td>
-          <para styleclass="Body Text">If you used strong typing in VO you needed to add DECLARE METHOD statements and/or DECLARE ACCESS and DECLARE ASSIGN. The X# compiler still recognizes these statements but no longer requires them</para>
+          <para styleclass="Body Text">如果在 VO 中使用强类型，则需要添加 DECLARE METHOD 语句和/或 DECLARE ACCESS 和 DECLARE ASSIGN。X# 编译器仍能识别这些语句，但不再需要它们</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -57,7 +58,7 @@
           <para styleclass="Body Text">RemoveExportLocalClause</para>
         </td>
         <td>
-          <para styleclass="Body Text">This option removes the EXPORT LOCAL clause that may be included in method declarations in VO code, but is ignored in X#</para>
+          <para styleclass="Body Text">该选项删除了 EXPORT LOCAL 子句，该子句可以包含在 VO 代码的方法声明中，但在 X# 中会被忽略。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -65,7 +66,7 @@
           <para styleclass="Body Text">AllClassesArePartial</para>
         </td>
         <td>
-          <para styleclass="Body Text">Partial classes is a mechanism in Vulcan and X# that allows you to split a class over multiple source files. That may be convenient if your classes have become very big or if you want to separate generated code from hand written code (like what the Windows Forms Editor in Visual Studio does). You can choose to make all Xporter classes partial. We have disabled this because there is a (small) performance penalty when you use this. Especially if you have split the Accesses and Assigns from your class over separate files.</para>
+          <para styleclass="Body Text">分部类是 Vulcan 和 X# 中的一种机制，它允许你将一个类分割到多个源文件中。如果你的类变得很大，或者你想将生成的代码与手写的代码分开(就像 Visual Studio 中的 Windows 窗体编辑器所做的那样)，这可能会很方便。你可以选择让所有 Xporter 类都是分部的。我们禁用了这一功能，因为使用时会对性能造成(少量)影响。尤其是当你将类中的 Accesses 和 Assigns 分割到不同的文件中时。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -73,7 +74,7 @@
           <para styleclass="Body Text">AddMissingConstructors</para>
         </td>
         <td>
-          <para styleclass="Body Text">VO allows you to declare a class without Init method / Constructor. In .Net this is also allowed., but then the compiler assumes you have a class with a constructor without parameters. This option will automatically generate missing constructors. Note that also the X# compiler supports emitting missing constructors even if they are not specified in the code, when the /vo16 compatibility option is enable. So this Xporter option is not necessary anymore and has been depreciated. </para>
+          <para styleclass="Body Text">VO 允许您声明一个没有 Init 方法/构造函数的类。.Net中也允许这样做，但编译器会认为你的类有一个不带参数的构造函数。该选项将自动生成缺失的构造函数。请注意，如果启用了 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo16">/vo16</link> 兼容选项，即使代码中没有指定构造函数，X# 编译器也支持生成缺失的构造函数。因此，<text style="font-weight:bold; color:#ff0000;">这个 Xporter 选项已不再需要并被弃用</text>。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -81,7 +82,7 @@
           <para styleclass="Body Text">IgnoreDuplicateDefines</para>
         </td>
         <td>
-          <para styleclass="Body Text"> If you select this then duplicate defines will simply be ignored and not written to the output files.</para>
+          <para styleclass="Body Text"> 如果选择此项，重复定义将被忽略，不会写入输出文件。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -89,7 +90,7 @@
           <para styleclass="Body Text">Don’tGenerateEmptyFiles</para>
         </td>
         <td>
-          <para styleclass="Body Text">Each module from your VO application will become a source file in X#. This option will suppress the generation of empty source files</para>
+          <para styleclass="Body Text">VO 应用程序中的每个模块都将成为 X# 中的源文件。该选项将抑制空源文件的生成</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -97,7 +98,7 @@
           <para styleclass="Body Text">AdjustCallbackFunctions</para>
         </td>
         <td>
-          <para styleclass="Body Text">Some (advanced) VO code contains callback functions where the address of a function is passed to another function and will get called. The Windows API uses that a lot, for example for enumerating windows or printers. That mechanism will not work in .Net. This option will change your code and will help you to get a working solution.</para>
+          <para styleclass="Body Text">一些(高级)VO 代码包含回调函数，其中一个函数的地址会传递给另一个函数并被调用。Windows API 经常使用回调函数，例如用于枚举窗口或打印机。这种机制在 .Net 中不起作用。该选项将更改您的代码，并帮助您获得可行的解决方案。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -105,7 +106,7 @@
           <para styleclass="Body Text">ExportOnlyDefines</para>
         </td>
         <td>
-          <para styleclass="Body Text">This option allows you to generate a DLL with only the defines from the AEF(s) or files you have selected. That may be useful if you have ported your code before with the Vulcan Transporter and want to get rid of the header files with the defines.</para>
+          <para styleclass="Body Text">通过该选项，您可以生成一个只包含所选 AEF 或文件中定义的 DLL。如果您以前曾使用 Vulcan Transporter 移植过代码，并希望删除包含定义的头文件，这可能会很有用。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -113,7 +114,7 @@
           <para styleclass="Body Text">Sort Entities by name</para>
         </td>
         <td>
-          <para styleclass="Body Text">This will sort all entities on name, Methods will be sorted inside the CLASS.. ENDCLASS and functions will be sorted as well</para>
+          <para styleclass="Body Text">这将根据名称对所有实体排序，函数和方法将在 CLASS... ENDCLASS 中排序。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -121,7 +122,7 @@
           <para styleclass="Body Text">Use XSharp Runtime</para>
         </td>
         <td>
-          <para styleclass="Body Text">When you select this (the default) then your app will be compiled against the X# runtime. Otherwise we will use the Vulcan runtime (which is not included with our product)</para>
+          <para styleclass="Body Text">选择此项(默认值)时，您的应用程序将根据 X# 运行时进行编译。否则，我们将使用 Vulcan 运行时(我们的产品中不包含该运行时)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -129,7 +130,7 @@
           <para styleclass="Body Text">Copy Resources to Project folder</para>
         </td>
         <td>
-          <para styleclass="Body Text">When you select this option then all BMP, ICO, CUR etc resources that are used in resource entities in your app will be copied to a Resources subfolder inside your project.</para>
+          <para styleclass="Body Text">选择该选项后，应用程序资源实体中使用的所有 BMP、ICO、CUR 等资源都将复制到项目中的资源子文件夹。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -137,7 +138,7 @@
           <para styleclass="Body Text">Replace Resource Defines with Values</para>
         </td>
         <td>
-          <para styleclass="Body Text">This controls the way that the numeric identifiers associated with menu options and control identifiers on forms are exported to the external resource files</para>
+          <para styleclass="Body Text">这可以控制将与菜单选项相关的数字标识符和表单上的控制标识符导出到外部资源文件的方式</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -145,7 +146,7 @@
           <para styleclass="Body Text">Check For IVar and Property Conflicts</para>
         </td>
         <td>
-          <para styleclass="Body Text">In Visual Objects, it is allowed to have ACCESS/ASSIGN methods that have the same name with IVars (usually INSTANCE vars) of the same class. This is not allowed in .Net, so if this option is enabled, the Xporter will detect this and will prefix the IVar names with an underscore (&quot;_&quot;).</para>
+          <para styleclass="Body Text">在 Visual Objects 中，允许 ACCESS/ASSIGN 方法与同类的 IVar（通常是 INSTANCE vars）同名。在 .Net 中不允许这样做，因此如果启用该选项，Xporter 将检测到这一点，并在 IVar 名称前加上下划线（“_”）。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -153,24 +154,27 @@
           <para styleclass="Body Text">Ignore code inside #ifdef...#endif</para>
         </td>
         <td>
-          <para styleclass="Body Text">As a means of preparing Visual Objects code to be ported to X#, it is common practice to provide a VO version and a X# version of the same code in the VO version of the source code, surrounded by #ifdef __XSHARP__ ... #else ... #endif preprocessor directives. When this option is set, Xporter does not touch any code that is surrounded by those directives.</para>
+          <para styleclass="Body Text">作为准备将 Visual Objects 代码移植到 X# 的一种方法，通常的做法是在源代码的 VO 版本中提供相同代码的 VO 版本和 X# 版本，并用 #ifdef __XSHARP__ ... #else ... #endif 预处理器指令。设置该选项后，Xporter 不会修改任何被这些指令包围的代码。</para>
         </td>
       </tr>
     </table></para>
-    <para styleclass="Body Text">The XPorter will allow you to select a destination folder and names for your Visual Studio solution and project files.</para>
-    <para styleclass="Body Text">After pressing xPort you will see the following folder s</para>
+    <para styleclass="Body Text">XPorter 将允许您为 Visual Studio 解决方案和项目文件选择目标文件夹和名称。</para>
+    <para styleclass="Body Text">按 xPort 键后，您将看到以下文件夹</para>
     <para styleclass="Body Text">C:\XporterOutput\Examples\Explorer<br/>C:\XporterOutput\Examples\Explorer\Explorer</para>
     <para styleclass="Body Text">C:\XporterOutput\Examples\Explorer\Explorer\Resources</para>
     <para styleclass="Body Text">C:\XporterOutput\Examples\Explorer\Explorer\Properties</para>
-    <para styleclass="Body Text">The first folder is the so called “Solution” folder<br/>The subfolder contains the project and its files.<br/>If you had selected multiple AEF files then each AEF would have its own subfolder under the Solution Folder</para>
-    <para styleclass="Body Text">The solution folder contains the files:</para>
+    <para styleclass="Body Text">第一个文件夹是所谓的 “解决方案” 文件夹</para>
+    <para styleclass="Body Text">子文件夹包含项目及其文件。</para>
+    <para styleclass="Body Text">如果您选择了多个 AEF 文件，那么每个 AEF 文件在 “解决方案” 文件夹下都有自己的子文件夹。</para>
+    <para styleclass="Body Text">解决方案文件夹包含文件：</para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="2">
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">File</text></para>
+          <para styleclass="" style="text-align:center; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">文件</text></para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">Contains</text></para>
+          <para styleclass="" style="text-align:center; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">内容</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -178,7 +182,7 @@
           <para styleclass="Body Text">Explorer.sln</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">VS Solution file</para>
+          <para styleclass="Body Text">VS 解决方案文件</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -186,19 +190,19 @@
           <para styleclass="Body Text">Explorer.viproj</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">XIDE project file</para>
+          <para styleclass="Body Text">XIDE 项目文件</para>
         </td>
       </tr>
     </table></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">The project folder contains the files</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Project 文件夹包含以下文件：</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="24" colcount="2">
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">File</text></para>
+          <para styleclass="" style="text-align:center; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">文件</text></para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">Contains</text></para>
+          <para styleclass="" style="text-align:center; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">内容</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -206,7 +210,7 @@
           <para styleclass="Body Text">Customer Explorer.prg</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Module source code</para>
+          <para styleclass="Body Text">模块源代码</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -214,7 +218,7 @@
           <para styleclass="Body Text">Data Servers.prg</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Module source code</para>
+          <para styleclass="Body Text">模块源代码</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -222,7 +226,7 @@
           <para styleclass="Body Text">Explorer Shell.prg</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Module source code</para>
+          <para styleclass="Body Text">模块源代码</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -230,7 +234,7 @@
           <para styleclass="Body Text">Explorer.viapp</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">XIDE Application file</para>
+          <para styleclass="Body Text">XIDE 应用程序文件</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -238,7 +242,7 @@
           <para styleclass="Body Text">Explorer.xsproj</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">VS Project file</para>
+          <para styleclass="Body Text">VS 项目文件</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -246,7 +250,7 @@
           <para styleclass="Body Text">Help About.HelpAboutDialog.rc</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Form resource used by VS</para>
+          <para styleclass="Body Text">VS 使用的表单资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -254,7 +258,7 @@
           <para styleclass="Body Text">Help About.HelpAboutDialog.xsfrm</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Form &quot;binary&quot; used by VS</para>
+          <para styleclass="Body Text">VS 使用的表单 &quot;二进制&quot;</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -262,7 +266,7 @@
           <para styleclass="Body Text">Help About.prg</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Module source code</para>
+          <para styleclass="Body Text">模块源代码</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -270,7 +274,7 @@
           <para styleclass="Body Text">Help About.rc</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Form resource used by XIDE</para>
+          <para styleclass="Body Text">XIDE 使用的表单资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -278,7 +282,7 @@
           <para styleclass="Body Text">Icons.ICONONE.rc</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Icon resource used by VS</para>
+          <para styleclass="Body Text">VS 使用的图标资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -286,7 +290,7 @@
           <para styleclass="Body Text">Icons.ICONTWO.rc</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Icon resource used by VS</para>
+          <para styleclass="Body Text">VS 使用的图标资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -294,7 +298,7 @@
           <para styleclass="Body Text">Icons.prg</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Module source code</para>
+          <para styleclass="Body Text">模块源代码</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -302,7 +306,7 @@
           <para styleclass="Body Text">Icons.rc</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Icon resources used by XIDE</para>
+          <para styleclass="Body Text">XIDE 使用的图标资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -310,7 +314,7 @@
           <para styleclass="Body Text">Menus.CustomerExplorerMenu.rc</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Menu resource used by VS</para>
+          <para styleclass="Body Text">VS 使用的菜单资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -318,7 +322,7 @@
           <para styleclass="Body Text">Menus.CustomerExplorerMenu.xsmnu</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Menu &quot;binary&quot;</para>
+          <para styleclass="Body Text">菜单 &quot;二进制&quot;</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -326,7 +330,7 @@
           <para styleclass="Body Text">Menus.CustomerExplorerMenu_Accelerator.rc</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Menu accelerators resource used by VS</para>
+          <para styleclass="Body Text">VS 使用的菜单加速器资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -334,7 +338,7 @@
           <para styleclass="Body Text">Menus.EMPTYSHELLMENU.rc</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Menu resource used by VS</para>
+          <para styleclass="Body Text">VS 使用的菜单资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -342,7 +346,7 @@
           <para styleclass="Body Text">Menus.EMPTYSHELLMENU.xsmnu</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Menu binary </para>
+          <para styleclass="Body Text">二进制菜单 </para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -350,7 +354,7 @@
           <para styleclass="Body Text">Menus.EMPTYSHELLMENU_Accelerator.rc</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Menu accelerator resource used by VS</para>
+          <para styleclass="Body Text">VS 使用的菜单加速器资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -358,7 +362,7 @@
           <para styleclass="Body Text">Menus.OrdersListViewMenu.rc</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Menu resource used by VS</para>
+          <para styleclass="Body Text">VS 使用的菜单资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -366,7 +370,7 @@
           <para styleclass="Body Text">Menus.prg</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Module source code</para>
+          <para styleclass="Body Text">模块源代码</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -374,7 +378,7 @@
           <para styleclass="Body Text">Menus.rc</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Menu resources for XIDE</para>
+          <para styleclass="Body Text">XIDE 的菜单资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -382,61 +386,67 @@
           <para styleclass="Body Text">Start.prg</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Module source code</para>
+          <para styleclass="Body Text">模块源代码</para>
         </td>
       </tr>
     </table></para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">To compile and build the project we open the file Explorer.SLN in Visual Studio. Inside Visual Studio it looks like:</para>
-    <para styleclass="Body Text"><image src="explorer-error.png" scale="100.00%"></image></para>
-    <para styleclass="Body Text">The arrows in front of several modules show that there are subitems in these modules. Those subitems contain the Form, Menu and Icon resources.</para>
-    <para styleclass="Body Text">Now let’s try to build the solution inside Visual Studio. (Menu option Build – Build Solution)</para>
-    <para styleclass="Body Text">This compiles the application and builds a debuggable version in the c:\XporterOutput\Explorer\Debug folder. You will see that this folder contains an EXE, PDB (debug symbols) and copies of the VO runtime libraries:<br/>Explorer.exe<br/>Explorer.pdb<br/>SDK_Defines.dll<br/>VOGUIClasses.dll<br/>VORDDClasses.dll<br/>VOSystemClasses.dll<br/>VOWin32APILibrary.dll</para>
+    <para styleclass="Body Text">为了编译和生成项目，我们在 Visual Studio 中打开文件 Explorer.SLN。在 Visual Studio 中，它看起来像</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><image src="explorer-error.png" scale="100.00%" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">几个模块前面的箭头表示这些模块中有子项目。这些子项目包含表单、菜单和图标资源。</para>
+    <para styleclass="Body Text">现在，让我们尝试在 Visual Studio 中生成解决方案。(菜单选项 “生成-生成解决方案&quot;）</para>
+    <para styleclass="Body Text">这将编译应用程序，并在 c:\XporterOutput\Explorer\Debug 文件夹中生成一个可调试版本。你会看到该文件夹包含一个 EXE、PDB（调试符号）和 VO 运行时库的副本：<br/>Explorer.exe<br/>Explorer.pdb<br/>SDK_Defines.dll<br/>VOGUIClasses.dll<br/>VORDDClasses.dll<br/>VOSystemClasses.dll<br/>VOWin32APILibrary.dll</para>
     <para styleclass="Body Text">XSharp.VO.dll</para>
     <para styleclass="Body Text">XSharp.RT.dll</para>
     <para styleclass="Body Text">XSharp.Core.dll</para>
-    <para styleclass="Body Text">Now can try to run the app. This works, but as soon as we select the File/Open menu option we will get a runtime error. After some resizing the screen looks similar to this</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"><image src="explorer-solutionexplorer.png" scale="-99.90%" width="1050" height="425"></image><br/></para>
-    <para styleclass="Body Text">The error message is clear: the app uses the splitwindow control and this requires the splitwindow support DLL.</para>
-    <para styleclass="Body Text">This DLL is located in the Redist folder of your VO installation. Simply copy the “Cato3spl.dll” file from your VO Redist folder to the output folder as well as the MSVCRT.DLL and try again.<br/>You can also add the DLLs to your project (Add Existing Item, and point to the DLLs in the Redist folder). This will copy them to the project folder. Then set the build action for the 2 DLLs to None and the “Copy to Output Directory” property to “Preserve Newest”. When you now build your app the DLL will be copied to the right folder.</para>
-    <para styleclass="Body Text">After that the code will run just like it did in VO with no code changes!</para>
-    <para styleclass="Body Text">Let’s have a closer look at what the xPorter has done:</para>
-    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Each module in VO has become a PRG file in the X# project</li>
+    <para styleclass="Body Text">现在可以尝试运行应用程序了。这可以运行，但一旦我们选择 “文件/打开” 菜单选项，就会出现运行时错误。调整大小后，屏幕看起来类似下面这样：</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><image src="explorer-solutionexplorer.png" scale="-99.90%" figurelistinclude="0"></image><br/></para>
+    <para styleclass="Body Text">错误信息很清楚：应用程序使用了 splitwindow 控件，而这需要 splitwindow 支持 DLL。</para>
+    <para styleclass="Body Text">该 DLL 位于 VO 安装的 Redist 文件夹中。只需将 VO Redist 文件夹中的 “Cato3spl.dll ”文件和 MSVCRT.DLL 复制到输出文件夹，然后再试一次。</para>
+    <para styleclass="Body Text">您也可以将 DLL 添加到项目中（添加现有项目，并指向 Redist 文件夹中的 DLL）。这将把它们复制到项目文件夹中。然后将这 2 个 DLL 的生成操作设置为 “无”，并将 “复制到输出目录 ”属性设置为 “保留最新内容”。现在，当您生成应用程序时，DLL 将被复制到正确的文件夹中。</para>
+    <para styleclass="Body Text">之后，代码将像在 VO 中一样运行，无需更改代码！</para>
+    <para styleclass="Body Text">让我们仔细看看 xPorter 都做了些什么：</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">VO 中的每个模块都已成为 X# 项目中的 PRG 文件</li>
     </list>
-    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Source code has been grouped by class and put in a CLASS .. END CLASS construct</li>
+    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">源代码已按类分组，并置于 CLASS ... END CLASS 结构中</li>
     </list>
-    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Init methods have been renamed to CONSTRUCTOR</li>
-      <li styleclass="Body Text">Compiler macros such as &quot;%CavoSamplesRootDir%\Explorer\&quot; have been replaced with literal values: &quot;C:\cavo28SP3\Samples\Explorer\&quot;</li>
+    <list id="2" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Init 方法已更名为 CONSTRUCTOR</li>
+      <li styleclass="Body Text">编译器宏（如“%CavoSamplesRootDir%\Explorer\”）已被字面值取代： “C:\cavo28SP3\Samples\Explorer\”</li>
     </list>
-    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Recourses have become “children” of the source file where they were defined</li>
-      <li styleclass="Body Text">Locations for resources have also been changed %CavoSamplesRootDir%\Explorer\TWO.ICO has been changed to ICONTWO Icon C:\cavo28SP3\Samples\Explorer\TWO.ICO. <br/>Also the RESOURCE keyword has been removed.</li>
-      <li styleclass="Body Text">The binaries for the forms and menus have not been included in this version of the XPorter (Beta 11). That will change.</li>
+    <list id="3" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">资源已成为定义它们的源文件的 “子文件”。</li>
+      <li styleclass="Body Text">资源的位置也已更改 %CavoSamplesRootDir%\Explorer\TWO.ICO 已更改为 ICONTWO Icon C:\cavo28SP3\Samples\Explorer\TWO.ICO。 <br/>RESOURCE 关键字也已删除。</li>
+      <li styleclass="Body Text">表单和菜单的二进制文件尚未包含在此版本的 XPorter（Beta 11）中。这种情况将会改变。</li>
     </list>
-    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">The Start file has the biggest change. In VO there was a method in there App:Start(). However the App class is not defined in this application but part of the GUI Classes. There was also no Start function in the App. VO would call the Start function in the GUI classes and would merge the App:Start() method in the application with the rest of the App class in the GUI Classes.<br/>This is not allowed in .Net. Classes cannot be spread over more than one assembly (the .Net name for of a Library, EXE or DLL).<br/>Therefore the XPorter has created a new class (xApp) and moved the Start method to this Xapp class. It has also added a Start() function which instantiates the App class and calls the Start method inside XApp. You can also see in the example below that a TRY .. CATCH .. END TRY construct is added which captures the errors that are not catched anywhere else and shows an error message in an ErrorBox object. This is the errorbox that was shown before because the CATO3SPL.DLL was missing.</li>
-      <li styleclass="Body Text">Finally the Start function is marked with an attribute (The word between the square brackets). In this case the attribute is [STAThread] which means that the main function (and therefore the whole app) needs to run in <text style="font-weight:bold;">S</text>ingle <text style="font-weight:bold;">T</text>hreaded &#160;<text style="font-weight:bold;">A</text>ppartment mode. This is important if your app uses external code such as OCX/ActiveX controls.</li>
+    <list id="4" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">启动文件的变化最大。在 VO 中，有一个方法 App:Start()。但 App 类并没有在此应用程序中定义，而是 GUI 类的一部分。应用程序中也没有 Start 函数。VO 将调用 GUI 类中的 Start 函数，并将应用程序中的 App:Start() 方法与 GUI 类中 App 类的其余部分合并。<br/>这在 .Net 中是不允许的。类不能分布在一个以上的程序集（.Net 对库、EXE 或 DLL 的称呼）中。</li>
+      <li styleclass="Body Text">因此，XPorter 创建了一个新类 (xApp)，并将 Start 方法移到了这个 Xapp 类中。它还添加了一个 Start() 函数，用于实例化 App 类并调用 XApp 中的 Start 方法。在下面的示例中，您还可以看到添加了一个 TRY ... CATCH ... END TRY 结构，它可以捕获其他地方捕获不到的错误，并在 ErrorBox 对象中显示错误信息。这就是之前由于 CATO3SPL.DLL 丢失而显示的错误框。</li>
+      <li styleclass="Body Text">最后，“开始 ”函数被标记为一个属性（方括号中的单词）。在本例中，属性为 [STAThread]，这意味着主函数（以及整个应用程序）需要以单线程模式运行。如果您的应用程序使用 OCX/ActiveX 控件等外部代码，这一点非常重要。</li>
     </list>
-    <list id="13" type="ul" listtype="bullet" formatstring="&#45;" levelreset="true" legalstyle="false" startfrom="0" styleclass="Body Text" style="font-family:Calibri; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text"><image src="explorer-startmodule.png" scale="100.00%" styleclass="Image Caption"></image></li>
+    <list id="5" type="ul" listtype="bullet" formatstring="-" levelreset="true" legalstyle="false" startfrom="0" styleclass="Body Text" style="font-family:Calibri; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text"><image src="explorer-startmodule.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></li>
     </list>
-    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:8pt; color:#000000;">
-      <li styleclass="Normal"><text styleclass="Body Text">If you look closer to the solution explorer in Visual Studio and click on the References node in the tree you will see that the example has references to the Vulcan runtime and the VO Class libraries as well as the SDK defines library that was included with the XPorter.</text></li>
+    <list id="6" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:8pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Body Text">  如果您仔细查看 Visual Studio 中的解决方案资源管理器，并点击树中的引用节点，就会发现示例中引用了 Vulcan 运行时和 VO 类库，以及 XPorter 附带的 SDK 定义库。</text></li>
     </list>
-    <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">If you open the project properties you will see on the General page that the selected dialect is “Visual Object” , on the Dialect page are most VO options are set and on the Build page the platform target is x86 (because the GUI classes are designed to run in x86 mode) and several warnings have been suppressed. These warnings are:</li>
+    <list id="7" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">如果打开项目属性，你会在常规页面上看到所选的方言是 “Visual Object”，在方言页面上设置了大多数 VO 选项，在生成页面上，平台目标是 x86（因为图形用户界面类设计为在 x86 模式下运行），并且抑制了一些警告。这些警告包括：</li>
     </list>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><table styleclass="Default" rowcount="7" colcount="2">
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Number</para>
+          <para styleclass="Body Text" style="text-align:center;">编号</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Meaning</para>
+          <para styleclass="Body Text" style="text-align:center;">含义</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -444,7 +454,7 @@
           <para styleclass="Body Text">162</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Suppresses a warning about Unreachable code</para>
+          <para styleclass="Body Text">抑制关于无法访问代码的警告</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -452,7 +462,7 @@
           <para styleclass="Body Text">618</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Suppresses a warning about the use of obsolete functions, such as CollectForced</para>
+          <para styleclass="Body Text">抑制对使用过时函数（如 CollectForced）的警告</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -460,7 +470,7 @@
           <para styleclass="Body Text">649</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Suppresses a warning about unused private and/or internal fields.</para>
+          <para styleclass="Body Text">取消对未使用的 private 和/或 internal 字段的警告。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -468,7 +478,7 @@
           <para styleclass="Body Text">9025</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Suppresses a warning about missing return statements</para>
+          <para styleclass="Body Text">消除关于缺少 Return 语句的警告</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -476,7 +486,7 @@
           <para styleclass="Body Text">9032</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Suppresses a warning about return values inside ASSIGN methods and/or constructors/destructors</para>
+          <para styleclass="Body Text">消除关于 ASSIGN 方法和/或构造函数/析构函数中返回值的警告</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -484,11 +494,13 @@
           <para styleclass="Body Text">9043</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">Suppresses a warning about ambiguous code, which could happen if two assemblies define a function with the same name.</para>
+          <para styleclass="Body Text">消除关于含糊代码的警告，如果两个程序集定义了同名函数，可能会出现这种情况。</para>
         </td>
       </tr>
     </table></para>
-    <para styleclass="Body Text">In this particular example only warning 618 is generated by the compiler because the CustomerExplorer:Close() method calls CollectForced. After commenting out that line you can remove all the “suppressed” warnings from the app and it will compile without any warnings.</para>
-    <para styleclass="Body Text"><text style="font-weight:bold;">You will find the &quot;code before&quot; and &quot;code after&quot; in the XSharp Examples folder</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">在本例中，编译器只生成了 618 警告，因为 CustomerExplorer:Close() 方法调用了 CollectForced。注释掉这一行后，您就可以删除应用程序中所有 “抑制 ”的警告，这样编译时就不会出现任何警告了。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">您可以在 XSharp 示例文件夹中找到 “Code before ”和 “Code after”。</text></para>
   </body>
 </topic>

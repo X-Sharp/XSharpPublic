@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T23:15:24.137+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.790+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-vo9</title>
   <keywords>
     <keyword>-vo9</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo9<tab /><tab />处理缺少或不正确的返回语句问题。您需要确保每个函数都有正确的返回语句，以便返回预期的结果。 </para>
+      <para styleclass="Heading1">-vo9<tab/><tab/>处理缺少或不正确的返回语句问题。您需要确保每个函数都有正确的返回语句，以便返回预期的结果。 </para>
     </header>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">当函数或方法没有任何 RETURN 语句时，-vo9 选项可防止编译器引发错误 XS0161。它还能解决返回值不正确的问题。</para>
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-vo9[+|-]</para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List">+ | - <tab />指定 + 或 -vo9，可以让没有任何 RETURN 语句的函数和方法在编译时不出错。 </para>
+    <para styleclass="List">+ | - <tab/>指定 + 或 -vo9，可以让没有任何 RETURN 语句的函数和方法在编译时不出错。 </para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">Visual Objects 允许返回类型不是 VOID 的函数和方法省略 RETURN 语句。任何此类函数或方法的返回值将始终是返回类型的默认值。</para>
     <para styleclass="Normal"></para>
@@ -26,15 +26,15 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
       <li styleclass="Normal" style="margin-left:13px;">点击 Dialect 选项卡 </li>
       <li styleclass="Normal" style="margin-left:13px;">更改值</li>
       <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">查看属性页</link></li>
     </list>
     <para styleclass="Heading2">示例</para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> x( y )</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? y</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">METHOD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> x( y </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? y</text><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; color:#000000;">&#32;</text></para>
-    <para styleclass="Normal">在第一个示例中，没有指定返回类型，因此默认为 USUAL，由于没有 RETURN 语句，函数在 Visual Objects 中将始终返回 NIL（USUAL 的默认值）。在第二个示例中，由于没有 RETURN 语句，该方法将始终在 Visual Objects 中返回 0（INT 的默认值）。</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> x( y )</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? y</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">METHOD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> x( y </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? y</text><text styleclass="" style="font-family:'Times New Roman'; font-size:12pt; color:#000000;"> </text></para>
+    <para styleclass="Normal">在第一个示例中，没有指定返回类型，因此默认为 USUAL，由于没有 RETURN 语句，函数在 Visual Objects 中将始终返回 NIL(USUAL 的默认值)。在第二个示例中，由于没有 RETURN 语句，该方法将始终在 Visual Objects 中返回 0(INT 的默认值)。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

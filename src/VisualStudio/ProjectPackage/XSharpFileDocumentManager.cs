@@ -55,6 +55,8 @@ namespace XSharp.Project
                 case XFileType.VOMenu:
                 case XFileType.VODBServer:
                 case XFileType.VOFieldSpec:
+                case XFileType.VOSqlTable:
+                case XFileType.VOReport:
                     // the primary view is the normal editor which is defined with an attribute on the package
                     // we only have to tell it what to do when we want to see the code.
                     if (logicalView == VSConstants.LOGVIEWID.Code_guid)

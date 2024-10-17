@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-13T10:44:57.329+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>X# Examples</title>
+<topic template="Default" modified="2024-07-15T06:59:54.858+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>X# 示例</title>
   <body>
     <header>
-      <para styleclass="Heading1">X# Examples</para>
+      <para styleclass="Heading1">X# 示例</para>
     </header>
     <para styleclass="Normal">以下 X# 示例也将作为示例解决方案安装在你的计算机上，位于 Users\Public\XSharp\Examples 文件夹中。</para>
   </body>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-08T10:59:10.966+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-27T12:01:17.216+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>引用</title>
   <keywords>
     <keyword>References to External .Net Assemblies</keyword>
@@ -14,7 +14,7 @@
     </header>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Visual studio 中的 XSharp 项目使用源代码项，可能包含对外部库中定义的代码的引用。</para>
-    <para styleclass="Normal">在 Visual Studio 中，您可以通过 &quot;引用 &quot;对话框设置这些引用。</para>
+    <para styleclass="Normal">在 Visual Studio 中，您可以通过 &quot;引用&quot; 对话框设置这些引用。</para>
     <para styleclass="Normal">简而言之，有三种参考资料：</para>
     <para styleclass="Normal"></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -23,7 +23,7 @@
       <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="project_references_Project">同一 Visual Studio 解决方案中的其他项目</link></li>
     </list>
     <para styleclass="Heading2">对非托管代码的引用</para>
-    <para styleclass="Normal">您不能使用 &quot;项目引用 &quot;为非托管代码添加引用。</para>
-    <para styleclass="Normal">要调用非托管代码，您必须声明带有 _DLL 前缀的函数或过程，或者声明静态方法或函数，并为其添加特殊的 [DllImport()] 属性。</para>
+    <para styleclass="Normal">您不能使用 &quot;项目引用&quot; 为非托管代码添加引用。</para>
+    <para styleclass="Normal">要调用非托管代码，您必须声明带有 _DLL 前缀的函数或过程，或者声明静态方法或函数，并为其添加特殊的 [DllImport()] 特性(attribute)。</para>
   </body>
 </topic>

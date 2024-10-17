@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-01T12:08:41.207+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.230+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-lib</title>
   <keywords>
     <keyword>-lib</keyword>
@@ -12,13 +12,13 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">-lib选项指定了通过 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference">-reference</link> 选项引用的程序集的位置。</para>
     <para styleclass="Heading2">语法</para>
-    <para styleclass="Code with box">-lib:dir1[,dir2] &#160;</para>
+    <para styleclass="Code with box">-lib:dir1[,dir2]  </para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">dir1</text><tab />如果在当前工作目录（调用编译器时所在的目录）或通用语言运行时的系统目录中找不到引用的程序集，编译器将查找的目录。</para>
-    <para styleclass="List"><text styleclass="Code Example">dir2</text><tab /><text styleclass="Normal">一个或多个用于搜索程序集引用的附加目录。附加目录名称之间用逗号隔开，中间不留空白。</text></para>
+    <para styleclass="List"><text styleclass="Code Example">dir1</text><tab/>如果在当前工作目录(调用编译器时所在的目录)或通用语言运行时的系统目录中找不到引用的程序集，编译器将查找的目录。</para>
+    <para styleclass="List"><text styleclass="Code Example">dir2</text><tab/><text styleclass="Normal">一个或多个用于搜索程序集引用的附加目录。附加目录名称之间用逗号隔开，中间不留空白。</text></para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">编译器会按以下顺序搜索未完全限定的程序集引用：</para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">当前工作目录。这是调用编译器的目录。</li>
       <li styleclass="Normal" style="margin-left:13px;">公共语言运行时系统目录。</li>
       <li styleclass="Normal" style="margin-left:13px;">由 -lib 指定的目录。</li>
@@ -34,7 +34,7 @@
     <para styleclass="Normal">编译器能引用程序集并不意味着公共语言运行时能在运行时找到并加载程序集。有关运行时如何搜索引用程序集的详细信息，请参阅运行时如何定位程序集。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">要在 Visual Studio 开发环境中设置此编译器选项</para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性 &quot;页面</li>
       <li styleclass="Normal" style="margin-left:13px;">单击 &quot; References Path(引用路径) &quot;属性页</li>
       <li styleclass="Normal" style="margin-left:13px;">编辑 contents 列表框</li>
@@ -45,7 +45,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">编译 t2.prg 以创建 .exe 文件。编译器将在工作目录和 C 盘根目录中查找程序集引用。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc -lib:c:\ -reference:t2.dll t2.prg &#160;</para>
+    <para styleclass="Code with box">xsc -lib:c:\ -reference:t2.dll t2.prg  </para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

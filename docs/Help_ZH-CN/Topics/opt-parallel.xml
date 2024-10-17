@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T19:11:01.486+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:06:31.367+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-parallel</title>
   <keywords>
     <keyword>-parallel</keyword>
@@ -10,6 +10,6 @@
       <para styleclass="Heading1">-parallel</para>
     </header>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">指定是否使用并发构建 (+)。</para>
+    <para styleclass="Body Text">指定是否使用并发生成 (+)。</para>
   </body>
 </topic>

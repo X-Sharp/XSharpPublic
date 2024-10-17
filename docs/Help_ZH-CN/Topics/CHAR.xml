@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-10T19:52:41.942+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:24:38.474+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>CHAR</title>
   <keywords>
     <keyword>CHAR</keyword>
@@ -10,7 +10,7 @@
       <para styleclass="Heading1">CHAR</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">CHAR 关键字表示一个用于表示 Unicode 字符的类型。Unicode 标准使用称为代码点的唯一 21 位标量数来标识每个 Unicode 字符，并定义了 UTF-16 编码形式，指定代码点如何编码为一个或多个 16 位值的序列。每个 16 位值的范围从十六进制 0x0000 到 0xFFFF，并存储在一个 Char 结构中。Char 对象的值是它的 16 位数值（序数值）。</para>
+    <para styleclass="Normal">CHAR 关键字表示一个用于表示 Unicode 字符的类型。Unicode 标准使用称为代码点的唯一 21 位标量数来标识每个 Unicode 字符，并定义了 UTF-16 编码形式，指定代码点如何编码为一个或多个 16 位值的序列。每个 16 位值的范围从十六进制 0x0000 到 0xFFFF，并存储在一个 Char 结构中。Char 对象的值是它的 16 位数值(序数值)。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

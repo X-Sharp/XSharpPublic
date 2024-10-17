@@ -159,12 +159,17 @@ namespace XSharp.MacroCompiler
                         case XSharpSpecialNames.XSharpDataFunctionsClass:
                         case XSharpSpecialNames.XSharpVFPFunctionsClass:
                         case XSharpSpecialNames.XSharpXPPFunctionsClass:
+                        case XSharpSpecialNames.XSharpHarbourFunctionsClass:
                             // functions in specific runtime files override generic files
+                            ApplyConversions(args, ovRes, out writeBack);
                             return ovRes.Symbol;
                         case XSharpSpecialNames.XSharpRTFunctionsClass:
                             if (func2 == XSharpSpecialNames.XSharpCoreFunctionsClass)
+                            {
                                 // functions in specific runtime files override generic files
+                                ApplyConversions(args, ovRes, out writeBack);
                                 return ovRes.Symbol;
+                            }
                             break;
                     }
                     switch (func2)
@@ -173,12 +178,17 @@ namespace XSharp.MacroCompiler
                         case XSharpSpecialNames.XSharpDataFunctionsClass:
                         case XSharpSpecialNames.XSharpVFPFunctionsClass:
                         case XSharpSpecialNames.XSharpXPPFunctionsClass:
+                        case XSharpSpecialNames.XSharpHarbourFunctionsClass:
                             // functions in specific runtime files override generic files
+                            ApplyConversions(args, ovRes, out writeBack);
                             return ovRes.Equivalent.Symbol;
                         case XSharpSpecialNames.XSharpRTFunctionsClass:
                             if (func1 == XSharpSpecialNames.XSharpCoreFunctionsClass)
+                            {
+                                ApplyConversions(args, ovRes, out writeBack);
                                 // functions in specific runtime files override generic files
                                 return ovRes.Equivalent.Symbol;
+                            }
                             break;
                     }
                 }

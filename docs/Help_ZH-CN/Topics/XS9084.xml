@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-13T03:46:41.325+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9084</title>
   <keywords>
     <keyword>implicitly convert</keyword>
@@ -12,19 +12,20 @@
     <header>
       <para styleclass="Heading1">Error XS9084</para>
     </header>
-    <para styleclass="Normal">Cannot implicitly convert between &apos;{0}&apos; and &apos;PTR&apos; in platform &apos;{1}&apos; because the size of &apos;{0}&apos; does not match the size of &apos;PTR&apos; for the target platform.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This error occurs when casting a variable to a PTR in the X86 or X64 platform </para>
+    <para styleclass="Normal">由于 &apos;{0}&apos; 的大小与目标平台 &apos;PTR&apos; 的大小不匹配，因此无法在平台 &apos;{1}&apos; 的 &apos;{0}&apos; 和 &apos;PTR&apos; 之间进行隐式转换。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The only allowed conversions are:</para>
+    <para styleclass="Normal">在 X86 或 X64 平台上将变量转换为 PTR 时会出现此错误。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">唯一允许的转换是</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="2">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Platform</para>
+          <para styleclass="Normal" style="text-align:center;">平台</para>
         </td>
         <td>
-          <para styleclass="Normal">Allowed</para>
+          <para styleclass="Normal" style="text-align:center;">允许</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -46,6 +47,6 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">All other conversions will produce this error.</para>
+    <para styleclass="Normal">所有其他转换都将产生此错误。</para>
   </body>
 </topic>

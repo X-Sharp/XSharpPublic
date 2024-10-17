@@ -1681,9 +1681,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (!token.IsOperator())
                 {
+                    var original = new XSharpToken(token);
                     token.Type = XSharpLexer.UDC_KEYWORD;
                     token.UDCLocation = this._matchtokens[0].Token;
                     token.UDCType = (byte)this.Type;
+                    token.Original = original;
                 }
             }
 #endif

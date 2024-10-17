@@ -128,13 +128,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			SET SELF:_SetWord( CDXTAGHEADER_DESCENDING, (WORD) IIF(value,1,0) ), _descending := value
 
         INTERNAL PROPERTY KeyExpression AS STRING GET _keyExpression ;
-            SET SELF:_SetString(KeyExprPos+CDXPAGE_SIZE, KeyExprLen, value) , _keyExpression := value
+            SET SELF:_GetBytes(SELF:KeyExprPos+CDXPAGE_SIZE, KeyExprLen, value) , _keyExpression := value
 
         INTERNAL PROPERTY ForExpression AS STRING GET _forExpression ;
-            SET SELF:_SetString(ForExprPos+CDXPAGE_SIZE, ForExprLen, value) , _forExpression := value
+            SET SELF:_GetBytes(SELF:ForExprPos+CDXPAGE_SIZE, ForExprLen, value) , _forExpression := value
 
         INTERNAL PROPERTY VFPCollation AS STRING GET _vfpCollation ;
-            SET SELF:_SetString(CDXTAGHEADER_VFPCOLLATION, 8, value) , _vfpCollation := value
+            SET SELF:_GetBytes(CDXTAGHEADER_VFPCOLLATION, 8, value) , _vfpCollation := value
 
 
 #endregion

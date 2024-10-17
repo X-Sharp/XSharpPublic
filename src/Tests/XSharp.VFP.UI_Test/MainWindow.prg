@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.VFP.UI_Test
 		
         public constructor() strict
             SUPER()                
-			InitializeComponent()
+			SELF:InitializeComponent()
 			return
 		end constructor
 		PRIVATE METHOD quitToolStripMenuItem_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT

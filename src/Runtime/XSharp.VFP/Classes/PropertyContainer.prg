@@ -219,7 +219,7 @@ end class
 public class XSharp.VFP.PropertyNotFoundException inherit Exception
     public property PropertyName as string auto get private set
     public constructor(name as string)
-        super(__VfpStr(VFPErrors.PROPERTY_NOT_FOUND, name))
+        super(__VfpStr(VFPErrors.VFP_PROPERTY_NOT_FOUND, name))
         self:PropertyName := name
         return
 end class

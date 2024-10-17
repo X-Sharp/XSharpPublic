@@ -17,13 +17,15 @@ BEGIN NAMESPACE XSharp.RDD
 [DebuggerDisplay("DBFVFP ({Alias,nq})")];
 CLASS DBFVFP INHERIT DBFCDX
     PRIVATE CONST VFP_BACKLINKSIZE := 262 AS LONG
-    PRIVATE oDbcTable as DbcTable
-	CONSTRUCTOR()
-		SUPER()
-		SELF:_AllowedFieldTypes := "BCDFGILMNPQTVWY0"
-		RETURN
-
-	OVERRIDE PROPERTY Driver         AS STRING GET nameof(DBFVFP)
+    PRIVATE oDbcTable       as DbcTable
+    PROTECT _NullColumn     AS DbfNullColumn            // Column definition for _NullFlags, used in DBFVFP driver
+    PROTECT _NullCount      AS LONG   // to count the NULL and Length bits for DBFVFP
+    CONSTRUCTOR()
+        SUPER()
+        SELF:_AllowedFieldTypes := "BCDFGILMNPQTVWY0"
+        RETURN
+    OVERRIDE PROPERTY NullColumn as DbfNullColumn => SELF:_NullColumn
+    OVERRIDE PROPERTY Driver         AS STRING GET nameof(DBFVFP)
     INTERNAL PROPERTY DbcName        AS STRING AUTO
     INTERNAL PROPERTY DbcPosition    AS INT GET DbfHeader.SIZE + SELF:_Fields:Length  * DbfField.SIZE +1
     INTERNAL PROPERTY DeleteOnClose  AS LOGIC AUTO
@@ -58,6 +60,7 @@ CLASS DBFVFP INHERIT DBFCDX
         LOCAL isOk AS LOGIC
         var aFieldCopy := SELF:_Fields // Save the fields, because the parent Create() will remove the flags
         isOk := SUPER:Create(openInfo)
+        SELF:_OemConvert := FALSE
         IF isOk
             SELF:_Fields := aFieldCopy
             SELF:_SetFoxHeader()
@@ -83,7 +86,7 @@ CLASS DBFVFP INHERIT DBFCDX
         ENDIF
         RETURN FALSE
 
-     PROTECTED METHOD _SetFoxHeader() AS VOID
+    PROTECTED METHOD _SetFoxHeader() AS VOID
         LOCAL lVar AS LOGIC
         LOCAL lAutoIncr AS LOGIC
         // check for foxpro field types and adjust the header
@@ -159,10 +162,11 @@ CLASS DBFVFP INHERIT DBFCDX
             ENDIF
             nullFld:Length := (BYTE) nLen
         ENDIF
+        SELF:_NullCount := NullCount
         lOk := super:CreateFields(aFields)
         RETURN lOk
 
-        OVERRIDE PROPERTY FieldCount AS LONG
+    OVERRIDE PROPERTY FieldCount AS LONG
         GET
             // Exclude the _NullColumn
             LOCAL ret := 0 AS LONG
@@ -174,7 +178,13 @@ CLASS DBFVFP INHERIT DBFCDX
             ENDIF
             RETURN ret
         END GET
-        END PROPERTY
+    END PROPERTY
+
+    PROTECTED OVERRIDE METHOD _determineCodePage() AS VOID
+        SELF:_Ansi := TRUE
+        var codePage := CodePageExtensions.ToCodePage( SELF:_Header:CodePage )
+        SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage )
+        SELF:_OemConvert := FALSE
 
     OVERRIDE METHOD Open ( info AS DbOpenInfo) AS LOGIC
         LOCAL lOk AS LOGIC
@@ -182,7 +192,9 @@ CLASS DBFVFP INHERIT DBFCDX
         // Delay auto open until after we have read the DBC name and we have read the long fieldnames
         lOld := XSharp.RuntimeState.AutoOpen
         XSharp.RuntimeState.AutoOpen := FALSE
+        SELF:_NullCount := 0
         lOk := SUPER:Open(info)
+        SELF:_lockScheme:Initialize( DbfLockingModel.FoxPro )
         XSharp.RuntimeState.AutoOpen := lOld
         IF lOk
             IF SELF:_Header:Version:IsVfp()
@@ -196,12 +208,11 @@ CLASS DBFVFP INHERIT DBFCDX
             ENDIF
             SELF:GoTop()
         ENDIF
-
         RETURN lOk
 
     OVERRIDE METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
         IF nOrdinal == DbFieldInfo.DBS_PROPERTIES
-           RETURN DbFieldInfo.DBS_FLAGS
+            RETURN DbFieldInfo.DBS_FLAGS
         ENDIF
         RETURN SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
 
@@ -210,7 +221,7 @@ CLASS DBFVFP INHERIT DBFCDX
         LOCAL buffer AS BYTE[]
         buffer := BYTE[]{VFP_BACKLINKSIZE}
         SELF:DbcName := ""
-        IF _oStream:SafeSetPos(nPos) .AND. _oStream:SafeRead(buffer)
+        IF _oStream:SafeReadAt(nPos, buffer)
             VAR cName := System.Text.Encoding.Default:GetString(buffer):Replace(e"\0","")
             IF ! String.IsNullOrEmpty(cName)
                 SELF:DbcName := Path.Combine(Path.GetDirectoryName(SELF:_FileName), cName)
@@ -264,6 +275,10 @@ CLASS DBFVFP INHERIT DBFCDX
             SELF:_NullColumn := dbfnc
         ENDIF
         IF info IS DbfColumn VAR column
+            // In FoxPro tables the special _NullFlags field contains information
+            // about if a field is nullable or (for variable length fields) if the length is stored
+            // in the last byte of the field
+            // For variable length fields the length bit precedes the null bit
             IF column:IsVarLength
                 column:LengthBit := SELF:_NullCount++
             ENDIF
@@ -274,7 +289,7 @@ CLASS DBFVFP INHERIT DBFCDX
         RETURN isOk
 
     OVERRIDE METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
-    LOCAL oResult AS OBJECT
+        LOCAL oResult AS OBJECT
         oResult := NULL
         BEGIN SWITCH nOrdinal
         CASE DbInfo.DBI_ISTEMPORARY

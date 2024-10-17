@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-08T11:05:11.794+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:29:22.200+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Project</title>
   <body>
     <header>
       <para styleclass="Heading1">References to other Visual Studio projects</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">第三种依赖关系是 Visual Studio 项目之间的依赖关系。当您添加这种类型的依赖关系时，Visual Studio(实际上是 MsBuild)会尝试先构建该项目，然后再构建依赖于它的项目。与 Visual Objects 不同，您不必为项目生成的输出导入原型库。Visual Studio(和我们的编辑器集成)将直接使用其他项目的输出。</para>
+    <para styleclass="Normal">第三种依赖关系是 Visual Studio 项目之间的依赖关系。当您添加这种类型的依赖关系时，Visual Studio(实际上是 MsBuild)会尝试先生成该项目，然后再生成依赖于它的项目。与 Visual Objects 不同，您不必为项目生成的输出导入原型库。Visual Studio(和我们的编辑器集成)将直接使用其他项目的输出。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">如果其他项目也是 X# 项目，那么我们的源代码编辑器支持代码将能在类型声明和使用该类型的地方之间跳转，即使该类型是在其他项目中。当您的 X# 项目依赖于其他语言(如 C#)的项目时，我们将像使用 &quot;普通 &quot;外部 .Net 程序集一样，使用该项目输出。</para>
+    <para styleclass="Normal">如果其他项目也是 X# 项目，那么我们的源代码编辑器支持代码将能在类型声明和使用该类型的地方之间跳转，即使该类型是在其他项目中。当您的 X# 项目依赖于其他语言(如 C#)的项目时，我们将像使用 &quot;普通&quot; 外部 .Net 程序集一样，使用该项目输出。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="Project references 1.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>

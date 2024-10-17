@@ -434,6 +434,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var s = GenerateEmptyStatement();
                     s = s.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_DynamicVariablesNotAllowed));
+                    s.XNode = dimVar;
                     stmts.Add(s);
                     return stmts;
                 }
@@ -758,7 +759,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else if (context.StmtBlk != null && !hasNoBody)
             {
-                body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
+                body = AddMissingReturnStatement(body, context.StmtBlk, returntype, warning: context.T.Token.Type != XP.PROCEDURE);
             }
             MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
                 attributeLists: attributes,

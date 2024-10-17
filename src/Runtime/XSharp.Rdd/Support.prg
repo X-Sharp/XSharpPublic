@@ -102,7 +102,7 @@ INTERNAL CLASS RddKeyData
         NEXT
         RETURN sb:ToString()
     OVERRIDE METHOD ToString() AS STRING
-        RETURN ToAscii(SELF:Key, FALSE) + " "+Recno:ToString()
+        RETURN SELF:ToAscii(SELF:Key, FALSE) + " "+Recno:ToString()
 #endif
     INTERNAL METHOD CopyTo(oOther AS RddKeyData) AS VOID
         oOther:ForCond := SELF:ForCond

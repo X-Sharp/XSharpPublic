@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-01T10:32:43.280+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-15T03:53:02.639+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9116</title>
   <keywords>
     <keyword>NULL</keyword>
@@ -11,6 +11,7 @@
     <header>
       <para styleclass="Heading1">Warning XS9116</para>
     </header>
-    <para styleclass="Body Text">Passing a NULL_PSZ for an argument declared as &apos;string&apos; may have unexpected results when the code checks for a string with the value NULL.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">如果为声明为 &apos;string&apos; 的参数传递 NULL_PSZ，当代码检查字符串值是否为 NULL 时，可能会产生意想不到的结果。</para>
   </body>
 </topic>

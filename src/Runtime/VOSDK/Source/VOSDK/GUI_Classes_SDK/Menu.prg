@@ -1,4 +1,4 @@
-#pragma options ("enforceself", on)
+
 /// <include file="Gui.xml" path="doc/Menu/*" />
 CLASS Menu INHERIT VObject
 	PROTECT oParent 	AS Menu
@@ -113,7 +113,7 @@ method DeleteItem(xItemIdOrMenu)
 		iItemCount := DWORD(GetMenuItemCount(hMenu))
 		IF iItemCount > 0
 			FOR i := 0 TO iItemCount-1
-				hTmp := GetSubMenu(hMenu, INT(i))
+				hTmp := Win32GetSubMenu(hMenu, INT(i))
 				IF hTmp == xItemIdOrMenu:Handle()
 					xItemIdOrMenu:SetParent(NULL_OBJECT)
 					SELF:DeleteChild(xItemIdOrMenu)
@@ -222,7 +222,7 @@ method GetSubMenu(nIndex)
 
 
 
-	RETURN GetSubMenu(hMenu,nIndex)
+	RETURN Win32GetSubMenu(hMenu,nIndex)
 
 
 /// <include file="Gui.xml" path="doc/Menu.Handle/*" />
@@ -455,7 +455,7 @@ method RegisterItem(nItemID, oHyperLabel, hParentMenu, nPosition)
 		IF IsNumeric(nItemID) .AND. IsAccess(oHyperLabel,#Caption)
 			cCaption := oHyperLabel:Caption
 			IF IsPtr(hParentMenu) .AND. IsLong(nPosition)
-				hMenu := GetSubMenu(hParentMenu, nPosition)
+				hMenu := Win32GetSubMenu(hParentMenu, nPosition)
 				__WCRegisterMenu(SELF, hMenu)
 				lResult := ModifyMenu(hParentMenu, nPosition, _OR(MF_BYPOSITION, _OR(MF_POPUP, MF_STRING)), DWORD(_CAST, hMenu), String2Psz(cCaption))
 			ELSE
@@ -594,7 +594,7 @@ method ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap)
 	ENDIF
 
 
-	hPopUpMenu := GetSubMenu(SELF:Handle(), 0)
+	hPopUpMenu := Win32GetSubMenu(SELF:Handle(), 0)
 	IF hPopUpMenu != NULL_PTR
 		lRet := TrackPopupMenuEx(hPopUpMenu, _OR(DWORD(kButton), DWORD(kAlignment)),;
 			strucPoint:x, strucPoint:y, oOwner:Handle(), pTPM)

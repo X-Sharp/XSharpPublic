@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T20:34:23.446+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.529+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-shared</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -11,17 +11,17 @@
       <para styleclass="Heading1">-shared</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">使用共享编译器进程（XSCompiler.exe）编译项目。该进程会缓存类型信息，因此重复编译的速度会更快</para>
+    <para styleclass="Normal">使用共享编译器进程(XSCompiler.exe)编译项目。该进程会缓存类型信息，因此重复编译的速度会更快</para>
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">/shared[: pipeName]</para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">pipeName</text><tab />该可选参数用于指定编译器在前台进程 (xsc.exe) 和后台编译器 (xscompiler.exe) 之间进行通信时使用的 pipename。</para>
+    <para styleclass="List"><text styleclass="Code Example">pipeName</text><tab/>该可选参数用于指定编译器在前台进程 (xsc.exe) 和后台编译器 (xscompiler.exe) 之间进行通信时使用的 pipename。</para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">该命令行选项有助于加快编译速度</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
       <li styleclass="Normal" style="margin-left:13px;">点击 Build 选项卡</li>
       <li styleclass="Normal" style="margin-left:13px;">更改 &quot;Use Shared compiler(使用共享编译器)&quot; 选项</li>

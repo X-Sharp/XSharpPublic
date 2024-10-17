@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-30T22:41:07.677+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-09-24T11:23:09.624+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>FoxPro</title>
   <keywords>
     <keyword>&amp;&amp;</keyword>
@@ -26,7 +26,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">这种方言具有“<link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_All-Non-Core-dialects">所有非 Core 方言</link>”的特征。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">编译器和运行时在编译“Foxpro”方言时具有以下“特殊”行为。</para>
+    <para styleclass="Normal">编译器和运行时在编译 “Foxpro” 方言时具有以下“特殊”行为。</para>
     <para styleclass="Heading2">编译器</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">允许使用 4 个字母缩写某些旧关键字。</li>
@@ -37,7 +37,7 @@
     </list>
     <para styleclass="Normal"></para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">允许使用 DOT (&apos;.&apos;) 操作符调用实例方法。</li>
+      <li styleclass="Normal">允许使用 DOT(&apos;.&apos;) 操作符调用实例方法。</li>
     </list>
     <para styleclass="Normal"></para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -53,7 +53,7 @@
     </list>
     <para styleclass="Normal"></para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">添加了几个关键字，如 THIS(作为 SELF 的别名)。</li>
+      <li styleclass="Normal">添加了几个关键字，如 THIS (作为 SELF 的别名)。</li>
     </list>
     <para styleclass="Normal"></para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -77,11 +77,11 @@
     </list>
     <para styleclass="Normal"></para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">添加了 \\ 和 \\ 语句。</li>
+      <li styleclass="Normal">添加了 \\ 和 \\\ 语句。</li>
     </list>
     <para styleclass="Normal"></para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">添加了 &quot;= &lt;表达式&gt;&quot; 命令</li>
+      <li styleclass="Normal">添加了 &quot;= &lt;Expression&gt;&quot; 命令</li>
     </list>
     <para styleclass="Normal"></para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -89,7 +89,7 @@
     </list>
     <para styleclass="Normal"></para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">过程可以返回值，因此与函数一样。</li>
+      <li styleclass="Normal">过程可以有返回值，因此与函数一样。</li>
     </list>
     <para styleclass="Normal"></para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -101,7 +101,7 @@
     </list>
     <para styleclass="Normal"></para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">使用 /fox1 进行编译时，编译器会假定所有类都继承自自定义类，并在使用 DEFINE CLASS 语法声明类时生成特殊代码。</li>
+      <li styleclass="Normal">使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox1">/fox1</link> 进行编译时，编译器会假定所有类都继承自 Custom 类，并在使用 DEFINE CLASS 语法声明类时生成特殊代码。</li>
     </list>
     <para styleclass="Normal">&#32;</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

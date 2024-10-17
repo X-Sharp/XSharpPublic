@@ -27,7 +27,7 @@ namespace XSharp.LanguageService
         private bool _showTabs;
         private readonly ITagAggregator<IClassificationTag> _tagAggregator;
 
-        private XSharpDialect _dialect;
+        private XDialect _dialect;
         private CompletionHelpers helpers ;
         internal static bool StringEquals(string lhs, string rhs)
         {

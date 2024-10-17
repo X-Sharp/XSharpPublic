@@ -233,7 +233,7 @@ BEGIN NAMESPACE VFPXPorterLib
         METHOD ExportProject( doBackup AS LOGIC, asyncWorker AS BackgroundWorker ) AS LOGIC
             LOCAL result := TRUE AS LOGIC
             LOCAL exitExport := FALSE AS LOGIC
-            VAR Dependencies := EnumerateDependencies( )
+            VAR Dependencies := SELF:EnumerateDependencies( )
             //
             TRY
                 // All strings written to ResultText will be written to the log File
@@ -696,7 +696,7 @@ BEGIN NAMESPACE VFPXPorterLib
                 Dependencies:Add( lib:Name )
             NEXT
             // Ok, then, look for All dependencies, and Dependencies of dependencies, and ...
-            Dependencies := EnumerateDependencies( Dependencies )
+            Dependencies := SELF:EnumerateDependencies( Dependencies )
             RETURN Dependencies
 
         PRIVATE METHOD EnumerateDependencies( Dependencies AS HashSet<STRING> ) AS HashSet<STRING>

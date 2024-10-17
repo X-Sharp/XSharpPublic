@@ -21,7 +21,7 @@ begin namespace $rootnamespace$
     public partial class $safeitemrootname$ inherit PageFunction<String>
 
         public constructor()  STRICT
-            InitializeComponent()
-			return
+            SELF:InitializeComponent()
+            return
     end class
 end namespace

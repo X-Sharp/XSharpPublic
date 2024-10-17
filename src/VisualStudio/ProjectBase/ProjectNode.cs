@@ -4288,7 +4288,7 @@ namespace Microsoft.VisualStudio.Project
             var duplicates = new List<MSBuild.ProjectItem>();
 
             // Process Files
-            foreach (MSBuild.ProjectItem item in this.buildProject.ItemsIgnoringCondition)
+            foreach (MSBuild.ProjectItem item in this.buildProject.Items)
             {
                 // Ignore the item if it is a reference or folder
                 if (this.FilterItemTypeToBeAddedToHierarchy(item.ItemType))

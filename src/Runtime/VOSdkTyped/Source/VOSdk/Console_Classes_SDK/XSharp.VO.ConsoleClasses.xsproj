@@ -8,7 +8,6 @@
     <AssemblyName>XSharp.VOConsoleClasses</AssemblyName>
     <Name>XSharp.VO.ConsoleClasses</Name>
     <OutputName>XSharp.VOConsoleClasses</OutputName>
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -28,13 +27,14 @@
     <InitLocals>false</InitLocals>
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-  <DocumentationFile>XSharp.VOConsoleClasses.xml</DocumentationFile>
+    <DocumentationFile>XSharp.VOConsoleClasses.xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -84,6 +84,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-<Import Project="..\VOSDKDocs.Targets" />
-
+  <Import Project="..\VOSDKDocs.Targets" />
 </Project>

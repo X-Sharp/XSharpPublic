@@ -18,6 +18,7 @@
     <Allowdot>True</Allowdot>
     <StartupObject />
     <NamedArgs>True</NamedArgs>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DisabledWarnings />

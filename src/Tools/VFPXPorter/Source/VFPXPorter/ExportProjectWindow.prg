@@ -16,7 +16,7 @@ BEGIN NAMESPACE VFPXPorter
 		PROPERTY Settings AS XPorterSettings AUTO
 
 		PUBLIC CONSTRUCTOR() STRICT //ExportWindow
-			InitializeComponent()
+			SELF:InitializeComponent()
 			RETURN
 
 		PRIVATE METHOD exportButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID
@@ -175,7 +175,7 @@ BEGIN NAMESPACE VFPXPorter
 			NEXT
 
 			foreach subfolder AS String in Directory.GetDirectories(folderPath)
-				EraseFolder(subfolder, TRUE)
+				SELF:EraseFolder(subfolder, TRUE)
 			NEXT
 			IF eraseTop
 				Directory.Delete( folderPath )

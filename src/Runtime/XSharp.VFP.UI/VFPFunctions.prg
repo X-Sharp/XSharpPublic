@@ -68,9 +68,9 @@ FUNCTION Sys(nSetting, uNewValue) As USUAL CLIPPER
 	CASE 5 // Default drive or volume.
         retVal := GetDefaultDir()
 	CASE 16
-		var asm := System.Reflection.Assembly.GetExecutingAssembly()
-		var path := asm:Location
-		retVal := path
+        var asm := AppDomain.CurrentDomain.BaseDirectory    //System.Reflection.Assembly.GetExecutingAssembly()
+// 		var path := asm:Location
+		retVal := asm
 	CASE 987
 		RETURN FALSE
 	CASE 2003

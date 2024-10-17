@@ -82,7 +82,7 @@ class SqlDbProviderPostgreSQL inherit SqlDbProvider
         switch oInfo:FieldType
         case DbFieldType.Character
         case DbFieldType.VarChar
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} varchar ({oInfo.Length}) default ''"
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} varchar ({oInfo.Length}) default ''"
             if oConn:UseNulls
                 if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
                     sResult += NullClause
@@ -91,21 +91,21 @@ class SqlDbProviderPostgreSQL inherit SqlDbProvider
                 endif
             endif
         case DbFieldType.Logic
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} bool "
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} bool "
         case DbFieldType.Integer
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int "
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} int "
             if oInfo:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
-                sResult := i"{QuoteIdentifier(oInfo.ColumnName)} serial4 "
+                sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} serial4 "
             else
                 sResult += " default 0"
             endif
         case DbFieldType.Memo
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} TEXT "
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} TEXT "
         case DbFieldType.Blob
         case DbFieldType.General
         case DbFieldType.Picture
         case DbFieldType.VarBinary
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} BLOB "
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} BLOB "
 
         otherwise
             sResult := super:GetSqlColumnInfo(oInfo, oConn)

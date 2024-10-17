@@ -113,7 +113,7 @@ BEGIN NAMESPACE UDCTesterApp
         VAR tokens := stream:GetTokens()
         sb:AppendLine("Nr,Channel, Position, Line, Column, Type, Text")
         FOREACH token AS XSharpToken IN tokens
-            WriteToken(sb, token)
+            SELF:WriteToken(sb, token)
         NEXT
         File.WriteAllText(cFile,sb:ToString())
         RETURN

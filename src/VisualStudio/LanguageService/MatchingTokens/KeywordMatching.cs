@@ -71,21 +71,22 @@ namespace XSharp.LanguageService
             return spans;
         }
 
-        internal static IList<SnapshotSpan> GetBlockSpans(IEnumerable<XSourceBlock> blocks, SnapshotPoint? currentChar, ITextBuffer buffer)
+        internal static IList<SnapshotSpan> GetBlockSpans(IEnumerable<XSourceBlock> blocks, SnapshotPoint? point
+            , ITextBuffer buffer)
         {
             foreach (var block in blocks)
             {
-                if (matchesPosition(block.Token, currentChar))
+                if (matchesPosition(block.Token, point))
                 {
                     return GetSpansForBlock(block, buffer);
                 }
-                if (matchesPosition(block.Last.Token, currentChar))
+                if (matchesPosition(block.Last.Token, point))
                 {
                     return GetSpansForBlock(block, buffer);
                 }
                 foreach (var child in block.Children)
                 {
-                    if (matchesPosition(child.Token, currentChar))
+                    if (matchesPosition(child.Token, point))
                     {
                         return GetSpansForBlock(block, buffer);
                     }
@@ -93,7 +94,7 @@ namespace XSharp.LanguageService
             }
             return null;
         }
-        internal static IList<SnapshotSpan> GetEntitySpans(IEnumerable<XSourceEntity> entities, SnapshotPoint? currentChar, ITextBuffer buffer)
+        internal static IList<SnapshotSpan> GetEntitySpans(IEnumerable<XSourceEntity> entities, SnapshotPoint? point, ITextBuffer buffer)
         {
             // The blockTokens contains the start and end tokens for an entity
             // like CLASS .. END CLASS
@@ -102,7 +103,7 @@ namespace XSharp.LanguageService
             {
                 foreach (var token in entity.BlockTokens)
                 {
-                    if (matchesPosition(token, currentChar))
+                    if (matchesPosition(token, point))
                     {
                         var spans = new List<SnapshotSpan>();
                         var snapshot = buffer.CurrentSnapshot;
@@ -138,42 +139,43 @@ namespace XSharp.LanguageService
 
             oStart = DateTime.Now;
             //don't do anything if the current SnapshotPoint is not initialized or at the end of the buffer
-            if (spans.Count == 0 || _currentChar == null || !_currentChar.HasValue)   //there is no content in the buffer
+            if (spans.Count == 0 || _point == null || !_point.HasValue)   //there is no content in the buffer
                 yield break;
 
-            var snapshot = _currentChar.Value.Snapshot;
-            if (spans[0].Snapshot != snapshot || _currentChar.Value.Position > snapshot.Length)
+            SnapshotPoint point = _point.Value;
+            var snapshot = point.Snapshot;
+            if (spans[0].Snapshot != snapshot || snapshot.Length == 0 )
             {
                 yield break;
             }
 
-            SnapshotPoint currentChar = _currentChar.Value;
             // Cursor after keyword before EOF?
-            if (currentChar.Position == snapshot.Length)
-                currentChar -= 1;
+            if (point.AtEnd() && !point.AtStart())
+                point -= 1;
            
-            //hold on to a snapshot of the current character
-            var ch = currentChar.GetChar();
-            if (char.IsWhiteSpace(ch))
-            { 
-                currentChar -= 1;
+            var ch = point.GetChar();
+            if (char.IsWhiteSpace(ch) )
+            {
+			    // try to get the preceding character
+                if (point.AtStart())
+                    yield break;
+                point -= 1;
+                ch = point.GetChar();
+                if (char.IsWhiteSpace(ch))
+                    yield break;
             }
-            ch = currentChar.GetChar();
-            if (char.IsWhiteSpace(ch))
-                yield break;
-
-            int currentLine = _currentChar.Value.GetContainingLine().LineNumber; 
+            int currentLine = _point.Value.GetContainingLine().LineNumber; 
             int tokenLine = currentLine + 1;// our tokens have 1 based line numbers
             IList<ITagSpan<TextMarkerTag>> result = new List<ITagSpan<TextMarkerTag>>();
             try
             {
                 // get all the blocks that surround the current position
                 var blocks = _document.Blocks.Where(b => b.Token.Line <= tokenLine && b.Last.Token.Line >= tokenLine);
-                IList<SnapshotSpan> foundSpans = GetBlockSpans(blocks, currentChar, _buffer);
+                IList<SnapshotSpan> foundSpans = GetBlockSpans(blocks, point, _buffer);
                 if (foundSpans == null)
                 {
                     var ents = _document.Entities.Where(e => e.Range.StartLine <= currentLine && e.Range.EndLine >= currentLine); // && e.BlockTokens.Count > 1);
-                    foundSpans = GetEntitySpans(ents,currentChar, _buffer);
+                    foundSpans = GetEntitySpans(ents,point, _buffer);
                 }
                
                 if (foundSpans != null)

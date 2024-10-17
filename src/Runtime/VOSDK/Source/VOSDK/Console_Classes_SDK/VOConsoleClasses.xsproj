@@ -22,6 +22,7 @@
     <VO10>false</VO10>
     <StartupObject />
     <NamedArgs>False</NamedArgs>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>

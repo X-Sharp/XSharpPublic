@@ -52,7 +52,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 
 		CONSTRUCTOR(  )
-			InitializeComponent()
+			SELF:InitializeComponent()
 			//
 			SELF:buttons := List<CommandButton>{}
 			RETURN

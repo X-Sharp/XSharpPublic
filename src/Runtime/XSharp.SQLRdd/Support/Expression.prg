@@ -81,7 +81,7 @@ internal class SqlDbExpression inherit SqlDbObject
 
 
     protect method AddToken(symType as TokenType, sb as StringBuilder) as void
-        AddToken(symType, sb:ToString())
+        SELF:AddToken(symType, sb:ToString())
     protect method AddToken(symType as TokenType, cName as string) as void
         local oFunc		as SqlDbToken
         local oToken 	as SqlDbToken
@@ -199,7 +199,7 @@ internal class SqlDbExpression inherit SqlDbObject
         return cKey
 
     protect method GetToken as SqlDbToken
-        local oToken  := NextToken() as SqlDbToken
+        local oToken  := SELF:NextToken() as SqlDbToken
         if oToken != null
             ++self:CurToken
         endif

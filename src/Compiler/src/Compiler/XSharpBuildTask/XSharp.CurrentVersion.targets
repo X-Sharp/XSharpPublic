@@ -171,7 +171,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
   </PropertyGroup>
 
   <ItemGroup>
-    <DocFileItem Include="$(DocumentationFile)" Condition="'$(DocumentationFile)'!=''"/>
+    <DocFileItem Include="$(IntermediateOutputPath)$(DocumentationFile)" Condition="'$(DocumentationFile)'!=''"/>
   </ItemGroup>
 
   <ItemGroup Condition="'$(_DebugSymbolsProduced)' == 'true' and '$(PdbFile)' != ''">

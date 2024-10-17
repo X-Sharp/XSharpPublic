@@ -55,7 +55,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
                     SELF:_Table := IntPtr.Zero
                 ENDIF
                 if nRes == 0
-                    nRes := SetParameters(oParams)
+                    nRes := SELF:SetParameters(oParams)
                 ENDIF
                 if nRes == 0
                     nRes := ACE.AdsExecuteSQL(SELF:_hStatement, OUT _Table)
@@ -134,7 +134,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
         CoreDb.RddInfo(_SET_SQL_PARAMETERS, REF oP)
         nRes := ACE.AdsPrepareSQL(SELF:_hStatement, sName)
         if nRes == 0 .and. oP is object[] VAR oParams
-            nRes := SetParameters(oParams)
+            nRes := SELF:SetParameters(oParams)
         endif
         if nRes == 0
             nRes := ACE.AdsExecuteSQL(SELF:_hStatement, OUT _Table)

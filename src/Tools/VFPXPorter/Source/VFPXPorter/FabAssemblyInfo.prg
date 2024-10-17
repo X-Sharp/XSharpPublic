@@ -11,14 +11,14 @@ BEGIN NAMESPACE VFPXPorter
 	PUBLIC CLASS FabAssemblyInfo
 		PRIVATE asembly AS Assembly
 		
-		PUBLIC PROPERTY Company AS STRING GET GetAssemblyAttribute({a AS AssemblyCompanyAttribute => a:Company})
-		PUBLIC PROPERTY Product AS STRING GET GetAssemblyAttribute({a AS AssemblyProductAttribute => a:Product})
-		PUBLIC PROPERTY Copyright AS STRING GET GetAssemblyAttribute({a AS AssemblyCopyrightAttribute => a:Copyright})
-		PUBLIC PROPERTY Trademark AS STRING GET GetAssemblyAttribute({a AS AssemblyTrademarkAttribute => a:Trademark})
-		PUBLIC PROPERTY Title AS STRING GET GetAssemblyAttribute({a AS AssemblyTitleAttribute => a:Title})
-		PUBLIC PROPERTY Description AS STRING GET GetAssemblyAttribute({a AS AssemblyDescriptionAttribute => a:Description})
-		PUBLIC PROPERTY Configuration AS STRING GET GetAssemblyAttribute({a AS AssemblyDescriptionAttribute => a:Description})
-		PUBLIC PROPERTY FileVersion AS STRING GET GetAssemblyAttribute({a AS AssemblyFileVersionAttribute => a:Version})
+		PUBLIC PROPERTY Company AS STRING GET SELF:GetAssemblyAttribute({a AS AssemblyCompanyAttribute => a:Company})
+		PUBLIC PROPERTY Product AS STRING GET SELF:GetAssemblyAttribute({a AS AssemblyProductAttribute => a:Product})
+		PUBLIC PROPERTY Copyright AS STRING GET SELF:GetAssemblyAttribute({a AS AssemblyCopyrightAttribute => a:Copyright})
+		PUBLIC PROPERTY Trademark AS STRING GET SELF:GetAssemblyAttribute({a AS AssemblyTrademarkAttribute => a:Trademark})
+		PUBLIC PROPERTY Title AS STRING GET SELF:GetAssemblyAttribute({a AS AssemblyTitleAttribute => a:Title})
+		PUBLIC PROPERTY Description AS STRING GET SELF:GetAssemblyAttribute({a AS AssemblyDescriptionAttribute => a:Description})
+		PUBLIC PROPERTY Configuration AS STRING GET SELF:GetAssemblyAttribute({a AS AssemblyDescriptionAttribute => a:Description})
+		PUBLIC PROPERTY FileVersion AS STRING GET SELF:GetAssemblyAttribute({a AS AssemblyFileVersionAttribute => a:Version})
 		
 		//
 		PUBLIC PROPERTY Version AS Version GET asembly:GetName():Version

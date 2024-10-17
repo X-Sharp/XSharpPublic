@@ -208,8 +208,8 @@ namespace XSharp.LanguageService
         }
         internal XSourceEntity GetCurrentEntity(IWpfTextView textView)
         {
-            var currentChar = textView.Caret.Position.BufferPosition;
-            int currentLine = currentChar.GetContainingLine().LineNumber;
+            var point = textView.Caret.Position.BufferPosition;
+            int currentLine = point.GetContainingLine().LineNumber;
             // LastOrDefault because we want the innermost entity
             // CLASS
             // METHOD

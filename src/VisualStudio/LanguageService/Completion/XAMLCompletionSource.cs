@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Shell;
 using XSharp.LanguageService;
 using XSharp.Settings;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 namespace XSharpLanguage
 {
     [Export(typeof(ICompletionSourceProvider))]
@@ -74,6 +75,9 @@ namespace XSharpLanguage
                 var triggerPoint = (SnapshotPoint)session.GetTriggerPoint(snapshot);
                 if (triggerPoint == null)
                     return;
+                if (triggerPoint.AtEnd())
+                    return;
+
                 // What is the character were it starts ?
                 var line = triggerPoint.GetContainingLine();
                 SnapshotPoint start = triggerPoint;

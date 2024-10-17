@@ -8,7 +8,6 @@
     <AssemblyName>XSharp.VOSQLClasses</AssemblyName>
     <Name>XSharp.VO.SQLClasses</Name>
     <OutputName>XSSQLClasses</OutputName>
-    <XSharpProjectversion>2.12.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Unsafe>false</Unsafe>
@@ -22,6 +21,8 @@
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
     <Vo5>False</Vo5>
+    <NamedArgs>False</NamedArgs>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>

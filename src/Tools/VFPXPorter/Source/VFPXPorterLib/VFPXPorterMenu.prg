@@ -431,7 +431,7 @@ BEGIN NAMESPACE VFPXPorterLib
             Directory.CreateDirectory( tempPath )
             // Now, extract code :
             // This will copy code to an External file, and replace the RawCode property with the FullPath of the External File
-            ExtractCode( tempPath, newList, "" )
+            SELF:ExtractCode( tempPath, newList, "" )
             // Serialize the Items List
             //VAR result := JsonConvert.SerializeObject( newList )
             // Save the Serialization
@@ -473,7 +473,7 @@ BEGIN NAMESPACE VFPXPorterLib
                     item:PROCEDURE := destFile
                 ENDIF
                 IF item:Childs:Count > 0
-                    ExtractCode( tempPath, item:Childs, IIF( String.IsNullOrEmpty(parent), "", parent + "_" ) + item:Name )
+                    SELF:ExtractCode( tempPath, item:Childs, IIF( String.IsNullOrEmpty(parent), "", parent + "_" ) + item:Name )
                 ENDIF
             NEXT
             //
@@ -485,7 +485,7 @@ BEGIN NAMESPACE VFPXPorterLib
                 //
                 total++
                 FOREACH VAR subItem IN item:Childs
-                    total += EnumItems( subItem:Childs )
+                    total += SELF:EnumItems( subItem:Childs )
                 NEXT
             NEXT
             RETURN total

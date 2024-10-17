@@ -71,9 +71,9 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
         switch oInfo:FieldType
         case DbFieldType.Character
         case DbFieldType.VarChar
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} nvarchar ({oInfo.Length}) default ''"
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} nvarchar ({oInfo.Length}) default ''"
         case DbFieldType.Integer
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int "
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} int "
             if oConn:UseNulls
                 if oInfo:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
                     sResult += " identity "
@@ -87,7 +87,7 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
             sResult := i"{oInfo.ColumnName} datetime"
 
         case DbFieldType.Number when oInfo:Decimals == 0
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int default 0"
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} int default 0"
         otherwise
             sResult := super:GetSqlColumnInfo(oInfo, oConn)
         end switch

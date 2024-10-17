@@ -1523,62 +1523,8 @@ namespace XSharp.Project
             });
         }
 
-        private List<EnvDTE.Project> GetSolutionProjects()
-        {
-            List<EnvDTE.Project> list = new List<EnvDTE.Project>();
-            EnvDTE.DTE dte = null;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                var tmp = this.Site.GetService(typeof(EnvDTE.DTE));
-                if (tmp != null)
-                {
-                    dte = (EnvDTE.DTE)tmp;
-
-                    foreach (EnvDTE.Project p in dte.Solution.Projects)
-                    {
-                        if (p == null || p.Properties == null) // unloaded ?
-                        {
-                            continue;
-                        }
-                        if (p.Kind.ToUpper() == EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder.ToUpper())
-                        {
-                            list.AddRange(GetSolutionFolderProjects(p));
-                        }
-                        else
-                        {
-                            list.Add(p);
-                        }
-                    }
-                }
-            });
-            return list;
-        }
-
-        public Object FindProject(string sProject)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            foreach (var p in GetSolutionProjects())
-            {
-                string name = "";
-                try
-                {
-                    name = p.FullName;
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.Message);
-                }
-                if (name.Equals(sProject, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return p;
-                }
-            }
-            return null;
-        }
-
-        public override void RemoveURL(String url)
+ 
+        public override void RemoveURL(string url)
         {
             if (!_closing)
             {

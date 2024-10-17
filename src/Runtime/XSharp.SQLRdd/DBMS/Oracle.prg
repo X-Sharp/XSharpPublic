@@ -69,7 +69,7 @@ class SqlDbProviderOracle inherit SqlDbProvider
         switch oInfo:FieldType
         case DbFieldType.Character
         case DbFieldType.VarChar
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} NVARCHAR ({oInfo.Length}) default ''"
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} NVARCHAR ({oInfo.Length}) default ''"
             if oConn:UseNulls
                 if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
                     sResult += NullClause
@@ -78,16 +78,16 @@ class SqlDbProviderOracle inherit SqlDbProvider
                 endif
             endif
         case DbFieldType.DateTime
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} TIMESTAMP "
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} TIMESTAMP "
 
         case DbFieldType.Double
         case DbFieldType.Float
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} FLOAT ({oInfo.Decimals}) DEFAULT 0"
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} FLOAT ({oInfo.Decimals}) DEFAULT 0"
 
         case DbFieldType.Number
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} NUMBER ({oInfo.Length}, {oInfo.Decimals}) DEFAULT 0"
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} NUMBER ({oInfo.Length}, {oInfo.Decimals}) DEFAULT 0"
         case DbFieldType.Integer
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} NUMBER (10,0) "
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} NUMBER (10,0) "
             if oInfo:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
                 sResult += " GENERATED ALWAYS AS IDENTITY "
             else
@@ -97,7 +97,7 @@ class SqlDbProviderOracle inherit SqlDbProvider
         case DbFieldType.General
         case DbFieldType.Picture
         case DbFieldType.VarBinary
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} BLOB "
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} BLOB "
 
         otherwise
             sResult := super:GetSqlColumnInfo(oInfo, oConn)

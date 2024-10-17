@@ -139,7 +139,7 @@ end class
         cmd:ExecuteNonQuery()
         sb:Clear()
         // build fields list
-        var cols := TableFields()
+        var cols := SELF:TableFields()
         var first := TRUE
         foreach var col in cols
             if first
@@ -150,8 +150,8 @@ end class
             sb:Append(prov:GetSqlColumnInfo(col:FieldInfo, SELF:Connection))
         next
         var fieldList := sb:ToString()
-        var fieldValues := CreateDefaultColumnValues(cols, DefaultSection)
-        var colNames := CreateColumnNames(cols)
+        var fieldValues := SELF:CreateDefaultColumnValues(cols, DefaultSection)
+        var colNames := SELF:CreateColumnNames(cols)
         sb:Clear()
         sb:Append(prov:CreateTableStatement)
         sb:Replace(SqlDbProvider.TableNameMacro, tableDict)
@@ -181,9 +181,9 @@ end class
         TRY
             var sb          := StringBuilder{}
             var prov        := Connection:Provider
-            var cols        := TableFields()
-            var colNames    := CreateColumnNames(cols)
-            var fieldValues := CreateDefaultColumnValues(cols, cTable)
+            var cols        := SELF:TableFields()
+            var colNames    := SELF:CreateColumnNames(cols)
+            var fieldValues := SELF:CreateDefaultColumnValues(cols, cTable)
             using var cmd := SqlDbCommand{"Metadata", Connection, false}
             sb:Append(prov:InsertStatement)
             sb:Replace(SqlDbProvider.TableNameMacro, tableDict)
@@ -201,8 +201,8 @@ end class
         var tables  := Connection:GetTables()
         foreach var table in tables
             if table  != TableDictionary .and. table != IndexDictionary
-                if !DoesTableExistInDictionary(table)
-                    AddTableToDictionary(table)
+                if !SELF:DoesTableExistInDictionary(table)
+                    SELF:AddTableToDictionary(table)
                 endif
             endif
         next
@@ -210,7 +210,7 @@ end class
     PRIVATE METHOD CreateIndexDict() as VOID
         var sb  := StringBuilder{}
         var prov := Connection:Provider
-        var cols := IndexFields()
+        var cols := SELF:IndexFields()
         var first := TRUE
         foreach var col in cols
             if first
@@ -470,7 +470,7 @@ end class
             next
             nOrdinal++
             // create insert command
-            var cols := IndexFields()
+            var cols := SELF:IndexFields()
             var first := TRUE
             var sbValues   := StringBuilder{}
             local iCounter := 1 as long

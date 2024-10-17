@@ -23,7 +23,7 @@ STATIC PUBLIC CLASS VFPTools
     STATIC METHOD ImageFromFile( filename AS STRING ) AS System.Drawing.Image
         // In Visual Studio ? So...In the Designer
         IF !System.IO.File.Exists( filename )
-            IF VPFIsInDesignMode()
+            IF VPFIsInDesignMode() .AND. !String.IsNullOrEmpty(filename)
                 // To avoid a crash in Designer
                 RETURN XSharp.VFP.UI.Properties.Resources.XSharp
             ELSE

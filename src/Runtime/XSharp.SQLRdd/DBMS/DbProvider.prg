@@ -194,7 +194,7 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     abstract method GetFunctions() as Dictionary<string, string>
     /// <inheritdoc/>
     method GetFunction(cFunction as string) as string
-        var funcs := GetFunctions()
+        var funcs := SELF:GetFunctions()
         if funcs:TryGetValue(cFunction, out var oFunc)
             return oFunc
         endif
@@ -371,7 +371,7 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     /// <inheritdoc/>
     virtual method GetSqlColumnInfo(oInfo as RddFieldInfo, oConn as SqlDbConnection) as string
         local sResult := "" as string
-        var name := i"{QuoteIdentifier(oInfo.ColumnName)}"
+        var name := i"{SELF:QuoteIdentifier(oInfo.ColumnName)}"
         switch oInfo:FieldType
         case DbFieldType.Character
         case DbFieldType.VarChar

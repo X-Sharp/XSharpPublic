@@ -25,33 +25,56 @@ namespace XSharp.LanguageService.Commands
 
         private static void GotoBraceExt(DocumentView doc)
         {
-            GotoBraceWorker(doc, true);
+            try
+            {
+                GotoBraceWorker(doc, true);
+            }
+            catch (Exception)
+            {
+
+            }
         }
         private static void GotoBraceNormal(DocumentView doc)
         {
-            GotoBraceWorker(doc, false);
+            try
+            {
+                GotoBraceWorker(doc, false);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         private static void GotoBraceWorker(DocumentView doc, bool ext)
         {
             var xDocument = doc.TextBuffer.GetDocument();
-            var currentChar = doc.TextView.Caret.Position.BufferPosition;
-            if (char.IsWhiteSpace(currentChar.GetChar()))
+            var point = doc.TextView.Caret.Position.BufferPosition;
+            var Length = point.Snapshot.Length;
+            if (Length == 0)
+                return; 
+            if (point.AtEnd())
             {
+                point -= 1;
+            }
+            if (char.IsWhiteSpace(point.GetChar()))
+            {
+                if (point.AtStart())
+                    return; 
                 // Cursor after keyword?
-                var prevChar = currentChar - 1;
+                var prevChar = point - 1;
                 if (!char.IsWhiteSpace(prevChar.GetChar()))
-                    currentChar = prevChar; 
+                    point = prevChar; 
             }
 
-            int currentLine = currentChar.GetContainingLine().LineNumber;
+            int currentLine = point.GetContainingLine().LineNumber;
             int tokenLine = currentLine + 1;// our tokens have 1 based line numbers
             var blocks = xDocument.Blocks.Where(b => b.Token.Line <= tokenLine && b.Last.Token.Line >= tokenLine);
-            var foundSpans = KeywordMatchingTagger.GetBlockSpans(blocks, currentChar, doc.TextBuffer);
+            var foundSpans = KeywordMatchingTagger.GetBlockSpans(blocks, point, doc.TextBuffer);
             if (foundSpans == null || foundSpans.Count == 0)
             {
                 var entities = xDocument.Entities.Where(e => e.Range.StartLine <= currentLine && e.Range.EndLine >= currentLine);
-                foundSpans = KeywordMatchingTagger.GetEntitySpans(entities, currentChar, doc.TextBuffer);
+                foundSpans = KeywordMatchingTagger.GetEntitySpans(entities, point, doc.TextBuffer);
             }
             if (foundSpans != null)
             {
@@ -60,17 +83,17 @@ namespace XSharp.LanguageService.Commands
                 // when the cursor is on a middle then we want to go to the next
                 if (foundSpans.Count >= 2)
                 {
-                    SnapshotPoint end = currentChar;
-                    SnapshotPoint start = currentChar;
-                    SnapshotPoint target = currentChar;
+                    SnapshotPoint end = point;
+                    SnapshotPoint start = point;
+                    SnapshotPoint target = point;
                     bool reversed = false;
                     start = target = foundSpans[0].Start;
                     end = foundSpans[foundSpans.Count - 1].End;
-                    if (foundSpans[0].Contains(currentChar))
+                    if (foundSpans[0].Contains(point))
                     {
                         target = end;
                     }
-                    else if (foundSpans[foundSpans.Count - 1].Contains(currentChar))
+                    else if (foundSpans[foundSpans.Count - 1].Contains(point))
                     {
                         target = start;
                         reversed = true;
@@ -79,7 +102,7 @@ namespace XSharp.LanguageService.Commands
                     {
                         for (int i = 0; i < foundSpans.Count - 1; i++)
                         {
-                            if (foundSpans[i].Contains(currentChar))
+                            if (foundSpans[i].Contains(point))
                             {
                                 if (foundSpans[i].GetText().ToLower() == "end" && i >= foundSpans.Count - 2)
                                 {
@@ -105,7 +128,7 @@ namespace XSharp.LanguageService.Commands
                 doc.TextBuffer.Properties.TryGetProperty(TaggerType, out property);
                 if (property != null)
                 {
-                    var span = new SnapshotSpan(doc.TextBuffer.CurrentSnapshot, currentChar.Position, 1);
+                    var span = new SnapshotSpan(doc.TextBuffer.CurrentSnapshot, point.Position, 1);
                     NormalizedSnapshotSpanCollection spans = new NormalizedSnapshotSpanCollection(span);
                     var mi = TaggerType.GetMethods().Where(m => m.Name == "GetTags").FirstOrDefault();
                     if (mi != null)
@@ -117,7 +140,7 @@ namespace XSharp.LanguageService.Commands
                             foreach (var tag in tags)
                             {
                                 var s = tag.Span;
-                                if (s.Contains(currentChar))
+                                if (s.Contains(point))
                                 {
                                     hasMatched = true;
                                     continue;
@@ -126,17 +149,17 @@ namespace XSharp.LanguageService.Commands
                                     continue;
                                 SnapshotPoint start, end, target;
                                 bool reversed = false;
-                                if (currentChar.Position < s.Start.Position)
+                                if (point.Position < s.Start.Position)
                                 {
                                     // cursor on or before opening paren / curly
-                                    start = currentChar; ;
+                                    start = point; ;
                                     end = s.End;
                                     target = end;
                                 }
                                 else
                                 {
                                     // cursor on or after closing paren / curly
-                                    end = currentChar;
+                                    end = point;
                                     start = s.Start;
                                     target = start;
                                     reversed = true;

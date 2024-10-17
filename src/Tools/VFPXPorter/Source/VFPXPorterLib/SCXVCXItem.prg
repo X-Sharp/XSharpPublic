@@ -139,7 +139,7 @@ BEGIN NAMESPACE VFPXPorterLib
 									newProp := newProp:Substring(0,newProp:Length-1)
 								ENDIF
 							ENDIF
-							newProp := ReplaceCaseInsensitive( newProp, "<@"+token+"@>", data)
+							newProp := SELF:ReplaceCaseInsensitive( newProp, "<@"+token+"@>", data)
 							Found := TRUE
 						ENDIF
 					NEXT
@@ -155,7 +155,7 @@ BEGIN NAMESPACE VFPXPorterLib
 									// Get the value of this "Fox" Property
 									VAR data := propList:Item[ token ]
 									// and put that value at the replaceable position
-									newProp := ReplaceCaseInsensitive( newProp, "<@"+token+"@>", data)
+									newProp := SELF:ReplaceCaseInsensitive( newProp, "<@"+token+"@>", data)
 									Found := TRUE
 								ENDIF
 							NEXT

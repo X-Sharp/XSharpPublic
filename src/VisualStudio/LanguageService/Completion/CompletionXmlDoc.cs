@@ -16,6 +16,7 @@ using XSharpModel;
 using Microsoft.VisualStudio.Editor;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.Remoting.Messaging;
 namespace XSharp.LanguageService
 {
     internal class XSharpXMLCompletion
@@ -27,6 +28,8 @@ namespace XSharp.LanguageService
         {
             // Retrieve Position
             SnapshotPoint caret = textView.Caret.Position.BufferPosition;
+            if (caret.AtEnd())
+                return;
             var line = caret.GetContainingLine();
             if ((line.LineNumber >= textView.TextSnapshot.LineCount - 1) || (line.LineNumber == 0))
                 return;
@@ -61,6 +64,8 @@ namespace XSharp.LanguageService
         {
             // Retrieve Position
             SnapshotPoint caret = textView.Caret.Position.BufferPosition;
+            if (caret.AtEnd())
+                return;
             var line = caret.GetContainingLine();
             if (line.LineNumber >= textView.TextSnapshot.LineCount - 1)
                 return;

@@ -21,7 +21,7 @@ CLASS SQLParser
     PROPERTY Error as STRING GET _Error
 
     METHOD SetError(message as STRING) AS VOID
-        SetError(message, Lt1)
+        SELF:SetError(message, Lt1)
     METHOD SetError(message as STRING, token as XToken) AS VOID
         _Error := message+", found '" + token:Text+"' at position "+SELF:Lt1:Start:ToString()
         RETURN
@@ -173,16 +173,16 @@ CLASS SQLParser
 
         */
         IF ! SELF:Expect(XTokenType.ALTER)
-            SetError("Expected ALTER", SELF:Lt1 )
+            SELF:SetError("Expected ALTER", SELF:Lt1 )
             return null
         ENDIF
         IF !SELF:Expect(XTokenType.TABLE)
-            SetError("Expected TABLE", SELF:Lt1 )
+            SELF:SetError("Expected TABLE", SELF:Lt1 )
             return null
         endif
         var table := FoxAlterTableContext{}
         if !SELF:ExpectAndGet(XTokenType.ID, out var id)
-            SetError("Expected ID", SELF:Lt1 )
+            SELF:SetError("Expected ID", SELF:Lt1 )
             RETURN null
         ENDIF
         table:Name := id:Text
@@ -226,10 +226,10 @@ CLASS SQLParser
         RETURN table
 
     METHOD ParseCreateTable(table out FoxCreateTableContext) AS LOGIC
-        return ParseCreateCursorTable(out table, TRUE)
+        return SELF:ParseCreateCursorTable(out table, TRUE)
 
     METHOD ParseCreateCursor(table out FoxCreateTableContext) AS LOGIC
-        return ParseCreateCursorTable(out table, FALSE)
+        return SELF:ParseCreateCursorTable(out table, FALSE)
 
     PRIVATE METHOD ParseCreateCursorTable(table out FoxCreateTableContext, lTable as LOGIC) AS LOGIC
         /*
@@ -291,7 +291,7 @@ CLASS SQLParser
         IF SELF:Expect(XTokenType.LPAREN)
             // read fields
             var done := FALSE
-            DO WHILE ! Matches(XTokenType.RPAREN) .and. ! SELF:Eoi() .and. ! done
+            DO WHILE ! SELF:Matches(XTokenType.RPAREN) .and. ! SELF:Eoi() .and. ! done
                 if lTable
                     var Lt := SELF:Lt1
                     switch La1
@@ -302,7 +302,7 @@ CLASS SQLParser
                             done := true
                         endif
                     case XTokenType.CHECK
-                        Consume()
+                        SELF:Consume()
                         table:RuleExpression := SELF:ParseExpression()
                         IF SELF:Expect(XTokenType.ERROR)
                             table:RuleText := SELF:ParseExpression()
@@ -319,7 +319,7 @@ CLASS SQLParser
                     case XTokenType.RPAREN
                         done := true
                     case XTokenType.COMMA
-                        Consume()
+                        SELF:Consume()
                     otherwise
                         NOP
                     end switch
@@ -355,13 +355,13 @@ CLASS SQLParser
         var sqlField := FoxColumnContext{}
         oColumns:Add(sqlField)
         IF !SELF:ExpectAndGet(XTokenType.ID, out name)
-            SetError("Expected Column Name", SELF:Lt1 )
+            SELF:SetError("Expected Column Name", SELF:Lt1 )
             RETURN FALSE
         ENDIF
         sqlField:Name    := name:Text
         sqlField:Caption := name:Text
         IF !SELF:ExpectAndGet(XTokenType.ID, out oType)
-            SetError("Expected Column Type", SELF:Lt1 )
+            SELF:SetError("Expected Column Type", SELF:Lt1 )
             RETURN FALSE
         ENDIF
         IF SELF:Expect(XTokenType.LPAREN)
@@ -369,7 +369,7 @@ CLASS SQLParser
             if Int32.TryParse(len:Text, out var nLen)
                 sqlField:Length := nLen
             else
-                SetError("Expected Length" ,len)
+                SELF:SetError("Expected Length" ,len)
                 RETURN FALSE
             endif
             IF SELF:Expect(XTokenType.COMMA)
@@ -377,12 +377,12 @@ CLASS SQLParser
                 if Int32.TryParse(dec:Text, out var nDec)
                     sqlField:Decimals := nDec
                 else
-                    SetError("Expected Decimals", dec)
+                    SELF:SetError("Expected Decimals", dec)
                     RETURN FALSE
                 endif
             ENDIF
             IF ! SELF:Expect(XTokenType.RPAREN)
-                SetError("Expected ')'")
+                SELF:SetError("Expected ')'")
                 return FALSE
             ENDIF
         ENDIF
@@ -420,7 +420,7 @@ CLASS SQLParser
                     IF Int32.TryParse(expr, out var nextval)
                         sqlField:NextValue := nextval
                     ELSE
-                        SetError("Expected NextValue")
+                        SELF:SetError("Expected NextValue")
                         RETURN FALSE
                     endif
                     IF SELF:Expect("STEP")
@@ -428,7 +428,7 @@ CLASS SQLParser
                         IF Int32.TryParse(step, out var stepval)
                             sqlField:StepValue := stepval
                         ELSE
-                            SetError("Expected StepValue")
+                            SELF:SetError("Expected StepValue")
                             RETURN FALSE
                         endif
                     ENDIF
@@ -448,19 +448,19 @@ CLASS SQLParser
                         if SELF:ExpectAndGet(XTokenType.ID, out var foreignTag)
                             sqlField:ForeignTag := foreignTag:Text
                         else
-                            SetError("Expected TagName")
+                            SELF:SetError("Expected TagName")
                             return false
                         endif
                     ENDIF
                 else
-                    SetError("Expected Foreign TableName")
+                    SELF:SetError("Expected Foreign TableName")
                     return false
                 endif
             CASE XTokenType.NOCPTRANS
                 SELF:Expect(XTokenType.NOCPTRANS)
                 sqlField:Flags |= DBFFieldFlags.Binary
             OTHERWISE
-                SetError("Unexpected token ", SELF:Lt1)
+                SELF:SetError("Unexpected token ", SELF:Lt1)
                 lOk := FALSE
                 done := TRUE
             END SWITCH
@@ -499,7 +499,7 @@ CLASS SQLParser
                 SELF:Expect(XTokenType.COMMA)
             ENDDO
         ELSE
-            SetError("Expected FROM or JOIN")
+            SELF:SetError("Expected FROM or JOIN")
             RETURN FALSE
         ENDIF
         IF SELF:Expect(XTokenType.WHERE)
@@ -558,24 +558,24 @@ CLASS SQLParser
         */
             stmt := FoxUpdateContext{}
             IF ! SELF:Expect(XTokenType.UPDATE)
-                SetError("Expected UPDATE")
+                SELF:SetError("Expected UPDATE")
                 return FALSE
             ENDIF
             IF SELF:Matches(XTokenType.ID)
                 stmt:TableName := SELF:ParseTableName()
             ENDIF
             IF ! SELF:Expect(XTokenType.SET)
-                SetError("Expected SET")
+                SELF:SetError("Expected SET")
                 return FALSE
             ENDIF
             IF ! SELF:Matches(XTokenType.ID)
-                SetError("Expected ID")
+                SELF:SetError("Expected ID")
                 RETURN FALSE
             ENDIF
             do while SELF:Matches(XTokenType.ID)
                 var column := SELF:ConsumeAndGetText()
                 IF ! SELF:Expect(XTokenType.EQ)
-                    SetError("Expected '='")
+                    SELF:SetError("Expected '='")
                     RETURN FALSE
                 ENDIF
                 var expr := SELF:ParseExpression(XTokenType.FROM, XTokenType.JOIN, XTokenType.WHERE)
@@ -610,12 +610,12 @@ CLASS SQLParser
                         ENDIF
                     ENDDO
                 ELSEIF SELF:Matches(XTokenType.SELECT)
-                    SetError("SUBSELECT NOT supported yet")
+                    SELF:SetError("SUBSELECT NOT supported yet")
                     RETURN FALSE
                 ENDIF
             ENDIF
             IF !SELF:Expect(XTokenType.WHERE) .and. ! SELF:Eoi() .and. ! Self:Eos()
-                SetError("Expected WHERE")
+                SELF:SetError("Expected WHERE")
                 RETURN FALSE
             ENDIF
             stmt:WhereClause := SELF:ParseExpression()

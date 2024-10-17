@@ -236,6 +236,8 @@ namespace XSharp.LanguageService
         internal int getCurrentLine()
         {
             SnapshotPoint caret = this._textView.Caret.Position.BufferPosition;
+            if (caret.AtEnd())
+                return caret.Snapshot.LineCount - 1;
             ITextSnapshotLine line = caret.GetContainingLine();
             return line.LineNumber;
         }

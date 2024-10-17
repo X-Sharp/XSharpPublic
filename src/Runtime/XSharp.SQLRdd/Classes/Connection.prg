@@ -363,7 +363,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
 
     internal method ForceOpen as void
         if self:DbConnection:State != ConnectionState.Open
-            var connStr := RaiseStringEvent(self, SqlRDDEventReason.ConnectionString, "", self:ConnectionString)
+            var connStr := SELF:RaiseStringEvent(self, SqlRDDEventReason.ConnectionString, "", self:ConnectionString)
             self:DbConnection:ConnectionString  := connStr
             self:DbConnection:Open()
         endif
@@ -573,7 +573,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <returns>Object with Table Information or NULL when an error occurs</returns>
     method GetStructureForQuery(cQuery as string, TableName as string, longFieldNames as LOGIC) as SqlDbTableInfo
          try
-            cQuery := RaiseStringEvent(self, SqlRDDEventReason.CommandText, TableName, cQuery)
+            cQuery := SELF:RaiseStringEvent(self, SqlRDDEventReason.CommandText, TableName, cQuery)
             longFieldNames := SELF:LongFieldNames
             _command:CommandText := cQuery
             var schema := _command:GetSchemaTable()
@@ -648,7 +648,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             var columnList := cColumnNames
             var selectStmt := SqlDbProvider.SelectClause+columnList+SqlDbProvider.FromClause+table
             var query := selectStmt+SqlDbProvider.WhereClause+"0=1"
-            var oTd := GetStructureForQuery(query,TableName, longFieldNames)
+            var oTd := SELF:GetStructureForQuery(query,TableName, longFieldNames)
             oTd:SelectStatement := selectStmt
             self:Schema:Add(TableName, oTd)
             return oTd
@@ -817,9 +817,9 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
 
 
     private method _Login() as void
-        _LoginWorker(true)
+        SELF:_LoginWorker(true)
     private method _Logout() as void
-        _LoginWorker(false)
+        SELF:_LoginWorker(false)
     private method _LoginWorker(lIn as LOGIC) as void
         var user    := Environment.UserName
         var station := Environment.MachineName
@@ -883,30 +883,30 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         endif
         var oArgs := SqlRddEventArgs{ nEvent, cTable, oValue}
         if @@CallBack != null
-            var result := @@CallBack ( oObject, oArgs )
+            var result := SELF:CallBack ( oObject, oArgs )
             return result
         endif
         return oArgs:Value
     internal method RaiseStringEvent(oObject as SqlDbObject, nEvent as SqlRDDEventReason, cTable as string, oValue as string) as string
-        var result := RaiseEvent(oObject, nEvent, cTable, oValue)
+        var result := SELF:RaiseEvent(oObject, nEvent, cTable, oValue)
         if result is string var strValue
             return strValue
         endif
         return oValue
     internal method RaiseIntEvent(oObject as SqlDbObject, nEvent as SqlRDDEventReason, cTable as string, oValue as int) as int
-        var result := RaiseEvent(oObject, nEvent, cTable, oValue)
+        var result := SELF:RaiseEvent(oObject, nEvent, cTable, oValue)
         if result is int var intValue
             return intValue
         endif
         return oValue
     internal method RaiseListEvent(oObject as SqlDbObject, nEvent as SqlRDDEventReason, cTable as string, oValue as IList<string>) as IList<string>
-        var result := RaiseEvent(oObject, nEvent, cTable, oValue)
+        var result := SELF:RaiseEvent(oObject, nEvent, cTable, oValue)
         if result is IList<string> var listValue
             return listValue
         endif
         return oValue
     internal method RaiseLogicEvent(oObject as SqlDbObject, nEvent as SqlRDDEventReason, cTable as string, oValue as logic) as logic
-        var result := RaiseEvent(oObject, nEvent, cTable, oValue)
+        var result := SELF:RaiseEvent(oObject, nEvent, cTable, oValue)
         if result is logic var logValue
             return logValue
         endif

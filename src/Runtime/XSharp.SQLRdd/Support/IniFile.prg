@@ -74,7 +74,7 @@ class SqlDbIniFile
     /// <param name="nDefault">Default value. This is returned when the entry is missing or not a valid number</param>
     /// <returns>The number from the ini file or the default</returns>
     method GetInt(sSection as string,sEntry as string,nDefault as longint) as longint
-        var sValue := GetString(sSection, sEntry, "")
+        var sValue := SELF:GetString(sSection, sEntry, "")
         var nValue := nDefault
         if ! String.IsNullOrEmpty(sValue)
             if ! Int32.TryParse(sValue, out nValue)
@@ -166,7 +166,7 @@ class SqlDbIniFile
     /// <returns>The value from ini file or the default</returns>
 
     method GetStringUpper(sSection as string,sEntry as string,sDefault as string) as string
-        return GetString(sSection, sEntry, sDefault):ToUpper()
+        return SELF:GetString(sSection, sEntry, sDefault):ToUpper()
 
     /// <summary>
     /// Write an integer to the INI file

@@ -17,6 +17,7 @@
     <VO3>true</VO3>
     <NamedArgs>False</NamedArgs>
     <StartupObject />
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <WarningLevel>4</WarningLevel>
@@ -45,15 +46,14 @@
       <AssemblyName>XSharp.Core.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-     <HintPath>$(RTOutputPath)XSharp.Core.dll</HintPath>
-
+      <HintPath>..\..\..\Artifacts\Debug\XSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.RT, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.RT</Name>
       <AssemblyName>XSharp.RT.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-     <HintPath>$(RTOutputPath)XSharp.RT.dll</HintPath>
+      <HintPath>..\..\..\Artifacts\Debug\XSharp.RT.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>System.Drawing</Name>

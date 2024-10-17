@@ -1448,13 +1448,13 @@ BEGIN NAMESPACE XSharp.RT.Tests
 		METHOD CreateFromTestsDBFNTX() AS VOID
          // https://github.com/X-Sharp/XSharpPublic/issues/917
             RddSetDefault ( "DBFNTX" ) // DBFNTX
-            _CreateFromTests()
+            SELF:_CreateFromTests()
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD CreateFromTestsDBFCDX() AS VOID
          // https://github.com/X-Sharp/XSharpPublic/issues/917
             RddSetDefault ( "DBFCDX" ) // DBFNTX
-            _CreateFromTests()
+            SELF:_CreateFromTests()
         METHOD _CreateFromTests() AS VOID
             LOCAL cDbf, cDbf2, cDbf3 AS STRING
             LOCAL aStruct AS ARRAY

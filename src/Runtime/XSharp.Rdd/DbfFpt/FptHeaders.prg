@@ -224,7 +224,7 @@ INTERNAL CLASS FlexHeader INHERIT FptHeader
     END PROPERTY
     METHOD RootLock() AS LOGIC
         IF SELF:Shared
-             _LockRetry(FLEXHEADER_OFFSET+OFFSET_ROOT,sizeof(LONG))
+             SELF:_LockRetry(FLEXHEADER_OFFSET+OFFSET_ROOT,sizeof(LONG))
              SELF:_RootLocked := TRUE
              RETURN TRUE
         ENDIF

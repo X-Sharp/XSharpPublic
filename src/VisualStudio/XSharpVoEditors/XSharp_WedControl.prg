@@ -104,15 +104,15 @@ CLASS XSharp_VOWEDControl INHERIT VOWEDControl IMPLEMENTS IVOWEDControl
 
         // Menu options
     METHOD CanDoAction(nType AS Actions) AS LOGIC
-        VAR lOk := CanDoAction( (DesignerActionType) (INT) nType)
+        VAR lOk := SELF:CanDoAction( (DesignerActionType) (INT) nType)
         RETURN lOk
 
     METHOD Action(nType AS Actions) AS VOID
-        DoAction( (DesignerActionType) (INT) nType)
+        SELF:DoAction( (DesignerActionType) (INT) nType)
 
     METHOD ShowStatusBarMessage(cMessage AS STRING) AS VOID
         IF (SELF:StatusMessage != NULL)
-            StatusMessage(cMessage)
+            SELF:StatusMessage(cMessage)
         ENDIF
 
 END CLASS

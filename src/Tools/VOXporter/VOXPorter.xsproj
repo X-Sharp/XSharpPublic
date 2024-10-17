@@ -24,6 +24,7 @@
     <SignAssembly>false</SignAssembly>
     <NamedArgs>True</NamedArgs>
     <AssemblyOriginatorKeyFile />
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <EmitDebugInformation>true</EmitDebugInformation>

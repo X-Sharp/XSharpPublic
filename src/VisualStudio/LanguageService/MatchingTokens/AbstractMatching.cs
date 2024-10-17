@@ -3,15 +3,12 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
-using Microsoft.VisualStudio.Utilities;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using XSharpModel;
 using XSharp.Settings;
 using Microsoft.VisualStudio.Language.StandardClassification;
@@ -29,7 +26,7 @@ namespace XSharp.LanguageService
         protected readonly XDocument _document;
         protected readonly IBufferTagAggregatorFactoryService _aggregator;
         protected readonly ITagAggregator<IClassificationTag> _tagAggregator;
-        protected SnapshotPoint? _currentChar;
+        protected SnapshotPoint? _point;
         
         protected string _prefix;
 
@@ -77,9 +74,9 @@ namespace XSharp.LanguageService
 
         private void UpdateAtCaretPosition(CaretPosition caretPosition)
         {
-            _currentChar = caretPosition.Point.GetPoint(_buffer, caretPosition.Affinity);
+            _point = caretPosition.Point.GetPoint(_buffer, caretPosition.Affinity);
 
-            if (_currentChar.HasValue)
+            if (_point.HasValue)
             {
                 SnapshotSpan snapshot = new SnapshotSpan(_buffer.CurrentSnapshot, 0, _buffer.CurrentSnapshot.Length);
                 TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(snapshot));
@@ -113,13 +110,14 @@ namespace XSharp.LanguageService
             }
             return false;
         }
-        internal static protected bool matchesPosition(IToken token, SnapshotPoint? currentChar)
+        internal static protected bool matchesPosition(IToken token, SnapshotPoint? point)
         {
-            return token.StartIndex <= currentChar && token.StopIndex >= currentChar;
+            return token.StartIndex <= point && token.StopIndex >= point;
         }
 
         public abstract IEnumerable<ITagSpan<TextMarkerTag>> GetTags(NormalizedSnapshotSpanCollection spans);
         internal abstract TextMarkerTag Tag { get; }
     }
+
 }
 

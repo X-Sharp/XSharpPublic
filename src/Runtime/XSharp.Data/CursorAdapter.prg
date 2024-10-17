@@ -114,23 +114,23 @@ CLASS CursorAdapter
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.AllowDelete/*" />
     property AllowDelete                    as logic ;
-        GET _GetFlag(CursorFlags.AllowDelete) ;
-        SET _SetFlag(CursorFlags.AllowDelete, value)
+        GET SELF:_GetFlag(CursorFlags.AllowDelete) ;
+        SET SELF:_SetFlag(CursorFlags.AllowDelete, value)
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.AllowInsert/*" />
     property AllowInsert                    as logic ;
-        GET _GetFlag(CursorFlags.AllowInsert) ;
-        SET _SetFlag(CursorFlags.AllowInsert, value)
+        GET SELF:_GetFlag(CursorFlags.AllowInsert) ;
+        SET SELF:_SetFlag(CursorFlags.AllowInsert, value)
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.AllowSimultaneousFetch/*" />
     property AllowSimultaneousFetch         as logic ;
-        GET _GetFlag(CursorFlags.AllowSimultaneousFetch) ;
-        SET _SetFlag(CursorFlags.AllowSimultaneousFetch, value)
+        GET SELF:_GetFlag(CursorFlags.AllowSimultaneousFetch) ;
+        SET SELF:_SetFlag(CursorFlags.AllowSimultaneousFetch, value)
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.AllowUpdate/*" />
     property AllowUpdate                    as logic ;
-        GET _GetFlag(CursorFlags.AllowUpdate) ;
-        SET _SetFlag(CursorFlags.AllowUpdate, value)
+        GET SELF:_GetFlag(CursorFlags.AllowUpdate) ;
+        SET SELF:_SetFlag(CursorFlags.AllowUpdate, value)
 
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.BatchUpdateCount/*" />
@@ -138,16 +138,16 @@ CLASS CursorAdapter
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.BreakOnError/*" />
     property BreakOnError                   as logic ;
-        GET _GetFlag(CursorFlags.BreakOnError) ;
-        SET _SetFlag(CursorFlags.BreakOnError, value)
+        GET SELF:_GetFlag(CursorFlags.BreakOnError) ;
+        SET SELF:_SetFlag(CursorFlags.BreakOnError, value)
 
 
     property BufferModeOverride             as long auto
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.CompareMemo/*" />
     property CompareMemo                    as logic ;
-        GET _GetFlag(CursorFlags.CompareMemo) ;
-        SET _SetFlag(CursorFlags.CompareMemo, value)
+        GET SELF:_GetFlag(CursorFlags.CompareMemo) ;
+        SET SELF:_SetFlag(CursorFlags.CompareMemo, value)
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.ConflictCheckCmd/*" />
     property ConflictCheckCmd               as string auto
@@ -171,7 +171,7 @@ CLASS CursorAdapter
         end get
         set
             _DataSource := value
-            _ValidateDataSource()
+            SELF:_ValidateDataSource()
         end set
     end property
 
@@ -207,14 +207,14 @@ CLASS CursorAdapter
     property DeleteCmdDataSourcetype        as string get DataSourceType
 
     property FetchAsNeeded                  as logic ;
-        GET _GetFlag(CursorFlags.FetchAsNeeded) ;
-        SET _SetFlag(CursorFlags.FetchAsNeeded, value)
+        GET SELF:_GetFlag(CursorFlags.FetchAsNeeded) ;
+        SET SELF:_SetFlag(CursorFlags.FetchAsNeeded, value)
 
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.FetchMemo/*" />
     property FetchMemo                      as logic ;
-        GET _GetFlag(CursorFlags.FetchMemo) ;
-        SET _SetFlag(CursorFlags.FetchMemo, value)
+        GET SELF:_GetFlag(CursorFlags.FetchMemo) ;
+        SET SELF:_SetFlag(CursorFlags.FetchMemo, value)
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.FetchMemoCmdList/*" />
     property FetchMemoCmdList               as string auto
@@ -257,13 +257,13 @@ CLASS CursorAdapter
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.MapBinary/*" />
     property MapBinary                      as logic ;
-        GET _GetFlag(CursorFlags.MapBinary) ;
-        SET _SetFlag(CursorFlags.MapBinary, value)
+        GET SELF:_GetFlag(CursorFlags.MapBinary) ;
+        SET SELF:_SetFlag(CursorFlags.MapBinary, value)
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.MapVarchar/*" />
     property MapVarchar                       as logic ;
-        GET _GetFlag(CursorFlags.MapVarchar) ;
-        SET _SetFlag(CursorFlags.MapVarchar, value)
+        GET SELF:_GetFlag(CursorFlags.MapVarchar) ;
+        SET SELF:_SetFlag(CursorFlags.MapVarchar, value)
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.MaxRecords/*" />
     property MaxRecords                       as long auto
@@ -273,13 +273,13 @@ CLASS CursorAdapter
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.NoData/*" />
     property NoData                          as logic ;
-        GET _GetFlag(CursorFlags.NoData) ;
-        SET _SetFlag(CursorFlags.NoData, value)
+        GET SELF:_GetFlag(CursorFlags.NoData) ;
+        SET SELF:_SetFlag(CursorFlags.NoData, value)
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.Prepared/*" />
     property Prepared                        as logic ;
-        GET _GetFlag(CursorFlags.Prepared) ;
-        SET _SetFlag(CursorFlags.Prepared, value)
+        GET SELF:_GetFlag(CursorFlags.Prepared) ;
+        SET SELF:_SetFlag(CursorFlags.Prepared, value)
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.RefreshAlias/*" />
     property RefreshAlias                   as string auto
@@ -300,16 +300,16 @@ CLASS CursorAdapter
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.RefreshTimeStamp/*" />
     property RefreshTimeStamp               as logic ;
-        GET _GetFlag(CursorFlags.RefreshTimeStamp) ;
-        SET _SetFlag(CursorFlags.RefreshTimeStamp, value)
+        GET SELF:_GetFlag(CursorFlags.RefreshTimeStamp) ;
+        SET SELF:_SetFlag(CursorFlags.RefreshTimeStamp, value)
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.SelectCmd/*" />
     property SelectCmd                      as string auto
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.SendUpdates/*" />
     property SendUpdates                    as logic ;
-        GET _GetFlag(CursorFlags.SendUpdates) ;
-        SET _SetFlag(CursorFlags.SendUpdates, value)
+        GET SELF:_GetFlag(CursorFlags.SendUpdates) ;
+        SET SELF:_SetFlag(CursorFlags.SendUpdates, value)
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.Tables/*" />
     property Tables                         as string auto
@@ -359,14 +359,14 @@ CLASS CursorAdapter
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.UseCursorSchema/*" />
     property UseCursorSchema                as logic ;
-        GET _GetFlag(CursorFlags.UseCursorSchema) ;
-        SET _SetFlag(CursorFlags.UseCursorSchema, value)
+        GET SELF:_GetFlag(CursorFlags.UseCursorSchema) ;
+        SET SELF:_SetFlag(CursorFlags.UseCursorSchema, value)
 
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.UseDeDataSource/*" />
     property UseDeDataSource                as logic ;
-        GET _GetFlag(CursorFlags.UseDeDataSource) ;
-        SET _SetFlag(CursorFlags.UseDeDataSource, value)
+        GET SELF:_GetFlag(CursorFlags.UseDeDataSource) ;
+        SET SELF:_SetFlag(CursorFlags.UseDeDataSource, value)
 
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.UseMemoSize/*" />
@@ -374,8 +374,8 @@ CLASS CursorAdapter
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.UseTransactions/*" />
     property UseTransactions                as logic ;
-        GET _GetFlag(CursorFlags.UseTransactions) ;
-        SET _SetFlag(CursorFlags.UseTransactions, value)
+        GET SELF:_GetFlag(CursorFlags.UseTransactions) ;
+        SET SELF:_SetFlag(CursorFlags.UseTransactions, value)
 
     /// <include file="VFPClasses.xml" path="doc/CursorAdapter.WhereType/*" />
     property WhereType                      as SqlWhereType auto
@@ -405,11 +405,11 @@ CLASS CursorAdapter
         // nOptions and Source are optional
         SWITCH SELF:DataSourceType
         CASE "ODBC"
-            return CursorFillODBC(useCursorSchema, noData)
+            return SELF:CursorFillODBC(useCursorSchema, noData)
         CASE "ADO"
-            return CursorFillAdo(useCursorSchema, noData)
+            return SELF:CursorFillAdo(useCursorSchema, noData)
         CASE "SQL"
-            return CursorFillSQL(useCursorSchema, noData)
+            return SELF:CursorFillSQL(useCursorSchema, noData)
         END SWITCH
         RETURN FALSE
 

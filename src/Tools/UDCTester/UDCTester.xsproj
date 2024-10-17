@@ -20,6 +20,10 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <ApplicationIcon>$(SolutionDir)Tools\VOXporter\Source\VOXPorter\Resources\XSharp.ico</ApplicationIcon>
+    <StartupObject />
+    <Allowdot>True</Allowdot>
+    <NamedArgs>True</NamedArgs>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DefineConstants>NDEBUG</DefineConstants>
@@ -44,11 +48,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(CommonDir)commonAssemblyInfo.prg" >
+    <Compile Include="$(CommonDir)commonAssemblyInfo.prg">
       <Link>Properties\CommonAssemblyInfo.prg</Link>
     </Compile>
-    <Compile Include="$(CommonDir)constants.prg" >
-    <Link>Properties\constants.prg</Link>
+    <Compile Include="$(CommonDir)constants.prg">
+      <Link>Properties\constants.prg</Link>
     </Compile>
     <Compile Include="Program.prg">
       <SubType>Code</SubType>

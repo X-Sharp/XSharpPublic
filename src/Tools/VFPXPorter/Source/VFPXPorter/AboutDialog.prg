@@ -9,7 +9,7 @@ BEGIN NAMESPACE VFPXPorter
 	PUBLIC PARTIAL CLASS AboutDialog	;
 		INHERIT System.Windows.Forms.Form
 		PUBLIC CONSTRUCTOR() STRICT //AboutDialog
-			InitializeComponent()
+			SELF:InitializeComponent()
 			RETURN
 		PRIVATE METHOD AboutDialog_Load(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
 			LOCAL currentAsm AS FabAssemblyInfo

@@ -20,6 +20,8 @@
     <DisabledWarnings>165</DisabledWarnings>
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
     <PlatformTarget>x86</PlatformTarget>
+    <NamedArgs>True</NamedArgs>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <EmitDebugInformation>true</EmitDebugInformation>

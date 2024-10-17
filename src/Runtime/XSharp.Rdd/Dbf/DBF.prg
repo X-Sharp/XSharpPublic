@@ -245,13 +245,13 @@ RETURN result
 
 /// <inheritdoc />
 OVERRIDE METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
-    ClearRecordList()
+    SELF:ClearRecordList()
 	SELF:ForceRel()
 RETURN SUPER:SetFilter(info)
 
 /// <inheritdoc />
 OVERRIDE METHOD ClearFilter( ) AS LOGIC
-    ClearRecordList()
+    SELF:ClearRecordList()
 	RETURN SUPER:ClearFilter()
 
     /// <inheritdoc />
@@ -2087,11 +2087,11 @@ OVERRIDE METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
     CASE DbInfo.DBI_RL_LEN
         oResult := _recordList?:Length
     CASE DbInfo.DBI_RL_CLEAR
-        ClearRecordList()
+        SELF:ClearRecordList()
     CASE DbInfo.DBI_RL_ENABLE
         oResult := FALSE
         IF (LOGIC)oNewValue != (_recordList != NULL)
-            ClearRecordList()
+            SELF:ClearRecordList()
             IF (LOGIC)oNewValue
                 _recordList := RecordList{}
             ELSE

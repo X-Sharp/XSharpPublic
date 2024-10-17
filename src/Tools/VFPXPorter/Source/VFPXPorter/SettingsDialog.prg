@@ -14,7 +14,7 @@ BEGIN NAMESPACE VFPXPorter
 		PRIVATE iniSettings AS ExporterSettings
 
 		PUBLIC CONSTRUCTOR( ini AS ExporterSettings ) STRICT //SettingsDialog
-			InitializeComponent()
+			SELF:InitializeComponent()
 			SELF:iniSettings := ini
 
 			RETURN

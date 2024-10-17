@@ -20,6 +20,8 @@
     <StartupObject />
     <Unsafe>True</Unsafe>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <Allowdot>True</Allowdot>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DisabledWarnings />

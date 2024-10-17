@@ -3,8 +3,11 @@
     local s aS sYMBOL
     local str aS string
     local l as long
-    S := U
+    s := u
     str := u
     l := u
-    ? S, l
+    ? s, l
+
+
     wait
+

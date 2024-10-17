@@ -341,20 +341,20 @@ partial class SQLRDD inherit DBFVFP
                         local wasNew := false as logic
                         // Append from may add deleted rows
                         if row:RowState.HasFlag(DataRowState.Added)
-                            lOk := _ExecuteInsertStatement(row)
+                            lOk := SELF:_ExecuteInsertStatement(row)
                             row:AcceptChanges()
                             wasNew  := true
                         endif
                         if self:_deletedColumnNo > -1
                             if !wasNew
                                 // already written with _deletedColumnNo with the correct value
-                                lOk := _ExecuteUpdateStatement(row, true)
+                                lOk := SELF:_ExecuteUpdateStatement(row, true)
                                 if lOk
                                     row:AcceptChanges()
                                 endif
                             endif
                         else
-                            lOk := _ExecuteDeleteStatement(row, true)
+                            lOk := SELF:_ExecuteDeleteStatement(row, true)
                             // we do not clear the fields, but leave the row unchanged.
                             // the DBF has the deleted flag. This emulates what DBF files do
 
@@ -363,10 +363,10 @@ partial class SQLRDD inherit DBFVFP
 
                     else
                         if row:RowState.HasFlag(DataRowState.Added)
-                            lOk := _ExecuteInsertStatement(row)
+                            lOk := SELF:_ExecuteInsertStatement(row)
                             row:AcceptChanges()
                         elseif row:RowState.HasFlag(DataRowState.Modified)
-                            lOk := _ExecuteUpdateStatement(row, true)
+                            lOk := SELF:_ExecuteUpdateStatement(row, true)
                             row:AcceptChanges()
                         endif
                     endif

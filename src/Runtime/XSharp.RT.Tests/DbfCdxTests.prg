@@ -5170,14 +5170,14 @@ RETURN
 		[Fact, Trait("Category", "DBF")];
 		METHOD VariousFptTests() AS VOID
 			LOCAL wBlockSize AS WORD
-			DoFptTest(100)
+			SELF:DoFptTest(100)
 			wBlockSize := RuntimeState.MemoBlockSize
 			RuntimeState.MemoBlockSize := 64
-			DoFptTest(10)
+			SELF:DoFptTest(10)
 			RuntimeState.MemoBlockSize := 20
-			DoFptTest(10)
+			SELF:DoFptTest(10)
 			RuntimeState.MemoBlockSize := 10
-			DoFptTest(10)
+			SELF:DoFptTest(10)
 			RuntimeState.MemoBlockSize := wBlockSize
 
 		METHOD DoFptTest(nRecords AS DWORD) AS VOID

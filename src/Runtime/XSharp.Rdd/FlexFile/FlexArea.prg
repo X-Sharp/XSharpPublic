@@ -299,7 +299,7 @@ INTERNAL CLASS FlexArea
         RETURN blockLen
 
     INTERNAL METHOD GetBlockLen(blockNbr AS LONG) AS LONG
-        var nLen := GetDataLen(blockNbr)
+        var nLen := SELF:GetDataLen(blockNbr)
         if nLen >= 0
             nLen += FlexMemoToken.TokenLength
         endif
@@ -494,7 +494,7 @@ INTERNAL CLASS FlexArea
                 IF SELF:SetBlockPos(nOldPtr)
                     IF SELF:LockHeader(TRUE)
                         SELF:WriteBlock(bytes)
-                        WriteBlockFiller(bytes:Length, LEFTOVER_DATASPACE_PAD)
+                        SELF:WriteBlockFiller(bytes:Length, LEFTOVER_DATASPACE_PAD)
                         SELF:UnLockHeader(TRUE)
                         RETURN blockNr
                     ENDIF

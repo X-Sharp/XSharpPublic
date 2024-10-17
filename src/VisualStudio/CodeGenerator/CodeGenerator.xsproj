@@ -14,6 +14,8 @@
     <NamedArgs>true</NamedArgs>
     <StartupObject />
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <Allowdot>True</Allowdot>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DefineConstants>DEBUG;TRACE</DefineConstants>

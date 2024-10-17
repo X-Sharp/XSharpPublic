@@ -15,6 +15,7 @@
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
     <StartupObject />
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DisabledWarnings />

@@ -44,7 +44,7 @@ CLASS SqlMetadataProviderCallBack Inherit SqlMetadataProviderAbstract
     /// <inheritdoc/>
     OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlDbTableInfo
         local oTable as SqlDbTableInfo
-        ReadDefaults()
+        SELF:ReadDefaults()
         if SELF:FindInCache(cTable, out oTable)
             return oTable
         endif

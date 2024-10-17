@@ -13,7 +13,7 @@ begin namespace XSharp.VFP.UI_Test
     public partial class TestVFPForm inherit XSharp.VFP.UI.Form
 
         public constructor() strict
-            InitializeComponent()
+            SELF:InitializeComponent()
             SELF:mDIForm := True
             return
         end constructor

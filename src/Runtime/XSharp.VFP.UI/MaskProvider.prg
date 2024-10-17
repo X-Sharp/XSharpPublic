@@ -69,7 +69,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 					VAR isNumeric := ( SELF:_type == "N" )
 					//
 					FOR VAR i := 1 TO SELF:_mask:Length
-						VAR maskChar := GetMask( i )
+						VAR maskChar := SELF:GetMask( i )
 						IF SELF:IsMaskChar( maskChar )
 							sb:Append(' ')
 						ELSE
@@ -137,7 +137,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			VAR isNumeric := ( SELF:_type == "N" )
 			FOR VAR i := currentPos TO SELF:_mask:Length
 				// "Standard" letters
-				IF IsMaskChar( SELF:GetMask( i ) )
+				IF SELF:IsMaskChar( SELF:GetMask( i ) )
 					RETURN i
 				ELSEIF isNumeric
 					IF SELF:GetMask( i ) == c'.' .OR. SELF:GetMask( i ) == c','
@@ -159,7 +159,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			VAR isNumeric := ( SELF:_type == "N" )
 			FOR VAR i := currentPos DOWNTO 1
 				// "Standard" letters
-				IF IsMaskChar( SELF:GetMask( i ) )
+				IF SELF:IsMaskChar( SELF:GetMask( i ) )
 					RETURN i
 				ELSEIF isNumeric
 					IF SELF:GetMask( i )== c'.' .OR. SELF:GetMask( i )== c','
@@ -226,7 +226,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			//
 			VAR curPos := SELF:_owner:CursorPos
 			VAR keyChar := e:KeyChar
-			VAR maskChar := GetMask( curPos )
+			VAR maskChar := SELF:GetMask( curPos )
 			IF SELF:IsValidChar( keyChar, maskChar, FALSE )
 				SWITCH maskChar
 				CASE c'!'; CASE c'U'; CASE c'u'
@@ -429,7 +429,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PROTECTED METHOD IsValidChar( keyChar AS CHAR, maskPos AS INT, ignoreBlank AS LOGIC ) AS LOGIC
 			IF maskPos <= SELF:_mask:Length
 				VAR maskChar := SELF:GetMask( maskPos )
-				RETURN IsValidChar( keyChar, maskChar, ignoreBlank )
+				RETURN SELF:IsValidChar( keyChar, maskChar, ignoreBlank )
 			ENDIF
 			RETURN FALSE
 		END METHOD

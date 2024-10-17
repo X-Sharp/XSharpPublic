@@ -15,7 +15,7 @@ BEGIN NAMESPACE VFPXPorter
 		INHERIT System.Windows.Forms.Form
 		PRIVATE jsonSettings AS ExporterSettings
 		PUBLIC CONSTRUCTOR()   STRICT//Form1
-			InitializeComponent()
+			SELF:InitializeComponent()
 			//VAR storingPath := Path.GetDirectoryName( Application.ExecutablePath )
 			//
 			// !!! Settings of VFPXPorter.exe are stored in %userfolder%/AppData/Roaming/XSharp

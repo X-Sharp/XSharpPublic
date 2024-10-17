@@ -1682,11 +1682,11 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         SELF:SelectMainItem()
         self:oDlg := VOControlCreationOrderDlg{SELF , SELF:GetAllDesignItemsByCreationOrder()}
         self:oDlg:Closed += System.EventHandler{ SELF , @CloseTabOrder() }
- 
+
         self:oDlg:TopMost := True
         self:oDlg:Show()
         self:oDlg:Focus()
-        
+
         RETURN
 
     METHOD DoDummyChange() AS VOID
@@ -3566,7 +3566,8 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         SELF:BeginAction()
         SELF:DoAction(DesignerActionType.DeSelectAll)
 
-        neworder := GetAllDesignItemsByCreationOrder():Count
+        neworder := SELF:ArrangeControlOrder():Count
+
         FOR n := 0 UPTO Clipboard:Count - 1
             oEntry := Clipboard:GetEntry(n)
             lNameConflict := SELF:NameExists(oEntry:cName)
@@ -3591,6 +3592,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
             END IF
             SELF:DoAction(DesignerActionType.SelectAdd , cGuid)
         NEXT
+        SELF:ArrangeControlOrder()
         SELF:EndAction()
         RETURN
 
@@ -4013,22 +4015,25 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         LOCAL aDesign AS ArrayList
         LOCAL aSorted AS SortedList
         LOCAL oDesign AS DesignWindowItem
-        LOCAL n AS INT
+        LOCAL n1, n2 AS INT
         SELF:oWindowDesign:GetProperty("__Order"):Value := 0
         aDesign := SELF:GetAllDesignItems()
         aSorted := SortedList{}
-        FOR n := 0 UPTO aDesign:Count - 1
-            oDesign := (DesignWindowItem)aDesign[n]
+
+        FOR n1 := 0 UPTO aDesign:Count - 1
+            oDesign := (DesignWindowItem)aDesign[n1]
             DO WHILE aSorted:ContainsKey(oDesign:Order)
                 oDesign:GetProperty("__Order"):Value := oDesign:Order + 1
             ENDDO
             aSorted:Add(oDesign:Order , oDesign)
         NEXT
-        FOR n := 0 UPTO aSorted:Count - 1
-            oDesign := (DesignWindowItem)aSorted:GetByIndex(n)
-            oDesign:GetProperty("__Order"):Value := n + 1
+
+        FOR n2 := 0 UPTO aSorted:Count - 1
+            oDesign := (DesignWindowItem)aSorted:GetByIndex(n2)
+            oDesign:GetProperty("__Order"):Value := n2 + 1
         NEXT
         RETURN aSorted
+
     METHOD GetAllDesignItemsByCreationOrder() AS ArrayList
         LOCAL aSorted AS SortedList
         LOCAL aDesign AS ArrayList

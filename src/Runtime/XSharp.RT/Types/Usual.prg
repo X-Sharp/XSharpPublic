@@ -1359,13 +1359,13 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
 #region Unary Operators
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    /// <remarks>This operator is only supported on usuals of type LOGIC.</remarks>
+    /// <remarks>This operator attempts to cast the usual to type LOGIC.</remarks>
     [NODEBUG];
     STATIC OPERATOR !(u AS __Usual) AS LOGIC
         IF u:_usualType == __UsualType.Logic
             RETURN !u:_logicValue
         ENDIF
-        THROW UnaryError("!", u)
+        RETURN !(LOGIC)u
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>This operator is only supported on usuals of integral types.</remarks>

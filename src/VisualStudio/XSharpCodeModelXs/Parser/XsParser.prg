@@ -635,7 +635,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 token:Type := XSharpLexer.PP_ENDTEXT
                 return
             otherwise
-                var xt := GetNextKeyword()
+                var xt := SELF:GetNextKeyword()
                 if XFormattingRule.IsStartKeyword(xt)
                     RETURN
                 ENDIF

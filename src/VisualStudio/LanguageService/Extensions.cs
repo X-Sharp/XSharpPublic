@@ -340,5 +340,13 @@ namespace XSharp.LanguageService
             }
             return null;
         }
+        internal static bool AtEnd(this SnapshotPoint point)
+        {
+            return point.Position >= point.Snapshot.Length;
+        }
+        internal static bool AtStart(this SnapshotPoint point)
+        {
+            return point.Position == 0;
+        }
     }
 }

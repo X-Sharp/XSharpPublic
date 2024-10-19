@@ -97,7 +97,7 @@ namespace XSharp.LanguageService
                 if (lookupresult.Count > 0)
                 {
                     var element = lookupresult[0];
-                    if (element.Name == location.Member.Name)
+                    if (element.Name == location.Member?.Name)
                     {
                         if (location.LineNumber == location.Member.FirstSourceLine(location.Document))
                             element = location.Member;

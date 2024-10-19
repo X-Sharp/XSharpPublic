@@ -20,7 +20,6 @@ INTERFACE IXSharpProject
     /// </summary>
     /// <param name="sUrl"></param>
     /// <returns>EnvDte project</returns>
-    METHOD FindProject(sUrl AS STRING) AS Object
     METHOD HasFileNode(fileName AS STRING) AS LOGIC
         // Properties
     PROPERTY DisplayName AS STRING GET
@@ -66,6 +65,7 @@ INTERFACE IXVsShellLink
     METHOD ClearIntellisenseErrors(file AS STRING) AS VOID
     METHOD SynchronizeKeywordCase(code AS STRING, fileName as string) AS STRING
     METHOD RunInForeGroundThread( a as Action) AS VOID
+    METHOD FindProject(sUrl AS STRING) AS Object
 
 END INTERFACE
 

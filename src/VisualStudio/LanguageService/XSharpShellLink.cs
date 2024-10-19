@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using VSLangProj;
 using XSharp.Settings;
 using XSharpModel;
 using static XSharp.Parser.VsParser;
@@ -531,6 +532,34 @@ namespace XSharp.LanguageService
         }
         #endregion
 
+
+        public object FindProject(string sUrl)
+        {
+            var sol = VS.Solutions.GetCurrentSolution();
+            return findProject(sol, sUrl);
+        }
+        private Project findProject(SolutionItem parent, string sUrl)
+        {
+            foreach(var child in parent.Children)
+            {
+                if (child is null)
+                    continue;
+                if (child is Project project)
+                {
+                    if (string.Compare(project.FullPath, sUrl, StringComparison.OrdinalIgnoreCase) == 0)
+                    {
+                        return project;
+                    }
+                }
+                foreach (var item in child.Children)
+                {
+                    var prj = findProject(item, sUrl);
+                    if (prj != null)
+                        return prj;
+                }
+            }
+            return null;
+        }
         public void RunInForeGroundThread(Action a)
         {
 

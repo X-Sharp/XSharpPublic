@@ -22,8 +22,9 @@
     <DelaySign>false</DelaySign>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <EnforceSelf>False</EnforceSelf>
+    <EnforceSelf>True</EnforceSelf>
     <Allowdot>True</Allowdot>
+    <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>

@@ -354,7 +354,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 
         [Fact, Trait("Dbf", "CreateAppend")];
         METHOD CheckCreateAppendDBF() AS VOID
-		    CheckCreateAppendDBF(TempFileName())
+		    SELF:CheckCreateAppendDBF(TempFileName())
 
 		METHOD CheckCreateAppendDBF(cFileName AS STRING) AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
@@ -617,7 +617,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "CreateAppendDBT")];
 		METHOD CheckCreateAppendDBFDBT() AS STRING
             var file := TempFileName()
-			VAR dbInfo := CreateFileHelper(file, OUT VAR data, OUT VAR Memos)
+			VAR dbInfo := SELF:CreateFileHelper(file, OUT VAR data, OUT VAR Memos)
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
 
 			// Now, Verify
@@ -691,7 +691,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "ModifyDBT_2")];
 		METHOD CheckModifyDBT_2() AS VOID
 			// Create and put some Data
-			VAR dbInfo := CreateFileHelper(TempFileName(), OUT var _, OUT VAR _)
+			VAR dbInfo := SELF:CreateFileHelper(TempFileName(), OUT var _, OUT VAR _)
 			// Now Modify in the same space
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
 			VAR Memos := List<STRING>{}

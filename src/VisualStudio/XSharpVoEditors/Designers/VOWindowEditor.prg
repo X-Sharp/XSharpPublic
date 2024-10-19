@@ -19,15 +19,16 @@ ENUM ViewMode
 END ENUM
 
 INTERNAL CLASS MultiPropertyDescriptor
-	CONSTRUCTOR(cName AS STRING, nLineInCode AS INT)
-		SELF:Name := cName
-		SELF:LineInCode := nLineInCode
-		SELF:SubProperties := ArrayList{}
-	RETURN
+    CONSTRUCTOR(cName AS STRING, nLineInCode AS INT)
+        SELF:Name := cName
+        SELF:LineInCode := nLineInCode
+        SELF:SubProperties := ArrayList{}
+        RETURN
 
-	PROPERTY Name AS STRING AUTO GET PRIVATE SET
-	PROPERTY LineInCode AS INT AUTO GET PRIVATE SET
-	PROPERTY SubProperties AS ArrayList AUTO GET PRIVATE SET
+
+    PROPERTY Name AS STRING AUTO GET PRIVATE SET
+    PROPERTY LineInCode AS INT AUTO GET PRIVATE SET
+    PROPERTY SubProperties AS ArrayList AUTO GET PRIVATE SET
 END CLASS
 
 PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
@@ -48,6 +49,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
     PROTECT cDefaultFileName AS STRING
         //	PROTECT oStatusBar AS StatusBar
     PROTECT lAlreadySavedBefore AS LOGIC
+    PROTECT oDlg AS VOControlCreationOrderDlg
 
     STATIC PROTECT oClipboard := DesignerClipboard{} AS DesignerClipboard
     STATIC ACCESS Clipboard AS DesignerClipboard
@@ -129,6 +131,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         SELF:oDummy:LostFocus += EventHandler{SELF , @DummyLostFocus() }
         SELF:oSurface:Controls:Add(SELF:oDummy)
         RETURN
+
     METHOD DummyGotFocus(o AS OBJECT , e AS EventArgs) AS VOID
         SELF:ShowHideTools(TRUE)
         IF SELF:oGrid:FindForm() != NULL
@@ -140,8 +143,9 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         SELF:oGrid:UseHierarchy(TRUE)
         SELF:oToolBox:SetViewMode(SELF:ViewMode)
         RETURN
+
     METHOD DummyLostFocus(o AS OBJECT , e AS EventArgs) AS VOID
-        SELF:ShowHideTools(FALSE)
+               SELF:ShowHideTools(FALSE)
         RETURN
 
     VIRTUAL METHOD GiveFocus() AS VOID
@@ -253,13 +257,14 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         //	PRIVATE METHOD TimerTicked(o AS OBJECT,e AS EventArgs) AS VOID // TODO: should be allowed?
         /*		IF SELF:eCurrent == WEDAction.None
         SELF:oSurface:Invalidate(TRUE)
-        ENDIF*/
-        // Check periodically if the WED is active and if not, hide the toolwindows
-        IF SELF:oGrid != NULL .AND. SELF:oGrid:oActiveDesigner == SELF
-            IF SELF:eCurrent == WEDAction.None .AND. !SELF:oSurface:ContainsFocus
-                SELF:ShowHideTools(FALSE)
-            ENDIF
         ENDIF
+        */
+        // Check periodically if the WED is active and if not, hide the toolwindows
+                 IF SELF:oGrid != NULL .AND. SELF:oGrid:oActiveDesigner == SELF
+                     IF SELF:eCurrent == WEDAction.None .AND. !SELF:oSurface:CanFocus
+                         SELF:ShowHideTools(FALSE)
+                     ENDIF
+                 ENDIF
         RETURN
 
     PROTECTED VIRTUAL METHOD ControlPaint(o AS OBJECT , e AS PaintEventArgs) AS VOID
@@ -1393,11 +1398,11 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
                         IF aMultiple:ContainsKey(oProp:cMember)
                             aList := aMultiple[oProp:cMember]:SubProperties
                         ELSE
-							aCode:Add("") // create an empty line code, placeholder to be filled later
-							LOCAL oMulti AS MultiPropertyDescriptor
-							oMulti := MultiPropertyDescriptor{oProp:cMember, aCode:Count}
-							aList := oMulti:SubProperties
-							aMultiple:Add(oProp:cMember , oMulti)
+                            aCode:Add("") // create an empty line code, placeholder to be filled later
+                            LOCAL oMulti AS MultiPropertyDescriptor
+                            oMulti := MultiPropertyDescriptor{oProp:cMember, aCode:Count}
+                            aList := oMulti:SubProperties
+                            aMultiple:Add(oProp:cMember , oMulti)
                         ENDIF
                         DO WHILE aList:Count < oProp:nMultiPos
                             aList:Add("")
@@ -1649,10 +1654,25 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         NEXT
         RETURN oRet
 
-    METHOD ShowTabOrder() AS VOID
-        LOCAL oDlg AS VOControlCreationOrderDlg
-        LOCAL oDesign AS DesignWindowItem
+    METHOD CloseTabOrder(o AS OBJECT , e AS System.EventArgs) AS VOID
+                LOCAL oDesign AS DesignWindowItem
         LOCAL n AS INT
+        IF Self:oDlg:DialogResult == DialogResult.OK
+            SELF:BeginAction()
+            FOR n := 0 UPTO Self:oDlg:aNewOrder:Count - 1
+                oDesign := (DesignWindowItem)Self:oDlg:aNewOrder[n]
+                SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "__Order" , n + 1})
+            NEXT
+            SELF:EndAction()
+        ENDIF
+        Self:oDlg := NULL
+        SELF:SelectMainItem()
+        return
+
+    METHOD ShowTabOrder() AS VOID
+
+        //LOCAL oDesign AS DesignWindowItem
+        //LOCAL n AS INT
         IF SELF:oWindow == NULL .OR. SELF:oWindowDesign == NULL
             RETURN
         ENDIF
@@ -1660,16 +1680,13 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
             RETURN
         ENDIF
         SELF:SelectMainItem()
-        oDlg := VOControlCreationOrderDlg{SELF , SELF:GetAllDesignItemsByCreationOrder()}
-        IF oDlg:ShowDialog() == DialogResult.OK
-            SELF:BeginAction()
-            FOR n := 0 UPTO oDlg:aNewOrder:Count - 1
-                oDesign := (DesignWindowItem)oDlg:aNewOrder[n]
-                SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "__Order" , n + 1})
-            NEXT
-            SELF:EndAction()
-        ENDIF
-        SELF:SelectMainItem()
+        self:oDlg := VOControlCreationOrderDlg{SELF , SELF:GetAllDesignItemsByCreationOrder()}
+        self:oDlg:Closed += System.EventHandler{ SELF , @CloseTabOrder() }
+
+        self:oDlg:TopMost := True
+        self:oDlg:Show()
+        self:oDlg:Focus()
+
         RETURN
 
     METHOD DoDummyChange() AS VOID
@@ -1716,6 +1733,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         SELF:oSurface:Invalidate(TRUE)
         RETURN
 
+
     METHOD Open() AS VOID
         LOCAL oDialog AS OpenFileDialog
         oDialog := OpenFileDialog{}
@@ -1741,6 +1759,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         IF oDlg:ShowDialog() == DialogResult.OK
             SELF:Save(oDlg:FileName , FALSE)
         ENDIF
+
         RETURN
 
 
@@ -1774,7 +1793,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 
         oPrgStream := EditorStream{}
         oVhStream := EditorStream{}
-        oRcStream := EditorStream{}
+        oRCStream := EditorStream{}
 
         oCode := SELF:GetCodeContents()
         IF SELF:GetSaveFileStreams(cFileName , REF oVNFrmStream , oRCStream , oPrgStream , oVhStream , REF cVhName , lVnfrmOnly , REF lRcInSameFolder)
@@ -2839,26 +2858,26 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
             NEXT
 
 
-            SELF:oGrid:Fill(SELF:aSelected)
-            SELF:UpdateControlOrders()
-            //			((DesignWindowItem)SELF:aSelected[ self:aSelected:Count - 1 ]):Control:BringToFront()
-            //			((DesignWindowItem)SELF:aSelected[0]):AdjustSelectors()
+                SELF:oGrid:Fill(SELF:aSelected)
+                SELF:UpdateControlOrders()
+                //			((DesignWindowItem)SELF:aSelected[ self:aSelected:Count - 1 ]):Control:BringToFront()
+                //			((DesignWindowItem)SELF:aSelected[0]):AdjustSelectors()
 
 
-            /*			Application.DoEvents()
-            System.Threading.Thread.Sleep(20)
-            FOR n := 0 UPTO SELF:oWindow:Controls:Count - 1
-            SELF:oWindow:Controls[n]:Invalidate()
-            NEXT
-            SELF:oWindow:Invalidate()
-            SELF:oSurface:Invalidate()*/
-            //			SELF:oSurface:Invalidate(TRUE)
+                /*			Application.DoEvents()
+                System.Threading.Thread.Sleep(20)
+                FOR n := 0 UPTO SELF:oWindow:Controls:Count - 1
+                SELF:oWindow:Controls[n]:Invalidate()
+                NEXT
+                SELF:oWindow:Invalidate()
+                SELF:oSurface:Invalidate()*/
+                //			SELF:oSurface:Invalidate(TRUE)
 
-            IF SELF:IsDirtyChanged != NULL
-                SELF:IsDirtyChanged:Invoke(SELF , EventArgs{})
-            ENDIF
+                IF SELF:IsDirtyChanged != NULL
+                    SELF:IsDirtyChanged:Invoke(SELF , EventArgs{})
+                ENDIF
 
-            SELF:PrintStatus()
+                SELF:PrintStatus()
 
         ENDIF
 
@@ -2977,10 +2996,44 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 
         CASE eAction == DesignerBasicActionType.SetProperty
             oDesign := SELF:GetDesignItemFromGuid(uData:cGuid)
-            oProp := oDesign:GetProperty(uData:cData)
-            IF !oProp:TextValue == oProp:GetTextValue(uData:oData)
-                SELF:lDidAction := TRUE
-                IF !oAction:lExecuted
+            if oDesign == NULL
+                SELF:ShowHideTools(FALSE)
+                 oRet := False
+            else
+
+                oProp := oDesign:GetProperty(uData:cData)
+                IF !oProp:TextValue == oProp:GetTextValue(uData:oData)
+                    SELF:lDidAction := TRUE
+                    IF !oAction:lExecuted
+                        oUndo := DesignerBasicAction{TRUE}
+                        oUndo:eAction := DesignerBasicActionType.SetProperty
+                        oUndo:uData := ActionData{oDesign:cGuid , uData:cData , oProp:Value}
+                        oAction:aUndo:Add(oUndo)
+
+                        oRedo := DesignerBasicAction{TRUE}
+                        oRedo:eAction := DesignerBasicActionType.SetProperty
+                        oRedo:uData := ActionData{oDesign:cGuid , uData:cData , uData:oData}
+                        oAction:aRedo:Add(oRedo)
+                    ENDIF
+                    oProp:Value := uData:oData
+                    SELF:PropertyGotUpdated(oDesign , oProp)
+                    SELF:AddAffected(oDesign)
+                ENDIF
+            endif
+
+
+
+        CASE eAction == DesignerBasicActionType.SetIndex
+            oDesign := SELF:GetDesignItemFromGuid(uData:cGuid)
+            if oDesign == NULL
+                SELF:ShowHideTools(FALSE)
+                 oRet := False
+            else
+                n := INT(uData:oData)
+                IF oDesign:Control:Parent:Controls:GetChildIndex(oDesign:Control) != n
+                    oDesign:Control:Parent:Controls:SetChildIndex(oDesign:Control , n)
+                    SELF:lDidAction := TRUE
+                    /*				IF !oAction:lExecuted
                     oUndo := DesignerBasicAction{TRUE}
                     oUndo:eAction := DesignerBasicActionType.SetProperty
                     oUndo:uData := ActionData{oDesign:cGuid , uData:cData , oProp:Value}
@@ -2990,32 +3043,11 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
                     oRedo:eAction := DesignerBasicActionType.SetProperty
                     oRedo:uData := ActionData{oDesign:cGuid , uData:cData , uData:oData}
                     oAction:aRedo:Add(oRedo)
+                    ENDIF*/
+                    SELF:AddAffected(oDesign)
                 ENDIF
-                oProp:Value := uData:oData
-                SELF:PropertyGotUpdated(oDesign , oProp)
-                SELF:AddAffected(oDesign)
-            ENDIF
 
-
-        CASE eAction == DesignerBasicActionType.SetIndex
-            oDesign := SELF:GetDesignItemFromGuid(uData:cGuid)
-            n := INT(uData:oData)
-            IF oDesign:Control:Parent:Controls:GetChildIndex(oDesign:Control) != n
-                oDesign:Control:Parent:Controls:SetChildIndex(oDesign:Control , n)
-                SELF:lDidAction := TRUE
-                /*				IF !oAction:lExecuted
-                oUndo := DesignerBasicAction{TRUE}
-                oUndo:eAction := DesignerBasicActionType.SetProperty
-                oUndo:uData := ActionData{oDesign:cGuid , uData:cData , oProp:Value}
-                oAction:aUndo:Add(oUndo)
-
-                oRedo := DesignerBasicAction{TRUE}
-                oRedo:eAction := DesignerBasicActionType.SetProperty
-                oRedo:uData := ActionData{oDesign:cGuid , uData:cData , uData:oData}
-                oAction:aRedo:Add(oRedo)
-                ENDIF*/
-                SELF:AddAffected(oDesign)
-            ENDIF
+            endif
 
         END CASE
 
@@ -3037,18 +3069,21 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         DO CASE
         CASE eAction == DesignerActionType.Select
             oDesign := SELF:GetDesignItemFromGuid(cGuid)
-            IF !oDesign:lSelected
-                SELF:DoAction(DesignerActionType.DeSelectAll)
-                oDesign:lSelected := TRUE
-                SELF:aSelected:Add(oDesign)
-                SELF:AddAffected(oDesign)
-            ENDIF
+            if !oDesign == null
+                IF !oDesign:lSelected
+                    SELF:DoAction(DesignerActionType.DeSelectAll)
+                    oDesign:lSelected := TRUE
+                    SELF:aSelected:Add(oDesign)
+                    SELF:AddAffected(oDesign)
+                ENDIF
+            endif
         CASE eAction == DesignerActionType.SelectAdd
             oDesign := SELF:GetDesignItemFromGuid(cGuid)
             IF !oDesign:lSelected
                 oDesign:lSelected := TRUE
                 SELF:aSelected:Add(oDesign)
                 SELF:AddAffected(oDesign)
+
             ENDIF
         CASE eAction == DesignerActionType.SelectDefault
             IF SELF:aSelected:Count >= 2
@@ -3515,7 +3550,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         LOCAL oEntry AS DesignerClipboardEntry
         LOCAL lNameConflict AS LOGIC
         LOCAL cGuid AS STRING
-        LOCAL n,m AS INT
+        LOCAL n,m, neworder AS INT
 
         IF SELF:lReadOnly
             RETURN
@@ -3530,25 +3565,34 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 
         SELF:BeginAction()
         SELF:DoAction(DesignerActionType.DeSelectAll)
+
+        neworder := SELF:ArrangeControlOrder():Count
+
         FOR n := 0 UPTO Clipboard:Count - 1
             oEntry := Clipboard:GetEntry(n)
             lNameConflict := SELF:NameExists(oEntry:cName)
             oEntry:nPasted ++
             cGuid := Guid.NewGuid():ToString()
+
             SELF:StartAction(DesignerBasicActionType.Create , ActionData{cGuid , oEntry:cClass , ""})
+
             FOR m := 0 UPTO oEntry:aProperties:Count - 1
                 SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , oEntry:aProperties:GetName(m) , oEntry:aProperties:GetValue(m)})
             NEXT
+
             IF lNameConflict
                 SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "Name" , SELF:GetNextName(oEntry:cName)})
             END IF
             SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Left" , oEntry:x + XCustomEditorSettings.PasteOffSetX * oEntry:nPasted})
             SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Top" , oEntry:y + XCustomEditorSettings.PasteOffSetY * oEntry:nPasted})
+            //set the order to end
+            SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "__Order" ,  neworder++})
             IF SELF:ViewMode == ViewMode.Browse
                 SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Deleted" , 1})
             END IF
             SELF:DoAction(DesignerActionType.SelectAdd , cGuid)
         NEXT
+        SELF:ArrangeControlOrder()
         SELF:EndAction()
         RETURN
 
@@ -3971,22 +4015,25 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         LOCAL aDesign AS ArrayList
         LOCAL aSorted AS SortedList
         LOCAL oDesign AS DesignWindowItem
-        LOCAL n AS INT
+        LOCAL n1, n2 AS INT
         SELF:oWindowDesign:GetProperty("__Order"):Value := 0
         aDesign := SELF:GetAllDesignItems()
         aSorted := SortedList{}
-        FOR n := 0 UPTO aDesign:Count - 1
-            oDesign := (DesignWindowItem)aDesign[n]
+
+        FOR n1 := 0 UPTO aDesign:Count - 1
+            oDesign := (DesignWindowItem)aDesign[n1]
             DO WHILE aSorted:ContainsKey(oDesign:Order)
                 oDesign:GetProperty("__Order"):Value := oDesign:Order + 1
             ENDDO
             aSorted:Add(oDesign:Order , oDesign)
         NEXT
-        FOR n := 0 UPTO aSorted:Count - 1
-            oDesign := (DesignWindowItem)aSorted:GetByIndex(n)
-            oDesign:GetProperty("__Order"):Value := n + 1
+
+        FOR n2 := 0 UPTO aSorted:Count - 1
+            oDesign := (DesignWindowItem)aSorted:GetByIndex(n2)
+            oDesign:GetProperty("__Order"):Value := n2 + 1
         NEXT
         RETURN aSorted
+
     METHOD GetAllDesignItemsByCreationOrder() AS ArrayList
         LOCAL aSorted AS SortedList
         LOCAL aDesign AS ArrayList
@@ -4224,7 +4271,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 
         LOCAL oProp,oTest AS VODesignProperty
         LOCAL cProp AS STRING
-        LOCAL n,m,k AS INT
+        LOCAL n,m,K AS INT
 
         IF oTemplate == NULL
             oTemplate := VOWindowEditorTemplate.Get("PUSHBUTTON")
@@ -4440,8 +4487,8 @@ CLASS DesignWindowItem INHERIT DesignItem
                 oProp:cPage := cCaption
                 ENDIF*/
                 //					lFound := FALSE
-                FOR k := 0 UPTO oTemplate:aProperties:Count - 1
-                    oTest := (VODesignProperty)oTemplate:aProperties[k]
+                FOR K := 0 UPTO oTemplate:aProperties:Count - 1
+                    oTest := (VODesignProperty)oTemplate:aProperties[K]
                     IF (!lBasic .AND. oTest:Caption:ToUpper() == cProp) .OR. (lBasic .AND. oTest:Name:ToUpper() == cProp)
                         //							lFound := TRUE
                         //							IF oTest:Name:ToUpper() == "TAB KEY" .and. SELF:cFullClass:IndexOf("FORM:DIALOGWINDOW") == 0
@@ -4870,6 +4917,14 @@ CLASS DesignWindowItem INHERIT DesignItem
                             LOOP // Let the Tab Key property decide on WS_CHILD and DS_CONTROL styles
                         END IF
                     ENDIF
+                    //                     IF oProp:Name:ToUpper() == "TAB KEY"
+                    //                        // LOCAL oTypeProp AS VODesignProperty
+                    //                        // oTypeProp := SELF:GetPropertyByCaption("Type")
+                    //                         IF SELF:GetPropertyByCaption("Type") != NULL .AND. SELF:GetPropertyByCaption("Type"):Value != NULL .AND. SELF:GetPropertyByCaption("Type"):Value:GetType() == TypeOf(INT) .AND. (INT)SELF:GetPropertyByCaption("Type"):Value == 0
+                    //                             LOOP
+                    //                         END IF
+                    //                     ENDIF
+
                     IF oProp:Name:ToUpper() == "TAB KEY"
                         LOCAL oTypeProp AS VODesignProperty
                         oTypeProp := SELF:GetPropertyByCaption("Type")
@@ -5037,13 +5092,13 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 
     EXPORT cName AS STRING
     EXPORT cCloneFrom := NULL AS STRING
-    PROTECT xfile AS XFile
+    PROTECT XFile AS XFile
     PROTECT cDefaultFileName AS STRING
 
-    CONSTRUCTOR(file AS XFile, cFileName AS STRING)
+    CONSTRUCTOR(File AS XFile, cFileName AS STRING)
 
         SUPER()
-        xfile := file
+        XFile := File
         cDefaultFileName := cFileName
         LOCAL oTemplate AS VOControlTemplate
         LOCAL n AS INT
@@ -5062,7 +5117,7 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
             SELF:oTypeListBox:SelectedIndex := 0
         END IF
         // we need the xfile object to get to the XProject and read the files from the database
-        IF xfile == NULL
+        IF XFile == NULL
             SELF:oCloneButton:Enabled := FALSE
         ENDIF
 

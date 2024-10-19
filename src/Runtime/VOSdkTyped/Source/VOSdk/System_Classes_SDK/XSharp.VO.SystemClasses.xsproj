@@ -24,6 +24,7 @@
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
     <Vo5>False</Vo5>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>

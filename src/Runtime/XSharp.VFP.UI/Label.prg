@@ -49,10 +49,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 			#include ".\Headers\FontProperties.xh"
 
+[System.ComponentModel.DefaultValue(0)];
+        PROPERTY DisabledBackColor AS LONG AUTO
+        
+        [System.ComponentModel.DefaultValue(0)];
+        PROPERTY DisabledForeColor AS LONG AUTO
 
-		PROPERTY DisabledBackColor AS LONG AUTO
-		PROPERTY DisabledForeColor AS LONG AUTO
         PROPERTY WordWrap AS LOGIC AUTO
+
         PROTECTED OVERRIDE METHOD OnPaint( e AS PaintEventArgs ) AS VOID STRICT
             IF SELF:Rotation != 0
                 var b := SolidBrush{ SELF:ForeColor }

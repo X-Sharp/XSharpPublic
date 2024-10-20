@@ -3,8 +3,14 @@
 #ifndef VFP_ITEMS_XH
 #define VFP_ITEMS_XH
 PROPERTY BorderColor AS LONG AUTO
+
+[System.ComponentModel.DefaultValue(0)];
 PROPERTY DisabledBackColor AS LONG AUTO
+
+[System.ComponentModel.DefaultValue(0)];
 PROPERTY DisabledForeColor AS LONG AUTO
+
+
 PROPERTY DisabledEditItemBackColor AS LONG AUTO
 PROPERTY DisabledEditItemForeColor AS LONG AUTO
 PROPERTY IncrementalSearch AS LOGIC AUTO

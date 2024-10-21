@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-04T18:13:22.577+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-21T08:31:24.879+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>版本历史</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -13,7 +13,7 @@
     <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="font-family:&apos;Times New Roman&apos;; font-weight:bold; text-decoration:none; vertical-align:baseline; color:#ff0000; background-color:#ffffff;">注：</text><text style="font-family:&apos;Times New Roman&apos;; text-decoration:none; vertical-align:baseline; color:#000000;">当一个项目有一个匹配的 GitHub 票据时，票据编号就会出现在项目后面的括号中，前缀为 #。</text></para>
     <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="font-family:&apos;Times New Roman&apos;; text-decoration:none; vertical-align:baseline; color:#000000;">您可以访问 https://github.com/X-Sharp/XSharpPublic/issues/nnn 其中 nnnn 是票据编号。</text></para>
     <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="font-family:&apos;Times New Roman&apos;; text-decoration:none; vertical-align:baseline; color:#000000;">如果您在 X# 中发现问题，我们建议您在 GitHub 上报告。我们会通知您问题的处理进度。</text></para>
-    <para styleclass="Heading1">Changes in 2.21.0.0</para>
+    <para styleclass="Heading1">Changes in 2.21.0.3</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -26,7 +26,6 @@
       <li styleclass="Normal">修正了在 XBase++ 方言中通过引用传递数组引用或 ivar 的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1492" target="_blank">#1492</link>)</li>
       <li styleclass="Normal">修正了针对包含在接口中的方法的 Evaluate() 函数中的 AmbiguousMatchException。 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1494" target="_blank">#1494</link>)</li>
       <li styleclass="Normal">修正了 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox1">/fox1</link> 开关在某些情况下被忽略的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1496" target="_blank">#1496</link>)</li>
-      <li styleclass="Normal">修正了 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-enforceself">/enforceself</link> 编译器选项被忽略的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1503" target="_blank">#1503</link>)</li>
       <li styleclass="Normal">编译系统现在会自动为使用 X# 编译的程序集添加 TargetFramework 属性 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1507" target="_blank">#1507</link>)</li>
       <li styleclass="Normal">修正了命名空间和属性同名时的歧义问题，以及禁用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-allowdot">/allowdot</link> 选项时的若干问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1515" target="_blank">#1515</link>)</li>
       <li styleclass="Normal">修正了带有 TEXTMERGE 子句的 TEXT TO/ENDTEXT 中的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1517" target="_blank">#1517</link>)</li>
@@ -67,6 +66,7 @@
       <li styleclass="Normal">修正了将 Windows 窗体用户控件的 .resx 文件放在解决方案资源管理器中不正确位置的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1560" target="_blank">#1560</link>)</li>
       <li styleclass="Normal">修复了编辑器中代码片段在 VS 2022 17.11 版中不再工作的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1564" target="_blank">#1564</link>)</li>
       <li styleclass="Normal">修复了带有结束关键字（如 NEXT 和 ENDDO）的缩进行的问题(当这些关键字后跟有 “垃圾 ”时)。</li>
+      <li styleclass="Normal">当 include 中的一个文件声明了实体(如 USING SomeNameSpace)时，在 VS 表单设计器中打开表单可能会失败(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1595" target="_blank">#1595</link>,<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1596" target="_blank">#1596</link>)</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">新特性</para>

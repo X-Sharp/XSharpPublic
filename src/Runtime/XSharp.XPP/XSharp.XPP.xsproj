@@ -20,6 +20,7 @@
     <ApplicationIcon />
     <NoWin32Manifest>False</NoWin32Manifest>
     <StandardDefs />
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DisabledWarnings />

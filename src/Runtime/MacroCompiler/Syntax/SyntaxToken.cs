@@ -335,7 +335,6 @@ namespace XSharp.MacroCompiler.Syntax
 
             var VoKeywordsStmt = new Dictionary<string, TokenType>
             {
-                {"AS", TokenType.AS},
                 {"BEGIN", TokenType.BEGIN},
                 {"BREAK", TokenType.BREAK},
                 {"CASE", TokenType.CASE},
@@ -379,6 +378,7 @@ namespace XSharp.MacroCompiler.Syntax
 
             var VoKeywords = new Dictionary<string, TokenType>
             {
+                {"AS", TokenType.AS},
                 {"_AND", TokenType.BIT_AND},
                 {"_CAST", TokenType.CAST},
                 {"FIELD", TokenType.FIELD},

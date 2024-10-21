@@ -342,7 +342,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
             aLines:Add("")
             aLines:Add("RETURN NIL")
         ELSE
-            aLines := GetTemplate(cName)
+            aLines := SELF:GetTemplate(cName)
         END IF
         IF aLines == NULL
             XFuncs.WarningBox("Could not find code template for event: " + cName)

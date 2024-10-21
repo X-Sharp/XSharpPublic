@@ -181,7 +181,7 @@ BEGIN NAMESPACE VFPXPorterLib
                     ENDIF
                 ENDIF
                 IF item:Childs:Count > 0
-                    ExtractCode( tempPath, item:Childs, IIF( String.IsNullOrEmpty(parent), "", parent + "_" ) + item:Name )
+                    SELF:ExtractCode( tempPath, item:Childs, IIF( String.IsNullOrEmpty(parent), "", parent + "_" ) + item:Name )
                 ENDIF
             NEXT
             //
@@ -242,7 +242,7 @@ BEGIN NAMESPACE VFPXPorterLib
             // Set of Rules
             LOCAL evtRules AS Dictionary<STRING,STRING[]>
             // Use the Rendering ClassName in order to get the Events name
-            evtRules := BuildEventRules( eventList, subItem:BaseClassName )
+            evtRules := SELF:BuildEventRules( eventList, subItem:BaseClassName )
             // Apply Rules and Create EventHandlers
             subItem:ConvertEvents( evtRules, sttmnt, vfpElt, SELF:Settings )
             //
@@ -883,7 +883,7 @@ BEGIN NAMESPACE VFPXPorterLib
             VAR handlers := StringBuilder{}
             FOREACH VAR subItem IN oneItem:Childs
                 //
-                handlers:AppendLine( BuildEventHandlers( subItem ) )
+                handlers:AppendLine( SELF:BuildEventHandlers( subItem ) )
             NEXT
             // Any event for the Form ?
             handlers:AppendLine( SELF:BuildEventHandlers( oneItem ) )
@@ -1072,7 +1072,7 @@ BEGIN NAMESPACE VFPXPorterLib
                     setDataEnv:Append("{}")
                     setDataEnv:Append(Environment.NewLine)
                     // Set of Rules
-                    dataRules := BuildControlRules( SELF:_propertiesRules, cursorItem:FoxClassName )
+                    dataRules := SELF:BuildControlRules( SELF:_propertiesRules, cursorItem:FoxClassName )
                     // Apply Rules to Properties
                     cursorItem:ConvertProperties( dataRules, SELF:_defaultValues )
                     setDataEnv:Append( cursorItem:ApplyPropertiesRules( TRUE ) )

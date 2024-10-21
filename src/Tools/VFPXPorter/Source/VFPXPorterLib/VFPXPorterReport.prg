@@ -63,12 +63,12 @@ BEGIN NAMESPACE VFPXPorterLib
                 XPorterLogger.Instance:Information( "High Level Items : "+ Items:Count:ToString() )
                 XPorterLogger.Instance:Information( "Total Items : "+ tmpitems:Count:ToString() )
                 // Make some corrections if needed
-                PostProcessItems( SELF:Items )
+                SELF:PostProcessItems( SELF:Items )
                 // For the Analyze text
-                EnumItems( SELF:Items, "" )
+                SELF:EnumItems( SELF:Items, "" )
                 IF doBackup
                     // Backup the MNX file to an XML file
-                    Serialize( SELF:Items )
+                    SELF:Serialize( SELF:Items )
                 ENDIF
             ENDIF
             RETURN success

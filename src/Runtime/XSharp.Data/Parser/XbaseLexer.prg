@@ -69,7 +69,7 @@ CLASS XBaseLexer INHERIT XLexer
 
                 SWITCH t
                 CASE XTokenType.ID
-                    DO WHILE ExpectIdChar()
+                    DO WHILE SELF:ExpectIdChar()
                         NOP
                     ENDDO
                     strValue := SELF:_Source:Substring(start, SELF:_index - start)
@@ -427,7 +427,7 @@ CLASS XBaseLexer INHERIT XLexer
                 END SWITCH
                 IF ch == XChannel.Default
                     IF t == XTokenType.ID
-                        st := LookupKeyword(strValue)
+                        st := SELF:LookupKeyword(strValue)
                         IF st != XTokenType.UNRECOGNIZED
                             t := XTokenType.KEYWORD
                         ELSE

@@ -9,6 +9,7 @@
 PRIVATE _VFPRefresh AS VFPOverride
 
 [System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Refresh Method")];
+[System.ComponentModel.DefaultValue("")];
 PROPERTY vfpRefresh AS STRING GET _VFPRefresh?:SendTo SET Set_Refresh( VFPOverride{SELF, value} )
 
 METHOD Set_Refresh( methodCall AS VFPOverride ) AS VOID

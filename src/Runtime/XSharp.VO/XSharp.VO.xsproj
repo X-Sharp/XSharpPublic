@@ -16,6 +16,8 @@
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
+    <StartupObject />
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DisabledWarnings />
@@ -101,5 +103,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-<Import Project="..\XmlDoc.Targets" />
+  <Import Project="..\XmlDoc.Targets" />
 </Project>

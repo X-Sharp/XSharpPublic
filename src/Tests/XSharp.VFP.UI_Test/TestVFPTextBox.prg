@@ -14,7 +14,7 @@ BEGIN NAMESPACE XSharp.VFP.UI_Test
 		INHERIT System.Windows.Forms.Form
 
         public constructor() strict
-            InitializeComponent()
+            SELF:InitializeComponent()
 			SELF:vfpTextBox2:Value := __Usual{0}
 			SELF:vfpTextBox2:InputMask := "99,999.99"
 			

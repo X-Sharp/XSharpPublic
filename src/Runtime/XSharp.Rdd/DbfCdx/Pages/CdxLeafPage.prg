@@ -940,9 +940,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN sb:ToString()
 
         METHOD DumpKeys AS VOID
-        Debug("Dump keys for leaf page", SELF:PageNoX)
+        SELF:Debug("Dump keys for leaf page", SELF:PageNoX)
         FOREACH VAR Leaf IN SELF:Keys
-            Debug("Rec", Leaf:Recno, Leaf:KeyText:Trim())
+            SELF:Debug("Rec", Leaf:Recno, Leaf:KeyText:Trim())
         NEXT
 
     END CLASS

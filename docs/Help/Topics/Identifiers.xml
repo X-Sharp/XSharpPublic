@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-18T15:24:22.164+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Identifiers</title>
   <body>
     <header>
       <para styleclass="Heading1">Identifiers</para>
     </header>
-    <para styleclass="Normal">Identifiers in X# appear on many places in the language. They consist of a character followed by one or more characters, numbers or digits. The lexer definition for identifiers is below. As you can see we also allow &apos;special characters&apos; and &apos;unicode characters&apos; , but in general that is not recommended.<br/></para>
-    <para styleclass="Normal">New keywords that are introduced in Vulcan and X# (see the <link displaytype="text" defaultstyle="true" type="topiclink" href="Keywords">keyword table</link>) can also be used as Identifier</para>
+    <para styleclass="Normal">Identifiers in X# appear on many places in the language. They consist of a character followed by one or more characters, numbers or digits. The lexer definition for identifiers is below. As you can see, we also allow &apos;special characters&apos; and &apos;unicode characters&apos;, but in general, that is not recommended.<br/></para>
+    <para styleclass="Normal">New keywords that are introduced in Vulcan and X# (see the <link displaytype="text" defaultstyle="true" type="topiclink" href="Keywords">keyword table</link>) can also be used as Identifier.</para>
     <para styleclass="Normal">When an identifier <text style="text-decoration:underline;">must</text> be used that has the same value as a keyword, then you can prefix the identifier with a double @@ sign, like in the following example.</para>
     <para styleclass="Normal">This is not recommended. But it can happen that code in an external DLL has properties or method names that are keywords in X#. In that case using the @@ prefix can work too.</para>
     <para styleclass="Normal"></para>

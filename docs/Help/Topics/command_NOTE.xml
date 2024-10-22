@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-18T16:16:31.520+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Comments</title>
   <keywords>
     <keyword>&amp;&amp; characters</keyword>
@@ -21,7 +21,7 @@
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code with box">/* &#160;this is a multiline <br/> &#160; &#160;comment */<br/>// this is a single line comment<br/>&amp;&amp; this is a single line comment. It may appear after other statements on a line<br/>* this is also a comment. the * must be the first non whitespace character on the line</para>
     <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">X# has many different comment formats</para>
+    <para styleclass="Normal">X# has many different comment formats.</para>
     <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">These examples show the various comment symbols:</para>
     <para styleclass="Normal"></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-08T20:06:22.142+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Differences with Xbase++</title>
   <body>
     <header>
@@ -10,10 +10,10 @@
     <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="2">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Operation</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Operation</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Difference</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Difference</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -29,10 +29,10 @@
     <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="2">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Function</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Function</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Difference</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Difference</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -40,7 +40,7 @@
           <para styleclass="Normal">FErase()</para>
         </td>
         <td>
-          <para styleclass="Normal">returns a LOGIC in X# and a Number Xbase++</para>
+          <para styleclass="Normal">Returns a LOGIC in X# and a Number Xbase++.</para>
         </td>
       </tr>
     </table></para>

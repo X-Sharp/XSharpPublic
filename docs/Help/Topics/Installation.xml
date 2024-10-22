@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-28T09:58:32.557+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-08T20:36:01.321+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Installation</title>
   <keywords>
     <keyword>component</keyword>
@@ -11,7 +11,7 @@
     <header>
       <para styleclass="Heading1">Installation</para>
     </header>
-    <para styleclass="Normal">When you install XSharp you will find the following folders on your machine.</para>
+    <para styleclass="Normal">When you install XSharp, you will find the following folders on your machine:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="26" colcount="3">
       <tr style="vertical-align:top">
@@ -44,7 +44,7 @@
           <para styleclass="Normal">Main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The runtime assemblies that are selectable in the Add Reference dialog inside Visual Studio. <br/>Please note that this is a subset of the folders in the Redist Folder. For deploying your apps please use the files in the Redist folder. In a future version this folder may contain so called reference assemblies (assemblies with only meta data and no code).</para>
+          <para styleclass="Normal">The runtime assemblies that are selectable in the Add Reference dialog inside Visual Studio. <br/>Please note that this is a subset of the folders in the Redist Folder. For deploying your apps, please use the files in the Redist folder. In a future version, this folder may contain so called reference assemblies (assemblies with only meta data and no code).</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -55,7 +55,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The command line compiler, the Script interpreter and Vulcan XPorter</para>
+          <para styleclass="Normal">The command line compiler, the Script interpreter and Vulcan XPorter.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -66,7 +66,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">Debug versions of the runtime DLLs and SDK DLLs (<text style="font-weight:bold;">FOX only</text>)</para>
+          <para styleclass="Normal">Debug versions of the runtime DLLs and SDK DLLs (<text style="font-weight:bold;">FOX only</text>).</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -89,7 +89,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The PDF, CHM help files and the Visual Studio help</para>
+          <para styleclass="Normal">The PDF, CHM help files and the Visual Studio help.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -100,7 +100,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">Some images</para>
+          <para styleclass="Normal">Some images.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -111,7 +111,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">XSharpDefs.xh and other header files needed by X#</para>
+          <para styleclass="Normal">XSharpDefs.xh and other header files needed by X#.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -122,7 +122,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The MsBuild integration for XsProj files</para>
+          <para styleclass="Normal">The MsBuild integration for XsProj files.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -133,7 +133,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">A version of the X# compiler and script engine for .Net Core 3.1 (<text style="font-weight:bold;">FOX only</text>)</para>
+          <para styleclass="Normal">A version of the X# compiler and script engine for .Net Core 3.1 (<text style="font-weight:bold;">FOX only</text>).</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -166,7 +166,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">Contains the templates for the VO Compatible editors for Windows, Servers and Menus</para>
+          <para styleclass="Normal">Contains the templates for the VO Compatible editors for Windows, Servers and Menus.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -177,7 +177,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">Tools that are used during installation,</para>
+          <para styleclass="Normal">Tools that are used during installation.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -188,7 +188,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The uninstaller and some cmd files generated during installation to register your X# Extension inside Visual Studio.<br/>It also contains cmd files created at install time to help generating native images for the X# compiler.<br/>The cmd files with the number 1-6 are used to install into different versions of Visual Studio.</para>
+          <para styleclass="Normal">The uninstaller and some cmd files generated during installation to register your X# Extension inside Visual Studio.<br/>It also contains cmd files created at install time to help generating native images for the X# compiler.<br/>The cmd files with the numbers 1-6 are used to install into different versions of Visual Studio.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -199,7 +199,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The VOXPorter</para>
+          <para styleclass="Normal">The VOXPorter.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -210,7 +210,7 @@
           <para styleclass="Normal">xIde</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The XIDE installer</para>
+          <para styleclass="Normal">The XIDE installer.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -221,7 +221,7 @@
           <para styleclass="Normal">main\gac</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">X# runtime files will be installed in the GAC when this component is selected</para>
+          <para styleclass="Normal">X# runtime files will be installed in the GAC when this component is selected.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -232,7 +232,7 @@
           <para styleclass="Normal">main\ngen</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The X# compiler files will be precompiled when the option &quot;Optimize performance by generating native images&quot; is selected</para>
+          <para styleclass="Normal">The X# compiler files will be precompiled when the option &quot;Optimize performance by generating native images&quot; is selected.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -243,7 +243,7 @@
           <para styleclass="Normal">main\examples</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The X# examples will be installed in the common documents folder when this option is selected</para>
+          <para styleclass="Normal">The X# examples will be installed in the common documents folder when this option is selected.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -254,7 +254,7 @@
           <para styleclass="Normal">main\vs..</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">X# will be integrated into Visual Studio when this is selected</para>
+          <para styleclass="Normal">X# will be integrated into Visual Studio when this is selected.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -272,7 +272,7 @@
         <td style="width:666px;">
           <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Normal"><text style="font-weight:bold;">&lt;number&gt; </text>is 2017 or 2019.</li>
-            <li styleclass="Normal"><text style="font-weight:bold;">&lt;Version&gt; </text>can be one of Professinal, Community, Enterprise or Buildtools. <br/>There can be more that one edition of VS2017/VS2019 on your machine. The installer will show all instances that are detected.</li>
+            <li styleclass="Normal"><text style="font-weight:bold;">&lt;Version&gt; </text>can be one of Professional, Community, Enterprise or Buildtools. <br/>There can be more than one edition of VS2017/VS2019 on your machine. The installer will show all instances that are detected.</li>
           </list>
         </td>
       </tr>
@@ -290,7 +290,7 @@
         </td>
         <td style="width:666px;">
           <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <li styleclass="Normal"><text style="font-weight:bold;">&lt;Version&gt; </text>can be one of Professinal, Community, Enterprise or Buildtools. <br/>There can be more that one edition of VS2017/VS2019 on your machine. The installer will show all instances that are detected.</li>
+            <li styleclass="Normal"><text style="font-weight:bold;">&lt;Version&gt; </text>can be one of Professional, Community, Enterprise or Buildtools. <br/>There can be more than one edition of VS2017/VS2019 on your machine. The installer will show all instances that are detected.</li>
           </list>
         </td>
       </tr>

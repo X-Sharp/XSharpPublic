@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-18T15:18:30.205+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Null Literals</title>
   <keywords>
     <keyword>Literals</keyword>
@@ -116,7 +116,7 @@
           <para styleclass="Body Text">NULL_STRING</para>
         </td>
         <td>
-          <para styleclass="Normal">Null reference to a string. When the compiler option /vo2 is used then this will become the equivalent of String.Empty</para>
+          <para styleclass="Normal">Null reference to a string. When the compiler option /vo2 is used, then this will become the equivalent of String.Empty</para>
         </td>
         <td>
           <para styleclass="Normal">N</para>

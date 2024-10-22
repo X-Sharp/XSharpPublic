@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-18T15:19:02.153+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Integer Literals</title>
   <keywords>
     <keyword>Integer Literals</keyword>
@@ -11,7 +11,7 @@
     <header>
       <para styleclass="Heading1">Integer Literals</para>
     </header>
-    <para styleclass="Normal">Literal INT values may be specified in decimal, hexadecimal or binary notation:</para>
+    <para styleclass="Normal">Literal INT values may be specified in decimal, hexadecimal, or binary notation:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">12345</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">0x1234ABCD</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">0b010010101</text></para>
     <para styleclass="Normal">&#32;</para>

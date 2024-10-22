@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-18T15:16:51.580+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>String Literals</title>
   <keywords>
     <keyword>Literals</keyword>
@@ -11,7 +11,7 @@
     <header>
       <para styleclass="Heading1">String Literals</para>
     </header>
-    <para styleclass="Normal">There are a couple of different string types inside X#. For normal strings the notation can be different for different dialects:</para>
+    <para styleclass="Normal">There are a couple of different string types inside X#. For normal strings, the notation can be different for different dialects:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="7" colcount="3">
       <tr style="vertical-align:top">

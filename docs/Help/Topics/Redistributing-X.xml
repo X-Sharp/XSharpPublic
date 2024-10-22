@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-27T12:57:16.186+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-08T20:33:38.217+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Redistributing X#</title>
   <body>
     <header>
       <para styleclass="Heading1">Redistributing X#</para>
     </header>
-    <para styleclass="Normal">You are allowed to distribute the following XSharp DLLs with your projects:</para>
+    <para styleclass="Normal">With your projects, you are allowed to distribute the XSharp DLLs listed below.</para>
     <para styleclass="Normal">You are also allowed to distribute the PDB files that come with these DLLs. </para>
     <para styleclass="Normal">These PDB files may help in locating the line numbers where an error occurs.</para>
     <para styleclass="Normal">These files can be found in the &lt;Program Files&gt;\XSharp\Redist folder on your machine.</para>
@@ -14,10 +14,10 @@
     <para styleclass="Normal"><table styleclass="Default" rowcount="14" colcount="2">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Name</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Name</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Needed for</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Needed for</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -129,7 +129,7 @@
     <para styleclass="Heading2"><table styleclass="Default" rowcount="8" colcount="1">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Name</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Name</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -172,7 +172,7 @@
     <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="1">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Name</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Name</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -202,12 +202,12 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following files are needed by VOGUIClasses.dll when you use the DataBrowser or Splitwindow </para>
+    <para styleclass="Normal">The following files are needed by VOGUIClasses.dll when you use the DataBrowser or Splitwindow:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="13" colcount="1">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Name</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Name</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -274,7 +274,7 @@
     <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="1">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Name</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Name</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -294,12 +294,12 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">These scripting files can all be found in the &lt;Program Files&gt;\XSharp\Bin folder</para>
+    <para styleclass="Normal">These scripting files can all be found in the &lt;Program Files&gt;\XSharp\Bin folder.</para>
     <para styleclass="Heading2">Support files</para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="1">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Name</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Name</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -319,7 +319,7 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">These support files can all be found in the &lt;Program Files&gt;\XSharp\Bin folder</para>
+    <para styleclass="Normal">These support files can all be found in the &lt;Program Files&gt;\XSharp\Bin folder.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

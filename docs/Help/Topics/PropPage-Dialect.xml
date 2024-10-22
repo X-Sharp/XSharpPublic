@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-09T21:08:47.231+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Dialect</title>
   <keywords>
     <keyword>-fox1</keyword>
@@ -27,20 +27,20 @@
     <header>
       <para styleclass="Heading1">Dialect</para>
     </header>
-    <para styleclass="Body Text">The Dialect page contains some additional language settings. Some of these settings apply to all dialects. Others only apply to the given dialect and will only be enabled when the appropriate dialect is chosen.</para>
+    <para styleclass="Body Text">The Dialect page contains some additional language settings. Some of these settings apply to all dialects, while others only apply to the given dialect and are only enabled when the appropriate dialect is chosen.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Normal"><image src="ProjectPropertiesDialect.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"><image src="ProjectPropertiesDialect.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="21" colcount="3">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Item</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Item</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Description</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Command item</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Command item</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -81,7 +81,7 @@
           <para styleclass="Normal">Compatible preprocessor</para>
         </td>
         <td>
-          <para styleclass="Normal">Makes the preprocessor case insensitive and also controls how #ifdef inspects #defines.</para>
+          <para styleclass="Normal">Makes the preprocessor case-insensitive, and controls how #ifdef inspects #defines.</para>
         </td>
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo8">-vo8</link></para>
@@ -92,7 +92,7 @@
           <para styleclass="Normal">Handle problems with incorrect or missing return statements</para>
         </td>
         <td>
-          <para styleclass="Normal">Allow missing return statements or allow return statements with incorrect return values.</para>
+          <para styleclass="Normal">Allow missing return statements, or allow return statements with incorrect return values.</para>
         </td>
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo9">-vo9</link></para>
@@ -103,7 +103,7 @@
           <para styleclass="Normal">Implicit numeric conversions</para>
         </td>
         <td>
-          <para styleclass="Normal">Implicit numeric integer conversions</para>
+          <para styleclass="Normal">Implicit numeric integer conversions.</para>
         </td>
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo4">-vo4</link></para>
@@ -115,7 +115,7 @@
         </td>
         <td>
           <para styleclass="Normal">Initialize strings to empty string (String.Empty). </para>
-          <para styleclass="Normal">Please note that in .NET a NULL_STRING is not the same as a string with length 0. When enabled this will initialize local string variables regardless of the setting of &apos;initialize locals&apos; setting from the Language page.</para>
+          <para styleclass="Normal">Please note that in .NET a NULL_STRING is different than a string with length 0. When enabled, this will initialize local string variables, regardless of the setting of &apos;initialize locals&apos; setting from the Language page.</para>
         </td>
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">-vo2</link></para>
@@ -182,7 +182,7 @@
         </td>
         <td>
           <para styleclass="Normal">Methods without parameters and calling convention are compiled as Clipper calling convention. </para>
-          <para styleclass="Normal">Please note that without this switch all methods without parameters will be seen as STRICT. Methods with untyped parameters are always seen as CLIPPER calling convention.</para>
+          <para styleclass="Normal">Please note that without this switch, all methods without parameters will be seen as STRICT. Methods with untyped parameters are always seen as CLIPPER calling convention.</para>
         </td>
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo5">-vo5</link></para>
@@ -204,7 +204,7 @@
           <para styleclass="Normal">Treat missing types as USUAL</para>
         </td>
         <td>
-          <para styleclass="Normal">Missing type clauses for locals, instance variables and parameters are treated as USUAL (VO and Vulcan dialect). The default = TRUE for the VO dialect and FALSE for the other dialects. We strongly recommend to set this to FALSE because this will help you to find problems in your code and non optimal code. If you have to use the USUAL type we recommend to explicitly declare variables and parameters as USUAL.</para>
+          <para styleclass="Normal">Missing type clauses for locals, instance variable, and parameters are treated as USUAL (VO and Vulcan dialect). The default = TRUE for the VO dialect and FALSE for the other dialects. We strongly recommend to set this to FALSE, as this will help you find problems in your code and non-optimal code. If you have to use the USUAL type, we recommend to explicitly declare variables and parameters as USUAL.</para>
         </td>
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo15">-vo15</link></para>
@@ -248,7 +248,7 @@
           <para styleclass="Normal">Compatible Array Handling</para>
         </td>
         <td>
-          <para styleclass="Body Text">FoxPro compatible array handling (Allows parenthesized arrays and assigning a single value to an array to fill all elements). <br/>WARNING Allowing parenthesized arrays may slow down the execution of your program !(/fox2)</para>
+          <para styleclass="Body Text">FoxPro compatible array handling (Allows parenthesized arrays and assigning a single value to an array to fill all elements). <br/>WARNING: Allowing parenthesized arrays may slow down the execution of your program!(/fox2)</para>
         </td>
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">-fox2</link></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-08T19:59:53.668+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Array Of Type</title>
   <keywords>
     <keyword>ARRAY OF</keyword>
@@ -13,15 +13,15 @@
     <para styleclass="Normal">This type is used for typed arrays. It has been introduced in the X# Runtime. The internal typename is XSharp.__ArrayBase<br/>The code below shows how you can use it.</para>
     <para styleclass="Normal">Many of the existing XBase runtime functions that accept arrays now also accept an ARRAY OF. </para>
     <para styleclass="Normal">Runtime functions that expect a codeblock for Arrays expect a Lambda expression for ARRAY OF.</para>
-    <para styleclass="Normal">The difference is that the parameters to the Lambda expression will be typed, so there is no late binding necessary.</para>
+    <para styleclass="Normal">The difference is that the parameters to the Lambda expression will be typed, so no late binding is necessary.</para>
     <para styleclass="Normal">Parameters to a Codeblock are always of type usual and therefore either require Late Binding support or need to be casted to the right type inside the codeblock.</para>
-    <para styleclass="Normal">We have also introduced a special multi dimensional syntax. Given the example below you can also get the first name of the first developer in the array by using the following syntax:</para>
+    <para styleclass="Normal">We have also introduced a special multidimensional syntax. Given the example below you can also get the first name of the first developer in the array by using the following syntax:</para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; cFirst := aDevelopers[1, &quot;FirstName&quot;]</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This may be useful when you work with existing generated code and the existing code was using a define for the elements in the multi dimensional array.</para>
+    <para styleclass="Normal">This may be useful when you work with existing generated code and the existing code was using a define for the elements in the multidimensional array.</para>
     <para styleclass="Normal">If you had a (generated) define like</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> DEVELOPER_FirstName := 1</text></para>
-    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">then you can change the code generator and generate this in stead</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">then you can change the code generator and generate this instead</text></para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> DEVELOPER_FirstName := &quot;FirstName&quot;</text></para>
     <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">The code that uses the define can remain unchanged</text></para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; cFirst := aDevelopers[1, DEVELOPER_FirstName]</text></para>

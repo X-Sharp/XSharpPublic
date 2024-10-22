@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-18T15:21:27.143+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Escape codes</title>
   <keywords>
     <keyword>\&apos;</keyword>
@@ -23,7 +23,7 @@
     <header>
       <para styleclass="Heading1">Escape codes</para>
     </header>
-    <para styleclass="Normal">The &lt;char&gt; literals in the table that are marked with an asterisk (*) may contain a special escape code</para>
+    <para styleclass="Normal">The &lt;char&gt; literals in the table that are marked with an asterisk (*) may contain a special escape code:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="15" colcount="2" style="width:auto;">
       <tr style="vertical-align:top">
@@ -135,7 +135,7 @@
           <para styleclass="Normal">\x HEXDIGIT(1-4) </para>
         </td>
         <td>
-          <para styleclass="Normal">Hex number of character. 1-4 hex digits</para>
+          <para styleclass="Normal">Hex number of character. 1-4 hex digits.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -143,7 +143,7 @@
           <para styleclass="Normal">\u HEXGDIGIT (4 or 8)</para>
         </td>
         <td>
-          <para styleclass="Normal">Unicode number of character. 4 or 8 hex digits</para>
+          <para styleclass="Normal">Unicode number of character. 4 or 8 hex digits.</para>
         </td>
       </tr>
     </table></para>

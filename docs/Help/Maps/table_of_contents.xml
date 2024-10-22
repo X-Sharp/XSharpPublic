@@ -540,7 +540,7 @@
         <topicref type="topic" id="440464358723166" build="ALL" modified="2020-08-03T11:38:47.498Z" icon="0" href="Editor-combo-boxes">
           <caption translate="true">Editor combo boxes</caption>
         </topicref>
-        <topicref type="topic" id="440465504347477" build="ALL" modified="2020-08-03T16:03:35.988Z" icon="0" href="editor-Goto-definition">
+        <topicref type="topic" id="440465504347477" build="ALL" modified="2024-10-10T15:03:40.027Z" icon="0" href="editor-Goto-definition">
           <caption translate="true">Goto definition</caption>
         </topicref>
         <topicref type="topic" id="440462957354821" build="ALL" modified="2020-08-03T16:03:38.619Z" icon="0" href="editor-Peek-definition">
@@ -807,8 +807,8 @@
             <caption translate="true">USUAL</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="423890697550599" build="ALL" modified="2018-11-09T10:14:05.188Z" icon="0" href="User-defined-Types">
-          <caption translate="true">User defined Types</caption>
+        <topicref type="topic" id="423890697550599" build="ALL" modified="2024-10-18T15:15:30.227Z" icon="0" href="User-defined-Types">
+          <caption translate="true">User-defined Types</caption>
         </topicref>
       </topicref>
       <topicref type="topic" id="423890220586711" build="ALL" modified="2016-01-19T20:51:14.267Z" icon="0" href="Literals">

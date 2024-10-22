@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-18T15:18:00.310+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Logic Literals</title>
   <keywords>
     <keyword>.F.</keyword>
@@ -17,7 +17,7 @@
     <header>
       <para styleclass="Heading1">Logic Literals</para>
     </header>
-    <para styleclass="Body Text">X# uses the following Logical literals. </para>
+    <para styleclass="Body Text">X# uses the following Logical literals:</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><table styleclass="Default" rowcount="3" colcount="2" style="width:auto;">
       <tr style="vertical-align:top">

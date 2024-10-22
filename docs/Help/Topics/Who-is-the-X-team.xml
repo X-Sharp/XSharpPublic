@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-08T19:55:19.307+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Who is who in the X# team</title>
   <body>
     <header>
       <para styleclass="Heading1">Who is who in the X# team</para>
     </header>
     <para styleclass="Body Text">The founders of the X# project started the X# project in the summer of 2015.</para>
-    <para styleclass="Body Text">They have ample experience with the xBase language. They all worked on the Visual Objects and/or Vulcan.NET development teams, and some of them have created 3rd party additions to Visual Objects and/or Vulcan.NET or created tools for VO and Vulcan developers.</para>
+    <para styleclass="Body Text">They have ample experience with the xBase language. They all worked on the Visual Objects and/or Vulcan.NET development teams, and some of them have created third-party additions to Visual Objects and/or Vulcan.NET or created tools for VO and Vulcan developers.</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">They are in alphabetical order:</para>
     <para styleclass="Body Text"></para>
@@ -84,6 +84,6 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text">If you are interested in participating in the development of X# please contact us and let us know what your area of expertise is. There are plenty of things to do !</para>
+    <para styleclass="Body Text">If you are interested in participating in the development of X#, please contact us and let us know what your area of expertise is. There are plenty of things to do!</para>
   </body>
 </topic>

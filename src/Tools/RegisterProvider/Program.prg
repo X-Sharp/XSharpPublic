@@ -86,7 +86,7 @@ CLASS ConfigPatcher
         WriteToLog( "Writing new XSharp Element")
         oXSharp := oDoc:CreateElement("compiler")
         oCompilers:AppendChild(oXSharp)
-        oXSharp:SetAttribute("language", "XSharp")
+        oXSharp:SetAttribute("language", "X#")
         oXSharp:SetAttribute("extension", ".prg")
         oXSharp:SetAttribute("type",PROVIDERVERSION)
         SELF:SaveFile(cFile)
@@ -168,6 +168,8 @@ CLASS ConfigPatcher
         CASE "compiler"
             IF oElement:HasAttributes
                 IF oElement:GetAttribute("language"):ToLower() =="xsharp"
+                    oXSharp := oElement
+                ELSEIF oElement:GetAttribute("language"):ToLower() =="x#"
                     oXSharp := oElement
                 ENDIF
             ENDIF

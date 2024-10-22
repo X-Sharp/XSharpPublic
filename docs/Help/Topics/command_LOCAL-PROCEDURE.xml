@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-19T12:47:32.559+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-18T16:13:12.110+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>LOCAL PROCEDURE</title>
   <keywords>
     <keyword>END PROCEDURE</keyword>
@@ -11,7 +11,7 @@
       <para styleclass="Heading1">LOCAL PROCEDURE</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Declare a local procedure </para>
+    <para styleclass="Normal">The LOCAL PROCEDURE keyword declares a local procedure. </para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal"><tab />[Modifiers] <text style="font-weight:bold;">LOCAL PROCEDURE</text> &lt;<text styleclass="Italic">idFunction</text>&gt; </para>
     <para styleclass="Normal"><tab />[Typeparameters]</para>
@@ -23,7 +23,7 @@
     <para styleclass="Normal"><tab />END PROCEDURE</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List"><tab /></para>
-    <para styleclass="List">[Modifiers]<tab />The only valid modifiers for a local function are UNSAFE and/or ASYNC</para>
+    <para styleclass="List">[Modifiers]<tab />The only valid modifiers for a local function are UNSAFE and/or ASYNC.</para>
     <para styleclass="List"></para>
     <para styleclass="List">&lt;idFunction&gt;<tab />A valid identifier name for the function. &#160;A function is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a function and a class, for example, with the same name.</para>
     <para styleclass="List"><snippet src="__IncludeLocalFunctionParameters" inline="false"/></para>
@@ -33,7 +33,7 @@
     <para styleclass="List">END PROCEDURE<tab />These <text style="font-weight:bold;">mandatory</text> keywords indicate the logical end of the function.</para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">A local function is defined as a nested function inside a containing member. The END PROCEDURE is mandatory so the compiler knows where the function ends and its surrounding container continues.</para>
-    <para styleclass="Normal">In the example below the WAIT command is part of the Start() function and will be executed after the call to Log(3)</para>
+    <para styleclass="Normal">In the example below, the WAIT command is part of the Start() function and will be executed after the call to Log(3).</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading1">Example</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;Log(1)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;Log(2)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;Log(3)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PROCEDURE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Log(nNum </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LONG</text><text style="font-weight:normal; font-style:normal; color:#000000;">) </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160;? nNum</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PROCEDURE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WAIT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>

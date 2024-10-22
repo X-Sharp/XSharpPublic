@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-27T09:52:58.188+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-10T15:26:28.078+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Project Templates</title>
   <keywords>
     <keyword>ClassLibrary</keyword>
@@ -44,13 +44,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="ClassLibrary.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">ClassLibrary</para>
         </td>
         <td>
-          <para styleclass="Normal">A project for creating a X# class library (.dll) for the Core dialect with no dependencies on the runtime</para>
+          <para styleclass="Normal">A project for creating an X# class library (.dll) for the Core dialect with no dependencies on the runtime</para>
         </td>
         <td>
           <para styleclass="Normal">2.0</para>
@@ -64,13 +64,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ClassLibraryCore.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="ClassLibraryCore.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">Core ClassLibrary</para>
         </td>
         <td>
-          <para styleclass="Normal">A project for creating a X# class library (.dll) for the Core dialect with a dependency on XSharp.Core</para>
+          <para styleclass="Normal">A project for creating an X# class library (.dll) for the Core dialect with a dependency on XSharp.Core</para>
         </td>
         <td>
           <para styleclass="Normal">2.0</para>
@@ -84,13 +84,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ClassLibraryFox.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="ClassLibraryFox.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">FoxPro ClassLibrary</para>
         </td>
         <td>
-          <para styleclass="Normal">A project for creating a X# class library (.dll) for the FoxPro Dialect</para>
+          <para styleclass="Normal">A project for creating an X# class library (.dll) for the FoxPro Dialect</para>
         </td>
         <td>
           <para styleclass="Normal">2.0</para>
@@ -104,13 +104,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ClassLibraryVO.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="ClassLibraryVO.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">VO ClassLibrary</para>
         </td>
         <td>
-          <para styleclass="Normal">A project for creating a X# class library (.dll) for the VO Dialect</para>
+          <para styleclass="Normal">A project for creating an X# class library (.dll) for the VO Dialect</para>
         </td>
         <td>
           <para styleclass="Normal">2.0</para>
@@ -124,13 +124,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ClassLibraryVulcan.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="ClassLibraryVulcan.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">Vulcan ClassLibrary</para>
         </td>
         <td>
-          <para styleclass="Normal">A project for creating a X# class library (.dll) for the Vulcan Dialect</para>
+          <para styleclass="Normal">A project for creating an X# class library (.dll) for the Vulcan Dialect</para>
         </td>
         <td>
           <para styleclass="Normal">2.0</para>
@@ -144,13 +144,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ClassLibraryXPP.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="ClassLibraryXPP.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">XPP ClassLibrary</para>
         </td>
         <td>
-          <para styleclass="Normal">A project for creating a X# class library (.dll) for the Xbase++ Dialect</para>
+          <para styleclass="Normal">A project for creating an X# class library (.dll) for the Xbase++ Dialect</para>
         </td>
         <td>
           <para styleclass="Normal">2.0</para>
@@ -164,13 +164,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ConsoleApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="ConsoleApplication.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">Console Application</para>
         </td>
         <td>
-          <para styleclass="Normal">A project for creating a X# command-line application in the core dialect.</para>
+          <para styleclass="Normal">A project for creating an X# command-line application in the core dialect.</para>
         </td>
         <td>
           <para styleclass="Normal">2.0</para>
@@ -184,13 +184,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ConsoleApplicationFox.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="ConsoleApplicationFox.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">FoxPro Console Application</para>
         </td>
         <td>
-          <para styleclass="Normal">A project for creating a X# command-line application in the FoxPro Dialect.</para>
+          <para styleclass="Normal">A project for creating an X# command-line application in the FoxPro Dialect.</para>
         </td>
         <td>
           <para styleclass="Normal">2.0</para>
@@ -204,13 +204,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ConsoleApplicationVO.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="ConsoleApplicationVO.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">VO Console Application</para>
         </td>
         <td>
-          <para styleclass="Normal">A project for creating a X# command-line application in the VO Dialect.</para>
+          <para styleclass="Normal">A project for creating an X# command-line application in the VO Dialect.</para>
         </td>
         <td>
           <para styleclass="Normal">2.0</para>
@@ -224,13 +224,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ConsoleApplicationVulcan.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="ConsoleApplicationVulcan.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">Vulcan Console Application</para>
         </td>
         <td>
-          <para styleclass="Normal">A project for creating a X# command-line application in the Vulcan dialect with Vulcan Runtime Assemblies (BYOR = Bring Your Own Runtime).</para>
+          <para styleclass="Normal">A project for creating an X# command-line application in the Vulcan dialect with Vulcan Runtime Assemblies (BYOR = Bring Your Own Runtime).</para>
         </td>
         <td>
           <para styleclass="Normal">2.0</para>
@@ -244,13 +244,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ConsoleApplicationXPP.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="ConsoleApplicationXPP.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">XPP Console Application</para>
         </td>
         <td>
-          <para styleclass="Normal">A project for creating a X# class library (.dll) for the Xbase++ Dialect</para>
+          <para styleclass="Normal">A project for creating an X# class library (.dll) for the Xbase++ Dialect</para>
         </td>
         <td>
           <para styleclass="Normal">2.0</para>
@@ -264,7 +264,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="WinFormApp.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="WinFormApp.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">Windows Forms Application</para>
@@ -284,7 +284,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="WPFApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="WPFApplication.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">WPF Application</para>
@@ -304,7 +304,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="VOMDIApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="VOMDIApplication.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">VO MDI Application</para>
@@ -325,7 +325,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="VOSDIApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="VOSDIApplication.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">VO SDI Application</para>
@@ -345,7 +345,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="VulcanApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="VulcanApplication.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">Vulcan Console Application</para>
@@ -365,7 +365,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="MsTestClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="MsTestClassLibrary.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">Ms Test Library</para>
@@ -385,7 +385,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="NUnitTestClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="NUnitTestClassLibrary.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">NUnit Test Library</para>
@@ -405,7 +405,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="XUnitTestClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
+          <para styleclass="Normal"><image src="XUnitTestClassLibrary.png" scale="25.00%" width="8" height="8" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">XUnit Test Library</para>

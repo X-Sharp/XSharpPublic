@@ -160,6 +160,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         #endregion
 
         #region Properties and Fields
+        internal bool AllowDebuggerIdentifiers = false;
         // Properties to set the behavior of the Lexer
         private readonly List<XSharpToken> pendingTokens = new();
         public CSharpParseOptions Options { get; set; }
@@ -1213,6 +1214,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             parseOne(UDCSEP);
                         break;
                     case '$':
+                        if (AllowDebuggerIdentifiers)
+                            goto case '_';
                         switch (La(2))
                         {
                             case '0':

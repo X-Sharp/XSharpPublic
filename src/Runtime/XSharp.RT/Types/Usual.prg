@@ -536,10 +536,10 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             CASE __UsualType.Logic		; RETURN SELF:_logicValue:CompareTo(rhs:_logicValue)
             CASE __UsualType.Long		; RETURN SELF:_intValue:CompareTo(rhs:_intValue)
             CASE __UsualType.Ptr		; RETURN SELF:_ptrValue:ToInt64():CompareTo(rhs:_ptrValue:ToInt64())
-                // Uses String Comparison rules
+            CASE __UsualType.Float      ; RETURN SELF:_r8Value:CompareTo(rhs:_r8Value)
+            // Uses String Comparison rules
             //CASE __UsualType.Psz
-            CASE __UsualType.String
-                RETURN __StringCompare( SELF:_stringValue,  rhs:_stringValue)
+            CASE __UsualType.String     ; RETURN __StringCompare( SELF:_stringValue,  rhs:_stringValue)
             CASE __UsualType.Symbol		; RETURN __StringCompare( (STRING) SELF:_symValue, (STRING) rhs:_symValue)
             OTHERWISE					; RETURN 0
             END SWITCH

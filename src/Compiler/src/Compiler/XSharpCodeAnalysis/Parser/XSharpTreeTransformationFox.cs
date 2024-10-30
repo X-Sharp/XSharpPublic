@@ -636,7 +636,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (context.Fld != null)
                 {
-                    var fielddecl = createField(varCtx.GetText(), varType, context.Modifiers);
+                    var fielddecl = createField(context, varCtx.GetText(), varType, context.Modifiers, context.Attributes);
                     list.Add(fielddecl);
                 }
                 else
@@ -945,13 +945,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private MemberDeclarationSyntax createField(string fldName, TypeSyntax type, XP.ClassvarModifiersContext modifiers)
+        private MemberDeclarationSyntax createField(XSharpParserRuleContext context, string fldName, TypeSyntax type, XP.ClassvarModifiersContext modifiers, XP.AttributesContext attributes)
         {
             var list = MakeSeparatedList(GenerateVariable(fldName, null));
             var decl = _syntaxFactory.VariableDeclaration(type, list);
-            var mods = modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(modifiers, false);
+            var mods = modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(context.isInInterface());
             var fdecl = _syntaxFactory.FieldDeclaration(
-                                    attributeLists: default,
+                                    attributeLists: getAttributes(attributes),
                                     modifiers: mods,
                                     declaration: decl,
                                     semicolonToken: SyntaxFactory.SemicolonToken);
@@ -999,7 +999,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Fld != null)
             {
-                var flddecl = createField(context.F.Name.GetText(), UsualType, context.Modifiers);
+                var flddecl = createField(context,context.F.Name.GetText(), UsualType, context.Modifiers, context.Attributes);
                 if (flddecl != null)
                 {
                     context.Put(flddecl);

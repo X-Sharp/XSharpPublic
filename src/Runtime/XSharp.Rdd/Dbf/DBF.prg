@@ -568,9 +568,13 @@ PROTECT METHOD _lockFile( ) AS LOGIC
 
 	locked := _oStream:SafeLock(SELF:_lockScheme:FileLockOffSet, SELF:_lockScheme:FileSize )
 	IF ! locked
-		SELF:_dbfError(FException(), Subcodes.ERDD_WRITE_LOCK,Gencode.EG_LOCK_ERROR,  "DBF._lockFile", FALSE)
+        SELF:_dbfError(FException(), Subcodes.ERDD_WRITE_LOCK,Gencode.EG_LOCK_ERROR,  "DBF._lockFile", FALSE)
+    ELSE
+        // Force Re-Read
+        SELF:_BufferValid := FALSE
 	ENDIF
-RETURN locked
+    RETURN locked
+
 
     // Place a lock : <nOffset> indicate where the lock should be; <nLong> indicate the number bytes to lock
     // If it fails, the operation is tried <nTries> times, waiting 1ms between each operation.
@@ -621,7 +625,7 @@ PROTECTED METHOD _lockDBFFile() AS LOGIC
 			NEXT
 			SELF:_Locks:Clear()
 		ENDIF
-		SELF:_fLocked := SELF:_lockFile()
+        SELF:_fLocked := SELF:_lockFile()
 #ifdef INPUTBUFFER
 		IF _inBuffer != NULL_OBJECT
 			_inBuffer:Invalidate()
@@ -644,7 +648,9 @@ PROTECTED METHOD _lockRecord( recordNbr AS LONG ) AS LOGIC
     VAR iOffset := SELF:_lockScheme:RecnoOffSet(recordNbr, SELF:_RecordLength , SELF:_HeaderLength )
     locked := SELF:_tryLock(iOffset, SELF:_lockScheme:RecordSize ,FALSE)
 	IF locked
-		SELF:_Locks:Add( recordNbr )
+        SELF:_Locks:Add( recordNbr )
+        // Force Re-Read
+        SELF:_BufferValid := FALSE
         //? CurrentThreadId, "Locked record ", recordNbr
     ELSE
         //? CurrentThreadId, "Failed to Lock record ", recordNbr

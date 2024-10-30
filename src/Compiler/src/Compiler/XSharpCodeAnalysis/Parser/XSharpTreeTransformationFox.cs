@@ -608,7 +608,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var datatype = context.Type.Get<TypeSyntax>();
             var name = context.Id.GetText();
-            var prop = createProperty(name, datatype, context, context.Modifiers);
+            var prop = createProperty(name, datatype, context, context.Modifiers, context.Attributes);
             context.Put(prop);
         }
 
@@ -641,7 +641,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    var propdecl = createProperty(varCtx.GetText(), varType, varCtx, context.Modifiers);
+                    var propdecl = createProperty(varCtx.GetText(), varType, varCtx, context.Modifiers, context.Attributes);
                     list.Add(propdecl);
                 }
             }
@@ -958,7 +958,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return fdecl;
         }
 
-        private MemberDeclarationSyntax createProperty(string fldName, TypeSyntax type, XSharpParserRuleContext context, XP.ClassvarModifiersContext modifiers)
+        private MemberDeclarationSyntax createProperty(string fldName, TypeSyntax type, XSharpParserRuleContext context, XP.ClassvarModifiersContext modifiers, XP.AttributesContext attributes)
         {
             var accessors = new List<AccessorDeclarationSyntax>();
             var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,
@@ -983,7 +983,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var accessorList = MakeAccessorList(accessors);
             var mods = modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, false);
             var prop = _syntaxFactory.PropertyDeclaration(
-                   attributeLists: default,
+                   attributeLists: getAttributes(attributes),
                    modifiers: mods,
                    type: type,
                    explicitInterfaceSpecifier: null,
@@ -1007,7 +1007,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                var propdecl = createProperty(context.F.Name.GetText(), UsualType, context, context.Modifiers);
+                var propdecl = createProperty(context.F.Name.GetText(), UsualType, context, context.Modifiers, context.Attributes);
                 if (propdecl != null)
                 {
                     context.Put(propdecl);

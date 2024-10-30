@@ -636,7 +636,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (context.Fld != null)
                 {
-                    var fielddecl = createField(context, varCtx.GetText(), varType, context.Modifiers, context.Attributes);
+                    var fielddecl = createField(context, varCtx.GetText(), varType, context.Modifiers, context.Attributes, null);
                     list.Add(fielddecl);
                 }
                 else
@@ -945,9 +945,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private MemberDeclarationSyntax createField(XSharpParserRuleContext context, string fldName, TypeSyntax type, XP.ClassvarModifiersContext modifiers, XP.AttributesContext attributes)
+        private MemberDeclarationSyntax createField(XSharpParserRuleContext context, string fldName, TypeSyntax type, XP.ClassvarModifiersContext modifiers, XP.AttributesContext attributes, ExpressionSyntax initializer)
         {
-            var list = MakeSeparatedList(GenerateVariable(fldName, null));
+            var list = MakeSeparatedList(GenerateVariable(fldName, initializer));
             var decl = _syntaxFactory.VariableDeclaration(type, list);
             var mods = modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(context.isInInterface());
             var fdecl = _syntaxFactory.FieldDeclaration(
@@ -999,7 +999,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Fld != null)
             {
-                var flddecl = createField(context,context.F.Name.GetText(), UsualType, context.Modifiers, context.Attributes);
+                var fldinit = context.F.Expr.Get<ExpressionSyntax>();   
+                var flddecl = createField(context, context.F.Name.GetText(), UsualType, context.Modifiers, context.Attributes, fldinit);
                 if (flddecl != null)
                 {
                     context.Put(flddecl);

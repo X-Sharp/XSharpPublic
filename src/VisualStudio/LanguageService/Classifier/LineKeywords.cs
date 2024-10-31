@@ -75,7 +75,11 @@ namespace XSharp.LanguageService
                 // encode keyword
                 if (firstkw != null)
                 {
-                    if (XFormattingRule.IsSingleKeyword(firstkw.Type))
+                    if (firstkw.Type == XSharpLexer.DEFINE && secondkw.Type == XSharpLexer.CLASS )
+                    {
+                        kw = new XKeyword(firstkw.Type, secondkw.Type);
+                    }
+                    else if (XFormattingRule.IsSingleKeyword(firstkw.Type))
                     {
                         kw = new XKeyword(firstkw.Type);
                     }

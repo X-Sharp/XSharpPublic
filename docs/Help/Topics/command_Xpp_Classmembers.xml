@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-19T12:49:09.571+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-31T14:04:40.829+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>METHOD Declarations</title>
   <keywords>
     <keyword>ACCESS</keyword>
@@ -29,8 +29,7 @@
     <para styleclass="Body Text"><tab />[Attributes] INLINE [CLASS] METHOD &lt;MethodName&gt;[ <text styleclass="Normal">[([&lt;</text><text styleclass="Italic">idParam</text><text styleclass="Normal">&gt; [AS|REF|OUT|IN &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;] [, ...])] </text>) <text styleclass="Normal">[AS &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;]</text><br/><tab /><text styleclass="Normal">[=&gt; &lt;expression&gt;] </text><br/><tab /><text styleclass="Normal" style="font-weight:bold;">CRLF</text></para>
     <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]<br/><tab />[END METHOD]</para>
     <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">Modifiers<tab />An optional list of modifiers that specify info about the method. (DEFERRED , FINAL , INTRODUCE , OVERRIDE , CLASS , SYNC, NEW, STATIC, ASYNC, UNSAFE, EXTERN).</para>
-    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
     <para styleclass="List">&lt;MethodName,...&gt; <tab />is a comma separated list with the names of the instance methods being declared. The name for a method follows the same convention as function and variable names. It must begin with a underscore or a letter and must contain alpha numeric characters. </para>
     <para styleclass="List"></para>
     <para styleclass="List">IS &lt;MethodName&gt;<tab />The IS methodname clause is not supported by X#</para>

@@ -2,6 +2,7 @@
 // https://github.com/X-Sharp/XSharpPublic/issues/1515#issuecomment-2313065234
 
 // core dialect, /allowdot- (disabled)
+#pragma options (allowdot, off)
 FUNCTION Start( ) AS VOID
 RETURN
 

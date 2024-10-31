@@ -33,13 +33,7 @@ RecentReference = GAC:XSharp.Core,v4,2.6.0.0
 RecentReference = GAC:XSharp.RT,v4,2.6.0.0
 RecentReference = GAC:XSharp.VO,v4,2.6.0.0
 RecentReference = GAC:XSharp.VFP,v4,2.6.0.0
-RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\VulcanRT.dll
-RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\VulcanRTFuncs.dll
 RecentReference = GAC:System.Drawing,v4,4.0.0.0
-RecentReference = GAC:XSharp.RT,v4,
-RecentReference = GAC:XSharp.VO,v4,
-RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll
-RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll
 
 [Application Groups]
 ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,723E53EA-0D2C-4FC9-B86E-F050D29A49D2
@@ -17520,8 +17514,8 @@ FileType = Code
 CopyToBin = 0
 [C182 References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\VulcanRT.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\VulcanRTFuncs.dll,1,1
+ReferenceGAC = VulcanRT,1,0,1.1.401.0
+ReferenceGAC = VulcanRTFuncs,1,0,1.1.401.0
 [C182 Resources]
 [C182 Native Resources]
 [C182 License files]
@@ -120373,7 +120367,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = VO
@@ -120413,7 +120407,6 @@ CopyToBin = 0
 [Tester References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
 ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
 ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
 [Tester Resources]
@@ -120432,7 +120425,7 @@ VO5=0
 VO6=0
 VO7=0
 VO8=0
-VO9=0
+VO9=1
 VO10=0
 VO11=0
 VO12=0
@@ -120457,7 +120450,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDotOption=0
+AllowDotOption=1
 ResponseOnly=0
 [Tester Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -133401,7 +133394,7 @@ ModernSyntax=0
 NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
-AllowDotOption=1
+AllowDotOption=0
 ResponseOnly=0
 [C917 - Some issues with /allowdot- Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -133596,9 +133589,9 @@ CopyToBin = 0
 [C919 - Problems with /vo9 in the FoxPro dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = XSharp.VFP,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
 [C919 - Problems with /vo9 in the FoxPro dialect Resources]
 [C919 - Problems with /vo9 in the FoxPro dialect Native Resources]
 [C919 - Problems with /vo9 in the FoxPro dialect License files]
@@ -133717,8 +133710,8 @@ CopyToBin = 0
 [C920 - Problem with /vo9 in the VO dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
 [C920 - Problem with /vo9 in the VO dialect Resources]
 [C920 - Problem with /vo9 in the VO dialect Native Resources]
 [C920 - Problem with /vo9 in the VO dialect License files]
@@ -133837,9 +133830,9 @@ CopyToBin = 0
 [C921 - Problems with accessing VOSTRUCT members with the dot operator References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
 [C921 - Problems with accessing VOSTRUCT members with the dot operator Resources]
 [C921 - Problems with accessing VOSTRUCT members with the dot operator Native Resources]
 [C921 - Problems with accessing VOSTRUCT members with the dot operator License files]
@@ -133958,9 +133951,9 @@ CopyToBin = 0
 [C922 - Problem with attributes and END markers in VFP dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = XSharp.VFP,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
 [C922 - Problem with attributes and END markers in VFP dialect Resources]
 [C922 - Problem with attributes and END markers in VFP dialect Native Resources]
 [C922 - Problem with attributes and END markers in VFP dialect License files]
@@ -134036,8 +134029,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C922 - Problem with attributes and END markers in VFP dialect
 
 ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION C923 *************
-Application = C923
+; ************** APPLICATION C923 - Naming conflicts with /allowdot- *************
+Application = C923 - Naming conflicts with /allowdot-
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -134070,22 +134063,22 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C923 FileGroups]
-[C923 Files]
+[C923 - Naming conflicts with /allowdot- FileGroups]
+[C923 - Naming conflicts with /allowdot- Files]
 File = %AppPath%\Prg\C923.prg
 FileGUID = AEB41A7D-DE78-42F0-A3AC-619CA63CD25B
 FileType = Code
 CopyToBin = 0
-[C923 References]
+[C923 - Naming conflicts with /allowdot- References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = XSharp.VO,1,0,2.6.0.0
-[C923 Resources]
-[C923 Native Resources]
-[C923 License files]
-[C923 General Options]
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+[C923 - Naming conflicts with /allowdot- Resources]
+[C923 - Naming conflicts with /allowdot- Native Resources]
+[C923 - Naming conflicts with /allowdot- License files]
+[C923 - Naming conflicts with /allowdot- General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -134125,7 +134118,7 @@ InitLocals=0
 AllowOldStyleAssignments=0
 AllowDotOption=1
 ResponseOnly=0
-[C923 Configurations]
+[C923 - Naming conflicts with /allowdot- Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -134154,7 +134147,842 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = C923
+ENDApplication = C923 - Naming conflicts with /allowdot-
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C924 - Problem using SizeOf() on a structure containing a string in the Core dialect *************
+Application = C924 - Problem using SizeOf() on a structure containing a string in the Core dialect
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C924\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = 
+NameSpace = 
+Assembly = C924
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 1AADB382-2060-4808-AE2E-F3BB59B870E2
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C924 - Problem using SizeOf() on a structure containing a string in the Core dialect FileGroups]
+[C924 - Problem using SizeOf() on a structure containing a string in the Core dialect Files]
+File = %AppPath%\Prg\C924.prg
+FileGUID = 12348FF3-EFB4-42A7-96FC-CB3F39E3E602
+FileType = Code
+CopyToBin = 0
+[C924 - Problem using SizeOf() on a structure containing a string in the Core dialect References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
+[C924 - Problem using SizeOf() on a structure containing a string in the Core dialect Resources]
+[C924 - Problem using SizeOf() on a structure containing a string in the Core dialect Native Resources]
+[C924 - Problem using SizeOf() on a structure containing a string in the Core dialect License files]
+[C924 - Problem using SizeOf() on a structure containing a string in the Core dialect General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=1
+ResponseOnly=0
+[C924 - Problem using SizeOf() on a structure containing a string in the Core dialect Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C924 - Problem using SizeOf() on a structure containing a string in the Core dialect
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C925 - Incorrect compiler cast with abstract collection *************
+Application = C925 - Incorrect compiler cast with abstract collection
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\925\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = 
+NameSpace = 
+Assembly = 925
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 77C2B3B6-3393-4CCB-B113-55BD9DE8A524
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C925 - Incorrect compiler cast with abstract collection FileGroups]
+[C925 - Incorrect compiler cast with abstract collection Files]
+File = %AppPath%\Prg\C925.prg
+FileGUID = 5A54F1AF-1040-4B78-A7A1-91D88C4F484E
+FileType = Code
+CopyToBin = 0
+[C925 - Incorrect compiler cast with abstract collection References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+[C925 - Incorrect compiler cast with abstract collection Resources]
+[C925 - Incorrect compiler cast with abstract collection Native Resources]
+[C925 - Incorrect compiler cast with abstract collection License files]
+[C925 - Incorrect compiler cast with abstract collection General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=1
+ResponseOnly=0
+[C925 - Incorrect compiler cast with abstract collection Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C925 - Incorrect compiler cast with abstract collection
+
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
+; ************** APPLICATION C926 - Macro compiler cannot compile strongly typed codeblocks *************
+Application = C926 - Macro compiler cannot compile strongly typed codeblocks
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C926\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C926
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 6AA584C2-B64A-4278-9FBE-B7904D05F99C
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C926 - Macro compiler cannot compile strongly typed codeblocks FileGroups]
+[C926 - Macro compiler cannot compile strongly typed codeblocks Files]
+File = %AppPath%\Prg\C926.prg
+FileGUID = DF2073C4-99E5-450B-A2CA-D0E2D79B12B8
+FileType = Code
+CopyToBin = 0
+[C926 - Macro compiler cannot compile strongly typed codeblocks References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+[C926 - Macro compiler cannot compile strongly typed codeblocks Resources]
+[C926 - Macro compiler cannot compile strongly typed codeblocks Native Resources]
+[C926 - Macro compiler cannot compile strongly typed codeblocks License files]
+[C926 - Macro compiler cannot compile strongly typed codeblocks General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=1
+ResponseOnly=0
+[C926 - Macro compiler cannot compile strongly typed codeblocks Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C926 - Macro compiler cannot compile strongly typed codeblocks
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C917b - Some issues with /allowdot+ *************
+Application = C917b - Some issues with /allowdot+
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C917b\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C917b
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = EB723605-033E-4C23-9C56-F14A08998D80
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C917b - Some issues with /allowdot+ FileGroups]
+[C917b - Some issues with /allowdot+ Files]
+File = %AppPath%\Prg\C917b.prg
+FileGUID = 9439E3E2-3468-4715-A777-27288B718816
+FileType = Code
+CopyToBin = 0
+[C917b - Some issues with /allowdot+ References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+[C917b - Some issues with /allowdot+ Resources]
+[C917b - Some issues with /allowdot+ Native Resources]
+[C917b - Some issues with /allowdot+ License files]
+[C917b - Some issues with /allowdot+ General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=1
+ResponseOnly=0
+[C917b - Some issues with /allowdot+ Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C917b - Some issues with /allowdot+
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C927 - Interpolated string literals problem with /allowdot+ enabled *************
+Application = C927 - Interpolated string literals problem with /allowdot+ enabled
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C927\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C927
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 8A8F96BB-3F28-4BC9-B40B-274C51ED76E8
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C927 - Interpolated string literals problem with /allowdot+ enabled FileGroups]
+[C927 - Interpolated string literals problem with /allowdot+ enabled Files]
+File = %AppPath%\Prg\C927.prg
+FileGUID = AC7EA14D-C714-4D4E-A713-39468960EA48
+FileType = Code
+CopyToBin = 0
+[C927 - Interpolated string literals problem with /allowdot+ enabled References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+[C927 - Interpolated string literals problem with /allowdot+ enabled Resources]
+[C927 - Interpolated string literals problem with /allowdot+ enabled Native Resources]
+[C927 - Interpolated string literals problem with /allowdot+ enabled License files]
+[C927 - Interpolated string literals problem with /allowdot+ enabled General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=1
+ResponseOnly=0
+[C927 - Interpolated string literals problem with /allowdot+ enabled Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C927 - Interpolated string literals problem with /allowdot+ enabled
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C928 - Problem defining properties when class inherits from system type *************
+Application = C928 - Problem defining properties when class inherits from system type
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = FoxPro
+Folder = %ProjectPath%\Applications\C928\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C928
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 6A6CACE0-636E-49BE-86E2-DA7FC761E0F8
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C928 - Problem defining properties when class inherits from system type FileGroups]
+[C928 - Problem defining properties when class inherits from system type Files]
+File = %AppPath%\Prg\C928.prg
+FileGUID = E9AEB8E3-6222-4709-8C12-C96A48E7530D
+FileType = Code
+CopyToBin = 0
+[C928 - Problem defining properties when class inherits from system type References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+[C928 - Problem defining properties when class inherits from system type Resources]
+[C928 - Problem defining properties when class inherits from system type Native Resources]
+[C928 - Problem defining properties when class inherits from system type License files]
+[C928 - Problem defining properties when class inherits from system type General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=1
+FOX2=1
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=1
+ResponseOnly=0
+[C928 - Problem defining properties when class inherits from system type Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C928 - Problem defining properties when class inherits from system type
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C929 - Problem with defining a class with /fox1- disabled *************
+Application = C929 - Problem with defining a class with /fox1- disabled
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = FoxPro
+Folder = %ProjectPath%\Applications\C929\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C929
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = B246AAB0-B286-4FF2-BD05-FAD920F1D774
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C929 - Problem with defining a class with /fox1- disabled FileGroups]
+[C929 - Problem with defining a class with /fox1- disabled Files]
+File = %AppPath%\Prg\C929.prg
+FileGUID = FCF59627-F769-453F-8DD3-A70FFFCB189B
+FileType = Code
+CopyToBin = 0
+[C929 - Problem with defining a class with /fox1- disabled References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+[C929 - Problem with defining a class with /fox1- disabled Resources]
+[C929 - Problem with defining a class with /fox1- disabled Native Resources]
+[C929 - Problem with defining a class with /fox1- disabled License files]
+[C929 - Problem with defining a class with /fox1- disabled General Options]
+Switches=/fox1-
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=1
+ResponseOnly=0
+[C929 - Problem with defining a class with /fox1- disabled Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C929 - Problem with defining a class with /fox1- disabled
 [EndApplications]
 
 [Configurations]

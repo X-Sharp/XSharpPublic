@@ -15,7 +15,7 @@ CONSTRUCTOR( args PARAMS USUAL[] )
 
 PRIVATE _VFPInit AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the Init handling method. Occurs when an object is created.")];
-[System.ComponentModel.DefaultValue("")];
+[System.ComponentModel.DefaultValue(NULL)];
 PROPERTY vfpInit AS STRING GET _VFPInit?:SendTo SET Set_Init( VFPOverride{SELF, value} )
 
 METHOD Set_Init( methodCall AS VFPOverride ) AS VOID

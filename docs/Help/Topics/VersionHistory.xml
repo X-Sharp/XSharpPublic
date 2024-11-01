@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-31T14:30:34.413+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-31T14:38:49.203+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -51,6 +51,8 @@
       <li styleclass="Normal">Fixed problems with reading variable-length fields in DBF files stored using MultiByte encoding.</li>
       <li styleclass="Normal">Fixed a problem where DBFs encoded with Simplified Chinese were interpreted as Kantonese.</li>
       <li styleclass="Normal">Fixed an issue in the DBF RDD where the currentbuffer was not reloaded after a record or file lock was acquired.</li>
+      <li styleclass="Normal">Fixed an issue in the USUAL type where CompareTo for Float values was not correctly implemented (#1616)</li>
+      <li styleclass="Normal">Fixed an issue in the USUAL type where the ! operator was not producing the correct results compared with the (LOGIC) cast. </li>
     </list>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">VOSDK</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -66,7 +68,8 @@
       <li styleclass="Normal">Fixed a problem with putting the .resx file for windows forms user controls in an incorrect location in the Solution Explorer (#1560)</li>
       <li styleclass="Normal">Fixed problem with editor snippets no longer working in VS 2022 version 17.11 (#1564)</li>
       <li styleclass="Normal">Fixed a problem with indenting lines with end keywords, such as NEXT and ENDDO, when these keywords were following by &apos;garbage&apos;.</li>
-      <li styleclass="Normal">Fixed a problem with the indentation of VFP Style classes declared with DEFINE CLASS &#160;... ENDDEFINE</li>
+      <li styleclass="Normal">Fixed an issue in the debugger where identifiers that start with a &apos;$&apos; character, such as &quot;$exception&quot; in the exception dialog were not properly evaluated (#1602)</li>
+      <li styleclass="Normal">Fixed a problem with the indentation of VFP Style classes declared with DEFINE CLASS &#160;... ENDDEFINE (#1609)</li>
     </list>
     <para styleclass="Heading3">New features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

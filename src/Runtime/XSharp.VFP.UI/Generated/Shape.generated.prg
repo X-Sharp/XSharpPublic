@@ -24,10 +24,10 @@ METHOD OLEDrag AS USUAL CLIPPER
     RETURN NIL
 
 [System.ComponentModel.DefaultValue(0)];
-PROPERTY OLEDragMode AS LONG AUTO
+PROPERTY OLEDragMode AS USUAL AUTO
 
-[System.ComponentModel.DefaultValue(NULL)];
-PROPERTY OLEDragPicture AS STRING AUTO
+[System.ComponentModel.DefaultValue("")];
+PROPERTY OLEDragPicture AS USUAL AUTO
 
 [System.ComponentModel.DefaultValue(0)];
 PROPERTY OLEDropEffects AS LONG AUTO

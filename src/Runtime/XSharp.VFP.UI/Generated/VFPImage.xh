@@ -1,10 +1,10 @@
 ﻿
 #ifndef VFP_IMAGE_XH
 #define VFP_IMAGE_XH
-[System.ComponentModel.DefaultValue("")];
+[System.ComponentModel.DefaultValue(0)];
 PROPERTY DisabledBackColor AS LONG AUTO
 
-[System.ComponentModel.DefaultValue("")];
+[System.ComponentModel.DefaultValue(0)];
 PROPERTY DisabledForeColor AS LONG AUTO
 
 [System.ComponentModel.DefaultValue("")];

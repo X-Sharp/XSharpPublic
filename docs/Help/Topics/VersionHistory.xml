@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-31T14:38:49.203+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-04T13:42:24.383+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -32,6 +32,7 @@
       <li styleclass="Normal">Fixed several issues with the /vo9 (handle missing RETURN statements and return values) compiler option (#1544)</li>
       <li styleclass="Normal">Fixed problem with using attributes in CLASS Statement in the FoxPro dialect (#1566)</li>
       <li styleclass="Normal">We have fixed an issue in the built system that would sometimes lead to a recompilation, even when nothing was changed.</li>
+      <li styleclass="Normal">The compiler could crash when building a solution that has a .editorconfig file</li>
       <li styleclass="Normal">Fixed an issue with generating the property output for attributes on Members inside a FoxPro style class definition</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
@@ -68,6 +69,7 @@
       <li styleclass="Normal">Fixed a problem with putting the .resx file for windows forms user controls in an incorrect location in the Solution Explorer (#1560)</li>
       <li styleclass="Normal">Fixed problem with editor snippets no longer working in VS 2022 version 17.11 (#1564)</li>
       <li styleclass="Normal">Fixed a problem with indenting lines with end keywords, such as NEXT and ENDDO, when these keywords were following by &apos;garbage&apos;.</li>
+      <li styleclass="Normal">Opening a form in the VS Form designer could fail when one of the include files declared entities, such as USING SomeNameSpace (#1595, #1596)</li>
       <li styleclass="Normal">Fixed an issue in the debugger where identifiers that start with a &apos;$&apos; character, such as &quot;$exception&quot; in the exception dialog were not properly evaluated (#1602)</li>
       <li styleclass="Normal">Fixed a problem with the indentation of VFP Style classes declared with DEFINE CLASS &#160;... ENDDEFINE (#1609)</li>
     </list>
@@ -85,6 +87,7 @@
       <li styleclass="Normal">We no longer create an X# intellisense database for solutions that do not have any X# projects.</li>
       <li styleclass="Normal">We have made several changes to the X# intellisense database structure. When you open a solution with an existing database, the database will be deleted and all source files will be rescanned (only once).</li>
       <li styleclass="Normal">The X# source code editor now has an extra combobox on the top, listing the projects where a file is included. When a file is included in more than one project, all these projects can be seen. Switching to a new project will change the &apos;evaluation context&apos;. Conditional compiles (#ifdef) will reflect the change in the editor.</li>
+      <li styleclass="Normal">We have added support for the commands Edit.NextMethod and Edit.PreviousMethod in the editor. There usually is no shortcut for these commands, but you can assign them with the &quot;Customize&quot; option on the Toolbar in Visual Studio. You could assign Ctrl-DownArrow and Ctl-UpArrow for example.</li>
     </list>
     <para styleclass="Heading2">XIDE</para>
     <para styleclass="Heading3">General</para>

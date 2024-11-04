@@ -731,7 +731,7 @@
       <config-value name="publisher">XSharp BV</config-value>
     </config-group>
     <variables>
-      <variable id="TXTVERSION" type="text" translate="true">Cahors (2.21.0.1)</variable>
+      <variable id="TXTVERSION" type="text" translate="true">Cahors (2.21.0.4)</variable>
       <variable id="APP" type="text" translate="true">XSharp</variable>
     </variables>
     <helpcontext-numbers>

@@ -1056,7 +1056,10 @@ aliasedName         : Global=GLOBAL Op=COLONCOLON Right=simpleName              
 simpleName          : Id=identifier	GenericArgList=genericArgumentList?
                     ;
 
-genericArgumentList : LT GenericArgs+=datatype (COMMA GenericArgs+=datatype)* GT
+genericArgumentList : LT (
+                          GenericArgs+=datatype (COMMA GenericArgs+=datatype )*
+                        | (Commas +=COMMA)*
+                        ) GT
                     ;
 
 identifierName      : Id=identifier

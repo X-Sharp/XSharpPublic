@@ -4530,11 +4530,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitGenericArgumentList([NotNull] XP.GenericArgumentListContext context)
         {
             var types = _pool.AllocateSeparated<TypeSyntax>();
-            foreach (var type in context._GenericArgs)
+            if (context._GenericArgs.Count == 0)
             {
-                if (types.Count != 0)
+                var type = _syntaxFactory.OmittedTypeArgument(SyntaxFactory.Token(SyntaxKind.OmittedTypeArgumentToken));
+                types.Add(type);
+                foreach (var comma in context._Commas)
+                {
                     types.AddSeparator(SyntaxFactory.CommaToken);
-                types.Add(type.Get<TypeSyntax>());
+                    types.Add(type);
+                }
+            }
+            else
+            {
+                foreach (var type in context._GenericArgs)
+                {
+                    if (types.Count > 0)
+                    {
+                        types.AddSeparator(SyntaxFactory.CommaToken);
+                    }
+                    types.Add(type.Get<TypeSyntax>());
+                }
             }
             context.Put(_syntaxFactory.TypeArgumentList(
                 SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
@@ -8893,7 +8908,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitSimpleName([NotNull] XP.SimpleNameContext context)
         {
-            if (context.GenericArgList == null || context.GenericArgList._GenericArgs.Count == 0)
+            if (context.GenericArgList == null)
                 context.Put(_syntaxFactory.IdentifierName(context.Id.Get<SyntaxToken>()));
             else
                 context.Put(_syntaxFactory.GenericName(context.Id.Get<SyntaxToken>(), context.GenericArgList.Get<TypeArgumentListSyntax>()));

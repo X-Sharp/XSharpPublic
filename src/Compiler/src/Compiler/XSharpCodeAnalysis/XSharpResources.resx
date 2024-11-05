@@ -7594,7 +7594,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>'ARRAY' does not have a method '{0}'. This code is converted to an 'ASend()' function call.</value>
   </data>
   <data name="ERR_FoxAsClauseMandatory" xml:space="preserve">
-    <value>The 'AS BaseType' clause is mandatory in the FoxPro dialect, unless you compile with /fox1-.</value>
+    <value>The 'AS BaseType' clause is mandatory in the FoxPro dialect, unless you compile with /fox1+.</value>
   </data>
   <data name="WRN_FoxUnsupportedClause" xml:space="preserve">
     <value>The '{0}' clause is not supported and ignored.</value>

@@ -472,7 +472,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case CompilerOption.Xpp1: // Inherit from Custom
                     return CheckOption(option, XPPInheritFromAbstract, token, options);
-                //case CompilerOption.Xpp2:
 
                 case CompilerOption.Fox1: // Inherit from Custom
                     return CheckOption(option, FoxInheritUnknown, token, options);

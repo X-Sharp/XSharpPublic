@@ -186,6 +186,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     case XSharpLexer.NEQ:
                     case XSharpLexer.NEQ2:
+                    case XSharpLexer.LTGT:
                         _evalStack.Push(string.Compare(strlhs, strrhs, StringComparison.Ordinal) != 0);
                         break;
                     default:
@@ -217,6 +218,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     case XSharpLexer.NEQ:
                     case XSharpLexer.NEQ2:
+                    case XSharpLexer.LTGT:
                         _evalStack.Push(dblLhs != dblRhs);
                         break;
                     default:
@@ -249,6 +251,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     case XSharpLexer.NEQ:
                     case XSharpLexer.NEQ2:
+                    case XSharpLexer.LTGT:
                         _evalStack.Push(intLhs != intRhs);
                         break;
                     default:
@@ -269,6 +272,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     case XSharpLexer.NEQ:
                     case XSharpLexer.NEQ2:
+                    case XSharpLexer.LTGT:
                         _evalStack.Push(bLhs != bRhs);
                         break;
                     default:
@@ -464,6 +468,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XSharpLexer.EEQ:
                     case XSharpLexer.NEQ:
                     case XSharpLexer.NEQ2:
+                    case XSharpLexer.LTGT:
                         doCompare(context, lhs, rhs);
                         return;
                     case XSharpLexer.PLUS:

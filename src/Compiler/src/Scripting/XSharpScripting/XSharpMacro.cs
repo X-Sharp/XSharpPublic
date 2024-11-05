@@ -38,7 +38,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
             result.Vo16 = notcore; // Generate Clipper constructors
             result.Fox1 = dialect == XSharpDialect.FoxPro; // Inherit from abstract class
             result.AllowDotForInstanceMembers = dialect.AllowDotForInstanceMembers();
-            //result.Fox2 = dialect == XSharpDialect.FoxPro; // Expose Locals
             result.Xpp1 = dialect == XSharpDialect.XPP; // Inherit from Custom class
             result.RuntimeAssemblies = RuntimeAssemblies.XSharpRT | RuntimeAssemblies.XSharpCore;
             switch (dialect)

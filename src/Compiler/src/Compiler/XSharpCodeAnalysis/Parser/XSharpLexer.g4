@@ -95,7 +95,7 @@ LAST_NULL,
 
 // Relational operators
 FIRST_OPERATOR,
-LT,LTE,GT,GTE,EQ,EEQ,SUBSTR,NEQ,NEQ2,
+LT,LTE,GT,GTE,EQ,EEQ,SUBSTR,NEQ,NEQ2,LTGT,
 
 // Prefix and postfix Operators
 INC,DEC,

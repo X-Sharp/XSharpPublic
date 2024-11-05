@@ -1156,7 +1156,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         else if (Expect('='))
                             parseOne(LTE);
                         else if (Expect('>'))
-                            parseOne(NEQ);
+                            parseOne(LTGT);
                         break;
                     case '>':
                         parseOne(GT);
@@ -2559,7 +2559,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__XSHARP__", MACRO},
                     { "__XSHARP_RT__", MACRO},
                     { "__XPP1__", MACRO},
-                    { "__XPP2__", MACRO},
                     { "__FOX1__", MACRO},
                     { "__FOX2__", MACRO},
 

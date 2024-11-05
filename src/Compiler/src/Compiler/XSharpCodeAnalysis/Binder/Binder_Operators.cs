@@ -607,6 +607,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         break;
                     case XSharpParser.NEQ:
                     case XSharpParser.NEQ2:
+                    case XSharpParser.LTGT:
                         if (leftUsual || rightUsual)
                         {
                             opType = VOOperatorType.NotEqualsUsual;

@@ -114,7 +114,6 @@ namespace XSharp.Project
                 XSharpProjectFileConstants.Undeclared,
                 XSharpProjectFileConstants.Unsafe,
                 XSharpProjectFileConstants.Xpp1,
-                XSharpProjectFileConstants.Xpp2,
                 XSharpProjectFileConstants.Fox1,
                 XSharpProjectFileConstants.Allowdot,
                 XSharpProjectFileConstants.EnforceSelf,

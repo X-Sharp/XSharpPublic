@@ -27,10 +27,9 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
     PROTECT lUsingMouse AS LOGIC
     PROTECT oTimer AS Timer
     PROTECT nMouseIndex AS INT
+	PROTECT cLastSelectedGuid := NULL AS STRING
 
-
-
-    CONSTRUCTOR(_oEditor AS VOWindowEditor , aDesign AS ArrayList)
+    CONSTRUCTOR(_oEditor AS VOWindowEditor , aDesign AS ArrayList, oSelected AS DesignWindowItem)
 
         SUPER()
 
@@ -63,11 +62,15 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
                 oItem:SubItems:Add(oDesign:GetProperty("Caption"):TextValue)
             ENDIF
             SELF:oControlsList:Items:Add(oItem)
+            IF n == 0
+				oItem:Selected :=  TRUE
+			END IF
+			IF oDesign == oSelected
+				oItem:Selected :=  TRUE
+			END IF
         NEXT
 
-        IF SELF:oControlsList:Items:Count != 0
-            SELF:oControlsList:Items[0]:Selected :=  TRUE
-        ENDIF
+		SELF:oControlsList:AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
 
         SELF:oTimer := Timer{}
         SELF:oTimer:Interval := 100
@@ -137,7 +140,6 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
         SELF:oCancelButton:Size := System.Drawing.Size{ 75 , 23 }
         SELF:oCancelButton:Text := "&Cancel"
         SELF:oCancelButton:TabIndex := 5
-        SELF:oCancelButton:Click += System.EventHandler{ SELF , @CancelButtonClick() }
         SELF:oCancelButton:Anchor := System.Windows.Forms.AnchorStyles.Bottom + System.Windows.Forms.AnchorStyles.Right
         SELF:Controls:Add(SELF:oCancelButton)
 
@@ -166,6 +168,9 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
         SELF:CancelButton := SELF:oCancelButton
 
         RETURN
+
+
+    PROPERTY LastSelectedGuid AS STRING GET SELF:cLastSelectedGuid
 
     METHOD ControlsListMouseDown(sender AS System.Object , e AS System.Windows.Forms.MouseEventArgs) AS System.Void
         SELF:oDragItem := SELF:oControlsList:GetItemAt(e:X , e:Y)
@@ -237,18 +242,33 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
         RETURN
 
     PROTECTED METHOD UseMouseButtonClick(o AS OBJECT , e AS EventArgs) AS VOID
+        LOCAL nSelectedIndex := 0 AS INT
+		IF SELF:oControlsList:SelectedIndices:Count == 1
+			nSelectedIndex := SELF:oControlsList:SelectedIndices[0]
+			IF nSelectedIndex >= SELF:oControlsList:Items:Count - 1
+				nSelectedIndex := 0
+			END IF
+		ENDIF
 
-        if SELF:nMouseIndex>0
-            SELF:lUsingMouse := TRUE
-            SELF:oTimer:Start()
-        else
-            SELF:oEditor:SelectMainItem()
-            SELF:lUsingMouse := TRUE
-            SELF:nMouseIndex := 0
-            SELF:oTimer:Start()
-        endif
+		IF nSelectedIndex > 0 .and. XFuncs.QuestionBox(String.Format("Start adjusting order after the selected control {0} ?" , ((DesignWindowItem)SELF:oControlsList:Items[nSelectedIndex]:Tag):Name), "Set control order" )
+			SELF:lUsingMouse := TRUE
+			FOR LOCAL n := 0 AS INT UPTO nSelectedIndex
+				LOCAL oDesign AS DesignItem
+				oDesign := SELF:oControlsList:Items[n]:Tag ASTYPE DesignItem
+				IF n == 0
+					SELF:oEditor:DoAction(DesignerActionType.Select , oDesign:cGuid)
+				ELSE
+					SELF:oEditor:DoAction(DesignerActionType.SelectAdd , oDesign:cGuid)
+				END IF
+			NEXT
+			SELF:nMouseIndex := nSelectedIndex + 1
+		ELSE
+			SELF:lUsingMouse := TRUE
+			SELF:oEditor:SelectMainItem()
+			SELF:nMouseIndex := 0
+		END IF
 
-
+        SELF:oTimer:Start()
         RETURN
     METHOD TimerTicked(o AS OBJECT , e AS EventArgs) AS VOID
         IF SELF:lUsingMouse
@@ -341,7 +361,7 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
         IF lUp .and. nIndex == 0
             RETURN
         ENDIF
-        IF !lUp .and. nIndex == SELF:oControlsList:Items:Count - 1
+        IF .not. lUp .and. nIndex == SELF:oControlsList:Items:Count - 1
             RETURN
         ENDIF
         oItem := SELF:oControlsList:Items[nIndex]
@@ -355,22 +375,17 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
         RETURN
 
     PROTECTED METHOD OKButtonClick(o AS OBJECT , e AS System.EventArgs) AS VOID
+		LOCAL oDesign AS DesignItem
+		LOCAL n AS INT
         SELF:aNewOrder := List<DesignWindowItem>{}
         FOREACH oItem AS ListViewItem IN SELF:oControlsList:Items
             SELF:aNewOrder:Add(oItem:Tag ASTYPE DesignWindowItem)
         NEXT
+		IF SELF:oControlsList:SelectedIndices:Count == 1
+			SELF:cLastSelectedGuid := ((DesignItem)SELF:oControlsList:SelectedItems[0]:Tag):cGuid
+		END IF
         SELF:DialogResult := DialogResult.OK
-
-        Self:Close()
         RETURN
-
-
-    PROTECTED METHOD CancelButtonClick(o AS OBJECT , e AS System.EventArgs) AS VOID
-        SELF:DialogResult := DialogResult.Cancel
-        Self:Close()
-        RETURN
-
-
 
 END CLASS
 

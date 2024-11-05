@@ -254,6 +254,7 @@ ENUM XSharpModel.XTokenType AS SHORT
     MEMBER @@Substr:= XSharpLexer.SUBSTR
     MEMBER @@Neq:= XSharpLexer.NEQ
     MEMBER @@Neq2:= XSharpLexer.NEQ2
+    MEMBER @@Ltgt:= XSharpLexer.LTGT
     MEMBER @@Inc:= XSharpLexer.INC
     MEMBER @@Dec:= XSharpLexer.DEC
     MEMBER @@Plus:= XSharpLexer.PLUS

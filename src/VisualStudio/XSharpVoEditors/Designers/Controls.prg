@@ -285,10 +285,10 @@ INTERNAL CLASS DesignCheckBox INHERIT CheckBox
 	override protected method OnPaint(e as PaintEventArgs) as void
 		super:OnPaint(e)
 
-		if self:lTestMode
+/*		if self:lTestMode
 //			SELF:Text := ""
 			return
-		end if
+		end if*/
 
 		if self:oBrush == null .or. self:oBrush:Color != self:ForeColor
 			self:oBrush := SolidBrush{self:ForeColor}

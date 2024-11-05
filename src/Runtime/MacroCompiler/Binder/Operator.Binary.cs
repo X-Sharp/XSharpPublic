@@ -206,6 +206,8 @@ namespace XSharp.MacroCompiler
                     return BinaryOperatorKind.NotEqual;
                 case TokenType.NEQ2:
                     return BinaryOperatorKind.NotEqual;
+                case TokenType.LTGT:
+                    return BinaryOperatorKind.NotEqual;
                 case TokenType.AMP:
                 case TokenType.BIT_AND:
                     return BinaryOperatorKind.And;

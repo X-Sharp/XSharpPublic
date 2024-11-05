@@ -1159,6 +1159,7 @@ namespace XSharp.MacroCompiler
             Opers[(int)TokenType.SUBSTR] = new Oper(AssocType.BinarySubstr, TokenType.SUBSTR, 13);
             Opers[(int)TokenType.NEQ] = new Oper(AssocType.BinaryLeft, TokenType.NEQ, 13);
             Opers[(int)TokenType.NEQ2] = new Oper(AssocType.BinaryLeft, TokenType.NEQ2, 13);
+            Opers[(int)TokenType.LTGT] = new Oper(AssocType.BinaryLeft, TokenType.LTGT, 13);
             Opers[(int)TokenType.AMP] = new Oper(AssocType.BinaryLeft, TokenType.AMP, 14);
             Opers[(int)TokenType.TILDE] = new Oper(AssocType.BinaryLeft, TokenType.TILDE, 15);
             Opers[(int)TokenType.PIPE] = new Oper(AssocType.BinaryLeft, TokenType.PIPE, 16);

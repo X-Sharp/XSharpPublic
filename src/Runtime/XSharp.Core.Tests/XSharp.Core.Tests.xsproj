@@ -26,8 +26,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <Prefer32Bit>True</Prefer32Bit>
-    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>False</Prefer32Bit>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <EmitDebugInformation>false</EmitDebugInformation>

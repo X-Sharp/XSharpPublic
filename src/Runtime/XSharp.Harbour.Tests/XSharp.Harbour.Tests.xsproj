@@ -28,6 +28,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DisabledWarnings>165,169,219,618,168</DisabledWarnings>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <DefineConstants>TRACE</DefineConstants>

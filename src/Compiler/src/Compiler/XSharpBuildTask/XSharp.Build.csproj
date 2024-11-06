@@ -20,7 +20,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Nullable>enable</Nullable>
     <ApplicationIcon>$(CommonDir)XSharpProject.ico</ApplicationIcon>
-    <NoWarn>$(NoWarn);1573;1591;1701;RS0016</NoWarn>
+    <NoWarn>$(NoWarn);1573;1591;1701;RS0016;NU1603</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(GenericDefines);TRACE;DEBUG</DefineConstants>

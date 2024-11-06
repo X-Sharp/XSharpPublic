@@ -143,8 +143,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     public enum LanguageVersion
     {
-        CSharp7_3,
-        CSharp9
+        CSharp7_3 = 703,
+        CSharp9 = 900,
+        CSharp12 = 1200,
+        /// <summary>
+        /// The latest supported version of the language.
+        /// </summary>
+        Latest = int.MaxValue,
     }
     internal static partial class ErrorFacts
     {

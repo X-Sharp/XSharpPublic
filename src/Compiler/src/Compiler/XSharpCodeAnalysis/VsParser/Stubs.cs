@@ -146,6 +146,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         CSharp7_3 = 703,
         CSharp9 = 900,
         CSharp12 = 1200,
+        Default=CSharp12,
         /// <summary>
         /// The latest supported version of the language.
         /// </summary>

@@ -180,13 +180,13 @@ namespace Microsoft.CodeAnalysis.Scripting
                 AllowOldStyleAssignments = true };
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             var arefs = assemblies.Where(a => !a.IsDynamic && (a.Location.ToLower().Contains("xsharp.core.dll") || a.Location.ToLower().Contains("xsharp.rt.dll")));
-            if (arefs.IsEmpty())
+            if (arefs.Count() == 0)
             {
                 arefs = assemblies.Where(a => !a.IsDynamic && (a.Location.ToLower().Contains("vulcanrt.dll") || a.Location.ToLower().Contains("vulcanrtfuncs.dll")));
                 XsOptions.Dialect = CSharp.XSharpDialect.Vulcan;
                 XsOptions.RuntimeAssemblies = CSharp.RuntimeAssemblies.VulcanRT | CSharp.RuntimeAssemblies.VulcanRTFuncs;
             }
-            if (arefs.IsEmpty())
+            if (arefs.Count() == 0)
             {
                 XsOptions.Dialect = CSharp.XSharpDialect.Core;
                 XsOptions.RuntimeAssemblies = CSharp.RuntimeAssemblies.None;

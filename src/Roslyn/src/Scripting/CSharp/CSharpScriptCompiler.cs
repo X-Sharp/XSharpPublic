@@ -71,14 +71,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
                     sourceReferenceResolver: script.Options.SourceResolver,
                     metadataReferenceResolver: script.Options.MetadataResolver,
                     assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default
-                )),
+                )
 #if XSHARP
                 .WithXSharpSpecificOptions(script.Options.XsOptions)
 #endif
+                ),
                 previousSubmission,
                 script.ReturnType,
                 script.GlobalsType
-            );
+                );
 
             return compilation;
         }

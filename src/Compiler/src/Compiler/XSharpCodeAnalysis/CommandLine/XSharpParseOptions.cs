@@ -91,7 +91,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // Options that can be set from the outside
         // Some options are also handled by the parser
         // Other options have flags, for the preprocessor macros, such as __VO1__
-        const LanguageVersion defaultLanguageVersion = LanguageVersion.Latest;
+        const LanguageVersion defaultLanguageVersion = LanguageVersion.CSharp12;
         #region private fields (need to be access with HasOption)
         private bool FoxInheritUnknown = false;
         private bool InitLocals = false;

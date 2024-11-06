@@ -20,7 +20,7 @@
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <!--Use the C# compiler created in this solution-->
     <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
-    <NoWarn>8032,1573,1591</NoWarn>
+    <NoWarn>8032,1573,1591;NU1603</NoWarn>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\XSCompiler\XSCompiler.csproj" />

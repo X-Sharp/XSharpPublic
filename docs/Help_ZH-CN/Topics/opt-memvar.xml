@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-02T06:10:28.638+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-06T10:13:22.628+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-memvar</title>
   <keywords>
     <keyword>-memvar</keyword>
@@ -10,17 +10,17 @@
       <para styleclass="Heading1">-memvar</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-memvar选项告诉编译器启用对 &quot;内存变量 &quot;的支持。如果要使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">-fox2</link> 编译选项让宏编译器看到局部变量，在 FoxPro 方言中也需要使用该选项。</para>
+    <para styleclass="Normal">-memvar选项告诉编译器启用对 &quot;内存变量 &quot;的支持。在 FoxPro 方言中，如果想让宏编译器看到局部变量，也需要使用该选项。</para>
     <para styleclass="Heading2">语法</para>
-    <para styleclass="Code with box">-memvar [+ | -]  </para>
+    <para styleclass="Code with box">-memvar [+ | -] &#160;</para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List">+ | - <tab/>指定 + 或 -memvar，可指示编译器启用对内存变量的支持。</para>
+    <para styleclass="List">+ | - <tab />指定 + 或 -memvar，可指示编译器启用对内存变量的支持。</para>
     <para styleclass="List"></para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">这对 Core 和 Vulcan 方言不起作用。</para>
     <para styleclass="Normal">启用该选项将在编译器中启用以下命令：<br/></para>
     <para styleclass="Body Text">MEMVAR &lt;MemvarName,...&gt; </para>
-    <para styleclass="Body Text">PUBLIC &lt;MemVarName,...&gt;  </para>
+    <para styleclass="Body Text">PUBLIC &lt;MemVarName,...&gt; &#160;</para>
     <para styleclass="Body Text">PRIVATE &lt;MemVarName,...&gt; </para>
     <para styleclass="Body Text">PARAMETERS &lt;ParameterName,,...&gt; </para>
     <para styleclass="Body Text"></para>

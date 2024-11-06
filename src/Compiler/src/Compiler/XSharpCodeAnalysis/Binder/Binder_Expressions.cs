@@ -135,16 +135,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             return expression;
         }
 
-        public BoundExpression SubtractSystemIndex(BoundExpression index, BindingDiagnosticBag diagnostics, bool checkZero = false)
+        public BoundExpression SubtractSystemIndex(BoundExpression index, BindingDiagnosticBag diagnostics, bool checkZero = false, bool fromEnd = false)
         {
             var syntax = (CSharpSyntaxNode)index.Syntax;
 
-            var kind = BinaryOperatorKind.Subtraction;
             var left = index;
             var leftType = left.Type;
             Debug.Assert(leftType.Equals(Compilation.GetWellKnownType(WellKnownType.System_Index)));
+            var int32type = Compilation.GetSpecialType(SpecialType.System_Int32);
 
-            var right = new BoundLiteral(syntax, ConstantValue.Create(1), index.Type) { WasCompilerGenerated = true };
+            var right = new BoundLiteral(syntax, ConstantValue.Create(1), int32type) { WasCompilerGenerated = true };
 
             BoundExpression isFromEnd;
             {
@@ -161,12 +161,21 @@ namespace Microsoft.CodeAnalysis.CSharp
             var opKind = BinaryOperatorKind.IntSubtraction;
             var resultConstant = FoldBinaryOperator(syntax, opKind, leftValue, right, leftValue.Type, diagnostics);
             var sig = this.Compilation.BuiltInOperators.GetSignature(opKind);
-            BoundExpression whenFalse = new BoundBinaryOperator(syntax, kind, leftValue, right, resultConstant, sig.Method, null,
+            BoundExpression whenFalse = new BoundBinaryOperator(syntax, opKind, leftValue, right, resultConstant, sig.Method, null,
                 resultKind: LookupResultKind.Viable,
                 originalUserDefinedOperatorsOpt: ImmutableArray<MethodSymbol>.Empty,
-                type: index.Type,
+                type: int32type,
                 hasErrors: false)
             { WasCompilerGenerated = true };
+            if (fromEnd)
+            {
+                MethodSymbol symbolOpt = GetWellKnownTypeMember(WellKnownMember.System_Index__ctor, diagnostics, syntax: syntax) as MethodSymbol;
+                whenFalse = new BoundFromEndIndexExpression(syntax, whenFalse, symbolOpt, index.Type) { WasCompilerGenerated = true };
+            }
+            else {
+                whenFalse = CreateConversion(whenFalse, index.Type, diagnostics);
+                whenFalse.WasCompilerGenerated = true;
+            }
 
             var whenTrue = index;
 
@@ -191,6 +200,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var constantValueZ = FoldConditionalOperator(isZero, whenTrue, whenFalse);
                 bool hasErrorsZ = constantValueZ?.IsBad == true;
                 whenFalse = new BoundConditionalOperator(syntax, false, isZero, whenTrue, whenFalse, constantValueZ, null, false, leftType, hasErrorsZ) { WasCompilerGenerated = true };
+            }
+
+            if (fromEnd)
+            {
+                var t = whenTrue;
+                whenTrue = whenFalse;
+                whenFalse = t;
             }
 
             var useSiteInfo = new CompoundUseSiteInfo<AssemblySymbol>(diagnostics, Compilation.Assembly);
@@ -220,6 +236,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             start = SubtractSystemIndex(start, diagnostics, checkZero: true);
+            end = SubtractSystemIndex(end, diagnostics, checkZero: true, fromEnd: true);
 
             var symbolOpt = (MethodSymbol)GetWellKnownTypeMember(
                 Compilation,

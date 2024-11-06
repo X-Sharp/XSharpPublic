@@ -672,7 +672,7 @@ statement           : Decl=localdecl                            #declarationStmt
                     | (BEGIN|DO)? S=SWITCH Expr=expression end=eos
                       (SwitchBlock+=switchBlock)+
                       e=END SWITCH? eos					                          #switchStmt
-                    | BEGIN Key=USING ( Expr=expression | VarDecl=variableDeclaration ) end=eos
+                    | BEGIN Key=USING a=AWAIT? ( Expr=expression | VarDecl=variableDeclaration ) end=eos
                         StmtBlk=statementBlock
                       e=END USING? eos						                        #blockStmt
                     | BEGIN Key=FIXED ( VarDecl=variableDeclaration ) end=eos

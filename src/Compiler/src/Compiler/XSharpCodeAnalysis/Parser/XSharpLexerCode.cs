@@ -1907,7 +1907,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     return ID;
                 case USING:
                     // BEGIN USING can/will be followed by a Variable Declaration
-                    if (keyword != LOCAL && keyword != VAR)
+                    if (keyword != LOCAL && keyword != VAR && keyword != AWAIT)
                         return ID;
                     break;
                 case MEMVAR:            // VO & XPP: followed by list of names

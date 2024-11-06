@@ -25,7 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
 
             var includeDir = Environment.GetEnvironmentVariable("INCLUDE");
-#if false
+#if NETSTANDARD2_0_OR_GREATER
             string XSharpIncludeDir = String.Empty;
             string VulcanIncludeDir = string.Empty;
             try
@@ -432,7 +432,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         Vo17 = 1 << 17,
         CompatibleBeginSequence = Vo17,
         Xpp1 = 1 << 18,
-        //Xpp2 = 1 << 18,
         Fox1 = 1 << 19,
         Fox2 = 1 << 20,
         FoxArraySupport = Fox2,
@@ -484,7 +483,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.MemVars:
                 case CompilerOption.UndeclaredMemVars:
                 case CompilerOption.Xpp1:
-                    //case CompilerOption.Xpp2:
                     return true;
                 case CompilerOption.AllowDotForInstanceMembers:
                 case CompilerOption.AllowOldStyleAssignments:
@@ -577,8 +575,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return "VO Compatible BEGIN SEQUENCE .. END ";
                 case CompilerOption.Xpp1:
                     return "All classes inherit from XPP.Abstract";
-                //case CompilerOption.Xpp2:
-                //    return "n/a";
                 case CompilerOption.None:
                     return "";
             }
@@ -659,8 +655,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CompilerOption.Vo17;
                 case "xpp1":
                     return CompilerOption.Xpp1;
-                //case "xpp2":
-                //    return CompilerOption.Xpp2;
                 default:
                     break;
             }

@@ -406,10 +406,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Xpp1 = positive;
                     encode = true;
                     break;
-                case "xpp2":       // ignored
-                    //options.Xpp2 = positive;
-                    //encode = true;
-                    break;
                 case "fox1":       // Classes inherit from unknown
                     options.Fox1 = positive;
                     encode = true;

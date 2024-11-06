@@ -28,6 +28,7 @@ namespace LanguageService.CodeAnalysis.CSharp.ExpressionEvaluator
             try
             {
                 XSharpLexer lexer = XSharpLexer.Create(source.ToString(), _fileName, options);
+                lexer.AllowDebuggerIdentifiers = true;
                 var lexerTokenStream = lexer.GetTokenStream();
                 foreach (var e in lexer.LexErrors)
                 {

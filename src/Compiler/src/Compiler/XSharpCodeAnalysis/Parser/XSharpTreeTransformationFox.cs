@@ -608,7 +608,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var datatype = context.Type.Get<TypeSyntax>();
             var name = context.Id.GetText();
-            var prop = createProperty(name, datatype, context, context.Modifiers);
+            var prop = createProperty(name, datatype, context, context.Modifiers, context.Attributes);
             context.Put(prop);
         }
 
@@ -636,12 +636,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (context.Fld != null)
                 {
-                    var fielddecl = createField(varCtx.GetText(), varType, context.Modifiers);
+                    var fielddecl = createField(context, varCtx.GetText(), varType, context.Modifiers, context.Attributes, null);
                     list.Add(fielddecl);
                 }
                 else
                 {
-                    var propdecl = createProperty(varCtx.GetText(), varType, varCtx, context.Modifiers);
+                    var propdecl = createProperty(varCtx.GetText(), varType, varCtx, context.Modifiers, context.Attributes);
                     list.Add(propdecl);
                 }
             }
@@ -946,20 +946,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private MemberDeclarationSyntax createField(string fldName, TypeSyntax type, XP.ClassvarModifiersContext modifiers)
+        private MemberDeclarationSyntax createField(XSharpParserRuleContext context, string fldName, TypeSyntax type, XP.ClassvarModifiersContext modifiers, XP.AttributesContext attributes, ExpressionSyntax initializer)
         {
-            var list = MakeSeparatedList(GenerateVariable(fldName, null));
+            var list = MakeSeparatedList(GenerateVariable(fldName, initializer));
             var decl = _syntaxFactory.VariableDeclaration(type, list);
-            var mods = modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(modifiers, false);
+            var mods = modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(context.isInInterface());
             var fdecl = _syntaxFactory.FieldDeclaration(
-                                    attributeLists: default,
+                                    attributeLists: getAttributes(attributes),
                                     modifiers: mods,
                                     declaration: decl,
                                     semicolonToken: SyntaxFactory.SemicolonToken);
             return fdecl;
         }
 
-        private MemberDeclarationSyntax createProperty(string fldName, TypeSyntax type, XSharpParserRuleContext context, XP.ClassvarModifiersContext modifiers)
+        private MemberDeclarationSyntax createProperty(string fldName, TypeSyntax type, XSharpParserRuleContext context, XP.ClassvarModifiersContext modifiers, XP.AttributesContext attributes)
         {
             var accessors = new List<AccessorDeclarationSyntax>();
             var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,
@@ -984,7 +984,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var accessorList = MakeAccessorList(accessors);
             var mods = modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, false);
             var prop = _syntaxFactory.PropertyDeclaration(
-                   attributeLists: default,
+                   attributeLists: getAttributes(attributes),
                    modifiers: mods,
                    type: type,
                    explicitInterfaceSpecifier: null,
@@ -1000,7 +1000,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Fld != null)
             {
-                var flddecl = createField(context.F.Name.GetText(), UsualType, context.Modifiers);
+                var fldinit = context.F.Expr.Get<ExpressionSyntax>();   
+                var flddecl = createField(context, context.F.Name.GetText(), UsualType, context.Modifiers, context.Attributes, fldinit);
                 if (flddecl != null)
                 {
                     context.Put(flddecl);
@@ -1008,7 +1009,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                var propdecl = createProperty(context.F.Name.GetText(), UsualType, context, context.Modifiers);
+                var propdecl = createProperty(context.F.Name.GetText(), UsualType, context, context.Modifiers, context.Attributes);
                 if (propdecl != null)
                 {
                     context.Put(propdecl);

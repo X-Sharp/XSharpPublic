@@ -536,7 +536,7 @@ destructorModifiers : ( Tokens+=EXTERN )+
 
 */
 overloadedOps       : Token= (PLUS | MINUS | NOT | TILDE | INC | DEC | TRUE_CONST | FALSE_CONST |
-                              MULT | DIV | MOD | AMP | PIPE | LSHIFT | RSHIFT | EEQ | NEQ | NEQ2 |
+                              MULT | DIV | MOD | AMP | PIPE | LSHIFT | RSHIFT | EEQ | NEQ | NEQ2 | LTGT |
                               GT | LT | GTE | LTE |
                               AND | OR )  // these two do not exist in C# and are mapped to & and |
                     ;
@@ -904,7 +904,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     | Left=expression Op=LSHIFT Right=expression                #binaryExpression       // expr << expr (shift)
                     | Left=expression Op=GT Gt=GT Right=expression              #binaryExpression       // expr >> expr (shift)
                     | Left=expression Op=( LT | LTE | GT | GTE | EQ | EEQ |
-                                          SUBSTR | NEQ | NEQ2) Right=expression #binaryExpression       // expr >= expr (relational)
+                                          SUBSTR | NEQ | NEQ2 | LTGT) Right=expression #binaryExpression       // expr >= expr (relational)
                     | Left=expression Op=AMP Right=expression                   #binaryExpression       // expr & expr (bitwise and)
                     | Left=expression Op=TILDE Right=expression                 #binaryExpression       // expr ~ expr (bitwise xor)
                     | Left=expression Op=PIPE Right=expression                  #binaryExpression       // expr | expr (bitwise or)
@@ -1058,7 +1058,11 @@ aliasedName         : Global=GLOBAL Op=COLONCOLON Right=simpleName              
 simpleName          : Id=identifier	GenericArgList=genericArgumentList?
                     ;
 
-genericArgumentList : LT GenericArgs+=datatype (COMMA GenericArgs+=datatype)* GT
+genericArgumentList : LT (
+                          GenericArgs+=datatype (COMMA GenericArgs+=datatype )*
+                        | (Commas +=COMMA)*
+                        ) GT
+                    | LTGT
                     ;
 
 identifierName      : Id=identifier
@@ -1507,7 +1511,7 @@ foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)?
                     ;
 
 
-foxfield            : (Modifiers=classvarModifiers)? (Fld=FIELD)? F=foxfieldinitializer end=eos
+foxfield            : (Attributes=attributes)? (Modifiers=classvarModifiers)? (Fld=FIELD)? F=foxfieldinitializer end=eos
                     ;
 
 foxfieldinitializer : Name=name assignoperator Expr=expression

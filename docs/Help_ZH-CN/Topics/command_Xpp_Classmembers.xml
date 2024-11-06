@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T11:00:09.198+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-06T10:19:46.112+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>METHOD 声明</title>
   <keywords>
     <keyword>ACCESS</keyword>
@@ -29,8 +29,7 @@
     <para styleclass="Body Text"><tab />[Attributes] INLINE [CLASS] METHOD &lt;MethodName&gt;[ <text styleclass="Normal">[([&lt;</text><text styleclass="Italic">idParam</text><text styleclass="Normal">&gt; [AS|REF|OUT|IN &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;] [, ...])] </text>) <text styleclass="Normal">[AS &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;]</text><br/><tab /><text styleclass="Normal">[=&gt; &lt;expression&gt;] </text><br/><tab /><text styleclass="Normal" style="font-weight:bold;">CRLF</text></para>
     <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]<br/><tab />[END METHOD]</para>
     <para styleclass="Heading1">参数</para>
-    <para styleclass="List">Modifiers<tab />可选的修饰符列表，用于指定方法的相关信息。(deferred , final , introduce , override , class , sync, new, static, async, unsafe, extern)。</para>
-    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
     <para styleclass="List">&lt;MethodName,...&gt; <tab />是一个用逗号分隔的列表，其中包含所声明的实例方法的名称。方法名称与函数和变量名称的约定相同。它必须以下划线或字母开头，并且必须包含字母数字字符。</para>
     <para styleclass="List"></para>
     <para styleclass="List">IS &lt;MethodName&gt;<tab />X# 不支持 IS methodname 子句</para>

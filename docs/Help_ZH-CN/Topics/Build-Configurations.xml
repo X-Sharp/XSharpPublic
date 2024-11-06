@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T02:11:15.523+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-05T11:57:03.245+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>生成配置</title>
   <body>
     <header>
       <para styleclass="Heading1">生成配置</para>
     </header>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">如果需要用不同的设置来生成项目，就需要生成配置。例如，&quot;调试&quot; 和 &quot;发布&quot; 都是配置，在生成时会相应地使用不同的编译器选项。一个配置处于活动状态，并在 Visual Studio IDE 顶部的命令栏中显示。</para>
+    <para styleclass="Body Text">当您需要用不同的设置来构建项目时，就会用到构建配置。例如，调试（Debug）和发布（Release）是在构建过程中使用不同编译器选项的两种配置。有一种配置处于活动状态，它在 Visual Studio IDE 顶部的命令栏中显示。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><image src="VsBuildToolbar.png" scale="71.07%" width="881" height="86" figurelistinclude="0"></image></para>
     <para styleclass="Body Text"></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T10:30:25.852+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-05T12:03:35.321+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>CODEBLOCK</title>
   <keywords>
     <keyword>CODEBLOCK</keyword>
@@ -30,8 +30,8 @@
     <para styleclass="Body Text">XSharp 还引入了包含<text style="font-weight:bold;">语句列表</text>的代码块：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> cb </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CODEBLOCK</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">cb := {| a,b,c| &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? &quot;value 1&quot; ,a </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? &quot;value 2&quot; ,b</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? &quot;value 3&quot; ,c </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> a*b*c</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; }</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? Eval(cb,10,20,30)</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">WAIT</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
     <para styleclass="Heading3">注意</para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">第一条语句应从参数列表后的新行开始。</li>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="text-indent:-15px; margin-left:15px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List" style="text-indent:-15px; margin-left:15px;">第一条语句应从参数列表后的新行开始。</li>
       <li styleclass="List">参数列表后不应有分号。</li>
       <li styleclass="List">语句列表应以 RETURN 语句结束。</li>
     </list>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T20:09:36.301+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-06T10:27:23.559+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>GLOBAL 语句</title>
   <keywords>
     <keyword>Arrays<keyword>declaring</keyword></keyword>
@@ -18,9 +18,10 @@
     <para styleclass="Heading1">用途</para>
     <para styleclass="Normal">声明整个应用程序或模块都可使用的变量或数组。</para>
     <para styleclass="Heading1">语法</para>
-    <para styleclass="Normal">[Modifiers] &#160;GLOBAL &lt;<text styleclass="Italic">idVar</text>&gt; [:= &lt;<text styleclass="Italic">uValue</text>&gt;] [AS | IS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
-    <para styleclass="Normal">[Modifiers] &#160;GLOBAL DIM &lt;<text styleclass="Italic">ArraySpec</text>&gt; AS | IS &lt;<text styleclass="Italic">idType</text>&gt;</para>
+    <para styleclass="Normal">[Attributes] [Modifiers] &#160;GLOBAL &lt;<text styleclass="Italic">idVar</text>&gt; [:= &lt;<text styleclass="Italic">uValue</text>&gt;] [AS | IS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
+    <para styleclass="Normal">[Attributes] [Modifiers] &#160;GLOBAL DIM &lt;<text styleclass="Italic">ArraySpec</text>&gt; AS | IS &lt;<text styleclass="Italic">idType</text>&gt;</para>
     <para styleclass="Heading1">参数</para>
+    <para styleclass="Heading1"><snippet src="__IncludeAttributes" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeFuncProcModifiers" inline="false"/></para>
     <para styleclass="List"></para>
     <para styleclass="List">&lt;idVar&gt;<tab />变量的有效标识符名称。 全局变量是一个实体，因此与其他实体共享相同的名称空间。 这就意味着，全局变量和函数不可能具有相同的名称。</para>

@@ -40,7 +40,7 @@ CLASS XSharp.MacroCompiler IMPLEMENTS XSharp.IMacroCompiler
         ENDIF
         IF options == NULL
             options := ScriptOptions.Default:WithReferences( ;
-			System.AppDomain.CurrentDomain:GetAssemblies():Where({a => !String.IsNullOrEmpty(a:Location)}) ;
+			System.AppDomain.CurrentDomain:GetAssemblies():Where({a => !a:IsDynamic .AND. !String.IsNullOrEmpty(a:Location)}) ;
 			)
         ENDIF
 

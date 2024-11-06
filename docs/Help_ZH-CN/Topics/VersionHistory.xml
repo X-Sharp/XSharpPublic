@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-04T13:56:35.315+01:00" lasteditedby="vboxuser" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-06T11:07:23.627+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>版本历史</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -34,6 +34,8 @@
       <li styleclass="Normal">修正了<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo9"> /vo9</link>(处理丢失的 RETURN 语句和返回值)编译器选项的若干问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1544" target="_blank">#1544</link>)</li>
       <li styleclass="Normal">修正了在 FoxPro 方言的 CLASS 语句中使用特性(attributes)的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1566" target="_blank">#1566</link>)</li>
       <li styleclass="Normal">我们修正了编译系统中的一个问题，该问题有时会导致重新编译，即使没有更改任何内容。</li>
+      <li styleclass="Normal">编译器在构建带有 .editorconfig 文件的解决方案时可能会崩溃。</li>
+      <li styleclass="Normal">修正了为 FoxPro 风格类定义内的成员属性生成特性(attributes)输出的问题。</li>
     </list>
     <para styleclass="Heading2">运行时</para>
     <para styleclass="Heading3">Bug 修复</para>
@@ -51,6 +53,9 @@
       <li styleclass="Normal">修正了宏编译器在使用某些语言关键字(如 REF、FIELD、DEFAULT)作为标识符时出现的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1557" target="_blank">#1557</link>)</li>
       <li styleclass="Normal">修正了读取使用多字节编码存储的 DBF 文件的可变长度字段的问题。</li>
       <li styleclass="Normal">修正了用简体中文编码的 DBF 文件被解释为粤语的问题。</li>
+      <li styleclass="Normal">修复了 DBF RDD 中的一个问题，即在获取记录或文件锁后，未重新加载 currentbuffer。</li>
+      <li styleclass="Normal">修正了 USUAL 类型中的一个问题，即浮点数值的 CompareTo 执行不正确 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1616" target="_blank">#1616</link>)</li>
+      <li styleclass="Normal">修正了 USUAL 类型中 ! 运算符与 (LOGIC) cast 相比不能产生正确结果的问题。</li>
     </list>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">VOSDK</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -67,8 +72,9 @@
       <li styleclass="Normal">修复了编辑器中代码片段在 VS 2022 17.11 版中不再工作的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1564" target="_blank">#1564</link>)</li>
       <li styleclass="Normal">修复了带有结束关键字（如 NEXT 和 ENDDO）的缩进行的问题(当这些关键字后跟有 “垃圾 ”时)。</li>
       <li styleclass="Normal">当 include 中的一个文件声明了实体(如 USING SomeNameSpace)时，在 VS 表单设计器中打开表单可能会失败(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1595" target="_blank">#1595</link>,<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1596" target="_blank">#1596</link>)</li>
+      <li styleclass="Normal">修正了调试器中以“$”字符开头的标识符（如异常对话框中的“$exception”）无法正确评估的问题(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1602" target="_blank">#1602</link>)</li>
+      <li styleclass="Normal">修正了使用 DEFINE CLASS &#160;... ENDDEFINE 声明的 VFP 样式的类的缩进问题(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1609" target="_blank">#1609</link>)</li>
     </list>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading3">新特性</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">现在，在 VS 中构建任何项目类型时，TargetFramework 属性都会自动添加到程序集中 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1507" target="_blank">#1507</link>)</li>
@@ -83,6 +89,7 @@
       <li styleclass="Normal">我们不再为没有任何 X# 项目的解决方案创建 X# intellisense 数据库</li>
       <li styleclass="Normal">我们对 X# intellisense 数据库结构做了一些更改。当您打开一个已有数据库的解决方案时，数据库将被删除，所有源文件将被重新扫描(仅一次)。</li>
       <li styleclass="Normal">X# 源代码编辑器顶部现在多了一个组合框，可列出包含文件的项目。当一个文件包含在多个项目中时，你可以看到所有项目。切换到新项目将改变 “评估上下文”。条件编译（#ifdef）会在编辑器中反映出变化。</li>
+      <li styleclass="Normal">我们在编辑器中添加了对 Edit.NextMethod 和 Edit.PreviousMethod 命令的支持。这些命令通常没有快捷键，但您可以使用 Visual Studio 工具栏上的 “自定义 ”选项来分配它们。例如，您可以指定 Ctrl-DownArrow 和 Ctl-UpArrow。</li>
     </list>
     <para styleclass="Heading2">XIDE</para>
     <para styleclass="Heading3">常规</para>

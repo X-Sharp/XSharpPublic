@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T20:06:09.734+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-06T10:35:03.826+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>FUNCTION 和 PROCEDURE</title>
   <keywords>
     <keyword>_ACCESS</keyword>
@@ -21,7 +21,8 @@
     <para styleclass="Heading1">用途</para>
     <para styleclass="Normal">定义类定义的方法和事件函数及过程。</para>
     <para styleclass="Heading1">语法</para>
-    <para styleclass="Body Text"><tab />[Modifiers] FUNCTION | PROCEDURE Name[_ACCESS |_ASSIGN]</para>
+    <para styleclass="Body Text"><tab />[Attributes] [Modifiers] FUNCTION | PROCEDURE Name[_ACCESS |_ASSIGN]</para>
+    <para styleclass="Normal"><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
     <para styleclass="Body Text"><tab /> &#160; ([cParamName | cArrayName[] [AS Type][@]]) [AS Type]</para>
     <para styleclass="Body Text"><tab /> &#160; [HELPSTRING cHelpString] | THIS_ACCESS(cMemberName) [NODEFAULT]</para>
     <para styleclass="Body Text"><tab /> &#160; &#160; &#160;cStatements</para>
@@ -29,6 +30,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">更多详情，请参阅 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_FUNCTION">FUNCTION </link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_FUNCTION">PROCEDURE</link> 。</para>
     <para styleclass="Heading1">参数</para>
+    <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
     <para styleclass="List">_ACCESS<tab />_ACCESS 或 _ASSIGN 后缀指定为同名属性创建 Access 或 Assign 方法。</para>
     <para styleclass="List">_ASSIGN<tab /></para>
     <para styleclass="List"></para>

@@ -788,7 +788,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.NEQ:
                 case XSharpParser.NEQ2:
-                case XSharpParser.LTGT:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken);
                     break;
                 //case XSharpParser.SUBSTR:
@@ -1466,7 +1465,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.NEQ:
                 case XSharpParser.NEQ2:
-                case XSharpParser.LTGT:
                     r = SyntaxKind.NotEqualsExpression;
                     break;
                 //case XSharpParser.SUBSTR:

@@ -361,7 +361,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpLexer.SUBSTR:
                 case XSharpLexer.NEQ:
                 case XSharpLexer.NEQ2:
-                case XSharpLexer.LTGT:
                 case XSharpLexer.AMP:
                 case XSharpLexer.TILDE:
                 case XSharpLexer.PIPE:

@@ -1156,7 +1156,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         else if (Expect('='))
                             parseOne(LTE);
                         else if (Expect('>'))
-                            parseOne(LTGT);
+                            parseOne(NEQ);
                         break;
                     case '>':
                         parseOne(GT);

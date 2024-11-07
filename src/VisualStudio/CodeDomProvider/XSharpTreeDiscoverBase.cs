@@ -546,7 +546,6 @@ namespace XSharp.CodeDom
                     break;
                 case XSharpParser.NEQ:
                 case XSharpParser.NEQ2:
-                case XSharpParser.LTGT:
                     op = CodeBinaryOperatorType.IdentityInequality;
                     break;
                 case XSharpParser.SUBSTR:

@@ -692,7 +692,7 @@ namespace XSharp.MacroCompiler
                         case TokenType.LT:
                             if (Expect('<')) { t = TokenType.LSHIFT; if (Expect('=')) t = TokenType.ASSIGN_LSHIFT; }
                             else if (Expect('=')) t = TokenType.LTE;
-                            else if (Expect('>')) t = TokenType.LTGT;
+                            else if (Expect('>')) t = TokenType.NEQ;
                             break;
                         case TokenType.GT:
                             if (Expect('=')) t = TokenType.GTE;

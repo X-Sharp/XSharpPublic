@@ -1872,7 +1872,6 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         CASE XSharpLexer.EEQ
         CASE XSharpLexer.NEQ
         CASE XSharpLexer.NEQ2
-        CASE XSharpLexer.LTGT
         CASE XSharpLexer.GT
         CASE XSharpLexer.LT
         CASE XSharpLexer.GTE

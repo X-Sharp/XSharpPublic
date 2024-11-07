@@ -103,7 +103,7 @@ namespace XSharp.MacroCompiler.Syntax
 
         // Relational operators
         FIRST_OPERATOR,
-        LT, LTE, GT, GTE, EQ, EEQ, SUBSTR, NEQ, NEQ2, LTGT,
+        LT, LTE, GT, GTE, EQ, EEQ, SUBSTR, NEQ, NEQ2, 
 
         // Prefix and postfix Operators
         INC, DEC,
@@ -973,7 +973,6 @@ namespace XSharp.MacroCompiler.Syntax
                 v[(int)TokenType.SUBSTR] = "$";
                 v[(int)TokenType.NEQ] = "!=";
                 v[(int)TokenType.NEQ2] = "#";
-                v[(int)TokenType.LTGT] = "<>";
 
                 // Prefix and postfix Operators
                 v[(int)TokenType.INC] = "++";

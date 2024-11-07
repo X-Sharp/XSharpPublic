@@ -30,7 +30,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     body = LocalRewriter.RewriteExit(method, body, diagnostics);
                     break;
                 case ReservedNames.RunInitProcs:
-                    body = LocalRewriter.RewriteRunInitProc(method,body,diagnostics);
+                    body = LocalRewriter.RewriteRunInitProc(method, body, diagnostics);
+                    break;
+                default:
+                    if (method.DeclaringCompilation.Options.Dialect == XSharpDialect.FoxPro &&
+                        method.Name.ToLower() == "init")
+                    {
+                        body = LocalRewriter.RewriteFoxInit(method, body, diagnostics);
+                    }
                     break;
             }
             switch (method.MethodKind)

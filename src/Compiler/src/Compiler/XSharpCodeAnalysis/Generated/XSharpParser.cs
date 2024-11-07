@@ -23411,19 +23411,19 @@ public partial class XSharpParser : Parser {
 			if (typedListener != null) typedListener.ExitFoxaddobject(this);
 		}
 	}
-	public partial class FoxclsvarinitContext : FoxclassmemberContext {
+	public partial class FoxclsfieldContext : FoxclassmemberContext {
 		public FoxfieldContext Member;
 		public FoxfieldContext foxfield() {
 			return GetRuleContext<FoxfieldContext>(0);
 		}
-		public FoxclsvarinitContext(FoxclassmemberContext context) { CopyFrom(context); }
+		public FoxclsfieldContext(FoxclassmemberContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			IXSharpListener typedListener = listener as IXSharpListener;
-			if (typedListener != null) typedListener.EnterFoxclsvarinit(this);
+			if (typedListener != null) typedListener.EnterFoxclsfield(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
 			IXSharpListener typedListener = listener as IXSharpListener;
-			if (typedListener != null) typedListener.ExitFoxclsvarinit(this);
+			if (typedListener != null) typedListener.ExitFoxclsfield(this);
 		}
 	}
 	public partial class FoxclsmethodContext : FoxclassmemberContext {
@@ -23519,10 +23519,10 @@ public partial class XSharpParser : Parser {
 				break;
 
 			case 2:
-				_localctx = new FoxclsvarinitContext(_localctx);
+				_localctx = new FoxclsfieldContext(_localctx);
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 3723; ((FoxclsvarinitContext)_localctx).Member = foxfield();
+				State = 3723; ((FoxclsfieldContext)_localctx).Member = foxfield();
 				}
 				break;
 
@@ -24092,6 +24092,7 @@ public partial class XSharpParser : Parser {
 		public IdentifierContext Id;
 		public DatatypeContext Type;
 		public IToken NoInit;
+		public IToken W;
 		public FoxfieldinitializerContext _foxfieldinitializer;
 		public IList<FoxfieldinitializerContext> _FieldsInits = new List<FoxfieldinitializerContext>();
 		public EosContext end;
@@ -24107,7 +24108,6 @@ public partial class XSharpParser : Parser {
 		public EosContext eos() {
 			return GetRuleContext<EosContext>(0);
 		}
-		public ITerminalNode WITH() { return GetToken(XSharpParser.WITH, 0); }
 		public AttributesContext attributes() {
 			return GetRuleContext<AttributesContext>(0);
 		}
@@ -24115,6 +24115,7 @@ public partial class XSharpParser : Parser {
 			return GetRuleContext<ClassvarModifiersContext>(0);
 		}
 		public ITerminalNode NOINIT() { return GetToken(XSharpParser.NOINIT, 0); }
+		public ITerminalNode WITH() { return GetToken(XSharpParser.WITH, 0); }
 		public FoxfieldinitializerContext[] foxfieldinitializer() {
 			return GetRuleContexts<FoxfieldinitializerContext>();
 		}
@@ -24185,7 +24186,7 @@ public partial class XSharpParser : Parser {
 			_la = _input.La(1);
 			if (_la==WITH) {
 				{
-				State = 3825; Match(WITH);
+				State = 3825; _localctx.W = Match(WITH);
 				State = 3826; _localctx._foxfieldinitializer = foxfieldinitializer();
 				_localctx._FieldsInits.Add(_localctx._foxfieldinitializer);
 				State = 3831;

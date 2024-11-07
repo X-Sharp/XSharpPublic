@@ -29,11 +29,9 @@ CustomControlsGuid = 91D751CB-030B-4A75-98B9-05D9B82C3067
 DefaultPropertiesGuid = 25819EAF-9863-441B-90D0-A9072599943A
 
 [Recent References]
-RecentReference = GAC:XSharp.Core,v4,2.6.0.0
-RecentReference = GAC:XSharp.RT,v4,2.6.0.0
-RecentReference = GAC:XSharp.VO,v4,2.6.0.0
-RecentReference = GAC:XSharp.VFP,v4,2.6.0.0
-RecentReference = GAC:System.Drawing,v4,4.0.0.0
+RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll
+RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll
+RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VFP.dll
 
 [Application Groups]
 ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,723E53EA-0D2C-4FC9-B86E-F050D29A49D2
@@ -120405,7 +120403,6 @@ CopyToBin = 0
 [Tester References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
 ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
 [Tester Resources]
 [Tester Native Resources]
@@ -133587,9 +133584,9 @@ CopyToBin = 0
 [C919 - Problems with /vo9 in the FoxPro dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VFP,1,0,2.6.0.0
 [C919 - Problems with /vo9 in the FoxPro dialect Resources]
 [C919 - Problems with /vo9 in the FoxPro dialect Native Resources]
 [C919 - Problems with /vo9 in the FoxPro dialect License files]
@@ -133708,8 +133705,8 @@ CopyToBin = 0
 [C920 - Problem with /vo9 in the VO dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C920 - Problem with /vo9 in the VO dialect Resources]
 [C920 - Problem with /vo9 in the VO dialect Native Resources]
 [C920 - Problem with /vo9 in the VO dialect License files]
@@ -133828,9 +133825,9 @@ CopyToBin = 0
 [C921 - Problems with accessing VOSTRUCT members with the dot operator References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VO,1,0,2.6.0.0
 [C921 - Problems with accessing VOSTRUCT members with the dot operator Resources]
 [C921 - Problems with accessing VOSTRUCT members with the dot operator Native Resources]
 [C921 - Problems with accessing VOSTRUCT members with the dot operator License files]
@@ -133949,9 +133946,9 @@ CopyToBin = 0
 [C922 - Problem with attributes and END markers in VFP dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VFP,1,0,2.6.0.0
 [C922 - Problem with attributes and END markers in VFP dialect Resources]
 [C922 - Problem with attributes and END markers in VFP dialect Native Resources]
 [C922 - Problem with attributes and END markers in VFP dialect License files]
@@ -134070,9 +134067,9 @@ CopyToBin = 0
 [C923 - Naming conflicts with /allowdot- References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VO,1,0,2.6.0.0
 [C923 - Naming conflicts with /allowdot- Resources]
 [C923 - Naming conflicts with /allowdot- Native Resources]
 [C923 - Naming conflicts with /allowdot- License files]
@@ -134427,9 +134424,9 @@ FileType = Code
 CopyToBin = 0
 [C926 - Macro compiler cannot compile strongly typed codeblocks References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VO,1,0,2.6.0.0
 [C926 - Macro compiler cannot compile strongly typed codeblocks Resources]
 [C926 - Macro compiler cannot compile strongly typed codeblocks Native Resources]
 [C926 - Macro compiler cannot compile strongly typed codeblocks License files]
@@ -134784,9 +134781,9 @@ CopyToBin = 0
 [C928 - Problem defining properties when class inherits from system type References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VFP.dll,1,1
 [C928 - Problem defining properties when class inherits from system type Resources]
 [C928 - Problem defining properties when class inherits from system type Native Resources]
 [C928 - Problem defining properties when class inherits from system type License files]
@@ -134905,9 +134902,9 @@ CopyToBin = 0
 [C929 - Problem with defining a class with /fox1- disabled References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VFP,1,0,2.6.0.0
 [C929 - Problem with defining a class with /fox1- disabled Resources]
 [C929 - Problem with defining a class with /fox1- disabled Native Resources]
 [C929 - Problem with defining a class with /fox1- disabled License files]
@@ -135143,9 +135140,9 @@ FileType = Code
 CopyToBin = 0
 [C931 - Problem with the <> operator References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VO,1,0,2.6.0.0
 [C931 - Problem with the <> operator Resources]
 [C931 - Problem with the <> operator Native Resources]
 [C931 - Problem with the <> operator License files]

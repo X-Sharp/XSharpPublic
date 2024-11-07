@@ -478,6 +478,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        public override void ExitFoxaddobjectclause([NotNull] XSharpParser.FoxaddobjectclauseContext context)
+        {
+            if (context.NoInit != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.NoInit, ErrorCode.WRN_FoxUnsupportedClause, context.NoInit.Text));
+            }
+            if (context.W != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.W, ErrorCode.WRN_FoxUnsupportedClause, context.W.Text));
+            }
+        }
+
         public override void ExitFoxpemcomattrib([NotNull] XSharpParser.FoxpemcomattribContext context)
         {
             _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxUnsupportedClause, "PEMName_COMATTRIB"));

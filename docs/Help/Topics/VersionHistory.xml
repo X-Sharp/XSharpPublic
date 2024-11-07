@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-05T21:53:41.472+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-06T11:53:53.436+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -35,7 +35,7 @@
       <li styleclass="Normal">The compiler could crash when building a solution that has a .editorconfig file</li>
       <li styleclass="Normal">Fixed an issue with generating the property output for attributes on Members inside a FoxPro style class definition</li>
       <li styleclass="Normal"><text styleclass="Body Text">Fixed an issue with defining VFP classes with /fox1+ (#1611)</text></li>
-      <li styleclass="Normal">Added support for generic types without type parameters, like in <text styleclass="Code Example">typeof(List&lt;&gt;)</text> and <text styleclass="Code Example">typeof(Dictionary&lt;,&gt;) (#1623)</text></li>
+      <li styleclass="Normal">Added support for generic types without type parameters, like in <text styleclass="Code Example">typeof(List&lt; &gt;)</text> and <text styleclass="Code Example">typeof(Dictionary&lt;,&gt;) (#1623)</text></li>
     </list>
     <para styleclass="Heading2">Build System</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -96,6 +96,7 @@
       <li styleclass="Normal">We have made several changes to the X# intellisense database structure. When you open a solution with an existing database, the database will be deleted and all source files will be rescanned (only once).</li>
       <li styleclass="Normal">The X# source code editor now has an extra combobox on the top, listing the projects where a file is included. When a file is included in more than one project, all these projects can be seen. Switching to a new project will change the &apos;evaluation context&apos;. Conditional compiles (#ifdef) will reflect the change in the editor.</li>
       <li styleclass="Normal">We have added support for the commands Edit.NextMethod and Edit.PreviousMethod in the editor. There usually is no shortcut for these commands, but you can assign them with the &quot;Customize&quot; option on the Toolbar in Visual Studio. You could assign Ctrl-DownArrow and Ctl-UpArrow for example.</li>
+      <li styleclass="Normal">Updated the Mono.Cecil library to 0.11.6</li>
     </list>
     <para styleclass="Heading2">XIDE</para>
     <para styleclass="Heading3">General</para>
@@ -155,7 +156,6 @@
       <li styleclass="Normal">Fixed a problem with incorrectly breaking on excluded handled exceptions.</li>
       <li styleclass="Normal">Fixed a common crash that could happen in the debugger.</li>
     </list>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Documentation</para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

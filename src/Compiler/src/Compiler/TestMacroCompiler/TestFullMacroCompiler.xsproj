@@ -17,6 +17,9 @@
     <RuntimeFilesDir Condition="'$(RuntimeFilesDir)' == '' ">$(DevRtDir)Binaries\Debug\</RuntimeFilesDir>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
     <BinariesDir>$(ArtifactsDir)bin\</BinariesDir>
+    <Allowdot>True</Allowdot>
+    <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
+    <Vo15>True</Vo15>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>

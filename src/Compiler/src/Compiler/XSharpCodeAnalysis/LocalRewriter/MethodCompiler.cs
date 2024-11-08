@@ -9,8 +9,25 @@ using Microsoft.CodeAnalysis.CSharp.Symbols;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
-    internal sealed partial class MethodCompiler 
+    internal sealed partial class MethodCompiler
     {
+
+        internal void CheckFoxProClass(NamedTypeSymbol containingType)
+        {
+            if (containingType.DeclaringCompilation.Options.Dialect == XSharpDialect.FoxPro)
+            {
+                if (containingType.GetNonNullSyntaxNode()?.XNode?.GetChild(0) is XSharpParser.FoxclassContext)
+                {
+                    if (!containingType.InheritsFromVfpCustom())
+                    {
+                        //ERR_FoxDefineClassMustInheritFromCustom
+                        var info = new CSDiagnosticInfo(ErrorCode.ERR_FoxDefineClassMustInheritFromCustom);
+                        _diagnostics.Add(new CSDiagnostic(info, containingType.Locations[0]));
+                    }
+                }
+            }
+        }
+
         internal static BoundStatement RewriteXSharpMethod(MethodSymbol method, 
             BoundStatement body, 
             int methodOrdinal,
@@ -33,11 +50,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     body = LocalRewriter.RewriteRunInitProc(method, body, diagnostics);
                     break;
                 default:
-                    if (method.DeclaringCompilation.Options.Dialect == XSharpDialect.FoxPro &&
-                        method.Name.ToLower() == "init")
-                    {
-                        body = LocalRewriter.RewriteFoxInit(method, body, diagnostics);
-                    }
                     break;
             }
             switch (method.MethodKind)

@@ -93,7 +93,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // Other options have flags, for the preprocessor macros, such as __VO1__
         const LanguageVersion defaultLanguageVersion = LanguageVersion.CSharp9;
         #region private fields (need to be access with HasOption)
-        private bool FoxInheritUnknown = false;
+        //private bool FoxInheritUnknown = false;
         private bool InitLocals = false;
         private bool VOAllowMissingReturns = false;
         private bool VOClipperIntegerDivisions = false;
@@ -165,7 +165,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public CSharpCommandLineArguments? CommandLineArguments { get; private set; }
         public TextWriter? ConsoleOutput { get; private set; }
         public bool cs => CaseSensitive;
-        public bool fox1 => FoxInheritUnknown;
+        //public bool fox1 => FoxInheritUnknown;
         public bool fox2 => FoxArraySupport;
         public bool lb => LateBinding;
         public bool vo1 => VoInitAxitMethods;
@@ -203,7 +203,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 DumpAST = opt.DumpAST;
                 EnforceOverride = opt.EnforceOverride;
                 EnforceSelf = opt.EnforceSelf;
-                FoxInheritUnknown = opt.Fox1;
+                //FoxInheritUnknown = opt.Fox1;
                 FoxArraySupport = opt.Fox2;
                 ImplicitNamespace = opt.ImplicitNameSpace;
                 var paths = opt.IncludePaths;
@@ -292,7 +292,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             DumpAST = opt.DumpAST;
             EnforceOverride = opt.EnforceOverride;
             EnforceSelf = opt.EnforceSelf;
-            FoxInheritUnknown = opt.FoxInheritUnknown;  // fox1
+            //FoxInheritUnknown = opt.FoxInheritUnknown;  // fox1
             FoxArraySupport = opt.FoxArraySupport;      // fox2
             ImplicitNamespace = opt.ImplicitNamespace;
             IncludePaths = opt.IncludePaths;
@@ -474,7 +474,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CheckOption(option, XPPInheritFromAbstract, token, options);
 
                 case CompilerOption.Fox1: // Inherit from Custom
-                    return CheckOption(option, FoxInheritUnknown, token, options);
+                    //return CheckOption(option, FoxInheritUnknown, token, options);
+                    return false;
 
                 case CompilerOption.AllowNamedArgs: // AllowNamedArguments: used in Antlr rules
                     return CheckOption(option, AllowNamedArguments, token, options);

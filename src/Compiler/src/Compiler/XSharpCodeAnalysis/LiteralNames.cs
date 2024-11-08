@@ -162,7 +162,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ClipperParamPrefix = "Xs$Par";
         internal const string ParenExprSuffix = "$ParenExpr$";
         internal const string XppStaticClassPrefix = "Xs$XppStaticClasses";
-        internal const string FoxInitField = "Xs$_initialized";
 
         internal const string FunctionsClass = "Functions";
         internal const string VOExeFunctionsClass = ".Exe.Functions";

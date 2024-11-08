@@ -440,7 +440,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void EnterFoxfield([NotNull] XSharpParser.FoxfieldContext context)
         {
-            string name = context.F.Name.GetText();
+            string name = context.Initializer.Name.GetText();
             if (name.EndsWith("_COMATTRIB", System.StringComparison.OrdinalIgnoreCase))
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxUnsupportedClause, "PEMName_COMATTRIB"));
@@ -454,21 +454,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFoxclsctor([NotNull] XSharpParser.FoxclsctorContext context)
         {
-            if (_options.HasOption(CompilerOption.Fox1, context, _pragmas))
-            {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FoxCtorDtor));
-            }
+            _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FoxCtorDtor));
         }
         public override void ExitFoxclsdtor([NotNull] XSharpParser.FoxclsdtorContext context)
         {
-            if (_options.HasOption(CompilerOption.Fox1, context, _pragmas))
-            {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FoxCtorDtor));
-            }
+            _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FoxCtorDtor));
         }
+
         public override void ExitFoxclass([NotNull] XSharpParser.FoxclassContext context)
         {
-            if (context.BaseType == null && !_options.HasOption(CompilerOption.Fox1, context, _pragmas))
+            if (context.BaseType == null)
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FoxAsClauseMandatory));
             }

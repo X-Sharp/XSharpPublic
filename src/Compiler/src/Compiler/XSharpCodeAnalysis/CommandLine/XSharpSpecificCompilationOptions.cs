@@ -129,7 +129,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Vo16 { get; internal set; } = false;
         public bool Vo17 { get; internal set; } = false;
         public bool Xpp1 { get; internal set; } = false;
-        public bool Fox1 { get; internal set; } = false;
+        //public bool Fox1 { get; internal set; } = false;
         public bool Fox2 { get; internal set; } = false;
         public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);
         public bool VulcanRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRT);
@@ -173,7 +173,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     EnforceOverride = value;
                     break;
                 case CompilerOption.Fox1:
-                    Fox1 = value;
+                    //Fox1 = value;
                     break;
                 case CompilerOption.Fox2:
                     Fox2 = value;
@@ -478,7 +478,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Vo15: // UntypedAllowed:
                 case CompilerOption.Vo16: // DefaultClipperContructors:
                 case CompilerOption.Vo17: // CompatibleBeginSequence:
-                case CompilerOption.Fox1:
+                //case CompilerOption.Fox1:
                 case CompilerOption.Fox2:
                 case CompilerOption.MemVars:
                 case CompilerOption.UndeclaredMemVars:
@@ -519,10 +519,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return "OVERRIDE must be explicitly used in the source code"; ;
                 case CompilerOption.EnforceSelf:
                     return "Instance Method calls inside a class require a SELF prefix";
-                case CompilerOption.Fox1:
-                    return "All Classes inherit from unknown";
+                //case CompilerOption.Fox1:
+                //    return "All Classes inherit from unknown";
                 case CompilerOption.Fox2:
-                    break;
+                    return "Compatible Array Handling";
                 case CompilerOption.ImplicitNamespace:
                     return "Enable Implicit Namespace lookups";
                 case CompilerOption.InitLocals:

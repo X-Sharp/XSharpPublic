@@ -116,15 +116,15 @@
         <NameValuePair Name="DependsOn" Value="Language::Dialect" />
       </BoolProperty.Metadata>
   </BoolProperty>
-  <BoolProperty   Category="FoxPro" Name="Fox1"             DisplayName="Inherit from Custom class"           Visible="True" Description="All classes without parent class automatically inherit from the VFP Custom class.(/fox1)"  Default="False" Switch="fox1">
+  <!--<BoolProperty   Category="FoxPro" Name="Fox1"             DisplayName="Inherit from Custom class"           Visible="True" Description="All classes without parent class automatically inherit from the VFP Custom class.(/fox1)"  Default="False" Switch="fox1">
   <BoolProperty.Metadata>
         <NameValuePair Name="VisibilityCondition">
           <NameValuePair.Value>(has-evaluated-value "Language" "Dialect" "FoxPro")</NameValuePair.Value>
         </NameValuePair>
         <NameValuePair Name="DependsOn" Value="Language::Dialect" />
       </BoolProperty.Metadata>
-  </BoolProperty>
-  <BoolProperty   Category="FoxPro" Name="Fox2"             DisplayName="Inherit from Custom class"           Visible="True" Description="Compatible FoxPro Array Support.(/fox2)"  Default="False" Switch="fox2" >
+  </BoolProperty>-->
+  <BoolProperty   Category="FoxPro" Name="Fox2"             DisplayName="Compatible Array Handling"           Visible="True" Description="FoxPro compatible array handling (Allows parenthesized arrays and assigning a single value to an array to fill all elements). WARNING Allowing parenthesized arrays may slow down the execution of your program !(/fox2)"  Default="False" Switch="fox2" >
   <BoolProperty.Metadata>
         <NameValuePair Name="VisibilityCondition">
           <NameValuePair.Value>(has-evaluated-value "Language" "Dialect" "FoxPro")</NameValuePair.Value>

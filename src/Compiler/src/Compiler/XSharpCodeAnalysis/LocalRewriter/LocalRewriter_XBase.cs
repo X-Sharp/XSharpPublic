@@ -210,38 +210,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             var stmt = new BoundExpressionStatement(syntax, ass) { WasCompilerGenerated = true };
             return stmt;
         }
-        internal static BoundStatement RewriteFoxInit(
-            MethodSymbol method,
-            BoundStatement statement,
-            DiagnosticBag diagnostics)
-        {
-            var type = method.ContainingType;
-            FieldSymbol initcalled = null;
-            foreach (var symbol in type.GetMembers())
-            {
-                if (symbol is FieldSymbol fs && fs.Name == XSharpSpecialNames.FoxInitField)
-                {
-                    initcalled = fs;
-                    break;
-                }
-            }
-            if (initcalled == null)
-                return statement;
-            var syntax = statement.Syntax;
-
-            var self = new BoundThisReference(syntax, type) { WasCompilerGenerated = true };
-            var left = new BoundFieldAccess(syntax, self, initcalled, null) { WasCompilerGenerated = true };
-            var retvalue = new BoundDefaultExpression(syntax, method.ReturnType) { WasCompilerGenerated = true };
-            var retstmt = new BoundReturnStatement(syntax, RefKind.None, retvalue) { WasCompilerGenerated = true };
-            var ifsyntax = new IfStatementSyntax((Syntax.InternalSyntax.CSharpSyntaxNode) syntax.Green, syntax.Parent, 0);
-            var ifstmt = new BoundIfStatement(ifsyntax, left, retstmt, null) { WasCompilerGenerated = true };
-            var right = new BoundLiteral(syntax, ConstantValue.Create(true), left.Type) { WasCompilerGenerated = true };
-            var assignment = new BoundAssignmentOperator(syntax, left, right, false, left.Type) { WasCompilerGenerated = true };
-            var stmt = new BoundExpressionStatement(syntax, assignment) { WasCompilerGenerated = true };
-            var newstatements = new List<BoundStatement>() { ifstmt, stmt, statement };
-            statement = new BoundBlock(syntax, ImmutableArray<LocalSymbol>.Empty, newstatements.ToImmutableArray<BoundStatement>());
-            return statement;
-        }
 
         internal static BoundStatement RewriteAppInit(
             MethodSymbol method,

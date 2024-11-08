@@ -1046,8 +1046,11 @@
           <topicref type="topic" id="384613959523963" build="ALL" modified="2019-09-24T14:17:26.154Z" icon="0" href="command__DLL">
             <caption translate="true">_DLL Statement</caption>
           </topicref>
-          <topicref type="topic" id="437476792465459" build="ALL" modified="2019-10-09T20:20:57.964Z" icon="0" href="Class-Members2">
-            <caption translate="true">CLASS Members</caption>
+          <topicref type="topic" id="384613776896508" build="ALL" modified="2019-10-09T20:05:41.376Z" icon="0" href="command_CLASS">
+            <caption translate="true">CLASS Statement (All dialects)</caption>
+            <topicref type="topic" id="437479735698648" build="ALL" modified="2019-10-09T20:19:21.160Z" icon="0" href="command_Instance_Variable">
+              <caption translate="true">Instance Variables</caption>
+            </topicref>
             <topicref type="topic" id="384615648750741" build="ALL" modified="2019-09-24T14:17:26.159Z" icon="0" href="command_ACCESS">
               <caption translate="true">ACCESS Statement</caption>
             </topicref>
@@ -1074,15 +1077,6 @@
             </topicref>
             <topicref type="topic" id="436996775134688" build="ALL" modified="2019-09-24T14:17:26.244Z" icon="0" href="command_PROPERTY">
               <caption translate="true">PROPERTY Statement</caption>
-            </topicref>
-          </topicref>
-          <topicref type="topic" id="384613776896508" build="ALL" modified="2019-10-09T20:05:41.376Z" icon="0" href="command_CLASS">
-            <caption translate="true">CLASS Statement (All dialects)</caption>
-            <topicref type="topic" id="437479735698648" build="ALL" modified="2019-10-09T20:19:21.160Z" icon="0" href="command_Instance_Variable">
-              <caption translate="true">Instance Variables</caption>
-            </topicref>
-            <topicref type="topic" id="437477572536812" build="ALL" modified="2019-10-09T20:11:57.391Z" icon="0" href="command_ClassMembers">
-              <caption translate="true">Other Classmembers</caption>
             </topicref>
           </topicref>
           <topicref type="topic" id="437477445546098" build="ALL" modified="2019-10-09T20:06:40.463Z" icon="0" href="command_CLASS_Fox">

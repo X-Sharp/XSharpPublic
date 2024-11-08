@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-08T20:48:55.625+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-08T15:02:17.919+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>FoxPro</title>
   <keywords>
     <keyword>&amp;&amp;</keyword>
@@ -59,8 +59,7 @@
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Allows code before the first entity in a source file. This will be compiled into a function with the same name as the PRG file.</li>
       <li styleclass="Normal">Adds support for the DoDefault() pseudo function.</li>
-      <li styleclass="Normal">When compiled with /fox1, the compiler assumes that all classes inherit from the Custom class, and will generate special code when declaring classes with the DEFINE CLASS syntax. </li>
-      <li styleclass="Normal">The NIL keyword in FoxPro has the property &apos;unitialized&apos; but a value of FALSE.</li>
+      <li styleclass="Body Text">The NIL keyword in FoxPro has the property &apos;unitialized&apos; but a value of FALSE.</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

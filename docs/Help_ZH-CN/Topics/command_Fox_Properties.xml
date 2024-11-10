@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-06T10:31:27.873+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-10T20:18:20.823+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>属性和字段</title>
   <body>
     <header>
@@ -10,15 +10,15 @@
     <para styleclass="Heading1">用途</para>
     <para styleclass="Normal">声明具有可选初始值的字段和或属性</para>
     <para styleclass="Heading1">语法</para>
-    <para styleclass="Normal"><tab />[Attributes] [FIELD] [modifiers] &lt;<text styleclass="List">IdName&gt;</text>, &lt;<text styleclass="List">IdName&gt;</text> ...] [AS &lt;idType&gt;]</para>
-    <para styleclass="Normal"><tab />[[.]Object.] &lt;<text styleclass="List">IdName</text>&gt; = &lt;Expression&gt; ...] </para>
+    <para styleclass="Normal"><tab />[Attributes] [<text style="font-weight:bold;">FIELD</text>] [modifiers] &lt;<text styleclass="List">IdName&gt;</text>, &lt;<text styleclass="List">IdName&gt;</text> ...] [<text style="font-weight:bold;">AS</text> &lt;idType&gt;]</para>
+    <para styleclass="Normal"><tab />[Attributes] [[.]Object.] &lt;<text styleclass="List">IdName</text>&gt; = &lt;Expression&gt; ...] [<text style="font-weight:bold;">AS</text> &lt;idType&gt;]</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">声明和/或初始化属性的两种语法均受支持。</para>
     <para styleclass="Normal">我们添加了一个可选的 AS DataType 子句。</para>
     <para styleclass="Normal">我们还添加了一个可选的 FIELD 子句，允许您声明字段(与属性相反)</para>
     <para styleclass="Heading1">参数</para>
     <para styleclass="List"></para>
-    <para styleclass="List">FIELD <tab />如果包含 FIELD 关键字，那么名称将是类中字段的名称</para>
+    <para styleclass="List"><text style="font-weight:bold;">FIELD</text>&#32;<tab />如果包含 FIELD 关键字，那么名称将是类中字段的名称。否则，编译器将创建属性。</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
     <para styleclass="List"></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-09-27T11:54:54.566+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-10T20:43:07.739+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Dialect(方言)</title>
   <keywords>
     <keyword>-fox1</keyword>
@@ -32,7 +32,7 @@
     <para styleclass="Body Text"></para>
     <para styleclass="Normal"><image src="ProjectPropertiesDialect.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="21" colcount="3">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="20" colcount="3">
       <tr style="vertical-align:top">
         <td style="width:401px;">
           <para styleclass="Normal" style="text-align:center;">项目</para>
@@ -248,18 +248,6 @@
         </td>
         <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo17">-vo17</link></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="width:401px;">
-          <para styleclass="Normal">Inherit from Custom class</para>
-          <para styleclass="Normal">(继承自 Custom 类)</para>
-        </td>
-        <td style="width:701px;">
-          <para styleclass="Normal">所有类都假定继承自 Custom 类。这也会影响编译器处理属性的方式。</para>
-        </td>
-        <td style="width:131px;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox1">-fox1</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

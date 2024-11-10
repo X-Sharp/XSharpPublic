@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-09-24T11:23:09.624+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-10T19:28:01.656+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>FoxPro</title>
   <keywords>
     <keyword>&amp;&amp;</keyword>
@@ -100,10 +100,6 @@
       <li styleclass="Normal">添加对 DoDefault() 伪函数的支持。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox1">/fox1</link> 进行编译时，编译器会假定所有类都继承自 Custom 类，并在使用 DEFINE CLASS 语法声明类时生成特殊代码。</li>
-    </list>
-    <para styleclass="Normal">&#32;</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">FoxPro 中的 NIL 关键字具有 &quot;unitialized &quot;属性，但其值为 FALSE。</li>
     </list>

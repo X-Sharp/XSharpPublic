@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T11:57:44.264+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-10T19:23:53.730+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>#pragma options</title>
   <keywords>
     <keyword>#pragma</keyword>
@@ -37,7 +37,7 @@
     <para styleclass="NotesBox"></para>
     <para styleclass="NotesBox"><text style="font-style:normal;">&quot;options &quot;可以是下列选项之一(请注意，并非所有编译器选项都可以使用)</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="32" colcount="2" style="width:auto; page-break-inside:avoid;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="31" colcount="2" style="width:auto; page-break-inside:avoid;">
       <tr style="vertical-align:top">
         <td style="width:126px;">
           <para styleclass="Normal"><text style="font-weight:bold;">选项</text></para>
@@ -272,18 +272,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:126px;">
-          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">&quot;fox1&quot;</text></para>
-        </td>
-        <td style="width:1121px;">
-          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">不能使用 #pragma 关键字设置该选项</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="width:126px;">
           <para styleclass="Normal">&quot;fox2&quot;</para>
         </td>
         <td style="width:1121px;">
-          <para styleclass="Normal">Foxpro 数组语法</para>
+          <para styleclass="Normal">与 Foxpro 兼容的数组处理</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

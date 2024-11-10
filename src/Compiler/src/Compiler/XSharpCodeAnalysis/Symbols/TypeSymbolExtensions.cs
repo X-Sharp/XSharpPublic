@@ -23,29 +23,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 // XSharp
                 {XSharpAssemblyNames.XSharpCore, XSharpTargetDLL.Core},
-                {XSharpAssemblyNames.XSharpVO,XSharpTargetDLL.VO},
-                {XSharpAssemblyNames.XSharpRT,XSharpTargetDLL.RT},
-                {XSharpAssemblyNames.XSharpXPP,XSharpTargetDLL.XPP},
-                {XSharpAssemblyNames.XSharpVFP,XSharpTargetDLL.VFP},
-                {XSharpAssemblyNames.XSharpHarbour,XSharpTargetDLL.Harbour},
-                {XSharpAssemblyNames.VoConsole,XSharpTargetDLL.VOConsoleClasses},
-                {XSharpAssemblyNames.VoGui,XSharpTargetDLL.VOGuiClasses},
-                {XSharpAssemblyNames.VoWin32,XSharpTargetDLL.VOWin32Api},
-                {XSharpAssemblyNames.VoRdd,XSharpTargetDLL.VORDDClasses},
-                {XSharpAssemblyNames.VoSql,XSharpTargetDLL.VOSQLClasses},
-                {XSharpAssemblyNames.VoSystem,XSharpTargetDLL.VOSystemClasses},
-                {XSharpAssemblyNames.VoReport,XSharpTargetDLL.VOReportClasses},
-                {XSharpAssemblyNames.VoInet,XSharpTargetDLL.VOInternetClasses},
+                {XSharpAssemblyNames.XSharpVO, XSharpTargetDLL.VO},
+                {XSharpAssemblyNames.XSharpRT, XSharpTargetDLL.RT},
+                {XSharpAssemblyNames.XSharpXPP, XSharpTargetDLL.XPP},
+                {XSharpAssemblyNames.XSharpVFP, XSharpTargetDLL.VFP},
+                {XSharpAssemblyNames.XSharpHarbour, XSharpTargetDLL.Harbour},
+                {XSharpAssemblyNames.VoConsole, XSharpTargetDLL.VOConsoleClasses},
+                {XSharpAssemblyNames.VoGui, XSharpTargetDLL.VOGuiClasses},
+                {XSharpAssemblyNames.VoWin32, XSharpTargetDLL.VOWin32Api},
+                {XSharpAssemblyNames.VoRdd, XSharpTargetDLL.VORDDClasses},
+                {XSharpAssemblyNames.VoSql, XSharpTargetDLL.VOSQLClasses},
+                {XSharpAssemblyNames.VoSystem, XSharpTargetDLL.VOSystemClasses},
+                {XSharpAssemblyNames.VoReport, XSharpTargetDLL.VOReportClasses},
+                {XSharpAssemblyNames.VoInet, XSharpTargetDLL.VOInternetClasses},
                 // Vulcan
-                {VulcanAssemblyNames.VulcanRT,XSharpTargetDLL.VulcanRT},
-                {VulcanAssemblyNames.VulcanRTFuncs,XSharpTargetDLL.VulcanRTFuncs},
-                {VulcanAssemblyNames.VulcanVoConsole,XSharpTargetDLL.VulcanVOConsoleClasses},
-                {VulcanAssemblyNames.VulcanVoGui,XSharpTargetDLL.VulcanVOGuiClasses},
-                {VulcanAssemblyNames.VulcanVoSystem,XSharpTargetDLL.VulcanVOSystemClasses},
-                {VulcanAssemblyNames.VulcanVoRdd,XSharpTargetDLL.VulcanVORDDClasses},
-                {VulcanAssemblyNames.VulcanVoSql,XSharpTargetDLL.VulcanVOSQLClasses},
-                {VulcanAssemblyNames.VulcanVoInet,XSharpTargetDLL.VulcanVOInternetClasses},
-                {VulcanAssemblyNames.VulcanVoWin32,XSharpTargetDLL.VulcanVOWin32Api}
+                {VulcanAssemblyNames.VulcanRT, XSharpTargetDLL.VulcanRT},
+                {VulcanAssemblyNames.VulcanRTFuncs, XSharpTargetDLL.VulcanRTFuncs},
+                {VulcanAssemblyNames.VulcanVoConsole, XSharpTargetDLL.VulcanVOConsoleClasses},
+                {VulcanAssemblyNames.VulcanVoGui, XSharpTargetDLL.VulcanVOGuiClasses},
+                {VulcanAssemblyNames.VulcanVoSystem, XSharpTargetDLL.VulcanVOSystemClasses},
+                {VulcanAssemblyNames.VulcanVoRdd, XSharpTargetDLL.VulcanVORDDClasses},
+                {VulcanAssemblyNames.VulcanVoSql, XSharpTargetDLL.VulcanVOSQLClasses},
+                {VulcanAssemblyNames.VulcanVoInet, XSharpTargetDLL.VulcanVOInternetClasses},
+                {VulcanAssemblyNames.VulcanVoWin32, XSharpTargetDLL.VulcanVOWin32Api}
             };
         }
 
@@ -97,6 +97,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             return type is null || type.Name != OurTypeNames.UsualType;
         }
+
+        internal static bool InheritsFromVfpCustom(this TypeSymbol type)
+        {
+            while (type is { })
+            {
+                if (type.Name == "Custom" && type.ToString() == "XSharp.VFP.Custom")
+                    return true;
+                type = type.BaseTypeNoUseSiteDiagnostics;
+            }
+            return false;
+        }
+
         public static MethodSymbol MethodSymbol(this IMethodSymbol sym)
         {
             if (sym is Symbols.PublicModel.MethodSymbol pms)

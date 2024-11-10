@@ -14,7 +14,7 @@
 #define FOXPROSQL_XH
 
 
-#command __NOFOXPROSQL__ <any> => #warning This command is not (yet) supported: <(any)>
+#command __NOFOXPROSQL__ <any> => #error This Embedded SQL command is not (yet) supported: <(any)>
 
 // DDL Commands
 
@@ -58,14 +58,12 @@
 
 // SQL Delete, mapped to normal delete
 #command DELETE [<*clauses*>] WHERE [<*moreclauses*>] => DELETE <clauses> FOR <moreclauses>
+#command DELETE <*target*> FROM <(a)> [<*clauses*>] => DELETE <clauses> IN <target>
 #command DELETE FROM <(a)> [<*clauses*>] => DELETE <clauses> IN <a>
-// Subselect is not supported
-#command DELETE [<*clauses*>] SELECT <*moreclauses*> => __NOFOXPROSQL__ <(udc)>
 
-// SQL Update Commands
-#command UPDATE [<*clauses*>] SET <*setclauses*> JOIN <*rest*>  => __NOFOXPROSQL__ <(udc)> // __SqlUpdate(<"udc">)
-// Subselect is not supported
-#command UPDATE [<*clauses*>] SELECT <*moreclauses*> => __NOFOXPROSQL__ <(udc)>
+// Delete with Join or Subselect is not supported
+#command DELETE [<*clauses*>] <s:SELECT,JOIN> <*moreclauses*> => __NOFOXPROSQL__ <(udc)>
+
 
 #command UPDATE <(a)> SET <(f1)> = <x1> [, <(fn)> = <xn>]               ;
          [WHERE <lfor>]                                                   ;
@@ -73,9 +71,11 @@
                  {||DbAutoLock(), __FieldSet(<(f1)>,<x1>) [, __FieldSet(<(fn)>, <xn>)], DbAutoUnLock()},    ;
                  <{lfor}>))
 
+// Update with Join or Subselect is not supported
+#command UPDATE [<*clauses*>] <x:SELECT,JOIN> <*moreclauses*> => __NOFOXPROSQL__ <(udc)>
+
 
 // SQL Select commands. Separate commands for TO and 3 different INTO variations
-
 
 #command SELECT <*columnClauses*> FROM <*TableList*>           ;
     [WITH (BUFFERING = <lExpr> ) ]                             ;

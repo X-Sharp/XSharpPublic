@@ -27,7 +27,8 @@
     <memvar>true</memvar>
     <undeclared>true</undeclared>
     <initlocals>true</initlocals>
-    <fox1>true</fox1>
+    <NamedArgs>False</NamedArgs>
+
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>

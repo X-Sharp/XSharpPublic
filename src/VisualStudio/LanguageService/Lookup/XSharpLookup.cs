@@ -667,7 +667,11 @@ namespace XSharp.LanguageService
                         startOfExpression = true;
                         continue;
                     case XSharpLexer.LBRKT:
-                        if (symbols.Peek().TypeName != KnownTypes.SystemArray)
+                        if (symbols.Count == 0)
+                        { 
+                            startOfExpression = true;
+                        }
+                        else if (symbols.Peek().TypeName != KnownTypes.SystemArray)
                         {
                             startOfExpression = true;
                         }
@@ -1235,6 +1239,7 @@ namespace XSharp.LanguageService
 
                 // The first token in the list can be a Function or a Procedure
                 // Except if we already have a Type
+                result.AddRange(SearchLocalFunction(location, currentName));
                 result.AddRange(SearchFunction(location, currentName));
 
                 if (result.Count == 0 && currentType != null)
@@ -1925,6 +1930,29 @@ namespace XSharp.LanguageService
             return result;
         }
 
+        private static IList<IXMemberSymbol> SearchLocalFunction(XSharpSearchLocation location, string name)
+        {
+            var result = new List<IXMemberSymbol>();
+            if (location.File == null || location.Project == null)
+            {
+                return result;
+            }
+            WriteOutputMessage($" SearchLocalFunction {location.File.SourcePath}, '{name}' ");
+            var file = location.File;
+            var current = location.Member;
+            foreach (XSourceEntity entity in file.EntityList)
+            {
+                if (entity is IXMemberSymbol member && member.Kind.IsLocal())
+                { 
+                if (entity.Name == name && current.Range.StartLine <= entity.Range.StartLine &&
+                    current.Range.EndLine > entity.Range.EndLine)
+                    {
+                        result.Add(member);
+                    }
+                }
+            }
+            return result;
+        }
         private static IList<IXMemberSymbol> SearchFunction(XSharpSearchLocation location, string name)
         {
 

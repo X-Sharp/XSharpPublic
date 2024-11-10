@@ -2242,9 +2242,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 case CompilerOption.Vo17:    // Compatible Begin Sequence .. END Sequence
                                     pragma = new PragmaOption(start, state, compopt);
                                     break;
-                                //case "xpp1":    // classes inherit from XPP.Abstract
-                                //case "xpp2":    // strongly typed entry point
-                                // case "fox1": // Classes inherit from unknown
+                                case CompilerOption.Xpp1:    // classes inherit from XPP.Abstract
+                                    if (_options.Dialect != XSharpDialect.XPP)
+                                        goto default;
+                                    pragma = new PragmaOption(start, state, compopt);
+                                    break;
+                                case CompilerOption.Fox1:    // Inherit from Base
                                 case CompilerOption.Fox2:    // FoxPro array syntax
                                     if (_options.Dialect != XSharpDialect.FoxPro)
                                         goto default;

@@ -534,7 +534,7 @@ destructorModifiers : ( Tokens+=EXTERN )+
 
 */
 overloadedOps       : Token= (PLUS | MINUS | NOT | TILDE | INC | DEC | TRUE_CONST | FALSE_CONST |
-                              MULT | DIV | MOD | AMP | PIPE | LSHIFT | RSHIFT | EEQ | NEQ | NEQ2 |
+                              MULT | DIV | MOD | AMP | PIPE | LSHIFT | RSHIFT | EEQ | NEQ | NEQ2 | 
                               GT | LT | GTE | LTE |
                               AND | OR )  // these two do not exist in C# and are mapped to & and |
                     ;
@@ -902,7 +902,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     | Left=expression Op=LSHIFT Right=expression                #binaryExpression       // expr << expr (shift)
                     | Left=expression Op=GT Gt=GT Right=expression              #binaryExpression       // expr >> expr (shift)
                     | Left=expression Op=( LT | LTE | GT | GTE | EQ | EEQ |
-                                          SUBSTR | NEQ | NEQ2) Right=expression #binaryExpression       // expr >= expr (relational)
+                                          SUBSTR | NEQ | NEQ2 ) Right=expression #binaryExpression       // expr >= expr (relational)
                     | Left=expression Op=AMP Right=expression                   #binaryExpression       // expr & expr (bitwise and)
                     | Left=expression Op=TILDE Right=expression                 #binaryExpression       // expr ~ expr (bitwise xor)
                     | Left=expression Op=PIPE Right=expression                  #binaryExpression       // expr | expr (bitwise or)
@@ -1474,7 +1474,7 @@ foxclass            : (Attributes=attributes)?
                     ;
 
 foxclassmember      : Member=foxclassvars          #foxclsvars
-                    | Member=foxfield              #foxclsvarinit
+                    | Member=foxfield              #foxclsfield
                     | Member=foxmethod             #foxclsmethod
                     | Member=foximplementsclause   #foximplements
                     | Member=foxaddobjectclause    #foxaddobject
@@ -1508,7 +1508,7 @@ foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)?
                     ;
 
 
-foxfield            : (Attributes=attributes)? (Modifiers=classvarModifiers)? (Fld=FIELD)? F=foxfieldinitializer end=eos
+foxfield            : (Attributes=attributes)? (Modifiers=classvarModifiers)? (Fld=FIELD)? Initializer=foxfieldinitializer (AS DataType=datatype)? end=eos
                     ;
 
 foxfieldinitializer : Name=name assignoperator Expr=expression
@@ -1520,7 +1520,7 @@ foximplementsclause : IMPLEMENTS Type=datatype (Excl=EXCLUDE)? (IN Library=expre
 
 foxaddobjectclause  : (Attributes=attributes)? ADD OBJECT (Modifiers=classvarModifiers)?
                       Id=identifier AS Type=datatype (NoInit=NOINIT)?
-                      (WITH FieldsInits += foxfieldinitializer (COMMA FieldsInits += foxfieldinitializer)* )?
+                      (W=WITH FieldsInits += foxfieldinitializer (COMMA FieldsInits += foxfieldinitializer)* )?
                       end=eos
                     ;
 

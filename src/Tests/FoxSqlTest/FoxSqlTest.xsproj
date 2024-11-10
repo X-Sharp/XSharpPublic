@@ -46,6 +46,8 @@
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <NoWin32Manifest>False</NoWin32Manifest>
+    <Allowdot>True</Allowdot>
+    <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

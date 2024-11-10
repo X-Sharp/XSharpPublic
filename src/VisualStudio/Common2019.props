@@ -9,7 +9,7 @@
     <TargetFrameworkMoniker>.NETFramework,Version=$(TargetFrameworkVersion)</TargetFrameworkMoniker>
     <RuntimeIdentifier>win</RuntimeIdentifier>
     <ExtensibilityEssentialsLevel>None</ExtensibilityEssentialsLevel>
-
+    <CheckNewtonsoftJsonVersion>false</CheckNewtonsoftJsonVersion>
   </PropertyGroup>
   <Import Project="Common.props" />
 

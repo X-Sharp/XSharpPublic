@@ -1397,17 +1397,17 @@ public interface IXSharpListener : IParseTreeListener {
 	void ExitFoxaddobject([NotNull] XSharpParser.FoxaddobjectContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>foxclsvarinit</c>
+	/// Enter a parse tree produced by the <c>foxclsfield</c>
 	/// labeled alternative in <see cref="XSharpParser.foxclassmember"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterFoxclsvarinit([NotNull] XSharpParser.FoxclsvarinitContext context);
+	void EnterFoxclsfield([NotNull] XSharpParser.FoxclsfieldContext context);
 	/// <summary>
-	/// Exit a parse tree produced by the <c>foxclsvarinit</c>
+	/// Exit a parse tree produced by the <c>foxclsfield</c>
 	/// labeled alternative in <see cref="XSharpParser.foxclassmember"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitFoxclsvarinit([NotNull] XSharpParser.FoxclsvarinitContext context);
+	void ExitFoxclsfield([NotNull] XSharpParser.FoxclsfieldContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>foxclsmethod</c>

@@ -55,7 +55,6 @@
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>

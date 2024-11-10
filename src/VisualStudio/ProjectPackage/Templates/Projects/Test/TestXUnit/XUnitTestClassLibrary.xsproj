@@ -1,61 +1,61 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-    <PropertyGroup>
-        <ProjectGuid>$guid1$</ProjectGuid>
-        <OutputType>Library</OutputType>
-        <RootNamespace>$safeprojectname$</RootNamespace>
-        <AssemblyName>$safeprojectname$</AssemblyName>
-        <TargetFrameworkVersion>v$targetframeworkversion$</TargetFrameworkVersion>
-        <Name>$safeprojectname$</Name>
-      <Dialect>Core</Dialect>
-      <Allowdot>True</Allowdot>
-      <NamedArgs>True</NamedArgs>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-    </PropertyGroup>
-    <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
-    <ItemGroup>
-        <Reference Include="mscorlib" />
-        <Reference Include="System" />
-        $if$ ($targetframeworkversion$ >= 3.5)
-        <Reference Include="System.Core"/>
-        <Reference Include="System.Data" />
-        <Reference Include="System.Data.DataSetExtensions" />
-        <Reference Include="System.Xml" />
-        <Reference Include="System.Xml.Linq" />
-      $endif$
-    </ItemGroup>
-    <ItemGroup>
-      <PackageReference Include="xunit">
-        <Version>*</Version>
-      </PackageReference>
-      <PackageReference Include="xunit.runner.visualstudio">
-        <Version>*</Version>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        <PrivateAssets>all</PrivateAssets>
-      </PackageReference>
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Properties\AssemblyInfo.prg">
-            <SubType>Code</SubType>
-        </Compile>
-        <Compile Include="TestClass.prg">
-            <SubType>Code</SubType>
-        </Compile>
-    </ItemGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-        <PreBuildEvent />
-        <PostBuildEvent />
-        <RunPostBuildEvent />
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-        <PreBuildEvent />
-        <PostBuildEvent />
-        <RunPostBuildEvent />
-    </PropertyGroup>
+  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
+  <PropertyGroup>
+    <ProjectGuid>$guid1$</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>$safeprojectname$</RootNamespace>
+    <AssemblyName>$safeprojectname$</AssemblyName>
+    <TargetFrameworkVersion>v$targetframeworkversion$</TargetFrameworkVersion>
+    <Name>$safeprojectname$</Name>
+    <Dialect>Core</Dialect>
+    <Allowdot>True</Allowdot>
+    <NamedArgs>True</NamedArgs>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    $if$ ($targetframeworkversion$ >= 3.5)
+    <Reference Include="System.Core"/>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    $endif$
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit">
+      <Version>*</Version>
+    </PackageReference>
+    <PackageReference Include="xunit.runner.visualstudio">
+      <Version>*</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestClass.prg">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
 </Project>

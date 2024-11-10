@@ -443,7 +443,7 @@ namespace XSharp.Build
 
         #endregion
 
-        private bool useCRLF;
+        private readonly bool useCRLF;
         private int errorCount;
         //private bool hasShownMaxErrorMsg;
         protected override string ToolNameWithoutExtension
@@ -829,50 +829,50 @@ namespace XSharp.Build
                 }
                 commandline.AppendSwitch("/ns:" + this.RootNameSpace);
             }
-            commandline.AppendPlusOrMinusSwitch("/allowdot", _store, nameof(AllowDot));
-            commandline.AppendPlusOrMinusSwitch("/allowoldstyleassignments", _store, nameof(AllowOldStyleAssignments));
-            commandline.AppendPlusOrMinusSwitch("/az", _store, nameof(AZ));
-            commandline.AppendPlusOrMinusSwitch("/cs", _store, nameof(CS));
-            commandline.AppendPlusOrMinusSwitch("/initlocals", _store, nameof(InitLocals));
-            commandline.AppendPlusOrMinusSwitch("/ins", _store, nameof(INS));
-            commandline.AppendPlusOrMinusSwitch("/lb", _store, nameof(LB));
-            commandline.AppendPlusOrMinusSwitch("/namedarguments", _store, nameof(NamedArgs));
+            commandline.AppendPlusOrMinusSwitchAlways("/allowdot", _store, nameof(AllowDot));
+            commandline.AppendPlusOrMinusSwitchAlways("/allowoldstyleassignments", _store, nameof(AllowOldStyleAssignments));
+            commandline.AppendPlusOrMinusSwitchAlways("/az", _store, nameof(AZ));
+            commandline.AppendPlusOrMinusSwitchAlways("/cs", _store, nameof(CS));
+            commandline.AppendPlusOrMinusSwitchAlways("/initlocals", _store, nameof(InitLocals));
+            commandline.AppendPlusOrMinusSwitchAlways("/ins", _store, nameof(INS));
+            commandline.AppendPlusOrMinusSwitchAlways("/lb", _store, nameof(LB));
+            commandline.AppendPlusOrMinusSwitchAlways("/namedarguments", _store, nameof(NamedArgs));
             if (Dialect.ToLower() != "core" && Dialect.ToLower() != "vulcan")
             {
-                commandline.AppendPlusOrMinusSwitch("/memvar", _store, nameof(MemVar));
-                commandline.AppendPlusOrMinusSwitch("/undeclared", _store, nameof(Undeclared));
+                commandline.AppendPlusOrMinusSwitchAlways("/memvar", _store, nameof(MemVar));
+                commandline.AppendPlusOrMinusSwitchAlways("/undeclared", _store, nameof(Undeclared));
             }
-            commandline.AppendPlusOrMinusSwitch("/enforceself", _store, nameof(EnforceSelf));
-            commandline.AppendPlusOrMinusSwitch("/enforceoverride", _store, nameof(EnforceOverride));
-            commandline.AppendPlusOrMinusSwitch("/modernsyntax", _store, nameof(ModernSyntax));
-            commandline.AppendPlusOrMinusSwitch("/noinit", _store, nameof(NoInit));
-            commandline.AppendPlusOrMinusSwitch("/ovf", _store, nameof(OVF));
-            commandline.AppendPlusOrMinusSwitch("/ppo", _store, nameof(PPO));
-            commandline.AppendPlusOrMinusSwitch("/vo1", _store, nameof(VO1));
-            commandline.AppendPlusOrMinusSwitch("/vo2", _store, nameof(VO2));
-            commandline.AppendPlusOrMinusSwitch("/vo3", _store, nameof(VO3));
-            commandline.AppendPlusOrMinusSwitch("/vo4", _store, nameof(VO4));
-            commandline.AppendPlusOrMinusSwitch("/vo5", _store, nameof(VO5));
-            commandline.AppendPlusOrMinusSwitch("/vo6", _store, nameof(VO6));
-            commandline.AppendPlusOrMinusSwitch("/vo7", _store, nameof(VO7));
-            commandline.AppendPlusOrMinusSwitch("/vo8", _store, nameof(VO8));
-            commandline.AppendPlusOrMinusSwitch("/vo9", _store, nameof(VO9));
-            commandline.AppendPlusOrMinusSwitch("/vo10", _store, nameof(VO10));
-            commandline.AppendPlusOrMinusSwitch("/vo11", _store, nameof(VO11));
-            commandline.AppendPlusOrMinusSwitch("/vo12", _store, nameof(VO12));
-            commandline.AppendPlusOrMinusSwitch("/vo13", _store, nameof(VO13));
-            commandline.AppendPlusOrMinusSwitch("/vo14", _store, nameof(VO14));
-            commandline.AppendPlusOrMinusSwitch("/vo15", _store, nameof(VO15));
-            commandline.AppendPlusOrMinusSwitch("/vo16", _store, nameof(VO16));
-            commandline.AppendPlusOrMinusSwitch("/vo17", _store, nameof(VO17));
+            commandline.AppendPlusOrMinusSwitchAlways("/enforceself", _store, nameof(EnforceSelf));
+            commandline.AppendPlusOrMinusSwitchAlways("/enforceoverride", _store, nameof(EnforceOverride));
+            commandline.AppendPlusOrMinusSwitchAlways("/modernsyntax", _store, nameof(ModernSyntax));
+            commandline.AppendPlusOrMinusSwitchAlways("/noinit", _store, nameof(NoInit));
+            commandline.AppendPlusOrMinusSwitchAlways("/ovf", _store, nameof(OVF));
+            commandline.AppendPlusOrMinusSwitchAlways("/ppo", _store, nameof(PPO));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo1", _store, nameof(VO1));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo2", _store, nameof(VO2));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo3", _store, nameof(VO3));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo4", _store, nameof(VO4));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo5", _store, nameof(VO5));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo6", _store, nameof(VO6));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo7", _store, nameof(VO7));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo8", _store, nameof(VO8));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo9", _store, nameof(VO9));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo10", _store, nameof(VO10));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo11", _store, nameof(VO11));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo12", _store, nameof(VO12));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo13", _store, nameof(VO13));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo14", _store, nameof(VO14));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo15", _store, nameof(VO15));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo16", _store, nameof(VO16));
+            commandline.AppendPlusOrMinusSwitchAlways("/vo17", _store, nameof(VO17));
             if (Dialect.ToLower() == "xpp")
             {
-                commandline.AppendPlusOrMinusSwitch("/xpp1", _store, nameof(XPP1));
+                commandline.AppendPlusOrMinusSwitchAlways("/xpp1", _store, nameof(XPP1));
             }
             if (Dialect.ToLower() == "foxpro")
             {
-                commandline.AppendPlusOrMinusSwitch("/fox1", _store, nameof(FOX1));
-                commandline.AppendPlusOrMinusSwitch("/fox2", _store, nameof(FOX2));
+                commandline.AppendPlusOrMinusSwitchAlways("/fox1", _store, nameof(FOX1));
+                commandline.AppendPlusOrMinusSwitchAlways("/fox2", _store, nameof(FOX2));
             }
 
             // User-defined CommandLine Option (in order to support switches unknown at that time)

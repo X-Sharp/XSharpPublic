@@ -29,6 +29,7 @@
     <fox1>true</fox1>
     <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
     <Allowdot>True</Allowdot>
+    <NamedArgs>False</NamedArgs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>

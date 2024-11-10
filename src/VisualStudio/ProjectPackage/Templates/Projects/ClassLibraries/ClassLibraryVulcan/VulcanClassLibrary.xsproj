@@ -22,6 +22,7 @@
     <vo14>true</vo14>
     <vo15>true</vo15>
     <vo16>true</vo16>
+    <NamedArgs>False</NamedArgs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" >
     <PlatformTarget>AnyCPU</PlatformTarget>

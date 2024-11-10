@@ -73,10 +73,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\Common\commonAssemblyInfo.prg">
+    <Compile Include="$(Commondir)commonAssemblyInfo.prg">
       <Link>Properties\commonAssemblyInfo.prg</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Common\constants.prg">
+    <Compile Include="$(Commondir)constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
     <Compile Include="BlockCode.prg" />

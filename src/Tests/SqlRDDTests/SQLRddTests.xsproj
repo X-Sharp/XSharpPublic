@@ -141,15 +141,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Advantage.Data.Provider, Version=12.0.2.2, Culture=neutral, PublicKeyToken=e33137c86a38dc06">
-      <Name>Advantage.Data.Provider</Name>
-      <AssemblyName>Advantage.Data.Provider.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\..\Tools\Advantage 12.0\ado.net\Redistribute\Advantage.Data.Provider.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="SqlRdd.Ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

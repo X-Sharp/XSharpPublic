@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
 	<PropertyGroup>
-		<TargetFrameworks>net46</TargetFrameworks>
+		<TargetFrameworks>net40</TargetFrameworks>
     <ArtifactsDir>$(Solutiondir)..\Artifacts\</ArtifactsDir>
     <BinariesDir>$(ArtifactsDir)bin\</BinariesDir>
     <VsExternalDir>$(ArtifactsDir)Shared\$(Configuration)</VsExternalDir>

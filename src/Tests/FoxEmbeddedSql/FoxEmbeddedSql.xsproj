@@ -14,6 +14,9 @@
     <OutputName>FoxEmbeddedSql</OutputName>
     <StartupObject />
     <MemVar>True</MemVar>
+    <Vo15>True</Vo15>
+    <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
+    <Vo9>True</Vo9>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -22,6 +25,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-09T21:08:47.231+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-08T15:01:23.339+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Dialect</title>
   <keywords>
     <keyword>-fox1</keyword>
@@ -31,7 +31,7 @@
     <para styleclass="Body Text"></para>
     <para styleclass="Normal"><image src="ProjectPropertiesDialect.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="21" colcount="3">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="20" colcount="3">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text style="font-weight:bold;">Item</text></para>
@@ -230,17 +230,6 @@
         </td>
         <td>
           <para styleclass="Normal">-vo17</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">Inherit from Custom class</para>
-        </td>
-        <td>
-          <para styleclass="Normal">All classes are assumed to inherit from the Custom class. This also affects the way in which properties are processed by the compiler.</para>
-        </td>
-        <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox1">-fox1</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

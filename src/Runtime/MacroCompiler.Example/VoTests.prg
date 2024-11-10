@@ -244,6 +244,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a| a := \"abc\", a + \"def\"}", Args(8), "abcdef", typeof(STRING))
         TestMacro(mc, e"{|a| 0 == 0}", Args(8), TRUE, typeof(LOGIC))
         TestMacro(mc, e"{|a| 0 != 0}", Args(8), FALSE, typeof(LOGIC))
+        TestMacro(mc, e"{|a| 0 <> 0}", Args(8), FALSE, typeof(LOGIC))
         TestMacro(mc, e"{|a| (0 > 1) .and. (0 < 1) }", Args(8), FALSE, typeof(LOGIC))
         TestMacro(mc, e"{|a| a := \"qwerty\", a:Length }", Args(8), 6, typeof(INT))
         TestMacro(mc, e"{|a| a := default(int) }", Args(8), 0, typeof(INT))
@@ -420,7 +421,9 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"'AA' == (object)'A'", Args(), FALSE, typeof(LOGIC))
         TestMacro(mc, e"'AA' = (object)'A'", Args(), TRUE, typeof(LOGIC))
         TestMacro(mc, e"'AA' != U('A')", Args(), FALSE, typeof(LOGIC))
+        TestMacro(mc, e"'AA' <> U('A')", Args(), FALSE, typeof(LOGIC))
         TestMacro(mc, e"'AA' != 'A'", Args(), FALSE, typeof(LOGIC))
+        TestMacro(mc, e"'AA' <> 'A'", Args(), FALSE, typeof(LOGIC))
         TestMacro(mc, e"'AA' != (object)'A'", Args(), FALSE, typeof(LOGIC))
         TestMacro(mc, e"{|a,b| a > b}", Args("est","test"), FALSE, typeof(LOGIC))
         TestMacro(mc, e"{|a,b| a < b}", Args("est","test"), TRUE, typeof(LOGIC))
@@ -688,10 +691,10 @@ BEGIN NAMESPACE MacroCompilerTest
         //TestMacro(mc, "{ || FloatNext(0) } ", Args(), null, null, ErrorCode.NotAMethod)
         //System.Reflection.Assembly.Load("XSharp.VO")
         //TestMacro(mc, "{ || FloatNext(0) } ", Args(), 0.0, typeof(float))
-        //typed and untyped parameters        
+        //typed and untyped parameters
         TestMacro(mc,"{|a,b| a + b }", Args(1,2), 3, typeof(INT))
         TestMacro(mc,"{|a as int,b as int| a + b }", Args(1,2), 3, typeof(INT))
-        
+
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         RETURN
 

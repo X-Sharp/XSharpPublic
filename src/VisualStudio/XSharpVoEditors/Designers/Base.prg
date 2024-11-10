@@ -184,7 +184,7 @@ CLASS DesignerBase
 	VIRTUAL METHOD TimerTicked(o AS OBJECT,e AS EventArgs) AS VOID
 		// Check periodically if the WED is active and if not, hide the toolwindows
 		IF SELF:oGrid != NULL .and. SELF:oGrid:oActiveDesigner == SELF
-			IF !SELF:oSurface:ContainsFocus
+			IF .not. SELF:oSurface:ContainsFocus
 				SELF:ShowHideTools(FALSE)
 			ENDIF
 		ENDIF
@@ -221,11 +221,11 @@ CLASS DesignerBase
     			RETURN
     		ENDIF
     		IF lShow
-                oGridForm:Show()
+    			oGridForm:Show()
     			oToolForm:Show()
     			SELF:GiveFocus()
     		ELSE
-    			IF !SELF:oSurface:CanFocus
+    			IF !SELF:oSurface:ContainsFocus
     				oGridForm:Hide()
     				oToolForm:Hide()
     			END IF

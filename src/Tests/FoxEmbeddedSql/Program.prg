@@ -12,6 +12,13 @@ USING SYstem.Text
 USING XSharp.Parsers
 
 #include "foxcmd.xh"
+#command __NOFOXPROSQL__ <any> => #error This Embedded SQL command is not (yet) supported: <(any)>
+// SQL Delete, mapped to normal delete
+#command DELETE [<*clauses*>] WHERE [<*moreclauses*>] => DELETE <clauses> FOR <moreclauses>
+#command DELETE <*target*> FROM <(a)> [<*clauses*>] => DELETE <clauses> IN <target>
+#command DELETE FROM <(a)> [<*clauses*>] => DELETE <clauses> IN <a>
+#command DELETE [<*clauses*>] <s:SELECT,JOIN> <*moreclauses*> => __NOFOXPROSQL__ <(udc)>
+// Subselect is not supported
 
 // comments:
 // insert into <table> opens the table when it is not already open
@@ -20,111 +27,112 @@ USING XSharp.Parsers
 
 FUNCTION Start() AS VOID STRICT
     try
-    local a,b,c as int
-    a := b := c := 42
-    CREATE TABLE Salesman ;
-        (SalesID c(6) PRIMARY KEY, ;
-        SaleName Character(20) )
-    IF Used()
-        INSERT INTO Salesman VALUES ("1", "Robert")
-        INSERT INTO Salesman VALUES ("2", "Fabrice")
-        INSERT INTO Salesman VALUES ("3", "Chris")
-        INSERT INTO Salesman VALUES ("4", "Nikos")
-        //Browse()
-    ELSE
-        ? "Table not open"
-    ENDIF
+        local a,b,c as int
+        a := b := c := 42
+        CREATE TABLE Salesman ;
+            (SalesID c(6) PRIMARY KEY, ;
+            SaleName Character(20) )
+        IF Used()
+            INSERT INTO Salesman VALUES ("1", "Robert")
+            INSERT INTO Salesman VALUES ("2", "Fabrice")
+            INSERT INTO Salesman VALUES ("3", "Chris")
+            INSERT INTO Salesman VALUES ("4", "Nikos")
+            //Browse()
+        ELSE
+            ? "Table not open"
+        ENDIF
 
-    CREATE CURSOR employee ;
-        (EmpID N(5), Name Character(20), DOB D, Address c( 30 ) , City c(30), ;
-        PostalCode c(10), OfficeNo c(8) NULL, Salary Numeric(10 , 2 ),  Specialty Memo)
+        CREATE CURSOR employee ;
+            (EmpID N(5), Name Character(20), DOB D, Address c( 30 ) , City c(30), ;
+            PostalCode c(10), OfficeNo c(8) NULL, Salary Numeric(10 , 2 ),  Specialty Memo)
 
-    IF Used()
-        INSERT INTO Employee(EmpId, Name) VALUES (1, "Nikos")
-        Local Address as usual
-        m.Address = "Zuukerweg"
-        m.EmpId = 10
-        m.Name  = "Robert"
-        INSERT INTO employee FROM Memvar
+        IF Used()
+            INSERT INTO Employee(EmpId, Name) VALUES (1, "Nikos")
+            Local Address as usual
+            m.Address = "Zuukerweg"
+            m.EmpId = 10
+            m.Name  = "Robert"
+            INSERT INTO employee FROM Memvar
 
-        LOCAL obj as object
-        OBJ = CREATEOBJECT("Empty")
-        = AddProperty(obj,"EmpId", 42)
-        = AddProperty(obj,"Name", "Fabrice")
-        INSERT INTO employee FROM NAME obj
+            LOCAL obj as object
+            OBJ = CREATEOBJECT("Empty")
+            = AddProperty(obj,"EmpId", 42)
+            = AddProperty(obj,"Name", "Fabrice")
+            INSERT INTO employee FROM NAME obj
 
-        Dimension values[3]
-        values[1] = 100
-        values[2] = "Chris"
-        values[3] = ToDay()
-        INSERT INTO employee FROM ARRAY values
+            Dimension values[3]
+            values[1] = 100
+            values[2] = "Chris"
+            values[3] = ToDay()
+            INSERT INTO employee FROM ARRAY values
 
-        //Browse()
+            //Browse()
 
-    ELSE
-        ? "Table not open"
-    ENDIF
+        ELSE
+            ? "Table not open"
+        ENDIF
 
-        DELETE FROM employee where EmpID = 1
-    
+        DELETE FROM employee where _FIELD->EmpID = 1
+
         //DELETE FROM Database!employee where EmpID = 1
-        
-        DELETE  MyProducts FROM MSRPList ;
-           WHERE MSRPList.ProdID = MyProducts.ProdID;
+
+        DELETE  MyProducts FROM MSRPList;
+            WHERE MSRPList.ProdID = MyProducts.ProdID;
             AND MSRPList.discontinued = .t.
 
-//         DELETE  DB!MyProducts FROM DB!MSRPList ;
-//            WHERE MSRPList.ProdID = MyProducts.ProdID;
-//             AND MSRPList.discontinued = .t.
+
+        //         DELETE  DB!MyProducts FROM DB!MSRPList ;
+        //            WHERE MSRPList.ProdID = MyProducts.ProdID;
+        //             AND MSRPList.discontinued = .t.
 
         UPDATE MyProducts SET MSRP=MyUpdates.MSRP FROM MyUpdates WHERE MyProducts.ProdID=MyUpdates.ProdID
         UPDATE products ;
-           SET unitprice = ;
-               (SELECT (msrp*.90) ;
-                  FROM mfg_msrp ;
-                 WHERE mfg_msrp.productID = products.productID ;
-                   AND mfg_msrp.discontinued = .f.)
+            SET unitprice = ;
+            (SELECT (msrp*.90) ;
+            FROM mfg_msrp ;
+            WHERE mfg_msrp.productID = products.productID ;
+            AND mfg_msrp.discontinued = .f.)
 
         UPDATE products ;
-           SET unitprice = mfg_msrp.msrp*.90 ;
-          FROM mfg_msrp ;
-         WHERE mfg_msrp.productID = products.productID;
-           AND mfg_msrp.discontinued = .f.
+            SET unitprice = mfg_msrp.msrp*.90 ;
+            FROM mfg_msrp ;
+            WHERE mfg_msrp.productID = products.productID;
+            AND mfg_msrp.discontinued = .f.
 
 
-    CREATE TABLE Orders ;
-   (OrderId i PRIMARY KEY, ;
-      CustId i REFERENCES customer TAG CustId, ;
-      CustName c(10), ;
-      OrderAmt y(4), ;
-      OrderQty i ;
-      DEFAULT 10 ;
-      CHECK (OrderQty > 9) ;
-      ERROR "Order Quantity must be at least 10", ;
-         DiscPercent n(6,2) NULL ;
-      DEFAULT .NULL., ;
-      CHECK (OrderAmt > 0) ERROR "Order Amount must be > 0" )
+        CREATE TABLE Orders ;
+            (OrderId i PRIMARY KEY, ;
+            CustId i REFERENCES customer TAG CustId, ;
+            CustName c(10), ;
+            OrderAmt y(4), ;
+            OrderQty i ;
+            DEFAULT 10 ;
+            CHECK (OrderQty > 9) ;
+            ERROR "Order Quantity must be at least 10", ;
+            DiscPercent n(6,2) NULL ;
+            DEFAULT .NULL., ;
+            CHECK (OrderAmt > 0) ERROR "Order Amount must be > 0" )
         local oTest := XSharp.VFP.Empty{}
         AddProperty(oTest, "LastName", "Hulst")
         AddProperty(oTest, "FirstName", "Robert")
         INSERT INTO Orders(CustId,OrderAmt, OrderQty,CustName) VALUES (1, 100, 10,"19010101")
         INSERT INTO Orders(CustId,OrderAmt, OrderQty,CustName) VALUES (1, 200, 20,"19010202")
-    Browse()
-    ALTER TABLE Orders Add OrderDate Date NULL
-    Browse()
-    ALTER TABLE Orders Add COLUMN DeliveryDate DateTime
-    Browse()
-    ALTER TABLE Orders DROP COLUMN OrderAmt
-    Browse()
-    ALTER TABLE Orders Alter COLUMN CustName C(5)
-    Browse()
+        Browse()
+        ALTER TABLE Orders Add OrderDate Date NULL
+        Browse()
+        ALTER TABLE Orders Add COLUMN DeliveryDate DateTime
+        Browse()
+        ALTER TABLE Orders DROP COLUMN OrderAmt
+        Browse()
+        ALTER TABLE Orders Alter COLUMN CustName C(5)
+        Browse()
 
-    CREATE SQL VIEW MyView AS SELECT * FROM Northwind!Customers;
-    WHERE Country="Mexico"
+//         CREATE SQL VIEW MyView AS SELECT * FROM Northwind!Customers;
+//             WHERE Country="Mexico"
     catch e as exception
         ? "Error", e:Message
     end try
-        WAIT
+    WAIT
 
 
 
@@ -170,3 +178,4 @@ FUNCTION __SqlUpdate (sCommand as STRING)
     ? "Where", table:WhereClause
 
     RETURN
+

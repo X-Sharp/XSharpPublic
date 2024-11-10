@@ -9,7 +9,9 @@
     <TargetFrameworkVersion>v$targetframeworkversion$</TargetFrameworkVersion>
     <Name>$safeprojectname$</Name>
     <Dialect>VO</Dialect>
+    <Ins>True</Ins>
     <vo15>True</vo15>
+    <NamedArgs>False</NamedArgs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>

@@ -57,13 +57,6 @@
   <ItemGroup>
     <Folder Include="Properties" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System">
-      <Name>System</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.dll</AssemblyName>
-    </Reference>
-  </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>
     <ProjectCapabilities>

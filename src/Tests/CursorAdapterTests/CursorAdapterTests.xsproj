@@ -13,6 +13,10 @@
     <NamedArgs>True</NamedArgs>
     <OutputName>ConsoleApplication1</OutputName>
     <StartupObject />
+    <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
+    <Vo15>True</Vo15>
+    <LB>True</LB>
+    <Vo9>True</Vo9>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>

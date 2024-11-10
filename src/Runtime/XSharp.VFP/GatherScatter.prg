@@ -49,9 +49,8 @@ INTERNAL FUNCTION __BuildFieldList(aFieldList IN USUAL, lIncludeMemo as LOGIC) A
         VoDb.FieldInfo(DBS_TYPE, nFld,@cType)
         SWITCH (STRING) cType
         CASE "M"
-            lInclude := lIncludeMemo
         CASE "G"
-            lInclude := FALSE
+            lInclude := lIncludeMemo
         OTHERWISE
             lInclude := TRUE
         END SWITCH

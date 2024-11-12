@@ -29,6 +29,7 @@
     <InitLocals>false</InitLocals>
     <StartupObject />
     <Vo15>True</Vo15>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

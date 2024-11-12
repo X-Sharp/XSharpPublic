@@ -25,6 +25,7 @@
     <NoWin32Manifest>False</NoWin32Manifest>
     <Vo5>False</Vo5>
     <EnforceSelf>True</EnforceSelf>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>

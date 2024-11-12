@@ -23,6 +23,9 @@
     <Fox2>True</Fox2>
     <NamedArgs>False</NamedArgs>
     <EnforceSelf>True</EnforceSelf>
+    <Vo9>true</Vo9>
+    <Fox1>true</Fox1>
+    <InitLocals>true</InitLocals>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

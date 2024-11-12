@@ -10,6 +10,7 @@
     <OutputName>VOWin32APILibrary</OutputName>
     <NamedArgs>False</NamedArgs>
     <EnforceSelf>True</EnforceSelf>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>

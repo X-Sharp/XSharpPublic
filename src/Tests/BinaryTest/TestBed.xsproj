@@ -40,7 +40,6 @@
     <VO8>false</VO8>
     <VO11>false</VO11>
     <VO12>false</VO12>
-    <XPP1>false</XPP1>
     <NamedArgs>False</NamedArgs>
     <StartupObject />
     <ApplicationIcon />
@@ -52,6 +51,8 @@
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths />
     <StandardDefs />
+    <Allowdot>true</Allowdot>
+    <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

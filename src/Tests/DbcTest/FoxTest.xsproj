@@ -37,6 +37,7 @@
     <Vo9>True</Vo9>
     <Allowdot>True</Allowdot>
     <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
+    <Fox1>true</Fox1>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

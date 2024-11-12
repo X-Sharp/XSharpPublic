@@ -19,6 +19,7 @@
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <NamedArgs>True</NamedArgs>
     <NoWin32Manifest>False</NoWin32Manifest>
+    <Allowdot>true</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>

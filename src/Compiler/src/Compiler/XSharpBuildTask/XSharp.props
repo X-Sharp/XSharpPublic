@@ -35,6 +35,7 @@
     <UseSharedCompilation>true</UseSharedCompilation>
     <WarningLevel>4</WarningLevel>
     <XSharpXamlDir>$(XSharpMsBuildDir)\Rules\</XSharpXamlDir>
+    <RuntimeIdentifier>win</RuntimeIdentifier>
   </PropertyGroup>
   <!-- Set defaults for Configuration, Platform, Optimize and PDB generation -->
   <PropertyGroup>

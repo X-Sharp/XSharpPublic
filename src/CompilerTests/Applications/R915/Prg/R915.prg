@@ -51,5 +51,7 @@ CLASS Test
     CONSTRUCTOR(nNum as DWORD)
         SELF:Text   :=  Repl(Chr(64+nNum),10)
         SELF:Number := nNum
-        REPLACE FLD1 with ::Text
+        // Removed next line. Would try to read at EOF in the
+        // test code, and will also overwrite changes to the previous record
+        //REPLACE FLD1 with ::Text
 END CLASS

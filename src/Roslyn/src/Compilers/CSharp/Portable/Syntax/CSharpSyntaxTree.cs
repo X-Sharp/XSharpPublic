@@ -521,12 +521,21 @@ namespace Microsoft.CodeAnalysis.CSharp
             options = options ?? CSharpParseOptions.Default;
 
 #if XSHARP
-            using var parser = new InternalSyntax.XSharpLanguageParser(path, text, options, oldTree: null, changes: null, cancellationToken: cancellationToken);
-#else
-            using var lexer = new InternalSyntax.Lexer(text, options);
-            using var parser = new InternalSyntax.LanguageParser(lexer, oldTree: null, changes: null, cancellationToken: cancellationToken);
-#endif
-            var compilationUnit = (CompilationUnitSyntax)parser.ParseCompilationUnit().CreateRed();
+            bool isXsharp = !path.EndsWith(".cs");
+            InternalSyntax.DirectiveStack directives = default;
+            CompilationUnitSyntax compilationUnit;
+            if (isXsharp)
+            {
+                using var parser = new InternalSyntax.XSharpLanguageParser(path, text, options, oldTree: null, changes: null, cancellationToken: cancellationToken);
+                compilationUnit = (CompilationUnitSyntax)parser.ParseCompilationUnit().CreateRed();
+            }
+            else
+            {
+                using var lexer = new InternalSyntax.Lexer(text, options);
+                using var parser = new InternalSyntax.LanguageParser(lexer, oldTree: null, changes: null, cancellationToken: cancellationToken);
+                compilationUnit = (CompilationUnitSyntax)parser.ParseCompilationUnit().CreateRed();
+                directives = parser.Directives;
+            }
             var tree = new ParsedSyntaxTree(
                 text,
                 text.Encoding,
@@ -534,15 +543,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 path,
                 options,
                 compilationUnit,
-#if XSHARP
-                directives: default,
+                directives: directives,
                 diagnosticOptions: diagnosticOptions,
-#else
-                parser.Directives,
-                diagnosticOptions: diagnosticOptions,
-#endif
                 cloneRoot: true);
-#if XSHARP
             if (options.SaveAsCSharp)
             {
                 path = System.IO.Path.ChangeExtension(path, ".cs");
@@ -557,8 +560,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 System.IO.File.WriteAllText(path, source);
             }
             return tree;
-
 #else
+            using var lexer = new InternalSyntax.Lexer(text, options);
+            using var parser = new InternalSyntax.LanguageParser(lexer, oldTree: null, changes: null, cancellationToken: cancellationToken);
+            var compilationUnit = (CompilationUnitSyntax)parser.ParseCompilationUnit().CreateRed();
+            var tree = new ParsedSyntaxTree(
+                text,
+                text.Encoding,
+                text.ChecksumAlgorithm,
+                path,
+                options,
+                compilationUnit,
+                parser.Directives,
+                diagnosticOptions: diagnosticOptions,
+                cloneRoot: true);
             tree.VerifySource();
             return tree;
 #endif

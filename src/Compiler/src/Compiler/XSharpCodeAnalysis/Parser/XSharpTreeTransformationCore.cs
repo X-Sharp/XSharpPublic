@@ -8068,7 +8068,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     init = context.Init.Get<InitializerExpressionSyntax>();
                 }
-                context.Put(CreateObject(type, argList, init));
+                if (type.ToString() == "_")
+                {
+                    context.Put(_syntaxFactory.ImplicitObjectCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword), argList, init));
+                }
+                else
+                {
+                    context.Put(CreateObject(type, argList, init));
+                }
             }
             else
             {
@@ -8103,7 +8110,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(sizes);
                 context.Put(_syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                     _syntaxFactory.ArrayType(type, MakeList(rankSpecifiers)),
-                    context.Init?.Get<InitializerExpressionSyntax>() ?? null));
+                    context.Init?.Get<InitializerExpressionSyntax>()));
             }
         }
 
@@ -9671,10 +9678,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     default,
                     SyntaxFactory.CloseBracketToken,
                     initializer);
-                if (!isNestedArray(context))
-                {
-                    expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UntypedArrayNotAvailableInDialect, _options.Dialect.ToString()));
-                }
+                //if (!isNestedArray(context))
+                //{
+                //    expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UntypedArrayNotAvailableInDialect, _options.Dialect.ToString()));
+                //}
             }
             context.Put(expr);
         }

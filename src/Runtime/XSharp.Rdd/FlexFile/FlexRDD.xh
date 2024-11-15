@@ -81,6 +81,9 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:_ReadOnly
                 SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
             ENDIF
+            IF SELF:EoF
+               RETURN TRUE
+            ENDIF
             SELF:ForceRel()
             IF SELF:_readRecord()
                 // GoHot() must be called first because this saves the current index values

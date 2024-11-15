@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T12:04:19.246+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-10T20:40:15.107+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>按类别划分的 X# 编译器选项</title>
   <keywords>
     <keyword>compiler options</keyword>
@@ -111,7 +111,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox1">-fox1</link></para>
         </td>
         <td>
-          <para styleclass="Body Text">假定类继承自 Custom 类</para>
+          <para styleclass="Body Text">已弃用</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

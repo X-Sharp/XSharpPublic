@@ -597,7 +597,7 @@ RETURN oApp
 
 METHOD LoadApplication(oApp AS AppClass,oStream AS StreamReader) AS STRING
 	STATIC LOCAL aRuntime := <STRING>{;
-	"XSharp.Core","XSharp.VO","XSharp.RT","XSharp.RDD","XSharp.VFP","XSharp.XPP","XSharp.MacroCompiler","XSharp.Data",;
+	"XSharp.Core","XSharp.VO","XSharp.RT","XSharp.RDD","XSharp.VFP","XSharp.XPP","XSharp.MacroCompiler","XSharp.Data", "XSharp.Harbour";
 	"VulcanRTFuncs","VulcanRT",;
 	"VulcanVOConsoleClasses","VulcanVOGUIClasses","VulcanVOInternetClasses","VulcanVORDDClasses","VulcanVOSQLClasses","VulcanVOSystemClasses","VulcanVOWin32APILibrary",;
 	"VOConsoleClasses","VOGUIClasses","VOInternetClasses","VORDDClasses","VOSQLClasses","VOSystemClasses","VOWin32APILibrary";

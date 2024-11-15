@@ -132529,9 +132529,9 @@ CopyToBin = 0
 [C910 - Compiler problem reading clipper/harbour .prg file with end of file marker References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.Harbour,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Harbour.dll,1,1
 [C910 - Compiler problem reading clipper/harbour .prg file with end of file marker Resources]
 [C910 - Compiler problem reading clipper/harbour .prg file with end of file marker Native Resources]
 [C910 - Compiler problem reading clipper/harbour .prg file with end of file marker License files]

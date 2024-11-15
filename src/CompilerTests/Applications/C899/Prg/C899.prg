@@ -1,8 +1,9 @@
 // 899. Various UDCs
 // https://github.com/X-Sharp/XSharpPublic/issues/1407
 FUNCTION Start( ) AS VOID
-
+IF ! System.Console.IsOutputRedirected
 clear screen
+ENDIF
 
 SET MEMOBLOCKSIZE TO 123
 SET MEMOBLOCK TO 123
@@ -27,24 +28,26 @@ xAssert(SetDecimal() == 1)
 
 set DIGITS TO 12
 xAssert(SetDigit() == 12)
-SET DIGITS TO               
+SET DIGITS TO
 xAssert(SetDigit() == 10)
 
 set scope TO
 set scope TO 1
 set scope TO 1,2
 set scopebottom TO 1
-                  
+
 set INTERNATIONAL TO WINDOWS
 ? SetInternational()
 xAssert(SetInternational() == "WINDOWS")
 
+? "setcollation"
 set COLLATION TO WINDOWS
 ? SetCollation()
 xAssert(SetCollation() == "WINDOWS")
 
 
 LOCAL replace := "abc" AS STRING
+? "replace"
 replace:GetType()
 replace:Replace('a','c')
 
@@ -52,6 +55,7 @@ replace:Replace('a','c')
 RETURN
 
 PROCEDURE Othertests()
+    ? "copy file"
 copy file c:\test\aaa.txt TO "c:\test\abc.txt"
 erase "c:\test\abc.txt"
 

@@ -9216,31 +9216,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 string format = null;
                 string expr = e;
-                int pos = expr.IndexOf(':');
-                if (!allowDot)
+                bool singleColon = false;
+                // Format character?
+                int pos = expr.IndexOf("::");
+                if (pos < 0 && allowDot)
                 {
-                    pos = expr.IndexOf("::");
+                    pos = expr.IndexOf(':');
+                    singleColon = pos > 0;
                 }
                 if (pos > 0)
                 {
 
                     var lhs = expr.Substring(0, pos).ToUpper();
-                    if (lhs == "SELF" || lhs == "SUPER" || lhs == "THIS")
+                    if (singleColon)
                     {
-                        ; // do nothing. Assume SELF:, SUPER: and THIS: are not shown with format specifier
+                        format = expr.Substring(pos);
                     }
                     else
                     {
-                        if (allowDot)
-                        {
-                            format = expr.Substring(pos);
-                        }
-                        else
-                        {
-                            format = expr.Substring(pos + 1);
-                        }
-                        expr = expr.Substring(0, pos);
+                        format = expr.Substring(pos + 1);
                     }
+                    expr = expr.Substring(0, pos);
                 }
                 res = ParseSubExpression(expr, out var extra, token);
                 if (!string.IsNullOrEmpty(format))

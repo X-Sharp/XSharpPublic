@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-08T15:14:43.305+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-15T13:52:28.150+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -180,7 +180,6 @@
     <para styleclass="Heading3">Bug fixes</para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Fixed problem with saving/reading the OldStyleAssignment compiler option project setting (#1495)</li>
-      <li styleclass="Normal">Improved the Clone Window selection dialog in the VOWED (#1508)</li>
       <li styleclass="Normal">Fixed an issue in VS2022 where several features in the editor were no longer working due to a change in VS (#1545)</li>
       <li styleclass="Normal">Fixed editor indentation problem with SCAN...END SCAN (#1549)</li>
       <li styleclass="Normal">Fixed a problem with putting the .resx file for windows forms user controls in an incorrect location in the Solution Explorer (#1560)</li>
@@ -205,6 +204,14 @@
       <li styleclass="Normal">We have made several changes to the X# intellisense database structure. When you open a solution with an existing database, the database will be deleted and all source files will be rescanned (only once).</li>
       <li styleclass="Normal">The X# source code editor now has an extra combobox on the top, listing the projects where a file is included. When a file is included in more than one project, all these projects can be seen. Switching to a new project will change the &apos;evaluation context&apos;. Conditional compiles (#ifdef) will reflect the change in the editor.</li>
       <li styleclass="Normal">We have added support for the commands Edit.NextMethod and Edit.PreviousMethod in the editor. There usually is no shortcut for these commands, but you can assign them with the &quot;Customize&quot; option on the Toolbar in Visual Studio. You could assign Ctrl-DownArrow and Ctl-UpArrow for example.</li>
+      <li styleclass="Normal">Improved the Clone Window selection dialog in the VOWED (#1508)</li>
+      <li styleclass="Normal">When selecting multiple controls in the VOWED, now that lastly selected control becomes the &quot;active&quot; one for the Properties window</li>
+      <li styleclass="Normal">When pasting a control in the VOWED, it now goes to the bottom of the control order list</li>
+    </list>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Added option in the VOWED Control Order dialog to start adjusting the control order of controls after the currently selected one when using &quot;Use Mouse&quot;</li>
+    </list>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Updated the Mono.Cecil library to 0.11.6</li>
       <li styleclass="Normal">Project files are adjusted when properties that were &quot;implicit&quot; before are missing (see above)</li>
     </list>
@@ -222,11 +229,17 @@
       <li styleclass="Normal">Fixed problem with not properly saving the compiler options /initlocals, /modernsyntax, /allowoldstyleassignments and /namedargs.</li>
       <li styleclass="Normal">The Clipboard item in the main XIDE window statusbar now shows the current clipboard contents in a tooltip.</li>
       <li styleclass="Normal">The Clipboard selection context menu now also displays the contents of every virtual clipboard.</li>
-      <li styleclass="Normal">Some small corrections to the Plugin System (you may need to recompile your plugins).</li>
       <li styleclass="Normal">Added Open Bin Folder context menu option for the project node in the Project tool window.</li>
       <li styleclass="Normal">Added option to the windows resource editor to include strings and text files.</li>
       <li styleclass="Normal">Added application templates for FoxPro, XBase++, and Harbour dialects.</li>
       <li styleclass="Normal">Application templates shown in the New Application dialog are now sorted by the GalleryIndex setting of each gallery file template.</li>
+      <li styleclass="Normal">Implemented new menu options View|Load/Save/Reset Layout, for switching between different layouts for the IDE window and tool windows</li>
+      <li styleclass="Normal">Added some new templates (code snippets) in template.cfg</li>
+      <li styleclass="Normal">Added project support for the /vo15 compiler option</li>
+      <li styleclass="Normal">Added standalone files default setting for the allowdot compiler option (Preferences/Compiler)</li>
+      <li styleclass="Normal">Added option to set the console location when running console apps (Preferences/Advanced)</li>
+      <li styleclass="Normal">Included several &quot;hidden&quot; commands in the main menu (File/Navigate and Edit/Advanced)</li>
+      <li styleclass="Normal">Improved deletion of items in the Watch tool window</li>
       <li styleclass="Normal">Improved the About XIDE dialog.</li>
     </list>
     <para styleclass="Heading3">Editor</para>
@@ -244,7 +257,10 @@
       <li styleclass="Normal">The editor now recognizes &amp;&amp; for line comments marker in FoxPro dialect.</li>
       <li styleclass="Normal">Added intellisense support for Nullable types specified with the ? postfix (for example, INT?).</li>
       <li styleclass="Normal">Added intellisense support for the ?: operator.</li>
-      <li styleclass="Normal">Added intellisense support for IF &lt;identifier&gt; IS &lt;type&gt; VAR &lt;local&gt;.</li>
+      <li styleclass="Normal">Added intellisense support for IF &lt;identifier&gt; IS &lt;type&gt; VAR &lt;local&gt;</li>
+      <li styleclass="Normal">Added option (Preferences/Editor/Edit) to automatically adjust numeric literals containing underscores</li>
+      <li styleclass="Normal">Added context menu Surround with options for REPEAT..UNTIL and BEGIN SCOPE...END</li>
+      <li styleclass="Normal">Added (experimental) option to sort entities in the editor (Edit-&gt;Sort Entities)</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">Designers</para>
@@ -258,6 +274,8 @@
       <li styleclass="Normal">Added toolbar button to Lock/Unlock controls in the Windows.Forms and VO Window editors.</li>
       <li styleclass="Normal">Locked state of controls is now preserved in the Windows.Forms designer (needs a Save Form to apply).</li>
       <li styleclass="Normal">Fixed problem with setting the Text property of strip items to empty.</li>
+      <li styleclass="Normal">Added option in the VOWED Control Order dialog to start adjusting the control order of controls after the currently selected one when using &quot;Use Mouse&quot;.</li>
+      <li styleclass="Normal">Added components SaveFileDialog, OpenFileDialog and FolderBrowserDialog in the Windows.Forms toolbox</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">Debugger</para>
@@ -265,6 +283,14 @@
       <li styleclass="Normal">Exception dialog while debugging now properly shows the exception message.</li>
       <li styleclass="Normal">Fixed a problem with incorrectly breaking on excluded handled exceptions.</li>
       <li styleclass="Normal">Fixed a common crash that could happen in the debugger.</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">Plugin System</para>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Some small corrections to the Plugin System (you may need to recompile your plugins)</li>
+      <li styleclass="Normal">Added Plugin:OnAfterCompileApplication(oApp AS Application, eResult AS CompileResult) callback method</li>
+      <li styleclass="Normal">Added Editor:SetSelection() method to select text in the editor</li>
+      <li styleclass="Normal">Entity objects returned from the plugin system no longer include END CLASS and END NAMESPACE statements</li>
     </list>
     <para styleclass="Heading2">Documentation</para>
     <para styleclass="Heading3">Bug fixes</para>

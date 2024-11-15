@@ -21,6 +21,8 @@
     <Includepaths />
     <Nostandarddefs />
     <NS>True</NS>
+    <Vo15>true</Vo15>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

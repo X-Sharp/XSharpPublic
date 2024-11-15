@@ -6,7 +6,7 @@ TestClass{}
 TestClass{}:Test1()
 
 [Obsolete];
-DEFINE CLASS TestClass
+DEFINE CLASS TestClass AS CUSTOM
 	[Obsolete];
 	FUNCTION Test1() AS INT
     	RETURN 123

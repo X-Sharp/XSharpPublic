@@ -11,6 +11,7 @@
     <LB>true</LB>
     <NamedArgs>False</NamedArgs>
     <EnforceSelf>True</EnforceSelf>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>

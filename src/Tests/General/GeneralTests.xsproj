@@ -34,8 +34,6 @@
     <VO14>False</VO14>
     <VO15>True</VO15>
     <VO16>false</VO16>
-    <XPP1>false</XPP1>
-    <FOX1>false</FOX1>
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>False</LB>
@@ -51,6 +49,7 @@
     <Undeclared>False</Undeclared>
     <InitLocals>false</InitLocals>
     <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>

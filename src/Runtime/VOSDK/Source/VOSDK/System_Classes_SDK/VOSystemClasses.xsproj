@@ -18,6 +18,7 @@
     <VO14>false</VO14>
     <NamedArgs>False</NamedArgs>
     <EnforceSelf>True</EnforceSelf>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>

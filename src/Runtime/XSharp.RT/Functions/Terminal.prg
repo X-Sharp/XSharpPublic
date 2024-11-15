@@ -161,7 +161,9 @@ FUNCTION QQOut( uValueList PARAMS  USUAL[] ) AS VOID
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/cls/*" />
 FUNCTION cls() AS VOID STRICT
-    Console.Clear()
+    IF !System.Console.IsOutputRedirected
+        Console.Clear()
+    ENDIF
     RETURN
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/col/*" />
@@ -357,8 +359,12 @@ FUNCTION SetColor(cNewColor as STRING) AS STRING
         var newColor := ConsoleHelpers.String2Color(cNewColor)
         nBack := _AND(newColor, 0xF0) >> 4
         nFore := _AND(newColor, 0x0F)
-        Console.ForegroundColor := (ConsoleColor) nFore
-        Console.BackgroundColor := (ConsoleColor) nBack
+        TRY
+            Console.ForegroundColor := (ConsoleColor) nFore
+            Console.BackgroundColor := (ConsoleColor) nBack
+        CATCH
+            NOP
+        END TRY
     ENDIF
     RETURN cOldCol
 

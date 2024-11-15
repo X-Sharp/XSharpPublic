@@ -18,6 +18,7 @@ using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+    using static Microsoft.CodeAnalysis.FlowAnalysis.ControlFlowGraphBuilder;
 
     internal class XSharpTreeTransformationRT : XSharpTreeTransformationCore
     {
@@ -2247,10 +2248,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                   finallyClause);
             context.Put(outerTry);
             _pool.Free(stmts);
-
         }
 
-        public CatchClauseSyntax generateRecoverBlock(XSharpParserRuleContext context, BlockSyntax block, string Id)
+        public CatchClauseSyntax generateRecoverBlock(XSharpParserRuleContext context, BlockSyntax block, XP.VaridentifierContext Id)
         {
             var stmts = _pool.Allocate<StatementSyntax>();
             var name = XSharpSpecialNames.RecoverVarName + "_" + context.Position.ToString();
@@ -2295,7 +2295,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //
                 // endif
                 // statements
-                var idName = GenerateSimpleName(Id);
+                var idName = GenerateSimpleName(Id.GetText());
+                idName.XNode = Id;
 
                 var condition2 = _syntaxFactory.BinaryExpression(SyntaxKind.IsExpression, objName,
                     SyntaxFactory.MakeToken(SyntaxKind.IsKeyword), GenerateQualifiedName(_errorType));
@@ -2304,10 +2305,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 assign1.XGenerated = true;
 
                 var assignstmt1 = GenerateExpressionStatement(assign1, context, true);
+                assignstmt1.XGenerated = true;
 
                 var assign2 = MakeSimpleAssignment(idName, objName);
                 assign2.XGenerated = true;
                 var assignstmt2 = GenerateExpressionStatement(assign2, context, true);
+                assignstmt2.XGenerated = true;
 
                 ExpressionSyntax assign3;
                 if (_options.HasOption(CompilerOption.CompatibleBeginSequence, context, PragmaOptions))
@@ -2320,6 +2323,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 assign3.XGenerated = true;
                 var assignstmt3 = GenerateExpressionStatement(assign3, context, true);
+                assignstmt3.XGenerated = true;
 
                 // else block that calls _SequenceError  or assigns the Exception to uValue
                 var elseClause = GenerateElseClause(assignstmt3);
@@ -2375,7 +2379,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitRecoverBlock([NotNull] XP.RecoverBlockContext context)
         {
-            var catchClause = generateRecoverBlock(context, context.StmtBlock.Get<BlockSyntax>(), context.Id?.GetText());
+            var catchClause = generateRecoverBlock(context, context.StmtBlock.Get<BlockSyntax>(), context.Id);
             context.SetSequencePoint(context.end);
             context.Put(catchClause);
         }

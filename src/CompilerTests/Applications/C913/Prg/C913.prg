@@ -10,7 +10,7 @@ FUNCTION Start() AS VOID
 PROCEDURE TestCopyStructure()
 	LOCAL cDbf,cDest AS STRING
 	LOCAL source AS DWORD
-	cDbf := "test"
+	cDbf := "test913"
 	cDest := "dest"
 	FErase(cDbf + ".cdx")
 	FErase(cDest + ".cdx")
@@ -118,7 +118,7 @@ PROCEDURE TestAppendFrom()
 PROCEDURE TestScatterGather()
 
 	LOCAL cDbf AS STRING
-	cDbf := "test"
+	cDbf := "test913a"
 	FErase(cDbf+".cdx")
 	DbCreate(cDbf,{{"FLD1","C",30,0},{"FLD2","N",10,0},{"testmemo","M",10,0}},"DBFCDX")
 	DbUseArea(TRUE,"DBFCDX",cDbf)

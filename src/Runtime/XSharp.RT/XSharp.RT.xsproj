@@ -19,6 +19,7 @@
     <InitLocals>false</InitLocals>
     <StartupObject />
     <EnforceSelf>True</EnforceSelf>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DisabledWarnings />

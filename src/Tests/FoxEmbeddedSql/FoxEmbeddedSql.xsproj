@@ -17,6 +17,8 @@
     <Vo15>True</Vo15>
     <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
     <Vo9>True</Vo9>
+    <Fox1>true</Fox1>
+    <InitLocals>true</InitLocals>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>

@@ -41,6 +41,8 @@
     <VO15>true</VO15>
     <VO16>true</VO16>
     <Nostandarddefs>false</Nostandarddefs>
+    <NamedArgs>false</NamedArgs>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

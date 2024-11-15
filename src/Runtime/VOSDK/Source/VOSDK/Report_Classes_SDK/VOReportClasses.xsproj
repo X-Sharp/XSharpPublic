@@ -10,6 +10,7 @@
     <OutputName>VOReportClasses</OutputName>
     <NamedArgs>False</NamedArgs>
     <EnforceSelf>True</EnforceSelf>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>

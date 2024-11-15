@@ -49,6 +49,7 @@
     <NoWin32Manifest>False</NoWin32Manifest>
     <Memvar>True</Memvar>
     <Undeclared>False</Undeclared>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

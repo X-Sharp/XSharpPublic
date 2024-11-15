@@ -12,13 +12,13 @@ CLASS TestClass
 	EXPORT o AS OBJECT
 	CONSTRUCTOR()
 		? o == NULL
-		? TestProperty
+		? TestMethod()
 	RETURN
-	
+
 	METHOD Test() AS VOID
 		n := 1
 		? n
-		? TestProperty
+		? TestMethod()
 	RETURN
-	PROPERTY TestProperty AS INT GET n
+	METHOD TestMethod AS INT=> 1
 END CLASS

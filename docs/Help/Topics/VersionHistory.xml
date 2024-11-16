@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-15T13:52:28.150+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-15T16:18:13.032+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -136,16 +136,21 @@
       <li styleclass="Normal">Fixed misleading line number reported in the compiler error about requiring the /memvar option (#1531)</li>
       <li styleclass="Normal">Fixed some issues with defining indexed properties (#1543)</li>
       <li styleclass="Normal">Fixed several issues with the /vo9 (handle missing RETURN statements and return values) compiler option (#1544)</li>
+      <li styleclass="Normal">Fixed parser problem with END DEFINE, END PROCEDURE and END FUNCTION in the VFP dialect (#1564)</li>
       <li styleclass="Normal">Fixed problem with using attributes in CLASS Statement in the FoxPro dialect (#1566)</li>
-      <li styleclass="Normal">We have fixed an issue in the build system that would sometimes lead to a recompilation, even when nothing was changed.</li>
+      <li styleclass="Normal">Fixed macro compiler problem with compiling strongly typed codeblocks (#1591)</li>
+      <li styleclass="Normal">Fixed problem with Attributes being ignored for properties defined with the DEFINE CLASS syntax in the VFP dialect (#1612)</li>
       <li styleclass="Normal">The compiler could crash when building a solution that has a .editorconfig file</li>
       <li styleclass="Normal">Fixed an issue with generating the property output for attributes on Members inside a FoxPro style class definition</li>
-      <li styleclass="Normal"><text styleclass="Body Text">Fixed an issue with defining VFP classes with /fox1+ (#1611)</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">Fixed typo in error message about defining a class without an AS clause in the VFP dialect (#1611)</text></li>
       <li styleclass="Normal">Added support for generic types without type parameters, like in <text styleclass="Code Example">typeof(List&lt; &gt;)</text> and <text styleclass="Code Example">typeof(Dictionary&lt;,&gt;) (#1623)</text></li>
       <li styleclass="Body Text">Changes to the FoxPro compatible DEFINE CLASS (see above)</li>
       <li styleclass="Body Text">Changes to the way how missing commandline arguments are handled (see above)</li>
     </list>
     <para styleclass="Heading2">Build System</para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">We have fixed an issue in the build system that would sometimes lead to a recompilation, even when nothing was changed.</li>
+    </list>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Fixed an issue where the language in the machine.config did not match the language defines in the built system</li>
       <li styleclass="Normal">Fixed a problem that caused the .xml doc files to be written to the wrong folder</li>
@@ -165,6 +170,8 @@
       <li styleclass="Normal">Fixed macro compiler problem with using Str() in the FoxPro dialect (which was causing problems in the INDEX ON command) (#1535)</li>
       <li styleclass="Normal">Suppressed runtime error when using FieldPut() when workarea is at EOF, for compatibility with VO (#1542)</li>
       <li styleclass="Normal">Fixed a macro compiler problem with some language keywords (like REF, FIELD, DEFAULT) used as identifiers (#1557)</li>
+      <li styleclass="Normal">Fixed problems with the REPLACE, DELETE and UPDATE commands in the VFP dialect (#1574, #1575, #1576, #1577)</li>
+      <li styleclass="Normal">Fixed problem in OrderDescend() with the AXDBFCDX driver (#1608)</li>
       <li styleclass="Normal">Fixed problems with reading variable-length fields in DBF files stored using MultiByte encoding.</li>
       <li styleclass="Normal">Fixed a problem where DBFs encoded with Simplified Chinese were interpreted as Kantonese.</li>
       <li styleclass="Normal">Fixed an issue in the DBF RDD where the currentbuffer was not reloaded after a record or file lock was acquired.</li>
@@ -179,11 +186,12 @@
     <para styleclass="Heading2">Visual Studio integration</para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Fixed problem with saving/reading the OldStyleAssignment compiler option project setting (#1495)</li>
+      <li styleclass="Normal">Fixed problem with saving/reading the OldStyleAssignment compiler option project setting (#1495, #1582)</li>
       <li styleclass="Normal">Fixed an issue in VS2022 where several features in the editor were no longer working due to a change in VS (#1545)</li>
       <li styleclass="Normal">Fixed editor indentation problem with SCAN...END SCAN (#1549)</li>
       <li styleclass="Normal">Fixed a problem with putting the .resx file for windows forms user controls in an incorrect location in the Solution Explorer (#1560)</li>
       <li styleclass="Normal">Fixed problem with editor snippets no longer working in VS 2022 version 17.11 (#1564)</li>
+      <li styleclass="Normal">Fixed problem with the parameter list auto-showing tooltip when using &lt;Enter&gt; to accept a method from the member completion list (#1570)</li>
       <li styleclass="Normal">Fixed a problem with indenting lines with end keywords, such as NEXT and ENDDO, when these keywords were following by &apos;garbage&apos;.</li>
       <li styleclass="Normal">Opening a form in the VS Form designer could fail when one of the include files declared entities, such as USING SomeNameSpace (#1595, #1596)</li>
       <li styleclass="Normal">Fixed an issue in the debugger where identifiers that start with a &apos;$&apos; character, such as &quot;$exception&quot; in the exception dialog were not properly evaluated (#1602)</li>
@@ -302,6 +310,7 @@
       <li styleclass="Normal">Several updates on the Chinese documentation.</li>
       <li styleclass="Normal">Added missing SCAN...ENDSCAN documentation (#1548).</li>
       <li styleclass="Normal">Added missing available constants for DBOrderInfo() function topic (#1565).</li>
+      <li styleclass="Normal">Fixed incorrect text in documentation about the -memvar option (#1621)</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading1">Changes in 2.20.0.3</para>

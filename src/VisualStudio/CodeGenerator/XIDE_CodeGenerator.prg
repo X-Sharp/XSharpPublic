@@ -260,7 +260,8 @@ RETURN
 		LOCAL nTemp AS INT
 		LOCAL nFirst AS INT
 		LOCAL lIsUser AS LOGIC
-		LOCAL lRemoveFields AS LOGIC
+        LOCAL lRemoveFields AS LOGIC
+        LOCAL lSealed := FALSE AS LOGIC
 		LOCAL n AS INT
 
 		LOCAL cTab , ceTab AS STRING
@@ -379,6 +380,10 @@ RETURN
 					IF _AND(oDeclarationLine:oEntity:eModifiers , EntityModifiers._Internal) == EntityModifiers._Internal
 						cDeclarationLine := "INTERNAL " + cDeclarationLine
 					ENDIF
+					IF _AND(oDeclarationLine:oEntity:eModifiers , EntityModifiers._Sealed) == EntityModifiers._Sealed
+                        cDeclarationLine := "SEALED " + cDeclarationLine
+                        lSealed := TRUE
+					ENDIF
 					IF .NOT. String.IsNullOrEmpty( oDeclarationLine:oEntity:cImplements:Trim() )
 						cDeclarationLine := cDeclarationLine + " IMPLEMENTS " + oDeclarationLine:oEntity:cImplements
 					ENDIF
@@ -402,15 +407,26 @@ RETURN
 			n := 1
 		END IF
 
-		DO WHILE n < aEntity:Count
-			oLine := SELF:AddWEDLine(aEntity[n] , REF nLine)
+        DO WHILE n < aEntity:Count
+            LOCAL cLine AS STRING
+            cLine := aEntity[n]
+            IF eType == EntityType._Class .and. lSealed
+                IF cLine:Trim():ToUpperInvariant():StartsWith("PROTECT ")
+                    LOCAL nIndex AS INT
+                    nIndex := cLine:ToUpperInvariant():IndexOf("PROTECT ")
+                    IF nIndex != - 1
+                        cLine := cLine:Substring(0,nIndex) + "PRIVATE " + cLine:Substring(nIndex+8)
+                    ENDIF
+                ENDIF
+            ENDIF
+			SELF:AddWEDLine(cLine , REF nLine)
 			n ++
 		END DO
 		IF (eOptions & EntityOptions.AddUser) == EntityOptions.AddUser
 			IF eType == EntityType._Class
-				oLine := SELF:AddWEDLine(ceTab + cUser + cTagU , REF nLine)
+				SELF:AddWEDLine(ceTab + cUser + cTagU , REF nLine)
 			ELSE
-				oLine := SELF:AddWEDLine(cTab + cUser + cTagU , REF nLine)
+				SELF:AddWEDLine(cTab + cUser + cTagU , REF nLine)
 			END IF
 		END IF
 

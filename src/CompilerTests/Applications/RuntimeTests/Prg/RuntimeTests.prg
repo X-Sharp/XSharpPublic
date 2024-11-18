@@ -55,7 +55,7 @@ FUNCTION Start() AS INT
 	aTests:Add("C738")
 	aTests:Add("R705")
 	#else
-	// they use Environment.CurrentDirectory, which does not work under tthe automated tests. Need to find a better way
+	// they use Environment.CurrentDirectory, which does not work under the automated tests. Need to find a better way
 	aTests:Remove("C418")
 	aTests:Remove("C479")
 	aTests:Remove("C521")

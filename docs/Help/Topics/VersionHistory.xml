@@ -1,18 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-15T17:50:21.274+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-18T09:06:13.983+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
     <keyword>Runtime chapter</keyword>
+    <keyword>String Literals</keyword>
   </keywords>
   <body>
     <header>
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Body Text" style="tabstops:96px left,144px left,240px left,488px left,1998px left ;">Note: When an item has a matching GitHub ticket, the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> , where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X#, we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue.</para>
-    <para styleclass="Heading1">Changes in 2.21.0.4</para>
-    <para styleclass="Heading2">Possibly breaking changes in 2.21.0.4</para>
+    <para styleclass="Heading1">Changes in 2.21.0.5</para>
+    <para styleclass="Heading2">Possibly breaking changes in 2.21.0.5</para>
     <para styleclass="Heading3">All dialects</para>
     <para styleclass="Body Text">Until now, the compiler had several built-in defaults for command line options based on the dialect. </para>
     <para styleclass="Body Text">That meant that when a command line option was NOT present and a certain dialect was chosen, then that option would be automatically enabled. We are talking about the following options:</para>
@@ -106,9 +107,7 @@
     <para styleclass="Normal">This should normally result in the same compilation as before. The only difference that you may see is that project files are automatically updated when you open them with this build.</para>
     <para styleclass="Heading3">FoxPro dialect</para>
     <para styleclass="Normal">Until now the DEFINE CLASS syntax could be used to create classes that inherit from the FoxPro Compatible Custom class, but also from other .Net classes. That has proven to be a bit complicated.</para>
-    <para styleclass="Normal">This is how classes are created inside VFP: </para>
-    <para styleclass="Code Example"><text style="font-style:normal; text-decoration:none; color:#000000;">CLASS ClassName1 AS ParentClass [OF ClassLibrary] [OLEPUBLIC]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; [[PROTECTED | HIDDEN] PropertyName1, PropertyName2 ...]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; [[.]Object.]PropertyName = eExpression ...]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; [PEMName_COMATTRIB = nFlags | DIMENSION PEMName_COMATTRIB[numElements]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160;[PEMName_COMATTRIB[1] = nFlags</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;PEMName_COMATTRIB[2] = cHelpString</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;PEMName_COMATTRIB[3] = cPropertyCapitalization</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;PEMName_COMATTRIB[4] = cPropertyType</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;PEMName_COMATTRIB[5] = nOptionalParams]]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; [ADD OBJECT [PROTECTED] ObjectName AS ClassName2 [NOINIT] [WITH cPropertylist]]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; [IMPLEMENTS cInterfaceName [EXCLUDE] IN TypeLib | TypeLibGUID | ProgID ]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; [[PROTECTED | HIDDEN] FUNCTION | PROCEDURE Name[_ACCESS |_ASSIGN]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160;([cParamName | cArrayName[] [AS Type][@]]) [AS Type]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160;[HELPSTRING cHelpString] | THIS_ACCESS(cMemberName) [NODEFAULT]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160;cStatements</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; [ENDFUNC | ENDPROC]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;">ENDDEFINE</text></para>
-    <para styleclass="Body Text"><text style="font-style:normal; text-decoration:none; color:#000000;">There is also a /fox1 compiler option that makes the AS ParentClass clause from the DEFINE CLASS command optional. Classes without AS ParentClass will then automatically inherit from Custom.</text></para>
+    <para styleclass="Body Text"><text style="font-style:normal; text-decoration:none; color:#000000;">There also was a /fox1 compiler option that makes the AS ParentClass clause from the DEFINE CLASS command optional. Classes without AS ParentClass will then automatically inherit from Custom.</text></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><text style="font-style:normal; text-decoration:none; color:#000000;">We have made the following changes:</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -146,6 +145,7 @@
       <li styleclass="Normal">Added support for generic types without type parameters, like in <text styleclass="Code Example">typeof(List&lt; &gt;)</text> and <text styleclass="Code Example">typeof(Dictionary&lt;,&gt;) (#1623)</text></li>
       <li styleclass="Body Text">Changes to the FoxPro compatible DEFINE CLASS (see above)</li>
       <li styleclass="Body Text">Changes to the way how missing commandline arguments are handled (see above)</li>
+      <li styleclass="Body Text">We have added the double colon (<text style="font-size:12pt; font-weight:bold;">::</text>) separator for interpolated strings to separate the expression from the format specifier. C# uses the single colon (<text style="font-size:12pt; font-weight:bold;">:) </text>but that character is also used as member access operator in X#.See the <link displaytype="text" defaultstyle="true" type="topiclink" href="StringLiterals">String Literals</link> topic for more information.</li>
     </list>
     <para styleclass="Heading2">Build System</para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

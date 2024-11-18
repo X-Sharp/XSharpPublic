@@ -20,6 +20,8 @@
     <Allowdot>True</Allowdot>
     <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
     <Vo15>True</Vo15>
+    <Vo9>true</Vo9>
+    <Fox1>true</Fox1>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>

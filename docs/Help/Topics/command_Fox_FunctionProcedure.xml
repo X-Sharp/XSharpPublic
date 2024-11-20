@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-19T12:50:15.192+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-08T14:43:03.857+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>FUNCTION and PROCEDURE</title>
   <keywords>
     <keyword>_ACCESS</keyword>
@@ -21,14 +21,16 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Defines method and event functions and procedures for the class definition. </para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Body Text"><tab />[Modifiers] FUNCTION | PROCEDURE Name[_ACCESS |_ASSIGN]</para>
-    <para styleclass="Body Text"><tab /> &#160; ([cParamName | cArrayName[] [AS Type][@]]) [AS Type]</para>
-    <para styleclass="Body Text"><tab /> &#160; [HELPSTRING cHelpString] | THIS_ACCESS(cMemberName) [NODEFAULT]</para>
+    <para styleclass="Body Text"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">FUNCTION</text> | <text style="font-weight:bold;">PROCEDURE</text> Name[_ACCESS |_ASSIGN] <text styleclass="Normal">[</text><text styleclass="Normal" style="font-weight:bold;">AS </text><text styleclass="Normal">&lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;]</text></para>
+    <para styleclass="Body Text"><tab /> &#160; ([cParamName | cArrayName[] [<text style="font-weight:bold;">AS</text> &lt;idType&gt;][@]] ) [<text style="font-weight:bold;">AS</text> &lt;idType&gt;]</para>
+    <para styleclass="Body Text"><tab /> &#160; [<text style="font-weight:bold;">HELPSTRING</text> cHelpString] | THIS_ACCESS(cMemberName) [<text style="font-weight:bold;">NODEFAULT</text>]</para>
     <para styleclass="Body Text"><tab /> &#160; &#160; &#160;cStatements</para>
-    <para styleclass="Body Text"><tab />[ENDFUNC | ENDPROC]]</para>
+    <para styleclass="Body Text"><tab />[<text style="font-weight:bold;">ENDFUNC</text> | <text style="font-weight:bold;">ENDPROC</text>]]</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">See the topics for <link displaytype="text" defaultstyle="true" type="topiclink" href="command_FUNCTION">FUNCTION </link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="command_FUNCTION">PROCEDURE</link> for more details.</para>
     <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__asType" inline="false"/></para>
     <para styleclass="List">_ACCESS<tab />The _ACCESS or _ASSIGN suffixes specify to create an Access or Assign method for a property with the same name. </para>
     <para styleclass="List">_ASSIGN<tab /></para>
     <para styleclass="List"></para>

@@ -70,7 +70,7 @@ class SqlDbProviderMySql inherit SqlDbProvider
         switch oInfo:FieldType
         case DbFieldType.Character
         case DbFieldType.VarChar
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} nvarchar ({oInfo.Length}) default ''"
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} nvarchar ({oInfo.Length}) default ''"
             if oConn:UseNulls
                 if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
                     sResult += NullClause
@@ -79,19 +79,19 @@ class SqlDbProviderMySql inherit SqlDbProvider
                 endif
             endif
         case DbFieldType.Integer
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int "
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} int "
             if oInfo:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
                 sResult += " PRIMARY KEY AUTO_INCREMENT "
             else
                 sResult += "default 0"
             endif
         case DbFieldType.Memo
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} TEXT "
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} TEXT "
         case DbFieldType.Blob
         case DbFieldType.General
         case DbFieldType.Picture
         case DbFieldType.VarBinary
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} BLOB "
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} BLOB "
         otherwise
             sResult := super:GetSqlColumnInfo(oInfo,oConn)
         end switch

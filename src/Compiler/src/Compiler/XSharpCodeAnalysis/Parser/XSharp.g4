@@ -1476,7 +1476,7 @@ foxclass            : (Attributes=attributes)?
                     ;
 
 foxclassmember      : Member=foxclassvars          #foxclsvars
-                    | Member=foxfield              #foxclsvarinit
+                    | Member=foxfield              #foxclsfield
                     | Member=foxmethod             #foxclsmethod
                     | Member=foximplementsclause   #foximplements
                     | Member=foxaddobjectclause    #foxaddobject
@@ -1510,7 +1510,7 @@ foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)?
                     ;
 
 
-foxfield            : (Attributes=attributes)? (Modifiers=classvarModifiers)? (Fld=FIELD)? F=foxfieldinitializer end=eos
+foxfield            : (Attributes=attributes)? (Modifiers=classvarModifiers)? (Fld=FIELD)? Initializer=foxfieldinitializer (AS DataType=datatype)? end=eos
                     ;
 
 foxfieldinitializer : Name=name assignoperator Expr=expression
@@ -1522,7 +1522,7 @@ foximplementsclause : IMPLEMENTS Type=datatype (Excl=EXCLUDE)? (IN Library=expre
 
 foxaddobjectclause  : (Attributes=attributes)? ADD OBJECT (Modifiers=classvarModifiers)?
                       Id=identifier AS Type=datatype (NoInit=NOINIT)?
-                      (WITH FieldsInits += foxfieldinitializer (COMMA FieldsInits += foxfieldinitializer)* )?
+                      (W=WITH FieldsInits += foxfieldinitializer (COMMA FieldsInits += foxfieldinitializer)* )?
                       end=eos
                     ;
 

@@ -14,6 +14,9 @@
     <Dialect>VO</Dialect>
     <OutputName>CdxValidator</OutputName>
     <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <Vo15>true</Vo15>
+    <NamedArgs>false</NamedArgs>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

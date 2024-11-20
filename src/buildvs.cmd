@@ -5,6 +5,7 @@ goto Error
 :Ok
 call buildvs2019 %1
 call buildvs2022 %1
+goto End
 :Error
 echo Syntax: BuildVS Debug or BuildVS Release
 goto End

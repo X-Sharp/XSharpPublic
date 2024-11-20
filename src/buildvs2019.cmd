@@ -1,7 +1,7 @@
 @echo off
 set xsoldpath=%path%
 SET VSVERSION=2019
-if "%VSEDITION%" == "" SET VSEDITION=Enterprise
+if "%VSEDITION%" == "" SET VSEDITION=Community
 set VsBatch="C:\Program Files (x86)\Microsoft Visual Studio\%VSVERSION%\%VSEDITION%\Common7\Tools\VsDevCmd.bat"
 if not exist %VsBatch% goto VsError
 if "%VSSDKINSTALL%" == "" call %VsBatch%

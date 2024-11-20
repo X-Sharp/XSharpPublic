@@ -597,7 +597,7 @@ RETURN oApp
 
 METHOD LoadApplication(oApp AS AppClass,oStream AS StreamReader) AS STRING
 	STATIC LOCAL aRuntime := <STRING>{;
-	"XSharp.Core","XSharp.VO","XSharp.RT","XSharp.RDD","XSharp.VFP","XSharp.XPP","XSharp.MacroCompiler","XSharp.Data",;
+	"XSharp.Core","XSharp.VO","XSharp.RT","XSharp.RDD","XSharp.VFP","XSharp.XPP","XSharp.MacroCompiler","XSharp.Data", "XSharp.Harbour",;
 	"VulcanRTFuncs","VulcanRT",;
 	"VulcanVOConsoleClasses","VulcanVOGUIClasses","VulcanVOInternetClasses","VulcanVORDDClasses","VulcanVOSQLClasses","VulcanVOSystemClasses","VulcanVOWin32APILibrary",;
 	"VOConsoleClasses","VOGUIClasses","VOInternetClasses","VORDDClasses","VOSQLClasses","VOSystemClasses","VOWin32APILibrary";
@@ -1543,7 +1543,18 @@ CASE oCompile:eLanguage == ApplicationLanguage.XSharp
 	IF oOptions:lImplicitNamespace
 		oCompile:cSwitches+=" /ins"
 	END IF
-
+	IF oOptions:lAllowDot
+		oCompile:cSwitches+=" /allowdot+"
+	END IF
+	IF oOptions:lAllowNamedArgs
+		oCompile:cSwitches+=" /namedargs+"
+	END IF
+	IF oOptions:lInitLocals
+		oCompile:cSwitches+=" /initlocals+"
+	END IF
+	IF oOptions:lAllowOldStyleAssignments
+		oCompile:cSwitches+=" /allowoldstyleassignments+"
+	END IF
 	IF oOptions:lVO1
 		oCompile:cSwitches+=" /vo1+"
 	END IF
@@ -1586,9 +1597,9 @@ CASE oCompile:eLanguage == ApplicationLanguage.XSharp
 	IF oOptions:lVO14
 		oCompile:cSwitches+=" /vo14+"
 	END IF
-/*	IF oOptions:lVO15
+	IF oOptions:lVO15
 		oCompile:cSwitches+=" /vo15+"
-	END IF*/
+	END IF
 	IF oOptions:lVO16
 		oCompile:cSwitches+=" /vo16+"
 	END IF
@@ -3459,7 +3470,10 @@ CLASS Options // reto update CloneOptions()
 	EXPORT lUndeclared AS LOGIC
 	EXPORT lMemVar AS LOGIC
 	EXPORT lUseNativeVersion AS LOGIC
-
+	EXPORT lAllowDot AS LOGIC
+	EXPORT lAllowNamedArgs as LOGIC
+	EXPORT lAllowOldStyleAssignments AS LOGIC
+	EXPORT lInitLocals as LOGIC
 	EXPORT lOvf,lFOvf AS LOGIC
 
 	EXPORT lVO1 AS LOGIC
@@ -3505,6 +3519,10 @@ CLASS Options // reto update CloneOptions()
 		SELF:lMemVar := FALSE
 		SELF:lImplicitNamespace := FALSE
 		SELF:lUseNativeVersion := FALSE
+		SELF:lAllowDot := FALSE
+		SELF:lAllowNamedArgs := FALSE
+		SELF:lInitLocals := FALSE
+		SELF:lAllowOldStyleAssignments := FALSE
 
 		SELF:lOvf := FALSE
 		SELF:lFOvf := FALSE
@@ -3656,6 +3674,14 @@ CLASS Fun
 //				CASE sLine:cParam=="VO"
 //					oOptions:lVO:=sLine:lValue
 
+				CASE sLine:cParam=="ALLOWDOTOPTION"
+					oOptions:lAllowDot:=sLine:lValue
+				CASE sLine:cParam=="NAMEDARG"
+					oOptions:lAllowNamedArgs:=sLine:lValue
+				CASE sLine:cParam=="INITLOCALS"
+					oOptions:lInitLocals:=sLine:lValue
+				CASE sLine:cParam=="ALLOWOLDSTYLEASSIGNMENTS"
+					oOptions:lAllowOldStyleAssignments:=sLine:lValue
 				CASE sLine:cParam=="VO1"
 					oOptions:lVO1:=sLine:lValue
 				CASE sLine:cParam=="VO2"
@@ -3684,8 +3710,8 @@ CLASS Fun
 					oOptions:lVO13:=sLine:lValue
 				CASE sLine:cParam=="VO14"
 					oOptions:lVO14:=sLine:lValue
-/*				CASE sLine:cParam=="VO15"
-					oOptions:lVO15:=sLine:lValue*/
+				CASE sLine:cParam=="VO15"
+					oOptions:lVO15:=sLine:lValue 
 				CASE sLine:cParam=="VO16"
 					oOptions:lVO16:=sLine:lValue
 

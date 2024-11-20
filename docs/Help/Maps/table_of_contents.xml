@@ -540,7 +540,7 @@
         <topicref type="topic" id="440464358723166" build="ALL" modified="2020-08-03T11:38:47.498Z" icon="0" href="Editor-combo-boxes">
           <caption translate="true">Editor combo boxes</caption>
         </topicref>
-        <topicref type="topic" id="440465504347477" build="ALL" modified="2020-08-03T16:03:35.988Z" icon="0" href="editor-Goto-definition">
+        <topicref type="topic" id="440465504347477" build="ALL" modified="2024-10-10T15:03:40.027Z" icon="0" href="editor-Goto-definition">
           <caption translate="true">Goto definition</caption>
         </topicref>
         <topicref type="topic" id="440462957354821" build="ALL" modified="2020-08-03T16:03:38.619Z" icon="0" href="editor-Peek-definition">
@@ -807,8 +807,8 @@
             <caption translate="true">USUAL</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="423890697550599" build="ALL" modified="2018-11-09T10:14:05.188Z" icon="0" href="User-defined-Types">
-          <caption translate="true">User defined Types</caption>
+        <topicref type="topic" id="423890697550599" build="ALL" modified="2024-10-18T15:15:30.227Z" icon="0" href="User-defined-Types">
+          <caption translate="true">User-defined Types</caption>
         </topicref>
       </topicref>
       <topicref type="topic" id="423890220586711" build="ALL" modified="2016-01-19T20:51:14.267Z" icon="0" href="Literals">
@@ -1046,8 +1046,11 @@
           <topicref type="topic" id="384613959523963" build="ALL" modified="2019-09-24T14:17:26.154Z" icon="0" href="command__DLL">
             <caption translate="true">_DLL Statement</caption>
           </topicref>
-          <topicref type="topic" id="437476792465459" build="ALL" modified="2019-10-09T20:20:57.964Z" icon="0" href="Class-Members2">
-            <caption translate="true">CLASS Members</caption>
+          <topicref type="topic" id="384613776896508" build="ALL" modified="2019-10-09T20:05:41.376Z" icon="0" href="command_CLASS">
+            <caption translate="true">CLASS Statement (All dialects)</caption>
+            <topicref type="topic" id="437479735698648" build="ALL" modified="2019-10-09T20:19:21.160Z" icon="0" href="command_Instance_Variable">
+              <caption translate="true">Instance Variables</caption>
+            </topicref>
             <topicref type="topic" id="384615648750741" build="ALL" modified="2019-09-24T14:17:26.159Z" icon="0" href="command_ACCESS">
               <caption translate="true">ACCESS Statement</caption>
             </topicref>
@@ -1074,15 +1077,6 @@
             </topicref>
             <topicref type="topic" id="436996775134688" build="ALL" modified="2019-09-24T14:17:26.244Z" icon="0" href="command_PROPERTY">
               <caption translate="true">PROPERTY Statement</caption>
-            </topicref>
-          </topicref>
-          <topicref type="topic" id="384613776896508" build="ALL" modified="2019-10-09T20:05:41.376Z" icon="0" href="command_CLASS">
-            <caption translate="true">CLASS Statement (All dialects)</caption>
-            <topicref type="topic" id="437479735698648" build="ALL" modified="2019-10-09T20:19:21.160Z" icon="0" href="command_Instance_Variable">
-              <caption translate="true">Instance Variables</caption>
-            </topicref>
-            <topicref type="topic" id="437477572536812" build="ALL" modified="2019-10-09T20:11:57.391Z" icon="0" href="command_ClassMembers">
-              <caption translate="true">Other Classmembers</caption>
             </topicref>
           </topicref>
           <topicref type="topic" id="437477445546098" build="ALL" modified="2019-10-09T20:06:40.463Z" icon="0" href="command_CLASS_Fox">

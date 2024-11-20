@@ -564,7 +564,8 @@ namespace XSharp.LanguageService
                 // Could be USING or USING STATIC statement.
                 // We allow the lookup of Namespaces or Types
                 //
-                if (!state.HasFlag(CompletionState.Namespaces) && !state.HasFlag(CompletionState.Types))
+                if (!state.HasFlag(CompletionState.Namespaces) && !state.HasFlag(CompletionState.Types)
+                    && !state.HasFlag(CompletionState.General))
                     return result;
                 StringBuilder sb = new StringBuilder();
                 foreach (var token in xtokenList)
@@ -572,11 +573,11 @@ namespace XSharp.LanguageService
                     sb.Append(token.Text);
                 }
                 var name = sb.ToString();
-                if (state.HasFlag(CompletionState.Namespaces))
+                if (state.HasFlag(CompletionState.Namespaces) || state.HasFlag(CompletionState.General))
                 {
                     result.AddRange(SearchNamespaces(location, name));
                 }
-                if (state.HasFlag(CompletionState.Types))
+                if (state.HasFlag(CompletionState.Types) || state.HasFlag(CompletionState.General))
                 {
                     result.AddRange(SearchType(location, name));
                 }
@@ -666,7 +667,11 @@ namespace XSharp.LanguageService
                         startOfExpression = true;
                         continue;
                     case XSharpLexer.LBRKT:
-                        if (symbols.Peek().TypeName != KnownTypes.SystemArray)
+                        if (symbols.Count == 0)
+                        { 
+                            startOfExpression = true;
+                        }
+                        else if (symbols.Peek().TypeName != KnownTypes.SystemArray)
                         {
                             startOfExpression = true;
                         }
@@ -1234,6 +1239,7 @@ namespace XSharp.LanguageService
 
                 // The first token in the list can be a Function or a Procedure
                 // Except if we already have a Type
+                result.AddRange(SearchLocalFunction(location, currentName));
                 result.AddRange(SearchFunction(location, currentName));
 
                 if (result.Count == 0 && currentType != null)
@@ -1924,6 +1930,29 @@ namespace XSharp.LanguageService
             return result;
         }
 
+        private static IList<IXMemberSymbol> SearchLocalFunction(XSharpSearchLocation location, string name)
+        {
+            var result = new List<IXMemberSymbol>();
+            if (location.File == null || location.Project == null)
+            {
+                return result;
+            }
+            WriteOutputMessage($" SearchLocalFunction {location.File.SourcePath}, '{name}' ");
+            var file = location.File;
+            var current = location.Member;
+            foreach (XSourceEntity entity in file.EntityList)
+            {
+                if (entity is IXMemberSymbol member && member.Kind.IsLocal())
+                { 
+                if (entity.Name == name && current.Range.StartLine <= entity.Range.StartLine &&
+                    current.Range.EndLine > entity.Range.EndLine)
+                    {
+                        result.Add(member);
+                    }
+                }
+            }
+            return result;
+        }
         private static IList<IXMemberSymbol> SearchFunction(XSharpSearchLocation location, string name)
         {
 

@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-08T20:18:02.496+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Apache 2</title>
   <body>
     <header>
       <para styleclass="Heading1">Apache 2</para>
     </header>
     <para styleclass="Body Text">Both the source code to the public elements of X# and to Roslyn are published under the Apache 2.0 license.</para>
-    <para styleclass="Body Text">You can find the public source code on Github in the XSharpPublic repository : <link displaytype="text" defaultstyle="true" type="weblink" href="&lt;%LINK_CAPTION%&gt;" target="_blank">https://github.com/X-Sharp/XSharpPublic</link><br/>The full text of this license is:</para>
+    <para styleclass="Body Text">You can find the public source code on Github in the XSharpPublic repository : <link displaytype="text" defaultstyle="true" type="weblink" href="&lt;%LINK_CAPTION%&gt;" target="_blank">https://github.com/X-Sharp/XSharpPublic</link>.<br/>The full text of this license is:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Body Text"><text styleclass="Normal">&#32;</text><text styleclass="T_Entry">Apache License</text><br/><text styleclass="T_Entry"> Version 2.0, January 2004</text></para>

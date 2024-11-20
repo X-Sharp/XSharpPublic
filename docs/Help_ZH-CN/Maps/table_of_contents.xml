@@ -1046,8 +1046,11 @@
           <topicref type="topic" id="384613959523963" build="ALL" modified="2024-06-27T19:53:17.289Z" icon="0" href="command__DLL">
             <caption translate="true">_DLL 语句</caption>
           </topicref>
-          <topicref type="topic" id="437476792465459" build="ALL" modified="2024-06-27T19:54:02.772Z" icon="0" href="Class-Members2">
-            <caption translate="true">CLASS 成员</caption>
+          <topicref type="topic" id="384613776896508" build="ALL" modified="2024-06-27T19:56:37.934Z" icon="0" href="command_CLASS">
+            <caption translate="true">CLASS 语句(所有方言)</caption>
+            <topicref type="topic" id="437479735698648" build="ALL" modified="2024-06-27T20:00:14.477Z" icon="0" href="command_Instance_Variable">
+              <caption translate="true">Instance变量</caption>
+            </topicref>
             <topicref type="topic" id="384615648750741" build="ALL" modified="2024-06-27T19:54:21.859Z" icon="0" href="command_ACCESS">
               <caption translate="true">ACCESS 语句</caption>
             </topicref>
@@ -1074,15 +1077,6 @@
             </topicref>
             <topicref type="topic" id="436996775134688" build="ALL" modified="2024-06-27T19:56:00.565Z" icon="0" href="command_PROPERTY">
               <caption translate="true">PROPERTY 语句</caption>
-            </topicref>
-          </topicref>
-          <topicref type="topic" id="384613776896508" build="ALL" modified="2024-06-27T19:56:37.934Z" icon="0" href="command_CLASS">
-            <caption translate="true">CLASS 语句(所有方言)</caption>
-            <topicref type="topic" id="437479735698648" build="ALL" modified="2024-06-27T20:00:14.477Z" icon="0" href="command_Instance_Variable">
-              <caption translate="true">Instance变量</caption>
-            </topicref>
-            <topicref type="topic" id="437477572536812" build="ALL" modified="2024-06-27T20:00:30.178Z" icon="0" href="command_ClassMembers">
-              <caption translate="true">其他类成员</caption>
             </topicref>
           </topicref>
           <topicref type="topic" id="437477445546098" build="ALL" modified="2024-06-27T20:05:16.559Z" icon="0" href="command_CLASS_Fox">

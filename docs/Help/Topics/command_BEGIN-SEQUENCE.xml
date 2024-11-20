@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-18T16:10:01.610+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>BEGIN SEQUENCE</title>
   <keywords>
     <keyword>BEGIN</keyword>
@@ -28,11 +28,11 @@
     <para styleclass="List"></para>
     <para styleclass="Heading1">Remarks</para>
     <para styleclass="Normal">BEGIN SEQUENCE ... END SEQUENCE is a control structure used for exception and runtime error handling. It delimits a block of statements defining a discrete operation, including invoked procedures and functions.</para>
-    <para styleclass="Normal">When an exception is thrown anywhere anywhere in the block of statements following the BEGIN SEQUENCE statement up to the corresponding RECOVER statement, control branches to the program statement immediately following the RECOVER statement. If a RECOVER statement is not specified, control branches to the statement following the FINALLY statement, terminating the sequence. If a FINALLY statement is not specified, control branches to the statement following the END SEQUENCE statement, terminating the sequence.</para>
+    <para styleclass="Normal">When an exception is thrown anywhere in the block of statements following the BEGIN SEQUENCE statement up to the corresponding RECOVER statement, control branches to the program statement immediately following the RECOVER statement. If a RECOVER statement is not specified, control branches to the statement following the FINALLY statement, terminating the sequence. If a FINALLY statement is not specified, control branches to the statement following the END SEQUENCE statement, terminating the sequence.</para>
     <para styleclass="Normal">If control reaches a RECOVER statement without an exception being thrown, control branches to the statement following the FINALLY statement. If a FINALLY statement is not specified, control branches to the statement following the END SEQUENCE statement, terminating the sequence.</para>
     <para styleclass="Normal">The RECOVER statement optionally receives an exception thrown by a statement in the tryStatements block. This is usually an error object, generated and returned by the current error handling block defined by ErrorBlock(). If an error object is returned, it can be sent messages to query information about the error. With this information, a runtime error can be handled within the context of the operation rather than in the current runtime error handler.</para>
     <para styleclass="Normal">The FINALLY statement block is useful for cleaning up any resources allocated in the BEGIN SEQUENCE block. Control is always passed to the FINALLY block (if present) regardless of how the BEGIN SEQUENCE block exits.</para>
-    <para styleclass="Normal">You cannot RETURN, LOOP, or EXIT between a BEGIN SEQUENCE and RECOVER statement. From within the RECOVER and FINALLY statement blocks however, you can LOOP, EXIT, BREAK, or RETURN since the sequence is essentially completed at that point. Using LOOP from within the RECOVER statement block is useful for re-executing the sequence statement block.</para>
+    <para styleclass="Normal">You cannot RETURN, LOOP, or EXIT between a BEGIN SEQUENCE and RECOVER statement. From within the RECOVER and FINALLY statement blocks however, you can LOOP, EXIT, BREAK, or RETURN, since the sequence is essentially completed at that point. Using LOOP from within the RECOVER statement block is useful for re-executing the sequence statement block.</para>
     <para styleclass="Normal">BEGIN SEQUENCE ... END SEQUENCE control structures can be nested to any depth.</para>
     <para styleclass="Normal">The CanBreak() function returns TRUE if execution is within any BEGIN SEQUENCE block.</para>
     <para styleclass="Heading1">Example</para>

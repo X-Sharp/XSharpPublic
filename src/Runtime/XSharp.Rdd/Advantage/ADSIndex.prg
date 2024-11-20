@@ -345,7 +345,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
                 //  SELF:_CheckError(ACE.AdsExtractKey(hIndex, chars, REF num), EG_CORRUPTION)
                 //  info:Result  := STRING{chars, 0, num}
                 // So we retrieve the key expression and compile it
-                IF OrderInfo(DBOI_EXPRESSION, info) IS LOGIC VAR lResult
+                IF SELF:OrderInfo(DBOI_EXPRESSION, info) IS LOGIC VAR lResult
                     IF lResult .and. info:Result is string var strKey .and. strKey:Length > 0
                          var mi  := SELF:_GetMCompile()
                          if mi != null

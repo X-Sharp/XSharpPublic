@@ -41,6 +41,8 @@
     <EnforceSelf>True</EnforceSelf>
     <StartupObject />
     <TargetFrameworkProfile />
+    <NamedArgs>False</NamedArgs>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -56,16 +58,6 @@
     <DisabledWarnings>9032;9043;618;162;165;649;9025</DisabledWarnings>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Data</Name>
-      <AssemblyName>System.Data.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-  </ItemGroup>
   <ItemGroup>
     <Compile Include="Start.prg">
       <SubType>Code</SubType>
@@ -169,9 +161,6 @@
     <None Include="CATO3SPL.DLL">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="gstutor.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Properties\cavowed.inf" />
     <None Include="Properties\saswed.inf" />
     <None Include="Properties\GSGWED.INF" />
@@ -249,6 +238,9 @@
   <ItemGroup>
     <PackageReference Include="System.Data.SQLite.Core">
       <Version>1.0.118</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime">
+      <Version>4.3.1</Version>
     </PackageReference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->

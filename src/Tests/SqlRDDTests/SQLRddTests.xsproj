@@ -8,7 +8,7 @@
     <RootNamespace>ConsoleApplication2</RootNamespace>
     <AssemblyName>GeneralTests</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <Name>GeneralTests</Name>
+    <Name>SQLRddTests</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>VO</Dialect>
@@ -34,8 +34,6 @@
     <VO14>False</VO14>
     <VO15>True</VO15>
     <VO16>false</VO16>
-    <XPP1>false</XPP1>
-    <FOX1>false</FOX1>
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>False</LB>
@@ -51,6 +49,7 @@
     <Undeclared>False</Undeclared>
     <InitLocals>false</InitLocals>
     <AllowOldStyleAssignments>False</AllowOldStyleAssignments>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -139,15 +138,6 @@
     <PackageReference Include="SQLite">
       <Version>3.13.0</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Advantage.Data.Provider, Version=12.0.2.2, Culture=neutral, PublicKeyToken=e33137c86a38dc06">
-      <Name>Advantage.Data.Provider</Name>
-      <AssemblyName>Advantage.Data.Provider.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\..\Tools\Advantage 12.0\ado.net\Redistribute\Advantage.Data.Provider.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="SqlRdd.Ini">

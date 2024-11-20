@@ -2536,6 +2536,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_FoxDimensionDeclaration = 9234,
         ERR_FoxDimensionNeedsMemvars = 9235,
         ERR_FoxMissingWithStatement = 9236,
+        ERR_FoxDefineClassMustInheritFromCustom = 9237,
         ERR_Internal = 9999
         #endregion X#-only messages
     }

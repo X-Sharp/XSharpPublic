@@ -58,7 +58,7 @@ CLASS XSqlLexer INHERIT XLexer
 
                 SWITCH t
                 CASE XTokenType.ID
-                    DO WHILE ExpectIdChar()
+                    DO WHILE SELF:ExpectIdChar()
                         NOP
                     ENDDO
                     strValue := SELF:_Source:Substring(start, SELF:_index - start)
@@ -314,7 +314,7 @@ CLASS XSqlLexer INHERIT XLexer
                 ENDIF
                 IF ch == XChannel.Default
                     IF t == XTokenType.ID
-                        var kw := LookupKeyword(strValue)
+                        var kw := SELF:LookupKeyword(strValue)
                         IF kw != XTokenType.UNRECOGNIZED
                             t := kw
                         ENDIF

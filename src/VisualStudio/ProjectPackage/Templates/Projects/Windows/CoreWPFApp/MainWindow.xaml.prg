@@ -21,7 +21,7 @@ BEGIN NAMESPACE $safeprojectname$
     PUBLIC PARTIAL CLASS $safeitemname$ INHERIT Window
 
         PUBLIC CONSTRUCTOR() STRICT
-            InitializeComponent()
+            SELF:InitializeComponent()
             RETURN
         END CONSTRUCTOR
 

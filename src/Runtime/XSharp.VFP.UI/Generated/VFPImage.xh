@@ -1,13 +1,21 @@
 ﻿
 #ifndef VFP_IMAGE_XH
 #define VFP_IMAGE_XH
-		PROPERTY DisabledBackColor AS LONG AUTO
-		PROPERTY DisabledForeColor AS LONG AUTO
-		PROPERTY DisabledPicture AS STRING AUTO
+[System.ComponentModel.DefaultValue(0)];
+PROPERTY DisabledBackColor AS LONG AUTO
+
+[System.ComponentModel.DefaultValue(0)];
+PROPERTY DisabledForeColor AS LONG AUTO
+
+[System.ComponentModel.DefaultValue("")];
+PROPERTY DisabledPicture AS STRING AUTO
+
+[System.ComponentModel.DefaultValue("")];
 		PROPERTY DownPicture AS STRING AUTO
 
 
         PRIVATE _picture AS STRING
+        [System.ComponentModel.DefaultValue("")];
         PROPERTY Picture AS STRING
             GET
                 IF SELF:_picture == NULL
@@ -22,9 +30,13 @@
 			END SET
         END PROPERTY
 
+[System.ComponentModel.DefaultValue(0)];
+        PROPERTY PictureMargin AS LONG AUTO
 
-		PROPERTY PictureMargin AS LONG AUTO
-		PROPERTY PicturePosition AS LONG AUTO
+        [System.ComponentModel.DefaultValue(0)];
+            PROPERTY PicturePosition AS LONG AUTO
+
+        [System.ComponentModel.DefaultValue(0)];
 		PROPERTY PictureSpacing AS LONG AUTO
 
 #endif

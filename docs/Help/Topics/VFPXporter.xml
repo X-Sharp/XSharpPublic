@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-28T19:59:58.309+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-10T15:53:26.925+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>VFPXporter</title>
   <keywords>
     <keyword>export</keyword>
@@ -15,37 +15,37 @@
     <header>
       <para styleclass="Heading1">VFPXporter</para>
     </header>
-    <para styleclass="Body Text">The VFPXporter too is created to ease the move of your &#160;Visual FoxPro (VFP) Application in .NET, using a language you already know, with help of XSharp.</para>
-    <para styleclass="Body Text">1. Minimum changes to your code during export</para>
+    <para styleclass="Body Text">The VFPXporter tool is created to ease the move of your &#160;Visual FoxPro (VFP) Application in .NET, using a language you already know, with help of XSharp.</para>
+    <para styleclass="Body Text">1. Minimum changes to your code during export.</para>
     <para styleclass="Body Text">2. Keep the original code as comment if any change is made.</para>
-    <para styleclass="Body Text">3. Move VFP Forms to Windows Forms, using an adaptation layer/library called XSharp.VFP.UI.Dll</para>
-    <para styleclass="Body Text">4. Move VCX libraries as external projects containing Forms/Controls</para>
-    <para styleclass="Body Text">5. Create real Windows Forms solution/project so you can use any existing 3rd party for .NET in your application</para>
+    <para styleclass="Body Text">3. Move VFP Forms to Windows Forms, using an adaptation layer/library called XSharp.VFP.UI.Dll.</para>
+    <para styleclass="Body Text">4. Move VCX libraries as external projects containing Forms/Controls.</para>
+    <para styleclass="Body Text">5. Create real Windows Forms solution/project so you can use any existing third party for .NET in your application.</para>
     <para styleclass="Heading3">Start &amp; Settings</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Aptos; font-size:11pt; color:#000000;">First, open the Settings dialog box:</text></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><image src="VFPExporter1.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Heading3">Folders settings</para>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:11px; margin-right:0px; margin-bottom:5px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><image src="VFPExporterSettings.png" imagestyleclass="Default" scale="84.45%" width="676" height="733" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:11px; margin-right:0px; margin-bottom:5px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><image src="VFPExporterSettings.png" imagestyleclass="Default" scale="84.45%" width="27" height="27" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Default VFP item Folder: The folder where VFPXPorter will start to search for elements to export per default.</li>
-      <li styleclass="Body Text">Default Output Folder: The folder where the VFPXPorter will create the generated export content</li>
-      <li styleclass="Body Text">Default exporter resources Folder: The folder where the VFPXPorter will look for extra templates/Libraries/Tools.etc </li>
+      <li styleclass="Body Text">Default Output Folder: The folder where the VFPXPorter will create the generated export content.</li>
+      <li styleclass="Body Text">Default exporter resources Folder: The folder where the VFPXPorter will look for extra templates, Libraries, Tools, etc. </li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">You can then:</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Reset Settings to their default values.</li>
-      <li styleclass="Body Text">Open Settings Folder where the .json settings file is stored (for backup for eg)</li>
+      <li styleclass="Body Text">Open Settings Folder where the .json settings file is stored (e.g., for backup).</li>
     </list>
     <para styleclass="Heading3">Export settings</para>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:11px; margin-right:0px; margin-bottom:5px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><image src="VFPExporterSettings2.png" imagestyleclass="Default" scale="86.61%" width="818" height="886" styleclass="Image Caption" figurelistinclude="0"></image></para>
-    <para styleclass="Body Text">Check or Uncheck the export settings: Usually the default values are the best choice.</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:11px; margin-right:0px; margin-bottom:5px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><image src="VFPExporterSettings2.png" imagestyleclass="Default" scale="86.61%" width="28" height="28" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text">Check or Uncheck the export settings. Usually, the default values are the best choice.</para>
     <para styleclass="Body Text"></para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Default Fields modifiers: When exporting a CLASS, set the default Field visibility.</li>
     </list>
     <para styleclass="Heading3">Project settings</para>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:11px; margin-right:0px; margin-bottom:5px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><image src="VFPExporterSettings3.png" imagestyleclass="Default" scale="86.71%" width="819" height="887" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:11px; margin-right:0px; margin-bottom:5px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><image src="VFPExporterSettings3.png" imagestyleclass="Default" scale="86.71%" width="28" height="28" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Ignore export Errors: Allows to continue the export process in case of errors. All errors are logged in the destination folder.</li>
       <li styleclass="Body Text">If needed, you can specify your own name for the Folders where elements are exported.</li>
@@ -54,37 +54,38 @@
     </list>
     <para styleclass="Heading2">Exporting</para>
     <para styleclass="Heading3">Project</para>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:11px; margin-right:0px; margin-bottom:5px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><image src="VFPExporterExport.png" imagestyleclass="Default" scale="73.15%" width="691" height="218" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:11px; margin-right:0px; margin-bottom:5px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><image src="VFPExporterExport.png" imagestyleclass="Default" scale="73.15%" width="23" height="23" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Input Project: Search for the .PJX file to export.</li>
       <li styleclass="Body Text">Output Folder: Indicate where the VFPXPorter will write the generated files.</li>
       <li styleclass="Body Text">Analyze: Allow to look at the content that the VFPXPorter has detected in the Project.</li>
       <li styleclass="Body Text">Export: Export the project</li>
-      <li styleclass="Body Text">Open : Open the folder where the files where written</li>
+      <li styleclass="Body Text">Open: Open the folder where the files where written.</li>
     </list>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">The generated folder should contain several folders (One per Library if you have checked the setting, One for detected FreeTables, One for XSharp Tools, …)</para>
+    <para styleclass="Body Text">The generated folder should contain several folders (One per Library if you have checked the setting, One for detected FreeTables, One for XSharp Tools, etc.).</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">You will find a file with the same name as the exported project with .SLN as extension. This is the MS Visual Studio solution file that will group all exported top-level items (Project, Libraries, ...)</para>
+    <para styleclass="Body Text">You will find a file with the same name as the exported project with .SLN as extension. This is the MS Visual Studio solution file that will group all exported top-level items (Project, Libraries, etc.).</para>
     <para styleclass="Body Text">This is the file you should open first.</para>
     <para styleclass="Heading2">How does the VFPXPorter work?</para>
-    <para styleclass="Body Text">The VFPXPorter will read you project and its elements. It will identify their type and generate some X# code.</para>
+    <para styleclass="Body Text">The VFPXPorter will read your project and its elements. It will identify their type and generate some X# code.</para>
     <para styleclass="Body Text">In order to generate that code, it will look into the Data folder.</para>
-    <para styleclass="Body Text">There, we will find several .JSON files that are used as conversion Rules: </para>
+    <para styleclass="Body Text">There, we will find several .JSON files that are used as conversion Rules.</para>
     <para styleclass="Body Text">The documentation for these rules is available in <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/blob/main/src/Tools/VFPXPorter/DocumentationAndRules.md" target="_blank">VFPXPorter repository</link> on GitHub.</para>
-    <para styleclass="Body Text">Then, to generate the files, it will use some templates : One per type of file. You can find these templates on GitHub : <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/tree/main/src/Tools/VFPXPorter/Source/VFPXPorterLib/Data/Templates" target="_blank">Templates</link></para>
+    <para styleclass="Body Text">Then, to generate the files, it will use some templates; one per type of file. You can find these templates on GitHub: <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/tree/main/src/Tools/VFPXPorter/Source/VFPXPorterLib/Data/Templates" target="_blank">Templates</link>.</para>
     <para styleclass="Heading2">Converting from VFP</para>
     <para styleclass="Heading3">Common problems</para>
     <para styleclass="Body Text">Please find here a list of the common troubles we will face when converting your VFP GUI code to X# and WinForms.</para>
     <para styleclass="Heading3">Events &amp; Methods naming</para>
-    <para styleclass="Body Text">When converting your Application from VFP to X# &amp; WinForms, you have to keep in mind that these two &quot;worlds&quot; are using a different point-of view to your Form.<br/></para>
+    <para styleclass="Body Text">When converting your Application from VFP to X# and WinForms, it&apos;s important to remember that these two &quot;worlds&quot; use a different point of view to your Form.<br/></para>
     <para styleclass="Body Text">In VFP, <text style="font-weight:bold;">events</text> are routed to the <text style="font-weight:bold;">Controls</text>.</para>
-    <para styleclass="Body Text">So we could consider that, for eg, each button on the Form has its own class that INHERIT from the base-class CommandButton, and is an instance of that particular class: So you can override Events and Methods that that level, and it gives you a lot of control on what&apos;s happening there.</para>
+    <para styleclass="Body Text">For example, each button on the Form has its own class that INHERITs from the base-class CommandButton, and is an instance of that particular class. This structure allows you to override Events and Methods at that level, providing extensive control over what&apos;s happening there.</para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">In <text style="font-style:italic;">WinForms</text>, <text style="font-weight:bold;">events</text> are routed to the Owner of the Controls: The <text style="font-weight:bold;">Form</text></para>
-    <para styleclass="Body Text">So, the usage is to prefix the EventHandlers and Methods with the name of the Control.</para>
-    <para styleclass="Body Text">If <text style="font-style:italic;">button1</text> is raising a click event, the name of the handler is <text style="font-style:italic;">button1_click</text>.</para>
-    <para styleclass="Body Text">If a <text style="font-style:italic;">Form</text> is raising a event, as the Form is the class, the name will be <text style="font-style:italic;">nameOfTheForm_Event</text>.</para>
-    <para styleclass="Body Text">You can change that via an exporter setting:</para>
+    <para styleclass="Body Text">Therefore, the convention is to prefix the EventHandlers and Methods with the name of the Control.</para>
+    <para styleclass="Body Text">For instance, if <text style="font-style:italic;">button1</text> raises a click event, the name of the handler is <text style="font-style:italic;">button1_click</text>.</para>
+    <para styleclass="Body Text">Similarly, if a <text style="font-style:italic;">Form</text> is raising an event, since the Form itself is the class, the name will be <text style="font-style:italic;">nameOfTheForm_Event</text>.</para>
+    <para styleclass="Body Text">This behavior can be changed through an exporter setting:</para>
     <para styleclass="Body Text"></para>
     <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Prefix Event methods with FORM name</li>
@@ -97,38 +98,38 @@
     <para styleclass="Body Text">This process is emulated by the <text style="font-style:italic;">InitType.prg</text> template that is used during export.</para>
     <para styleclass="Body Text">With Controls, the Init() Method is called when the Handle is created. This code is generated by the <text style="font-style:italic;">InitType.prg</text> template used during export.</para>
     <para styleclass="Heading3">Colors</para>
-    <para styleclass="Body Text"><text style="font-style:italic;">Unfortunately, these cannot be handled automatically as it would break the Windows Forms designer in Visual Studio.</text></para>
+    <para styleclass="Body Text"><text style="font-style:italic;">Unfortunately, these cannot be handled automatically, as that would break the Windows Forms designer in Visual Studio.</text></para>
     <para styleclass="Body Text">Setting a BackColor or ForeColor with an RGB, like :</para>
     <para styleclass="Code Example"> &#160; &#160;this.Label1.ForeColor = RGB(255,0,0)</para>
     <para styleclass="Body Text">Should be converted to :</para>
     <para styleclass="Code Example"> &#160; &#160;this.Label1.ForeColor = System.Drawing.Color.FromARGB( 255,0,0) )</para>
-    <para styleclass="Body Text">BUT.... If you had a function called RGB() that returns a System.Drawing.Color in a PRG file, in the Tools folder of the Exporter, it will be part of your Exported Solution, and it will supersede the XSharp Runtime definition, and that will do the trick !!</para>
+    <para styleclass="Body Text">BUT.... If you had a function called RGB() that returns a System.Drawing.Color in a PRG file, in the Tools folder of the Exporter, it will be part of your Exported Solution, and it will supersede the XSharp Runtime definition, which will do the trick!</para>
     <para styleclass="Heading3">Method Call without parenthesis</para>
-    <para styleclass="Body Text">In X#, a Property holds a Value that is set/get with the equal sign, while a Method contains code that is executed when called : And you can make the difference because Method call ends with parenthesis.</para>
-    <para styleclass="Body Text">While this is allowed in VFP, you will have to correct that in X#</para>
+    <para styleclass="Body Text">In X#, a Property holds a Value that is set/get with the equal sign, while a Method contains code that is executed when called : And you can make the difference, because Method call ends with parenthesis.</para>
+    <para styleclass="Body Text">While this is allowed in VFP, you will have to correct that in X#:</para>
     <para styleclass="Code Example"> &#160; &#160;this.Refresh</para>
     <para styleclass="Body Text">Should be corrected as</para>
     <para styleclass="Code Example"> &#160; &#160;this.Refresh()</para>
     <para styleclass="Body Text">These can be corrected at export time, if you check the &quot;Convert Statement to Call&quot; in settings.</para>
-    <para styleclass="Body Text">The handled statements are in the <text style="font-style:italic;">Statements.json</text> file</para>
+    <para styleclass="Body Text">The handled statements are in the <text style="font-style:italic;">Statements.json</text> file.</para>
     <para styleclass="Heading3">Form Properties casing</para>
-    <para styleclass="Body Text">In order to modify a Form with the <text style="font-style:italic;">Windows Form Designer</text> in Visual Studio, the Properties must respect the WinForm casing. So, you may have to add some properties to the <text style="font-style:italic;">PropRules.json</text> in order to automatically convert them.</para>
-    <para styleclass="Body Text">That&apos;s why <text style="font-style:italic;">ShowInTaskBar</text> appears in the rules as <text style="font-style:italic;">ShowInTaskbar</text>. (Note the lowercased b)</para>
+    <para styleclass="Body Text">To modify a Form with the <text style="font-style:italic;">Windows Form Designer</text> in Visual Studio, the Properties must respect the WinForm casing. Therefore, you may need to add some properties to the <text style="font-style:italic;">PropRules.json</text> in order to automatically convert them.</para>
+    <para styleclass="Body Text">That&apos;s why <text style="font-style:italic;">ShowInTaskBar</text> appears in the rules as <text style="font-style:italic;">ShowInTaskbar</text>. (Note the lowercase &quot;b&quot;).</para>
     <para styleclass="Heading3"><text style="font-style:italic;">The following points have been addressed with the VFP2WinForms.json Rules</text></para>
     <para styleclass="Heading3"><text style="font-style:italic;">Access to Parent</text></para>
-    <para styleclass="Body Text">The Parent Property is already defined in Windows Forms, and is strongly typed to a System.Windows.Forms.Control object. To avoid troubles, and ease the port of applications, the support library contains a property called _Parent that access the Control&apos;s parent, but as a weakly typed Object.</para>
-    <para styleclass="Body Text">This will forced X# to a late-bound call, and could help in resolving access to ported code.</para>
+    <para styleclass="Body Text">The Parent Property is already defined in Windows Forms, and is strongly typed to a System.Windows.Forms.Control object. To avoid problems, and ease the port of applications, the support library contains a property called _Parent that accesses the Control&apos;s parent, but as a weakly typed Object.</para>
+    <para styleclass="Body Text">This will force X# to a late-bound call, and could help in resolving access to ported code.</para>
     <para styleclass="Body Text">The call to _Parent is automatically generated by the XPorter.</para>
     <para styleclass="Heading3"><text style="font-style:italic;">Calling an Object Event in Your Code</text></para>
-    <para styleclass="Body Text">In object with Parent, you may sometimes call directly Event handlers in your VFP code.</para>
-    <para styleclass="Body Text">This might be problematic, and for example a direct call to the Click event of a button will fail.</para>
+    <para styleclass="Body Text">In object with Parent, you may sometimes directly call Event handlers in your VFP code.</para>
+    <para styleclass="Body Text">This might be problematic, and for example, a direct call to the Click event of a button will fail.</para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">This.Parent.cmd_prec.Click</text></para>
-    <para styleclass="Body Text">During export, the This will be turned to ThisObject, the parent.</para>
+    <para styleclass="Body Text">During export, the This will be turned to ThisObject, the parent.</para>
     <para styleclass="Heading3"><text style="font-style:italic;">Array access</text></para>
     <para styleclass="Body Text">In X#, array elements are accessed using brackets [].</para>
-    <para styleclass="Body Text">In VFP, it is possible to use parenthesis ().</para>
-    <para styleclass="Body Text">But this can be a problem when accessing a .Net typed-array.</para>
-    <para styleclass="Body Text">So, in order to ease the port of VFP applications, some array access have been turned to method call in the XSharp.VFP.UI, the Control layer that ease access to .NET Controls with VFP syntax.</para>
+    <para styleclass="Body Text">In VFP, however, it is possible to use parenthesis ().</para>
+    <para styleclass="Body Text">This can create issues when accessing a .Net typed-array.</para>
+    <para styleclass="Body Text">To simplify the porting of VFP-applications, some array access operations have been converted to method calls in the XSharp.VFP.UI, the Control layer that eases access to .NET Controls using VFP syntax.</para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">x = __screen.FormCount</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">__screen.Forms(x-1).Release() </text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// Here, Forms array will be replaced by Forms Method call.</text></para>
     <para styleclass="Heading3"><text style="font-style:italic;">Access Fields in the current Area/Cursor</text></para>
     <para styleclass="Body Text">In VFP, it is possible to reference the current WorkArea/Cursor using its name, and to point to specific fields by specifying their name after a Dot selector, like with :</para>
@@ -138,7 +139,7 @@
     <para styleclass="Heading3"><text style="font-style:italic;">Undeclared Vars</text></para>
     <para styleclass="Body Text">You can use an undeclared var anywhere in your code. This is something that X# will recognize and support.</para>
     <para styleclass="Body Text">In such case, X# will silently create a MemVar: a local, untyped, var.</para>
-    <para styleclass="Body Text">But there are some cases, where this will not work. For eg:</para>
+    <para styleclass="Body Text">But there are some cases, where this will not work. For example:</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">IF</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> SQLExec(nHandle,</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#3366ff;">&quot;SELECT * &#160;FROM employees ORDER BY id ASC &#160;LIMIT 1&quot;</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">,</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#3366ff;">&quot;CurResult&quot;</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">) &lt;=0 THEN &amp;&amp;&amp; validate error first. </text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; Aerror(laErr)</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; Messagebox(</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#3366ff;">&quot;Check the following error: &quot;</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> + Chr(13) + laErr[2],&apos;Alert&apos;,3000)</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> .F.</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">ENDIF</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text></para>
     <para styleclass="Body Text">In the previous code, the var laErr has never been declared at this level, but it is used as a REF var by the AError() function.</para>
     <para styleclass="Body Text">This type of construction is not supported by X#. You will have to create a local variable laErr first.</para>
@@ -148,16 +149,16 @@
     <para styleclass="Body Text">To avoid that, indicate these warnings as Errors.</para>
     <para styleclass="Body Text">To do so, with MS Visual Studio, follow these steps:</para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Open the Properties of the Project</li>
-      <li styleclass="Body Text">Go To Build</li>
-      <li styleclass="Body Text">In section Treat Warning as Errors, enter the Specific Warning : XS0618</li>
+      <li styleclass="Body Text">Open the Properties of the Project;</li>
+      <li styleclass="Body Text">Go To Build;</li>
+      <li styleclass="Body Text">In section Treat Warning as Errors, enter the Specific Warning : XS0618.</li>
     </list>
-    <para styleclass="Heading1">XSharp.VFP.UI.Dll : adaptation layer</para>
-    <para styleclass="Body Text">VFP GUI Control library is very different from .NET Windows Forms : Properties, Methods and Event Handling are very different.</para>
-    <para styleclass="Body Text">In order to offer GUI export, VFPXPorter is using an adaptation layer : XSharp.VFP.GUI</para>
-    <para styleclass="Body Text">That library contains some controls that micmics the way VFP is behaving. It exposes the originals properties of VFP and convert them to their .NET Windows Forms counterparts.</para>
+    <para styleclass="Heading1">XSharp.VFP.UI.Dll: adaptation layer</para>
+    <para styleclass="Body Text">VFP GUI Control library is very different from .NET Windows Forms: Properties, Methods and Event Handling are very different.</para>
+    <para styleclass="Body Text">In order to offer GUI export, VFPXPorter is using an adaptation layer, XSharp.VFP.GUI</para>
+    <para styleclass="Body Text">That library contains some controls that micmics the way VFP is behaving. It exposes the originals properties of VFP and converts them to their .NET Windows Forms counterparts.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">Some controls might be missing, same for some Properties/Methods/Events : Please report your troubles in the XSharp Forums.</para>
+    <para styleclass="Body Text">Some controls might be missing, as well as some Properties/Methods/Event. Please report your troubles in the XSharp Forums.</para>
     <para styleclass="Body Text"></para>
   </body>
 </topic>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T02:41:26.050+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-05T13:55:30.272+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Highlight Identifiers(高亮标识符)</title>
   <keywords>
     <keyword>Highlight words</keyword>
@@ -10,7 +10,7 @@
       <para styleclass="Heading1">Highlight Identifiers(高亮标识符)</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">当您选择一个特定的单词时，它会显示该单词的所有使用地点，并区分大小写。</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">当您选择一个特定的单词时，它会显示该单词的所有使用位置，并区分大小写。</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="Highlight words.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Body Text"></para>

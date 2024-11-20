@@ -13,6 +13,7 @@
     <NamedArgs>True</NamedArgs>
     <OutputName>MemoTest</OutputName>
     <StartupObject />
+    <Vo15>true</Vo15>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>

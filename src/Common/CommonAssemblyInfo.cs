@@ -12,12 +12,12 @@ using System.Reflection;
 
 #if COMMITHASH
 #if DEBUG
-[assembly: Microsoft.CodeAnalysis.CommitHashAttribute("debug")]
+[assembly: Microsoft.CodeAnalysis.CommitHashAttribute("Debug")]
 #else
 #if PUBLIC
-    [assembly: Microsoft.CodeAnalysis.CommitHashAttribute("public")]
+    [assembly: Microsoft.CodeAnalysis.CommitHashAttribute("Public")]
 #else
-    [assembly: Microsoft.CodeAnalysis.CommitHashAttribute("release")]
+    [assembly: Microsoft.CodeAnalysis.CommitHashAttribute("Release")]
 #endif
 #endif
 #endif

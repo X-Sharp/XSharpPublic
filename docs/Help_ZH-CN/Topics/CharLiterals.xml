@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-10T20:57:55.569+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-05T12:16:21.951+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Char 字面量</title>
   <keywords>
     <keyword>CHAR</keyword>
@@ -14,7 +14,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">根据所选方言的不同，Char 字面量有不同的符号。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">在许多方言中，单引号是字符串分隔符，因此 Char 字面量需要 “c ”前缀。</para>
+    <para styleclass="Normal">在许多方言中，单引号是字符串分隔符，因此 Char 字面量需要 &apos;c&apos; 前缀。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">只有在 Core 和 Vulcan 方言中，字符字面量总是保留单引号</para>
     <para styleclass="Normal"></para>

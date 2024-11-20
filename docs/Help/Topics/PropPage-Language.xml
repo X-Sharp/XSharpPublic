@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-27T09:46:38.812+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-09T21:04:33.042+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Language</title>
   <keywords>
     <keyword>Additional Include paths</keyword>
@@ -55,13 +55,13 @@
     <para styleclass="Normal"><table styleclass="Default" rowcount="20" colcount="3">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Item</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Item</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Description</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Command item</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Command item</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -113,7 +113,7 @@
           <para styleclass="Normal">Initialize Local variables</para>
         </td>
         <td>
-          <para styleclass="Normal">Automatically initialize local variables without initialization expression. Please note that for locals of type string the initial value will depend on the &apos;Initialize strings&apos; setting from the Dialect page.</para>
+          <para styleclass="Normal">Automatically initialize local variables without initialization expression. Please note that for locals of type string, the initial value will depend on the &apos;Initialize strings&apos; setting from the Dialect page.</para>
         </td>
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-initlocals">/initlocals</link></para>
@@ -146,7 +146,7 @@
           <para styleclass="Normal">Enforce SELF</para>
         </td>
         <td>
-          <para styleclass="Normal">When checked then all references to methods and fields/properties inside a class should be prefixed with SELF (or SUPER)</para>
+          <para styleclass="Normal">When checked, all references to methods and fields/properties inside a class should be prefixed with SELF (or SUPER).</para>
         </td>
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-enforceself">/enforceself</link></para>
@@ -157,7 +157,7 @@
           <para styleclass="Normal">Allow DOT for instance members</para>
         </td>
         <td>
-          <para styleclass="Normal">When checked then you can also use the DOT (.) operator to access instance fields, properties and methods. Otherwise the COLON (:) operator is needed</para>
+          <para styleclass="Normal">When checked, you can also use the DOT (.) operator to access instance fields, properties and methods. Otherwise, the COLON (:) operator is needed.</para>
         </td>
         <td>
           <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-allowdot">/allowdot</link></para>
@@ -168,7 +168,7 @@
           <para styleclass="Normal">Enforce VIRTUAL/OVERRIDE</para>
         </td>
         <td>
-          <para styleclass="Normal">When checked then you MUST prefix methods with VIRTUAL and/or OVERRIDE when overriding methods in a parent class or when defining a new method that can be overridden</para>
+          <para styleclass="Normal">When checked, you MUST prefix methods with VIRTUAL and/or OVERRIDE when overriding methods in a parent class, or when defining a new method that can be overridden.</para>
         </td>
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-enforceoverride">/enforceoverride</link></para>
@@ -179,7 +179,7 @@
           <para styleclass="Normal">Allow Old Style assignments</para>
         </td>
         <td>
-          <para styleclass="Normal">When checked then allow the use of the single equals operator (=) for assignments. Otherwise the Colon Equals (:=) operator is mandatory</para>
+          <para styleclass="Normal">When checked, allow the use of the single equals operator (=) for assignments. Otherwise, the Colon Equals (:=) operator is mandatory.</para>
         </td>
         <td>
           <para styleclass="Normal">/<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-allowoldstyleassignments">allowoldstyleassignments</link></para>
@@ -190,7 +190,7 @@
           <para styleclass="Normal">Modern Syntax</para>
         </td>
         <td>
-          <para styleclass="Normal">This options disables some old style features such as certain comment characters </para>
+          <para styleclass="Normal">This options disables some old style features, such as certain comment characters. </para>
         </td>
         <td>
           <para styleclass="Normal">/<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-modernsyntax">modernsyntax</link></para>
@@ -202,7 +202,7 @@
         </td>
         <td>
           <para styleclass="Normal">Enable support for memory variables (MEMVAR, PUBLIC, PRIVATE &amp; PARAMETERS). </para>
-          <para styleclass="Normal">Please note that this is NOT supported for the Core and Vulcan dialects</para>
+          <para styleclass="Normal">Please note that this is NOT supported for the Core and Vulcan dialects.</para>
         </td>
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">/memvar</link></para>
@@ -247,7 +247,7 @@
           <para styleclass="Normal">Additional Include paths</para>
         </td>
         <td>
-          <para styleclass="Normal">Additional include paths for the preprocessor (it also looks through the folders set with the include environment variable).</para>
+          <para styleclass="Normal">Additional include paths for the preprocessor. (It also looks through the folders set with the include environment variable.)</para>
         </td>
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-i">/i</link></para>

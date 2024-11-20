@@ -61,6 +61,7 @@
     <UseSharedCompilation>false</UseSharedCompilation>
     <EnforceOverRide>true</EnforceOverRide>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <RuntimeIdentifier>win</RuntimeIdentifier>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'" Label="Configuration">
     <EmitDebugInformation>true</EmitDebugInformation>

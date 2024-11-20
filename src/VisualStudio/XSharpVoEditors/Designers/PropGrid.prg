@@ -171,7 +171,7 @@ CLASS DesignerGrid INHERIT Panel
 			RETURN
 		END IF
 
-		oDesign := (DesignItem)SELF:aSelected[0]
+		oDesign := (DesignItem)SELF:aSelected[SELF:aSelected:Count - 1] // Show the props from the last selected item
 
 		SELF:SetPages(oDesign:aPages)
 

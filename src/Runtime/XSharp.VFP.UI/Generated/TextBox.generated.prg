@@ -10,8 +10,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PROPERTY BorderColor AS LONG AUTO
 		PROPERTY Century AS LONG AUTO
 		PROPERTY DateFormat AS LONG AUTO
-		PROPERTY DateMark AS STRING AUTO
-		PROPERTY DisabledBackColor AS LONG AUTO
+        PROPERTY DateMark AS STRING AUTO
+
+        [System.ComponentModel.DefaultValue(0)];
+            PROPERTY DisabledBackColor AS LONG AUTO
+
+        [System.ComponentModel.DefaultValue(0)];
 		PROPERTY DisabledForeColor AS LONG AUTO
 
 		PROPERTY EnableHyperLinks AS LOGIC AUTO

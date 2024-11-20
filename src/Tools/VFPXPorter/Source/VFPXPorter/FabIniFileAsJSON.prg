@@ -89,7 +89,7 @@ BEGIN NAMESPACE VFPXPorter
 
 
 		PUBLIC METHOD WriteValue(Section AS STRING , Key AS STRING , newValue AS STRING ) AS VOID
-			WritePrivateProfileString(Section, Key, newValue)
+			SELF:WritePrivateProfileString(Section, Key, newValue)
 
 
 		PUBLIC METHOD WriteLogic(Section AS STRING , Key AS STRING , newValue AS LOGIC ) AS VOID
@@ -99,13 +99,13 @@ BEGIN NAMESPACE VFPXPorter
 			IF (newValue)
 				writeValue := "true"
 			ENDIF
-			WritePrivateProfileString(Section, Key, writeValue)
+			SELF:WritePrivateProfileString(Section, Key, writeValue)
 
 		PUBLIC METHOD WriteValue(Section AS STRING , Key AS STRING , newValue AS LOGIC ) AS VOID
 			SELF:WriteLogic( Section, Key, newValue )
 
 		PUBLIC METHOD WriteLong(Section AS STRING , Key AS STRING , newValue AS LONG ) AS VOID
-			WritePrivateProfileString(Section, Key, newValue:ToString())
+			SELF:WritePrivateProfileString(Section, Key, newValue:ToString())
 
 		PUBLIC METHOD WriteValue(Section AS STRING , Key AS STRING , newValue AS LONG ) AS VOID
 			SELF:WriteLong( Section, Key, newValue )
@@ -115,7 +115,7 @@ BEGIN NAMESPACE VFPXPorter
 
 
 		PUBLIC METHOD ReadValue(Section AS STRING , Key AS STRING , defValue AS STRING ) AS STRING
-			RETURN GetPrivateProfileString(Section, Key, defValue)
+			RETURN SELF:GetPrivateProfileString(Section, Key, defValue)
 
 
 		PUBLIC METHOD ReadLogic(Section AS STRING , Key AS STRING , defValue AS LOGIC ) AS LOGIC

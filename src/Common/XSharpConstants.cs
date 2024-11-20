@@ -203,7 +203,6 @@ namespace XSharp
         internal const string VulcanCompatibleResources = nameof(VulcanCompatibleResources);
         internal const string WarningLevel = nameof(WarningLevel);
         internal const string Xpp1 = nameof(Xpp1);
-        internal const string Xpp2 = nameof(Xpp2);
         internal const string RootNamespace = nameof(RootNamespace);
         internal const string StartupObject = nameof(StartupObject);
         internal const string ApplicationIcon = nameof(ApplicationIcon);

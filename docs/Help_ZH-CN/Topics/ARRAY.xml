@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-04T23:12:48.339+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-05T11:18:09.071+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>ARRAY</title>
   <keywords>
     <keyword>ARRAY</keyword>
@@ -10,7 +10,7 @@
       <para styleclass="Heading1">ARRAY</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">ARRAY 类型是由 USUAL 值组成的动态数组。数组的每个元素都可以包含另一个数组，因此数组可以是多维的。</para>
+    <para styleclass="Normal">ARRAY 类型是由 USUAL 值组成的动态数组。数组的每个元素都可以包含另一个数组，这意味着数组可以是多维的。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">实现</para>
     <para styleclass="Normal">ARRAY 类型在 XSharp.__Array 类中实现。</para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-07T17:39:38.116+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-18T15:24:37.925+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>BEGIN (UN)CHECKED</title>
   <keywords>
     <keyword>BEGIN</keyword>
@@ -17,7 +17,7 @@
       <para styleclass="Heading1">BEGIN (UN)CHECKED</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Body Text">The <text style="font-weight:bold;">BEGIN</text> (<text style="font-weight:bold;">UN</text>)<text style="font-weight:bold;">CHECKED</text> and <text style="font-weight:bold;">END</text> (<text style="font-weight:bold;">UN</text>)<text style="font-weight:bold;">CHECKED</text> keywords mark a block of statements that are compiled with overflow checking enabled or disabled</para>
+    <para styleclass="Body Text">The <text style="font-weight:bold;">BEGIN</text> (<text style="font-weight:bold;">UN</text>)<text style="font-weight:bold;">CHECKED</text> and <text style="font-weight:bold;">END</text> (<text style="font-weight:bold;">UN</text>)<text style="font-weight:bold;">CHECKED</text> keywords mark a block of statements that are compiled with overflow checking enabled or disabled.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code with box">BEGIN CHECKED<br/> &#160; statements<br/>END CHECKED<br/><br/>BEGIN UNCHECKED<br/> &#160; statements<br/>END CHECKED</para>
     <para styleclass="Heading1">Arguments</para>

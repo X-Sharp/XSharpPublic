@@ -35,6 +35,7 @@
     <UseSharedCompilation>true</UseSharedCompilation>
     <WarningLevel>4</WarningLevel>
     <XSharpXamlDir>$(XSharpMsBuildDir)\Rules\</XSharpXamlDir>
+    <RuntimeIdentifier>win</RuntimeIdentifier>
   </PropertyGroup>
   <!-- Set defaults for Configuration, Platform, Optimize and PDB generation -->
   <PropertyGroup>
@@ -53,4 +54,18 @@
     <DebugType>pdbonly</DebugType>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
+  <ItemGroup Condition="'$(UsingMicrosoftNETSdkWeb)' == 'true'">
+    <VOBinary Include="**\*.xsdbs" />
+    <VOBinary Include="**\*.xsfs" />
+    <VOBinary Include="**\*.xsfrm" />
+    <VOBinary Include="**\*.xsmnu" />
+    <VOBinary Include="**\*.xsrep" />
+    <VOBinary Include="**\*.xssql" />
+    <VOBinary Include="**\*.vndbs" />
+    <VOBinary Include="**\*.vnfs" />
+    <VOBinary Include="**\*.vnfrm" />
+    <VOBinary Include="**\*.vnmnu" />
+    <NativeResource Include="**\*.rc" />
+  </ItemGroup>
+
 </Project>

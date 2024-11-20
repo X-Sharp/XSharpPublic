@@ -301,15 +301,17 @@ CLASS XFormattingRule
 
 
     PUBLIC STATIC METHOD IsGlobalEntity(token AS XKeyword) AS LOGIC
-        SWITCH token:Kw1
-        CASE XTokenType.Function
-        CASE XTokenType.Procedure
-        CASE XTokenType.Vostruct
-        CASE XTokenType.Union
-        CASE XTokenType.Define
-        CASE XTokenType.Global
-            RETURN TRUE
-        END SWITCH
+        if (token:Kw2 == XTokenType.None)
+            SWITCH token:Kw1
+            CASE XTokenType.Function
+            CASE XTokenType.Procedure
+            CASE XTokenType.Vostruct
+            CASE XTokenType.Union
+            CASE XTokenType.Define
+            CASE XTokenType.Global
+                RETURN TRUE
+            END SWITCH
+        ENDIF
         RETURN FALSE
 
 

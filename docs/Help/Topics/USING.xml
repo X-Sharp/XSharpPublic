@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-18T16:14:36.404+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>USING</title>
   <keywords>
     <keyword>#USING</keyword>
@@ -17,7 +17,7 @@
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">namespaceName <tab />Specifies a fully-qualified namespace name that the compiler will use when attempting to resolve type names. </para>
     <para styleclass="List">alias<tab />An alias for the namespace. </para>
-    <para styleclass="List">typeName<tab />Specifies the name of the type whose static members and nested types can be referenced without specifying a type na</para>
+    <para styleclass="List">typeName<tab />Specifies the name of the type whose static members and nested types can be referenced without specifying a type namespace.</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">All types in .NET have fully-qualified names consisting of a namespace name and a type name. For example, &quot;System.Windows.Forms.MessageBox&quot; refers to a type named &quot;MessageBox&quot; (a class, in this case) in the &quot;System.Windows.Forms&quot; namespace.</para>
     <para styleclass="Body Text"></para>

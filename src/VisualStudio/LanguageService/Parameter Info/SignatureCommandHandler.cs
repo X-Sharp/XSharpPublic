@@ -21,8 +21,8 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.InteropServices;
-using XSharpModel;
 using XSharp.Settings;
+using XSharpModel;
 
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 namespace XSharp.LanguageService
@@ -66,7 +66,7 @@ namespace XSharp.LanguageService
         {
             this._textView = textView;
             this._signatureBroker = broker;
-            _doc = textView.TextBuffer.GetDocument();   
+            _doc = textView.TextBuffer.GetDocument();
             //add this to the filter chain
             textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
         }
@@ -107,11 +107,12 @@ namespace XSharp.LanguageService
                         if (HasActiveSignatureSession)
                         {
                             SnapshotPoint ssp = _textView.Caret.Position.BufferPosition;
-                            if (ssp.Position > 0)
+                            if (!ssp.AtStart())
                             {
-                                // get previous char
-                                var previous = _textView.TextBuffer.CurrentSnapshot.GetText().Substring(ssp.Position - 1, 1);
-                                if (previous == "(" || previous == "{")
+                                // get preceding character
+                                ssp -= 1;
+                                var previous = ssp.GetChar();
+                                if (previous == '(' || previous == '{')
                                 {
                                     _signatureSession.Dismiss();
                                 }
@@ -186,7 +187,7 @@ namespace XSharp.LanguageService
                             }
                             _doc.SignatureStarting = false;
                             break;
-                        case (int)VSConstants.VSStd2KCmdID.RETURN when ! _doc.SignatureStarting:
+                        case (int)VSConstants.VSStd2KCmdID.RETURN when !_doc.SignatureStarting:
                             if (_doc.CompletionSession == null)
                             {
                                 CancelSignatureSession();
@@ -199,7 +200,7 @@ namespace XSharp.LanguageService
                         case (int)VSConstants.VSStd2KCmdID.BACKSPACE:
                             if (HasActiveSignatureSession)
                             {
-                               MoveSignature();
+                                MoveSignature();
                             }
                             break;
                         case (int)VSConstants.VSStd2KCmdID.UP:
@@ -230,9 +231,8 @@ namespace XSharp.LanguageService
             bool done = false;
             bool inString = false;
             char closeChar = '\0';
-            int pos = ssp.Position;
             int curLine = ssp.GetContainingLine().LineNumber;
-            while (!done && pos > 0)
+            while (!done && !ssp.AtStart())
             {
                 int line = ssp.GetContainingLine().LineNumber;
                 if (line != curLine)
@@ -245,8 +245,6 @@ namespace XSharp.LanguageService
                     }
                     curLine = line;
                 }
-                if (ssp.Position == 0)
-                    break;
                 ssp = ssp - 1;
                 var ch = ssp.GetChar();
                 {
@@ -265,7 +263,7 @@ namespace XSharp.LanguageService
                                 closeChar = '\0';
                             }
                             break;
-                        case '(' when ! inString:
+                        case '(' when !inString:
                         case '{' when !inString:
                             level += 1;
                             break;
@@ -452,10 +450,13 @@ namespace XSharp.LanguageService
             bool command = triggerchar == '\0';
             IXMemberSymbol currentElement = null;
             SnapshotPoint ssp = this._textView.Caret.Position.BufferPosition;
-            if (triggerchar == '(' && ssp.Position < ssp.Snapshot.Length && ssp.GetChar() == ')')
-                ssp -= 1;
-            if (triggerchar == '{' && ssp.Position < ssp.Snapshot.Length && ssp.GetChar() == '}')
-                ssp -= 1;
+            if (!ssp.AtStart())
+            {
+                if (triggerchar == '(' && !ssp.AtEnd() && ssp.GetChar() == ')')
+                    ssp -= 1;
+                if (triggerchar == '{' && !ssp.AtEnd() && ssp.GetChar() == '}')
+                    ssp -= 1;
+            }
             var location = _textView.FindLocation(ssp);
             if (location == null || location.Member == null)
                 return false;
@@ -619,7 +620,7 @@ namespace XSharp.LanguageService
                 return false;
             SnapshotPoint ssp = this._textView.Caret.Position.BufferPosition;
             var line = ssp.GetContainingLine().LineNumber;
-            if ( line != props.triggerLine)
+            if (line != props.triggerLine)
             {
                 var doc = this._textView.TextBuffer.GetDocument();
                 LineFlags flags;

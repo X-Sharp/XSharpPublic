@@ -5495,7 +5495,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 -vo15[+|-]                     Allow untyped Locals and return types (default = ON for VO/Vulcan)
 -vo16[+|-]                     Generate Clipper calling convention constructors for classes without constructor
 -vo17[+|-]                     VO Compatible BEGIN SEQUENCE .. END SEQUENCE handling
--fox1[+|-]                     All FoxPro classes are assumed to inherit from the Custom class
+-fox1[+|-]                     Obsolete
 -fox2[+|-]                     FoxPro Array support (fill with simple assignment, alow parenthesized array elements)
 -xpp1[+|-]                     All classes inherit from the Abstract class (default = OFF)
 -memvar[+|-]                   Should memory variables (PUBLIC and PRIVATE variables) be supported.
@@ -9031,7 +9031,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>'ARRAY' does not have a method '{0}'. This code is converted to an 'ASend()' function call.</value>
   </data>
   <data name="ERR_FoxAsClauseMandatory" xml:space="preserve">
-    <value>The 'AS BaseType' clause is mandatory in the FoxPro dialect, unless you compile with /fox1-.</value>
+    <value>The 'AS BaseType' clause is mandatory in the FoxPro dialect.</value>
   </data>
   <data name="WRN_FoxUnsupportedClause" xml:space="preserve">
     <value>The '{0}' clause is not supported and ignored.</value>
@@ -9049,7 +9049,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>To use Dynamic variables (PUBLIC, PRIVATE, MEMVAR, DECLARE, DIMENSION) you will have to pass the /memvar commandline option.</value>
   </data>
   <data name="ERR_FoxCtorDtor" xml:space="preserve">
-    <value>CONSTRUCTOR and DESTRUCTOR are only allowed in the FoxPro dialect, when you compile with /fox1-.</value>
+    <value>CONSTRUCTOR and DESTRUCTOR are not allowed for classes declared with DEFINE CLASS</value>
   </data>
   <data name="WRN_UndeclaredVariableLatebound" xml:space="preserve">
     <value>Type '{0}' does not have a member '{1}'. This gets resolved to a late bound call to its method '{2}'.</value>
@@ -9163,6 +9163,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
    <data name="ERR_AutoPropertyParameters" xml:space="preserve">
   <value>Indexed properties cannot be an AUTO property.</value>
  </data>
-
+<data name="ERR_FoxDefineClassMustInheritFromCustom" xml:space="preserve">
+<value>Classes declared with DEFINE CLASS must inherit from the VFP Custom class.</value>
+</data>
+ 
 </root>
-

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-18T15:16:38.806+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Char Literals</title>
   <keywords>
     <keyword>CHAR</keyword>
@@ -11,8 +11,8 @@
     <header>
       <para styleclass="Heading1">Char Literals</para>
     </header>
-    <para styleclass="Normal">There are different notations for a char literal depending on the dialect selected.<br/>In the many dialects the single quotes are string delimiters and therefore the &apos;c&apos; prefix is needed for character literals. </para>
-    <para styleclass="Normal">Only in the Core and Vulcan dialects single quotes are always reserved for character literals</para>
+    <para styleclass="Normal">There are different notations for a char literal, depending on the dialect selected.<br/>In many dialects, the single quotes are string delimiters, and therefore, the &apos;c&apos; prefix is needed for character literals. </para>
+    <para styleclass="Normal">Only in the Core and Vulcan dialects, single quotes are always reserved for character literals.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="3">
       <tr style="vertical-align:top">

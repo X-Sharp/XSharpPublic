@@ -21,8 +21,7 @@
   <BoolProperty Name="ImplicitUsings"
                 DisplayName="Implicit global usings"
                 Description="Enable implicit global usings to be declared by the project SDK."
-				Category="General"
-				Visible="False"                >
+				Category="General" >
     <BoolProperty.DataSource>
       <DataSource Persistence="ProjectFileWithInterception"
                   SourceOfDefaultValue="AfterContext"

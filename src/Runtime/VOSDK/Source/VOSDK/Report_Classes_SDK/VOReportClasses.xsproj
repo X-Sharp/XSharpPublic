@@ -8,8 +8,9 @@
     <AssemblyName>VOReportClasses</AssemblyName>
     <Name>VOReportClasses</Name>
     <OutputName>VOReportClasses</OutputName>
-    <XSharpProjectversion>2.9.1.0</XSharpProjectversion>
-    
+    <NamedArgs>False</NamedArgs>
+    <EnforceSelf>True</EnforceSelf>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>

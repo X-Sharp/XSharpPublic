@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-17T15:06:57.907+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Runtime Scripting</title>
   <keywords>
     <keyword>ExecScript</keyword>
@@ -12,7 +12,7 @@
     <para styleclass="Normal">XSharp 2.8 adds support for Runtime scripting through the ExecScript() function.</para>
     <para styleclass="Normal">Scripting was added for the FoxPro dialect but also works for other dialects.</para>
     <para styleclass="Normal">Inside scripts you will have the full X# language at your disposal. </para>
-    <para styleclass="Normal">The first time a script runs it will be compiled. If you run the same script a second time then the script compiler can reuse the already compiled version of the first script.</para>
+    <para styleclass="Normal">The first time a script runs, it will be compiled. If you run the same script a second time, the script compiler can reuse the already compiled version of the first script.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">An example (FoxPro dialect, MessageBox() is a FoxPro functon)</para>
     <para styleclass="Normal"></para>

@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-17T15:18:46.288+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Simple (Native) Types</title>
   <body>
     <header>
       <para styleclass="Heading1">Simple (Native) Types</para>
     </header>
-    <para styleclass="Normal">By simple data types we mean data types that are not primarily used to hold other data, e.g. Objects, Structures, Arrays, etc., that we will see later.</para>
+    <para styleclass="Normal">By simple data types, we mean data types that are not primarily used to hold other data, e.g. Objects, Structures, Arrays, that we will see later.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Most data types are identical across all .Net languages. This contributes to the ease with which one can use assemblies written in different .Net languages within one application, one of the main The simple data types come in various categories; some include several types. The following table just groups data types by category:</para>
+    <para styleclass="Normal">Most data types are identical across all .Net languages, which makes it easier to use assemblies written in different .Net languages within one application - one of the main benefits of the framework. The simple data types are divided in various categories, with some categories containing multiple types. The following table groups data types by category:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="20" colcount="4">

@@ -18,6 +18,8 @@
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
     <BinariesDir>$(ArtifactsDir)bin\</BinariesDir>
     <RuntimeIdentifiers>win</RuntimeIdentifiers>
+    <Vo15>true</Vo15>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>

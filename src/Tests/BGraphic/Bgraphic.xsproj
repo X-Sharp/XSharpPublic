@@ -41,6 +41,8 @@
     <EnforceSelf>True</EnforceSelf>
     <StartupObject />
     <TargetFrameworkProfile />
+    <NamedArgs>false</NamedArgs>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -63,27 +65,6 @@
     <Compile Include="GraphMenu.prg">
       <SubType>Code</SubType>
     </Compile>
-    <NativeResource Include="GraphMenu.GMENRIB.rc">
-      <DependentUpon>GraphMenu.prg</DependentUpon>
-    </NativeResource>
-    <NativeResource Include="GraphMenu.GraphMenu_Accelerator.rc">
-      <DependentUpon>GraphMenu.prg</DependentUpon>
-    </NativeResource>
-    <NativeResource Include="GraphMenu.ShellMenu_Accelerator.rc">
-      <DependentUpon>GraphMenu.prg</DependentUpon>
-    </NativeResource>
-    <NativeResource Include="GraphMenu.GraphMenu.rc">
-      <DependentUpon>GraphMenu.prg</DependentUpon>
-    </NativeResource>
-    <NativeResource Include="GraphMenu.ShellMenu.rc">
-      <DependentUpon>GraphMenu.prg</DependentUpon>
-    </NativeResource>
-    <VOBinary Include="GraphMenu.GraphMenu.xsmnu">
-      <DependentUpon>GraphMenu.prg</DependentUpon>
-    </VOBinary>
-    <VOBinary Include="GraphMenu.ShellMenu.xsmnu">
-      <DependentUpon>GraphMenu.prg</DependentUpon>
-    </VOBinary>
     <Compile Include="GraphWindow.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -96,9 +77,6 @@
     <Compile Include="GraphShell.prg">
       <SubType>Code</SubType>
     </Compile>
-    <VOBinary Include="GraphShell.GraphShellWindow.xsfrm">
-      <DependentUpon>GraphShell.prg</DependentUpon>
-    </VOBinary>
     <Compile Include="Read Me.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -137,6 +115,37 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties" />
+  </ItemGroup>
+  <ItemGroup>
+    <VOBinary Include="GraphMenu.GraphMenu.xsmnu">
+      <DependentUpon>GraphMenu.prg</DependentUpon>
+    </VOBinary>
+    <VOBinary Include="GraphMenu.ShellMenu.xsmnu">
+      <DependentUpon>GraphMenu.prg</DependentUpon>
+    </VOBinary>
+    <VOBinary Include="GraphShell.GraphShellWindow.xsfrm">
+      <DependentUpon>GraphShell.prg</DependentUpon>
+    </VOBinary>
+  </ItemGroup>
+  <ItemGroup>
+    <NativeResource Include="GraphMenu.GMENRIB.rc">
+      <DependentUpon>GraphMenu.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="GraphMenu.GraphMenu.rc">
+      <DependentUpon>GraphMenu.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="GraphMenu.GraphMenu_Accelerator.rc">
+      <DependentUpon>GraphMenu.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="GraphMenu.prg.rc">
+      <DependentUpon>GraphMenu.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="GraphMenu.ShellMenu.rc">
+      <DependentUpon>GraphMenu.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="GraphMenu.ShellMenu_Accelerator.rc">
+      <DependentUpon>GraphMenu.prg</DependentUpon>
+    </NativeResource>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

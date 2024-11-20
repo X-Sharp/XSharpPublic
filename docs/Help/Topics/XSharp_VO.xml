@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-08T19:49:01.832+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XSharp.VO</title>
   <keywords>
     <keyword>XSharp.VO</keyword>
@@ -9,13 +9,13 @@
     <header>
       <para styleclass="Heading1">XSharp.VO</para>
     </header>
-    <para styleclass="Normal">This DLL adds some specific types and functions that are unique to the VO and Vulcan dialect. Functions such as <br/>QueryRtRegInt() </para>
+    <para styleclass="Normal">This DLL adds some specific types and functions that are unique to the VO and Vulcan dialect. These are functions such as :<br/>QueryRtRegInt() </para>
     <para styleclass="Normal">QueryRtRegString()</para>
     <para styleclass="Normal">MB..()</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Also many obsolete functions from VO are in this DLL.</para>
+    <para styleclass="Normal">Also, many obsolete functions from VO are in this DLL.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This DLL also contains the classes</para>
+    <para styleclass="Normal">Furthermore, this DLL contains the classes:</para>
     <para styleclass="Normal">ErrorDialog</para>
     <para styleclass="Normal">NameArg</para>
     <para styleclass="Normal">OleAutoObject</para>

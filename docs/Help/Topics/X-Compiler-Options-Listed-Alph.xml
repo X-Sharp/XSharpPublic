@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-01T20:47:45.424+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-08T15:00:28.707+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# Compiler Options Listed Alphabetically</title>
   <keywords>
     <keyword>Compiler Options</keyword>
@@ -226,7 +226,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox1">-fox1</link></para>
         </td>
         <td>
-          <para styleclass="Normal">Assume classes inherit from Custom class. This also controls the code generation for properties.</para>
+          <para styleclass="Normal">Obsolete</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

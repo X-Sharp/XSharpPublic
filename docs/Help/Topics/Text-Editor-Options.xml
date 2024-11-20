@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-27T09:51:17.662+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-10T14:41:03.322+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Text Editor Options</title>
   <keywords>
     <keyword>EditorSettings.json</keyword>
@@ -13,19 +13,20 @@
     </header>
     <para styleclass="Normal">The various settings for the Visual Studio editors can be controlled from the Tools/Options menu.</para>
     <para styleclass="Normal">The values for the settings are stored in the file XSharp\EditorSettings.json in your roaming profile folder. </para>
-    <para styleclass="Normal">If you have more that one installation of Visual Studio then the settings will be shared between these installations.</para>
-    <para styleclass="Normal">When you open that menu point you will see a window like this:</para>
+    <para styleclass="Normal">If you have multiple Visual Studio installations, the settings will be shared across all of them.</para>
+    <para styleclass="Normal">When you open this menu, you will see a window like this:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="Tools-Options.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Image Caption">Tools Options dialog</text></para>
-    <para styleclass="Body Text">On the left hand side here is a treeview from where you can select the category of the option you are interested in.<br/>This dialog contains a LOT of option.</para>
-    <para styleclass="Body Text">To ease the navigation you can use the edit control on top to filter.</para>
-    <para styleclass="Body Text">All X# options can be found by typing X# in this control:</para>
-    <para styleclass="Body Text">You will then see the categories for X#:</para>
+    <para styleclass="Body Text">On the left-hand side, there is a tree-view in which you can select the category of the options you are interested in.<br/>This dialog contains a large number of options.</para>
+    <para styleclass="Body Text">To make navigation easier, you can use the edit control on top to filter.</para>
+    <para styleclass="Body Text">All X# options can be found by typing &quot;X#&quot; in this control. This will display the categories related to X#.</para>
     <para styleclass="Body Text"><image src="Tools-Options-XSharp.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><text styleclass="Image Caption">Tools Options filtered on X#</text></para>
-    <para styleclass="Body Text">The Text Editor category (which was also visible on the first image) contain settings for all languages that are supported by Visual Studio or by an extension installed inside Visual Studio (such as our Visual Studio extension for X#).</para>
-    <para styleclass="Body Text">There is also an entry under the Debugging category for settings used by the X# expression evaluator inside the debugger</para>
-    <para styleclass="Body Text">The last category contains some settings for the VO compatible form editor and for some of the other X# specific editors.</para>
+    <para styleclass="Body Text">The Text Editor category (which was also visible on the first image) contains settings for all languages supported by Visual Studio or by extensions installed inside Visual Studio (such as the X# Visual Studio extension).</para>
+    <para styleclass="Body Text">Under the Debugging category, there is an entry for settings used by the X# expression evaluator in the debugger.</para>
+    <para styleclass="Body Text">The last category includes settings for the VO-compatible form editor and some of the other X#-specific editors.</para>
   </body>
 </topic>

@@ -11,7 +11,7 @@ DESTRUCTOR()
 
 
 
-	IF !InCollect()
+	IF !InCollect() 
 		oBitmap := NULL_OBJECT
 	ENDIF
 

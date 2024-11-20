@@ -16,8 +16,7 @@
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>true</LB>
-    <NamedArgs>
-    </NamedArgs>
+    <NamedArgs>false</NamedArgs>
     <OVF>false</OVF>
     <Unsafe>false</Unsafe>
     <INS>false</INS>
@@ -34,6 +33,8 @@
     <Vo1>True</Vo1>
     <Vo3>True</Vo3>
     <Xpp1>True</Xpp1>
+    <Vo15>true</Vo15>
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

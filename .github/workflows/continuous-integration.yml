@@ -14,7 +14,7 @@ env:
 jobs:
   job1:
     name: BuildXSharpCompiler
-    runs-on: windows-2022 #Specify the OS to execute on
+    runs-on: windows-latest #Specify the OS to execute on
     
     steps:
       - uses: actions/checkout@v4

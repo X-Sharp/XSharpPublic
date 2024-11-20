@@ -150,11 +150,11 @@ INTERNAL FUNCTION __DbFieldListHelper(aFieldList AS ARRAY, cIncludedFields AS ST
             fldName := oFld:Name:ToUpperInvariant()
         ENDIF
         SWITCH (STRING) oFld:FieldTypeStr
-            CASE "M"
-            CASE "G"
-                lInclude := lIncludeMemo .or. aFields:IndexOf(fldName) > -1
-            OTHERWISE
-                lInclude := TRUE
+        CASE "M"
+        CASE "G"
+            lInclude := lIncludeMemo .or. aFields:IndexOf(fldName) > -1
+        OTHERWISE
+            lInclude := TRUE
         END SWITCH
         IF lInclude
             allfields:Add(fldName)
@@ -197,10 +197,10 @@ INTERNAL FUNCTION __DbFieldListHelper(aFieldList AS ARRAY, cIncludedFields AS ST
             NEXT
         NEXT
     ENDIF
-return selected
+    return selected
 
 FUNCTION DbCopyFox(cTargetFile, cType, aFields, cbForCondition, ;
-    cbWhileCondition, nNext,nRecord, lRest, nCodePage, cDbName, cLongTableName, lCdx, lNoOptimize)   AS LOGIC CLIPPER
+        cbWhileCondition, nNext,nRecord, lRest, nCodePage, cDbName, cLongTableName, lCdx, lNoOptimize)   AS LOGIC CLIPPER
     local cOutPutType as STRING
     LOCAL result as LOGIC
     EnforceType(REF lCdx, __UsualType.Logic)
@@ -215,7 +215,7 @@ FUNCTION DbCopyFox(cTargetFile, cType, aFields, cbForCondition, ;
     var cDelim := RuntimeState.DelimRDD
     VAR lOldOpt := __DbPushOptimize(lNoOptimize)
     TRY
-    SWITCH cOutPutType:ToLower()
+        SWITCH cOutPutType:ToLower()
         CASE "csv"
             RuntimeState.DelimRDD := "CSV"
             if String.IsNullOrEmpty(System.IO.Path.GetExtension(cTargetFile))
@@ -247,8 +247,8 @@ FUNCTION DbCopyFox(cTargetFile, cType, aFields, cbForCondition, ;
 
 
 FUNCTION DbCopyDelimFox (cTargetFile, cDelim, cChar, aFields,  ;
-    cbForCondition, cbWhileCondition, nNext,nRecord, lRest, nCodePage, lNoOptimize) ;
-    AS LOGIC CLIPPER
+        cbForCondition, cbWhileCondition, nNext,nRecord, lRest, nCodePage, lNoOptimize) ;
+        AS LOGIC CLIPPER
     var acFields := {}
     foreach var cField in aFields
         AAdd(acFields, cField)
@@ -276,7 +276,8 @@ FUNCTION DbCopyDelimFox (cTargetFile, cDelim, cChar, aFields,  ;
 
 
 FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, lNoOptimize) AS ARRAY CLIPPER
-    VAR aFields := __BuildFieldList(aFieldList, FALSE)
+    // COPY TO ARRAY doed not have a MEMO keyword, so automatically include memo fields
+    VAR aFields := __BuildFieldList(aFieldList, TRUE)
     LOCAL aResult := {} AS ARRAY
     LOCAL lMulti   AS LOGIC
     LOCAL nRows    AS DWORD
@@ -284,9 +285,10 @@ FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nN
     LOCAL aFox   := NULL  AS __FoxArray
     LOCAL aSource := NULL_ARRAY AS ARRAY
     IF IsArray(uSource) .AND. ALen(uSource) > 0
+        // We support both FoxPro arrays and VO arrays
         aSource   := uSource
-        IF aSource IS __FoxArray
-            aFox := (__FoxArray) aSource
+        IF aSource IS __FoxArray VAR aFox1
+            aFox := aFox1
             aFox:__Fill(NIL)
             lMulti := aFox:MultiDimensional
             IF lMulti
@@ -325,7 +327,7 @@ FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nN
             AFill(aSource, NIL)
         ENDIF
         IF lMulti
-            nRows := Min(ALen(aResult), nRows)
+            nRows := Math.Min(ALen(aResult), nRows)
             FOR VAR nRow := 1 TO nRows
                 FOR VAR nCol := 1 TO nColumns
                     aSource[nRow, nCol] := aResult[nRow, nCol]
@@ -338,8 +340,8 @@ FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nN
             NEXT
         ENDIF
         aResult := aSource
-        ELSE
-            NOP
+    ELSE
+        NOP
     ENDIF
     RETURN aResult
 
@@ -424,7 +426,7 @@ FUNCTION DbAppFox(cSourceFile, cType, aFields, cbForCondition, cbWhileCondition,
     FINALLY
         RuntimeState.DelimRDD   := cDelim
     END TRY
-return result
+    return result
 
 
 FUNCTION DbAppDelimFox (cTargetFile, cDelim, cChar, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, nCodePage, lNoOptimize)   AS LOGIC CLIPPER
@@ -445,7 +447,7 @@ FUNCTION DbAppDelimFox (cTargetFile, cDelim, cChar, aFields, cbForCondition, cbW
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsort/*" />
 FUNCTION DbSortFox(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext, nRecord, ;
-    lRest, lNoOpt, lDesc, acOutPutFields)   AS LOGIC CLIPPER
+        lRest, lNoOpt, lDesc, acOutPutFields)   AS LOGIC CLIPPER
     // acFields = the list of fields to sort on
     // acOutPutFields = the list of fields to write
     acOutPutFields := __BuildFieldList(acOutPutFields, TRUE)
@@ -453,53 +455,53 @@ FUNCTION DbSortFox(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNex
         lRest, lNoOpt, lDesc, acOutPutFields)
 
 
-// function that handles extra options for the FoxPro variant of the USE command
-// At this moment the only extra thing this function does is to handle the uArea parameter
-// Several options are relevant for remote views in the Database only:
-// - Online
-// - Admin
-// - NoRequery
-// - NoData
-// - ConnString
+    // function that handles extra options for the FoxPro variant of the USE command
+    // At this moment the only extra thing this function does is to handle the uArea parameter
+    // Several options are relevant for remote views in the Database only:
+    // - Online
+    // - Admin
+    // - NoRequery
+    // - NoData
+    // - ConnString
 
 /// <include file="VFPRUntimeDocs.xml" path="Runtimefunctions/dbuseareafox/*" />
 FUNCTION DbUseAreaFox(uArea, cDataFile, cAlias, lShared, lReadOnly, ;
-    lOnline, lAdmin, lAgain, lNoData, lNoRequery, nDataSession, uConnection) AS LOGIC CLIPPER
+        lOnline, lAdmin, lAgain, lNoData, lNoRequery, nDataSession, uConnection) AS LOGIC CLIPPER
 
-LOCAL cDriver := "DBFVFP" AS STRING
-IF !IsNil(uArea)
-    DbSelectArea(uArea)
-ENDIF
-IF !IsNil(lAgain) .and. lAgain
-    // select other area where cDataFile is open and copy lShared, lReadonly
-    var ext := System.IO.Path.GetExtension(cDataFile)
-    if String.IsNullOrEmpty(ext)
-        cDataFile := System.IO.Path.ChangeExtension(cDataFile, ".dbf")
-    endif
-    if File(cDataFile)
-        cDataFile := FPathName()
-    endif
-    // locate the area with the same filename
-    for var i := 1u to Workareas.MaxWorkareas
-        var area := RuntimeState.DataSession.GetRDD(i)
-        if area is Workarea var wa .and. String.Compare(wa:FileName, cDataFile, TRUE) == 0
-            lShared := wa:Shared
-            lReadOnly := wa:ReadOnly
-            EXIT
-        endif
-    next
-ENDIF
-if IsNil(cAlias)
-    cAlias := System.IO.Path.GetFileNameWithoutExtension( cDataFile ):ToUpper()
-    if VoDbGetSelect(cAlias) > 0
-        cAlias := Chr(64+RuntimeState.DataSession.CurrentWorkareaNO)
-        DO WHILE VoDbGetSelect(cAlias) > 0
-            cAlias := Chr(Asc(cAlias)+1)
-        ENDDO
+    LOCAL cDriver := "DBFVFP" AS STRING
+    IF !IsNil(uArea)
+        DbSelectArea(uArea)
     ENDIF
+    IF !IsNil(lAgain) .and. lAgain
+        // select other area where cDataFile is open and copy lShared, lReadonly
+        var ext := System.IO.Path.GetExtension(cDataFile)
+        if String.IsNullOrEmpty(ext)
+            cDataFile := System.IO.Path.ChangeExtension(cDataFile, ".dbf")
+        endif
+        if File(cDataFile)
+            cDataFile := FPathName()
+        endif
+        // locate the area with the same filename
+        for var i := 1u to Workareas.MaxWorkareas
+            var area := RuntimeState.DataSession.GetRDD(i)
+            if area is Workarea var wa .and. String.Compare(wa:FileName, cDataFile, TRUE) == 0
+                lShared := wa:Shared
+                lReadOnly := wa:ReadOnly
+                EXIT
+            endif
+        next
+    ENDIF
+    if IsNil(cAlias)
+        cAlias := System.IO.Path.GetFileNameWithoutExtension( cDataFile ):ToUpper()
+        if VoDbGetSelect(cAlias) > 0
+            cAlias := Chr(64+RuntimeState.DataSession.CurrentWorkareaNO)
+            DO WHILE VoDbGetSelect(cAlias) > 0
+                cAlias := Chr(Asc(cAlias)+1)
+            ENDDO
+        ENDIF
 
-ENDIF
-RETURN DbUseArea(FALSE, cDriver, cDataFile, cAlias, lShared, lReadOnly)
+    ENDIF
+    RETURN DbUseArea(FALSE, cDriver, cDataFile, cAlias, lShared, lReadOnly)
 
 
 FUNCTION DbSeekFox(uExpr, uOrder, cBagName, lDescend) AS LOGIC CLIPPER
@@ -543,6 +545,7 @@ FUNCTION DbCopyStructFox(cTargetFile, aFields, lCdx) AS LOGIC CLIPPER
 
 FUNCTION DbCopyXStructFox(cTargetFile AS STRING) AS LOGIC
     return DbCopyXStruct(cTargetFile)
+
 
 
 

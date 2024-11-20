@@ -72,6 +72,19 @@ namespace XSharp.Build
                 this.AppendNewLine();
             }
         }
+        internal void AppendPlusOrMinusSwitchAlways(string switchName, PropertyDictionary bag, string parameterName)
+        {
+            if (bag[parameterName] != null)
+            {
+                base.AppendPlusOrMinusSwitch(switchName, bag, parameterName);
+            }
+            else
+            {
+                base.AppendSwitch(switchName + "-");
+            }
+            this.AppendNewLine();
+        }
+
         internal override void AppendPlusOrMinusSwitch(string switchName, PropertyDictionary bag, string parameterName)
         {
             // Overridden so we can add a NewLine when needed

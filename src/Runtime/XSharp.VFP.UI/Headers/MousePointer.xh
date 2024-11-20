@@ -6,7 +6,8 @@
 // See License.txt in the project root for license information.
 
 PRIVATE _VFPMousePointer := 0 AS INT
-	[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the shape of the mouse cursor")];
+[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the shape of the mouse cursor")];
+[System.ComponentModel.DefaultValue(0)];
 PROPERTY MousePointer AS INT
 	GET
 		RETURN SELF:_VFPMousePointer

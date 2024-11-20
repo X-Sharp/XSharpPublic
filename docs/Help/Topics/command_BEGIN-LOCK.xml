@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-18T15:53:45.317+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>BEGIN LOCK</title>
   <keywords>
     <keyword>BEGIN</keyword>
@@ -32,7 +32,7 @@
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">System.Threading.Monitor.Enter( lockObj )</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">TRY</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;In guarded block&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FINALLY</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">System.Threading.Monitor.</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">Exit</text><text style="font-weight:normal; font-style:normal; color:#000000;">( lockObj )</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TRY</text></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">Using <text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text> is recommended over using the Monitor class directly because the code is more concise and insures that the monitor object is released even if an exception occurs within the guarded block.</para>
+    <para styleclass="Body Text">Using <text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text> is recommended over using the Monitor class directly because the code is more concise and insures that the monitor object is released, even if an exception occurs within the guarded block.</para>
     <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text> provides functionality similar to the Windows API functions EnterCriticalSection() and LeaveCriticalSection(). However, instead of using an object created by InitializeCriticalSection(), any instance of a reference type may be used for the locking object.</para>
     <para styleclass="Body Text">Please see the documentation for the System.Threading.Monitor class for more information.</para>
     <para styleclass="Body Text"></para>

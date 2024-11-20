@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharp.VFP.UI_Test
         PUBLIC CONSTRUCTOR()   STRICT//Form1
             USE Customer
             //
-            InitializeComponent()
+            SELF:InitializeComponent()
             //
             RETURN
 

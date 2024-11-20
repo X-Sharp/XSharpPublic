@@ -453,6 +453,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             SynthesizedInteractiveInitializerMethod scriptInitializer = null;
             SynthesizedEntryPointSymbol scriptEntryPoint = null;
             int scriptCtorOrdinal = -1;
+#if XSHARP
+            CheckFoxProClass(containingType);
+#endif
             if (containingType.IsScriptClass)
             {
                 // The field initializers of a script class could be arbitrary statements,

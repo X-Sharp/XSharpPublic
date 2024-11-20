@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-17T15:14:17.153+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# Language Reference</title>
   <body>
     <header>
       <para styleclass="Heading1">X# Language Reference</para>
     </header>
-    <para styleclass="Normal">This section is a reference to the X# language</para>
+    <para styleclass="Normal">This section is a reference to the X# language.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">X# Language elements</para>
     <para styleclass="Normal"></para>
@@ -58,7 +58,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Commands-by-Category">Commands and Statements</link></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">A List of commands and statements</para>
+          <para styleclass="Normal">A list of commands and statements</para>
         </td>
       </tr>
     </table></para>

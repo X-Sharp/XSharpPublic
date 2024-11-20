@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-09T21:11:14.878+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Build</title>
   <keywords>
     <keyword>Code Signing KeyFile</keyword>
@@ -38,20 +38,20 @@
     <header>
       <para styleclass="Heading1">Build</para>
     </header>
-    <para styleclass="Body Text">The Build properties page contains <text style="font-weight:bold; font-style:italic;">Configuration Specific </text>properties. So you can have different properties here for a Debug and a Release configuration. Please read the <link displaytype="text" defaultstyle="true" type="topiclink" href="Build-Configurations">Build Configuration</link> topic for more information about build configurations</para>
+    <para styleclass="Body Text">The Build properties page contains <text style="font-weight:bold; font-style:italic;">Configuration Specific </text>properties, so properties can differ for a Debug and a Release configuration. Please read the <link displaytype="text" defaultstyle="true" type="topiclink" href="Build-Configurations">Build Configuration</link> topic for more information about build configurations.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Normal"><image src="ProjectPropertiesBuild.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"><image src="ProjectPropertiesBuild.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="19" colcount="3">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Item</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Item</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Description</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Command item</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Command item</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -81,10 +81,10 @@
           <para styleclass="Normal">Intermediate Output Path</para>
         </td>
         <td>
-          <para styleclass="Normal">Intermediate Output Path &#160;(macros are allowed).</para>
+          <para styleclass="Normal">Intermediate Output Path (macros are allowed).</para>
         </td>
         <td>
-          <para styleclass="Normal">used by Visual Studio/MsBuild</para>
+          <para styleclass="Normal">Used by Visual Studio/MsBuild.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -95,7 +95,7 @@
           <para styleclass="Normal">Output Path (macros are allowed).</para>
         </td>
         <td>
-          <para styleclass="Normal">used by Visual Studio/MsBuild</para>
+          <para styleclass="Normal">Used by Visual Studio/MsBuild.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -125,7 +125,7 @@
           <para styleclass="Normal">Sign the output assembly</para>
         </td>
         <td>
-          <para styleclass="Normal">Sign the assembly</para>
+          <para styleclass="Normal">Sign the assembly.</para>
         </td>
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-keyfile">-keyfile</link></para>
@@ -139,7 +139,7 @@
           <para styleclass="Normal">User-Defined Command Line options.</para>
         </td>
         <td>
-          <para styleclass="Normal">you can specify additional commandline options here</para>
+          <para styleclass="Normal">You can specify additional command line options here.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -155,13 +155,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Register for COM interop</para>
+          <para styleclass="Normal">Register for COM Interop</para>
         </td>
         <td>
-          <para styleclass="Normal">Register the output assembly for COM Interop (requires administrator rights</para>
+          <para styleclass="Normal">Register the output assembly for COM Interop (requires administrator rights).</para>
         </td>
         <td>
-          <para styleclass="Normal">This will run a tool after the build process to register the assembly for COM interop. </para>
+          <para styleclass="Normal">This will run a tool after the build process to register the assembly for COM Interop. </para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -169,7 +169,7 @@
           <para styleclass="Normal">Use Shared Compiler</para>
         </td>
         <td>
-          <para styleclass="Normal">Should the shared compiler be used to compile the project? (Faster, but may hide some compiler errors)</para>
+          <para styleclass="Normal">Should the shared compiler be used to compile the project? (Faster, but may hide some compiler errors.)</para>
         </td>
         <td>
           <para styleclass="Normal">-shared</para>

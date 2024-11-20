@@ -422,7 +422,7 @@ partial class SQLRDD inherit DBFVFP
             _command:AddParameter(name, row[c])
             ++iCounter
         next
-        var strWhere := _GetWhereClause(row, originalData)
+        var strWhere := SELF:_GetWhereClause(row, originalData)
         _command:BindParameters()
         var sb := StringBuilder{}
         sb:Append(Provider:UpdateStatement)
@@ -460,7 +460,7 @@ partial class SQLRDD inherit DBFVFP
 
     private method _ExecuteDeleteStatement(row as DataRow, originalData as LOGIC) as logic
         _command:ClearParameters()
-        var strWhere := _GetWhereClause(row, originalData)
+        var strWhere := SELF:_GetWhereClause(row, originalData)
         _command:BindParameters()
         var sb := StringBuilder{}
         sb:Append(Provider:DeleteStatement)

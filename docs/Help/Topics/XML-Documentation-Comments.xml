@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-17T15:05:57.134+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XML Documentation Comments</title>
   <body>
     <header>
@@ -13,7 +13,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">To refer to XML elements (for example, your function processes specific XML elements that you want to describe in an XML documentation comment), you can use the standard quoting mechanism (&lt; and &gt;). To refer to generic identifiers in code reference (cref) elements, you can use either the escape characters (for example, cref=&quot;List&lt;T&gt;&quot;) or braces (cref=&quot;List{T}&quot;). As a special case, the compiler parses the braces as angle brackets to make the documentation comment less cumbersome to author when referring to generic identifiers.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Since we use the same documentation engine that C# does <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/xmldoc/recommended-tags-for-documentation-comments" target="_blank">we refer to the C# documentation </link>for the documentation tags that are allowed:</para>
+    <para styleclass="Normal">Since we use the same documentation engine that C# does, <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/xmldoc/recommended-tags-for-documentation-comments" target="_blank">we refer to the C# documentation </link>for the list of allowed documentation tags.</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

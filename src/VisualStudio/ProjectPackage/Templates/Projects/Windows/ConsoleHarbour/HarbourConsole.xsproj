@@ -10,6 +10,8 @@
     <Name>$safeprojectname$</Name>
     <Dialect>Harbour</Dialect>
     <vo15>True</vo15>
+    <Ins>True</Ins>
+    <NamedArgs>False</NamedArgs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>

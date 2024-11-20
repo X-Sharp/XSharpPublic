@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-07T14:48:02.374+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-10-08T20:37:12.330+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Bring Your Own Runtime (BYOR)</title>
   <body>
     <header>
@@ -9,7 +9,7 @@
     <para styleclass="Normal" style="border-color:#000000; border-style:single; border-width:1px; padding:5px;"><table styleclass="Default" rowcount="1" colcount="1" style="background-color:#ffff99; head-row-background-color:#ffff99; alt-row-background-color:#ffff99;">
       <thead style="vertical-align:top">
         <td>
-          <para styleclass="Normal" style="border-color:#000000; border-style:single; border-width:1px; padding:5px;"><text style="font-weight:bold;">The X# Runtime is now available. There is no need anymore to compile against the Vulcan Runtime !</text><br/><text style="font-weight:bold;">For now we still support the Vulcan runtime, but that support may be dropped in a future build of X#.</text></para>
+          <para styleclass="Normal" style="border-color:#000000; border-style:single; border-width:1px; padding:5px;"><text style="font-weight:bold;">The X# Runtime is now available. There is no need anymore to compile against the Vulcan Runtime!</text><br/><text style="font-weight:bold;">For now we still support the Vulcan runtime, but that support may be dropped in a future build of X#.</text></para>
         </td>
       </thead>
     </table></para>

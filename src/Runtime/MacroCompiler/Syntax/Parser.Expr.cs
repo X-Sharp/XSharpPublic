@@ -583,6 +583,10 @@ namespace XSharp.MacroCompiler
                     do
                     {
                         p.Add(a);
+                        if (Expect(TokenType.AS))
+                        {
+                            ParseType();
+                        }
                         if (!Expect(TokenType.COMMA))
                             break;
                         a = Require(ParseId(), ErrorCode.Expected, "identifier");

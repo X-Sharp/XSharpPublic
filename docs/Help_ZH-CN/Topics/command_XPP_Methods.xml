@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T11:00:30.147+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-06T10:24:42.525+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>METHOD 实现</title>
   <keywords>
     <keyword>ACCESS</keyword>
@@ -22,9 +22,8 @@
     <para styleclass="Normal"><tab />[Attributes] <text styleclass="Body Text"> [ACCESS | ASSIGN] [Modifiers] METHOD [&lt;ClassName&gt;:] &lt;MethodName&gt;[ </text>[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS|REF|OUT|IN &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] <text styleclass="Body Text">) </text>[AS &lt;<text styleclass="Italic">idType</text>&gt;]<br/><tab />[=&gt; &lt;expression&gt;] <br/><tab /><text style="font-weight:bold;">CRLF</text></para>
     <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]<br/><tab />[END METHOD]?</para>
     <para styleclass="Heading1">参数</para>
-    <para styleclass="List">Modifiers<tab />一个或多个修饰符的可选列表。 CLASS, STATIC, ABSTRACT, UNSAFE, ASYNC, EXTERN<br/>STATIC 是 CLASS 的同义词。</para>
-    <para styleclass="List"></para>
-    <para styleclass="Normal"><snippet src="__IncludeAttributes" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
+    <para styleclass="Normal"></para>
     <para styleclass="List">ACCESS | ASSIGN<tab />声明此方法实现了一个属性的 Getter 或 Setter。这也必须在类声明中定义为 ACCESS 或 ASSIGN。</para>
     <para styleclass="List"></para>
     <para styleclass="List"></para>

@@ -57,6 +57,7 @@ VO11=1
 VO12=%option_intdiv%
 VO13=1
 VO14=1
+VO15=1
 VO16=1
 LateBound=1
 Unsafe=1

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-19T12:45:46.320+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>User defined Types</title>
+<topic template="Default" modified="2024-10-18T15:15:31.233+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>User-defined Types</title>
   <keywords>
     <keyword>CLASS</keyword>
     <keyword>CLASS (FoxPro syntax)</keyword>
@@ -15,10 +15,10 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">User defined Types</para>
+      <para styleclass="Heading1">User-defined Types</para>
     </header>
     <para styleclass="Normal">The X# language allows you to define your own types (in fact the XBase Specific types have all been defined that way).</para>
-    <para styleclass="Normal">The language has the following keywords that define User defined Types.</para>
+    <para styleclass="Normal">The language has the following keywords that define User-defined Types.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="10" colcount="2">
       <thead style="vertical-align:top">

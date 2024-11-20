@@ -876,7 +876,7 @@ namespace XSharp.Build
                 commandLine.AppendSwitchIfNotNull("/features:", feature.Trim());
             }
         }
-		
+
         /// <summary>
         /// Adds a "/analyzer:" switch to the command line for each provided analyzer.
         /// </summary>

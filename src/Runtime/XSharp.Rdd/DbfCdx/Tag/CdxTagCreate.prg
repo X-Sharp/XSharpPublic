@@ -452,8 +452,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_oRdd:GoTo(1)
             IF SELF:_oRdd:_isValid
                 IF ! _ordCondInfo:Custom
+                    local nRecno := 0 as long
                     REPEAT
-                        SELF:_oRdd:GoTo(SELF:_RecNo + 1)
+                        nRecno += 1
+                        SELF:_oRdd:GoTo(nRecno)
                         IF SELF:_oRdd:EoF .OR. ! SELF:_sortGetRecord()
                             EXIT
                         ENDIF

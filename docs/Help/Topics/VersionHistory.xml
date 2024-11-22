@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-18T09:06:13.983+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-22T12:02:42.262+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -162,22 +162,27 @@
       <li styleclass="Normal">Fixed some DBSetFilter() incompatibilities with VO (#1489)</li>
       <li styleclass="Normal">Fixed problem with DBSetFilter() with no matching records causing subsequent calls to DBSetFilter() or DBClearFilter() to fail (#1493)</li>
       <li styleclass="Normal">Fixed problem (missing implementation) with the WITH CDX clause in the FoxPro COPY command (#1497)</li>
-      <li styleclass="Normal">Fixed a problem in DbZap() with DBFNTX (#1509)</li>
       <li styleclass="Normal">Fixed problem with SCATTER/GATHER MEMO MEMVAR (#1510, #1534)</li>
-      <li styleclass="Normal">Fixed problem with DBSetOrder(0) always returning FALSE in DBFNTX (#1520)</li>
-      <li styleclass="Normal">Fixed a problem with the Collection Class not increasing the Count property when adding an item (FoxPro dialect) (#1528)</li>
+      <li styleclass="Normal">Fixed a problem with the Collection class not increasing the Count property when adding an item (FoxPro dialect) (#1528)</li>
       <li styleclass="Normal">Fixed problem with the APPEND FROM command with a FOR clause (#1529)</li>
       <li styleclass="Normal">Fixed macro compiler problem with using Str() in the FoxPro dialect (which was causing problems in the INDEX ON command) (#1535)</li>
-      <li styleclass="Normal">Suppressed runtime error when using FieldPut() when workarea is at EOF, for compatibility with VO (#1542)</li>
       <li styleclass="Normal">Fixed a macro compiler problem with some language keywords (like REF, FIELD, DEFAULT) used as identifiers (#1557)</li>
       <li styleclass="Normal">Fixed problems with the REPLACE, DELETE and UPDATE commands in the VFP dialect (#1574, #1575, #1576, #1577)</li>
-      <li styleclass="Normal">Fixed problem in OrderDescend() with the AXDBFCDX driver (#1608)</li>
-      <li styleclass="Normal">Fixed problems with reading variable-length fields in DBF files stored using MultiByte encoding.</li>
-      <li styleclass="Normal">Fixed a problem where DBFs encoded with Simplified Chinese were interpreted as Kantonese.</li>
-      <li styleclass="Normal">Fixed an issue in the DBF RDD where the currentbuffer was not reloaded after a record or file lock was acquired.</li>
       <li styleclass="Normal">Fixed an issue in the USUAL type where CompareTo for Float values was not correctly implemented (#1616)</li>
       <li styleclass="Normal">Fixed an issue in the USUAL type where the ! operator was not producing the correct results compared with the (LOGIC) cast. </li>
       <li styleclass="Normal">We have fixed several issues in the XSharp.VFP.UI library </li>
+    </list>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">RDD System</text></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Fixed a problem in DbZap() with DBFNTX (#1509)</li>
+      <li styleclass="Normal">Fixed problem with DBSetOrder(0) always returning FALSE in DBFNTX (#1520)</li>
+      <li styleclass="Normal">Suppressed runtime error when using FieldPut() when workarea is at EOF, for compatibility with VO (#1542)</li>
+      <li styleclass="Normal">Fixed problem in OrderDescend() with the AXDBFCDX driver (#1608)</li>
+      <li styleclass="Normal">Fixed problems with reading variable-length fields in DBF files stored using MultiByte encoding.</li>
+      <li styleclass="Normal">Fixed a problem where DBFs encoded with Simplified Chinese were interpreted as Cantonese.</li>
+      <li styleclass="Normal">Fixed an issue in the DBF RDD where the currentbuffer was not reloaded after a record or file lock was acquired.</li>
+      <li styleclass="Normal">We have fixed an issue with DBF files larger than 2 Gb (0x7FFFFFFF bytes)</li>
+      <li styleclass="Normal">Creating UNIQUE indexes in the DBFCDX driver would exclude the first record from the DBF file</li>
     </list>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">VOSDK</text></para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

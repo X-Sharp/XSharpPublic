@@ -730,6 +730,9 @@
       <config-value name="uid">XSharp.Documentation</config-value>
       <config-value name="publisher">XSharp BV</config-value>
     </config-group>
+    <config-group name="plugins">
+      <config-value name="deepl">{&quot;destlang&quot;:&quot;DE&quot;,&quot;defapiglossary&quot;:&quot;&quot;,&quot;glossarycount&quot;:&quot;0&quot;}</config-value>
+    </config-group>
     <variables>
       <variable id="TXTVERSION" type="text" translate="true">Cahors (2.21.0.5)</variable>
       <variable id="APP" type="text" translate="true">XSharp</variable>

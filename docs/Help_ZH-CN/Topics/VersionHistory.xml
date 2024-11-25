@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-20T10:25:00.345+01:00" lasteditedby="vboxuser" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-25T14:34:27.565+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>版本历史</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -108,8 +108,7 @@
     <para styleclass="Normal">这通常会导致与之前相同的编译结果。你可能看到的唯一区别是，当你用此版本打开项目文件时，文件会自动更新。</para>
     <para styleclass="Heading3">FoxPro 方言</para>
     <para styleclass="Normal">到目前为止，DEFINE CLASS 语法不仅可用于创建继承自 FoxPro 兼容 Custom 类的类，还可用于创建继承自其他 .Net 类的类。事实证明这有点复杂。</para>
-    <para styleclass="Normal">这就是在 VFP 中创建类的方法： </para>
-    <para styleclass="Code Example"><text style="font-style:normal; text-decoration:none; color:#000000;">CLASS ClassName1 AS ParentClass [OF ClassLibrary] [OLEPUBLIC]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; [[PROTECTED | HIDDEN] PropertyName1, PropertyName2 ...]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; [[.]Object.]PropertyName = eExpression ...]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; [PEMName_COMATTRIB = nFlags | DIMENSION PEMName_COMATTRIB[numElements]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160;[PEMName_COMATTRIB[1] = nFlags</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;PEMName_COMATTRIB[2] = cHelpString</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;PEMName_COMATTRIB[3] = cPropertyCapitalization</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;PEMName_COMATTRIB[4] = cPropertyType</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;PEMName_COMATTRIB[5] = nOptionalParams]]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; [ADD OBJECT [PROTECTED] ObjectName AS ClassName2 [NOINIT] [WITH cPropertylist]]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; [IMPLEMENTS cInterfaceName [EXCLUDE] IN TypeLib | TypeLibGUID | ProgID ]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; [[PROTECTED | HIDDEN] FUNCTION | PROCEDURE Name[_ACCESS |_ASSIGN]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160;([cParamName | cArrayName[] [AS Type][@]]) [AS Type]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160;[HELPSTRING cHelpString] | THIS_ACCESS(cMemberName) [NODEFAULT]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160;cStatements</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;"> &#160; [ENDFUNC | ENDPROC]</text><br/><text style="font-style:normal; text-decoration:none; color:#000000;">ENDDEFINE</text></para>
+    <para styleclass="Normal"></para>
     <para styleclass="Body Text"><text style="font-style:normal; text-decoration:none; color:#000000;">还有一个 /fox1 编译器选项，可使 DEFINE CLASS 命令中的 AS ParentClass 子句成为可选项。没有 AS ParentClass 的类将自动从自定义类继承。</text></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><text style="font-style:normal; text-decoration:none; color:#000000;">我们做了以下更改：</text></para>
@@ -156,6 +155,7 @@
       <li styleclass="Normal">添加了对无类型参数的泛型的支持，如 typeof(List&lt; &gt;) 和 typeof(Dictionary&lt;,&gt;) (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1623" target="_blank">#1623</link>)</li>
       <li styleclass="Normal">更改与 FoxPro 兼容的 DEFINE CLASS(见上文)</li>
       <li styleclass="Normal">更改了处理命令行参数缺失的方式(见上文)</li>
+      <li styleclass="Normal">我们为<link displaytype="text" defaultstyle="true" type="topiclink" href="StringLiterals">插值字符串</link>添加了双冒号(::)分隔符，以分隔表达式和格式指定符。C# 使用单冒号(:)，但该字符在 X# 中用作成员访问操作符。</li>
     </list>
     <para styleclass="Heading2">生成系统</para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -236,6 +236,7 @@
       <li styleclass="Normal">在 VOWED 中选择多个控件时，现在最后选定的控件将成为 “属性 ”窗口中的 “活动 ”控件</li>
       <li styleclass="Normal">在 VOWED 中粘贴控件时，控件现在会转到控件顺序列表的底部</li>
       <li styleclass="Normal">在 “VOWED 控制顺序 ”对话框中添加了选项，以便在 “使用鼠标 ”时，在当前选定控件之后开始调整控件的控制顺序</li>
+      <li styleclass="Normal">现在，VO 二进制编辑器在生成代码时会保留 SEALED 修饰符。密封类的 PROTECT 字段也变成了 PRIVATE (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1628" target="_blank">#1628</link>)</li>
       <li styleclass="Normal">将 Mono.Cecil 库更新至 0.11.6</li>
       <li styleclass="Normal">当以前 “隐含”的属性丢失时，项目文件会被调整(见上文)</li>
     </list>
@@ -332,7 +333,7 @@
       <li styleclass="Normal">为 DBOrderInfo() 函数主题添加了缺失的可用常量 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1565" target="_blank">#1565</link>)</li>
     </list>
     <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">修正了文档中有关 -memvar 选项的错误文本 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1621" target="_blank">#1621</link>)</li>
+      <li styleclass="Normal">修正了文档中有关 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">-memvar</link> 选项的错误文本 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1621" target="_blank">#1621</link>)</li>
     </list>
     <para styleclass="Heading1">Changes in 2.20.0.3</para>
     <para styleclass="Heading2">编译器</para>

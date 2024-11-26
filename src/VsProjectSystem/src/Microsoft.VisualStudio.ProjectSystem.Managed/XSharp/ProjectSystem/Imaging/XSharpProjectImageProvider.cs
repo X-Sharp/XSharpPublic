@@ -28,7 +28,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.Imaging.XSharp
                 _ => null
             };
         }
-        public static ProjectImageMoniker XSProjectNode { get; } = KnownMonikers.PYProjectNode.ToProjectSystemType();
+        public static ProjectImageMoniker XSProjectNode { get; } = KnownMonikers.Box.ToProjectSystemType();
         //public static ProjectImageMoniker XSProjectNode { get; } = XSharpImagesMonikers.ProjectImage.ToProjectSystemType();
     }
 }

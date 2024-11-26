@@ -17,12 +17,6 @@
     <Nullable>annotations</Nullable>
     <NoWarn>$(NoWarn);RS0037</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net472|AnyCPU'">
-    <NoWarn>$(NoWarn);1701;1702;1705;1591</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net472|AnyCPU'">
-    <NoWarn>$(NoWarn);1701;1702;1705;1591</NoWarn>
-  </PropertyGroup>
 
   <!-- TODO: Remove this once ImageMoniker and related types are available in a net8.0-compatible package. -->
   <ItemGroup Condition="'$(TargetFramework)' == '$(NetCoreTargetFramework)'">

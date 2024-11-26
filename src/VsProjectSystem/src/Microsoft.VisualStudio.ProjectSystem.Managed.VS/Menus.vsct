@@ -210,7 +210,7 @@
   <Symbols>
     <GuidSymbol name="guidSolutionExplorerToolWindow" value="{3AE79031-E1BC-11D0-8F78-00A0C9110057}" />
     
-    <!-- This is out managed package guid. -->
+    <!-- This is our managed package guid. -->
     <GuidSymbol name="PackageGuidString" value="{93bc6a0e-d5ad-455e-a9b9-01d09153707d}" />
 
     <GuidSymbol name="guidDebugTargetHandlerPackage" value="{6e87cfad-6c05-4adf-9cd7-3b7943875b7c}">
@@ -219,7 +219,7 @@
 
     </GuidSymbol>
 
-    <GuidSymbol name="guidManagedProjectSystemCommandSet" value="{568ABDF7-D522-474D-9EED-34B5E5095BA5}">
+    <GuidSymbol name="guidManagedProjectSystemCommandSet" value="{07530DC2-31D8-429D-8250-848AF494F007}">
       <!-- Note that these need room to grow hence they need to be spaced out-->
       <IDSymbol name="cmdidProjectDebugger" value="0x0100" />
       <IDSymbol name="cmdidGenerateNuGetPackageProjectContextMenu" value="0x2000" />
@@ -232,7 +232,7 @@
       <IDSymbol name="NavigateGroup" value="0x4000" />
     </GuidSymbol>
 
-    <GuidSymbol name="guidManagedProjectSystemOrderCommandSet" value="{6C4806E9-034E-4B64-99DE-29A6F837B993}">
+    <GuidSymbol name="guidManagedProjectSystemOrderCommandSet" value="{07530DC2-31D8-429D-8250-848AF494F008}">
       <IDSymbol name="OrderingGroup" value="0x0100" />
       <IDSymbol name="AddAboveGroup" value="0x0101" />
       <IDSymbol name="AddBelowGroup" value="0x0102" />

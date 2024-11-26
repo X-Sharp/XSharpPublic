@@ -28,13 +28,13 @@
     <ProjectReference Include="..\..\src\Microsoft.VisualStudio.AppDesigner\Microsoft.VisualStudio.AppDesigner.vbproj">
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup;GetCopyToOutputDirectoryItems;SatelliteDllsProjectOutputGroup</IncludeOutputGroupsInVSIX>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.VisualStudio.Editors\$(_EditorsProjectName).vbproj">
+    <ProjectReference Include="..\..\src\$(_EditorsProjectName)\$(_EditorsProjectName).vbproj">
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup;GetCopyToOutputDirectoryItems;SatelliteDllsProjectOutputGroup;PkgdefProjectOutputGroup</IncludeOutputGroupsInVSIX>
     </ProjectReference>
     <ProjectReference Update="@(ProjectReference)">
       <Name>%(Filename)</Name>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
-      <Ngen>false</Ngen>
+      <Ngen>true</Ngen>
       <NgenPriority>3</NgenPriority>
     </ProjectReference>
   </ItemGroup>

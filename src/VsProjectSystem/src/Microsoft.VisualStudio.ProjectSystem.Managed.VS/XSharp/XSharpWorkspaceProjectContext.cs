@@ -17,7 +17,7 @@ using Microsoft.VisualStudio.Threading;
 namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
 {
     [DebuggerDisplay("{XsDisplayName,nq}")]
-    internal class XSharpWorkspaceProjectContext : IWorkspaceProjectContext, IXSharpProject
+    internal class XSharpWorkspaceProjectContext : IWorkspaceProjectContext, IXSharpProject, IVsLanguageServiceBuildErrorReporter2
     {
         private readonly string _name;
         public Guid Guid { get; set; }
@@ -295,8 +295,30 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
         {
             return false;
         }
+        #endregion
+        #region IVsLanguageServiceBuildErrorReporter2
+        public int ReportError(string bstrErrorMessage, string bstrErrorId, VSTASKPRIORITY nPriority, int iLine, int iColumn, string bstrFileName)
+        {
+            // Dummy method. Roslyn calls this but CPS handles error display
+            // We may want to pass this to the language service to highlight the error in the editor
+            return 0;
+        }
 
-#endregion
+        public int ClearErrors()
+        {
+            // Dummy method. Roslyn calls this but CPS handles error display
+            // We may want to pass this to the language service to clear the errors in the editors
+            return 0; 
+        }
+
+        public void ReportError2(string bstrErrorMessage, string bstrErrorId, VSTASKPRIORITY nPriority, int iStartLine, int iStartColumn, int iEndLine, int iEndColumn, string bstrFileName)
+        {
+            // Dummy method. Roslyn calls this but CPS handles error display
+            // We may want to pass this to the language service to highlight the error in the editor
+            return;
+        }
+
+        #endregion
     }
     internal sealed class BatchScope : IDisposable, IAsyncDisposable
     {

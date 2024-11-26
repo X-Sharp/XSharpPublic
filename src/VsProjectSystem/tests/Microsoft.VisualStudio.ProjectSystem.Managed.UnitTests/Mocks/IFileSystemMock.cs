@@ -161,7 +161,7 @@ namespace Microsoft.VisualStudio.IO
             return DateTime.MinValue;
         }
 
-        public bool TryGetLastFileWriteTimeUtc(string path, out DateTime? result)
+        public bool TryGetLastFileWriteTimeUtc(string path, [NotNullWhen(true)]out DateTime? result)
         {
             if (Files.TryGetValue(path, out FileData value))
             {

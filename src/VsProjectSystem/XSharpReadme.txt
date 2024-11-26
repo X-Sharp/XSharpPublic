@@ -48,17 +48,15 @@ We will make the following changes later:
   Roslyn has code for this in the language service. We have created a special XSharpWorkspaceProjectContext object that 
   is instantiated for each targetframework in the project.
 
-  
-TODO:
-- Link the project system to our codemodel:
-  - register projects  
-  - register source files
-  - register references
-  - implement IXSharpProject, so the Codemodel can talk back to the project system.
 
-- Project Property pages for Language and Dialect settings.
-- Dialect selection option on Application Property page and other X# specific properties, such as VulcanCompatibleResources
-  
+TODO:
+- Check Item rules NativeResources
+- Check Item rules VOBinary
+- Windows Forms Designer support
+- Add project tree node for Includefiles per project
+- Define rules that make VOBinary and NativeResources children of PRG nodes
+- Check publishing support
+- 
   
   
 To make this work we also need to install files in the following folder:
@@ -70,6 +68,7 @@ The following files are expected in that folder:
 - VOBinary.BrowseObject.xaml 
 - VOBinary.xaml 
 - XSharp.DesignTime.targets 
+- Workspace must implement IVsLanguageServiceBuildErrorReporter2
 
 
 

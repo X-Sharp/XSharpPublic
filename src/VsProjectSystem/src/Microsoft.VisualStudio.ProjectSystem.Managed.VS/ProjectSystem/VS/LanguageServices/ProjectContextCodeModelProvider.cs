@@ -61,7 +61,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.VS.LanguageServices
 
             return await _workspaceWriter.WriteAsync(workspace =>
             {
-                return TaskResult.Null<CodeModel>();
+                return Task.FromResult(_codeModelFactory.GetCodeModel(workspace.Context, project));
             });
         }
 

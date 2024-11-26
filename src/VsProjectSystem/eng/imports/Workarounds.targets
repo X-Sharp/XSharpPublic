@@ -18,11 +18,11 @@
   <Target Name="Test" />
 
   <!-- Workaround for https://github.com/NuGet/Home/issues/9431 -->
-  <Target Name="RemoveSourceRootsWithoutSourceLinkUrl">
+  <!--<Target Name="RemoveSourceRootsWithoutSourceLinkUrl">
     <ItemGroup>
       <SourceRoot Remove="@(SourceRoot)" Condition="'%(SourceRoot.SourceLinkUrl)' == ''" />
     </ItemGroup>
-  </Target>
+  </Target>-->
 
   <!-- Workaround for https://github.com/dotnet/wpf/issues/810 -->
   <Import Project="$(_WpfTempProjectNuGetFilePathNoExt).targets" Condition="'$(_WpfTempProjectNuGetFilePathNoExt)' != '' and Exists('$(_WpfTempProjectNuGetFilePathNoExt).targets')"/>

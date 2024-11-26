@@ -11,6 +11,7 @@ namespace Microsoft.VisualStudio.ProjectSystem
         public const string XSharp = nameof(XSharp);
         public const string XSharpAppDesigner = ProjectCapability.XSharp + " & " + AppDesigner;
         public const string CSharpOrVisualBasicOrXSharp = "(" + ProjectCapability.XSharp + " | " + ProjectCapabilities.CSharp + " | " + ProjectCapabilities.VB + ")";
+        public const string ProjectIncludesTree = nameof(ProjectIncludesTree);
 #endif
         public const string CSharp =  ProjectCapabilities.CSharp;
         public const string VisualBasic = ProjectCapabilities.VB;

@@ -292,19 +292,10 @@ internal sealed class Workspace : OnceInitializedOnceDisposedUnderLockAsync, IWo
                 _disposableBag.Add(_activeEditorContextTracker.RegisterContext(_contextId));
 
                 object? hostObject = _unconfiguredProject.Services.HostObject;
-#if !XSHARP
-                // Call into Roslyn to initialize language service for this project
-                _context = await _workspaceProjectContextFactory.Value.CreateProjectContextAsync(
-                    _projectGuid,
-                    _contextId,
-                    languageName,
-                    evaluationData,
-                    hostObject,
-                    cancellationToken,);
-#else
-                if (languageName == "X#")
-
+#if XSHARP
+                if (_unconfiguredProject.FullPath.ToLower().EndsWith(".xsproj"))
                 {
+                    languageName = "X#";
                     _context = new XSharpWorkspaceProjectContext(_projectGuid,
                                                     _contextId,
                                                     languageName,
@@ -313,8 +304,17 @@ internal sealed class Workspace : OnceInitializedOnceDisposedUnderLockAsync, IWo
                                                     cancellationToken);
                 }
                 else
-                { 
-                    _context = null;
+                {
+#endif
+                    // Call into Roslyn to initialize language service for this project
+                    _context = await _workspaceProjectContextFactory.Value.CreateProjectContextAsync(
+                    _projectGuid,
+                    _contextId,
+                    languageName,
+                    evaluationData,
+                    hostObject,
+                    cancellationToken);
+#if XSHARP
                 }
 #endif
                 evaluationData.Release();

@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Threading;
-
+#if !XSHARP
 namespace Microsoft.VisualStudio.ProjectSystem.VS
 {
     /// <summary>
@@ -74,3 +74,4 @@ namespace Microsoft.VisualStudio.ProjectSystem.VS
         }
     }
 }
+#endif

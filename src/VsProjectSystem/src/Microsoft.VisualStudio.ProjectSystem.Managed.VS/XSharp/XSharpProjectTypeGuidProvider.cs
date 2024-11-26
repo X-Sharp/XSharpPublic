@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 [assembly: IgnoresAccessChecksTo("Microsoft.VisualStudio.LanguageServices")]
 [assembly: IgnoresAccessChecksTo("Microsoft.CodeAnalysis")]
 [assembly: IgnoresAccessChecksTo("Microsoft.CodeAnalysis.CSharp")]
+[assembly: IgnoresAccessChecksTo("Microsoft.VisualStudio.Project")]
 
 namespace Microsoft.VisualStudio.ProjectSystem.VS.XSharp
 {

@@ -64,7 +64,7 @@ Namespace Microsoft.VisualStudio.Editors.ResourceEditor
                 Try
                     Debug.Assert(DataStream.Length < Integer.MaxValue)
                     Dim Data(CInt(DataStream.Length) - 1) As Byte
-                    Dim v = DataStream.Read(Data, 0, CInt(DataStream.Length))
+                    DataStream.Read(Data, 0, CInt(DataStream.Length))
                     FileStream.Write(Data, 0, Data.Length)
                 Finally
                     FileStream.Close()

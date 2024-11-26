@@ -4,7 +4,9 @@
   <Import Project="$(Solutiondir)eng\imports\VisualStudio.props" />
 
   <PropertyGroup>
-    <EnableXlfLocalization>true</EnableXlfLocalization>
+    <CSCToolExe>e:\XSharp\DevPublic\src\VsProjectSystem\csc\csc.exe</CSCToolExe>
+    <EnableXlfLocalization>false</EnableXlfLocalization>
+    <StrongNameKeyId>XSharp</StrongNameKeyId>
     <RootNamespace>Microsoft.VisualStudio</RootNamespace>
     <IsManagedProjectSystemProject>true</IsManagedProjectSystemProject>
     <TargetFramework>net472</TargetFramework>
@@ -25,7 +27,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.VisualStudio.ProjectSystem.Managed\Microsoft.VisualStudio.ProjectSystem.Managed.csproj" />
+    <ProjectReference Include="..\Microsoft.VisualStudio.ProjectSystem.Managed\XSharp.VisualStudio.ProjectSystem.Managed.csproj" />
   </ItemGroup>
 
   <ItemGroup>

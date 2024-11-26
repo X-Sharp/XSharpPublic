@@ -7,13 +7,13 @@
 
   <!-- Local properties -->
   <PropertyGroup>
-    <_ManagedProjectName>Microsoft.VisualStudio.ProjectSystem.Managed</_ManagedProjectName>
+    <_ManagedProjectName>XSharp.VisualStudio.ProjectSystem.Managed</_ManagedProjectName>
   </PropertyGroup>
 
   <PropertyGroup>
-    <RootNamespace>Microsoft.VisualStudio</RootNamespace>
+    <RootNamespace>XSharp.VisualStudio</RootNamespace>
     <!-- Note: No idea why ProjectSystem is the AssemblyName instead of using the MSBuildProjectName of ProjectSystemSetup. -->
-    <AssemblyName>ProjectSystem</AssemblyName>
+    <AssemblyName>XSharpProjectSystem</AssemblyName>
     <TargetFramework>net472</TargetFramework>
 
     <!-- VSIX -->
@@ -40,11 +40,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="XSharpAssemblyRedirects.cs" />
+    <Compile Remove="Manifest\**" />
+    <EmbeddedResource Remove="Manifest\**" />
+    <None Remove="Manifest\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="XSharp.VisualStudio.ProjectSystem.Managed.VS.pkgdef" />
+    <Compile Remove="AssemblyRedirects.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Microsoft.VisualStudio.ProjectSystem.Managed.VS.pkgdef" />
     <None Remove="ProjectSelectors.pkgdef" />
   </ItemGroup>
 
@@ -52,18 +58,21 @@
     <Content Include="UnifiedSettings\ManagedProjectSystem.registration.json">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    
-    <ProjectReference Include="..\..\src\Microsoft.VisualStudio.ProjectSystem.Managed.VS\Microsoft.VisualStudio.ProjectSystem.Managed.VS.csproj">
+    <ProjectReference Include="..\..\src\Microsoft.VisualStudio.ProjectSystem.Managed.VS\XSharp.VisualStudio.ProjectSystem.Managed.VS.csproj">
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup;GetCopyToOutputDirectoryItems;SatelliteDllsProjectOutputGroup;PkgdefProjectOutputGroup</IncludeOutputGroupsInVSIX>
     </ProjectReference>
     
-    <ProjectReference Include="..\..\src\Microsoft.VisualStudio.ProjectSystem.Managed\Microsoft.VisualStudio.ProjectSystem.Managed.csproj">
+    <ProjectReference Include="..\..\src\Microsoft.VisualStudio.ProjectSystem.Managed\XSharp.VisualStudio.ProjectSystem.Managed.csproj">
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup;GetCopyToOutputDirectoryItems;SatelliteDllsProjectOutputGroup</IncludeOutputGroupsInVSIX>
+      <Name>XSharp.VisualStudio.ProjectSystem.Managed</Name>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
+      <Ngen>false</Ngen>
+      <NgenPriority>1</NgenPriority>
     </ProjectReference>
     <ProjectReference Update="@(ProjectReference)">
       <Name>%(Filename)</Name>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
-      <Ngen>true</Ngen>
+      <Ngen>false</Ngen>
       <NgenPriority>1</NgenPriority>
     </ProjectReference>
   </ItemGroup>
@@ -73,7 +82,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Microsoft.VisualStudio.ProjectSystem.Managed.VS.pkgdef">
+    <Content Include="XSharp.VisualStudio.ProjectSystem.Managed.VS.pkgdef">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -89,12 +98,20 @@
   <ItemGroup>
     <VSIXSourceItem Include="$(CodeModel)" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="xsharp.source.extension.vsixmanifest">
+      <Generator>VsixManifestGenerator</Generator>
+    </None>
+  </ItemGroup>
   <!-- Excludes the localized .xaml files from the VSIX which are added from the GetCopyToOutputDirectoryItems output group. Only the localized .dlls are needed in the VSIX. -->
   <!-- For additional info, see: https://github.com/dotnet/project-system/issues/6612 -->
   <Target Name="ExcludeLocalizedXamlFilesFromVSIX" AfterTargets="GetVsixSourceItems">
     <ItemGroup>
       <VSIXSourceItem Remove="$(ArtifactsObjDir)$(_ManagedProjectName)\$(TargetFramework)\$(_ManagedProjectName).xlf\**\*.xaml" />
     </ItemGroup>
+  </Target>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="Copy /y xsharp.source.extension.vsixmanifest source.extension.vsixmanifest " />
   </Target>
 
 </Project>

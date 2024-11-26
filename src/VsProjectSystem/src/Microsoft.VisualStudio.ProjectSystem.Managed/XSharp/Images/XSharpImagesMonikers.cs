@@ -14,13 +14,7 @@ namespace Microsoft.VisualStudio.ProjectSystem
 
         private const int ProjectIcon = 1;
         private const int ItemIcon = 2;
-        private static Stream s_stream;
-        static XSharpImagesMonikers()
-        {
-            Stream stream = typeof(XSharpImagesMonikers).Assembly.GetManifestResourceStream("Microsoft.VisualStudio.Resources.XSharpProjectImageList.bmp");
-            s_stream = stream;
-
-        }
+      
         public static ImageMoniker ProjectImage
         {
             get

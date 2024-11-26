@@ -3022,7 +3022,7 @@ Namespace Microsoft.VisualStudio.Editors.ResourceEditor
                 Dim hDropHandleRef As New HandleRef(Nothing, hDrop)
                 Try
                     Dim RawData(StreamLength - 1) As Byte
-                    Dim v = HDropStream.Read(RawData, 0, StreamLength)
+                    HDropStream.Read(RawData, 0, StreamLength)
                     Marshal.Copy(RawData, 0, hDrop, RawData.Length)
 
                     'Get the number of files in the drop structure

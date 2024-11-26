@@ -4,6 +4,8 @@
   <Import Project="..\..\eng\imports\HostAgnostic.props" />
 
   <PropertyGroup>
+    <StrongNameKeyId>XSharp</StrongNameKeyId>
+    <EnableXlfLocalization>false</EnableXlfLocalization>
     <RootNamespace>Microsoft.VisualStudio</RootNamespace>
     <!-- The value of RuleInjectionClassName of XamlPropertyRule items defined by this project -->
     <XamlPropertyRuleInjectionClassName>ProjectProperties</XamlPropertyRuleInjectionClassName>
@@ -45,7 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Microsoft.VisualStudio.ProjectSystem.Managed.VS" />
+    <InternalsVisibleTo Include="XSharp.VisualStudio.ProjectSystem.Managed.VS"/>
     <InternalsVisibleTo Include="Microsoft.VisualStudio.ProjectSystem.Managed.VSCode" />
     <InternalsVisibleTo Include="Microsoft.VisualStudio.ProjectSystem.Managed.UnitTests" />
     <InternalsVisibleTo Include="Microsoft.VisualStudio.ProjectSystem.Managed.VS.UnitTests" />

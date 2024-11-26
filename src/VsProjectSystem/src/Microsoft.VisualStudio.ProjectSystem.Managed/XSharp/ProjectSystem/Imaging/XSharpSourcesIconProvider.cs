@@ -14,6 +14,9 @@ namespace Microsoft.VisualStudio.ProjectSystem.Imaging.XSharp
             { ".prg", SourceIcon },
             { ".ppo", SourceIcon },
             { ".xs", SourceIcon },
+            { ".xh", HeaderIcon},
+            { ".vh", HeaderIcon},
+            { ".rc", ResourceIcon},
             { ".xsfrm", FormIcon},
             { ".xsdbs", DatabaseIcon },
             { ".xsfs", FieldIcon},
@@ -27,10 +30,12 @@ namespace Microsoft.VisualStudio.ProjectSystem.Imaging.XSharp
         };
 
         //private static ProjectImageMoniker SourceIcon => XSharpImagesMonikers.FileImage.ToProjectSystemType();
-        private static ProjectImageMoniker SourceIcon => KnownMonikers.PYSourceFile.ToProjectSystemType();
+        private static ProjectImageMoniker HeaderIcon => KnownMonikers.CPPHeaderFile.ToProjectSystemType();
+        private static ProjectImageMoniker ResourceIcon => KnownMonikers.ResourceType.ToProjectSystemType();
+        private static ProjectImageMoniker SourceIcon => KnownMonikers.VBSourceFile.ToProjectSystemType(); 
         private static ProjectImageMoniker FormIcon => KnownMonikers.WindowsForm.ToProjectSystemType();
         private static ProjectImageMoniker DatabaseIcon => KnownMonikers.Database.ToProjectSystemType();
-        private static ProjectImageMoniker FieldIcon => KnownMonikers.Database.ToProjectSystemType();
+        private static ProjectImageMoniker FieldIcon => KnownMonikers.Column.ToProjectSystemType();
         private static ProjectImageMoniker MenuIcon => KnownMonikers.MenuBar.ToProjectSystemType();
         private static ProjectImageMoniker ReportIcon => KnownMonikers.Report.ToProjectSystemType();
 

@@ -4,12 +4,12 @@
     <body>
       <trans-unit id="28">
         <source>X#</source>
-        <target state="translated">X#</target>
+        <target state="new">X#</target>
         <note />
       </trans-unit>
       <trans-unit id="29">
         <source>X# Project Files (*.xsproj);*.xsproj</source>
-        <target state="translated">X# Proje Dosyaları (*.xsproj);*.xsproj</target>
+        <target state="new">X# Project Files (*.xsproj);*.xsproj</target>
         <note />
       </trans-unit>
       <trans-unit id="3">

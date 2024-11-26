@@ -16,6 +16,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
     internal static class SyntaxHelpers
     {
 #if XSHARP
+        internal static CSharpParseOptions PreviewParseOptions => ParseOptions;
         internal static CSharpParseOptions ParseOptions { get; set; } = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersionFacts.CurrentVersion).WithKind(SourceCodeKind.Script);
 #else
         internal static readonly CSharpParseOptions PreviewParseOptions = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Preview); // Used to be LanguageVersionFacts.CurrentVersion
@@ -225,17 +226,16 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
 #if XSHARP
             ParseOptions = ParseOptions.WithXSharpSpecificOptions(XSyntaxHelpers.XSharpOptions);
             var statement = XSyntaxHelpers.ParseDebuggerInternal<InternalSyntax.StatementSyntax>(text, ParseOptions);
-            var syntaxTree = statement.CreateSyntaxTree(SourceText.From(text));
-            return (StatementSyntax)syntaxTree.GetRoot();
 #else
             var source = SourceText.From(text, encoding: null, SourceHashAlgorithms.Default);
             using var lexer = new InternalSyntax.Lexer(source, PreviewParseOptions);
             using var parser = new InternalSyntax.LanguageParser(lexer, oldTree: null, changes: null, lexerMode: InternalSyntax.LexerMode.DebuggerSyntax);
 
             var statement = parser.ParseStatement();
-            var syntaxTree = statement.CreateSyntaxTree(source);
-            return (StatementSyntax)syntaxTree.GetRoot();
 #endif
+            var syntaxTree = statement.CreateSyntaxTree(SourceText.From(text));
+            return (StatementSyntax)syntaxTree.GetRoot();
+
         }
 
         private static SyntaxTree CreateSyntaxTree(this InternalSyntax.CSharpSyntaxNode root, SourceText text)

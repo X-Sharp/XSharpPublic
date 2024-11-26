@@ -8,8 +8,8 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <AssemblyName>XSharp.Scripting</AssemblyName>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <NoWarn>8032;NU1603;1591</NoWarn>
+    <TargetFrameworks>netstandard2.0;net9.0</TargetFrameworks>
+    <NoWarn>8032;NU1603;1591;NU1507</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RootNamespace>LanguageService.CodeAnalysis.XSharp.Scripting</RootNamespace>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>

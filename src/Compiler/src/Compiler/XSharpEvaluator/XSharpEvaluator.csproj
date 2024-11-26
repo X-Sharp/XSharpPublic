@@ -9,9 +9,10 @@
     <CSharpEvalSource>$(RoslynSrc)\ExpressionEvaluator\CSharp\Source\</CSharpEvalSource>
     <OutputType>Library</OutputType>
     <AssemblyName>XSharp.Evaluator</AssemblyName>
+    <TargetFramework>net472</TargetFramework>
     <RootNamespace>LanguageService.CodeAnalysis.ExpressionEvaluator</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NoWarn>1591,1573,1701,3021,RS0016</NoWarn> 
+    <NoWarn>1591,1573,1701,3021,RS0016;NU1507;8032</NoWarn> 
     <!--<CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>-->
     <NoStdLib>true</NoStdLib>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
@@ -57,12 +58,12 @@
     <Compile Remove="$(CSharpEvalSource)ResultProvider\NetFX20\AssemblyInfo.cs" />
   </ItemGroup>
    <ItemGroup>
-    <PackageReference Include="Microsoft.DiaSymReader" Version="1.4.0" />
-    <PackageReference Include="Microsoft.DiaSymReader.Native" Version="1.7.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine" Version="17.0.2012801" />
-    <PackageReference Include="Microsoft.VisualStudio.Debugger.Metadata" Version="17.0.2012801" />
-    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
-    <PackageReference Include="System.Reflection.Metadata" Version="5.0.0" />
+    <PackageReference Include="Microsoft.DiaSymReader"  />
+    <PackageReference Include="Microsoft.DiaSymReader.Native"  />
+    <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine" />
+    <PackageReference Include="Microsoft.VisualStudio.Debugger.Metadata"  />
+    <PackageReference Include="System.Collections.Immutable"  />
+    <PackageReference Include="System.Reflection.Metadata"  />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj" />

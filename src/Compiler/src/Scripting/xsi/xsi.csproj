@@ -9,10 +9,10 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <TargetFrameworks>net472;net9.0</TargetFrameworks>
     <Prefer32Bit>false</Prefer32Bit>
     <LargeAddressAware>true</LargeAddressAware>
     <RootNamespace>XSharpInteractive</RootNamespace>
-    <TargetFrameworks>net472</TargetFrameworks>
     <UseAppHost>false</UseAppHost>
     <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);NET46;NET472;</DefineConstants>
     <DefineConstants>$(DefineConstants);XSHARP;COMMITHASH</DefineConstants>
@@ -20,7 +20,7 @@
     <!--Use the C# compiler created in this solution-->
     <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
     <CreateZips>true</CreateZips>
-    <NoWarn>8032;NU1603</NoWarn>
+    <NoWarn>8032;NU1603;NU1507</NoWarn>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\XSharpScripting\XSharpScripting.csproj" />

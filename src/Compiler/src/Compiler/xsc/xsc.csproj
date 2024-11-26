@@ -13,14 +13,16 @@
     <Prefer32Bit>false</Prefer32Bit>
     <LargeAddressAware>true</LargeAddressAware>
     <ServerGarbageCollection>true</ServerGarbageCollection>
-    <TargetFrameworks>net472</TargetFrameworks>
+    <TargetFrameworks>net472;net9.0</TargetFrameworks>
     <UseAppHost>false</UseAppHost>
     <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);NET46;NET472</DefineConstants>
     <DefineConstants>$(DefineConstants);XSHARP;COMMITHASH</DefineConstants>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <!--Use the C# compiler created in this solution-->
     <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
-    <NoWarn>8032,1573,1591;NU1603</NoWarn>
+    <NoWarn>8032,1573,1591;NU1603;NU1507</NoWarn>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <PublishSingleFile>true</PublishSingleFile>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\XSCompiler\XSCompiler.csproj" />
@@ -37,7 +39,7 @@
     <DefineConstants>$(DefineConstants);NDEBUG</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'net9.0'" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">

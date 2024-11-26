@@ -9,25 +9,25 @@
     <OutputType>Exe</OutputType>
     <LargeAddressAware>true</LargeAddressAware>
     <AssemblyName>XSCompiler</AssemblyName>
-    <TargetFrameworks>net472</TargetFrameworks>
-    <NoWarn>8032,1573,NU1603</NoWarn>
+    <TargetFrameworks>net472;net9.0</TargetFrameworks>
+    <NoWarn>8032,1573,NU1603;NU1507</NoWarn>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <UseAppHost>false</UseAppHost>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants)NET46;NET472</DefineConstants>
     <DefineConstants Condition="'$(TargetFramework)' != 'net472'">$(DefineConstants)NETCOREAPP</DefineConstants>
-    <DefineConstants>$(DefineConstants);XSHARP;COMMITHASH</DefineConstants>
+    <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
     <!--Use the C# compiler created in this solution-->
     <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseAppHost>true</UseAppHost>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
-    <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'">
     <DefineConstants>$(DefineConstants);TRACE;</DefineConstants>
@@ -36,8 +36,7 @@
     <DefineConstants>$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.Configuration" Condition="'$(TargetFramework)' != 'netcoreapp3.1'" />
-    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+    <Reference Include="System.Configuration" Condition="'$(TargetFramework)' != 'net9.0'" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">

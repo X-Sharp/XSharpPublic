@@ -14,7 +14,7 @@
     <TargetFrameworks>net472</TargetFrameworks>
     <!--Use the C# compiler created in this solution-->
     <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
-    <NoWarn>;1573;1591;1701;3008;3021;649;1574;NU5105;Nullable;RS0016,8032;NU1603</NoWarn>
+    <NoWarn>;1573;1591;1701;3008;3021;649;1574;NU5105;Nullable;RS0016,8032;NU1603;NU1507</NoWarn>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>

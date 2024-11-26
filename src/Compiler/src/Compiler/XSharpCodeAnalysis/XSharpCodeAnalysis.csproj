@@ -8,8 +8,8 @@
     <AssemblyName>XSharp.CodeAnalysis</AssemblyName>
     <RootNamespace>LanguageService.CodeAnalysis.XSharp</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <NoWarn>1591,1573,1701,3021,RS0016,8032,NU1603</NoWarn> 
+    <TargetFrameworks>netstandard2.0;net9.0</TargetFrameworks>
+    <NoWarn>1591,1573,1701,3021,RS0016,8032,NU1603;NU1507</NoWarn> 
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <NoStdLib>true</NoStdLib>
     <DefineConstants>$(DefineConstants);COMPILERCORE;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE;NETSTANDARD20;NETSTANDARD;COMMITHASH;XSHARP</DefineConstants>

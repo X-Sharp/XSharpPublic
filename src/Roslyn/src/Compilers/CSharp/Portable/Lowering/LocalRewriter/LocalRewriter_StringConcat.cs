@@ -797,7 +797,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool alreadyReported = false;
             if (_factory.Diagnostics.HasAnyErrors())
             {
-                foreach (var error in _factory.Diagnostics.DiagnosticBag.AsEnumerable())
+                foreach (var error in _factory.Diagnostics.DiagnosticBag!.AsEnumerable())
                 {
                     if (error.Location == location)
                     {

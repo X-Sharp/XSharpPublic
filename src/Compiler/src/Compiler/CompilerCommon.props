@@ -63,6 +63,7 @@ See License.txt in the project root for license information.
     <RuntimeFilesDir Condition="'$(RuntimeFilesDir)' == '' ">$(DevRtDir)Binaries\Debug\</RuntimeFilesDir>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
   </PropertyGroup>
   <Target Name="SignWithXSharpKey" AfterTargets="PostBuildEvent" Condition="'$(UseXSharpKey)' == 'true'">
     <Exec Command="&quot;$(SDK40ToolsPath)sn.exe&quot;  -q -R $(TargetPath) $(AssemblyOriginatorKeyFile)" />

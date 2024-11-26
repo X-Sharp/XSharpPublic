@@ -140,7 +140,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
                 if (this.HasClipperCallingConvention() != overriddenOrExplicitlyImplementedMethod.HasClipperCallingConvention())
                 {
-                    diagnostics.Add(ErrorCode.ERR_InterfaceImplementationDifferentCallingConvention, Locations[0], this, overriddenOrExplicitlyImplementedMethod);
+                    diagnostics.Add(ErrorCode.ERR_InterfaceImplementationDifferentCallingConvention, Locations[0], this, overriddenOrExplicitlyImplementedMethod!);
                     overriddenOrExplicitlyImplementedMethod = null;
                 }
 #endif

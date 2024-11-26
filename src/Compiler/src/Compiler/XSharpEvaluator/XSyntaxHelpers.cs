@@ -1,4 +1,6 @@
-﻿using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+﻿global using Microsoft.CodeAnalysis.PooledObjects;
+global using Microsoft.CodeAnalysis.ErrorReporting;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp;
@@ -7,6 +9,7 @@ using Microsoft.CodeAnalysis;
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator;
+
 
 namespace LanguageService.CodeAnalysis.CSharp.ExpressionEvaluator
 {

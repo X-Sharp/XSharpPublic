@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-#nullable disable
+#nullable enable
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -73,7 +73,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         int fieldSize, elementSize;
                         if (f.IsFixedSizeBuffer == true)
                         {
-                            elementSize = (f.Type as PointerTypeSymbol).PointedAtType.VoFixedBufferElementSizeInBytes(DeclaringCompilation);
+                            elementSize = (f.Type as PointerTypeSymbol)!.PointedAtType.VoFixedBufferElementSizeInBytes(DeclaringCompilation);
                             fieldSize = f.FixedSize * elementSize;
                         }
                         else
@@ -82,7 +82,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             if ((f.Type as SourceNamedTypeSymbol)?.IsSourceVoStructOrUnion == true)
                             {
                                 // get the size of the largest element in the structure in source
-                                elementSize = (f.Type as SourceNamedTypeSymbol).VoStructElementSize;
+                                elementSize = (f.Type as SourceNamedTypeSymbol)!.VoStructElementSize;
                             }
                             else if (f.Type.IsVoStructOrUnion())
                             {
@@ -170,7 +170,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             var constructorArguments = ArrayBuilder<TypedConstant>.GetInstance();
             constructorArguments.Add(new TypedConstant(int32type, TypedConstantKind.Primitive, VoStructSize));
             constructorArguments.Add(new TypedConstant(int32type, TypedConstantKind.Primitive, VoStructElementSize));
-            return SynthesizedAttributeData.Create(DeclaringCompilation, attributeConstructor, constructorArguments.ToImmutableAndFree(), ImmutableArray<KeyValuePair<string, TypedConstant>>.Empty);
+            return SynthesizedAttributeData.Create(DeclaringCompilation, attributeConstructor!, constructorArguments.ToImmutableAndFree(), ImmutableArray<KeyValuePair<string, TypedConstant>>.Empty);
         }
 
         private (CSharpAttributeData?, BoundAttribute?) XsDecodeWellKnownAttribute(ref EarlyDecodeWellKnownAttributeArguments<EarlyWellKnownAttributeBinder, NamedTypeSymbol, AttributeSyntax, AttributeLocation> arguments)

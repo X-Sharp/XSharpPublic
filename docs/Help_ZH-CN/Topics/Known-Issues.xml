@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-24T13:07:22.737+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-22T12:07:22.931+01:00" lasteditedby="vboxuser" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>已知问题</title>
   <body>
     <header>
@@ -17,17 +17,13 @@
       <li styleclass="List1">有时你可能会看到 &quot;找不到包含文件&quot;的错误，而文件确实存在。这似乎是用于保存包含文件的编码的副作用。</li>
     </list>
     <para styleclass="List1"><tab />如果将文件保存为 UTF8 格式(Visual Studio 中的 &quot;文件高级保存选项&quot;)，这个问题几乎总会消失。</para>
-    <para styleclass="Heading2">Visual Studio</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List1">调试器的新功能，例如全局(Globals)和 RDD 工作区窗口。</li>
-    </list>
     <para styleclass="Heading2">RDD 系统</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">查询优化 (Rushmore) 尚不支持</li>
     </list>
     <para styleclass="List1"></para>
     <para styleclass="List1"><text styleclass="Heading2">运行时(Runtime)</text></para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">某些运行时功能尚不支持。</li>
     </list>
   </body>

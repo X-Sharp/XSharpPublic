@@ -3741,6 +3741,78 @@ RETURN
 
 
         [Fact, Trait("Category", "DBF")];
+		METHOD UniqeTestNEW() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL nRecords AS INT
+
+			cDBF := GetTempFileName()
+
+			RddSetDefault("DBFCDX")
+
+			DbfTests.CreateDatabase(cDbf , {{"FLD1", "C", 4, 0},{"FLD2", "C", 4, 0}} )
+			DbUseArea(TRUE,,cDbf)
+			DbAppend()
+			FieldPut(1,"EEE1")
+			FieldPut(2,"EEE2")
+			DbAppend()
+			FieldPut(1,"PPP1")
+			FieldPut(2,"PPP2")
+			DbAppend()
+			FieldPut(1,"TTT1")
+			FieldPut(2,"TTT2")
+			DbCloseArea()
+
+			DbUseArea(TRUE,,cDbf)
+			DbGoTop()
+			DbCreateOrder("ORD1",cDbf,"FLD1",,TRUE)
+			DbCreateOrder("ORD2",cDbf,"FLD2",,TRUE)
+			DbCloseArea()
+
+			DbUseArea(TRUE,,cDbf)
+			DbSetIndex(cDbf)
+			DbGoTop()
+			DbSetOrder("ORD1")
+			DbGoTop()
+			Assert.True( DbSeek("TTT1")  )// TRUE, OK
+			Assert.True( FieldGet(1) == "TTT1" ) // TRUE, OK
+			Assert.True( FieldGet(2) == "TTT2" ) // TRUE, OK
+			Assert.True( DbSeek("EEE1") ) // FALSE, WRONG
+			Assert.True( FieldGet(1) == "EEE1" ) // FALSE, WRONG
+			
+			DbGoTop()
+			nRecords := 0
+			DO WHILE ( !Eof() )
+				? FieldGet(1), FieldGet(2)
+				nRecords ++
+				DbSkip(1)
+			ENDDO
+			? nRecords // 2, should be 3
+			Assert.Equal( 3 , nRecords)
+			
+			DbGoTop()
+			DbSetOrder("ORD2")
+			DbGoTop()
+			Assert.True( FieldGet(1) == "EEE1" ) // FALSE, WRONG
+			
+			DbGoTop()
+			nRecords := 0
+			DO WHILE ( !Eof() )
+				? RecNo(), FieldGet(1), FieldGet(2)
+				nRecords ++
+				DbSkip(1)
+			ENDDO
+			? nRecords // 2, should be 3
+			Assert.Equal( 3 , nRecords)
+			
+			DbGoTop()
+			Assert.True( DbSeek("EEE2",35) ) // FALSE, WRONG
+			Assert.True( FieldGet(1) == "EEE1" ) // FALSE, WRONG
+		
+			DbCloseArea()
+
+		END METHOD
+
+        [Fact, Trait("Category", "DBF")];
 		METHOD PackZapReindexTest() AS VOID
 			SELF:PackZapReindexTest_helper(1)
 			SELF:PackZapReindexTest_helper(2)

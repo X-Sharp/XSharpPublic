@@ -40,6 +40,8 @@ Copyright (c) XSharp B.V.  All Rights Reserved
     <SynthesizeLinkMetadata Condition=" '$(SynthesizeLinkMetadata)' == '' and '$(HasSharedItems)' == 'true' ">true</SynthesizeLinkMetadata>
     <DefaultProjectTypeGuid Condition=" '$(DefaultProjectTypeGuid)' == '' ">{AA6C8D78-22FF-423A-9C7C-5F2393824E04}</DefaultProjectTypeGuid>
     <AppDesignerFolder Condition="'$(AppDesignerFolder)' == ''">Properties</AppDesignerFolder>
+    <!-- Make sure that we have full paths when compiling inside VS -->
+    <GenerateFullPaths Condition="'$(BuildingInsideVisualStudio)'=='true'">true</GenerateFullPaths>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(DefineXSharpItemSchemas)' != 'false' ">

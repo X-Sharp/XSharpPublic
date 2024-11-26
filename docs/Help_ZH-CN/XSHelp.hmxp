@@ -17,13 +17,12 @@
           <export-task name="Publish as PDF" format="PDF">
             <task-config-group name="settings">
               <task-config-value name="outputfile">..\..\artifacts\Doc\XSharp_ZH-CN.pdf</task-config-value>
-              <task-config-value name="template">Standard_manual_A4.mnl</task-config-value>
+              <task-config-value name="template">..\Help\Standard_manual_A4.mnl</task-config-value>
               <task-config-value name="highlighthotspots">0</task-config-value>
               <task-config-value name="exportcomments">0</task-config-value>
               <task-config-value name="exportcommentsdate">36526</task-config-value>
               <task-config-value name="make4include">PDF</task-config-value>
               <task-config-value name="make4status">*</task-config-value>
-              <task-config-value name="table_of_contents">Table of Contents</task-config-value>
             </task-config-group>
           </export-task>
           <export-task name="Publish as HXS" format="HXS">
@@ -200,7 +199,7 @@
       <config-value name="linkcolor">16711680</config-value>
       <config-value name="ignoreblank">1</config-value>
       <config-value name="outputfile">..\..\artifacts\Doc\XSharp_ZH-CN.pdf</config-value>
-      <config-value name="template">Standard_manual_A4.mnl</config-value>
+      <config-value name="template">..\Help\Standard_manual_A4.mnl</config-value>
       <config-value name="highlighthotspots">0</config-value>
       <config-value name="exportcomments">0</config-value>
       <config-value name="exportcommentsdate">36526</config-value>
@@ -665,7 +664,7 @@
       </config-group>
       <config-group name="vboxuser">
         <config-group name="project">
-          <config-value name="lastexport">0</config-value>
+          <config-value name="lastexport">4</config-value>
         </config-group>
       </config-group>
       <config-group name="lenovo">
@@ -742,6 +741,9 @@
       <config-value name="subject">XSharp.Documentation</config-value>
       <config-value name="uid">XSharp.Documentation</config-value>
       <config-value name="publisher">XSharp BV</config-value>
+    </config-group>
+    <config-group name="plugins">
+      <config-value name="deepl">{&quot;sourcelang&quot;:&quot;ZH&quot;,&quot;destlang&quot;:&quot;EN-GB&quot;,&quot;defapiglossary&quot;:&quot;&quot;,&quot;glossarycount&quot;:&quot;0&quot;}</config-value>
     </config-group>
     <variables>
       <variable id="TXTVERSION" type="text" translate="true">Cahors (2.21.0.5)</variable>

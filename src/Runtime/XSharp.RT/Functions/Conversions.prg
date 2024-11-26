@@ -194,7 +194,7 @@ end class
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ashexstring/*" />
 /// <seealso cref='C2Hex(System.String)' >C2Hex</seealso>
 /// <seealso cref='_C2Hex(System.String,System.Boolean)' >_C2Hex</seealso>
-function AsHexString(uValue as usual) as string
+function AsHexString(uValue IN usual) as string
     local result as string
     if uValue:IsString
         result := _C2Hex( (string) uValue, true)
@@ -235,12 +235,12 @@ function AsPadr(uValue as usual,wLen as dword) as string
 
 
 /// <exclude />
-function _AsString(u as usual) as string
+function _AsString(u IN usual) as string
     return	 AsString(u)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asstring/*" />
-function AsString(uValue as usual) as string
+function AsString(uValue IN usual) as string
     local result as string
     do case
     case uValue:IsString
@@ -282,7 +282,7 @@ function AsString(uValue as usual) as string
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/assymbol/*" />
-function AsSymbol(uValue as usual) as symbol
+function AsSymbol(uValue IN usual) as symbol
     if uValue:IsSymbol
         return (symbol) uValue
     endif
@@ -582,15 +582,15 @@ function _Str(nValue ,uLen ,uDec ) as string clipper
     // They are the equivalent of the STR() functions but always return with digit decimal separator
     // We route all three to the _Str() function that takes care of this already
 /// <exclude/>
-function __Str(n as usual) as string
+function __Str(n IN usual) as string
     return _Str( n)
 
 /// <exclude/>
-function __Str(n as usual,nLen as usual) as string
+function __Str(n IN usual,nLen IN usual) as string
     return _Str( n, nLen)
 
 /// <exclude/>
-function __Str(n as usual,nLen as usual, nDec as usual) as string
+function __Str(n IN usual,nLen IN usual, nDec IN usual) as string
     return _Str( n, nLen, nDec)
 
 
@@ -623,7 +623,7 @@ function StrZero(nNumber as usual,nLength as int) as string
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strzero/*" />
-function StrZero(nNumber as usual) as string
+function StrZero(nNumber IN usual) as string
     if ! ( nNumber:IsNumeric )
         throw Error.DataTypeError( __function__, nameof(nNumber),1,nNumber)
     endif
@@ -632,7 +632,7 @@ function StrZero(nNumber as usual) as string
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/toword/*" />
-function ToWord(n as usual) as dword
+function ToWord(n IN usual) as dword
     return (dword) n
 
 
@@ -651,7 +651,7 @@ function StrFloat(flSource as float,dwLength as dword,dwDecimals as dword) as st
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/str1/*" />
-function Str1(fNumber as usual) as string
+function Str1(fNumber IN usual) as string
     if fNumber:IsFloat
         return ConversionHelpers.AdjustDecimalSeparator(_Str1( (float) fNumber))
     else

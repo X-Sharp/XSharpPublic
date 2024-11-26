@@ -358,7 +358,7 @@ FUNCTION ArrayInit(wElements AS DWORD, avalues REF USUAL[]) AS ARRAY
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*" />
 
-FUNCTION AAdd(aTarget AS ARRAY,uNewElement AS USUAL) AS USUAL
+FUNCTION AAdd(aTarget AS ARRAY,uNewElement IN USUAL) AS USUAL
     ARRAYNOTNULL aTarget
     RETURN AAdd<USUAL>(aTarget, uNewElement)
 
@@ -567,7 +567,7 @@ FUNCTION ArrayPut<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD,uValue AS T) A
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayput/*" />
-FUNCTION ArrayPut(aTarget AS ARRAY,dwElement AS DWORD,uValue AS USUAL) AS USUAL
+FUNCTION ArrayPut(aTarget AS ARRAY,dwElement AS DWORD,uValue IN USUAL) AS USUAL
     ARRAYNOTNULL aTarget
     aTarget:__SetElement(uValue, (INT)dwElement -1)
     RETURN uValue
@@ -598,7 +598,7 @@ FUNCTION ArrayStore<T>(aSource AS __ArrayBase<T>,Buff AS T PTR,dwLen AS DWORD) A
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayswap/*" />
-FUNCTION ArraySwap(aTarget AS ARRAY,dwElement AS DWORD,uNewValue AS USUAL) AS USUAL
+FUNCTION ArraySwap(aTarget AS ARRAY,dwElement AS DWORD,uNewValue IN USUAL) AS USUAL
     ARRAYNOTNULL aTarget
     RETURN aTarget:Swap((INT) dwElement, uNewValue)
 
@@ -610,48 +610,48 @@ FUNCTION ArraySwap<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD,uNewValue AS 
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
-FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart := NIL AS USUAL,nCount := NIL AS USUAL) AS DWORD
+FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart := NIL AS USUAL,nCount := NIL IN USUAL) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, nCount, SetExact())
 
 
     /// <inheritdoc cref='AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
-FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS USUAL) AS DWORD
+FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart IN USUAL) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, NIL, SetExact())
 
     /// <inheritdoc cref='AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
-FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL) AS DWORD
+FUNCTION AScan(aTarget AS ARRAY, uSearch IN USUAL) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, 1, NIL, SetExact())
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" />
-FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart := NIL AS USUAL, nCount := NIL AS USUAL) AS DWORD
+FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart := NIL AS USUAL, nCount := NIL IN USUAL) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, nCount, TRUE )
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" />
-FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart AS USUAL) AS DWORD
+FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart IN USUAL) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, NIL, TRUE )
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" />
-FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL) AS DWORD
+FUNCTION AScanExact( aTarget AS ARRAY, uSearch IN USUAL) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, 1, NIL, TRUE )
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanbin/*" />
-FUNCTION AScanBin(aTarget AS ARRAY,uSearch AS USUAL) AS DWORD
+FUNCTION AScanBin(aTarget AS ARRAY,uSearch IN USUAL) AS DWORD
     ARRAYNOTNULL aTarget
     RETURN ArrayHelpers.AScanBin( "AscanBin" , aTarget, uSearch, FALSE )
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanbinexact/*" />
-FUNCTION AScanBinExact(aTarget AS ARRAY,uSearch AS USUAL) AS DWORD
+FUNCTION AScanBinExact(aTarget AS ARRAY,uSearch IN USUAL) AS DWORD
     ARRAYNOTNULL aTarget
     RETURN ArrayHelpers.AScanBin( "AscanBin" , aTarget, uSearch, TRUE )
 
@@ -784,7 +784,7 @@ FUNCTION ACopy(aSource ,aTarget ,nStart ,nCount ,nTargetPos ) AS ARRAY CLIPPER
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/afill/*" />
-FUNCTION AFill(aTarget AS ARRAY,uValue := NIL AS USUAL, nStart := NIL AS USUAL, nCount := NIL AS USUAL) AS ARRAY
+FUNCTION AFill(aTarget AS ARRAY,uValue := NIL IN USUAL, nStart := NIL AS USUAL, nCount := NIL AS USUAL) AS ARRAY
     // The behavior of AFill() in VO is different than what is descibed in the help file
     // - if start <= 0 throws an error
     // - if start == NIL, then start becomes 1

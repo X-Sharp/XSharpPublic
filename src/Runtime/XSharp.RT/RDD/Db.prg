@@ -190,7 +190,7 @@ FUNCTION FieldWBlock(cFieldName AS STRING,dwWorkArea AS USUAL) AS CODEBLOCK
     RETURN {|x| IIF( x:IsNil, __FieldGetWa(dwWorkArea, cFieldName), __FieldSetWa(dwWorkArea, cFieldName, x)) }
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldwblocksym/*" />
-FUNCTION FieldWBlockSym(symFieldname AS SYMBOL,dwWorkArea AS DWORD) AS CODEBLOCK
+FUNCTION FieldWBlockSym(symFieldname AS SYMBOL,dwWorkArea IN DWORD) AS CODEBLOCK
     RETURN FieldWBlock(symFieldname, dwWorkArea)
 
 
@@ -218,11 +218,11 @@ FUNCTION FieldPosSym(sFieldName AS SYMBOL) AS DWORD
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldputalias/*" />
-FUNCTION FieldPutAlias(symAlias AS SYMBOL,symField AS SYMBOL,uNewValue AS USUAL) AS USUAL
+FUNCTION FieldPutAlias(symAlias AS SYMBOL,symField AS SYMBOL,uNewValue IN USUAL) AS USUAL
     RETURN FieldPutArea(@@Select(symAlias ), symField, uNewValue)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldputsym/*" />
-FUNCTION FieldPutSym(symField AS SYMBOL,uNewValue AS USUAL) AS USUAL
+FUNCTION FieldPutSym(symField AS SYMBOL,uNewValue IN USUAL) AS USUAL
     LOCAL dwPos AS DWORD
     dwPos := FieldPosSym(symField)
     IF dwPos == 0
@@ -231,7 +231,7 @@ FUNCTION FieldPutSym(symField AS SYMBOL,uNewValue AS USUAL) AS USUAL
     RETURN FieldPut( dwPos ,uNewValue )
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldputselect/*" />
-FUNCTION FieldPutSelect(symAlias AS USUAL,symField AS SYMBOL,uNewValue AS USUAL) AS USUAL
+FUNCTION FieldPutSelect(symAlias AS USUAL,symField AS SYMBOL,uNewValue IN USUAL) AS USUAL
     RETURN FieldPutArea(@@Select(symAlias ), symField, uNewValue)
 
 
@@ -351,7 +351,7 @@ FUNCTION DbDelete () AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Delete() )
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbdelete/*" />
-FUNCTION DbDelete (uArea AS USUAL) AS LOGIC STRICT
+FUNCTION DbDelete (uArea IN USUAL) AS LOGIC STRICT
     RETURN (uArea)->DbDelete()
 
 // Delete with AutoLock for FoxPro support
@@ -368,7 +368,7 @@ FUNCTION DbRecall() AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Recall())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrecall/*" />
-FUNCTION DbRecall(uArea AS USUAL) AS LOGIC STRICT
+FUNCTION DbRecall(uArea IN USUAL) AS LOGIC STRICT
     RETURN (uArea)->DbRecall()
 
 
@@ -424,7 +424,7 @@ FUNCTION DbFieldInfo(kInfoType, nFieldPos, uNewSetting) AS USUAL CLIPPER
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgoto/*" />
-FUNCTION DbGoto(uRecID AS USUAL) AS LOGIC
+FUNCTION DbGoto(uRecID IN USUAL) AS LOGIC
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Goto(uRecID) )
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgoto/*" />
@@ -615,8 +615,8 @@ FUNCTION DbSetDriver(cNewSetting) AS STRING CLIPPER
 FUNCTION DbSetFilter(cbCondition, cCondition) AS LOGIC CLIPPER
     LOCAL sCondition AS STRING
     LOCAL cbCond AS CODEBLOCK
-    IF PCount() == 0 .or. (cbCondition:IsNil .and. cCondition:IsNil) .or. ; 
-                          (cbCondition:IsString .and. String.IsNullOrWhiteSpace((STRING)cbCondition)) .or. ; 
+    IF PCount() == 0 .or. (cbCondition:IsNil .and. cCondition:IsNil) .or. ;
+                          (cbCondition:IsString .and. String.IsNullOrWhiteSpace((STRING)cbCondition)) .or. ;
                           (cbCondition:IsNil .and. cCondition:IsString .and. String.IsNullOrWhiteSpace((STRING)cCondition))
         RETURN DbClearFilter()
     ENDIF
@@ -749,7 +749,7 @@ FUNCTION DbUseArea (lNewArea, cDriver, cDataFile, cAlias, lShared, lReadOnly, aS
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldput/*" />
-FUNCTION FieldPut (nFieldPos AS USUAL, uNewValue  AS USUAL) AS USUAL
+FUNCTION FieldPut (nFieldPos AS USUAL, uNewValue AS USUAL) AS USUAL
     LOCAL lResult AS LOGIC
     IF ! IsNumeric(nFieldPos)
         THROW Error.ArgumentError( __FUNCTION__, nameof(nFieldPos), __CavoStr(VOErrors.ARGNOTNUMERIC), 1 ,<OBJECT>{nFieldPos,uNewValue})
@@ -835,7 +835,7 @@ FUNCTION FieldGetArea(dwWorkArea AS DWORD, symFieldName AS SYMBOL) AS USUAL
     RETURN result
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldputarea/*" />
-FUNCTION FieldPutArea(dwWorkArea AS DWORD, symField AS SYMBOL, uNewValue AS USUAL) AS USUAL
+FUNCTION FieldPutArea(dwWorkArea AS DWORD, symField AS SYMBOL, uNewValue IN USUAL) AS USUAL
     LOCAL dwPos AS DWORD
     dwPos :=__FieldHelper(dwWorkArea, symField, __FUNCTION__, OUT VAR oldArea)
     VoDbFieldPut( dwPos, uNewValue)
@@ -850,7 +850,7 @@ FUNCTION LUpdate()  AS DATE STRICT
     RETURN NULL_DATE
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lupdate/*" />
-FUNCTION LUpdate(uArea AS USUAL)  AS DATE STRICT
+FUNCTION LUpdate(uArea IN USUAL)  AS DATE STRICT
     RETURN (uArea)->(LUpdate())
 
 
@@ -891,7 +891,7 @@ FUNCTION RddVersion     (nParm) AS USUAL CLIPPER
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbmemofield/*" />
-FUNCTION DbMemoField (uField AS USUAL)  AS USUAL
+FUNCTION DbMemoField (uField IN USUAL)  AS USUAL
     LOCAL n,i        AS DWORD
     LOCAL xRet       AS USUAL
     LOCAL nFields    AS DWORD

@@ -747,7 +747,7 @@ FUNCTION DbTrans(wTarget, aStruct, cbForCondition, cbWhileCondition, nNext, nRec
 
 
 /// <exclude />
-FUNCTION __DbPushOptimize(lNoOpt as USUAL) AS LOGIC
+FUNCTION __DbPushOptimize(lNoOpt IN USUAL) AS LOGIC
     IF ! lNoOpt:IsNil
         local lNoOptimize := lNoOpt as LOGIC
         RETURN DbInfo(DBI_OPTIMIZE, !lNoOptimize)
@@ -755,7 +755,7 @@ FUNCTION __DbPushOptimize(lNoOpt as USUAL) AS LOGIC
     RETURN DbInfo(DBI_OPTIMIZE)
 
 /// <exclude />
-FUNCTION __DbPopOptimize(lNoOpt as USUAL, lOldOpt as LOGIC) AS VOID
+FUNCTION __DbPopOptimize(lNoOpt IN USUAL, lOldOpt as LOGIC) AS VOID
     IF ! IsNil(lNoOpt)
         DbInfo(DBI_OPTIMIZE, lOldOpt )
     ENDIF

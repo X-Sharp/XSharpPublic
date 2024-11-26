@@ -66,7 +66,7 @@ INTERNAL FUNCTION _InListWorker( u IN USUAL, args AS CONST USUAL[], compare as F
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
 
-FUNCTION Max(uValue1 AS USUAL,uValue2 AS USUAL) AS USUAL
+FUNCTION Max(uValue1 IN USUAL,uValue2 IN USUAL) AS USUAL
 
     IF uValue1:IsNumeric .AND. uValue2:IsNumeric
 
@@ -109,7 +109,7 @@ FUNCTION Max(uValue1 AS USUAL,uValue2 AS USUAL) AS USUAL
     ENDIF
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/min/*" />
-FUNCTION Min(uValue1 AS USUAL, uValue2 AS USUAL) AS USUAL
+FUNCTION Min(uValue1 IN USUAL, uValue2 IN USUAL) AS USUAL
     IF uValue1:IsNumeric .AND. uValue2:IsNumeric
 
         IF uValue1:IsFloat .OR. uValue2:IsFloat

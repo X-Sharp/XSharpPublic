@@ -1684,7 +1684,7 @@ function IVarPutInfo(oObject as object,symInstanceVar as symbol) as dword
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarput/*" />
 
-function IVarPut(oObject as object,symInstanceVar as string,uValue as usual) as usual
+function IVarPut(oObject as object,symInstanceVar as string,uValue IN usual) as usual
     if oObject == null_object
         throw Error.NullArgumentError(__function__, nameof(oObject),1)
     endif
@@ -1711,7 +1711,7 @@ function IVarPut(oObject as object,symInstanceVar as string,uValue as usual) as 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarputself/*" />
 
-function IVarPutSelf(oObject as object,symInstanceVar as string,uValue as usual) as usual
+function IVarPutSelf(oObject as object,symInstanceVar as string,uValue IN usual) as usual
     if oObject == null_object
         throw Error.NullArgumentError(__function__, nameof(oObject),1)
     endif

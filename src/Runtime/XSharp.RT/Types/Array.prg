@@ -317,7 +317,7 @@ PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializab
             RETURN NIL
         END TRY
 
-    PRIVATE METHOD _adjustArguments(indices AS INT[], u := NIL AS USUAL) AS OBJECT[]
+    PRIVATE METHOD _adjustArguments(indices AS INT[], u := NIL IN USUAL) AS OBJECT[]
         VAR result := List<OBJECT>{}
         IF! u:IsNil
             result:Add(u)

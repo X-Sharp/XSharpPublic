@@ -14,7 +14,7 @@ USING System.Linq
 USING System.Text
 
 
-FUNCTION _NoAlias(uArea AS USUAL) AS Error
+FUNCTION _NoAlias(uArea IN USUAL) AS Error
     VAR oErr := Error{EG_NOTABLE, "uArea", "Alias '"+uArea:ToString()+"' is not found"}
     oErr:FuncSym := ProcName(1):Replace("FUNCTIONS:","")
     RETURN oErr
@@ -46,7 +46,7 @@ FUNCTION Bof() AS LOGIC
    RETURN VoDb.Bof()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bof/*" />
-FUNCTION Bof(uArea AS USUAL) AS LOGIC
+FUNCTION Bof(uArea IN USUAL) AS LOGIC
     RETURN (uArea)->(Bof())
 
 
@@ -55,7 +55,7 @@ FUNCTION DBF() AS STRING
     RETURN VoDb.Dbf()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbf/*" />
-FUNCTION DBF(uArea AS USUAL) AS STRING
+FUNCTION DBF(uArea IN USUAL) AS STRING
     RETURN (uArea)->(DBF())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbpack/*" />
@@ -88,7 +88,7 @@ FUNCTION Deleted() AS LOGIC STRICT
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/deleted/*" />
-FUNCTION Deleted(uArea AS USUAL) AS LOGIC STRICT
+FUNCTION Deleted(uArea IN USUAL) AS LOGIC STRICT
     RETURN (uArea)->(Deleted())
 
 
@@ -97,7 +97,7 @@ FUNCTION Eof() AS LOGIC
    RETURN VoDb.Eof()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/eof/*" />
-FUNCTION Eof(uArea AS USUAL) AS LOGIC
+FUNCTION Eof(uArea IN USUAL) AS LOGIC
     RETURN (uArea)->(Eof())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/flock/*" />
@@ -105,7 +105,7 @@ FUNCTION Flock() AS LOGIC STRICT
     RETURN VoDb.Flock()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/flock/*" />
-FUNCTION Flock(uArea AS USUAL) AS LOGIC STRICT
+FUNCTION Flock(uArea IN USUAL) AS LOGIC STRICT
     RETURN (uArea)->(Flock())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fcount/*" />
@@ -113,7 +113,7 @@ FUNCTION FCount() AS DWORD
     RETURN VoDb.FCount()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fcount/*" />
-FUNCTION FCount(uArea AS USUAL) AS DWORD
+FUNCTION FCount(uArea IN USUAL) AS DWORD
     RETURN (uArea)->(FCount())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldname/*" />
@@ -125,7 +125,7 @@ FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldname/*" />
-FUNCTION FieldName(dwFieldPos AS DWORD, uArea AS USUAL) AS STRING
+FUNCTION FieldName(dwFieldPos AS DWORD, uArea IN USUAL) AS STRING
     RETURN (uArea)->(FieldName(dwFieldPos))
 
 
@@ -138,7 +138,7 @@ FUNCTION FieldSym(dwFieldPos AS DWORD) AS SYMBOL
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldsym/*" />
-FUNCTION FieldSym(dwFieldPos AS DWORD, uArea AS USUAL) AS SYMBOL
+FUNCTION FieldSym(dwFieldPos AS DWORD, uArea IN USUAL) AS SYMBOL
     RETURN (uArea)->(FieldSym(dwFieldPos))
 
 
@@ -161,7 +161,7 @@ FUNCTION Found() AS LOGIC
     RETURN VoDb.Found()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/found/*" />
-FUNCTION Found(uArea AS USUAL) AS LOGIC
+FUNCTION Found(uArea IN USUAL) AS LOGIC
    RETURN (uArea)->(Found())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/header/*" />
@@ -173,7 +173,7 @@ FUNCTION Header() AS LONG
     RETURN 0
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/header/*" />
-FUNCTION Header(uArea AS USUAL) AS LONG
+FUNCTION Header(uArea IN USUAL) AS LONG
     RETURN (uArea)->(Header())
 
 
@@ -182,7 +182,7 @@ FUNCTION LastRec() AS DWORD
     RETURN (DWORD) VoDb.LastRec()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lastrec/*" />
-FUNCTION LastRec(uArea AS USUAL) AS DWORD
+FUNCTION LastRec(uArea IN USUAL) AS DWORD
     RETURN (uArea)->(LastRec())
 
 /// <summary>Refresh the buffer for the current workarea, discarding any changes that were made.</summary>
@@ -192,7 +192,7 @@ FUNCTION DbBuffRefresh() AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Refresh())
 
 
-FUNCTION DbBuffRefresh(uArea AS USUAL) AS LOGIC STRICT
+FUNCTION DbBuffRefresh(uArea IN USUAL) AS LOGIC STRICT
     RETURN (uArea)->(DbBuffRefresh())
 
 
@@ -202,7 +202,7 @@ FUNCTION DbClearFilter() AS LOGIC STRICT
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclearfilter/*" />
-FUNCTION DbClearFilter(uArea AS USUAL) AS LOGIC STRICT
+FUNCTION DbClearFilter(uArea IN USUAL) AS LOGIC STRICT
     RETURN (uArea)->(DbClearFilter())
 
 
@@ -220,12 +220,12 @@ FUNCTION DbCloseAll() AS LOGIC STRICT
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclosearea/*" />
 FUNCTION DbCloseArea () AS LOGIC STRICT
     RETURN VoDb.CloseArea()
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclosearea/*" />
-FUNCTION DbCloseArea (uArea AS USUAL) AS LOGIC STRICT
+FUNCTION DbCloseArea (uArea IN USUAL) AS LOGIC STRICT
     RETURN (uArea)->DbCloseArea()
-    
-    
+
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcommit/*" />
 FUNCTION DbCommit() AS LOGIC STRICT
@@ -290,7 +290,7 @@ FUNCTION RecCount() AS LONG
     RETURN VoDb.LastRec()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/reccount/*" />
-FUNCTION RecCount(uArea AS USUAL) AS LONG
+FUNCTION RecCount(uArea IN USUAL) AS LONG
      RETURN (uArea)->(RecCount())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/recno/*" />
@@ -298,7 +298,7 @@ FUNCTION RecNo() AS DWORD
     RETURN VoDb.Recno()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/recno/*" />
-FUNCTION RecNo(uArea AS USUAL) AS DWORD
+FUNCTION RecNo(uArea IN USUAL) AS DWORD
      RETURN (uArea)->(RecNo())
 
 
@@ -307,7 +307,7 @@ FUNCTION RecSize AS LONG
     RETURN VoDb.RecSize()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/recsize/*" />
-FUNCTION RecSize(uArea AS USUAL) AS LONG
+FUNCTION RecSize(uArea IN USUAL) AS LONG
      RETURN (uArea)->(RecSize())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rlock/*" />
@@ -315,7 +315,7 @@ FUNCTION RLock() AS LOGIC STRICT
     RETURN VoDb.RLock(NULL)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rlock/*" />
-FUNCTION RLock(uArea AS USUAL) AS LOGIC STRICT
+FUNCTION RLock(uArea IN USUAL) AS LOGIC STRICT
      RETURN (uArea)->(RLock())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rlock/*" />
@@ -366,7 +366,7 @@ FUNCTION Used() AS LOGIC
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/used/*" />
-FUNCTION Used(uArea AS USUAL) AS LOGIC
+FUNCTION Used(uArea IN USUAL) AS LOGIC
     IF IsString(uArea) .OR. IsSymbol(uArea)
         RETURN VoDbGetSelect(uArea) != 0
     ENDIF

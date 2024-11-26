@@ -8,7 +8,7 @@ USING System.Runtime.CompilerServices
 USING System.Collections.Generic
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/empty/*" />
-FUNCTION Empty(uValue AS USUAL) AS LOGIC
+FUNCTION Empty(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsEmpty
 
 #region Empty Overloads
@@ -227,7 +227,7 @@ FUNCTION EmptyUsual(kType AS DWORD) AS USUAL
     RETURN result
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isarray/*" />
-FUNCTION IsArray(uValue AS USUAL) AS LOGIC
+FUNCTION IsArray(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsArray
 
 /// <summary>
@@ -236,7 +236,7 @@ FUNCTION IsArray(uValue AS USUAL) AS LOGIC
 /// <param name="uVal">The value to examine.</param>
 /// <returns>
 /// </returns>
-FUNCTION IsByRef(uVal AS USUAL) AS LOGIC
+FUNCTION IsByRef(uVal IN USUAL) AS LOGIC
     RETURN uVal:IsByRef
 
 /// <summary>
@@ -244,15 +244,15 @@ FUNCTION IsByRef(uVal AS USUAL) AS LOGIC
 /// </summary>
 /// <param name="uVal">The value to examine.</param>
 /// <returns>TRUE if the value is a Binary data type; otherwise, FALSE. </returns>
-FUNCTION IsBinary(uValue AS USUAL) AS LOGIC
+FUNCTION IsBinary(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsBinary
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/iscodeblock/*" />
-FUNCTION IsCodeBlock(uValue AS USUAL) AS LOGIC
+FUNCTION IsCodeBlock(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsCodeblock
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isdate/*" />
-FUNCTION IsDate(uValue AS USUAL) AS LOGIC
+FUNCTION IsDate(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsDate .OR. uValue:IsDateTime
 
 
@@ -261,7 +261,7 @@ FUNCTION IsDate(uValue AS USUAL) AS LOGIC
 /// </summary>
 /// <param name="uVal">The value to examine.</param>
 /// <returns>TRUE if the value is a DATETIME data type; otherwise, FALSE. </returns>
-FUNCTION IsDateTime(uVal AS USUAL) AS LOGIC
+FUNCTION IsDateTime(uVal IN USUAL) AS LOGIC
     RETURN uVal:IsDateTime
 
 /// <summary>
@@ -269,7 +269,7 @@ FUNCTION IsDateTime(uVal AS USUAL) AS LOGIC
 /// </summary>
 /// <param name="uVal">The value to examine.</param>
 /// <returns>TRUE if the value is a Decimal data type; otherwise, FALSE. </returns>
-FUNCTION IsDecimal(uVal AS USUAL) AS LOGIC
+FUNCTION IsDecimal(uVal IN USUAL) AS LOGIC
     RETURN uVal:IsDecimal
 
 
@@ -278,7 +278,7 @@ FUNCTION IsDecimal(uVal AS USUAL) AS LOGIC
 /// </summary>
 /// <param name="uVal">The value to examine.</param>
 /// <returns>TRUE if the value is a Currency data type; otherwise, FALSE. </returns>
-FUNCTION IsCurrency(uVal AS USUAL) AS LOGIC
+FUNCTION IsCurrency(uVal IN USUAL) AS LOGIC
     RETURN uVal:IsCurrency
 
 /// <summary>
@@ -286,11 +286,11 @@ FUNCTION IsCurrency(uVal AS USUAL) AS LOGIC
 /// </summary>
 /// <param name="uVal">The value to examine.</param>
 /// <returns>TRUE if the value is a Decimal, Currency or Float data type; otherwise, FALSE. </returns>
-FUNCTION IsFractional(uVal AS USUAL) AS LOGIC
+FUNCTION IsFractional(uVal IN USUAL) AS LOGIC
     RETURN uVal:IsFractional
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isfloat/*" />
-FUNCTION IsFloat(uValue AS USUAL) AS LOGIC
+FUNCTION IsFloat(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsFloat
 
 /// <summary>
@@ -298,7 +298,7 @@ FUNCTION IsFloat(uValue AS USUAL) AS LOGIC
 /// </summary>
 /// <param name="uVal">The value to examine.</param>
 /// <returns>TRUE if the value is a INT64 data type; otherwise, FALSE. </returns>
-FUNCTION IsInt64(uVal AS USUAL) AS LOGIC
+FUNCTION IsInt64(uVal IN USUAL) AS LOGIC
     RETURN uVal:IsInt64
 
 /// <summary>
@@ -306,47 +306,47 @@ FUNCTION IsInt64(uVal AS USUAL) AS LOGIC
 /// </summary>
 /// <param name="uVal">The value to examine.</param>
 /// <returns>TRUE if the value is a LONG or INT64 data type; otherwise, FALSE. </returns>
-FUNCTION IsInteger(uVal AS USUAL) AS LOGIC
+FUNCTION IsInteger(uVal IN USUAL) AS LOGIC
     RETURN uVal:IsInteger
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/islogic/*" />
-FUNCTION IsLogic(uValue AS USUAL) AS LOGIC
+FUNCTION IsLogic(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsLogic
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/islong/*" />
-FUNCTION IsLong(uValue AS USUAL) AS LOGIC
+FUNCTION IsLong(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsLong
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isnil/*" />
-FUNCTION IsNil(uValue AS USUAL) AS LOGIC
+FUNCTION IsNil(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsNil
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isnumeric/*" />
 /// <returns>TRUE if the value is a LONG, FLOAT, IN64 or DECIMAL data type; otherwise, FALSE. </returns>
-FUNCTION IsNumeric(uValue AS USUAL) AS LOGIC
+FUNCTION IsNumeric(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsNumeric
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isobject/*" />
-FUNCTION IsObject(uValue AS USUAL) AS LOGIC
+FUNCTION IsObject(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsObject
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isptr/*" />
-FUNCTION IsPtr(uValue AS USUAL) AS LOGIC
+FUNCTION IsPtr(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsPtr
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isstring/*" />
-FUNCTION IsString(uValue AS USUAL) AS LOGIC
+FUNCTION IsString(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsString
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/issymbol/*" />
-FUNCTION IsSymbol(uValue AS USUAL) AS LOGIC
+FUNCTION IsSymbol(uValue IN USUAL) AS LOGIC
     RETURN uValue:IsSymbol
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/len/*" />
-FUNCTION Len(uValue AS USUAL) AS DWORD
+FUNCTION Len(uValue IN USUAL) AS DWORD
     IF uValue:IsArray
         RETURN (DWORD) ((ARRAY) uValue):Length
     ELSEIF uValue:IsString

@@ -19,7 +19,7 @@ PROCEDURE ErrorSys _INIT1
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/break/*" />
-FUNCTION _Break(uValue AS USUAL) AS USUAL
+FUNCTION _Break(uValue IN USUAL) AS USUAL
 	THROW XSharp.Internal.WrappedException{uValue}
 
 

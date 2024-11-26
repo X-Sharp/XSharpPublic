@@ -176,7 +176,7 @@ FUNCTION VoDbFieldInfo(kInfoType AS DWORD,wFieldPos AS DWORD,uValue AS USUAL) AS
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfieldput/*" />
 /// <seealso cref="CoreDb.FieldPut"  />
-FUNCTION VoDbFieldPut(wFieldPos AS DWORD,uNewValue AS USUAL) AS LOGIC
+FUNCTION VoDbFieldPut(wFieldPos AS DWORD,uNewValue IN USUAL) AS LOGIC
     RETURN VoDb.FieldPut(wFieldPos, uNewValue)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfieldput/*" />
@@ -229,7 +229,7 @@ FUNCTION VoDbGoBottom() AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgoto/*" />
 /// <seealso cref="CoreDb.Goto"  />
-FUNCTION VoDbGoto(uRecId AS USUAL) AS LOGIC
+FUNCTION VoDbGoto(uRecId IN USUAL) AS LOGIC
     RETURN VoDb.Goto(uRecId)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgotop/*" />
@@ -291,12 +291,12 @@ FUNCTION VoDbOrdCreate(cIndexFile AS STRING,cOrder AS USUAL,cKeyValue AS STRING,
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbdeleteorder/*" />
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodborddestroy/*" />
 /// <seealso cref="CoreDb.OrdDestroy"  />
-FUNCTION VoDbOrdDestroy(cIndexFile AS STRING,uOrder AS USUAL) AS LOGIC
+FUNCTION VoDbOrdDestroy(cIndexFile AS STRING,uOrder IN USUAL) AS LOGIC
     RETURN VoDb.OrdDestroy(cIndexFile, uOrder)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodborderinfo/*" />
 /// <seealso cref="CoreDb.OrderInfo"  />
-FUNCTION VoDbOrderInfo(kInfoType AS DWORD,cIndexFile AS STRING,uOrder AS USUAL,ptrRetVal REF USUAL) AS LOGIC
+FUNCTION VoDbOrderInfo(kInfoType AS DWORD,cIndexFile AS STRING,uOrder IN USUAL,ptrRetVal REF USUAL) AS LOGIC
     RETURN VoDb.OrderInfo(kInfoType, cIndexFile, uOrder, REF ptrRetVal)
 
 /// <inheritdoc cref="VoDbOrderInfo" />/>
@@ -308,13 +308,13 @@ FUNCTION VoDbOrderInfo(kInfoType AS DWORD,cIndexFile AS STRING,uOrder AS USUAL,u
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetindex/*" />
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbordlistadd/*" />
 /// <seealso cref="CoreDb.OrdListAdd"  />
-FUNCTION VoDbOrdListAdd(cIndexFile AS STRING,uOrder AS USUAL) AS LOGIC
+FUNCTION VoDbOrdListAdd(cIndexFile AS STRING,uOrder IN USUAL) AS LOGIC
     RETURN VoDb.OrdListAdd(cIndexFile, uOrder)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclearindex/*" />
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbordlistclear/*" />
 /// <seealso cref="CoreDb.OrdListClear"  />
-FUNCTION VoDbOrdListClear(cIndexFile AS STRING,uOrder AS USUAL) AS LOGIC
+FUNCTION VoDbOrdListClear(cIndexFile AS STRING,uOrder IN USUAL) AS LOGIC
     RETURN VoDb.OrdListClear(cIndexFile, uOrder)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbreindex/*" />
@@ -327,7 +327,7 @@ FUNCTION VoDbOrdListRebuild() AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbordsetfocus/*" />
 /// <param name="cOrder">This returns the previous order that was selected.</param>
 /// <seealso cref="CoreDb.OrdSetFocus"  />
-FUNCTION VoDbOrdSetFocus(cIndexFile AS STRING,uOrder AS USUAL,cOrder OUT STRING) AS LOGIC
+FUNCTION VoDbOrdSetFocus(cIndexFile AS STRING,uOrder IN USUAL,cOrder OUT STRING) AS LOGIC
     RETURN VoDb.OrdSetFocus(cIndexFile,  uOrder, OUT cOrder)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbpack/*" />
@@ -395,12 +395,12 @@ FUNCTION VoDbRecordGet() AS BYTE[]
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbrecordinfo/*" />
 /// <seealso cref="CoreDb.RecordInfo"  />
-FUNCTION VoDbRecordInfo(kInfoType AS DWORD,nRecID AS USUAL,ptrRetVal REF USUAL) AS LOGIC
+FUNCTION VoDbRecordInfo(kInfoType AS DWORD,nRecID IN USUAL,ptrRetVal REF USUAL) AS LOGIC
     RETURN VoDb.RecordInfo(kInfoType, nRecID, REF ptrRetVal)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbrecordinfo/*" />
 /// <seealso cref="CoreDb.RecordInfo"  />
-FUNCTION VoDbRecordInfo(kInfoType AS DWORD,nRecID AS USUAL,ptrRetVal AS USUAL) AS LOGIC
+FUNCTION VoDbRecordInfo(kInfoType AS DWORD,nRecID IN USUAL,ptrRetVal AS USUAL) AS LOGIC
     RETURN VoDb.RecordInfo(kInfoType, nRecID, ptrRetVal)
 
 /// <inheritdoc cref="CoreDb.RecordPut"  />
@@ -460,7 +460,7 @@ FUNCTION VoDbSelect(wNew AS DWORD,wOld OUT DWORD ) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbsetfilter/*" />
 /// <seealso cref="CoreDb.SetFilter"  />
-FUNCTION VoDbSetFilter(cbCondition AS USUAL,cCondition AS STRING) AS LOGIC
+FUNCTION VoDbSetFilter(cbCondition IN USUAL,cCondition AS STRING) AS LOGIC
     RETURN VoDb.SetFilter(VoDb.ValidBlock(cbCondition), cCondition)
 
 
@@ -471,12 +471,12 @@ FUNCTION VoDbSetFound(lFound AS LOGIC) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbsetlocate/*" />
 /// <seealso cref="CoreDb.SetLocate"  />
-FUNCTION VoDbSetLocate(cbForCondition AS USUAL) AS LOGIC
+FUNCTION VoDbSetLocate(cbForCondition IN USUAL) AS LOGIC
     RETURN VoDb.SetLocate(VoDb.ValidBlock(cbForCondition))
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbsetrelation/*" />
 /// <seealso cref="CoreDb.SetRelation"  />
-FUNCTION VoDbSetRelation(cAlias AS STRING,cbRel AS USUAL,cRel AS STRING, cName := "" AS STRING) AS LOGIC
+FUNCTION VoDbSetRelation(cAlias AS STRING,cbRel IN USUAL,cRel AS STRING, cName := "" AS STRING) AS LOGIC
     RETURN VoDb.SetRelation(cAlias, VoDb.ValidBlock(cbRel), cRel, cName)
 
 
@@ -511,7 +511,7 @@ FUNCTION VoDbSkipScope(nRecords AS LONG,scope AS DbScopeInfo) AS LOGIC
 /// <param name="fnSortNames">List of field names to sort on</param>
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsort/*" />
 /// <seealso cref="CoreDb.Sort"  />
-FUNCTION VoDbSort(nDest AS DWORD,fldNames AS _FieldNames,cbForCondition AS USUAL,cbWhileCondition AS USUAL, nNext AS USUAL,nRecord AS USUAL,lRest AS LOGIC,fnSortNames AS _FieldNames) AS LOGIC
+FUNCTION VoDbSort(nDest AS DWORD,fldNames AS _FieldNames,cbForCondition IN USUAL,cbWhileCondition IN USUAL, nNext IN USUAL,nRecord IN USUAL,lRest AS LOGIC,fnSortNames AS _FieldNames) AS LOGIC
     RETURN VoDb.Sort(nDest, fldNames, VoDb.ValidBlock(cbForCondition), VoDb.ValidBlock(cbWhileCondition), nNext, nRecord, lRest, fnSortNames)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbsymselect/*" />
@@ -522,7 +522,7 @@ FUNCTION VoDbSymSelect(symAlias AS SYMBOL) AS INT
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbtrans/*" />
 /// <seealso cref="CoreDb.Trans"  />
 /// <param name="fldNames">List of field names to copy </param>
-FUNCTION VoDbTrans(wTarget AS DWORD,fldNames AS _FieldNames,cbForCondition AS USUAL,cbWhileCondition AS USUAL, nNext AS USUAL,nRecord AS USUAL,lRest AS LOGIC) AS LOGIC
+FUNCTION VoDbTrans(wTarget AS DWORD,fldNames AS _FieldNames,cbForCondition IN USUAL,cbWhileCondition IN USUAL, nNext IN USUAL,nRecord IN USUAL,lRest AS LOGIC) AS LOGIC
     RETURN VoDb.Trans(wTarget, fldNames, VoDb.ValidBlock(cbForCondition), VoDb.ValidBlock(cbWhileCondition), nNext, nRecord, lRest)
 
 /// <inheritdoc cref="CoreDb.TransRec"  />
@@ -533,7 +533,7 @@ FUNCTION VoDbTransRec(nDest AS DWORD,fldNames AS _FieldNames) AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbunlock/*" />
 /// <remarks> <inheritdoc cref="CoreDb.Unlock"  />
 /// <br/><br/> <note type="tip">The difference between VoDbUnlock and CoreDb.UnLock is that VoDbUnlock takes USUAL parameters</note></remarks>
-FUNCTION VoDbUnlock(uRecId AS USUAL) AS LOGIC
+FUNCTION VoDbUnlock(uRecId IN USUAL) AS LOGIC
     RETURN VoDb.Unlock( uRecId)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbunlockall/*" />

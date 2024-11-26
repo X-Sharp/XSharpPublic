@@ -136,7 +136,7 @@ FUNCTION @@Date(dwYear AS DWORD,dwMonth AS DWORD,dwDay AS DWORD) AS DATE
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/tstring/*" />
-FUNCTION TString(nSeconds AS USUAL) AS STRING
+FUNCTION TString(nSeconds IN USUAL) AS STRING
 	IF nSeconds:IsNil
 		RETURN XSharp.Core.Functions.TString( (DWORD) 0 )
 	ELSEIF nSeconds:IsFractional

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -40,7 +40,7 @@ FUNCTION ADir(cFileSpec ,acFileNames ,anSizes ,adDates,acTimes,acAttributes) AS 
     if aAttribs != NULL_ARRAY
         aFiles := Directory(cFileSpec,FA_NORMAL+FC_HIDDEN+FC_SYSTEM+FC_READONLY)
     ELSE
-        aFiles := Directory(cFileSpec,FA_NORMAL)    
+        aFiles := Directory(cFileSpec,FA_NORMAL)
     ENDIF
 	IF ALen(aFiles) > 0 .AND. lHasArg
 		LOCAL x AS DWORD
@@ -64,13 +64,13 @@ FUNCTION ADir(cFileSpec ,acFileNames ,anSizes ,adDates,acTimes,acAttributes) AS 
 		NEXT
 	ENDIF
 	RETURN ALen(aFiles)
-	
-	
-	
-	
-	
+
+
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/directory/*" />
-FUNCTION Directory(cFileSpec AS STRING, uAttributes := NIL AS USUAL) AS ARRAY
+FUNCTION Directory(cFileSpec AS STRING, uAttributes := NIL IN USUAL) AS ARRAY
 	LOCAL nAttr		AS DWORD
 	LOCAL aReturn	AS ARRAY
 	LOCAL cPath		AS STRING
@@ -91,10 +91,10 @@ FUNCTION Directory(cFileSpec AS STRING, uAttributes := NIL AS USUAL) AS ARRAY
 			AAdd(aReturn, {DriveInfo{cFileSpec}:VolumeLabel, 0, NULL_DATE, "00:00:00", "V"})
         CATCH as Exception
             NOP
-            
+
 		END TRY
 	ENDIF
-    lWild := cFileSpec:Contains("*") .or. cFileSpec:Contains("?") 
+    lWild := cFileSpec:Contains("*") .or. cFileSpec:Contains("?")
     IF ! lWild
         local sPathSep as STRING
         sPathSep := System.IO.Path.DirectorySeparatorChar:ToString()
@@ -105,45 +105,45 @@ FUNCTION Directory(cFileSpec AS STRING, uAttributes := NIL AS USUAL) AS ARRAY
 	    ELSEIF cFileSpec:EndsWith(sPathSep)
 		    cFileSpec += "*.*"
 	    ELSEIF cFileSpec:Length == 2 .and. cFileSpec[1] == System.IO.Path.VolumeSeparatorChar .AND. Char.IsLetter( cFileSpec, 0 )   // only a drive letter specified
-		    VAR  curdir := Environment.CurrentDirectory 
+		    VAR  curdir := Environment.CurrentDirectory
 		    IF Char.ToUpper( cFileSpec[0] ) == Char.ToUpper( curdir[0] )  // if same drive, use current directory
                 cFileSpec := curdir + sPathSep + "*.*"
 		    ELSE
 			    cFileSpec += sPathSep  + "*.*"
-		    ENDIF   
+		    ENDIF
 	    ENDIF
     ENDIF
 	TRY
 		cPath := Path.GetDirectoryName(cFileSpec)
 	CATCH
 		cPath := ""
-	END TRY   
-	
+	END TRY
+
 	IF String.IsNullOrEmpty( cPath )
 		cPath := System.IO.Directory.GetCurrentDirectory()
 	ENDIF
-	
+
 	cFileMask := Path.GetFileName( cFileSpec )
 	LOCAL files AS STRING[]
 	IF _AND( nAttr,FA_DIRECTORY ) == (DWORD) FA_DIRECTORY
 		DirectoryHelper.AddDirectoryInfo( aReturn, cFileSpec, nAttr , NULL)
     ENDIF
 	// File Info
-	    
+
 	TRY
 		files := System.IO.Directory.GetFiles( cPath, cFileMask )
 		IF files != NULL
 			FOREACH cFile AS STRING IN files
 				VAR oFile := System.IO.FileInfo{cFile}
-				DirectoryHelper.AddFileInfo(aReturn, oFile, nAttr)			
+				DirectoryHelper.AddFileInfo(aReturn, oFile, nAttr)
 			NEXT
 		ENDIF
 	CATCH
 		NOP
 	END TRY
 
-	
-	
+
+
 	// Directory info
 	IF _AND( nAttr, FA_DIRECTORY) == (DWORD) FA_DIRECTORY .AND. ( cFileSpec:Contains( "*" ) || cFileSpec:Contains( "?" ) )
 	    cPath := Path.GetDirectoryName( cFileSpec )
@@ -151,9 +151,9 @@ FUNCTION Directory(cFileSpec AS STRING, uAttributes := NIL AS USUAL) AS ARRAY
 		IF cPath != Path.GetPathRoot( cFileSpec ) .AND. ( cName == "*.*" || cName == "*" )
 			DirectoryHelper.AddDirectoryInfo( aReturn, cPath, nAttr, "." )
 			DirectoryHelper.AddDirectoryInfo( aReturn, cPath, nAttr, ".." )
-		ENDIF         
-		
-		TRY 
+		ENDIF
+
+		TRY
 			files := System.IO.Directory.GetDirectories( cPath, cName )
 			FOR VAR i := 1 UPTO files:Length
 				DirectoryHelper.AddDirectoryInfo( aReturn, files[i], nAttr, NULL )
@@ -162,16 +162,16 @@ FUNCTION Directory(cFileSpec AS STRING, uAttributes := NIL AS USUAL) AS ARRAY
 			NOP
 		END TRY
 	ENDIF
-	
+
 	IF ALen(aReturn) > 1
-		aReturn := ASort( aReturn, 1, aReturn:Length, {|x,y| x[1] < y[1] } )	
+		aReturn := ASort( aReturn, 1, aReturn:Length, {|x,y| x[1] < y[1] } )
 	ENDIF
 	RETURN aReturn
 
 INTERNAL STATIC CLASS DirectoryHelper
 
 INTERNAL STATIC METHOD AddFileInfo(aReturn AS ARRAY, oFile AS System.IO.FileInfo, nAttr AS DWORD) AS VOID
-    
+
 	LOCAL lAdd := TRUE AS LOGIC
     VAR cAttribute := DecodeAttributes(oFile:Attributes, nAttr, REF lAdd)
 	IF lAdd
@@ -179,7 +179,7 @@ INTERNAL STATIC METHOD AddFileInfo(aReturn AS ARRAY, oFile AS System.IO.FileInfo
         AAdd(aReturn, aFile)
 	ENDIF
 	RETURN
-	
+
 INTERNAL STATIC METHOD AddDirectoryInfo( aReturn AS ARRAY, cDirectory AS STRING, nAttr AS DWORD, cName AS STRING ) AS VOID
 	TRY
         IF cDirectory:IndexOfAny(<CHAR> {c'?',c'*'}) == -1
@@ -197,11 +197,11 @@ INTERNAL STATIC METHOD AddDirectoryInfo( aReturn AS ARRAY, cDirectory AS STRING,
 			    ENDIF
             ENDIF
         ENDIF
-	CATCH 
+	CATCH
 		NOP
-	END TRY   
+	END TRY
 
-	RETURN  
+	RETURN
 
 INTERNAL STATIC METHOD FileSystemInfo2Array(info AS FileSystemInfo, cAttribute AS STRING) AS ARRAY
     VAR aFile := ArrayNew(F_LEN)
@@ -228,18 +228,18 @@ RETURN aFile
 INTERNAL STATIC METHOD DecodeAttributes(attributes AS System.IO.FileAttributes, nAttr AS DWORD, lOk REF LOGIC) AS STRING
     VAR cAttribute := ""
     lOk := TRUE
-	IF attributes:HasFlag(System.IO.FileAttributes.ReadOnly) 
+	IF attributes:HasFlag(System.IO.FileAttributes.ReadOnly)
 		cAttribute += "R"
 	ENDIF
-	IF attributes:HasFlag(System.IO.FileAttributes.Hidden) 
+	IF attributes:HasFlag(System.IO.FileAttributes.Hidden)
 		lOk := lOk .AND. _AND(nAttr,FC_HIDDEN) == (DWORD) FC_HIDDEN
 		cAttribute += "H"
 	ENDIF
-	IF attributes:HasFlag(System.IO.FileAttributes.System) 
+	IF attributes:HasFlag(System.IO.FileAttributes.System)
 		lOk := lOk .AND. _AND(nAttr,FC_SYSTEM) == (DWORD) FC_SYSTEM
 		cAttribute += "S"
 	ENDIF
-	IF attributes:HasFlag(System.IO.FileAttributes.Archive) 
+	IF attributes:HasFlag(System.IO.FileAttributes.Archive)
 		cAttribute += "A"
 	ENDIF
     RETURN cAttribute

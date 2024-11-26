@@ -1,0 +1,128 @@
+<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information. -->
+<!--
+
+  This file contains Visual Studio and designer-related properties and items for X# projects.
+  It is based on Microsoft.CSharp.DesignTime.targets 
+  It gets install inside the <VisualStudio>\MSBuild\Microsoft\VisualStudio\Managed folder.
+  This folder is also known as "ManagedXamlResourcesDirectory"
+  It references the Microsoft xaml files and the XSharp specific files that are normally installed
+  in the folder that is defined in the property XSharpXamlDir, 
+  which is set to the $(XSharpMsBuildDir)\Rules folder.
+  This file plays an essential role in the managed project system. It declares the items that 
+  are supported and also declares the various Project Property pages.
+  We inherit the property pages from Microsoft.Managed.DesignTime.targets and extend some of them 
+  with X# specific properties. Our pages are called <Somepage>.XSharp.Xaml.
+  The order attribute in the xaml files determines the order in which pages are shown in the UI.
+  
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="Microsoft.Managed.DesignTime.targets" />
+
+  <!-- Properties -->
+  <PropertyGroup>
+    <AppDesignerFolder Condition="'$(AppDesignerFolder)' == ''">Properties</AppDesignerFolder>
+    <AppDesignerFolderContentsVisibleOnlyInShowAllFiles Condition="'$(AppDesignerFolderContentsVisibleOnlyInShowAllFiles)' == ''">false</AppDesignerFolderContentsVisibleOnlyInShowAllFiles>
+    <LanguageServiceName Condition="'$(LanguageServiceName)' == ''">X#</LanguageServiceName>
+    <LanguageServiceId Condition="'$(LanguageServiceId)'==''">{694DD9B6-B865-4C5B-AD85-86356E9C88DC}</LanguageServiceId>
+    <TemplateLanguage Condition="'$(TemplateLanguage)' == ''">XSharp</TemplateLanguage>
+    <AddItemTemplatesGuid Condition="'$(AddItemTemplatesGuid)' == ''">{FAE04EC0-301F-11d3-BF4B-00C04F79EFBC}</AddItemTemplatesGuid>
+    <CmdUIContextGuid Condition="'$(CmdUIContextGuid)' == ''">{FAE04EC1-301F-11d3-BF4B-00C04F79EFBC}</CmdUIContextGuid>
+    <GeneratorsTypeGuid Condition="'$(GeneratorsTypeGuid)' == ''">{FAE04EC1-301F-11d3-BF4B-00C04F79EFBC}</GeneratorsTypeGuid>
+    <DesignerFunctionVisibility Condition="'$(DesignerFunctionVisibility)' == ''">Private</DesignerFunctionVisibility>
+    <DesignerVariableNaming Condition="'$(DesignerVariableNaming)' == ''">Camel</DesignerVariableNaming>
+    <DesignerHiddenCodeGeneration Condition="'$(DesignerHiddenCodeGeneration)' == ''">Declarations</DesignerHiddenCodeGeneration>
+    <!-- Turn off rules and capabilities that are defined in MSBuild so that we can import our own below -->
+    <DefineXSharpItemSchemas>false</DefineXSharpItemSchemas>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PropertyPageSchema Include="$(XSharpXamlDir)ProjectItemsSchema.XSharp.xaml;" />
+    <ProjectCapability Include="
+                          XSharp;
+                          Managed;
+		                  SingleTargetBuildForStartupProjects;
+                          ClassDesigner;
+                          SharedProjectReferences;
+                          ProjectPropertiesEditor;" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(DefineCommonManagedItemSchemas)' == 'true'">
+
+    <PropertyPageSchema Include="$(XSharpXamlDir)ApplicationPropertyPage.XSharp.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+
+    <PropertyPageSchema Include="$(XSharpXamlDir)LanguagePage.XSharp.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+
+    <PropertyPageSchema Include="$(XSharpXamlDir)DialectPage.XSharp.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+	
+    <PropertyPageSchema Include="$(XSharpXamlDir)DebugPropertyPage.XSharp.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+	
+    <PropertyPageSchema Include="$(XSharpXamlDir)BuildPropertyPage.XSharp.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+
+    <PropertyPageSchema Include="$(XSharpXamlDir)ReferencesPage.XSharp.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+	
+    <PropertyPageSchema Include="$(XSharpXamlDir)SettingsPropertyPage.XSharp.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+	
+    <PropertyPageSchema Include="$(XSharpXamlDir)VOBinary.xaml">
+      <Context>File</Context>
+    </PropertyPageSchema>
+
+   <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.xaml">
+      <Context>File</Context>
+    </PropertyPageSchema>
+	
+   <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.BrowseObject.xaml">
+      <Context>BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <PropertyPageSchema Include="$(XSharpXamlDir)VOBinary.BrowseObject.xaml">
+      <Context>BrowseObject</Context>
+    </PropertyPageSchema>
+
+	<PropertyPageSchema Include="$(ManagedXamlNeutralResourcesDirectory)EditorConfigFiles.xaml">
+      <Context>File</Context>
+    </PropertyPageSchema>
+
+    <PropertyPageSchema Include="$(ManagedXamlResourcesDirectory)EditorConfigFiles.BrowseObject.xaml">
+      <Context>BrowseObject</Context>
+    </PropertyPageSchema>
+
+  </ItemGroup>
+
+  <!-- Targets -->
+
+  <!-- 
+      Returns Xsc command-line arguments for the language service 
+	  The _CheckCompileDesignTimePrerequisite target checks to make sure that 
+	  both SkipCompilerExecution and ProvideCommandLineArgs are set to true.
+	  When that happens, then the xsc task will create items for each of the command-line arguments
+	  and will not execute xsc.exe
+	  These items are picked up by the managed project system and fed to the language service.
+  -->
+  <Target Name="CompileDesignTime"
+          Returns="@(_CompilerCommandLineArgs)"
+          DependsOnTargets="_CheckCompileDesignTimePrerequisite;Compile"
+          Condition="'$(IsCrossTargetingBuild)' != 'true'">
+
+    <ItemGroup>
+      <_CompilerCommandLineArgs Include="@(XscCommandLineArgs)" />
+    </ItemGroup>
+
+  </Target>
+
+</Project>

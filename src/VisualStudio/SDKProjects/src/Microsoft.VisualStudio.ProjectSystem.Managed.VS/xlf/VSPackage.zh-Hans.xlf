@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="zh-Hans" original="../VSPackage.resx">
+    <body>
+      <trans-unit id="28">
+        <source>X#</source>
+        <target state="new">X#</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="29">
+        <source>X# Project Files (*.xsproj);*.xsproj</source>
+        <target state="new">X# Project Files (*.xsproj);*.xsproj</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="3">
+        <source>Console App (.NET Core)</source>
+        <target state="translated">控制台应用(.NET Core)</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="4">
+        <source>A project for creating a command-line application that can run on .NET Core on Windows, Linux and MacOS.</source>
+        <target state="translated">用于创建可在 Windows、Linux 和 MacOS 上的 .NET Core 上运行的命令行应用程序的项目。</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="5">
+        <source>Class Library (.NET Standard)</source>
+        <target state="translated">类库(.NET Standard)</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="6">
+        <source>A project for creating a class library that targets .NET Standard.</source>
+        <target state="translated">用于创建目标为 .NET Standard 的类库的项目。</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="9">
+        <source>Class Library (.NET Core)</source>
+        <target state="translated">类库 (.NET Core)</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="10">
+        <source>A project for creating a class library that targets .NET Core.</source>
+        <target state="translated">用于创建目标为 .NET Core 的类库的项目。</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="11">
+        <source>xUnit Test Project (.NET Core)</source>
+        <target state="translated">xUnit 测试项目 (.NET Core)</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="12">
+        <source>A project that contains xUnit.net tests that can run on .NET Core on Windows, Linux and MacOS.</source>
+        <target state="translated">包含 xUnit.net 测试的项目，测试可在 Windows、Linux 和 MacOS 的 .NET Core 上运行</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="13">
+        <source>NUnit Test Project (.NET Core)</source>
+        <target state="translated">NUnit 测试项目(.NET Core)</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="14">
+        <source>A project that contains NUnit tests that can run on .NET Core on Windows, Linux and MacOS.</source>
+        <target state="translated">包含 NUnit 测试的项目，可在 Windows、Linux 和 MacOS 中的 .NET Core 上运行。</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="21">
+        <source>Visual Basic</source>
+        <target state="translated">Visual Basic</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="22">
+        <source>Visual Basic Project Files (*.vbproj);*.vbproj</source>
+        <target state="translated">Visual Basic 项目文件(*.vbproj);*.vbproj</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="23">
+        <source>F#</source>
+        <target state="translated">F#</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="24">
+        <source>F# Project Files (*.fsproj);*.fsproj</source>
+        <target state="translated">F# 项目文件(*.fsproj);*.fsproj</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="25">
+        <source>C#</source>
+        <target state="translated">C#</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="26">
+        <source>C# Project Files (*.csproj);*.csproj</source>
+        <target state="translated">C# 项目文件(*.csproj);*.csproj</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="27">
+        <source>.NET Core 2015 Project Files (*.xproj);*.xproj</source>
+        <target state="translated">.NET Core 2015 项目文件(*.xproj);*.xproj</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FastUpToDateCheck_Enabled_Title">
+        <source>Don't call MSBuild if a project appears to be up to date</source>
+        <target state="translated">如果项目看起来是最新的，请不要调用 MSBuild</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FastUpToDateCheck_LoggingLevel_Info">
+        <source>Info</source>
+        <target state="translated">信息</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FastUpToDateCheck_LoggingLevel_Minimal">
+        <source>Minimal</source>
+        <target state="translated">最小</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FastUpToDateCheck_LoggingLevel_None">
+        <source>None</source>
+        <target state="translated">无</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FastUpToDateCheck_LoggingLevel_Title">
+        <source>Logging level</source>
+        <target state="translated">日志记录级别</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FastUpToDateCheck_LoggingLevel_Verbose">
+        <source>Verbose</source>
+        <target state="translated">详细</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FileNesting_IgnoreSolutionAndProjectSettings_Title">
+        <source>Ignore solution and project settings</source>
+        <target state="translated">忽略解决方案和项目设置</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FileNesting_PreferSingleTargetBuilds_Description">
+        <source>When starting a project that targets multiple frameworks, build time can be reduced by building only a single one.</source>
+        <target state="translated">启动面向多个框架的项目时，可通过仅生成一个框架来缩短生成时间。</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FileNesting_PreferSingleTargetBuilds_Title">
+        <source>Prefer single-target builds when starting a project</source>
+        <target state="translated">启动项目时首选单目标生成</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Settings_Category_FastUpToDateCheck">
+        <source>Up-to-date Checks</source>
+        <target state="translated">最新检查</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Settings_Category_FileNestingSettings">
+        <source>File Nesting</source>
+        <target state="translated">文件嵌套</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Settings_Category_MultiTargetingSettings">
+        <source>Multi-targeting</source>
+        <target state="translated">多重目标</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Settings_Category_SdkStyleProjects">
+        <source>SDK-style Projects</source>
+        <target state="translated">SDK 样式项目</target>
+        <note />
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

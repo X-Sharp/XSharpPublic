@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="de" original="../CodeAnalysisPropPage.resx">
+    <body>
+      <trans-unit id="AnalysisLevelComboBox.AutoCompleteCustomSource">
+        <source>preview</source>
+        <target state="translated">Vorschau</target>
+        <note>"preview" is a project property term and should not be localized</note>
+      </trans-unit>
+      <trans-unit id="AnalysisLevelComboBox.AutoCompleteCustomSource1">
+        <source>latest</source>
+        <target state="translated">neueste</target>
+        <note>"latest" is a project property term and should not be localized</note>
+      </trans-unit>
+      <trans-unit id="AnalysisLevelComboBox.AutoCompleteCustomSource2">
+        <source>5.0</source>
+        <target state="translated">5.0</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="AnalysisLevelComboBox.AutoCompleteCustomSource3">
+        <source>none</source>
+        <target state="translated">keine</target>
+        <note>"none" is a project property term and should not be localized</note>
+      </trans-unit>
+      <trans-unit id="AnalysisLevelLabel.Text">
+        <source>Analysis Level</source>
+        <target state="translated">Analyseebene</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnableNETAnalyzersCheckBox.Text">
+        <source>Enable .NET analyzers</source>
+        <target state="translated">.NET-Analysetools aktivieren</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnforceCodeStyleInBuildCheckBox.Text">
+        <source>Enforce CodeStyle on build</source>
+        <target state="translated">Erzwingen von CodeStyle beim Build</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Label1.Text">
+        <source>.NET analyzers</source>
+        <target state="translated">.NET-Analysetools</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="NETAnalyzersLinkLabel.Text">
+        <source>What are .NET analyzers?</source>
+        <target state="translated">Was sind .NET-Analysetools?</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="RoslynAnalyzersLabel.Text">
+        <source>All analyzers</source>
+        <target state="translated">Alle Analysetools</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="RoslynAnalyzersHelpLinkLabel.Text">
+        <source>What are the benefits of source code analyzers?</source>
+        <target state="translated">Welche Vorteile haben Quellcode-Analysetools?</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="RunAnalyzersDuringLiveAnalysis.Text">
+        <source>Run on &amp;live analysis</source>
+        <target state="translated">Bei &amp;Liveanalyse ausführen</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="RunAnalyzersDuringBuild.Text">
+        <source>Run on &amp;build</source>
+        <target state="translated">&amp;Beim Erstellen ausführen</target>
+        <note />
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,592 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="ko" original="../BuildPropertyPage.xaml">
+    <body>
+      <trans-unit id="BoolProperty|AllowUnsafeBlocks|Description">
+        <source>Allow code that uses the 'unsafe' keyword to compile.</source>
+        <target state="translated">'안전하지 않음' 키워드를 사용하는 코드를 컴파일할 수 있도록 허용합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|AllowUnsafeBlocks|DisplayName">
+        <source>Unsafe code</source>
+        <target state="translated">안전하지 않은 코드</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|AllowUnsafeBlocks|Metadata|SearchTerms">
+        <source>pointers</source>
+        <target state="translated">포인터</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|CheckForOverflowUnderflow|Description">
+        <source>Throw exceptions when integer arithmetic produces out of range values.</source>
+        <target state="translated">정수 연산에서 범위를 벗어난 값을 생성하는 경우 예외를 Throw합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|CheckForOverflowUnderflow|DisplayName">
+        <source>Check for arithmetic overflow</source>
+        <target state="translated">산술 오버플로 확인</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|CheckForOverflowUnderflow|Metadata|SearchTerms">
+        <source>checked;unchecked</source>
+        <target state="translated">선택됨;선택 취소됨</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|DelaySign|Description">
+        <source>Use delayed signing when access to the private key is restricted. The public key will be used during the build, and addition of the private key information deferred until the assembly is handed off.</source>
+        <target state="translated">프라이빗 키에 대한 액세스가 제한된 경우 지연된 서명을 사용합니다. 빌드 중에는 퍼블릭 키가 사용되며, 프라이빗 키 정보 추가는 어셈블리가 전달될 때까지 지연됩니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|DelaySign|DisplayName">
+        <source>Delay sign only</source>
+        <target state="translated">서명만 연기</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Deterministic|Description">
+        <source>Produce identical compilation output for identical inputs.</source>
+        <target state="translated">동일한 입력에 대해 동일한 컴파일 출력을 생성합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Deterministic|DisplayName">
+        <source>Deterministic</source>
+        <target state="translated">결정적</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|GenerateAssemblyInfo|Description">
+        <source>Transform project properties into assembly attributes during build.</source>
+        <target state="translated">빌드하는 동안 프로젝트 속성을 어셈블리 특성으로 변환합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|GenerateAssemblyInfo|DisplayName">
+        <source>Generate assembly info</source>
+        <target state="translated">어셈블리 정보 생성</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|GenerateDocumentationFile|Description">
+        <source>Generate a file containing API documentation.</source>
+        <target state="translated">API 설명서를 포함하는 파일을 생성합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|GenerateDocumentationFile|DisplayName">
+        <source>Documentation file</source>
+        <target state="translated">설명서 파일</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|IsAotCompatible|Description">
+        <source>Indicates that the library project is AOT compatible.</source>
+        <target state="translated">라이브러리 프로젝트가 AOT와 호환됨을 나타냅니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|IsAotCompatible|DisplayName">
+        <source>AOT Compatible</source>
+        <target state="translated">AOT 호환 가능</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|IsPublishable|Description">
+        <source>Allows the "Publish" target to run. This property only affects processes that use .*proj files and "Publish" target, such as "dotnet publish" command. The default value is true.</source>
+        <target state="translated">"게시" 대상을 실행하도록 허용합니다. 이 속성은 "dotnet publish" 명령과 같이 .*proj 파일 및 "게시" 대상을 사용하는 프로세스에만 영향을 줍니다. 기본값은 true입니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|IsPublishable|DisplayName">
+        <source>Publishing</source>
+        <target state="translated">게시</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|IsTrimmable|Description">
+        <source>Marks your assembly as trimmable and enables trim warnings for that project.</source>
+        <target state="translated">어셈블리를 트리밍 가능으로 표시하고 해당 프로젝트에 대한 트리밍 경고를 활성화합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|IsTrimmable|DisplayName">
+        <source>Trimmable</source>
+        <target state="translated">트리밍 가능</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Optimize|Description">
+        <source>Enable compiler optimizations for smaller, faster, and more efficient output.</source>
+        <target state="translated">더 작고 빠르며 더 효율적인 출력을 위해 컴파일러 최적화를 사용하도록 설정합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Optimize|DisplayName">
+        <source>Optimize code</source>
+        <target state="translated">코드 최적화</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Optimize|Metadata|SearchTerms">
+        <source>optimise;optimisation</source>
+        <target state="translated">최적화하다;최적화</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Prefer32Bit|Description">
+        <source>Run in 32-bit mode on systems that support both 32-bit and 64-bit applications.</source>
+        <target state="translated">32비트 및 64비트 응용 프로그램을 모두 지원하는 시스템에서 32비트 모드로 실행합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Prefer32Bit|DisplayName">
+        <source>Prefer 32-bit</source>
+        <target state="translated">32비트 선호</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|PreferNativeArm64|Description">
+        <source>Run on native hardware platform by default.</source>
+        <target state="translated">기본적으로 네이티브 하드웨어 플랫폼에서 실행합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|PreferNativeArm64|DisplayName">
+        <source>Prefer Native ARM64</source>
+        <target state="translated">네이티브 ARM64 선호</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|ProduceReferenceAssembly|Description">
+        <source>Produce a reference assembly containing the public API of the project.</source>
+        <target state="translated">프로젝트의 공용 API를 포함하는 참조 어셈블리를 생성합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|ProduceReferenceAssembly|DisplayName">
+        <source>Reference assembly</source>
+        <target state="translated">참조 어셈블리</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|PublishAot|Description">
+        <source>Enable Ahead-of-Time (AOT) Compilation to generate native machine code for your .NET Core application during the publish process for improved performance and reduced startup time.</source>
+        <target state="translated">AOT(Ahead-of-Time) 컴파일을 활성화하여 성능 향상 및 시작 시간 단축을 위해 게시 프로세스 중에 .NET Core 애플리케이션용 네이티브 컴퓨터 코드를 생성합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|PublishAot|DisplayName">
+        <source>Publish native AOT</source>
+        <target state="translated">네이티브 AOT 게시</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|PublishTrimmed|Description">
+        <source>Controls whether trimming is enabled during publish.</source>
+        <target state="translated">게시하는 동안 트리밍을 사용할지 여부를 제어합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|PublishTrimmed|DisplayName">
+        <source>Publish trimmed</source>
+        <target state="translated">트리밍하여 게시</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|SignAssembly|Description">
+        <source>Sign the output assembly to give it a strong name.</source>
+        <target state="translated">출력 어셈블리에 서명하여 강력한 이름을 지정합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|SignAssembly|DisplayName">
+        <source>Sign the assembly</source>
+        <target state="translated">어셈블리 서명</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|TreatWarningsAsErrors|Description">
+        <source>Instruct the compiler to treat warnings as errors.</source>
+        <target state="translated">컴파일러에서 경고를 오류로 처리하도록 지시합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|TreatWarningsAsErrors|DisplayName">
+        <source>Treat warnings as errors</source>
+        <target state="translated">경고를 오류로 처리</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Advanced|Description">
+        <source>Advanced settings for the application.</source>
+        <target state="translated">응용 프로그램에 대한 고급 설정입니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Advanced|DisplayName">
+        <source>Advanced</source>
+        <target state="translated">고급</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|ErrorsAndWarnings|Description">
+        <source>Configures the error and warning options for the build process.</source>
+        <target state="translated">빌드 프로세스의 오류 및 경고 옵션을 구성합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|ErrorsAndWarnings|DisplayName">
+        <source>Errors and warnings</source>
+        <target state="translated">오류 및 경고</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Events|Description">
+        <source>Configures custom events that run before and after build.</source>
+        <target state="translated">빌드 전후에 실행되는 사용자 지정 이벤트를 구성합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Events|DisplayName">
+        <source>Events</source>
+        <target state="translated">이벤트</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|General|DisplayName">
+        <source>General</source>
+        <target state="translated">일반</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Output|Description">
+        <source>Configures the output options for the build process.</source>
+        <target state="translated">빌드 프로세스의 출력 옵션을 구성합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Output|DisplayName">
+        <source>Output</source>
+        <target state="translated">출력</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Publish|Description">
+        <source>Configures options in the publish process.</source>
+        <target state="translated">게시 프로세스에서 옵션을 구성합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Publish|DisplayName">
+        <source>Publish</source>
+        <target state="translated">게시</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|StrongNaming|Description">
+        <source>Configures strong name signing of build outputs.</source>
+        <target state="translated">빌드 출력의 강력한 이름 서명을 구성합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|StrongNaming|DisplayName">
+        <source>Strong naming</source>
+        <target state="translated">강력한 이름 지정</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|PlatformTarget|Description">
+        <source>Specifies the processor to be targeted by the output file. Choose 'Any CPU' to specify that any processor is acceptable, allowing the application to run on the broadest range of hardware.</source>
+        <target state="translated">출력 파일의 대상으로 지정할 프로세서를 지정합니다. 애플리케이션이 가장 광범위한 하드웨어에서 실행되도록 모든 프로세서를 수락하도록 지정하려면 '모든 CPU'를 선택합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|PlatformTarget|DisplayName">
+        <source>Platform target</source>
+        <target state="translated">플랫폼 대상</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|DebugType|Description">
+        <source>Specifies the kind of debug symbols produced during build.</source>
+        <target state="translated">빌드하는 동안 생성된 디버그 기호의 종류를 지정합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|DebugType|DisplayName">
+        <source>Debug symbols</source>
+        <target state="translated">디버그 기호</target>
+        <note>="PDB Only" /&gt;</note>
+      </trans-unit>
+      <trans-unit id="EnumProperty|DebugType|Metadata|SearchTerms">
+        <source>debug type</source>
+        <target state="translated">디버그 형식</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|ErrorReport|Description">
+        <source>Send internal compiler error (ICE) reports to Microsoft.</source>
+        <target state="translated">ICE(내부 컴파일러 오류) 보고서를 Microsoft에 보냅니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|ErrorReport|DisplayName">
+        <source>Internal compiler error reporting</source>
+        <target state="translated">내부 컴파일러 오류 보고</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|FileAlignment|Description">
+        <source>Specifies, in bytes, where to align the sections of the output file.</source>
+        <target state="translated">출력 파일의 섹션을 맞출 위치를 바이트 단위로 지정합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|FileAlignment|DisplayName">
+        <source>File alignment</source>
+        <target state="translated">파일 맞춤</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|Nullable|Description">
+        <source>Specifies the project-wide C# nullable context. Only available for projects that use C# 8.0 or later.</source>
+        <target state="translated">프로젝트 차원의 C# null 허용 컨텍스트를 지정합니다. C# 8.0 이상을 사용하는 프로젝트에서만 사용할 수 있습니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|Nullable|DisplayName">
+        <source>Nullable</source>
+        <target state="translated">Null 허용</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|RunPostBuildEvent|Description">
+        <source>Specifies under which condition the post-build event will be executed.</source>
+        <target state="translated">빌드 후 이벤트가 실행될 조건을 지정합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|RunPostBuildEvent|DisplayName">
+        <source>When to run the post-build event</source>
+        <target state="translated">빌드 후 이벤트를 실행하는 경우</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|WarningLevel|Description">
+        <source>Specifies the level to display for compiler warnings. Higher levels produce more warnings, and include all warnings from lower levels.</source>
+        <target state="translated">컴파일러 경고에 대해 표시할 수준을 지정합니다. 높은 수준은 더 많은 경고를 생성하고 낮은 수준의 모든 경고를 포함합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|WarningLevel|DisplayName">
+        <source>Warning level</source>
+        <target state="translated">경고 수준</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|DebugType.embedded|DisplayName">
+        <source>Embedded in DLL/EXE, portable across platforms</source>
+        <target state="translated">DLL/EXE에 포함됨, 플랫폼 간에 이동 가능</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|DebugType.full|DisplayName">
+        <source>PDB file, current platform</source>
+        <target state="translated">PDB 파일, 현재 플랫폼</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|DebugType.none|DisplayName">
+        <source>No symbols are emitted</source>
+        <target state="translated">내보낸 기호 없음</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|DebugType.portable|DisplayName">
+        <source>PDB file, portable across platforms</source>
+        <target state="translated">PDB 파일, 플랫폼 간에 이동 가능</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|ErrorReport.none|DisplayName">
+        <source>Never send</source>
+        <target state="translated">보내지 않음</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|ErrorReport.prompt|DisplayName">
+        <source>Prompt before sending</source>
+        <target state="translated">보내기 전에 확인</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|ErrorReport.queue|DisplayName">
+        <source>Queue</source>
+        <target state="translated">큐</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|ErrorReport.send|DisplayName">
+        <source>Send</source>
+        <target state="translated">보내기</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|FileAlignment.1024|DisplayName">
+        <source>1024</source>
+        <target state="translated">1024</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|FileAlignment.2048|DisplayName">
+        <source>2048</source>
+        <target state="translated">2048</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|FileAlignment.4096|DisplayName">
+        <source>4096</source>
+        <target state="translated">4096</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|FileAlignment.512|DisplayName">
+        <source>512</source>
+        <target state="translated">512</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|FileAlignment.8192|DisplayName">
+        <source>8192</source>
+        <target state="translated">8192</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|Nullable.annotations|DisplayName">
+        <source>Annotations</source>
+        <target state="translated">주석</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|Nullable.disable|DisplayName">
+        <source>Disable</source>
+        <target state="translated">사용 안 함</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|Nullable.enable|DisplayName">
+        <source>Enable</source>
+        <target state="translated">사용</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|Nullable.warnings|DisplayName">
+        <source>Warnings</source>
+        <target state="translated">경고</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|RunPostBuildEvent.Always|DisplayName">
+        <source>Always</source>
+        <target state="translated">항상</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|RunPostBuildEvent.OnBuildSuccess|DisplayName">
+        <source>When the build succeeds</source>
+        <target state="translated">빌드가 성공한 경우</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|RunPostBuildEvent.OnOutputUpdated|DisplayName">
+        <source>When the output is updated</source>
+        <target state="translated">출력이 업데이트된 경우</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.0|DisplayName">
+        <source>0 - Disable all warnings</source>
+        <target state="translated">0 - 모든 경고 비활성화</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.1|DisplayName">
+        <source>1 - Severe warning messages</source>
+        <target state="translated">1 - 심각한 경고 메시지</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.2|DisplayName">
+        <source>2 - Less severe warnings, such as warnings about hiding class members</source>
+        <target state="translated">2 - 클래스 구성원 숨기기에 대한 경고와 같은 덜 심각한 경고</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.3|DisplayName">
+        <source>3 - Less severe warnings, such as warnings about expressions that always evaluate to true or false</source>
+        <target state="translated">3 - 항상 true 또는 false로 평가되는 식에 대한 경고와 같이 덜 심각한 경고</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.4|DisplayName">
+        <source>4 - Informational warnings</source>
+        <target state="translated">4 - 정보 경고</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.5|DisplayName">
+        <source>5 - Warnings from C# 9</source>
+        <target state="translated">5 - C# 9의 경고</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.6|DisplayName">
+        <source>6 - Warnings from C# 10</source>
+        <target state="translated">6 - C# 10의 경고</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.7|DisplayName">
+        <source>7 - Warnings from C# 11</source>
+        <target state="translated">7 - C# 11의 경고</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.8|DisplayName">
+        <source>8 - Warnings from C# 13</source>
+        <target state="translated">8 - C# 13의 경고</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.9999|DisplayName">
+        <source>9999 - All warnings</source>
+        <target state="translated">9999 - 모든 경고</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Rule|Build|Description">
+        <source>Specifies properties that control how the project builds.</source>
+        <target state="translated">프로젝트가 빌드되는 방식을 제어하는 속성을 지정합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Rule|Build|DisplayName">
+        <source>Build</source>
+        <target state="translated">빌드</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|AssemblyOriginatorKeyFile|DisplayName">
+        <source>Strong name key file</source>
+        <target state="translated">강력한 이름 키 파일</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|BaseOutputPath|Description">
+        <source>Specifies the base location for the project's output during build. Subfolders will be appended to this path to differentiate project configuration.</source>
+        <target state="translated">빌드하는 동안 프로젝트의 출력에 대한 기본 위치를 지정합니다. 프로젝트 구성을 구분하기 위해 이 경로에 하위 폴더가 추가됩니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|BaseOutputPath|DisplayName">
+        <source>Base output path</source>
+        <target state="translated">기본 출력 경로</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|DefineConstants|Description">
+        <source>Specifies symbols on which to perform conditional compilation.</source>
+        <target state="translated">조건부 컴파일을 수행할 기호를 지정합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|DefineConstants|DisplayName">
+        <source>Conditional compilation symbols</source>
+        <target state="translated">조건부 컴파일 기호</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|DefineConstants|ValueEditors|ValueEditor|Metadata|TypeDescriptorText|Value">
+        <source>Custom symbols</source>
+        <target state="translated">사용자 지정 기호</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|DocumentationFile|Description">
+        <source>Optional path for the API documentation file. Leave blank to use the default location.</source>
+        <target state="translated">API 설명서 파일의 선택적 경로입니다. 기본 위치를 사용하려면 비워 두세요.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|DocumentationFile|DisplayName">
+        <source>XML documentation file path</source>
+        <target state="translated">XML 설명서 파일 경로</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|LangVersion|Description">
+        <source>The version of the language available to code in this project.</source>
+        <target state="translated">이 프로젝트에서 코드를 작성하는 데 사용할 수 있는 언어의 버전입니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|LangVersion|DisplayName">
+        <source>Language version</source>
+        <target state="translated">언어 버전</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|NoWarn|Description">
+        <source>Blocks the compiler from generating the specified warnings. Separate multiple warning numbers with a comma (',') or semicolon (';').</source>
+        <target state="translated">하나 이상의 경고를 생성하는 컴파일러의 기능을 차단합니다. 여러 개의 경고 번호는 쉼표(',') 또는 세미콜론(';')으로 구분합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|NoWarn|DisplayName">
+        <source>Suppress specific warnings</source>
+        <target state="translated">경고 표시 안 함</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PostBuildEvent|Description">
+        <source>Specifies commands that run after the build completes. Does not run if the build failed. Use 'call' to invoke .bat files. A non-zero exit code will fail the build.</source>
+        <target state="translated">빌드가 완료된 후 실행되는 명령을 지정합니다. 빌드가 실패하면 실행되지 않습니다. .bat 파일을 호출하려면 '호출'을 사용하세요. 0이 아닌 종료 코드는 빌드에 실패합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PostBuildEvent|DisplayName">
+        <source>Post-build event</source>
+        <target state="translated">빌드 후 이벤트</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PreBuildEvent|Description">
+        <source>Specifies commands that run before the build starts. Does not run if the project is up-to-date. A non-zero exit code will fail the build before it runs.</source>
+        <target state="translated">빌드가 시작되기 전에 실행되는 명령을 지정합니다. 프로젝트가 최신 상태이면 실행되지 않습니다. 0이 아닌 종료 코드는 실행되기 전에 빌드에 실패합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PreBuildEvent|DisplayName">
+        <source>Pre-build event</source>
+        <target state="translated">빌드 전 이벤트</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|WarningsAsErrors|Description">
+        <source>Specifies which warnings are treated as errors. Separate multiple warning numbers with a comma (',') or semicolon (';').</source>
+        <target state="translated">지정된 경고를 오류로 처리합니다. 여러 개의 경고 번호는 쉼표(',') 또는 세미콜론(';')으로 구분합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|WarningsAsErrors|DisplayName">
+        <source>Treat specific warnings as errors</source>
+        <target state="translated">특정 경고를 오류로 처리</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|WarningsNotAsErrors|Description">
+        <source>Specifies which warnings are excluded from being treated as errors. Separate multiple warning numbers with a comma (',') or semicolon (';').</source>
+        <target state="translated">지정된 경고가 오류로 처리되지 않도록 합니다. 여러 개의 경고 번호는 쉼표(',') 또는 세미콜론(';')으로 구분합니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|WarningsNotAsErrors|DisplayName">
+        <source>Exclude specific warnings as errors</source>
+        <target state="translated">특정 경고가 오류로 처리되지 않도록 함</target>
+        <note />
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

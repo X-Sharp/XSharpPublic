@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="zh-Hans" original="../Resources.resx">
+    <body>
+      <trans-unit id="DataFlowFaults">
+        <source>Project system data flow '{0}' closed because of an exception: {1}.</source>
+        <target state="translated">由于出现异常 {1}，已关闭项目系统数据流“{0}”。</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DiagnosticLevel_Error">
+        <source>Error</source>
+        <target state="translated">错误</target>
+        <note>Indicates that a diagnostic (i.e. a compiler warning) should be promoted to an error.</note>
+      </trans-unit>
+      <trans-unit id="DiagnosticLevel_None">
+        <source>None</source>
+        <target state="translated">无</target>
+        <note>Indicates that a diagnostic (i.e. a compiler warning) should be disabled.</note>
+      </trans-unit>
+      <trans-unit id="DiagnosticLevel_Warning">
+        <source>Warning</source>
+        <target state="translated">警告</target>
+        <note>Indicates that a diagnostic (i.e. a compiler warning) should be kept as a warning rather than disabled or promoted to an error.</note>
+      </trans-unit>
+      <trans-unit id="ImportsTreeNodeName">
+        <source>Imports</source>
+        <target state="translated">导入</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="JsonErrorsNeedToBeCorrected_1">
+        <source>Errors in '{0}' need to be corrected before applying changes.</source>
+        <target state="translated">在应用更改前，需要更正“{0}”中的错误。</target>
+        <note>{0} is the path to the malformed .json file.</note>
+      </trans-unit>
+      <trans-unit id="JsonErrorsNeedToBeCorrected_WithErrorMessage_2">
+        <source>Errors in '{0}' need to be corrected before applying changes. Error message:
+{1}</source>
+        <target state="translated">在应用更改前，需要更正“{0}”中的错误。错误消息:
+{1}</target>
+        <note>{0} is the path to the malformed .json file. {1} is an error message containing more details about the problems in the file.</note>
+      </trans-unit>
+      <trans-unit id="NeutralLanguage_DisplayNameFormatString">
+        <source>{0} - {1}</source>
+        <target state="translated">{0} - {1}</target>
+        <note>{0} is a culture name such as "English (British)" or "Portugeuse (Brazil)", and {1} is the corresponding culture code such as "en-GB" or "pt-BR". </note>
+      </trans-unit>
+      <trans-unit id="NoActionProfileName">
+        <source>Start</source>
+        <target state="translated">启动</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="MsBuildMissingValueToRemove">
+        <source>The specified value to remove '{0}' was not present in the property '{1}'</source>
+        <target state="translated">属性“{1}”中没有要用于删除“{0}”的指定值</target>
+        <note>{0} will be a specific property value such as "Debug", {1} will be an MsBuild property name such as "Configurations". Neither of those values will be localized.</note>
+      </trans-unit>
+      <trans-unit id="MsBuildMissingValueToRename">
+        <source>The specified value to rename '{0}' was not present in the property '{1}'</source>
+        <target state="translated">属性“{1}”中没有要用于重命名“{0}”的指定值</target>
+        <note>{0} will be a specific property value such as "Debug", {1} will be an MsBuild property name such as "Configurations". Neither of those values will be localized.</note>
+      </trans-unit>
+      <trans-unit id="AnalyzersNodeName">
+        <source>Analyzers</source>
+        <target state="translated">分析器</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="AssembliesNodeName">
+        <source>Assemblies</source>
+        <target state="translated">程序集</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ComNodeName">
+        <source>COM</source>
+        <target state="translated">COM</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DependenciesNodeName">
+        <source>Dependencies</source>
+        <target state="translated">依赖项</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FrameworkAssembliesNodeName">
+        <source>Framework Assemblies</source>
+        <target state="translated">框架程序集</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="NoAuth">
+        <source>No Authentication</source>
+        <target state="translated">不进行身份验证</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OutputGroupPublishItemsDescription">
+        <source>Contains all the assemblies needed when publishing a .NET Core project.</source>
+        <target state="translated">包含发布 .NET Core 项目时所需的全部程序集。</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OutputGroupPublishItemsDisplayName">
+        <source>Publish Items</source>
+        <target state="translated">发布项</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ProjectLoadedWithWrongProjectType">
+        <source>The project file '{0}' cannot be opened. 
+
+This project was loaded using the wrong project type, likely as a result of renaming the project extension outside of Visual Studio. Remove and re-add the project to have the solution pick up the right project type.</source>
+        <target state="translated">无法打开项目文件“{0}”。
+
+此项目是使用错误的项目类型加载的，这可能是由于在 Visual Studio 之外重命名了项目扩展。请删除该项目，然后再重新添加它，使解决方案选择正确的项目类型。</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ProjectsNodeName">
+        <source>Projects</source>
+        <target state="translated">项目</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Property_NoneValue">
+        <source>(None)</source>
+        <target state="translated">(无)</target>
+        <note>Special value to show in the project property pages when a property has no value.</note>
+      </trans-unit>
+      <trans-unit id="Restore_DuplicateToolReferenceItems">
+        <source>The metadata on 'DotNetCliToolReference' item '{0}' is inconsistent between target frameworks. Only the first one will be restored.</source>
+        <target state="translated">"DotNetCliToolReference" 项元数据 {0} 在目标框架之间不一致。将仅还原第一个。</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Restore_EmptyTargetFrameworkMoniker">
+        <source>The value of the 'TargetFrameworkMoniker' and 'NuGetTargetMoniker' properties in the '{0}' configuration are both empty. This configuration will not contribute to NuGet restore, which may result in restore and build errors.</source>
+        <target state="translated">“{0}”配置中 "TargetFrameworkMoniker" 和 "NuGetTargetMoniker" 属性的值均为空。此配置将影响 NuGet 还原，这可能导致还原和生成错误。</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Restore_NuGetCycleDetected">
+        <source>A NuGet restore loop has been detected in project '{0}'. Further restores have been aborted. The project might be in a bad state.</source>
+        <target state="translated">在项目 "{0}" 中检测到 NuGet 还原循环。已中止进一步还原。项目可能处不良状态。</target>
+        <note>{0} is a file path.</note>
+      </trans-unit>
+      <trans-unit id="Restore_PropertyWithInconsistentValues">
+        <source>The value of the '{0}' property is inconsistent between target frameworks. This property must be identical for NuGet restore to function correctly. The value '{1}' from the '{2}' configuration will be used, other target frameworks may fail to pick NuGet assets.</source>
+        <target state="translated">{0} 属性的值在目标框架之间不一致。此属性必须相同以便 NuGet 还原正常运行。将使用“{2}”配置中的值 {1}，而其他目标框架可能无法选取 NuGet 资产。</target>
+        <note>{0} is a file path.</note>
+      </trans-unit>
+      <trans-unit id="SdkNodeName">
+        <source>SDK</source>
+        <target state="translated">SDK</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FrameworkNodeName">
+        <source>Frameworks</source>
+        <target state="translated">框架</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="PackagesNodeName">
+        <source>Packages</source>
+        <target state="translated">包</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="SpecialFileProvider_FileOrFolderAlreadyExists">
+        <source>A file or folder with the name '{0}' already exists on disk at this location. Please choose another name.
+
+If this file or folder does not appear in Solution Explorer, then it is not currently part of your project. To view files which exist on disk, but are not in the project, select Show All Files from the Project menu.</source>
+        <target state="translated">磁盘上该位置已存在名为“{0}”的文件或文件夹。请另选一个名称。
+
+如果此文件或文件夹未在“解决方案资源管理器”中出现，那么它当前不是项目的一部分。若要查看磁盘上存在但未包含在项目中的文件，请从“项目”菜单选择“显示所有文件”。</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="WindowsAuth">
+        <source>Windows Authentication</source>
+        <target state="translated">Windows 身份验证</target>
+        <note />
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

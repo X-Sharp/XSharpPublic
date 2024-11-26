@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="ru" original="../BuildPropertyPage.FSharp.xaml">
+    <body>
+      <trans-unit id="BoolProperty|FSharpPrefer64BitTools|Description">
+        <source>Use a 64-bit compiler on systems that support both 32-bit and 64-bit compilers.</source>
+        <target state="translated">Используйте 64-разрядный компилятор в системах, поддерживающих 32- и 64-разрядные компиляторы.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|FSharpPrefer64BitTools|DisplayName">
+        <source>Prefer 64 bit tools</source>
+        <target state="translated">Предпочитать 64-разрядные инструменты</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|FSharpPreferNetFrameworkTools|Description">
+        <source>Prefer .NET Framework version of the compiler when available.</source>
+        <target state="translated">Предпочитать версию .NET Framework компилятора, если она доступна.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|FSharpPreferNetFrameworkTools|DisplayName">
+        <source>Framework tools</source>
+        <target state="translated">Инструменты платформы</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Optimize|Description">
+        <source>Enable compiler optimizations for smaller, faster, and more efficient output.</source>
+        <target state="translated">Включить оптимизацию компилятора для быстрого и эффективного получения выходных данных меньшего размера.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Optimize|DisplayName">
+        <source>Optimize code</source>
+        <target state="translated">Оптимизировать код</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Optimize|Metadata|SearchTerms">
+        <source>optimise;optimisation</source>
+        <target state="translated">оптимизировать;оптимизация</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Tailcalls|Description">
+        <source>Enable tail call generation.</source>
+        <target state="translated">Включить создание вызова с префиксом tail.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Tailcalls|DisplayName">
+        <source>Generate tail calls</source>
+        <target state="translated">Создавать вызовы с префиксом tail</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Tailcalls|Metadata|SearchTerms">
+        <source>tailcall</source>
+        <target state="translated">tailcall</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|DebugType|Description">
+        <source>Specifies the kind of debug symbols produced during build.</source>
+        <target state="translated">Задает тип отладочных символов, создаваемых во время сборки.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|DebugType|DisplayName">
+        <source>Debug symbols</source>
+        <target state="translated">Отладочные символы</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|DebugType|Metadata|SearchTerms">
+        <source>debug type</source>
+        <target state="translated">тип отладки</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|WarningLevel|Description">
+        <source>Specifies the level to display for compiler warnings. Higher levels produce more warnings, and include all warnings from lower levels.</source>
+        <target state="translated">Задает уровень, отображаемый для предупреждений компилятора. Более высокий уровень создает больше предупреждений и включает все предупреждения более низкого уровня.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|WarningLevel|DisplayName">
+        <source>Warning level</source>
+        <target state="translated">Уровень предупреждения</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|DebugType.embedded|DisplayName">
+        <source>Embedded in DLL/EXE, portable across platforms</source>
+        <target state="translated">Внедрено в DLL/EXE, переносимость между платформами</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|DebugType.full|DisplayName">
+        <source>PDB file, current platform</source>
+        <target state="translated">PDB-файл, текущая платформа</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|DebugType.none|DisplayName">
+        <source>No symbols are emitted</source>
+        <target state="translated">Символы не выданы</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|DebugType.portable|DisplayName">
+        <source>PDB file, portable across platforms</source>
+        <target state="translated">PDB-файл, переносимый между платформами</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.0|DisplayName">
+        <source>0 - Fewest warnings, including most severe issues</source>
+        <target state="translated">0 — меньшее количество предупреждений, включая наиболее серьезные проблемы</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.1|DisplayName">
+        <source>1</source>
+        <target state="translated">1</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.2|DisplayName">
+        <source>2</source>
+        <target state="translated">2</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.3|DisplayName">
+        <source>3 - Default warning level</source>
+        <target state="translated">3 — стандартный уровень предупреждений</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.4|DisplayName">
+        <source>4</source>
+        <target state="translated">4</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.5|DisplayName">
+        <source>5 - Most warnings, including less severe issues</source>
+        <target state="translated">5 — наибольшее количество предупреждений, включая менее серьезные проблемы</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|OtherFlags|Description">
+        <source>Additional compiler flags. Separate flags with whitespace.</source>
+        <target state="translated">Дополнительные флаги компилятора. Разделяйте флаги пробелами.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|OtherFlags|DisplayName">
+        <source>Other flags</source>
+        <target state="translated">Другие флаги</target>
+        <note />
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

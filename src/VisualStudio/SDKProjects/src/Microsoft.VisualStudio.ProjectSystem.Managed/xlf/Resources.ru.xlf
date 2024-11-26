@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="ru" original="../Resources.resx">
+    <body>
+      <trans-unit id="DataFlowFaults">
+        <source>Project system data flow '{0}' closed because of an exception: {1}.</source>
+        <target state="translated">Поток системных данных проекта "{0}" закрыт из-за исключения: {1}.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DiagnosticLevel_Error">
+        <source>Error</source>
+        <target state="translated">Ошибка</target>
+        <note>Indicates that a diagnostic (i.e. a compiler warning) should be promoted to an error.</note>
+      </trans-unit>
+      <trans-unit id="DiagnosticLevel_None">
+        <source>None</source>
+        <target state="translated">Нет</target>
+        <note>Indicates that a diagnostic (i.e. a compiler warning) should be disabled.</note>
+      </trans-unit>
+      <trans-unit id="DiagnosticLevel_Warning">
+        <source>Warning</source>
+        <target state="translated">Предупреждение</target>
+        <note>Indicates that a diagnostic (i.e. a compiler warning) should be kept as a warning rather than disabled or promoted to an error.</note>
+      </trans-unit>
+      <trans-unit id="ImportsTreeNodeName">
+        <source>Imports</source>
+        <target state="translated">Импортирует</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="JsonErrorsNeedToBeCorrected_1">
+        <source>Errors in '{0}' need to be corrected before applying changes.</source>
+        <target state="translated">Перед применением изменений необходимо исправить ошибки в "{0}".</target>
+        <note>{0} is the path to the malformed .json file.</note>
+      </trans-unit>
+      <trans-unit id="JsonErrorsNeedToBeCorrected_WithErrorMessage_2">
+        <source>Errors in '{0}' need to be corrected before applying changes. Error message:
+{1}</source>
+        <target state="translated">Перед применением изменений необходимо исправить ошибки в "{0}". Сообщение об ошибке:
+{1}</target>
+        <note>{0} is the path to the malformed .json file. {1} is an error message containing more details about the problems in the file.</note>
+      </trans-unit>
+      <trans-unit id="NeutralLanguage_DisplayNameFormatString">
+        <source>{0} - {1}</source>
+        <target state="translated">{0} — {1}</target>
+        <note>{0} is a culture name such as "English (British)" or "Portugeuse (Brazil)", and {1} is the corresponding culture code such as "en-GB" or "pt-BR". </note>
+      </trans-unit>
+      <trans-unit id="NoActionProfileName">
+        <source>Start</source>
+        <target state="translated">Запуск</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="MsBuildMissingValueToRemove">
+        <source>The specified value to remove '{0}' was not present in the property '{1}'</source>
+        <target state="translated">Указанное для удаления значение "{0}" отсутствовало в свойстве "{1}"</target>
+        <note>{0} will be a specific property value such as "Debug", {1} will be an MsBuild property name such as "Configurations". Neither of those values will be localized.</note>
+      </trans-unit>
+      <trans-unit id="MsBuildMissingValueToRename">
+        <source>The specified value to rename '{0}' was not present in the property '{1}'</source>
+        <target state="translated">Указанное для переименования значение "{0}" отсутствовало в свойстве "{1}"</target>
+        <note>{0} will be a specific property value such as "Debug", {1} will be an MsBuild property name such as "Configurations". Neither of those values will be localized.</note>
+      </trans-unit>
+      <trans-unit id="AnalyzersNodeName">
+        <source>Analyzers</source>
+        <target state="translated">Анализаторы</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="AssembliesNodeName">
+        <source>Assemblies</source>
+        <target state="translated">Сборки</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ComNodeName">
+        <source>COM</source>
+        <target state="translated">COM</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DependenciesNodeName">
+        <source>Dependencies</source>
+        <target state="translated">Зависимости</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FrameworkAssembliesNodeName">
+        <source>Framework Assemblies</source>
+        <target state="translated">Сборки платформы</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="NoAuth">
+        <source>No Authentication</source>
+        <target state="translated">без проверки подлинности</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OutputGroupPublishItemsDescription">
+        <source>Contains all the assemblies needed when publishing a .NET Core project.</source>
+        <target state="translated">Содержит все сборки, необходимые при публикации проекта .NET Core.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OutputGroupPublishItemsDisplayName">
+        <source>Publish Items</source>
+        <target state="translated">Элементы для публикации</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ProjectLoadedWithWrongProjectType">
+        <source>The project file '{0}' cannot be opened. 
+
+This project was loaded using the wrong project type, likely as a result of renaming the project extension outside of Visual Studio. Remove and re-add the project to have the solution pick up the right project type.</source>
+        <target state="translated">Не удается открыть файл проекта "{0}".
+
+Этот проект был загружен с использованием неправильного типа проекта, вероятно, в результате переименования расширения проекта вне Visual Studio. Удалите и повторно добавьте проект, чтобы решение правильно определило тип проекта.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ProjectsNodeName">
+        <source>Projects</source>
+        <target state="translated">Проекты</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Property_NoneValue">
+        <source>(None)</source>
+        <target state="translated">(Нет)</target>
+        <note>Special value to show in the project property pages when a property has no value.</note>
+      </trans-unit>
+      <trans-unit id="Restore_DuplicateToolReferenceItems">
+        <source>The metadata on 'DotNetCliToolReference' item '{0}' is inconsistent between target frameworks. Only the first one will be restored.</source>
+        <target state="translated">Метаданные для элемента "DotNetCliToolReference" "{0}" не согласованы между целевыми платформами. Будут восстановлены только первые метаданные.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Restore_EmptyTargetFrameworkMoniker">
+        <source>The value of the 'TargetFrameworkMoniker' and 'NuGetTargetMoniker' properties in the '{0}' configuration are both empty. This configuration will not contribute to NuGet restore, which may result in restore and build errors.</source>
+        <target state="translated">Значения свойств "TargetFrameworkMoniker" и "NuGetTargetMoniker" в конфигурации "{0}" являются пустыми. Эта конфигурация не будет задействована в восстановлении NuGet, что может привести к ошибкам при восстановлении и сборке.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Restore_NuGetCycleDetected">
+        <source>A NuGet restore loop has been detected in project '{0}'. Further restores have been aborted. The project might be in a bad state.</source>
+        <target state="translated">Обнаружен цикл восстановления NuGet в проекте "{0}". Дальнейшие операции восстановления прерваны. Возможно, проект находится в некорректном состоянии.</target>
+        <note>{0} is a file path.</note>
+      </trans-unit>
+      <trans-unit id="Restore_PropertyWithInconsistentValues">
+        <source>The value of the '{0}' property is inconsistent between target frameworks. This property must be identical for NuGet restore to function correctly. The value '{1}' from the '{2}' configuration will be used, other target frameworks may fail to pick NuGet assets.</source>
+        <target state="translated">Значение свойства "{0}" не согласовано между целевыми платформами. Для правильной работы функции восстановления NuGet значение этого свойства должно быть одинаковым на всех целевых платформах. Будет использовано значение "{1}" из конфигурации "{2}", на остальных целевых платформах могут возникнуть трудности с получением ресурсов NuGet.</target>
+        <note>{0} is a file path.</note>
+      </trans-unit>
+      <trans-unit id="SdkNodeName">
+        <source>SDK</source>
+        <target state="translated">ПАКЕТ SDK</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FrameworkNodeName">
+        <source>Frameworks</source>
+        <target state="translated">Платформы</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="PackagesNodeName">
+        <source>Packages</source>
+        <target state="translated">Пакеты</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="SpecialFileProvider_FileOrFolderAlreadyExists">
+        <source>A file or folder with the name '{0}' already exists on disk at this location. Please choose another name.
+
+If this file or folder does not appear in Solution Explorer, then it is not currently part of your project. To view files which exist on disk, but are not in the project, select Show All Files from the Project menu.</source>
+        <target state="translated">Файл или папка с именем "{0}" уже существуют в этом расположении на диске. Выберите другое имя.
+
+Если этот файл или папка не отображаются в обозревателе решений, то они сейчас не являются элементом проекта. Чтобы просмотреть файлы, которые есть на диске, но не включены в проект, выберите пункт "Показать все файлы" в меню "Проект".</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="WindowsAuth">
+        <source>Windows Authentication</source>
+        <target state="translated">Аутентификация Windows</target>
+        <note />
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

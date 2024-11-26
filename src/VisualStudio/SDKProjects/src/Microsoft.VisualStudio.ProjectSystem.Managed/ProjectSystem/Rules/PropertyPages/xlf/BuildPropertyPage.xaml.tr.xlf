@@ -1,0 +1,592 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="tr" original="../BuildPropertyPage.xaml">
+    <body>
+      <trans-unit id="BoolProperty|AllowUnsafeBlocks|Description">
+        <source>Allow code that uses the 'unsafe' keyword to compile.</source>
+        <target state="translated">'güvenli olmayan' anahtar sözcüğü kullanan kodun derlenmesine izin verin.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|AllowUnsafeBlocks|DisplayName">
+        <source>Unsafe code</source>
+        <target state="translated">Güvenli olmayan kod</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|AllowUnsafeBlocks|Metadata|SearchTerms">
+        <source>pointers</source>
+        <target state="translated">işaretçiler</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|CheckForOverflowUnderflow|Description">
+        <source>Throw exceptions when integer arithmetic produces out of range values.</source>
+        <target state="translated">Tamsayı aritmetiği aralık dışında değerler oluşturduğunda özel durumları atın.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|CheckForOverflowUnderflow|DisplayName">
+        <source>Check for arithmetic overflow</source>
+        <target state="translated">Aritmetik taşmayı denetle</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|CheckForOverflowUnderflow|Metadata|SearchTerms">
+        <source>checked;unchecked</source>
+        <target state="translated">işaretli;işaretlenmemiş</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|DelaySign|Description">
+        <source>Use delayed signing when access to the private key is restricted. The public key will be used during the build, and addition of the private key information deferred until the assembly is handed off.</source>
+        <target state="translated">Özel anahtara erişim kısıtlandığında gecikmeli imzalamayı kullanın. Ortak anahtar, bütünleştirilmiş kod devredilene kadar ertelenen özel anahtar bilgilerinin derlenip eklenmesi sırasında kullanılır.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|DelaySign|DisplayName">
+        <source>Delay sign only</source>
+        <target state="translated">Yalnızca gecikmeli imzala</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Deterministic|Description">
+        <source>Produce identical compilation output for identical inputs.</source>
+        <target state="translated">Aynı girdiler için aynı derleme çıktıları oluşturun.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Deterministic|DisplayName">
+        <source>Deterministic</source>
+        <target state="translated">Belirlenimci</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|GenerateAssemblyInfo|Description">
+        <source>Transform project properties into assembly attributes during build.</source>
+        <target state="translated">Derleme sırasında proje özelliklerini derleme özniteliklerine dönüştürün.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|GenerateAssemblyInfo|DisplayName">
+        <source>Generate assembly info</source>
+        <target state="translated">Derleme bilgisi oluştur</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|GenerateDocumentationFile|Description">
+        <source>Generate a file containing API documentation.</source>
+        <target state="translated">API belgelerini içeren bir dosya oluşturun.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|GenerateDocumentationFile|DisplayName">
+        <source>Documentation file</source>
+        <target state="translated">Belge dosyası</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|IsAotCompatible|Description">
+        <source>Indicates that the library project is AOT compatible.</source>
+        <target state="translated">Kitaplık projesinin AOT uyumlu olduğunu belirtir.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|IsAotCompatible|DisplayName">
+        <source>AOT Compatible</source>
+        <target state="translated">AOT Uyumlu</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|IsPublishable|Description">
+        <source>Allows the "Publish" target to run. This property only affects processes that use .*proj files and "Publish" target, such as "dotnet publish" command. The default value is true.</source>
+        <target state="translated">"Yayınla" hedefinin çalıştırılmasına izin verir. Bu özellik yalnızca .*proj dosyalarını ve "dotnet yayımlama" komutu gibi "Yayınlama" hedefini kullanan işlemleri etkiler. Varsayılan değer doğrudur.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|IsPublishable|DisplayName">
+        <source>Publishing</source>
+        <target state="translated">Yayımlama</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|IsTrimmable|Description">
+        <source>Marks your assembly as trimmable and enables trim warnings for that project.</source>
+        <target state="translated">Bütünleştirilmiş kodlarınızı kırpılabilir olarak işaretleyip bu proje için kırpma uyarılarını sağlar.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|IsTrimmable|DisplayName">
+        <source>Trimmable</source>
+        <target state="translated">Kırpılabilir</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Optimize|Description">
+        <source>Enable compiler optimizations for smaller, faster, and more efficient output.</source>
+        <target state="translated">Daha küçük, daha hızlı ve daha verimli çıktılar için derleyici iyileştirmelerini etkinleştirin.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Optimize|DisplayName">
+        <source>Optimize code</source>
+        <target state="translated">Kodu iyileştir</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Optimize|Metadata|SearchTerms">
+        <source>optimise;optimisation</source>
+        <target state="translated">optimize et;optimizasyon</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Prefer32Bit|Description">
+        <source>Run in 32-bit mode on systems that support both 32-bit and 64-bit applications.</source>
+        <target state="translated">Hem 32 bit hem de 64 bit uygulamaları destekleyen sistemlerde 32 bit modunda çalıştırın.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|Prefer32Bit|DisplayName">
+        <source>Prefer 32-bit</source>
+        <target state="translated">32 biti tercih et</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|PreferNativeArm64|Description">
+        <source>Run on native hardware platform by default.</source>
+        <target state="translated">Varsayılan olarak yerel donanım platformunda çalıştırın.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|PreferNativeArm64|DisplayName">
+        <source>Prefer Native ARM64</source>
+        <target state="translated">Yerel ARM64'ü tercih et</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|ProduceReferenceAssembly|Description">
+        <source>Produce a reference assembly containing the public API of the project.</source>
+        <target state="translated">Projenin genel API'sini içeren bir başvuru bütünleştirilmiş kodu oluşturun.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|ProduceReferenceAssembly|DisplayName">
+        <source>Reference assembly</source>
+        <target state="translated">Başvuru bütünleştirilmiş kodu</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|PublishAot|Description">
+        <source>Enable Ahead-of-Time (AOT) Compilation to generate native machine code for your .NET Core application during the publish process for improved performance and reduced startup time.</source>
+        <target state="translated">Daha iyi performans ve daha düşük başlatma süresi için yayımlama işlemi sırasında .NET Core uygulamanız için yerel makine kodu oluşturmak için Zamanından Önce (AOT) Derlemeyi etkinleştirin.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|PublishAot|DisplayName">
+        <source>Publish native AOT</source>
+        <target state="translated">Yerel AOT yayımla</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|PublishTrimmed|Description">
+        <source>Controls whether trimming is enabled during publish.</source>
+        <target state="translated">Yayınlama sırasında kırpmanın etkin olup olmadığını kontrol eder.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|PublishTrimmed|DisplayName">
+        <source>Publish trimmed</source>
+        <target state="translated">Kırpılmış yayınla</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|SignAssembly|Description">
+        <source>Sign the output assembly to give it a strong name.</source>
+        <target state="translated">Daha güçlü bir ad vermek için çıkış bütünleştirilmiş kodunu imzalayın.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|SignAssembly|DisplayName">
+        <source>Sign the assembly</source>
+        <target state="translated">Bütünleştirilmiş kodu imzala</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|TreatWarningsAsErrors|Description">
+        <source>Instruct the compiler to treat warnings as errors.</source>
+        <target state="translated">Derleyicinin uyarıları hata olarak değerlendirmesini sağlayın.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|TreatWarningsAsErrors|DisplayName">
+        <source>Treat warnings as errors</source>
+        <target state="translated">Uyarıları hata olarak değerlendir</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Advanced|Description">
+        <source>Advanced settings for the application.</source>
+        <target state="translated">Uygulamanın gelişmiş ayarları.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Advanced|DisplayName">
+        <source>Advanced</source>
+        <target state="translated">Gelişmiş</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|ErrorsAndWarnings|Description">
+        <source>Configures the error and warning options for the build process.</source>
+        <target state="translated">Derleme işlemi için hata ve uyarı seçeneklerini yapılandırır.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|ErrorsAndWarnings|DisplayName">
+        <source>Errors and warnings</source>
+        <target state="translated">Hatalar ve uyarılar</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Events|Description">
+        <source>Configures custom events that run before and after build.</source>
+        <target state="translated">Derlemeden önce ve sonra çalıştırılan özel olayları yapılandırır.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Events|DisplayName">
+        <source>Events</source>
+        <target state="translated">Olaylar</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|General|DisplayName">
+        <source>General</source>
+        <target state="translated">Genel</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Output|Description">
+        <source>Configures the output options for the build process.</source>
+        <target state="translated">Derleme işlemi için çıkış seçeneklerini yapılandırır.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Output|DisplayName">
+        <source>Output</source>
+        <target state="translated">Çıkış</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Publish|Description">
+        <source>Configures options in the publish process.</source>
+        <target state="translated">Yayımlama işlemindeki seçenekleri yapılandırır.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Publish|DisplayName">
+        <source>Publish</source>
+        <target state="translated">Yayımla</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|StrongNaming|Description">
+        <source>Configures strong name signing of build outputs.</source>
+        <target state="translated">Derleme çıktılarının tanımlayıcı ad imzasını yapılandırır.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|StrongNaming|DisplayName">
+        <source>Strong naming</source>
+        <target state="translated">Tanımlayıcı adlandırma</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|PlatformTarget|Description">
+        <source>Specifies the processor to be targeted by the output file. Choose 'Any CPU' to specify that any processor is acceptable, allowing the application to run on the broadest range of hardware.</source>
+        <target state="translated">Çıkış dosyası tarafından hedeflenecek işlemciyi belirtir. Herhangi bir işlemcinin kabul edilebilir olduğunu belirterek uygulamanın en geniş donanım aralığında çalışmasına olanak tanımak için ‘Herhangi Bir CPU’ seçeneğini belirleyin.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|PlatformTarget|DisplayName">
+        <source>Platform target</source>
+        <target state="translated">Platform hedefi</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|DebugType|Description">
+        <source>Specifies the kind of debug symbols produced during build.</source>
+        <target state="translated">Derleme sırasında oluşturulan hata ayıklama sembollerinin türünü belirtir.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|DebugType|DisplayName">
+        <source>Debug symbols</source>
+        <target state="translated">Hata ayıklama sembolleri</target>
+        <note>="PDB Only" /&gt;</note>
+      </trans-unit>
+      <trans-unit id="EnumProperty|DebugType|Metadata|SearchTerms">
+        <source>debug type</source>
+        <target state="translated">hata ayıklama türü</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|ErrorReport|Description">
+        <source>Send internal compiler error (ICE) reports to Microsoft.</source>
+        <target state="translated">İç derleyici hatası (ICE) raporlarını Microsoft'a gönderin.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|ErrorReport|DisplayName">
+        <source>Internal compiler error reporting</source>
+        <target state="translated">Derleyici iç hatası raporlama</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|FileAlignment|Description">
+        <source>Specifies, in bytes, where to align the sections of the output file.</source>
+        <target state="translated">Çıkış dosyasının bölümlerinin hizalanacağı konumu bayt olarak belirtir.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|FileAlignment|DisplayName">
+        <source>File alignment</source>
+        <target state="translated">Dosya hizalama</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|Nullable|Description">
+        <source>Specifies the project-wide C# nullable context. Only available for projects that use C# 8.0 or later.</source>
+        <target state="translated">Proje genelinde C# null atanabilir bağlamını belirtir. Yalnızca C# 8.0 veya üzerini kullanan projeler için kullanılabilir.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|Nullable|DisplayName">
+        <source>Nullable</source>
+        <target state="translated">Null atanabilir</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|RunPostBuildEvent|Description">
+        <source>Specifies under which condition the post-build event will be executed.</source>
+        <target state="translated">Derleme sonrası olayının hangi koşulda yürütüleceğini belirtir.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|RunPostBuildEvent|DisplayName">
+        <source>When to run the post-build event</source>
+        <target state="translated">Derleme sonrası olayının çalıştırılacağı zaman</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|WarningLevel|Description">
+        <source>Specifies the level to display for compiler warnings. Higher levels produce more warnings, and include all warnings from lower levels.</source>
+        <target state="translated">Derleyici uyarılar için görüntülenecek düzeyi belirtir. Yüksek düzeyler daha fazla uyarı üretir ve daha düşük düzeylerdeki tüm uyarıları kapsar.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|WarningLevel|DisplayName">
+        <source>Warning level</source>
+        <target state="translated">Uyarı düzeyi</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|DebugType.embedded|DisplayName">
+        <source>Embedded in DLL/EXE, portable across platforms</source>
+        <target state="translated">DLL/EXE içine gömülü, platformlar arasında taşınabilir</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|DebugType.full|DisplayName">
+        <source>PDB file, current platform</source>
+        <target state="translated">PDB dosyası, geçerli platform</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|DebugType.none|DisplayName">
+        <source>No symbols are emitted</source>
+        <target state="translated">Sembol gösterilmiyor</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|DebugType.portable|DisplayName">
+        <source>PDB file, portable across platforms</source>
+        <target state="translated">PDB dosyası, platformlar arasında taşınabilir</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|ErrorReport.none|DisplayName">
+        <source>Never send</source>
+        <target state="translated">Hiçbir zaman gönderme</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|ErrorReport.prompt|DisplayName">
+        <source>Prompt before sending</source>
+        <target state="translated">Göndermeden önce sor</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|ErrorReport.queue|DisplayName">
+        <source>Queue</source>
+        <target state="translated">Kuyruk</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|ErrorReport.send|DisplayName">
+        <source>Send</source>
+        <target state="translated">Gönder</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|FileAlignment.1024|DisplayName">
+        <source>1024</source>
+        <target state="translated">1024</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|FileAlignment.2048|DisplayName">
+        <source>2048</source>
+        <target state="translated">2048</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|FileAlignment.4096|DisplayName">
+        <source>4096</source>
+        <target state="translated">4096</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|FileAlignment.512|DisplayName">
+        <source>512</source>
+        <target state="translated">512</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|FileAlignment.8192|DisplayName">
+        <source>8192</source>
+        <target state="translated">8192</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|Nullable.annotations|DisplayName">
+        <source>Annotations</source>
+        <target state="translated">Ek Açıklamalar</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|Nullable.disable|DisplayName">
+        <source>Disable</source>
+        <target state="translated">Devre dışı bırak</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|Nullable.enable|DisplayName">
+        <source>Enable</source>
+        <target state="translated">Etkinleştir</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|Nullable.warnings|DisplayName">
+        <source>Warnings</source>
+        <target state="translated">Uyarılar</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|RunPostBuildEvent.Always|DisplayName">
+        <source>Always</source>
+        <target state="translated">Her Zaman</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|RunPostBuildEvent.OnBuildSuccess|DisplayName">
+        <source>When the build succeeds</source>
+        <target state="translated">Derleme başarılı olduğunda</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|RunPostBuildEvent.OnOutputUpdated|DisplayName">
+        <source>When the output is updated</source>
+        <target state="translated">Çıkış güncelleştirildiğinde</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.0|DisplayName">
+        <source>0 - Disable all warnings</source>
+        <target state="translated">0 - Tüm uyarıları devre dışı bırak</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.1|DisplayName">
+        <source>1 - Severe warning messages</source>
+        <target state="translated">1 - Önemli uyarı iletileri</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.2|DisplayName">
+        <source>2 - Less severe warnings, such as warnings about hiding class members</source>
+        <target state="translated">2 - Sınıf üyelerini gizlemeyle ilgili uyarılar gibi daha az önemli uyarılar</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.3|DisplayName">
+        <source>3 - Less severe warnings, such as warnings about expressions that always evaluate to true or false</source>
+        <target state="translated">3 - Her zaman true veya false olarak değerlendirilen ifadeler hakkındaki uyarılar gibi daha az önemli uyarılar</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.4|DisplayName">
+        <source>4 - Informational warnings</source>
+        <target state="translated">4 - Bilgilendirici uyarılar</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.5|DisplayName">
+        <source>5 - Warnings from C# 9</source>
+        <target state="translated">5 - C# 9'dan uyarılar</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.6|DisplayName">
+        <source>6 - Warnings from C# 10</source>
+        <target state="translated">6 - C# 10'dan uyarılar</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.7|DisplayName">
+        <source>7 - Warnings from C# 11</source>
+        <target state="translated">7 - C# 11'dan uyarılar</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.8|DisplayName">
+        <source>8 - Warnings from C# 13</source>
+        <target state="translated">8 - C# 13'ten uyarılar</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|WarningLevel.9999|DisplayName">
+        <source>9999 - All warnings</source>
+        <target state="translated">9999 - Tüm uyarılar</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Rule|Build|Description">
+        <source>Specifies properties that control how the project builds.</source>
+        <target state="translated">Projenin nasıl derleneceğini denetleyen özellikleri belirtir.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Rule|Build|DisplayName">
+        <source>Build</source>
+        <target state="translated">Derleme</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|AssemblyOriginatorKeyFile|DisplayName">
+        <source>Strong name key file</source>
+        <target state="translated">Tanımlayıcı ad anahtar dosyası</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|BaseOutputPath|Description">
+        <source>Specifies the base location for the project's output during build. Subfolders will be appended to this path to differentiate project configuration.</source>
+        <target state="translated">Derleme sırasında projenin çıkışı için temel konumu belirtir. Proje yapılandırmasını ayırt etmek için bu yola alt klasörler eklenir.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|BaseOutputPath|DisplayName">
+        <source>Base output path</source>
+        <target state="translated">Temel çıkış yolu</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|DefineConstants|Description">
+        <source>Specifies symbols on which to perform conditional compilation.</source>
+        <target state="translated">Koşullu derlemenin gerçekleştirileceği simgeleri belirtir.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|DefineConstants|DisplayName">
+        <source>Conditional compilation symbols</source>
+        <target state="translated">Koşullu derleme sembolleri</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|DefineConstants|ValueEditors|ValueEditor|Metadata|TypeDescriptorText|Value">
+        <source>Custom symbols</source>
+        <target state="translated">Özel semboller</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|DocumentationFile|Description">
+        <source>Optional path for the API documentation file. Leave blank to use the default location.</source>
+        <target state="translated">API belge dosyası için isteğe bağlı yol. Varsayılan konumu kullanmak için boş bırakın.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|DocumentationFile|DisplayName">
+        <source>XML documentation file path</source>
+        <target state="translated">XML belgeleri dosya yolu</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|LangVersion|Description">
+        <source>The version of the language available to code in this project.</source>
+        <target state="translated">Bu projede kod için kullanılabilen dilin sürümü.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|LangVersion|DisplayName">
+        <source>Language version</source>
+        <target state="translated">Dil sürümü</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|NoWarn|Description">
+        <source>Blocks the compiler from generating the specified warnings. Separate multiple warning numbers with a comma (',') or semicolon (';').</source>
+        <target state="translated">Derleyicinin bir veya daha fazla uyarı oluşturulabilmesini engeller. Birden çok uyarı numarasını virgül (',') veya noktalı virgül (';') ile ayırın.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|NoWarn|DisplayName">
+        <source>Suppress specific warnings</source>
+        <target state="translated">Uyarıları Gizle</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PostBuildEvent|Description">
+        <source>Specifies commands that run after the build completes. Does not run if the build failed. Use 'call' to invoke .bat files. A non-zero exit code will fail the build.</source>
+        <target state="translated">Derleme tamamlandıktan sonra çalıştırılan komutları belirtir. Derleme başarısız olursa çalıştırmayın. Bat dosyalarını çağırmak için “Çağrı” işlevini kullanın. Sıfır olmayan bir çıkış kodu derlemeyi başarısız kılar.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PostBuildEvent|DisplayName">
+        <source>Post-build event</source>
+        <target state="translated">Derleme sonrası olayı</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PreBuildEvent|Description">
+        <source>Specifies commands that run before the build starts. Does not run if the project is up-to-date. A non-zero exit code will fail the build before it runs.</source>
+        <target state="translated">Derleme başlamadan önce çalıştırılan komutları belirtir. Proje güncelse çalıştırmayın. Sıfır olmayan bir çıkış kodu derlemeyi çalıştırılmadan önce başarısız kılar.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PreBuildEvent|DisplayName">
+        <source>Pre-build event</source>
+        <target state="translated">Derleme öncesi olayı</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|WarningsAsErrors|Description">
+        <source>Specifies which warnings are treated as errors. Separate multiple warning numbers with a comma (',') or semicolon (';').</source>
+        <target state="translated">Belirtilen uyarıları hata olarak değerlendirir. Birden çok uyarı numarasını virgül (',') veya noktalı virgül (';') ile ayırın.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|WarningsAsErrors|DisplayName">
+        <source>Treat specific warnings as errors</source>
+        <target state="translated">Belirli uyarıları hata olarak değerlendir</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|WarningsNotAsErrors|Description">
+        <source>Specifies which warnings are excluded from being treated as errors. Separate multiple warning numbers with a comma (',') or semicolon (';').</source>
+        <target state="translated">Belirtilen uyarıları hata olarak değerlendirmenin dışında tutar. Birden çok uyarı numarasını virgül (',') veya noktalı virgül (';') ile ayırın.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|WarningsNotAsErrors|DisplayName">
+        <source>Exclude specific warnings as errors</source>
+        <target state="translated">Belirli uyarıları hata olarak değerlendirilme dışında tut</target>
+        <note />
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

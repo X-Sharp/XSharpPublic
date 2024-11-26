@@ -1,0 +1,168 @@
+id: 
+name: GitOps.PullRequestIssueManagement
+description: GitOps.PullRequestIssueManagement primitive
+owner: 
+resource: repository
+disabled: false
+where: 
+configuration:
+  resourceManagementConfiguration:
+    scheduledSearches: []
+
+    eventResponderTasks:
+
+    - if:
+      - payloadType: Pull_Request
+      - hasLabel:
+          label: auto-merge
+      then:
+      - enableAutoMerge:
+          mergeMethod: Merge
+      description: Automatically merge PR once CI passes
+
+    - if:
+      - payloadType: Pull_Request
+      - labelRemoved:
+          label: auto-merge
+      then:
+      - disableAutoMerge
+      description: Cancel auto-merge when label removed from PRs
+
+    - if:
+      - payloadType: Pull_Request
+      - labelAdded:
+          label: auto-merge
+      - isActivitySender:
+          user: dotnet-bot
+          issueAuthor: False
+      then:
+      - approvePullRequest:
+          comment: Auto-approval of dotnet-bot PRs labeled with "auto-merge"
+      description: Auto-approve dotnet-bot's "auto-merge" PRs
+
+    - if:
+      - payloadType: Issue_Comment
+      then:
+      - cleanEmailReply
+      description: Email cleanser
+
+    - if:
+      - payloadType: Pull_Request
+      then:
+      - labelSync:
+          pattern: Area-
+      - labelSync:
+          pattern: Feature
+      - labelSync:
+          pattern: Performance
+      - labelSync:
+          pattern: Tenet
+      - labelSync:
+          pattern: Parity-
+      - labelSync:
+          pattern: Block
+      - labelSync:
+          pattern: Bug
+      description: Sync labels from issues -> PR
+
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Closed
+      - isMerged
+      - targetsBranch:
+          branch: main
+      then:
+      - addMilestone:
+          milestone: 17.12
+      description: Milestone tracking - main
+      triggerOnOwnActions: true
+
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      then:
+      - addCodeFlowLink
+      description: CodeFlow
+
+    # MILESTONE TRACKING PER RELEASE BRANCH
+    #
+    # Only for branches present in https://github.com/dotnet/project-system/branches/all
+    #
+    # dev17.9.x
+    # dev17.8.x
+    # dev17.7.x
+    # dev17.4.x
+    # dev16.11.x
+
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Closed
+      - isMerged
+      - or:
+        - targetsBranch:
+            branch: dev17.9.x
+      then:
+      - addMilestone:
+          milestone: 17.8
+      description: Milestone tracking - 17.9
+
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Closed
+      - isMerged
+      - or:
+        - targetsBranch:
+            branch: dev17.8.x
+      then:
+      - addMilestone:
+          milestone: 17.8
+      description: Milestone tracking - 17.8
+
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Closed
+      - isMerged
+      - or:
+        - targetsBranch:
+            branch: dev17.7-x
+      then:
+      - addMilestone:
+          milestone: 17.7
+      description: Milestone tracking - 17.7
+
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Closed
+      - isMerged
+      - or:
+        - targetsBranch:
+            branch: dev17.4-preview1
+        - targetsBranch:
+            branch: dev17.4-preview2
+        - targetsBranch:
+            branch: dev17.4.x
+      then:
+      - addMilestone:
+          milestone: 17.4
+      description: Milestone tracking - 17.4
+
+    - if:
+      - payloadType: Pull_Request
+      - targetsBranch:
+          branch: dev16.11.x
+      - isAction:
+          action: Closed
+      - isMerged
+      then:
+      - addMilestone:
+          milestone: 16.11
+      description: Milestone tracking - 16.11
+
+onFailure: 
+onSuccess:

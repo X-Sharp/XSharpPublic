@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="pl" original="../Resources.resx">
+    <body>
+      <trans-unit id="DataFlowFaults">
+        <source>Project system data flow '{0}' closed because of an exception: {1}.</source>
+        <target state="translated">Przepływ danych systemu projektu „{0}” został zamknięty z powodu wyjątku: {1}.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DiagnosticLevel_Error">
+        <source>Error</source>
+        <target state="translated">Błąd</target>
+        <note>Indicates that a diagnostic (i.e. a compiler warning) should be promoted to an error.</note>
+      </trans-unit>
+      <trans-unit id="DiagnosticLevel_None">
+        <source>None</source>
+        <target state="translated">Brak</target>
+        <note>Indicates that a diagnostic (i.e. a compiler warning) should be disabled.</note>
+      </trans-unit>
+      <trans-unit id="DiagnosticLevel_Warning">
+        <source>Warning</source>
+        <target state="translated">Ostrzeżenie</target>
+        <note>Indicates that a diagnostic (i.e. a compiler warning) should be kept as a warning rather than disabled or promoted to an error.</note>
+      </trans-unit>
+      <trans-unit id="ImportsTreeNodeName">
+        <source>Imports</source>
+        <target state="translated">Importy</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="JsonErrorsNeedToBeCorrected_1">
+        <source>Errors in '{0}' need to be corrected before applying changes.</source>
+        <target state="translated">Przed zastosowaniem zmian należy poprawić błędy w elemencie „{0}”.</target>
+        <note>{0} is the path to the malformed .json file.</note>
+      </trans-unit>
+      <trans-unit id="JsonErrorsNeedToBeCorrected_WithErrorMessage_2">
+        <source>Errors in '{0}' need to be corrected before applying changes. Error message:
+{1}</source>
+        <target state="translated">Przed zastosowaniem zmian należy poprawić błędy w elemencie „{0}”. Komunikat o błędzie:
+{1}</target>
+        <note>{0} is the path to the malformed .json file. {1} is an error message containing more details about the problems in the file.</note>
+      </trans-unit>
+      <trans-unit id="NeutralLanguage_DisplayNameFormatString">
+        <source>{0} - {1}</source>
+        <target state="translated">{0} — {1}</target>
+        <note>{0} is a culture name such as "English (British)" or "Portugeuse (Brazil)", and {1} is the corresponding culture code such as "en-GB" or "pt-BR". </note>
+      </trans-unit>
+      <trans-unit id="NoActionProfileName">
+        <source>Start</source>
+        <target state="translated">Uruchom</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="MsBuildMissingValueToRemove">
+        <source>The specified value to remove '{0}' was not present in the property '{1}'</source>
+        <target state="translated">Właściwość „{1}” nie zawiera określonej wartości do usunięcia „{0}”</target>
+        <note>{0} will be a specific property value such as "Debug", {1} will be an MsBuild property name such as "Configurations". Neither of those values will be localized.</note>
+      </trans-unit>
+      <trans-unit id="MsBuildMissingValueToRename">
+        <source>The specified value to rename '{0}' was not present in the property '{1}'</source>
+        <target state="translated">Właściwość „{1}” nie zawiera określonej wartości „{0}”, której nazwa ma zostać zmieniona</target>
+        <note>{0} will be a specific property value such as "Debug", {1} will be an MsBuild property name such as "Configurations". Neither of those values will be localized.</note>
+      </trans-unit>
+      <trans-unit id="AnalyzersNodeName">
+        <source>Analyzers</source>
+        <target state="translated">Analizatory</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="AssembliesNodeName">
+        <source>Assemblies</source>
+        <target state="translated">Zestawy</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ComNodeName">
+        <source>COM</source>
+        <target state="translated">Model COM</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DependenciesNodeName">
+        <source>Dependencies</source>
+        <target state="translated">Zależności</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FrameworkAssembliesNodeName">
+        <source>Framework Assemblies</source>
+        <target state="translated">Zestawy platformy</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="NoAuth">
+        <source>No Authentication</source>
+        <target state="translated">Bez uwierzytelniania</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OutputGroupPublishItemsDescription">
+        <source>Contains all the assemblies needed when publishing a .NET Core project.</source>
+        <target state="translated">Zawiera wszystkie zestawy wymagane podczas publikowania projektu platformy .NET Core.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OutputGroupPublishItemsDisplayName">
+        <source>Publish Items</source>
+        <target state="translated">Publikuj elementy</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ProjectLoadedWithWrongProjectType">
+        <source>The project file '{0}' cannot be opened. 
+
+This project was loaded using the wrong project type, likely as a result of renaming the project extension outside of Visual Studio. Remove and re-add the project to have the solution pick up the right project type.</source>
+        <target state="translated">Nie można otworzyć pliku projektu „{0}”. 
+
+Ten projekt został załadowany przy użyciu nieprawidłowego typu projektu, prawdopodobnie z powodu zmiany nazwy rozszerzenia projektu poza programem Visual Studio. Usuń i dodaj ponownie projekt, aby w rozwiązaniu został użyty odpowiedni typ projektu.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ProjectsNodeName">
+        <source>Projects</source>
+        <target state="translated">Projekty</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Property_NoneValue">
+        <source>(None)</source>
+        <target state="translated">(Brak)</target>
+        <note>Special value to show in the project property pages when a property has no value.</note>
+      </trans-unit>
+      <trans-unit id="Restore_DuplicateToolReferenceItems">
+        <source>The metadata on 'DotNetCliToolReference' item '{0}' is inconsistent between target frameworks. Only the first one will be restored.</source>
+        <target state="translated">Metadane dla elementu „DotNetCliToolReference” „{0}” są niezgodne między platformami docelowymi. Tylko pierwszy z nich zostanie przywrócony.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Restore_EmptyTargetFrameworkMoniker">
+        <source>The value of the 'TargetFrameworkMoniker' and 'NuGetTargetMoniker' properties in the '{0}' configuration are both empty. This configuration will not contribute to NuGet restore, which may result in restore and build errors.</source>
+        <target state="translated">Wartości właściwości „TargetFrameworkMoniker” i „NuGetTargetMoniker” w konfiguracji „{0}” są puste. Ta konfiguracja nie zostanie uwzględniona przy przywracaniu pakietów NuGet, co może skutkować błędami przywracania i kompilacji.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Restore_NuGetCycleDetected">
+        <source>A NuGet restore loop has been detected in project '{0}'. Further restores have been aborted. The project might be in a bad state.</source>
+        <target state="translated">W projekcie „{0}” wykryto pętlę przywracania NuGet. Dalsze przywracanie zostało przerwane. Projekt może być w złym stanie.</target>
+        <note>{0} is a file path.</note>
+      </trans-unit>
+      <trans-unit id="Restore_PropertyWithInconsistentValues">
+        <source>The value of the '{0}' property is inconsistent between target frameworks. This property must be identical for NuGet restore to function correctly. The value '{1}' from the '{2}' configuration will be used, other target frameworks may fail to pick NuGet assets.</source>
+        <target state="translated">Wartość właściwości „{0}” jest niezgodna między platformami docelowymi. Ta właściwość musi być identyczna, aby przywracanie pakietu NuGet działało poprawnie. Zostanie użyta wartość „{1}” z konfiguracji „{2}”, inne platformy docelowe mogą nie móc wybrać zasobów pakietu NuGet.</target>
+        <note>{0} is a file path.</note>
+      </trans-unit>
+      <trans-unit id="SdkNodeName">
+        <source>SDK</source>
+        <target state="translated">SDK</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FrameworkNodeName">
+        <source>Frameworks</source>
+        <target state="translated">Struktury</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="PackagesNodeName">
+        <source>Packages</source>
+        <target state="translated">Pakiety</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="SpecialFileProvider_FileOrFolderAlreadyExists">
+        <source>A file or folder with the name '{0}' already exists on disk at this location. Please choose another name.
+
+If this file or folder does not appear in Solution Explorer, then it is not currently part of your project. To view files which exist on disk, but are not in the project, select Show All Files from the Project menu.</source>
+        <target state="translated">Plik lub folder o nazwie „{0}” istnieje już na dysku w tej lokalizacji. Proszę wybrać inną nazwę.
+
+Jeśli ten plik lub folder nie jest wyświetlany w Eksploratorze rozwiązań, to nie jest on aktualnie częścią projektu. Aby wyświetlić pliki, które istnieją na dysku, ale nie znajdują się w projekcie, wybierz pozycję Pokaż wszystkie pliki z menu Projekt.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="WindowsAuth">
+        <source>Windows Authentication</source>
+        <target state="translated">Uwierzytelnianie systemu Windows</target>
+        <note />
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

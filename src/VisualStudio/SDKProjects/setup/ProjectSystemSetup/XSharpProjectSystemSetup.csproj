@@ -1,0 +1,117 @@
+﻿<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information. -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Note: VSIX signing is handled via AddVsixForSigning in Directory.Build.targets. -->
+
+  <Import Project="..\..\eng\imports\VisualStudio.props" />
+
+  <!-- Local properties -->
+  <PropertyGroup>
+    <_ManagedProjectName>XSharp.VisualStudio.ProjectSystem.Managed</_ManagedProjectName>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RootNamespace>XSharp.VisualStudio</RootNamespace>
+    <!-- Note: No idea why ProjectSystem is the AssemblyName instead of using the MSBuildProjectName of ProjectSystemSetup. -->
+    <AssemblyName>XSharpProjectSystem</AssemblyName>
+    <TargetFramework>net472</TargetFramework>
+
+    <!-- VSIX -->
+    <ExtensionInstallationRoot>Extensions</ExtensionInstallationRoot>
+    <ExtensionInstallationFolder>XSharp\ManagedProjectSystem</ExtensionInstallationFolder>
+    <TargetVsixContainerName>$(AssemblyName).vsix</TargetVsixContainerName>
+    <TargetVsixContainer>$(VisualStudioSetupInsertionPath)$(TargetVsixContainerName)</TargetVsixContainer>
+
+    <!-- Set's the JSON manifest name for GetVsixPrimaryOutputs in Directory.Build.targets -->
+    <VsixManifestPackageId>$(_ManagedProjectName)</VsixManifestPackageId>
+    <CodeModel>$(Solutiondir)..\..\Artifacts\Common\Debug\XSharp.CodeModel.dll</CodeModel>
+    <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
+    <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
+    <EnableNETAnalyzers>False</EnableNETAnalyzers>
+
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>$(NoWarn);1701;1702;1705;1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>$(NoWarn);1701;1702;1705;1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Manifest\**" />
+    <EmbeddedResource Remove="Manifest\**" />
+    <None Remove="Manifest\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="AssemblyRedirects.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Microsoft.VisualStudio.ProjectSystem.Managed.VS.pkgdef" />
+    <None Remove="ProjectSelectors.pkgdef" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="UnifiedSettings\ManagedProjectSystem.registration.json">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <ProjectReference Include="..\..\src\Microsoft.VisualStudio.ProjectSystem.Managed.VS\XSharp.VisualStudio.ProjectSystem.Managed.VS.csproj">
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup;GetCopyToOutputDirectoryItems;SatelliteDllsProjectOutputGroup;PkgdefProjectOutputGroup</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    
+    <ProjectReference Include="..\..\src\Microsoft.VisualStudio.ProjectSystem.Managed\XSharp.VisualStudio.ProjectSystem.Managed.csproj">
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup;GetCopyToOutputDirectoryItems;SatelliteDllsProjectOutputGroup</IncludeOutputGroupsInVSIX>
+      <Name>XSharp.VisualStudio.ProjectSystem.Managed</Name>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
+      <Ngen>false</Ngen>
+      <NgenPriority>1</NgenPriority>
+    </ProjectReference>
+    <ProjectReference Update="@(ProjectReference)">
+      <Name>%(Filename)</Name>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
+      <Ngen>false</Ngen>
+      <NgenPriority>1</NgenPriority>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="XSharpProjectSelectors.pkgdef">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="XSharp.VisualStudio.ProjectSystem.Managed.VS.pkgdef">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Compile Include="..\Common\ProvideCodeBaseBindingRedirection.cs">
+      <Link>ProvideCodeBaseBindingRedirection.cs</Link>
+    </Compile>
+  </ItemGroup>
+
+
+  <ItemGroup> 
+    <Reference Include="$(CodeModel)" />
+  </ItemGroup>
+  <ItemGroup>
+    <VSIXSourceItem Include="$(CodeModel)" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="xsharp.source.extension.vsixmanifest">
+      <Generator>VsixManifestGenerator</Generator>
+    </None>
+  </ItemGroup>
+  <!-- Excludes the localized .xaml files from the VSIX which are added from the GetCopyToOutputDirectoryItems output group. Only the localized .dlls are needed in the VSIX. -->
+  <!-- For additional info, see: https://github.com/dotnet/project-system/issues/6612 -->
+  <Target Name="ExcludeLocalizedXamlFilesFromVSIX" AfterTargets="GetVsixSourceItems">
+    <ItemGroup>
+      <VSIXSourceItem Remove="$(ArtifactsObjDir)$(_ManagedProjectName)\$(TargetFramework)\$(_ManagedProjectName).xlf\**\*.xaml" />
+    </ItemGroup>
+  </Target>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="Copy /y xsharp.source.extension.vsixmanifest source.extension.vsixmanifest " />
+  </Target>
+
+</Project>

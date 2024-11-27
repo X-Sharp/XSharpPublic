@@ -196,14 +196,14 @@ BEGIN NAMESPACE XSharp.RT.Tests
 //			Appending in exclusive mode:
 			DbUseArea(, , cDbf , "alias2" , FALSE)
 			Assert.True( DbAppend() )
-			Assert.Equal(  RecCount() ,1)
+			Assert.Equal(  RecCount() ,1U)
 			FieldPut(1, "test") // ok
 			DbCloseArea()
 
 //			Appending in SHARED mode:
 			DbUseArea(, , cDbf , "alias2" , TRUE)
 			Assert.True( DbAppend() ) // returns true but does not append record
-			Assert.Equal(  RecCount() ,2) // returns 1, wrong
+			Assert.Equal(  RecCount() ,2U) // returns 1, wrong
 			DbCloseArea()
 		RETURN
 

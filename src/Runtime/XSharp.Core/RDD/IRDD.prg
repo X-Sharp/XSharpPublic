@@ -25,7 +25,7 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Position the cursor to a specific, physical row.</summary>
 	/// <param name="nRec">The ONE based row number of the new cursor position.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD GoTo(nRec AS LONG)				AS LOGIC
+	METHOD GoTo(nRec AS DWORD)				AS LOGIC
 
 	/// <summary>Position the cursor to a specific, physical identity.</summary>
 	/// <param name="oRec">The ONE based row ID of the new cursor position.</param>
@@ -410,11 +410,11 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>The outcome of the last search operation.</summary>
 	PROPERTY Found		AS LOGIC	GET SET
 	/// <summary>The number of rows.</summary>
-	PROPERTY RecCount	AS LONG		GET
+	PROPERTY RecCount	AS DWORD	GET
 	/// <summary>The row identifier at the current cursor position.</summary>
 	PROPERTY RecId		AS OBJECT	GET		// Does not have to be numeric.
 	/// <summary>The physical row identifier at the current cursor position.</summary>
-	PROPERTY RecNo		AS LONG		GET
+	PROPERTY RecNo		AS DWORD	GET
 	/// <summary>Is the current Workarea opened Shared?</summary>
 	PROPERTY Shared		AS LOGIC	GET
 

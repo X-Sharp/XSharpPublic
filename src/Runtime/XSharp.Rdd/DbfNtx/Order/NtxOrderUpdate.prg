@@ -20,9 +20,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     INTERNAL PARTIAL SEALED CLASS NtxOrder
         // Methods for updating (adding, inserting, deleting) keys into indices
 
-        PRIVATE METHOD _keyUpdate(recordNo AS LONG , lNewRecord AS LOGIC ) AS LOGIC
+        PRIVATE METHOD _keyUpdate(recordNo AS DWORD , lNewRecord AS LOGIC ) AS LOGIC
             LOCAL condFor := TRUE AS LOGIC
-            LOCAL num AS LONG
+            LOCAL num AS DWORD
             LOCAL noMoreLock AS LOGIC
             LOCAL errorLevel AS LONG
             LOCAL lockCount AS LONG

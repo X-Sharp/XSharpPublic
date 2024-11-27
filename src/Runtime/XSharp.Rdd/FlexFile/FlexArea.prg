@@ -445,7 +445,7 @@ INTERNAL CLASS FlexArea
 
     METHOD WriteBlock (bytes AS BYTE[]) AS LOGIC
         local lOk as LOGIC
-        lOk := _oStream:SafeWrite(bytes)
+        lOk := _oStream:SafeWrite(bytes, bytes:Length)
         IF ! lOk
             SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FlexArea.WriteBlock")
         ENDIF

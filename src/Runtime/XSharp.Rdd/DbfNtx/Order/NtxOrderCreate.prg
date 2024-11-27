@@ -216,12 +216,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL lUseOrder     := FALSE AS LOGIC
             LOCAL hasWhile      := FALSE AS LOGIC
             LOCAL hasEvalBlock  := FALSE AS LOGIC
-            LOCAL record        := 1 AS LONG
-            LOCAL count         := 1 AS LONG
-            LOCAL toDo          := 0 AS LONG
+            LOCAL record        := 1 AS DWORD
+            LOCAL count         := 1 AS DWORD
+            LOCAL toDo          := 0 AS DWORD
             LOCAL done          := 0 AS LONG
-            LOCAL nextRecord    := 0 AS LONG
-            LOCAL start         := 0 AS LONG
+            LOCAL nextRecord    := 0 AS DWORD
+            LOCAL start         := 0 AS DWORD
             LOCAL result        := FALSE AS LOGIC
             LOCAL includeRecord := TRUE AS LOGIC
 
@@ -350,7 +350,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL fType := 0 AS DbFieldType
             LOCAL sourceIndex := 0 AS LONG
             LOCAL evalCount AS LONG
-            LOCAL lRecCount AS LONG
+            LOCAL lRecCount AS DWORD
             LOCAL sortInfo AS DbSortInfo
             LOCAL hasBlock AS LOGIC
             LOCAL sorting AS RddSortHelper
@@ -482,7 +482,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:Flush()
             RETURN Ok
 
-        PRIVATE METHOD _initLevels(uiBOrder AS LONG , keyCount AS LONG ) AS LONG
+        PRIVATE METHOD _initLevels(uiBOrder AS LONG , keyCount AS DWORD ) AS LONG
             LOCAL level AS LONG
             LOCAL exp AS LONG
             LOCAL nLevel AS NtxLevel
@@ -533,7 +533,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             RETURN TRUE
 
-        PRIVATE METHOD _RecalcLevel(uiLevel AS LONG , lKeys AS LONG , uiBOrder AS LONG ) AS VOID
+        PRIVATE METHOD _RecalcLevel(uiLevel AS LONG , lKeys AS DWORD , uiBOrder AS DWORD ) AS VOID
             LOCAL nLevel AS NtxLevel
 
             nLevel := SELF:_levels[uiLevel]

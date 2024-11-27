@@ -33,14 +33,14 @@ END ENUM
 
 INTERNAL CLASS SortRecord
     PRIVATE _data AS BYTE[]
-    PRIVATE _Recno AS LONG
+    PRIVATE _Recno AS DWORD
     INTERNAL PROPERTY Duplicate AS LOGIC AUTO
 
     INTERNAL PROPERTY Data AS BYTE[] GET _data
 
-    INTERNAL PROPERTY Recno AS LONG GET _Recno
+    INTERNAL PROPERTY Recno AS DWORD GET _Recno
 
-    INTERNAL CONSTRUCTOR(data AS BYTE[] , lRecno AS LONG )
+    INTERNAL CONSTRUCTOR(data AS BYTE[] , lRecno AS DWORD )
         SELF:_data  := (BYTE[])data:Clone()
         SELF:_Recno := lRecno
         SELF:Duplicate := FALSE
@@ -71,12 +71,12 @@ INTERNAL CLASS RddStack
 END CLASS
 
 INTERNAL CLASS RddKeyData
-    PROPERTY Recno   AS LONG AUTO
+    PROPERTY Recno   AS DWORD AUTO
     PROPERTY Key     AS BYTE[] AUTO
     PROPERTY ForCond AS LOGIC AUTO
     INTERNAL CONSTRUCTOR (nKeyLen AS LONG)
         SELF:ForCond := TRUE
-        SELF:Recno   := -1
+        SELF:Recno   := MISSING_RECNO
         SELF:Key     := BYTE[]{nKeyLen}
         RETURN
 #ifdef __DEBUG__

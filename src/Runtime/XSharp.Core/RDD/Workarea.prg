@@ -129,7 +129,7 @@ BEGIN NAMESPACE XSharp.RDD
 			/// <inheritdoc />
 		VIRTUAL METHOD DbEval(info AS DbEvalInfo) AS LOGIC
 			// fetch locals from info
-            LOCAL nRecno   := 0 AS LONG
+            LOCAL nRecno   := 0 AS DWORD
             LOCAL isOk     := TRUE AS LOGIC
             LOCAL lLimit   := FALSE AS LOGIC
             LOCAL lRecordOk := TRUE AS LOGIC
@@ -141,7 +141,7 @@ BEGIN NAMESPACE XSharp.RDD
             cbFor    := info:ScopeInfo:ForBlock
             cbEval   := info:Block
             IF info:ScopeInfo:RecId != NULL
-                nRecno := Convert.ToInt32(info:ScopeInfo:RecId)
+                nRecno := Convert.ToUInt32(info:ScopeInfo:RecId)
                 isOk   := SELF:GoTo(nRecno)
                 lLimit := TRUE
                 nRecno := 1
@@ -198,7 +198,7 @@ BEGIN NAMESPACE XSharp.RDD
 			THROW NotImplementedException{__ENTITY__}
 
 			/// <inheritdoc />
-		VIRTUAL METHOD GoTo(nRec AS INT) AS LOGIC
+		VIRTUAL METHOD GoTo(nRec AS DWORD) AS LOGIC
 			THROW NotImplementedException{__ENTITY__}
 
 			/// <inheritdoc />
@@ -302,7 +302,7 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL lFound    := FALSE AS LOGIC
             LOCAL lContinue := TRUE AS LOGIC
             LOCAL result    := TRUE AS LOGIC
-            LOCAL nextCnt := SELF:_ScopeInfo:NextCount  AS LONG
+            LOCAL nextCnt := SELF:_ScopeInfo:NextCount  AS DWORD
             LOCAL cbWhile AS ICodeblock
             LOCAL cbFor   AS ICodeblock
             _ScopeInfo:Compile(SELF)
@@ -904,12 +904,12 @@ BEGIN NAMESPACE XSharp.RDD
                 LOCAL result    := TRUE AS LOGIC
                 LOCAL lQualified:= TRUE AS LOGIC
                 LOCAL lLimit    := TRUE AS LOGIC
-                LOCAL nRecno    := 0    AS LONG
+                LOCAL nRecno    := 0    AS DWORD
                 IF SELF:HasRelations
                     SELF:ForceRel()
                 ENDIF
                 IF info:Scope:RecId != NULL
-                    nRecno := Convert.ToInt32(info:Scope:RecId)
+                    nRecno := Convert.ToUInt32(info:Scope:RecId)
                     result := SELF:GoTo(nRecno)
                     lLimit := TRUE
                 ELSEIF info:Scope:NextCount != 0
@@ -1214,12 +1214,12 @@ BEGIN NAMESPACE XSharp.RDD
 
 
 		/// <inheritdoc />
-		VIRTUAL PROPERTY RecCount AS INT GET 0
+		VIRTUAL PROPERTY RecCount AS DWORD GET 0
 
 		/// <inheritdoc />
 		VIRTUAL PROPERTY RecId AS OBJECT GET RecNo
 		/// <inheritdoc />
-		VIRTUAL PROPERTY RecNo AS LONG GET   0
+		VIRTUAL PROPERTY RecNo AS DWORD GET   0
 
 		/// <inheritdoc />
 		VIRTUAL PROPERTY Shared AS LOGIC GET _Shared

@@ -425,7 +425,7 @@ FUNCTION DbFieldInfo(kInfoType, nFieldPos, uNewSetting) AS USUAL CLIPPER
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgoto/*" />
 FUNCTION DbGoto(uRecID IN USUAL) AS LOGIC
-    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Goto(uRecID) )
+    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.GoToId(uRecID) )
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgoto/*" />
 FUNCTION DbGoto(uRecID AS USUAL, uArea AS USUAL) AS LOGIC
@@ -922,7 +922,7 @@ FUNCTION DbMemoField (uField IN USUAL)  AS USUAL
 FUNCTION _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      AS LOGIC CLIPPER
 
     LOCAL aStruct       AS ARRAY
-    LOCAL i,n           AS INT
+    LOCAL i,n           AS DWORD
     LOCAL nSelect       AS INT
     LOCAL aField        AS ARRAY
 

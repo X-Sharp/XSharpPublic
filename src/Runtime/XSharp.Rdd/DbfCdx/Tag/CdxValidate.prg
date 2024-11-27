@@ -27,12 +27,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN
 
         INTERNAL METHOD _validate() AS LOGIC
-            LOCAL aLevels   AS List<LONG>
+            LOCAL aLevels   AS List<DWORD>
             LOCAL lOk := TRUE AS LOGIC
 
             TRY
                 IF SELF:Xlock()
-                    aLevels     := List<LONG>{}
+                    aLevels     := List<DWORD>{}
                     _errors     := List<STRING>{}
 
                     SELF:GoTop()
@@ -72,7 +72,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _validateLeaves(firstPage AS CdxLeafPage) AS VOID
             LOCAL aRecordList AS BitArray
             LOCAL currentPage AS CdxLeafPage
-            aRecordList := BitArray{SELF:_oRdd:RecCount+1}
+            aRecordList := BitArray{(INT) (SELF:_oRdd:RecCount+1)}
             currentPage := firstPage
             IF firstPage:HasLeft
                SELF:_addError( i"First page {firstPage.PageNo} in leaf level has a LeftPointer {firstPage.LeftPtr:X}")
@@ -80,12 +80,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             DO WHILE currentPage != NULL
                 VAR prevKey := BYTE[]{_keySize}
                 VAR currKey := BYTE[]{_keySize}
-                LOCAL prevRec := 0 AS LONG
+                LOCAL prevRec := 0 AS DWORD
                 FOREACH leaf AS CdxLeaf IN currentPage:Keys
-                    IF aRecordList[leaf:Recno]
+                    IF aRecordList[(INT) leaf:Recno]
                         SELF:_addError( i"Record {leaf.Recno} is found more than once at the Leaf level. Second occurrence was on page on page {currentPage.PageNo:X} ")
                     ELSE
-                        aRecordList[leaf:Recno] := TRUE
+                        aRecordList[(INT) leaf:Recno] := TRUE
                     ENDIF
                     IF SELF:__Compare(prevKey, leaf:Key, _keySize, prevRec, leaf:Recno) > 0
                         VAR cLeft   := prevKey:ToAscii(FALSE)
@@ -129,14 +129,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 NEXT
             ELSE
-                FOR VAR i := 1 TO SELF:_oRdd:RecCount
+                local i as dword
+                FOR i := 1 TO SELF:_oRdd:RecCount
                     SELF:_oRdd:__Goto(i)
                     LOCAL oInclude AS OBJECT
                     oInclude  := SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
                     IF oInclude IS LOGIC VAR lInclude
-                        IF lInclude .AND. ! aRecordList[i]
+                        IF lInclude .AND. ! aRecordList[(INT) i]
                             SELF:_addError( i"Record {i} is not recorded at the Leaf level, but it DOES match the for condition")
-                        ELSEIF ! lInclude .AND. aRecordList[i]
+                        ELSEIF ! lInclude .AND. aRecordList[(INT) i]
                             SELF:_addError( i"Record {i} is recorded at the Leaf level, but it DOES NOT match the for condition")
                         ENDIF
                     ELSE
@@ -155,7 +156,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             DO WHILE currentPage != NULL
                 VAR prevKey := BYTE[]{_keySize}
-                LOCAL prevRecno := 0 AS LONG
+                LOCAL prevRecno := 0 AS DWORD
                 FOR VAR nBranch := 0 TO currentPage:Keys:Count-1
                     VAR branch := currentPage:Keys[nBranch]
                     IF SELF:__Compare(prevKey, branch:Key, _keySize, prevRecno, branch:Recno) > 0

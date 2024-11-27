@@ -27,16 +27,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     PRIVATE CONST CDXFILEHEADER_VERSION     := 8 AS LONG
 	PRIVATE CONST CDXFILEHEADER_FREELIST	:= 0x04	AS WORD		// Byte offset to next free block
 
-    PRIVATE _freeList       AS LONG
+    PRIVATE _freeList       AS DWORD
 
-    INTERNAL PROPERTY FreeList AS LONG ;
-        GET IIF(_freeList >= 0, _freeList, 0) ;
-        SET SELF:_SetLong(CDXFILEHEADER_FREELIST, VALUE), _freeList  := IIF(VALUE >= 0, VALUE, 0)
+    INTERNAL PROPERTY FreeList AS DWORD ;
+        GET IIF(CdxPage.PageIsValid(_freeList), _freeList, 0) ;
+        SET SELF:_SetDWord(CDXFILEHEADER_FREELIST, VALUE), _freeList  := IIF(CdxPage.PageIsValid(value), VALUE, 0)
 
 
     PRIVATE METHOD _getValues AS VOID
-        _freeList   := SELF:_GetLong(CDXFILEHEADER_FREELIST)
-        IF _freeList < 0
+        _freeList   := SELF:_GetDWord(CDXFILEHEADER_FREELIST)
+        IF _freeList == MISSING_PAGE
             _freeList := 0
             _hot := TRUE
         ENDIF

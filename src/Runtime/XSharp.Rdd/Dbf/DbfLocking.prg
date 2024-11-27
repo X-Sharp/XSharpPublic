@@ -21,7 +21,7 @@ STRUCTURE DbfLocking
     /// <summary>Direction of locking, used to calculate file lock offsets and record lock offsets</summary>
 	PUBLIC Direction AS LONG
 
-/// <summary>Set various numbers based on a locking model.</summary>	
+/// <summary>Set various numbers based on a locking model.</summary>
 METHOD Initialize( model AS DbfLockingModel ) AS VOID
 	SWITCH model
 	CASE DbfLockingModel.Clipper52
@@ -64,7 +64,7 @@ METHOD Initialize( model AS DbfLockingModel ) AS VOID
     PROPERTY FileLockOffSet AS INT64
         GET
             VAR iOffset := SELF:Offset
-	        IF SELF:Direction < 0 
+	        IF SELF:Direction < 0
 		        iOffset -= SELF:FileSize
 	        ELSE
 		        iOffset++
@@ -73,9 +73,9 @@ METHOD Initialize( model AS DbfLockingModel ) AS VOID
         END GET
     END PROPERTY
     /// <summary>Calculate the record offset based </summary>
-    METHOD RecnoOffSet(recordNbr AS LONG, recSize AS LONG, headerLength AS LONG) AS INT64
+    METHOD RecnoOffSet(recordNbr AS DWORD, recSize AS LONG, headerLength AS LONG) AS INT64
 	    VAR iOffset := SELF:Offset
-	    IF SELF:Direction < 0 
+	    IF SELF:Direction < 0
 		    iOffset -= (INT64)recordNbr
 	    ELSEIF( SELF:Direction == 2 )
 		    iOffset += (INT64)( ( recordNbr - 1 ) * recSize + headerLength )
@@ -85,5 +85,5 @@ METHOD Initialize( model AS DbfLockingModel ) AS VOID
         RETURN iOffset
 END STRUCTURE
 
-    
+
 END NAMESPACE

@@ -286,11 +286,11 @@ FUNCTION RddSetDefault  (cNewSetting AS STRING) AS STRING
     RETURN VoDb.RddSetDefault(cNewSetting)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/reccount/*" />
-FUNCTION RecCount() AS LONG
+FUNCTION RecCount() AS DWORD
     RETURN VoDb.LastRec()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/reccount/*" />
-FUNCTION RecCount(uArea IN USUAL) AS LONG
+FUNCTION RecCount(uArea IN USUAL) AS DWORD
      RETURN (uArea)->(RecCount())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/recno/*" />

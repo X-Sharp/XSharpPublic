@@ -7,7 +7,7 @@
 USING XSharp.RDD.Support
 /// <summary>This interface defines a row in a .Net Table.</summary>
 INTERFACE XSharp.RDD.IDbRow
-    PROPERTY RecNo as LONG GET SET
+    PROPERTY RecNo as DWORD GET SET
 END INTERFACE
 
 

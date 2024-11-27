@@ -17,8 +17,8 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _Hot            AS LOGIC
         PROTECT _Ansi           AS LOGIC
         PROTECT _BufferValid    AS LOGIC
-        PROTECT _Reccount       AS LONG
-        PROTECT _Recno          AS LONG
+        PROTECT _Reccount       AS DWORD
+        PROTECT _Recno          AS DWORD
         PROTECT _fieldData      AS OBJECT[]
         PROTECT _numformat      AS NumberFormatInfo
         PROTECT _Buffer         AS BYTE[]
@@ -33,7 +33,7 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL _OpenInfo		AS DbOpenInfo // current dbOpenInfo structure in OPEN/CREATE method
 
         #region abstract methods, must be implemented in subclass
-        ABSTRACT PROTECTED METHOD _getLastRec()  AS LONG
+        ABSTRACT PROTECTED METHOD _getLastRec()  AS DWORD
         ABSTRACT PROTECTED METHOD _writeRecord() AS LOGIC
         ABSTRACT PROTECTED METHOD _readRecord() AS LOGIC
         #endregion
@@ -199,7 +199,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 
             /// <inheritdoc />
-        OVERRIDE METHOD Skip(nToSkip AS INT) AS LOGIC
+        OVERRIDE METHOD Skip(nToSkip AS LONG) AS LOGIC
             IF SELF:_Recno <= SELF:_Reccount
                 SELF:_Recno += 1
                 SELF:_BufferValid := FALSE
@@ -305,9 +305,6 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:IsOpen
                 SELF:_FileName := FGetFileName(SELF:_hFile)
                 isOK := SELF:_DetermineCodePage()
-                IF FSize(SELF:_hFile) < Int32.MaxValue
-                    FConvertToMemoryStream(SELF:_hFile)
-                ENDIF
                 SELF:_prepareFields()
                 SELF:_Reccount := SELF:_getLastRec()
                 SELF:GoTop()
@@ -386,11 +383,11 @@ BEGIN NAMESPACE XSharp.RDD
             /// <inheritdoc />
         OVERRIDE PROPERTY Deleted 	AS LOGIC GET 	FALSE
         /// <inheritdoc />
-        OVERRIDE PROPERTY RecCount	AS LONG GET _Reccount
+        OVERRIDE PROPERTY RecCount	AS DWORD GET _Reccount
         /// <inheritdoc />
         OVERRIDE PROPERTY RecId		AS OBJECT GET  _Recno
         /// <inheritdoc />
-        OVERRIDE PROPERTY RecNo		AS LONG 	GET _Recno
+        OVERRIDE PROPERTY RecNo		AS DWORD 	GET _Recno
         /// <inheritdoc />
         OVERRIDE PROPERTY Driver AS STRING GET "TEXTRDD"
 

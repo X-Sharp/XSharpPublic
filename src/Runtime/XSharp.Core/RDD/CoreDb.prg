@@ -162,7 +162,7 @@ CLASS XSharp.CoreDb
         info:Scope:WhileBlock   := uCobWhile
         IF nNext IS LONG
             TRY
-                info:Scope:NextCount := Convert.ToInt32(nNext)
+                info:Scope:NextCount := Convert.ToUInt32(nNext)
             CATCH e AS Exception
                 Fail(e)
                 info:Scope:NextCount := 0
@@ -708,13 +708,13 @@ CLASS XSharp.CoreDb
 
     STATIC METHOD Eval(uBlock AS ICodeblock,uCobFor AS ICodeblock,uCobWhile AS ICodeblock,uNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
-        LOCAL nNext AS LONG
+        LOCAL nNext AS DWORD
         IF uBlock == NULL
             THROW Error.ArgumentError(__FUNCTION__, nameof(uBlock),1, <OBJECT>{uBlock})
         ELSE
             TRY
                 IF uNext != NULL
-                    nNext := Convert.ToInt32(uNext)
+                    nNext := Convert.ToUInt32(uNext)
                 ELSE
                     nNext := 0
                 ENDIF
@@ -1023,7 +1023,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <param name="uRecId">ID of the record to goto</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    STATIC METHOD Goto(uRecId AS OBJECT) AS LOGIC
+    STATIC METHOD GoToId(uRecId AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         BEFOREMOVE
@@ -1031,6 +1031,20 @@ CLASS XSharp.CoreDb
         AFTERMOVE
         RETURN result
         })
+
+       /// <summary>
+       /// Move to a record specified by record number.
+       /// </summary>
+       /// <param name="uRecId">ID of the record to goto</param>
+       /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+   STATIC METHOD GoTo(nRecord AS DWORD) AS LOGIC
+       RETURN CoreDb.Do ({ =>
+       LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
+       BEFOREMOVE
+       VAR result := oRdd:GoTo(nRecord)
+       AFTERMOVE
+       RETURN result
+       })
 
         /// <summary>
         /// Move to the first logical record.
@@ -1051,7 +1065,7 @@ CLASS XSharp.CoreDb
         })
 
 
-    STATIC METHOD  Header() AS LONG
+    STATIC METHOD Header() AS LONG
         LOCAL oValue := NULL AS OBJECT
         IF CoreDb.Info(DBI_GETHEADERSIZE, REF oValue)
             RETURN (LONG) oValue
@@ -1141,7 +1155,7 @@ CLASS XSharp.CoreDb
         /// </returns>
         /// <remarks> <note type="tip">VoDbLastRec() and CoreDb.LastRec() are aliases</note></remarks>
 
-    STATIC METHOD LastRec() AS LONG
+    STATIC METHOD LastRec() AS DWORD
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         RETURN oRdd:RecCount
@@ -1159,7 +1173,7 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBLocate() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// </remarks>
-    STATIC METHOD Locate(uCobFor AS ICodeblock,uCobWhile AS ICodeblock,nNext AS LONG,uRecId AS OBJECT,lRest AS LOGIC) AS LOGIC
+    STATIC METHOD Locate(uCobFor AS ICodeblock,uCobWhile AS ICodeblock,nNext AS DWORD,uRecId AS OBJECT,lRest AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         LOCAL scopeinfo := DbScopeInfo{} AS DbScopeInfo

@@ -8,7 +8,7 @@ USING System.Runtime.CompilerServices
 USING System.Collections.Generic
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/empty/*" />
-FUNCTION Empty(uValue IN USUAL) AS LOGIC
+FUNCTION Empty(uValue AS USUAL) AS LOGIC
     RETURN uValue:IsEmpty
 
 #region Empty Overloads

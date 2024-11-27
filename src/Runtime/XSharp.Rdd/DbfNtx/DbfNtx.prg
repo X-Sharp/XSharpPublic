@@ -90,7 +90,7 @@ BEGIN NAMESPACE XSharp.RDD
             END LOCK
 
         OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DbOrderInfo ) AS OBJECT
-            LOCAL result AS LONG
+            LOCAL result AS DWORD
             LOCAL workOrder AS NtxOrder
             LOCAL isOk := FALSE AS LOGIC
 
@@ -411,11 +411,11 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN result
             END LOCK
 
-        METHOD __Goto(nRec AS LONG) AS LOGIC
+        METHOD __Goto(nRec AS DWORD) AS LOGIC
             // Skip without reset of stack
             RETURN SUPER:GoTo(nRec)
 
-        OVERRIDE METHOD GoTo(nRec AS LONG) AS LOGIC
+        OVERRIDE METHOD GoTo(nRec AS DWORD) AS LOGIC
             local result as LOGIC
             SELF:GoCold()
             IF SELF:CurrentOrder != NULL

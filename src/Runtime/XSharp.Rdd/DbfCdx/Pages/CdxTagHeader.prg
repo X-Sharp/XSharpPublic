@@ -45,7 +45,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         // so therefore allocate extra 2nd page
         INTERNAL PROPERTY TagName      AS STRING AUTO
 
-	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , cTagName AS STRING, oTag as CdxTag)
+	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS DWORD , cTagName AS STRING, oTag as CdxTag)
             SUPER(bag)
             SELF:_nPage := nPage
             SELF:SetBuffer(bag:AllocBuffer(2))
@@ -73,7 +73,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endregion
 
         PRIVATE METHOD _getValues as VOID
-            _rootPage   := SELF:_GetLong(CDXTAGHEADER_ROOT)
+            _rootPage   := SELF:_GetDWord(CDXTAGHEADER_ROOT)
             _keyLength  := SELF:_GetWord(CDXTAGHEADER_KEYLENGTH)
             _options    := (CdxOptions)Buffer[CDXTAGHEADER_OPTIONS]
             _keyExprPos := SELF:_GetWord(CDXTAGHEADER_KEYEXPRPOS)
@@ -86,7 +86,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _vfpCollation  := SELF:_GetString(CDXTAGHEADER_VFPCOLLATION, 8)
 
 #region Fields
-        PRIVATE _rootPage       as LONG
+        PRIVATE _rootPage       as DWORD
         PRIVATE _keyLength      as WORD
         PRIVATE _options        as CdxOptions
         PRIVATE _keyExprPos     as WORD
@@ -100,8 +100,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endregion
 #region properties
 
-        INTERNAL PROPERTY RootPage AS LONG GET _rootPage;
-            SET SELF:_SetLong(CDXTAGHEADER_ROOT, value), _rootPage := value
+        INTERNAL PROPERTY RootPage AS DWORD GET _rootPage;
+            SET SELF:_SetDWord(CDXTAGHEADER_ROOT, value), _rootPage := value
 
 		INTERNAL PROPERTY KeySize		AS WORD	GET _keyLength;
 			SET SELF:_SetWord(CDXTAGHEADER_KEYLENGTH, value), _keyLength := value

@@ -230,7 +230,13 @@ FUNCTION VoDbGoBottom() AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgoto/*" />
 /// <seealso cref="CoreDb.Goto"  />
 FUNCTION VoDbGoto(uRecId IN USUAL) AS LOGIC
-    RETURN VoDb.Goto(uRecId)
+    RETURN VoDb.GoToId(uRecId)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgoto/*" />
+/// <seealso cref="CoreDb.GotoId"  />
+FUNCTION VoDbGotoId(uRecId IN USUAL) AS LOGIC
+    RETURN VoDb.GoToId(uRecId)
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgotop/*" />
 /// <seealso cref="CoreDb.GoTop"  />
@@ -258,12 +264,12 @@ FUNCTION VoDbJoinAppend(nSelect AS DWORD,struList AS _JoinList) AS LOGIC
 
 /// <inheritdoc cref="CoreDb.LastRec"  />
 /// <seealso cref="CoreDb.LastRec"  />
-FUNCTION VoDbLastRec() AS LONG
+FUNCTION VoDbLastRec() AS DWORD
     RETURN VoDb.LastRec()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodblocate/*" />
 /// <seealso cref="CoreDb.Locate"  />
-FUNCTION VoDbLocate(cbForCondition AS USUAL,cbWhileCondition AS USUAL,liNext AS LONG,uRecord AS USUAL,lRest AS LOGIC) AS LOGIC
+FUNCTION VoDbLocate(cbForCondition AS USUAL,cbWhileCondition AS USUAL,liNext AS DWORD,uRecord AS USUAL,lRest AS LOGIC) AS LOGIC
     RETURN VoDb.Locate(VoDb.ValidBlock(cbForCondition), VoDb.ValidBlock(cbWhileCondition), liNext, uRecord, lRest)
 
 

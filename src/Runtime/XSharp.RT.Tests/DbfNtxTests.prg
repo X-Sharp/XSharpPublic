@@ -1651,7 +1651,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			
 			DbGoTop()
 
-			Assert.Equal(3, RecCount())
+			Assert.Equal(3U, RecCount())
 
 			LOCAL cOutput := "" AS STRING
 			DbGoTop()

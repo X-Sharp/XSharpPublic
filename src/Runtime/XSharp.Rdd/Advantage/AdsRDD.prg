@@ -579,7 +579,7 @@ OVERRIDE METHOD GoTop() AS LOGIC
 RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
-OVERRIDE METHOD GoTo(lRec AS LONG) AS LOGIC
+OVERRIDE METHOD GoTo(lRec AS DWORD) AS LOGIC
     IF SELF:_Table == IntPtr.Zero
         RETURN FALSE
     ENDIF
@@ -599,12 +599,12 @@ RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
 OVERRIDE METHOD GoToId(oRecnum AS OBJECT) AS LOGIC
-    LOCAL recNum AS LONG
+    LOCAL recNum AS DWORD
     IF SELF:_Table == IntPtr.Zero
         RETURN FALSE
     ENDIF
     TRY
-        recNum := System.Convert.ToInt32(oRecnum)
+        recNum := System.Convert.ToUInt32(oRecnum)
     CATCH e AS Exception
         SELF:ADSERROR(ERDD.DATATYPE, XSharp.Gencode.EG_DATATYPE, "GoToId",e:Message)
         RETURN FALSE
@@ -621,7 +621,7 @@ OVERRIDE METHOD Skip(lCount AS LONG) AS LOGIC
         SELF:_CheckError(ACE.AdsWriteRecord(SELF:_Table),EG_WRITE)
         result := ACE.AdsRefreshRecord(SELF:_Table)
     ELSE
-        result := ACE.AdsSkip(SELF:CurrentOrder, lCount)
+        result := ACE.AdsSkip(SELF:CurrentOrder, (LONG) lCount)
     ENDIF
     IF result != ACE.AE_NO_CURRENT_RECORD .AND. result != 0
         SELF:_CheckError(result,EG_READ)
@@ -916,16 +916,16 @@ OVERRIDE PROPERTY Deleted AS LOGIC
     END GET
 END PROPERTY
 
-OVERRIDE PROPERTY RecCount AS LONG
+OVERRIDE PROPERTY RecCount AS DWORD
     GET
         IF SELF:_Table == IntPtr.Zero
            RETURN 0
         ENDIF
         SELF:_CheckError(ACE.AdsGetRecordCount(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT VAR dwCount),EG_READ)
-        RETURN (LONG) dwCount
+        RETURN dwCount
     END GET
 END PROPERTY
-OVERRIDE PROPERTY RecNo AS LONG GET (LONG) SELF:_RecNo
+OVERRIDE PROPERTY RecNo AS DWORD GET SELF:_RecNo
 PROPERTY _RecNo AS DWORD
     GET
         LOCAL result AS DWORD
@@ -950,7 +950,7 @@ END PROPERTY
 
     /// <inheritdoc />
 OVERRIDE METHOD Lock(lockInfo REF DbLockInfo) AS LOGIC
-    LOCAL lRecno := 0 AS DWORD
+    LOCAL lRecno := 0 AS INT64
     LOCAL result := 0 AS DWORD
       //
     IF SELF:_Table == IntPtr.Zero
@@ -980,7 +980,7 @@ OVERRIDE METHOD Lock(lockInfo REF DbLockInfo) AS LOGIC
                 ENDIF
             ENDIF
         ENDIF
-        result  := ACE.AdsLockRecord(SELF:_Table, lRecno)
+        result  := ACE.AdsLockRecord(SELF:_Table, (DWORD) lRecno)
     ENDIF
 
     IF result != ACE.AE_TABLE_NOT_SHARED .AND. result != 0

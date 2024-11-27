@@ -35,14 +35,14 @@ USING System.Diagnostics
 BEGIN NAMESPACE XSharp.RDD.CDX
     [DebuggerDisplay("{DebugString,nq}")];
     INTERNAL SEALED CLASS CdxBranch
-        INTERNAL Recno AS LONG
-        INTERNAL ChildPage AS LONG
+        INTERNAL Recno AS DWORD
+        INTERNAL ChildPage AS DWORD
         INTERNAL Key   AS BYTE[]
         INTERNAL KeyBinary AS LOGIC
         INTERNAL PROPERTY KeyText       AS STRING GET SELF:Key:ToAscii(KeyBinary)
         INTERNAL PROPERTY ChildPageX    AS STRING GET ChildPage:ToString("X8")
         INTERNAL PROPERTY DebugString   AS STRING GET SELF:KeyText:Trim() +" # "+SELF:Recno:ToString()+" P " + ChildPageX
-        INTERNAL CONSTRUCTOR (nRecno AS LONG, nChild AS LONG, bKey AS BYTE[],binary as LOGIC)
+        INTERNAL CONSTRUCTOR (nRecno AS DWORD, nChild AS DWORD, bKey AS BYTE[],binary as LOGIC)
             SELF:Recno := nRecno
             SELF:ChildPage := nChild
             SELF:Key   := (BYTE[]) bKey:Clone()
@@ -82,7 +82,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE CONST CDXBRANCH_BYTESFREE           := 500  AS WORD
         #endregion
 
-        INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS WORD)
+        INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS DWORD , buffer AS BYTE[], nKeyLen AS WORD)
             SUPER(bag, nPage, buffer)
             SELF:_keyLen        := nKeyLen
             SELF:_dataLen       := _keyLen + 8
@@ -95,7 +95,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL OVERRIDE METHOD InitBlank(oTag AS CdxTag) AS VOID
             SELF:PageType   := CdxPageType.Branch
             SELF:NumKeys    := 0
-            SELF:LeftPtr    := SELF:RightPtr   := -1
+            SELF:LeftPtr    := SELF:RightPtr   := MISSING_PAGE
             SELF:Tag        := oTag
             RETURN
 
@@ -122,29 +122,29 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN SELF:_CopyBytes( nStart, _keyLen)
 
         [INLINE];
-        INTERNAL OVERRIDE METHOD GetRecno(nPos AS Int32) AS Int32
+        INTERNAL OVERRIDE METHOD GetRecno(nPos AS Int32) AS DWORD
             LOCAL nStart AS INT
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_HEADERLEN + nPos * _dataLen
-            RETURN SELF:_GetLongLE(nStart+_keyLen)
+            RETURN SELF:_GetDWordLE(nStart+_keyLen)
 
-        INTERNAL METHOD SetData(nPos as Int32, nRecord as Int32, nPage as Int32, key as Byte[]) AS CdxAction
+        INTERNAL METHOD SetData(nPos as Int32, nRecord as DWORD, nPage as DWORD, key as Byte[]) AS CdxAction
             LOCAL nStart AS INT
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_HEADERLEN + nPos * _dataLen
             Array.Copy(key, 0, _buffer, nStart, _keyLen)
-            SELF:_SetLongLE(nStart+_keyLen, nRecord)
-            SELF:_SetLongLE(nStart+_pageNoOffSet, nPage)
+            SELF:_SetDWordLE(nStart+_keyLen, nRecord)
+            SELF:_SetDWordLE(nStart+_pageNoOffSet, nPage)
             return CdxAction.Ok
 
-        INTERNAL OVERRIDE METHOD GetChildPage(nPos AS Int32) AS Int32
+        INTERNAL OVERRIDE METHOD GetChildPage(nPos AS Int32) AS DWORD
             LOCAL nStart AS INT
             nStart := CDXBRANCH_HEADERLEN + nPos * _dataLen
-            RETURN SELF:_GetLongLE(nStart+_pageNoOffSet)
+            RETURN SELF:_GetDWordLE(nStart+_pageNoOffSet)
 
-        INTERNAL OVERRIDE METHOD GetChildren as IList<LONG>
+        INTERNAL OVERRIDE METHOD GetChildren as IList<DWORD>
             // used in the dump routine to avoid recursion
-            VAR oList := List<LONG>{}
+            VAR oList := List<DWORD>{}
             FOR VAR i := 0 to SELF:NumKeys - 1
                 oList:Add(SELF:GetChildPage(i))
             NEXT
@@ -166,7 +166,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD Add(node AS CdxPageNode) AS CdxAction
             RETURN SELF:Add(node:Recno, node:Page:PageNo, node:KeyBytes)
 
-         INTERNAL METHOD Add(recno AS LONG, childPageNo AS LONG, key AS BYTE[]) AS CdxAction
+         INTERNAL METHOD Add(recno AS DWORD, childPageNo AS DWORD, key AS BYTE[]) AS CdxAction
             //SELF:Debug(recno, childPageNo:ToString("X6"))
             IF SELF:NumKeys >= SELF:MaxKeys
                 //Debug( "triggers addBranch ","Rec", recno, "Child", childPageNo:ToString("X8"))
@@ -198,7 +198,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD Insert(nPos AS LONG, node AS CdxPageNode) AS CdxAction
             RETURN SELF:Insert(nPos, node:Recno, node:Page:PageNo, node:KeyBytes)
 
-        INTERNAL METHOD Insert(nPos AS LONG, recno AS LONG, childPageNo AS LONG, key AS BYTE[]) AS CdxAction
+        INTERNAL METHOD Insert(nPos AS LONG, recno AS DWORD, childPageNo AS DWORD, key AS BYTE[]) AS CdxAction
             LOCAL nMax := SELF:NumKeys AS WORD
             // we allow to write at the position nMax
             //SELF:Debug(nPos, recno, childPageNo:ToString("X6"))
@@ -347,7 +347,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END GET
          END PROPERTY
 
-         INTERNAL METHOD FindPage(nPage AS LONG) AS LONG
+         INTERNAL METHOD FindPage(nPage AS DWORD) AS LONG
             FOR VAR i := 0 TO NumKeys -1
                 IF SELF:GetChildPage(i) == nPage
                     RETURN i
@@ -355,7 +355,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             RETURN -1
 
-         INTERNAL OVERRIDE METHOD FindKey(key AS BYTE[], recno AS LONG, keyLength AS LONG) AS WORD
+         INTERNAL OVERRIDE METHOD FindKey(key AS BYTE[], recno AS DWORD, keyLength AS LONG) AS WORD
             // return page number of page where pageKey > key
             // or page where pageKey == key and RecordNo > recno
             LOCAL nI AS WORD
@@ -488,7 +488,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN
 #endif
 
-        INTERNAL METHOD IsDuplicate(nRecno AS LONG, nChildPage AS LONG, cKey AS BYTE[]) AS LOGIC
+        INTERNAL METHOD IsDuplicate(nRecno AS DWORD, nChildPage AS DWORD, cKey AS BYTE[]) AS LOGIC
             IF SELF:NumKeys > 0
                 FOR VAR i := 0 TO SELF:NumKeys -1
                     VAR nRec  := SELF:GetRecno(i)

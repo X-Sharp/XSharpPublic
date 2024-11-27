@@ -119,7 +119,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             IF SELF:_Scopes[BOTTOMSCOPE]:IsSet
-                nLen := SELF:_Scopes[BOTTOMSCOPE]:Size 
+                nLen := SELF:_Scopes[BOTTOMSCOPE]:Size
                 IF SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[BOTTOMSCOPE]:Buffer, nLen) > 0
                     RETURN SELF:_oRdd:__Goto(0)
                 ENDIF
@@ -128,7 +128,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
 
         PUBLIC METHOD SkipRaw(nToSkip AS LONG ) AS LOGIC
-            LOCAL recno AS LONG
+            LOCAL recno AS DWORD
             LOCAL isBof AS LOGIC
             LOCAL isEof AS LOGIC
             LOCAL changedBof AS LOGIC
@@ -178,7 +178,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         isBof := SELF:_oRdd:BoF
                         isEof := SELF:_oRdd:EoF
                         var newrec := SELF:_ScopeSkip(nToSkip)
-                        IF newrec != -1 // -1  means that there was nothing to do
+                        IF newrec != MISSING_RECNO // -1  means that there was nothing to do
                             recno := newrec
                         ENDIF
                         IF isBof != SELF:_oRdd:BoF
@@ -227,7 +227,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN result
 
 
-        PRIVATE METHOD _getNextKey(thisPage AS LOGIC , moveDirection AS SkipDirection ) AS LONG
+        PRIVATE METHOD _getNextKey(thisPage AS LOGIC , moveDirection AS SkipDirection ) AS DWORD
             LOCAL page AS NtxPage
             LOCAL node AS NtxPageNode
             // No page loaded ?
@@ -275,7 +275,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN node:Recno
 
 
-        PRIVATE METHOD _findItemPos(record REF LONG , nodePage AS LOGIC ) AS LOGIC
+        PRIVATE METHOD _findItemPos(record REF DWORD , nodePage AS LOGIC ) AS LOGIC
             LOCAL page   AS NtxPage
             LOCAL node   AS NtxPageNode
             IF SELF:_TopStack == 0
@@ -306,9 +306,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
 
 
-        PRIVATE METHOD _getScopePos() AS LONG
-            LOCAL first AS LONG
-            LOCAL last AS LONG
+        PRIVATE METHOD _getScopePos() AS DWORD
+            LOCAL first AS DWORD
+            LOCAL last AS DWORD
             IF SELF:_Scopes[TOPSCOPE]:IsSet
                 IF SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[TOPSCOPE]:Buffer, SELF:_Scopes[TOPSCOPE]:Size) < 0
                     RETURN 0
@@ -336,7 +336,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN first - last + 1
 
 
-        INTERNAL METHOD _saveCurrentKey(rcno AS LONG, oData AS RddKeyData) AS LOGIC
+        INTERNAL METHOD _saveCurrentKey(rcno AS DWORD, oData AS RddKeyData) AS LOGIC
             LOCAL isOk AS LOGIC
 
             isOk := TRUE
@@ -354,9 +354,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
 
 
-        PRIVATE METHOD _ScopeSkip(lNumKeys AS LONG ) AS LONG
-            LOCAL result AS LONG
-            LOCAL recno AS LONG
+        PRIVATE METHOD _ScopeSkip(lNumKeys AS LONG ) AS DWORD
+            LOCAL result AS DWORD
+            LOCAL recno AS DWORD
             LOCAL SkipDirection AS SkipDirection
 
             VAR RT_Deleted := XSharp.RuntimeState.Deleted
@@ -420,7 +420,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         ENDIF
                     UNTIL !((recno != 0) .AND. (lNumKeys != 0))
                 ELSE
-                    recno := -1
+                    recno := MISSING_RECNO
                 ENDIF
             ENDIF
             RETURN recno
@@ -487,8 +487,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN isOk
 
 
-        PRIVATE METHOD _goRecord(keyBytes AS BYTE[], keyLen AS LONG, gotoRec AS LONG ) AS LONG
-            LOCAL recno AS LONG
+        PRIVATE METHOD _goRecord(keyBytes AS BYTE[], keyLen AS LONG, gotoRec AS DWORD ) AS DWORD
+            LOCAL recno AS DWORD
             // Search the first occurence from the start of the index
             recno := SELF:_locateKey(keyBytes, keyLen, SearchMode.Left)
             // Now, move until we found the right Recno
@@ -498,7 +498,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN recno
 
 
-        INTERNAL METHOD _GoToRecno(recno AS LONG ) AS LOGIC
+        INTERNAL METHOD _GoToRecno(recno AS DWORD ) AS LOGIC
             LOCAL result AS LOGIC
             result := TRUE
             SELF:_oRdd:__Goto(recno)
@@ -517,7 +517,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             RETURN result
 
-        PRIVATE METHOD _locateKey( keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS SearchMode ) AS LONG
+        PRIVATE METHOD _locateKey( keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS SearchMode ) AS DWORD
             // Find Key starting at the top of the index
             SELF:ClearStack()
             IF bufferLen > SELF:_keySize
@@ -530,7 +530,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, SELF:_firstPageOffset)
 
 
-        PRIVATE METHOD _locate(keyBuffer AS BYTE[] , keyLength AS LONG , searchMode AS SearchMode , pageOffset AS LONG ) AS LONG
+        PRIVATE METHOD _locate(keyBuffer AS BYTE[] , keyLength AS LONG , searchMode AS SearchMode , pageOffset AS LONG ) AS DWORD
             LOCAL foundPos  AS WORD
             LOCAL page      AS NtxPage
             LOCAL nodeCount AS WORD
@@ -658,7 +658,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN 0
 
 
-        PRIVATE METHOD _skipFilter(recno AS LONG , iPolar AS SkipDirection ) AS LONG
+        PRIVATE METHOD _skipFilter(recno AS DWORD , iPolar AS SkipDirection ) AS DWORD
             IF SELF:_oRdd:__Goto(recno)
                 SELF:_oRdd:SkipFilter((INT) iPolar)
                 recno := SELF:_RecNo
@@ -666,10 +666,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN recno
 
         PRIVATE METHOD _Seek(seekInfo AS DbSeekInfo , bSearchKey AS BYTE[] ) AS LOGIC
-            LOCAL recno := 0 AS LONG
+            LOCAL recno := 0 AS DWORD
             LOCAL result := FALSE  AS LOGIC
             LOCAL fSoft := FALSE AS LOGIC
-            LOCAL recnoOk := 0 AS LONG
+            LOCAL recnoOk := 0 AS DWORD
             LOCAL locked := FALSE AS LOGIC
             LOCAL strCmp AS INT
             LOCAL strCmpMaxMin AS INT

@@ -42,8 +42,8 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     //PROTECT _HasAutoInc		AS LOGIC
     //PROTECT _HasTimeStamp	AS LOGIC
     //PROTECT _LastUpdate	    AS DateTime
-	PROTECT _RecCount		AS LONG
-	PROTECT _RecNo			AS LONG
+	PROTECT _RecCount		AS DWORD
+	PROTECT _RecNo			AS DWORD
     //PROTECT _Temporary		AS LOGIC
 	PROTECT _RecordChanged	AS LOGIC 	// Current record has changed ?
 	PROTECT _Positioned		AS LOGIC 	//
@@ -54,7 +54,7 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     PROTECT _HeaderLocked	AS LOGIC
     //PROTECT _PackMemo		AS LOGIC
     INTERNAL _OpenInfo		AS DbOpenInfo // current dbOpenInfo structure in OPEN/CREATE method
-    PROTECT _Locks			AS List<LONG>
+    PROTECT _Locks			AS List<DWORD>
     PROTECT _AllowedFieldTypes AS STRING
     //PROTECT _DirtyRead		AS LONG
     //PROTECT _HasTrigger		AS LOGIC
@@ -146,7 +146,7 @@ CONSTRUCTOR()
 	SELF:_hFile     := F_ERROR
 	SELF:_oStream   := NULL
 	SELF:_Header    := DbfHeader{SELF}
-	SELF:_Locks     := List<LONG>{}
+	SELF:_Locks     := List<DWORD>{}
 	SELF:_numformat := (NumberFormatInfo) culture:NumberFormat:Clone()
 	SELF:_numformat:NumberDecimalSeparator := "."
 	SELF:_RelInfoPending    := NULL
@@ -186,7 +186,7 @@ OVERRIDE METHOD GoBottom() AS LOGIC
 RETURN FALSE
 
 /// <inheritdoc />
-OVERRIDE METHOD GoTo(nRec AS LONG) AS LOGIC
+OVERRIDE METHOD GoTo(nRec AS DWORD) AS LOGIC
 	IF SELF:IsOpen
 		BEGIN LOCK SELF
         // Validate any pending change
@@ -196,6 +196,9 @@ OVERRIDE METHOD GoTo(nRec AS LONG) AS LOGIC
 				SELF:_RecCount := SELF:_calculateRecCount()
 			ENDIF
             VAR nCount := SELF:_RecCount
+            IF nRec == UInt32.MaxValue  // -1
+                nRec := 0
+            ENDIF
             // Normal positioning, VO resets FOUND to FALSE after a recprd movement
             SELF:_Found := FALSE
       	    SELF:_BufferValid := FALSE
@@ -233,8 +236,12 @@ OVERRIDE METHOD GoToId(oRec AS OBJECT) AS LOGIC
 	LOCAL result AS LOGIC
 	BEGIN LOCK SELF
 		TRY
-			VAR nRec := Convert.ToInt32( oRec )
-			result := SELF:GoTo( nRec )
+            VAR nRec := Convert.ToInt64( oRec )
+            IF nRec < UInt32.MaxValue .and. nRec >= 0
+                result := SELF:GoTo( (DWORD) nRec )
+            ELSEIF nRec < 0
+                result := SELF:GoTo(0)
+            ENDIF
 		CATCH ex AS Exception
 			SELF:_dbfError(ex, Subcodes.EDB_GOTO,Gencode.EG_DATATYPE,  "DBF.GoToId",FALSE)
 			result := FALSE
@@ -292,7 +299,7 @@ RETURN result
     /// <inheritdoc />
 OVERRIDE METHOD SkipRaw(nToSkip AS INT) AS LOGIC
 	LOCAL isOK := TRUE AS LOGIC
-    LOCAL nNewRec AS INT
+    LOCAL nNewRec AS DWORD
     //
 	IF nToSkip == 0
         // Refresh current Recno
@@ -302,7 +309,7 @@ OVERRIDE METHOD SkipRaw(nToSkip AS INT) AS LOGIC
 		SELF:_SetBOF(currentBof)
         SELF:_SetEOF(currentEof)
 	ELSE
-        nNewRec := SELF:_RecNo + nToSkip
+        nNewRec := (DWORD) (SELF:_RecNo + nToSkip)
         IF nNewRec != 0
 		    isOK := SELF:GoTo( SELF:_RecNo + nToSkip )
         ELSE
@@ -373,7 +380,7 @@ OVERRIDE METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 //
 RETURN isOK
 
-PRIVATE METHOD _UpdateRecCount(nCount AS LONG) AS LOGIC
+PRIVATE METHOD _UpdateRecCount(nCount AS DWORD) AS LOGIC
 	SELF:_RecCount          := nCount
     SELF:_Header:RecCount   := nCount
     SELF:_wasChanged        := TRUE
@@ -484,7 +491,7 @@ OVERRIDE METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
     // Then unlock the File if needed
 /// <inheritdoc />
 OVERRIDE METHOD UnLock(oRecId AS OBJECT) AS LOGIC
-	LOCAL recordNbr AS LONG
+	LOCAL recordNbr AS DWORD
 	LOCAL isOK AS LOGIC
     //
 	IF SELF:Shared
@@ -492,7 +499,7 @@ OVERRIDE METHOD UnLock(oRecId AS OBJECT) AS LOGIC
             //? CurrentThreadId, "UnLock", oRecId
 			SELF:GoCold()
 			TRY
-				recordNbr := Convert.ToInt32( oRecId )
+				recordNbr := Convert.ToUInt32( oRecId )
 			CATCH ex AS Exception
 				recordNbr := 0
 				SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE,Gencode.EG_LOCK_ERROR,  "DBF.UnLock",FALSE)
@@ -544,7 +551,7 @@ RETURN unlocked
 PROTECTED PROPERTY CurrentThreadId AS STRING GET System.Threading.Thread.CurrentThread:ManagedThreadId:ToString()
 
     // Unlock a record. The Offset depends on the LockScheme
-PROTECT METHOD _unlockRecord( recordNbr AS LONG ) AS LOGIC
+PROTECT METHOD _unlockRecord( recordNbr AS DWORD ) AS LOGIC
 	LOCAL unlocked AS LOGIC
 	IF ! SELF:IsOpen
 		RETURN FALSE
@@ -638,7 +645,7 @@ PROTECTED METHOD _lockDBFFile() AS LOGIC
 RETURN isOK
 
     // Lock a record number. The Offset depends on the LockScheme
-PROTECTED METHOD _lockRecord( recordNbr AS LONG ) AS LOGIC
+PROTECTED METHOD _lockRecord( recordNbr AS DWORD ) AS LOGIC
 	LOCAL locked AS LOGIC
     //
 	IF ! SELF:IsOpen
@@ -687,18 +694,18 @@ PROTECTED METHOD _lockRecord( lockInfo REF DbLockInfo ) AS LOGIC
     //
 	IF isOK
         // Already locked ?
-		IF SELF:Shared .AND. !SELF:_Locks:Contains( (LONG)nToLock )
+		IF SELF:Shared .AND. !SELF:_Locks:Contains( (DWORD)nToLock )
             IF lockInfo:Method == DbLockInfo.LockMethod.Multiple
                 // Just add the lock to the list
-				isOK := SELF:_lockRecord( (LONG)nToLock )
+				isOK := SELF:_lockRecord( (DWORD)nToLock )
 			ELSE // DbLockInfo.LockMethod.Exclusive
                 // Release the locks
 				SELF:UnLock(0)
                 // Now, lock the one
-				isOK := SELF:_lockRecord( (LONG)nToLock )
+				isOK := SELF:_lockRecord( (DWORD)nToLock )
                 // Go to there
                 IF SELF:RecNo != nToLock
-                    SELF:GoTo( (LONG)nToLock )
+                    SELF:GoTo( (DWORD)nToLock )
                 ENDIF
 			ENDIF
 		ENDIF
@@ -804,9 +811,9 @@ OVERRIDE METHOD Pack() AS LOGIC
     //
 	isOK := SELF:GoCold()
 	IF isOK
-		LOCAL nToRead AS LONG
-		LOCAL nMoveTo AS LONG
-		LOCAL nTotal AS LONG
+		LOCAL nToRead AS DWORD
+		LOCAL nMoveTo AS DWORD
+		LOCAL nTotal AS DWORD
 		LOCAL lDeleted AS LOGIC
         //
 		nToRead := 1
@@ -1683,7 +1690,7 @@ OVERRIDE METHOD GoHot()			AS LOGIC
     ENDIF
     IF ret
         IF SELF:_FilterInfo:Active && SELF:_recordList != NULL
-            SELF:_recordList.Items[SELF:RecNo] := RecordList.RecordState.Unknown
+            SELF:_recordList.Items[(INT) SELF:RecNo] := RecordList.RecordState.Unknown
         ENDIF
     ENDIF
 RETURN ret
@@ -1865,7 +1872,7 @@ RETURN TRUE
     /// <inheritdoc />
 OVERRIDE METHOD ForceRel() AS LOGIC
 	LOCAL isOK    := TRUE AS LOGIC
-	LOCAL gotoRec := 0 AS LONG
+	LOCAL gotoRec := 0 AS DWORD
 	IF SELF:_RelInfoPending != NULL
     // Save the current context
 		LOCAL currentRelation := SELF:_RelInfoPending AS DbRelInfo
@@ -1874,7 +1881,7 @@ OVERRIDE METHOD ForceRel() AS LOGIC
 		isOK := SELF:RelEval( currentRelation )
 		if isOK .and. !currentRelation:Parent:EoF
 			TRY
-				gotoRec := Convert.ToInt32( SELF:_EvalResult )
+				gotoRec := Convert.ToUInt32( SELF:_EvalResult )
 			CATCH ex AS InvalidCastException
 				gotoRec := 0
 				SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE,Gencode.EG_DATATYPE,  "DBF.ForceRel", FALSE)
@@ -2115,13 +2122,13 @@ RETURN oResult
 
 /// <inheritdoc />
 OVERRIDE METHOD RecInfo(nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
-	LOCAL nNewRec := 0 AS LONG
+	LOCAL nNewRec := 0 AS DWORD
 	LOCAL oResult AS OBJECT
-	LOCAL nOld := 0 AS LONG
+	LOCAL nOld := 0 AS DWORD
 
 	IF oRecID != NULL
 		TRY
-			nNewRec := Convert.ToInt32( oRecID )
+			nNewRec := Convert.ToUInt32( oRecID )
 		CATCH ex AS Exception
 			nNewRec := SELF:RecNo
 			SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, "DBF.RecInfo")
@@ -2192,7 +2199,7 @@ RETURN oResult
 
 /// <inheritdoc />
 OVERRIDE METHOD Sort(info AS DbSortInfo) AS LOGIC
-	LOCAL recordNumber AS LONG
+	LOCAL recordNumber AS DWORD
 	LOCAL trInfo AS DbTransInfo
 	LOCAL hasWhile AS LOGIC
 	LOCAL hasFor AS LOGIC
@@ -2237,7 +2244,7 @@ OVERRIDE METHOD Sort(info AS DbSortInfo) AS LOGIC
     //			ENDIF
     //
 	IF trInfo:Scope:RecId != NULL
-		recordNumber := Convert.ToInt32(trInfo:Scope:RecId)
+		recordNumber := Convert.ToUInt32(trInfo:Scope:RecId)
 		isOK := SELF:GoTo(recordNumber)
 		readMore := TRUE
 		limit := TRUE
@@ -2352,11 +2359,11 @@ OVERRIDE METHOD EvalFilter(oBlock AS ICodeblock) AS LOGIC
     IF _recordList == NULL
         RETURN (LOGIC) SELF:EvalBlock(oBlock)
     ENDIF
-    VAR rli := _recordList.Items[SELF:RecNo]
+    VAR rli := _recordList.Items[(INT) SELF:RecNo]
     VAR res := rli == RecordList.RecordState.Visible
     IF rli == RecordList.RecordState.Unknown
         res := (LOGIC) SELF:EvalBlock(oBlock)
-        _recordList.Items[SELF:RecNo] := IIF(res, RecordList.RecordState.Visible, RecordList.RecordState.Hidden)
+        _recordList.Items[(INT)SELF:RecNo] := IIF(res, RecordList.RecordState.Visible, RecordList.RecordState.Hidden)
         RLMissCount++
     ELSE
         RLHitCount++
@@ -2415,7 +2422,7 @@ OVERRIDE PROPERTY Found		AS LOGIC
 END PROPERTY
 
 /// <inheritdoc />
-OVERRIDE PROPERTY RecCount	AS LONG
+OVERRIDE PROPERTY RecCount	AS DWORD
 	GET
 		IF SELF:Shared
 			SELF:_RecCount := SELF:_calculateRecCount()
@@ -2424,19 +2431,19 @@ OVERRIDE PROPERTY RecCount	AS LONG
 	END GET
 END PROPERTY
 
-PRIVATE METHOD _calculateRecCount()	AS LONG
-	LOCAL reccount := 0 AS LONG
+PRIVATE METHOD _calculateRecCount()	AS DWORD
+	LOCAL reccount := 0 AS DWORD
     //
 	IF SELF:IsOpen
         VAR fSize   := SELF:_oStream:Length
 		IF fSize != 0  // Just created file ?
-			reccount := (LONG) (( fSize - SELF:_HeaderLength ) / SELF:_RecordLength)
+			reccount := (DWORD) (( fSize - SELF:_HeaderLength ) / SELF:_RecordLength)
         ENDIF
 	ENDIF
 RETURN reccount
 
     /// <inheritdoc />
-OVERRIDE PROPERTY RecNo		AS INT
+OVERRIDE PROPERTY RecNo		AS DWORD
 	GET
 		SELF:ForceRel()
 		RETURN SELF:_RecNo

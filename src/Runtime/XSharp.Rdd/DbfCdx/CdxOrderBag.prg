@@ -389,15 +389,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             RETURN lOk
 
-        METHOD FindFreePage() AS LONG
-            LOCAL nPage AS LONG
-            LOCAL nNext AS LONG
-            IF SELF:_root:FreeList > 0
+        METHOD FindFreePage() AS DWORD
+            LOCAL nPage AS DWORD
+            LOCAL nNext AS DWORD
+            IF CdxPage.PageIsValid(SELF:_root:FreeList)
                 nPage := SELF:_root:FreeList
                 VAR oPage := SELF:_PageList:GetPage(nPage, 0, NULL)
                 IF oPage IS CdxTreePage VAR tPage
                     nNext := tPage:LeftPtr
-                    IF nNext < 0
+                    IF !CdxPage.PageIsValid(nNext)
                         nNext := 0
                     ENDIF
                     SELF:_root:FreeList := nNext
@@ -410,7 +410,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     DebOut32(cMessage)
                     throw IOException{cMessage}
                 ENDIF
-                nPage   := (LONG) _stream:Length
+                nPage   := (DWORD) _stream:Length
                 _newPageAllocated := TRUE
             ENDIF
             RETURN nPage
@@ -429,9 +429,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD AllocBuffer(nSize := 1 AS LONG)  AS BYTE[]
             RETURN BYTE[]{CDXPAGE_SIZE *nSize}
 
-        METHOD Read(nPage AS LONG, buffer AS BYTE[]) AS LOGIC
+        METHOD Read(nPage AS DWORD, buffer AS BYTE[]) AS LOGIC
             SELF:ThrowIfNeedsLock()
-            RETURN SELF:_stream:SafeReadAt(nPage, buffer)
+            RETURN SELF:_stream:SafeReadAt(nPage, buffer, buffer:Length)
 
         METHOD Read(oPage AS CdxPage) AS LOGIC
             SELF:ThrowIfNeedsLock()
@@ -445,7 +445,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #ifdef CHECKVERSIONS
             SELF:_PageList:CheckVersion(SELF:Root:RootVersion)
 #endif
-            IF oPage:PageNo == -1
+            IF oPage:PageNo == MISSING_PAGE
                 oPage:PageNo := SELF:FindFreePage()
                 oPage:IsHot  := TRUE
                 SELF:_PageList:SetPage(oPage:PageNo, oPage)
@@ -456,7 +456,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 THROW IOException{cMessage}
             ENDIF
             IF oPage:IsHot
-                isOk := SELF:_stream:SafeWriteAt(oPage:PageNo, oPage:Buffer)
+                isOk := SELF:_stream:SafeWriteAt(oPage:PageNo, oPage:Buffer, oPage:Buffer:Length)
             ELSE
                 isOk := TRUE
             ENDIF
@@ -464,8 +464,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
 
-        METHOD GetPage(nPage AS Int32, nKeyLen AS WORD,tag AS CdxTag) AS CdxPage
-           IF nPage == -1
+        METHOD GetPage(nPage AS DWORD, nKeyLen AS WORD,tag AS CdxTag) AS CdxPage
+           IF nPage == MISSING_PAGE
                 RETURN NULL
            ENDIF
            VAR page := SELF:_PageList:GetPage(nPage, nKeyLen,tag)

@@ -29,10 +29,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PROPERTY RDD AS DBFNTX Get _Order:RDD
 
 		INTERNAL METHOD Read() AS LOGIC
-			RETURN _oStream:SafeReadAt(0, SELF:Buffer)
+			RETURN _oStream:SafeReadAt(0, SELF:Buffer, SELF:Buffer:Length)
 
 		INTERNAL METHOD Write() AS LOGIC
-			RETURN _oStream:SafeWriteAt(0, SELF:Buffer)
+			RETURN _oStream:SafeWriteAt(0, SELF:Buffer, SELF:Buffer:Length)
 
 		INTERNAL CONSTRUCTOR( oOrder AS NtxOrder, stream AS FileStream )
 			SELF:_oStream := stream

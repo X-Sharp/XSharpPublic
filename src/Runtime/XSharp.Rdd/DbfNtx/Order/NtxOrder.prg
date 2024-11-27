@@ -90,7 +90,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL PROPERTY CurrentStack       AS RddStack GET  SELF:_stack[SELF:_TopStack]
         INTERNAL PROPERTY OrderName AS STRING GET _orderName
 	    INTERNAL PROPERTY Shared    AS LOGIC GET _Shared
-        INTERNAL PROPERTY _RecNo AS LONG GET _oRdd:RecNo
+        INTERNAL PROPERTY _RecNo AS DWORD GET _oRdd:RecNo
         INTERNAL PROPERTY HasScope AS LOGIC GET _Scopes[TOPSCOPE]:IsSet .OR. _Scopes[BOTTOMSCOPE]:IsSet
         INTERNAL PROPERTY TopScope AS OBJECT GET _Scopes[TOPSCOPE]:Value
         INTERNAL PROPERTY BottomScope AS OBJECT GET _Scopes[BOTTOMSCOPE]:Value
@@ -257,7 +257,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE METHOD EvaluateExpressions(lCalculateSize as LOGIC) AS LOGIC
             LOCAL evalOk AS LOGIC
             LOCAL oKey AS OBJECT
-            local nRecno as Long
+            local nRecno as DWORD
             nRecno := SELF:_oRdd:RecNo
             evalOk := TRUE
             TRY
@@ -600,12 +600,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
 
 
-        INTERNAL METHOD _CountRecords(records REF LONG ) AS LOGIC
+        INTERNAL METHOD _CountRecords(records REF DWORD ) AS LOGIC
             LOCAL isOk AS LOGIC
-            LOCAL oldRec AS LONG
-            LOCAL recno AS LONG
-            LOCAL last AS LONG
-            LOCAL count AS LONG
+            LOCAL oldRec AS DWORD
+            LOCAL recno AS DWORD
+            LOCAL last AS DWORD
+            LOCAL count AS DWORD
 
             isOk := TRUE
             SELF:_oRdd:GoCold()
@@ -657,10 +657,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN isOk
 
 
-        INTERNAL METHOD _getRecPos(record REF LONG ) AS LOGIC
-            LOCAL oldRec AS LONG
-            LOCAL recno AS LONG
-            LOCAL count AS LONG
+        INTERNAL METHOD _getRecPos(record REF DWORD ) AS LOGIC
+            LOCAL oldRec AS DWORD
+            LOCAL recno AS DWORD
+            LOCAL count AS DWORD
 
             SELF:_oRdd:GoCold()
             oldRec := SELF:_RecNo
@@ -705,8 +705,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN SELF:_unLockForRead()
 
 
-        PRIVATE METHOD _nextKey( keyMove AS LONG ) AS LONG
-            LOCAL recno			AS LONG
+        PRIVATE METHOD _nextKey( keyMove AS LONG ) AS DWORD
+            LOCAL recno			AS DWORD
             LOCAL moveDirection	AS SkipDirection
             IF keyMove == 1
                 recno := SELF:_getNextKey(FALSE, SkipDirection.Forward)

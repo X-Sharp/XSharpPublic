@@ -173,17 +173,17 @@ CLASS DbOrderCondInfo
 	/// <summary>A string defining the for condition to use for the creation and maintenance of the order.</summary>
 	PUBLIC ForExpression	AS STRING
 	/// <summary>The number of rows to process for order creation.</summary>
-	PUBLIC NextCount		AS LONG
+	PUBLIC NextCount		AS DWORD
 	/// <summary>A flag that is TRUE if the for condition may NOT be optimized,</summary>
 	PUBLIC NoOptimize		AS LOGIC
 	/// <summary> A single row number to include in the order. </summary>
-	PUBLIC RecNo			AS LONG
+	PUBLIC RecNo			AS DWORD
 	/// <summary>A flag that is TRUE if only the rows specified by lStartRecno through end-of-file are to be included in the order.</summary>
 	PUBLIC Rest				AS LOGIC
 	/// <summary>A flag indicating whether the order is to be scoped. fScoped will be TRUE if WhileBlock, NextCount, Recno, Rest, or All is specified.</summary>
 	PUBLIC Scoped			AS LOGIC
 	/// <summary>The row at which to begin processing when either the NextCount or Rest scoping options are specified.</summary>
-	PUBLIC StartRecNo		AS LONG
+	PUBLIC StartRecNo		AS DWORD
 	/// <summary>The frequency of the evaluation of EvalBlock. </summary>
 	PUBLIC StepSize			AS LONG
 	/// <summary>A flag that is TRUE if only rows in the controlling order are to be included in the order.</summary>
@@ -339,7 +339,7 @@ CLASS DbScopeInfo
 	/// <summary>A flag that is TRUE if the last row of the current scope is required. </summary>
 	PUBLIC Last				AS LOGIC
 	/// <summary>Permits continuation of a process for the next lNext rows, while obeying for and while clauses.</summary>
-	PUBLIC NextCount		AS LONG
+	PUBLIC NextCount		AS DWORD
 	/// <summary>Permits continuation of a process for a single row number, while obeying for and while clauses.</summary>
 	PUBLIC RecId			AS OBJECT
 	/// <summary>A flag that is TRUE if a process should continue stepping through data from the current work area cursor position until logical end-of-file. </summary>

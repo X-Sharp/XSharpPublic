@@ -18,14 +18,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     /// </summary>
     [DebuggerDisplay("Pages: {Count}")];
     INTERNAL SEALED CLASS CdxPageList
-        PRIVATE _pages AS Dictionary<LONG, LinkedListNode<CdxPage>>
+        PRIVATE _pages AS Dictionary<DWORD, LinkedListNode<CdxPage>>
         PRIVATE _lruPages AS LinkedList<CdxPage>
         PRIVATE _bag   AS CdxOrderBag
         PRIVATE _hDump AS IntPtr
         INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
         INTERNAL CONST CDXPAGE_MAXCOUNT    := 10000 AS WORD
 
-        INTERNAL METHOD _FindPage( offset AS LONG ) AS CdxPage
+        INTERNAL METHOD _FindPage( offset AS DWORD ) AS CdxPage
             LOCAL node AS LinkedListNode<CdxPage>
             IF SELF:_pages:TryGetValue(offset, OUT node)
                 _lruPages:Remove(node)
@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
 
-       INTERNAL METHOD GetPage(nPage AS Int32, nKeyLen AS WORD, tag AS CdxTag) AS CdxPage
+       INTERNAL METHOD GetPage(nPage AS DWORD, nKeyLen AS WORD, tag AS CdxTag) AS CdxPage
          	LOCAL isOk AS LOGIC
             LOCAL buffer AS BYTE[]
             LOCAL oResult AS CdxPage
@@ -80,7 +80,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Count AS INT GET _pages:Count
         INTERNAL PROPERTY DumpHandle AS IntPtr GET _hDump SET _hDump := value
 
-        INTERNAL METHOD SetPage(nPage AS LONG, page AS CdxPage) AS VOID
+        INTERNAL METHOD SetPage(nPage AS DWORD, page AS CdxPage) AS VOID
             LOCAL oldNode AS LinkedListNode<CdxPage>
             IF SELF:_pages:TryGetValue(nPage, OUT oldNode)
                 SELF:_lruPages:Remove(oldNode)
@@ -90,11 +90,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_pages[nPage] := newNode
 
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
-            SELF:_pages := Dictionary<LONG, LinkedListNode<CdxPage>>{}
+            SELF:_pages := Dictionary<DWORD, LinkedListNode<CdxPage>>{}
             SELF:_lruPages := LinkedList<CdxPage>{}
             SELF:_bag   := bag
 
-        INTERNAL METHOD Update( pageNo AS LONG ) AS CdxPage
+        INTERNAL METHOD Update( pageNo AS DWORD ) AS CdxPage
             LOCAL page AS CdxPage
             page := SELF:Read(pageNo)
             IF page != NULL
@@ -110,7 +110,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_pages:Clear()
             SELF:_lruPages:Clear()
 
-        INTERNAL METHOD Delete(pageNo AS LONG) AS LOGIC
+        INTERNAL METHOD Delete(pageNo AS DWORD) AS LOGIC
            Debug.Assert(_pages:ContainsKey(pageNo))
            LOCAL node AS LinkedListNode<CdxPage>
            IF SELF:_pages:TryGetValue(pageNo, OUT node)
@@ -120,7 +120,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
            ENDIF
            RETURN FALSE
 
-        INTERNAL METHOD Append( pageNo AS LONG ) AS CdxPage
+        INTERNAL METHOD Append( pageNo AS DWORD ) AS CdxPage
             LOCAL page AS CdxTreePage
             page := (CdxTreePage) SELF:_FindPage(pageNo)
             IF page == NULL
@@ -132,7 +132,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN page
 
 
-        INTERNAL METHOD Read(pageNo AS LONG ) AS CdxTreePage
+        INTERNAL METHOD Read(pageNo AS DWORD ) AS CdxTreePage
             LOCAL page AS CdxTreePage
 
             page := (CdxTreePage) SELF:_FindPage(pageNo)
@@ -161,7 +161,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN lOk
 
-        INTERNAL METHOD Write(pageNo AS LONG ) AS LOGIC
+        INTERNAL METHOD Write(pageNo AS DWORD ) AS LOGIC
             // Write a single page from the buffer
             LOCAL lOk := FALSE AS LOGIC
             VAR page := SELF:_FindPage(pageNo)

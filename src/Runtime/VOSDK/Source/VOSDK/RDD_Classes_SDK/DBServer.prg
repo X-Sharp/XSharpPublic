@@ -25,10 +25,10 @@ PARTIAL CLASS DbServer INHERIT DataServer
 	PROTECT cbStoredForBlock AS USUAL
 	PROTECT cbStoredWhileBlock AS USUAL
 	PROTECT uStoredScope AS USUAL
-	PROTECT nStoredNextCount AS LONGINT
+	PROTECT nStoredNextCount AS DWORD
 	PROTECT lStoredAllRecords AS USUAL
 	PROTECT lStoredRestOfFile AS LOGIC
-	PROTECT wLastSelectionRec AS LONGINT
+	PROTECT wLastSelectionRec AS DWORD
 	PROTECT oErrorInfo AS Error
 	PROTECT lErrorFlag AS LOGIC
 	PROTECT nEffectiveCCMode AS DWORD
@@ -182,7 +182,7 @@ METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
 	LOCAL lFor AS LOGIC
 	LOCAL lWhile AS LOGIC
 	LOCAL lInternalError AS LOGIC
-	LOCAL iRecno AS INT
+	LOCAL iRecno AS LONG
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL uRC AS USUAL
 	LOCAL oError AS USUAL

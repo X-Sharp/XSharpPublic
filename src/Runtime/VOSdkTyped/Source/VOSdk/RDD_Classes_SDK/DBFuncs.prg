@@ -1291,7 +1291,7 @@ FUNCTION __ConstructUniqueAlias ( cFileName AS STRING ) AS SYMBOL STRICT
 
 
 /// <exclude/>
-FUNCTION __DBSGoTo( n AS LONGINT, nTries := 1 AS DWORD) AS LOGIC STRICT
+FUNCTION __DBSGoTo( n AS DWORD, nTries := 1 AS DWORD) AS LOGIC STRICT
    LOCAL lOk := FALSE AS LOGIC
    DO WHILE nTries > 0
 		NetErr( FALSE )

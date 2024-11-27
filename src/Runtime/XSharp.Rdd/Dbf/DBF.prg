@@ -241,6 +241,8 @@ OVERRIDE METHOD GoToId(oRec AS OBJECT) AS LOGIC
                 result := SELF:GoTo( (DWORD) nRec )
             ELSEIF nRec < 0
                 result := SELF:GoTo(0)
+            ELSE
+                result := FALSE
             ENDIF
 		CATCH ex AS Exception
 			SELF:_dbfError(ex, Subcodes.EDB_GOTO,Gencode.EG_DATATYPE,  "DBF.GoToId",FALSE)

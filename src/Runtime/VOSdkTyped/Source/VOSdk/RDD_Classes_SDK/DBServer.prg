@@ -31,7 +31,7 @@ partial class DbServer inherit DataServer
     protect cbStoredForBlock as usual
     protect cbStoredWhileBlock as usual
     protect uStoredScope as usual
-    protect nStoredNextCount as longint
+    protect nStoredNextCount as DWORD
     protect lStoredAllRecords as usual
     protect lStoredRestOfFile as logic
     protect wLastSelectionRec as dword
@@ -229,7 +229,7 @@ partial class DbServer inherit DataServer
                                 if nLastLock != 0
                                     VoDbUnlock( nLastLock )
                                 endif
-                                nLastLock := (int) VoDbRecno( )
+                                nLastLock := VoDbRecno( )
                                 if ! VoDbEof( )
                                     lRetCode := VoDbRlock( nLastLock )
                                 else
@@ -492,7 +492,7 @@ partial class DbServer inherit DataServer
                     if nLastLock != 0
                         VoDbUnlock( self:nLastLock )
                     endif
-                    nLastLock := (int) VoDbRecno( )
+                    nLastLock := VoDbRecno( )
                     if ! VoDbEof( )
                         lRetCode := VoDbRlock( self:nLastLock )
                     else
@@ -660,7 +660,7 @@ partial class DbServer inherit DataServer
                 break ErrorBuild( _VoDbErrInfoPtr( ) )
             endif
             if ! uFlock
-                nLastLock := (long) self:RecNo
+                nLastLock := self:RecNo
                 if ! self:RLock( nLastLock )
                     nLastLock := 0
                     oHLStatus := self:Status
@@ -679,7 +679,7 @@ partial class DbServer inherit DataServer
         endcase
 
         return
- 
+
 
     /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
     constructor( cFile as usual, lShareMode := null as object, lReadOnlyMode := null as object, xDriver:= "" as string, aRDD := null_array as array)

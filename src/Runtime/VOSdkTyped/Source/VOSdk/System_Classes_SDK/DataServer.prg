@@ -14,7 +14,7 @@ ABSTRACT CLASS DataServer
     PROTECT aClients		AS ARRAY
     PROTECT nClients		AS DWORD
     PROTECT nCCMode		    AS DWORD
-    PROTECT nLastLock		AS LONG
+    PROTECT nLastLock		AS DWORD
 
 
 /// <include file="System.xml" path="doc/DataServer.ctor/*" />
@@ -283,7 +283,7 @@ METHOD FieldPut( nFieldPosition AS USUAL, uValue  AS USUAL) AS USUAL
 
 
 /// <include file="System.xml" path="doc/DataServer.GoTo/*" />
-	METHOD GoTo( nPosition AS LONG ) AS LOGIC
+	METHOD GoTo( nPosition AS DWORD ) AS LOGIC
 		RETURN FALSE
 
 
@@ -310,7 +310,7 @@ METHOD FieldPut( nFieldPosition AS USUAL, uValue  AS USUAL) AS USUAL
 
 
 /// <include file="System.xml" path="doc/DataServer.RecCount/*" />
-	ACCESS LastRec AS LONG
+	ACCESS LastRec AS DWORD
 		RETURN 0
 
     method LockCurrentRecord( ) as logic strict
@@ -365,17 +365,17 @@ METHOD Notify( kNotification AS LONG, uDescription := NIL AS USUAL) AS USUAL
 
 
 /// <include file="System.xml" path="doc/DataServer.RecCount/*" />
-	ACCESS RecCount AS LONG
+	ACCESS RecCount AS DWORD
 		RETURN 0
 
 
 /// <include file="System.xml" path="doc/DataServer.RecNo/*" />
-	ACCESS RecNo AS LONG
+	ACCESS RecNo AS DWORD
 		RETURN 0L
 
 
 /// <include file="System.xml" path="doc/DataServer.RecNo/*" />
-	ASSIGN RecNo( lRecNo AS LONG)
+	ASSIGN RecNo( lRecNo AS DWORD)
 		RETURN
 
 
@@ -397,7 +397,7 @@ METHOD RegisterClient( oForm AS OBJECT) AS LOGIC
 
 
 /// <include file="System.xml" path="doc/DataServer.RLOCK/*" />
-	METHOD RLock( nRecord AS LONG ) AS LOGIC
+	METHOD RLock( nRecord AS DWORD ) AS LOGIC
         RETURN FALSE
 
 
@@ -471,7 +471,7 @@ METHOD RegisterClient( oForm AS OBJECT) AS LOGIC
 
 
 /// <include file="System.xml" path="doc/DataServer.UnLock/*" />
-	METHOD UnLock(nRecno := 0  AS LONG) AS LOGIC
+	METHOD UnLock(nRecno := 0  AS DWORD) AS LOGIC
 		RETURN FALSE
 
 

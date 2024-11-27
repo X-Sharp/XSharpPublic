@@ -769,7 +769,7 @@ PARTIAL CLASS DbServer
     ACCESS RecCount
         LOCAL nCurrentRecord            AS DWORD
         LOCAL siCurrentSelectionStatus  AS SHORTINT
-        LOCAL iRetVal                   AS INT
+        LOCAL iRetVal                   AS DWORD
         LOCAL dwCurrentWorkArea          AS DWORD
         LOCAL oError                    AS USUAL
         IF ! SELF:Used

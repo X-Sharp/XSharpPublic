@@ -609,12 +609,12 @@ METHOD CopyStructure( cFileName AS STRING, aFieldList := NULL AS ARRAY )   AS LO
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.Count/*" />
-METHOD Count( cbForBlock := NIL AS USUAL, cbWhileBlock := NIL AS USUAL, uScope := NIL AS USUAL)   AS LONG
+METHOD Count( cbForBlock := NIL AS USUAL, cbWhileBlock := NIL AS USUAL, uScope := NIL AS USUAL)   AS DWORD
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
 	LOCAL lRestOfFile AS LOGIC
-	LOCAL iTally := 0 AS INT
+	LOCAL iTally := 0 AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oHLTemp AS HyperLabel

@@ -1327,7 +1327,7 @@ METHOD Skip( nRecordCount )
 							IF VODBEof() .OR. ! ( Functions.Eval( cbSelectionIndexingExpression ) = uSelectionValue )
 								siSelectionStatus := DBSELECTIONEOF
 								IF ! VODBEof()
-									wLastSelectionRec := (int) VODBRecno() - 1
+									wLastSelectionRec := VODBRecno() - 1
 									__DBSGoBottom(nTries)
 									__DBSSkip(1, nTries)
 								ENDIF
@@ -1728,7 +1728,7 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope)
 	//
 	LOCAL uValue                AS USUAL
 	LOCAL cbKey                 AS USUAL // AS CODEBLOCK
-	LOCAL nNextCount            AS LONGINT
+	LOCAL nNextCount            AS LONG
 	LOCAL lRestOfFile           AS LOGIC
 	LOCAL cTarget               AS STRING
 	LOCAL w                     AS DWORD
@@ -1819,7 +1819,7 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope)
 				ENDIF
 
 
-				nNextCount:=nStoredNextCount
+				nNextCount:= (LONG) nStoredNextCount
 				IF IsNil(nNextCount)
 					nNextCount:=-1
 				ELSE

@@ -425,7 +425,6 @@ METHOD GoTo( nRecordNumber )
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			nRecordNumber := INT( nRecordNumber )
 			IF lSelectionActive
 				#IFDEF __DEBUG__
 					DBFDebug( "SERVER:GoTo(" + NTrim( nRecordNumber ) + " )" )
@@ -461,7 +460,7 @@ METHOD GoTo( nRecordNumber )
 							__DBSGoBottom( nTries )
 							__DBSSkip( 1, nTries )
 						ELSE
-							__DBSGoTo( (INT) nCurrentRecord, nTries )
+							__DBSGoTo( nCurrentRecord, nTries )
 						ENDIF
 					ENDIF
 				ENDIF
@@ -750,7 +749,7 @@ METHOD Join( oDBSource, oFSTarget, aFieldList, cbForBlock )
 METHOD Locate( cbForBlock, cbWhileBlock, uScope )
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
-	LOCAL nNextCount AS LONGINT
+	LOCAL nNextCount AS DWORD
 	LOCAL lRestOfFile AS LOGIC
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL

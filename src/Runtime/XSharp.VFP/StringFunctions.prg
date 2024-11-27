@@ -404,12 +404,3 @@ END FUNCTION
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/transform/*" />
 FUNCTION Transform( uValue AS USUAL ) AS STRING
     RETURN AsString(uValue)
-
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/str/*" />
-FUNCTION Str(nNumber ,nLength ,nDecimals ) AS STRING CLIPPER
-    IF PCount() < 1 .or. pCount() > 3
-        RETURN ""
-    ENDIF
-    Default(REF nLength, 10)
-    Default(REF nDecimals, 0)
-RETURN XSharp.RT.Functions.Str(nNumber, nLength, nDecimals)

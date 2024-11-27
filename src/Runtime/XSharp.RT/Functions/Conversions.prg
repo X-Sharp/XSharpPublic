@@ -443,7 +443,10 @@ function Str(nNumber ,nLength ,nDecimals ) as string clipper
     if PCount() < 1 .or. pCount() > 3
         return ""
     endif
-
+   if RuntimeState.Dialect == XSharpDialect.FoxPro
+       Default(REF nLength, 10)
+       Default(REF nDecimals, 0)
+   endif
     // Handle integer values
     if nNumber:IsInteger .and. (PCount() <= 2 .or. (PCount() == 3 .and. nDecimals:IsNumeric .and. nDecimals == 0) )
         local cRet as string

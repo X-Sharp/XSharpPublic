@@ -41,15 +41,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     INTERNAL CLASS NtxPage
         INTERNAL CONST NTXPAGE_SIZE             := 1024 AS WORD
         PROTECTED _Order    AS NtxOrder
-        PROTECTED _Offset   AS LONG
+        PROTECTED _Offset   AS DWORD
         PROTECTED _Hot      AS LOGIC
 
         PROTECTED _Bytes AS BYTE[]
 
         // Current Page Number = Page Offset
-		INTERNAL PROPERTY PageOffset AS LONG GET SELF:_Offset SET SELF:_Offset := value
+		INTERNAL PROPERTY PageOffset AS DWORD GET SELF:_Offset SET SELF:_Offset := value
         // The locationof the next page in case this is part of the unused pages list
-        INTERNAL PROPERTY NextPage   AS LONG GET SELF[ 0]:PageNo SET SELF[ 0]:PageNo := value
+        INTERNAL PROPERTY NextPage   AS DWORD GET SELF[ 0]:PageNo SET SELF[ 0]:PageNo := value
 
 		// Bytes of the Page (1024)
         INTERNAL PROPERTY Bytes AS BYTE[] GET SELF:_Bytes
@@ -96,7 +96,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         END PROPERTY
 
 		// Initialize the NtxPage; The pageNumber is in fact the offset of the page in the File
-        INTERNAL CONSTRUCTOR( order AS NtxOrder, pageNumber AS LONG )
+        INTERNAL CONSTRUCTOR( order AS NtxOrder, pageNumber AS DWORD )
             //
             SELF:_Order := order
             SELF:_Offset := pageNumber

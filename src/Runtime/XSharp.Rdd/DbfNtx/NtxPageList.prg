@@ -15,13 +15,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     /// The NtxPageList class.
     /// </summary>
     INTERNAL SEALED CLASS NtxPageList
-        PRIVATE _Pages AS Dictionary<LONG, LinkedListNode<NtxPage>>
+        PRIVATE _Pages AS Dictionary<DWORD, LinkedListNode<NtxPage>>
         PRIVATE _lruPages AS LinkedList<NtxPage>
         PRIVATE _Order AS NtxOrder
         PRIVATE _hDump AS IntPtr
         INTERNAL CONST NTXPAGE_MAXCOUNT := 64 AS WORD
 
-        PRIVATE METHOD _FindPage( offset AS LONG ) AS NtxPage
+        PRIVATE METHOD _FindPage( offset AS DWORD ) AS NtxPage
             LOCAL node AS LinkedListNode<NtxPage>
             IF _Pages:TryGetValue(offset, OUT node)
                 _lruPages:Remove(node)
@@ -40,12 +40,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN
 
         INTERNAL CONSTRUCTOR( order AS NtxOrder )
-            SELF:_Pages := Dictionary<LONG, LinkedListNode<NtxPage>>{}
+            SELF:_Pages := Dictionary<DWORD, LinkedListNode<NtxPage>>{}
             SELF:_lruPages := LinkedList<NtxPage>{}
             SELF:_Order := order
 
 
-        INTERNAL METHOD Update( pageNo AS LONG ) AS NtxPage
+        INTERNAL METHOD Update( pageNo AS DWORD ) AS NtxPage
             LOCAL page AS NtxPage
             page := SELF:Read(pageNo)
             IF page != NULL
@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN page
 
 
-        INTERNAL METHOD Append( pageNo AS LONG ) AS NtxPage
+        INTERNAL METHOD Append( pageNo AS DWORD ) AS NtxPage
             LOCAL page AS NtxPage
             page := SELF:_FindPage(pageNo)
             IF page == NULL
@@ -69,7 +69,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN page
 
 
-        INTERNAL METHOD Read(pageNo AS LONG ) AS NtxPage
+        INTERNAL METHOD Read(pageNo AS DWORD ) AS NtxPage
             LOCAL page AS NtxPage
 
             page := SELF:_FindPage(pageNo)
@@ -114,7 +114,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN
 
 
-        INTERNAL METHOD Write(pageNo AS LONG ) AS LOGIC
+        INTERNAL METHOD Write(pageNo AS DWORD ) AS LOGIC
             LOCAL page AS NtxPage
 
             page := SELF:_FindPage(pageNo)

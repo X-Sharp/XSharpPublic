@@ -59,7 +59,7 @@ END ENUM
 // Keep informations
 [DebuggerDisplay("Page {Page}, Pos {Pos}, Count {Count}")];
 INTERNAL CLASS RddStack
-    INTERNAL Page   AS LONG
+    INTERNAL Page   AS DWORD
     INTERNAL Pos    AS WORD
     INTERNAL Count  AS WORD
 

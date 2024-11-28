@@ -330,7 +330,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE METHOD _LockStuff() AS VOID
             IF SELF:_getHeader()
                 SELF:_PageList:Clear()
-                SELF:_fileSize  := (LONG) _oStream:Length
+                SELF:_fileSize  := (DWORD) _oStream:Length
                 SELF:ClearStack()
             ENDIF
 

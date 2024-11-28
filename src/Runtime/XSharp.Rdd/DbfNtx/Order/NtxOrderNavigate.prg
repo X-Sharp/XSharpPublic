@@ -530,7 +530,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, SELF:_firstPageOffset)
 
 
-        PRIVATE METHOD _locate(keyBuffer AS BYTE[] , keyLength AS LONG , searchMode AS SearchMode , pageOffset AS LONG ) AS DWORD
+        PRIVATE METHOD _locate(keyBuffer AS BYTE[] , keyLength AS LONG , searchMode AS SearchMode , pageOffset AS DWORD ) AS DWORD
             LOCAL foundPos  AS WORD
             LOCAL page      AS NtxPage
             LOCAL nodeCount AS WORD

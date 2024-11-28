@@ -132,7 +132,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE METHOD _addKey() AS LOGIC
             LOCAL uiHalfPage    AS WORD
             LOCAL page          AS NtxPage
-            LOCAL pageNo        AS LONG
+            LOCAL pageNo        AS DWORD
             LOCAL offset        AS WORD
             LOCAL node          AS NtxNode
 
@@ -177,7 +177,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
 
         PRIVATE METHOD _deleteKey() AS VOID
-            LOCAL lPage AS LONG
+            LOCAL lPage AS DWORD
             LOCAL uiPos AS LONG
             LOCAL page AS NtxPage
             LOCAL node AS NtxNode
@@ -230,15 +230,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
 
         PRIVATE METHOD _balance() AS VOID
-            LOCAL leftPageNo AS LONG
+            LOCAL leftPageNo AS DWORD
             LOCAL uiCount AS LONG
             LOCAL pageLeft AS NtxPage
             LOCAL pageRight AS NtxPage
             LOCAL nodeLeft AS NtxNode
             LOCAL nodeRight AS NtxNode
             LOCAL iPos AS LONG
-            LOCAL rightPageNo AS LONG
-            LOCAL num2 AS LONG
+            LOCAL rightPageNo AS DWORD
+            LOCAL num2 AS DWORD
             LOCAL offset AS WORD
             LOCAL num4 AS LONG
             leftPageNo  := SELF:CurrentStack:Page
@@ -294,7 +294,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     nodeLeft := pageLeft[iPos + 1]
                     nodeRight := pageRight[0]
                     nodeLeft:PageNo := nodeRight:PageNo
-                    nodeRight:PageNo := -1
+                    nodeRight:PageNo := MISSING_PAGE
                     pageLeft:NodeCount++
                 ELSE
                     // save at the front
@@ -312,7 +312,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     // copoy data from Mid
                     nodeRight:Recno := SELF:_midItem:Recno
                     nodeRight:KeyBytes := SELF:_midItem:KeyBytes
-                    nodeRight:PageNo := -1
+                    nodeRight:PageNo := MISSING_PAGE
                     pageRight:NodeCount++
                 ENDIF
                 iPos := pageLeft:NodeCount
@@ -412,7 +412,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE METHOD _delToMid(page AS NtxPage , uiPos AS LONG ) AS VOID
             // copy entry into mid, then delete from page
             LOCAL nodeCount AS LONG
-            LOCAL leftPageNo AS LONG
+            LOCAL leftPageNo AS DWORD
             LOCAL offSet AS WORD
             LOCAL i AS LONG
 
@@ -446,7 +446,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL num2 AS INT
             LOCAL shift AS INT
             LOCAL nStep AS INT
-            LOCAL pageNo AS LONG
+            LOCAL pageNo AS DWORD
 
             nodeCount := page:NodeCount
             uiPos := SELF:CurrentStack:Pos

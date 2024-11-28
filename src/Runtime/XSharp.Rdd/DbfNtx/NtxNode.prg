@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     INTERNAL CLASS NtxNode
         PROTECTED _keyLength      AS LONG
         PROTECTED _bytesKey       AS BYTE[]
-        PROTECTED _PageNo         AS LONG
+        PROTECTED _PageNo         AS DWORD
         PROTECTED _RecNo          AS DWORD
         PROTECTED _Pos            AS LONG				// Index of the Item in the page array of Offsets
 
@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		// Retrieve/set the PageNo/PageOffset of the Item
 		// It is on top of the Item's bytes
 		// it is the Record offset from start of page
-        INTERNAL VIRTUAL PROPERTY PageNo AS LONG GET _PageNo SET _PageNo := value
+        INTERNAL VIRTUAL PROPERTY PageNo AS DWORD GET _PageNo SET _PageNo := value
 
         INTERNAL VIRTUAL PROPERTY Recno AS DWORD GET _RecNo SET _RecNo := value
 
@@ -108,9 +108,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         END PROPERTY
 
 
-        INTERNAL OVERRIDE PROPERTY PageNo AS LONG
+        INTERNAL OVERRIDE PROPERTY PageNo AS DWORD
             GET
-                 _PageNo := BitConverter.ToInt32(_Page:Bytes, _Offset+PAGE_OFFSET)
+                 _PageNo := BitConverter.ToUInt32(_Page:Bytes, _Offset+PAGE_OFFSET)
                 RETURN _PageNo
 
             END GET

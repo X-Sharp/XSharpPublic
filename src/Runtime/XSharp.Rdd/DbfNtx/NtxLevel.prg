@@ -31,7 +31,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:ExtraKeys  := 0
 
 
-        INTERNAL METHOD Write( offset AS LONG ) AS LOGIC
+        INTERNAL METHOD Write( offset AS DWORD ) AS LOGIC
             LOCAL result AS LOGIC
             SELF:PageOffset := offset
             result := SELF:Write()

@@ -451,7 +451,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     level:Write(level:PageOffset)
                 ENDIF
             NEXT
-            SELF:_fileSize  := (LONG) _oStream:Length
+            SELF:_fileSize  := (DWORD) _oStream:Length
             SELF:_levels := NULL
             RETURN result
 
@@ -505,7 +505,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL iLevel AS LONG
             LOCAL level AS NtxLevel
             LOCAL node AS NtxNode
-            LOCAL page AS LONG
+            LOCAL page AS DWORD
 
             iLevel := 0
             level := SELF:_levels[0]

@@ -81,46 +81,55 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN BitConverter.ToInt32(Buffer, nOffSet)
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        PRIVATE METHOD _GetDWord(nOffSet AS INT) AS DWORD
+            RETURN BitConverter.ToUInt32(Buffer, nOffSet)
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];
 		PRIVATE METHOD _SetLong(nOffSet AS INT, nValue AS LONG) AS VOID
             Array.Copy(BitConverter.GetBytes(nValue), 0, Buffer, nOffSet, sizeof(LONG))
             isHot := TRUE
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+		PRIVATE METHOD _SetDWord(nOffSet AS INT, nValue AS DWORD) AS VOID
+            Array.Copy(BitConverter.GetBytes(nValue), 0, Buffer, nOffSet, sizeof(DWORD))
+            isHot := TRUE
+
  		INTERNAL PROPERTY Signature  AS NtxHeaderFlags	;
 		    GET (NtxHeaderFlags) SELF:_GetWord(NTXOFFSET_SIG) ;
-		    SET SELF:_SetWord(NTXOFFSET_SIG, VALUE), isHot := TRUE
+		    SET SELF:_SetWord(NTXOFFSET_SIG, VALUE)
 
 		INTERNAL PROPERTY IndexingVersion		AS WORD			;
 		    GET SELF:_GetWord(NTXOFFSET_INDEXING_VER);
-		    SET SELF:_SetWord(NTXOFFSET_INDEXING_VER, VALUE), isHot := TRUE
+		    SET SELF:_SetWord(NTXOFFSET_INDEXING_VER, VALUE)
 
-		INTERNAL PROPERTY FirstPageOffset		AS LONG			;
-		    GET SELF:_GetLong(NTXOFFSET_FPAGE_OFFSET);
-		    SET SELF:_SetLong(NTXOFFSET_FPAGE_OFFSET, VALUE), isHot := TRUE
+		INTERNAL PROPERTY FirstPageOffset		AS DWORD			;
+		    GET SELF:_GetDWord(NTXOFFSET_FPAGE_OFFSET);
+		    SET SELF:_SetDWord(NTXOFFSET_FPAGE_OFFSET, VALUE)
 
-		INTERNAL PROPERTY NextUnusedPageOffset		AS LONG			;
-		    GET SELF:_GetLong(NTXOFFSET_NUPAGE_OFFSET)	;
-		    SET SELF:_SetLong(NTXOFFSET_NUPAGE_OFFSET, VALUE), isHot := TRUE
+		INTERNAL PROPERTY NextUnusedPageOffset		AS DWORD			;
+		    GET SELF:_GetDWord(NTXOFFSET_NUPAGE_OFFSET)	;
+		    SET SELF:_SetDWord(NTXOFFSET_NUPAGE_OFFSET, VALUE)
 
 		// keysize + 2 longs. ie.e Left pointer + record no.
 		INTERNAL PROPERTY EntrySize		AS WORD			;
 		    GET SELF:_GetWord(NTXOFFSET_ENTRYSIZE);
-		    SET SELF:_SetWord(NTXOFFSET_ENTRYSIZE, VALUE), isHot := TRUE
+		    SET SELF:_SetWord(NTXOFFSET_ENTRYSIZE, VALUE)
 
 		INTERNAL PROPERTY KeySize		AS WORD			;
 		    GET SELF:_GetWord(NTXOFFSET_KEYSIZE);
-		    SET SELF:_SetWord(NTXOFFSET_KEYSIZE, VALUE), isHot := TRUE
+		    SET SELF:_SetWord(NTXOFFSET_KEYSIZE, VALUE)
 
 		INTERNAL PROPERTY KeyDecimals	AS WORD			;
 		    GET SELF:_GetWord(NTXOFFSET_KEYDECIMALS);
-		    SET SELF:_SetWord(NTXOFFSET_KEYDECIMALS, VALUE), isHot := TRUE
+		    SET SELF:_SetWord(NTXOFFSET_KEYDECIMALS, VALUE)
 
 		INTERNAL PROPERTY MaxItem	AS WORD			;
 		    GET SELF:_GetWord(NTXOFFSET_MAXITEM);
-		    SET SELF:_SetWord(NTXOFFSET_MAXITEM, VALUE), isHot := TRUE
+		    SET SELF:_SetWord(NTXOFFSET_MAXITEM, VALUE)
 
 		INTERNAL PROPERTY HalfPage	AS WORD			;
 		    GET SELF:_GetWord(NTXOFFSET_HALFPAGE);
-		    SET SELF:_SetWord(NTXOFFSET_HALFPAGE, VALUE), isHot := TRUE
+		    SET SELF:_SetWord(NTXOFFSET_HALFPAGE, VALUE)
 
 		INTERNAL PROPERTY KeyExpression	 AS STRING ;
 		    GET SELF:_GetString(NTXOFFSET_KEYEXPRESSION, NTXOFFSET_EXPRESSION_SIZE ) ;

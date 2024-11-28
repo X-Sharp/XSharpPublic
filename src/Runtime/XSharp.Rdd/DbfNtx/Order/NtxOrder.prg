@@ -50,15 +50,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL _newvalue     AS RddKeyData
         PRIVATE _newKeyLen AS LONG
         PRIVATE _indexVersion AS WORD
-        PRIVATE _nextUnusedPageOffset AS LONG
+        PRIVATE _nextUnusedPageOffset AS DWORD
         PRIVATE _entrySize AS WORD
         PRIVATE _keyExprType AS LONG
         PRIVATE _keySize AS WORD
         PRIVATE _keyDecimals AS WORD
         PRIVATE _MaxEntry AS WORD
         PRIVATE _halfPage AS WORD
-        PRIVATE _firstPageOffset AS LONG
-        PRIVATE _fileSize AS LONG
+        PRIVATE _firstPageOffset AS DWORD
+        PRIVATE _fileSize AS DWORD
         PRIVATE _stack AS RddStack[]
         PRIVATE _orderName AS STRING
         PRIVATE _fileName AS STRING
@@ -73,7 +73,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _levels AS NtxLevel[]
         PRIVATE _levelsCount AS LONG
         PRIVATE _midItem AS NtxNode
-        PRIVATE _outPageNo AS LONG
+        PRIVATE _outPageNo AS DWORD
         PRIVATE getKeyValue AS ValueBlock       // Delegate to calculate the key
 
         #endregion
@@ -192,7 +192,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             // For Condition
             SELF:_Shared := SELF:_oRdd:Shared
-            SELF:_fileSize  := (LONG) _oStream:Length
+            SELF:_fileSize  := (DWORD) _oStream:Length
             SELF:_Hot := FALSE
             SELF:ClearStack()
             SELF:_entrySize := SELF:_Header:EntrySize
@@ -747,7 +747,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
         PRIVATE METHOD AllocPage() AS NtxPage
             LOCAL page AS NtxPage
-            LOCAL nextPage AS LONG
+            LOCAL nextPage AS DWORD
 
             IF SELF:_nextUnusedPageOffset > 0
                 nextPage := SELF:_nextUnusedPageOffset
@@ -793,7 +793,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 sRecords:AppendLine("------------------------------")
                 sRecords:AppendLine("List of Unused Pages")
                 sRecords:AppendLine("------------------------------")
-                LOCAL nPage AS LONG
+                LOCAL nPage AS DWORD
                 nPage := SELF:_nextUnusedPageOffset
                 SELF:_PageList:DumpHandle := IntPtr.Zero
                 SELF:_PageList:Flush(FALSE)

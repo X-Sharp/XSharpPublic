@@ -38,7 +38,10 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>$(Genericdefines);XSHARP;NDEBUG;TRACE;</DefineConstants>
   </PropertyGroup>
-   
+  <ItemGroup>
+    <UpToDateCheckInput Include="Parser\XSharp.g4" />
+    <UpToDateCheckInput Include="Parser\XSharpLexer.g4" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>

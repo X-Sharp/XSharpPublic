@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-24T13:32:48.947+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>插值字符串</title>
+<topic template="Default" modified="2024-12-04T00:23:21.790+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Interpolated Strings</title>
   <keywords>
     <keyword>ei&quot;...&quot;</keyword>
     <keyword>i&quot;...&quot;</keyword>
@@ -11,28 +11,8 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">插值字符串</para>
+      <para styleclass="Heading1">Interpolated Strings</para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">插值字符串是一种允许将局部变量、实例变量或其他表达式嵌入字面字符串的功能。</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">X# 支持两种插值字符串：</para>
-    <para styleclass="Heading2"><text style="font-weight:bold;">1.</text><tab /><text style="font-weight:bold;">正常插值字符串：i&quot;....&quot;</text></para>
-    <para styleclass="Normal">其工作方式与普通 X# 字符串类似，但内嵌表达式：</para>
-    <para styleclass="Code Example"><tab /><text style="font-weight:bold; font-style:normal; color:#3366ff;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#3366ff;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#3366ff;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Who </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#3366ff;">STRING</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;Who := </text><text style="font-weight:bold; font-style:normal; color:#993366;">&quot;World&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;Console.Writeline( i</text><text style="font-weight:bold; font-style:normal; color:#993366;">&quot;Hello {Who}&quot;</text><text style="font-weight:normal; font-style:normal; color:#000000;">)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;Console.Read()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#3366ff;">RETURN</text></para>
-    <para styleclass="Heading2">2.<tab /> 扩展插值字符串：ie&quot;...&quot; and ei&quot;....&quot;</para>
-    <para styleclass="Normal">这是一个内插字符串和一个扩展字符串的组合。在下面的示例中，\t 将被 tab 字符替换。</para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#3366ff;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#3366ff;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Who </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#3366ff;">STRING</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;Who := </text><text style="font-weight:bold; font-style:normal; color:#993366;">&quot;World&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;Console.Writeline( ie</text><text style="font-weight:bold; font-style:normal; color:#993366;">&quot;Hello\t{Who}&quot;</text><text style="font-weight:normal; font-style:normal; color:#000000;">)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;Console.Read()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#3366ff;">RETURN</text></para>
-    <para styleclass="Heading2">备注：</para>
-    <para styleclass="Normal">插值字符串内部的表达式解析识别：</para>
-    <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">SELF:</li>
-      <li styleclass="Normal">局部变量、成员变量和带 SELF: 前缀或不带 SELF: 前缀的属性</li>
-      <li styleclass="Normal">其他表达式目前必须使用 C# 语法，使用点(<text style="font-weight:bold;">.</text>)运算符作为发送运算符。</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">字符串内的表达式元素可以使用格式化符号，就像 String.Format() 符号一样。例如</para>
-    <para styleclass="Code Example"><tab /><text style="font-weight:bold; font-style:normal; color:#3366ff;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#3366ff;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#3366ff;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> i </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> INT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;i := 42</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;Console.Writeline( i</text><text style="font-weight:bold; font-style:normal; color:#993366;">&quot;Hello {i:x}&quot;</text><text style="font-weight:normal; font-style:normal; color:#000000;">) &#160; </text><text style="font-weight:normal; font-style:italic; color:#339966;">// </text><text styleclass="p_normal" style="font-family:&apos;Times New Roman&apos;; font-size:9pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#008000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">i 用十六进制符号打印，所以是 你好 2a</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;Console.Read()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">RETURN</text></para>
+    <para styleclass="Normal"><snippet src="__InterpolatedStrings" inline="false"/></para>
   </body>
 </topic>

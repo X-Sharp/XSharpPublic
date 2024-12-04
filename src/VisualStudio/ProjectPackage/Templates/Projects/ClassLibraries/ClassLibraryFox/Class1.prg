@@ -18,7 +18,7 @@ BEGIN NAMESPACE $safeprojectname$
     DEFINE CLASS Class1  AS Custom
     PROTECTED prop1         AS STRING // X# allows types
     HIDDEN hiddenprop1      AS DATE
-    // CONSTRUCTOR
+    // This gets called from the (generated) constructor
     PROCEDURE Init(p1, p2)   
         prop1 := p1
         hiddenprop1 := p2

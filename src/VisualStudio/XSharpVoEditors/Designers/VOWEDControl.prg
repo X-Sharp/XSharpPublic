@@ -226,7 +226,7 @@ CLASS VOWEDControl INHERIT Panel
     STATIC METHOD InitializeToolbox() AS VOID
         IF VOWEDControl.oToolBox == NULL
             VOWEDControl.oToolBox := ToolBox{}
-            VOWEDControl.CreateToolWindow( Resources.ToolboxCaption, Point{950 , 150} , Size{200 , 600} , oToolBox,"ToolBox")
+            VOWEDControl.CreateToolWindow( Resources.ToolboxCaption, Point{950 , 150} , Size{200 , 550} , oToolBox,"ToolBox")
         ENDIF
         RETURN
 
@@ -246,6 +246,11 @@ CLASS VOWEDControl INHERIT Panel
         oForm:Closing += System.ComponentModel.CancelEventHandler{ NULL , @ToolWindowClosing() }
         oForm:Move    += ToolWindowmoving
         oForm:SizeChanged += ToolWindowSizeChanged
+        IF cName == "ToolBox"
+		    oForm:AutoScaleDimensions := System.Drawing.SizeF{ 96 , 96 }
+            oForm:AutoScaleMode := System.Windows.Forms.AutoScaleMode.Dpi
+            oForm:PerformAutoScale()
+        ENDIF
         RETURN
     STATIC METHOD ToolWindowClosing(o AS OBJECT , e AS System.ComponentModel.CancelEventArgs) AS VOID
         e:Cancel := TRUE

@@ -140,6 +140,9 @@
     <topicref type="topic" id="452217451269321" build="ALL" modified="2023-10-22T12:59:43.223Z" icon="0" href="__SeeAlsoExitLoop">
       <caption translate="true">__SeeAlsoExitLoop</caption>
     </topicref>
+    <topicref type="topic" id="456298376010241" build="ALL" modified="2024-12-03T23:56:26.887Z" icon="0" href="__InterpolatedStrings">
+      <caption translate="true">__InterpolatedStrings</caption>
+    </topicref>
   </topicref>
   <topicref type="topic" id="423886812341331" build="ALL" modified="2024-05-25T17:49:22.898Z" icon="0" href="XSharp">
     <caption translate="true">X# 文档</caption>

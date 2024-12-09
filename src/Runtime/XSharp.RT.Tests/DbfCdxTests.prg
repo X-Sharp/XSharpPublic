@@ -6144,7 +6144,6 @@ RETURN
 
 			DbfTests.CreateDatabase(cDbf, aStruct)
 
-			DbCreate(cDbf, aStruct)
 			DbUseArea(TRUE,"DBFCDX",cDbf)
 			DbAppend()
 			FOR n := 1 UPTO ALen(aKeywords)
@@ -6167,6 +6166,61 @@ RETURN
 			DbCloseArea()
 		RETURN
 
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD OrdScope_test_with_HIGH_value() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileName()
+			FErase(cDbf + ".cdx")
+
+			RddSetDefault("DBFCDX")
+
+			DbfTests.CreateDatabase(cDbf, {{"FLD" , "N" , 5 , 0 }} , {3,2,1,10,1,8,9,5,4,8} )
+
+			DbCreateIndex(cDbf + ".cdx" , "FLD")
+
+			OrdScope(TOPSCOPE, 1)
+			OrdScope(BOTTOMSCOPE, 10)
+			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 10)
+
+			OrdScope(TOPSCOPE, -1)
+			OrdScope(BOTTOMSCOPE, 10)
+			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 10)
+
+			OrdScope(TOPSCOPE, 2)
+			OrdScope(BOTTOMSCOPE, 10)
+			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 8)
+
+			OrdScope(TOPSCOPE, 2)
+			OrdScope(BOTTOMSCOPE, 8)
+			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 6)
+
+			OrdScope(TOPSCOPE, 1)
+			OrdScope(BOTTOMSCOPE, 11)
+			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 10)
+
+			OrdScope(TOPSCOPE, 0)
+			OrdScope(BOTTOMSCOPE, 11)
+			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 10)
+
+			OrdScope(TOPSCOPE, -100)
+			OrdScope(BOTTOMSCOPE, 100)
+			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 10)
+
+			OrdScope(TOPSCOPE, 9)
+			OrdScope(BOTTOMSCOPE, 100)
+			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 2)
+
+			OrdScope(TOPSCOPE, 100)
+			OrdScope(BOTTOMSCOPE, 200)
+			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 0)
+
+			OrdScope(TOPSCOPE, -100)
+			OrdScope(BOTTOMSCOPE, -200)
+			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 0)
+
+			DbCloseArea()
+		RETURN
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

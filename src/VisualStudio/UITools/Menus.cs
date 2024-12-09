@@ -12,8 +12,8 @@ namespace XSharp.Project
     /// </summary>
     internal sealed partial class PackageGuids
     {
-        public const string guidProjectPackageString = "e299fb7b-d273-4678-9acf-b37b4af04a12";
-        public static Guid guidProjectPackage = new Guid(guidProjectPackageString);
+        public const string guidUIToolsPackageString = "15d36a1d-0fc1-48f7-b2ac-e77cb9cdf00e";
+        public static Guid guidUIToolsPackage = new Guid(guidUIToolsPackageString);
 
         public const string guidImagesString = "9f1c712d-4803-4aff-9153-28b74c34e1bf";
         public static Guid guidImages = new Guid(guidImagesString);

@@ -54,13 +54,16 @@ namespace XSharp.Project
                 _ = await VS.Commands.ExecuteAsync(KnownCommands.Window_CloseAllDocuments);
                 ModelWalker.Stop();
                 var solution = await VS.Solutions.GetCurrentSolutionAsync();
-                var solFile = solution.FullPath;
-                var projects = XSharpProjectNode.AllProjects;
+                var projects = await VS.Solutions.GetAllProjectsAsync(ProjectStateFilter.Loaded);
                 XSolution.Close();
-                XSolution.Open(solFile);
+                XSolution.Open(solution.FullPath);
                 foreach (var project in projects)
                 {
-                    project.ReloadProjectModel();
+                    if (project.IsLoaded)
+                    {
+                        await project.UnloadAsync();
+                        await project.LoadAsync();
+                    }
                 }
                 ModelWalker.Walk();
                 foreach (var filename in fileNames)

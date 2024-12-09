@@ -104,7 +104,7 @@ namespace XSharp.Project
         }
 
         #region Fields
-        private XSharpProjectPackage myPackage;
+        private XSharpUIToolsPackage myPackage;
 
         private string fileName = string.Empty;
         private bool isDirty;
@@ -132,7 +132,7 @@ namespace XSharp.Project
         /// <summary>
         /// </summary>
         /// <param name="package">Our Package instance.</param>
-        public VOEditorPane(XSharpProjectPackage package)
+        public VOEditorPane(XSharpUIToolsPackage package)
            : base(null)
         {
             PrivateInit(package);
@@ -191,7 +191,7 @@ namespace XSharp.Project
         /// which will show up in the properties window
         /// </summary>
         /// <param name="package"></param>
-        private void PrivateInit(XSharpProjectPackage package)
+        private void PrivateInit(XSharpUIToolsPackage package)
         {
             myPackage = package;
             loading = false;
@@ -1406,7 +1406,8 @@ namespace XSharp.Project
         {
             try
             {
-                Utilities.DeleteFileSafe(strBackupFileName);
+                System.IO.File.Delete(strBackupFileName);
+                //Utilities.DeleteFileSafe(strBackupFileName);
                 editorControl.Save(strBackupFileName, true);
                 backupObsolete = false;
             }
@@ -1576,7 +1577,7 @@ namespace XSharp.Project
     }
     public class VOFormEditorPane : VOEditorPane
     {
-        public VOFormEditorPane(XSharpProjectPackage package) : base(package)
+        public VOFormEditorPane(XSharpUIToolsPackage package) : base(package)
         {
             MyExtension = ".xsfrm";
         }
@@ -1894,7 +1895,7 @@ namespace XSharp.Project
     }
     public class VOMenuEditorPane : VOEditorPane
     {
-        public VOMenuEditorPane(XSharpProjectPackage package) : base(package)
+        public VOMenuEditorPane(XSharpUIToolsPackage package) : base(package)
         {
             MyExtension = ".xsmnu";
         }
@@ -1916,7 +1917,7 @@ namespace XSharp.Project
     }
     public class VOServerEditorPane : VOEditorPane
     {
-        public VOServerEditorPane(XSharpProjectPackage package) : base(package)
+        public VOServerEditorPane(XSharpUIToolsPackage package) : base(package)
         {
             MyExtension = ".xsdbs";
         }
@@ -1938,7 +1939,7 @@ namespace XSharp.Project
     }
     public class VOFieldSpecEditorPane : VOEditorPane
     {
-        public VOFieldSpecEditorPane(XSharpProjectPackage package) : base(package)
+        public VOFieldSpecEditorPane(XSharpUIToolsPackage package) : base(package)
         {
             MyExtension = ".xsfs";
         }

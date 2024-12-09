@@ -37,7 +37,6 @@ namespace XSharp.Project
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
     public partial class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject,
         /*IVsDesignTimeAssemblyResolution, */IVsProject5, IXsProjectDesigner
-    , IVsReferenceManagerUser
     {
         static List<XSharpProjectNode> nodes = new List<XSharpProjectNode>();
 
@@ -450,6 +449,7 @@ namespace XSharp.Project
                     return this;
                 case (int)__VSHPROPID.VSHPROPID_DefaultNamespace:
                     return this.RootNameSpace;
+
                 case (int)__VSHPROPID5.VSHPROPID_OutputType:
                     return (uint)GetOutPutType();
                 case (int)__VSHPROPID2.VSHPROPID_DesignerHiddenCodeGeneration:
@@ -468,6 +468,9 @@ namespace XSharp.Project
                 case (int)__VSHPROPID7.VSHPROPID_CanBuildQuickCheck:
                 case (int)__VSHPROPID7.VSHPROPID_CanDebugLaunchQuickCheck:
                     return _VSQuickCheckAnswer.QCA_Always;
+                case (int)__VSHPROPID5.VSHPROPID_ReferenceManagerUser:
+                    return this.VsReferenceManager;
+
                 // Added for NuGet Support
                 case (int)__VSHPROPID8.VSHPROPID_ProjectCapabilitiesChecker:
                     if (_checker == null)
@@ -1221,7 +1224,35 @@ namespace XSharp.Project
                 }
             }
         }
-
+        public override int AddProjectReference()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread("AddProjectReference");
+            var referenceManager = this.GetService(typeof(SVsReferenceManager)) as IVsReferenceManager;
+            if (referenceManager != null)
+            {
+                string title = $"Reference Manager - {this.Caption}";
+                var contextGuids = new[] {
+                          VSConstants.AssemblyReferenceProvider_Guid,
+                          VSConstants.ProjectReferenceProvider_Guid,
+                          //VSConstants.SharedProjectReferenceProvider_Guid,
+                          VSConstants.ComReferenceProvider_Guid,
+                          VSConstants.FileReferenceProvider_Guid,
+                    };
+                referenceManager.ShowReferenceManager(
+                      VsReferenceManager,
+                      title,
+                      "VS.AddReference",
+                      contextGuids.First(),
+                      fForceShowDefaultProvider: false
+                      );
+                return VSConstants.S_OK;
+            }
+            else
+            {
+                return VSConstants.E_NOINTERFACE;
+            }
+        }
+        IVsReferenceManagerUser VsReferenceManager => new ProjectNodeReferenceManager(this);
 
         internal void LoadPackageReferences()
         {

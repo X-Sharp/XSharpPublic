@@ -137,11 +137,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.527</Version>
+    <PackageReference Include="Community.VisualStudio.Toolkit.16">
+      <Version>16.0.527</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine">
-      <Version>15.0.26606</Version>
+      <Version>16.0.2032702</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

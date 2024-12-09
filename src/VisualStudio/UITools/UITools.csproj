@@ -53,7 +53,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <NoWarn>VSTHRD010;VSSDK006;1762;NU1605;NU1903</NoWarn>
-    <DeployExtension>True</DeployExtension>
+    <DeployExtension>False</DeployExtension>
     <CreateVsixContainer>False</CreateVsixContainer>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -146,17 +146,12 @@
       <Generator>VsctGenerator</Generator>
       <LastGenOutput>Menus.cs</LastGenOutput>
     </VSCTCompile>
-    <Compile Include="RepositoryWindow\ToolWindows\RepositoryWindow.cs" />
-    <Compile Include="RepositoryWindow\ToolWindows\RepositoryWindowControl.xaml.cs">
-      <DependentUpon>RepositoryWindowControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Resources.cs" />
     <Compile Include="Menus.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Menus.vsct</DependentUpon>
     </Compile>
-    <Compile Include="XSharpShellEvents.cs" />
     <Compile Include="XSharpUIToolsPackage.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -241,8 +236,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.527</Version>
+    <PackageReference Include="Community.VisualStudio.Toolkit.16">
+      <Version>16.0.527</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>
@@ -255,9 +250,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Text.UI.Wpf">
       <Version>15.8.525</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Threading">
-      <Version>15.3.20</Version>
     </PackageReference>
     <Content Include="$(VSExternalDir)XSharp.MonoCecil.dll">
       <Link>XSharp.MonoCecil.dll</Link>
@@ -278,12 +270,6 @@
       <Version>4.3.1</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Page Include="RepositoryWindow\ToolWindows\RepositoryWindowControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
@@ -302,7 +288,7 @@
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup>
     <PreBuildEvent>
-	</PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>"c:\Program Files\7-Zip\7z.exe" d $(Targetdir)$(TargetName).vsix *.pdb &gt;nul</PostBuildEvent>

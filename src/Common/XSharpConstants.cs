@@ -11,6 +11,7 @@ namespace XSharp
     internal static class XSharpConstants
     {
         internal const string guidXSharpProjectPkgString = "e299fb7b-d273-4678-9acf-b37b4af04a12";
+        internal const string guidUIpPkgString = "15d36a1d-0fc1-48f7-b2ac-e77cb9cdf00e";
         internal const string guidXSharpDebuggerUIPkgString = "39dae239-87b5-4b97-8e5e-9e6854f2499a";
         internal const string guidXSharpProjectFactoryString = "aa6c8d78-22ff-423a-9c7c-5f2393824e04";
         internal const string guidXSharpProjectFactoryStringCurly = "{"+ guidXSharpProjectFactoryString+"}";
@@ -34,6 +35,7 @@ namespace XSharp
         internal const string LanguageServiceName = "XSharp Language Service";
         internal const string EditorName = "XSharp Source Code Editor";
         internal const string ProjectSystemName = "XSharp Project System";
+        internal const string UIToolsName = "XSharp VS UI Subsystem";
         internal const string CpsProjectAssemblyName = "XSharp.VisualStudio.ProjectSystem";
 
         internal const string ProjectExtension = "xsproj";

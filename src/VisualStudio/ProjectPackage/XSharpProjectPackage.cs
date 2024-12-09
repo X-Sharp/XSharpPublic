@@ -16,7 +16,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using XSharp.Project.Options;
+//using XSharp.Project.Options;
 using XSharp.Project.WPF;
 using XSharpModel;
 using Task = System.Threading.Tasks.Task;
@@ -82,24 +82,6 @@ namespace XSharp.Project
         XSharpConstants.LanguageName, XSharpConstants.ProjectFileMask, XSharpConstants.ProjectExtension, XSharpConstants.ProjectExtensions,
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
-
-    [ProvideOptionPage(typeof(Options.DialogPageProvider.WindowEditor), "X# Custom Editors", "VO Window Editor",
-        categoryResourceID: 200,
-        pageNameResourceID: 201,
-        keywordListResourceId: 301,
-        supportsAutomation: true,
-        Sort = 1)]
-    [ProvideOptionPage(typeof(Options.DialogPageProvider.OtherEditor), "X# Custom Editors", "Other Editors",
-        categoryResourceID: 200,
-        pageNameResourceID: 202,
-        keywordListResourceId: 302,
-        supportsAutomation: true, Sort = 2)]
-    [ProvideOptionPage(typeof(Options.DialogPageProvider.Debugger), "Debugger", "X# Debugger",
-     categoryResourceID: 203,
-     pageNameResourceID: 204,
-     keywordListResourceId: 304,
-     supportsAutomation: true)]
-
     [ProvideProjectFactory(typeof(XSharpWPFProjectFactory),
         null,
         null,
@@ -113,32 +95,9 @@ namespace XSharp.Project
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Class", 500)]
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Form", 500)]
 
-    // Editors for VOBinaries
-    [ProvideEditorExtension(typeof(VOFormEditorFactory), ".xsfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
-    [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".xsmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
-    [ProvideEditorExtension(typeof(VODBServerEditorFactory), ".xsdbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
-    [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".xsfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
-    //[ProvideEditorExtension(typeof(VOSQLServerEditorFactory), ".xssql", 0x42, DefaultName = "XSharp VO SQL Editor", NameResourceID = 80114)]
-    //[ProvideEditorExtension(typeof(VOReportEditorFactory), ".xsrep", 0x42, DefaultName = "XSharp VO Report Editor", NameResourceID = 80115)]
-    [ProvideEditorLogicalView(typeof(VOFormEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
-    [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
-    [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
-    [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
-    // Vulcan Binaries
-    [ProvideEditorExtension(typeof(VOFormEditorFactory), ".vnfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
-    [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".vnmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
-    [ProvideEditorExtension(typeof(VODBServerEditorFactory), ".vndbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
-    [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".vnfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
-    //[ProvideEditorExtension(typeof(VOSQLServerEditorFactory), ".vnsqs", 0x42, DefaultName = "XSharp VO SQL Editor", NameResourceID = 80114)]
-    //[ProvideEditorExtension(typeof(VOReportEditorFactory), ".vnrep", 0x42, DefaultName = "XSharp VO Report Editor", NameResourceID = 80115)]
 
     [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
     [Guid(XSharpConstants.guidXSharpProjectPkgString)]
-#if REPOWINDOW
-    [ProvideToolWindow(typeof(RepositoryWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.SolutionExplorer)]
-    [ProvideToolWindowVisibility(typeof(RepositoryWindow.Pane), VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string)]
-#endif
-    [ProvideMenuResource("Menus.ctmenu", 1)]
     public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents, IDisposable
     {
         private static XSharpProjectPackage instance = null;
@@ -197,10 +156,10 @@ namespace XSharp.Project
             this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
 
             // editors for the binaries
-            base.RegisterEditorFactory(new VOFormEditorFactory(this));
-            base.RegisterEditorFactory(new VOMenuEditorFactory(this));
-            base.RegisterEditorFactory(new VODBServerEditorFactory(this));
-            base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
+            //base.RegisterEditorFactory(new VOFormEditorFactory(this));
+            //base.RegisterEditorFactory(new VOMenuEditorFactory(this));
+            //base.RegisterEditorFactory(new VODBServerEditorFactory(this));
+            //base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
 
             _errorList = await VS.GetRequiredServiceAsync<SVsErrorList, IErrorList>();
             _taskList = await VS.GetRequiredServiceAsync<SVsTaskList, ITaskList>();
@@ -210,8 +169,7 @@ namespace XSharp.Project
             {
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
-            await this.RegisterCommandsAsync();
-            await GetOptionsAsync();
+            //await GetOptionsAsync();
             XSettings.CodeDomProviderClass  = typeof(XSharp.CodeDom.XSharpCodeDomProvider);
 
         }
@@ -229,10 +187,21 @@ namespace XSharp.Project
                 xnode.UpdateReferencesInProjectModel();
             }
         }
+
+        bool IsXSharp(string path)
+        {
+            if (path != null)
+            {
+                var ext = System.IO.Path.GetExtension(path).ToLower();
+                return ext == ".xsproj" || ext == ".xsprj";
+            }
+            return false;
+        }
+
         private void BuildEvents_ProjectConfigurationChanged(Community.VisualStudio.Toolkit.Project prj)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            if (!prj.IsXSharp())
+            if (!IsXSharp(prj.FullPath))
                 return;
             foreach (var project in XSharpProjectNode.AllProjects)
             {
@@ -248,27 +217,27 @@ namespace XSharp.Project
 
 
         #endregion
-        public async Task<bool> GetOptionsAsync()
-        {
-            var options = ProjectSystemOptions.Load();
-            if (options == null)
-            {
-                options = new ProjectSystemOptions();
-                options.DebuggerOptions = await Options.DebuggerOptions.GetLiveInstanceAsync();
-                options.WindowEditorOptions = await Options.WindowEditorOptions.GetLiveInstanceAsync();
-                options.OtherEditorOptions = await Options.OtherEditorOptions.GetLiveInstanceAsync();
-                options.Save();
-            }
-            else
-            {
-                // save values from disk to private registry 
-                await options.DebuggerOptions.SaveAsync();
-                await options.WindowEditorOptions.SaveAsync();
-                await options.OtherEditorOptions.SaveAsync();
-            }
-            options.WriteToSettings();
-            return true;
-        }
+        //public async Task<bool> GetOptionsAsync()
+        //{
+        //    var options = ProjectSystemOptions.Load();
+        //    if (options == null)
+        //    {
+        //        options = new ProjectSystemOptions();
+        //        options.DebuggerOptions = await Options.DebuggerOptions.GetLiveInstanceAsync();
+        //        options.WindowEditorOptions = await Options.WindowEditorOptions.GetLiveInstanceAsync();
+        //        options.OtherEditorOptions = await Options.OtherEditorOptions.GetLiveInstanceAsync();
+        //        options.Save();
+        //    }
+        //    else
+        //    {
+        //        // save values from disk to private registry 
+        //        await options.DebuggerOptions.SaveAsync();
+        //        await options.WindowEditorOptions.SaveAsync();
+        //        await options.OtherEditorOptions.SaveAsync();
+        //    }
+        //    options.WriteToSettings();
+        //    return true;
+        //}
 
         
         
@@ -298,23 +267,23 @@ namespace XSharp.Project
         #endregion
         public int OnShellPropertyChange(int propid, object var)
         {
-            // A modal dialog has been opened. Editor Options ?
-            if (propid == (int)__VSSPROPID4.VSSPROPID_IsModal && var is bool)
-            {
-                // when modal window closes
-                if (!(bool)var)
-                {
-                    SetCommentTokens();
-                    var options = new ProjectSystemOptions();
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate
-                    {
-                        options.DebuggerOptions = await DebuggerOptions.GetLiveInstanceAsync();
-                        options.WindowEditorOptions = await WindowEditorOptions.GetLiveInstanceAsync();
-                        options.OtherEditorOptions = await OtherEditorOptions.GetLiveInstanceAsync();
-                    });
-                    options.Save();
-                }
-            }
+        //    // A modal dialog has been opened. Editor Options ?
+        //    if (propid == (int)__VSSPROPID4.VSSPROPID_IsModal && var is bool)
+        //    {
+        //        // when modal window closes
+        //        if (!(bool)var)
+        //        {
+        //            SetCommentTokens();
+        //            var options = new ProjectSystemOptions();
+        //            ThreadHelper.JoinableTaskFactory.Run(async delegate
+        //            {
+        //                options.DebuggerOptions = await DebuggerOptions.GetLiveInstanceAsync();
+        //                options.WindowEditorOptions = await WindowEditorOptions.GetLiveInstanceAsync();
+        //                options.OtherEditorOptions = await OtherEditorOptions.GetLiveInstanceAsync();
+        //            });
+        //            options.Save();
+        //        }
+        //    }
             return VSConstants.S_OK;
         }
 

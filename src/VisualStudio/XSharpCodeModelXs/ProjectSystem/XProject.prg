@@ -382,7 +382,7 @@ BEGIN NAMESPACE XSharpModel
 
     METHOD RefreshAssemblyReferences as VOID
         FOREACH asm as XAssembly in SELF:AssemblyReferences:ToArray()
-            if asm:IsModifiedOnDisk
+            if asm:IsModifiedOnDisk .and. asm:Exists
                 asm:Read()
                 SELF:_AssemblyTypeCache?:Clear()
             endif

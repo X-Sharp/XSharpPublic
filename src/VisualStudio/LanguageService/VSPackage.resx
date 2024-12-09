@@ -117,18 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="100" xml:space="preserve">
-    <value>XSharp Files (*.prg, *.xs, *.?h, *.??frm, *.??mnu, *.??fs, *.??dbs);*.prg,*.xs,*.?h,*.??frm,*.??mnu,*.??fs,*.??dbs</value>
-    <comment>Filter for add existing item file dialog</comment>
-  </data>
-  <data name="102" xml:space="preserve">
-    <value>XSharp Files (*.prg, *.xs, *.?h, *.ppo, *.resx, *.rc, *.settings, *.??frm, *.??mnu, *.??fs, *.??dbs);*.prg,*.xs,*.?h,*.ppo,*.resx,*.rc,*.settings,*.??frm,*.??mnu,*.??fs,*.??dbs</value>
-    <comment>Filter for open file dialog</comment>
-  </data>
-  <data name="103" xml:space="preserve">
-    <value>XSharp Files (*.prg, *.xs, *.?h, *.resx, *.rc, *.xsd, *.xaml, *.xml, *.htm, *.html, *.css);*.prg,*.xs,*.?h,*.resx,*.rc,*.xsd,*.xaml,*.xml,*.htm,*.html,*.css</value>
-    <comment>Filter for find in files dialog (do not include binaries here)</comment>
-  </data>
   <data name="1" xml:space="preserve">
     <value>X#</value>
     <comment>'Localized' Language name used on several dialogs. </comment>

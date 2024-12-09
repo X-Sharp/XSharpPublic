@@ -78,7 +78,10 @@
       <HintPath>$(VsExternalDir)XSharp.CodeAnalysis.dll</HintPath>
       <Aliases>codeanalysis</Aliases>
     </Reference>
-    <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" />
+    <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Artifacts\Debug\XSharp.Core.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.Evaluator">
       <HintPath>$(VsExternalDir)XSharp.Evaluator.dll</HintPath>
     </Reference>
@@ -111,25 +114,6 @@
     <Compile Include="Automation\OAXSharpProject.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs" />
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
-    <Compile Include="Commands\CommandGenerateWinForm.cs" />
-    <Compile Include="Commands\CommandAddDesignerFile.cs" />
-    <Compile Include="Commands\CommandConvertXsRuntime.cs" />
-    <Compile Include="Commands\CommandRebuildIntellisense.cs" />
-    <Compile Include="Commands\CommandEditProjectFile.cs" />
-    <Compile Include="Commands\CommandViewInDisassembler.cs" />
-    <Compile Include="Commands\CommandViewRepo.cs" />
-    <Compile Include="Commands\CommandViewWorkareas.cs" />
-    <Compile Include="Commands\CommandViewSettings.cs" />
-    <Compile Include="Commands\CommandViewMemVars.cs" />
-    <Compile Include="Commands\CommandViewGlobals.cs" />
-    <Compile Include="Commands\CommandUDCTester.cs" />
-    <Compile Include="Commands\CommandFoxXPorter.cs" />
-    <Compile Include="Commands\CommandXsHelpChinese.cs" />
-    <Compile Include="Commands\CommandXsWebsite.cs" />
-    <Compile Include="Commands\CommandXsHelp.cs" />
-    <Compile Include="Commands\CommandXPorter.cs" />
-    <Compile Include="Commands\CommandVoXPorter.cs" />
-    <Compile Include="Commands\XSharpBaseCommand.cs" />
     <Compile Include="ExternalAssemblies.cs" />
     <Compile Include="FileCodeModel\CodeDomCodeAttribute.cs" />
     <Compile Include="FileCodeModel\CodeDomCodeClass.cs" />
@@ -170,19 +154,8 @@
     <Compile Include="Nodes\XSharpIncludeContainerNode.cs" />
     <Compile Include="Nodes\XSharpProjectNodeReferenceManager.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
-    <Compile Include="OptionsPages\BaseOptionsModel.cs" />
-    <Compile Include="OptionsPages\BaseOptionsPage.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="OptionsPages\DebuggerOptions.cs" />
-    <Compile Include="OptionsPages\OtherEditorOptions.cs" />
-    <Compile Include="OptionsPages\DialogPageProvider.cs" />
-    <Compile Include="OptionsPages\ProjectSystemOptions.cs" />
-    <Compile Include="OptionsPages\WindowEditorOptions.cs" />
     <Compile Include="Nodes\XSharpFileNodeProperties.cs" />
     <Compile Include="Nodes\XSharpNodeProperties.cs" />
-    <Compile Include="Editors\XSharpVOEditorPane.cs" />
-    <Compile Include="Editors\Factories.cs" />
     <Compile Include="PackageReferences\OAVsPackageReferencescs.cs" />
     <Compile Include="PackageReferences\PackageReferenceContainer.cs" />
     <Compile Include="PackageReferences\PackageReferencesNode.cs" />
@@ -247,7 +220,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Editors\Todo.txt" />
     <Content Include="source.extension.2019.vsixmanifest" />
     <Content Include="source.extension.2022.vsixmanifest" />
     <Content Include="Template.ico">
@@ -412,11 +384,6 @@
     <Content Include="XSharp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <VSCTCompile Include="Menus.vsct">
-      <ResourceName>Menus.ctmenu</ResourceName>
-      <Generator>VsctGenerator</Generator>
-      <LastGenOutput>Menus.cs</LastGenOutput>
-    </VSCTCompile>
     <Content Include="XSharpVSIXLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -425,10 +392,6 @@
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\WcfService\Service.prg">
     </ZipItem>
-    <Compile Include="RepositoryWindow\ToolWindows\RepositoryWindow.cs" />
-    <Compile Include="RepositoryWindow\ToolWindows\RepositoryWindowControl.xaml.cs">
-      <DependentUpon>RepositoryWindowControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Resources.cs" />
     <Compile Include="source.extension.cs">
       <AutoGen>True</AutoGen>
@@ -436,15 +399,10 @@
       <DependentUpon>source.extension.vsixmanifest</DependentUpon>
     </Compile>
     <Compile Include="XSharpFileType.cs" />
-    <Compile Include="XSharpOutputPane.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
+    <Compile Include="XSharpProjectFactory.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
-    <Compile Include="Menus.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Menus.vsct</DependentUpon>
-    </Compile>
     <Compile Include="XSharpShellEvents.cs" />
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />
@@ -455,7 +413,6 @@
     <Compile Include="Nodes\XSharpDependentFileNode.cs" />
     <Compile Include="XSharpConfigprovider.cs" />
     <Compile Include="Automation\OAXSharpFileItem.cs" />
-    <Compile Include="Editors\XSharpProjectFactory.cs" />
     <Compile Include="Nodes\XSharpFileNode.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Nodes\XSharpProjectNode.cs" />
@@ -701,6 +658,13 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
+    <ProjectReference Include="..\UITools\UITools2022.csproj">
+      <Project>{28EF43A9-5C3E-4651-8461-1F2076002EEE}</Project>
+      <Name>UITools2022</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+      <Aliases>uitools</Aliases>
+    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>CodeModel</Name>
@@ -778,12 +742,6 @@
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="RepositoryWindow\ToolWindows\RepositoryWindowControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>

@@ -197,8 +197,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.527</Version>
+    <PackageReference Include="Community.VisualStudio.Toolkit.16">
+      <Version>16.0.527</Version>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Build">

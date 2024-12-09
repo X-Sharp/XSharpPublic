@@ -18,7 +18,7 @@ BEGIN NAMESPACE $rootnamespace$
     DEFINE CLASS $safeitemrootname$
     PROTECTED prop1         AS STRING // X# allows types
     HIDDEN hiddenprop1      AS DATE
-    // CONSTRUCTOR
+    // This gets called from the (generated) constructor
     PROCEDURE Init(p1 as STRING, p2 AS DATE)   // X# allows to type the parameters
         prop1 := p1
         hiddenprop1 := p2
@@ -28,8 +28,6 @@ BEGIN NAMESPACE $rootnamespace$
         ? p1, p2
         RETURN p1 == prop1 AND p2 == hiddenprop1
 
-    CONSTRUCTOR()
-         RETURN
 
 	ENDDEFINE
 END NAMESPACE // $rootnamespace$

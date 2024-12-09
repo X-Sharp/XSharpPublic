@@ -2686,7 +2686,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return null;
         }
-        private AttributeSyntax EncodeDefaultParameter(XP.ExpressionContext initexpr, XP.DatatypeContext datatype)
+        private AttributeSyntax EncodeDefaultParameter([NotNull] XP.ParameterContext context, XP.ExpressionContext initexpr, XP.DatatypeContext datatype)
         {
             bool negative = false;
             if (datatype == null)
@@ -2694,24 +2694,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // FUNCTION Test (a := NIL,b := NIL as USUAL)
                 // find the next parameter and its datatype
                 // When we get here then params have a type
-                if (CurrentMember != null && CurrentMember.Params != null)
-                {
-                    var pars = CurrentMember.Params._Params;
-                    for (int i = 0; i < pars.Count && datatype == null; i++)
-                    {
-                        var par = pars[i];
-                        if (par.Default == initexpr)
-                        {
-                            for (int j = i + 1; j < pars.Count && datatype == null; j++)
-                            {
-                                if (pars[j].Type != null)
-                                {
-                                    datatype = pars[j].Type;
-                                }
-                            }
-                        }
-                    }
-                }
+                datatype = _getNextParameterDataType(context);
             }
             if (initexpr is XP.PrefixExpressionContext)
             {
@@ -2866,10 +2849,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
-
-        public override void ExitParameter([NotNull] XP.ParameterContext context)
+        public override void ExitParameterList([NotNull] XP.ParameterListContext context)
         {
-            base.ExitParameter(context);
+            // Visit each of the parameters so we can determine if there
+            // is a default.
+            foreach (var param in context._Params)
+            {
+                VisitParameter(param);
+            }
+            base.ExitParameterList(context);
+        }
+        public void VisitParameter([NotNull] XP.ParameterContext context)
+        {
             // Only apply the default parameter attribute when there
             // are no Attributes on the parameter, such as [CallerMember]
             var inLocalFuncProc = CurrentMember is XP.LocalfuncprocContext;
@@ -2883,7 +2874,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Put(par);
                     return;
                 }
-                AttributeSyntax attr = EncodeDefaultParameter(context.Default, context.Type);
+                AttributeSyntax attr = EncodeDefaultParameter(context, context.Default, context.Type);
                 if (attr != null)
                 {
                     ParameterSyntax par = context.Get<ParameterSyntax>();

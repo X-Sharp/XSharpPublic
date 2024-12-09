@@ -126,13 +126,13 @@ INTERNAL FUNCTION _IsIdentifierStartChar(cChar AS CHAR) AS LOGIC
     ENDIF
     VAR cat := CharUnicodeInfo.GetUnicodeCategory(cChar)
     SWITCH cat
-        CASE UnicodeCategory.UppercaseLetter
-        CASE UnicodeCategory.LowercaseLetter
-        CASE UnicodeCategory.TitlecaseLetter
-        CASE UnicodeCategory.ModifierLetter
-        CASE UnicodeCategory.OtherLetter
-        CASE UnicodeCategory.LetterNumber
-            RETURN TRUE
+    CASE UnicodeCategory.UppercaseLetter
+    CASE UnicodeCategory.LowercaseLetter
+    CASE UnicodeCategory.TitlecaseLetter
+    CASE UnicodeCategory.ModifierLetter
+    CASE UnicodeCategory.OtherLetter
+    CASE UnicodeCategory.LetterNumber
+        RETURN TRUE
     END SWITCH
     RETURN FALSE
 
@@ -142,13 +142,13 @@ INTERNAL FUNCTION _IsIdentifierPartChar(cChar AS CHAR) AS LOGIC
     ENDIF
     VAR cat := CharUnicodeInfo.GetUnicodeCategory(cChar)
     SWITCH cat
-        CASE UnicodeCategory.DecimalDigitNumber
-        CASE UnicodeCategory.ConnectorPunctuation
-        CASE UnicodeCategory.NonSpacingMark
-        CASE UnicodeCategory.SpacingCombiningMark
-            RETURN TRUE
-        CASE UnicodeCategory.Format
-            RETURN cChar > 127
+    CASE UnicodeCategory.DecimalDigitNumber
+    CASE UnicodeCategory.ConnectorPunctuation
+    CASE UnicodeCategory.NonSpacingMark
+    CASE UnicodeCategory.SpacingCombiningMark
+        RETURN TRUE
+    CASE UnicodeCategory.Format
+        RETURN cChar > 127
     END SWITCH
     RETURN FALSE
 
@@ -196,9 +196,9 @@ FUNCTION Type(cString AS STRING, nArray AS LONG) AS STRING
 
         CATCH  AS Exception
             IF RuntimeState.Dialect == XSharpDialect.FoxPro
-            cRet  := "U"
+                cRet  := "U"
             ELSE
-            cRet  := "UE"
+                cRet  := "UE"
             ENDIF
         END TRY
     ENDIF
@@ -250,42 +250,42 @@ FUNCTION StrEvaluate( cString AS STRING ) AS STRING
         FOREACH VAR cChar IN cString
             lAddChar := TRUE
             SWITCH cChar
-                CASE c'&'
-                    IF lInVariable
-                        evalMacro   := TRUE
-                    ELSE
-                        cVariableName := ""
-                    ENDIF
-                    lInVariable   := TRUE
+            CASE c'&'
+                IF lInVariable
+                    evalMacro   := TRUE
+                ELSE
+                    cVariableName := ""
+                ENDIF
+                lInVariable   := TRUE
+                lAddChar     := FALSE
+            CASE c' '
+            CASE c'\t'
+                IF lInVariable
+                    lInVariable := FALSE
+                    evalMacro   := TRUE
+                ENDIF
+            CASE c'.'
+                IF lInVariable
+                    lInVariable := FALSE
+                    evalMacro   := TRUE
                     lAddChar     := FALSE
-                CASE c' '
-                CASE c'\t'
-                    IF lInVariable
-                        lInVariable := FALSE
-                        evalMacro   := TRUE
-                    ENDIF
-                CASE c'.'
-                    IF lInVariable
-                        lInVariable := FALSE
-                        evalMacro   := TRUE
+                ENDIF
+            OTHERWISE
+                IF lInVariable
+                    LOCAL lIsNameChar AS LOGIC
+                    IF cVariableName:Length == 0
+                        lIsNameChar := _IsIdentifierStartChar(cChar)
+                    ELSE
+                        lIsNameChar := _IsIdentifierPartChar(cChar)
+                    END IF
+                    IF lIsNameChar
+                        cVariableName += cChar:ToString()
                         lAddChar     := FALSE
+                    ELSE
+                        lInVariable := FALSE
+                        evalMacro   := TRUE
                     ENDIF
-                OTHERWISE
-                    IF lInVariable
-                        LOCAL lIsNameChar AS LOGIC
-                        IF cVariableName:Length == 0
-                            lIsNameChar := _IsIdentifierStartChar(cChar)
-                    	ELSE
-                            lIsNameChar := _IsIdentifierPartChar(cChar)
-                    	END IF
-                        IF lIsNameChar
-                            cVariableName += cChar:ToString()
-                            lAddChar     := FALSE
-                        ELSE
-                            lInVariable := FALSE
-                            evalMacro   := TRUE
-                        ENDIF
-                    ENDIF
+                ENDIF
             END SWITCH
             IF evalMacro
                 VAR result := StrEvaluateMemVarGet(cVariableName)
@@ -313,9 +313,9 @@ INTERNAL FUNCTION StrEvaluateMemVarGet(cVariableName AS STRING) AS STRING
             oMemVar := XSharp.MemVar.PublicFind(cVariableName)
         ENDIF
         IF oMemVar != NULL
-        	IF oMemVar:Value:IsString
+            IF oMemVar:Value:IsString
                 RETURN oMemVar:Value:ToString()
-        	ENDIF
+            ENDIF
         ENDIF
     CATCH
         // Memvar not found ?
@@ -348,10 +348,14 @@ INTERNAL FUNCTION GetCompany(asm AS System.Reflection.Assembly) AS STRING
     RETURN NULL
 
 
-    INTERNAL GLOBAL _fullMacroCompiler AS Assembly
+INTERNAL GLOBAL _fullMacroCompiler AS Assembly
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/execscript/*" />
 FUNCTION ExecScript( cExpression, eParameter1, eParameter2, eParameterN ) AS USUAL CLIPPER
+    RETURN ExecScriptFast(cExpression, eParameter1, eParameter2, eParameterN )
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/execscript/*" />
+FUNCTION ExecScriptSlow( cExpression, eParameter1, eParameter2, eParameterN ) AS USUAL CLIPPER
     LOCAL result := NIL AS USUAL
     XSharp.RuntimeState.LastScriptError := NULL
     TRY
@@ -426,5 +430,6 @@ FUNCTION ExecScriptFast( cExpression, eParameter1, eParameter2, eParameterN ) AS
         THROW Error{"Could not find the Script Compiler"}
     ENDIF
     RETURN result
+
 
 

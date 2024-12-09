@@ -963,7 +963,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 minPos := 0
                                 maxPos := nodeCount
                             ELSE
-                            // the key we are looking for is at EOF of the file
+                                // the key we are looking for is at EOF of the file
                                 atEOF := TRUE
                             ENDIF
                         ENDIF
@@ -1231,7 +1231,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     found := FALSE
                 ENDIF
 
-                IF !SELF:_oRdd:_isValid
+                IF !SELF:_oRdd:_isValid .and. recno != 0
                     SELF:ClearStack()
                 ENDIF
                 SELF:_oRdd:_SetBOF(SELF:_oRdd:RecCount == 0)

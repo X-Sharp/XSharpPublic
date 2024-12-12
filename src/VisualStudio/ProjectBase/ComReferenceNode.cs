@@ -191,8 +191,11 @@ namespace Microsoft.VisualStudio.Project
             // Initialize private state
             this.typeName = selectorData.bstrTitle;
             this.typeGuid = selectorData.guidTypeLibrary;
-            this.majorVersionNumber = selectorData.wTypeLibraryMajorVersion.ToString(CultureInfo.InvariantCulture);
-            this.minorVersionNumber = selectorData.wTypeLibraryMinorVersion.ToString(CultureInfo.InvariantCulture);
+            int majorVersion = selectorData.wTypeLibraryMajorVersion != 0 ? selectorData.wTypeLibraryMajorVersion : selectorData.wFileMajorVersion;
+            int minorVersion = selectorData.wTypeLibraryMinorVersion != 0 ? selectorData.wTypeLibraryMinorVersion : selectorData.wFileMinorVersion;
+            this.majorVersionNumber = majorVersion.ToString(CultureInfo.InvariantCulture);
+            this.minorVersionNumber = minorVersion.ToString(CultureInfo.InvariantCulture);
+
             this.lcid = selectorData.lcidTypeLibrary.ToString(CultureInfo.InvariantCulture);
             if (String.IsNullOrEmpty(wrapperTool))
                wrapperTool = WrapperToolAttributeValue.TlbImp.ToString();
@@ -203,7 +206,8 @@ namespace Microsoft.VisualStudio.Project
             // If the value cannot be set throw.
             if(String.IsNullOrEmpty(this.installedFilePath))
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(
+                    $"Cannot locate the file that implements the type library for {selectorData.bstrTitle}");
             }
         }
         #endregion
@@ -327,11 +331,11 @@ namespace Microsoft.VisualStudio.Project
             IEnumerable<ProjectItem> comReferences = this.ProjectMgr.BuildProject.GetItems(ProjectFileConstants.COMReference);
             foreach (ProjectItem reference in comReferences)
             {
-                if(String.Compare(reference.GetMetadataValue(ProjectFileConstants.Guid), this.typeGuid.ToString("B"), StringComparison.OrdinalIgnoreCase) == 0
-                    && String.Compare(reference.GetMetadataValue(ProjectFileConstants.VersionMajor), this.majorVersionNumber, StringComparison.OrdinalIgnoreCase) == 0
-                    && String.Compare(reference.GetMetadataValue(ProjectFileConstants.VersionMinor), this.minorVersionNumber, StringComparison.OrdinalIgnoreCase) == 0
-                    && String.Compare(reference.GetMetadataValue(ProjectFileConstants.Lcid), this.lcid, StringComparison.OrdinalIgnoreCase) == 0
-                    && String.Compare(reference.GetMetadataValue(ProjectFileConstants.WrapperTool), this.WrapperTool, StringComparison.OrdinalIgnoreCase) == 0)
+                if(string.Compare(reference.GetMetadataValue(ProjectFileConstants.Guid), this.typeGuid.ToString("B"), StringComparison.OrdinalIgnoreCase) == 0
+                    && string.Compare(reference.GetMetadataValue(ProjectFileConstants.VersionMajor), this.majorVersionNumber, StringComparison.OrdinalIgnoreCase) == 0
+                    && string.Compare(reference.GetMetadataValue(ProjectFileConstants.VersionMinor), this.minorVersionNumber, StringComparison.OrdinalIgnoreCase) == 0
+                    && string.Compare(reference.GetMetadataValue(ProjectFileConstants.Lcid), this.lcid, StringComparison.OrdinalIgnoreCase) == 0
+                    && string.Compare(reference.GetMetadataValue(ProjectFileConstants.WrapperTool), this.WrapperTool, StringComparison.OrdinalIgnoreCase) == 0)
                 {
 
                     string name = reference.EvaluatedInclude;
@@ -369,10 +373,25 @@ namespace Microsoft.VisualStudio.Project
                     {
                         this.typeName = typeLib.GetValue(string.Empty) as string;
                     }
+                    this.installedFilePath = null;
                     // Now get the path to the file that contains this type library.
-                    using(RegistryKey installKey = typeLib.OpenSubKey(string.Format(CultureInfo.InvariantCulture, @"{0}\win32", this.LCID)))
+                    using (RegistryKey installKey = typeLib.OpenSubKey(string.Format(CultureInfo.InvariantCulture, @"{0}\win32", this.LCID)))
                     {
-                        this.installedFilePath = installKey.GetValue(String.Empty) as String;
+                        if (installKey != null)
+                        {
+                            this.installedFilePath = installKey.GetValue(String.Empty) as String;
+                        }
+                    }
+                    if (this.installedFilePath == null)
+                    {
+                        using (RegistryKey installKey = typeLib.OpenSubKey(string.Format(CultureInfo.InvariantCulture, @"{0}\win64", this.LCID)))
+                        {
+                            if (installKey != null)
+                            {
+                                this.installedFilePath = installKey.GetValue(String.Empty) as String;
+                            }
+                        }
+
                     }
                 }
             }

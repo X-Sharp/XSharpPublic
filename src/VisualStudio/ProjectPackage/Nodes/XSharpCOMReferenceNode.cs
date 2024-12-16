@@ -249,7 +249,7 @@ namespace XSharp.Project
                 try
                 {
 
-                    if (BaseReferenceNode.WrapperTool.ToLower() == "primary")
+                    if (BaseReferenceNode.WrapperTool?.ToLower() == "primary")
                     {
                         var key = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey("Typelib\\" + BaseReferenceNode.TypeGuid.ToString("B") + "\\" + this.Version);
                         if (key != null)
@@ -269,8 +269,11 @@ namespace XSharp.Project
                     try
                     {
                         string path = base.Path;
-                        tryLoad = true;
-                        assembly = System.Reflection.Assembly.LoadFile(path);
+                        if (File.Exists(path))
+                        {
+                            tryLoad = true;
+                            assembly = System.Reflection.Assembly.LoadFile(path);
+                        }
                     }
                     catch (Exception)
                     {

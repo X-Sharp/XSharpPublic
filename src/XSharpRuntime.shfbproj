@@ -185,7 +185,7 @@
       <Argument Key="maxVersionParts" Value="2" />
       <Argument Key="defaultLanguage" Value="xs" />
       <Argument Key="includeEnumValues" Value="true" />
-      <Argument Key="baseSourceCodeUrl" Value="https://github.com/X-Sharp/XSharpPublic/blob/feature/Runtime/src/" />
+      <Argument Key="baseSourceCodeUrl" Value="https://github.com/X-Sharp/XSharpPublic/blob/main/src/" />
       <Argument Key="requestExampleUrl" Value="mailto:info@xsharp.eu" />
     </TransformComponentArguments>
     <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>

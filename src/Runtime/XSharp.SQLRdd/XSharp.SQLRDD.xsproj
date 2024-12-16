@@ -23,7 +23,7 @@
     <Allowdot>True</Allowdot>
     <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" >
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DisabledWarnings />
     <DebugType>full</DebugType>
     <DebuggerCommand>

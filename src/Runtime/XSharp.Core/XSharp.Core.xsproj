@@ -19,7 +19,6 @@
     <StartupObject />
     <NamedArgs>True</NamedArgs>
     <EnforceSelf>True</EnforceSelf>
-    <DisabledWarnings />
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
     <WarningsAsErrors />

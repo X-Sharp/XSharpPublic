@@ -28,7 +28,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <DocumentationFile>VOConsoleClasses.Xml</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
     <DocumentationFile>VOConsoleClasses.Xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
@@ -57,4 +57,14 @@
     <Folder Include="Properties" />
   </ItemGroup>
   <Import Project="..\VOSDKDocs.Targets" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
 </Project>

@@ -67,4 +67,14 @@
     <Folder Include="Properties" />
   </ItemGroup>
   <Import Project="..\VOSDKDocs.Targets" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
 </Project>

@@ -22,7 +22,6 @@
     <StandardDefs />
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
-    <DisabledWarnings />
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>XSharp.XPP.Xml</DocumentationFile>

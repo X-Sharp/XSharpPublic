@@ -21,13 +21,14 @@
     <ApplicationIcon />
     <Allowdot>True</Allowdot>
     <EnforceSelf>True</EnforceSelf>
-    <DisabledWarnings />
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <DisabledWarnings />
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <DocumentationFile>XSharp.RT.Debugger.Xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
     <DocumentationFile>XSharp.RT.Debugger.Xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />

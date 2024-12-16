@@ -21,9 +21,11 @@
     <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
     <Allowdot>True</Allowdot>
     <EnforceSelf>True</EnforceSelf>
-    <DisabledWarnings />
   </PropertyGroup>
-  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <DocumentationFile>XSharp.VFP.Xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
     <DocumentationFile>XSharp.VFP.Xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />

@@ -21,7 +21,6 @@
     <Unsafe>True</Unsafe>
     <Allowdot>True</Allowdot>
     <EnforceSelf>True</EnforceSelf>
-    <DisabledWarnings />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DebugType>full</DebugType>
@@ -257,6 +256,5 @@
       <Version>4.3.1</Version>
     </PackageReference>
   </ItemGroup>
-
   <Import Project="..\XmlDoc.Targets" />
 </Project>

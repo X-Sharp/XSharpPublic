@@ -23,8 +23,7 @@
     <WarningsAsErrors />
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <DisabledWarnings />
-    <PlatformTarget>AnyCPU</PlatformTarget>
+     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>XSharp.RT.Xml</DocumentationFile>

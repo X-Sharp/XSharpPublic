@@ -23,7 +23,7 @@
     <Allowdot>True</Allowdot>
     <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" >
     <DisabledWarnings />
     <DebugType>full</DebugType>
     <DebuggerCommand>
@@ -33,13 +33,11 @@
     <DebuggerWorkingDirectory />
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
     <EmitDebugInformation>true</EmitDebugInformation>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <DisabledWarnings />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <DocumentationFile>XSharp.SQLRdd.Xml</DocumentationFile>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -129,16 +127,5 @@
       <Version>4.3.1</Version>
     </PackageReference>
   </ItemGroup>
-  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
-  <ProjectExtensions>
-    <ProjectCapabilities>
-      <ProjectConfigurationsDeclaredAsItems />
-    </ProjectCapabilities>
-  </ProjectExtensions>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
-  </PropertyGroup>
   <Import Project="..\XmlDoc.Targets" />
 </Project>

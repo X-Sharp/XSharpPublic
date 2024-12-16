@@ -37,30 +37,13 @@
     <OutPutCopy>$(SolutionDir)Tools\VFPXPorter\Source\VFPXPorterLib\Data\Templates\Tools\$(TargetFileName)</OutPutCopy>
     <Allowdot>True</Allowdot>
     <EnforceSelf>False</EnforceSelf>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <DisabledWarnings>108,114</DisabledWarnings>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
     <WarningsAsErrors />
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <DisabledWarnings>108,114</DisabledWarnings>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>XSharp.VFP.UI.Xml</DocumentationFile>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <WarningLevel>4</WarningLevel>
-    <WarningsAsErrors />
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -238,12 +221,6 @@
       <CustomTool>ResXFileCodeGenerator</CustomTool>
     </EmbeddedResource>
   </ItemGroup>
-  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
-  <ProjectExtensions>
-    <ProjectCapabilities>
-      <ProjectConfigurationsDeclaredAsItems />
-    </ProjectCapabilities>
-  </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent>copy $(Targetpath) "$(OutPutCopy)" /y</PostBuildEvent>

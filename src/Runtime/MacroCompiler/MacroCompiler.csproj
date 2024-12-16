@@ -37,6 +37,15 @@
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\DocChinese\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;RUNTIME</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>Preview</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>

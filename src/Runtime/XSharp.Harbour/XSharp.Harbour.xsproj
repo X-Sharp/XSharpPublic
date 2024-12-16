@@ -19,17 +19,15 @@
     <StartupObject />
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <DisabledWarnings />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
-    <DisabledWarnings />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)' == 'Documentation'">
     <DocumentationFile>XSharp.Harbour.Xml</DocumentationFile>
     <DefineConstants>DEBUG;TRACE;RUNTIME;DOCUMENTATION</DefineConstants>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'DocChinese'">
+    <DocumentationFile>XSharp.Harbour.Xml</DocumentationFile>
+    <DefineConstants>DEBUG;TRACE;RUNTIME;DOCUMENTATION</DefineConstants>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -64,21 +62,6 @@
       <Version>4.3.1</Version>
     </PackageReference>
   </ItemGroup>
-  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
-  <ProjectExtensions>
-    <ProjectCapabilities>
-      <ProjectConfigurationsDeclaredAsItems />
-    </ProjectCapabilities>
-  </ProjectExtensions>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
   <Import Project="..\XmlDoc.Targets" />
+
 </Project>

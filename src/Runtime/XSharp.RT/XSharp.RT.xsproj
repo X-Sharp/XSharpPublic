@@ -20,29 +20,15 @@
     <StartupObject />
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DisabledWarnings />
+    <WarningsAsErrors />
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DisabledWarnings />
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <WarningsAsErrors />
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>XSharp.RT.Xml</DocumentationFile>
     <DefineConstants>DEBUG;TRACE;RUNTIME;DOCUMENTATION</DefineConstants>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <WarningLevel>4</WarningLevel>
-    <WarningsAsErrors />
-    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -127,21 +113,15 @@
       <Version>4.3.1</Version>
     </PackageReference>
   </ItemGroup>
-  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
-  <ProjectExtensions>
-    <ProjectCapabilities>
-      <ProjectConfigurationsDeclaredAsItems />
-    </ProjectCapabilities>
-  </ProjectExtensions>
+  <Import Project="..\XmlDoc.Targets" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent />
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <RunPostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent />
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <RunPostBuildEvent />
   </PropertyGroup>
-  <Import Project="..\XmlDoc.Targets" />
 </Project>

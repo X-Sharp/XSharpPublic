@@ -33,9 +33,8 @@
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <NoWin32Manifest>False</NoWin32Manifest>
     <Vo2>True</Vo2>
-    <Fox2>False</Fox2>
     <Vo9>True</Vo9>
-    <Allowdot>True</Allowdot>
+    <Allowdot>true</Allowdot>
     <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
     <Fox1>true</Fox1>
   </PropertyGroup>
@@ -114,6 +113,11 @@
     <ProjectReference Include="..\..\Runtime\XSharp.VFP\XSharp.VFP.xsproj">
       <Name>XSharp.VFP</Name>
       <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.XPP\XSharp.XPP.xsproj">
+      <Name>XSharp.XPP</Name>
+      <Project>{c5d7be20-038e-4b42-a90a-b13bab83d8e5}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

@@ -41,11 +41,13 @@
     <Prefer32Bit>False</Prefer32Bit>
     <RegisterForComInterop>False</RegisterForComInterop>
     <DisabledWarnings>165, 168</DisabledWarnings>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <DocumentationFile>XSharp.VOGUIClasses.Xml</DocumentationFile>
+    <DisabledWarnings>165, 168, 1591,649,414,169,67,9015</DisabledWarnings>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
     <DocumentationFile>XSharp.VOGUIClasses.Xml</DocumentationFile>
     <DisabledWarnings>165, 168, 1591,649,414,169,67,9015</DisabledWarnings>
   </PropertyGroup>
@@ -284,26 +286,6 @@
       <Version>4.3.1</Version>
     </PackageReference>
   </ItemGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <PreBuildEvent>Copy $(Solutiondir)Docs\Gui.xml $(ProjectDir)\Gui.Xml</PreBuildEvent>
-    <PostBuildEvent>Erase $(ProjectDir)\Gui.Xml</PostBuildEvent>
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <ProjectExtensions>
-    <ProjectCapabilities>
-      <ProjectConfigurationsDeclaredAsItems />
-    </ProjectCapabilities>
-  </ProjectExtensions>
+  <Import Project="..\VOSDKDocs.Targets" />
+
 </Project>

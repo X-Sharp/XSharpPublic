@@ -63,7 +63,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <RuntimeIdentifier>win</RuntimeIdentifier>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)' == 'Documentation'" >
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -71,13 +71,21 @@
     <DisabledWarnings>165,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573</DisabledWarnings>
     <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)' == 'DocChinese'" >
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE;RUNTIME</DefineConstants>
+    <DisabledWarnings>165,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573</DisabledWarnings>
+    <CommandLineOption>/noclipcall</CommandLineOption>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" >
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>TRACE;RUNTIME</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" >
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>

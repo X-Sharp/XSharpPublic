@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Comments>
+  <ClassDescribe>
+    <summary>反射类定义</summary>
+
+    <param name="uInfo">
+      此参数必须使用常量。
+      它默认为 CLASS_DESCR_ALL，并定义返回值中包含的信息类型。
+    </param>
+    <returns> 
+      如果省略 &lt;uInfo&gt; 或设置为 CLASS_DESCR_ALL，则返回一个包含四个元素的数组。 它们包含将以下常量之一传递给此方法所产生的信息： 
+      <code
+        language="X#">
+        obj:classDescribe() --> { CLASS_DESCR_CLASSNAME , ;
+        CLASS_DESCR_SUPERCLASSES, ;
+        CLASS_DESCR_MEMBERS , ;
+        CLASS_DESCR_METHODS }
+      </code>
+      该数组的元素反映了函数 ClassCreate() 的参数配置文件。 有关返回数组的详细信息，请参阅备注部分。 
+    </returns>
+    <remarks> 
+      ClassDescribe 的常量包含在 XSharp.XPP.DLL 中，您不再需要包含 Class.CH。 <br /> 
+      允许的常量有： <br />
+      <list type="table">
+        <listheader>
+          <term>常量</term>
+          <description>返回值</description>
+        </listheader>
+        <item>
+          <term>CLASS_DESCR_ALL *)</term>
+          <description>一个数组中的所有可用信息。 </description>
+        </item>
+        <item>
+          <term>CLASS_DESCR_CLASSNAME</term>
+          <description>类名作为字符字符串 </description>
+        </item>
+        <item>
+          <term>CLASS_DESCR_SUPERCLASSES</term>
+          <description>包含所有超类的类对象的一维数组</description>
+        </item>
+        <item>
+          <term>CLASS_DESCR_MEMBERS</term>
+          <description> 包含成员变量信息的三列二维数组。 <br />
+            <list>
+              <item>
+                <term>CLASS_MEMBER_NAME</term>
+                <description>表示单个成员变量名称的字符字符串</description>
+              </item>
+              <item>
+                <term>CLASS_MEMBER_ATTR</term>
+                <description>成员变量属性为数值</description>
+              </item>
+              <item>
+                <term>CLASS_MEMBER_TYPE</term>
+                <description>保留</description>
+              </item>
+            </list>
+          </description>
+        </item>
+        <item>
+          <term>CLASS_DESCR_METHODS</term>
+          <description> 包含方法信息的三列二维数组。 <list>
+              <item>
+                <term>CLASS_METHOD_NAME</term>
+                <description>方法名称的字符字符串</description>
+              </item>
+              <item>
+                <term>CLASS_METHOD_ATTR</term>
+                <description>方法属性为数值</description>
+              </item>
+              <item>
+                <term>CLASS_METHOD_BLOCK</term>
+                <description>如果方法是使用 ClassCreate() 动态创建的，则为方法代码块</description>
+              </item>
+              <item>
+                <term>CLASS_METHOD_VARNAME</term>
+                <description>如果是 ACCESS|ASSIGN 方法，则为重定向变量的名称</description>
+              </item>
+              <item>
+                <term>CLASS_METHOD_TYPE</term>
+                <description>保留</description>
+              </item>
+            </list>
+
+          </description>
+        </item>
+        <item>
+          <term>CLASS_DESCR_SUPERDETAILS</term>
+          <description>X# 不支持</description>
+        </item>
+      </list>
+    </remarks>
+  </ClassDescribe>
+  <NoIvarGet>
+    <summary>处理赋值操作并添加未定义的实例变量。</summary>
+    <param name="cName">被访问的字段名称。</param>
+    <remarks> 
+      对于未定义的实例变量，返回 NIL。 每当访问未定义的实例时，都会执行此方法。根据定义，DataObjects 在这种情况下返回 NIL。 
+      这允许通过与值 NIL 进行比较来检查动态实例变量中是否存在值。 <br /> 
+      函数 IsMemberVar() 和方法 classDescribe() 可用于确定 DataObject
+      中是否定义了特定成员。这无论成员是动态添加的，还是在从 DataObject 派生的类中静态定义的，都能正常工作。 
+    </remarks>
+  </NoIvarGet>
+  <NoIvarPut>
+    <summary>处理赋值操作并添加未定义的实例变量。</summary>
+    <param name="cName">被赋值的字段名称。</param>
+    <param name="uValue">赋值的值。</param>
+    <remarks>
+      如果向此类的实例发送消息，而没有相应的实例变量，则执行 NoIvarPut()。该方法在 &lt;cName&gt; 参数中接收实例变量的名称，并在 &lt;uValue&gt;
+      参数中接收要赋值的值。NoIvarPut() 首先创建实例变量，然后分配传递的值。
+      因为它现在存在，所以将来访问实例变量不再导致执行 NoIvarPut()。相反，操作与静态实例变量的处理方式相同。
+      函数 IsMemberVar() 可用于测试通过 NoIvarPut() 添加的实例变量的存在。此外，方法 :classDescribe() 也反映了动态实例变量。
+    </remarks>
+  </NoIvarPut>
+  <NoMethod>
+    <summary>定义动态方法。</summary>
+    <returns>执行未定义的方法总是返回 NIL。</returns>
+    <param name="uParams">这是一个虚拟参数。
+      该方法将接收任意数量的参数，并将这些参数传递给被调用的方法。</param>
+    <remarks> 
+      每当调用未定义的方法时，都会执行 noMethod() 方法。 DataObject 类中 noMethod() 的实现会检查是否已使用 defineMethod
+      定义了方法。 一旦使用 defineMethod() 定义了方法，则该方法由 NoMethod() 调用，并传递参数。<br /> 
+      如果未定义方法，则不会生成运行时错误，而只是返回一个 NIL 值。 
+    </remarks>
+  </NoMethod>
+</Comments>

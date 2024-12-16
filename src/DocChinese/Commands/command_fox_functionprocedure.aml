@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="6d2ad4c1-1013-4e91-8a02-9ac65ae9cb0e" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration &gt; <link xlink:href="c6b4374e-7e31-423e-b481-6788ea32ecbd" />&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">FoxPro FUNCTION and PROCEDURE definition clauses</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Defines method and event functions and procedures for the class definition. </para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>&#160;[Modifiers] FUNCTION | PROCEDURE Name[_ACCESS |_ASSIGN]</para>
+<para>&#160; &#160; ([cParamName | cArrayName[] [AS Type][@]]) [AS Type]</para>
+<para>&#160; &#160; [HELPSTRING cHelpString] | THIS_ACCESS(cMemberName) [NODEFAULT]</para>
+<para>&#160; &#160; &#160; &#160;cStatements</para>
+<para>&#160;[ENDFUNC | ENDPROC]]</para>
+<para>&#160;</para>
+<para>See the topics for <link xlink:href="14cdd669-1822-49e7-b700-7abebe59013c">FUNCTION </link> and <link xlink:href="14cdd669-1822-49e7-b700-7abebe59013c">PROCEDURE</link> for more details.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>_ACCESS</entry><entry>The _ACCESS or _ASSIGN suffixes specify to create an Access or Assign method for a property with the same name. </entry></row></table><table><row><entry>_ASSIGN</entry><entry></entry></row></table><para>&#160;</para>
+<table><row><entry>HELPSTRING</entry><entry>The HELPSTRING clause is not supported in X#</entry></row></table><para>&#160;</para>
+<table><row><entry>THIS_ACCESS</entry><entry>The THIS_ACCESS clause is not supported in X#</entry></row></table><para>&#160;</para>
+<table><row><entry>NODEFAULT</entry><entry>The NODEFAULT clause is not supported in X#</entry></row></table><para>&#160;</para>
+<table><row><entry>ENDFUNC </entry><entry>This may also be written as END FUNCTION</entry></row></table><para>&#160;</para>
+<table><row><entry>ENDPROC </entry><entry>This may also be written as END PROCEDURE</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">&#160;</h1>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

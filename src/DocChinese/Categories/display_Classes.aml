@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
+<topic id="cat-Display_Classes" revisionNumber="1" title="Display Classes">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <section address="Section1">
+      <title>Display Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Bitmap</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a bitmap, which is a bit pattern entity—that is, a two-dimensional array of pixels, each pixel having color attributes (monochrome or color).
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.BoundingBox</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a bounding box, which is a set of four numbers that represent the bottom-left and top-right corners of a rectangle.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Brush</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a brush, which can be used by the Window:PaintBoundingBox() method and the DrawObject hierarchy.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ButtonImageList</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create an image list for use with buttons.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Color</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Select or create a color, which can be used by a Brush, Pen, or DrawObject object.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Console</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Encapsulate a Win32 console application.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ConsoleCoord</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            A helper class encapsulating a console window's coordinates.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Cursor</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a text cursor, which is used to visually represent the position in a window where the next piece of text appears.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Font</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a font, which describes how characters are displayed on a window.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Icon</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create an icon, which is a small bitmap that the system displays for a window when it is iconized in its owner window.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ImageList</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create an image list.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Pen</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a pen, which can be used to draw lines in a particular color, style, and width. Pens are used by the Window:LineTo() method and the DrawObject hierarchy.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Pointer</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a mouse cursor, which is used to visually represent the mouse in a window.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.Console</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Encapsulate a Win32 console application.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.ConsoleCoord</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            A helper class encapsulating a console window's coordinates.
+        </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
+  </developerConceptualDocument>
+</topic>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
+<topic id="cat-Draw_Classes" revisionNumber="1" title="Draw Classes">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <section address="Section1">
+      <title>Draw Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.BitmapObject</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a Bitmap object; this type of entity is part of the DrawObject hierarchy, which provides a means of displaying and manipulating various objects.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DrawObject</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Provide the base class from which all X# DrawObject objects are subclassed.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.EllipseObject</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create an EllipseObject object; this type of entity is part of the DrawObject hierarchy, which provides a means of displaying and manipulating various objects.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.FormattedTextObject</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Provide a way to format a string specifying position (origin), font, and color.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.LineObject</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a LineObject object; this type of entity is part of the DrawObject hierarchy, which provides a means of displaying and manipulating various objects.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.PieObject</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Construct a PieObject object.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.RectangleObject</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a RectangleObject object; this class is part of the DrawObject hierarchy, which provides a means of displaying and manipulating various geometric objects.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ShapeObject</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Provide an intermediate class from which all X# two-dimensional objects are subclassed.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TextObject</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a text-drawing object.
+    </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
+  </developerConceptualDocument>
+</topic>

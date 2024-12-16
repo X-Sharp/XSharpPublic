@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="eb977cbb-17b1-435b-9dba-5de7a682bec0" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_control.html -->Program Control&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">REPEAT UNTIL Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Execute a loop until a condition is TRUE.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>REPEAT <para/>
+&#160;&lt;Statements&gt;...<para/>
+[EXIT]<para/>
+&#160;&lt;Statements&gt;...<para/>
+[LOOP]<para/>
+&#160;&lt;Statements&gt;...<para/>
+UNTIL &lt;lCondition&gt;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;lCondition&gt;</entry><entry>The logical control expression for the REPEAT UNTIL loop.</entry></row></table><para>&#160;</para>
+<table><row><entry>EXIT</entry><entry>Unconditionally branches control from within a FOR, FOREACH , REPEAT or DO WHILE statement to the statement immediately following the corresponding ENDDO or NEXT statement.</entry></row></table><para>&#160;</para>
+<table><row><entry>LOOP</entry><entry>Branches control to the most recently executed FOR, FOREACH , REPEAT or DO WHILE statement.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>As long as the condition evaluates to FALSE then the loop will continuet. When the condition evaluates to false, the REPEAT construct terminates and control passes to the statement immediately following the UNTIL.</para>
+<para>&#160;</para>
+<para>Use EXIT to terminate a REPEAT UNTIL structure based on a condition other than the REPEAT UNTIL condition. &#160;LOOP, by contrast, prevents execution of statements within a REPEAT UNTIL based on an intermediate condition, and returns to the most recent REPEAT UNTIL statement.</para>
+<para>&#160;</para>
+<para>Control structures can be nested to any depth. &#160;The only requirement is that each control structure be properly nested.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example demonstrates a typical control structure for a simple grouped report:</para>
+<para>&#160;</para>
+<para>LOCAL cOldSalesman, nTotalAmount<para/>
+USE sales INDEX salesman NEW<para/>
+DO WHILE .NOT.  EOF()<para/>
+&#160;cOldSalesman := Sales-&gt;Salesman<para/>
+&#160;nTotalAmount := 0<para/>
+&#160;DO WHILE cOldSalesman = Sales-&gt;Salesman ;<para/>
+&#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;.AND.  (.NOT.  EOF())<para/>
+&#160; &#160; &#160; &#160; &#160;? Sales-&gt;Salesman, Sales-&gt;Amount<para/>
+&#160; &#160; &#160; &#160; &#160;nTotalAmount := nTotalAmount + Sales-&gt;Amount<para/>
+&#160; &#160; &#160; &#160; &#160;SKIP<para/>
+&#160;ENDDO<para/>
+&#160;? &quot;Total: &#160;&quot;, nTotalAmount, &quot;for&quot;, cOldSalesman<para/>
+ENDDO<para/>
+CLOSE sales<para/>
+&#160;</para>
+<para>This code fragment demonstrates how LOOP can be used to provide an intermediate processing condition:</para>
+<para>&#160;</para>
+<para>DO WHILE &lt;lCondition&gt;<para/>
+&#160;&lt;Initial Processing&gt;...<para/>
+&#160;IF &lt;Intermediate Condition&gt;<para/>
+&#160; &#160; &#160; &#160; &#160;LOOP<para/>
+&#160;ENDIF<para/>
+&#160;&lt;Continued Processing&gt;...<para/>
+ENDDO</para>
+<para>The next example demonstrates the use of DO WHILE to emulate a &quot;repeat until looping&quot; construct:</para>
+<para>&#160;</para>
+<para>LOCAL lMore := TRUE<para/>
+DO WHILE lMore<para/>
+&#160;&lt;Statements&gt;...<para/>
+&#160;lMore := &lt;lCondition&gt;<para/>
+ENDDO</para>
+<para>&#160;</para>
+<para>Here, a DO WHILE loop moves sequentially through a database file:</para>
+<para>&#160;</para>
+<para>DO WHILE .NOT.  EOF()<para/>
+&#160;&lt;Statements&gt;...<para/>
+&#160;SKIP<para/>
+ENDDO</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="8fc150d3-ff60-4982-ba29-ec8c86969a13">BEGIN SEQUENCE</link>, <!-- TODO: Unknown topic link: function_dbeval.html -->DBEval(), <link xlink:href="289eca8d-5593-4340-b806-5a25d5a19a0b">DO CASE</link>, <link xlink:href="a6f0f406-78b2-4a8e-8819-6fadbb71474d">FOR</link>, <link xlink:href="c100f682-3607-4d37-af60-c7e05e9b7695">IF</link>, <link xlink:href="70c94423-9322-4c94-aecc-907f367520ad">RETURN</link>, <link xlink:href="d5dffe8e-fc26-4e58-a5a7-31c26132758f">DO WHILE</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

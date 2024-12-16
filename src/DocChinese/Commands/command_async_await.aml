@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="6c7e6533-def3-4e05-a421-97b080a47a4a" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_control.html -->Program Control&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">ASYNC .. AWAIT Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>ASYNC await are strictly speaking not statements, but modifiers.</para>
+<para>&#160;</para>
+<para>ASYNC is a method modifier used to indicate that a method / function contains asynchronous code</para>
+<para>&#160;</para>
+<para>AWAIT is used before an expression to indicate that an operation may take a while to process.</para>
+<para>&#160;</para>
+<para>The compiler will (behind the scenes) construct a complicated mechanism in which the body of the method is split into a part before and after the await. When the expression returns then the code jumps to the point where it has to continue. As such this belongs to the JUMP statements.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Example</h1>
+<para>//<para/>
+// This example shows that you can call an async task and wait for it to finish<para/>
+// The result of the async task (in this case the size of the file that has been downloaded)<para/>
+// will be come available when the task has finished<para/>
+// The calling code (The Start()) function will not have to wait until the async task has<para/>
+// finished. That is why the line &quot;2.....&quot; will be printed before the results from TestClass.DoTest()<para/>
+// The sample also shows an event and displays the thread id&#39;s. You can see that the DownloadFileTaskAsync() method<para/>
+// starts multiple threads to download the web document in multiple pieces.<para/>
+&#160;<para/>
+USING System<para/>
+USING System.Threading.Tasks<para/>
+&#160;<para/>
+FUNCTION Start() AS VOID<para/>
+ &#160; &#160;? &quot;1. calling long process&quot;<para/>
+ &#160; &#160;TestClass.DoTest()<para/>
+ &#160; &#160;? &quot;2. this should be printed while processing&quot;<para/>
+ &#160; &#160;Console.ReadKey()<para/>
+&#160;<para/>
+CLASS TestClass &#160; <para/>
+ &#160; STATIC PROTECT oLock AS OBJECT &#160; &#160;  // To make sure we synchronize the writing to the screen<para/>
+ &#160; STATIC CONSTRUCTOR<para/>
+ &#160; &#160; &#160;oLock := OBJECT{}<para/>
+&#160;<para/>
+ &#160;  ASYNC STATIC METHOD DoTest() AS VOID<para/>
+ &#160; &#160; &#160;  LOCAL Size AS INT64<para/>
+ &#160; &#160; &#160; &#160;Size := AWAIT LoooongProcess()<para/>
+ &#160; &#160; &#160; &#160;? &quot;3. returned from long process&quot;<para/>
+ &#160; &#160; &#160; &#160;? Size, &quot; Bytes downloaded&quot;<para/>
+&#160;<para/>
+ &#160;  ASYNC STATIC METHOD LoooongProcess() AS Task&lt;INT64&gt;<para/>
+ &#160; &#160; &#160;  VAR WebClient := System.Net.WebClient{}<para/>
+ &#160; &#160; &#160;  VAR FileName := System.IO.Path.GetTempPath()+&quot;temp.txt&quot;<para/>
+ &#160; &#160; &#160; &#160;webClient:DownloadProgressChanged += OnDownloadProgress<para/>
+ &#160; &#160; &#160; &#160;webClient:Credentials := System.Net.CredentialCache.DefaultNetworkCredentials<para/>
+ &#160; &#160; &#160;  AWAIT webClient:DownloadFileTaskAsync(&quot;http://www.xsharp.info/index.php&quot;, FileName)<para/>
+ &#160; &#160; &#160;  VAR dirInfo &#160; &#160; &#160;:= System.IO.DirectoryInfo{System.IO.Path.GetTempPath()}<para/>
+ &#160; &#160; &#160;  VAR Files &#160; &#160; &#160; &#160;:= dirInfo:GetFiles(&quot;temp.txt&quot;)<para/>
+ &#160; &#160; &#160;  IF Files:Length &gt; 0<para/>
+ &#160; &#160; &#160; &#160; &#160; &#160;System.IO.File.Delete(FileName)<para/>
+ &#160; &#160; &#160; &#160; &#160;  RETURN Files[1]:Length<para/>
+ &#160; &#160; &#160;  ENDIF<para/>
+ &#160; &#160; &#160;  RETURN 0<para/>
+&#160;<para/>
+ &#160; STATIC METHOD OnDownloadProgress (sender AS OBJECT, e AS System.Net.DownloadProgressChangedEventArgs) AS VOID<para/>
+ &#160; &#160;  BEGIN LOCK oLock<para/>
+ &#160; &#160; &#160; &#160; ? String.Format(&quot;{0,3} % Size: {1,8:N0} Thread {2}&quot;, 100*e:BytesReceived / e:TotalBytesToReceive , e:BytesReceived, ;<para/>
+ &#160; &#160; &#160; &#160; &#160; System.Threading.Thread.CurrentThread:ManagedThreadId)<para/>
+ &#160; &#160;  END LOCK<para/>
+ &#160; &#160;  RETURN<para/>
+&#160;<para/>
+END CLASS </para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

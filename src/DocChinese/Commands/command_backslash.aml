@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="156e06bc-f29e-4b31-bb0e-02b216ad2601" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_terminal.html -->Terminal Window&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">\|\\ Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Prints or displays lines of text</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>\  &#160; &#160; &#160; &#160;TextLine<para/>
+\\  &#160; &#160; &#160; &#160;TextLine</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>\ TextLine</entry><entry>When you use \, the text line is preceded by a carriage return and a line feed.</entry></row></table><table><row><entry>\\ TextLine</entry><entry>When you use \\, the text line is not preceded by a carriage return and a line feed.<para/>
+Any spaces preceding \ and \\ are not included in the output line, but spaces following \ and \\ are included. <para/>
+You can embed an expression in the text line. If the expression is enclosed in the text merge delimiters (&lt;&lt; &gt;&gt; by default) and SET TEXTMERGE is ON, the expression is evaluated and its value is output as text. </entry></row></table><para>&#160;</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>The \ and \\ commands facilitate text merge in X#. <para/>
+Text merge makes it possible for you to output text to a file to create form letters or programs.</para>
+<para>Use \ and \\ to output a text line to the current text-merge output file and the screen. <para/>
+SET TEXTMERGE is used to specify the text merge output file. If text merge is not directed to a file, the text line is output only to the main Visual FoxPro window or the active user-defined output window. SET TEXTMERGE NOSHOW suppresses output to the main Visual FoxPro window or the active user-defined window.</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example displays a record from a database file using ? and ?? statements with PadR() to assure column alignment:</para>
+<para>&#160;</para>
+<para>CLOSE DATABASES<para/>
+OPEN DATABASE (C:\Test\Data\testdata&#39;)<para/>
+USE Customer // Open customer table<para/>
+SET TEXTMERGE ON<para/>
+SET TEXTMERGE TO letter.txt<para/>
+\&lt;&lt;CDOW(DATE( ))&gt;&gt;, &lt;&lt;CMONTH(DATE( ))&gt;&gt;<para/>
+\\ &lt;&lt;DAY(DATE( ))&gt;&gt;, &lt;&lt;YEAR(DATE( ))&gt;&gt;<para/>
+\<para/>
+\<para/>
+\Dear &lt;&lt;contact&gt;&gt;<para/>
+\Additional text<para/>
+\<para/>
+\Thank you,<para/>
+\<para/>
+\XYZ Corporation<para/>
+CLOSE ALL<para/>
+&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.VFP.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: command_set_textmerge.html -->SET TEXTMERGE</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

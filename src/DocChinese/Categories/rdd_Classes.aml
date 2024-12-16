@@ -1,0 +1,1035 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
+<topic id="cat-RDD_Classes" revisionNumber="1" title="RDD Classes">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <section address="Section1">
+      <title>RDD Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.BlobData</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This class is used to write BLOB data to a FPT file.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.DbNotifyEventArgs</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Provides data for the Notify event of the IDbNotify interface.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.DbNotifyEventHandler</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>The delegate that defines the Workarea Eventhandler</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IClosedRDD</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VoDb</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>The VoDb class extends the CoreDb class with methods that take usual parameters or return usual values.
+            All other methods are identical and inherited from the CoreDb class.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.BaseIndex</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Base Index class. Does not implement anything. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.BaseMemo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Base Memo class. Does not implement anything. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.CSV</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>CSV RDD. For reading and writing semicolon delimited files.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.CursorProperty</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Enum that matches the various FoxPro cursor properties, used in CursorGetProp() and CursorSetProp()</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DataSession</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>The DataSession class contains a list of workareas/cursors</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBF</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBF RDD. Usually not used 'stand alone'</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfAutoIncrementColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for reading / writing AutoIncrement Columns. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFCDX</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBFCDX RDD. For DBF/FPT/CDX.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfCharacterColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for reading / writing String Columns</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for DBF Column reading / writing </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfCurrencyColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for reading / writing Currency Columns. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfDateColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for reading / writing Date Columns</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfDateTimeColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for reading / writing DateTime Columns. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFDBT</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBFDBT RDD. For DBF/DBT. No index support at this level</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfDoubleColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for reading / writing Double Columns. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfField</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBF Field.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFFPT</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBFFPT RDD. For DBF/FPT. No index support at this level</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfHeader</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBF Header.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfHeaderCodepage</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBF Header Codepage numbers.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfIntegerColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for reading / writing Integer Columns. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfLocking</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This structure holds the various settings for locking models</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfLockingModel</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBF Locking model.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfLogicColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for reading / writing Logic Columns</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfMemoColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for reading / writing Memo Columns. This class returns and writes the block numbers.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFNTX</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBFNTX RDD. For DBF/DBT/NTX.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfNullColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for reading / writing the Special Column for NULL values. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfNumericColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for reading / writing Numeric Columns</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFTableFlags</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBF Table flags.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFVersion</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBF File Versions.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFVFP</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBFVFP RDD. DBFCDX with support for the FoxPro field types.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFVFPSQL</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBFVFPSQL RDD. DBFCDX with support for the FoxPro field types and a List of Object values as backing collection for the data.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DELIM</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DELIM RDD. For reading and writing delimited files.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.ERDD</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Common RDD Error numbers</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.IBlobData</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Interface that is used for BLOB operations for memo files
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.LockTimer</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.OsCodepage</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>OS Codepages as used in DBF files.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.RecordList</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.RegisteredRDD</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This class is used to register RDD names with the matching System.Types</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.SDF</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>SDF RDD. For reading and writing text files.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.TEXTRDD</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Abstract TextRDD. For reading and writing delimited files and SDF files.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.TSV</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>TSV RDD. For reading and writing tab delimited files.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Workarea</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Base class for DBF based RDDs. Holds common properties such as the Workarea number, Alias, Fields list and various flags.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Workareas</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class that contains the list of open Workareas. Each thread will have its own list.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.WrapperRDD</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This class can be used to wrap an existing RDD and add some functionality to it, such as
+             logging, encryption etc. 
+             To use it, create a subclass of this class and implement the methods that you want to override.
+             The constructor of this class takes an existing RDD object and automatically replaces it in the
+             Workarea table.
+             </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DBFFieldFlags</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBF Field flags.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbfHeaderCodepage</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbFieldInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum specifies the various values that the FieldInfo method for the IRDD interface accepts.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbFieldType</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum specifies the various field types that can appear in DBF files.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum specifies the various values that the Info method for the IRDD interface accepts.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbLockMode</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum specifies the lock modes.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbNotificationType</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Enum that described the possible Notification messages that are sent to clients of Workareas</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbOrder_Info</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum specifies the various values that the OrderInfo method for the IRDD interface accepts.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbRecordInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum specifies the various values that the RecordInfo method for the IRDD interface accepts.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbSortFlags</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Flags that describe how a DbSort operation can be done.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbTransInfoFlags</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Flags that describe how a DbTrans operation can be done.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.RddInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum specifies the various values that the RDDInfo method for the IRDD interface accepts.
+             
+             These enums are also available as DEFINES and can therefore also be used without the "RDDInfo." prefix.
+             </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbEvalInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store the scope and codeblock for a DbEval() operation. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbFilterInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store a filter condition for a table.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbLockInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper structure to store information needed to lock a row or table for exclusive access.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbOpenInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store information needed to open a table.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbOrderCondInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store information needed to create a conditional order.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbOrderCreateInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store information needed to create a new order.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbOrderInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store information needed to open/address an order.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbRelInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store a list of relational information.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbScopeInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store references to all of the scope clause expressions. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbSeekInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper structure to store information needed to perform a seek operation </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbSortInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store information needed to perform a physical sort. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbSortItem</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper structure to store information about a single sort key value. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbTransInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store information needed for the global transfer of data items from one work area to another. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbTransItem</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper structure to store information about a single piece of data (usually a column) to transfer from one work area to another.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.RddFieldInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class for the RDD system to store field information</para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
+  </developerConceptualDocument>
+</topic>

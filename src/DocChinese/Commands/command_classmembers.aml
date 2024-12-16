@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="4599f46c-f169-46e4-b43a-452c21b6e907" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration &gt; <link xlink:href="e8707520-821f-41bc-857b-31cdf44b7886" />&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">ClassMembers (All dialects)</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Normal class members (apart from Instance Variables)</h1>
+<para>&#160;</para>
+<para><link xlink:href="2a5aba7a-b709-40e1-9bd0-f31d73c511b7">ACCESS</link> </para>
+<para><link xlink:href="91993c4b-eb98-471f-a272-3feaddceb3d0">ASSIGN</link></para>
+<para><link xlink:href="2e3ce02f-e582-464b-b3d8-3ebe56eba8a2">CONSTRUCTOR</link> </para>
+<para><link xlink:href="1517da49-281d-4c1b-9337-5d60d2bd1f95">DESTRUCTOR</link> </para>
+<para><link xlink:href="e3b838c9-f90d-4c04-a519-0d3c6533d416">EVENT</link> </para>
+<para><link xlink:href="77b4131b-7ffd-4fad-ae60-b9ca0ec84fc7">METHOD</link> </para>
+<para><link xlink:href="4d6279cb-f438-4885-9c02-e61120f22548">OPERATOR</link> </para>
+<para><link xlink:href="ef62a4ba-0422-4701-9e88-9cc105d382be">PROPERTY</link></para>
+<para>&#160;</para>
+<para>The DECLARE &#160;( ACCESS | ASSIGN | METHOD ) &#160;&lt;idName&gt; [, &lt;idName&gt;] clause is supported by the compiler but ignored</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Nested types</h1>
+<para>&#160;</para>
+<para>&#39;Regular&#39; classes can also have embedded types:</para>
+<para>&#160;</para>
+<para><link xlink:href="e8707520-821f-41bc-857b-31cdf44b7886">CLASS</link></para>
+<para><link xlink:href="198dc8b4-b6e9-482d-9edd-0be368279d52">DELEGATE</link></para>
+<para><link xlink:href="a6320054-7ff3-4d6a-a900-62bb607f9e55">STRUCTURE</link></para>
+<para><link xlink:href="c224a54c-83d5-4423-8914-f45d34e54454">INTERFACE</link></para>
+<para><link xlink:href="34620539-dc0e-4e1b-a5ef-8ec6772b75c4">ENUM</link></para>
+<para>&#160;</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

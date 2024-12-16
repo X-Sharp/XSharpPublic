@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="02b0b057-7431-40c0-9b58-2fa0604b4d68" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: blocks2.html -->Blocks and Namespaces&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">BEGIN LOCK</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>The BEGIN LOCK and END LOCK keywords mark a block of statements as a critical section.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>BEGIN LOCK object<para/>
+ &#160; statements<para/>
+END LOCK</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<para>&#160;</para>
+<table><row><entry>object </entry><entry>An expression that evaluates to an object reference that is used as a locking object. </entry></row></table><table><row><entry>statements </entry><entry>One or more statements or expressions that are guarded by a mutual exclusion lock on the object specified in object. </entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Remarks</h1>
+<para>&#160;</para>
+<para>BEGIN LOCK ... END LOCK insures that multiple threads cannot execute the statements within the block at the same time. If one thread is executing code within the block, any other thread that attempts to enter the block will be suspended until the thread that is executing leaves the block.</para>
+<para>The object used as the locking object must be a reference type, it cannot be a value type and the expression cannot evaluate to NULL or a runtime error will occur.</para>
+<para>BEGIN LOCK ... END LOCK uses Monitor.Enter() and Monitor.Exit() to acquire and release a lock on the specified object. The following example:</para>
+<para>&#160;</para>
+<para>BEGIN LOCK lockObj<para/>
+? &quot;In guarded block&quot;<para/>
+END LOCK</para>
+<para>is equivalent to:</para>
+<para>System.Threading.Monitor.Enter( lockObj )<para/>
+TRY<para/>
+? &quot;In guarded block&quot;<para/>
+FINALLY<para/>
+System.Threading.Monitor.Exit( lockObj )<para/>
+END TRY</para>
+<para>&#160;</para>
+<para>&#160;</para>
+<para>Using BEGIN LOCK ... END LOCK is recommended over using the Monitor class directly because the code is more concise and insures that the monitor object is released even if an exception occurs within the guarded block.</para>
+<para>BEGIN LOCK ... END LOCK provides functionality similar to the Windows API functions EnterCriticalSection() and LeaveCriticalSection(). However, instead of using an object created by InitializeCriticalSection(), any instance of a reference type may be used for the locking object.</para>
+<para>Please see the documentation for the System.Threading.Monitor class for more information.</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

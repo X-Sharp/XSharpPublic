@@ -1,0 +1,3625 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <members>
+    </members>
+    <CEmail>
+        <summary>
+            提供一个类来存储和解码电子邮件的所有数据。
+        </summary>
+        <remarks>
+            该类提供了检查和接收来自 Internet POP 服务器的电子邮件所需的所有方法和属性。该类仅解码传递到其头部组件的电子邮件文本字符串。
+            HTML 和附件组件根据需要进行解码。
+        </remarks>
+        <example>
+            <code language="X#">
+                FUNCTION SMTPSendMail (cServerIP      AS STRING,;
+                                        cMailSubject   AS STRING,;
+                                        xDestUser      AS USUAL,;
+                                        xCCUser        AS USUAL,;
+                                        cBody          AS STRING,;
+                                        cFromAddress   AS STRING,;
+                                        xAttachFile    AS USUAL,;
+                                        cFromName      AS STRING,;
+                                        xBCCUser       AS USUAL,;
+                                        cCargo         AS STRING) AS LOGIC PASCAL
+
+                        LOCAL oSmtp AS CSMTP
+                        LOCAL lRet AS LOGIC
+                        LOCAL oEmail AS CEmail
+
+                        oEMail              := CEmail{}
+                        oEmail:FromAddress  := cFromAddress
+                        oEmail:FromName     := cFromName
+                        oEmail:Cargo        := cCargo
+                        oEmail:Subject      := cMailSubject
+                        oEmail:DestList     := xDestUser
+                        oEmail:CCList       := xCCUser
+                        oEmail:BCCList      := xBCCUser
+                        oEmail:MailBody     := cBody
+
+                        IF !IsNil(xAttachFile)
+                            oEmail:AttachmentFileList := xAttachFile
+                        ENDIF
+
+                        oSmtp               := CSmtp{oEmail}
+                        oSMtp:RemoteHost    := cServerIP
+                        oSmtp:TimeOut       := 5000
+
+                        lRet := oSmtp:SendMail()
+
+                        RETURN lRet
+            </code>
+            参看 CLASS CPop, CLASS CSmtp, Class CStorage 
+        </example>
+    </CEmail>
+
+    <CEmail.ctor>
+        <summary>
+            构造一个CEmail对象。
+        </summary>
+        <param name="cRawMail">**缺少参数文档**</param>
+        <param name="uStorage">**缺少参数文档**</param>
+    </CEmail.ctor>
+
+    <CEmail.AddAttachment>
+        <summary>
+            向电子邮件添加附件。
+        </summary>
+        <param name="cFullPath">要附加到电子邮件的文件</param>
+        <param name="cContentType">要使用的内容类型。默认为 'application/octet-stream'</param>
+        <param name="dwEncodeType">要使用的编码。默认为</param>
+        <param name="cContentID">**缺少参数文档**</param>
+        <param name="cFilename">在消息体中使用的文件名。默认为文件本身的名称。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CEmail.AddAttachment>
+
+    <CEmail.AttachmentFileList>
+        <summary>
+            包含附件文件名的数组。
+        </summary>
+        <value>包含附件文件名的数组。</value>
+    </CEmail.AttachmentFileList>
+
+    <CEmail.AttachmentInfo>
+        <summary>
+            返回或设置所有附件的信息，作为单个字符串。
+            对于每个附件，都有一行单独的。
+            每行包含：完全限定的文件名，内容类型，编码，ID，大小，ContentId
+        </summary>
+        <value>
+            返回或设置所有附件的信息，作为单个字符串。
+            对于每个附件，都有一行单独的。
+            每行包含：完全限定的文件名，内容类型，编码，ID，大小，ContentId
+        </value>
+    </CEmail.AttachmentInfo>
+
+    <CEmail.AttachmentList>
+        <summary>
+            包含附件文件的编码内容的字符串数组。
+        </summary>
+        <value>包含附件文件的编码内容的字符串数组。</value>
+    </CEmail.AttachmentList>
+
+    <CEmail.BCCList>
+        <summary>
+            包含所有密件抄送(BCC)收件人的电子邮件的字符串数组。
+        </summary>
+        <value>包含所有密件抄送(BCC)收件人的电子邮件的字符串数组。</value>
+    </CEmail.BCCList>
+
+    <CEmail.Boundary>
+        <summary>
+            用于不同电子邮件部分的边界的字符串值。
+        </summary>
+        <value>用于不同电子邮件部分的边界的字符串值。</value>
+    </CEmail.Boundary>
+
+    <CEmail.Cargo>
+        <summary>
+            附加用户定义的头部信息的字符串值。
+        </summary>
+        <value>附加用户定义的头部信息的字符串值。</value>
+    </CEmail.Cargo>
+
+    <CEmail.CCList>
+        <summary>
+            包含所有抄送(CC)收件人的电子邮件的字符串数组。
+        </summary>
+        <value>包含所有抄送(CC)收件人的电子邮件的字符串数组。</value>
+    </CEmail.CCList>
+
+    <CEmail.CloneAttachments>
+        <summary>
+            克隆内部附件数组。
+        </summary>
+        <returns>
+            无
+        </returns>
+    </CEmail.CloneAttachments>
+
+    <CEmail.CreateHtml>
+        <summary>
+            根据电子邮件消息的文本主体创建HTML主体。
+        </summary>
+        <param name="cText">要编码的文本</param>
+        <returns>
+            cHTML cText的HTML副本。
+        </returns>
+    </CEmail.CreateHtml>
+
+    <CEmail.CreateReplyBody>
+        <summary>
+            准备默认的文本响应。
+        </summary>
+        <param name="lReFormat">**缺少参数文档**</param>
+        <remarks>
+            此方法准备默认的回复文本，并将其放入类的 cText 实例变量中。它包含一个 From Address，目的地列表和日期时间戳。
+            现有的文本行前缀为 "&gt;"，并清除任何 HTML 文本。
+        </remarks>
+    </CEmail.CreateReplyBody>
+
+    <CEmail.DateTimeStamp>
+        <summary>
+            包含电子邮件的完全限定日期和时间的字符串。
+        </summary>
+        <value>包含电子邮件的完全限定日期和时间的字符串。</value>
+    </CEmail.DateTimeStamp>
+
+    <CEmail.Decode>
+        <summary>
+            从电子邮件的各个部分中提取所有信息。
+        </summary>
+        <param name="cMail">要解码的邮件消息。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            此方法将原始电子邮件流的所有不同部分拆分，并将它们分配给适当的属性。
+        </remarks>
+    </CEmail.Decode>
+
+    <CEmail.DeleteAttachment>
+        <summary>
+            向电子邮件添加附件。
+        </summary>
+        <param name="dwIndex">要删除的附件的索引</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CEmail.DeleteAttachment>
+
+    <CEmail.DestList>
+        <summary>
+            包含所有收件人的电子邮件地址的字符串数组。
+        </summary>
+        <value>包含所有收件人的电子邮件地址的字符串数组。</value>
+    </CEmail.DestList>
+
+    <CEmail.DispositionNotification>
+        <summary>
+            包含应通知电子邮件已收到的一方的电子邮件地址的字符串。
+            这有时会被一些电子邮件客户端替换为回执。
+        </summary>
+        <value>包含应通知电子邮件已收到的一方的电子邮件地址的字符串。这有时会被一些电子邮件客户端替换为回执。</value>
+    </CEmail.DispositionNotification>
+
+    <CEmail.EncodeAttachment>
+        <summary>
+            提供一种方法来编码所提供的文件，并提供邮件部分头以正确定义附件到电子邮件。
+        </summary>
+        <param name="cFilename">要附加的文件的完整路径名。</param>
+        <returns>
+            STRING 包含错误信息。如果编码成功，字符串将为空。
+        </returns>
+        <remarks>
+            此方法使用 Base64 编码对所提供的文件名进行编码，并格式化完整文本以进行附件部分，并将其添加到电子邮件中。
+        </remarks>
+    </CEmail.EncodeAttachment>
+
+    <CEmail.Error>
+        <summary>
+            表示上次发生的最后一个错误代码的数值。
+        </summary>
+        <value>表示上次发生的最后一个错误代码的数值。</value>
+    </CEmail.Error>
+
+    <CEmail.ErrorMsg>
+        <summary>
+            代表错误描述的字符串。
+        </summary>
+        <value>代表错误描述的字符串。</value>
+    </CEmail.ErrorMsg>
+
+    <CEmail.FindBoundary>
+        <summary>
+            在电子邮件部分中定位边界
+        </summary>
+        <param name="cSection">要在其中进行搜索的电子邮件部分文本。</param>
+        <returns>
+            包含找到的边界的字符串。
+        </returns>
+        <remarks>
+            此方法可用于查找电子邮件正文的主要边界或子边界。
+        </remarks>
+    </CEmail.FindBoundary>
+
+    <CEmail.FromAddress>
+        <summary>
+            包含发件人电子邮件的字符串。
+        </summary>
+        <value>包含发件人电子邮件的字符串。</value>
+    </CEmail.FromAddress>
+
+    <CEmail.FromName>
+        <summary>
+            代表发件人姓名的字符串。
+        </summary>
+        <value>代表发件人姓名的字符串。</value>
+    </CEmail.FromName>
+
+    <CEmail.FullFromAddress>
+        <summary>
+            电子邮件头中指定的发件人地址。
+        </summary>
+        <value>电子邮件头中指定的发件人地址。</value>
+    </CEmail.FullFromAddress>
+
+    <CEmail.GetAttachmentInfo>
+        <summary>
+            解码电子邮件的所有头部元素的方法
+        </summary>
+        <param name="dwIndex">**缺少参数文档**</param>
+        <param name="dwType">**缺少参数文档**</param>
+        <remarks>
+            此方法读取当前的原始电子邮件数据，并将所有头部元素解码为它们各自的 ivars。
+            该过程还会解码和分离所有收件人，并解析名称、日期时间戳、优先级和收据要求。
+        </remarks>
+    </CEmail.GetAttachmentInfo>
+
+    <CEmail.GetHeaderInfo>
+        <summary>
+            解码电子邮件的所有头部元素的方法
+        </summary>
+        <remarks>
+            此方法读取当前的原始电子邮件数据，并将所有头部元素解码为它们各自的 ivars。
+            该过程还会解码和分离所有收件人，并解析名称、日期时间戳、优先级和收据要求。
+        </remarks>
+    </CEmail.GetHeaderInfo>
+
+    <CEmail.HTMLText>
+        <summary>
+            适合在Web浏览器窗格中显示的正确格式的HTML文本字符串。如果电子邮件不包含HTM组件，则通过在适当的标记中包装文本组件来形成一个。
+            如果电子邮件包含HTML并且有嵌入的图像(用src="cid:)标记，则这些引用将被替换为这些图像的实际文件名的引用。
+        </summary>
+        <value>
+            适合在Web浏览器窗格中显示的正确格式的HTML文本字符串。如果电子邮件不包含HTM组件，则通过在适当的标记中包装文本组件来形成一个。
+            如果电子邮件包含HTML并且有嵌入的图像(用src="cid:)标记，则这些引用将被替换为这些图像的实际文件名的引用。
+        </value>
+    </CEmail.HTMLText>
+
+    <CEmail.MailBody>
+        <summary>
+            包含邮件文本的字符串。
+        </summary>
+        <value>包含邮件文本的字符串。</value>
+    </CEmail.MailBody>
+
+    <CEmail.MailDate>
+        <summary>
+            代表电子邮件接收(发送)日期的日期值。
+        </summary>
+        <value>代表电子邮件接收(发送)日期的日期值。</value>
+    </CEmail.MailDate>
+
+    <CEmail.MailHeader>
+        <summary>
+            包含邮件头文本的字符串。
+        </summary>
+        <value>包含邮件头文本的字符串。</value>
+    </CEmail.MailHeader>
+
+    <CEmail.MailPriority>
+        <summary>
+            代表电子邮件优先级的数值。
+        </summary>
+        <value>代表电子邮件优先级的数值。</value>
+    </CEmail.MailPriority>
+
+    <CEmail.MailTime>
+        <summary>
+            代表电子邮件发送时间的时间字符串。
+        </summary>
+        <value>代表电子邮件发送时间的时间字符串。</value>
+    </CEmail.MailTime>
+
+    <CEmail.MimeEncode>
+        <summary>
+            使用特定编码或电子邮件的默认编码对字符串进行编码的方法
+        </summary>
+        <param name="c">要编码的可选字符串。默认是对正文进行编码</param>
+        <param name="nCode">
+            要使用的可选编码类型。VO 支持以下两种编码:<br />
+            CODING_TYPE_PRINTABLE(默认)<br />
+            CODING_TYPE_BASE64<br />
+        </param>
+        <returns>
+            编码后的字符串。
+        </returns>
+    </CEmail.MimeEncode>
+
+    <CEmail.MimeHeader>
+        <summary>
+            编码 MIME 附件头的方法
+        </summary>
+        <param name="nCode">
+            要使用的可选编码类型。VO 支持以下两种编码:<br />
+            CODING_TYPE_PRINTABLE(默认)<br />
+            CODING_TYPE_BASE64<br />
+        </param>
+        <param name="xContentType">
+            编码时要使用的内容类型。默认是消息的内容类型。当使用以下三种情况之一时，VO 将假定文件是正文的一部分:<br />
+            如果使用其他类型，VO 将假定文件不是消息正文的一部分，而是附件<br />
+        </param>
+        <param name="cFile">要用于编码的头文件的文件名。这个名称不适用于上述三种内容类型。</param>
+        <param name="cCID">**缺少参数文档**</param>
+        <returns>
+            编码后的字符串。
+        </returns>
+        <remarks>
+            MimeHeader() 方法在  CEMail:StreamOut() 方法在流式传输消息时调用。
+        </remarks>
+    </CEmail.MimeHeader>
+
+    <CEmail.Priority>
+        <summary>
+            代表电子邮件优先级的数值(正常=3)。
+        </summary>
+        <value>代表电子邮件优先级的数值(正常=3)。</value>
+    </CEmail.Priority>
+
+    <CEmail.ReplyTo>
+        <summary>
+            包含正在发送回复的电子邮件的字符串值。
+        </summary>
+        <value>包含正在发送回复的电子邮件的字符串值。</value>
+    </CEmail.ReplyTo>
+
+    <CEmail.ReturnReceipt>
+        <summary>
+            包含应发送回执通知的一方的电子邮件地址的字符串。一些电子邮件客户端可能使用这个来包含回执，其他可能使用 Disposition Notification。
+        </summary>
+        <value>包含应发送回执通知的一方的电子邮件地址的字符串。一些电子邮件客户端可能使用这个来包含回执，其他可能使用 Disposition Notification。</value>
+    </CEmail.ReturnReceipt>
+
+    <CEmail.SaveAs>
+        <summary>
+            解码并保存电子邮件的指定编码附件作为本地文件。
+        </summary>
+        <param name="cPath">要保存文件的目录。如果未指定，附件将保存在当前目录中。</param>
+        <param name="cFile">包含要保存的附件的新文件名的字符串。如果未指定，附件将保存在附件电子邮件头中包含的文件名下。</param>
+        <param name="n">指定要解码和保存为文件的多个附件中的哪一个的数字。如果未指定，将保存第一个附件。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            此方法解码指定的编码附件并将其保存为指定或默认文件名。
+        </remarks>
+    </CEmail.SaveAs>
+
+    <CEmail.SetAttachmentInfo>
+        <summary>
+            此方法允许您替换电子邮件对象的内部附件数组的元素。
+        </summary>
+        <param name="dwIndex">需要替换的附件数组中的元素</param>
+        <param name="dwType">
+            需要替换的信息类型。这可以是以下之一:<br />
+            ATTACH_STOREID(1)<br />
+            ATTACH_CONTENTID(2)<br />
+            ATTACH_FILESIZE(3)<br />
+            ATTACH_FILENAME(4)<br />
+            ATTACH_CONTENTTYPE(5)<br />
+            ATTACH_TRANSFERENCODING(6)<br />
+            ATTACH_FULLPATH(7)<br />
+            ATTACH_SIZE(8)
+        </param>
+        <param name="uNewValue">类型的新值。</param>
+        <returns>
+            附件数组元素的旧值
+        </returns>
+    </CEmail.SetAttachmentInfo>
+
+    <CEmail.SetHeaderInfo>
+        <summary>
+            解码电子邮件的所有头部元素的方法
+        </summary>
+        <remarks>
+            此方法读取Email对象的属性，并从这些属性创建一个头部。它还将头部分配给电子邮件的 Header 属性。
+            此方法在流式传输电子邮件消息时从 CEmail:StreamOut 中调用。
+        </remarks>
+    </CEmail.SetHeaderInfo>
+
+    <CEmail.SetMailTime>
+        <summary>
+            基于当前日期和时间创建一个 ANSI 日期/时间。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            此方法创建一个包含日期和时间的字符串，格式可以被所有 Internet 服务器理解。生成的字符串可以通过 TimeStamp 访问使用。
+        </remarks>
+    </CEmail.SetMailTime>
+
+    <CEmail.Size>
+        <summary>**缺少文档**</summary>
+    </CEmail.Size>
+
+    <CEmail.StreamIn>
+        <summary>
+            当接收电子邮件消息时，将调用此方法。它调用 Storage 对象来解码和存储附件。
+        </summary>
+        <param name="cData">要接收并需要解码的字符串</param>
+        <remarks> 
+            通常不需要自己调用此方法。它在接收电子邮件时从 CPop 类中调用。在解码原始消息时，CEMail:Decode 方法也会调用它。 
+            <note type="tip">
+                Visual Objects 尝试避免完全在内存中构建大型电子邮件。因此，它以块的形式读取或写入它们。
+                CEmail 类的 StreamIn()和 StreamOut() 方法处理这些块。
+            </note>
+        </remarks>
+    </CEmail.StreamIn>
+
+    <CEmail.StreamOut>
+        <summary>
+            生成消息内容
+        </summary>
+        <remarks> 
+            通常不需要直接调用此消息。在发送电子邮件时，CSmtp:SendMail() 会重复调用它。 
+            <note type="tip">
+                Visual Objects 尝试避免完全在内存中构建大型电子邮件。因此，它以块的形式读取或写入它们。
+                CEmail 类的 StreamIn() 和 StreamOut() 方法处理这些块。
+            </note>
+        </remarks>
+    </CEmail.StreamOut>
+
+    <CEmail.StreamStart>
+        <summary>
+            初始化电子邮件消息的流状态。
+        </summary>
+        <remarks>
+            通常不需要直接调用此消息。在发送电子邮件时，CSmtp:SendMail() 会重复调用它。在接收邮件时，CPop 也会调用它。
+            在解码邮件时，CEMail:Decode 也会调用它。 
+            <note type="tip">
+                Visual Objects 尝试避免完全在内存中构建大型电子邮件。因此，它以块的形式读取或写入它们。
+                CEmail 类的 StreamIn() 和 StreamOut() 方法处理这些块。
+            </note>
+        </remarks>
+    </CEmail.StreamStart>
+
+    <CEmail.Subject>
+        <summary>
+            包含电子邮件主题的字符串值。
+        </summary>
+        <value>包含电子邮件主题的字符串值。</value>
+    </CEmail.Subject>
+
+    <CEmail.TimeStamp>
+        <summary>
+            包含发送电子邮件的日期和时间的字符串值。
+        </summary>
+        <value>包含发送电子邮件的日期和时间的字符串值。</value>
+    </CEmail.TimeStamp>
+
+    <CFtp>
+        <summary>
+            Microsoft 在 Wininet.dll 中提供的高级文件传输协议(FTP)功能的包装类。
+        </summary>
+        <remarks>
+            此类提供了使用文件传输协议进行文件传输和交换所需的所有方法和属性。
+        </remarks>
+    </CFtp>
+
+    <CFtp.ctor>
+        <summary>
+            构造一个 CFtp 对象实例。
+        </summary>
+        <param name="cCaption">调用后续方法的应用程序或实体的名称。默认是'VO Ftp Client'。</param>
+        <param name="n">端口号。默认的FTP端口号是21。</param>
+        <param name="lStat">逻辑值，指定是否应调用 CFtp:InternetStatus() 方法以获取状态回调通知。默认是 TRUE。</param>
+    </CFtp.ctor>
+
+    <CFtp.AccessType>
+        <summary>
+            代表所需访问的数值。
+            应用程序可以选择这些类型值中的一个：
+            <list type="table">
+                <item>
+                    <term>INTERNET_OPEN_TYPE_DIRECT</term>
+                    <description>本地解析所有主机名。</description>
+                </item>
+                <item>
+                    <term>INTERNET_OPEN_TYPE_PROXY</term>
+                    <description>
+                        将请求传递给由 CFtp:Proxy 指定的代理，除非 CFtp:ProxyBypass 提供了代理绕过列表，并且要解析的名称绕过了代理。
+                        在这种情况下，函数将像对待 INTERNET_OPEN_TYPE_DIRECT 一样进行。
+                    </description>
+                </item>
+                <item>
+                    <term>INTERNET_OPEN_TYPE_PRECONFIG</term>
+                    <description>从注册表中检索代理或直接配置。</description>
+                </item>
+            </list>
+        </summary>
+        <value>代表所需访问的数值。</value>
+    </CFtp.AccessType>
+
+    <CFtp.Append>
+        <summary>**缺少文档**</summary>
+        <param name="cLocalFile">**缺少参数文档**</param>
+        <param name="nFlags">**缺少参数文档**</param>
+    </CFtp.Append>
+
+    <CFtp.CloseFile>
+        <summary>
+            关闭远程文件。
+        </summary>
+        <param name="ptrHandle">先前打开的远程文件的句柄。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            应该使用此方法来关闭从 OpenFile() 方法返回的句柄。
+        </remarks>
+    </CFtp.CloseFile>
+
+    <CFtp.CloseRemote>
+        <summary>
+            关闭当前的 Internet FTP 连接。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            可以使用此方法来关闭 CFtp 对象实例的连接。如果未指定，如果适当的对象实例超出范围，连接将自动关闭。
+        </remarks>
+        <example>
+            请参阅 CFtp:ConnectRemote() 示例。
+        </example>
+    </CFtp.CloseRemote>
+    
+    <CFtp.Connected>
+        <summary>
+            代表连接状态的逻辑值。
+        </summary>
+        <value>代表连接状态的逻辑值。</value>
+    </CFtp.Connected>
+
+    <CFtp.ConnectRemote>
+        <summary>
+            将应用程序连接到远程FTP服务器。
+        </summary>
+        <param name="cIP">包含互联网服务器主机名的字符串。或者，字符串可以包含ASCII点十进制格式(例如，11.22.3.45)的站点的IP号。</param>
+        <param name="cID">包含要登录的用户的名称的字符串。如果此参数为NULL，函数将使用适当的默认值('anonymous')。对于 FTP 协议，默认值是 anonymous。</param>
+        <param name="cPw">用户的密码作为字符串。对于匿名登录用户，可以使用用户的电子邮件名称作为密码。</param>
+        <param name="lBypass">**缺少参数文档**</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            此方法建立与远程 FTP 服务器的连接。
+        </remarks>
+        <example> 
+            以下示例创建了 ftp.cai.com 的 X# 下载部分的所有文件和目录的列表： 
+            <code language="X#">
+                FUNC ListVOFiles()
+                    LOCAL oFTP AS CFtp
+                    LOCAL lRet AS LOGIC
+                    LOCAL aRet AS ARRAY
+                    LOCAL i AS INT
+
+                    oFTP := CFtp{"VO Sample FTP Agent"}
+
+                    IF oFTP:ConnectRemote("ftp.cai.com", "anonymous", "Darth.Vader@starwars.com")
+                        oFTP:SetCurDir("/pub/vo")
+                        ? "Contents of Directory " + oFTP:GetCurDir()
+                        aRet := oFTP:Directory("*.*")
+
+                        FOR i := 1 UPTO ALen(aRet)
+                            ? aRet[i, F_NAME]
+                            ?? ", Size: " + NTrim(aRet[i, F_SIZE])
+                            ?? ", Date/Time: " + DToC(aRet[i, F_DATE]) + ;
+                            "/" + aRet[i, F_TIME]
+                            ?? ", Attribute(s): ", aRet[i, F_ATTR]
+                        NEXT
+                    ENDIF
+
+                    oFTP:CloseRemote()
+            </code><code
+                language="X#">RETURN lRet</code>
+        </example>
+    </CFtp.ConnectRemote>
+
+    <CFtp.CreateDir>
+        <summary>
+            在 FTP 服务器上创建一个新目录。
+        </summary>
+        <param name="cRemoteDir">包含要创建的目录的名称的字符串。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            此方法在远程 FTP 服务器上创建一个新目录。
+        </remarks>
+    </CFtp.CreateDir>
+
+    <CFtp.DeleteFile>
+        <summary>
+            删除存储在 FTP 服务器上的文件。
+        </summary>
+        <param name="cRemoteFile">包含要在远程 FTP 服务器上删除的文件的名称的字符串。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            此方法从远程 FTP 服务器中删除一个文件。
+        </remarks>
+    </CFtp.DeleteFile>
+
+    <CFtp.Directory>
+        <summary>
+            创建一个关于远程 FTP 服务器的目录和文件信息的数组。
+        </summary>
+        <param name="cFile">
+            搜索的文件的文件规范。除了文件名，此规范还可以包括可选的驱动器，目录和扩展名。
+            文件名和扩展名可以包含标准通配符字符(*和?)。
+            如果不指定驱动器和目录，将使用 Windows 默认值。
+            如果不指定任何文件名，将假定为'*.*'。
+        </param>
+        <param name="nFlags">**缺少参数文档**</param>
+        <returns> 一个子数组的数组，每个子数组包含与<paramref name="cFileSpec" />
+            匹配的每个文件的信息。子数组元素的引用如下所示，在 CFtp:ConnectRemote() 方法部分的示例中。
+        </returns>
+        <remarks>
+            此方法返回有关当前或指定目录中的文件的信息。您可以使用它执行对文件组的操作。
+        </remarks>
+    </CFtp.Directory>
+
+    <CFtp.Error>
+        <summary>
+            表示最近发生的错误的数字值。
+        </summary>
+        <value>表示最近发生的错误的数字值。</value>
+    </CFtp.Error>
+
+    <CFtp.ErrorMsg>
+        <summary>
+            表示错误描述的字符串。
+        </summary>
+        <value>表示错误描述的字符串。</value>
+    </CFtp.ErrorMsg>
+
+    <CFtp.GetCurDir>
+        <summary>
+            获取当前进程在远程 FTP 服务器上的当前目录的名称。
+        </summary>
+        <returns>
+            如果成功，则返回当前目录的名称；否则，返回 NULL_STRING。
+        </returns>
+        <remarks>
+            此方法检索当前进程在远程 FTP 服务器上的目录名称。
+        </remarks>
+    </CFtp.GetCurDir>
+
+    <CFtp.GetFile>
+        <summary>
+            从 FTP 服务器接收文件。
+        </summary>
+        <param name="cRemoteFile">要接收的远程文件的名称。</param>
+        <param name="cNewFile">
+            包含要在本地系统上创建的文件名称的字符串。
+            如果未指定，则 <paramref name="cRemoteFile" /> 自动成为本地文件的名称。
+        </param>
+        <param name="lFailIfExists">
+            逻辑值，指示如果本地系统上已存在指定名称的文件，方法是否应继续执行。
+            如果 <paramref name="lFailIfExists" /> 为 TRUE 且本地文件存在，则 GetFile() 方法失败。
+        </param>
+        <param name="nFlags">
+            控制文件下载方式的标志。第一个标志值集指示传输发生的条件。这些传输类型标志可以与控制缓存的第二个标志值集结合使用。
+            应用程序可以选择以下传输类型值之一:
+            下面的标志处理如何处理此文件的缓存。可以与传输类型标志结合使用任何以下标志。
+            可能的值是:
+        </param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            该方法从 FTP 服务器检索文件，并将其存储在指定名称下的本地文件中。
+        </remarks>
+        <example> 
+            以下是 ftp.cai.com 上 X# 下载区包含的所有文件的综合列表(00index.txt)： 
+            <code language="X#">
+                FUNC TestGetFile()
+                    LOCAL oFTP AS CFtp
+                    LOCAL cFile AS STRING
+
+                    oFTP := CFtp{"VO Sample FTP Agent"}
+
+                    IF oFTP:ConnectRemote("ftp.cai.com", "anonymous", "Darth.Vader@starwars.com")
+                        cFile := "00index.txt"
+
+                        IF oFTP:SetCurDir("/pub/vo")
+                            IF oFTP:GetFile(cFile)
+                                IF File(cFile)
+                                    ? "File received: " + FPathName()
+                                ENDIF
+                            ELSE
+                                __RaiseFTPError(oFTP)
+                            ENDIF
+                        ELSE
+                            __RaiseFTPError(oFTP)
+                        ENDIF
+                    ENDIF
+
+                    oFTP:CloseRemote()
+
+                    RETURN
+
+                STATIC FUNC __RaiseFTPError (oFTP AS CFtp) AS INT PASCAL
+                    LOCAL cError AS STRING
+                    LOCAL nRet AS INT
+
+                    nRet := oFTP:Error
+
+                    IF nRet &gt; 0
+                        cError := oFTP:ErrorMsg
+                        
+                        IF SLen(cError) &gt; 0
+                            MessageBox(0, cError, "FTP Error", MB_OK)
+                        ENDIF
+                    ENDIF
+            </code>
+        </example>
+    </CFtp.GetFile>
+
+    <CFtp.InternetStatus>
+        <summary>
+            方法 InternetStatus() 是一个回调占位符，用于接收 FTP 会话的当前状态信息。它应该被子类重写，以实现所需的行为。
+        </summary>
+        <param name="nContext">与当前类相关联的应用程序定义的上下文值。</param>
+        <param name="nStatus">状态代码，指示调用回调函数的原因。它可以是以下值之一:</param>
+        <param name="pStatusInfo">包含与此回调函数调用相关信息的缓冲区的地址。</param>
+        <param name="nStatusLength"><paramref name="pStatusInfo" />缓冲区的大小。</param>
+        <remarks>
+            InternetStatus() 方法可以在 FTP 客户端和服务器之间的 FTP 传输的任何阶段接收不同状态信息。
+        </remarks>
+        <example> 
+            以下示例演示了如何使用 InternetStatus() 方法来通知每个状态更改的所有者窗口： 
+            <code language="X#">
+                CLASS MyFTP INHERIT CFtp
+                    PROTECT oOwner AS OBJECT
+
+                    METHOD Init(oParent, cCaption, n, lStat)CLASS MyFtp
+                        SUPER:Init(cCaption, n, lStat)
+                        SELF:oOwner := oParent
+                        RETURN SELF
+
+                    METHOD InternetStatus( nContext, nStatus, ; pStatusInfo, nStatusLength ) CLASS MyFTP
+                        //
+                        // 这个方法接收所有低级FTP
+                        // 通知。请保留所有参数，如果你
+                        // 想要重写它以满足自己的目的
+                        //
+                        LOCAL cMsg AS STRING
+
+                        DO CASE
+                            CASE nStatus == INTERNET_STATUS_RESOLVING_NAME
+                                cMsg := "正在解析名称... "
+                            CASE nStatus == INTERNET_STATUS_NAME_RESOLVED
+                                cMsg := "名称已解析"
+                            CASE nStatus == INTERNET_STATUS_CONNECTING_TO_SERVER
+                                cMsg := "正在连接到服务器... "
+                            CASE nStatus == INTERNET_STATUS_CONNECTED_TO_SERVER
+                                cMsg := "已连接到服务器"
+                            CASE nStatus == INTERNET_STATUS_SENDING_REQUEST
+                                cMsg := "正在发送请求... "
+                            CASE nStatus == INTERNET_STATUS_REQUEST_SENT
+                                cMsg := "请求已发送"
+                            CASE nStatus == INTERNET_STATUS_RECEIVING_RESPONSE
+                                cMsg := "正在接收响应..."
+                            CASE nStatus == INTERNET_STATUS_RESPONSE_RECEIVED
+                                cMsg := "响应已接收"
+                            CASE nStatus == INTERNET_STATUS_CTL_RESPONSE_RECEIVED
+                                cMsg := "CTL响应已接收"
+                            CASE nStatus == INTERNET_STATUS_PREFETCH
+                                cMsg := "预取"
+                            CASE nStatus == INTERNET_STATUS_CLOSING_CONNECTION
+                                cMsg := "正在关闭连接..."
+                            CASE nStatus == INTERNET_STATUS_CONNECTION_CLOSED
+                                cMsg := "连接已关闭"
+                            CASE nStatus == INTERNET_STATUS_HANDLE_CREATED
+                                cMsg := "句柄已创建"
+                                // _DebOut32( "FTP状态: " + cMsg )
+                                RETURN
+                            CASE nStatus == INTERNET_STATUS_HANDLE_CLOSING
+                                cMsg := "正在关闭句柄..."
+                            CASE nStatus == INTERNET_STATUS_REQUEST_COMPLETE
+                                cMsg := "请求完成"
+                            CASE nStatus == INTERNET_STATUS_REDIRECT
+                                cMsg := "重定向"
+                            OTHERWISE
+                                cMsg := "未知FTP状态"
+                        ENDCASE
+
+                        SELF:oOwner:FTPStatus := cMsg
+
+                        RETURN NIL
+            </code>
+        </example>
+    </CFtp.InternetStatus>
+
+    <CFtp.Open>
+        <summary>
+            初始化应用程序对 Win32 Internet 函数的使用。
+        </summary>
+        <param name="nFlags">
+            指示影响方法行为的各种选项的标志。它可以是这些值的组合：
+            <list type="table">
+                <item>
+                    <term>INTERNET_FLAG_OFFLINE</term>
+                    <description>仅通过持久缓存满足此句柄上的下载操作。如果项目在缓存中不存在，方法将返回适当的错误代码。</description>
+                </item>
+                <item>
+                    <term>INTERNET_FLAG_ASYNC</term>
+                    <description>未来对此句柄的操作可能会失败，错误代码为 ERROR_IO_PENDING。</description>
+                </item>
+            </list>
+        </param>
+        <param name="xProxy">包含代理服务器名称的字符串，如果指定了代理访问。如果此参数为 NIL，函数将从注册表中读取代理信息。</param>
+        <param name="aProxyByPass">
+            包含本地已知的主机名或IP地址，或两者都是。对这些名称的请求不会通过代理路由。
+            字符串可以包含通配符，例如{'157.55.*', '*int*'}，表示以157.55开头的任何IP地址，或包含子字符串'int'的任何名称，都将绕过代理。
+            如果此数组包含'&lt;local&gt;'字符串作为唯一条目，函数将绕过不包含句点的任何主机名。
+            例如，'www.cai.com' 将被路由到代理，而 'internet' 将不会。如果此参数为 NIL，函数将从注册表中读取绕过列表。
+        </param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            此方法初始化内部数据结构，并准备好将来调用 CFtp 方法。不必显式调用此方法，因为 CFtp:ConnectRemote() 方法在必要时会在内部调用此方法。
+        </remarks>
+    </CFtp.Open>
+
+    <CFtp.OpenFile>
+        <summary>
+            为写入或读取打开远程文件。
+        </summary>
+        <param name="cRemoteFile">包含要在远程系统上访问的文件的名称的字符串。</param>
+        <param name="nAccess">确定文件访问类型(GENERIC_READ或GENERIC_WRITE ——不能同时使用)。默认值为 GENERIC_READ。</param>
+        <param name="nFlags">
+            操作与指定文件的条件。应用程序应选择一个传输类型和任何控制文件缓存方式的标志。
+            传输类型可以是以下任何一个值：
+            应用程序可以使用以下任何一个或多个值来控制文件缓存：
+        </param>
+        <returns>
+            如果成功，文件句柄；否则，NULL_PTR。
+        </returns>
+        <remarks>
+            OpenFile() 方法为后续文件操作初始化远程文件句柄。
+            句柄保持打开状态，直到调用 CloseFile() 方法，并且可以用于调用函数，如 InternetReadFile() 或 InternetWriteFile()，InternetCloseHandle()，或 FtpFindFirstFile()。
+        </remarks>
+    </CFtp.OpenFile>    
+
+    <CFtp.PassWord>
+        <summary>
+            表示 FTP 会话密码的字符串。
+        </summary>
+        <value>表示 FTP 会话密码的字符串。</value>
+    </CFtp.PassWord>
+
+    <CFtp.Proxy>
+        <summary>
+            包含用于 Internet 连接的代理服务器(或服务器)名称的字符串。
+        </summary>
+        <value>包含用于Internet连接的代理服务器(或服务器)名称的字符串。</value>
+    </CFtp.Proxy>
+
+    <CFtp.ProxyBypass>
+        <summary>
+            包含本地已知的主机名或IP地址，或两者都是，的可选列表。对这些名称的请求不会通过代理路由。
+            列表可以包含通配符，例如"130.126.*.* *dev*"，表示以130.126开头的任何IP地址，或包含子字符串"dev"的任何名称，都将绕过代理。
+        </summary>
+        <value>
+            包含本地已知的主机名或IP地址，或两者都是，的可选列表。对这些名称的请求不会通过代理路由。
+            列表可以包含通配符，例如"130.126.*.* *dev*"，表示以130.126开头的任何IP地址，或包含子字符串"dev"的任何名称，都将绕过代理。
+        </value>
+    </CFtp.ProxyBypass>
+
+    <CFtp.PutFile>
+        <summary>
+            在 FTP 服务器上存储文件。
+        </summary>
+        <param name="cLocalFile">要发送到远程 FTP 服务器的本地文件的名称。 </param>
+        <param name="cRemoteFile">包含要在远程 FTP 服务器上创建的文件的名称的字符串。如果未指定，&lt;cLocalFile&gt;将自动成为远程文件的名称。</param>
+        <param name="lFailIfExists">
+            逻辑值，指示如果指定名称的远程文件已存在，方法是否应继续。
+            如果 <paramref name="lFailIfExists" /> 为 TRUE，并且远程文件存在，PutFile() 方法失败。
+        </param>
+        <param name="nFlags">
+            控制函数将如何处理文件上传以及传输发生的条件的标志。应用程序应选择一个传输类型和任何控制文件缓存方式的标志。
+            传输类型可以是以下任何一个值：
+            应用程序可以使用以下任何一个或多个值来控制文件缓存：
+        </param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            此方法处理与在本地读取文件并将其存储在FTP服务器上相关的所有必要过程。
+        </remarks>
+        <example> 
+            以下接收包含在 ftp.cai.com 的 X# 下载部分的所有文件的全面列表(00index.txt)： 
+            <code language="X#">
+                FUNC TestGetFile()
+                    LOCAL oFTP AS CFtp
+                    LOCAL cFile AS STRING
+
+                    oFTP := CFtp{"VO Sample FTP Agent"}
+
+                    IF oFTP:ConnectRemote("ftp.cai.com", "anonymous", "Darth.Vader@starwars.com")
+                        cFile := "00index.txt"
+                        IF oFTP:SetCurDir("/pub/vo")
+                            IF oFTP:GetFile(cFile)
+                                IF File(cFile)
+                                ? "File received: " + FPathName()
+                                ENDIF
+                            ELSE
+                                __RaiseFTPError(oFTP)
+                            ENDIF
+                        ELSE
+                            __RaiseFTPError(oFTP)
+                        ENDIF
+                    ENDIF
+
+                    oFTP:CloseRemote()
+                    
+                    RETURN
+
+                STATIC FUNC __RaiseFTPError (oFTP AS CFtp) AS INT PASCAL
+                    LOCAL cError AS STRING
+                    LOCAL nRet AS INT
+
+                    nRet := oFTP:Error
+
+                    IF nRet &gt; 0
+                        cError := oFTP:ErrorMsg
+
+                        IF SLen(cError) &gt; 0
+                            MessageBox(0, cError, "FTP Error", MB_OK)
+                        ENDIF
+                    ENDIF
+
+                    RETURN nRet
+            </code>
+        </example>
+    </CFtp.PutFile>
+
+    <CFtp.RemoteHost>
+        <summary>
+            一个字符串，表示要连接的 FTP 服务器的名称。
+        </summary>
+        <value>一个字符串，表示要连接的 FTP 服务器的名称。</value>
+    </CFtp.RemoteHost>
+
+    <CFtp.RemoveDir>
+        <summary>
+            从远程 FTP 服务器删除一个目录。
+        </summary>
+        <param name="cRemoteDir">包含要删除的目录名称的字符串。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            此方法从远程 FTP 服务器删除一个目录。
+        </remarks>
+    </CFtp.RemoveDir>
+
+    <CFtp.RenameFile>
+        <summary>
+            重命名 FTP 服务器上存储的文件。
+        </summary>
+        <param name="cRemoteFile">包含要在远程 FTP 服务器上重命名的文件名称的字符串。</param>
+        <param name="cNewName">要给文件的新名称。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            RenameFile()方法重命名远程 FTP 服务器上的文件。
+        </remarks>
+    </CFtp.RenameFile>
+
+    <CFtp.SetCurDir>
+        <summary>
+            更改远程 FTP 服务器上当前进程的当前目录。
+        </summary>
+        <param name="cRemoteDir">包含要更改到的目录路径的字符串。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            SetCurDir()方法更改远程 FTP 服务器上当前进程的目录。
+        </remarks>
+    </CFtp.SetCurDir>
+
+    <CFtp.UserName>
+        <summary>
+            一个字符串，用于标识 FTP 连接的用户。
+        </summary>
+        <value>一个字符串，用于标识 FTP 连接的用户。</value>
+    </CFtp.UserName>
+
+    <CHttp>
+        <summary>
+            Http(超文本传输协议)会话的包装类。
+        </summary>
+        <remarks>
+            此类为超文本传输协议会话提供了所有必要的方法和属性。
+        </remarks>
+    </CHttp>
+
+    <CHttp.ctor>
+        <summary>
+            实例化一个新的 Http 包装对象。
+        </summary>
+        <param name="cCaption">一个可选的标题字符串。</param>
+        <param name="n">HTTP 端口地址(默认为80)。</param>
+        <param name="lStat">**缺少参数文档**</param>
+    </CHttp.ctor>
+
+    <CHttp.AddRequestHeaders>
+        <summary>
+            向当前请求添加额外的头部。
+        </summary>
+        <param name="cHeaders">包含要追加到请求的头部的字符串。每个头部必须以CR/LF(回车/换行)对结尾。</param>
+        <param name="nModifiers">包含用于修改此函数语义的值(见 Win32 Internet API 帮助中的 HttpAddRequestHeaders 可能的值)。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CHttp.AddRequestHeaders>
+    
+    <CHttp.CloseRemote>
+        <summary>
+            关闭 http 连接。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CHttp.CloseRemote>
+
+    <CHttp.CloseRequest>
+        <summary>
+            关闭一个 http 请求。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CHttp.CloseRequest>
+
+    <CHttp.ConnectRemote>
+        <summary>
+            打开 http 连接。
+        </summary>
+        <param name="cIP">远程服务器的主机名或 IP 地址。</param>
+        <param name="cID">用户ID(可选)</param>
+        <param name="cPw">密码(可选)</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CHttp.ConnectRemote>
+
+    <CHttp.Directory>
+        <summary>
+            如果通过 http 访问 ftp 服务器，这个方法返回当前目录的文件数组。
+        </summary>
+        <returns>
+            远程 ftp 服务器上当前目录的文件数组。
+        </returns>
+    </CHttp.Directory>
+
+    <CHttp.FtpRequest>
+        <summary>
+            指示 http 连接正在用于访问 ftp 服务器。
+        </summary>
+        <value>指示 http 连接正在用于访问 ftp 服务器。</value>
+    </CHttp.FtpRequest>
+
+    <CHttp.GetCurDir>
+        <summary>
+            获取远程服务器上的当前目录名称。
+        </summary>
+        <returns>
+            目录名称作为字符串。
+        </returns>
+    </CHttp.GetCurDir>
+
+    <CHttp.GetDocumentByURL>
+        <summary>
+            从服务器检索文档。
+        </summary>
+        <param name="cURL">要检索的文档的 URL。</param>
+        <param name="nFlags">**缺少参数文档**</param>
+        <returns>
+            文档作为字符串。
+        </returns>
+    </CHttp.GetDocumentByURL>
+
+    <CHttp.GetDocumentFromServer>
+        <summary>
+            从服务器检索文档。
+        </summary>
+        <param name="cServer">要从中检索文件的服务器。</param>
+        <param name="cDocument">要检索的文档。</param>
+        <param name="cID">可选的用户ID。</param>
+        <param name="cPw">可选的密码。</param>
+        <returns>
+            文档作为字符串。
+        </returns>
+    </CHttp.GetDocumentFromServer>
+
+    <CHttp.GetFile>
+        <summary>
+            检索远程文件 cRemoteFile 到本地文件 cNewFile。
+        </summary>
+        <param name="cRemoteFile">要从远程服务器检索的文件名称。</param>
+        <param name="cNewFile">用于保存文件的本地驱动器上的名称。</param>
+        <param name="lFailIfExists">如果 lFailIfExists 设置为 TRUE，则方法将在本地磁盘上存在文件时失败。如果设置为 FALSE，则将覆盖现有的文件。</param>
+        <returns>
+            如果文件被保存，则为 TRUE，否则为 FALSE。
+        </returns>
+    </CHttp.GetFile>
+
+    <CHttp.GetResponse>
+        <summary>
+            获取当前请求的响应。
+        </summary>
+        <returns>
+            当前请求的响应作为字符串。
+        </returns>
+    </CHttp.GetResponse>
+
+    <CHttp.GetResponseHeader>
+        <summary>
+            获取当前请求的响应头部。
+        </summary>
+        <returns>
+            当前请求的响应头部作为字符串。
+        </returns>
+    </CHttp.GetResponseHeader>
+
+    <CHttp.Open>
+        <summary>
+            打开 http 连接。
+        </summary>
+        <param name="nFlags">包含在内部 InternetConnect 调用中使用的标志(见 Win32 Internet API 帮助中的可能值)。</param>
+        <param name="xProxy">代理服务器的名称(可选)。</param>
+        <param name="aProxyByPass">不应通过代理访问的服务器名称数组(可选)。</param>
+        <returns>
+            如果连接被打开，则为 TRUE，否则为 FALSE。
+        </returns>
+    </CHttp.Open>
+
+    <CHttp.OpenFile>
+        <summary>
+            打开远程文件。
+        </summary>
+        <param name="cRemoteFile">文件名作为字符串。</param>
+        <param name="nAccess">**缺少参数文档**</param>
+        <param name="nFlags">包含在内部调用中使用的标志(见 Win32 Internet API 帮助中的可能值)。</param>
+        <returns>
+            请求文件的句柄。
+        </returns>
+    </CHttp.OpenFile>
+
+    <CHttp.OpenRequest>
+        <summary>
+            打开一个新的请求。
+        </summary>
+        <param name="cMethod">请求动词(例如GET)。</param>
+        <param name="cDocument">要打开的目标文档的名称。</param>
+        <param name="nFlags">包含在内部 HttpOpenRequest 调用中使用的标志(见 Win32 Internet API 帮助中的可能值)。</param>
+        <returns>
+            如果文档被打开，则为 TRUE，否则为 FALSE。
+        </returns>
+    </CHttp.OpenRequest>
+
+    <CHttp.Response>
+        <summary>
+            使用此方法获取响应。
+        </summary>
+        <value>使用此方法获取响应。</value>
+    </CHttp.Response>
+
+    <CHttp.ResponseHeader>
+        <summary>
+            使用此方法获取响应头部。
+        </summary>
+        <value>使用此方法获取响应头部。</value>
+    </CHttp.ResponseHeader>
+
+    <CHttp.SendRequest>
+        <summary>
+            向服务器发送请求。
+        </summary>
+        <param name="cHeaders">额外的头部(可选)。</param>
+        <param name="pData">数据的指针，大小为 <paramref name="nDataSize" /> (可选)。</param>
+        <param name="nDataSize"><paramref name="pData" /> 中的数据大小(可选，但如果使用了 <paramref name="pData" />，则必须提供)。</param>
+        <returns>
+            如果请求成功，则为 TRUE，否则为 FALSE。
+        </returns>
+    </CHttp.SendRequest>
+
+    <CHttp.SetCurDir>
+        <summary>
+            更改当前进程在远程服务器上的当前目录。
+        </summary>
+        <param name="cRemoteDir">要更改为的目录的路径。</param>
+        <returns>
+            新目录名称作为字符串。
+        </returns>
+    </CHttp.SetCurDir>
+
+    <CIMap>
+        <summary>使用 IMAP 协议读取邮箱的类。</summary>
+    </CIMap>
+
+    <CImap.ctor>
+        <summary>**缺少文档**</summary>
+        <param name="cServer">**缺少参数文档**</param>
+        <param name="cUid">**缺少参数文档**</param>
+        <param name="cPwd">**缺少参数文档**</param>
+    </CImap.ctor>
+
+    <CImap.CheckReply>
+        <summary>**缺少文档**</summary>
+    </CImap.CheckReply>
+
+    <CImap.ClientCommand>
+        <summary>**缺少文档**</summary>
+        <param name="cBuffer">**缺少参数文档**</param>
+    </CImap.ClientCommand>
+
+    <CImap.DeleteMail>
+        <summary>**缺少文档**</summary>
+        <param name="nMail">**缺少参数文档**</param>
+    </CImap.DeleteMail>
+
+    <CImap.Disconnect>
+        <summary>**缺少文档**</summary>
+    </CImap.Disconnect>
+
+    <CImap.GetMail>
+        <summary>**缺少文档**</summary>
+        <param name="nMail">**缺少参数文档**</param>
+    </CImap.GetMail>
+
+    <CImap.GetPrefix>
+        <summary>**缺少文档**</summary>
+    </CImap.GetPrefix>
+
+    <CImap.GetStatus>
+        <summary>**缺少文档**</summary>
+    </CImap.GetStatus>
+
+    <CImap.LogOn>
+        <summary>**缺少文档**</summary>
+        <param name="cUID">**缺少参数文档**</param>
+        <param name="cPwd">**缺少参数文档**</param>
+    </CImap.LogOn>
+
+    <CImap.MailBox>
+        <summary>**缺少文档**</summary>
+    </CImap.MailBox>
+
+    <CImap.SendRemote>
+        <summary>**缺少文档**</summary>
+        <param name="cData">**缺少参数文档**</param>
+    </CImap.SendRemote>
+
+    <CInetDial>
+        <summary>
+            用于建立拨号连接的类
+        </summary>
+        <remarks>
+            该类封装了管理拨号连接的功能
+        </remarks>
+    </CInetDial>
+
+    <CINetDial.ctor>
+        <summary>**缺少文档**</summary>
+        <param name="dwDialFlag">**缺少参数文档**</param>
+        <param name="oOwner">**缺少参数文档**</param>
+        <param name="symNotifyMethod">**缺少参数文档**</param>
+    </CINetDial.ctor>
+
+    <CINetDial.AutoDial>
+        <summary>**缺少文档**</summary>
+        <param name="dwDialFlag">**缺少参数文档**</param>
+    </CINetDial.AutoDial>
+
+    <CINetDial.Dial>
+        <summary>**缺少文档**</summary>
+        <param name="cConnectionName">**缺少参数文档**</param>
+        <param name="dwDialFlag">**缺少参数文档**</param>
+    </CINetDial.Dial>
+
+    <CINetDial.DialFlag>
+        <summary>**缺少文档**</summary>
+    </CINetDial.DialFlag>
+
+    <CINetDial.Error>
+        <summary>**缺少文档**</summary>
+    </CINetDial.Error>
+
+    <CINetDial.ErrorDescription>
+        <summary>**缺少文档**</summary>
+    </CINetDial.ErrorDescription>
+
+    <CINetDial.GetConnectedState>
+        <summary>**缺少文档**</summary>
+    </CINetDial.GetConnectedState>
+
+    <CINetDial.GetConnections>
+        <summary>**缺少文档**</summary>
+    </CINetDial.GetConnections>
+
+    <CINetDial.GetDialUpEntries>
+        <summary>**缺少文档**</summary>
+    </CINetDial.GetDialUpEntries>
+
+    <CINetDial.HangUp>
+        <summary>**缺少文档**</summary>
+        <param name="lAllModems">**缺少参数文档**</param>
+    </CINetDial.HangUp>
+
+    <CINetDial.IsConfigured>
+        <summary>**缺少文档**</summary>
+    </CINetDial.IsConfigured>
+
+    <CINetDial.IsConnected>
+        <summary>**缺少文档**</summary>
+    </CINetDial.IsConnected>
+
+    <CINetDial.IsLan>
+        <summary>**缺少文档**</summary>
+    </CINetDial.IsLan>
+
+    <CINetDial.IsModem>
+        <summary>**缺少文档**</summary>
+    </CINetDial.IsModem>
+
+    <CINetDial.IsOffline>
+        <summary>**缺少文档**</summary>
+    </CINetDial.IsOffline>
+
+    <CINetDial.IsProxy>
+        <summary>**缺少文档**</summary>
+    </CINetDial.IsProxy>
+
+
+    <CINetDial.SetOwner>
+        <summary>**缺少文档**</summary>
+        <param name="oOwner">**缺少参数文档**</param>
+        <param name="symNotifyMethod">**缺少参数文档**</param>
+    </CINetDial.SetOwner>
+
+    <CINetDial.SetSystemOffline>
+        <summary>**缺少文档**</summary>
+        <param name="lEnable">**缺少参数文档**</param>
+    </CINetDial.SetSystemOffline>
+
+    <CINetDial.VerifyConnection>
+        <summary>**缺少文档**</summary>
+        <param name="dwDialFlag">**缺少参数文档**</param>
+        <param name="cConnectionName">**缺少参数文档**</param>
+    </CINetDial.VerifyConnection>
+
+    <CMailAbstract>
+        <summary>
+            CPop, CSmtp 和 CNNTP 类的基类。
+        </summary>
+        <remarks>
+            <br />重要！ CMailAbstract 是一个抽象类，不应直接使用 - 而是使用其子类之一。 
+            这个抽象类定义了电子邮件类(CPop, CSmtp 和 CNNTP)使用的公共协议 - 属性和行为。 
+        </remarks>
+    </CMailAbstract>
+
+    <CMailAbstract.ctor>
+        <summary>
+            构造一个 CMailAbstract 对象。
+        </summary>
+        <param name="nPort">端口号在 <paramref name="cHostNameOrIP" />。默认值为 IPPORT_SMTP(25)。</param>
+        <param name="cServer">
+            包含 Internet 服务器的本地名称的字符串。或者，字符串可以包含 ASCII 点十进制格式的站点IP号(例如，11.22.3.45)。如果指定了 NULL_STRING，将假定本地主机名。
+        </param>
+    </CMailAbstract.ctor>
+
+    <CMailAbstract.Close>
+        <summary>
+            关闭 Internet 会话的所有内部值。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            这个方法通过关闭和销毁适当的 CSocket 对象实例来关闭 Internet 会话。
+        </remarks>
+    </CMailAbstract.Close>
+
+    <CMailAbstract.Destroy>
+        <summary>**缺少文档**</summary>
+    </CMailAbstract.Destroy>
+
+    <CMailAbstract.DomainName>
+        <summary>**缺少文档**</summary>
+    </CMailAbstract.DomainName>
+
+    <CMailAbstract.Email>
+        <summary>
+            表示要发送的电子邮件的 CEmail 对象实例。
+        </summary>
+        <value>表示要发送的电子邮件的 CEmail 对象实例。</value>
+    </CMailAbstract.Email>
+
+    <CMailAbstract.Error>
+        <summary>
+            表示最近发生的错误的数字值。
+        </summary>
+        <value>表示最近发生的错误的数字值。</value>
+    </CMailAbstract.Error>
+
+    <CMailAbstract.ErrorMsg>
+        <summary>
+            表示错误描述的字符串。
+        </summary>
+        <value>表示错误描述的字符串。</value>
+    </CMailAbstract.ErrorMsg>
+
+    <CMailAbstract.InternetStatus>
+        <summary>**缺少文档**</summary>
+        <param name="nContext">**缺少参数文档**</param>
+        <param name="nStatus">**缺少参数文档**</param>
+        <param name="xStatus">**缺少参数文档**</param>
+        <param name="nStatusLength">**缺少参数文档**</param>
+    </CMailAbstract.InternetStatus>
+
+    <CMailAbstract.Open>
+        <summary>
+            初始化 Internet 会话的所有内部启动值。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            这个方法通过创建一个稍后将使用的 CSocket 对象来初始化 Internet 会话。
+        </remarks>
+    </CMailAbstract.Open>
+
+    <CMailAbstract.oSocket>
+        <exclude />
+    </CMailAbstract.oSocket>
+
+    <CMailAbstract.PassWord>
+        <summary>
+            表示要使用的密码的字符串。
+        </summary>
+        <value>表示要使用的密码的字符串。</value>
+    </CMailAbstract.PassWord>
+
+    <CMailAbstract.RecvRemote>
+        <summary>
+            从远程主机接收数据。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            RecvRemote() 方法从连接的远程主机接收数据。接收到的数据存储到实例变量 SELF:cReply 中。
+        </remarks>
+    </CMailAbstract.RecvRemote>
+
+    <CMailAbstract.RemoteHost>
+        <summary>
+            表示邮件服务器的地址的字符串。
+        </summary>
+        <value>表示邮件服务器的地址的字符串。</value>
+    </CMailAbstract.RemoteHost>
+
+    <CMailAbstract.RemotePort>
+        <summary>
+            表示端口号的数字值。
+        </summary>
+        <value>表示端口号的数字值。</value>
+    </CMailAbstract.RemotePort>
+
+    <CMailAbstract.ReplyCode>
+        <summary>
+            表示服务器回复代码的数字值。
+        </summary>
+        <value>表示服务器回复代码的数字值。</value>
+    </CMailAbstract.ReplyCode>
+
+    <CMailAbstract.ReplyString>
+        <summary>
+            表示服务器回复的字符串。
+        </summary>
+        <value>表示服务器回复的字符串。</value>
+    </CMailAbstract.ReplyString>
+
+    <CMailAbstract.SendData>
+        <summary>
+            向远程主机发送数据。
+        </summary>
+        <param name="cData">要发送到远程主机的数据。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            这个方法通过向数据流添加尾随CRLF来发送数据到远程主机。
+        </remarks>
+    </CMailAbstract.SendData>
+
+    <CMailAbstract.SendRaw>
+        <summary>**缺少文档**</summary>
+        <param name="cData">**缺少参数文档**</param>
+    </CMailAbstract.SendRaw>
+
+    <CMailAbstract.SendRemote>
+        <summary>
+            向远程主机发送任何数据。
+        </summary>
+        <param name="cData">要发送到远程主机的数据。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            这个方法通过一个套接字向远程主机发送数据。
+        </remarks>
+    </CMailAbstract.SendRemote>
+
+    <CMailAbstract.Socket>
+        <summary>
+            表示使用的套接字的 CSocket 对象实例。
+        </summary>
+        <value>表示使用的套接字的 CSocket 对象实例。</value>
+    </CMailAbstract.Socket>
+
+    <CMailAbstract.Timeout>
+        <summary>
+            表示超时时间的数字值(以毫秒为单位)。
+        </summary>
+        <value>表示超时时间的数字值(以毫秒为单位)。</value>
+    </CMailAbstract.Timeout>
+
+    <CMailAbstract.TimeoutRetries>
+        <summary>**缺少文档**</summary>
+    </CMailAbstract.TimeoutRetries>
+
+    <CMailAbstract.UserName>
+        <summary>
+            表示要使用的用户名的字符串。
+        </summary>
+        <value>表示要使用的用户名的字符串。</value>
+    </CMailAbstract.UserName>
+
+    <CMessage>
+        <summary>
+            CEmail类的基类。
+        </summary>
+        <remarks>
+            <br />重要！ CMessage 是一个抽象类，不应直接使用 - 而是使用其子类之一。 这个抽象类定义了电子邮件类(CEmail)使用的公共协议 - 属性和行为。 
+        </remarks>
+    </CMessage>
+
+    <CMessage.ctor>
+        <summary>
+            构造一个新的 CMessage 对象。
+        </summary>
+    </CMessage.ctor>
+
+    <CMessage.AttachmentCount>
+        <summary>**缺少文档**</summary>
+    </CMessage.AttachmentCount>
+
+    <CMessage.AttachmentFileList>
+        <summary>
+            附件的文件名数组。 (仅由 CNews 使用。)
+        </summary>
+        <value>附件的文件名数组。 (仅由 CNews 使用。)</value>
+    </CMessage.AttachmentFileList>
+
+    <CMessage.AttachmentList>
+        <summary>**缺少文档**</summary>
+    </CMessage.AttachmentList>
+
+    <CMessage.Body>
+        <summary>**缺少文档**</summary>
+    </CMessage.Body>
+
+    <CMessage.BodyExtract>
+        <summary>**缺少文档**</summary>
+        <param name="c">**缺少参数文档**</param>
+    </CMessage.BodyExtract>
+
+    <CMessage.BodyHtml>
+        <summary>**缺少文档**</summary>
+    </CMessage.BodyHtml>
+
+    <CMessage.Boundary>
+        <summary>
+            表示电子邮件的主要边界的字符串。
+        </summary>
+        <value>表示电子邮件的主要边界的字符串。</value>
+    </CMessage.Boundary>
+
+    <CMessage.Cargo>
+        <summary>**缺少文档**</summary>
+    </CMessage.Cargo>
+
+    <CMessage.ContentType>
+        <summary>
+            表示当前部分的内容类型的字符串。
+        </summary>
+        <value>表示当前部分的内容类型的字符串。</value>
+    </CMessage.ContentType>
+
+    <CMessage.Decode>
+        <summary>
+            将原始消息字符串解码为其各个部分。
+        </summary>
+        <param name="cMail">要解码的原始字符串。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CMessage.Decode>
+
+    <CMessage.DecodeAndSaveAs>
+        <summary>
+            这是 CMessage:SaveAs() 调用的抽象方法，如果代码类型未知。
+            开发人员可以使用该方法来实现不支持的代码类型。
+        </summary>
+        <remarks>
+            <br />重要！ 这是 X# 使用的回调方法。通常，不应在应用程序代码中调用它。 </remarks>
+        <param name="cPath">保存文件时要使用的路径。</param>
+        <param name="cFile">要使用的文件名。</param>
+        <param name="cMail">要解码的原始字符串。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CMessage.DecodeAndSaveAs>
+
+    <CMessage.Error>
+        <summary>
+            表示最近发生的错误的数字值。
+        </summary>
+        <value>表示最近发生的错误的数字值。</value>
+    </CMessage.Error>
+
+    <CMessage.ErrorMsg>
+        <summary>
+            表示最近错误的详细信息的字符串。
+        </summary>
+        <value>表示最近错误的详细信息的字符串。</value>
+    </CMessage.ErrorMsg>
+
+    <CMessage.FakeAttachmentList>
+        <summary>
+            获取附件的原始文件名。
+        </summary>
+        <returns>
+            返回一个字符串，其中包含附件的原始文件名。
+        </returns>
+    </CMessage.FakeAttachmentList>
+
+    <CMessage.FromAddress>
+        <summary>
+            表示发件人的电子邮件地址的字符串。
+        </summary>
+        <value>表示发件人的电子邮件地址的字符串。</value>
+    </CMessage.FromAddress>
+
+    <CMessage.FromName>
+        <summary>
+            表示发件人的名称的字符串。
+        </summary>
+        <value>表示发件人的名称的字符串。</value>
+    </CMessage.FromName>
+
+    <CMessage.GetAttachInfo>
+        <summary>
+            获取有关附件的信息。
+        </summary>
+        <param name="c">可选的附件字符串。</param>
+        <param name="lNewsGroupMessage">一个逻辑标志，指示 <paramref name="c" /> 是否是新闻组消息。</param>
+    </CMessage.GetAttachInfo>
+
+    <CMessage.GetHeaderInfo>
+        <summary>
+            提取所有头信息并将该信息存储到适当的属性中。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CMessage.GetHeaderInfo>
+
+    <CMessage.HEADER>
+        <summary>**缺少文档**</summary>
+    </CMessage.HEADER>
+
+    <CMessage.MailBody>
+        <summary>
+            表示电子邮件正文的整个内容的字符串。这将包括所有附件和多部分扩展。
+        </summary>
+        <value>表示电子邮件正文的整个内容的字符串。这将包括所有附件和多部分扩展。</value>
+    </CMessage.MailBody>
+
+    <CMessage.MailDate>
+        <summary>
+            返回消息的创建日期。
+        </summary>
+        <value>消息的创建日期。</value>
+    </CMessage.MailDate>
+
+    <CMessage.MailHeader>
+        <summary>
+            表示电子邮件的整个头部内容的字符串。
+        </summary>
+        <value>表示电子邮件的整个头部内容的字符串。</value>
+    </CMessage.MailHeader>
+
+    <CMessage.MailTime>
+        <summary>
+            返回消息的创建时间作为字符串。
+        </summary>
+        <value>消息的创建时间作为字符串。</value>
+    </CMessage.MailTime>
+
+    <CMessage.MessageID>
+        <summary>
+            表示电子邮件的唯一消息ID的字符串。
+        </summary>
+        <value>表示电子邮件的唯一消息ID的字符串。</value>
+    </CMessage.MessageID>
+
+    <CMessage.Priority>
+        <summary>**缺少文档**</summary>
+    </CMessage.Priority>
+
+    <CMessage.References>
+        <summary>**缺少文档**</summary>
+    </CMessage.References>
+
+    <CMessage.ReplyTo>
+        <summary>**缺少文档**</summary>
+    </CMessage.ReplyTo>
+
+    <CMessage.SaveAs>
+        <summary>
+            解码并保存附件。
+        </summary>
+        <param name="cPath">可选的目录，其中文件将被保存。</param>
+        <param name="cFile">可选的文件名，保存附件。</param>
+        <param name="n">要保存的附件。如果未指定，将保存第一个附件。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CMessage.SaveAs>
+
+    <CMessage.SetMailTime>
+        <summary>
+            将当前时间和日期转换为当前消息对象的 Internet 时间戳字符串。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CMessage.SetMailTime>
+
+    <CMessage.SubBoundary>
+        <summary>
+            一个字符串，表示多部分替代电子邮件的子边界。这是一个既包含文本又包含 HTML 组件的边界。
+        </summary>
+        <value>一个字符串，表示多部分替代电子邮件的子边界。这是一个既包含文本又包含 HTML 组件的边界。</value>
+    </CMessage.SubBoundary>
+
+    <CMessage.Subject>
+        <summary>**缺少文档**</summary>
+    </CMessage.Subject>
+
+    <CMessage.TimeStamp>
+        <summary>
+            返回消息的创建日期和时间，作为时间戳字符串。
+        </summary>
+        <value>消息的创建日期和时间，作为时间戳字符串。</value>
+    </CMessage.TimeStamp>
+
+    <CMessage.TransferEncoding>
+        <summary>
+            一个字符串，表示当前部分的传输编码类型。
+        </summary>
+        <value>一个字符串，表示当前部分的传输编码类型。</value>
+    </CMessage.TransferEncoding>
+
+    <CNews>
+        <summary>
+            封装 Internet 新闻消息。
+        </summary>
+        <remarks>
+            此类用于从新闻组中检索消息。
+        </remarks>
+    </CNews>
+
+    <CNews.ctor>
+        <summary>
+            构造一个新的 CNews 对象。
+        </summary>
+        <param name="xData">可选的原始新闻消息，将其解码为其各个部分。</param>
+    </CNews.ctor>
+
+    <CNews.FollowUpTo>
+        <summary>
+            返回新闻消息头的 FollowUpTo 字段的字符串。
+        </summary>
+        <value>新闻消息头的 FollowUpTo 字段的字符串。</value>
+    </CNews.FollowUpTo>
+
+    <CNews.GetAttachInfo>
+        <summary>
+            返回有关任何附件的信息。
+        </summary>
+        <param name="c">可选的附件字符串。</param>
+    </CNews.GetAttachInfo>
+
+    <CNews.GetHeaderInfo>
+        <summary>
+            提取所有头信息并将该信息存储到相应的属性中。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CNews.GetHeaderInfo>
+
+    <CNews.NewsGroups>
+        <summary>
+            返回新闻消息头的 NewsGroups 字段的字符串。
+        </summary>
+        <value>新闻消息头的 NewsGroups 字段的字符串。</value>
+    </CNews.NewsGroups>
+
+    <CNews.Organization>
+        <summary>
+            返回新闻消息头的 Organization 字段的字符串。
+        </summary>
+        <value>新闻消息头的 Organization 字段的字符串。</value>
+    </CNews.Organization>
+
+    <CNews.Path>
+        <summary>
+            返回新闻消息头的 Path 字段的字符串。
+        </summary>
+        <value>新闻消息头的 Path 字段的字符串。</value>
+    </CNews.Path>
+
+    <CNews.Sender>
+        <summary>
+            返回新闻消息头的 Sender 字段的字符串。
+        </summary>
+        <value>新闻消息头的 Sender 字段的字符串。</value>
+    </CNews.Sender>
+
+    <CNews.Size>
+        <summary>
+            返回新闻消息的大小的字符串。
+        </summary>
+        <value>新闻消息的大小的字符串。</value>
+    </CNews.Size>
+
+    <CNNTP>
+        <summary>
+            基于 NNTP(网络新闻传输协议)创建一个 Internet 新闻服务器。
+        </summary>
+        <remarks>
+            封装一个到基于 NNTP(网络新闻传输协议)的 Internet 新闻服务器的 Internet 会话。
+        </remarks>
+    </CNNTP>
+
+    <CNNTP.ctor>
+        <summary>
+            构造一个新的NNTP对象。
+        </summary>
+        <param name="cServer">Internet 新闻服务器的本地名称。</param>
+        <param name="cUid">可选的用户ID作为字符串。</param>
+        <param name="cPwd">可选的密码作为字符串。</param>
+    </CNNTP.ctor>
+
+    <CNNTP.Authenticate>
+        <summary>
+            将用户身份验证到 NNTP 服务器。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            <note type="tip">
+                应当在初始化 CNNTP 对象时指定用户ID和密码。
+            </note>
+        </remarks>
+    </CNNTP.Authenticate>
+
+    <CNNTP.CheckReply>
+        <summary>
+            确定服务器的回复是否成功。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CNNTP.CheckReply>
+
+    <CNNTP.connect>
+        <summary>
+            连接到一个 Internet 邮件服务器。
+        </summary>
+        <param name="cIP">包含 Internet 服务器本地名称的可选字符串。默认为本地主机名。</param>
+        <param name="n">在 cIP 上使用的可选端口号。默认为 IPPORT_SMTP (25)。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CNNTP.connect>
+
+    <CNNTP.CurrentNews>
+        <summary>
+            CNNTP 类的当前 CNews 对象。
+        </summary>
+        <value>CNNTP 类的当前 CNews 对象。</value>
+    </CNNTP.CurrentNews>
+
+    <CNNTP.Disconnect>
+        <summary>
+            从新闻服务器断开连接。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CNNTP.Disconnect>
+
+    <CNNTP.GetArticle>
+        <summary>
+            从选定的组中检索指定的消息。
+        </summary>
+        <param name="xMsg">这可以是一个数字ID或包含唯一标识符的字符串。如果 xMsg 未指定，则假设当前消息。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CNNTP.GetArticle>
+
+    <CNNTP.GetBody>
+        <summary>
+            从选定的组中检索指定的消息体。
+        </summary>
+        <param name="xMsg">这可以是一个数字ID或包含唯一标识符的字符串。如果 xMsg 未指定，则假设当前消息。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CNNTP.GetBody>
+
+    <CNNTP.GetHeader>
+        <summary>
+            从选定的组中检索指定的消息头。
+        </summary>
+        <param name="xMsg">这可以是一个数字ID或包含唯一标识符的字符串。如果 xMsg 未指定，则假设当前消息。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CNNTP.GetHeader>
+
+    <CNNTP.GetList>
+        <summary>
+            返回包含 cSearch 在其名称中的所有组的列表。
+        </summary>
+        <param name="cSearch">要搜索的字符串。如果 cSearch 未指定，则结果列表包含所有组。</param>
+        <returns>
+            组的数组。
+        </returns>
+    </CNNTP.GetList>
+
+    <CNNTP.GetNewGroups>
+        <summary>
+            返回包含 cSearch 在其名称中的所有新创建的组的列表。
+        </summary>
+        <param name="cSearch">要搜索的可选字符串。如果 cSearch 未指定，则结果列表包含所有组。</param>
+        <param name="dDate">要接受的最早创建日期的可选日期。</param>
+        <param name="cTime">要接受的最早创建时间的可选字符串。</param>
+        <param name="lGmt">一个可选的逻辑值，决定是否使用 GMT 时间。</param>
+        <returns>
+            组的数组。
+        </returns>
+    </CNNTP.GetNewGroups>
+
+    <CNNTP.GetNewNews>
+        <summary>
+            返回特定组或组列表中所有新创建的消息的列表。
+        </summary>
+        <param name="cGroups">
+            要查询的组(例如'comp.lang.clipper.visual-objects)或组列表(例如'comp.lang.clipper.*')。</param>
+        <param name="dDate">要接受的最早消息创建日期的可选日期。</param>
+        <param name="cTime">要接受的最早消息创建时间的可选字符串。</param>
+        <param name="lGmt">一个可选的逻辑值，决定是否使用 GMT 时间。</param>
+        <returns>
+            新创建的消息的数组。
+        </returns>
+    </CNNTP.GetNewNews>
+
+    <CNNTP.GetStatus>
+        <summary>
+            从选定的组中检索指定的消息状态。
+        </summary>
+        <param name="xMsg">这可以是一个数字ID或包含唯一标识符的字符串。如果xMsg未指定，则假设当前消息。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CNNTP.GetStatus>
+
+    <CNNTP.GroupName>
+        <summary>
+            返回当前选定组的名称作为字符串。
+        </summary>
+        <value>当前选定组的名称作为字符串。</value>
+    </CNNTP.GroupName>
+
+    <CNNTP.Message>
+        <summary>
+            返回当前处理的消息的数字ID。
+        </summary>
+        <value>当前处理的消息的数字ID。</value>
+    </CNNTP.Message>
+
+    <CNNTP.MessageCount>
+        <summary>
+            返回当前选定组中的消息数量。
+        </summary>
+        <value>当前选定组中的消息数量。</value>
+    </CNNTP.MessageCount>
+
+    <CNNTP.MessageFirst>
+        <summary>
+            返回当前选定组中第一个可用的消息的数字ID。
+        </summary>
+        <value>当前选定组中第一个可用的消息的数字ID。</value>
+    </CNNTP.MessageFirst>
+
+    <CNNTP.MessageID>
+        <summary>
+            返回当前处理的消息的唯一消息ID作为字符串。
+        </summary>
+        <value>当前处理的消息的唯一消息ID作为字符串。</value>
+    </CNNTP.MessageID>
+
+    <CNNTP.MessageLast>
+        <summary>
+            返回当前选定组中最后一个可用的消息的数字ID。
+        </summary>
+        <value>当前选定组中最后一个可用的消息的数字ID。</value>
+    </CNNTP.MessageLast>
+
+    <CNNTP.Post>
+        <summary>**缺少文档**</summary>
+        <param name="oMsg">**缺少参数文档**</param>
+    </CNNTP.Post>
+
+    <CNNTP.PrepareCommand>
+        <summary>**缺少文档**</summary>
+        <param name="cCommand">**缺少参数文档**</param>
+        <param name="xMsg">**缺少参数文档**</param>
+    </CNNTP.PrepareCommand>
+
+    <CNNTP.RecvData>
+        <summary>**缺少文档**</summary>
+        <param name="cCommand">**缺少参数文档**</param>
+        <param name="nRetCode">**缺少参数文档**</param>
+    </CNNTP.RecvData>
+
+    <CNNTP.RecvRemote>
+        <summary>
+            通过套接字从新闻服务器检索数据。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            <note type="tip">
+                检索到的数据将以CRLF结尾。
+            </note>
+        </remarks>
+    </CNNTP.RecvRemote>
+
+    <CNNTP.ReplyString>
+        <summary>
+            返回来自 NNTP 服务器的最新回复作为字符串。
+        </summary>
+        <value>来自 NNTP 服务器的最新回复作为字符串。</value>
+    </CNNTP.ReplyString>
+
+    <CNNTP.SendHeader>
+        <summary>**缺少文档**</summary>
+    </CNNTP.SendHeader>
+
+    <CNNTP.SendMailBody>
+        <summary>**缺少文档**</summary>
+    </CNNTP.SendMailBody>
+
+    <CNNTP.SetNewsGroup>
+        <summary>
+            从NTTP服务器选择一个新闻组，以便进一步处理。
+        </summary>
+        <param name="cGroup">要选择的组的名称作为字符串。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CNNTP.SetNewsGroup>
+
+    <CNNTP.SetReadMode>
+        <summary>**缺少文档**</summary>
+    </CNNTP.SetReadMode>
+
+    <CNNTP.SkipNext>
+        <summary>
+            将内部消息指针设置为当前组的下一个可用的消息。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CNNTP.SkipNext>
+
+    <CNNTP.SkipPrev>
+        <summary>
+            将内部消息指针设置为当前组的上一个可用的消息。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CNNTP.SkipPrev>
+
+    <CPop>
+        <summary>
+            提供一个类来处理 Internet 邮局协议(POP)。
+        </summary>
+        <remarks>
+            该类提供了从 Internet POP 服务器检查和接收电子邮件所需的所有方法和属性。
+        </remarks>
+    </CPop>
+
+    <CPop.ctor>
+        <summary>
+            构造一个 CPop 对象。
+        </summary>
+        <param name="cServer">包含有效 POP 服务器主机名的字符串。或者，字符串可以包含 POP 服务器的 IP 号，以 ASCII 点分十进制格式(例如，11.22.3.45)。</param>
+        <param name="cUserName">用户 ID。</param>
+        <param name="cPassword">用户的密码。</param>
+        <param name="nPort">**缺少参数文档**</param>
+        <param name="oEMailStorage">**缺少参数文档**</param>
+    </CPop.ctor>
+
+    <CPop.CheckReply>
+        <summary>
+            检查 POP 服务器的响应是否包含错误代码。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            该方法检查 POP 服务器的响应字符串，检查错误代码，并设置 ReplyCode、ReplyString 和 Error 属性。
+        </remarks>
+    </CPop.CheckReply>
+
+    <CPop.connect>
+        <summary>
+            与远程 POP 服务器建立连接。
+        </summary>
+        <param name="cIP">包含 Internet 服务器主机名的字符串。或者，字符串可以包含 POP 服务器的 IP 号，以 ASCII 点分十进制格式(例如，11.22.3.45)。</param>
+        <param name="n">
+            在 <paramref name="cHostNameOrIP" /> 的端口号。如果未指定，将在端口 SELF:RemotePort 或默认端口 IPPORT_POP(110) 上建立连接。
+        </param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks> 该方法在指定的远程邮件服务器的端口 <paramref name="nPort" /> 或 SELF:RemotePort 上建立连接。 </remarks>
+    </CPop.connect>
+
+    <CPop.DeleteMail>
+        <summary>
+            从远程 POP 服务器删除指定的邮件。
+        </summary>
+        <param name="nMail">要从队列中删除的电子邮件消息的编号。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            该方法从远程 POP 服务器删除指定的电子邮件消息。
+        </remarks>
+        <example> 
+            下面的函数收集所有等待的电子邮件消息，并从远程 POP 服务器删除它们： 
+            <code language="X#">
+                FUNC POPGetMails (cServerIP AS STRING,;
+                                    cUser   AS STRING,;
+                                    cPassW  AS STRING,;
+                                    lDelete AS LOGIC ) AS ARRAY PASCAL
+                    LOCAL oPop AS CPop
+                    LOCAL aRet AS ARRAY
+                    LOCAL i,n AS INT
+
+                    oPop := CPop{cServerIP}
+
+                    IF oPop:Logon(cUser, cPassW)
+                        oPop:GetStatus()
+                        n       := oPop:MailCount
+                        aRet    := oPop:ListMail()
+
+                        IF lDelete
+                            // 删除所有消息
+                            FOR i := 1 TO n
+                                oPop:DeleteMail(i)
+                            NEXT
+                        ENDIF
+                    ENDIF
+
+                    oPop:Disconnect()
+
+                    RETURN aRet
+            </code>
+        </example>
+    </CPop.DeleteMail>
+
+    <CPop.Disconnect>
+        <summary>
+            关闭当前的 POP 连接。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            该方法可以用于关闭到 POP3 服务器的连接。
+        </remarks>
+        <example>
+            参见 CPop:DeleteMail() 示例。
+        </example>
+    </CPop.Disconnect>
+
+    <CPop.Email>
+        <summary>**缺少文档 **</summary>
+    </CPop.Email>
+
+    <CPop.GetList>
+        <summary>
+            返回等待在服务器上的特定电子邮件的信息数组的方法。
+        </summary>
+        <param name="nMail">正在调查的电子邮件的编号</param>
+        <returns>
+            由字符串数组表示的日期，时间，发件人名称和该电子邮件的主题。
+            {cDate, cTime, cSender, cSubject}
+        </returns>
+        <remarks>
+            该方法查询服务器并返回等待下载的电子邮件的信息。用户可以根据这些信息决定哪些邮件下载或删除。
+        </remarks>
+    </CPop.GetList>
+
+    <CPop.GetListIDs>
+        <summary>**缺少文档 **</summary>
+        <param name="nMail">** 缺少参数文档 **</param>
+    </CPop.GetListIDs>
+
+    <CPop.GetMail>
+        <summary>
+            从远程 POP 服务器读取指定的邮件。
+        </summary>
+        <param name="nMail">要从队列中读取的电子邮件消息的编号。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            该方法从远程 POP 服务器读取指定的电子邮件消息，并将其解码为其 MailHeader， MailBody 和 Attachment 部分。
+        </remarks>
+        <example> 
+            下面的函数从远程POP服务器读取指定的电子邮件消息： 
+            <code language="X#">
+                FUNC POPReadMail (cServerIP AS STRING,;
+                                    cUser   AS STRING,;
+                                    cPassW  AS STRING,;
+                                    nMail   AS INT ) AS ARRAY PASCAL
+                LOCAL oPop AS CPop
+                LOCAL aRet AS ARRAY
+                LOCAL n AS INT
+
+                oPop := CPop{cServerIP}
+
+                IF oPop:Logon(cUser, cPassW)
+                    oPop:GetStatus()
+                    n := oPop:MailCount
+
+                    IF nMail &lt;= n
+                        IF oPop:GetMail(nMail)
+                            aRet    := ArrayCreate(3)
+                            aRet[1] := oPop:MailHeader
+                            aRet[2] := oPop:MailBody
+                            aRet[3] := oPop:Attachment
+                        ENDIF
+                    ENDIF
+                ENDIF
+
+                oPop:Disconnect()
+
+                RETURN aRet
+            </code>
+        </example>
+    </CPop.GetMail>
+
+    <CPop.GetMailTop>
+        <summary>**缺少文档 **</summary>
+        <param name="nMail">** 缺少参数文档 **</param>
+        <param name="nBodyLines">** 缺少参数文档 **</param>
+    </CPop.GetMailTop>
+
+    <CPop.GetStatus>
+        <summary>
+            从远程 POP 服务器获取当前活动用户的邮件状态。
+        </summary>
+        <returns>
+            包含当前状态的字符串。
+        </returns>
+        <remarks>
+            该方法请求当前活动用户的状态，该用户必须已登录，并将结果保存到 MailHeader，MailCount 和 TotalBytes属性中。
+        </remarks>
+        <example>
+            参见 CPop:DeleteMail() 示例。
+        </example>
+    </CPop.GetStatus>
+
+    <CPop.ListMail>
+        <summary>
+            从远程 POP 服务器读取所有电子邮件。
+        </summary>
+        <returns>
+            如果成功，返回所有电子邮件的数组；否则，返回一个空数组。
+        </returns>
+        <remarks>
+            该方法从远程 POP 服务器读取所有电子邮件，并将它们作为原始字符串放入一个数组中，每个字符串包含每个邮件的头部，正文和附件。
+        </remarks>
+        <example>
+            参见CPop:DeleteMail()示例。
+        </example>
+    </CPop.ListMail>
+
+    <CPop.ListMailIDs>
+        <summary>
+            返回等待在服务器上等待下载的电子邮件的邮件ID数组的方法。
+        </summary>
+        <returns>
+            包含邮件ID的邮件ID数组，格式如下。
+            {{nNum, cID}, …}
+        </returns>
+        <remarks>
+            该方法查询服务器并返回邮件编号及其对应的ID的列表。这些信息可以用于防止重复下载，其中需要检查头部或下载但未从服务器删除的邮件。
+        </remarks>
+    </CPop.ListMailIDs>
+
+    <CPop.LogOn>
+        <summary>
+            登录用户到已连接的 POP 服务器。
+        </summary>
+        <param name="cUID">用户ID。</param>
+        <param name="cPwd">用户的密码。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <example>
+            参见 CPop:DeleteMail() 示例。
+        </example>
+    </CPop.LogOn>
+
+    <CPop.MailboxInfo>
+        <summary>
+            一个参数数组，表示等待在服务器上等待下载的电子邮件的信息。数组的格式，每个邮件一个，如下所示：
+            {{cDate, cTime, cSender, cSubject}, …}
+            数组的每个元素都是一个字符串。
+        </summary>
+        <value>
+            一个参数数组，表示等待在服务器上等待下载的电子邮件的信息。数组的格式，每个邮件一个，如下所示：
+            {{cDate, cTime, cSender, cSubject}, …}
+            数组的每个元素都是一个字符串。
+        </value>
+    </CPop.MailboxInfo>
+
+    <CPop.MailCount>
+        <summary>
+            表示特定用户的电子邮件数量的数字值。
+        </summary>
+        <value>表示特定用户的电子邮件数量的数字值。</value>
+    </CPop.MailCount>
+
+    <CPop.PassWord>
+        <summary>
+            表示用户密码的字符串。
+        </summary>
+        <value>表示用户密码的字符串。</value>
+    </CPop.PassWord>
+
+    <CPop.ReceiveBytes>
+        <summary>
+            表示接收的字节数的数字值。
+        </summary>
+        <value>表示接收的字节数的数字值。</value>
+    </CPop.ReceiveBytes>
+
+    <CPop.RecvRemote>
+        <summary>
+            从远程邮件服务器接收响应数据。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            该方法从已连接的远程 POP 服务器接收数据。接收的数据存储到 ReplyString 属性中。
+        </remarks>
+    </CPop.RecvRemote>
+
+    <CPop.TotalBytes>
+        <summary>
+            表示特定用户的所有电子邮件的总大小。
+        </summary>
+        <value>表示特定用户的所有电子邮件的总大小。</value>
+    </CPop.TotalBytes>
+
+    <CPop.UserName>
+        <summary>
+            表示用户名称的字符串。
+        </summary>
+        <value>表示用户名称的字符串。</value>
+    </CPop.UserName>
+
+    <CSession>
+        <summary>
+            用于包装 Internet 会话的抽象类。
+        </summary>
+        <remarks>
+            该类提供了所有必要的方法和属性，作为通过 Ftp 和 Http 发送和接收文件的基础。
+        </remarks>
+    </CSession>
+
+    <CSession.ctor>
+        <summary>
+            构造一个CSession对象。
+        </summary>
+        <param name="cCaption">可选的标题，作为字符串。</param>
+        <param name="n">可选的端口号。如果未提供，则默认为0。</param>
+        <param name="lStat">** 缺少参数文档 **</param>
+    </CSession.ctor>
+
+    <CSession.AccessType>
+        <summary>
+            Internet 会话的类型。
+            默认类型为 INTERNET_OPEN_TYPE_DIRECT。
+            备用类型为 INTERNET_OPEN_TYPE_PROXY。
+        </summary>
+        <value>
+            Internet 会话的类型。
+            默认类型为 INTERNET_OPEN_TYPE_DIRECT。
+            备用类型为 INTERNET_OPEN_TYPE_PROXY。
+        </value>
+    </CSession.AccessType>
+
+    <CSession.CloseFile>
+        <summary>
+            关闭远程文件。
+        </summary>
+        <param name="hFile">要关闭的文件的句柄。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CSession.CloseFile>
+
+    <CSession.CloseRemote>
+        <summary>
+            关闭 Internet 连接。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CSession.CloseRemote>
+
+    <CSession.Connected>
+        <summary>
+            表示连接状态的逻辑值。
+        </summary>
+        <value>表示连接状态的逻辑值。</value>
+    </CSession.Connected>
+
+    <CSession.ConnectHandle>
+        <summary>
+            Internet 连接句柄。
+        </summary>
+        <value>Internet 连接句柄。</value>
+    </CSession.ConnectHandle>
+
+    <CSession.ConnectRemote>
+        <summary>
+            打开到 Internet 服务器的连接。
+        </summary>
+        <param name="cIP">远程服务器的主机名或IP地址。</param>
+        <param name="nService">表示要访问的服务类型的常量。</param>
+        <param name="nFlags">在内部 InternetConnect 调用中使用的标志。</param>
+        <param name="nContext">返回的连接句柄的应用程序上下文的标识符。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CSession.ConnectRemote>
+
+    <CSession.Destroy>
+        <summary>**缺少文档 **</summary>
+    </CSession.Destroy>
+
+    <CSession.Error>
+        <summary>
+            收到的最后一个错误代码的编号。
+        </summary>
+        <value>收到的最后一个错误代码的编号。</value>
+    </CSession.Error>
+
+    <CSession.ErrorMsg>
+        <summary>
+            表示收到的最后一个错误消息的字符串。
+        </summary>
+        <value>表示收到的最后一个错误消息的字符串。</value>
+    </CSession.ErrorMsg>
+
+    <CSession.Handle>
+        <summary>
+            Internet 会话的句柄。
+        </summary>
+        <value>Internet 会话的句柄。</value>
+    </CSession.Handle>
+
+    <CSession.InternetStatus>
+        <summary>**缺少文档 **</summary>
+        <param name="nContext">**缺少参数文档 **</param>
+        <param name="nStatus">**缺少参数文档 **</param>
+        <param name="pStatusInfo">**缺少参数文档 **</param>
+        <param name="nStatusLength">**缺少参数文档 **</param>
+    </CSession.InternetStatus>
+
+    <CSession.ogStatus>
+        <exclude />
+    </CSession.ogStatus>
+
+    <CSession.oLock>
+        <exclude />
+    </CSession.oLock>
+
+    <CSession.Open>
+        <summary>
+            打开到 Internet 服务器的连接。
+        </summary>
+        <param name="nFlags">在内部 InternetConnect 调用中使用的标志。</param>
+        <param name="xProxy">可选的代理服务器的名称。</param>
+        <param name="aProxyByPass">一个不应通过代理访问的服务器名称的可选数组。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </CSession.Open>
+
+    <CSession.OpenFlags>
+        <summary>**缺少文档 **</summary>
+    </CSession.OpenFlags>
+
+    <CSession.PassWord>
+        <summary>
+            建立远程连接所需的密码。
+        </summary>
+        <value>建立远程连接所需的密码。</value>
+    </CSession.PassWord>
+
+    <CSession.Port>
+        <summary>
+            当前会话通信的端口号。
+        </summary>
+        <value>当前会话通信的端口号。</value>
+    </CSession.Port>
+
+    <CSession.Proxy>
+        <summary>
+            表示远程连接的代理的字符串。
+        </summary>
+        <value>表示远程连接的代理的字符串。</value>
+    </CSession.Proxy>
+
+    <CSession.ProxyBypass>
+        <summary>
+            表示建立远程连接时应绕过的代理的字符串。
+        </summary>
+        <value>表示建立远程连接时应绕过的代理的字符串。</value>
+    </CSession.ProxyBypass>
+
+    <CSession.RemoteHost>
+        <summary>
+            表示远程服务器的主机名或IP地址的字符串。
+        </summary>
+        <value>表示远程服务器的主机名或IP地址的字符串。</value>
+    </CSession.RemoteHost>
+
+    <CSession.SetResponseStatus>
+        <summary>**缺少文档 **</summary>
+    </CSession.SetResponseStatus>
+
+    <CSession.UserName>
+        <summary>
+            建立远程连接所需的用户ID。
+        </summary>
+        <value>建立远程连接所需的用户ID。</value>
+    </CSession.UserName>
+
+    <CSmtp>
+        <summary>
+            提供一个类来处理 Internet 协议 SMTP。
+        </summary>
+        <remarks>
+            该类提供了所有必要的方法和属性，用于向简单邮件传输协议(SMTP)服务器发送电子邮件。
+        </remarks>
+        <example>
+            <code language="X#">
+                FUNCTION SMTPSendMail (cServerIP      AS STRING,;
+                                        cMailSubject  AS STRING,;
+                                        xDestUser     AS USUAL,;
+                                        xCCUser       AS USUAL,;
+                                        cBody         AS STRING,;
+                                        cFromAddress  AS STRING,;
+                                        xAttachFile   AS USUAL,;
+                                        cFromName     AS STRING,;
+                                        xBCCUser      AS USUAL,;
+                                        cCargo        AS STRING) AS LOGIC PASCAL
+                LOCAL oSmtp AS CSMTP
+                LOCAL lRet AS LOGIC
+                LOCAL oEmail AS CEmail
+
+                oEMail              := CEmail{}
+                oEmail:FromAddress  := cFromAddress
+                oEmail:FromName     := cFromName
+                oEmail:Cargo        := cCargo
+                oEmail:Subject      := cMailSubject
+                oEmail:DestList     := xDestUser
+                oEmail:CCList       := xCCUser
+                oEmail:BCCList      := xBCCUser
+                oEmail:MailBody     := cBody
+
+                IF !IsNil(xAttachFile)
+                    oEmail:AttachmentFileList := xAttachFile
+                ENDIF
+
+                oSmtp := CSmtp{oEmail}
+                oSMtp:RemoteHost := cServerIP
+                oSmtp:TimeOut := 5000
+
+                lRet := oSmtp:SendMail()
+
+                RETURN lRet
+            </code>
+        </example>
+    </CSmtp>
+
+    <CSmtp.ctor>
+        <summary>
+            构造一个 CSmtp 对象。
+        </summary>
+        <param name="oMail">一个 CEmail 对象。如果省略，将创建一个通用(空)的 CEmail 对象。</param>
+        <param name="cServer">类应连接到的远程主机的名称</param>
+        <param name="nPort">类应连接到的远程主机的电子邮件端口。默认为25</param>
+    </CSmtp.ctor>
+
+    <CSmtp.CheckReply>
+        <summary>
+            检查邮件服务器的响应是否包含错误代码。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            该方法检查邮件服务器的响应字符串是否包含错误代码，并设置属性 ReplyCode，ReplyString 和 Error。
+        </remarks>
+        <example> 
+            下面的示例检查与 Computer Associates 邮件服务器的连接： 
+            <code language="X#">
+                FUNC SmtpTest()
+                    LOCAL oSmtp AS CSMTP
+
+                    oSmtp := CSMTP{"ServerCheck", "", "", "Check "}
+                    oSmtp:Timeout := 1000
+                    oSmtp:Connect("mail2.cai.com")
+                    oSmtp:CheckReply()
+
+                    ? oSmtp:ReplyString
+                    ? oSmtp:ReplyCode
+                    ? oSmtp:Error
+
+                    oSmtp:Disconnect()
+            </code>
+        </example>
+    </CSmtp.CheckReply>
+
+    <CSmtp.connect>
+        <summary>
+            与远程 SMTP 服务器建立连接。
+        </summary>
+        <param name="cIP">包含 Internet 服务器的主机名的字符串。或者，字符串可以包含 ASCII 点十进制格式的站点的 IP 号码(例如11.22.3.45)。</param>
+        <param name="nPort">
+            在 cHostNameOrIP 上使用的端口号。如果未指定，将建立到端口 SELF:RemotePort 的连接。默认值为 IPPORT_SMTP(25)。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks> 该方法在指定的远程邮件服务器的端口 <paramref name="nPort" /> 或 SELF:RemotePort 上建立连接。 </remarks>
+        <example>
+            参见 CSmtp:CheckReply() 示例。
+        </example>
+    </CSmtp.connect>
+
+    <CSmtp.Disconnect>
+        <summary>
+            关闭当前的 SMTP 连接。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            该方法可以用于关闭到 SMTP 服务器的连接。
+        </remarks>
+        <example>
+            参见 CSmtp:CheckReply() 示例。
+        </example>
+    </CSmtp.Disconnect>
+
+    <CSmtp.Email>
+        <summary>
+            一个 CEmail 类的实例。
+        </summary>
+        <value>一个 CEmail 类的实例。</value>
+    </CSmtp.Email>
+
+    <CSmtp.EmailFormat>
+        <summary>
+            电子邮件的格式。
+        </summary>
+        <value>电子邮件的格式。</value>
+    </CSmtp.EmailFormat>
+
+    <CSmtp.Logon>
+        <summary>
+            使用 smtp 类的用户名和密码登录到远程主机
+        </summary>
+        <returns>
+            逻辑值，指示登录是否成功
+        </returns>
+    </CSmtp.Logon>
+
+    <CSmtp.MailApplication>
+        <summary>
+            一个字符串，保存连接到邮件服务器时使用的名称
+        </summary>
+        <value>一个字符串，保存连接到邮件服务器时使用的名称</value>
+    </CSmtp.MailApplication>
+
+    <CSmtp.RecvRemote>
+        <summary>
+            从远程 SMTP 服务器接收响应数据。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            该方法从连接的远程 SMTP 服务器接收数据。接收到的数据存储到 ReplyString 属性中。
+        </remarks>
+    </CSmtp.RecvRemote>
+
+    <CSmtp.SecureSMTP>
+        <summary>
+            一个逻辑值，指示 CSmtp 类是否应使用安全 SMTP
+        </summary>  
+        <value>一个逻辑值，指示 CSmtp 类是否应使用安全 SMTP</value>
+    </CSmtp.SecureSMTP>
+
+    <CSmtp.SendAttachedFile>
+        <summary>
+            作为电子邮件的一部分，向远程 SMTP 服务器发送附加文件。
+        </summary>
+        <param name="cFile">要发送的文件，可选包括驱动器号和路径。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            SendAttachedFile() 从 SendMail() 方法中调用，以编码并发送由 SELF:AttachmentFile 指定的文件到远程 SMTP 服务器。
+        </remarks>
+    </CSmtp.SendAttachedFile>
+
+    <CSmtp.SendHeaderInfo>
+        <summary>
+            创建邮件头并作为电子邮件的一部分发送到远程 SMTP 服务器。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            SendHeaderInfo() 从 SendMail() 方法中调用，以准备并发送适当的头部到远程 SMTP 服务器。该方法不接受任何参数。FROM，TO，CC和BCC的值从 cSMTP 类的 Email 属性中读取。
+        </remarks>
+    </CSmtp.SendHeaderInfo>
+
+    <CSmtp.SendMail>
+        <summary>
+            将完整的电子邮件发送到远程 SMTP 服务器。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            该方法将完整的电子邮件发送到远程 SMTP 服务器。
+            根据 SELF:MailBody，SELF:AttachmentFile，SELF:DestList，SELF:CCList，SELF:FromAddress 和 SELF:RemoteHost 的值，
+            SendMail() 方法准备所有必要的数据，包括头部和控制序列，
+            并在事务的不同阶段调用 SELF:SendHeaderInfo()，SendMailBody()和 SELF:SendAttachedFile() 方法。
+        </remarks>
+    </CSmtp.SendMail>
+
+    <CSmtp.SendMailBody>
+        <summary>
+            该方法在&lt;%APPVER%&gt;中不再可用
+        </summary>
+    </CSmtp.SendMailBody>
+
+    <CSmtp.TextEncoding>
+        <summary>
+            电子邮件的文本编码类型。
+        </summary>
+        <value>电子邮件的文本编码类型。</value>
+    </CSmtp.TextEncoding>
+
+    <CSocket>
+        <summary>
+            提供一个用于低级 TCP/IP 编程的类。
+        </summary>
+        <remarks>
+            该类提供了可以用于实现不同 Internet 协议的低级套接字功能。
+        </remarks>
+    </CSocket>
+
+    <CSocket.ctor>
+        <summary>
+            构造一个 CSocket 对象。
+        </summary>
+        <param name="nType">新创建的套接字的类型。有效值为：</param>
+        <param name="xSocket">套接字号。</param>
+        <param name="xSocketStatus">套接字状态。</param>
+    </CSocket.ctor>
+
+    <CSocket.accept>
+        <summary>
+            在套接字上接受新的连接。
+        </summary>
+        <returns>
+            如果成功，返回一个新的 CSocket 对象实例；否则，返回 NULL_OBJECT。
+        </returns>
+        <remarks>
+            该方法可以用于使 Internet 服务器应用程序等待客户端的连接。
+        </remarks>
+        <example> 
+            以下示例实现了一个简单的套接字服务器函数，监听端口7的第一个连接： 
+            <code language="X#">
+                FUNCTION ServerTest()
+                LOCAL oSocket AS CSocket
+                LOCAL oSockMsg AS CSocket
+                LOCAL cData AS STRING
+                LOCAL cFrom AS STRING
+                LOCAL nPort AS INT
+                LOCAL lRet AS LOGIC
+
+                oSocket := CSocket{SOCK_STREAM}
+
+                IF oSocket:bind(7, NULL_STRING, AF_INET)
+                    oSocket:listen(1)
+                    lRet        := .F.
+                    oSockMsg    := oSocket:accept()
+
+                    IF oSockMsg != NULL_OBJECT
+                        cData := oSockMsg:GetLine()
+                        oSockMsg:getpeername(@cFrom, @nPort)
+                        ? "Connection accepted from ", cFrom, , client port: , NTrim(nPort)
+                        ? "Received data: ", cData
+                        lRet := .T.
+                    ENDIF
+
+                    oSockMsg:Close()
+                ENDIF
+
+                oSocket:Close()
+
+                RETURN lRet
+            </code>
+        </example>
+    </CSocket.accept>
+
+    <CSocket.bind>
+        <summary>
+            将本地地址与套接字关联。
+        </summary>
+        <param name="nPort">在<paramref name="cHostNameOrIP" />的端口号。</param>
+        <param name="cIP">
+            包含 Internet 服务器的本地名称的字符串。或者，字符串可以包含 ASCII 点分十进制格式的站点的IP号码(例如，11.22.3.45)。
+            如果指定 NULL_STRING，则假定本地主机名。</param>
+        <param name="nFamily">指定地址族的 SHORTINT 号。</param>
+    </CSocket.bind>
+
+    <CSocket.Close>
+        <summary>
+            断开套接字的连接并关闭它。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            该方法断开连接并关闭连接。
+            如果在代码中未关闭套接字，如果适当的对象实例超出范围，它将自动关闭。
+        </remarks>
+        <example>
+            请参阅 CSocket:Connect() 示例。
+        </example>
+    </CSocket.Close>
+
+    <CSocket.connect>
+        <summary>
+            建立套接字实例与对等方的连接。
+        </summary>
+        <param name="cIP">包含 Internet 服务器的主机名的字符串。或者，字符串可以包含 ASCII 点分十进制格式的站点的IP号码(例如，11.22.3.45)。</param>
+        <param name="nPort">在 <paramref name="cHostNameOrIP" /> 的端口号。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks> 该方法在指定的远程地址的端口 <paramref name="nPort" /> 建立连接。 </remarks>
+        <example> 
+            以下示例检查远程 SMTP 服务器当前是否可用： 
+            <code language="X#">
+                FUNCTION Start
+                    IF CheckRemote("mail2.cai.com", IPPORT_SMTP, 1000)
+                        ? "CA's mail server is available"
+                    ELSE
+                        ? "Mail server currently not accessible"
+                    ENDIF
+
+                FUNCTION CheckRemote (cServer AS STRING, nPort AS INT, nTimeout AS INT); AS LOGIC PASCAL
+                    LOCAL oSocket AS CSocket
+                    LOCAL lRet AS LOGIC
+
+                    oSocket         := CSocket{SOCK_STREAM}
+                    oSocket:TimeOut := nTimeout
+
+                    lRet := oSocket:connect(cServer, nPort)
+                    oSocket:Close()
+                    
+                    RETURN lRet
+            </code>
+        </example>
+    </CSocket.connect>
+    <CSocket.Destroy>
+        <summary>**Missing documentation **</summary>
+    </CSocket.Destroy>
+
+    <CSocket.DisConnect>
+        <summary>
+            关闭当前套接字连接。
+            这将禁用套接字的发送/接收，但不会关闭套接字。
+            请注意，此函数不像 Visual Objects 2.5 中那样关闭连接！
+            要关闭套接字，您需要调用 cSocket:Close()！
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            Disconnect() 可以用于关闭 CSocket 对象实例的连接。如果未指定，如果适当的对象实例超出范围，连接将自动关闭。
+        </remarks>
+        <example>
+            请参阅 CSocket:Connect() 示例。
+        </example>
+    </CSocket.DisConnect>
+
+    <CSocket.DisplayError>
+        <summary>
+            显示错误消息。
+        </summary>
+        <remarks>
+            显示错误消息。
+        </remarks>
+    </CSocket.DisplayError>
+
+    <CSocket.Error>
+        <summary>
+            表示错误代码的数字值。
+        </summary>
+        <value>表示错误代码的数字值。</value>
+    </CSocket.Error>
+
+    <CSocket.ErrorMsg>
+        <summary>
+            带有错误信息的字符串。
+        </summary>
+        <value>带有错误信息的字符串。</value>
+    </CSocket.ErrorMsg>
+
+    <CSocket.GetLine>
+        <summary>
+            从当前连接接收的套接字数据中提取第一行。
+        </summary>
+        <returns>
+            如果成功，返回包含接收到的数据行的字符串；否则，返回 NULL_STRING
+        </returns>
+        <remarks> 
+            该方法从输入数据中提取第一行。 
+            <note type="tip">GetLine() 只能用于 TCP 套接字，因为它假定已经建立了连接。</note>
+        </remarks>
+        <example>
+            请参阅 CSocket:Accept() 示例。
+        </example>
+    </CSocket.GetLine>
+
+    <CSocket.GetLineFrom>
+        <summary>
+            等待连接并从传入数据中提取第一行。
+        </summary>
+        <param name="cIP">引用一个字符串，用于接收客户端的IP地址。</param>
+        <param name="nRemPort">引用一个 DWORD 值，用于接收客户端的端口号。</param>
+        <returns>
+            如果成功，返回包含接收到的数据行的字符串；否则，返回 NULL_STRING
+        </returns>
+        <remarks>
+            该方法等待数据包并从输入数据中提取第一行。除此之外，GetLineFrom() 还会提取与接收到的数据相关的 IP 地址和端口号。该方法可以由 UDP 套接字使用，以从 Internet 接收发送的数据包。
+        </remarks>
+        <example> 
+            以下示例实现了一个简单的套接字服务器函数，监听端口7的第一个数据包： 
+            <code language="X#">
+                FUNCTION ServerTest2() AS VOID PASCAL
+                    LOCAL oSocket AS CSocket
+                    LOCAL cData AS STRING
+                    LOCAL cFrom AS STRING
+                    LOCAL nPort AS INT
+
+                    oSocket := CSocket{SOCK_DGRAM}
+
+                    IF oSocket:bind(7, NULL_STRING, AF_INET)
+                        oSocket:TimeOut := 10000
+                        cData := oSocket:GetLineFrom(@cFrom, @nPort)
+
+                        IF cFrom == NULL_STRING
+                            ? "Timeout expired, no data received :-("
+                        ELSE
+                            ? "Data received from ", cFrom, , "Client port: ", NTrim(nPort)
+                            ? "Received data:" , cData
+                        ENDIF
+                    ENDIF
+
+                oSocket:Close()
+
+                RETURN
+            </code>
+        </example>
+    </CSocket.GetLineFrom>
+
+    <CSocket.GetLines>
+        <summary>**缺少文档**</summary>
+        <param name="aSearch">**缺少参数文档**</param>
+    </CSocket.GetLines>
+
+    <CSocket.getpeername>
+        <summary>
+            获取套接字连接的对等方的地址。
+        </summary>
+        <param name="cName">引用一个字符串，用于接收对等方的IP地址。</param>
+        <param name="nPort">引用一个 DWORD 值，用于接收对等方的端口号。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            该方法获取套接字连接的对等方的地址和端口号。
+        </remarks>
+        <example>
+            请参阅 CSocket:Accept() 示例。
+        </example>
+    </CSocket.getpeername>
+
+    <CSocket.GetRaw>
+        <summary>
+            从套接字接收所有可用的数据。
+        </summary>
+        <returns>
+            如果成功，返回包含接收到的数据的字符串；否则，返回 NULL_STRING。
+        </returns>
+        <remarks> 该方法将输入数据存储到一个字符串中。 <note type="tip">GetRaw() 只能用于 TCP 套接字，因为它假定已经建立了连接。</note>
+        </remarks>
+        <example> 
+            以下示例实现了一个简单的套接字服务器函数，等待端口7的连接并从客户端接收所有数据： 
+            <code language="X#">
+                FUNCTION ServerTest3() AS VOID PASCAL
+                    LOCAL oSocket AS CSocket
+                    LOCAL oSockMsg AS CSocket
+                    LOCAL cData AS STRING
+                    LOCAL cFrom AS STRING
+                    LOCAL nPort AS INT
+
+                    oSocket := CSocket{SOCK_STREAM}
+
+                    IF oSocket:bind(7, NULL_STRING, AF_INET)
+                        oSocket:listen(1)
+                        oSockMsg := oSocket:accept()
+
+                        IF oSockMsg != NULL_OBJECT
+                            cData := oSockMsg:GetRaw()
+                            oSockMsg:GetPeerName(@cFrom, @nPort)
+                            ? "Data received from ", cFrom, ", Client port: ", NTrim(nPort)
+                            ? "Received data: ", cData
+                        ENDIF
+
+                        oSockMsg:Close()
+                    ENDIF
+
+                    oSocket:Close()
+
+                    RETURN
+            </code>
+        </example>
+    </CSocket.GetRaw>
+
+    <CSocket.GetRawText>
+        <summary>
+            从套接字接收所有可用的数据。
+        </summary>
+        <param name="lLineMode">**缺少参数文档**</param>
+        <param name="lNext">**缺少参数文档**</param>
+        <param name="dwByteCount">**缺少参数文档**</param>
+        <returns>
+            如果成功，返回包含接收到的数据的字符串；否则，返回 NULL_STRING。
+        </returns>
+        <remarks> 该方法将输入数据存储到一个字符串中。 <note type="tip">GetRaw() 只能用于 TCP 套接字，因为它假定已经建立了连接。</note>
+        </remarks>
+        <example> 
+            以下示例实现了一个简单的套接字服务器函数，等待端口7的连接并从客户端接收所有数据： 
+            <code language="X#">
+                FUNCTION ServerTest3() AS VOID PASCAL
+                    LOCAL oSocket   AS CSocket
+                    LOCAL oSockMsg  AS CSocket
+                    LOCAL cData     AS STRING
+                    LOCAL cFrom     AS STRING
+                    LOCAL nPort     AS INT
+
+                    oSocket := CSocket{SOCK_STREAM}
+
+                    IF oSocket:bind(7, NULL_STRING, AF_INET)
+                        oSocket:listen(1)
+                        oSockMsg := oSocket:accept()
+
+                        IF oSockMsg != NULL_OBJECT
+                            cData := oSockMsg:GetRaw()
+                            oSockMsg:GetPeerName(@cFrom, @nPort)
+                            ? "Data received from ", cFrom, ", Client port: ", NTrim(nPort)
+                            ? "Received data: ", cData
+                        ENDIF
+
+                        oSockMsg:Close()
+                    ENDIF
+
+                    oSocket:Close()
+
+                    RETURN
+            </code>
+        </example>
+    </CSocket.GetRawText>
+
+    <CSocket.getsockname>
+        <summary>
+            获取套接字的本地名称。
+        </summary>
+        <param name="cName">引用一个字符串，用于接收套接字的本地IP地址。</param>
+        <param name="nPort">引用一个 DWORD 值，用于接收套接字的本地端口号。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            该方法获取套接字的本地地址和端口号。
+        </remarks>
+        <example> 
+            以下示例演示了该方法的使用： 
+            <code language="X#">
+                FUNCTION SimpleTest() AS VOID PASCAL
+                    LOCAL oSocket AS CSocket
+                    LOCAL cIP AS STRING
+                    LOCAL nPort AS INT
+
+                    oSocket := CSocket{SOCK_STREAM}
+
+                    IF oSocket:bind(7, NULL_STRING, AF_INET)
+                        oSocket:GetSockName(@cIP, @nPort)
+                        ? "Local IP ", cIP, ", port: ", NTrim(nPort)
+                    ENDIF
+                    
+                    oSocket:Close()
+
+                    RETURN
+            </code>
+        </example>
+    </CSocket.getsockname>
+
+    <CSocket.InternetStatus>
+        <summary>**缺少文档**</summary>
+        <param name="nContext">**缺少参数文档**</param>
+        <param name="nStatus">**缺少参数文档**</param>
+        <param name="xStatus">**缺少参数文档**</param>
+        <param name="nStatusLength">**缺少参数文档**</param>
+    </CSocket.InternetStatus>
+
+    <CSocket.listen>
+        <summary>
+            建立一个套接字以侦听传入的连接。
+        </summary>
+        <param name="nBackLog">挂起连接队列的最大长度。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            该方法建立一个套接字以侦听传入的连接。
+        </remarks>
+        <example>
+            请参阅 CSocket:Accept() 示例。
+        </example>
+    </CSocket.listen>
+
+    <CSocket.RcvBufSize>
+        <summary>**缺少文档**</summary>
+    </CSocket.RcvBufSize>
+
+    <CSocket.SendLine>
+        <summary>
+            发送以 CRLF 结尾的数据到连接的套接字。
+        </summary>
+        <param name="cData">要通过套接字发送的数据。</param>
+        <returns>
+            如果成功，返回发送的数据量；否则，返回0(零)。
+        </returns>
+        <remarks> SendLine() 方法向连接的套接字发送一行。 <note type="tip"> 此方法仅适用于 TCP 套接字，因为它假定已经建立了连接。</note>
+        </remarks>
+        <example> 
+            以下示例演示了该方法的使用： 
+            <code language="X#">
+                FUNCTION ClientTest() AS LOGIC PASCAL
+                    LOCAL oSocket AS CSocket
+                    LOCAL cTo AS STRING
+                    LOCAL nPort AS INT
+
+                    oSocket := CSocket{SOCK_STREAM}
+
+                    IF oSocket:connect( HostName(), 7)
+                        IF oSocket:SendLine("Hello world") &gt; 0
+                            oSocket:GetPeerName(@cTo, @nPort)
+                            ? "Data sent to ", cTo, ", port: ", NTrim(nPort)
+                        ENDIF
+
+                        oSocket:Close()
+                    ENDIF
+                    
+                    RETURN
+            </code>
+        </example>
+    </CSocket.SendLine>
+
+    <CSocket.SendLineTo>
+        <summary>
+            向特定目的地发送以 CRLF 结尾的数据。
+        </summary>
+        <param name="cData">要通过套接字发送的数据。</param>
+        <param name="cDest">包含 Internet 服务器的主机名的字符串。或者，字符串可以包含 ASCII 点分十进制格式的站点IP号(例如，11.22.3.45)。</param>
+        <param name="nRemPort">在<paramref name="cHostNameOrIP" />的端口号。</param>
+        <returns>
+            如果成功，返回发送的数据量；否则，返回0(零)。
+        </returns>
+        <remarks>
+            该方法向目的地发送一行，而不建立连接。SendLine() 可以用于 UDP 套接字，通过 Internet 发送数据包。
+        </remarks>
+        <example> 
+            以下示例演示了该方法的使用： 
+            <code language="X#">
+                FUNCTION ClientTest1() AS LOGIC PASCAL
+                    LOCAL oSocket AS CSocket
+                    LOCAL cTo AS STRING
+                    LOCAL nPort AS INT
+
+                    oSocket := CSocket{SOCK_DGRAM}
+
+                    IF oSocket:SendLineTo("Hello world", HostName(), 7)
+                        ? "Datagram package sent ... "
+                    ENDIF
+                    
+                    oSocket:Close()
+
+                    RETURN
+            </code>
+        </example>
+    </CSocket.SendLineTo>
+
+    <CSocket.SendRaw>
+        <summary>
+            向连接的套接字发送任何数据。
+        </summary>
+        <param name="pData">指向要通过套接字发送的数据的指针。</param>
+        <param name="nSize">要发送的数据的长度。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks> 
+            SendRaw() 向连接的套接字发送原始数据。 
+            <note type="tip">此方法仅适用于 TCP 套接字，因为它假定已经建立了连接。</note>
+        </remarks>
+        <example> 
+            以下示例演示了该方法的使用： 
+            <code language="X#">
+                FUNCTION ClientTest2() AS LOGIC PASCAL
+                    LOCAL oSocket AS CSocket
+                    LOCAL cTo AS STRING
+                    LOCAL cData AS STRING
+                    LOCAL nSize AS INT
+                    LOCAL nPort AS INT
+
+                    CLS
+                    oSocket := CSocket{SOCK_STREAM}
+
+                    IF oSocket:connect( HostName(), 7)
+                        cData := MemoRead("Test.txt")
+                        nSize := SLen(cData)
+
+                        IF oSocket:SendRaw(PTR(_CAST, cData), nSize)
+                            oSocket:GetPeerName(@cTo, @nPort)
+                            ? "Data sent to ", cTo, ", port: ", NTrim(nPort)
+                        ENDIF
+                    ENDIF
+                    
+                    oSocket:Close()
+
+                    RETURN
+            </code>
+        </example>
+    </CSocket.SendRaw>
+
+    <CSocket.SendRawText>
+        <summary>
+            向连接的套接字发送任何数据。
+        </summary>
+        <param name="cData">指向要通过套接字发送的数据的指针。</param>
+        <param name="nDataLen">要发送的数据的长度。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks> 
+            SendRaw() 向连接的套接字发送原始数据。 
+            <note type="tip">此方法仅适用于 TCP 套接字，因为它假定已经建立了连接。</note>
+        </remarks>
+        <example> 
+            以下示例演示了该方法的使用： 
+            <code language="X#">
+                FUNCTION ClientTest2() AS LOGIC PASCAL
+                    LOCAL oSocket AS CSocket
+                    LOCAL cTo AS STRING
+                    LOCAL cData AS STRING
+                    LOCAL nSize AS INT
+                    LOCAL nPort AS INT
+
+                    CLS
+                    oSocket := CSocket{SOCK_STREAM}
+
+                    IF oSocket:connect( HostName(), 7)
+                        cData := MemoRead("Test.txt")
+                        nSize := SLen(cData)
+
+                        IF oSocket:SendRaw(PTR(_CAST, cData), nSize)
+                            oSocket:GetPeerName(@cTo, @nPort)
+                            ? "Data sent to ", cTo, ", port: ", NTrim(nPort)
+                        ENDIF
+                    ENDIF
+                    
+                    oSocket:Close()
+
+                    RETURN
+            </code>
+        </example>
+    </CSocket.SendRawText>
+
+    <CSocket.SndBufSize>
+        <summary>**缺少文档**</summary>
+    </CSocket.SndBufSize>
+
+    <CSocket.Status>
+        <summary>
+            数字值，表示当前状态的当前状态，代表以下状态之一：
+        </summary>
+        <value>数字值，表示当前状态的当前状态，代表以下状态之一：</value>
+        <remarks>
+            <list type="table">
+                <item>
+                    <term>SSTAT_UNINITIALIZED</term>
+                </item>
+                <item>
+                    <term>SSTAT_DISCONNECTED</term>
+                </item>
+                <item>
+                    <term>SSTAT_CONNECTING</term>
+                </item>
+                <item>
+                    <term>SSTAT_LISTENING</term>
+                </item>
+                <item>
+                    <term>SSTAT_DISCONNECTING</term>
+                </item>
+                <item>
+                    <term>SSTAT_CONNECTED</term>
+                </item>
+                <item>
+                    <term>SSTAT_ERRORSTATE</term>
+                </item>
+                <item>
+                    <term>SSTAT_TIMEDOUT</term>
+                </item>
+            </list>
+        </remarks>
+    </CSocket.Status>
+
+    <CSocket.TimeOut>
+        <summary>
+            表示超时的毫秒数的数字值。
+        </summary>
+        <value>表示超时的毫秒数的数字值。</value>
+    </CSocket.TimeOut>
+
+    <CSocket.TimeOutRetries>
+        <summary>**缺少文档**</summary>
+    </CSocket.TimeOutRetries>
+
+    <CStorage>
+        <summary>
+            提供一个接口来处理大型电子邮件消息和附件
+        </summary>
+        <remarks>
+            此类仅由 CEMail 类专门用于读取和写入附件。<br />
+            该类在磁盘文件夹中读取/写入附件。<br />
+            如果您想将附件存储在其他位置(例如SQL数据库)中，那么您应该子类化此类并重写方法的实现。<br />
+            CStorage 还为您提供了一个接口，用于存储接收到的电子邮件的原始数据。<br />
+            在接收电子邮件时，会调用以下三个方法:<br />
+            RawNew()<br />
+            RawWrite()<br />
+            RawClose()<br />
+            您可以使用这些方法来实现自己的机制来保存原始电子邮件内容。<br />
+            该类提供了一个接口，用于处理入站和出站消息的流式传输
+        </remarks>
+    </CStorage>
+
+    <CStorage.ctor>
+        <summary>
+            在此输入主题文本。
+        </summary>
+        <param name="cPath">**缺少参数文档**</param>
+    </CStorage.ctor>
+
+    <CStorage.AttachmentAdd>
+        <summary>
+            当接收到电子邮件时，调用此方法以初始化保存新附件的过程。
+            CStorage 中的实现生成一个唯一的ID并创建(空)文件。
+        </summary>
+        <param name="cFile">包含附件文件的文件名。</param>
+        <param name="dwCode"> 
+            编码类型。可以是以下值之一： 
+            <pre>
+                CODING_TYPE_7BIT
+                CODING_TYPE_8BIT
+                CODING_TYPE_BASE64
+                CODING_TYPE_NONE
+                CODING_TYPE_PRINTABLE
+                CODING_TYPE_UNKNOWN
+                CODING_TYPE_UUENCODE
+            </pre>
+            在大多数情况下，它是 CODING_TYPE_BASE64，CStorage 类中只实现了这种类型。 </param>
+        <returns>
+            <paramref name="cID" /> STRING 唯一的ID。如果 AttachmentAdd() 失败，它返回一个 NULL_STRING。 </returns>
+    </CStorage.AttachmentAdd>
+
+    <CStorage.AttachmentClose>
+        <summary>
+            在接收到附件或在发送过程中从存储中读取附件后，调用此方法。CStorage 中的实现关闭一个打开的文件。
+        </summary>
+    </CStorage.AttachmentClose>
+
+    <CStorage.AttachmentDelete>
+        <summary>
+            此方法返回通过 cAttachID 寻址的附件文件的完整路径。
+        </summary>
+        <param name="cID">包含附件的ID或完整路径。</param>
+        <returns>
+            LOGIC 当附件可以被删除时返回 TRUE。
+        </returns>
+    </CStorage.AttachmentDelete>
+
+    <CStorage.AttachmentFullPath>
+        <summary>
+            此方法返回通过 cAttachID 寻址的附件文件的完整路径。
+        </summary>
+        <param name="cAttachID">包含附件的ID或完整路径。如果是完整路径，cAttachID 的第一个字符是 ATTACHID_PATHFLAG(&gt;)</param>
+        <returns>
+            <paramref name="cID" /> STRING 附件文件的完整路径 </returns>
+    </CStorage.AttachmentFullPath>
+
+    <CStorage.AttachmentOpen>
+        <summary>
+            在发送电子邮件时，如果需要发送附件，会调用此方法。它准备从存储中加载附件的过程。在我们的情况下，它寻址附件文件并打开它。
+        </summary>
+        <param name="cAttachID">包含附件的ID或完整路径。</param>
+        <param name="dwCode"> 
+            包含编码类型。可以是以下值之一： 
+            <list type="bullet">
+                <item>CODING_TYPE_7BIT</item>
+                <item>CODING_TYPE_8BIT</item>
+                <item>CODING_TYPE_BASE64</item>
+                <item>CODING_TYPE_NONE</item>
+                <item>CODING_TYPE_PRINTABLE</item>
+                <item>CODING_TYPE_UNKNOWN</item>
+                <item>CODING_TYPE_UUENCODE</item>
+            </list>
+            在大多数情况下，它是 CODING_TYPE_BASE64，CStorage 类中只实现了这种类型。 
+        </param>
+        <returns>
+            LOGIC 当附件可以成功打开时返回 TRUE。
+        </returns>
+    </CStorage.AttachmentOpen>
+
+    <CStorage.AttachmentRead>
+        <summary>
+            在发送附件时，会调用此方法。它从附件文件中读取一个数据块。在我们的实现中，它读取1536字节。结果字符串是这个数据块的编码值。
+        </summary>
+        <returns>
+            STRING 这个数据块的编码值。
+        </returns>
+    </CStorage.AttachmentRead>
+
+    <CStorage.AttachmentSave>
+        <summary>
+            将具有 ID cAttachID 的附件保存到文件 cToFile 中。
+            cToFile 必须是完整路径名。此方法是从 CEMail:SaveAs() 中调用的。
+        </summary>
+        <param name="cAttachID">包含附件的ID或完整路径。</param>
+        <param name="cToFile">包含目标文件的完整路径名。</param>
+        <returns>
+            <paramref name="cID" /> STRING 唯一的ID。如果 AttachmentAdd() 失败，它返回一个 NULL_STRING。 </returns>
+    </CStorage.AttachmentSave>
+
+    <CStorage.AttachmentSize>
+        <summary>
+            返回当前存储的或打开的附件文件的文件大小。在接收电子邮件时调用此访问。
+        </summary>
+        <value>当前存储的或打开的附件文件的文件大小。在接收电子邮件时调用此访问。</value>
+    </CStorage.AttachmentSize>
+
+    <CStorage.AttachmentWrite>
+        <summary>
+            在接收过程中，每个附件会多次调用此方法。
+        </summary>
+        <param name="cData">包含编码的附件数据。对于 BASE64 编码的数据，cData 的长度大多是78个字符。默认实现解码 cData 并将其写入文件中。</param>
+        <returns>
+            NOTHING
+        </returns>
+    </CStorage.AttachmentWrite>
+
+    <CStorage.CreateNewEMail>
+        <summary>**缺少文档**</summary>
+    </CStorage.CreateNewEMail>
+
+    <CStorage.CreateNewMail>
+        <summary>
+            此方法返回一个新的空 CEMail 对象。
+        </summary>
+        <returns>
+            <paramref name="oMail" /> 一个新的空 CEmail 对象。 </returns>
+    </CStorage.CreateNewMail>
+
+    <CStorage.LoadEMail>
+        <summary>
+            此方法返回一个填充有所有数据的 CEMail 对象，这些数据通过 cID 寻址。
+            您必须实现此方法和 cID 的含义。
+            CSTORAGE 中未实现此方法，并且 Internet 类不调用它
+        </summary>
+        <param name="cId">包含电子邮件的唯一标识符</param>
+        <returns>
+            <paramref name="oEmail" />
+        </returns>
+        <remarks>
+            <note type="tip"> 
+                以下显示了此方法的逻辑模板： 
+                <code language="X#">
+                    METHOD LoadEMail(cId AS STRING) CLASS MyCStorage
+                        //您应该执行以下操作：
+                        LOCAL oEMail AS CEMail
+                        oEMail := SELF:CreateNewEmail()
+                        // 1.) 分配oEMail:MailHeader
+                        // 2.) 调用oEMail:GetHeaderInfo()
+                        // 3.) 分配oEMail:Body
+                        // 4.) 分配oEMail:Html
+                        // 5.) 分配oEMail:AttachmentInfo
+
+                        RETURN oEMail
+                </code>
+            </note>
+        </remarks>
+    </CStorage.LoadEMail>
+
+    <CStorage.NoSave>
+        <summary>
+            您可以使用此分配来阻止将附件保存到存储中。如果您只想存储原始电子邮件文件，这是有意义的。
+        </summary>
+        <value>您可以使用此分配来阻止将附件存储到存储中。这在您只想存储原始电子邮件文件时是有意义的。</value>
+        <param name="LOGIC">如果为 TRUE，则会阻止保存附件。在这种情况下，您需要在 CStorage 子类中实现 Raw..() 方法，以保存原始电子邮件。</param>
+    </CStorage.NoSave>
+
+    <CStorage.RawClose>
+        <summary>
+            当一个电子邮件完全接收时调用此方法。
+        </summary>
+        <param name="cFile">包含附件的文件名。</param>
+        <returns>
+            无返回值
+        </returns>
+        <remarks>
+            <note type="tip">
+                不建议将原始电子邮件在内存中解码为单个字符串。
+                首选机制是将它们流式传输到磁盘或数据库中。
+                请查看电子邮件示例中的 EmailWindowMain:ImportMail() 方法，了解如何轻松实现此功能。
+                如果您想了解如何将电子邮件发送到原始电子邮件文件，请查看电子邮件示例中的 EmailStore:SendMailAsFile() 方法。
+            </note>
+        </remarks>
+    </CStorage.RawClose>
+
+    <CStorage.RawNew>
+        <summary>
+            在任何数据接收之前调用此方法。
+            您需要在这里实现如何存储和寻址原始数据。
+        </summary>
+        <param name="oEMail">接收到的邮件对象。请注意，这个对象的几乎所有属性都是空的。</param>
+        <returns>
+            无返回值
+        </returns>
+        <remarks>
+            <note type="tip">
+                不建议将原始电子邮件在内存中解码为单个字符串。
+                首选机制是将它们流式传输到磁盘或数据库中。
+                请查看电子邮件示例中的 EmailWindowMain:ImportMail() 方法，了解如何轻松实现此功能。
+                如果您想了解如何将电子邮件发送到原始电子邮件文件，请查看电子邮件示例中的 EmailStore:SendMailAsFile() 方法。
+            </note>
+        </remarks>
+    </CStorage.RawNew>
+
+    <CStorage.RawWrite>
+        <summary>
+            直到包括所有附件的完整电子邮件接收完成，这个方法将被多次调用。您需要实现如何存储每个数据块。
+        </summary>
+        <param name="cData">包含附件的文件名。</param>
+        <returns>
+            <paramref name="cID" /> STRING 唯一ID。如果 AttachmentAdd() 失败，则返回 NULL_STRING。 </returns>
+        <remarks>
+            <note type="tip">
+                不建议将原始电子邮件在内存中解码为单个字符串。
+                首选机制是将它们流式传输到磁盘或数据库中。
+                请查看电子邮件示例中的 EmailWindowMain:ImportMail() 方法，了解如何轻松实现此功能。
+                如果您想了解如何将电子邮件发送到原始电子邮件文件，请查看电子邮件示例中的 EmailStore:SendMailAsFile() 方法。
+            </note>
+        </remarks>
+    </CStorage.RawWrite>
+
+    <CStorage.SaveAttachments>
+        <summary>
+            此方法将电子邮件的所有附件存储到存储中。
+        </summary>
+        <param name="oEMail">需要从中保存附件到存储的电子邮件。</param>
+        <param name="lClone">如果 lClone 为 TRUE，并且 oEMail 从存储中加载，则将附件的新副本存储到存储中。</param>
+        <returns>
+            <paramref name="cID" /> STRING 唯一ID。如果 AttachmentAdd() 失败，则返回 NULL_STRING。 </returns>
+    </CStorage.SaveAttachments>
+
+    <CStorage.SaveEMail>
+        <summary>
+            此方法将 CEMail 对象存储在 cID 地址下，包括所有数据。
+            您必须实现此方法并理解 cID 的含义。
+            此方法在 CSTORAGE 中未实现，并且不由 Internet 类调用。
+        </summary>
+        <param name="cId">电子邮件的唯一标识符</param>
+        <param name="oEMail">包含电子邮件的对象</param>
+        <returns>
+            LOGIC 当电子邮件成功保存时返回TRUE
+        </returns>
+        <remarks>
+            <note type="tip"> 
+            以下是此方法的逻辑模板： 
+            <code language="X#">
+                METHOD SaveEMail(cId AS STRING, oEMail AS CEMail) AS LOGIC PASCAL CLASS MyCStorage
+                    //使用当前ID保存oEMail
+                    //您应该保存以下内容
+                    // 1.) oEMail:MailHeader 用于接收邮件，不用于发送邮件
+                    // 调用oEMail:SetHeaderInfo()创建MailHeader
+                    // 2.) oEMail:Body
+                    // 3.) oEMail:Html
+                    // 4.) 调用Self:SaveAttachments(oEMail)
+                    // 5.) 保存oEMail:AttachmentInfo
+                    RETURN TRUE
+                </code>
+            </note>
+        </remarks>
+    </CStorage.SaveEMail>
+</doc>

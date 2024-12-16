@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="4de57022-1ab5-49a3-bfbe-309216c3b018" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_memvar.html -->Memory Variable&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">STORE Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Assign a value to one or more variables.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>STORE &lt;uValue&gt; TO &lt;idVarList&gt;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;uValue&gt;</entry><entry>A value to assign to the specified variables.</entry></row></table><table><row><entry>TO &lt;idVarList&gt;</entry><entry>Defines a list of one or more variables that are assigned the value &lt;uValue&gt;. &#160;If any variable reference in the list is ambiguous (that is, not declared at compile time or not explicitly qualified with an alias), it is assumed to be MEMVAR. &#160;If any variable in the list is not visible or does not exist, a private variable is created using &lt;uValue&gt;.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>The STORE command is defined using the assignment operator (:=). &#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<para>Assigning a value to an entire array:  In XSharp, neither the STORE command nor the assignment operators can assign a single value to an entire array. &#160;Use the AFill() function for this purpose.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>These statements create and assign values to undeclared private variables:</para>
+<para>&#160;</para>
+<para>STORE &quot;string&quot; TO cVar1, cVar2, cVar3<para/>
+cVar1 := &quot;string2&quot;<para/>
+cVar2 := _MEMVAR-&gt;cVar1</para>
+<para>&#160;</para>
+<para>These statements assign multiple variables using both STORE and the inline assignment operator (:=). &#160;The methods produce identical code:</para>
+<para>&#160;</para>
+<para>STORE &quot;value&quot; TO cVar1, cVar2, cVar3<para/>
+cVar1 := cVar2 := cVar3 := &quot;value&quot;</para>
+<para>&#160;</para>
+<para>These statements assign values to the same field referenced explicitly with an alias. &#160;The first assignment uses the field alias (_FIELD-&gt;), where the second uses the actual alias name:</para>
+<para>&#160;</para>
+<para>USE sales NEW<para/>
+STORE 1200.98 TO _FIELD-&gt;CustBal<para/>
+STORE 1200.98 TO Sales-&gt;CustBal</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_AFill.htm -->AFill(), , <link xlink:href="d8822cca-7c06-4150-b83c-2dd9b531186d">LOCAL</link>, <link xlink:href="167a7bca-5bea-4198-b685-3376fba16514">PRIVATE</link>, <link xlink:href="8d194317-f7c6-462f-bcfb-ccb8b195d6bf">PUBLIC</link>, <link xlink:href="deefbc86-9dcf-48e1-85c3-6bb4ba96e72e">RELEASE</link>, <link xlink:href="0a30ff7e-788b-4630-9e4b-b61279449f34">REPLACE</link>, <link xlink:href="b058df06-6e00-4b17-82e2-a80610cadfc3">RESTORE</link>, <link xlink:href="90f76795-c5ca-4bfb-b6c4-21556ec416c0">SAVE</link>, <link xlink:href="3910e899-798b-4188-834b-5046aaa0cd3c">STATIC</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

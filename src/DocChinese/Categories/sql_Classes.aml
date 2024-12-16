@@ -1,0 +1,904 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
+<topic id="cat-SQL_Classes" revisionNumber="1" title="SQL Classes">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <section address="Section1">
+      <title>SQL Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLCatalogQuery</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Provide the base class from which all X# catalog classes are subclassed.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Describe an SQL column.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLColumnAttributes</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Describe the attributes of an SQL column.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLConnection</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Manage an SQL connection to an ODBC data source.  A SQLConnection object is needed before any database operations can be performed.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLData</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Represent an SQL data value; used internally by SQL classes.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SqlData_Union</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLErrorInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Describe a SQL error.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListColumnPrivileges</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the columns and associated privileges for one or more tables.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListColumns</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the column names in specified tables.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListForeignKeys</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the column names that comprise foreign keys, if they exist for a specified table.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListPrimaryKeys</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the column names that comprise the primary key for a table.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListProcedureColumns</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the input and output procedure parameters and columns that make up the result set for the specified procedures.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListProcedures</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the procedure names stored in a specific data source.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListSpecialColumns</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List information about the optimal set of columns that uniquely identifies a row in a specified table or the columns that are updated automatically when any value in the row is updated by a transaction.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListStatistics</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the table statistics and the indexes.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListTablePrivileges</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the tables and associated privileges.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListTables</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the table names stored in a specific data source.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListTypeInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the ODBC data types that are supported by this connection.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SqlParameter</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>T:VO.SqlParameterSQL.xmldoc/SqlParameter/*</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLSelect</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Manage a SQL select statement to select a set of rows from an ODBC data source.  The rows can be read, modified, or deleted using the SQLSelect methods.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLStatement</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Manage a SQL statement.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLTable</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Manage a table.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLValue</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Describe a SQL value.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Data</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Data.AbstractSqlFactory</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This is the base class for most ISqlFactory implementations.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Data</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Data.ISqlFactory</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This interface declares the common behavior for all XSharp Data Factory classes.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Data</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Data.OdbcFactory</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This is the class that implements a Factory to access data through the Ado.Net ODBC Classes.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Data</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Data.OleDbFactory</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This is the class that implements a Factory to access data through the Ado.Net Microsoft SQL Server classes.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Data</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Data.SqlServerFactory</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This is the class that implements a Factory to access data through the Ado.Net Microsoft SQL Server classes.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.SQLProperty</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Enum that matches the various FoxPro Sql properties, used in SqlGetProp() and SqlSetProp()</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLCatalogQuery</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Provide the base class from which all X# catalog classes are subclassed.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Describe an SQL column.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLColumnAttributes</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Describe the attributes of an SQL column.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLConnection</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Manage an SQL connection to an ODBC data source.  A SQLConnection object is needed before any database operations can be performed.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLData</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Represent an SQL data value; used internally by SQL classes.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLErrorInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Describe a SQL error.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListColumnPrivileges</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the columns and associated privileges for one or more tables.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListColumns</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the column names in specified tables.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListDatabases</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>T:XSharp.VO.SDK.SQLListDatabasesSql.xmldoc/SQLListDatabases/*</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListForeignKeys</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the column names that comprise foreign keys, if they exist for a specified table.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListIndexColumns</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>T:XSharp.VO.SDK.SQLListIndexColumnsSql.xmldoc/SQLListIndexColumns/*</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListIndexes</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>T:XSharp.VO.SDK.SQLListIndexesSql.xmldoc/SQLListIndexes/*</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListPrimaryKeys</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the column names that comprise the primary key for a table.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListProcedureColumns</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the input and output procedure parameters and columns that make up the result set for the specified procedures.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListProcedureParameters</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>T:XSharp.VO.SDK.SQLListProcedureParametersSql.xmldoc/SQLListProcedureParameters/*</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListProcedures</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the procedure names stored in a specific data source.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListReservedWords</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>T:XSharp.VO.SDK.SQLListReservedWordsSql.xmldoc/SQLListReservedWords/*</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListRestrictions</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>T:XSharp.VO.SDK.SQLListRestrictionsSql.xmldoc/SQLListRestrictions/*</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListSpecialColumns</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List information about the optimal set of columns that uniquely identifies a row in a specified table or the columns that are updated automatically when any value in the row is updated by a transaction.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListStatistics</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the table statistics and the indexes.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListTablePrivileges</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the tables and associated privileges.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListTables</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the table names stored in a specific data source.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListTriggers</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>T:XSharp.VO.SDK.SQLListTriggersSql.xmldoc/SQLListTriggers/*</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListTypeInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List the ODBC data types that are supported by this connection.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListUsers</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>T:XSharp.VO.SDK.SQLListUsersSql.xmldoc/SQLListUsers/*</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListViewColumns</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>T:XSharp.VO.SDK.SQLListViewColumnsSql.xmldoc/SQLListViewColumns/*</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLListViews</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>T:XSharp.VO.SDK.SQLListViewsSql.xmldoc/SQLListViews/*</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SqlParameter</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>T:XSharp.VO.SDK.SqlParameterSql.xmldoc/SqlParameter/*</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLSelect</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Manage a SQL select statement to select a set of rows from an ODBC data source.  The rows can be read, modified, or deleted using the SQLSelect methods.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLStatement</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Manage a SQL statement.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLTable</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Manage a table.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.SQLValue</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Describe a SQL value.
+        </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
+  </developerConceptualDocument>
+</topic>

@@ -226,15 +226,15 @@ namespace XSharp.LanguageService
                     // Check the SingleLineEntity flag for them
                     var singleLineEntityStart = _document.HasLineState(lineNumber, LineFlags.SingleLineEntity);
                     _expectedIndent[lineNumber] = _indentSize;
-                    if (!singleLineEntityStart && !_lineKeywords.ContainsKey(lineNumber) )
+                    if (!singleLineEntityStart && !_lineKeywords.ContainsKey(lineNumber))
                     {
                         // check for continuation
                         if (_settings.IndentContinuedLines &&
-                            _document.HasLineState(lineNumber, LineFlags.IsContinued) )
+                            _document.HasLineState(lineNumber, LineFlags.IsContinued))
                         {
                             if (_document.LineAfterAttribute(lineNumber))
                             {
-                                _expectedIndent[lineNumber] = _indentSize ;
+                                _expectedIndent[lineNumber] = _indentSize;
                             }
                             else
                             {
@@ -250,17 +250,20 @@ namespace XSharp.LanguageService
                         _indentSize = IndentEntityStart(kw, lineNumber, startIndent, singleLineEntityStart);
                         _firstDoccomment = -1;
                     }
-                    if (kw.IsStart())
+                    if (!singleLineEntityStart)
                     {
-                        HandleStart(kw, lineNumber);
-                    }
-                    else if (kw.IsMiddle())
-                    {
-                        HandleMiddle(kw, lineNumber);
-                    }
-                    else if (kw.IsStop())
-                    {
-                        HandleEnd(kw, lineNumber);
+                        if (kw.IsStart())
+                        {
+                            HandleStart(kw, lineNumber);
+                        }
+                        else if (kw.IsMiddle())
+                        {
+                            HandleMiddle(kw, lineNumber);
+                        }
+                        else if (kw.IsStop())
+                        {
+                            HandleEnd(kw, lineNumber);
+                        }
                     }
                 }
             }

@@ -396,71 +396,71 @@ ENUM XSharp.VOErrors
 #endregion TERMINAL
 #region RT_MSG
 	//RTMSG.H AND RTDEF.H IN VO
-    /// <summary>String ID for the month January</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH1/*" />
 	MEMBER RT_MSG_MONTH1      := 0x3000
-    /// <summary>String ID for the month February</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH2/*" />
 	MEMBER RT_MSG_MONTH2      := RT_MSG_MONTH1 +1
-    /// <summary>String ID for the month March</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH3/*" />
 	MEMBER RT_MSG_MONTH3      := RT_MSG_MONTH1 +2
-    /// <summary>String ID for the month April</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH4/*" />
 	MEMBER RT_MSG_MONTH4      := RT_MSG_MONTH1 +3
-    /// <summary>String ID for the month May</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH5/*" />
 	MEMBER RT_MSG_MONTH5      := RT_MSG_MONTH1 +4
-    /// <summary>String ID for the month June</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH6/*" />
 	MEMBER RT_MSG_MONTH6      := RT_MSG_MONTH1 +5
-    /// <summary>String ID for the month July</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH7/*" />
 	MEMBER RT_MSG_MONTH7      := RT_MSG_MONTH1 +6
-    /// <summary>String ID for the month August</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH8/*" />
 	MEMBER RT_MSG_MONTH8      := RT_MSG_MONTH1 +7
-    /// <summary>String ID for the month September</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH9/*" />
 	MEMBER RT_MSG_MONTH9      := RT_MSG_MONTH1 +8
-    /// <summary>String ID for the month October</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH10/*" />
 	MEMBER RT_MSG_MONTH10     := RT_MSG_MONTH1 +9
-    /// <summary>String ID for the month November</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH11/*" />
 	MEMBER RT_MSG_MONTH11     := RT_MSG_MONTH1 +10
-    /// <summary>String ID for the month December</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH12/*" />
 	MEMBER RT_MSG_MONTH12     := RT_MSG_MONTH1 +11
-    /// <summary>String ID for the day Sunday</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_DAY1/*" />
 	MEMBER RT_MSG_DAY1        := RT_MSG_MONTH1 +12
-    /// <summary>String ID for the day Monday</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_DAY2/*" />
 	MEMBER RT_MSG_DAY2        := RT_MSG_MONTH1 +13
-    /// <summary>String ID for the day Tuesday</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_DAY3/*" />
 	MEMBER RT_MSG_DAY3        := RT_MSG_MONTH1 +14
-    /// <summary>String ID for the day Wednesday</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_DAY4/*" />
 	MEMBER RT_MSG_DAY4        := RT_MSG_MONTH1 +15
-    /// <summary>String ID for the day Thursday</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_DAY5/*" />
 	MEMBER RT_MSG_DAY5        := RT_MSG_MONTH1 +16
-    /// <summary>String ID for the day Friday</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_DAY6/*" />
 	MEMBER RT_MSG_DAY6        := RT_MSG_MONTH1 +17
-    /// <summary>String ID for the day Saturday</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_DAY7/*" />
 	MEMBER RT_MSG_DAY7        := RT_MSG_MONTH1 +18
-    /// <summary>String ID for the description of the Nation Table</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_INFOSTRING/*" />
 	MEMBER RT_MSG_INFOSTRING  := RT_MSG_MONTH1 +19
 
 	MEMBER RT_MSG_LITERAL      := 0X2000
-    /// <summary>String ID for the short literal for TRUE</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_SHORT_TRUE/*" />
 	MEMBER RT_MSG_SHORT_TRUE   := RT_MSG_LITERAL + 1
-    /// <summary>String ID for the short literal for FALSE</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_SHORT_FALSE/*" />
 	MEMBER RT_MSG_SHORT_FALSE  := RT_MSG_LITERAL + 2
-    /// <summary>String ID for the long literal for TRUE</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_LONG_TRUE/*" />
 	MEMBER RT_MSG_LONG_TRUE    := RT_MSG_LITERAL + 3
-    /// <summary>String ID for the long literal for FALSE</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_LONG_FALSE/*" />
 	MEMBER RT_MSG_LONG_FALSE   := RT_MSG_LITERAL + 4
-    /// <summary>String ID for the short literal for YES</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_SHORT_YES/*" />
 	MEMBER RT_MSG_SHORT_YES    := RT_MSG_LITERAL + 5
-    /// <summary>String ID for the short literal for NO</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_SHORT_NO/*" />
 	MEMBER RT_MSG_SHORT_NO     := RT_MSG_LITERAL + 6
-    /// <summary>String ID for the long literal for YES</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_LONG_YES/*" />
 	MEMBER RT_MSG_LONG_YES     := RT_MSG_LITERAL + 7
-    /// <summary>String ID for the long literal for NO</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_LONG_NO/*" />
 	MEMBER RT_MSG_LONG_NO      := RT_MSG_LITERAL + 8
-    /// <summary>String ID for the long literal for currency</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_CURRENCY/*" />
 	MEMBER RT_MSG_CURRENCY     := RT_MSG_LITERAL + 9
-    /// <summary>String ID for the literal for Yes/No</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_YNSTRING/*" />
 	MEMBER RT_MSG_YNSTRING     := RT_MSG_LITERAL + 10
-    /// <summary>String ID for the literal for Debit</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_DEBIT/*" />
 	MEMBER RT_MSG_DEBIT        := RT_MSG_LITERAL + 11
-    /// <summary>String ID for the literal for credit</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_CREDIT/*" />
 	MEMBER RT_MSG_CREDIT        := RT_MSG_LITERAL + 12
 
 
@@ -468,7 +468,7 @@ ENUM XSharp.VOErrors
 	// NOTE DUPLICATE VALUES WILL CAUSE PROBLEM WITH LOOKUP. THEREFORE RT_MSG_ERR IS A DEFINE
 	// MEMBER RT_MSG_ERR     := 0X4000
     // This matches the numeric values for the Gencode ENum + 0x4000
-	/// <summary>String ID for the first error message </summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_ERR_0/*" />
 	MEMBER RT_MSG_ERR_0        := RT_MSG_ERR + 0
 	/// <exclude />
 	MEMBER RT_MSG_ERR_1        := RT_MSG_ERR + 1
@@ -1122,79 +1122,75 @@ ENUM XSharp.VOErrors
 #endregion XS_RUNTIME
 
 END ENUM
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH1/*" />
 DEFINE  RT_MSG_MONTH1     := VOErrors.RT_MSG_MONTH1
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH2/*" />
 DEFINE  RT_MSG_MONTH2     := VOErrors.RT_MSG_MONTH2
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH3/*" />
 DEFINE  RT_MSG_MONTH3     := VOErrors.RT_MSG_MONTH3
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH4/*" />
 DEFINE  RT_MSG_MONTH4     := VOErrors.RT_MSG_MONTH4
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH5/*" />
 DEFINE  RT_MSG_MONTH5     := VOErrors.RT_MSG_MONTH5
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH6/*" />
 DEFINE  RT_MSG_MONTH6     := VOErrors.RT_MSG_MONTH6
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH7/*" />
 DEFINE  RT_MSG_MONTH7     := VOErrors.RT_MSG_MONTH7
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH8/*" />
 DEFINE  RT_MSG_MONTH8     := VOErrors.RT_MSG_MONTH8
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH9/*" />
 DEFINE  RT_MSG_MONTH9     := VOErrors.RT_MSG_MONTH9
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH10/*" />
 DEFINE  RT_MSG_MONTH10    := VOErrors.RT_MSG_MONTH10
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH11/*" />
 DEFINE  RT_MSG_MONTH11    := VOErrors.RT_MSG_MONTH11
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_MONTH12/*" />
 DEFINE  RT_MSG_MONTH12    := VOErrors.RT_MSG_MONTH12
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_DAY1/*" />
 DEFINE  RT_MSG_DAY1       := VOErrors.RT_MSG_DAY1
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_DAY2/*" />
 DEFINE  RT_MSG_DAY2       := VOErrors.RT_MSG_DAY2
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_DAY3/*" />
 DEFINE  RT_MSG_DAY3       := VOErrors.RT_MSG_DAY3
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_DAY4/*" />
 DEFINE  RT_MSG_DAY4       := VOErrors.RT_MSG_DAY4
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_DAY5/*" />
 DEFINE  RT_MSG_DAY5       := VOErrors.RT_MSG_DAY5
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_DAY6/*" />
 DEFINE  RT_MSG_DAY6       := VOErrors.RT_MSG_DAY6
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_DAY7/*" />
 DEFINE  RT_MSG_DAY7       := VOErrors.RT_MSG_DAY7
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_INFOSTRING/*" />
 DEFINE  RT_MSG_INFOSTRING := VOErrors.RT_MSG_INFOSTRING
 
-/// <exclude />
 DEFINE  RT_MSG_LITERAL     := VOErrors.RT_MSG_LITERAL
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_SHORT_TRUE/*" />
 DEFINE  RT_MSG_SHORT_TRUE  := VOErrors.RT_MSG_SHORT_TRUE
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_SHORT_FALSE/*" />
 DEFINE  RT_MSG_SHORT_FALSE := VOErrors.RT_MSG_SHORT_FALSE
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_LONG_TRUE/*" />
 DEFINE  RT_MSG_LONG_TRUE   := VOErrors.RT_MSG_LONG_TRUE
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_LONG_FALSE/*" />
 DEFINE  RT_MSG_LONG_FALSE  := VOErrors.RT_MSG_LONG_FALSE
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_SHORT_YES/*" />
 DEFINE  RT_MSG_SHORT_YES   := VOErrors.RT_MSG_SHORT_YES
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_SHORT_NO/*" />
 DEFINE  RT_MSG_SHORT_NO    := VOErrors.RT_MSG_SHORT_NO
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_LONG_YES/*" />
 DEFINE  RT_MSG_LONG_YES    := VOErrors.RT_MSG_LONG_YES
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_LONG_NO/*" />
 DEFINE  RT_MSG_LONG_NO     := VOErrors.RT_MSG_LONG_NO
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_CURRENCY/*" />
 DEFINE  RT_MSG_CURRENCY    := VOErrors.RT_MSG_CURRENCY
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_YNSTRING/*" />
 DEFINE  RT_MSG_YNSTRING    := VOErrors.RT_MSG_YNSTRING
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_DEBIT/*" />
 DEFINE  RT_MSG_DEBIT       := VOErrors.RT_MSG_DEBIT
-/// <exclude />
+/// <include file="XSharp.CoreDefines.xml" path="members/VOErrors.RT_MSG_CREDIT/*" />
 DEFINE  RT_MSG_CREDIT      := VOErrors.RT_MSG_CREDIT
 
 
-
-/// <exclude />
 DEFINE RT_MSG_DOSERR  := 0x4040
-/// <exclude />
 DEFINE RT_MSG_ERR     := 0x4000
 
 

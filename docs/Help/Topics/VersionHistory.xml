@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-12-22T22:06:41.555+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-23T16:13:51.055+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -12,7 +12,7 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Body Text" style="tabstops:96px left,144px left,240px left,488px left,1998px left ;">Note: When an item has a matching GitHub ticket, the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> , where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X#, we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue.</para>
-    <para styleclass="Heading1">Changes in 2.21.X.X</para>
+    <para styleclass="Heading1">Changes in 2.22.0.0</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -23,12 +23,15 @@
     </list>
     <para styleclass="Heading2">Build System</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"></li>
+      <li styleclass="Normal">Some project files that were converted from Vulcan could cause problems locating errors from the error list. This has been fixed. The property GenerateFullPaths &#160;is now always set to TRUE when building inside Visual Studio.</li>
+      <li styleclass="Normal">The files LastXSharpResponseFile.Rsp and <text styleclass="Body Text">LastXSharpNativeResourceResponseFile </text>are now always created in the temp folder, and not in the MSBuildTemp subfolder in the temp folder. </li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"></li>
+      <li styleclass="Normal">Marked SetCPU() and SetMath() as obsolete</li>
+      <li styleclass="Normal">Bin2Ptr() and Ptr2Bin() now also work in X64 mode. The strings returned or expected are 8 characters long.</li>
+      <li styleclass="Normal">ExecScript() now calls the scripting code in the new macro compiler (#1646)</li>
     </list>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">RDD System</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -45,7 +48,10 @@
       <li styleclass="Normal">Fixed problem in Format Document with DEFINEs (#1642)</li>
       <li styleclass="Normal">Fixed problem with reading Assembly info when assembly does not exist (#1645)</li>
       <li styleclass="Normal">Fixed problem in the VFP Class project template with the DEFINE CLASS syntax (#1648)</li>
+      <li styleclass="Normal">Fix for issue with the font size on the toolbox for the Window Editor (#1650)</li>
+      <li styleclass="Normal">Fix for issue adding a COM reference to a project (#1654)</li>
     </list>
+    <para styleclass="Normal"></para>
     <para styleclass="Heading3">New features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"></li>
@@ -81,11 +87,12 @@
     <para styleclass="Heading2">Documentation</para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"></li>
+      <li styleclass="Normal">The [View Source] link was pointing to a feature branch on Github. It now points to the main branch.</li>
+      <li styleclass="Normal">Updated the help topic about Interpolated strings.</li>
     </list>
     <para styleclass="Heading3">New Features</para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"></li>
+      <li styleclass="Normal">Start of Chinese documentation of the Runtime functions and classes.</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading1">Changes in 2.21.0.5</para>

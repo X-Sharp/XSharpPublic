@@ -3617,9 +3617,8 @@ namespace Microsoft.VisualStudio.Project
             }
 
             projectInstance.SetProperty(GlobalProperty.VisualStudioStyleErrors.ToString(), "true");
-            projectInstance.SetProperty("UTFOutput", "true");
+            projectInstance.SetProperty("Utf8Output", "true");
             projectInstance.SetProperty(GlobalProperty.BuildingInsideVisualStudio.ToString(), "true");
-
             this.BuildProject.ProjectCollection.HostServices.SetNodeAffinity(projectInstance.FullPath, NodeAffinity.InProc);
             BuildRequestData requestData = new BuildRequestData(projectInstance, targetsToBuild, this.BuildProject.ProjectCollection.HostServices, BuildRequestDataFlags.ReplaceExistingProjectInstance);
             BuildSubmission submission = BuildManager.DefaultBuildManager.PendBuildRequest(requestData);

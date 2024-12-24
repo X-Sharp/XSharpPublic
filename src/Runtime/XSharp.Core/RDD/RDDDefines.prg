@@ -34,6 +34,8 @@ DEFINE DBRI_USER		:= DbRecordInfo.DBRI_USER
 
 
 // FieldInfo defines
+/// <include file="XSharp.CoreDefines.xml" path="members/DbFieldInfo.DBS_NAME/*" />
+DEFINE DBS_NAME					:= DbFieldInfo.DBS_NAME
 /// <include file="XSharp.CoreDefines.xml" path="members/DbFieldInfo.DBS_TYPE/*" />
 DEFINE DBS_TYPE					:= DbFieldInfo.DBS_TYPE
 /// <include file="XSharp.CoreDefines.xml" path="members/DbFieldInfo.DBS_LEN/*" />

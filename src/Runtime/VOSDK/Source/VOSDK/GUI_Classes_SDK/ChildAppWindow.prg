@@ -241,7 +241,7 @@ ACCESS ToolBar
 
 
 
-	IF oImp IS AppWindow VAR appWnd
+	IF oImp IS Window VAR appWnd
 		RETURN appWnd:Toolbar
 	ENDIF
 
@@ -254,7 +254,9 @@ ACCESS ToolBar
 /// <include file="Gui.xml" path="doc/ChildAppWindow.ToolBar/*" />
 ASSIGN ToolBar(oNewToolBar)
 
-	IF  ((OBJECT) oNewToolbar)  IS ToolBar VAR oTB
+    // Original code in VO was also checking IsInstanceOf(oImp, #Window) to be true
+    // Note that below oTB as used in the IS VAR pattern, but still assigned in the next line
+    IF  ((OBJECT) oNewToolbar)  IS ToolBar VAR oTB
 		oTb := oNewToolBar
 		oImp:ToolBar := oTb
 		oTb:__SetParent(SELF)

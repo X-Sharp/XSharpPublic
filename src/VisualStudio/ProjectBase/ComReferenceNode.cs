@@ -15,12 +15,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
 using System.Collections.Generic;
 using Microsoft.Build.Evaluation;
-using Microsoft.Build.Execution;
 using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project

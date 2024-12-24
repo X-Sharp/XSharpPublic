@@ -3425,6 +3425,7 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
+        static HashSet<string> filetypes = null;
         /// <summary>
         /// Called by the project to know if the item is a file (that is part of the project)
         /// or an intermediate file used by the MSBuild tasks/targets
@@ -3434,27 +3435,38 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>True = items of this type should be included in the project</returns>
         protected virtual bool IsItemTypeFileType(string type)
         {
-            if (String.Compare(type, BuildAction.Compile.ToString(), StringComparison.OrdinalIgnoreCase) == 0
-                || String.Compare(type, BuildAction.Content.ToString(), StringComparison.OrdinalIgnoreCase) == 0
-                || String.Compare(type, BuildAction.EmbeddedResource.ToString(), StringComparison.OrdinalIgnoreCase) == 0
-                || String.Compare(type, BuildAction.None.ToString(), StringComparison.OrdinalIgnoreCase) == 0)
-                return true;
-
-            // we don't know about this type, so ignore it.
-            return false;
+            if (filetypes == null)
+            {
+                filetypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    BuildAction.Compile.Name,
+                    BuildAction.Content.Name,
+                    BuildAction.EmbeddedResource.Name,
+                    BuildAction.None.Name
+                };
+            }
+            return filetypes.Contains(type);
         }
 
+        HashSet<string> itemTypes = null;
         /// <summary>
         /// Filter items that should not be processed as file items. Example: Folders and References.
         /// </summary>
         protected virtual bool FilterItemTypeToBeAddedToHierarchy(string itemType)
         {
-            return (String.Compare(itemType, ProjectFileConstants.Reference, StringComparison.OrdinalIgnoreCase) == 0
-                    || String.Compare(itemType, ProjectFileConstants.ProjectReference, StringComparison.OrdinalIgnoreCase) == 0
-                    || String.Compare(itemType, ProjectFileConstants.COMReference, StringComparison.OrdinalIgnoreCase) == 0
-                    || String.Compare(itemType, ProjectFileConstants.Folder, StringComparison.OrdinalIgnoreCase) == 0
-                    || String.Compare(itemType, ProjectFileConstants.WebReference, StringComparison.OrdinalIgnoreCase) == 0
-                    || String.Compare(itemType, ProjectFileConstants.WebReferenceFolder, StringComparison.OrdinalIgnoreCase) == 0);
+            if (itemTypes == null)
+            {
+                itemTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    ProjectFileConstants.Reference,
+                    ProjectFileConstants.ProjectReference,
+                    ProjectFileConstants.COMReference,
+                    ProjectFileConstants.Folder,
+                    ProjectFileConstants.WebReference,
+                    ProjectFileConstants.WebReferenceFolder
+                };
+            }
+            return itemTypes.Contains(itemType);
         }
 
         /// <summary>

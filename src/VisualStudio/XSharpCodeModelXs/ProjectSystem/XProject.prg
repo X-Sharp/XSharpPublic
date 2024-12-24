@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING System
+USING System.IO
 USING System.Collections.Generic
 USING System.ComponentModel
 USING System.Linq
@@ -229,11 +230,16 @@ BEGIN NAMESPACE XSharpModel
             oldAsm:Add(name, name)
         next
 
+        var folder := Path.GetDirectoryName(SELF:ProjectNode:Url)
         FOREACH var asmFile in asmList
-            if oldAsm:ContainsKey(asmFile)
-                oldAsm:Remove(asmFile)
+            var cAsm := asmFile
+            if !Path.IsPathRooted(cAsm)
+                cAsm := Path.Combine(folder, cAsm)
+            endif
+            if oldAsm:ContainsKey(cAsm)
+                oldAsm:Remove(cAsm)
             else
-                newAsm:Add(asmFile)
+                newAsm:Add(cAsm)
             endif
         next
         FOREACH var item in oldAsm

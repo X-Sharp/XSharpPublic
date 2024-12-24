@@ -85,11 +85,13 @@ FUNCTION SetCompatible(lNewSetting AS LOGIC) AS LOGIC
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcpu/*" />
+[Obsolete];
 FUNCTION SetCpu() AS DWORD
     GETSTATE DWORD Set.Cpu
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcpu/*" />
+[Obsolete];
 FUNCTION SetCpu(nNewSetting AS DWORD) AS DWORD
     SETSTATE DWORD Set.Cpu nNewSetting
 
@@ -293,10 +295,12 @@ FUNCTION SetFixed(lNewSetting AS LOGIC) AS LOGIC
     RETURN lOld
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setmath/*" />
+[Obsolete];
 FUNCTION SetMath() AS DWORD
     GETSTATE DWORD Set.Math
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setmath/*" />
+[Obsolete];
 FUNCTION SetMath(nNewSetting AS DWORD) AS DWORD
     SETSTATE DWORD Set.Math nNewSetting
 

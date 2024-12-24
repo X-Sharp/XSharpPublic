@@ -19186,14 +19186,14 @@
         // 使 30 成为范围内的最高年龄
         OrdScope(BOTTOMSCOPE, 30)
         LIST Age&#0009;&#0009;&#0009;&#0009;// 显示年龄在 25
-        &#0009;&#0009;&#0009;&#0009;&#0009;// <= 年龄 <= 30
+        &#0009;&#0009;&#0009;&#0009;&#0009;// &lt;= 年龄 &lt;= 30
         // 将最高年龄更改为 35
         OrdScope(BOTTOMSCOPE, 35)
         LIST Age&#0009;&#0009;&#0009;&#0009;// 显示年龄在 25
-        &#0009;&#0009;&#0009;&#0009;&#0009;// <= 年龄 <= 35
+        &#0009;&#0009;&#0009;&#0009;&#0009;// &lt;= 年龄 &lt;= 35
         // 重置顶部边界
         OrdScope(TOPSCOPE, NIL)
-        LIST Age&#0009;&#0009;&#0009;&#0009;// 显示年龄 <= 35 的记录
+        LIST Age&#0009;&#0009;&#0009;&#0009;// 显示年龄 &lt;= 35 的记录
         // 重置底部边界
         OrdScope(BOTTOMSCOPE, NIL)
         LIST Age&#0009;&#0009;&#0009;&#0009;// 显示所有记录
@@ -21452,16 +21452,9 @@
       如果指定了 <paramref name="lNewSetting" />，则返回先前的设置。
     </returns>
     <remarks>
-      SetCPU() 是一个环境函数，返回中央处理器的数字标识符。
+      SetCPU() 是一個相容性函數。它在 X# 中並沒有真正做任何事情。
     </remarks>
-    <example>
-      此示例查询处理器类型：
-      <code language="X#">
-        FUNCTION Start()
-        &#0009;QOut("CPU 类型: ", SetCPU())
-        &#0009;WAIT
-      </code>
-    </example>
+   
     <seealso cref='O:XSharp.Core.Functions.SetMath'>SetMath</seealso>
   </setcpu>
 
@@ -22275,24 +22268,13 @@
       返回并可选地更改决定底层浮点系统的内部操作特性的设置。
     </summary>
     <param name="nNewSetting">以下值之一，指示要使用的数学处理器类型：</param>
-    <param name="Value">指示</param>
-    <param name="0">没有浮点。</param>
-    <param name="387">正在使用387数学协处理器。</param>
-    <param name="486">至少使用带有内置数学协处理器的486。</param>
     <returns>
       如果未指定<paramref name="nNewSetting" />，SetMath()返回当前设置。<br/>
-      如果指定了<nNewSetting>，则返回之前的设置。
+      如果指定了<paramref name="nNewSetting" />，则返回之前的设置。
     </returns>
     <remarks>
+      SetMath() 是一個相容性函數。它在 X# 中並沒有真正做任何事情。
     </remarks>
-    <example>
-      此示例使用SetMath()检查当前设置是否为486：
-      <code language="X#">
-        IF SetMath() != 486
-        &#0009;? "不是486单元"
-        ENDIF
-      </code>
-    </example>
     <seealso cref='O:XSharp.Core.Functions.SetCpu'>SetCPU</seealso>
   </setmath>
 

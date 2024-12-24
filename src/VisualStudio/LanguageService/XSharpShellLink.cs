@@ -540,22 +540,25 @@ namespace XSharp.LanguageService
         }
         private Project findProject(SolutionItem parent, string sUrl)
         {
-            foreach(var child in parent.Children)
+            if (parent != null)
             {
-                if (child is null)
-                    continue;
-                if (child is Project project)
+                foreach (var child in parent.Children)
                 {
-                    if (string.Compare(project.FullPath, sUrl, StringComparison.OrdinalIgnoreCase) == 0)
+                    if (child is null)
+                        continue;
+                    if (child is Project project)
                     {
-                        return project;
+                        if (string.Compare(project.FullPath, sUrl, StringComparison.OrdinalIgnoreCase) == 0)
+                        {
+                            return project;
+                        }
                     }
-                }
-                foreach (var item in child.Children)
-                {
-                    var prj = findProject(item, sUrl);
-                    if (prj != null)
-                        return prj;
+                    foreach (var item in child.Children)
+                    {
+                        var prj = findProject(item, sUrl);
+                        if (prj != null)
+                            return prj;
+                    }
                 }
             }
             return null;

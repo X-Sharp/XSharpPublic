@@ -1,50 +1,37 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 
 
 //
 // subscripts for Directory() array
 //
-/// <summary>Position in Directory() sub-array for fileName (as a string).</summary>
-/// <include file="CoreComments.xml" path="Comments/Directory/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/F_NAME/*" />
 DEFINE F_NAME  := 1
-/// <summary>Position in Directory() sub-array for filesize(as a numeric).</summary>
-/// <include file="CoreComments.xml" path="Comments/Directory/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/F_SIZE/*" />
 DEFINE F_SIZE  := 2
-/// <summary>Position in Directory() sub-array for last file write date(as a date).</summary>
-/// <include file="CoreComments.xml" path="Comments/Directory/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/F_DATE/*" />
 DEFINE F_DATE  := 3
-/// <summary>Position in Directory() sub-array for last file write date(as a date).</summary>
-/// <include file="CoreComments.xml" path="Comments/Directory/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/F_WRITE_DATE/*" />
 DEFINE F_WRITE_DATE  := 3
-/// <summary>Position in Directory() sub-array for last file write time(as a string).</summary>
-/// <include file="CoreComments.xml" path="Comments/Directory/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/F_TIME/*" />
 DEFINE F_TIME  := 4
-/// <summary>Position in Directory() sub-array for last file write time(as a string).</summary>
-/// <include file="CoreComments.xml" path="Comments/Directory/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/F_WRITE_TIME/*" />
 DEFINE F_WRITE_TIME  := 4
-/// <summary>Position in Directory() sub-array for file attributes(as a number).</summary>
-/// <include file="CoreComments.xml" path="Comments/Directory/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/F_ATTR/*" />
 DEFINE F_ATTR  := 5
-/// <summary>Position in Directory() sub-array for Size of extended attributes(as a string).</summary>
-/// <include file="CoreComments.xml" path="Comments/Directory/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/F_EA_SIZE/*" />
 DEFINE F_EA_SIZE := 6
-/// <summary>Position in Directory() sub-array for creation date(as a date).</summary>
-/// <include file="CoreComments.xml" path="Comments/Directory/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/F_CREATION_DATE/*" />
 DEFINE F_CREATION_DATE := 7
-/// <summary>Position in Directory() sub-array for creation time(as a string).</summary>
-/// <include file="CoreComments.xml" path="Comments/Directory/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/F_CREATION_TIME/*" />
 DEFINE F_CREATION_TIME := 8
-/// <summary>Position in Directory() sub-array for last access date(as a date).</summary>
-/// <include file="CoreComments.xml" path="Comments/Directory/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/F_ACCESS_DATE/*" />
 DEFINE F_ACCESS_DATE := 9
-/// <summary>Position in Directory() sub-array for last access time(as a string).</summary>
-/// <include file="CoreComments.xml" path="Comments/Directory/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/F_ACCESS_TIME/*" />
 DEFINE F_ACCESS_TIME := 10
-/// <summary>Length of Directory() sub-array.</summary>
-/// <include file="CoreComments.xml" path="Comments/Directory/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/F_LEN/*" />
 DEFINE F_LEN   := 10   // length of
 
 
@@ -70,7 +57,7 @@ DEFINE REAL8_EPSILON := 2.2204460492503131e-016  // smallest such that 1.0+REAL8
 DEFINE REAL8_MAX     := 1.7976931348623158e+308  // Maximum representable number
 
 
-DEFINE TICK_FREQUENCY   :=    18.20647  // ticks per second 
+DEFINE TICK_FREQUENCY   :=    18.20647  // ticks per second
 
 //
 // ASCII character equates
@@ -91,7 +78,7 @@ DEFINE ASC_A        := 65
 DEFINE ASC_Z        := 90
 DEFINE ASC_SOFT_CR  :=   141      // softCarriageReturn
 
-/// <summary>This define consists of a Carriage Return and a Line Feed. Unfortunately this is not properly shown in the help file, because the help file generator strips CRLF characters...</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/CRLF/*" />
 DEFINE CRLF       := e"\r\n"
 DEFINE SE_ABORT := 0
 DEFINE SE_IGNORE := 1

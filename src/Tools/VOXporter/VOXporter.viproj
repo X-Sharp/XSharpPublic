@@ -29,8 +29,6 @@ CustomControlsGuid = 52ACC108-C00C-4E87-8CA8-7F1C5B7D65A0
 DefaultPropertiesGuid = DC6FD78A-F117-431E-8C2D-F6667142861F
 
 [Recent References]
-RecentReference = Browse:C:\xSharp\DevPublic\Binaries\Debug\XSharpVoEditors.dll
-RecentReference = Browse:C:\xSharp\DevPublic\Artifacts\Debug\XSharp.VoEditors.dll
 
 [Application Groups]
 
@@ -61,7 +59,7 @@ GUID = FD056C5F-6DE1-465A-90E4-0145DEB734D2
 IncludeInProjectBuild = 1
 IncludeInProjectSearch = 1
 IncludeInProjectExport = 1
-IncludePath = c:\XSharp\DevPublic\Common
+IncludePath = C:\xSharp\Dev\src\Common
 StdDefsFile = 
 AppToRun = 
 SignAssembly = 0
@@ -103,6 +101,16 @@ File = %AppPath%\VOParser.prg
 FileGUID = 81056C36-30B9-42B2-B0F6-E51A9FA52F14
 FileType = Code
 CopyToBin = 0
+File = C:\xSharp\Dev\src\Common\commonAssemblyInfo.prg
+FileGUID = 3C0D9DC5-C981-4D3A-9A17-0574F88B13E9
+FileFileGroup = AA82ABD5-9D0C-4788-976C-3313B139325F
+FileType = Code
+CopyToBin = 0
+File = C:\xSharp\Dev\src\Common\constants.prg
+FileGUID = 15B49D79-BAD9-4F74-B42A-DA8B005DF917
+FileFileGroup = AA82ABD5-9D0C-4788-976C-3313B139325F
+FileType = Code
+CopyToBin = 0
 [VOXPorter References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
@@ -114,7 +122,7 @@ ReferenceBrowse = %ProjectPath%\Dll\XIRES.dll,1,1
 ReferenceBrowse = %ProjectPath%\Dll\XIDED.dll,1,1
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Xml,1,0,4.0.0.0
-ReferenceBrowse = C:\xSharp\DevPublic\Artifacts\Debug\XSharp.VoEditors.dll,1,1
+ReferenceBrowse = C:\xSharp\Dev\Artifacts\Common\Debug\XSharp.VoEditors.dll,1,1
 [VOXPorter Resources]
 ResourceFile = Designers , %AppPath%\Resources\Designers.resources
 ResourceFileGuid = 369B3304-1BF5-4D80-AA97-2B60C561DEDF
@@ -144,6 +152,7 @@ VO11=0
 VO12=0
 VO13=0
 VO14=0
+VO15=0
 VO16=0
 VO17=0
 FOX1=0
@@ -159,6 +168,11 @@ MemVar=0
 IgnoreStdDefs=0
 Ovf=0
 FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=1
 ResponseOnly=0
 [VOXPorter Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -216,7 +230,7 @@ GUID = D5679723-DA91-4572-B699-5FDEC084BDB5
 IncludeInProjectBuild = 1
 IncludeInProjectSearch = 1
 IncludeInProjectExport = 1
-IncludePath = c:\XSharp\DevPublic\Common
+IncludePath = C:\xSharp\Dev\src\Common
 StdDefsFile = 
 AppToRun = 
 SignAssembly = 0
@@ -318,6 +332,7 @@ VO11=0
 VO12=0
 VO13=0
 VO14=0
+VO15=0
 VO16=0
 VO17=0
 FOX1=0
@@ -333,6 +348,11 @@ MemVar=0
 IgnoreStdDefs=0
 Ovf=0
 FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=1
 ResponseOnly=0
 [Fab_VO_Entities Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111

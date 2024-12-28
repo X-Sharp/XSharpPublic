@@ -38,10 +38,13 @@ namespace XSharp.Project
 
         #endregion
         #region Fields
+        private Assembly assembly = null;
         private string wrapperFileName;
         private string description;
         private Microsoft.VisualStudio.Shell.Interop.IVsTypeLibraryWrapper typelibwrapper = null;
         #endregion
+
+        internal Assembly Assembly => assembly;
         public XSharpComReferenceNode(ProjectNode root, ProjectElement element)
            : base(root, element)
         {
@@ -151,22 +154,22 @@ namespace XSharp.Project
                     Guid CLSID_VSAxImporter = new Guid(0x7D7D0D7B, 0xA0D5, 0x4BFE, 0xA2, 0xCF, 0x04, 0xB3, 0x72, 0xA4, 0x46, 0xBB);
                     Guid CLSID_PrimaryImporter = new Guid(0x0c075ae9, 0x42ac, 0x4bef, 0x87, 0xa1, 0x85, 0xc1, 0xbf, 0xed, 0x9f, 0x1f);
                     Guid Importer = new Guid();
-                    if (String.Equals(WrapperTool, WrapperToolAttributeValue.AxImp.ToString(), StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(WrapperTool, WrapperToolAttributeValue.AxImp.ToString(), StringComparison.OrdinalIgnoreCase))
                     {
                         Importer = CLSID_VSAxImporter;
                     }
-                    else if (String.Equals(WrapperTool, WrapperToolAttributeValue.TlbImp.ToString(), StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals(WrapperTool, WrapperToolAttributeValue.TlbImp.ToString(), StringComparison.OrdinalIgnoreCase))
                     {
                         Importer = CLSID_VSTypeLibraryImporter;
                     }
-                    else if (String.Equals(WrapperTool, WrapperToolAttributeValue.Primary.ToString(), StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals(WrapperTool, WrapperToolAttributeValue.Primary.ToString(), StringComparison.OrdinalIgnoreCase))
                     {
                         Importer = CLSID_PrimaryImporter;
                     }
                     if (Importer != Guid.Empty)
                     {
-                        IntPtr result = IntPtr.Zero;
                         ILocalRegistry localReg = this.GetService(typeof(SLocalRegistry)) as ILocalRegistry;
+                        IntPtr result;
                         ErrorHandler.ThrowOnFailure(localReg.CreateInstance(Importer, null, ref wrapperGuid, (uint)Microsoft.VisualStudio.OLE.Interop.CLSCTX.CLSCTX_INPROC_SERVER, out result));
                         typelibwrapper = Marshal.GetObjectForIUnknown(result) as IVsTypeLibraryWrapper;
                     }
@@ -203,7 +206,7 @@ namespace XSharp.Project
                     {
                         name = (string)key.GetValue("PrimaryInteropAssemblyName");
                         var asmName = new AssemblyName(name);
-                        var assembly = Assembly.Load(asmName);
+                        this.assembly = Assembly.Load(asmName);
                         this.wrapperFileName = assembly.Location;
                     }
 
@@ -217,15 +220,8 @@ namespace XSharp.Project
                 int iresult = LoadTypeLib(typeLibPath, out var itypelib);
                 if (iresult == VSConstants.S_OK && itypelib != null)
                 {
-                    System.Runtime.InteropServices.ComTypes.ITypeLib itl = itypelib as System.Runtime.InteropServices.ComTypes.ITypeLib;
-                    if (itl != null)
-                    {
-                        string strName, strDocString, strHelpFile;
-                        int iHelpContext;
-                        itl.GetDocumentation(-1, out strName, out strDocString, out iHelpContext, out strHelpFile);
-                        description = strDocString;
-
-                    }
+                    itypelib.GetDocumentation(-1, out _, out var strDocString, out _, out _);
+                    description = strDocString;
                 }
             }
 
@@ -234,18 +230,32 @@ namespace XSharp.Project
     [CLSCompliant(false), ComVisible(true)]
     internal class XSharpOAComReference : Microsoft.VisualStudio.Project.Automation.OAComReference
     {
-        private Assembly assembly = null;
+        private XSharpComReferenceNode comref;
+        private bool loaded = false;
+        private string location;
         private bool tryLoad = false;
+        private string asmName = null;
 
-        internal XSharpOAComReference(ComReferenceNode comReference) : base(comReference)
+        internal XSharpOAComReference(XSharpComReferenceNode comReference) : base(comReference)
         {
-
+            comref = comReference;
         }
 
         private void LoadAssembly()
         {
-            if (assembly == null && !tryLoad)
+            if (!loaded && !tryLoad)
             {
+                if (comref.Assembly != null)
+                {
+                    var assembly = comref.Assembly;
+                    if (!String.IsNullOrEmpty(assembly.Location))
+                    {
+                        loaded = true;
+                        location = assembly.Location;
+                        asmName = assembly.GetName().Name;
+                        return;
+                    }
+                }
                 try
                 {
 
@@ -254,17 +264,20 @@ namespace XSharp.Project
                         var key = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey("Typelib\\" + BaseReferenceNode.TypeGuid.ToString("B") + "\\" + this.Version);
                         if (key != null)
                         {
-                            string asmName = (string)key.GetValue("PrimaryInteropAssemblyName");
-                            var name = new AssemblyName(asmName);
-                            assembly = Assembly.Load(name);
+                            string asm = (string)key.GetValue("PrimaryInteropAssemblyName");
+                            var name = new AssemblyName(asm);
+                            var assembly = Assembly.Load(name);
+                            location = assembly.Location;
+                            asmName = assembly.GetName().Name;
+                            loaded = true;
                         }
                     }
                 }
                 catch (Exception)
                 {
-                    assembly = null;
+                    loaded = false;
                 }
-                if (assembly == null)
+                if (! loaded)
                 {
                     try
                     {
@@ -272,12 +285,15 @@ namespace XSharp.Project
                         if (File.Exists(path))
                         {
                             tryLoad = true;
-                            assembly = System.Reflection.Assembly.LoadFile(path);
+                            var bytes = File.ReadAllBytes(path);
+                            var assembly = Assembly.Load(bytes);
+                            location = path;
+                            asmName = assembly.GetName().Name;
                         }
                     }
                     catch (Exception)
                     {
-                        assembly = null;
+                        loaded = false;
                     }
                 }
             }
@@ -290,10 +306,11 @@ namespace XSharp.Project
                 // this needs to return the name as defined in the assembly
                 // Otherwise the form editor will not be able to load a saved activeX control
                 // the safest thing to do is to load the assembly and retrieve its name
-                LoadAssembly();
-                if (assembly != null)
+                if (!loaded)
+                    LoadAssembly();
+                if (loaded)
                 {
-                    return assembly.GetName().Name;
+                    return asmName;
                 }
                 return System.IO.Path.GetFileNameWithoutExtension(this.Path);
             }
@@ -305,10 +322,10 @@ namespace XSharp.Project
             {
                 try
                 {
-                    if (assembly == null)
+                    if (!loaded)
                         LoadAssembly();
-                    if (assembly != null)
-                        return assembly.Location;
+                    if (loaded)
+                        return location;
                 }
                 catch
                 {

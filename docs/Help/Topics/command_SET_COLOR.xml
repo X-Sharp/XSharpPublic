@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T15:46:04.427+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SET COLOR Command</title>
   <keywords>
     <keyword>Colors<keyword>setting</keyword></keyword>
@@ -16,9 +16,9 @@
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Change the setting that determines the current color for the terminal window.</para>
+    <para styleclass="Normal">Changes the setting that determines the current color for the terminal window.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">SET COLOR | COLOUR TO [&lt;<text styleclass="Italic">xcColorString</text>&gt;]</para>
+    <para styleclass="Normal"><text style="font-family:Consolas;">SET COLOR | COLOUR TO [&lt;</text><text styleclass="Italic" style="font-family:Consolas;">xcColorString</text><text style="font-family:Consolas;">&gt;]</text></para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">SET COLOR is functionally equivalent to SetColor(). &#160;SET COLOR TO with no arguments is the same as SetColor(NULL_STRING), returning to the default color settings.</para>
     <para styleclass="Heading1">Examples</para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T15:41:59.131+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>ACCEPT Command</title>
   <keywords>
     <keyword>ACCEPT command</keyword>
@@ -14,7 +14,7 @@
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Take input from the keyboard and assign it to a memory variable.</para>
+    <para styleclass="Normal">Takes input from the keyboard and assigns it to a memory variable.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">ACCEPT [&lt;<text styleclass="Italic">uValuePrompt</text>&gt;] TO &lt;<text styleclass="Italic">idVar</text>&gt;</para>
     <para styleclass="Heading1">Arguments</para>
@@ -23,9 +23,9 @@
     <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">When ACCEPT is executed, it first performs a carriage return/linefeed, displays the prompt in the terminal window, and begins taking characters from the keyboard at the position immediately following the prompt.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Up to 255 characters can be entered. &#160;When input reaches the edge of the window, as defined by MaxCol(), the cursor moves to the next line.</para>
+    <para styleclass="Normal">Up to 255 characters can be entered. When input reaches the edge of the window, as defined by MaxCol(), the cursor moves to the next line.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">ACCEPT supports only two editing keys: &#160;Backspace and Enter (Esc is not supported). &#160;Backspace deletes the last character typed. &#160;Enter confirms entry and is the only key that can terminate an ACCEPT. &#160;If Enter is the only key pressed, ACCEPT assigns a NULL_STRING to &lt;<text styleclass="Italic">idVar</text>&gt;.</para>
+    <para styleclass="Normal">ACCEPT supports only two editing keys: Backspace and Enter (Esc is not supported). Backspace deletes the last character typed. &#160;Enter confirms entry and is the only key that can terminate an ACCEPT. If Enter is the only key pressed, ACCEPT assigns a NULL_STRING to &lt;<text styleclass="Italic">idVar</text>&gt;.</para>
     <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">This example uses ACCEPT to get keyboard input from the user:</para>
     <para styleclass="Normal"></para>

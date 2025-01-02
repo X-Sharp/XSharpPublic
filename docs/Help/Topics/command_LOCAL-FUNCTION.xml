@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-18T16:12:02.682+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-14T15:39:57.475+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>LOCAL FUNCTION</title>
   <keywords>
     <keyword>END FUNCTION</keyword>
@@ -11,7 +11,7 @@
       <para styleclass="Heading1">LOCAL FUNCTION</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Declare a local function </para>
+    <para styleclass="Normal">Declare a local function. </para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal"><tab />[Modifiers] <text style="font-weight:bold;">LOCAL FUNCTION</text> &lt;<text styleclass="Italic">idFunction</text>&gt; </para>
     <para styleclass="Normal"><tab />[Typeparameters]</para>
@@ -26,14 +26,14 @@
     <para styleclass="List"><tab /></para>
     <para styleclass="List">[Modifiers]<tab />The only valid modifiers for a local function are UNSAFE and/or ASYNC.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;idFunction&gt;<tab />A valid identifier name for the function. &#160;A function is an entity and, as such, shares the same name space as other entities. This means that it is not possible to have a function and a class, for example, with the same name.</para>
+    <para styleclass="List">&lt;idFunction&gt;<tab />A valid identifier name for the function. A function is an entity and, as such, shares the same name space as other entities. This means that it is not possible to have a function and a class, for example, with the same name.</para>
     <para styleclass="List"><snippet src="__IncludeLocalFunctionParameters" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeExpressionBody" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
     <para styleclass="List"></para>
     <para styleclass="List">END FUNCTION<tab />These <text style="font-weight:bold;">mandatory</text> keywords indicate the logical end of the function.</para>
     <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">A local function is defined as a nested function inside a containing member. The END FUNCTION is mandatory so the compiler knows where the function ends and its surrounding container continues.</para>
+    <para styleclass="Normal">A local function is defined as a nested function inside a containing member.The END FUNCTION is mandatory so the compiler knows where the function ends and its surrounding container continues.</para>
     <para styleclass="Normal">In the example below, the WAIT command is part of the Start() function and will be executed after result of the call to Fact() is shown.</para>
     <para styleclass="Heading1">Example</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;? Fact(10)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Fact(nNum </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LONG</text><text style="font-weight:normal; font-style:normal; color:#000000;">) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LONG</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nNum == 1</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 1</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nNum * Fact(nNum-1) &#160; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WAIT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>

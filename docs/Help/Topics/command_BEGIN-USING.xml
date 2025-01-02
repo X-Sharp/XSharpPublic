@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-18T16:11:16.394+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-04T17:12:04.070+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>BEGIN USING</title>
   <keywords>
     <keyword>BEGIN</keyword>
@@ -19,7 +19,7 @@
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code with box">BEGIN USING <text style="font-style:italic;">declaration</text><br/> &#160; <text style="font-style:italic;">statements</text><br/>END USING</para>
     <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">declaration<tab />Declaration of a variable and assignment that </para>
+    <para styleclass="List">declaration<tab />Declaration of a variable and assignment that is visible only inside the statement block between BEGIN and END</para>
     <para styleclass="List"><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; font-style:italic; color:#000000;">statements</text><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; color:#000000;">&#32;</text><tab />Code including one or more statements that may contain unsafe code.</para>
     <para styleclass="List"></para>
     <para styleclass="Heading1">Description</para>

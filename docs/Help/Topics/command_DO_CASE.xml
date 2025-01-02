@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T15:08:56.467+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>DO CASE Statement</title>
   <keywords>
     <keyword>Branching</keyword>
@@ -17,7 +17,7 @@
       <para styleclass="Heading1">DO CASE Statement</para>
     </header>
     <para styleclass="Heading2">Purpose</para>
-    <para styleclass="Body Text">Conditionally execute a block of statements.</para>
+    <para styleclass="Body Text">Conditionally executes a block of statements.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Code with box">DO CASE<br/>CASE &lt;lCondition&gt;<br/> &#160; &lt;Statements&gt;...<br/>[CASE &lt;lCondition&gt;]<br/> &#160; &lt;Statements&gt;...<br/>[OTHERWISE]<br/> &#160; &lt;Statements&gt;...<br/>END[CASE]</para>
     <para styleclass="Heading2">Arguments</para>

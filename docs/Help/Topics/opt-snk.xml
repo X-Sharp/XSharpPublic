@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-12T12:42:56.747+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-snk</title>
   <keywords>
     <keyword>-keyfile</keyword>
@@ -10,7 +10,7 @@
     <header>
       <para styleclass="Heading1">-snk</para>
     </header>
-    <para styleclass="Normal">The -snk compiler option is an alias for the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-keyfile">-keyfile </link>option, for compatibility .</para>
+    <para styleclass="Normal">The -snk compiler option is an alias for the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-keyfile">-keyfile </link>option, for compatibility.</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

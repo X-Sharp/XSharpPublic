@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T16:55:45.430+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# Preprocessor Directives</title>
   <keywords>
     <keyword>Preprocessor</keyword>
@@ -9,7 +9,7 @@
     <header>
       <para styleclass="Heading1">X# Preprocessor Directives</para>
     </header>
-    <para styleclass="Normal">The XSharp preprocessor supports the following preprocessor directives</para>
+    <para styleclass="Normal">The XSharp preprocessor supports the following preprocessor directives:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Command">#command</link></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Define">#define</link></para>

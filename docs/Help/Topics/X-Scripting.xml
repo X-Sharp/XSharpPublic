@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-08T19:44:13.512+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-12T14:09:30.523+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# Scripting</title>
   <keywords>
     <keyword>#LOAD</keyword>
@@ -125,7 +125,7 @@
       </list>
     </list>
     <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Passes command-line arguments to scripts </li>
+      <li styleclass="Normal">Passes command line arguments to scripts </li>
       <list id="7" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Xsi.exe &lt;script.prgx&gt; &lt;arg&gt; ...</li>
       </list>
@@ -185,7 +185,7 @@
       </list>
     </list>
     <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Provides access to command-line arguments </li>
+      <li styleclass="Normal">Provides access to command line arguments </li>
       <li styleclass="Normal">Print function with pretty formatting options</li>
     </list>
     <para styleclass="Heading2">Scripting internals: script declarations</para>
@@ -352,7 +352,7 @@
       <list id="20" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal" style="margin-left:13px;">Speed-up initial compilation </li>
         <li styleclass="Normal" style="margin-left:13px;">64-bit version of ngen must be used for 64-bit CLR!!! </li>
-        <li styleclass="Normal" style="margin-left:13px;">Useful for command-line scripts (xsi.exe)</li>
+        <li styleclass="Normal" style="margin-left:13px;">Useful for command line scripts (xsi.exe)</li>
       </list>
     </list>
     <para styleclass="Heading2">Advanced topics: functional scripts</para>

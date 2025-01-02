@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-12T12:51:06.426+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-touchedfiles</title>
   <keywords>
     <keyword>-touchedfiles</keyword>
@@ -18,6 +18,6 @@
     <para styleclass="List">filename.read<tab /><tab />This lists all the files that were read by the compiler</para>
     <para styleclass="List">filename.write<tab /><tab />This lists all the files that were written by the compiler. That includes the exe, pdb, ppo etc.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">The file names in both files are all capitalized and in alphabetical order</para>
+    <para styleclass="List">The file names in both files are all capitalized and in alphabetical order.</para>
   </body>
 </topic>

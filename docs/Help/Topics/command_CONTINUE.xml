@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-04T17:33:52.304+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>CONTINUE Command</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -20,12 +20,12 @@
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code with box">CONTINUE</para>
     <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">CONTINUE searches from the current record position for the next record meeting the most recent locate condition executed in the current work area. &#160;(You can set the locate condition with the LOCATE command or with the VODBLocate() or VODBSetLocate() functions.)</para>
+    <para styleclass="Normal">CONTINUE searches from the current record position for the next record meeting the most recent locate condition executed in the current work area. (You can set the locate condition with the LOCATE command or with the VODBLocate() or VODBSetLocate() functions.)</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The search terminates when a match is found or end of file is encountered. &#160;If CONTINUE is successful, the matching record becomes the current record and <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Found.htm" domain="XSharpRef.chm">Found()</link> returns TRUE; if unsuccessful, Found() returns FALSE.</para>
-    <para styleclass="Normal">Each work area can have an active locate condition. &#160;A locate condition remains pending until a new one is specified.</para>
+    <para styleclass="Normal">The search terminates when a match is found or end of file is encountered. If CONTINUE is successful, the matching record becomes the current record and <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Found.htm" domain="XSharpRef.chm">Found()</link> returns TRUE; if unsuccessful, Found() returns FALSE.</para>
+    <para styleclass="Normal">Each work area can have an active locate condition. A locate condition remains pending until a new one is specified.</para>
     <para styleclass="Heading1">Notes</para>
-    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Scope and WHILE condition: &#160;</text>The scope and WHILE condition of the locate condition are ignored; only the for condition is used with CONTINUE. &#160;If you are using a LOCATE command with a while condition and want to continue the search for a matching record, use SKIP and then repeat the original LOCATE command, adding REST as the scope.</para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Scope and WHILE condition: </text>The scope and WHILE condition of the locate condition are ignored; only the for condition is used with CONTINUE. If you are using a LOCATE command with a while condition and want to continue the search for a matching record, use SKIP and then repeat the original LOCATE command, adding REST as the scope.</para>
     <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">This example scans records in SALES.DBF for a particular salesman and displays a running total sales amount:</para>
     <para styleclass="Normal"></para>

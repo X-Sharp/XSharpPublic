@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-14T14:29:34.369+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>PACK Command</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -24,7 +24,7 @@
     <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">PACK is functionally equivalent to DBPack(). &#160;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Warning! &#160;</text><text styleclass="Italic">PACK does not create backup files. &#160;You may want to make a backup of the file (using COPY FILE, for example) before issuing this command; otherwise, you will not be able to recover deleted records.</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Warning! </text><text styleclass="Italic">PACK does not create backup files. You may want to make a backup of the file (using COPY FILE, for example) before issuing this command; otherwise, you will not be able to recover deleted records.</text></para>
     <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">The following shows the result of a simple PACK:</para>
     <para styleclass="Normal"></para>

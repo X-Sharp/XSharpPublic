@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-10T15:26:28.078+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-12T14:10:06.448+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Project Templates</title>
   <keywords>
     <keyword>ClassLibrary</keyword>
@@ -170,7 +170,7 @@
           <para styleclass="Normal">Console Application</para>
         </td>
         <td>
-          <para styleclass="Normal">A project for creating an X# command-line application in the core dialect.</para>
+          <para styleclass="Normal">A project for creating an X# command line application in the core dialect.</para>
         </td>
         <td>
           <para styleclass="Normal">2.0</para>
@@ -190,7 +190,7 @@
           <para styleclass="Normal">FoxPro Console Application</para>
         </td>
         <td>
-          <para styleclass="Normal">A project for creating an X# command-line application in the FoxPro Dialect.</para>
+          <para styleclass="Normal">A project for creating an X# command line application in the FoxPro Dialect.</para>
         </td>
         <td>
           <para styleclass="Normal">2.0</para>
@@ -210,7 +210,7 @@
           <para styleclass="Normal">VO Console Application</para>
         </td>
         <td>
-          <para styleclass="Normal">A project for creating an X# command-line application in the VO Dialect.</para>
+          <para styleclass="Normal">A project for creating an X# command line application in the VO Dialect.</para>
         </td>
         <td>
           <para styleclass="Normal">2.0</para>
@@ -230,7 +230,7 @@
           <para styleclass="Normal">Vulcan Console Application</para>
         </td>
         <td>
-          <para styleclass="Normal">A project for creating an X# command-line application in the Vulcan dialect with Vulcan Runtime Assemblies (BYOR = Bring Your Own Runtime).</para>
+          <para styleclass="Normal">A project for creating an X# command line application in the Vulcan dialect with Vulcan Runtime Assemblies (BYOR = Bring Your Own Runtime).</para>
         </td>
         <td>
           <para styleclass="Normal">2.0</para>
@@ -351,7 +351,7 @@
           <para styleclass="Normal">Vulcan Console Application</para>
         </td>
         <td>
-          <para styleclass="Normal">A project for creating a Vulcan command-line application.</para>
+          <para styleclass="Normal">A project for creating a Vulcan command line application.</para>
         </td>
         <td>
           <para styleclass="Normal">2.0</para>

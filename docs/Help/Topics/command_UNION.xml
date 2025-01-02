@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-19T12:48:03.627+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-14T15:54:32.037+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>UNION Statement</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -25,13 +25,13 @@
     <para styleclass="Normal"><tab />MEMBER DIM &lt;<text styleclass="Italic">ArraySpec</text>&gt; [ ,…] AS | IS &lt;<text styleclass="Italic">idType</text>&gt; [ ,…]</para>
     <para styleclass="Normal"><tab />[END UNION]</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>The MEMBER statement is shown using two syntax diagrams for convenience. &#160;You can declare variables and dimensioned arrays using a single MEMBER statement if each definition is separated by a comma.</para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>The MEMBER statement is shown using two syntax diagrams for convenience. You can declare variables and dimensioned arrays using a single MEMBER statement if each definition is separated by a comma.</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List"><snippet src="__IncludeFuncProcModifiers" inline="false"/></para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;idUnion&gt;<tab />A valid identifier name for the union. &#160;A union is an entity and shares the same name space as other entities. &#160;This means that it is not possible to have a union and a constant, for example, with the same name.</para>
+    <para styleclass="List">&lt;idUnion&gt;<tab />A valid identifier name for the union. A union is an entity and shares the same name space as other entities. This means that it is not possible to have a union and a constant, for example, with the same name.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">MEMBER<tab />Declares one or more union member variables or dimensioned arrays. &#160;You can specify multiple MEMBER declarations on separate lines.</para>
+    <para styleclass="List">MEMBER<tab />Declares one or more union member variables or dimensioned arrays. You can specify multiple MEMBER declarations on separate lines.</para>
     <para styleclass="List"></para>
     <para styleclass="List">&lt;idVarList&gt;<tab />A comma-separated list of identifier names for the union member variables.</para>
     <para styleclass="List"></para>
@@ -40,13 +40,13 @@
     <para styleclass="List"><tab />&lt;idArray&gt;[&lt;nElements&gt;],[&lt;nElements&gt;], [&lt;nElements&gt;]</para>
     <para styleclass="List"><tab />All dimensions except the first are optional.</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />&lt;nElements&gt; defines the number of elements in a particular dimension of an array. &#160;The number of dimensions is determined by how many &lt;nElements&gt; arguments you specify.</para>
+    <para styleclass="List"><tab />&lt;nElements&gt; defines the number of elements in a particular dimension of an array. The number of dimensions is determined by how many &lt;nElements&gt; arguments you specify.</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />&lt;nElements&gt; can be a literal numeric representation or a simple numeric expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (such as function calls) are not allowed.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type of the variable you are declaring (called <link displaytype="text" defaultstyle="true" type="topiclink" href="Strong-Typing" styleclass="Normal">strong typing</link>). &#160;For DIM arrays, declares the data type for all array elements. &#160;The AS &lt;idType&gt; is required for all union members.</para>
+    <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type of the variable you are declaring (called <link displaytype="text" defaultstyle="true" type="topiclink" href="Strong-Typing" styleclass="Normal">strong typing</link>). For DIM arrays, declares the data type for all array elements. The AS &lt;idType&gt; is required for all union members.</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />Refer to the CLASS entry for a list of valid values for &lt;idType&gt;. &#160;Note that the following data types are not supported in unions because they are dynamic types that require garbage collection:</para>
+    <para styleclass="List"><tab />Refer to the CLASS entry for a list of valid values for &lt;idType&gt;. Note that the following data types are not supported in unions because they are dynamic types that require garbage collection:</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <list id="0" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="List">ARRAY</li>
@@ -66,7 +66,7 @@
     <para styleclass="List"></para>
     <para styleclass="List"><tab />Note: The default alignment for C/C++ compilers is 4 as well, unless the structure contains doubles (REAL8 in &lt;%APP%&gt;). In that case the C/C++ compiler uses an alignment of 8. &lt;%APP%&gt; does NOT automatically choose an alignment of 8, so you must add the ALIGN 8 to your structure in these circumstances.</para>
     <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">UNIONs are like STRUCTUREs, but all members start at offset zero (0). &#160;In other words, assigning a value to a union member affects all other union members. &#160;As the size of the union is equal to the size of the biggest member, changing one member will change all of the others because they occupy the same memory.</para>
+    <para styleclass="Normal">UNIONs are like STRUCTUREs, but all members start at offset zero (0). In other words, assigning a value to a union member affects all other union members. As the size of the union is equal to the size of the biggest member, changing one member will change all of the others because they occupy the same memory.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">You use the UNION statement to mark the beginning of the definition of a union entity, followed by one or more MEMBER statements that define what the union looks like. &#160;</para>
     <para styleclass="Heading1">Examples</para>

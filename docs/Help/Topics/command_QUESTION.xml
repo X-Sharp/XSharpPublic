@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T15:37:01.456+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>?|?? Statement</title>
   <keywords>
     <keyword>?|?? statement</keyword>
@@ -17,14 +17,14 @@
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">? | ?? [&lt;<text styleclass="Italic">uValueList</text>&gt;]</para>
     <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">&lt;uValueList&gt;<tab />A list of values to display. &#160;If no argument is specified with the ? statement, a carriage return/linefeed is sent to the terminal window. &#160;If you use the ?? statement without arguments, nothing happens.</para>
+    <para styleclass="List">&lt;uValueList&gt;<tab />A list of values to display. If no argument is specified with the ? statement, a carriage return/linefeed is sent to the terminal window. If you use the ?? statement without arguments, nothing happens.</para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">? and ?? are synonyms for the QOut() and QQOut() functions, respectively.</para>
-    <para styleclass="Normal">Although functionally similar to one another, ? and ?? differ slightly. &#160;? sends a carriage return/linefeed before displaying the results of the expression list. &#160;?? displays output at the current position. &#160;This lets you use ?? statements to display successive output on the same line.</para>
+    <para styleclass="Normal">Although functionally similar to one another, ? and ?? differ slightly. ? sends a carriage return/linefeed before displaying the results of the expression list. ?? displays output at the current position. This lets you use ?? statements to display successive output on the same line.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">A ? or ?? statement locates the cursor or print head one position to the right of the last character displayed. &#160;Row() and Col() are updated to reflect the new cursor position. &#160;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If output from a ? or ?? statement reaches the edge of the terminal window it wraps to the next line. &#160;If the output reaches the bottom of the window the window scrolls up one line.</para>
+    <para styleclass="Normal">If output from a ? or ?? statement reaches the edge of the terminal window, it wraps to the next line. If the output reaches the bottom of the window, the window scrolls up one line.</para>
     <para styleclass="Normal">To format any expression specified, use Transform(). &#160;If you need to pad a variable length value for column alignment, use any of the Pad() functions to left-justify, right-justify, or center the value as illustrated in the examples below.</para>
     <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">This example displays a record from a database file using ? and ?? statements with PadR() to assure column alignment:</para>

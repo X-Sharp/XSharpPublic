@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-12T14:10:21.889+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Command-line Building With xsc.exe</title>
   <keywords>
     <keyword>compiler options</keyword>
@@ -24,7 +24,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The X# compiler uses the following rules when it interprets arguments given on the operating system command line:</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Arguments are delimited by white space, which is either a space or a tab.</li>
       <li styleclass="Normal">The caret character (^) is not recognized as an escape character or delimiter. The character is handled by the command-line parser in the operating system before it is passed to the argv array in the program.</li>
       <li styleclass="Normal">A string enclosed in double quotation marks (&quot;string&quot;) is interpreted as a single argument, regardless of white space that is contained within. A quoted string can be embedded in an argument.</li>
@@ -32,7 +32,7 @@
       <li styleclass="Normal">Backslashes are interpreted literally, unless they immediately precede a double quotation mark.</li>
       <li styleclass="Normal">If an even number of backslashes is followed by a double quotation mark, one backslash is put in the compiler options array for every pair of backslashes, and the double quotation mark is interpreted as a string delimiter.</li>
       <li styleclass="Normal">If an odd number of backslashes is followed by a double quotation mark, one backslash is put in the compiler options array for every pair of backslashes, and the double quotation mark is &quot;escaped&quot; by the remaining backslash. This causes a literal double quotation mark (&quot;) to be added in compiler options array.</li>
-      <li styleclass="Normal">Commandline options can start with a hyphen (-) or a slash (/). On Non windows platforms the hyphen should be used because the slash may be seen as a path delimiter character</li>
+      <li styleclass="Normal">Command-line options can start with a hyphen (-) or a slash (/). On Non windows platforms the hyphen should be used because the slash may be seen as a path delimiter character</li>
       <li styleclass="Normal">If you do not use the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-noconfig">/noconfig</link> compiler option then references to the assemblies listed in xsc.exe will be automatically included.</li>
     </list>
     <para styleclass="Heading2">Sample commands for the X# Compiler</para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-10-22T13:02:38.923-07:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T15:20:19.173+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>REPEAT UNTIL Statement</title>
   <keywords>
     <keyword>Branching</keyword>
@@ -18,7 +18,7 @@
       <para styleclass="Heading1">REPEAT UNTIL Statement</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Execute a loop until a condition is TRUE.</para>
+    <para styleclass="Normal">Executes a loop until a condition is TRUE.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code with box">REPEAT <br/><tab />&lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>[EXIT]<br/><tab />&lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>[LOOP]<br/><tab />&lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>UNTIL &lt;<text style="font-style:italic;">lCondition</text>&gt;</para>
     <para styleclass="Heading1">Arguments</para>
@@ -26,7 +26,7 @@
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__ExitLoop" inline="false"/></para>
     <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">As long as the condition evaluates to FALSE then the loop will continuet. When the condition evaluates to false, the REPEAT construct terminates and control passes to the statement immediately following the UNTIL.</para>
+    <para styleclass="Normal">As long as the condition evaluates to FALSE then the loop will continue. When the condition evaluates to false, the REPEAT construct terminates and control passes to the statement immediately following the UNTIL.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Use EXIT to terminate a <text styleclass="List">REPEAT UNTIL</text> structure based on a condition other than the <text styleclass="List">REPEAT UNTIL</text> condition. &#160;LOOP, by contrast, prevents execution of statements within a <text styleclass="List">REPEAT UNTIL</text> based on an intermediate condition, and returns to the most recent <text styleclass="List">REPEAT UNTIL</text> statement.</para>
     <para styleclass="Normal"></para>

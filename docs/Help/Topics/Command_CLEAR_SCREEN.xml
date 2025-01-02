@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T15:46:19.190+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>CLEAR SCREEN Command</title>
   <keywords>
     <keyword>CLEAR SCREEN Command</keyword>
@@ -13,9 +13,9 @@
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Take input from the keyboard and assign it to a memory variable.</para>
+    <para styleclass="Normal">Takes input from the keyboard and assigns it to a memory variable.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">CLEAR SCREEN</para>
+    <para styleclass="Normal"><text style="font-family:Consolas;">CLEAR SCREEN</text></para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Body Text">The command CLEAR erases the screen. <br/>After execution of the CLEAR command, the cursor is positioned at 0, 0 and the functions Row() and Col() are updated. </para>
     <para styleclass="Heading1">Examples</para>

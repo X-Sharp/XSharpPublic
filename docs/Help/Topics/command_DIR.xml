@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-16T13:30:24.142+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>DIR Command</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -18,7 +18,7 @@
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code with box">DIR [&lt;xcFileSpec&gt;]</para>
     <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">&lt;xcFileSpec&gt;<tab />The file specification for the directory search. &#160;Besides a file name, this specification may also include an optional drive, directory, and extension. &#160;The file name and extension may include the standard wildcard characters (* and ?). &#160;If you do not specify a drive and directory, this function respects SetDefault().</para>
+    <para styleclass="List">&lt;xcFileSpec&gt;<tab />The file specification for the directory search. Besides a file name, this specification may also include an optional drive, directory, and extension. The file name and extension may include the standard wildcard characters (* and ?). If you do not specify a drive and directory, this function respects SetDefault().</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />If the argument is omitted, the default file specification is *.DBF.</para>
     <para styleclass="List"></para>

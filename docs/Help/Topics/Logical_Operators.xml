@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T16:41:40.238+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Logical</title>
   <keywords>
     <keyword>!</keyword>
@@ -39,7 +39,7 @@
           <para styleclass="Body Text">x .AND. y</para>
         </td>
         <td>
-          <para styleclass="Body Text">Returns TRUE when both operands are TRUE, otherwise FALSE</para>
+          <para styleclass="Body Text">Returns TRUE when both operands are TRUE, otherwise FALSE.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -50,7 +50,7 @@
           <para styleclass="Body Text">x .OR. y</para>
         </td>
         <td>
-          <para styleclass="Body Text">Returns TRUE with one or both operands are TRUE. Only when both operands are FALSE then FALSE is returned</para>
+          <para styleclass="Body Text">Returns TRUE with one or both operands are TRUE. Only when both operands are FALSE then FALSE is returned.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

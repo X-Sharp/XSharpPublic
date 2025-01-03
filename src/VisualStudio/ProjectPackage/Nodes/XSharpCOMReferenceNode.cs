@@ -13,7 +13,6 @@ using Microsoft.VisualStudio.Project;
 using System.Reflection;
 using System.Diagnostics;
 using Microsoft.VisualStudio.Shell;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace XSharp.Project
 {
@@ -41,7 +40,14 @@ namespace XSharp.Project
         private Assembly assembly = null;
         private string wrapperFileName;
         private string description;
-        private Microsoft.VisualStudio.Shell.Interop.IVsTypeLibraryWrapper typelibwrapper = null;
+        private IVsTypeLibraryWrapper typelibwrapper = null;
+        #endregion
+
+
+        #region properties
+        bool IsPrimary => string.Equals(WrapperTool, WrapperToolAttributeValue.Primary.ToString(), StringComparison.OrdinalIgnoreCase);
+        bool IsActiveX => string.Equals(WrapperTool, WrapperToolAttributeValue.AxImp.ToString(), StringComparison.OrdinalIgnoreCase);
+        bool IsTypeLib => string.Equals(WrapperTool, WrapperToolAttributeValue.TlbImp.ToString(), StringComparison.OrdinalIgnoreCase);
         #endregion
 
         internal Assembly Assembly => assembly;
@@ -68,6 +74,7 @@ namespace XSharp.Project
         public XSharpComReferenceNode(ProjectNode root, VSCOMPONENTSELECTORDATA selectorData, string wrapperTool)
          : base(root, selectorData, wrapperTool)
         {
+            Community.VisualStudio.Toolkit.VS.StatusBar.ShowMessageAsync("Binding COM reference").FireAndForget();
             if (String.IsNullOrEmpty(wrapperTool))
                 wrapperTool = WrapperToolAttributeValue.TlbImp.ToString();
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -75,6 +82,7 @@ namespace XSharp.Project
             this.description = selectorData.bstrTitle;
             this.EmbedInteropTypes = false;
             BindReferenceData();
+            Community.VisualStudio.Toolkit.VS.StatusBar.ClearAsync().FireAndForget();
         }
 
 
@@ -95,18 +103,34 @@ namespace XSharp.Project
         {
             XSharpProjectNode projectNode = (XSharpProjectNode)this.ProjectMgr;
             projectNode.ProjectModel.RemoveAssemblyReference(this.Url);
-            base.Remove(removeFromStorage);
+            base.Remove(!IsPrimary);  // when not Primary, then remove from storage
+        } 
+
+        protected override void DeleteFromStorage(string path)
+        {
+            if (File.Exists(path))
+            {
+                var projectPath = this.ProjectMgr.ProjectFolder;
+                // only delete when inside the project path
+                if ( string.Compare(path, 0, projectPath,0,projectPath.Length,true) == 0)
+                {
+                    File.SetAttributes(path, FileAttributes.Normal); // make sure it's not readonly.
+                    OurNativeMethods.ShellDelete(path, OurNativeMethods.RecycleOption.SendToRecycleBin,
+                       OurNativeMethods.UICancelOption.DoNothing, OurNativeMethods.FileOrDirectory.Directory);
+                }
+            }
         }
 
         public override string Url
         {
             get
             {
-                if (String.Compare(WrapperTool, WrapperToolAttributeValue.Primary.ToString(), true) == 0)
+                if (IsPrimary)
                 {
                     return wrapperFileName;
                 }
-
+                if (this.ProjectMgr == null)
+                    return String.Empty;
                 string result = this.ProjectMgr.GetProjectProperty("IntermediateOutputPath") + this.wrapperFileName;
                 result = Path.Combine(this.ProjectMgr.ProjectFolder, result);
                 return result;
@@ -154,15 +178,15 @@ namespace XSharp.Project
                     Guid CLSID_VSAxImporter = new Guid(0x7D7D0D7B, 0xA0D5, 0x4BFE, 0xA2, 0xCF, 0x04, 0xB3, 0x72, 0xA4, 0x46, 0xBB);
                     Guid CLSID_PrimaryImporter = new Guid(0x0c075ae9, 0x42ac, 0x4bef, 0x87, 0xa1, 0x85, 0xc1, 0xbf, 0xed, 0x9f, 0x1f);
                     Guid Importer = new Guid();
-                    if (string.Equals(WrapperTool, WrapperToolAttributeValue.AxImp.ToString(), StringComparison.OrdinalIgnoreCase))
+                    if (IsActiveX)
                     {
                         Importer = CLSID_VSAxImporter;
                     }
-                    else if (string.Equals(WrapperTool, WrapperToolAttributeValue.TlbImp.ToString(), StringComparison.OrdinalIgnoreCase))
+                    else if (IsTypeLib)
                     {
                         Importer = CLSID_VSTypeLibraryImporter;
                     }
-                    else if (string.Equals(WrapperTool, WrapperToolAttributeValue.Primary.ToString(), StringComparison.OrdinalIgnoreCase))
+                    else if (IsPrimary)
                     {
                         Importer = CLSID_PrimaryImporter;
                     }

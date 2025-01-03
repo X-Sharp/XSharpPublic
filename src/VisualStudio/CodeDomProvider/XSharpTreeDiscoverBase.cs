@@ -1734,6 +1734,8 @@ namespace XSharp.CodeDom
 
         private string simplifyType(string typeName)
         {
+            if (typeName == null)
+                return typeName;
             var index = typeName.IndexOf("<");
             var name = typeName;
             if (index > 0)

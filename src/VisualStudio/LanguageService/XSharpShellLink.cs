@@ -137,7 +137,30 @@ namespace XSharp.LanguageService
                         if (field != null)
                         {
                             dynamic _frame = field.GetValue(doc);
-                            docName = _frame.EffectiveDocumentMoniker;
+                            try
+                            {
+                                docName = _frame.EffectiveDocumentMoniker;
+                            }
+                            catch (Exception)
+                            {
+                                ;
+                            }
+                            if (string.IsNullOrEmpty(docName))
+                            {
+                                try
+                                {
+                                    docName = _frame.DocumentMoniker;
+                                }
+                                catch (Exception)
+                                {
+                                    ;
+                                }
+                            }
+                            if (string.IsNullOrEmpty(docName))
+                            {
+                                continue;
+                            }
+
                             var type = XFileTypeHelpers.GetFileType(docName);
                             if (type != XFileType.SourceCode)
                                 continue;

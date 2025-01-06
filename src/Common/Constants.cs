@@ -21,7 +21,7 @@ namespace XSharp
         internal const string FileVersion = "2.22.0.0";
         internal const string ProductVersion = "2.22 GA";
         internal const string PublicKey = "ed555a0467764586";
-        internal const string Copyright = "Copyright © XSharp BV 2015-2024";
+        internal const string Copyright = "Copyright © XSharp BV 2015-2025";
 
         internal const string RegistryKey = @"Software\" + RegCompany + @"\" + Product;
         internal const string RegistryKey64 = @"Software\WOW6432Node\" + RegCompany + @"\" + Product;

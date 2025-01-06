@@ -2,58 +2,58 @@
 <members>
 
   <FS_SET>
-    <summary>FSeek() Seek Offset: Seek from beginning of file</summary>
+    <summary>FSeek() 偏移量：从文件开头开始查找</summary>
   </FS_SET>
   <FS_RELATIVE>
-    <summary>FSeek() Seek Offset: Seek from current file position</summary>
+    <summary>FSeek() 偏移量：从当前文件位置开始查找</summary>
   </FS_RELATIVE>
   <FS_END>
-    <summary>FSeek() Seek Offset: Seek from end of file</summary>
+    <summary>FSeek() 偏移量：从文件末尾开始查找</summary>
   </FS_END>
   <FO_READ>
-    <summary>FOpen() Open Mode: Open for reading (default)</summary>
+    <summary>FOpen() 打开模式：打开以供读取（默认）</summary>
   </FO_READ>
   <FO_WRITE>
-    <summary>FOpen() Open Mode: Open for writing</summary>
+    <summary>FOpen() 打开模式：打开以供写入</summary>
   </FO_WRITE>
   <FO_READWRITE>
-    <summary>FOpen() Open Mode: Open for reading or writing</summary>
+    <summary>FOpen() 打开模式：打开以供读取或写入</summary>
   </FO_READWRITE>
   <FO_UNBUFFERED>
-    <summary>FOpen() Open Mode: UnBuffered. Added to FO_READ, FO_WRITE and FO_READWRITE</summary>
+    <summary>FOpen() 打开模式：无缓冲。添加到 FO_READ、FO_WRITE 和 FO_READWRITE</summary>
   </FO_UNBUFFERED>
   <FO_COMPAT>
-    <summary>FOpen() Sharing Mode: Compatibility mode (default)</summary>
+    <summary>FOpen() 共享模式：兼容模式（默认）</summary>
   </FO_COMPAT>
   <FO_EXCLUSIVE>
-    <summary>FOpen() Sharing Mode: Exclusive</summary>
+    <summary>FOpen() 共享模式：独占</summary>
   </FO_EXCLUSIVE>
   <FO_DENYWRITE>
-    <summary>FOpen() Sharing Mode: Prevent other processes from writing</summary>
+    <summary>FOpen() 共享模式：防止其他进程写入</summary>
   </FO_DENYWRITE>
   <FO_DENYREAD>
-    <summary>FOpen() Sharing Mode: Prevent other processes from reading</summary>
+    <summary>FOpen() 共享模式：防止其他进程读取</summary>
   </FO_DENYREAD>
   <FO_DENYNONE>
-    <summary>FOpen() Sharing Mode: (same as FO_SHARED)</summary>
+    <summary>FOpen() 共享模式：（与 FO_SHARED 相同）</summary>
   </FO_DENYNONE>
   <FO_SHARED>
-    <summary>FOpen() Sharing Mode:  Allow other processes to read or write</summary>
+    <summary>FOpen() 共享模式：允许其他进程读取或写入</summary>
   </FO_SHARED>
   <FC_NORMAL>
-    <summary>FCreate() attribute mode: normal read/write file (default for create)</summary>
+    <summary>FCreate() 属性模式：正常读/写文件（创建时默认）</summary>
   </FC_NORMAL>
   <FC_READONLY>
-    <summary>FCreate() attribute mode: read-only file</summary>
+    <summary>FCreate() 属性模式：只读文件</summary>
   </FC_READONLY>
   <FC_HIDDEN>
-    <summary>FCreate() attribute mode: hidden file</summary>
+    <summary>FCreate() 属性模式：隐藏文件</summary>
   </FC_HIDDEN>
   <FC_SYSTEM>
-    <summary>FCreate() attribute mode: system file</summary>
+    <summary>FCreate() 属性模式：系统文件</summary>
   </FC_SYSTEM>
   <FC_ARCHIVED>
-    <summary>FCreate() attribute mode: archived</summary>
+    <summary>FCreate() 属性模式：已存档</summary>
   </FC_ARCHIVED>
   <AMERICAN>
     <include file="CoreComments.xml" path="Comments/DateCountry/*" />
@@ -116,52 +116,52 @@
     <include file="CoreComments.xml" path="Comments/OptLevel/*" />
   </DBOI_OPTIMIZED_FULL>
   <DB_DBF_STD>
-    <summary>Standard table   </summary>
+    <summary>标准表</summary>
   </DB_DBF_STD>
   <DB_DBF_VFP>
-    <summary>   FoxPro table   </summary>
+    <summary>FoxPro 表</summary>
   </DB_DBF_VFP>
   <DB_MEMO_NONE>
-    <summary>   No Memo   </summary>
+    <summary>无备注</summary>
   </DB_MEMO_NONE>
   <DB_MEMO_DBT>
-    <summary>   DBT Memo   </summary>
+    <summary>DBT 备注</summary>
   </DB_MEMO_DBT>
   <DB_MEMO_FPT>
-    <summary>   FPT Memo   </summary>
+    <summary>FPT 备注</summary>
   </DB_MEMO_FPT>
   <DB_MEMO_SMT>
-    <summary>   SMT Memo   </summary>
+    <summary>SMT 备注</summary>
   </DB_MEMO_SMT>
   <DB_DBFLOCK_DEFAULT>
-    <summary>   Default Harbour Locking scheme   </summary>
+    <summary>默认 Harbour 锁定方案</summary>
   </DB_DBFLOCK_DEFAULT>
   <DB_DBFLOCK_CLIPPER>
-    <summary>   default Clipper locking scheme   </summary>
+    <summary>默认 Clipper 锁定方案</summary>
   </DB_DBFLOCK_CLIPPER>
   <DB_DBFLOCK_COMIX>
-    <summary>   COMIX and CL53 DBFCDX hyper locking scheme   </summary>
+    <summary>COMIX 和 CL53 DBFCDX 超级锁定方案</summary>
   </DB_DBFLOCK_COMIX>
   <DB_DBFLOCK_VFP>
     <summary>   [V]FP, CL52 DBFCDX, SIx3 SIXCDX, CDXLOCK.OBJ   </summary>
   </DB_DBFLOCK_VFP>
   <DB_DBFLOCK_HB32>
-    <summary>   Harbour hyper locking scheme for 32bit file API   </summary>
+    <summary>Harbour 32位文件 API 超级锁定方案</summary>
   </DB_DBFLOCK_HB32>
   <DB_DBFLOCK_HB64>
-    <summary>   Harbour hyper locking scheme for 64bit file API   </summary>
+    <summary>Harbour 64位文件 API 超级锁定方案</summary>
   </DB_DBFLOCK_HB64>
   <DB_DBFLOCK_CLIPPER2>
-    <summary>   extended Clipper locking scheme NTXLOCK2.OBJ   </summary>
+    <summary>扩展 Clipper 锁定方案 NTXLOCK2.OBJ</summary>
   </DB_DBFLOCK_CLIPPER2>
   <DBT_DEFBLOCKSIZE>
-    <summary>   Default DBT BlockSize   </summary>
+    <summary>默认 DBT 块大小</summary>
   </DBT_DEFBLOCKSIZE>
   <FPT_DEFBLOCKSIZE>
-    <summary>   Default FPT BlockSize   </summary>
+    <summary>默认 FPT 块大小</summary>
   </FPT_DEFBLOCKSIZE>
   <SMT_DEFBLOCKSIZE>
-    <summary>   Default SMT Blocksize   </summary>
+    <summary>默认 SMT 块大小</summary>
   </SMT_DEFBLOCKSIZE>
   <EDB>
     <include file="CoreComments.xml" path="Comments/RDDError/*" />
@@ -287,193 +287,193 @@
     <include file="CoreComments.xml" path="Comments/ScopeInfo/*" />
   </SCOPE_BOTH>
   <F_NAME>
-    <summary>Position in Directory() sub-array for fileName (as a string).</summary>
+    <summary>Directory() 子数组中文件名的位置（作为字符串）。</summary>
     <include file="CoreComments.xml" path="Comments/Directory/*" />
   </F_NAME>
   <F_SIZE>
-    <summary>Position in Directory() sub-array for filesize(as a numeric).</summary>
+    <summary>Directory() 子数组中文件大小的位置（作为数值）。</summary>
     <include file="CoreComments.xml" path="Comments/Directory/*" />
   </F_SIZE>
   <F_DATE>
-    <summary>Position in Directory() sub-array for last file write date(as a date).</summary>
+    <summary>Directory() 子数组中文件最后写入日期的位置（作为日期）。</summary>
     <include file="CoreComments.xml" path="Comments/Directory/*" />
   </F_DATE>
   <F_WRITE_DATE>
-    <summary>Position in Directory() sub-array for last file write date(as a date).</summary>
+    <summary>Directory() 子数组中文件最后写入日期的位置（作为日期）。</summary>
     <include file="CoreComments.xml" path="Comments/Directory/*" />
   </F_WRITE_DATE>
   <F_TIME>
-    <summary>Position in Directory() sub-array for last file write time(as a string).</summary>
+    <summary>Directory() 子数组中文件最后写入时间的位置（作为字符串）。</summary>
     <include file="CoreComments.xml" path="Comments/Directory/*" />
   </F_TIME>
   <F_WRITE_TIME>
-    <summary>Position in Directory() sub-array for last file write time(as a string).</summary>
+    <summary>Directory() 子数组中文件最后写入时间的位置（作为字符串）。</summary>
     <include file="CoreComments.xml" path="Comments/Directory/*" />
   </F_WRITE_TIME>
   <F_ATTR>
-    <summary>Position in Directory() sub-array for file attributes(as a number).</summary>
+    <summary>Directory() 子数组中文件属性的位置（作为数值）。</summary>
     <include file="CoreComments.xml" path="Comments/Directory/*" />
   </F_ATTR>
   <F_EA_SIZE>
-    <summary>Position in Directory() sub-array for Size of extended attributes(as a string).</summary>
+    <summary>Directory() 子数组中扩展属性大小的位置（作为字符串）。</summary>
     <include file="CoreComments.xml" path="Comments/Directory/*" />
   </F_EA_SIZE>
   <F_CREATION_DATE>
-    <summary>Position in Directory() sub-array for creation date(as a date).</summary>
+    <summary>Directory() 子数组中文件创建日期的位置（作为日期）。</summary>
     <include file="CoreComments.xml" path="Comments/Directory/*" />
   </F_CREATION_DATE>
   <F_CREATION_TIME>
-    <summary>Position in Directory() sub-array for creation time(as a string).</summary>
+    <summary>Directory() 子数组中文件创建时间的位置（作为字符串）。</summary>
     <include file="CoreComments.xml" path="Comments/Directory/*" />
   </F_CREATION_TIME>
   <F_ACCESS_DATE>
-    <summary>Position in Directory() sub-array for last access date(as a date).</summary>
+    <summary>Directory() 子数组中文件最后访问日期的位置（作为日期）。</summary>
     <include file="CoreComments.xml" path="Comments/Directory/*" />
   </F_ACCESS_DATE>
   <F_ACCESS_TIME>
-    <summary>Position in Directory() sub-array for last access time(as a string).</summary>
+    <summary>Directory() 子数组中文件最后访问时间的位置（作为字符串）。</summary>
     <include file="CoreComments.xml" path="Comments/Directory/*" />
   </F_ACCESS_TIME>
   <F_LEN>
-    <summary>Length of Directory() sub-array.</summary>
+    <summary>Directory() 子数组的长度。</summary>
     <include file="CoreComments.xml" path="Comments/Directory/*" />
   </F_LEN>
   <CRLF>
-    <summary>This define consists of a Carriage Return and a Line Feed. Unfortunately this is not properly shown in the help file, because the help file generator strips CRLF characters...</summary>
+    <summary>此定义由回车和换行组成。不幸的是，这在帮助文件中没有正确显示，因为帮助文件生成器会去除 CRLF 字符...</summary>
   </CRLF>
   <DbInfo>
     <summary>
-      This enum specifies the various values that the Info method for the IRDD interface accepts.
+      此枚举指定 IRDD 接口的 Info 方法接受的各种值。
     </summary>
     <remarks>
-      <note type="tip">These enums are also available as DEFINES and can therefore also be used without the "DbInfo." prefix.</note>
+      <note type="tip">这些枚举也可以作为定义使用，因此也可以在没有 "DbInfo." 前缀的情况下使用。</note>
     </remarks>
   </DbInfo>
   <DbInfo.DBI_ISDBF>
-    <summary>Logical: Is the RDD DBF based ?</summary>
+    <summary>逻辑值：RDD 是否基于 DBF？</summary>
   </DbInfo.DBI_ISDBF>
   <DbInfo.DBI_CANPUTREC>
-    <summary>Logical: Does the RDD support the PutRec mechanism ?</summary>
+    <summary>逻辑值：RDD 是否支持 PutRec 机制？</summary>
   </DbInfo.DBI_CANPUTREC>
   <DbInfo.DBI_GETHEADERSIZE>
-    <summary>Numeric: Get header size of the file  ?</summary>
+    <summary>数值：获取文件的头部大小？</summary>
   </DbInfo.DBI_GETHEADERSIZE>
   <DbInfo.DBI_LASTUPDATE>
-    <summary>Date:    Last date RDD file updated  </summary>
+    <summary>日期：RDD 文件的最后更新日期</summary>
   </DbInfo.DBI_LASTUPDATE>
   <DbInfo.DBI_GETDELIMITER>
-    <summary>String:  Get default FIELD delimiter</summary>
+    <summary>字符串：获取默认字段分隔符</summary>
   </DbInfo.DBI_GETDELIMITER>
   <DbInfo.DBI_SETDELIMITER>
-    <summary>String:  Set default FIELD delimiter</summary>
+    <summary>字符串：设置默认字段分隔符</summary>
   </DbInfo.DBI_SETDELIMITER>
   <DbInfo.DBI_GETRECSIZE>
-    <summary>Numeric: Get record size </summary>
+    <summary>数值：获取记录大小</summary>
   </DbInfo.DBI_GETRECSIZE>
   <DbInfo.DBI_GETLOCKARRAY>
-    <summary>Array:   Get array of locked records</summary>
+    <summary>数组：获取锁定记录的数组</summary>
   </DbInfo.DBI_GETLOCKARRAY>
   <DbInfo.DBI_TABLEEXT>
-    <summary>String:  Get table file extension</summary>
+    <summary>字符串：获取表文件扩展名</summary>
   </DbInfo.DBI_TABLEEXT>
   <DbInfo.DBI_READONLY>
-    <summary>Logic: is the file opened readonly</summary>
+    <summary>逻辑值：文件是否只读打开</summary>
   </DbInfo.DBI_READONLY>
   <DbInfo.DBI_ISFLOCK>
-    <summary>Logic: Is there a file lock active? </summary>
+    <summary>逻辑值：是否有文件锁定活动？</summary>
   </DbInfo.DBI_ISFLOCK>
   <DbInfo.DBI_FILESTREAM>
-    <summary>Stream: The RDDs stream object</summary>
+    <summary>流：RDD 的流对象</summary>
   </DbInfo.DBI_FILESTREAM>
   <DbInfo.DBI_CHILDCOUNT>
-    <summary>Number: Number of child relations set</summary>
+    <summary>数值：设置的子关系数量</summary>
   </DbInfo.DBI_CHILDCOUNT>
   <DbInfo.DBI_FILEHANDLE>
-    <summary>IntPtr: The data file's handle</summary>
+    <summary>IntPtr：数据文件的句柄</summary>
   </DbInfo.DBI_FILEHANDLE>
   <DbInfo.DBI_FULLPATH>
-    <summary>String: Full path to data file</summary>
+    <summary>字符串：数据文件的完整路径</summary>
   </DbInfo.DBI_FULLPATH>
   <DbInfo.DBI_ISANSI>
-    <summary>Logic: Is the file ansi encoded</summary>
+    <summary>逻辑值：文件是否为 ANSI 编码</summary>
   </DbInfo.DBI_ISANSI>
   <DbInfo.DBI_BOF>
-    <summary>Logic: Same as Bof()</summary>
+    <summary>逻辑值：与 Bof() 相同</summary>
   </DbInfo.DBI_BOF>
   <DbInfo.DBI_EOF>
-    <summary>Logic: Same as Eof()</summary>
+    <summary>逻辑值：与 Eof() 相同</summary>
   </DbInfo.DBI_EOF>
   <DbInfo.DBI_DBFILTER>
-    <summary>String: Current Filter setting </summary>
+    <summary>字符串：当前过滤器设置</summary>
   </DbInfo.DBI_DBFILTER>
   <DbInfo.DBI_FOUND>
-    <summary>Logic: Same as Found() </summary>
+    <summary>逻辑值：与 Found() 相同</summary>
   </DbInfo.DBI_FOUND>
   <DbInfo.DBI_FCOUNT>
-    <summary>Number: Number of fields per record</summary>
+    <summary>数值：每条记录的字段数</summary>
   </DbInfo.DBI_FCOUNT>
   <DbInfo.DBI_LOCKCOUNT>
-    <summary>Number: Number of record locks  </summary>
+    <summary>数值：记录锁定的数量</summary>
   </DbInfo.DBI_LOCKCOUNT>
   <DbInfo.DBI_VALIDBUFFER>
-    <summary>Logic: Is the buffer Valid</summary>
+    <summary>逻辑值：缓冲区是否有效</summary>
   </DbInfo.DBI_VALIDBUFFER>
   <DbInfo.DBI_ALIAS>
-    <summary>String: Alias</summary>
+    <summary>字符串：别名</summary>
   </DbInfo.DBI_ALIAS>
   <DbInfo.DBI_GETSCOPE>
-    <summary>Object: The ScopeInfo</summary>
+    <summary>对象：范围信息</summary>
   </DbInfo.DBI_GETSCOPE>
   <DbInfo.DBI_LOCKOFFSET>
-    <summary>Number: Lock offset</summary>
+    <summary>数值：锁定偏移量</summary>
   </DbInfo.DBI_LOCKOFFSET>
   <DbInfo.DBI_SHARED>
-    <summary>Logic: is the file opened shared</summary>
+    <summary>逻辑值：文件是否共享打开</summary>
   </DbInfo.DBI_SHARED>
   <DbInfo.DBI_MEMOEXT>
-    <summary>String: Memo file extension</summary>
+    <summary>字符串：备注文件扩展名</summary>
   </DbInfo.DBI_MEMOEXT>
   <DbInfo.DBI_MEMOHANDLE>
-    <summary>Intptr: The memo file's handle</summary>
+    <summary>IntPtr：备注文件的句柄</summary>
   </DbInfo.DBI_MEMOHANDLE>
   <DbInfo.DBI_BLOB_HANDLE>
-    <summary>Intptr: The memo file's handle</summary>
+    <summary>IntPtr：备注文件的句柄</summary>
   </DbInfo.DBI_BLOB_HANDLE>
   <DbInfo.DBI_MEMOBLOCKSIZE>
-    <summary>Number: The memo block size</summary>
+    <summary>数值：备注块大小</summary>
   </DbInfo.DBI_MEMOBLOCKSIZE>
   <DbInfo.DBI_CODEPAGE>
-    <summary>Number: The Windows Codepage</summary>
+    <summary>数值：Windows 代码页</summary>
   </DbInfo.DBI_CODEPAGE>
   <DbInfo.DBI_DOSCODEPAGE>
-    <summary>Number: The DOS Codepage</summary>
+    <summary>数值：DOS 代码页</summary>
   </DbInfo.DBI_DOSCODEPAGE>
   <DbInfo.DBI_BLOB_RECOVER>
     <summary></summary>
   </DbInfo.DBI_BLOB_RECOVER>
   <DbInfo.DBI_NEWINDEXLOCK>
-    <summary>Logic:  Use new index lock mechanism</summary>
+    <summary>逻辑值：使用新的索引锁定机制</summary>
   </DbInfo.DBI_NEWINDEXLOCK>
   <DbInfo.DBI_STRICTREAD>
-    <summary>Flag for avoiding RDD hierarchy and using a bigger buffer when indexing</summary>
+    <summary>标志：避免使用 RDD 层次结构并在索引时使用更大的缓冲区</summary>
   </DbInfo.DBI_STRICTREAD>
   <DbInfo.DBI_OPTIMIZE>
-    <summary>Flag for whether to use query optimization</summary>
+    <summary>标志：是否使用查询优化</summary>
   </DbInfo.DBI_OPTIMIZE>
   <DbInfo.DBI_AUTOOPEN>
-    <summary>Flag for automatically opening structural indexes</summary>
+    <summary>标志：自动打开结构索引</summary>
   </DbInfo.DBI_AUTOOPEN>
   <DbInfo.DBI_AUTOORDER>
-    <summary>Should the order be set to the first index when a structural index is opened</summary>
+    <summary>当打开结构索引时，是否应将顺序设置为第一个索引</summary>
   </DbInfo.DBI_AUTOORDER>
   <DbInfo.DBI_AUTOSHARE>
-    <summary>When a network is detected, open the index shared, otherwise open exclusively</summary>
+    <summary>当检测到网络时，共享打开索引，否则独占打开</summary>
   </DbInfo.DBI_AUTOSHARE>
   <DbInfo.DBI_MEMOSTREAM>
-    <summary>Stream: The memo file's stream</summary>
+    <summary>流：备注文件的流</summary>
   </DbInfo.DBI_MEMOSTREAM>
   <DbInfo.DBI_MEMOPATH>
-    <summary>Stream: The memo file name</summary>
+    <summary>流：备注文件名</summary>
   </DbInfo.DBI_MEMOPATH>
   <DbInfo.DBI_DB_VERSION>
     <summary></summary>
@@ -491,111 +491,111 @@
     <summary></summary>
   </DbInfo.DBI_VO_MACRO_SYNTAX>
   <DbInfo.DBI_RDD_OBJECT>
-    <summary>Returns RDD Object.</summary>
+    <summary>返回 RDD 对象。</summary>
   </DbInfo.DBI_RDD_OBJECT>
   <DbInfo.DBI_LOCKSCHEME>
     <summary></summary>
-    <summary>Harbour extension: Locking scheme used by RDD</summary>
+    <summary>Harbour 扩展：RDD 使用的锁定方案</summary>
   </DbInfo.DBI_LOCKSCHEME>
   <DbInfo.DBI_ISREADONLY>
-    <summary>Harbour extension: Was the file opened readonly?</summary>
+    <summary>Harbour 扩展：文件是否以只读方式打开？</summary>
   </DbInfo.DBI_ISREADONLY>
   <DbInfo.DBI_ROLLBACK>
-    <summary>Harbour extension: Rollback changes made to current record</summary>
+    <summary>Harbour 扩展：回滚对当前记录的更改</summary>
   </DbInfo.DBI_ROLLBACK>
   <DbInfo.DBI_PASSWORD>
-    <summary>Harbour extension: orkarea password </summary>
+    <summary>Harbour 扩展：工作区密码</summary>
   </DbInfo.DBI_PASSWORD>
   <DbInfo.DBI_ISENCRYPTED>
-    <summary>Harbour extension: The database is encrypted</summary>
+    <summary>Harbour 扩展：数据库已加密</summary>
   </DbInfo.DBI_ISENCRYPTED>
   <DbInfo.DBI_MEMOTYPE>
-    <summary>Harbour extension: Type of MEMO file: DBT, SMT, FPT</summary>
+    <summary>Harbour 扩展：备注文件类型：DBT, SMT, FPT</summary>
   </DbInfo.DBI_MEMOTYPE>
   <DbInfo.DBI_SEPARATOR>
-    <summary>Harbour extension: The record separator (as a string)</summary>
+    <summary>Harbour 扩展：记录分隔符（作为字符串）</summary>
   </DbInfo.DBI_SEPARATOR>
   <DbInfo.DBI_MEMOVERSION>
-    <summary>Harbour extension: sub version of memo file</summary>
+    <summary>Harbour 扩展：备注文件的子版本</summary>
   </DbInfo.DBI_MEMOVERSION>
   <DbInfo.DBI_TABLETYPE>
-    <summary>Harbour extension: Type of table file</summary>
+    <summary>Harbour 扩展：表文件类型</summary>
   </DbInfo.DBI_TABLETYPE>
   <DbInfo.DBI_SCOPEDRELATION>
-    <summary>Harbour extension: Is given relation scoped</summary>
+    <summary>Harbour 扩展：给定关系是否有范围</summary>
   </DbInfo.DBI_SCOPEDRELATION>
   <DbInfo.DBI_TRIGGER>
-    <summary>Harbour extension: Get/Set trigger function</summary>
+    <summary>Harbour 扩展：获取/设置触发器函数</summary>
   </DbInfo.DBI_TRIGGER>
   <DbInfo.DBI_OPENINFO>
-    <summary>Harbour extension: DBOPENINFO structure pointer</summary>
+    <summary>Harbour 扩展：DBOPENINFO 结构指针</summary>
   </DbInfo.DBI_OPENINFO>
   <DbInfo.DBI_ENCRYPT>
-    <summary>Harbour extension: Encrypt table</summary>
+    <summary>Harbour 扩展：加密表</summary>
   </DbInfo.DBI_ENCRYPT>
   <DbInfo.DBI_DECRYPT>
-    <summary>Harbour extension: Decrypt table</summary>
+    <summary>Harbour 扩展：解密表</summary>
   </DbInfo.DBI_DECRYPT>
   <DbInfo.DBI_MEMOPACK>
-    <summary>Harbour extension: Pack memo file </summary>
+    <summary>Harbour 扩展：打包备注文件</summary>
   </DbInfo.DBI_MEMOPACK>
   <DbInfo.DBI_DIRTYREAD>
-    <summary>Harbour extension: Get/Set index dirty read flag</summary>
+    <summary>Harbour 扩展：获取/设置索引脏读标志</summary>
   </DbInfo.DBI_DIRTYREAD>
   <DbInfo.DBI_POSITIONED>
-    <summary>Harbour extension: Is cursor positioned to valid record</summary>
+    <summary>Harbour 扩展：光标是否定位到有效记录</summary>
   </DbInfo.DBI_POSITIONED>
   <DbInfo.DBI_ISTEMPORARY>
-    <summary>Harbour extension: Is the table a temporary one?</summary>
+    <summary>Harbour 扩展：表是否为临时表？</summary>
   </DbInfo.DBI_ISTEMPORARY>
   <DbInfo.DBI_LOCKTEST>
-    <summary>Harbour extension: record / file lock test</summary>
+    <summary>Harbour 扩展：记录/文件锁定测试</summary>
   </DbInfo.DBI_LOCKTEST>
   <DbInfo.DBI_CODEPAGE_HB>
-    <summary>Harbour extension: Codepage used also memberd by VO and Vulcan</summary>
+    <summary>Harbour 扩展：代码页也由 VO 和 Vulcan 成员使用</summary>
   </DbInfo.DBI_CODEPAGE_HB>
   <DbInfo.DBI_TRANSREC>
-    <summary>Harbour extension: Is it destination table of currently processed COPY TO or APPEND FROM operation?</summary>
+    <summary>Harbour 扩展：是否为当前处理的 COPY TO 或 APPEND FROM 操作的目标表？</summary>
   </DbInfo.DBI_TRANSREC>
   <DbInfo.DBI_SETHEADER>
-    <summary>Harbour extension: DBF header updating modes</summary>
+    <summary>Harbour 扩展：DBF 头更新模式</summary>
   </DbInfo.DBI_SETHEADER>
   <DbInfo.DBI_RM_SUPPORTED>
     <summary></summary>
-    <summary>Harbour record map extension: has WA RDD record map support?</summary>
+    <summary>Harbour 记录映射扩展：是否支持 WA RDD 记录映射？</summary>
   </DbInfo.DBI_RM_SUPPORTED>
   <DbInfo.DBI_RM_CREATE>
-    <summary>Harbour record map extension: create new empty work area record map</summary>
+    <summary>Harbour 记录映射扩展：创建新的空工作区记录映射</summary>
   </DbInfo.DBI_RM_CREATE>
   <DbInfo.DBI_RM_REMOVE>
-    <summary>Harbour record map extension: remove active work area record map</summary>
+    <summary>Harbour 记录映射扩展：移除活动工作区记录映射</summary>
   </DbInfo.DBI_RM_REMOVE>
   <DbInfo.DBI_RM_CLEAR>
-    <summary>Harbour record map extension: remove all records from WA record map</summary>
+    <summary>Harbour 记录映射扩展：从 WA 记录映射中移除所有记录</summary>
   </DbInfo.DBI_RM_CLEAR>
   <DbInfo.DBI_RM_FILL>
-    <summary>Harbour record map extension: add all records to WA record map </summary>
+    <summary>Harbour 记录映射扩展：将所有记录添加到 WA 记录映射</summary>
   </DbInfo.DBI_RM_FILL>
   <DbInfo.DBI_RM_ADD>
-    <summary>Harbour record map extension: add record to work area record map </summary>
+    <summary>Harbour 记录映射扩展：将记录添加到工作区记录映射</summary>
   </DbInfo.DBI_RM_ADD>
   <DbInfo.DBI_RM_DROP>
-    <summary>Harbour record map extension: remove record from work area record map</summary>
+    <summary>Harbour 记录映射扩展：从工作区记录映射中移除记录</summary>
   </DbInfo.DBI_RM_DROP>
   <DbInfo.DBI_RM_TEST>
-    <summary>Harbour record map extension: test if record is set in WA record map</summary>
+    <summary>Harbour 记录映射扩展：测试记录是否在 WA 记录映射中设置</summary>
   </DbInfo.DBI_RM_TEST>
   <DbInfo.DBI_RM_COUNT>
-    <summary>Harbour record map extension: number of records set in record map </summary>
+    <summary>Harbour 记录映射扩展：记录映射中设置的记录数</summary>
   </DbInfo.DBI_RM_COUNT>
   <DbInfo.DBI_RM_HANDLE>
-    <summary>Harbour record map extension: get/set record map filter handle</summary>
+    <summary>Harbour 记录映射扩展：获取/设置记录映射过滤器句柄</summary>
   </DbInfo.DBI_RM_HANDLE>
   <DbInfo.DBI_QUERY>
-    <summary>if area represents result of a query, obtain expression of this query </summary>
+    <summary>如果区域表示查询结果，获取此查询的表达式</summary>
   </DbInfo.DBI_QUERY>
   <DbInfo.DBI_REFRESH>
-    <summary>Refresh the current data in the SQLRDD</summary>
+    <summary>刷新 SQLRDD 中的当前数据</summary>
   </DbInfo.DBI_REFRESH>
   <DbInfo.BLOB_INFO_HANDLE>
     <summary></summary>
@@ -670,1242 +670,1242 @@
     <summary></summary>
   </DbInfo.BLOB_USER>
   <DbInfo.DBI_USER>
-    <summary>Start of user defined DBI values</summary>
+    <summary>用户定义的 DBI 值的开始</summary>
   </DbInfo.DBI_USER>
   <DbInfo.DBI_RL_AND>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_AND>
   <DbInfo.DBI_RL_CLEAR>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_CLEAR>
   <DbInfo.DBI_RL_COUNT>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_COUNT>
   <DbInfo.DBI_RL_DESTROY>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_DESTROY>
   <DbInfo.DBI_RL_EXFILTER>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_EXFILTER>
   <DbInfo.DBI_RL_GETFILTER>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_GETFILTER>
   <DbInfo.DBI_RL_HASMAYBE>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_HASMAYBE>
   <DbInfo.DBI_RL_LEN>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_LEN>
   <DbInfo.DBI_RL_MAYBEEVAL>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_MAYBEEVAL>
   <DbInfo.DBI_RL_NEW>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_NEW>
   <DbInfo.DBI_RL_NEWDUP>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_NEWDUP>
   <DbInfo.DBI_RL_NEWQUERY>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_NEWQUERY>
   <DbInfo.DBI_RL_NEXTRECNO>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_NEXTRECNO>
   <DbInfo.DBI_RL_NOT>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_NOT>
   <DbInfo.DBI_RL_OR>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_OR>
   <DbInfo.DBI_RL_PREVRECNO>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_PREVRECNO>
   <DbInfo.DBI_RL_SET>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_SET>
   <DbInfo.DBI_RL_SETFILTER>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_SETFILTER>
   <DbInfo.DBI_RL_TEST>
-    <summary>Clipmore extension: </summary>
+    <summary>Clipmore 扩展: </summary>
   </DbInfo.DBI_RL_TEST>
   <DbInfo.DBI_RL_HITS>
-    <summary>Recordlist extension: </summary>
+    <summary>Recordlist 扩展: </summary>
   </DbInfo.DBI_RL_HITS>
   <DbInfo.DBI_RL_MISSES>
-    <summary>Recordlist extension: </summary>
+    <summary>Recordlist 扩展: </summary>
   </DbInfo.DBI_RL_MISSES>
   <DbInfo.DBI_RL_ENABLE>
-    <summary>Recordlist extension: </summary>
+    <summary>Recordlist 扩展: </summary>
   </DbInfo.DBI_RL_ENABLE>
   <DbSortFlags>
-    <summary>Flags that describe how a DbSort operation can be done.</summary>
+    <summary>描述如何执行 DbSort 操作的标志。</summary>
   </DbSortFlags>
   <DbSortFlags.Default>
-    <summary>An ascending sort (default)   </summary>
+    <summary>升序排序（默认）</summary>
   </DbSortFlags.Default>
   <DbSortFlags.Case>
-    <summary> A case-insensitive sort        </summary>
+    <summary>不区分大小写的排序</summary>
   </DbSortFlags.Case>
   <DbSortFlags.Numeric>
-    <summary>A sort with printable numerics        </summary>
+    <summary>可打印数字的排序</summary>
   </DbSortFlags.Numeric>
   <DbSortFlags.Ascii>
-    <summary>A sort for ASCII (not nation-dependent)</summary>
+    <summary>ASCII 排序（不依赖于国家）</summary>
   </DbSortFlags.Ascii>
   <DbSortFlags.Long>
-    <summary>A sort with long integer values        </summary>
+    <summary>长整数值的排序</summary>
   </DbSortFlags.Long>
   <DbSortFlags.Descending>
-    <summary>A descending sort        </summary>
+    <summary>降序排序</summary>
   </DbSortFlags.Descending>
   <DbFieldInfo>
-    <summary>This enum specifies the various values that the FieldInfo method for the IRDD interface accepts.</summary>
+    <summary>此枚举指定 IRDD 接口的 FieldInfo 方法可接受的各种值。</summary>
     <remarks>
-      <note type="tip">These enums are also available as DEFINES and can therefore also be used without the "DbFieldInfo." prefix.</note>
+      <note type="tip">这些枚举也可以作为 DEFINES 使用，因此可以不带 "DbFieldInfo." 前缀使用。</note>
     </remarks>
   </DbFieldInfo>
   <DbFieldInfo.DBS_NAME>
-    <summary>Returns the name of the field.</summary>
+    <summary>返回字段的名称。</summary>
   </DbFieldInfo.DBS_NAME>
   <DbFieldInfo.DBS_TYPE>
-    <summary>Returns the data type of the field. This is a single character string such as 'C' or 'N'.</summary>
+    <summary>返回字段的数据类型。这是一个单字符字符串，例如 'C' 或 'N'。</summary>
   </DbFieldInfo.DBS_TYPE>
   <DbFieldInfo.DBS_LEN>
-    <summary>Returns the length of the field.</summary>
+    <summary>返回字段的长度。</summary>
   </DbFieldInfo.DBS_LEN>
   <DbFieldInfo.DBS_ALEN>
-    <summary>Returns the length of the FieldInfo array.</summary>
+    <summary>返回 FieldInfo 数组的长度。</summary>
   </DbFieldInfo.DBS_ALEN>
   <DbFieldInfo.DBS_DEC>
-    <summary> Returns the number of decimal places for the field. </summary>
+    <summary>返回字段的小数位数。</summary>
   </DbFieldInfo.DBS_DEC>
   <DbFieldInfo.DBS_ALIAS>
-    <summary>Returns and optionally changes an alternate name (or alias) by which a field can be referenced (by default, same as DBS_NAME).  </summary>
+    <summary>返回并可选地更改字段可以引用的备用名称（或别名）（默认与 DBS_NAME 相同）。</summary>
   </DbFieldInfo.DBS_ALIAS>
   <DbFieldInfo.DBS_FLAGS>
-    <summary>Returns the field flags for a field (a value from the DBFFieldFlags enum)  </summary>
+    <summary>返回字段的标志（来自 DBFFieldFlags 枚举的值）</summary>
   </DbFieldInfo.DBS_FLAGS>
   <DbFieldInfo.DBS_ISNULL>
-    <summary>Harbour extension: Returns the flag that indicates if a field is Nullable.</summary>
+    <summary>Harbour 扩展：返回指示字段是否可为空的标志。</summary>
   </DbFieldInfo.DBS_ISNULL>
   <DbFieldInfo.DBS_COUNTER>
-    <summary>Harbour extension: Returns the next available value for autoincrement fields.</summary>
+    <summary>Harbour 扩展：返回自增字段的下一个可用值。</summary>
   </DbFieldInfo.DBS_COUNTER>
   <DbFieldInfo.DBS_STEP>
-    <summary>Harbour extension: Returns the step value for autoincrement fields.</summary>
+    <summary>Harbour 扩展：返回自增字段的步长值。</summary>
   </DbFieldInfo.DBS_STEP>
   <DbFieldInfo.DBS_CAPTION>
-    <summary>Foxpro extension: Returns the field caption.</summary>
+    <summary>Foxpro 扩展：返回字段标题。</summary>
   </DbFieldInfo.DBS_CAPTION>
   <DbFieldInfo.DBS_COLUMNINFO>
-    <summary>VFP / SQL extension: Returns the object with the complete column information.</summary>
+    <summary>VFP / SQL 扩展：返回包含完整列信息的对象。</summary>
   </DbFieldInfo.DBS_COLUMNINFO>
   <DbFieldInfo.DBS_DESCRIPTION>
-    <summary>VFP / SQL extension: Returns a string describing the object (the comment).</summary>
+    <summary>VFP / SQL 扩展：返回描述对象的字符串（注释）。</summary>
   </DbFieldInfo.DBS_DESCRIPTION>
   <DbFieldInfo.DBS_BLANK>
-    <summary>X# Extension: returns a blank value for the field.</summary>
+    <summary>X# 扩展：返回字段的空值。</summary>
   </DbFieldInfo.DBS_BLANK>
   <DbFieldInfo.DBS_BLOB_GET>
-    <summary>Gets a BLOB value.</summary>
+    <summary>获取 BLOB 值。</summary>
   </DbFieldInfo.DBS_BLOB_GET>
   <DbFieldInfo.DBS_BLOB_TYPE>
-    <summary>Unlike memo fields maintained in .DBT files, BLOB files allow you to store many different types of data in memo fields. This returns type type of the BLOB as a single character string.</summary>
+    <summary>与 .DBT 文件中维护的备注字段不同，BLOB 文件允许在备注字段中存储多种不同类型的数据。这将返回 BLOB 的类型作为单字符字符串。</summary>
   </DbFieldInfo.DBS_BLOB_TYPE>
   <DbFieldInfo.DBS_BLOB_LEN>
-    <summary>Returns the length of the BLOB data in a memo field as an unsigned long integer.</summary>
+    <summary>返回备注字段中 BLOB 数据的长度，作为无符号长整数。</summary>
   </DbFieldInfo.DBS_BLOB_LEN>
   <DbFieldInfo.DBS_BLOB_OFFSET>
     <summary></summary>
   </DbFieldInfo.DBS_BLOB_OFFSET>
   <DbFieldInfo.DBS_BLOB_POINTER>
-    <summary>Returns a numeric pointer to the BLOB data associated with a memo field.</summary>
+    <summary>返回与备注字段关联的 BLOB 数据的数值指针。</summary>
   </DbFieldInfo.DBS_BLOB_POINTER>
   <DbFieldInfo.DBS_BLOB_DIRECT_TYPE>
-    <summary>Returns the type of data in a BLOB as an unsigned long integer, without referencing a particular memo field.   With this constant, you must specify the BLOB using a numeric pointer obtained from BLOBDirectPut(), BLOBDirectImport(),   or DBFieldInfo(DBS_BLOB_POINTER, &lt;nFieldPos&gt;).  </summary>
+    <summary>返回 BLOB 中数据的类型，作为无符号长整数，而不引用特定的备注字段。使用此常量时，必须使用从 BLOBDirectPut()、BLOBDirectImport() 或 DBFieldInfo(DBS_BLOB_POINTER, &lt;nFieldPos&gt;) 获得的数值指针指定 BLOB。</summary>
   </DbFieldInfo.DBS_BLOB_DIRECT_TYPE>
   <DbFieldInfo.DBS_BLOB_DIRECT_LEN>
-    <summary>Returns the length of data in a BLOB as an unsigned long integer, without referencing a particular memo field.   With this constant, you must specify the BLOB using a numeric pointer obtained from BLOBDirectPut(), BLOBDirectImport(),   or DBFieldInfo(DBS_BLOB_POINTER, &lt;nFieldPos&gt;).  </summary>
+    <summary>返回 BLOB 中数据的长度，作为无符号长整数，而不引用特定的备注字段。使用此常量时，必须使用从 BLOBDirectPut()、BLOBDirectImport() 或 DBFieldInfo(DBS_BLOB_POINTER, &lt;nFieldPos&gt;) 获得的数值指针指定 BLOB。</summary>
   </DbFieldInfo.DBS_BLOB_DIRECT_LEN>
   <DbFieldInfo.DBS_STRUCT>
-    <summary>Return the RDD FieldInfo structure</summary>
+    <summary>返回 RDD FieldInfo 结构</summary>
   </DbFieldInfo.DBS_STRUCT>
   <DbFieldInfo.DBS_PROPERTIES>
-    <summary>Returns the number of properties defined for a field.</summary>
+    <summary>返回为字段定义的属性数量。</summary>
   </DbFieldInfo.DBS_PROPERTIES>
   <DbFieldInfo.DBS_USER>
-    <summary>Start of user defined FieldInfo values.</summary>
+    <summary>用户定义的 FieldInfo 值的开始。</summary>
   </DbFieldInfo.DBS_USER>
   <DbFieldType>
-    <summary>This enum specifies the various field types that can appear in DBF files.</summary>
+    <summary>此枚举指定可以出现在 DBF 文件中的各种字段类型。</summary>
   </DbFieldType>
   <DbFieldType.Character>
-    <summary>'C', uses len and dec</summary>
+    <summary>'C'，使用长度和小数</summary>
   </DbFieldType.Character>
   <DbFieldType.Date>
-    <summary>'D', 8 bytes</summary>
+    <summary>'D'，8 字节</summary>
   </DbFieldType.Date>
   <DbFieldType.Logic>
-    <summary>'L', 1 byte</summary>
+    <summary>'L'，1 字节</summary>
   </DbFieldType.Logic>
   <DbFieldType.Memo>
-    <summary>'M', 4 or 10 bytes see Length</summary>
+    <summary>'M'，4 或 10 字节，见长度</summary>
   </DbFieldType.Memo>
   <DbFieldType.Number>
-    <summary>'N', uses len and dec</summary>
+    <summary>'N'，使用长度和小数</summary>
   </DbFieldType.Number>
   <DbFieldType.VOObject>
-    <summary>'O', is anybody using this ?</summary>
+    <summary>'O'，有人在用这个吗？</summary>
   </DbFieldType.VOObject>
   <DbFieldType.Blob>
-    <summary>'W' = Blob 4 or 10 bytes VFP type</summary>
+    <summary>'W' = Blob 4 或 10 字节 VFP 类型</summary>
   </DbFieldType.Blob>
   <DbFieldType.Currency>
-    <summary> 'Y'	VFP Type 8 byte </summary>
+    <summary>'Y' VFP 类型 8 字节</summary>
   </DbFieldType.Currency>
   <DbFieldType.Double>
-    <summary>'B'	VFP Type, also '8'</summary>
+    <summary>'B' VFP 类型，也为 '8'</summary>
   </DbFieldType.Double>
   <DbFieldType.DateTime>
-    <summary>'T'	VFP Type can be 4 or 8 bytes</summary>
+    <summary>'T' VFP 类型，可以是 4 或 8 字节</summary>
   </DbFieldType.DateTime>
   <DbFieldType.Float>
-    <summary>'F'	VFP Type, uses len and dec</summary>
+    <summary>'F' VFP 类型，使用长度和小数</summary>
   </DbFieldType.Float>
   <DbFieldType.General>
-    <summary>'G'    VFP type Ole 4 or 10 bytes </summary>
+    <summary>'G' VFP 类型 Ole 4 或 10 字节</summary>
   </DbFieldType.General>
   <DbFieldType.Integer>
-    <summary>'I'	VFP Type , may be autoInc</summary>
+    <summary>'I' VFP 类型，可能是自增</summary>
   </DbFieldType.Integer>
   <DbFieldType.Picture>
-    <summary>'P'	VFP Type, 4 or 10 bytes</summary>
+    <summary>'P' VFP 类型，4 或 10 字节</summary>
   </DbFieldType.Picture>
   <DbFieldType.VarBinary>
-    <summary>'Q'    VFP Type=, between 1 and 255 </summary>
+    <summary>'Q' VFP 类型，介于 1 和 255 之间</summary>
   </DbFieldType.VarBinary>
   <DbFieldType.VarChar>
-    <summary>'V'    VFP Type </summary>
+    <summary>'V' VFP 类型</summary>
   </DbFieldType.VarChar>
   <DbFieldType.NullFlags>
-    <summary>'0'    VFP Type, contains Null Flags</summary>
+    <summary>'0' VFP 类型，包含空标志</summary>
   </DbFieldType.NullFlags>
   <DbTransInfoFlags>
-    <summary>Flags that describe how a DbTrans operation can be done.</summary>
+    <summary>描述如何进行 DbTrans 操作的标志。</summary>
   </DbTransInfoFlags>
   <DbTransInfoFlags.None>
-    <summary>Default</summary>
+    <summary>默认</summary>
   </DbTransInfoFlags.None>
   <DbTransInfoFlags.SameStructure>
-    <summary>Both this work area and the destination work area have identical row structures (i.e., all columns match).</summary>
+    <summary>此工作区和目标工作区具有相同的行结构（即所有列匹配）。</summary>
   </DbTransInfoFlags.SameStructure>
   <DbTransInfoFlags.CanPutRec>
-    <summary>The RDD has the ability to transfer an entire row.</summary>
+    <summary>RDD 能够传输整个行。</summary>
   </DbTransInfoFlags.CanPutRec>
   <DBFFieldFlags>
-    <summary>DBF Field flags.</summary>
+    <summary>DBF 字段标志。</summary>
   </DBFFieldFlags>
   <DBFFieldFlags.System>
-    <summary>System Field ?</summary>
+    <summary>系统字段？</summary>
   </DBFFieldFlags.System>
   <DBFFieldFlags.Nullable>
-    <summary>Field is Nullable</summary>
+    <summary>字段可为空</summary>
   </DBFFieldFlags.Nullable>
   <DBFFieldFlags.Binary>
-    <summary>Field is Binary</summary>
+    <summary>字段是二进制的</summary>
   </DBFFieldFlags.Binary>
   <DBFFieldFlags.AutoIncrement>
-    <summary>Field is AutoIncrement</summary>
+    <summary>字段是自增的</summary>
   </DBFFieldFlags.AutoIncrement>
   <DBFFieldFlags.Compressed>
-    <summary>Field is Compressed (not used yet, for compatibility with Harbour)</summary>
+    <summary>字段已压缩（尚未使用，与 Harbour 兼容）</summary>
   </DBFFieldFlags.Compressed>
   <DBFFieldFlags.Encrypted>
-    <summary>Field is Encrypted (not used yet, for compatibility with Harbour)</summary>
+    <summary>字段已加密（尚未使用，与 Harbour 兼容）</summary>
   </DBFFieldFlags.Encrypted>
   <DBFFieldFlags.Unicode>
-    <summary>Field contains Unicode text</summary>
+    <summary>字段包含 Unicode 文本</summary>
   </DBFFieldFlags.Unicode>
   <DbNotificationType>
-    <summary>Enum that described the possible Notification messages that are sent to clients of Workareas</summary>
-    <remarks>Clients that want to subscribe to these notifications can register themselves by calling DbRegisterClient() and must implement IDbNotify().</remarks>
+    <summary>枚举描述了发送给工作区客户端的可能通知消息</summary>
+    <remarks>希望订阅这些通知的客户端可以通过调用 DbRegisterClient() 注册，并且必须实现 IDbNotify()。</remarks>
   </DbNotificationType>
   <DbNotificationType.FileCreate>
-    <summary>This message is sent after a file was created. The Data parameter is the name of the file that was opened.</summary>
+    <summary>在文件创建后发送此消息。数据参数是已打开文件的名称。</summary>
   </DbNotificationType.FileCreate>
   <DbNotificationType.FileOpen>
-    <summary>This message is sent after a file was opened. The Data parameter is the name of the file that was opened.</summary>
+    <summary>在文件打开后发送此消息。数据参数是已打开文件的名称。</summary>
   </DbNotificationType.FileOpen>
   <DbNotificationType.FileClose>
-    <summary>This message is sent after a file is closed. The Data parameter is the name of the file that was closed.</summary>
+    <summary>在文件关闭后发送此消息。数据参数是已关闭文件的名称。</summary>
   </DbNotificationType.FileClose>
   <DbNotificationType.IndexCreate>
-    <summary>This message is sent after an index was created. The Data parameter is the name of the file that was opened.</summary>
+    <summary>在索引创建后发送此消息。数据参数是已打开文件的名称。</summary>
   </DbNotificationType.IndexCreate>
   <DbNotificationType.IndexDelete>
-    <summary>This message is sent after an index was deleted. The Data parameter is the name of the file that was opened.</summary>
+    <summary>在索引删除后发送此消息。数据参数是已打开文件的名称。</summary>
   </DbNotificationType.IndexDelete>
   <DbNotificationType.IndexOpen>
-    <summary>This message is sent after an index was opened. The Data parameter is the name of the file that was opened.</summary>
+    <summary>在索引打开后发送此消息。数据参数是已打开文件的名称。</summary>
   </DbNotificationType.IndexOpen>
   <DbNotificationType.IndexClose>
-    <summary>This message is sent after an index was closed. The Data parameter is the name of the file that was closed.</summary>
+    <summary>在索引关闭后发送此消息。数据参数是已关闭文件的名称。</summary>
   </DbNotificationType.IndexClose>
   <DbNotificationType.BeforeBulkOperation>
-    <summary>This message is sent before a bulk operation is started. The Data parameter is a description of the operation.</summary>
+    <summary>在批量操作开始前发送此消息。数据参数是操作的描述。</summary>
   </DbNotificationType.BeforeBulkOperation>
   <DbNotificationType.AfterBulkOperation>
-    <summary>This message is sent after a bulk operation was completed. The Data parameter is a description of the operation.</summary>
+    <summary>在批量操作完成后发送此消息。数据参数是操作的描述。</summary>
   </DbNotificationType.AfterBulkOperation>
   <DbNotificationType.OrderChanged>
-    <summary>This message is sent after an order was changed. The Data parameter is the name of the new order.</summary>
+    <summary>在顺序更改后发送此消息。数据参数是新顺序的名称。</summary>
   </DbNotificationType.OrderChanged>
   <DbNotificationType.BeforeFieldUpdate>
-    <summary>This message is sent before a field is updated The Data parameter is the fieldname of the field that was updated.</summary>
+    <summary>在字段更新前发送此消息。数据参数是已更新字段的字段名。</summary>
   </DbNotificationType.BeforeFieldUpdate>
   <DbNotificationType.AfterFieldUpdate>
-    <summary>This message is sent after a field was updated The Data parameter is the fieldname of the field that was updated.</summary>
+    <summary>在字段更新后发送此消息。数据参数是已更新字段的字段名。</summary>
   </DbNotificationType.AfterFieldUpdate>
   <DbNotificationType.BeforeMove>
-    <summary>This message is sent before the record pointer is moved. The Data parameter indicates the reason for the move</summary>
+    <summary>在记录指针移动前发送此消息。数据参数指示移动的原因。</summary>
   </DbNotificationType.BeforeMove>
   <DbNotificationType.AfterMove>
-    <summary>This message is sent after the record pointer was moved. The Data parameter indicates the reason for the move</summary>
+    <summary>在记录指针移动后发送此消息。数据参数指示移动的原因。</summary>
   </DbNotificationType.AfterMove>
   <DbNotificationType.RecordAppended>
-    <summary>This message is sent after a new record was appended. The Data parameter is the record number of the record.</summary>
+    <summary>在新记录追加后发送此消息。数据参数是记录的记录号。</summary>
   </DbNotificationType.RecordAppended>
   <DbNotificationType.AfterRecordDeleted>
-    <summary>This message is sent after a record was deleted. The Data parameter is the record number of the record.</summary>
+    <summary>在记录删除后发送此消息。数据参数是记录的记录号。</summary>
   </DbNotificationType.AfterRecordDeleted>
   <DbNotificationType.RecordDeleted>
-    <summary>This message is sent after a record was deleted. The Data parameter is the record number of the record.</summary>
+    <summary>在记录删除后发送此消息。数据参数是记录的记录号。</summary>
   </DbNotificationType.RecordDeleted>
   <DbNotificationType.AfterRecordRecalled>
-    <summary>This message is sent after a record was recalled. The Data parameter is the record number of the record.</summary>
+    <summary>在记录恢复后发送此消息。数据参数是记录的记录号。</summary>
   </DbNotificationType.AfterRecordRecalled>
   <DbNotificationType.RecordRecalled>
-    <summary>This message is sent after a record was recalled. The Data parameter is the record number of the record.</summary>
+    <summary>在记录恢复后发送此消息。数据参数是记录的记录号。</summary>
   </DbNotificationType.RecordRecalled>
   <DbNotificationType.RecordLocked>
-    <summary>This message is sent after a record was locked. The Data parameter is the record number of the record.</summary>
+    <summary>在记录锁定后发送此消息。数据参数是记录的记录号。</summary>
   </DbNotificationType.RecordLocked>
   <DbNotificationType.RecordUnLocked>
-    <summary>This message is sent after a record was unlocked. The Data parameter is the record number of the record.</summary>
+    <summary>在记录解锁后发送此消息。数据参数是记录的记录号。</summary>
   </DbNotificationType.RecordUnLocked>
   <DbNotificationType.FileCommit>
-    <summary>This message is sent after a Workarea was commited. The Data parameter is the file name of area.</summary>
+    <summary>在工作区提交后发送此消息。数据参数是区域的文件名。</summary>
   </DbNotificationType.FileCommit>
   <DbNotificationType.BeforeRecordDeleted>
-    <summary>This message is sent before a record is deleted. The Data parameter is the record number of the record.</summary>
+    <summary>此消息在记录被删除之前发送。数据参数是记录的记录号。</summary>
   </DbNotificationType.BeforeRecordDeleted>
   <DbNotificationType.BeforeRecordRecalled>
-    <summary>This message is sent before a record is recalled. The Data parameter is the record number of the record.</summary>
+    <summary>此消息在记录被恢复之前发送。数据参数是记录的记录号。</summary>
   </DbNotificationType.BeforeRecordRecalled>
   <DbNotificationType.OperationFailed>
-    <summary>This message is sent after an operation failed. The Data parameter is the description of the operation.</summary>
+    <summary>此消息在操作失败后发送。数据参数是操作的描述。</summary>
   </DbNotificationType.OperationFailed>
   <DbRecordInfo>
     <summary>
-      This enum specifies the various values that the RecordInfo method for the IRDD interface accepts.
+      此枚举指定 IRDD 接口的 RecordInfo 方法所接受的各种值。
     </summary>
     <remarks>
-      <note type="tip">These enums are also available as DEFINES and can therefore also be used without the "DbRecordInfo." prefix.</note>
+      <note type="tip">这些枚举也可以作为 DEFINES 使用，因此可以不加 "DbRecordInfo." 前缀使用。</note>
     </remarks>
   </DbRecordInfo>
 
   <DbRecordInfo.DBRI_DELETED>
-    <summary>Gets the deleted flag for the record.</summary>
+    <summary>获取记录的删除标志。</summary>
   </DbRecordInfo.DBRI_DELETED>
   <DbRecordInfo.DBRI_LOCKED>
-    <summary>Gets the locked state for the record. You may specify a specific record.</summary>
+    <summary>获取记录的锁定状态。您可以指定特定的记录。</summary>
   </DbRecordInfo.DBRI_LOCKED>
   <DbRecordInfo.DBRI_RECSIZE>
-    <summary>Gets the record size. You may specify a specific record.</summary>
+    <summary>获取记录的大小。您可以指定特定的记录。</summary>
   </DbRecordInfo.DBRI_RECSIZE>
   <DbRecordInfo.DBRI_RECNO>
-    <summary>Gets the record number.</summary>
+    <summary>获取记录号。</summary>
   </DbRecordInfo.DBRI_RECNO>
   <DbRecordInfo.DBRI_UPDATED>
-    <summary>Gets/Sets a boolean indicating if the current record is updated.</summary>
+    <summary>获取/设置一个布尔值，指示当前记录是否已更新。</summary>
   </DbRecordInfo.DBRI_UPDATED>
   <DbRecordInfo.DBRI_BUFFPTR>
-    <summary>Gets the buffer used by the RDD system for the record data. This is an array of bytes in X#.</summary>
+    <summary>获取 RDD 系统用于记录数据的缓冲区。在 X# 中，这是一个字节数组。</summary>
   </DbRecordInfo.DBRI_BUFFPTR>
   <DbRecordInfo.DBRI_ENCRYPTED>
-    <summary>Harbour: Is the current record encrypted?</summary>
+    <summary>Harbour：当前记录是否已加密？</summary>
   </DbRecordInfo.DBRI_ENCRYPTED>
   <DbRecordInfo.DBRI_RAWMEMOS>
-    <summary>Harbour extension: Return all the memos in the current record as one string.</summary>
+    <summary>Harbour 扩展：将当前记录中的所有备注作为一个字符串返回。</summary>
   </DbRecordInfo.DBRI_RAWMEMOS>
   <DbRecordInfo.DBRI_RAWDATA>
-    <summary>Harbour extension: Return the current record and all the memos in the current record as one string.</summary>
+    <summary>Harbour 扩展：将当前记录及其所有备注作为一个字符串返回。</summary>
   </DbRecordInfo.DBRI_RAWDATA>
   <DbRecordInfo.DBRI_RAWRECORD>
-    <summary>Harbour extension: Return the current record as one string.</summary>
+    <summary>Harbour 扩展：将当前记录作为一个字符串返回。</summary>
   </DbRecordInfo.DBRI_RAWRECORD>
   <DbRecordInfo.DBRI_USER>
-    <summary>Offset of user defined values.</summary>
+    <summary>用户定义值的偏移量。</summary>
   </DbRecordInfo.DBRI_USER>
   <RddInfo>
     <summary>
-      This enum specifies the various values that the RDDInfo method for the IRDD interface accepts.
+      此枚举指定 IRDD 接口的 RDDInfo 方法所接受的各种值。
       <note type="tip">
-        These enums are also available as DEFINES and can therefore also be used without the "RDDInfo." prefix.
+        这些枚举也可以作为 DEFINES 使用，因此可以不加 "RDDInfo." 前缀使用。
       </note>
     </summary>
     <seealso cref='M:XSharp.RT.Functions.RddInfo(XSharp.__Usual,XSharp.__Usual)' >RddInfo()</seealso>
-    <remarks>Most of these ENUMs come from Harbour and have not been implemented yet. </remarks>
+    <remarks>这些 ENUM 大多数来自 Harbour，尚未实现。</remarks>
 
   </RddInfo>
   <RddInfo.RDDI_ISDBF>
-    <summary>Does this RDD support DBFs?</summary>
+    <summary>此 RDD 是否支持 DBF？</summary>
   </RddInfo.RDDI_ISDBF>
   <RddInfo.RDDI_CANPUTREC>
-    <summary>Can this RDD Put Records?</summary>
+    <summary>此 RDD 能否放置记录？</summary>
   </RddInfo.RDDI_CANPUTREC>
   <RddInfo.RDDI_DELIMITER>
-    <summary>The field delimiter (as a string)</summary>
+    <summary>字段分隔符（字符串形式）</summary>
   </RddInfo.RDDI_DELIMITER>
   <RddInfo.RDDI_SEPARATOR>
-    <summary>The record separator (as a string) </summary>
+    <summary>记录分隔符（字符串形式）</summary>
   </RddInfo.RDDI_SEPARATOR>
   <RddInfo.RDDI_TABLEEXT>
-    <summary>Default data file's file extension</summary>
+    <summary>默认数据文件的文件扩展名</summary>
   </RddInfo.RDDI_TABLEEXT>
   <RddInfo.RDDI_MEMOEXT>
-    <summary>Default memo file's file extension </summary>
+    <summary>默认备注文件的文件扩展名</summary>
   </RddInfo.RDDI_MEMOEXT>
   <RddInfo.RDDI_ORDBAGEXT>
-    <summary>Default multi tag index's file extension</summary>
+    <summary>默认多标签索引的文件扩展名</summary>
   </RddInfo.RDDI_ORDBAGEXT>
   <RddInfo.RDDI_ORDEREXT>
-    <summary>default single tag index's file extension</summary>
+    <summary>默认单标签索引的文件扩展名</summary>
   </RddInfo.RDDI_ORDEREXT>
   <RddInfo.RDDI_ORDSTRUCTEXT>
-    <summary>default single tag index's file extension</summary>
+    <summary>默认单标签索引的文件扩展名</summary>
   </RddInfo.RDDI_ORDSTRUCTEXT>
   <RddInfo.RDDI_LOCAL>
-    <summary>Local file access?</summary>
+    <summary>本地文件访问？</summary>
   </RddInfo.RDDI_LOCAL>
   <RddInfo.RDDI_REMOTE>
-    <summary>Remote table access? </summary>
+    <summary>远程表访问？</summary>
   </RddInfo.RDDI_REMOTE>
   <RddInfo.RDDI_CONNECTION>
-    <summary>Get/Set default connection</summary>
+    <summary>获取/设置默认连接</summary>
   </RddInfo.RDDI_CONNECTION>
   <RddInfo.RDDI_TABLETYPE>
-    <summary>Type of table file</summary>
+    <summary>表文件类型</summary>
   </RddInfo.RDDI_TABLETYPE>
   <RddInfo.RDDI_MEMOTYPE>
-    <summary>Type of MEMO file DB_MEMO_*: DBT, SMT, FPT(FP,SIX3,FLEXIII) </summary>
+    <summary>备注文件类型 DB_MEMO_*：DBT、SMT、FPT（FP、SIX3、FLEXIII）</summary>
   </RddInfo.RDDI_MEMOTYPE>
   <RddInfo.RDDI_LARGEFILE>
-    <summary>Is large file size (>=4GB) supported</summary>
+    <summary>是否支持大文件（>=4GB）</summary>
   </RddInfo.RDDI_LARGEFILE>
   <RddInfo.RDDI_LOCKSCHEME>
-    <summary>Locking scheme used by RDD</summary>
+    <summary>RDD 使用的锁定方案</summary>
   </RddInfo.RDDI_LOCKSCHEME>
   <RddInfo.RDDI_RECORDMAP>
-    <summary>Does RDD support record map functionality?</summary>
+    <summary>RDD 是否支持记录映射功能？</summary>
   </RddInfo.RDDI_RECORDMAP>
   <RddInfo.RDDI_ENCRYPTION>
-    <summary>Does RDD support encryption</summary>
+    <summary>RDD 是否支持加密</summary>
   </RddInfo.RDDI_ENCRYPTION>
   <RddInfo.RDDI_TRIGGER>
-    <summary>Get/Set default trigger function</summary>
+    <summary>获取/设置默认触发器函数</summary>
   </RddInfo.RDDI_TRIGGER>
   <RddInfo.RDDI_AUTOLOCK>
-    <summary>automatic locking on update</summary>
+    <summary>更新时自动锁定</summary>
   </RddInfo.RDDI_AUTOLOCK>
   <RddInfo.RDDI_STRUCTORD>
-    <summary>Are structural indexes supported</summary>
+    <summary>是否支持结构化索引</summary>
   </RddInfo.RDDI_STRUCTORD>
   <RddInfo.RDDI_STRICTREAD>
-    <summary>Flag for avoiding RDD hierarchy and using a bigger buffer when indexing</summary>
+    <summary>避免 RDD 层次结构并在索引时使用更大缓冲区的标志</summary>
   </RddInfo.RDDI_STRICTREAD>
   <RddInfo.RDDI_STRICTSTRUCT>
-    <summary>Flag for strict structural order checking</summary>
+    <summary>严格结构顺序检查标志</summary>
   </RddInfo.RDDI_STRICTSTRUCT>
   <RddInfo.RDDI_OPTIMIZE>
-    <summary>Flag for whether to use query optimization</summary>
+    <summary>是否使用查询优化的标志</summary>
   </RddInfo.RDDI_OPTIMIZE>
   <RddInfo.RDDI_FORCEOPT>
-    <summary>Flag for forcing linear optimization</summary>
+    <summary>强制线性优化的标志</summary>
   </RddInfo.RDDI_FORCEOPT>
   <RddInfo.RDDI_AUTOOPEN>
-    <summary>Flag for automatically opening structural indexes</summary>
+    <summary>自动打开结构化索引的标志</summary>
   </RddInfo.RDDI_AUTOOPEN>
   <RddInfo.RDDI_AUTOORDER>
-    <summary>When a structural index is opened, the order to be set</summary>
+    <summary>打开结构化索引时要设置的顺序</summary>
   </RddInfo.RDDI_AUTOORDER>
   <RddInfo.RDDI_AUTOSHARE>
-    <summary>When a network is detected, open the index shared, otherwise open exclusively</summary>
+    <summary>检测到网络时，共享打开索引，否则独占打开</summary>
   </RddInfo.RDDI_AUTOSHARE>
   <RddInfo.RDDI_MULTITAG>
-    <summary>Does RDD support multi tag in index file</summary>
+    <summary>RDD 是否支持索引文件中的多标签</summary>
   </RddInfo.RDDI_MULTITAG>
   <RddInfo.RDDI_SORTRECNO>
-    <summary>Is record number part of key in sorting</summary>
+    <summary>记录号是否是排序键的一部分</summary>
   </RddInfo.RDDI_SORTRECNO>
   <RddInfo.RDDI_MULTIKEY>
-    <summary>Does custom orders support repeated keys?</summary>
+    <summary>自定义顺序是否支持重复键？</summary>
   </RddInfo.RDDI_MULTIKEY>
   <RddInfo.RDDI_MEMOBLOCKSIZE>
-    <summary>Memo File's block size</summary>
+    <summary>备注文件的块大小</summary>
   </RddInfo.RDDI_MEMOBLOCKSIZE>
   <RddInfo.RDDI_MEMOVERSION>
-    <summary>sub version of memo file</summary>
+    <summary>备注文件的子版本</summary>
   </RddInfo.RDDI_MEMOVERSION>
   <RddInfo.RDDI_MEMOGCTYPE>
-    <summary>type of garbage collector used by GC</summary>
+    <summary>GC 使用的垃圾收集器类型</summary>
   </RddInfo.RDDI_MEMOGCTYPE>
   <RddInfo.RDDI_MEMOREADLOCK>
-    <summary>use read lock in memo file access</summary>
+    <summary>备注文件访问时使用读锁</summary>
   </RddInfo.RDDI_MEMOREADLOCK>
   <RddInfo.RDDI_MEMOREUSE>
-    <summary>reuse free space on write</summary>
+    <summary>写入时重用空闲空间</summary>
   </RddInfo.RDDI_MEMOREUSE>
   <RddInfo.RDDI_BLOB_SUPPORT>
-    <summary>can support BLOB files directly</summary>
+    <summary>是否可以直接支持 BLOB 文件</summary>
   </RddInfo.RDDI_BLOB_SUPPORT>
   <RddInfo.RDDI_PENDINGTRIGGER>
-    <summary>set pending trigger for next open operation</summary>
+    <summary>为下一个打开操作设置挂起的触发器</summary>
   </RddInfo.RDDI_PENDINGTRIGGER>
   <RddInfo.RDDI_PENDINGPASSWORD>
-    <summary>set pending password for next open operation</summary>
+    <summary>为下一个打开操作设置挂起的密码</summary>
   </RddInfo.RDDI_PENDINGPASSWORD>
   <RddInfo.RDDI_PASSWORD>
-    <summary>Get/Set default password</summary>
+    <summary>获取/设置默认密码</summary>
   </RddInfo.RDDI_PASSWORD>
   <RddInfo.RDDI_LOCKRETRY>
-    <summary>Get/Set record and file lock timeout value</summary>
+    <summary>获取/设置记录和文件锁定超时值</summary>
   </RddInfo.RDDI_LOCKRETRY>
   <RddInfo.RDDI_DIRTYREAD>
-    <summary>Get/Set index dirty read flag</summary>
+    <summary>获取/设置索引脏读标志</summary>
   </RddInfo.RDDI_DIRTYREAD>
   <RddInfo.RDDI_INDEXPAGESIZE>
-    <summary>Get/Set default index page size</summary>
+    <summary>获取/设置默认索引页大小</summary>
   </RddInfo.RDDI_INDEXPAGESIZE>
   <RddInfo.RDDI_DECIMALS>
-    <summary>Get/Set default number of decimal places for numeric fields if it's undefined</summary>
+    <summary>获取/设置数值字段的默认小数位数（如果未定义）</summary>
   </RddInfo.RDDI_DECIMALS>
   <RddInfo.RDDI_SETHEADER>
-    <summary>DBF header updating modes</summary>
+    <summary>DBF 头部更新模式</summary>
   </RddInfo.RDDI_SETHEADER>
   <RddInfo.RDDI_CONNECT>
-    <summary>connect to database</summary>
+    <summary>连接到数据库</summary>
   </RddInfo.RDDI_CONNECT>
   <RddInfo.RDDI_DISCONNECT>
-    <summary>disconnect from database</summary>
+    <summary>断开与数据库的连接</summary>
   </RddInfo.RDDI_DISCONNECT>
   <RddInfo.RDDI_EXECUTE>
-    <summary>execute SQL statement </summary>
+    <summary>执行 SQL 语句</summary>
   </RddInfo.RDDI_EXECUTE>
   <RddInfo.RDDI_ERROR>
-    <summary>error number</summary>
+    <summary>错误编号</summary>
   </RddInfo.RDDI_ERROR>
   <RddInfo.RDDI_ERRORNO>
-    <summary>error description</summary>
+    <summary>错误描述</summary>
   </RddInfo.RDDI_ERRORNO>
   <RddInfo.RDDI_INSERTID>
-    <summary>last auto insert ID</summary>
+    <summary>最后自动插入的 ID</summary>
   </RddInfo.RDDI_INSERTID>
   <RddInfo.RDDI_AFFECTEDROWS>
-    <summary>number of affected rows after UPDATE</summary>
+    <summary>UPDATE 后受影响的行数</summary>
   </RddInfo.RDDI_AFFECTEDROWS>
   <RddInfo.RDDI_QUERY>
-    <summary>last executed query</summary>
+    <summary>最后执行的查询</summary>
   </RddInfo.RDDI_QUERY>
   <DbOrder_Info>
-    <summary>This enum specifies the various values that the OrderInfo method for the IRDD interface accepts.</summary>
+    <summary>此枚举指定 IRDD 接口的 OrderInfo 方法所接受的各种值。</summary>
     <seealso cref='M:XSharp.RT.Functions.DbOrderInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbOrderInfo()</seealso>
     <remarks>
-      The types in the list of possible value are the types of the return value when you call DbOrderInfo() with this enum value.
+      可能值列表中的类型是调用 DbOrderInfo() 时的返回值类型。
       <note type="tip">
-        These enums are also available as DEFINES and can therefore also be used without the "DbOrderInfo." prefix.
+        这些枚举也可以作为 DEFINES 使用，因此可以不加 "DbOrderInfo." 前缀使用。
       </note>
     </remarks>
 
   </DbOrder_Info>
   <DbOrder_Info.DBOI_CONDITION>
-    <summary>String: The order's conditional expression</summary>
+    <summary>字符串：顺序的条件表达式</summary>
   </DbOrder_Info.DBOI_CONDITION>
   <DbOrder_Info.DBOI_EXPRESSION>
-    <summary>String: The order's key expression</summary>
+    <summary>字符串：顺序的键表达式</summary>
   </DbOrder_Info.DBOI_EXPRESSION>
   <DbOrder_Info.DBOI_POSITION>
-    <summary>Number: The current key position in scope and filter</summary>
+    <summary>数值：范围和过滤器中的当前键位置</summary>
   </DbOrder_Info.DBOI_POSITION>
   <DbOrder_Info.DBOI_KEYGOTO>
-    <summary>Alias for DBOI_POSITION</summary>
+    <summary>DBOI_POSITION 的别名</summary>
   </DbOrder_Info.DBOI_KEYGOTO>
   <DbOrder_Info.DBOI_KEYNO>
-    <summary>Alias for DBOI_POSITION</summary>
+    <summary>DBOI_POSITION 的别名</summary>
   </DbOrder_Info.DBOI_KEYNO>
   <DbOrder_Info.DBOI_RECNO>
-    <summary>Number: The current key position disregarding filters</summary>
+    <summary>数值：忽略过滤器的当前键位置</summary>
   </DbOrder_Info.DBOI_RECNO>
   <DbOrder_Info.DBOI_NAME>
-    <summary>String: The name of the order</summary>
+    <summary>字符串：顺序的名称</summary>
   </DbOrder_Info.DBOI_NAME>
   <DbOrder_Info.DBOI_NUMBER>
-    <summary>Number: The numeric position in the list of orders</summary>
+    <summary>数值：顺序列表中的数字位置</summary>
   </DbOrder_Info.DBOI_NUMBER>
   <DbOrder_Info.DBOI_BAGNAME>
-    <summary>String: The name of the file containing this order</summary>
+    <summary>字符串：包含此顺序的文件名</summary>
   </DbOrder_Info.DBOI_BAGNAME>
   <DbOrder_Info.DBOI_INDEXNAME>
-    <summary>Alias for DBOI_BAGNAME</summary>
+    <summary>DBOI_BAGNAME 的别名</summary>
   </DbOrder_Info.DBOI_INDEXNAME>
   <DbOrder_Info.DBOI_BAGEXT>
-    <summary>String: The extension of the file containing this order</summary>
+    <summary>字符串：包含此顺序的文件扩展名</summary>
   </DbOrder_Info.DBOI_BAGEXT>
   <DbOrder_Info.DBOI_INDEXEXT>
-    <summary>Alias for DBOI_BAGEXT</summary>
+    <summary>DBOI_BAGEXT 的别名</summary>
   </DbOrder_Info.DBOI_INDEXEXT>
   <DbOrder_Info.DBOI_DEFBAGEXT>
-    <summary>String: The defauly index extension </summary>
+    <summary>字符串：默认索引扩展名</summary>
   </DbOrder_Info.DBOI_DEFBAGEXT>
   <DbOrder_Info.DBOI_COLLATION>
-    <summary>FoxPro CDX Index collation</summary>
+    <summary>FoxPro CDX 索引排序</summary>
   </DbOrder_Info.DBOI_COLLATION>
   <DbOrder_Info.DBOI_FULLPATH>
-    <summary>String: The full path to the index file (Bag)</summary>
+    <summary>字符串：索引文件（Bag）的完整路径</summary>
   </DbOrder_Info.DBOI_FULLPATH>
   <DbOrder_Info.DBOI_FILEHANDLE>
-    <summary>IntPtr: The handle of the index</summary>
+    <summary>IntPtr：索引的句柄</summary>
   </DbOrder_Info.DBOI_FILEHANDLE>
   <DbOrder_Info.DBOI_ISDESC>
-    <summary>Logic : Is the order DESCENDing? </summary>
+    <summary>逻辑值：顺序是否降序？</summary>
   </DbOrder_Info.DBOI_ISDESC>
   <DbOrder_Info.DBOI_ISCOND>
-    <summary>Logic : Does the order have a FOR condition?</summary>
+    <summary>逻辑值：顺序是否有 FOR 条件？</summary>
   </DbOrder_Info.DBOI_ISCOND>
   <DbOrder_Info.DBOI_KEYTYPE>
-    <summary>The type of the order's key  (usualType value)</summary>
+    <summary>顺序键的类型（usualType 值）</summary>
   </DbOrder_Info.DBOI_KEYTYPE>
   <DbOrder_Info.DBOI_KEYSIZE>
-    <summary>Number: The length of the order's key</summary>
+    <summary>数值：顺序键的长度</summary>
   </DbOrder_Info.DBOI_KEYSIZE>
   <DbOrder_Info.DBOI_KEYCOUNT>
-    <summary>Number: The count of keys in scope and filter</summary>
+    <summary>数值：范围和过滤器中的键数</summary>
   </DbOrder_Info.DBOI_KEYCOUNT>
   <DbOrder_Info.DBOI_SETCODEBLOCK>
-    <summary>Block : The codeblock that produces the key </summary>
+    <summary>代码块：生成键的代码块</summary>
   </DbOrder_Info.DBOI_SETCODEBLOCK>
   <DbOrder_Info.DBOI_KEYDEC>
-    <summary>Number: The # of decimals in a numeric key </summary>
+    <summary>数值：数值键的小数位数</summary>
   </DbOrder_Info.DBOI_KEYDEC>
   <DbOrder_Info.DBOI_HPLOCKING>
-    <summary>Logic : Using High Performance locking for this order?</summary>
+    <summary>逻辑值：此顺序是否使用高性能锁定？</summary>
   </DbOrder_Info.DBOI_HPLOCKING>
   <DbOrder_Info.DBOI_LOCKOFFSET>
-    <summary>Number: The offset used for logical locking </summary>
+    <summary>数值：用于逻辑锁定的偏移量</summary>
   </DbOrder_Info.DBOI_LOCKOFFSET>
   <DbOrder_Info.DBOI_KEYADD>
-    <summary>Logic: Custom Index: Add key  </summary>
+    <summary>逻辑值：自定义索引：添加键</summary>
   </DbOrder_Info.DBOI_KEYADD>
   <DbOrder_Info.DBOI_KEYDELETE>
-    <summary>Logic: Custom Index: Delete key </summary>
+    <summary>逻辑值：自定义索引：删除键</summary>
   </DbOrder_Info.DBOI_KEYDELETE>
   <DbOrder_Info.DBOI_KEYVAL>
-    <summary>Object: The value of the current key </summary>
+    <summary>对象：当前键的值</summary>
   </DbOrder_Info.DBOI_KEYVAL>
   <DbOrder_Info.DBOI_SCOPETOP>
-    <summary>Object: Get or Set the scope top    </summary>
+    <summary>对象：获取或设置范围顶部</summary>
   </DbOrder_Info.DBOI_SCOPETOP>
   <DbOrder_Info.DBOI_SCOPEBOTTOM>
-    <summary>Object: Get or Set the scope bottom</summary>
+    <summary>对象：获取或设置范围底部</summary>
   </DbOrder_Info.DBOI_SCOPEBOTTOM>
   <DbOrder_Info.DBOI_SCOPETOPCLEAR>
-    <summary>Void: Clear top scope</summary>
+    <summary>Void：清除顶部范围</summary>
   </DbOrder_Info.DBOI_SCOPETOPCLEAR>
   <DbOrder_Info.DBOI_SCOPEBOTTOMCLEAR>
-    <summary>Void: Clear Bottom scope</summary>
+    <summary>Void：清除底部范围</summary>
   </DbOrder_Info.DBOI_SCOPEBOTTOMCLEAR>
   <DbOrder_Info.DBOI_UNIQUE>
-    <summary>Logic : Does the order have the UNIQUE attribute?</summary>
+    <summary>逻辑值：此顺序是否具有唯一属性？</summary>
   </DbOrder_Info.DBOI_UNIQUE>
   <DbOrder_Info.DBOI_ORDERCOUNT>
-    <summary>Number: The count of ORDERS contained in an index file or in total</summary>
+    <summary>数值：索引文件中或总计包含的顺序数</summary>
   </DbOrder_Info.DBOI_ORDERCOUNT>
   <DbOrder_Info.DBOI_CUSTOM>
-    <summary>Logic: Is this a Custom Index?  </summary>
+    <summary>逻辑值：这是自定义索引吗？</summary>
   </DbOrder_Info.DBOI_CUSTOM>
   <DbOrder_Info.DBOI_SKIPUNIQUE>
-    <summary>Logic: Was a skip to adjacent unique Key successful?  </summary>
+    <summary>逻辑值：跳过到相邻唯一键是否成功？</summary>
   </DbOrder_Info.DBOI_SKIPUNIQUE>
   <DbOrder_Info.DBOI_KEYSINCLUDED>
-    <summary>Number: Number of keys in the index order</summary>
+    <summary>数值：索引顺序中的键数</summary>
   </DbOrder_Info.DBOI_KEYSINCLUDED>
   <DbOrder_Info.DBOI_KEYNORAW>
-    <summary>Number: The key number disregarding filters</summary>
+    <summary>数值：忽略过滤器的键号</summary>
   </DbOrder_Info.DBOI_KEYNORAW>
   <DbOrder_Info.DBOI_OPTLEVEL>
-    <summary>Number: Optimization level for current query</summary>
+    <summary>数值：当前查询的优化级别</summary>
   </DbOrder_Info.DBOI_OPTLEVEL>
   <DbOrder_Info.DBOI_KEYCOUNTRAW>
-    <summary>Number: The key count disregarding filter  </summary>
+    <summary>数值：忽略过滤器的键数</summary>
   </DbOrder_Info.DBOI_KEYCOUNTRAW>
   <DbOrder_Info.DBOI_FILESTREAM>
-    <summary>FileStream: The stream object of the index</summary>
+    <summary>文件流：索引的流对象</summary>
   </DbOrder_Info.DBOI_FILESTREAM>
   <DbOrder_Info.DBOI_STRICTREAD>
-    <summary>The following numbers are reserved but not implemented yet.</summary>
+    <summary>以下数字已保留但尚未实现。</summary>
   </DbOrder_Info.DBOI_STRICTREAD>
   <DbOrder_Info.DBOI_DUMP>
-    <summary>Dump the current order to a text file in the folder of the index.</summary>
+    <summary>将当前顺序转储到索引文件夹中的文本文件。</summary>
   </DbOrder_Info.DBOI_DUMP>
   <DbOrder_Info.DBOI_VALIDATE>
-    <summary>Logic: Validate the current order. Errors are written to a text file in the folder of the index. Only supported by DBFCDX</summary>
+    <summary>逻辑值：验证当前顺序。错误将写入索引文件夹中的文本文件。仅支持 DBFCDX</summary>
   </DbOrder_Info.DBOI_VALIDATE>
   <DbOrder_Info.DBOI_USER>
-    <summary>Start of user defined values</summary>
+    <summary>用户定义值的开始</summary>
   </DbOrder_Info.DBOI_USER>
   <DatabasePropertyType.Null>
-    <summary>Null (Internal) </summary>
+    <summary>Null（内部）</summary>
   </DatabasePropertyType.Null>
   <DatabasePropertyType.Path>
-    <summary>The relative path with respect to the DBC to the table including the name of the file. </summary>
+    <summary>相对于 DBC 的表的相对路径，包括文件名。</summary>
   </DatabasePropertyType.Path>
   <DatabasePropertyType.Class>
-    <summary>Class (Internal) </summary>
+    <summary>类（内部）</summary>
   </DatabasePropertyType.Class>
   <DatabasePropertyType.Unknown_3>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_3>
   <DatabasePropertyType.Unknown_4>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_4>
   <DatabasePropertyType.Unknown_5>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_5>
   <DatabasePropertyType.Unknown_6>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_6>
   <DatabasePropertyType.Comment>
-    <summary>The text of the field comment. (C) </summary>
+    <summary>字段注释的文本。（C）</summary>
   </DatabasePropertyType.Comment>
   <DatabasePropertyType.Unknown_8>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_8>
   <DatabasePropertyType.RuleExpression>
-    <summary>The rule expression. (C)</summary>
+    <summary>>规则表达式。（C）</summary>
   </DatabasePropertyType.RuleExpression>
   <DatabasePropertyType.RuleText>
-    <summary>The row rule error text.(C) </summary>
+    <summary>行规则错误文本。（C）</summary>
   </DatabasePropertyType.RuleText>
   <DatabasePropertyType.DefaultValue>
-    <summary>The field default value.(C) </summary>
+    <summary>字段默认值。（C）</summary>
   </DatabasePropertyType.DefaultValue>
   <DatabasePropertyType.ParameterList>
-    <summary>The WHERE clause parameters. The format for the parameters is ''ParameterName1, 'Type1'; ParameterName2, 'Type2'; ...'' </summary>
+    <summary>WHERE 子句参数。参数的格式为“参数名1，‘类型1’；参数名2，‘类型2’；...”</summary>
   </DatabasePropertyType.ParameterList>
   <DatabasePropertyType.RelatedChild>
-    <summary>ChildTag for a Relation Object</summary>
+    <summary>关系对象的子标签</summary>
   </DatabasePropertyType.RelatedChild>
   <DatabasePropertyType.InsertTrigger>
-    <summary>The Insert trigger expression.</summary>
+    <summary>插入触发器表达式。</summary>
   </DatabasePropertyType.InsertTrigger>
   <DatabasePropertyType.UpdateTrigger>
-    <summary>The Update trigger expression.</summary>
+    <summary>更新触发器表达式。</summary>
   </DatabasePropertyType.UpdateTrigger>
   <DatabasePropertyType.DeleteTrigger>
-    <summary>The Delete trigger expression.</summary>
+    <summary>删除触发器表达式。</summary>
   </DatabasePropertyType.DeleteTrigger>
   <DatabasePropertyType.IsUnique>
-    <summary>The IsUnique flag for an Index Object</summary>
+    <summary>索引对象的唯一标志</summary>
   </DatabasePropertyType.IsUnique>
   <DatabasePropertyType.RelatedTable>
-    <summary>Related table for a Relation Object</summary>
+    <summary>关系对象的相关表</summary>
   </DatabasePropertyType.RelatedTable>
   <DatabasePropertyType.RelatedTag>
-    <summary>Related tag for a Relatin Object</summary>
+    <summary>关系对象的相关标签</summary>
   </DatabasePropertyType.RelatedTag>
   <DatabasePropertyType.PrimaryKey>
-    <summary>The tag name of the primary key. (C) </summary>
+    <summary>主键的标签名称。（C）</summary>
   </DatabasePropertyType.PrimaryKey>
   <DatabasePropertyType.Unknown_21>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_21>
   <DatabasePropertyType.Unknown_22>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_22>
   <DatabasePropertyType.Unknown_23>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_23>
   <DatabasePropertyType.Version>
-    <summary>The database version number. (N) </summary>
+    <summary>数据库版本号。（N）</summary>
   </DatabasePropertyType.Version>
   <DatabasePropertyType.Unknown_25>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_25>
   <DatabasePropertyType.Unknown_26>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_26>
   <DatabasePropertyType.Unknown_27>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_27>
   <DatabasePropertyType.BatchUpdateCount>
-    <summary>The number of update statements sent to the back end for views. 1 is the default. Adjusting this value can greatly increase update performance. (N) </summary>
+    <summary>发送到后端的视图更新语句的数量。默认值为 1。调整此值可以大大提高更新性能。（N）</summary>
   </DatabasePropertyType.BatchUpdateCount>
   <DatabasePropertyType.DataSource>
-    <summary>The name of the data source as defined in the Odbc.ini file.</summary>
+    <summary>数据源的名称，如 Odbc.ini 文件中定义。</summary>
   </DatabasePropertyType.DataSource>
   <DatabasePropertyType.Unknown_30>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_30>
   <DatabasePropertyType.Unknown_31>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_31>
   <DatabasePropertyType.ConnectName>
-    <summary>The named connection used when the view is opened. (C)</summary>
+    <summary>视图打开时使用的命名连接。（C）</summary>
   </DatabasePropertyType.ConnectName>
   <DatabasePropertyType.Unknown_33>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_33>
   <DatabasePropertyType.Unknown_34>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_34>
   <DatabasePropertyType.UpdateName>
-    <summary>The name of the field used when data in the field is updated to the remote table. By default, the remote table field name.Read/write. </summary>
+    <summary>更新到远程表时使用的字段名称。默认情况下，远程表字段名称。读/写。</summary>
   </DatabasePropertyType.UpdateName>
   <DatabasePropertyType.FetchMemo>
-    <summary>Contains true (.T.) (default) if memo and general fields are fetched with the view results; otherwise, contains false (.F.).</summary>
+    <summary>包含 true (.T.)（默认）如果在视图结果中获取了 memo 和 general 字段；否则，包含 false (.F.)。</summary>
   </DatabasePropertyType.FetchMemo>
   <DatabasePropertyType.FetchSize>
-    <summary>Contains the number of records fetched at a time from the remote tables. The default is 100 records. Setting FetchSize to –1 retrieves the complete result set, limited by the MaxRecords setting</summary>
+    <summary>包含一次从远程表中获取的记录数。默认值为 100 条记录。将 FetchSize 设置为 -1 可检索完整的结果集，受 MaxRecords 设置限制</summary>
   </DatabasePropertyType.FetchSize>
   <DatabasePropertyType.KeyField>
-    <summary>Contains True (.T.) if the field is specified in an index key expression; otherwise, contains False (.F.). (L)  </summary>
+    <summary>如果字段在索引键表达式中指定，则包含 True (.T.)；否则，包含 False (.F.)。（L）</summary>
   </DatabasePropertyType.KeyField>
   <DatabasePropertyType.MaxRecords>
-    <summary>The maximum number of records fetched when result sets are returned. (N) The default is – 1 (all rows are returned). A value of 0 specifies that the view is executed but no results are fetched.</summary>
+    <summary>返回结果集时获取的最大记录数。（N）默认值为 -1（返回所有行）。值为 0 表示执行视图但不获取结果。</summary>
   </DatabasePropertyType.MaxRecords>
   <DatabasePropertyType.ShareConnection>
-    <summary>Contains true (.T.) if the view can share its connection handle with other connections; otherwise, contains false (.F.).</summary>
+    <summary>如果视图可以与其他连接共享其连接句柄，则包含 true (.T.)；否则，包含 false (.F.)。</summary>
   </DatabasePropertyType.ShareConnection>
   <DatabasePropertyType.SourceType>
-    <summary>The view source. (N) SourceType may assume the following values: 1 - The view uses local tables.2 - The view uses remote tables.</summary>
+    <summary>视图源。（N）SourceType 可以取以下值：1 - 视图使用本地表。2 - 视图使用远程表。</summary>
   </DatabasePropertyType.SourceType>
   <DatabasePropertyType.SQL>
-    <summary>The SQL statement executed when the view is opened.(C) </summary>
+    <summary>视图打开时执行的 SQL 语句。（C）</summary>
   </DatabasePropertyType.SQL>
   <DatabasePropertyType.Tables>
-    <summary>A comma-delimited list of the names of the tables.(C) </summary>
+    <summary>表名的逗号分隔列表。（C）</summary>
   </DatabasePropertyType.Tables>
   <DatabasePropertyType.SendUpdates>
-    <summary>Contains true (.T.) if a SQL update query is sent to update remote tables; otherwise, contains false (.F.) (default).</summary>
+    <summary>如果发送 SQL 更新查询以更新远程表，则包含 true (.T.)；否则，包含 false (.F.)（默认）。</summary>
   </DatabasePropertyType.SendUpdates>
   <DatabasePropertyType.Updatable>
-    <summary>Contains True (.T.) if the field can be updated; otherwise, contains False (.F.). </summary>
+    <summary>如果字段可以更新，则包含 True (.T.)；否则，包含 False (.F.)。</summary>
   </DatabasePropertyType.Updatable>
   <DatabasePropertyType.UpdateType>
-    <summary>The update type. Valid values are: 1 or DB_UPDATE (from Foxpro.h). The old data is updated with the new data (default). 2 or DB_DELETEINSERT (from Foxpro.h). The old data is deleted and the new data is inserted.</summary>
+    <summary>更新类型。有效值为：1 或 DB_UPDATE（来自 Foxpro.h）。旧数据用新数据更新（默认）。2 或 DB_DELETEINSERT（来自 Foxpro.h）。旧数据被删除，新数据被插入。</summary>
   </DatabasePropertyType.UpdateType>
   <DatabasePropertyType.UseMemoSize>
-    <summary>The minimum size (in bytes) for which result columns are returned in memo fields. For example, if the width of a column result is greater than the value of UseMemoSize, the column result is stored in a memo field. UseMemoSize may vary from 1 to 255; the default value is 255.</summary>
+    <summary>返回结果列的最小大小（以字节为单位）以存储在 memo 字段中。例如，如果列结果的宽度大于 UseMemoSize 的值，则列结果存储在 memo 字段中。UseMemoSize 可以在 1 到 255 之间变化；默认值为 255。</summary>
   </DatabasePropertyType.UseMemoSize>
   <DatabasePropertyType.WhereType>
-    <summary>The WHERE clause for updates to remote tables.WhereType may assume the following values: 1 or DB_KEY , 2 or DB_KEYANDUPDATABLE, 3 or DB_KEYANDMODIFIED and 4 or DB_KEYANDTIMESTAMP </summary>
+    <summary>更新远程表的 WHERE 子句。WhereType 可以取以下值：1 或 DB_KEY，2 或 DB_KEYANDUPDATABLE，3 或 DB_KEYANDMODIFIED 和 4 或 DB_KEYANDTIMESTAMP</summary>
   </DatabasePropertyType.WhereType>
   <DatabasePropertyType.Unknown_49>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_49>
   <DatabasePropertyType.DisplayClass>
-    <summary>Name of the class used for field mapping. (C) </summary>
+    <summary>用于字段映射的类的名称。（C）</summary>
   </DatabasePropertyType.DisplayClass>
   <DatabasePropertyType.DisplayClassLibrary>
-    <summary>Path to the class library specified with the DisplayClass property.(C)  </summary>
+    <summary>使用 DisplayClass 属性指定的类库的路径。（C）</summary>
   </DatabasePropertyType.DisplayClassLibrary>
   <DatabasePropertyType.Unknown_52>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_52>
   <DatabasePropertyType.Unknown_53>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_53>
   <DatabasePropertyType.InputMask>
-    <summary>The field input format. (C) .Read/write. </summary>
+    <summary>字段输入格式。（C）。读/写。</summary>
   </DatabasePropertyType.InputMask>
   <DatabasePropertyType.Format>
-    <summary>The field display format. (C) .Read/write. </summary>
+    <summary>字段显示格式。（C）。读/写。</summary>
   </DatabasePropertyType.Format>
   <DatabasePropertyType.Caption>
-    <summary>The field caption. (C) If an equal sign (=) precedes the value of this property, Visual FoxPro evaluates the value as an expression. Otherwise, it is treated as a string literal.Read/write. FIELD</summary>
+    <summary>字段标题。（C）如果等号（=）出现在此属性的值之前，Visual FoxPro 会将该值视为表达式进行计算。否则，将其视为字符串文字。读/写。字段</summary>
   </DatabasePropertyType.Caption>
   <DatabasePropertyType.Unknown_57>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_57>
   <DatabasePropertyType.Unknown_58>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_58>
   <DatabasePropertyType.Unknown_59>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_59>
   <DatabasePropertyType.Unknown_60>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_60>
   <DatabasePropertyType.Unknown_61>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_61>
   <DatabasePropertyType.Unknown_62>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_62>
   <DatabasePropertyType.Unknown_63>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_63>
   <DatabasePropertyType.Asynchronous>
-    <summary>The connection mode. (Default) False (.F.) specifies a synchronous connection. True (.T.) specifies an asynchronous connection.Read/write.</summary>
+    <summary>连接模式。（默认）False (.F.) 指定同步连接。True (.T.) 指定异步连接。读/写。</summary>
   </DatabasePropertyType.Asynchronous>
   <DatabasePropertyType.BatchMode>
-    <summary>The batch-processing mode. (Default) True (.T.) specifies the connection that operates in batch mode.</summary>
+    <summary>批处理模式。（默认）True (.T.) 指定连接在批处理模式下操作。</summary>
   </DatabasePropertyType.BatchMode>
   <DatabasePropertyType.ConnectString>
-    <summary>The login connection string.</summary>
+    <summary>登录连接字符串。</summary>
   </DatabasePropertyType.ConnectString>
   <DatabasePropertyType.ConnectTimeout>
-    <summary>The connection timeout interval in seconds. The default is 0 (wait indefinitely).</summary>
+    <summary>连接超时间隔（秒）。默认值为 0（无限等待）。</summary>
   </DatabasePropertyType.ConnectTimeout>
   <DatabasePropertyType.DispLogin>
-    <summary>Contains a numeric value that determines when the ODBC Login dialog box is displayed.</summary>
+    <summary>包含一个数值，确定何时显示 ODBC 登录对话框。</summary>
   </DatabasePropertyType.DispLogin>
   <DatabasePropertyType.DispWarnings>
-    <summary>Contains a numeric value that determines when the ODBC Login dialog box is displayed.</summary>
+    <summary>包含一个数值，确定何时显示 ODBC 登录对话框。</summary>
   </DatabasePropertyType.DispWarnings>
   <DatabasePropertyType.IdleTimeout>
-    <summary>The idle timeout interval in minutes. Timeout is checked no more than once per minute, therefore it is possible that active connections might deactivate one or two minutes later after the specified time interval has elapsed. The default value is 0 (wait indefinitely).</summary>
+    <summary>空闲超时间隔（分钟）。超时检查不超过每分钟一次，因此可能会在指定时间间隔过去后的一两分钟内停用活动连接。默认值为 0（无限等待）。</summary>
   </DatabasePropertyType.IdleTimeout>
   <DatabasePropertyType.QueryTimeOut>
-    <summary>The query timeout interval in seconds. The default value is 0 (wait indefinitely).</summary>
+    <summary>查询超时间隔（秒）。默认值为 0（无限等待）。</summary>
   </DatabasePropertyType.QueryTimeOut>
   <DatabasePropertyType.Password>
-    <summary>The connection password.</summary>
+    <summary>连接密码。</summary>
   </DatabasePropertyType.Password>
   <DatabasePropertyType.Transactions>
-    <summary>Contains a numeric value that determines how the connection manages transactions on the remote table. </summary>
+    <summary>包含一个数值，确定连接如何管理远程表上的事务。</summary>
   </DatabasePropertyType.Transactions>
   <DatabasePropertyType.UserId>
-    <summary>The user identification.</summary>
+    <summary>用户标识。</summary>
   </DatabasePropertyType.UserId>
   <DatabasePropertyType.WaitTime>
-    <summary>The amount of time in milliseconds that elapses before Visual FoxPro checks whether the SQL statement has completed executing. </summary>
+    <summary>在 Visual FoxPro 检查 SQL 语句是否已执行完毕之前经过的时间（毫秒）。</summary>
   </DatabasePropertyType.WaitTime>
   <DatabasePropertyType.TimeStamp>
-    <summary>Timestamp (internal)</summary>
+    <summary>时间戳（内部）</summary>
   </DatabasePropertyType.TimeStamp>
   <DatabasePropertyType.DataType>
-    <summary>The data type for a field in a view. Initially set to the data type for the field in the data source.</summary>
+    <summary>视图中字段的数据类型。最初设置为数据源中字段的数据类型。</summary>
   </DatabasePropertyType.DataType>
   <DatabasePropertyType.PacketSize>
-    <summary>The size of the network packet used by the connection. Adjusting this value can improve performance. The default value is 4096 bytes (4K).</summary>
+    <summary>连接使用的网络数据包大小。调整此值可以提高性能。默认值为4096字节（4K）。</summary>
   </DatabasePropertyType.PacketSize>
   <DatabasePropertyType.Database>
-    <summary>The name of the server database specified with the DATABASE clause in the CREATE CONNECTION command or in the Connection Designer.</summary>
+    <summary>在CREATE CONNECTION命令或连接设计器中使用DATABASE子句指定的服务器数据库名称。</summary>
   </DatabasePropertyType.Database>
   <DatabasePropertyType.Prepared>
-    <summary>Contains True (.T.) if SQL statements are prepared for subsequent REQUERY( ) function calls. REQUERY( ) is used to retrieve data again for a SQL view. See SQLPREPARE( ) for additional information about preparing SQL statements. The default is false (.F.).</summary>
+    <summary>如果SQL语句为后续的REQUERY()函数调用准备好，则包含True (.T.)。REQUERY()用于再次检索SQL视图的数据。有关准备SQL语句的更多信息，请参见SQLPREPARE()。默认值为False (.F.)。</summary>
   </DatabasePropertyType.Prepared>
   <DatabasePropertyType.CompareMemo>
-    <summary>Contains true (.T.) (default) if memo fields (of type Memo, General, or Picture, or, for remote views, type Timestamp) are included in the WHERE clause for updates; otherwise, contains false (.F.).Read/write.</summary>
+    <summary>如果在更新的WHERE子句中包含备注字段（类型为Memo、General或Picture，或对于远程视图，类型为Timestamp），则包含True (.T.)（默认）；否则，包含False (.F.)。读/写。</summary>
   </DatabasePropertyType.CompareMemo>
   <DatabasePropertyType.FetchAsNeeded>
-    <summary>If True (.T.), data is fetched only when needed, such as when record pointer moves to a row that has not been fetched. If False (.F.), additional data is fetched during idle time. (Default)</summary>
+    <summary>如果为True (.T.)，则仅在需要时获取数据，例如当记录指针移动到尚未获取的行时。如果为False (.F.)，则在空闲时间获取额外的数据。（默认）</summary>
   </DatabasePropertyType.FetchAsNeeded>
   <DatabasePropertyType.Unknown_83>
-    <summary>Not defined</summary>
+    <summary>未定义</summary>
   </DatabasePropertyType.Unknown_83>
   <DatabasePropertyType.OfflineRecs>
-    <summary>When this property is found the table is offline. The Path property then returns the OffLinePath</summary>
+    <summary>当找到此属性时，表格处于离线状态。然后Path属性返回OffLinePath。</summary>
   </DatabasePropertyType.OfflineRecs>
   <DatabasePropertyType.OfflineRemRecs>
-    <summary># of remote records offline.</summary>
+    <summary>离线的远程记录数。</summary>
   </DatabasePropertyType.OfflineRemRecs>
   <DatabasePropertyType.DBCEventFileName>
-    <summary>Relative path and filename of external program file containing DBC Events code. (C) </summary>
+    <summary>包含DBC事件代码的外部程序文件的相对路径和文件名。(C)</summary>
   </DatabasePropertyType.DBCEventFileName>
   <DatabasePropertyType.DBCEvents>
-    <summary>Enabled state of DBC Events. Set to True (.T.) to enable. (L) </summary>
+    <summary>DBC事件的启用状态。设置为True (.T.)以启用。(L)</summary>
   </DatabasePropertyType.DBCEvents>
   <DatabasePropertyType.AllowSimultaneousFetch>
-    <summary>Applies when using remote views, a shared connection, and to cursors created using ODBC. </summary>
+    <summary>适用于使用远程视图、共享连接以及使用ODBC创建的游标。</summary>
   </DatabasePropertyType.AllowSimultaneousFetch>
   <DatabasePropertyType.DisconnectRollback>
-    <summary>Specifies if a pending transaction is committed or rolled back when SQLDISCONNECT( ) is called for the last connection handle.</summary>
+    <summary>指定当为最后一个连接句柄调用SQLDISCONNECT()时，是否提交或回滚挂起的事务。</summary>
   </DatabasePropertyType.DisconnectRollback>
   <DatabasePropertyType.OffLine>
-    <summary>Is the table offline (this is not stored as a real property but derived from the extistence of the properties OfflineRecs, OfflineRemRecs and Path.</summary>
+    <summary>表是否离线（这不是存储为真实属性，而是从属性OfflineRecs、OfflineRemRecs和Path的存在中派生出来的）。</summary>
   </DatabasePropertyType.OffLine>
   <DatabasePropertyType.ColumnName>
-    <summary>X# Column Name property (not persisted in DBC)</summary>
+    <summary>X#列名属性（不在DBC中持久化）</summary>
   </DatabasePropertyType.ColumnName>
   <SQLProperty.Asynchronous>
-    <summary>Specifies whether result sets are returned synchronously.</summary>
+    <summary>指定结果集是同步返回还是异步返回。</summary>
   </SQLProperty.Asynchronous>
   <SQLProperty.BatchMode>
-    <summary>Specifies whether SqlExec( ) returns result sets all at once (True (.T.), the default),   or individually with SqlMoreResults( ) (False (.F.)).</summary>
+    <summary>指定SqlExec()是一次性返回结果集（True (.T.)，默认）还是通过SqlMoreResults()单独返回（False (.F.)）。</summary>
     <seealso cref="O:XSharp.VFP.Functions.SqlExec" />
     <seealso cref="O:XSharp.VFP.Functions.SqlMoreResults" />
   </SQLProperty.BatchMode>
   <SQLProperty.ConnectBusy>
-    <summary>Contains True (.T.) if a shared connection is busy; otherwise contains False (.F.).</summary>
+    <summary>如果共享连接繁忙，则包含True (.T.)；否则包含False (.F.)。</summary>
   </SQLProperty.ConnectBusy>
   <SQLProperty.ConnectString>
-    <summary>The login connection string.</summary>
+    <summary>登录连接字符串。</summary>
   </SQLProperty.ConnectString>
   <SQLProperty.ConnectTimeOut>
-    <summary>Specifies the time to wait (in seconds) before returning a connection time-out error.   If you specify 0, the wait is indefinite and a time-out error is never returned. ConnectTimeOut can be 0 to 600. The default is 15.</summary>
+    <summary>指定在返回连接超时错误之前等待的时间（以秒为单位）。如果指定0，则等待时间无限长，永远不会返回超时错误。ConnectTimeOut可以是0到600。默认值为15。</summary>
   </SQLProperty.ConnectTimeOut>
   <SQLProperty.DataSource>
-    <summary>The name of the data source as defined in the ODBC.INI file.</summary>
+    <summary>在ODBC.INI文件中定义的数据源名称。</summary>
   </SQLProperty.DataSource>
   <SQLProperty.DisconnectRollback>
-    <summary>Specifies if a pending transaction is committed or rolled back when SqlDisconnect( ) is called for the last connection handle.</summary>
+    <summary>指定当为最后一个连接句柄调用SqlDisconnect()时，是否提交或回滚挂起的事务。</summary>
     <seealso cref="O:XSharp.VFP.Functions.SqlDisconnect" />
   </SQLProperty.DisconnectRollback>
   <SQLProperty.DispLogin>
-    <summary>Contains a numeric value that determines when the ODBC Login dialog box is displayed.</summary>
+    <summary>包含一个数值，确定何时显示ODBC登录对话框。</summary>
   </SQLProperty.DispLogin>
   <SQLProperty.DispWarnings>
-    <summary>Specifies if error messages are displayed (True (.T.)) or are not displayed (False (.F.), the default).</summary>
+    <summary>指定是否显示错误消息（True (.T.)）或不显示（False (.F.)，默认）。</summary>
   </SQLProperty.DispWarnings>
   <SQLProperty.IdleTimeout>
-    <summary>The idle timeout interval in minutes. Active connections are deactivated after the specified time interval.   The default value is 0 (wait indefinitely).</summary>
+    <summary>空闲超时间隔（分钟）。在指定的时间间隔后，活动连接将被停用。默认值为0（无限等待）。</summary>
   </SQLProperty.IdleTimeout>
   <SQLProperty.NativeCommand>
-    <summary>The native commandtext in the SQLStatement object.</summary>
+    <summary>SQLStatement对象中的本机命令文本。</summary>
   </SQLProperty.NativeCommand>
   <SQLProperty.ODBChdbc>
-    <summary>The internal ODBC connection, which may be used by external code to call ODBC.</summary>
-    <remarks>In X# this does not return the connection handle but the DbConnection object !</remarks>
+    <summary>内部ODBC连接，可由外部代码使用以调用ODBC。</summary>
+    <remarks>在X#中，这不返回连接句柄，而是返回DbConnection对象！</remarks>
   </SQLProperty.ODBChdbc>
   <SQLProperty.ODBChstmt>
-    <summary>The internal ODBC statement , which may be used by external code to call ODBC.</summary>
-    <remarks>In X# this does not return the statement handle but the DbCommand object !</remarks>
+    <summary>内部ODBC语句，可由外部代码使用以调用ODBC。</summary>
+    <remarks>在X#中，这不返回语句句柄，而是返回DbCommand对象！</remarks>
   </SQLProperty.ODBChstmt>
   <SQLProperty.PacketSize>
-    <summary>The size of the network packet used by the connection. Adjusting this value can improve performance.   The default value is 4096 bytes (4K).</summary>
+    <summary>连接使用的网络数据包大小。调整此值可以提高性能。默认值为4096字节（4K）。</summary>
   </SQLProperty.PacketSize>
   <SQLProperty.Password>
-    <summary>The connection password.</summary>
+    <summary>连接密码。</summary>
   </SQLProperty.Password>
   <SQLProperty.QueryTimeOut>
-    <summary>Specifies the time to wait (in seconds) before returning a general time-out error.   If you specify 0 (the default), the wait is indefinite and a time-out error is never returned. QueryTimeOut can be 0 to 600.</summary>
+    <summary>指定在返回一般超时错误之前等待的时间（以秒为单位）。如果指定0（默认），则等待时间无限长，永远不会返回超时错误。QueryTimeOut可以是0到600。</summary>
   </SQLProperty.QueryTimeOut>
   <SQLProperty.Shared>
-    <summary>Specifies whether the underlying connection is a shared connection (True (.T.)), or not (False (.F.)).</summary>
+    <summary>指定底层连接是否为共享连接（True (.T.)）或非共享连接（False (.F.)）。</summary>
   </SQLProperty.Shared>
   <SQLProperty.Transactions>
-    <summary>Contains a numeric value that determines how the connection manages transactions on the remote table.</summary>
+    <summary>包含一个数值，确定连接如何管理远程表上的事务。</summary>
   </SQLProperty.Transactions>
   <SQLProperty.UserId>
-    <summary>The user identification.</summary>
+    <summary>用户标识。</summary>
   </SQLProperty.UserId>
   <SQLProperty.WaitTime>
-    <summary>The amount of time in milliseconds that elapses before Visual FoxPro checks if the SQL statement   has completed executing. The default is 100 milliseconds.</summary>
+    <summary>在Visual FoxPro检查SQL语句是否已执行完毕之前经过的时间（毫秒）。默认值为100毫秒。</summary>
   </SQLProperty.WaitTime>
   <__UsualType.Void>
-    <summary>The usual contains a NIL.</summary>
+    <summary>通常包含一个NIL。</summary>
   </__UsualType.Void>
   <__UsualType.Long>
-    <summary>The usual contains a LONG value</summary>
+    <summary>通常包含一个LONG值</summary>
   </__UsualType.Long>
   <__UsualType.Date>
-    <summary>The usual contains a DATE value</summary>
+    <summary>通常包含一个DATE值</summary>
   </__UsualType.Date>
   <__UsualType.Float>
-    <summary>The usual contains a FLOAT value</summary>
+    <summary>通常包含一个FLOAT值</summary>
   </__UsualType.Float>
   <__UsualType.Fixed>
-    <summary>This value is NEVER used for USUALs (this was also defined in VO but never used).</summary>
+    <summary>此值从未用于USUALs（在VO中也定义过，但从未使用）。</summary>
   </__UsualType.Fixed>
   <__UsualType.Array>
-    <summary>The usual contains an ARRAY value</summary>
+    <summary>通常包含一个ARRAY值</summary>
   </__UsualType.Array>
   <__UsualType.Object>
-    <summary>The usual contains an OBJECT value</summary>
+    <summary>通常包含一个OBJECT值</summary>
   </__UsualType.Object>
   <__UsualType.String>
-    <summary>The usual contains an STRING value</summary>
+    <summary>通常包含一个STRING值</summary>
   </__UsualType.String>
   <__UsualType.Logic>
-    <summary>The usual contains an LOGIC value</summary>
+    <summary>通常包含一个LOGIC值</summary>
   </__UsualType.Logic>
   <__UsualType.Codeblock>
-    <summary>The usual contains an CODEBLOCK value</summary>
+    <summary>通常包含一个CODEBLOCK值</summary>
   </__UsualType.Codeblock>
   <__UsualType.Symbol>
-    <summary>The usual contains an SYMBOL value</summary>
+    <summary>通常包含一个SYMBOL值</summary>
   </__UsualType.Symbol>
   <__UsualType.Byte>
-    <summary>This value is in the enum for completeness but never used inside a usual. Byte values are stored as LONG.</summary>
+    <summary>此值在枚举中是为了完整性，但从未在通常中使用。Byte值存储为LONG。</summary>
   </__UsualType.Byte>
   <__UsualType.ShortInt>
-    <summary>This value is in the enum for completeness but never used inside a usual. Short values are stored as LONG.</summary>
+    <summary>此值在枚举中是为了完整性，但从未在通常中使用。Short值存储为LONG。</summary>
   </__UsualType.ShortInt>
   <__UsualType.Word>
-    <summary>This value is in the enum for completeness but never used inside a usual. Word values are stored as LONG.</summary>
+    <summary>此值在枚举中是为了完整性，但从未在通常中使用。Word值存储为LONG。</summary>
   </__UsualType.Word>
   <__UsualType.DWord>
-    <summary>This value is in the enum for completeness but never used inside a usual. DWord values are stored as LONG or FLOAT.</summary>
+    <summary>此值在枚举中是为了完整性，但从未在通常中使用。DWord值存储为LONG或FLOAT。</summary>
   </__UsualType.DWord>
   <__UsualType.Real4>
-    <summary>This value is in the enum for completeness but never used inside a usual. Real4 values are stored as FLOAT</summary>
+    <summary>此值在枚举中是为了完整性，但从未在通常中使用。Real4值存储为FLOAT</summary>
   </__UsualType.Real4>
   <__UsualType.Real8>
-    <summary>This value is in the enum for completeness but never used inside a usual. Real8 values are stored as FLOAT.</summary>
+    <summary>此值在枚举中是为了完整性，但从未在通常中使用。Real8值存储为FLOAT。</summary>
   </__UsualType.Real8>
   <__UsualType.Psz>
-    <summary>This value is in the enum for completeness but never used inside a usual.</summary>
-    <summary>The usual contains an PSZ value</summary>
+    <summary>此值在枚举中是为了完整性，但从未在通常中使用。</summary>
+    <summary>通常包含一个PSZ值</summary>
   </__UsualType.Psz>
   <__UsualType.Ptr>
-    <summary>The usual contains an PTR value</summary>
+    <summary>通常包含一个PTR值</summary>
   </__UsualType.Ptr>
   <__UsualType.Usual>
     <exclude/>
   </__UsualType.Usual>
   <__UsualType.Int64>
-    <summary>The usual contains an INT64 value (new in Vulcan and X#).</summary>
+    <summary>通常包含一个INT64值（Vulcan和X#中新添加）。</summary>
   </__UsualType.Int64>
   <__UsualType.UInt64>
-    <summary>The usual contains an UINT64 value (new in Vulcan and X#).</summary>
+    <summary>通常包含一个UINT64值（Vulcan和X#中新添加）。</summary>
   </__UsualType.UInt64>
   <__UsualType.Char>
-    <summary>This value is in the enum for completeness but never used inside a usual. Char values are stored as LONG</summary>
+    <summary>此值在枚举中是为了完整性，但从未在通常中使用。Char值存储为LONG</summary>
   </__UsualType.Char>
   <__UsualType.Dynamic>
-    <summary>This value is in the enum for completeness but never used inside a usual. Dynamic values are stored as OBJECT</summary>
+    <summary>此值在枚举中是为了完整性，但从未在通常中使用。Dynamic值存储为OBJECT</summary>
   </__UsualType.Dynamic>
   <__UsualType.DateTime>
-    <summary>The usual contains a DateTime value (new in X#).</summary>
+    <summary>通常包含一个DateTime值（X#中新添加）。</summary>
   </__UsualType.DateTime>
   <__UsualType.Decimal>
-    <summary>The usual contains a Decimal value (new in X#).</summary>
+    <summary>通常包含一个Decimal值（X#中新添加）。</summary>
   </__UsualType.Decimal>
   <__UsualType.Currency>
-    <summary>The usual contains a Currency value (new in X#).</summary>
+    <summary>通常包含一个Currency值（X#中新添加）。</summary>
   </__UsualType.Currency>
   <__UsualType.Binary>
-    <summary>The usual contains a Binary value (new in X#).</summary>
+    <summary>通常包含一个Binary值（X#中新添加）。</summary>
   </__UsualType.Binary>
   <__UsualType.Null>
-    <summary>The usual contains a DBNull.Value value (new in X#).</summary>
+    <summary>通常包含一个DBNull.Value值（X#中新添加）。</summary>
   </__UsualType.Null>
   <__UsualType.Memo>
-    <summary>The usual contains an Memo value. This value is there for compatibility with VO but never used.</summary>
+    <summary>通常包含一个Memo值。此值是为了兼容VO但从未使用。</summary>
   </__UsualType.Memo>
   <__UsualType.Invalid>
-    <summary>Invalid Usual Type.</summary>
+    <summary>无效的Usual类型。</summary>
   </__UsualType.Invalid>
   <LockMethod.Exclusive>
-    <summary>Lock a row, releasing currently locked rows.</summary>
+    <summary>锁定一行，释放当前锁定的行。</summary>
   </LockMethod.Exclusive>
   <LockMethod.Multiple>
-    <summary>Lock a row, maintaining currently locked rows.</summary>
+    <summary>锁定一行，保持当前锁定的行。</summary>
   </LockMethod.Multiple>
   <LockMethod.File>
-    <summary>Lock a table, releasing locks currently held.</summary>
+    <summary>锁定一个表，释放当前持有的锁。</summary>
   </LockMethod.File>
   <VOErrors.RT_MSG_MONTH1>
-    <summary>String ID for the month January</summary>
+    <summary>一月的字符串ID</summary>
   </VOErrors.RT_MSG_MONTH1>
   <VOErrors.RT_MSG_MONTH2>
-    <summary>String ID for the month February</summary>
+    <summary>二月的字符串ID</summary>
   </VOErrors.RT_MSG_MONTH2>
   <VOErrors.RT_MSG_MONTH3>
-    <summary>String ID for the month March</summary>
+    <summary>三月的字符串ID</summary>
   </VOErrors.RT_MSG_MONTH3>
   <VOErrors.RT_MSG_MONTH4>
-    <summary>String ID for the month April</summary>
+    <summary>四月的字符串ID</summary>
   </VOErrors.RT_MSG_MONTH4>
   <VOErrors.RT_MSG_MONTH5>
-    <summary>String ID for the month May</summary>
+    <summary>五月的字符串ID</summary>
   </VOErrors.RT_MSG_MONTH5>
   <VOErrors.RT_MSG_MONTH6>
-    <summary>String ID for the month June</summary>
+    <summary>六月的字符串ID</summary>
   </VOErrors.RT_MSG_MONTH6>
   <VOErrors.RT_MSG_MONTH7>
-    <summary>String ID for the month July</summary>
+    <summary>七月的字符串ID</summary>
   </VOErrors.RT_MSG_MONTH7>
   <VOErrors.RT_MSG_MONTH8>
-    <summary>String ID for the month August</summary>
+    <summary>八月的字符串ID</summary>
   </VOErrors.RT_MSG_MONTH8>
   <VOErrors.RT_MSG_MONTH9>
-    <summary>String ID for the month September</summary>
+    <summary>九月的字符串ID</summary>
   </VOErrors.RT_MSG_MONTH9>
   <VOErrors.RT_MSG_MONTH10>
-    <summary>String ID for the month October</summary>
+    <summary>十月的字符串ID</summary>
   </VOErrors.RT_MSG_MONTH10>
   <VOErrors.RT_MSG_MONTH11>
-    <summary>String ID for the month November</summary>
+    <summary>十一月的字符串ID</summary>
   </VOErrors.RT_MSG_MONTH11>
   <VOErrors.RT_MSG_MONTH12>
-    <summary>String ID for the month December</summary>
+    <summary>十二月的字符串ID</summary>
   </VOErrors.RT_MSG_MONTH12>
   <VOErrors.RT_MSG_DAY1>
-    <summary>String ID for the day Sunday</summary>
+    <summary>星期天的字符串ID</summary>
   </VOErrors.RT_MSG_DAY1>
   <VOErrors.RT_MSG_DAY2>
-    <summary>String ID for the day Monday</summary>
+    <summary>星期一的字符串ID</summary>
   </VOErrors.RT_MSG_DAY2>
   <VOErrors.RT_MSG_DAY3>
-    <summary>String ID for the day Tuesday</summary>
+    <summary>星期二的字符串ID</summary>
   </VOErrors.RT_MSG_DAY3>
   <VOErrors.RT_MSG_DAY4>
-    <summary>String ID for the day Wednesday</summary>
+    <summary>星期三的字符串ID</summary>
   </VOErrors.RT_MSG_DAY4>
   <VOErrors.RT_MSG_DAY5>
-    <summary>String ID for the day Thursday</summary>
+    <summary>星期四的字符串ID</summary>
   </VOErrors.RT_MSG_DAY5>
   <VOErrors.RT_MSG_DAY6>
-    <summary>String ID for the day Friday</summary>
+    <summary>星期五的字符串ID</summary>
   </VOErrors.RT_MSG_DAY6>
   <VOErrors.RT_MSG_DAY7>
-    <summary>String ID for the day Saturday</summary>
+    <summary>星期六的字符串ID</summary>
   </VOErrors.RT_MSG_DAY7>
   <VOErrors.RT_MSG_INFOSTRING>
-    <summary>String ID for the description of the Nation Table</summary>
+    <summary>国家表的描述字符串ID</summary>
   </VOErrors.RT_MSG_INFOSTRING>
   <VOErrors.RT_MSG_SHORT_TRUE>
-    <summary>String ID for the short literal for TRUE</summary>
+    <summary>TRUE的短文字字符串ID</summary>
   </VOErrors.RT_MSG_SHORT_TRUE>
   <VOErrors.RT_MSG_SHORT_FALSE>
-    <summary>String ID for the short literal for FALSE</summary>
+    <summary>FALSE的短文字字符串ID</summary>
   </VOErrors.RT_MSG_SHORT_FALSE>
   <VOErrors.RT_MSG_LONG_TRUE>
-    <summary>String ID for the long literal for TRUE</summary>
+    <summary>TRUE的长文字字符串ID</summary>
   </VOErrors.RT_MSG_LONG_TRUE>
   <VOErrors.RT_MSG_LONG_FALSE>
-    <summary>String ID for the long literal for FALSE</summary>
+    <summary>FALSE的长文字字符串ID</summary>
   </VOErrors.RT_MSG_LONG_FALSE>
   <VOErrors.RT_MSG_SHORT_YES>
-    <summary>String ID for the short literal for YES</summary>
+    <summary>YES的短文字字符串ID</summary>
   </VOErrors.RT_MSG_SHORT_YES>
   <VOErrors.RT_MSG_SHORT_NO>
-    <summary>String ID for the short literal for NO</summary>
+    <summary>NO的短文字字符串ID</summary>
   </VOErrors.RT_MSG_SHORT_NO>
   <VOErrors.RT_MSG_LONG_YES>
-    <summary>String ID for the long literal for YES</summary>
+    <summary>YES的长文字字符串ID</summary>
   </VOErrors.RT_MSG_LONG_YES>
   <VOErrors.RT_MSG_LONG_NO>
-    <summary>String ID for the long literal for NO</summary>
+    <summary>NO的长文字字符串ID</summary>
   </VOErrors.RT_MSG_LONG_NO>
   <VOErrors.RT_MSG_CURRENCY>
-    <summary>String ID for the long literal for currency</summary>
+    <summary>货币的长文字字符串ID</summary>
   </VOErrors.RT_MSG_CURRENCY>
   <VOErrors.RT_MSG_YNSTRING>
-    <summary>String ID for the literal for Yes/No</summary>
+    <summary>Yes/No的文字字符串ID</summary>
   </VOErrors.RT_MSG_YNSTRING>
   <VOErrors.RT_MSG_DEBIT>
-    <summary>String ID for the literal for Debit</summary>
+    <summary>借方的文字字符串ID</summary>
   </VOErrors.RT_MSG_DEBIT>
   <VOErrors.RT_MSG_CREDIT>
-    <summary>String ID for the literal for credit</summary>
+    <summary>贷方的文字字符串ID</summary>
   </VOErrors.RT_MSG_CREDIT>
   <VOErrors.RT_MSG_ERR_0>
-    <summary>String ID for the first error message </summary>
+    <summary>第一个错误消息的字符串ID</summary>
   </VOErrors.RT_MSG_ERR_0>
   <VOErrors.RT_MSG_ERR_1>
     <exclude />
@@ -2181,83 +2181,83 @@
     <exclude />
   </VOErrors.RT_MSG_GUARD_PAGE>
   <Set>
-    <summary>Values that match the Visual Objects SET_* defines </summary>
+    <summary>与 Visual Objects SET_* 定义匹配的值</summary>
     <remarks>
-      Global settings are stored in the RuntimeState and are thread specific.
-      The numeric value of these sets indicate the key of the setting in the settings dictionary on the runtimestate.
+      全局设置存储在 RuntimeState 中，并且是线程特定的。
+      这些设置的数值表示在 runtimestate 的设置字典中的键。
     </remarks>
   </Set>
   <Set.Exact>
-    <summary>Specifies rules that Visual FoxPro uses when comparing two strings of different lengths.</summary>
+    <summary>指定 Visual FoxPro 在比较两个不同长度的字符串时使用的规则。</summary>
   </Set.Exact>
   <Set.Fixed>
-    <summary>Specifies if the number of decimal places used in the display of numeric data is fixed.</summary>
+    <summary>指定用于显示数值数据的小数位数是否固定。</summary>
   </Set.Fixed>
   <Set.Decimals>
-    <summary>Specifies the number of decimal places displayed in numeric expressions.</summary>
+    <summary>指定在数值表达式中显示的小数位数。</summary>
   </Set.Decimals>
   <Set.DateFormat>
-    <summary>Specifies the format for the display of Date and DateTime expressions.</summary>
+    <summary>指定日期和日期时间表达式的显示格式。</summary>
   </Set.DateFormat>
   <Set.Epoch>
-    <summary>Change the setting that determines how dates without century digits are interpreted.</summary>
+    <summary>更改确定如何解释没有世纪数字的日期的设置。</summary>
   </Set.Epoch>
   <Set.Path>
-    <summary>Specifies a path for file searches.</summary>
+    <summary>指定文件搜索路径。</summary>
   </Set.Path>
   <Set.Default>
-    <summary>Specifies the default drive and directory.</summary>
+    <summary>指定默认驱动器和目录。</summary>
   </Set.Default>
   <Set.Exclusive>
-    <summary>Specifies whether Visual FoxPro opens table files for exclusive or shared use on a network.</summary>
+    <summary>指定 Visual FoxPro 是否以独占或共享方式打开表文件。</summary>
   </Set.Exclusive>
   <Set.Softseek>
-    <summary>Determines where the record pointer is positioned after FIND or SEEK unsuccessfully searches for a record.</summary>
+    <summary>确定 FIND 或 SEEK 未成功搜索记录后记录指针的位置。</summary>
   </Set.Softseek>
   <Set.Unique>
-    <summary>Specifies whether records with duplicate index key values are maintained in an index file.</summary>
+    <summary>指定索引文件中是否保留具有重复索引键值的记录。</summary>
   </Set.Unique>
   <Set.Deleted>
-    <summary>Specifies whether Visual FoxPro processes records marked for deletion and whether they are available for use with other commands.</summary>
+    <summary>指定 Visual FoxPro 是否处理标记为删除的记录以及它们是否可用于其他命令。</summary>
   </Set.Deleted>
   <Set.NotUsed>
-    <summary>--- not used ---</summary>
+    <summary>--- 未使用 ---</summary>
   </Set.NotUsed>
   <Set.Color>
-    <summary>Sets the colors used on the console output</summary>
+    <summary>设置控制台输出中使用的颜色</summary>
   </Set.Color>
   <Set.Cursor>
-    <summary>Determines whether the insertion point is displayed when Visual FoxPro waits for input.</summary>
+    <summary>确定 Visual FoxPro 等待输入时是否显示插入点。</summary>
   </Set.Cursor>
   <Set.Console>
-    <summary>Enables or disables output to the console output window or to the active user-defined window from within programs.</summary>
+    <summary>启用或禁用从程序中输出到控制台输出窗口或活动的用户定义窗口。</summary>
   </Set.Console>
   <Set.Alternate>
-    <summary>Directs screen or printer output created with ?, ??, DISPLAY, or LIST to a text file.</summary>
+    <summary>将使用 ?, ??, DISPLAY 或 LIST 创建的屏幕或打印输出定向到文本文件。</summary>
   </Set.Alternate>
   <Set.AltFile>
-    <summary>Output filename for the Alternate file.</summary>
+    <summary>备用文件的输出文件名。</summary>
   </Set.AltFile>
   <Set.Device>
-    <summary>Directs output from @ ... SAY to the screen, a printer, or a file.</summary>
+    <summary>将 @ ... SAY 的输出定向到屏幕、打印机或文件。</summary>
   </Set.Device>
   <Set.Printer>
-    <summary>Enables or disables output to the printer or routes output to a file, port, or network printer. </summary>
+    <summary>启用或禁用输出到打印机或将输出路由到文件、端口或网络打印机。</summary>
   </Set.Printer>
   <Set.PrintFile>
-    <summary>Output filename for printer output.</summary>
+    <summary>打印输出的输出文件名。</summary>
   </Set.PrintFile>
   <Set.Margin>
-    <summary>Sets the left printer margin and affects all output directed to the printer.</summary>
+    <summary>设置左打印机边距并影响所有定向到打印机的输出。</summary>
   </Set.Margin>
   <Set.Bell>
-    <summary>Turns the computer bell on or off and sets the bell attributes.</summary>
+    <summary>打开或关闭计算机铃声并设置铃声属性。</summary>
   </Set.Bell>
   <Set.Confirm>
-    <summary>Specifies whether the user can exit a text box by typing past the last character in the text box.</summary>
+    <summary>指定用户是否可以通过键入文本框中的最后一个字符来退出文本框。</summary>
   </Set.Confirm>
   <Set.Escape>
-    <summary>Determines whether pressing the ESC key interrupts program and command execution.</summary>
+    <summary>确定按 ESC 键是否中断程序和命令执行。</summary>
   </Set.Escape>
   <Set.Delimiters>
     <summary></summary>
@@ -2266,106 +2266,106 @@
     <summary></summary>
   </Set.Neterr>
   <Set.Digits>
-    <summary>The setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.</summary>
+    <summary>确定显示数字时小数点左侧显示的位数。</summary>
   </Set.Digits>
   <Set.AmExt>
-    <summary>A string representing the morning extension for time strings in 12-hour format.</summary>
+    <summary>表示 12 小时格式时间字符串的上午扩展的字符串。</summary>
   </Set.AmExt>
   <Set.PmExt>
-    <summary>A string representing the evening extension for time strings in 12-hour format.</summary>
+    <summary>表示 12 小时格式时间字符串的下午扩展的字符串。</summary>
   </Set.PmExt>
   <Set.Ansi>
-    <summary>The setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.</summary>
+    <summary>确定是否使用 ANSI 或 OEM 格式创建数据库文件以及某些文本文件操作是否在两种字符集之间进行转换的设置。</summary>
   </Set.Ansi>
   <Set.Yield>
     <summary></summary>
   </Set.Yield>
   <Set.Locktries>
-    <summary>The number of times certain lock operations are retried</summary>
+    <summary>某些锁定操作重试的次数</summary>
   </Set.Locktries>
   <Set.AmPm>
-    <summary>The setting that determines whether time strings are in 12-hour or 24-hour format.</summary>
+    <summary>确定时间字符串是 12 小时格式还是 24 小时格式的设置。</summary>
   </Set.AmPm>
   <Set.Century>
-    <summary>Determines whether the century portion of date expressions is displaid.</summary>
+    <summary>确定日期表达式是否显示世纪部分。</summary>
   </Set.Century>
   <Set.DigitFixed>
-    <summary>The setting that fixes the number of digits used to display numeric output.</summary>
+    <summary>固定用于显示数值输出的位数的设置。</summary>
   </Set.DigitFixed>
   <Set.DecimalSep>
-    <summary>Determines the decimal point character used in the display of numeric and currency expressions.</summary>
+    <summary>确定在显示数值和货币表达式时使用的小数点字符。</summary>
   </Set.DecimalSep>
   <Set.ThousandSep>
-    <summary>Specifies the character that separates each group of three digits to the left of the decimal point when displaying a formatted numeric or currency value. </summary>
+    <summary>指定在显示格式化的数值或货币值时小数点左侧每组三位数字分隔的字符。</summary>
   </Set.ThousandSep>
   <Set.Timesep>
-    <summary>The current separation character used in time strings.</summary>
+    <summary>时间字符串中使用的当前分隔字符。</summary>
   </Set.Timesep>
   <Set.Fieldstore>
-    <summary>The setting that determines whether assignments are made to fields or to memory variables.</summary>
+    <summary>确定是将赋值分配给字段还是分配给内存变量的设置。</summary>
   </Set.Fieldstore>
   <Set.Science>
-    <summary>The setting that controls if numbers are displaid in scientific notation.</summary>
+    <summary>控制数字是否以科学计数法显示的设置。</summary>
   </Set.Science>
   <Set.Floatdelta>
-    <summary>The setting that determines the point at which 2 floating point numbers would be considered equal even though they are different.</summary>
+    <summary>确定即使两个浮点数不同也会被认为相等的点的设置。</summary>
   </Set.Floatdelta>
   <Set.International>
     <summary></summary>
   </Set.International>
   <Set.DateCountry>
-    <summary>Specifies the format for the display of Date and DateTime expressions.</summary>
+    <summary>指定日期和日期时间表达式的显示格式。</summary>
   </Set.DateCountry>
   <Set.DefaultDir>
     <summary></summary>
   </Set.DefaultDir>
   <Set.EpochCent>
-    <summary>Determines how X# interprets dates that specify only 2 digit years.</summary>
+    <summary>确定 X# 如何解释仅指定两位数年份的日期。</summary>
   </Set.EpochCent>
   <Set.EpochYear>
-    <summary>Determines how X# interprets dates that specify only 2 digit years.</summary>
+    <summary>确定 X# 如何解释仅指定两位数年份的日期。</summary>
   </Set.EpochYear>
   <Set.DateFormatNet>
-    <summary>The current dateformat in .Net format.</summary>
+    <summary>当前的 .Net 格式日期格式。</summary>
   </Set.DateFormatNet>
   <Set.DateFormatEmpty>
-    <summary>The empty representation of the current date format.</summary>
+    <summary>当前日期格式的空表示。</summary>
   </Set.DateFormatEmpty>
   <Set.SysObject>
-    <summary>SysObject value</summary>
+    <summary>SysObject 值</summary>
   </Set.SysObject>
   <Set.NoMethod>
-    <summary>The last method called with a late bound send operator that was not found in the object that was used.</summary>
+    <summary>使用晚绑定发送操作符在对象中未找到的最后一个方法。</summary>
   </Set.NoMethod>
   <Set.Patharray>
-    <summary>The current path setting as an array of strings.</summary>
+    <summary>当前路径设置为字符串数组。</summary>
   </Set.Patharray>
   <Set.NatDLL>
-    <summary>Determines the name of the current Nation DLL.</summary>
+    <summary>确定当前 Nation DLL 的名称。</summary>
   </Set.NatDLL>
   <Set.CollationTable>
-    <summary>Determines the collation array read from the current Nation DLL</summary>
+    <summary>确定从当前 Nation DLL 读取的排序数组</summary>
   </Set.CollationTable>
   <Set.ErrorBlock>
-    <summary>The codeblock set for the current error handler.</summary>
+    <summary>为当前错误处理程序设置的代码块。</summary>
   </Set.ErrorBlock>
   <Set.LastScriptError>
-    <summary>The last script error that occurred.</summary>
+    <summary>发生的最后一个脚本错误。</summary>
   </Set.LastScriptError>
   <Set.LastFound>
-    <summary>The last file found with File()</summary>
+    <summary>使用 File() 找到的最后一个文件</summary>
   </Set.LastFound>
   <Set.DelimRDD>
-    <summary>Determines the name of the current Delim RDD.</summary>
+    <summary>确定当前 Delim RDD 的名称。</summary>
   </Set.DelimRDD>
   <Set.FieldDelimiter>
-    <summary>Determines the current field delimiter for Delim RDDs</summary>
+    <summary>确定 Delim RDD 的当前字段分隔符</summary>
   </Set.FieldDelimiter>
   <Set.RecordDelimiter>
-    <summary>Determines the current record delimiter for Delim RDDs</summary>
+    <summary>确定 Delim RDD 的当前记录分隔符</summary>
   </Set.RecordDelimiter>
   <Set.ErrorLogFile>
-    <summary>Name of the error log file from the default RT error handler. Defaults to VOERROR.LOG</summary>
+    <summary>默认 RT 错误处理程序的错误日志文件名。默认为 VOERROR.LOG</summary>
   </Set.ErrorLogFile>
   <Set.Dict>
     <summary></summary>
@@ -2377,25 +2377,25 @@
     <summary></summary>
   </Set.RddInfo>
   <Set.MemoBlockSize>
-    <summary>Specifies how X# allocates disk space for the storage of memo fields.   This is 64 for the FoxPro dialect and 32 for other dialects.</summary>
+    <summary>指定 X# 如何分配磁盘空间以存储备注字段。这是 FoxPro 方言的 64 和其他方言的 32。</summary>
   </Set.MemoBlockSize>
   <Set.DefaultRdd>
-    <summary>Determines the current Default RDD. This is DBFVFP for the FoxPro dialect and   DBFNTX for the other dialects.</summary>
+    <summary>确定当前默认 RDD。这是 FoxPro 方言的 DBFVFP 和其他方言的 DBFNTX。</summary>
   </Set.DefaultRdd>
   <Set.MemoExt>
-    <summary>Determines the current default Memofile extension.</summary>
+    <summary>确定当前默认的备注文件扩展名。</summary>
   </Set.MemoExt>
   <Set.AutoOpen>
-    <summary>Determines if production CDX files should be automatically opened. Defaults to TRUE</summary>
+    <summary>确定是否应自动打开生产 CDX 文件。默认为 TRUE</summary>
   </Set.AutoOpen>
   <Set.AutoOrder>
-    <summary>Determines if the first index in the production CDX should be selected. Defaults to 0 for the FoxPro dialect and 1 for the other dialects.</summary>
+    <summary>确定是否应选择生产 CDX 中的第一个索引。默认为 FoxPro 方言的 0 和其他方言的 1。</summary>
   </Set.AutoOrder>
   <Set.HpLocking>
-    <summary>Should High Performance NTX Locking be used for DBFNTX files.</summary>
+    <summary>是否应为 DBFNTX 文件使用高性能 NTX 锁定。</summary>
   </Set.HpLocking>
   <Set.NewIndexLock>
-    <summary>Should the New Index Locking Scheme be used for DBFNTX files.</summary>
+    <summary>是否应为 DBFNTX 文件使用新的索引锁定方案。</summary>
   </Set.NewIndexLock>
   <Set.Autoshare>
     <summary></summary>
@@ -2407,97 +2407,97 @@
     <summary></summary>
   </Set.BlobCircref>
   <Set.Optimize>
-    <summary>Enables or disables Query Optimization.</summary>
+    <summary>启用或禁用查询优化。</summary>
   </Set.Optimize>
   <Set.FoxLock>
-    <summary>Should the FoxPro locking scheme be used for DBFCDX and DBFVFP files.</summary>
+    <summary>是否应为 DBFCDX 和 DBFVFP 文件使用 FoxPro 锁定方案。</summary>
   </Set.FoxLock>
   <Set.RddInfoMax>
-    <summary>Determines the maximum number of RDD related settings.</summary>
+    <summary>确定 RDD 相关设置的最大数量。</summary>
   </Set.RddInfoMax>
   <Set.WinCodepage>
-    <summary>Determines the current Windows CodePage number</summary>
+    <summary>确定当前的 Windows 代码页编号。</summary>
   </Set.WinCodepage>
   <Set.DosCodepage>
-    <summary>Determines the current DOS/OEM CodePage number</summary>
+    <summary>确定当前的 DOS/OEM 代码页编号。</summary>
   </Set.DosCodepage>
   <Set.CollationMode>
-    <summary>Determines the current Collation mode (Windows, Clipper, Ordinal, Unicode, XPP)</summary>
+    <summary>确定当前的排序模式（Windows、Clipper、Ordinal、Unicode、XPP）。</summary>
   </Set.CollationMode>
   <Set.Asserts>
-    <summary>Specifies whether to pad a shorter string with spaces when making a SQL string comparison or binary expression with zero (0) bytes when making a binary expression comparison in SQL commands using the equal sign operator (=).</summary>
+    <summary>指定在使用等号运算符（=）进行 SQL 字符串比较或二进制表达式比较时，是否用空格填充较短的字符串或用零（0）字节填充二进制表达式。</summary>
   </Set.Asserts>
   <Set.AutoIncError>
-    <summary>Specifies whether attempts to update or insert values in a field with automatically incrementing values generate errors.</summary>
+    <summary>指定在尝试更新或插入具有自动递增值的字段时是否生成错误。</summary>
   </Set.AutoIncError>
   <Set.CollateFox>
-    <summary>Specifies a collation sequence for character fields in subsequent indexing and sorting operations. Defaults to MACHINE</summary>
+    <summary>指定在后续索引和排序操作中字符字段的排序顺序。默认为 MACHINE。</summary>
   </Set.CollateFox>
   <Set.Compatible>
-    <summary>Controls compatibility with Microsoft FoxBASE+ and other FoxPro languages.</summary>
+    <summary>控制与 Microsoft FoxBASE+ 和其他 FoxPro 语言的兼容性。</summary>
   </Set.Compatible>
   <Set.Database>
-    <summary>Sets an open database as the current database or sets no current database.</summary>
+    <summary>将打开的数据库设置为当前数据库或设置为无当前数据库。</summary>
   </Set.Database>
   <Set.DataSession>
     <summary></summary>
   </Set.DataSession>
   <Set.DebugOut>
-    <summary>Directs debugging output to a file.</summary>
+    <summary>将调试输出定向到文件。</summary>
   </Set.DebugOut>
   <Set.Directory>
-    <summary>Specifies the default drive and directory.</summary>
+    <summary>指定默认驱动器和目录。</summary>
   </Set.Directory>
   <Set.FullPath>
-    <summary>FoxPro: Should CDX(),DBF() and similar functions return full paths</summary>
+    <summary>FoxPro: CDX()、DBF() 和类似函数是否应返回完整路径。</summary>
   </Set.FullPath>
   <Set.Lock>
-    <summary>Enables or disables automatic file locking in certain commands.</summary>
+    <summary>启用或禁用某些命令中的自动文件锁定。</summary>
   </Set.Lock>
   <Set.MemoWidth>
-    <summary>Specifies the displayed width of memo fields and character expressions.Default is 50</summary>
+    <summary>指定备注字段和字符表达式的显示宽度。默认值为 50。</summary>
   </Set.MemoWidth>
   <Set.MultiLocks>
-    <summary>Determines whether you can lock multiple records using LOCK( ) or RLOCK( ). Default is OFF</summary>
+    <summary>确定是否可以使用 LOCK() 或 RLOCK() 锁定多个记录。默认值为 OFF。</summary>
   </Set.MultiLocks>
   <Set.Near>
-    <summary>Determines where the record pointer is positioned after FIND or SEEK unsuccessfully searches for a record.</summary>
+    <summary>确定在 FIND 或 SEEK 未成功搜索记录后记录指针的位置。</summary>
   </Set.Near>
   <Set.Null>
-    <summary>Determines how null values are supported by the ALTER TABLE, CREATE TABLE and INSERT - SQL commands.</summary>
+    <summary>确定 ALTER TABLE、CREATE TABLE 和 INSERT - SQL 命令如何支持空值。</summary>
   </Set.Null>
   <Set.Point>
-    <summary>Determines the decimal point character used in the display of numeric and currency expressions.</summary>
+    <summary>确定在显示数字和货币表达式时使用的小数点字符。</summary>
   </Set.Point>
   <Set.Refresh>
-    <summary>Determines whether to and how frequently to update local memory buffers with changes from other users on the network.</summary>
+    <summary>确定是否以及多长时间更新本地内存缓冲区以反映网络上其他用户的更改。</summary>
   </Set.Refresh>
   <Set.Reprocess>
-    <summary>Specifies how many times and for how long Visual FoxPro attempts to lock a file or record after an unsuccessful locking attempt.</summary>
+    <summary>指定在锁定文件或记录失败后，Visual FoxPro 尝试锁定的次数和时间。</summary>
   </Set.Reprocess>
   <Set.Safety>
-    <summary>Determines whether Visual FoxPro displays a dialog box before overwriting an existing file.</summary>
+    <summary>确定 Visual FoxPro 在覆盖现有文件之前是否显示对话框。</summary>
   </Set.Safety>
   <Set.Separator>
-    <summary>Specifies the character that separates each group of three digits to the left of the decimal point when displaying a formatted numeric or currency value. </summary>
+    <summary>指定在显示格式化的数字或货币值时，小数点左侧每组三位数字之间的分隔字符。</summary>
   </Set.Separator>
   <Set.User>
-    <summary>Start of User Defines Settings. </summary>
+    <summary>用户定义设置的开始。</summary>
   </Set.User>
   <Set.Space>
-    <summary>FoxPro: Add Space between ? and ?? field expressions</summary>
+    <summary>FoxPro: 在 ? 和 ?? 字段表达式之间添加空格。</summary>
   </Set.Space>
   <Set.SqlBuffering>
-    <summary>Specifies if data in a SQL - SELECT statement is based on buffered data or data written to disk.</summary>
+    <summary>指定 SQL - SELECT 语句中的数据是基于缓冲数据还是写入磁盘的数据。</summary>
   </Set.SqlBuffering>
   <Set.SqlAnsi>
-    <summary>Specifies whether to pad a shorter string with spaces when making a SQL string comparison or binary expression with zero (0) bytes when making a binary expression comparison in SQL commands using the equal sign operator (=).</summary>
+    <summary>指定在使用等号运算符（=）进行 SQL 字符串比较或二进制表达式比较时，是否用空格填充较短的字符串或用零（0）字节填充二进制表达式。</summary>
   </Set.SqlAnsi>
   <Set.TextMerge>
-    <summary>FoxPro: Is Textmerge enabled.</summary>
+    <summary>FoxPro: 是否启用文本合并。</summary>
   </Set.TextMerge>
   <Set.WithStack>
-    <summary>Specifies how character data expressions are mapped to query result sets.</summary>
+    <summary>指定如何将字符数据表达式映射到查询结果集。</summary>
   </Set.WithStack>
   <DateCountry.American>
     <summary>mm/dd/yy  mm/dd/yyyy</summary>
@@ -2524,12 +2524,12 @@
     <summary>yy/mm/dd  yyyy/mm/dd</summary>
   </DateCountry.Taiwan>
   <DateCountry.System>
-    <summary>Get the format from the System</summary>
+    <summary>从系统获取格式</summary>
   </DateCountry.System>
   <AutoShareMode>
-    <summary>This enum specifies how files should be opened.</summary>
+    <summary>此枚举指定文件应如何打开。</summary>
   </AutoShareMode>
   <DbLockMode>
-    <summary>This enum specifies the lock modes.</summary>
+    <summary>此枚举指定锁定模式。</summary>
   </DbLockMode>
 </members>

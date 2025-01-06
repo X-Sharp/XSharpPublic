@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -81,7 +81,12 @@ namespace XSharp.Project
                 yield return ctxt;
             }
 
-            //CreateSharedProjectReferenceProviderContext(referenceManager),
+            //ctxt = CreateSharedProjectReferenceProviderContext(mgr);
+            //if (ctxt != null)
+            //{
+            //    yield return ctxt;
+            //}
+
             ctxt = CreateCOMReferenceProviderContext(mgr);
             if (ctxt != null)
             {
@@ -163,25 +168,6 @@ namespace XSharp.Project
 
             return context;
         }
-        //private IVsReferenceProviderContext CreateSharedProjectReferenceProviderContext(IVsReferenceManager mgr)
-        //{
-        //    ThreadHelper.ThrowIfNotOnUIThread();
-        //    var context = mgr.CreateProviderContext(VSConstants.SharedProjectReferenceProvider_Guid) as IVsSharedProjectReferenceProviderContext;
-
-        //    //var referenceContainer = this.GetReferenceContainer();
-        //    //var references = referenceContainer
-        //    //     .EnumReferences()
-        //    //     .OfType<ProjectReferenceNode>();
-        //    //foreach (var reference in references)
-        //    //{
-        //    //    var newReference = context.CreateReference() as IVsProjectReference;
-        //    //    newReference.Identity = reference.ReferencedProjectGuid.ToString("B");
-        //    //    newReference.AlreadyReferenced = true;
-        //    //    context.AddReference(newReference);
-        //    //}
-
-        //    return context as IVsReferenceProviderContext;
-        //}
         private IVsReferenceProviderContext CreateFileReferenceProviderContext(IVsReferenceManager mgr)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -202,42 +188,6 @@ namespace XSharp.Project
             return context;
         }
 
-
-        //private IVsReferenceProviderContext CreatePlatformReferenceProviderContext(IVsReferenceManager mgr)
-        //{
-        //    IVsPlatformReferenceProviderContext2 vsPlatformReferenceProviderContext = mgr.CreateProviderContext(VSConstants.PlatformReferenceProvider_Guid) as IVsPlatformReferenceProviderContext2;
-        //    foreach (SdkReferenceNode current in GetReferenceContainer().EnumReferences().OfType<SdkReferenceNode>())
-        //    {
-        //        IVsPlatformReference vsPlatformReference = vsPlatformReferenceProviderContext.CreateReference() as IVsPlatformReference;
-        //        vsPlatformReference.SDKIdentity = current.Caption;
-        //        vsPlatformReference.IsSDK = true;
-        //        vsPlatformReference.AlreadyReferenced = true;
-        //        vsPlatformReference.FullPath = current.Url;
-        //        vsPlatformReferenceProviderContext.AddReference(vsPlatformReference);
-        //    }
-        //    if (IsImmersive)
-        //    {
-        //        vsPlatformReferenceProviderContext.TargetFrameworkMoniker = base.TargetFrameworkMoniker.ToString();
-        //        vsPlatformReferenceProviderContext.TargetPlatformIdentifier = "UAP";
-        //        vsPlatformReferenceProviderContext.TargetPlatformVersion = "10.0.14393.0";
-        //        vsPlatformReferenceProviderContext.IsImplicitlyReferenced = true;
-        //        vsPlatformReferenceProviderContext.SDKDirectoryRoot = GetSDKRootDirectory();
-        //        vsPlatformReferenceProviderContext.SDKExtensionDirectoryRoot = GetUWPSDKRootDirectory();
-        //        vsPlatformReferenceProviderContext.SDKFilterKeywords = "WindowsAppContainer WindowsXAML CSharp Managed";
-        //        vsPlatformReferenceProviderContext.SDKRegistryRoot = "Software\\Microsoft\\Microsoft SDKs";
-        //    }
-        //    else
-        //    {
-        //        vsPlatformReferenceProviderContext.TargetFrameworkMoniker = base.TargetFrameworkMoniker.ToString();
-        //        vsPlatformReferenceProviderContext.TargetPlatformIdentifier = "Windows";
-        //        vsPlatformReferenceProviderContext.TargetPlatformVersion = "8.0";
-        //        vsPlatformReferenceProviderContext.IsImplicitlyReferenced = true;
-        //        vsPlatformReferenceProviderContext.VisualStudioVersion = "11.0";
-        //        vsPlatformReferenceProviderContext.SDKDirectoryRoot = GetSDKRootDirectory();
-        //        vsPlatformReferenceProviderContext.SDKFilterKeywords = "WindowsAppContainer Managed";
-        //    }
-        //    return vsPlatformReferenceProviderContext;
-        //}
 
         private __VSREFERENCECHANGEOPERATIONRESULT AddReferences(IVsReferenceProviderContext context)
         {
@@ -272,10 +222,6 @@ namespace XSharp.Project
             {
                 return GetAddedCOMReferences(context as IVsComReferenceProviderContext);
             }
-            //else if (context.ProviderGuid == VSConstants.PlatformReferenceProvider_Guid)
-            //{
-            //    return GetAddedPlatformReferences(context as IVsPlatformReferenceProviderContext);
-            //}
             return Enumerable.Empty<VSCOMPONENTSELECTORDATA>();
         }
 
@@ -314,10 +260,6 @@ namespace XSharp.Project
             {
                 removedReferences = GetRemovedCOMReferences(context);
             }
-            //else if (context.ProviderGuid == VSConstants.PlatformReferenceProvider_Guid)
-            //{
-            //    removedReferences = GetRemovedPlatformReferences(context as IVsPlatformReferenceProviderContext);
-            //}
             return removedReferences;
         }
 
@@ -371,20 +313,6 @@ namespace XSharp.Project
 
             return selectedReferences;
         }
-
-
-        //private IEnumerable<VSCOMPONENTSELECTORDATA> GetAddedPlatformReferences(IVsPlatformReferenceProviderContext context)
-        //{
-        //    return context.References.OfType<IVsPlatformReference>().Select(delegate (IVsPlatformReference reference)
-        //    {
-        //        VSCOMPONENTSELECTORDATA result = default(VSCOMPONENTSELECTORDATA);
-        //        result.type = VSCOMPONENTTYPE.VSCOMPONENTTYPE_Custom;
-        //        result.bstrTitle = reference.Name;
-        //        result.bstrFile = reference.FullPath;
-        //        return result;
-        //    });
-        //}
-
 
         private IEnumerable<ReferenceNode> GetRemovedProjectReferences(IVsReferenceProviderContext context)
         {
@@ -452,16 +380,6 @@ namespace XSharp.Project
                    where selectedReferences.Contains(refNode.TypeGuid)
                    select refNode;
         }
-
-        //private IEnumerable<ReferenceNode> GetRemovedPlatformReferences(IVsPlatformReferenceProviderContext context)
-        //{
-        //    IEnumerable<string> selectedReferences = from platformRef in context.References.OfType<IVsPlatformReference>()
-        //                                             select platformRef.FullPath;
-        //    return from refNode in GetReferenceContainer().EnumReferences().OfType<SdkReferenceNode>()
-        //           where selectedReferences.Contains(refNode.Url)
-        //           select refNode;
-        //}
-
 
         protected virtual string AddReferenceExtensions
         {

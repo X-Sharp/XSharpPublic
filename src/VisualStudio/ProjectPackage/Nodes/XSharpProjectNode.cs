@@ -450,6 +450,7 @@ namespace XSharp.Project
                     return this;
                 case (int)__VSHPROPID.VSHPROPID_DefaultNamespace:
                     return this.RootNameSpace;
+
                 case (int)__VSHPROPID5.VSHPROPID_OutputType:
                     return (uint)GetOutPutType();
                 case (int)__VSHPROPID2.VSHPROPID_DesignerHiddenCodeGeneration:

@@ -1,12 +1,10 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Threading;
 using System;
-using XSharpModel;
 using Task = System.Threading.Tasks.Task;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.Project;
-
+using System.Linq;
+using Microsoft.VisualStudio.Shell.Interop;
 namespace XSharp.Project
 {
     [Command(PackageIds.idConvertXSharpRuntime)]
@@ -23,13 +21,14 @@ namespace XSharp.Project
             Command.Visible = await Commands.ProjectIsXSharpProjectAsync();
             if (Command.Visible)
             {
-                var refs = await GetAssemblyReferencesAsync();
+                var project = await VS.Solutions.GetActiveProjectAsync();
+                var refs = project.References.Select(r => r.VsReference.FullPath);
                 bool isVulcan = false;
                 if (refs != null)
                 {
                     foreach (var asmref in refs)
                     {
-                        if (asmref.FullName.Contains("Vulcan"))
+                        if (asmref.Contains("Vulcan"))
                         {
                             isVulcan = true;
                             break;
@@ -39,26 +38,19 @@ namespace XSharp.Project
                 Command.Visible = isVulcan;
             }
         }
-        async System.Threading.Tasks.Task<List<XAssembly>> GetAssemblyReferencesAsync()
-        {
-            var project = await VS.Solutions.GetActiveProjectAsync();
-            var path = project.FullPath;
-            var xsproject = XSolution.FindProjectByFileName(path);
-            if (xsproject != null)
-            {
-                return xsproject.AssemblyReferences;
-            }
-            return null;
-        }
+       
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var toDelete = new List<string>();
             var toAdd = new List<string>();
-            foreach (var asm in await GetAssemblyReferencesAsync())
+            var project = await VS.Solutions.GetActiveProjectAsync();
+            var refs = project.References.Select(r => r.VsReference.FullPath);
+            foreach (var asm in refs)
             {
                 bool delete = true;
-                switch (System.IO.Path.GetFileName(asm.FileName).ToLower())
+                var name = System.IO.Path.GetFileName(asm).ToLower();
+                switch (name)
                 {
                     case VulcanRT:
                         toAdd.Add(XSharpCore);
@@ -99,7 +91,7 @@ namespace XSharp.Project
                 }
                 if (delete)
                 {
-                    toDelete.Add(asm.FileName);
+                    toDelete.Add(asm);
                 }
             }
             if (toDelete.Count == 0 || toAdd.Count == 0)
@@ -107,34 +99,23 @@ namespace XSharp.Project
                 await VS.MessageBox.ShowErrorAsync("No Vulcan assemblies found in the project");
                 return;
             }
-            var project = await VS.Solutions.GetActiveProjectAsync();
-            var path = project.FullPath;
-            var xsproject = XSolution.FindProjectByFileName(path);
-            var projectNode = (XSharpProjectNode)xsproject.ProjectNode;
-            var refContainer = projectNode.GetReferenceContainer() as XSharpReferenceContainerNode;
             // Delete Vulcan items from the project
+            var referencesToDelete = new List<Reference>();
             foreach (var item in toDelete)
             {
-                
-                var refnode = refContainer.FindChild(item);
-                if (refnode != null)
+                foreach (var node in project.References)
                 {
-                    refnode.Remove(false);
-                    xsproject.RemoveAssemblyReference(item);
+                    if (string.Compare(node.VsReference.FullPath, item, StringComparison.OrdinalIgnoreCase) == 0)
+                    {
+                        referencesToDelete.Add(node);
+                    }
                 }
             }
-            // Add X# items to the project. Make sure to not add items that already exist.
-            foreach (var item in toAdd)
-            {
-                var refnode = refContainer.FindChild(item);
-                if (refnode == null)
-                {
-                    refnode = new XSharpAssemblyReferenceNode(projectNode, item);
-                    refContainer.AddChild(refnode);
-                }
-            }
-            // Let MsBuild figure out where the assemblies are
-            projectNode.Build(MsBuildTarget.ResolveAssemblyReferences);
+            await project.References.RemoveAsync(referencesToDelete.ToArray());
+            await project.References.AddAsync(toAdd.ToArray());
+            await VS.MessageBox.ShowAsync("The project was converted to the X# runtime successfully. Please recompile and test.",
+                icon: OLEMSGICON.OLEMSGICON_INFO,
+                buttons : OLEMSGBUTTON.OLEMSGBUTTON_OK);
         }
         #region Assembly names
         internal const string VulcanRT = "vulcanrt.dll";

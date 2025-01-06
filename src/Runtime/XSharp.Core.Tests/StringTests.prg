@@ -383,7 +383,9 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	  RETURN
    [Fact, Trait("Category", "String")];
    METHOD LikeTest() AS VOID
-	  LOCAL search AS STRING
+        LOCAL search AS STRING
+        var dia := RuntimeState.Dialect
+        RuntimeState.Dialect := XSharpDialect.Core
 	  search := "file*.txt"
 	  Assert.Equal(true, _Like(search,"file.txt"))
 	  Assert.Equal(true, _Like(search,"file1.txt"))
@@ -400,7 +402,8 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	  Assert.Equal(false, _Like(search,"file.txt"))  // too short
 	  Assert.Equal(true, _Like(search,"file1.txt"))
 	  Assert.Equal(false, _Like(search,"file2a.txt")) // too long
-	  Assert.Equal(true, _Like(search,"file*.txt"))
+        Assert.Equal(true, _Like(search,"file*.txt"))
+        RuntimeState.Dialect := dia
 	  RETURN
 
 

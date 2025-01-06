@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-18T16:13:12.110+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-14T15:40:34.872+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>LOCAL PROCEDURE</title>
   <keywords>
     <keyword>END PROCEDURE</keyword>
@@ -25,7 +25,7 @@
     <para styleclass="List"><tab /></para>
     <para styleclass="List">[Modifiers]<tab />The only valid modifiers for a local function are UNSAFE and/or ASYNC.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;idFunction&gt;<tab />A valid identifier name for the function. &#160;A function is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a function and a class, for example, with the same name.</para>
+    <para styleclass="List">&lt;idFunction&gt;<tab />A valid identifier name for the function. A function is an entity and, as such, shares the same name space as other entities. This means that it is not possible to have a function and a class, for example, with the same name.</para>
     <para styleclass="List"><snippet src="__IncludeLocalFunctionParameters" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeExpressionBody" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>

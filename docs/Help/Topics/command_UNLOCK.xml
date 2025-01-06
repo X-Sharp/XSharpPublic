@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-04T17:20:58.186+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>UNLOCK Command</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -24,11 +24,11 @@
     <para styleclass="List"><text styleclass="Heading1">Arguments</text></para>
     <para styleclass="List">RECORD nRecordNumber<tab />Releases the record lock on record number nRecordNumber. Issuing UNLOCK RECORD nRecordNumber for a record in a table with a file lock releases the file lock. </para>
     <para styleclass="List"><snippet src="__In" inline="false"/></para>
-    <para styleclass="List">ALL<tab />Releases all record and file locks in all work areas. &#160;If not specified, only the lock in the current work area is released. ALL cannot be combined with the RECORD or IN|ALIAS clause.</para>
+    <para styleclass="List">ALL<tab />Releases all record and file locks in all work areas. If not specified, only the lock in the current work area is released. ALL cannot be combined with the RECORD or IN|ALIAS clause.</para>
     <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">UNLOCK is functionally equivalent to DBUnlock() and UNLOCK ALL is functionally equivalent to DBUnlockAll(). &#160;</para>
+    <para styleclass="Normal">UNLOCK is functionally equivalent to DBUnlock(), and UNLOCK ALL is functionally equivalent to DBUnlockAll(). &#160;</para>
     <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">This example attempts an update operation that requires a record lock. &#160;If the RLock() is successful, the record is updated with a function and the RLock() is released with UNLOCK:</para>
+    <para styleclass="Normal">This example attempts an update operation that requires a record lock. &#160;If the RLock() is successful, the record is updated with a function, and the RLock() is released with UNLOCK:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> sales </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">INDEX</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> salesman SHARED </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">NEW</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">IF</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> RLock()</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; UpdateRecord()</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; UNLOCK</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">ELSE</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; ? &quot;Record update failed&quot;</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">BREAK</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">ENDIF</text></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>

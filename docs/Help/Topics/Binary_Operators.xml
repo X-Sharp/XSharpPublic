@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T16:40:18.706+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Binary</title>
   <keywords>
     <keyword>-</keyword>
@@ -118,19 +118,19 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2">Binary operators and XBase types </para>
-    <para styleclass="Normal">The following XBase types support binary operators.</para>
+    <para styleclass="Heading2"><text style="color:#0000ff;">Binary operators and XBase types </text></para>
+    <para styleclass="Normal">The following XBase types support binary operators:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="7" colcount="3">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Type</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Type</text></para>
         </td>
         <td style="width:15%;">
-          <para styleclass="Normal">Operator</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Description</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -141,7 +141,7 @@
           <para styleclass="Normal">none</para>
         </td>
         <td>
-          <para styleclass="Normal">binary operators are not supported for arrays</para>
+          <para styleclass="Normal">Binary operators are not supported for arrays.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -152,7 +152,7 @@
           <para styleclass="Normal">+ and -</para>
         </td>
         <td>
-          <para styleclass="Normal">You can add and subtract a numeric to a date, which is the equivalent of adding days.<br/>You can subtract a date from a date which will return the number of days between the dates</para>
+          <para styleclass="Normal">You can add and subtract a numeric to a date, which is the equivalent of adding days.<br/>You can subtract a date from a date which will return the number of days between the dates.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -163,7 +163,7 @@
           <para styleclass="Normal">all</para>
         </td>
         <td>
-          <para styleclass="Normal">You can perform all binary operations on FLOATs when both operands are numeric. The compiler will automatically insert a conversion from &lt;any numeric type&gt; to FLOAT when the right hand side of the binary operator is not a float</para>
+          <para styleclass="Normal">You can perform all binary operations on FLOATs when both operands are numeric. The compiler will automatically insert a conversion from &lt;any numeric type&gt; to FLOAT when the right hand side of the binary operator is not a float.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -174,7 +174,7 @@
           <para styleclass="Normal">none</para>
         </td>
         <td>
-          <para styleclass="Normal">binary operators are not supported for arrays</para>
+          <para styleclass="Normal">Binary operators are not supported for arrays.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -185,7 +185,7 @@
           <para styleclass="Normal">+ and -</para>
         </td>
         <td>
-          <para styleclass="Normal">The + operator will add 2 strings. The - operator will add the RHS to the LHS and move all trailing spaces of the LHS to the end of the resulting string. You can also add STRING values and SYMBOL values. The SYMBOLs will automatically be converted to strings</para>
+          <para styleclass="Normal">The + operator will add 2 strings. The - operator will add the RHS to the LHS and move all trailing spaces of the LHS to the end of the resulting string. You can also add STRING values and SYMBOL values. The SYMBOLs will automatically be converted to strings.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

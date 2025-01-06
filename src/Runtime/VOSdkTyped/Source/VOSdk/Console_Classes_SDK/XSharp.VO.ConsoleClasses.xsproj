@@ -12,7 +12,6 @@
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <VO15>false</VO15>
-    <FOX1>false</FOX1>
     <VO14>false</VO14>
     <VO5>false</VO5>
     <VO6>false</VO6>
@@ -28,12 +27,12 @@
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
     <EnforceSelf>True</EnforceSelf>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <Allowdot>false</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <DocumentationFile>XSharp.VOConsoleClasses.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
     <DocumentationFile>XSharp.VOConsoleClasses.xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
@@ -68,12 +67,7 @@
       <AssemblyName>System.dll</AssemblyName>
     </Reference>
   </ItemGroup>
-  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
-  <ProjectExtensions>
-    <ProjectCapabilities>
-      <ProjectConfigurationsDeclaredAsItems />
-    </ProjectCapabilities>
-  </ProjectExtensions>
+  <Import Project="..\VOSDKDocs.Targets" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent />
@@ -84,5 +78,4 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  <Import Project="..\VOSDKDocs.Targets" />
 </Project>

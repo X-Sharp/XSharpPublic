@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-12T14:48:11.034+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Catching runtime errors at startup</title>
   <keywords>
     <keyword>-main</keyword>
@@ -12,13 +12,14 @@
     <header>
       <para styleclass="Heading1">Catching runtime errors at startup</para>
     </header>
-    <para styleclass="Normal">Sometimes your program throws runtime errors at startup. These can be caused by missing assemblies and or by errors in initialization code. <br/>These errors can be difficult to trap, since the errors occur inside code that is executed before the first line of code in your application.</para>
-    <para styleclass="Normal">Take the following example</para>
+    <para styleclass="Normal">Sometimes, your program throws runtime errors at startup. These can be caused by missing assemblies and/or by errors in initialization code. <br/>These errors can be difficult to trap, since the errors occur inside code that is executed before the first line of code in your application.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Take the following example:</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">GLOBAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">GLOBAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> y := 1 / x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> ? &quot;Function Start&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
     <para styleclass="Body Text">This code will generate an exception at startup, which you can only see/read when you run the app from the commandline</para>
     <para styleclass="Code Example">Unhandled Exception: System.TypeInitializationException: The type initializer for &apos;Application1.Exe.Functions&apos; threw an exception. ---&gt; System.DivideByZeroException: Attempted to divide by zero.<br/>at Application1.Exe.Functions..cctor() in C:\XIDE\Projects\Default\Applications\Application1\Prg\Start.prg:line 4<br/>--- End of inner exception stack trace ---<br/>at Application1.Exe.Functions.Start()</para>
     <para styleclass="Body Text">The normal program flow in an X# application is this:</para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Your application is started</li>
       <li styleclass="Body Text">The DotNet framework is initialized</li>
       <li styleclass="Body Text">The entrypoint is called. The normal entrypoint in an app is the Start function, which is converted by the compiler to a Start method in a compiler generated Functions class. <br/>The same class also has the globals and defines from your app. If one of these globals or defines contains an initialization expression that cannot be resolved at compile then these this code will be executed in the static constructor of the Functions class (in the error message above this is called the &quot;type initializer&quot;).</li>
@@ -33,11 +34,11 @@
     <para styleclass="Body Text">You may have to change the call to Application1.Exe.Functions.Start() into something that matches your EXE name.</para>
     <para styleclass="Body Text">Now goto the General page in the application properties in VS and at the entry &quot;Startup Object&quot; set the value MyStartupCode.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"><image src="StartupCode.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Body Text"><image src="StartupCode.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">In XIDE add the command line option -main:MyStartupCode:</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"><image src="XideStartup.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Body Text"><image src="XideStartup.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">and run the code again.<br/>The error is now trapped and shown.<br/>If you app is not a Console app but a Windows app then the console output may not be visible. </para>
     <para styleclass="Body Text"></para>

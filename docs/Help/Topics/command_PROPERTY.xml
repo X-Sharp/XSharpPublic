@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-08T14:46:34.928+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-14T15:15:42.042+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>PROPERTY Statement</title>
   <keywords>
     <keyword>Access() Methods</keyword>
@@ -39,7 +39,7 @@
     <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;]</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="Heading1"><snippet src="__IncludeAttributes" inline="false"/></para>
-    <para styleclass="List">&lt;<text styleclass="Italic" style="font-style:normal;">idName</text>&gt;<tab />A valid identifier name for the property that you are defining. &#160;Like other methods, properties are entities. Property names must be unique within a class, but can share the same name as other entities in your application.</para>
+    <para styleclass="List">&lt;<text styleclass="Italic" style="font-style:normal;">idName</text>&gt;<tab />A valid identifier name for the property that you are defining. Like other methods, properties are entities. Property names must be unique within a class, but can share the same name as other entities in your application.</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
     <para styleclass="List"><snippet src="__asType" inline="false"/></para>
@@ -47,14 +47,15 @@
     <para styleclass="List"><snippet src="__IncludeExpressionBody" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
     <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">There are 3 types of property declarations:</para>
+    <para styleclass="Normal">There are three types of property declarations:</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Single line declaration without AUTO clause</li>
-      <li styleclass="Normal">Single line declaration with GET / SET / INIT accessors</li>
-      <li styleclass="Normal">Multi line declaration with GET accessor block and/or SET/INIT accessor bock. For multi line declarations the END PROPERTY is mandatory</li>
+      <li styleclass="Normal">Single line declaration without AUTO clause;</li>
+      <li styleclass="Normal">Single line declaration with GET / SET / INIT accessors;</li>
+      <li styleclass="Normal">Multi-line declaration with GET accessor block and/or SET/INIT accessor bock. For multi-line declarations, the END PROPERTY is mandatory.</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">INIT accessor declares that a property can only be changed in the constructor of a class. A property cannot have both a SET and an INIT accessor.</para>
+    <para styleclass="Normal"></para>
     <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>
     <para styleclass="Normal"></para>

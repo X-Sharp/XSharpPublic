@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
+<topic id="cat-Dialog_Classes" revisionNumber="1" title="Dialog Classes">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <section address="Section1">
+      <title>Dialog Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ErrorBox</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Present the user with an error message box.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.InfoBox</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Present the user with informational message box.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ModelessDialog</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a modeless dialog window (also commonly referred to as a dialog box), which are used to present a collection of controls for user input and output.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.OpenDialog</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Present the user with a standard "file open" dialog box.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.PaletteDialog</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Present the user with a standard color palette dialog box, allowing the user to define custom colors.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SaveAsDialog</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Provide standard save-file dialog facilities.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SelectDialog</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Present the user with a standard color palette dialog box.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.StandardColorDialog</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Provide the base class from which all X# color dialog boxes are subclassed.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.StandardDialog</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Provide the base class from which all X# standard dialog boxes are subclassed.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.StandardFileDialog</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Provide the base class from which all X# standard file-oriented dialog boxes are subclassed.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.StandardFolderDialog</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Encapsulate a standard folder dialog.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.StandardFontDialog</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Provide standard font dialog facilities.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TextBox</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Present the user with a text message box.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.WarningBox</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a warning message box.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ErrorDialog</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
+  </developerConceptualDocument>
+</topic>

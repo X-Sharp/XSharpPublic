@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="3b6a5e3e-bfd2-4c92-b379-b0b8d89c2bba" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_control.html -->Program Control&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">NOP Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>The NOP statement inserts an empty statement in the code</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>NOP</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Remarks</h1>
+<para>The NOP statement is an empty statement. It can be used to indicate that a certain code section is left intentionally empty</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>FUNCTION Start(aArgs as string[]) AS VOID<para/>
+ &#160; IF aArgs != NULL .AND. aArgs:Length &gt; 0<para/>
+ &#160; &#160; &#160; ? &quot;You passed &quot;, aArgs:Length, &quot;command line parameters&quot;<para/>
+ &#160; ELSE<para/>
+ &#160; &#160; &#160; NOP &#160; // This indicates that the else branch is not forgotten but intentionally empty<para/>
+ &#160; ENDIF<para/>
+ &#160; &#160;.....<para/>
+  RETURN</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

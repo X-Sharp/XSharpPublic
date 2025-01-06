@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-14T15:28:06.157+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>DELEGATE Statement</title>
   <keywords>
     <keyword>DELEGATE</keyword>
@@ -11,7 +11,7 @@
       <para styleclass="Heading1">DELEGATE Statement</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Declare a delegate to &#160;the compiler.</para>
+    <para styleclass="Normal">Declare a delegate to the compiler.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">DELEGATE</text> &lt;<text styleclass="Italic">idDelegate</text>&gt; </para>
     <para styleclass="Normal"><tab />[Typeparameters]</para>
@@ -20,7 +20,7 @@
     <para styleclass="Normal"><tab />[TypeparameterConstraints]</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
-    <para styleclass="List">&lt;<text styleclass="Italic">idDelegate</text>&gt;<tab />A valid identifier name for the delegate. &#160;Delegate names must be unique within a namespace.</para>
+    <para styleclass="List">&lt;<text styleclass="Italic">idDelegate</text>&gt;<tab />A valid identifier name for the delegate. Delegate names must be unique within a namespace.</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
     <para styleclass="List"><snippet src="__asType" inline="false"/></para>

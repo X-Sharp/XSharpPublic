@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-14T14:43:30.241+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SUM Command</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -21,9 +21,9 @@
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code with box">SUM &lt;nValueList&gt; TO &lt;idVarList&gt; [&lt;Scope&gt;] [WHILE &lt;lCondition&gt;] [FOR &lt;lCondition&gt;]</para>
     <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">&lt;nValueList&gt;<tab />The list of values to sum for each record processed. &#160;Note that the &lt;nValueList&gt; is required and not optional as it is in other dialects.</para>
+    <para styleclass="List">&lt;nValueList&gt;<tab />The list of values to sum for each record processed. Note that the &lt;nValueList&gt; is required and not optional as it is in other dialects.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">TO &lt;idVarList&gt;<tab />Defines a list of one or more variables to assign the results of the sum. &#160;If any variable reference in the list is ambiguous (that is, not declared at compile time or not explicitly qualified with an alias), it is assumed to be MEMVAR. &#160;If any variable in the list is not visible or does not exist, a private variable is created using &lt;uValue&gt;.</para>
+    <para styleclass="List">TO &lt;idVarList&gt;<tab />Defines a list of one or more variables to assign the results of the sum. If any variable reference in the list is ambiguous (that is, not declared at compile time or not explicitly qualified with an alias), it is assumed to be MEMVAR. &#160;If any variable in the list is not visible or does not exist, a private variable is created using &lt;uValue&gt;.</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
     <para styleclass="List"><snippet src="__While" inline="false"/></para>

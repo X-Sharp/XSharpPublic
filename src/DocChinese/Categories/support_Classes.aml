@@ -1,0 +1,996 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
+<topic id="cat-Support_Classes" revisionNumber="1" title="Support Classes">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <section address="Section1">
+      <title>Support Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DateRange</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      An auxiliary class used by the DateTimePicker and MonthCalendar controls to represent a date range.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Dimension</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a Dimension object, which is used to describe the size of two-dimensional objects using ordered pair coordinates (width, height or x, y).
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HotKey</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a hot key.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HotKeyRule</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a hot key rule.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Pair</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Provide the base class from which all X# objects containing ordered pairs of values are subclassed.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Point</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a point, which is used to describe a location on the canvas of a window.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Range</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a range, representing the minimum and maximum values of the coordinates (or scroll units) that the thumb position on a scroll bar can move—up or down, left or right.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Selection</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a selection, which represents the start and end of a text selection in an edit control as an ordered pair.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.CollationMode</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum specifies the collation mode used to create and update index strings.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Collations</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Conversions</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.CoreDb</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            The CoreDb class contains the methods to manipulate Workareas. 
+            The class is stateless. The Workarea state is stored in the RuntimeState.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.DateCountry</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Values that match the XBase DateCountry defines. They are used to set the date format.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.DbNotifyEventArgs</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Provides data for the Notify event of the IDbNotify interface.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.DbNotifyEventHandler</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>The delegate that defines the Workarea Eventhandler</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.FixedMemBlockEnd</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Guard Block following MemAlloc return value</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.FixedMemBlockStart</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Guard Block preceding MemAlloc return value</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.FoxArrayHelpers</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ICodeblock</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This interface defines Compile time and runtime codeblocks
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ICodeblock2</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This interface extends the ICodeblock interface and adds a property
+            that returns the 'real' returntype of the codeblock, before
+            customizations are done to the value (for example for Foxpro where NIL gets converted to FALSE)
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IDate</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This interface defines Date values
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IDbNotify</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This interface must be implemented by objects that register themselves for DB Notifications
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IDynamicProperties</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para> This interface is used for objects that implement a special mechanism
+            for reading / writing properties at runtime.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IFloat</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This interface defines FLOAT values
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IIndexedProperties</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This interface can be used to access any object with an indexer.
+            This is mostly used for elements inside typed arrays of the 'ARRAY OF' class.
+            If you implement the interface on the elements you can use an array syntax to
+            assess fields/properties in the elements of the array by name or ordinal.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IIndexer</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para> This interface is used to index a collection using the VO Array syntax.
+            The interface is implemented by the ARRAY type in the runtime, but you can also use it for your custom types.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ILateBound</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This interface described the methods needed for a LateBound object 
+            When an object implements this interface then the X# runtime will not use
+            reflection to implement late bound calls to properties or methods
+            but will call these methods instead.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IMacroCompilerUsual</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This interface defines and extension to the Macro compiler subsystem
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.INamedIndexer</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This interface is used to index a collection using a numeric and a string index and is implemented by the
+            typed array class ('ARRAY OF'). If your elements inside the collection implement the IIndexProperties interface then
+            the lookup of the property inside array element will be resolved with a call to the named indexer on that object.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IRtCodeblock</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This interface Extended the ICodeblock interface and adds support for usual
+            parameters and return values
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.MemVar</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Internal type that implements the Dynamic Memory Variables.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VObject</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Base class for many types used in the VO SDK Classes</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.XSharpDialect</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum lists the various dialects possible in XSharp. The enum MUST match the dialect values inside the compiler </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Internal</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.CompilerServices</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This class contains helper code that is called by the compiler to support various XBase language constructs, such as the
+            automatic memory management of PSZ values created with String2Psz().
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.IO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IO.XsBufferedFileStream</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This class performs buffered IO to files opened exclusively</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.IO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IO.XsFileStream</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Special Filestream class that sets the runtime IO Errorstate when an error occurs. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.IO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IO.XsWin32FileStream</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This class is used for Shared diskaccess on Windows. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbDate</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Implementation of the IDate interface that can be used by the RDD system. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbFloat</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Implementation of the IFloat interface that can be used by the RDD system. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.IDbRow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This interface defines a row in a .Net Table.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.IMemo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This interface defines the mimimum methods that a RDD that supports memos should implement.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.IOrder</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This interface defines the mimimum methods that a RDD that supports indexes should implement.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.IRdd</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Definition for the interface that each RDD must implement</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.AutoShareMode</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum specifies how files should be opened.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DBFFieldFlags</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBF Field flags.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbfHeaderCodepage</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbFieldInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum specifies the various values that the FieldInfo method for the IRDD interface accepts.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbFieldType</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum specifies the various field types that can appear in DBF files.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum specifies the various values that the Info method for the IRDD interface accepts.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbLockMode</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum specifies the lock modes.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbNotificationType</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Enum that described the possible Notification messages that are sent to clients of Workareas</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbOrder_Info</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum specifies the various values that the OrderInfo method for the IRDD interface accepts.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbRecordInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum specifies the various values that the RecordInfo method for the IRDD interface accepts.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbSortFlags</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Flags that describe how a DbSort operation can be done.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Enums</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbTransInfoFlags</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Flags that describe how a DbTrans operation can be done.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbEvalInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store the scope and codeblock for a DbEval() operation. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbFilterInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store a filter condition for a table.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbLockInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper structure to store information needed to lock a row or table for exclusive access.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbOpenInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store information needed to open a table.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbOrderCondInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store information needed to create a conditional order.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbOrderCreateInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store information needed to create a new order.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbOrderInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store information needed to open/address an order.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbRelInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store a list of relational information.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbScopeInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store references to all of the scope clause expressions. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbSeekInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper structure to store information needed to perform a seek operation </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbSortInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store information needed to perform a physical sort. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbSortItem</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper structure to store information about a single sort key value. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbTransInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to store information needed for the global transfer of data items from one work area to another. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD.Support</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbTransItem</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper structure to store information about a single piece of data (usually a column) to transfer from one work area to another.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RT.MemWalker</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Delegate that a client needs to implement to use MemWalk.</para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
+  </developerConceptualDocument>
+</topic>

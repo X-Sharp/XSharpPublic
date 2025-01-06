@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="8d75ad58-39e3-4eb7-86fc-c76fd96f2441" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: blocks2.html -->Blocks and Namespaces&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">BEGIN SEQUENCE</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<h1 class="p_Heading1" style="page-break-after: avoid;">The BEGIN SEQUENCE keyword declares the beginning of an exception handling block.</h1>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>BEGIN SEQUENCE<para/>
+ &#160; tryStatements<para/>
+[RECOVER [USING localVariable]<para/>
+ &#160; recoveryStatements<para/>
+]<para/>
+[FINALLY<para/>
+ &#160; finallyStatements<para/>
+]<para/>
+END [SEQUENCE]</para>
+<para>where:</para>
+<table><row><entry>tryStatements </entry><entry>One or more statements or expressions that may cause an exception to be thrown. </entry></row></table><table><row><entry>localVariable </entry><entry>A local variable that will receive the exception thrown by any code between the BEGIN SEQUENCE and RECOVER statements. This must be a variable typed as USUAL. </entry></row></table><table><row><entry>recoveryStatements</entry><entry>One or more statements or expressions that will execute if an exception is thrown by any of the tryStatements. </entry></row></table><table><row><entry>finallyStatements </entry><entry>One or more statements or expressions that will always execute regardless of whether an exception is thrown or not. </entry></row></table><para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Remarks</h1>
+<para>BEGIN SEQUENCE ... END SEQUENCE is a control structure used for exception and runtime error handling. It delimits a block of statements defining a discrete operation, including invoked procedures and functions.</para>
+<para>When an exception is thrown anywhere anywhere in the block of statements following the BEGIN SEQUENCE statement up to the corresponding RECOVER statement, control branches to the program statement immediately following the RECOVER statement. If a RECOVER statement is not specified, control branches to the statement following the FINALLY statement, terminating the sequence. If a FINALLY statement is not specified, control branches to the statement following the END SEQUENCE statement, terminating the sequence.</para>
+<para>If control reaches a RECOVER statement without an exception being thrown, control branches to the statement following the FINALLY statement. If a FINALLY statement is not specified, control branches to the statement following the END SEQUENCE statement, terminating the sequence.</para>
+<para>The RECOVER statement optionally receives an exception thrown by a statement in the tryStatements block. This is usually an error object, generated and returned by the current error handling block defined by ErrorBlock(). If an error object is returned, it can be sent messages to query information about the error. With this information, a runtime error can be handled within the context of the operation rather than in the current runtime error handler.</para>
+<para>The FINALLY statement block is useful for cleaning up any resources allocated in the BEGIN SEQUENCE block. Control is always passed to the FINALLY block (if present) regardless of how the BEGIN SEQUENCE block exits.</para>
+<para>You cannot RETURN, LOOP, or EXIT between a BEGIN SEQUENCE and RECOVER statement. From within the RECOVER and FINALLY statement blocks however, you can LOOP, EXIT, BREAK, or RETURN since the sequence is essentially completed at that point. Using LOOP from within the RECOVER statement block is useful for re-executing the sequence statement block.</para>
+<para>BEGIN SEQUENCE ... END SEQUENCE control structures can be nested to any depth.</para>
+<para>The CanBreak() function returns TRUE if execution is within any BEGIN SEQUENCE block.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Example</h1>
+<para>&#160;</para>
+<para>FUNCTION Start() AS VOID<para/>
+LOCAL x := 4, y := 0 AS INT<para/>
+BEGIN SEQUENCE<para/>
+? x / y<para/>
+RECOVER<para/>
+? &quot;oops&quot;<para/>
+FINALLY<para/>
+? &quot;in finally block&quot;<para/>
+END SEQUENCE<para/>
+RETURN</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="ec59bbbe-c5f7-4c77-bb2f-cb4bedf04964">BREAK</link><para/>
+<link xlink:href="b311f02d-ac36-46c7-a504-e068924e54c7">THROW</link><para/>
+<link xlink:href="71a37628-1a90-4927-a16d-9343f5ea84f2">TRY-CATCH-FINALLY </link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

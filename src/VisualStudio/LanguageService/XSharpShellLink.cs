@@ -137,7 +137,30 @@ namespace XSharp.LanguageService
                         if (field != null)
                         {
                             dynamic _frame = field.GetValue(doc);
-                            docName = _frame.EffectiveDocumentMoniker;
+                            try
+                            {
+                                docName = _frame.EffectiveDocumentMoniker;
+                            }
+                            catch (Exception)
+                            {
+                                ;
+                            }
+                            if (string.IsNullOrEmpty(docName))
+                            {
+                                try
+                                {
+                                    docName = _frame.DocumentMoniker;
+                                }
+                                catch (Exception)
+                                {
+                                    ;
+                                }
+                            }
+                            if (string.IsNullOrEmpty(docName))
+                            {
+                                continue;
+                            }
+
                             var type = XFileTypeHelpers.GetFileType(docName);
                             if (type != XFileType.SourceCode)
                                 continue;
@@ -540,22 +563,25 @@ namespace XSharp.LanguageService
         }
         private Project findProject(SolutionItem parent, string sUrl)
         {
-            foreach(var child in parent.Children)
+            if (parent != null)
             {
-                if (child is null)
-                    continue;
-                if (child is Project project)
+                foreach (var child in parent.Children)
                 {
-                    if (string.Compare(project.FullPath, sUrl, StringComparison.OrdinalIgnoreCase) == 0)
+                    if (child is null)
+                        continue;
+                    if (child is Project project)
                     {
-                        return project;
+                        if (string.Compare(project.FullPath, sUrl, StringComparison.OrdinalIgnoreCase) == 0)
+                        {
+                            return project;
+                        }
                     }
-                }
-                foreach (var item in child.Children)
-                {
-                    var prj = findProject(item, sUrl);
-                    if (prj != null)
-                        return prj;
+                    foreach (var item in child.Children)
+                    {
+                        var prj = findProject(item, sUrl);
+                        if (prj != null)
+                            return prj;
+                    }
                 }
             }
             return null;

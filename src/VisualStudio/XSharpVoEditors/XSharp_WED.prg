@@ -380,19 +380,21 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 
         VAR oEditor := XSharp_EditorStream{}
         oEditor:Load(oFile:FullPath)
-        local nLine as LONG
+        local nLine, nFirstLine as LONG
         if oType != NULL
-            // Apparently oType:Range:EndLine returns the end line minus one, so we have to add one
-            nLine := oType:Range:EndLine +1
+            nLine := oType:Range:EndLine - 1
         else
-            nLine := aLines:Count-1
+            nLine := oEditor:Editor:aLines:Count - 1
         ENDIF
-        FOR LOCAL nTemplateLine :=  aLines:Count - 1 AS INT DOWNTO 0
-            LOCAL cLine := aLines[nTemplateLine] AS STRING
+        XDocuments.InsertLine(oFile:FullPath, nLine, "")
+        nLine ++
+        nFirstLine := nLine
+        FOREACH cLine AS STRING IN aLines
             LOCAL cNew := VOWindowEditor.SubStituteTpl(cLine, cClass, oWindowDesign:cInitParams) AS STRING
             XDocuments.InsertLine(oFile:FullPath, nLine, cNew)
+            nLine ++
         NEXT
-        XDocuments.Open(oFile:FullPath, nLine-1,0, false)
+        XDocuments.Open(oFile:FullPath, nFirstLine, 0, false)
         XSharpModel.XSolution.WalkFile(oFile:FullPath)
         RETURN
 

@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <members></members>
+  <ReportQueue>
+    <summary>
+      管理报表编辑器的报表活动，以及报表编辑器窗口的外观。
+    </summary>
+    <remarks>
+      ReportQueue 类允许应用程序使用报表编辑器创建、编辑、打印、预览和保存使用报表定义文件 (*.RET) 创建和格式化的报表。
+    </remarks>
+  </ReportQueue>
+
+  <ReportQueue.ctor>
+    <summary>
+      构造一个报表队列。
+    </summary>
+    <param name="oOwner">拥有 ReportQueue 对象的窗口。</param>
+    <param name="cServerName">
+      要使用的报表编辑器服务器。如果未指定，则默认值为“报表编辑器”，即报表编辑器运行时引擎。
+    </param>
+    <remarks>
+      <note type="tip">
+        报表编辑器是唯一支持的服务器。
+      </note> ReportQueue:Init() 
+      创建一个由窗口拥有的 ReportQueue 对象。然后可以使用此对象进行顺序报表任务。 
+    </remarks>
+    <example> 
+      此示例创建一个包含 ReportQueue 对象的 shell 窗口： 
+      <code language="X#">
+        CLASS MyShellWindow INHERIT ShellWindow
+            HIDDEN oRQ AS OBJECT
+
+            METHOD Start() CLASS App
+                LOCAL oSW := MyShellWind{}
+                oSW:Show()
+                SELF:Exec()
+
+            METHOD Init() CLASS MyShellWind
+                SUPER:Init()
+                // 初始化服务器
+                oRQ := ReportQueue{SELF,"Report Editor"}
+      </code>
+    </example>
+  </ReportQueue.ctor>
+
+  <ReportQueue.ActiveFile>
+    <summary>
+      报表编辑器服务器刚刚使用的报表定义文件。此信息可在 AppWindow:ReportNotification() 方法中使用。
+    </summary>
+    <value>报表编辑器服务器刚刚使用的报表定义文件。此信息可在 AppWindow:ReportNotification() 方法中使用。</value>
+  </ReportQueue.ActiveFile>
+
+  <ReportQueue.Close>
+    <summary>
+      关闭报表。
+    </summary>
+    <remarks>
+      当程序完成报表后，应关闭报表以减少报表编辑器的内存使用量。这不会关闭报表编辑器；只会关闭其中的打开报表。
+      ReportQueue 通过调用 ReportQueue:Open() 方法保持其打开的报表堆栈（但它无法看到用户通过报表编辑器菜单打开的额外文件）。一旦所有报表都关闭（通过
+      ReportQueue:Close() 方法或报表编辑器菜单），ReportQueue 就不知道有任何报表是打开的，并且会拒绝任何进一步的打印、预览或导出“当前报表”的调用，直到下一个
+      ReportQueue:Open() 调用。
+      ReportQueue:Close() 在所有者窗口的状态栏中显示其状态。
+      即使 ReportQueue 认为报表编辑器没有打开报表，Close() 方法仍会向报表编辑器发送 FILE.CLOSE 命令。此命令会被报表编辑器静默忽略，因此始终可以安全地调用
+      ReportQueue:Close()。
+      ReportQueue:Close() 方法完全关闭报表。ReportQueue:Close() 方法关闭预览（如果打开），和/或关闭报表定义，具体取决于打开的窗口类型。
+      报表编辑器会在报表或视图关闭时通知 ReportQueue（无论关闭是由 ReportQueue 还是用户发起的）。
+    </remarks>
+    <example> 
+      以下示例关闭报表定义： 
+      <code language="X#">
+        LOCAL oReportQueue := ReportQueue{SELF, "Report Editor"}
+        oReportQueue:Open("one.ret")
+        oReportQueue:Close()
+      </code>
+    </example>
+  </ReportQueue.Close>
+
+  <ReportQueue.CloseAll>
+    <summary>
+      关闭所有报表。
+    </summary>
+    <remarks>
+      CloseAll() 在所有者窗口的状态栏中显示其状态。它会保留报表编辑器服务器和您的程序运行。
+      CloseAll() 可以在任何时候安全调用，并且可能在异常处理程序和清理例程中有用。
+    </remarks>
+  </ReportQueue.CloseAll>
+
+  <ReportQueue.ConnectToDB>
+    <summary>
+      连接到 ODBC 数据源。
+    </summary>
+    <param name="cDataSourceName">要连接的 ODBC 数据源的名称。如果未指定数据源，将出现一个对话框以便选择一个数据源。</param>
+    <param name="cUserName">此数据源的 ODBC 用户名。</param>
+    <param name="cPassword">此数据源的 ODBC 密码或授权字符串。</param>
+    <returns>
+      如果成功则返回 TRUE；否则返回 FALSE。
+    </returns>
+    <remarks>
+      报表编辑器需要一个活动的数据库连接。在打开报表之前，必须为报表数据库创建一个数据源。
+    </remarks>
+    <example> 以下示例连接到“CA Xbase”数据源： <code language="X#">oRQ:ConnectToDB("CA Xbase")</code></example>
+  </ReportQueue.ConnectToDB>
+
+  <ReportQueue.DataUpdate>
+    <summary> 
+      处理 DataUpdateEvent（如果发生）。如果需要特殊处理事件，请在派生的 ReportQueue 类中提供此事件处理程序。 <br />
+      重要！您不应尝试调用或提供此方法的替代实现。相反，您可以在派生版本的
+      AppWindow:ReportNotification() 中提供额外的事件处理。 
+    </summary>
+    <param name="oIpcDataUpdateEvent">存储主题名称、项目名称和更改的数据（作为字符串）。</param>
+    <remarks>
+      此方法执行未完成的 ReportQueue 方法（如 Print() 和 SaveToFile()
+      等命令，或报表编辑器外观方法）。一旦打开报表，后续的命令方法可以接受一组报表参数，这些参数将插入到报表编辑器报表文本和/或数据库查询中。
+      报表编辑器的外观可以同步更改，但报表编辑器异步执行命令，所有后续命令和外观更改都在
+      ReportQueue 中排队，直到报表编辑器通知已完成上一个命令。
+      ReportQueue 方法在其所有者窗口的状态栏中发布消息，每当它们向报表编辑器发送命令时，并在完成每个命令后用确认消息替换它。
+    </remarks>
+  </ReportQueue.DataUpdate>
+
+  <ReportQueue.Edit>
+    <summary>
+      将报表加载到报表编辑器中进行编辑。
+    </summary>
+    <remarks>
+      此方法允许用户编辑报表定义 (.RET) 文件，并提供与 IDE 相同的环境。
+    </remarks>
+    <example> 
+      以下示例打开“sales.ret”报表文件并允许用户编辑文件： 
+      <code language="X#">
+        oRQ:Open("sales.ret")
+        oRQ:Edit()
+      </code></example>
+  </ReportQueue.Edit>
+
+  <ReportQueue.EventType>
+    <summary> 
+      表示事件的以下常量之一： 
+      <pre>
+          常量					              描述
+          REPORTCLOSEEVENT			    当前报表已关闭。
+          REPORTCOMPLETEERROREVENT	打印或导出任务已中止。
+          REPORTCOMPLETEEVENT		    打印或导出任务已完成。
+          REPORTFILESAVEEVENT		    报表定义已关闭。
+          REPORTOPENEVENT			      请求的报表已打开。
+          REPORTSERVERCLOSEEVENT	  报表编辑器已关闭。
+          REPORTVIEWCLOSEEVENT		  报表预览已关闭（但报表本身仍然打开）。
+        </pre> 
+      它应仅在您添加到拥有此 ReportQueue 对象的窗口类的任何
+      AppWindow:ReportNotification() 方法中使用。 
+    </summary>
+    <value>
+      表示事件的常量
+    </value>
+  </ReportQueue.EventType>
+
+  <ReportQueue.Filename>
+    <summary>
+      定义报表的 .RET 文件的名称。在打开报表的函数中不太可能使用此访问，因为文件名字符串应已在函数中本地化。如果一个方法打开报表，另一个方法需要使用该打开的文件，这将很有用。
+      请注意，这访问的是在下一个命令方法执行时打开的报表的名称，而不是 ReportQueue:ActiveFile 可能是报表编辑器当前正在处理的早期报表。
+    </summary>
+    <value>
+      定义报表的 .RET 文件的名称。在打开报表的函数中不太可能使用此访问，因为文件名字符串应已在函数中本地化。如果一个方法打开报表，另一个方法需要使用该打开的文件，这将很有用。
+      请注意，这访问的是在下一个命令方法执行时打开的报表的名称，而不是 ReportQueue:ActiveFile 可能是报表编辑器当前正在处理的早期报表。
+    </value>
+  </ReportQueue.Filename>
+
+  <ReportQueue.Hide>
+    <summary>
+      隐藏报表编辑器窗口和图标，使其不可见。
+    </summary>
+  </ReportQueue.Hide>
+
+  <ReportQueue.NEW>
+    <summary>
+      在报表编辑器中创建新的报表定义以进行编辑。
+    </summary>
+    <param name="cSQLSelectStatement">定义报表的 SQL Select 语句字符串。</param>
+    <param name="kReportStyle">
+      表示新报表样式的以下常量之一：
+    </param>
+    <remarks>
+      <pre>
+          常量				          描述
+          RPTSTYLE_CROSSTAB		创建交叉表报表。
+          RPTSTYLE_FORM			  创建基于表单的报表
+          RPTSTYLE_FREESTYLE	创建自由样式报表
+          RPTSTYLE_LABEL		  创建标签报表
+          RPTSTYLE_LETTER		  创建信件报表
+          RPTSTYLE_TABULAR		创建表格报表
+          如果未指定报表样式，将出现包含上述所有报表样式的对话框。
+      </pre> 
+      此方法允许用户编辑报表定义 (.RET) 文件，并提供与 IDE 相同的环境。 
+    </remarks>
+    <example> 
+      以下示例创建一个新的报表定义文件并允许用户编辑文件： 
+      <code language="X#">
+        oRQ:New("SELECT CUSTOMERS * FROM
+        C:\CAVO2x\SAMPLES\CUSTOMER")
+      </code>
+    </example>
+  </ReportQueue.NEW>
+
+  <ReportQueue.Open>
+    <summary>
+      打开报表。
+    </summary>
+    <param name="cReportName">现有的报表编辑器报表定义文件。如果未给出扩展名，则在指定的文件名后附加 .RET。</param>
+    <remarks> 
+      在调用 ReportQueue 命令方法（如 Print() 或 Preview()）之前，必须调用 Open()。
+      在打开第二个报表之前，建议您关闭第一个报表以节省内存，尽管这不是必需的。 Open() 在所有者窗口的状态栏中显示其状态。 
+      <note type="tip">
+        报表编辑器需要一个活动的数据库连接。在打开报表之前，必须为报表数据库创建一个数据源并使用 ReportQueue:ConnectToDB() 连接到它。
+      </note>
+    </remarks>
+    <example> 
+      此示例打开报表定义： 
+      <code language="X#">
+        LOCAL od AS OBJECT
+        LOCAL ReportFile AS STRING
+        od := OpenDialog{SELF,"*.ret"}
+        od:Show()
+        ReportFile := od:FileName
+        od:Destroy()
+        oRQ:ConnectToDB(...)
+        oRQ:Open(ReportFile)
+      </code>
+    </example>
+  </ReportQueue.Open>
+
+  <ReportQueue.Origin>
+    <summary>
+      定义报表编辑器窗口左上角显示位置的点（以画布坐标表示）。
+      报表编辑器从此点向下显示。这与 X# 应用程序使用的坐标系统相反，X# 应用程序将其窗口的原点视为左下角，并向上显示窗口。
+    </summary>
+    <value>定义报表编辑器窗口左上角显示位置的点（以画布坐标表示）。报表编辑器从此点向下显示。这与 X# 应用程序使用的坐标系统相反，X# 应用程序将其窗口的原点视为左下角，并向上显示窗口。</value>
+  </ReportQueue.Origin>
+
+  <ReportQueue.owner>
+    <summary>
+      拥有 ReportQueue 对象的窗口。此访问允许使用 ReportQueue 的代码调用所有者的方法（最终派生自 AppWindow）。
+    </summary>
+    <value>拥有 ReportQueue 对象的窗口。此访问允许使用 ReportQueue 的代码调用所有者的方法（最终派生自 AppWindow）。</value>
+  </ReportQueue.owner>
+
+  <ReportQueue.Preview>
+    <summary>
+      在屏幕上预览报表。
+    </summary>
+    <param name="aParams">
+      报表参数数组，由报表编辑器报表文件理解。这些报表参数可以由报表编辑器插入到报表文本中，和/或用作报表查询中的选择条件。使用逗号默认任何未使用的参数或重新使用先前提供的参数。</param>
+    <param name="cPreviewTitle">表示预览窗口标题的字符串。如果省略，窗口标题栏中不会显示标题。</param>
+    <param name="lMDIChild">逻辑值，指示预览窗口是否为 MDI 子窗口（TRUE）或不是（FALSE）。如果省略，默认值为 FALSE。</param>
+    <remarks> 方法的状态发送到所有者窗口的状态栏，显示“<paramref name="ServerName" /> 已完成报表。” 参数在 Preview()
+      方法之前传输到报表编辑器，并将由后续的 Print() 方法使用。您可以更喜欢将是否打印报表的决定留给预览的人，而不是让程序请求打印。 </remarks>
+    <example> 
+      以下示例在打印之前在屏幕上预览文件： 
+      <code language="X#">
+        oRQ:ConnectToDB(...)
+        oRQ:Open("sales.ret")
+        oRQ:Preview({"Spain","1993"})
+        oRQ:Print()
+      </code>
+    </example>
+  </ReportQueue.Preview>
+
+  <ReportQueue.Print>
+    <summary>
+      将报表打印到报表编辑器选择的打印机。
+    </summary>
+    <param name="aParams">
+      报表参数数组，由报表编辑器报表文件理解。这些报表参数可以由报表编辑器插入到报表文本中，和/或用作报表查询中的选择条件。使用逗号默认任何未使用的参数或重新使用先前提供的参数。</param>
+    <param name="oRange">要打印的页码范围。省略此参数以打印报表的所有页面。Range:Min 参数为零表示“从开始”，而 Range:Max 参数为零表示“到结束”。</param>
+    <remarks>
+      报表参数在打印命令之前传输到报表编辑器，并由后续的 Print() 方法使用。
+    </remarks>
+    <example> 
+      此示例从同一报表定义打印三个不同的报表： 
+      <code language="X#">
+        // 打印所有
+        oRQ:ConnectToDB(...)
+        oRQ:Open{"sales.ret"}
+        // 默认再次使用 1992
+        oRQ:Print({"Spain","1992"})
+        oRQ:Print({"Ireland"})
+        // 第二和第三页
+        oRQ:Print({,"1993"},Range{2,3})
+        oRQ:Close()
+      </code>
+    </example>
+  </ReportQueue.Print>
+
+  <ReportQueue.ReportExit>
+    <summary>
+      退出报表编辑器。
+    </summary>
+  </ReportQueue.ReportExit>
+
+  <ReportQueue.ReportServer>
+    <summary>
+      当前此 ReportQueue 使用的报表编辑器服务器。该值在 ReportQueue:Init() 方法中设置。
+    </summary>
+    <value>当前此 ReportQueue 使用的报表编辑器服务器。该值在 ReportQueue:Init() 方法中设置。</value>
+    <remarks>
+      <note type="tip">唯一支持的服务器是“报表编辑器”。</note>
+    </remarks>
+  </ReportQueue.ReportServer>
+
+  <ReportQueue.SaveToFile>
+    <summary>
+      将报表保存到指定文件名。
+    </summary>
+    <param name="cTarget">保存报表的文件。</param>
+    <param name="cFormat">定义保存格式的另一个字符串，可以是 RTF 或 TEXT。富文本格式保留所有间距、表格对齐、字体等特性。默认值为 RTF。</param>
+    <param name="aParams">字符串参数数组，这些参数是报表编辑器报表文件理解的报表参数。请参阅 ReportQueue:Preview() 方法下的讨论。</param>
+    <example> 
+      此示例将两个文件以 RTF 格式存储到磁盘： 
+      <code language="X#">
+        oRQ:Print({"Spain","1992"})
+        oRQ:SaveToFile("spain92.rtf","RTF")
+        oRQ:SaveToFile("spain93.rtf",,{,"1993"})
+      </code>
+    </example>
+  </ReportQueue.SaveToFile>
+
+  <ReportQueue.SetPapersize>
+    <summary>
+      设置报表的纸张大小。
+    </summary>
+    <param name="iSize">
+      表示预定义纸张大小之一的整数（见下文）。
+      如果省略，默认值为 1（Letter 8 1/2 x 11 英寸）。
+    </param>
+    <remarks> 
+      <table>
+        <tr>
+          <th>Size</th>
+          <th>MM</th>
+        </tr>
+        <tr>
+          <td>A3</td>
+          <td>297 x 420</td>
+        </tr>
+        <tr>
+          <td>A4</td>
+          <td>210 x 297</td>
+        </tr>
+        <tr>
+          <td>A4 Small</td>
+          <td>210 x 297</td>
+        </tr>
+        <tr>
+          <td>A5</td>
+          <td>148 x 210</td>
+        </tr>
+        <tr>
+          <td>B4</td>
+          <td>250 x 354</td>
+        </tr>
+        <tr>
+          <td>B5</td>
+          <td>182 x 257</td>
+        </tr>
+        <tr>
+          <td>C size sheet</td>
+          <td>24</td>
+        </tr>
+        <tr>
+          <td>D size sheet</td>
+          <td>25</td>
+        </tr>
+        <tr>
+          <td>E size sheet</td>
+          <td>26</td>
+        </tr>
+        <tr>
+          <td>Envelope B4</td>
+          <td>250 x 353</td>
+        </tr>
+        <tr>
+          <td>Envelope B5</td>
+          <td>176 x 250</td>
+        </tr>
+        <tr>
+          <td>Envelope B6</td>
+          <td>176 x 125</td>
+        </tr>
+        <tr>
+          <td>Envelope C5</td>
+          <td>162 x 229</td>
+        </tr>
+        <tr>
+          <td>Envelope C3</td>
+          <td>324 x 458</td>
+        </tr>
+        <tr>
+          <td>Envelope C4</td>
+          <td>229 x 324</td>
+        </tr>
+        <tr>
+          <td>Envelope C6</td>
+          <td>114 x 162</td>
+        </tr>
+        <tr>
+          <td>Envelope C65</td>
+          <td>114 x 229</td>
+        </tr>
+        <tr>
+          <td>Envelope DL</td>
+          <td>110 x 220</td>
+        </tr>
+        <tr>
+          <td>Envelope 110 x 230</td>
+          <td>36</td>
+        </tr>
+        <tr>
+          <td>Envelope Monarch</td>
+          <td>3.875 x 7.5 in</td>
+        </tr>
+        <tr>
+          <td>6 3/4 Envelope</td>
+          <td>3 5/8 x 6 1/2 in</td>
+        </tr>
+        <tr>
+          <td>Envelope #9</td>
+          <td>3 7/8 x 8 7/8</td>
+        </tr>
+        <tr>
+          <td>Envelope #10</td>
+          <td>4 1/8 x 9 1/2</td>
+        </tr>
+        <tr>
+          <td>Envelope #11</td>
+          <td>4 1/2 x 10 3/8</td>
+        </tr>
+        <tr>
+          <td>Envelope #12</td>
+          <td>4 3/4 x 11</td>
+        </tr>
+        <tr>
+          <td>Envelope #14</td>
+          <td>5 x 11 1/2</td>
+        </tr>
+        <tr>
+          <td>Executive</td>
+          <td>7 1/4 x 10 1/2 in</td>
+        </tr>
+        <tr>
+          <td>Folio</td>
+          <td>8 1/2 x 13 in</td>
+        </tr>
+        <tr>
+          <td>German Std Fanfold</td>
+          <td>8 1/2 x 12 in</td>
+        </tr>
+        <tr>
+          <td>German Legal Fanfold</td>
+          <td>8 1/2 x 13 in</td>
+        </tr>
+        <tr>
+          <td>Legal</td>
+          <td>8 1/2 x 14 in</td>
+        </tr>
+        <tr>
+          <td>Letter</td>
+          <td>8 1/2 x 11 in</td>
+        </tr>
+        <tr>
+          <td>Letter Small</td>
+          <td>8 1/2 x 11 in</td>
+        </tr>
+        <tr>
+          <td>Note</td>
+          <td>8 1/2 x 11 in</td>
+        </tr>
+        <tr>
+          <td>Quarto</td>
+          <td>215 x 275 mm</td>
+        </tr>
+        <tr>
+          <td>Statement</td>
+          <td>5 1/2 x 8 1/2 in</td>
+        </tr>
+        <tr>
+          <td>Tabloid</td>
+          <td>11 x 17 in</td>
+        </tr>
+        <tr>
+          <td>US Std Fanfold</td>
+          <td>14 7/8 x 11 in</td>
+        </tr>
+        <tr>
+          <td>10x14 in</td>
+          <td>16</td>
+        </tr>
+        <tr>
+          <td>11x17 in</td>
+          <td>17</td>
+        </tr>
+      </table>
+      在调用 Print()或 Preview()之前应设置纸张大小。
+      <note type="tip">
+      并非所有打印机都支持所有纸张大小。请查阅您的打印机文档以了解支持的纸张大小。
+      </note>
+    </remarks>
+    <example>
+      <code language="X#">
+        oRQ:SetPrinterPaperSize(5) // 将纸张大小设置为 Legal 8 1/2 x 14 英寸
+      </code>
+    </example>
+  </ReportQueue.SetPapersize>
+
+  <ReportQueue.SetPrinterOrientation>
+    <summary>
+      设置报表的打印方向。
+    </summary>
+    <param name="bOrientation">二进制值，指示打印方向是纵向 (0) 还是横向 (1)。如果省略，默认为 0（纵向）。</param>
+    <remarks>
+      在调用 Print() 或 Preview() 之前应设置纸张方向。
+    </remarks>
+    <example>
+      <code language="X#">oRQ:SetPrinterOrientation(1) // 将方向设置为横向</code>
+    </example>
+  </ReportQueue.SetPrinterOrientation>
+
+  <ReportQueue.SetReportQuery>
+    <summary>
+      设置用于报表的查询。
+    </summary>
+    <param name="sQueryName">用于报表的查询名称。</param>
+    <remarks>
+      对于包含多个查询的报表，可以使用此方法选择运行报表时使用的查询。要查看可用的查询，请进入报表编辑器并选择“查询，设置报表查询”菜单项。如果该菜单项被禁用，则仅定义了默认查询
+      (QUERY1)。否则，将出现一个“设置报表查询”对话框，并列出可用的查询。
+      在调用 Print() 或 Preview() 之前应设置报表查询。
+    </remarks>
+    <example>
+      <code language="X#">oRQ:SetReportQuery("QUERY2") // 将报表查询设置为 QUERY2</code>
+    </example>
+  </ReportQueue.SetReportQuery>
+
+  <ReportQueue.SetSQLFile>
+    <summary>
+      加载一个 SQL 查询文件作为报表的活动 SQL 查询。
+    </summary>
+    <param name="sQueryFile">要加载的查询文件的名称。</param>
+    <remarks> 
+      从磁盘加载一个 SQL 查询文件以用作此报表的活动查询。在调用 Print() 或 Preview() 之前应加载 SQL 查询文件。 
+      <note type="tip">
+        X# 报表编写器不支持示例查询 (.QBE) 文件。
+      </note>
+    </remarks>
+    <example>
+      <code language="X#">oRQ:SetSQLFile("QUERY6.SQL")</code>
+    </example>
+  </ReportQueue.SetSQLFile>
+
+  <ReportQueue.SetSQLText>
+    <summary>
+      设置一个文本字符串作为报表的活动 SQL 查询。
+    </summary>
+    <param name="sQuery">用作活动 SQL 查询的查询字符串。</param>
+    <remarks>
+      在调用 Print() 或 Preview() 之前应设置查询文本。
+    </remarks>
+    <example>
+      <code language="X#">
+        oRQ:SetSQLText("SELECT Customer.* FROM " + ;
+                      "C:\CAVO2x\Samples\Explorer\Customer WHERE " + ;
+                      "Customer.CustNum = 8")
+      </code>
+    </example>
+  </ReportQueue.SetSQLText>
+
+  <ReportQueue.Show>
+    <summary>
+      最小化或最大化报表编辑器窗口。
+    </summary>
+    <param name="kShowState">
+      报表编辑器窗口区域应显示的状态。指定以下常量之一:
+    </param>
+    <remarks>
+      <pre>
+          常量		        描述
+          SHOWICONIZED	将报表编辑器窗口图标化或最小化。
+          SHOWNORMAL	  将报表编辑器窗口恢复为正常状态。这是默认值。
+          SHOWZOOMED	  将报表编辑器窗口最大化为全屏。
+        </pre>
+    </remarks>
+  </ReportQueue.Show>
+
+  <ReportQueue.Size>
+    <summary>
+      表示报表编辑器窗口当前大小的尺寸，以画布坐标表示。
+    </summary>
+    <value>表示报表编辑器窗口当前大小的尺寸，以画布坐标表示。</value>
+  </ReportQueue.Size>
+
+</doc>

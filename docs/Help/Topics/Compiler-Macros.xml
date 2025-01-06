@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-08T15:00:53.780+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T16:36:19.553+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Compiler Macros</title>
   <keywords>
     <keyword>__ARRAYBASE__</keyword>
@@ -65,16 +65,17 @@
       <para styleclass="Heading1">Compiler Macros</para>
     </header>
     <para styleclass="Normal">The following defines can be used in your code and will be replaced by the compiler with a literal value:</para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="41" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Name</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Name</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Type</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Type</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Value</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Value</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -255,13 +256,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">__FOX2__</para>
+          <para styleclass="Normal">__FOX1__, __FOX2__</para>
         </td>
         <td>
           <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal">Current value of the FoxPro compatibility compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">/fox2</link></para>
+          <para styleclass="Normal">Current value of the FoxPro compatibility compiler options <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox1">/fox1</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">/fox2</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -518,8 +519,8 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading3">Note</para>
-    <para styleclass="Normal">The CLR2 and CLR4 version is determined by the X# compiler by looking at the version of either system.dll or mscorlib.dll</para>
+    <para styleclass="Heading3"><text style="color:#0000ff;">Note</text></para>
+    <para styleclass="Normal">The CLR2 and CLR4 version is determined by the X# compiler by looking at the version of either system.dll or mscorlib.dll.</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

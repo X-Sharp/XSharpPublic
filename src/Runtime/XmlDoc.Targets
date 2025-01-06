@@ -3,7 +3,12 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Documentation'">
     <PreBuildEvent>copy $(SolutionDir)Docs\*.xml $(ProjectDir) &gt; nul</PreBuildEvent>
     <PostBuildEvent>erase  $(ProjectDir)*.xml</PostBuildEvent>
-    <RunPostBuildEvent />
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
+ <PropertyGroup Condition="'$(Configuration)' == 'DocChinese'">
+    <PreBuildEvent>copy $(SolutionDir)DocChinese\*.xml $(ProjectDir) &gt; nul</PreBuildEvent>
+    <PostBuildEvent>erase  $(ProjectDir)*.xml</PostBuildEvent>
+   <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+ </PropertyGroup>  
 </Project>
 

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-01T20:55:26.808+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T17:59:36.899+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-keyfile</title>
   <keywords>
     <keyword>-keyfile</keyword>
@@ -9,7 +9,7 @@
     <header>
       <para styleclass="Heading1">-keyfile</para>
     </header>
-    <para styleclass="Normal">Specifies the filename containing the cryptographic key.</para>
+    <para styleclass="Normal">This option specifies the filename containing the cryptographic key.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Code with box">-keyfile:file <text styleclass="Normal">&#32;</text></para>
     <para styleclass="Heading2">Arguments</para>
@@ -21,18 +21,17 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">You can also pass your encryption information to the compiler with -keycontainer. Use -delaysign if you want a partially signed assembly.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">In case both -keyfile and -keycontainer are specified (either by command line option or by custom attribute) in the same compilation, the compiler will first try the key container. If that succeeds, then the assembly is signed with the information in the key container. If the compiler does not find the key container, it will try the file specified with -keyfile. If that succeeds, the assembly is signed with the information in the key file and the key information will be installed in the key container (similar to sn -i) so that on the next compilation, the key container will be valid.</para>
+    <para styleclass="Normal">In case both -keyfile and -keycontainer are specified (either by command line option or by custom attribute) in the same compilation, the compiler will first try the key container. If that succeeds, the assembly is signed with the information in the key container. If the compiler does not find the key container, it will try the file specified with -keyfile. If that succeeds, the assembly is signed with the information in the key file and the key information will be installed in the key container (similar to sn -i) so that on the next compilation, the key container will be valid.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Note that a key file might contain only the public key.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">For more information, see Creating and Using Strong-Named Assemblies and Delay Signing an Assembly.</para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
-    <para styleclass="Normal"></para>
     <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the Properties page for the project.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Build property page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Modify the Choose a strong name key file property.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link></li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link>.</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
     <para styleclass="Normal">You can programmatically access this compiler option with AssemblyOriginatorKeyFile.</para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T17:59:59.561+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-langversion</title>
   <keywords>
     <keyword>-langversion</keyword>
@@ -9,6 +9,6 @@
     <header>
       <para styleclass="Heading1">-langversion</para>
     </header>
-    <para styleclass="Normal">this compiler option is ignored. When compared to the C# compiler, X# always compiles in the languageversion Latest.</para>
+    <para styleclass="Normal">This compiler option is ignored. When compared to the C# compiler, X# always compiles in the latest language version.</para>
   </body>
 </topic>

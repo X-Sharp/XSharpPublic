@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-14T15:06:51.343+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>EVENT Statement</title>
   <keywords>
     <keyword>Access() Methods</keyword>
@@ -38,11 +38,11 @@
     <para styleclass="Heading1"></para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">There are 3 types of event declarations:</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Single line declaration without ADD / REMOVE accessors</li>
-      <li styleclass="Normal">Single line declaration with ADD / REMOVE accessors</li>
-      <li styleclass="Normal">Multi line declaration with ADD accessor block and/or REMOVE accessor bock</li>
+    <para styleclass="Normal">There are three types of event declarations:</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Single line declaration without ADD / REMOVE accessors;</li>
+      <li styleclass="Normal">Single line declaration with ADD / REMOVE accessors;</li>
+      <li styleclass="Normal">Multi-line declaration with ADD accessor block and/or REMOVE accessor bock.</li>
     </list>
     <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>

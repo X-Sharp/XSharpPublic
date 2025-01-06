@@ -58,7 +58,7 @@ namespace XSharp.Project
         protected override bool SupportsIconMonikers => true;
         protected override ImageMoniker GetIconMoniker(bool open)
         {
-#if VS17
+#if DEV17
             if (open)
                 return KnownMonikers.PropertiesFolderOpen;
             else

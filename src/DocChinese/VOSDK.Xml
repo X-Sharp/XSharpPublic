@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <ReturnsLogic>
+        <returns>
+            如果成功则返回 TRUE；否则返回 FALSE。
+        </returns>
+    </ReturnsLogic>
+
+    <commonblocks>
+        <notify>
+            <param name="kNotification">标识事件，指定为下表中的常量之一。</param>
+            <param name="uDescription">仅用于某些通知类型。请参阅下表中的描述</param>
+            <remarks>
+                <list type="table">
+                    <listheader>
+                        <term>常量</term>
+                        <description>描述</description>
+                    </listheader>
+                    <item>
+                        <term>NOTIFYAPPEND</term>
+                        <description>
+                            一个空白记录已附加到服务器；
+                            服务器仍然定位在这个新记录上，并且其值尚未最终确定。
+                        </description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCLEARRELATION</term>
+                        <description>不会发送到数据浏览器。</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCLOSE</term>
+                        <description>服务器打算关闭自身。</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCOMPLETION</term>
+                        <description>
+                            服务器已完成某些不涉及重新定位服务器或更改数据的大型操作（如重新索引）。
+                            这使客户端有机会更新用户的视觉指示，表明某些操作已完成。
+                        </description>
+                    </item>
+                    <item>
+                        <term>NOTIFYDELETE</term>
+                        <description>当前记录已被删除，服务器现在根据其处理删除的规则进行定位。浏览器应相应地刷新其显示。</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYFIELDCHANGE</term>
+                        <description> 字段已更改。<paramref name="uDescription" />
+                是字段名称作为符号。请注意，浏览器可能不包含具有指示名称的列。服务器只知道它有一个该名称的字段并且它已更改，并通知所有客户端以防它们感兴趣。 </description>
+                    </item>
+                    <item>
+                        <term>NOTIFYFILECHANGE</term>
+                        <description>
+                服务器已执行某些对数据进行大量更改的方法；浏览器对服务器及其数据的所有了解可能已过时，应从服务器刷新所有信息以及所有依赖于数据或其位置的计算。
+                        </description>
+                    </item>
+                    <item>
+                        <term>NOTIFYGOBOTTOM</term>
+                        <description>
+                            服务器已移动到其最后一条记录。许多客户端将此视为记录更改，
+                            但数据浏览器可以将定位到末尾视为特殊情况。
+                        </description>
+                    </item>
+                    <item>
+                        <term>NOTIFYGOTOP</term>
+                        <description>
+                            服务器已移动到其第一条记录。许多客户端将此视为记录更改，但数据浏览器可以将定位到顶部视为特殊情况。
+                        </description>
+                    </item>
+                    <item>
+                        <term>NOTIFYINTENTTOMOVE</term>
+                        <description>
+                服务器打算进行移动。（请注意，移动可能是由另一个客户端发起的。）浏览器应确保在移动完成之前保存其所有数据（如有必要）。标准实现检查验证状态。如果浏览器包含无效数据，用户可以选择纠正错误或放弃数据。
+                        </description>
+                    </item>
+                    <item>
+                        <term>NOTIFYRECORDCHANGE</term>
+                        <description>
+                服务器的记录位置已更改。所有客户端在任何移动后都会收到通知，以便它们可以从服务器刷新其显示。浏览器需要根据移动的距离智能地更新其显示。<paramref
+                                name="uDescription" /> 可能指示移动的长度（记录的数量）。浏览器可以使用此信息进行显示优化，但不能依赖其可用性。 </description>
+                    </item>
+                    <item>
+                        <term>NOTIFYRELATIONCHANGE</term>
+                        <description>
+                            不会发送到数据浏览器（服务器之间的关系更改作为文件更改传输到客户端）。
+                        </description>
+                    </item>
+                </list>
+                此 Notify() 方法是链接浏览器和服务器之间自动通知的核心， 允许任何窗口更改字段值或发起移动，并确保所有 客户端窗口反映更改。<br />
+                任何注册为服务器客户端的类都必须智能地响应 Notify 消息。<br /> 与定义的常量一样，您永远不应依赖常量的实际值——它们不会
+                必然保持不变。然而，常量确实保持其顺序： 
+                <list type="bullet">
+                    <listheader>
+                        <term>常量</term>
+                        <description>描述</description>
+                    </listheader>
+                    <item>
+                        <term>NOTIFYFIELDCHANGE</term>
+                        <description>最低</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCLOSE</term>
+                        <description>.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCOMPLETION</term>
+                        <description>.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYINTENTTOMOVE</term>
+                        <description>.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYRECORDCHANGE</term>
+                        <description>.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYGOBOTTOM</term>
+                        <description>.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYGOTOP</term>
+                        <description>.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYDELETE</term>
+                        <description>.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYAPPEND</term>
+                        <description>.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYFILECHANGE</term>
+                        <description>.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYRELATIONCHANGE</term>
+                        <description>.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCLEARRELATION</term>
+                        <description>最高</description>
+                    </item>
+                </list>
+                因此，您可以可靠地编写： 
+                <code language="X#">
+                    IF kNotification &gt; NOTIFYINTENTTOMOVE;
+                        .AND. kNotification &lt; NOTIFYFILECHANGE
+                        ... // 仅记录级别移动
+                    ENDIF
+                </code>
+            </remarks>
+        </notify>
+
+        <scopeparams>
+            <param name="aFieldList">要包含的源文件中的字段数组。默认是所有字段。</param>
+            <param name="cbForBlock">对范围内每条记录进行评估的条件；如果为 TRUE，则包括该记录。它提供与记录处理命令的 FOR 子句相同的功能。</param>
+            <param name="cbForCondition">定义范围内每条记录必须满足的条件的代码块，以便进行处理。</param>
+            <param name="cbWhileBlock">从第一条记录开始评估每条记录的条件，直到条件返回 FALSE。它提供与记录处理命令的 WHILE 子句相同的功能。</param>
+            <param name="cbWhileCondition"> 
+                定义每条记录必须满足的另一个条件的代码块，以便进行处理。 一旦遇到导致条件失败的记录，操作就会终止。<br />
+                如果未指定范围，<paramref name="cbWhileCondition" /> 会将默认范围更改为 <paramref name="lRest" />。<br />
+                您可以使用这三个互斥参数之一来定义范围。<br /> 默认是所有记录。 
+            </param>
+            <param name="uScope"> 
+                要处理的记录范围，提供与记录处理命令的 ALL、REST 和 NEXT 子句相同的功能。 
+                <include file="RTComments.xml" path="Comments/Scope_Constants/*" />
+            </param>
+            <param name="cDriver">将为数据服务器提供服务的 RDD 的名称。如果未指定，则使用由 RDDSetDefault() 确定的默认 RDD。</param>
+            <param name="aRDD"> 
+                一个包含 RDD 名称的一维数组，主 RDD 从中继承特殊功能。
+                这允许您对具有不同数据库驱动程序的不同数据服务器使用具有特殊功能的 RDD，例如加密或解密。
+                这些 RDD 覆盖主 RDD 的特殊功能（使用 <paramref name="cDriver" /> 参数指定）。
+                如果多个 RDD（使用此参数指定）实现相同的功能，则列表中最后一个 RDD 关联的功能优先。
+                如果省略 <paramref name="aRdds" />，则不假定有其他 RDD。 
+            </param>
+            <param name="nNext"> 要处理的记录数，从 <paramref name="nRecord" /> 开始。 指定 0 以忽略此参数。 </param>
+            <param name="nRecord">要处理的单个记录号。指定 0 以忽略此参数。</param>
+            <param name="lRest"> TRUE 仅处理从 <paramref name="nStart" /> 到文件末尾的记录。 FALSE 处理所有记录。 </param>
+            <param name="lNoOpt">禁用（Rushmore）优化（尚不支持）。</param>
+        </scopeparams>
+        <acrdds>
+            <param name="acRDDs"> 
+                一个包含 RDD 名称的一维数组，主 RDD 从中继承特殊功能。<br />
+                这允许您在具有不同数据库驱动程序的不同工作区中使用具有特殊功能的 RDD，例如加密或解密。<br /> 
+                这些 RDD 覆盖主 RDD 的特殊功能（使用 <paramref name="cDriver" /> 参数指定）。<br /> 
+                如果多个 RDD（使用此参数指定）实现相同的功能，则列表中最后一个 RDD 关联的功能优先。<br />
+                如果省略 <paramref name="acRDDs" />，则不假定有其他 RDD。 
+            </param>
+        </acrdds>
+    </commonblocks>
+</doc>

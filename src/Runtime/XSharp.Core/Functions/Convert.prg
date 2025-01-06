@@ -55,6 +55,25 @@ FUNCTION Bin2L(cSignedInt AS STRING) AS LONG
     RETURN liResult
 
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bin2l/*" />
+FUNCTION Bin2Int64(cSignedInt AS STRING) AS INT64
+    LOCAL i64Result := 0 AS INT64
+    IF cSignedInt!= NULL .AND. cSignedInt:Length >= 8
+        LOCAL aBytes AS BYTE[]
+        aBytes := BYTE[]{8}
+        aBytes[0] := (BYTE) _AND(cSignedInt:Chars[0], 0xFF)
+        aBytes[1] := (BYTE) _AND(cSignedInt:Chars[1], 0xFF)
+        aBytes[2] := (BYTE) _AND(cSignedInt:Chars[2], 0xFF)
+        aBytes[3] := (BYTE) _AND(cSignedInt:Chars[3], 0xFF)
+        aBytes[4] := (BYTE) _AND(cSignedInt:Chars[4], 0xFF)
+        aBytes[5] := (BYTE) _AND(cSignedInt:Chars[5], 0xFF)
+        aBytes[6] := (BYTE) _AND(cSignedInt:Chars[6], 0xFF)
+        aBytes[7] := (BYTE) _AND(cSignedInt:Chars[7], 0xFF)
+        i64Result := BitConverter.ToInt64(aBytes, 0)
+    ENDIF
+    RETURN i64Result
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bin2logic/*" />
 FUNCTION Bin2Logic(pszLogical AS STRING) AS LOGIC
     RETURN pszLogical != NULL .AND. pszLogical[0] != 0
@@ -68,7 +87,7 @@ FUNCTION Ptr2Bin(p AS IntPtr) AS STRING
     IF IntPtr.Size == 4
         RETURN L2Bin( p:ToInt32())
     ELSE
-        THROW NotSupportedException{}
+        RETURN I642Bin( p:ToInt64())
     ENDIF
 
 /// <summary>
@@ -80,7 +99,7 @@ FUNCTION Bin2Ptr(cPointer AS STRING) AS IntPtr
     IF IntPtr.Size == 4
         RETURN (IntPtr) Bin2L(cPointer)
     ELSE
-        THROW NotSupportedException{}
+        RETURN (IntPtr) Bin2Int64(cPointer)
     ENDIF
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bin2real4/*" />
@@ -217,6 +236,12 @@ FUNCTION I2Bin(siValue AS SHORT) AS STRING
 FUNCTION L2Bin(liValue AS LONG) AS STRING
     LOCAL byteArray := BitConverter.GetBytes( liValue ) AS BYTE[]
     RETURN _bytes2String(byteArray)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/l2bin/*" />
+FUNCTION I642Bin(liValue AS INT64) AS STRING
+    LOCAL byteArray := BitConverter.GetBytes( liValue ) AS BYTE[]
+    RETURN _bytes2String(byteArray)
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lobyte/*" />
 FUNCTION LoByte(wValue AS WORD) AS BYTE

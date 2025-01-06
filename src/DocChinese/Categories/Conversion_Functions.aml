@@ -1,0 +1,1402 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:28 -->
+<topic id="cat-Conversion_Functions" revisionNumber="1" title="Conversion Functions">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <section address="Section1">
+      <title>Conversion Functions</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Assembly</para>
+              </entry>
+              <entry>
+                <para>Function</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions._C2Hex(System.String,System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Convert a string value to a hexadecimal string.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a numeric expression to a string.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Str3(XSharp.__Float,System.UInt32,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a numeric expression to a string of specific length and decimal places.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions._Val(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string containing a numeric value to a numeric data type.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Ansi2Oem(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string of ANSI characters to OEM characters.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Ansi2OemA(System.String@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string of ANSI characters to OEM characters, changing the contents of the original string as well as the returned string.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Ansi2OemBuff(System.Byte[],System.Byte[],System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Ansi2OemBuff(XSharp.__Psz,XSharp.__Psz,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Asc(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a character to its ASCII value.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.AscW(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a character to its Unicode ASCII value.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsHexString(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a value to a hexadecimal string.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsPadr(XSharp.__Usual,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a value to a right-padded string.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsSymbol(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string or a PSZ to a symbol.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Bin2Date(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string containing a 32-bit binary date to a date data type.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Bin2DW(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string containing a 32-bit unsigned integer to a double word.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Bin2F(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string containing a 80-bit floating point number to a float value.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Bin2I(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string containing a 16-bit signed integer to a short integer.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Bin2L(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string containing a 32-bit signed integer to a long integer.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Bin2Logic(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string containing an 8-bit logical into a logical value.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Bin2Logic(XSharp.__Psz)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string containing an 8-bit logical into a logical value.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Bin2Ptr(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Bin2Real4(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string containing a 32-bit floating point number to a Real4 value.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Bin2Real8(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string containing a 32-bit floating point number to a Real8 value.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Bin2W(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string containing a 16-bit unsigned integer to a word.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.BinToc(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.C2Hex(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Convert a string value to a hexadecimal string.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.CDoW(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Extract the name of the day of the week from a date.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Chr(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert an ASCII code to a character value.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ChrA(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert an ASCII code to a character value, always using the Ansi codepage, ignoring the SetAnsi() setting.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ChrW(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert an ASCII code to a character value.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.CMonth(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Extract the name of the month from a date.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ConDate(System.UInt32,System.UInt32,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Format a set of numbers representing a year, month, and day as a date.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CToBin(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>-- todo --</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.CToD(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a date string to date format.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.CToDAnsi(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert an ANSI date string to date format.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.CToDt(System.String,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a Date string to DateTime.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.CToDtAnsi(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert an ANSI date string to DateTime
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.CTOL(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string value to a logic.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CToT(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>-- todo --</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Date2Bin(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a date to a 32-bit binary date string.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Extract the number of the day of the week from a date.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DToC(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a date to a string.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.DToCSQL(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Convert a date to a string in "YYYY-MM-DD" format</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VOSQLClasses.Functions.DToCSQL(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Convert a date to a string in "YYYY-MM-DD" format</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DToR(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Converts degrees to radians.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DToS(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a date value to a string formatted as yyyymmdd.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToT(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Returns a DateTime value from a Date expression.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DtToC(System.DateTime)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a DateTime to a string.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DtToS(System.DateTime)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a DateTime value to a string formatted as string in ANSI format
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DW2Bin(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a double word to a string containing a 32-bit unsigned integer.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.EncodeBase64(System.IntPtr,System.IntPtr)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Encode a file for e-mail transfer.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.F2Bin(XSharp.__Float)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a float to a string containing an 80-bit floating point number.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Float2Long(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Hex2C(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.I2Bin(System.Int16)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a short integer to a string containing a 16-bit signed integer.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.L2Bin(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a long integer to a string containing a 32-bit signed integer.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Logic2Bin(System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a logical value to a string containing an 8-bit logical value.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.LTOC(System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a logical value to a string.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MDY(System.DateTime)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Mem2String(System.IntPtr,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Extract a substring of a certain size from the left of a buffer.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.NToCDoW(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert the number that identifies a day into the name of the day.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.NToCMonth(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert the number that identifies a month into the name of the month.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.NToM(XSharp.__Float)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Returns a Currency value from a Numeric expression.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NTrim(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a numeric expression to a left-trimmed string.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Oem2Ansi(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string of OEM characters to ANSI characters.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Oem2AnsiA(System.String@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string of OEM characters to ANSI characters, changing the contents of the argument as well as the return value.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Oem2AnsiBuff(System.Byte[],System.Byte[],System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Oem2AnsiBuff(XSharp.__Psz,XSharp.__Psz,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Psz2String(XSharp.__Psz)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a null-terminated string to a strongly typed string.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Psz2Usual(XSharp.__Psz)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a null-terminated string to a strongly typed string.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Ptr2Bin(System.IntPtr)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a intptr to a string
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Real42Bin(System.Single)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a Real4 value to a string containing a 32-bit floating point number.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Real82Bin(System.Double)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a Real8 value to a string containing an 8-byte floating point number.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RToD(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Converts radians to its equivalent in degrees.
+            You can use RTOD( ) when working with the X# trigonometric functions COS( ), SIN( ), and TAN( ).
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a numeric expression to a string.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str1(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a numeric expression to a string.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str2(XSharp.__Float,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a numeric expression to a string of a specified length.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str3(XSharp.__Float,System.UInt32,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a numeric expression to a string of specific length and decimal places.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrConv(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>-- todo --</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StrFloat(XSharp.__Float,System.UInt32,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a float expression to a PSZ.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.String2Atom(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string to a Symbol.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.String2FAttr(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.String2Symbol(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string to an uppercase Symbol.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StrInt(System.Int32,System.UInt32,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert an integer expression to a PSZ.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StrLong(System.Int32,System.UInt32,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a long integer expression to a PSZ.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StrToFloat(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string containing a numeric value to a numeric data type.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StrZero(XSharp.__Usual,System.Int32,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a numeric expression to a string and pad it with leading zeroes instead of blanks.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Symbol2String(XSharp.__Symbol)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a symbol to string
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ToWord(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a number to a word.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Val(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a string containing a numeric value to a numeric data type.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.Var2Char(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.W2Bin(System.UInt16)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Convert a word to a string containing a 16-bit unsigned integer.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Year(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Extract the number of the year from a date.
+        </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
+  </developerConceptualDocument>
+</topic>

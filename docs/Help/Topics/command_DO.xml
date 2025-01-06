@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T15:09:38.629+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>DO Statement</title>
   <keywords>
     <keyword>Branching</keyword>
@@ -13,7 +13,7 @@
       <para styleclass="Heading1">DO Statement</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Call a procedure or function, and optionally pass arguments to the called routine.</para>
+    <para styleclass="Normal">Calls a procedure or function, and optionally passes arguments to the called routine.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code with box">DO &lt;idProcedure&gt; [WITH &lt;uValueArgList&gt;]</para>
     <para styleclass="Heading1">Arguments</para>

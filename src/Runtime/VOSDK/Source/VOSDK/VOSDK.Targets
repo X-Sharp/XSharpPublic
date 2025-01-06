@@ -7,6 +7,7 @@
     <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
     <BaseIntermediateOutputPath>$(BinariesDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
     <OutputType>Library</OutputType>
+    <CommonDir>$(Solutiondir)Common\</CommonDir>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VO</RootNamespace>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
@@ -15,13 +16,13 @@
     <Nologo>true</Nologo>
     <Nostandarddefs>true</Nostandarddefs>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <AssemblyOriginatorKeyFile>$(Solutiondir)Runtime\vosdk\source\sharedbinaries\vulcanstrongnamekey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(CommonDir)XSharp.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <Prefer32Bit>False</Prefer32Bit>
     <CommandLineOption />
     <PPO>false</PPO>
-    <CommonInclude>$(Solutiondir)Common</CommonInclude>
+    <CommonInclude>$(CommonDir)</CommonInclude>
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>false</LB>
@@ -46,6 +47,7 @@
     <vo15>true</vo15>
     <VO16>false</VO16>
     <XPP1>false</XPP1>
+    <IncludePaths>$(CommonDir)</IncludePaths>
     <MemVar>false</MemVar>
     <Undeclared>false</Undeclared>
     <ErrorReport>prompt</ErrorReport>
@@ -53,14 +55,13 @@
     <StartupObject />
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>false</UseSharedCompilation>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)' == 'Documentation'" >
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -70,14 +71,24 @@
 	<vo15>true</vo15>
 	<vo5>false</vo5>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+<PropertyGroup Condition="'$(Configuration)' == 'DocChinese'" >
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE;DOCUMENTATION;RUNTIME</DefineConstants>
+    <DisabledWarnings>165,169,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573</DisabledWarnings>
+    <CommandLineOption>/noclipcall </CommandLineOption>
+	<vo15>true</vo15>
+	<vo5>false</vo5>
+  </PropertyGroup>  
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" >
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>TRACE;RUNTIME</DefineConstants>
     <DisabledWarnings>165,9032,170,618,9068,108,9043</DisabledWarnings>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" >
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>

@@ -1,0 +1,1921 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <members></members>
+    <notifyappend>
+        <summary>
+            已添加新记录
+        </summary>
+    </notifyappend>
+
+    <notifyclose>
+        <summary>
+            服务已关闭
+        </summary>
+    </notifyclose>
+
+    <notifyintenttomove>
+        <summary>
+            服务打算移动
+        </summary>
+    </notifyintenttomove>
+
+    <notifygobottom>
+        <summary>
+            服务已移动到最后一条（逻辑）记录
+        </summary>
+    </notifygobottom>
+
+    <notifydelete>
+        <summary>
+            当前记录已被删除
+        </summary>
+    </notifydelete>
+
+    <notifygotop>
+        <summary>
+            服务已移动到第一条（逻辑）记录
+        </summary>
+    </notifygotop>
+
+    <notifycompletion>
+        <summary>
+            操作已完成
+        </summary>
+    </notifycompletion>
+
+    <notifyrecordchange>
+        <summary>
+            当前记录已更改
+        </summary>
+    </notifyrecordchange>
+
+    <notifyfieldchange>
+        <summary>
+            当前记录中的字段已更改
+        </summary>
+    </notifyfieldchange>
+
+    <notifyfilechange>
+        <summary>
+            已完成处理一个或多个记录的操作
+        </summary>
+    </notifyfilechange>
+
+    <notifyrelationchange>
+        <summary>
+            父记录已更改，子记录也必须更改
+        </summary>
+    </notifyrelationchange>
+
+    <notifyclearrelation>
+        <summary>
+            父子记录之间的关系已更改
+        </summary>
+    </notifyclearrelation>
+
+    <notifyconcurrencycontrolmode>
+        <summary>
+            未使用
+        </summary>
+    </notifyconcurrencycontrolmode>
+
+    <DataField>
+        <summary>
+            创建一个字段对象，该对象包含定义数据服务中特定字段的信息（例如，字段的数据类型和长度）。
+        </summary>
+        <remarks> 
+            DataField 对象是数据库记录中的特定项。这与 FieldSpec 对象形成对比，后者是某些字段可能具有的属性的描述。 例如，假设您要创建一个定义员工编号的
+            FieldSpec 对象，并且您有一个 EMPLOYEE 数据库，其中有两个不同的字段：EMPNO（员工编号）和 MGRNO（经理编号）。因此，您可以按如下方式定义
+            FieldSpec 对象： 
+            <code language="X#">
+                CLASS EmployeeNumber INHERIT FieldSpec
+                ...
+            </code>
+            然后在数据库中定义两个不同的字段： 
+            <code language="X#">
+                DataField{HyperLabel{#EmpNo, "员工编号"}, EmployeeNumber{}}
+                DataField{HyperLabel{#MgrNo, "经理编号"}, EmployeeNumber{}}
+            </code>
+            请注意，某些字段属性在可用的 FieldSpec 属性下可能显得多余。例如，字段包含一个超标签，但字段的 FieldSpec
+            对象也包含一个超标签。此外，字段的超标签包含一个符号名称，而 FieldSpec 的超标签也包含一个符号名称。 然而，这种表面上的冗余具有有用的目的。FieldSpec
+            的超标签标识数据的一般类别（在此示例中称为 #EmpNo）。此名称通常用作此类字段的标准名称，但不一定必须如此，因为每个特定字段都有一个特定名称——在上面的示例中为
+            #EmpNo 和 #MgrNo。 因此，字段包含两组属性： 一般标签信息，如名称、标题、描述和帮助上下文 ID 数据类型信息，存储为 FieldSpec
+            对象，包括数据类型、长度、小数位数、验证规则、错误消息、诊断和格式化规则
+            无论如何，系统中的所有数据导向对象都有一个名称和一个超标签，这些名称和超标签通常在系统中用于注释和帮助目的。 <br />
+            重要提示！开发人员很少需要直接考虑字段，因为它们通常通过各种数据服务编辑器生成的代码创建。
+        </remarks>
+    </DataField>
+
+    <DataField.ctor>
+        <summary>
+            构造一个数据字段。
+        </summary>
+        <param name="oHLName">表示字段名称或符号的名称。</param>
+        <param name="oFS">定义字段属性的 FieldSpec 对象。至少必须包含字段的数据类型和长度。</param>
+    </DataField.ctor>
+
+    <DataField.ctor>
+        <summary>
+            构造一个数据字段。
+        </summary>
+        <param name="oHLName">包含字段名称和任何可选注释的超标签。</param>
+        <param name="oFS">定义字段属性的 FieldSpec 对象。至少必须包含字段的数据类型和长度。</param>
+    </DataField.ctor>
+
+    <DataField.AsString>
+        <summary>
+            返回为此字段定义的描述性标签。
+        </summary>
+        <returns>
+            如果此字段的超标签包含标题，则返回该标题；否则，返回字段名称。
+        </returns>
+    </DataField.AsString>
+
+    <DataField.FieldSpec>
+        <summary>
+            连接到此字段的 FieldSpec 对象。
+        </summary>
+        <value>连接到此字段的 FieldSpec 对象。</value>
+        <remarks> 
+            连接到此字段的 FieldSpec 对象。通过 FieldSpec 对象，您可以依次访问其控制字段行为和呈现的各种属性。 
+            例如，以下代码调用字段的多个
+            FieldSpec 访问/分配方法： 
+            <code language="X#">
+                oDataField:FieldSpec:Type
+                oDataField:FieldSpec:Length
+                oDataField:FieldSpec:Decimals
+                oDataField:FieldSpec:Validate(&lt;uValue&gt;)
+            </code>
+        </remarks>
+    </DataField.FieldSpec>
+
+    <DataField.HyperLabel>
+        <summary>
+            连接到此字段的超标签。
+        </summary>
+        <value>连接到此字段的超标签。</value>
+        <remarks> 
+            连接到此字段的超标签。通过超标签，您可以检索有关字段的其他信息——例如： 
+            <code language="X#">
+                cCaption := oDataField:HyperLabel:Caption
+                cDescription := oDataField:HyperLabel:Description
+                cHelpContext := oDataField:HyperLabel:HelpContext
+            </code>
+        </remarks>
+    </DataField.HyperLabel>
+
+    <DataField.Name>
+        <summary>
+            表示字段名称的字符串。
+        </summary>
+        <value>表示字段名称的字符串。</value>
+        <remarks>
+            表示字段名称的字符串。请注意，超标签也包含一个名称；在 DBServer 编辑器生成的代码中，这两个名称是相同的。
+        </remarks>
+    </DataField.Name>
+
+    <DataField.NameSym>
+        <summary>
+            表示字段名称的符号。
+        </summary>
+        <value>表示字段名称的符号。</value>
+        <remarks>
+            表示字段名称的符号。请注意，字段的超标签也包含一个符号名称；在 DBServer 编辑器生成的代码中，这两个名称是相同的。
+        </remarks>
+    </DataField.NameSym>
+
+    <DataServer>
+        <summary>
+            提供所有 X# 数据服务的基类。
+        </summary>
+        <remarks>
+            重要提示！DataServer 是一个抽象类，不应直接使用——而应使用其子类之一，包括 DBServer 和 SQLSelect。此类中的文档是为了创建
+            DataServer 子类，并详细说明了应为其他 X# 组件（例如数据窗口）实现的一致接口的数据服务实体。 这个抽象类定义了各种 X#
+            数据服务使用的通用协议——属性和行为。这些数据服务在许多上下文中提供了面向对象的数据库接口，但它们特别适合作为 DataWindow 类的驱动程序。例如，任何从
+            DataServer 派生的类都可以作为服务连接到数据窗口或数据浏览器。 
+        </remarks>
+    </DataServer>
+
+    <DataServer.ctor>
+        <summary>
+            构造一个数据服务。
+        </summary>
+    </DataServer.ctor>
+
+    <DataServer.Append>
+        <summary>
+            向此数据服务的末尾添加一个空白记录（新记录成为当前位置，并准备分配数据值）。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            <note type="tip">此方法的实现细节以及它如何与其他操作（例如唯一索引和并发控制）交互，取决于特定的数据服务子类。</note>
+        </remarks>
+    </DataServer.Append>
+
+    <DataServer.AsString>
+        <summary>
+            返回为此数据服务定义的描述性标签。
+        </summary>
+        <returns>
+            如果此数据服务的超标签包含标题，则返回该标题；否则，返回数据服务的名称。
+        </returns>
+    </DataServer.AsString>
+
+    <DataServer.BoF>
+        <summary>
+            一个逻辑值，指示此数据服务是否位于文件的开头，即第一条记录上（如果是，则为 TRUE；如果不是，则为 FALSE）。
+        </summary>
+        <value>一个逻辑值，指示此数据服务是否位于文件的开头，即第一条记录上（如果是，则为 TRUE；如果不是，则为 FALSE）。</value>
+    </DataServer.BoF>
+
+    <DataServer.Clients>
+        <summary>**缺少文档**</summary>
+        <value>**缺少文档**</value>
+    </DataServer.Clients>
+
+    <DataServer.Close>
+        <summary>
+            以特定于所使用数据库的方式关闭服务。
+        </summary>
+        <returns>
+            如果操作成功，则返回 TRUE；如果不成功，则返回 FALSE。（关闭服务如何会不成功？如果您通过网络访问数据库，并且在服务关闭之前网络中断，则
+            DataServer:Close() 操作可能是第一个失败的操作，但仍然需要响应此失败，因为它可能表明数据库更改未提交。）
+        </returns>
+    </DataServer.Close>
+
+    <DataServer.Commit>
+        <summary>
+            强制将此数据服务的所有待处理更新永久写入磁盘。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks> 
+            DataServer:Commit() 可能会因多种原因而失败，从服务缺乏能力到锁定冲突和技术问题（例如网络崩溃）。
+            使用 DataServer:Status 属性确定失败的确切原因。
+            此操作的确切含义取决于数据服务的类型。对于某些数据库管理系统，此方法提交使用相同连接的所有服务；
+            对于其他系统，它仅提交此服务；对于其他系统，此方法不执行任何操作。
+            此外，某些 SQL 服务在提交操作时有其他含义（例如，它们可以关闭游标）。 
+            <note type="tip">您应仔细研究数据库管理系统的文档。</note>
+        </remarks>
+    </DataServer.Commit>
+
+    <DataServer.ConcurrencyControl>
+        <summary>
+            一个常量，标识此数据服务的自动并发控制模式，确定何时以及如何锁定和释放记录：
+        </summary>
+        <value>一个常量，标识此数据服务的自动并发控制模式，确定何时以及如何锁定和释放记录：</value>
+        <remarks> 
+            以下常量之一，标识此数据服务的自动并发控制模式，确定何时以及如何锁定和释放记录： 
+            <list type="table">
+                <listheader>
+                    <term>常量</term>
+                    <description>描述</description>
+                </listheader>
+                <item>
+                    <term>CCNONE</term>
+                    <description>数据服务不提供自动记录锁定；应用程序需要显式执行所有锁定。</description>
+                </item>
+                <item>
+                    <term>CCOPTIMISTIC</term>
+                    <description> 
+                        除了追加时，通常不保持锁定——刚刚追加的记录被锁定， 
+                        并且只有在移出记录或显式调用 DataServer 或 DBServer Unlock() 方法时才释放锁定。 
+                        对于所有其他记录，在进行任何更新之前，记录会从磁盘重新读取。这是<b>默认</b>设置。 </description>
+                </item>
+                <item>
+                    <term>CCSTABLE</term>
+                    <description>服务所在的记录始终保持锁定。</description>
+                </item>
+                <item>
+                    <term>CCREPEATABLE</term>
+                    <description>所有已读取的记录都保持锁定。用户保证在返回先前查看的数据时，它们未更改。</description>
+                </item>
+                <item>
+                    <term>CCFILE</term>
+                    <description>
+                        服务提供的整个记录集中的所有记录在整个过程中都被锁定。
+                        这对于与服务的所有记录相关联的窗口来说并不实用。它旨在与方法 DataServer:SetSelectiveRelation() 一起使用。
+                    </description>
+                </item>
+            </list>
+        </remarks>
+    </DataServer.ConcurrencyControl>
+
+    <DataServer.DataField>
+        <summary>
+            检索指定字段位置的 DataField 对象。
+        </summary>
+        <param name="nFieldPosition">表示所需字段的名称、编号或符号。</param>
+    </DataServer.DataField>
+
+    <DataServer.DBStruct>
+        <summary>
+            包含此数据服务结构的数组。
+        </summary>
+        <value>包含此数据服务结构的数组。</value>
+        <remarks> 
+            包含此数据服务结构的数组。 数据服务的结构表示为一个数组，其长度（即元素数量）等于服务中的字段数量。
+            每个子数组由五个元素组成，按以下顺序包含以下信息： 
+            <include file="RTComments.xml" path="Comments/DbStruct_Constants/*" />
+        </remarks>
+    </DataServer.DBStruct>
+
+    <DataServer.Delete>
+        <summary>
+            删除此数据服务中的当前记录。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks> 
+            成功执行后，此方法会向此数据服务的客户端发送 NotifyDelete 消息。 
+            <note type="tip">
+                此方法的实现细节及其对并发控制的要求取决于特定的数据服务子类。
+            </note>
+        </remarks>
+    </DataServer.Delete>
+
+    <DataServer.EoF>
+        <summary>
+            一个逻辑值，指示此数据服务是否位于文件的末尾，即在尝试移动到最后一条记录之后（如果是，则为 TRUE；如果不是，则为 FALSE）。
+        </summary>
+        <value>一个逻辑值，指示此数据服务是否位于文件的末尾，即在尝试移动到最后一条记录之后（如果是，则为 TRUE；如果不是，则为 FALSE）。</value>
+    </DataServer.EoF>
+
+    <DataServer.FCount>
+        <summary>
+            此数据服务中的字段数量。
+        </summary>
+        <value>此数据服务中的字段数量。</value>
+    </DataServer.FCount>
+
+    <DataServer.FieldGet>
+        <summary>
+            返回此数据服务中指定字段的内容。
+        </summary>
+        <param name="nFieldPosition">表示所需字段的名称、编号或符号。</param>
+        <returns>
+            字段的内容。返回值的数据类型取决于字段的数据类型。
+        </returns>
+    </DataServer.FieldGet>
+
+    <DataServer.FieldGetFormatted>
+        <summary>
+            根据其 FieldSpec 的格式规范返回此数据服务中指定字段的内容。
+        </summary>
+        <param name="nFieldPosition">表示所需字段的名称、编号或符号。</param>
+        <returns>
+            字段的内容。
+        </returns>
+    </DataServer.FieldGetFormatted>
+
+    <DataServer.FieldHyperLabel>
+        <summary>
+            返回此数据服务中字段定义的超标签。
+        </summary>
+        <param name="nFieldPosition">表示所需字段的名称、编号或符号。</param>
+        <remarks> 
+            通过访问字段的超标签，您可以依次访问其注释字段的各种属性。例如： 
+            <code language="X#">
+                oDataServer:FieldHyperLabel(#LastName):Caption
+                oDataServer:FieldHyperLabel(#LastName):Description
+                oDataServer:FieldHyperLabel(#LastName):HelpContext
+            </code>
+        </remarks>
+    </DataServer.FieldHyperLabel>
+
+    <DataServer.FieldName>
+        <summary>
+            返回此数据服务中字段的名称。
+        </summary>
+        <param name="nFieldPosition">所需字段的编号。</param>
+    </DataServer.FieldName>
+
+    <DataServer.FieldPos>
+        <summary>
+            返回此数据服务中字段的位置。
+        </summary>
+        <param name="nFieldPosition">所需字段的名称。</param>
+    </DataServer.FieldPos>
+
+    <DataServer.FieldPut>
+        <summary>
+            为此数据服务中的字段分配一个值。
+        </summary>
+        <param name="nFieldPosition">表示所需字段的名称、编号或符号。</param>
+        <param name="uValue">要分配给字段的值。此值的数据类型必须与字段的数据类型匹配。</param>
+        <returns>
+            如果操作成功，则返回新分配的值；否则，返回 NIL。
+        </returns>
+    </DataServer.FieldPut>
+
+    <DataServer.FieldSpec>
+        <summary>
+            返回此数据服务中字段的 FieldSpec 对象。
+        </summary>
+        <param name="nFieldPosition">表示所需字段的编号。</param>
+        <remarks> 
+            通过引用字段的 FieldSpec 对象的属性，可以访问字段的各个属性和方法。例如： 
+            <code language="X#">
+            oDataServer:FieldSpec(1):Description
+            </code> 
+            有关 FieldSpec 的更多信息，请参阅 IDE 用户指南中的“定义数据服务和 FieldSpec”以及程序员指南中的“数据服务类”。 
+        </remarks>
+    </DataServer.FieldSpec>
+
+    <DataServer.FieldStatus>
+        <summary>
+            确定此数据服务中字段在上次操作后的状态。
+        </summary>
+        <param name="nFieldPosition">表示所需字段的名称、编号或符号。</param>
+        <returns>
+            如果发生任何错误条件或验证失败，则返回一个 HyperLabel 对象；如果一切正常，验证通过或没有进行验证尝试，则返回 NIL。
+        </returns>
+        <remarks> 
+            特别是，DataServer:FieldStatus() 可用于了解有关验证失败的更多信息。
+            通过访问此超标签的属性，您不仅可以检索到引发的条件的描述，还可以检索到与之相关的上下文敏感帮助。例如： 
+            <code language="X#">
+                oDataServer:FieldStatus(#LastName):Caption
+                oDataServer:FieldStatus(#LastName):Description
+                oDataServer:FieldStatus(#LastName):HelpContext
+            </code>
+        </remarks>
+    </DataServer.FieldStatus>
+
+    <DataServer.FieldSym>
+        <summary>
+            返回此数据服务中字段的符号名称。
+        </summary>
+        <param name="nFieldPosition">表示所需字段的名称、编号或符号。</param>
+    </DataServer.FieldSym>
+
+    <DataServer.FieldValidate>
+        <summary>
+            执行此数据服务中字段的 FieldSpec 定义的所有验证（例如，必需的，最大和最小位数，最大和最小值，验证规则）并返回测试结果。
+        </summary>
+        <param name="nFieldPosition">表示所需字段的名称、编号或符号。</param>
+        <param name="uValue">要验证的值。其数据类型应与指定字段的数据类型兼容。如果类型不能转换为适当的数据类型，则视为验证失败。</param>
+        <returns>
+            如果任何验证失败，则返回 FALSE；否则，返回 TRUE。
+        </returns>
+    </DataServer.FieldValidate>
+
+    <DataServer.FLOCK>
+        <summary>
+            锁定整个数据服务以进行独占访问。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </DataServer.FLOCK>
+
+    <DataServer.GoBottom>
+        <summary>
+            将此数据服务定位到最后一条记录。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            成功执行后，此方法会向此数据服务的客户端发送 NotifyGoBottom 消息。
+        </remarks>
+    </DataServer.GoBottom>
+
+    <DataServer.GoTo>
+        <summary>
+            将此数据服务定位到指定的记录号。
+        </summary>
+        <param name="nPosition">服务应定位到的记录号。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks> 
+            成功执行后，此方法会向此数据服务的客户端发送 NotifyRecordChange 消息。 
+            <note type="tip">
+                某些类型的数据服务无法支持按记录号移动。
+            </note>
+        </remarks>
+    </DataServer.GoTo>
+
+    <DataServer.GoTop>
+        <summary>
+            将此数据服务定位到第一条记录。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            成功执行后，此方法会向此数据服务的客户端发送 NotifyGoTop 消息。
+        </remarks>
+    </DataServer.GoTop>
+
+    <DataServer.HLStatus>
+        <summary>**缺少文档**</summary>
+        <value>**缺少文档**</value>
+    </DataServer.HLStatus>
+
+    <DataServer.HyperLabel>
+        <summary>
+            连接到此数据服务的超标签。通过超标签，您可以检索有关数据服务的其他信息。
+        </summary>
+        <value>连接到此数据服务的超标签。通过超标签，您可以检索有关数据服务的其他信息。</value>
+        <example>
+            <code language="X#">
+                cCaption := oDataServer:HyperLabel:Caption
+                cDescription := oDataServer:HyperLabel:Description
+                cHelpContext := oDataServer:HyperLabel:HelpContext
+            </code>
+            此属性还可用于将 HyperLabel 对象分配给数据服务，尽管这通常是在数据服务实例化期间完成的。 
+        </example>
+    </DataServer.HyperLabel>
+
+    <DataServer.Name>
+        <summary>
+            表示此数据服务名称的字符串。
+        </summary>
+        <value>表示此数据服务名称的字符串。</value>
+    </DataServer.Name>
+
+    <DataServer.NameSym>
+        <summary>
+            表示此数据服务名称的符号。
+        </summary>
+        <value>表示此数据服务名称的符号。</value>
+    </DataServer.NameSym>
+
+    <DataServer.NoIVarGet>
+        <summary> 
+            提供一个通用错误拦截，当对不存在的导出实例变量进行访问引用时（在任何类中），系统会自动调用此方法。
+            在 DataServer 类中，它用于实现虚拟字段变量。 <br />
+            重要提示！NoIVarGet() 不应直接调用；它由系统调用以处理无效引用。 
+        </summary>
+        <param name="symFieldName">被引用变量的符号名称。在 DataServer 类的标准用法中，这是一个字段名称。</param>
+        <remarks>
+            对于 DataServer，此方法用于拦截对字段名称作为导出变量的引用，这通常是不允许的。
+            如果字段名称有效，它会调用 DataServer:FieldGet() 获取相应的字段名称，从而将数据库字段变成每个 DBServer 对象的访问方法。
+            有关 NoIVarGet() 的更多信息，请参阅《程序员指南》中的“对象、类和方法”。
+        </remarks>
+    </DataServer.NoIVarGet>
+
+    <DataServer.NoIVarPut>
+        <summary> 
+            提供一个通用错误拦截，当对不存在的导出实例变量进行赋值引用时（在任何类中），系统会自动调用此方法。
+            在 DataServer 类中，它用于实现虚拟字段变量。 <br />
+            重要提示！NoIVarPut() 不应直接调用；它由系统调用以处理无效引用。 
+        </summary>
+        <param name="symFieldName">被引用变量的符号名称。在 DBServer 类的标准用法中，这是一个字段名称。</param>
+        <param name="uValue">要分配给字段的值。此值的数据类型必须与字段的数据类型匹配。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            成功执行后，此方法会向此数据服务的客户端发送 NotifyFieldChange 消息。
+            对于 DataServer，此方法用于拦截对字段名称作为导出变量的引用，这通常是不允许的。
+            如果字段名称有效，它会对相应的字段名称执行 DataServer:FieldPut() 并传递值（实际上将数据库字段变成每个 DBServer 对象的赋值方法）。
+            有关 NoIVarPut() 的更多信息，请参阅《程序员指南》中的“对象、类和方法”。
+        </remarks>
+    </DataServer.NoIVarPut>
+
+    <DataServer.Notify>
+        <summary> 
+            一个事件处理程序，用于响应在此服务的方法中或在以某种方式链接到此服务的其他服务中发生的事件。标准实现会通知服务的所有客户端该事件。 <br />
+            重要提示！此方法由数据服务的各种操作方法自动调用，通常不应由应用程序代码调用。 </summary>
+        <param name="kNotification">标识事件，指定为以下常量之一：</param>
+        <param name="uDescription">仅用于某些通知类型。</param>
+        <returns> 
+            SELF，除非为 <paramref name="kNotifyName" /> 指定了 NOTIFYINTENTTOMOVE。在这种情况下，如果成功，则返回
+            TRUE；否则返回 FALSE。 
+        </returns>
+        <remarks>
+            <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
+        </remarks>
+    </DataServer.Notify>
+
+    <DataServer.PostInit>
+        <summary>
+            实现窗口的自定义初始化代码。
+        </summary>
+        <remarks>
+            此方法用于自定义数据服务的初始化代码。
+            自定义初始化代码不会被生成的默认初始化代码覆盖。
+            在 Init() 方法的末尾会自动生成对 PostInit() 的调用。
+        </remarks>
+    </DataServer.PostInit>
+
+    <DataServer.PreInit>
+        <summary>
+            实现服务的自定义初始化代码。
+        </summary>
+        <remarks> 
+            此方法用于自定义服务的初始化代码。 自定义初始化代码不会被生成的默认初始化代码覆盖。 
+            在 Init() 方法的开头会自动生成对 PreInit() 的调用。 此类中 PostInit() 的默认实现为空。 
+            <note type="tip">
+                在 .Net 中，通常不允许或不建议在调用父构造函数之前运行代码。
+                窗口编辑器中的生成代码会这样做（在 SUPER() 调用之前调用 PreInit。
+                。我们建议您非常小心不要触及从父类继承的受保护实例变量，因为这些变量可能尚未初始化，您分配给它们的值可能会在父类的构造函数中被覆盖。
+            </note>
+        </remarks>
+    </DataServer.PreInit>
+
+    <DataServer.RecCount>
+        <summary>
+            表示此数据服务中记录数的数值。
+        </summary>
+        <value>表示此数据服务中记录数的数值。</value>
+        <remarks>
+            <note type="tip">某些类型的数据服务可能无法提供此数字。如果发生故障，则返回 -1。</note>
+        </remarks>
+    </DataServer.RecCount>
+
+    <DataServer.RecNo>
+        <summary>
+            表示当前记录号的数值，标识此数据服务中记录指针的位置。
+        </summary>
+        <value>表示当前记录号的数值，标识此数据服务中记录指针的位置。</value>
+        <remarks> 
+            表示当前记录号的数值，标识此数据服务中记录指针的位置。 
+            为 DataServer:RecNo 分配一个值相当于执行 DataServer:GoTo()；两者都将记录指针重新定位到给定记录。 
+            <note type="tip">某些类型的数据服务无法支持按记录号移动。</note>
+        </remarks>
+    </DataServer.RecNo>
+
+    <DataServer.RegisterClient>
+        <summary>
+            将对象注册为此数据服务的客户端，以便它接收来自服务的有关某些操作的通知消息。
+        </summary>
+        <param name="oForm">
+            要注册为此数据服务客户端的对象（例如，数据窗口或数据浏览器。
+            任何提供 Notify() 方法的对象都可以注册为客户端。
+        </param>
+    </DataServer.RegisterClient>
+
+    <DataServer.ResetNotification>
+        <summary>
+            恢复向服务的附加客户端广播 Notify 消息（在调用 DataServer:SuspendNotification() 之后）。
+        </summary>
+        <remarks>
+            此方法与 DataServer:SuspendNotification() 配合使用，后者暂停 Notify 消息的广播。
+            请注意，DataServer:SuspendNotification() 会堆叠其调用。
+            因此，对于每次调用 DataServer:SuspendNotification()，需要相应地调用 DataServer:ResetNotification()。
+        </remarks>
+    </DataServer.ResetNotification>
+
+    <DataServer.RLOCK>
+        <summary>
+            锁定此数据服务中的特定记录以进行独占写访问；其他用户仍然可以对记录进行只读引用。
+        </summary>
+        <param name="nRecord">
+            要锁定的记录的 ID（通常是记录号）。如果指定，则当前进程持有的记录锁定将被保留。
+            如果未指定，则释放当前进程持有的所有锁定，并假定当前记录。
+        </param>
+        <returns>
+            如果成功，则返回 TRUE；否则返回 FALSE。请注意，即使记录成功锁定但无法维护其他记录锁定，也会返回 FALSE。
+        </returns>
+        <remarks> 
+            当指定参数时，RLock() 不会释放当前进程持有的记录锁定。相反，它将新锁定的记录添加到锁定列表中。 
+            <note type="tip">
+                某些数据服务无法支持维护多个记录锁定，甚至无法基于记录号锁定当前记录以外的记录。
+            </note>
+        </remarks>
+    </DataServer.RLOCK>
+
+    <DataServer.RLockVerify>
+        <summary>
+            确定此数据服务中的当前记录是否有任何待处理的更新，如果没有，则将其锁定以进行独占写访问。
+        </summary>
+        <returns>
+            如果记录未更改且锁定成功，则返回 TRUE；否则返回 FALSE。
+        </returns>
+        <remarks>
+            此方法通过将服务最初定位到记录时读取的值与相应数据库记录中的当前值进行比较，检查当前记录是否有待处理的更新。
+            如果值匹配，则表示自用户开始处理数据以来没有其他用户修改数据，因此可以安全地锁定记录并让用户继续进行更新事务（请注意，当记录被锁定时，其他用户仍然可以对记录进行只读引用）。
+            如果值不匹配，则表示其他人已更改记录，用户应从磁盘刷新值并重新启动事务。应用程序必须决定如何处理不同的值。请注意，可以使用 DataServer:Status 确定失败的原因。
+            此方法用于乐观并发控制。有关更多信息，请参阅《程序员指南》中的“并发控制”。
+        </remarks>
+    </DataServer.RLockVerify>
+
+    <DataServer.Rollback>
+        <summary>
+            撤消在当前事务中对该数据服务所做的更改。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks> 
+            此方法可能因多种原因而失败，从服务缺乏能力到锁定冲突再到技术问题（如网络崩溃）。使用 DataServer:Status 确定失败的确切原因。
+            请注意，并非所有服务都支持此操作，包括标准的 Xbase DBServer。
+            如果服务支持此操作，则回滚的确切含义因服务而异。对于某些数据库管理系统，该方法会回滚使用相同连接的所有服务；对于其他系统，则仅回滚此服务。
+            此外，某些 SQL 服务对回滚操作有其他影响（例如，它们可能会关闭游标）。 
+            <note type="tip">您应仔细研究数据库管理系统的文档。</note>
+        </remarks>
+    </DataServer.Rollback>
+
+    <DataServer.Seek>
+        <summary>
+            移动到控制顺序中具有指定键值的下一条记录。
+        </summary>
+        <param name="uValue">要搜索的值。搜索表达式的数据类型应与控制顺序的类型匹配。如果没有控制顺序，Seek() 将按记录号搜索，因此相当于 GoTo()。</param>
+        <returns>
+            如果找到指定的键值，则返回 TRUE；否则返回 FALSE。请注意，FALSE 值可能表示未找到该值或服务不支持此搜索操作。
+            使用 DataServer:Status 属性确定失败的原因。
+        </returns>
+    </DataServer.Seek>
+
+    <DataServer.SetDataField>
+        <summary>
+            将 DataField 对象分配给此数据服务中的指定字段。
+        </summary>
+        <param name="nFieldPosition">数据字段的编号。</param>
+        <param name="oDataField">要分配的数据字段。</param>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <remarks>
+            新字段的数据类型必须与实际数据库字段兼容。
+            此方法通常仅在数据服务实例化期间使用（通常在子类的 Init() 方法中）。例如，数据服务编辑器生成的代码使用此方法。
+        </remarks>
+    </DataServer.SetDataField>
+
+    <DataServer.Skip>
+        <summary>
+            在此数据服务中将记录指针向前或向后移动指定数量的记录。
+        </summary>
+        <param name="nRelativePosition">相对于当前记录要移动的记录数。正值表示向前移动，负值表示向后移动。默认值为 +1。</param>
+        <returns>
+            如果成功，则返回 TRUE；否则返回 FALSE。请注意，FALSE 值还可能表示遇到文件开头或结尾。使用 DataServer:Status 属性确定失败的原因。
+        </returns>
+        <remarks> 
+            成功执行后，此方法会向此数据服务的客户端发送 NotifyRecordChange 消息。 
+            <note type="tip">并非所有数据服务都能够向后移动。</note>
+        </remarks>
+    </DataServer.Skip>
+
+    <DataServer.Status>
+        <summary>
+            标识上次操作后此数据服务状态的超标签。
+        </summary>
+        <value>标识上次操作后此数据服务状态的超标签。</value>
+        <remarks>
+            标识上次操作后此数据服务状态的超标签。
+            如果上次操作成功，则此值为 NULL_OBJECT；如果出现问题（无论是引发错误条件还是仅返回失败代码），DataServer:Status 返回一个信息性超标签。
+            通过访问此超标签的属性，您不仅可以检索到所引发条件的描述，还可以检索到有关所引发条件的上下文相关帮助。
+        </remarks>
+        <example> 
+            以下示例调用数据服务的多个 DataServer:Status 属性： 
+            <code language="X#">
+                oDataServer:Status:Caption
+                oDataServer:Status:Description
+                oDataServer:Status:HelpContext
+            </code>
+        </example>
+    </DataServer.Status>
+
+    <DataServer.SuspendNotification>
+        <summary>
+            暂停向服务的附加客户端广播 Notify 消息。
+        </summary>
+        <remarks>
+            此方法很有用，例如，当服务在数据库中移动并且服务最终恢复到其原始位置时。因此，没有理由通知服务的客户端数据库中的位置更改。
+            请注意，DataServer:SuspendNotification() 会堆叠其调用。
+            因此，对于每次调用 DataServer:SuspendNotification()，需要相应地调用 DataServer:ResetNotification()。
+        </remarks>
+    </DataServer.SuspendNotification>
+
+    <DataServer.UnLock>
+        <summary>
+            删除此数据服务上持有的所有锁定。
+        </summary>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    </DataServer.UnLock>
+
+    <DataServer.UnRegisterClient>
+        <summary>
+            取消对象作为此数据服务客户端的注册，以便它不再接收来自服务的有关某些操作的通知消息。
+        </summary>
+        <param name="oClient">要取消注册的对象（例如，DataWindow 或 DataBrowser）。</param>
+        <param name="lAllowClose">
+            TRUE 关闭服务（如果这是服务注册的最后一个客户端）；
+            FALSE 不关闭服务。默认值为 TRUE。
+        </param>
+        <returns>
+            如果成功，则返回 TRUE；否则返回 FALSE（包括如果客户端之前未注册）。
+        </returns>
+    </DataServer.UnRegisterClient>
+
+    <DataServer.Update>
+        <summary>
+            使用另一个服务或表中的数据更新此服务。
+        </summary>
+        <returns>
+            如果成功，则返回 TRUE；否则返回 FALSE，尽管即使返回 FALSE，某些记录也可能已更新。
+            如果操作在中途因技术问题而失败，则可能会发生这种情况。
+        </returns>
+        <remarks> 
+            完成后发送 NotifyFileChange 消息。 两个服务之间的匹配关系有两种不同的形式。 
+            如果 <paramref name="lRandomFlag" /> 为 TRUE，则此服务必须按指定键索引，但另一个服务可以按任何顺序排列；
+            如果未指定 <paramref name="lRandomFlag" /> 或为 FALSE，
+            则两个服务必须按指定键索引或排序。如果此服务中有多个记录具有匹配的键字段，则仅更新第一个记录。 
+        </remarks>
+    </DataServer.Update>
+
+    <DateFS>
+        <summary>
+            创建一个日期字段规范，该规范包含日期数据类型信息。
+        </summary>
+    </DateFS>
+
+    <DateFS.ctor>
+        <summary>
+            构造一个日期规范。
+        </summary>
+        <param name="oHLName">包含字段名称和其他属性（例如，标题、描述和帮助上下文）的超标签，用于创建新的日期字段规范。</param>
+    </DateFS.ctor>
+
+    <DbError>
+        <exclude />
+    </DbError>
+
+    <DbError.ctor>
+        <exclude />
+    </DbError.ctor>
+
+    <DbError.Throw>
+        <exclude />
+    </DbError.Throw>
+
+    <FieldSpec>
+        <summary>
+            创建一个字段规范，该规范包含有关数据元素（如数据库字段和窗口控件）的通用数据类型信息。
+        </summary>
+        <remarks> 
+            FieldSpec 对象包含许多与字段相关的属性。具体来说，可以为以下内容定义 FieldSpec 对象：
+            由于这两种类型最终都适用于字段，因此字段规范的属性仅以字段的术语描述（即，不包括窗口控件）。
+            <note type="tip">
+                字段规范对应于有时称为“元素定义”、“域”或“抽象数据类型”的内容。
+            </note> 
+            字段规范包含以下属性： 
+            <list type="table">
+                <listheader>
+                    <term>属性</term>
+                    <description>描述</description>
+                </listheader>
+                <item>
+                    <term>Decimals</term>
+                    <description>字段中的小数位数（仅限数字）</description>
+                </item>
+                <item>
+                    <term>Diagnostics</term>
+                    <description>每个验证规则的超标签。请注意，超标签不仅包含诊断消息，还包含帮助上下文，以便在验证失败后提供上下文相关的帮助。</description>
+                </item>
+                <item>
+                    <term>HyperLabel</term>
+                    <description>有关字段的信息：其名称、标题、描述和帮助上下文</description>
+                </item>
+                <item>
+                    <term>Length</term>
+                    <description>字段的长度</description>
+                </item>
+                <item>
+                    <term>Min,Max</term>
+                    <description>字段中允许的数据范围</description>
+                </item>
+                <item>
+                    <term>MinLength</term>
+                    <description>字段中允许的最小字符数（例如，STATE 字段可以定义为长度和最小长度为 2，而 PASSWORD 可能具有长度为 10 和最小长度为
+            4）</description>
+                </item>
+                <item>
+                    <term>Picture</term>
+                    <description>用于格式化字段的图片子句。这是一个标准的 Xbase 图片子句，例如 @! 或 999-99-9999。</description>
+                </item>
+                <item>
+                    <term>Status</term>
+                    <description>描述验证测试结果的 HyperLabel 对象（如果验证通过，则为 NIL）</description>
+                </item>
+                <item>
+                    <term>Type</term>
+                    <description>字段的基础存储类型（数字、字符串、逻辑、日期或备注）</description>
+                </item>
+                <item>
+                    <term>Validation</term>
+                    <description>
+                        设置字段验证规则的代码块（即，必填字段、数据类型合规性、范围合规性等）。
+                        还请注意，FieldSpec 子类可以具有 Validation() 方法，该方法会覆盖此代码块。
+                    </description>
+                </item>
+            </list>
+        </remarks>
+    </FieldSpec>
+
+    <FieldSpec.ctor>
+        <summary>
+            构造一个字段规范。
+        </summary>
+        <param name="oHLName">包含字段名称和其他属性（例如，标题、描述和帮助上下文）的超标签，用于创建新的字段规范。</param>
+        <param name="uType">
+            新字段规范的数据类型。可以指定为一个字符的字符串或常量（请参阅 FieldSpec:ValType 和 FieldSpec:UsualType 以获取有效的字符串和常量）。
+        </param>
+        <param name="uLength">字段的长度。此参数对于数字和字符串数据类型是必需的，但对于所有其他类型是可选的。</param>
+        <param name="uDecimals">字段中的小数位数。此参数仅用于数字数据类型。默认值为 0。</param>
+    </FieldSpec.ctor>
+
+    <FieldSpec.AsString>
+        <summary>
+            返回定义给此字段规范的超标签的标题；如果未定义标题，则返回定义给超标签的名称。
+        </summary>
+    </FieldSpec.AsString>
+
+    <FieldSpec.Decimals>
+        <summary>
+            表示定义给此字段规范的小数位数的数值。
+        </summary>
+        <value>表示定义给此字段规范的小数位数的数值。</value>
+        <remarks>
+            表示定义给此字段规范的小数位数的数值。此参数仅用于数字数据类型。默认值为 0。
+        </remarks>
+    </FieldSpec.Decimals>
+
+    <FieldSpec.HyperLabel>
+        <summary>
+            连接到此字段规范的超标签。
+        </summary>
+        <value>连接到此字段规范的超标签。</value>
+        <remarks> 
+            连接到此字段规范的超标签。从超标签中，您可以检索有关字段规范的其他信息，例如： 
+            <code language="X#">
+                cCaption := oFieldSpec:HyperLabel:Caption
+                cDescription := oFieldSpec:HyperLabel:Description
+                cHelpContext := oFieldSpec:HyperLabel:HelpContext
+            </code>
+        </remarks>
+    </FieldSpec.HyperLabel>
+
+    <FieldSpec.Length>
+        <summary>
+            表示定义给此字段规范的长度的数值。
+        </summary>
+        <value>表示定义给此字段规范的长度的数值。</value>
+    </FieldSpec.Length>
+
+    <FieldSpec.Maximum>
+        <summary>
+            表示此字段规范的范围验证中的最大值的数值。
+        </summary>
+        <value>表示此字段规范的范围验证中的最大值的数值。</value>
+    </FieldSpec.Maximum>
+
+    <FieldSpec.Minimum>
+        <summary>
+            表示此字段规范的范围验证中的最小值的数值。
+        </summary>
+        <value>表示此字段规范的范围验证中的最小值的数值。</value>
+    </FieldSpec.Minimum>
+
+    <FieldSpec.MinLength>
+        <summary>
+            表示此字段规范的新最小长度验证的数值。
+        </summary>
+        <value>表示此字段规范的新最小长度验证的数值。</value>
+    </FieldSpec.MinLength>
+
+    <FieldSpec.MinLengthHL>
+        <summary>最小长度验证失败时的错误消息。</summary>
+        <value>最小长度验证失败时的错误消息。</value>
+    </FieldSpec.MinLengthHL>
+
+    <FieldSpec.Nullable>
+        <summary>字段是否可为空？</summary>
+        <value>字段是否可为空？</value>
+    </FieldSpec.Nullable>
+
+    <FieldSpec.PerformValidations>
+        <summary>
+            测试指定值是否通过此字段规范的所有验证规则。
+        </summary>
+        <param name="uValue">要测试的值。</param>
+        <param name="arg">
+            传递给 FieldSpec:Validate() 方法的第二个参数。
+        </param>
+        <returns> 
+            如果验证成功，则返回 TRUE；否则返回 FALSE。 
+            <note type="tip">
+                如果返回 FALSE，系统会将 FieldSpec:Status 设置为验证规则失败的相应超标签；<br />
+                如果返回 TRUE，FieldSpec:Status 设置为 NULL_OBJECT。
+            </note>
+        </returns>
+        <example> 
+            以下示例执行验证并将结果状态分配给状态栏消息变量： 
+            <code language="X#">
+                IF !oFS:PerformValidations(x)
+                    SELF:StatusBarMessage := oFS:Status
+                ENDIF
+            </code>
+        </example>
+    </FieldSpec.PerformValidations>
+
+    <FieldSpec.Picture>
+        <summary>
+            表示定义给此字段规范的图片子句的字符串。它由 FieldSpec:Transform() 方法使用。
+        </summary>
+        <value>表示定义给此字段规范的图片子句的字符串。它由 FieldSpec:Transform() 方法使用。</value>
+    </FieldSpec.Picture>
+
+    <FieldSpec.RangeHL>
+        <summary>范围验证失败时的错误消息。</summary>
+        <value>范围验证失败时的错误消息。</value>
+    </FieldSpec.RangeHL>
+
+    <FieldSpec.Required>
+        <summary>
+            指示字段是否必需的逻辑值（TRUE 或 FALSE）。
+        </summary>
+        <value>指示字段是否必需的逻辑值（TRUE 或 FALSE）。</value>
+    </FieldSpec.Required>
+
+    <FieldSpec.RequiredHL>
+        <summary>必需验证失败时的错误消息。</summary>
+        <value>必需验证失败时的错误消息。</value>
+    </FieldSpec.RequiredHL>
+
+    <FieldSpec.SetLength>
+        <summary>
+            为此字段规范设置新的长度和新的超标签诊断以进行长度检查。
+        </summary>
+        <param name="w">新长度。如果省略，则当前值不变。</param>
+        <param name="oHL">包含长度检查的新诊断（标题、描述和帮助上下文）的超标签。如果省略，则当前值不变。</param>
+        <remarks>
+            字段规范的长度通常在实例化期间设置，通常不应在以后更改。
+        </remarks>
+    </FieldSpec.SetLength>
+
+    <FieldSpec.SetMinLength>
+        <summary>
+            为此字段规范设置新的最小长度验证和新的超标签诊断以进行最小长度检查。
+        </summary>
+        <param name="w">新的最小长度（如果为 0，则删除最小长度检查）。如果省略，则当前值不变。</param>
+        <param name="oHL">包含最小长度检查的新诊断（标题、描述和帮助上下文）的超标签。如果省略，则当前值不变。</param>
+    </FieldSpec.SetMinLength>
+
+    <FieldSpec.SetRange>
+        <summary>
+            为此字段规范设置新的范围验证和新的超标签诊断以进行范围检查。
+        </summary>
+        <param name="uMinimum">新最小值。如果省略，则当前值不变。</param>
+        <param name="uMaximum">新最大值。如果省略，则当前值不变。</param>
+        <param name="oHL">包含范围检查的新诊断（标题、描述和帮助上下文）的超标签。如果省略，则当前值不变。</param>
+    </FieldSpec.SetRange>
+
+    <FieldSpec.SetRequired>
+        <summary>
+            为此字段规范设置新的必需验证和新的超标签诊断以进行必需检查。
+        </summary>
+        <param name="lReq">如果字段应为必需，则为 TRUE；否则为 FALSE。如果省略，则假定为 TRUE。</param>
+        <param name="oHL">包含必需检查的新诊断（标题、描述和帮助上下文）的超标签。如果省略，则当前值不变。</param>
+    </FieldSpec.SetRequired>
+
+    <FieldSpec.SetType>
+        <summary>
+            为此字段规范设置新的数据类型和新的超标签诊断以进行数据类型检查。
+        </summary>
+        <param name="uType">
+            新数据类型。可以指定为一个字符的字符串或常量（请参阅 FieldSpec:ValType 和 FieldSpec:UsualType 以获取有效的字符串和常量）。
+            如果省略，则当前值不变。
+        </param>
+        <param name="oHL">包含数据类型检查的新诊断（标题、描述和帮助上下文）的超标签。如果省略，则当前值不变。</param>
+        <remarks>
+            字段规范的数据类型通常在实例化期间设置，通常不应在以后更改。
+        </remarks>
+    </FieldSpec.SetType>
+
+    <FieldSpec.SetValidation>
+        <summary>
+            为此字段规范设置新的验证规则和新的超标签诊断以进行验证规则检查。
+        </summary>
+        <param name="cb">新验证规则。如果省略，则当前值不变。</param>
+        <param name="oHL">包含验证规则检查的新诊断（标题、描述和帮助上下文）的超标签。如果省略，则当前值不变。</param>
+    </FieldSpec.SetValidation>
+
+    <FieldSpec.Status>
+        <summary>
+            在验证请求之后（有关详细信息，请参阅 FieldSpec:PerformValidations()），此字段包含描述验证结果的 HyperLabel 对象，
+            如果验证通过，则为 NULL_OBJECT。
+        </summary>
+        <value>
+            在验证请求之后（有关详细信息，请参阅 FieldSpec:PerformValidations()），
+            此字段包含描述验证结果的 HyperLabel 对象，如果验证通过，则为 NULL_OBJECT。
+        </value>
+        <example> 
+            以下示例执行验证并将结果状态分配给状态栏消息变量： 
+            <code language="X#">
+                IF !oFS:PerformValidations(x)
+                    SELF:StatusBarMessage := oFS:Status
+                ENDIF
+            </code>
+        </example>
+    </FieldSpec.Status>
+
+    <FieldSpec.Transform>
+        <summary>
+            将指定值转换为字符串，格式化为此字段规范的图片子句。
+        </summary>
+        <param name="uValue">
+            要格式化的值。它应符合此字段规范的基础数据类型。
+            如果不符合，方法返回 NIL 并相应地设置 FieldSpec:Status（请注意，FieldSpec:Transform() 不执行其他验证）。
+        </param>
+    </FieldSpec.Transform>
+
+    <FieldSpec.UsualType>
+        <summary>
+            表示定义给此字段规范的数据类型的常量:
+        </summary>
+        <value>表示定义给此字段规范的数据类型的常量：</value>
+        <remarks>
+            <para>以下常量之一，表示定义给此字段规范的数据类型：</para>
+            <list type="table">
+                <listheader>
+                    <term>常量</term>
+                    <description>含义</description>
+                </listheader>
+                <item>
+                    <term>BYTE</term>
+                    <description>字节</description>
+                </item>
+                <item>
+                    <term>DATE</term>
+                    <description>日期</description>
+                </item>
+                <item>
+                    <term>DWORD</term>
+                    <description>双字</description>
+                </item>
+                <item>
+                    <term>FLOAT</term>
+                    <description>浮点数</description>
+                </item>
+                <item>
+                    <term>INT</term>
+                    <description>整数，长整数</description>
+                </item>
+                <item>
+                    <term>LOGIC</term>
+                    <description>逻辑</description>
+                </item>
+                <item>
+                    <term>OBJECT</term>
+                    <description>对象</description>
+                </item>
+                <item>
+                    <term>REAL4</term>
+                    <description>Real4</description>
+                </item>
+                <item>
+                    <term>REAL8</term>
+                    <description>Real8</description>
+                </item>
+                <item>
+                    <term>SHORT</term>
+                    <description>短整数</description>
+                </item>
+                <item>
+                    <term>STRING</term>
+                    <description>字符串</description>
+                </item>
+                <item>
+                    <term>TYPE_BITMAP</term>
+                    <description>位图</description>
+                </item>
+                <item>
+                    <term>WORD</term>
+                    <description>字</description>
+                </item>
+            </list>
+        </remarks>
+    </FieldSpec.UsualType>
+
+    <FieldSpec.Val>
+        <summary>
+            根据此字段规范定义的数据类型，将字符串转换为值。
+        </summary>
+        <param name="cString">
+            要转换的字符串。如果字符串无法转换为适当的值，
+            此方法返回 NIL 并设置 FieldSpec:Status 以指示失败的原因（请注意，FieldSpec:Val() 不执行其他验证）。
+        </param>
+        <remarks>
+            FieldSpec:Val() 方法充当 FieldSpec:Transform() 方法的逆操作，将转换后的字符串转换回其原始值。
+        </remarks>
+    </FieldSpec.Val>
+
+    <FieldSpec.Validate>
+        <summary>
+            一个可替换的方法，用于执行验证。标准实现会评估通过 FieldSpec:SetValidation() 指定的代码块。
+        </summary>
+        <param name="uValue">要验证的值。</param>
+        <param name="arg">
+            传递给通过 FieldSpec:SetValidation() 指定的代码块的第二个参数。
+            在 FieldSpec:PerformValidations() 中执行时，该参数是 Control 对象或 Column 对象。
+        </param>
+        <returns>
+            如果值有效，则返回 TRUE；否则返回 FALSE。
+        </returns>
+        <remarks> 
+            此方法由 FieldSpec:PerformValidations() 调用，通常不应由开发人员调用。它提供了一种方法，开发人员可以选择使用自定义的验证技术。
+            标准实现是：
+            <code language="X#">
+                METHOD Validate(uValue, uArg) CLASS FieldSpec
+                    RETURN cbValidation = NULL_CODEBLOCK .OR. EVAL(cbValidation, uValue)
+            </code>
+        </remarks>
+    </FieldSpec.Validate>
+
+    <FieldSpec.Validation>
+        <summary>
+            设置此字段规范的验证规则的代码块。
+        </summary>
+        <value>设置此字段规范的验证规则的代码块。</value>
+    </FieldSpec.Validation>
+
+    <FieldSpec.ValidationHL>
+        <summary>验证失败时的错误消息。</summary>
+        <value>验证失败时的错误消息。</value>
+    </FieldSpec.ValidationHL>
+
+    <FieldSpec.ValType>
+        <summary>
+            表示此字段规范定义的数据类型的单字符字符串：
+        </summary>
+        <value>
+            表示此字段规范定义的数据类型的单字符字符串：
+        </value>
+        <remarks>
+            <list type="table">
+                <listheader>
+                    <term>字符</term>
+                    <description>含义</description>
+                </listheader>
+                <item>
+                    <term>C</term>
+                    <description>字符串</description>
+                </item>
+                <item>
+                    <term>D</term>
+                    <description>日期</description>
+                </item>
+                <item>
+                    <term>L</term>
+                    <description>逻辑</description>
+                </item>
+                <item>
+                    <term>M</term>
+                    <description>备注</description>
+                </item>
+                <item>
+                    <term>N</term>
+                    <description>长整数、浮点数、字节、短整数、字、双字、Real4、Real8</description>
+                </item>
+            </list>
+        </remarks>
+    </FieldSpec.ValType>
+
+    <FileSpec>
+        <summary>
+            创建一个文件规范，它提供了一个有用的框架来管理文件名和路径。
+        </summary>
+        <remarks>
+            文件规范旨在作为一种存储和管理文件名和路径相关信息的方法。它提供了一些用于复制、移动、删除和重命名文件的方法，以及用于检索文件信息的访问方法。
+            如果未使用 FileSpec 类提供的分配方法指定路径，则通过 SetDefault() 和 SetPath() 函数获取路径。
+            该类允许您以通用方式管理所有不同类型文件的数据。因此，它不提供处理文件的方法，例如读取和写入文件，因为这些方法取决于文件的类型。
+            例如，.DBF 文件可以使用 DBServer 对象处理；其他文件可以使用函数或定制的 FileSpec 子类处理，这些子类已定制用于处理不同类型的文件。
+        </remarks>
+        <example> 
+            文件规范通常用作 DBServer 对象和方法的参数。例如，要将选定的记录从一个文件复制到另一个文件： 
+            <code language="X#">
+                // 源文件
+                oFSSource := FileSpec{"c:\data\customer"}
+                // 对于目标文件，使用源文件的路径
+                oFSTarget := FileSpec{oFSSource:FullPath}
+                // 更改目标文件的文件名
+                oFSTarget:FileName := "nycust"
+                // 在服务对象中打开源文件
+                oDBSource := DBServer{oFSSource}
+                // 将记录复制到目标文件
+                oDBSource:CopyDB(oFSTarget,,{||STATE="NY"})
+            </code>
+            FileSpec 对象也是查找当前目录然后根据逻辑结构在子目录中搜索的便捷方法： 
+            <code language="X#">
+                oFileSpec := FileSpec{}
+                oFileSpec:Path := CurDir()
+                oFileSpec:AppendToPath("data")
+                oFileSpec:FileName := "custdata"
+                oDB := DBServer{oFileSpec}
+            </code>
+        </example>
+    </FileSpec>
+
+    <FileSpec.ctor>
+        <summary>
+            构造一个文件规范。
+        </summary>
+        <param name="cFullPath">包含文件名的完整或部分路径名。如果省略，您应在使用对象之前使用 FileSpec 类的分配方法指定此文件的路径。</param>
+    </FileSpec.ctor>
+
+    <FileSpec.AppendToPath>
+        <summary>
+            将子目录附加到此文件规范路径的末尾。
+        </summary>
+        <param name="cDirectory">
+            要附加的子目录，可以带或不带前导和尾随斜杠。也可以附加由斜杠分隔的子目录列表。
+        </param>
+        <remarks>
+            <note type="tip"> 如果路径之前未知（NIL），<paramref name="cDirectory" /> 将成为新路径。 </note>
+        </remarks>
+        <returns>
+            生成的路径。
+        </returns>
+        <example> 
+            以下示例说明了 FileSpec:AppendToPath() 的使用： 
+            <code language="X#">
+                // d:\data\cust
+                oFS:Path := "d:\data"
+                oFS:AppendToPath("cust")
+                // d:\data\cust
+                oFS:Path := "d:\data"
+                oFS:AppendToPath("\cust\")
+                // \data
+                oFS:Path := "\"
+                oFS:AppendToPath("data")
+                // \cust
+                oFS:Path := NIL
+                oFS:AppendToPath("cust")
+                // d:\data\cust\1993\budget
+                oFS:Path := "d:\data"
+                oFS:AppendToPath("cust\1993\budget")
+            </code>
+        </example>
+    </FileSpec.AppendToPath>
+
+    <FileSpec.Attributes>
+        <summary>
+            一个或多个字符连接成一个字符串，表示此文件规范表示的文件的属性：
+        </summary>
+        <value>一个或多个字符连接成一个字符串，表示此文件规范表示的文件的属性：</value>
+        <remarks> 
+            一个或多个字符连接成一个字符串，表示此文件规范表示的文件的属性： 
+            <list type="table">
+                <listheader>
+                    <term>字符</term>
+                    <description>描述</description>
+                </listheader>
+                <item>
+                    <term>A</term>
+                    <description>存档位设置的文件</description>
+                </item>
+                <item>
+                    <term>H</term>
+                    <description>隐藏文件</description>
+                </item>
+                <item>
+                    <term>NULL_STRING</term>
+                    <description>普通读/写文件</description>
+                </item>
+                <item>
+                    <term>R</term>
+                    <description>只读文件</description>
+                </item>
+                <item>
+                    <term>S</term>
+                    <description>系统文件</description>
+                </item>
+            </list>
+            <note type="tip">您可以使用 At() 函数确定是否设置了特定属性。</note>
+        </remarks>
+        <example> 
+            此示例检查文件 "abc.dbf" 是否为只读： 
+            <code language="X#">
+                oFileSpec := FileSpec("abc.dbf")
+                IF AT("R", oFileSpec:Attributes) &gt; 0
+                    // 属性字符串包含 "R"，因此文件为只读
+                    ...
+                ENDIF
+            </code>
+        </example>
+    </FileSpec.Attributes>
+
+    <FileSpec.Copy>
+        <summary>
+            复制此文件规范表示的文件。
+        </summary>
+        <param name="oFSTarget">目标文件的名称，包括可选的驱动器、目录和扩展名。文件按照操作系统规则创建。</param>
+        <param name="lName">逻辑参数。如果在复制过程中发生文件冲突，TRUE 会自动重命名目标文件。默认值为 FALSE。</param>
+        <returns>
+            如果文件成功复制，则返回 TRUE；否则返回 FALSE。
+        </returns>
+        <example> 
+            此示例定义一个文件规范，然后将其复制到目标文件： 
+            <code language="X#">
+                // 定义原始文件
+                oFSSource := FileSpec{"c:\data\customer.dbf"}
+                // 复制文件
+                oFSSource:Copy("a:\custdata")
+            </code>
+        </example>
+    </FileSpec.Copy>
+
+    <FileSpec.DateChanged>
+        <summary>
+            表示文件创建或最后更改的日期值。如果未找到文件，则返回 NULL_DATE。
+        </summary>
+        <value>表示文件创建或最后更改的日期值。如果未找到文件，则返回 NULL_DATE。</value>
+    </FileSpec.DateChanged>
+
+    <FileSpec.Delete>
+        <summary>
+            删除此文件规范表示的文件。
+        </summary>
+        <returns>
+            如果文件成功删除，则返回 TRUE；否则返回 FALSE。
+        </returns>
+    </FileSpec.Delete>
+
+    <FileSpec.Drive>
+        <summary>
+            表示分配给此文件规范的驱动器的字符串。
+        </summary>
+        <value>表示分配给此文件规范的驱动器的字符串。</value>
+        <remarks>
+            表示分配给此文件规范的驱动器的字符串。驱动器可以显式分配或作为较长文件规范的一部分分配（作为实例化参数或作为文件名或完整路径的一部分分配）。
+            访问 FileSpec:Drive 时，请求的驱动器将带有尾随冒号返回。
+            分配 FileSpec:Drive 时，可以指定带或不带冒号的驱动器。将 NULL_STRING（或 NIL）分配给驱动器表示驱动器未知或未指定；
+            使用文件规范定位文件的各种函数和对象会在指定文件名而不指定驱动器时查找适用的默认驱动器。
+        </remarks>
+        <example> 
+            要将选定的记录从一个磁盘驱动器上的文件复制到另一个磁盘驱动器上的文件 - 使用相同的文件名和目录 - 您可以这样做： 
+            <code language="X#">
+                // 定义原始文件
+                oFSSource := FileSpec{"c:\data\customer"}
+                // 复制目标文件的路径
+                oFSTarget := FileSpec{oFSSource:FullPath}
+                // 更改目标文件的驱动器
+                oFSTarget:Drive := "d"
+                // 打开原始文件
+                oDBSource := DBServer{oFSSource}
+                // 将选定的记录复制到目标文件
+                oDBSource:CopyDB(oFSTarget,,{||STATE="NY"})
+            </code>
+        </example>
+    </FileSpec.Drive>
+
+    <FileSpec.ErrInfo>
+        <summary>返回上次 Copy() 或 Move() 操作的错误对象。</summary>
+        <value>上次 Copy() 或 Move() 操作的错误对象。</value>
+        <seealso cref="O:VO.FileSpec.Copy" />
+        <seealso cref="O:VO.FileSpec.Move" />
+    </FileSpec.ErrInfo>
+
+    <FileSpec.Error>
+        <summary>
+            提供一种方法来处理 FileSpec 处理期间引发的错误条件。
+            这是一个事件处理程序：它由其他方法自动调用；开发人员通常不需要调用错误方法，但可能希望替换或修改它。
+        </summary>
+        <param name="oError">描述错误条件的错误对象。</param>
+        <param name="symMethod">引发错误的方法的符号名称。</param>
+        <remarks>
+            FileSpec 的所有方法都使用 recover 语句捕获严重错误并将其发送到此方法。普通故障（例如文件未找到）不会引发错误条件；它们只是通过失败返回值指示。
+            标准的 Error() 处理方法填充有关错误和引发错误的 FileSpec 对象的更多信息，并在其标准的 Error()
+            处理方法中设置服务对象的状态值。该方法通过发出带有相同错误对象的 BREAK 将其传递到调用堆栈。
+        </remarks>
+    </FileSpec.Error>
+
+    <FileSpec.Extension>
+        <summary>
+            表示分配给此文件规范的扩展名的字符串。
+        </summary>
+        <value>表示分配给此文件规范的扩展名的字符串。</value>
+        <remarks> 
+            表示分配给此文件规范的扩展名的字符串。扩展名可以显式分配或作为较长文件规范的一部分分配（作为实例化参数或作为文件名或完整路径的一部分分配）。 
+            访问 FileSpec:Extension 时，请求的扩展名将带有前导句点返回。 分配 FileSpec:Extension 时，可以指定带或不带前导句点的扩展名。
+            将 NULL_STRING（或 NIL）分配给扩展名表示扩展名未知或未指定；使用文件规范定位文件的各种函数和对象使用适用于它们的默认扩展名。 
+            <note type="tip">
+                仅分配一个句点作为扩展名明确指定了“空”扩展名。
+            </note>
+        </remarks>
+    </FileSpec.Extension>
+
+    <FileSpec.FileName>
+        <summary>
+            表示分配给此文件规范的文件名的字符串。
+        </summary>
+        <value>表示分配给此文件规范的文件名的字符串。</value>
+        <remarks>
+            表示分配给此文件规范的文件名的字符串。文件名可以显式分配或作为较长文件规范的一部分分配（作为实例化参数或作为完整路径分配的一部分）。
+            访问 FileSpec:FileName 时，请求的文件名将不带路径和扩展名返回。
+            分配 FileSpec:FileName 时，可以指定简单文件名、带扩展名的文件名或带驱动器的完整路径。给定的信息将被解析并分配给适当的组件；
+            此外，仅更改指定的部分。
+            分配 NULL_STRING（或 NIL）表示文件名未知或未指定。
+        </remarks>
+        <example> 
+            以下是使用 FileSpec:FileName 的一些示例： 
+            <code language="X#">
+                // 仅更改文件名
+                oFS:FileName := "cust"
+                // 更改文件名和扩展名
+                oFS:FileName := "cust.dbx"
+                // 更改路径和文件名
+                oFS:FileName := "data\cust"
+                // 更改路径和文件名
+                oFS:FileName:="\data\cust"
+                // 更改驱动器、路径、文件名
+                oFS:FileName:="d:cust"
+            </code>
+        </example>
+    </FileSpec.FileName>
+
+    <FileSpec.Find>
+        <summary>
+            在磁盘上搜索由此文件规范表示的文件，指示它是否存在，如果存在，将其完整路径信息存储在此文件规范中以供将来参考。
+        </summary>
+        <returns>
+            如果找到文件，则返回 TRUE；否则返回 FALSE。
+        </returns>
+        <remarks>
+            此方法根据 SetPath() 和 SetDefault() 函数的所有标准设置搜索文件。
+            如果找到文件，它的完整路径信息将存储以供将来参考，这对于初始搜索从当前目录开始，以后可以在 DBServer 中使用相同的文件，
+            例如，当当前目录可能不同的时候，非常有用。
+        </remarks>
+        <example> 
+            以下示例是一个假设的数据窗口中方法的一部分，定义了一个通用文件，搜索它，然后如果找到，显示其完整路径： 
+            <code language="X#">
+                oFileSpec := FileSpec{"custfile"}
+                IF oFileSpec:Find()
+                    SELF:Caption := oFileSpec:FullPath d:\data\custfile.dbf
+                    ...
+                    SELF:Use(DBServer{oFileSpec})
+                ENDIF
+            </code>
+        </example>
+    </FileSpec.Find>
+
+    <FileSpec.FullPath>
+        <summary>
+            表示分配给此文件规范的完整路径名的字符串。
+        </summary>
+        <value>表示分配给此文件规范的完整路径名的字符串。</value>
+        <remarks>
+            表示分配给此文件规范的完整路径名的字符串。完整路径名的各个组件可能已经被显式分配，
+            也可能作为较长文件规范的一部分分配（作为实例化参数或作为文件名或完整路径分配的一部分）。 
+            访问 FileSpec:FullPath 时，请求的完整路径名将带有驱动器、路径、文件名和扩展名返回。
+            但是，如果文件没有完全指定并且自从找到文件以来文件还没有被找到，路径的部分可能是未知的。任何未知的部分都将从返回值中省略。 
+            分配 FileSpec:FullPath 时，可以指定一个简单的文件名、带扩展名的文件名或带驱动器的完整路径。
+            给定的信息将被解析并分配给适当的组件；此外，当将字符串分配给 FileSpec:FullPath 时，那些在字符串中被省略的部分将被存储为未知或未指定。 
+            <note type="tip">FileSpec
+                不区分没有扩展名的文件和子目录（例如，C:\CAVOxx，在这个目录中，目录“CAVOxx”似乎是没有扩展名的文件）。
+            </note>
+        </remarks>
+        <example> 
+            以下是使用 FileSpec:FullPath 的一些示例，以及它们表示的内容的解释： 
+            <code language="X#">
+                // 所有部分都已知
+                c:\data\customer\custdata.dbf
+                // 驱动器未知
+                \data\customer\custdata.dbf
+                // 路径是 ROOT
+                c:\custdata.dbf
+                // 驱动器和路径未知
+                custdata.dbf
+                // 驱动器未知，路径是 ROOT
+                \custdata.dbf
+                // 扩展名未知
+                c:\data\customer\custdata
+                // 仅文件名已知
+                custdata
+            </code>
+            以下是一些将字符串分配给 FileSpec:FullPath 的示例，以及结果的解释： 
+            <code language="X#">
+                // 分配并显示 FileSpec:FullPath
+                oFS:FileSpec := ("String")
+                ? oFS:FullPath
+                // 所有部分都标记为未知
+                oFS:FullPath := "cust"
+                // 除了文件名和扩展名，所有部分都标记为未知
+                oFS:FullPath:= "cust.dbx"
+                // 设置路径和文件名，标记驱动器和
+                // 扩展名为未知
+                oFS:FullPath := "data\cust"
+                // 同上
+                oFS:FullPath := "\data\cust"
+                // 更改驱动器、路径、文件名；
+                // 设置扩展名为未知
+                oFS:FullPath := "d:cust"
+            </code>
+        </example>
+    </FileSpec.FullPath>
+
+    <FileSpec.Move>
+        <summary>
+            将由此文件规范表示的文件移动到新位置。
+        </summary>
+        <param name="oFSTarget">目标文件的名称，包括可选的驱动器、目录和扩展名。根据操作系统规则创建文件。请注意，文件可以在卷之间移动。</param>
+        <param name="lName">逻辑参数。如果在移动过程中发生文件冲突，TRUE 会导致目标文件自动重命名。默认值为 FALSE。</param>
+        <returns>
+            如果成功移动文件，则返回 TRUE；否则返回 FALSE。
+        </returns>
+        <example> 
+            以下示例移动并重命名一个文件: 
+            <code language="X#">
+                // 定义原始文件
+                oFSSource := FileSpec{"c:\data\customer.dbf"}
+                // 移动文件
+                oFSSource:Move("a:\custdata\customer.bak")
+            </code>
+        </example>
+    </FileSpec.Move>
+
+    <FileSpec.Path>
+        <summary>
+            表示分配给此文件规范的路径的字符串。
+        </summary>
+        <value>表示分配给此文件规范的路径的字符串。</value>
+        <remarks>
+            表示分配给此文件规范的路径的字符串。路径可能已经被显式分配，也可能作为较长文件规范的一部分分配（作为实例化参数或作为文件名或完整路径分配的一部分）。
+            访问 FileSpec:Path 时，请求的路径将带有前导斜杠和适用时的尾随斜杠返回。
+            分配 FileSpec:Path 时，可以指定一个带或不带前导斜杠和尾随斜杠的路径。要指定根目录，分配一个单斜杠。
+            将 NULL_STRING（或 NIL）分配给驱动器表示驱动器未知或未指定；使用文件规范定位文件的各种函数和对象使用适用于它们的默认驱动器。
+            通常，分配值到路径不会影响驱动器、文件名或扩展名。如果路径中包含驱动器，它将被分配到路径。
+        </remarks>
+        <example> 
+            以下是一些使用 FileSpec:Path 的示例，以及它们表示的内容的解释： 
+            <code language="X#">
+                \data\customer      // 跷径是 \data\customer
+                \                   // 跷径是 ROOT
+                &lt;EmptyString&gt; // 跷径未知
+            </code>
+            以下是一些将字符串分配给 FileSpec:Path 的示例，以及结果的解释： 
+            <code language="X#">
+                oFS:Path := NIL             // 未知
+                oFS:Path := ""              // 未知
+                oFS:Path := "\"             // ROOT
+                oFS:Path := "data"          // \data
+                oFS:Path := "\data"         // \data
+                oFS:Path := "data\"         // \data
+                oFS:Path := "\data"         // \data
+                oFS:Path := "data\cust"     // \data\CUST
+                oFS:Path := "\data\cust"    // \data\CUST
+                oFS:Path := "d:data"        // Drive = d:
+                                            // Path = \data
+                oFS:Path := "d:\data"       // Drive = d:
+                                            // Path = \data
+                oFS:Path := "d:\"           // Drive = d:
+                                            // Path = root
+                oFS:Path := "d:"            // Drive = d:
+                                            // Path = root
+            </code>
+        </example>
+    </FileSpec.Path>
+
+    <FileSpec.PathUp>
+        <summary>
+            从此文件规范的路径的末尾删除最后一个子目录。
+        </summary>
+        <returns>
+            结果路径。
+        </returns>
+        <remarks>
+            如果路径先前是根目录或未知（NIL），PathUp() 不会更改路径。其他组件 — 驱动器、文件名和扩展名 — 不受影响。
+        </remarks>
+        <example> 
+            例如，将选定的数据存储在实际数据目录的同级备份目录中： 
+            <code language="X#">
+                oFSCust := FileSpec{"c:\data\cust.dbf"}
+                oFSCustBackup := FileSpec{oFSCust:FullPath}
+                oFSCustBackup:PathUp()
+                oFSCustBackup:AppendToPath("backup")
+            </code>
+        </example>
+    </FileSpec.PathUp>
+
+    <FileSpec.Rename>
+        <summary>
+            重命名由此文件规范表示的文件。
+        </summary>
+        <param name="oFSTarget">新文件名。</param>
+        <param name="lName">
+            如果存在冲突，进行不同的文件名。
+            新名称将以原始文件的基本文件名开头。
+            如果发生名称冲突，新名称将以原始名称的5或6个字符加上后缀的8个字符文件名开头，后缀范围从"_1"到"_99"。否则返回 NULL_STRING
+        </param>
+
+        <returns>
+            如果成功重命名文件，则返回 TRUE；否则返回 FALSE。
+        </returns>
+        <example> 
+            以下示例重命名一个文件： 
+            <code language="X#">
+                oFSSource := FileSpec{"c =:\data\customer.dbf"}
+                // 重命名文件
+                oFSSource:Rename("customer.bak")
+            </code>
+        </example>
+    </FileSpec.Rename>
+
+    <FileSpec.Size>
+        <summary>
+            表示由此文件规范表示的文件的大小，以字节为单位。
+        </summary>
+        <value>表示由此文件规范表示的文件的大小，以字节为单位。</value>
+    </FileSpec.Size>
+
+    <FileSpec.TimeChanged>
+        <summary>
+            表示文件创建或最后更改的时间的字符串。
+        </summary>
+        <value>表示文件创建或最后更改的时间的字符串。</value>
+        <remarks>
+            表示文件创建或最后更改的时间的字符串。如果文件未找到，则返回"00:00:00"。
+        </remarks>
+    </FileSpec.TimeChanged>
+
+    <FSError>
+        <exclude />
+    </FSError>
+
+    <FSError.ctor>
+        <exclude />
+    </FSError.ctor>
+
+    <HLError>
+        <exclude />
+    </HLError>
+
+    <HLError.ctor>
+        <exclude />
+    </HLError.ctor>
+
+    <HyperLabel>
+        <summary>
+            创建一个超级标签，用于存储关于另一个对象的信息。
+        </summary>
+        <remarks> 
+            HyperLabel 类存储关于另一个对象 — 主机对象 — 的上下文敏感帮助信息的提示和说明。
+            该类的目的是以标准方式收集这种信息，以便系统中的各种帮助系统（状态、异常和错误管理函数）可以处理超级标签，而不需要知道主机对象的任何信息，就像邮寄系统在不知道包裹内容的情况下路由包裹一样。
+            超级标签还记录主机的符号名称。例如，系统使用这个名称在将数据窗口链接到数据源时将字段与控件匹配，并在菜单命令的情况下，决定用户命令该菜单命令执行时菜单的所有者的哪个方法要分派。
+            单个数据库列有超级标签，数据类型、数据窗口、控件和菜单命令也有超级标签。对象之间委托超级标签。事实上，
+            X# 的良好编程的一个很大的部分在于提供完整和有用的超级标签。系统的许多自动行为的进展取决于超级标签中的信息的质量。 
+            它被称为超级标签，因为系统的超文本帮助系统通过超级标签导航。 
+            <note type="tip">首先创建一个超级标签，然后通过将其分配给主机的超级标签伪变量来将其附加到主机对象。</note>
+        </remarks>
+    </HyperLabel>
+
+    <HyperLabel.ctor>
+        <summary>
+            构造一个超级标签。
+        </summary>
+        <param name="uName">
+            程序使用的符号名称，用于引用超级标签附加的对象。
+            例如，如果超级标签附加到菜单命令，符号名称是用户执行该菜单命令时系统调用的方法（窗口拥有该菜单的方法）。
+            如果超级标签附加到字段，符号是字段的名称。换句话说，符号名称只对程序有用。相比之下，其他项目对用户有意义。
+        </param>
+        <param name="uCaption"> 
+            超级标签附加的对象的名称，用户可识别。如果对象是控件，标题是显示在控件旁边或上面的名称。
+            如果您提供一个字符串的资源ID，HyperLabel:Init() 会提取字符串。如果未指定，如果提供了 <paramref name="symName" />，则默认值与之相同；
+            否则，默认值为 NULL_STRING。 
+        </param>
+        <param name="uDescription">
+            主机对象的目的。对于控件，目的告诉用户控件的用途。默认情况下，当控件获得焦点时，系统会在状态栏上显示控件的超级标签的描述。
+            类似地，当用户在菜单上拖动鼠标时，每次突出一个新的命令时，它的超级标签的描述会出现在状态栏上。
+            如果您提供一个字符串的资源ID，HyperLabel:Init() 会提取字符串。如果未指定，则默认值为 NULL_STRING。
+        </param>
+        <param name="uHelpContext">
+            在超文本帮助系统中唯一标识要跳转的地方的字符串。
+            在 Windows 的情况下，这只是上下文名称。系统使用对象的超级标签的帮助上下文来决定当用户请求有关主机对象的上下文帮助时要跳转的地方。
+            如果您提供一个字符串的资源ID，HyperLabel:Init() 会提取字符串。
+            如果未指定，如果提供了 <paramref name="symName" />，则默认值与之相同；否则，默认值为 NULL_STRING。
+        </param>
+    </HyperLabel.ctor>
+
+    <HyperLabel.AsString>
+        <summary>
+            返回超级标签的标题。
+        </summary>
+        <remarks>
+            此方法返回与 HyperLabel:Caption 相同的内容，并将超级标签呈现为可识别的字符串。
+        </remarks>
+    </HyperLabel.AsString>
+
+    <HyperLabel.Caption>
+        <summary>
+            表示用户用于引用主机对象（超级标签附加的对象）的短名称或标题的字符串。对于菜单命令，这将是菜单本身中显示的文本。
+        </summary>
+        <value>表示用户用于引用超级标签附加的主机对象的短名称或标题的字符串。对于菜单命令，这将是菜单本身中显示的文本。</value>
+    </HyperLabel.Caption>
+
+    <HyperLabel.Description>
+        <summary>
+            一个字符串，表示主机对象（超级标签附加到的对象）的目的。系统通常将其作为用户的提示或作为超文本帮助的更快替代。
+        </summary>
+        <value>一个字符串，表示主机对象（超级标签附加到的对象）的目的。系统通常将其作为用户的提示或作为超文本帮助的更快替代。</value>
+    </HyperLabel.Description>
+
+    <HyperLabel.Error>
+        <summary>
+            提供处理超级标签处理过程中出现的错误条件的方法。
+        </summary>
+        <param name="oError">描述错误条件的错误对象。</param>
+        <param name="symMethod">引起错误的方法的符号名称。</param>
+        <remarks>
+            <note type="tip">
+                这是一个事件处理程序，其他方法会自动调用它；开发者通常不需要直接调用 HyperLabel:Error() 方法，但可能想替换或修改它。
+            </note>
+            标准的 Error() 处理方法会填充更多关于错误和引起错误的 HyperLabel 对象的信息，设置对象的状态值，并将问题传递给其客户端，
+            如果有客户端，在其标准的 Error() 处理方法中。 如果没有客户端想处理问题，方法会通过发出同样的错误对象来将问题传递给调用栈。 
+            <note type="tip">
+                如果在处理错误时另一个错误出现，Error() 方法会立即中断。
+            </note>
+        </remarks>
+    </HyperLabel.Error>
+
+    <HyperLabel.HelpContext>
+        <summary>
+            一个字符串，表示超文本系统中查找关于主机对象（超级标签附加到的对象）的帮助信息的键或ID。
+        </summary>
+        <value>一个字符串，表示超文本系统中查找关于主机对象（超级标签附加到的对象）的帮助信息的键或ID。</value>
+    </HyperLabel.HelpContext>
+
+    <HyperLabel.Name>
+        <summary>
+            一个字符串，表示超级标签附加到的主机对象的名称。
+        </summary>
+        <value>一个字符串，表示超级标签附加到的主机对象的名称。</value>
+    </HyperLabel.Name>
+
+    <HyperLabel.NameSym>
+        <summary>
+            一个符号，表示超级标签附加到的主机对象的名称。
+        </summary>
+        <value>一个符号，表示超级标签附加到的主机对象的名称。</value>
+    </HyperLabel.NameSym>
+
+    <IntegerFS>
+        <summary>
+            创建一个整数字段规范，该规范包含整数数据类型信息。
+        </summary>
+    </IntegerFS>
+
+    <IntegerFS.ctor>
+        <summary>
+            构造一个整数字段规范。
+        </summary>
+        <param name="oHLName">包含字段名称和其他属性（例如，标题、描述和帮助上下文）的超标签，用于创建新的整数字段规范。</param>
+        <param name="uLength">字段的长度。 如果不指定，默认为 10。</param>
+    </IntegerFS.ctor>
+
+    <LogicFS>
+        <summary>
+            创建一个逻辑字段规范，该规范包含逻辑数据类型信息。
+        </summary>
+    </LogicFS>
+
+    <LogicFS.ctor>
+        <summary>
+            构造一个逻辑字段规范。
+        </summary>
+        <param name="oHLName">包含字段名称和其他属性（例如，标题、描述和帮助上下文）的超标签，用于创建新的逻辑字段规范。</param>
+    </LogicFS.ctor>
+
+    <MoneyFS>
+        <summary>
+            创建一个货币字段规范，该规范包含货币数据类型信息。
+        </summary>
+    </MoneyFS>
+
+    <MoneyFS.ctor>
+        <summary>
+            构造一个货币字段规范。
+        </summary>
+        <param name="oHLName">包含字段名称和其他属性（例如，标题、描述和帮助上下文）的超标签，用于创建新的货币字段规范。</param>
+        <param name="uLength">字段的长度。 如果不指定，默认为 12。</param>
+        <param name="uDecimals">字段中的小数位数。 如果不指定，默认为 2。</param>
+    </MoneyFS.ctor>
+
+    <NumberFS>
+        <summary>
+            创建一个数字字段规范，该规范包含数字数据类型信息。
+        </summary>
+    </NumberFS>
+
+    <NumberFS.ctor>
+        <summary>
+            构造一个数字字段规范。
+        </summary>
+        <param name="oHLName">包含字段名称和其他属性（例如，标题、描述和帮助上下文）的超标签，用于创建新的数字字段规范。</param>
+        <param name="uLength">字段的长度。 如果不指定，默认为 12。</param>
+        <param name="uDecimals">字段中的小数位数。 如果不指定，默认为 2。</param>
+    </NumberFS.ctor>
+
+    <ObjCodeBlock>
+        <exclude />
+    </ObjCodeBlock>
+
+    <ObjCodeBlock.ctor>
+        <exclude />
+    </ObjCodeBlock.ctor>
+
+    <ObjCodeBlock.Eval>
+        <exclude />
+    </ObjCodeBlock.Eval>
+
+    <StringFS>
+        <summary>
+            创建一个字符串字段规范，该规范包含字符串数据类型信息。
+        </summary>
+    </StringFS>
+    
+    <StringFS.ctor>
+        <summary>
+            构造一个字符串字段规范。
+        </summary>
+        <param name="oHLName">包含字段名称和其他属性（例如，标题、描述和帮助上下文）的超标签，用于创建新的字符串字段规范。</param>
+        <param name="uLength">字段的长度。 如果不指定，默认为 10。</param>
+    </StringFS.ctor>
+</doc>

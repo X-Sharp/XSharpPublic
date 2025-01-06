@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
+<topic id="cat-TextControl_Classes" revisionNumber="1" title="TextControl Classes">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <section address="Section1">
+      <title>TextControl Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.FixedText</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a FixedText object.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.GroupBox</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a group box, which can be used to group related controls together.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HotKeyEdit</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a hot key edit.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HyperLink</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a HyperLink control.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.IPAddress</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Edit control to edit an IP address that consists of 4 numbers
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.MultiLineEdit</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a multiline edit control for displaying and entering information to a variable or field in a server. Multiline edit controls may be bound to a data server field of any type (character, date, logical, numeric, or memo).
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.RichEdit</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a rich edit control.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SingleLineEdit</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a single-line edit control for displaying and entering information to a variable or field in a server.
+      Single-line edit controls may be bound to a data server field of any type (character, date, logical, numeric, or memo).
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TextControl</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Provide the base class from which all X# controls are subclassed.
+    </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
+  </developerConceptualDocument>
+</topic>

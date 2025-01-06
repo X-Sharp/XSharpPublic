@@ -7,6 +7,8 @@ using System;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Project;
 using System.IO;
+using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Imaging.Interop;
 
 namespace XSharp.Project
 {
@@ -88,7 +90,7 @@ namespace XSharp.Project
           ComReferenceNode node = new XSharpComReferenceNode(this.ProjectMgr, selectorData, wrapperTool);
           return node;
       }
-#if VS17
+#if DEV17
         protected override bool SupportsIconMonikers => true;
         protected override ImageMoniker GetIconMoniker(bool open)
         {

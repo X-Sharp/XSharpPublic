@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-14T14:32:56.985+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SCATTER Command</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -25,7 +25,7 @@
     <para styleclass="List">TO &lt;ArrayName&gt;<tab />Specifies an array to which the record contents are copied. Starting with the first field, SCATTER copies the contents of each field into each element of the array in sequential order.</para>
     <para styleclass="List"><tab />SCATTER automatically creates a new array. The array elements have the same size and data types as the corresponding fields. </para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /></para>
-    <para styleclass="List">MEMVAR<tab />Scatters the data to a set of variables instead of an array. SCATTER creates one variable for each field in the table and fills each variable with data from the corresponding field in the current record, assigning to the variable the same name, size, and type as its field.</para>
+    <para styleclass="List">MEMVAR<tab />Scatters the data to a set of variables instead of an array. SCATTER creates one variable for each field in the table and fills each variable with data from the corresponding field in the current record, assigning the variable the same name, size, and type as its field.</para>
     <para styleclass="List"></para>
     <para styleclass="List">NAME &lt;ObjectName&gt;<tab />Creates an object whose properties have the same names as fields in the table. To copy the value of each field in the table to each object property, do not include the BLANK keyword. To leave the properties empty, include the BLANK keyword</para>
     <para styleclass="List"></para>

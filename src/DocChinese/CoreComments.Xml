@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Comments>
+    <ansi2oem>
+        <span>
+            <note type="warning">
+                Ansi2Oem() 和 Oem2Ansi() 函数系列是兼容性函数。除非你真的必须使用它们，否则不要使用。
+                X# 是一个 Unicode 语言，如果你使用这些函数，将进行 Unicode - Ansi - Oem - Unicode 的转换。<br/>
+                你还应该意识到，Ansi2Oem(Oem2Ansi(cSource)) 不总是会返回 cSource。一些字符可能
+                在 OEM 代码页中不可用，可能会被转换为其他字符。<br/>
+                例如：Windows 代码页 1252 在位置 203 上有大写 E Umlaut (Ë)。
+                当转换为 OEM 代码页 437 时，这将变为没有 Umlaut 的大写 E (69)。再次转换为 Ansi 将保持为没有 Umlaut 的 E。
+            </note>
+        </span>
+    </ansi2oem>
+
+    <StringCompare>
+        <summary>
+            比较两个字符串。这个函数被编译器用于字符串比较。
+        </summary>
+        <returns>
+            此函数返回一个数字值，表示字符串在排序中的顺序:
+            <list type="table">
+                <listheader>
+                    <term>值</term>
+                    <description>描述</description>
+                </listheader>
+                <item>
+                    <term>-1</term>
+                    <description>LHS 在排序中的顺序在 RHS 之前。</description>
+                </item>
+                <item>
+                    <term>0</term>
+                    <description>LHS 在排序中的位置与 RHS 相同。</description>
+                </item>
+                <item>
+                    <term>1</term>
+                    <description>LHS 在排序中的顺序在 RHS 之后。</description>
+                </item>
+            </list>
+        </returns>
+    </StringCompare>
+
+    <File>
+        <remarks>
+            <note type="tip">
+                X# 运行时中的低级文件 IO 函数在后台使用 .Net 文件流。 <br/>
+                这意味着 FOpen() 和 FCreate() 返回的文件句柄不是'正常'的文件句柄，而是用于在运行时的流集合中找到底层流对象的唯一标识符。
+                这也意味着你不能使用 FRead() 和 FWrite() 这样的函数，这些函数不是在 X# 运行时中创建的文件句柄。<br/>
+                如果你想访问底层的 FileStream，你应该调用函数 <see cref="O:XSharp.Core.Functions.FGetStream">FGetStream() </see>
+            </note>
+        </remarks>
+    </File>
+
+    <PtrBin>
+        <remarks>
+            <note type="warning">
+                这是一个只在 x86 模式下工作的兼容性函数。当在 x64 模式下运行时，该函数将抛出异常。
+            </note>
+        </remarks>
+    </PtrBin>
+
+    <FileHandle>
+        <span>
+            文件的句柄。 <em>请参阅下面关于 X# 运行时文件句柄和 Win32 文件句柄兼容性的备注。</em>
+        </span>
+    </FileHandle>
+
+    <Oem2AnsiFileIO>
+        <span>
+            <note type="tip">
+                在 Ansi 环境中，如 Visual Objects，OEM 和 Ansi 之间的转换是相关的。<br/>
+                在 Unicode 环境中，这种转换不仅仅是 OEM 和 Ansi 之间的转换，还包括 Unicode 和 Ansi 或 Unicode 和 OEM 之间的转换。 <br/>
+                对于这些转换，运行时使用 <see cref="P:XSharp.RuntimeState.WinCodePage">Windows 代码页</see>
+                和 <see cref="P:XSharp.RuntimeState.DosCodePage">DOS 代码页</see>的当前值。
+            </note>
+        </span>
+    </Oem2AnsiFileIO>
+
+    <BLOBImportExport>
+        <summary>BLOB 导入/导出定义。</summary>
+    </BLOBImportExport>
+
+    <OptLevel>
+        <summary>DBOI_OPTLEVEL 定义。</summary>
+    </OptLevel>
+
+    <IndexType>
+        <summary>DBOI_INDEXTYPE 定义。</summary>
+    </IndexType>
+
+    <LockScheme>
+        <summary>LockScheme 定义。</summary>
+    </LockScheme>
+
+    <BlockSize>
+        <summary>BlockSize 定义。</summary>
+    </BlockSize>
+
+    <RDDError>
+        <summary>RDD 错误编号。</summary>
+        <seealso cref='T:XSharp.Subcodes'>Subcodes 枚举</seealso>
+        <seealso cref='P:XSharp.Error.SubCode'>Error 对象中的 Subcode 字段</seealso>
+        <remarks>这个定义的值与 Subcodes 枚举的一个成员相同。你可以在你的代码中使用定义或枚举值。</remarks>
+    </RDDError>
+
+    <Directory>
+        <seealso cref="O:XSharp.RT.Functions.Directory">Directory 函数</seealso>
+        <remarks>
+            与 Clipper 和 Visual Objects 相比，Directory() 的返回值已经改变了：
+            从 Directory() 返回的每个子数组现在包含一些额外的值，比如创建日期和最后访问日期。正常的 Date 和 Time 元素表示最后写入的日期和时间。
+        </remarks>
+    </Directory>
+
+    <Set>
+        <summary>Set() 定义</summary>
+        <seealso cref='T:XSharp.Set'>Set 枚举</seealso>
+        <seealso cref='O:XSharp.RT.Functions.Set' >Set() 函数</seealso>
+        <remarks>
+            这个定义的值与 Set 枚举的一个成员相同。你可以在你的代码中使用该定义或枚举值。<br/>
+            如果你来自 XHarbour 或 Xbase++，请不要使用 SET.CH。Set 枚举中的值可能不同:
+            我们已经从各种方言的 SET 定义中合并了 SET 定义，其中存在一些相互冲突的值。
+        </remarks>
+    </Set>
+
+    <DateCountry>
+        <summary>DateFormat 定义</summary>
+        <seealso cref='T:XSharp.DateCountry'>DateCountry 枚举</seealso>
+        <remarks>这个定义的值与 DateCountry 枚举的一个成员相同。你可以在你的代码中使用该定义或枚举值。</remarks>
+    </DateCountry>
+
+    <NationMessage>
+        <summary>Nation message 定义</summary>
+        <seealso cref='T:XSharp.VOErrors'>VOErrors 枚举</seealso>
+        <remarks>这个定义的值与 VOErrors 枚举的一个成员相同。你可以在你的代码中使用该定义或枚举值。</remarks>
+    </NationMessage>
+
+    <TrueOrFalse>
+        <span>
+            当操作成功时为 TRUE，当操作失败时为 FALSE。 <br/>
+            一些 RDD 操作并不真正返回 FALSE，而是抛出异常来表示失败。
+            这些异常在更高级别的代码中被捕获，并在运行时状态的 <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError 属性</see>中注册。
+        </span>
+    </TrueOrFalse>
+
+    <ScopeInfo>
+        <summary>
+            <c>DbScope()</c>，<c>DbSetScope()</c> 和 <c>DbClearScope()</c> 的作用域值。
+        </summary>
+        <seealso cref='O:XSharp.RT.Functions.DbScope' >DbScope()</seealso>
+        <seealso cref='O:XSharp.RT.Functions.DbSetScope' >DbSetScope()</seealso>
+        <seealso cref='O:XSharp.RT.Functions.DbClearScope' >DbClearScope()</seealso>
+    </ScopeInfo>
+    
+    <LastError>
+        <span>
+            这个函数，不会调用错误处理程序，因此如果失败，不会产生运行时错误消息或创建错误对象。
+            因此，检查返回值以确定函数是否成功是很重要的。<br/><br/>
+            <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError 属性</see>将包含关于发生的任何错误的必要信息。
+        </span>
+    </LastError>
+
+    <Collation>
+        <span>
+            Core 方言总是按照 Unicode 规则进行比较。<br/>
+            其他方言使用 SetCollation 定义的规则进行字符串比较。有 4 种可能的值：
+            <list type="table">
+                <listheader>
+                    <term>参数</term>
+                    <description>描述</description>
+                </listheader>
+                <item>
+                    <term>Windows (默认)</term>
+                    <description>
+                        这使用正常的 Windows Ansi 比较机制，Visual Objects 也使用这个。
+                        这意味着来自 .Net 的 Unicode 字符首先被转换为 Ansi，然后按照 Ansi 比较规则进行比较。<br/>
+
+                        在大多数情况下，不在 Ansi 代码页中的字符会被翻译为问号 '?'，因此都被视为相等。 <br/>
+                        如果你想进行真正的 Unicode 比较，你需要 Unicode 值来设置 SetCollation。
+                    </description>
+                </item>
+                <item>
+                    <term>Clipper</term>
+                    <description>
+                        这使用的是与 Visual Objects 国家模块中的字符比较表相同的字符串比较表。<br/>
+                        Unicode 字符串中的每个字符首先使用运行时状态的 DosCodePage 转换为 OEM 代码页中的字符。
+                        然后，结果的 OEM 字符在运行时 dll 的 256 字符权重表中查找。<br/>
+                        你可以通过使用 SetNatDLL() 切换到不同的表。
+                    </description>
+                </item>
+                <item>
+                    <term>Unicode</term>
+                    <description>
+                        这使用的是普通的 Unicode String.Compare 例程进行字符串比较。
+                    </description>
+                </item>
+                <item>
+                    <term>Ordinal</term>
+                    <description>
+                        这使用的是普通的 Ordinal String.Compare 例程。这是最快的。
+                    </description>
+                </item>
+            </list>
+        </span>
+    </Collation>
+
+    <PerThread>
+        <remarks>
+            <note type="tip">
+                这个值是 'per thread'。新线程从主线程继承设置。对这个设置的更改只对同一线程中的代码可见。
+            </note>
+        </remarks>
+    </PerThread>
+
+    <CompilerOptions>
+        <remarks>
+            这个值在非 Core 方言的应用程序的启动代码中被赋值。<br/>
+            如果你的主应用程序不是用 X# 编写的，那么这个设置将使用它的默认值。<br/>
+            <note type="tip">
+                这个值不是 'per thread'，而是全局的，对所有线程都可见。
+            </note>
+        </remarks>
+        <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11" />
+        <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13" />
+        <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF" />
+        <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF" />
+        <seealso cref="P:XSharp.RuntimeState.Dialect" />
+    </CompilerOptions>
+
+    <StreamRead>
+            <param name="oStream">要从中读取的流。</param>
+            <param name="pos">开始读取的位置。</param>
+            <param name="buffer">必须读取的缓冲区。</param>
+            <param name="length">要读取的字节数。</param>
+            <param name="lread">实际读取的字节数。</param>
+            <returns>当成功时为 TRUE，当发生异常或参数不正确时为 FALSE。</returns>
+    </StreamRead>
+    
+    <StreamWrite>
+            <param name="oStream">要写入的流。</param>
+            <param name="pos">开始写入的位置。</param>
+            <param name="buffer">必须写入的缓冲区。</param>
+            <param name="length">要写入的字节数。</param>
+            <param name="b">要写入的字节。</param>
+            <returns>当成功时为 TRUE，当发生异常或参数不正确时为 FALSE。</returns>
+    </StreamWrite>
+</Comments>

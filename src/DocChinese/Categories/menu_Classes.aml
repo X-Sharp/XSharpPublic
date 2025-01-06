@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
+<topic id="cat-Menu_Classes" revisionNumber="1" title="Menu Classes">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <section address="Section1">
+      <title>Menu Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Accelerator</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create an accelerator table.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Menu</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a menu. Menus consist of items which the user selects for execution; a menu item can be a string, a bitmap, or another menu.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.MenuCommandEvent</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Provide information about a MenuCommandEvent, generated when the user executes a menu item, either directly or through the use of accelerator keys.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.MenuInitEvent</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Provide information about a MenuInitEvent, generated when the user first activates a menu for the first time.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.MenuSelectEvent</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Provide information about a MenuSelectEvent, generated whenever a menu item is highlighted on a menu (menu items are highlighted as the user moves either the mouse or the highlight bar up or down a menu).
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SystemMenu</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a system menu.
+    </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
+  </developerConceptualDocument>
+</topic>

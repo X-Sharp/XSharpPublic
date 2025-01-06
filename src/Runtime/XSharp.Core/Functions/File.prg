@@ -25,35 +25,35 @@ DEFINE FERROR_EOF     := 257   // eof was already reached, when a read was tried
 DEFINE FERROR_PARAM   := 258   // invalid parameter already detected before giving to DOS
 
 // FSEEK(), _llseek() modes
-/// <summary>FSeek() Seek Offset: Seek from beginning of file</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FS_SET/*" />
 DEFINE FS_SET         := 0
-/// <summary>FSeek() Seek Offset: Seek from current file position</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FS_RELATIVE/*" />
 DEFINE FS_RELATIVE    := 1
-/// <summary>FSeek() Seek Offset: Seek from end of file</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FS_END/*" />
 DEFINE FS_END         := 2
 
 // FOPEN() access modes
-/// <summary>FOpen() Open Mode: Open for reading (default)</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FO_READ/*" />
 DEFINE FO_READ        := 0
-/// <summary>FOpen() Open Mode: Open for writing</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FO_WRITE/*" />
 DEFINE FO_WRITE       := 1
-/// <summary>FOpen() Open Mode: Open for reading or writing</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FO_READWRITE/*" />
 DEFINE FO_READWRITE   := 2
-///  <summary>FOpen() Open Mode: UnBuffered. Added to FO_READ, FO_WRITE and FO_READWRITE</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FO_UNBUFFERED/*" />
 DEFINE FO_UNBUFFERED  := 8
 
 // FOPEN() sharing modes (combine with open mode using +)
-/// <summary>FOpen() Sharing Mode: Compatibility mode (default)</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FO_COMPAT/*" />
 DEFINE FO_COMPAT     := 0x00000000
-/// <summary>FOpen() Sharing Mode: Exclusive</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FO_EXCLUSIVE/*" />
 DEFINE FO_EXCLUSIVE  := 0x00000010
-/// <summary>FOpen() Sharing Mode: Prevent other processes from writing</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FO_DENYWRITE/*" />
 DEFINE FO_DENYWRITE  := 0x00000020
-/// <summary>FOpen() Sharing Mode: Prevent other processes from reading</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FO_DENYREAD/*" />
 DEFINE FO_DENYREAD   := 0x00000030
-/// <summary>FOpen() Sharing Mode: (same as FO_SHARED)</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FO_DENYNONE/*" />
 DEFINE FO_DENYNONE   := 0x00000040
-/// <summary>FOpen() Sharing Mode:  Allow other processes to read or write</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FO_SHARED/*" />
 DEFINE FO_SHARED     := 0x00000040  //
 
 DEFINE OF_SHARE_COMPAT		:= 0x00000000
@@ -79,15 +79,15 @@ DEFINE FO_REOPEN := 0x00008000
 DEFINE FXO_WILD      := 0x00010000  // Allow wildcards in file name
 
 // FCREATE() file attribute modes (always opens with OF_READWRITE)
-/// <summary>FCreate() attribute mode: normal read/write file (default for create)</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FC_NORMAL/*" />
 DEFINE FC_NORMAL     := 0x00000000
-/// <summary>FCreate() attribute mode: read-only file</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FC_READONLY/*" />
 DEFINE FC_READONLY   := 0x00000001
-/// <summary>FCreate() attribute mode: hidden file</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FC_HIDDEN/*" />
 DEFINE FC_HIDDEN     := 0x00000002
-/// <summary>FCreate() attribute mode: system file</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FC_SYSTEM/*" />
 DEFINE FC_SYSTEM     := 0x00000004
-/// <summary>FCreate() attribute mode: archived</summary>
+/// <include file="XSharp.CoreDefines.xml" path="members/FC_ARCHIVED/*" />
 DEFINE FC_ARCHIVED   := 0x00000020
 
 //

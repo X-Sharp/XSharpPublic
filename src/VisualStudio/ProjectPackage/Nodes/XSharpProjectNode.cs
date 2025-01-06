@@ -12,6 +12,7 @@ using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -1030,6 +1031,8 @@ namespace XSharp.Project
             var type = XFileTypeHelpers.GetFileType(strFileName);
             return type == XFileType.XAML;
         }
+
+        static HashSet<string> filetypes = null;
         /// <summary>
         /// Called by the project to know if the item is a file (that is part of the project)
         /// or an intermediate file used by the MSBuild tasks/targets
@@ -1039,19 +1042,23 @@ namespace XSharp.Project
         /// <returns>True = items of this type should be included in the project</returns>
         protected override bool IsItemTypeFileType(string type)
         {
-            if (string.Compare(type, ProjectFileConstants.Compile, StringComparison.OrdinalIgnoreCase) == 0          // prg
-                || string.Compare(type, ProjectFileConstants.None, StringComparison.OrdinalIgnoreCase) == 0          // none
-                || string.Compare(type, ProjectFileConstants.Resource, StringComparison.OrdinalIgnoreCase) == 0           // resource file
-                || string.Compare(type, ProjectFileConstants.EmbeddedResource, StringComparison.OrdinalIgnoreCase) == 0  // resx
-                || string.Compare(type, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase) == 0          // xaml page/window
-                || string.Compare(type, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) == 0     // xaml application definition
-                || string.Compare(type, ProjectFileConstants.NativeResource, StringComparison.OrdinalIgnoreCase) == 0           // rc file
-                || string.Compare(type, ProjectFileConstants.VOBinary, StringComparison.OrdinalIgnoreCase) == 0           // vobinary file
-                )
+            if (filetypes == null)
             {
-                return true;
-            }
+                filetypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    ProjectFileConstants.Compile,
+                    ProjectFileConstants.None,
+                    ProjectFileConstants.Resource,
+                    ProjectFileConstants.EmbeddedResource,
+                    ProjectFileConstants.Page,
+                    ProjectFileConstants.ApplicationDefinition,
+                    ProjectFileConstants.NativeResource,
+                    ProjectFileConstants.VOBinary
+                };
 
+            }
+            if (filetypes.Contains(type))
+                return true;
             // we don't know about this type, ask the base class.
             return base.IsItemTypeFileType(type);
         }
@@ -1196,21 +1203,28 @@ namespace XSharp.Project
             var refContainer = GetReferenceContainer() as XSharpReferenceContainerNode;
             foreach (var child in refContainer.EnumReferences())
             {
-                if (child is XSharpAssemblyReferenceNode xasm)
+
+                switch (child)
                 {
-                    ProjectModel.AddAssemblyReference(xasm.AssemblyPath);
-                }
-                else if (child is XSharpProjectReferenceNode projref)
-                {
-                    var url = projref.Url;
-                    if (IsXSharpProjectFile(url))
-                    {
-                        this.ProjectModel.AddProjectReference(url);
-                    }
-                    else if (IsOtherProjectFile(url))
-                    {
-                        this.ProjectModel.AddStrangerProjectReference(url);
-                    }
+                    case XSharpAssemblyReferenceNode xasm:
+                        ProjectModel.AddAssemblyReference(xasm.AssemblyPath);
+                        break;
+                    case XSharpProjectReferenceNode projref:
+                        var url = projref.Url;
+                        if (IsXSharpProjectFile(url))
+                        {
+                            this.ProjectModel.AddProjectReference(url);
+                        }
+                        else if (IsOtherProjectFile(url))
+                        {
+                            this.ProjectModel.AddStrangerProjectReference(url);
+                        }
+                        break;
+                    case XSharpComReferenceNode comref:
+                        ProjectModel.AddAssemblyReference(comref.Url);
+                        break;
+                    default:
+                        break;
                 }
             }
         }

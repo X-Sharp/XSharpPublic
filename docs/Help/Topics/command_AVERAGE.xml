@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-04T17:31:23.309+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>AVERAGE Command</title>
   <keywords>
     <keyword>AVERAGE command</keyword>
@@ -21,7 +21,7 @@
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List"><text styleclass="Normal">&lt;</text><text styleclass="Italic">nValueList</text><text styleclass="Normal">&gt;</text><tab /><text styleclass="Normal">A list of the numeric values to average for each record processed.</text></para>
     <para styleclass="List"></para>
-    <para styleclass="List"><text styleclass="Normal">TO &lt;</text><text styleclass="Italic">idVarList</text><text styleclass="Normal">&gt;</text><tab /><text styleclass="Normal">A list of receiving variable or field names which will contain the average results. &#160;Variables that either do not exist or are not visible are created as private variables. &#160;&lt;</text><text styleclass="Italic">idVarList</text><text styleclass="Normal">&gt; must contain the same number of elements as &lt;</text><text styleclass="Italic">nValueList</text><text styleclass="Normal">&gt;.</text></para>
+    <para styleclass="List"><text styleclass="Normal">TO &lt;</text><text styleclass="Italic">idVarList</text><text styleclass="Normal">&gt;</text><tab /><text styleclass="Normal">A list of receiving variable or field names which will contain the average results. Variables that either do not exist or are not visible are created as private variables. &lt;</text><text styleclass="Italic">idVarList</text><text styleclass="Normal">&gt; must contain the same number of elements as &lt;</text><text styleclass="Italic">nValueList</text><text styleclass="Normal">&gt;.</text></para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
     <para styleclass="List"><snippet src="__While" inline="false"/></para>

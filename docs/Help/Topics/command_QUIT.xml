@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T15:19:39.561+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>QUIT Command</title>
   <keywords>
     <keyword>Closing files</keyword>
@@ -15,8 +15,8 @@
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Terminate application processing, close all open files, and return control to the operating system.</para>
-        <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal">Terminates application processing, closes all open files, and returns control to the operating system.</para>
+    <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">QUIT | CANCEL</para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">QUIT is the same as CANCEL. &#160;See CANCEL for a complete explanation of this command.</para>

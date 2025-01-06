@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-05T10:02:24.567+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-12T12:14:41.141+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-platform</title>
   <keywords>
     <keyword>-platform</keyword>
@@ -30,24 +30,23 @@
     <para styleclass="Normal"></para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Assemblies compiled with -platform:x86 execute on the 32-bit CLR running under WOW64.</li>
-      <li styleclass="Normal" style="margin-left:13px;">A DLL compiled with The -platform:anycpu executes on the same CLR as the process into which it is loaded.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Executables that are compiled with The -platform:anycpu execute on the 64-bit CLR.</li>
+      <li styleclass="Normal" style="margin-left:13px;">A DLL compiled with the -platform:anycpu executes on the same CLR as the process into which it is loaded.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Executables that are compiled with the -platform:anycpu execute on the 64-bit CLR.</li>
       <li styleclass="Normal" style="margin-left:13px;">Executables compiled with -platform:anycpu32bitpreferred execute on the 32-bit CLR.</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
     <para styleclass="Normal">The anycpu32bitpreferred setting is valid only for executable (.EXE) files, and it requires the .NET Framework 4.5.</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <list id="3" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the Properties page for the project.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Build property page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Modify the Platform target property and, for projects that target the .NET Framework 4.5, select or clear the Prefer 32-bit check box.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link></li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link>.</li>
     </list>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following example shows how to use The -platform option to specify that the application should be run by the 64-bit CLR on a 64-bit Windows operating system.</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example shows how to use the -platform option to specify that the application should be run by the 64-bit CLR on a 64-bit Windows operating system.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">xsc -platform:anycpu filename.prg &#160;</para>
     <para styleclass="Normal"></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T15:28:59.010+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>THROW Statement</title>
   <keywords>
     <keyword>THROW</keyword>
@@ -9,13 +9,14 @@
     <header>
       <para styleclass="Heading1">THROW Statement</para>
     </header>
+    <para styleclass="Heading2"><text style="color:#0000ff;">Purpose</text></para>
     <para styleclass="Body Text">The THROW statement raises a runtime exception.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code with box">THROW [<text style="font-style:italic;">expression</text>] </para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List"><text style="font-style:italic;">expression</text>&#32;<tab /><text styleclass="Body Text">An optional expression to throw. </text></para>
     <para styleclass="Heading1">Remarks</para>
-    <para styleclass="Body Text"><text style="font-weight:bold;">THROW </text>throws a runtime exception, causing execution to branch to the nearest <text style="font-weight:bold;">CATCH</text> or <text style="font-weight:bold;">FINALLY</text> block in a <text style="font-weight:bold;">TRY</text> construct. If execution is not within a TRY construct the application will terminate.</para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">THROW </text>throws a runtime exception, causing execution to branch to the nearest <text style="font-weight:bold;">CATCH</text> or <text style="font-weight:bold;">FINALLY</text> block in a <text style="font-weight:bold;">TRY</text> construct. If execution is not within a TRY construct, the application will terminate.</para>
     <para styleclass="Body Text">The specified expression is passed to the <text style="font-weight:bold;">CATCH</text> statement, if any, and must be of type System.Exception or a class derived from it . See <text style="font-weight:bold;">TRY</text>-<text style="font-weight:bold;">CATCH</text>-<text style="font-weight:bold;">FINALLY</text> fro more information.</para>
     <para styleclass="Body Text">Using <text style="font-weight:bold;">THROW</text> within a <text style="font-weight:bold;">CATCH</text> block without any arguments re-throws the exception, passing it unchanged to the next highest <text style="font-weight:bold;">TRY</text>-<text style="font-weight:bold;">CATCH</text> block.</para>
     <para styleclass="Heading1">Example</para>

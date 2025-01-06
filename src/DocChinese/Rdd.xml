@@ -1,0 +1,4207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <members>
+  </members>
+  <AdsSQLServer>
+    <summary>ADS 兼容的 DbServer 类，其构造函数接收一个 Sql Select 语句</summary>
+  </AdsSQLServer>
+  <AdsSQLServer.ctor>
+    <inheritdoc />
+  </AdsSQLServer.ctor>
+  <DbError>
+    <exclude />
+  </DbError>
+  <DbError.ctor>
+    <exclude />
+  </DbError.ctor>
+  <DbError.Throw>
+    <exclude />
+  </DbError.Throw>
+  <DbFileSpec>
+    <summary>
+      保存 .DBF 文件的文件名和路径，并提供与 DBF 相关的功能，如创建、复制、删除、移动和重命名文件。
+    </summary>
+    <remarks> 
+      FileSpec 是一个通用的对象，它保存文件的文件名和路径。DBFileSpec 子类专门用于保存 .DBF 文件的信息。
+      FileSpec 类不包含任何用于读取或写入文件的方法，但实际上你可以使用这个类创建一个 DBF 结构；它仅限于目录级别的属性， 如大小、日期和时间更改以及操作，如删除和重命名。
+      DBFileSpec 添加了两个仅适用于 DBF 文件的操作：通过 DBFileSpec:DBStruct 读取记录布局和通过 DBFileSpec:Create() 创建文件。
+      请注意，DBServer 对象在实例化时打开一个现有文件；它要求文件存在，因此不能用于创建 DBF 文件。 DBFileSpec:Create() 是创建 DBF 文件的理想方法。
+      DBStruct 可以作为 DBServer 类的访问方法，但实例化 DBServer 是读取文件头的一个不必要的复杂方式。 DBFileSpec:DBStruct 是获取记录布局的一种更简单的方式。 
+    </remarks>
+    <example> 
+      这两种方法可以一起使用，与 FileSpec 类的路径操作方法一起。 
+      例如，要在不同驱动器上的相应目录中创建一个新文件，该文件的记录布局与现有文件相同，你可能会这样做： 
+      <code language="X#">
+        oDBFileSpec := DBFileSpec{"c:\data\custdata.dbf"}
+
+        IF oDBFileSpec:Find() // 文件存在吗？
+          aDBStruct         := oDBFileSpec:DBStruct
+          oDBFileSpec:Drive := "d:"
+          oDBFileSpec:Create(aDBStruct)
+        ENDIF
+      </code>
+    </example>
+  </DbFileSpec>
+
+  <DbFileSpec.ctor>
+    <summary>
+      实例化一个 DBFileSpec 对象，并填充其实例变量与 DBF 信息。
+    </summary>
+    <param name="cFullPath">DBF 文件的驱动器、路径和文件名。</param>
+    <param name="oFS">DBF 文件的驱动器、路径和文件名。</param>
+    <param name="cDriver">用于实例化 DBFileSpec 的 RDD。</param>
+    <param name="_aRDDs">打开 DBF 文件所需的1-D数组的“隐藏” RDDs，如 DBFMEMO。</param>
+    <returns>
+      一个 DBFileSpec 对象。
+    </returns>
+    <example>
+      <code language="X#">
+        oDB1 := DBFileSpec{ "C:\TEST\TEST.DBF" }
+        oDB2 := DBFileSpec{}
+        oDB2:FullPath := "C:\TEST\TEST.DBF"
+      </code>
+    </example>
+  </DbFileSpec.ctor>
+
+  <DbFileSpec.Copy>
+    <summary>
+      将与 DBFileSpec 对象关联的所有文件复制到不同的驱动器和/或目录。
+    </summary>
+    <param name="oDBFSTarget">DBFileSpec 对象的目标目录。可以是可选的或完整路径。</param>
+    <param name="lIDX">逻辑参数。TRUE 还会移动与 SELF 关联的任何索引文件。默认为 TRUE。</param>
+    <param name="lName">逻辑参数。TRUE 在复制过程中如果发生文件冲突，会自动重命名目标文件。默认为 FALSE。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <example>
+      <code language="X#">
+        // 将 CUSTOMER.DBF 文件复制到 C:\TEST 目录：
+        SetDefault( "C:\CAVOxx\SAMPLES\GSTUTOR" )
+        oDB := DBFileSpec{}
+        oDB:FileName := "CUSTOMER"
+
+        IF oDB:Find()
+          oDB:Copy( "C:\TEST\" )
+        ENDIF
+
+        // 使用FileSpec对象复制：
+        // 将CUSTOMER.DBF文件复制到C:\TEST\COPY\DBFS目录：
+        // 将TEST.DBF文件复制到C:\TEST目录：
+        SetDefault( "C:\CAVOxx\SAMPLES\GSTUTOR" )
+        oFS := FileSpec{ "C:\TEST\" }
+        oDB := DBFileSpec{}
+        oDB:FileName := "CUSTOMER"
+
+        IF oDB:Find()
+          oDB:Copy( oFS )
+        ENDIF
+      </code>
+    </example>
+  </DbFileSpec.Copy>
+
+  <DbFileSpec.CopyTo>
+    <summary>
+      将 DBFileSpec 对象的 DBF 文件复制到另一种数据格式。这可以用于将文件复制到另一个 RDD，到一个分隔文件，或到一个 SDF 文件。
+    </summary>
+    <param name="oFS">要将 SELF 的文件复制到的驱动器和目录。也可以是一个现有的 DBFileSpec 对象或 FileSpec 对象。</param>
+    <param name="cDriver">目标文件的 RDD。</param>
+    <param name="lWantAnsi">逻辑参数。TRUE 创建 ANSI 格式的目标文件。默认为源 DBFileSpec 的 ANSI 设置。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <example> 
+      下面的例子说明了如何将 DBF 文件复制到不同的数据格式： 
+      <code language="X#">
+        // 将CUSTOMER.DBF/DBT文件的记录导出到各种格式：
+        SetDefault( "C:\CAVOxx\SAMPLES\SSATUTOR" )
+        oDB := DBFileSpec{}
+        oDB:FileName := "CUSTOMER"
+
+        IF oDB:Find()
+          // 将文件复制到DBF/FPT
+          oDB:CopyTo( "cust_CDX", "DBFCDX" )
+          // 将文件复制到一个分隔文件
+          oDB:Delim := ","
+          oDB:CopyTo( "cust_DEL" )
+          oDB:Delim := NULL_STRING
+          // 将文件复制到一个SDF文件
+          oDB:SDF := TRUE
+          oDB:CopyTo( "cust_SDF" )
+          oDB:SDF := FALSE
+          // 将文件复制到一个DBF/DBV文件
+          oDB:HidRDDs := { "DBFMEMO" }
+          oDB:CopyTo( "cust_DBV" )
+          oDB:HidRDDs := {}
+        ENDIF
+      </code>
+    </example>
+  </DbFileSpec.CopyTo>
+
+  <DbFileSpec.Create>
+    <summary>
+      使用提供的 DBStruct 数组创建一个给定名称的新 DBF 文件。
+    </summary>
+    <param name="cFullPath">新 DBF 文件的文件名和可选路径或 FileSpec 对象。</param>
+    <param name="aDbStruct">
+      用于创建 DBF 的 DBStruct 数组的布局，每个字段由一个子数组表示，子数组包含字段名，类型，长度，小数位数和别名(如果与 SELF 的 DBF 文件结构不同)。</param>
+    <param name="cDriver">用于创建新 DBF文件结构的 RDD，如果与 SELF 的不同。</param>
+    <param name="lWantAnsi">TRUE，如果这个新的 DBF 是一个 ANSI DBF(默认)。</param>
+    <param name="aRdds">打开 DBF 文件所需的1-D数组的“隐藏” RDDs，如 DBFMEMO。默认为 SELF 的。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      DBFileSpec:Create() 方法对于生成给定文件规范和路径的新 DBF 文件非常有用。DBCreate() 函数也可以做同样的事情，但这种方法更有效。
+      请注意，DBServer 类不包含 Create() 方法：实例化 DBServer 需要文件已经存在，因此无法创建文件。DBServer 类的 CopyDB() 和 CopyStructure() 方法通常提供了一种更容易的方法，用于复制现有文件的结构，完全或部分。
+      请注意，该方法不会打开文件。
+    </remarks>
+    <example>
+      <code language="X#">
+        aDBF := { { "FLD1_C", "C", 10, 0 }, { "FLD2_N", "N", 10, 2 }, { "FLD3_D", "D", 8, 0 }, ;
+        { "FLD4_L", "L", 1, 0 }, { "FLD5_M", "M", 10, 0 } }
+        aRDD := { "DBFMEMO" }
+        cSomePath := WorkDir{} + "data\"
+        SetDefault( "C:\TEST" )
+        oDB := DBFileSpec{}
+        // 创建一个DBF/DBV文件
+        oDB:Create( "NewFile1", aDBF, "DBFNTX", TRUE, aRDD )
+        // 创建一个DBF/FPT文件到不同的文件夹
+        oDB:Create( cSomePath + "NewFile2", aDBF, "DBFCDX", TRUE )
+      </code>
+    </example>
+  </DbFileSpec.Create>
+
+  <DbFileSpec.DBFAttr>
+    <summary>
+      返回的 DBF 文件属性，类型为字符串。
+    </summary>
+    <value>返回的 DBF 文件属性，类型为字符串。</value>
+  </DbFileSpec.DBFAttr>
+
+  <DbFileSpec.DBFDateChanged>
+    <summary>
+      返回的 DBF 文件日期戳，类型为日期。
+    </summary>
+    <value>返回的 DBF 文件日期戳，类型为日期。</value>
+  </DbFileSpec.DBFDateChanged>
+
+  <DbFileSpec.DBFName>
+    <summary>
+      DBF 文件的名称和扩展名。
+    </summary>
+    <value>DBF 文件的名称和扩展名。</value>
+  </DbFileSpec.DBFName>
+
+  <DbFileSpec.DBFSGetInfo>
+    <summary>
+      填充 DBFileSpec 对象的实例变量。当使用 Find() 方法时，如果找到文件，将在内部调用此方法。
+    </summary>
+    <param name="xRDDs">用于打开 DBFileSpec 对象中定义的目标文件的 RDD。</param>
+    <param name="xRdds">用于打开 DBFileSpec 对象中定义的目标文件的 RDD。</param>
+    <param name="aHidden">DBFileSpec 对象中定义的目标文件所需的“隐藏” RDDs的1-D数组。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <example>
+      <code language="X#">
+        oDB := DBFileSpec{}
+        // path to existing DBF file
+        oDB:FullPath := "C:\TEST\CUSTOMER.DBF"
+
+        IF !oDB:DBFSGetInfo()
+            MessageBox( 0, "an error occurred", "", 0 )
+        ENDIF
+      </code>
+    </example>
+  </DbFileSpec.DBFSGetInfo>
+
+  <DbFileSpec.DBFSize>
+    <summary>
+      DBF 文件的大小。
+    </summary>
+    <value>DBF 文件的大小。</value>
+  </DbFileSpec.DBFSize>
+
+  <DbFileSpec.DBFTime>
+    <summary> 
+      返回的 DBF 文件时间戳，类型为字符串。
+    </summary>
+    <value>返回的 DBF 文件时间戳，类型为字符串。</value>
+  </DbFileSpec.DBFTime>
+
+  <DbFileSpec.DbStruct>
+    <summary>
+      返回一个包含 DBF 文件结构的数组。
+    </summary>
+    <value>返回一个包含 DBF 文件结构的数组。</value>
+    <remarks> 
+      返回一个包含 DBF 文件结构的数组。 
+      数组的结构是当前数据库文件的结构，其长度等于数据库文件中的字段数。 
+      数组的每个元素是一个子数组，包含一个字段的信息。 子数组的格式如下： 
+      <include file="RTComments.xml" path="Comments/DbStruct_Constants/*" />
+    </remarks>
+  </DbFileSpec.DbStruct>
+
+  <DbFileSpec.Delete>
+    <summary>
+      物理删除与 DBFileSpec 对象关联的所有文件，包括通过 OrderSpec 对象与 DBF 相关的任何索引文件和任何 FPT 文件。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <example>
+      <code language="X#">
+        oDB := DBFileSpec{ "C:\TEST\DELETE\STRING\TEST.DBF" }
+        oDB:Delete( )
+      </code>
+    </example>
+  </DbFileSpec.Delete>
+
+  <DbFileSpec.Delim>
+    <summary>
+      访问 CopyTo() 方法使用的分隔符。
+    </summary>
+    <value>访问 CopyTo() 方法使用的分隔符。</value>
+  </DbFileSpec.Delim>
+
+  <DbFileSpec.FCount>
+    <summary>
+      DBF 文件中的字段数。
+    </summary>
+    <value>DBF 文件中的字段数。</value>
+  </DbFileSpec.FCount>
+
+  <DbFileSpec.Fields>
+    <summary>
+      使用 CopyTo() 方法时要复制到的 DBF 字段的 1-D 数组。
+    </summary>
+    <value>使用 CopyTo() 方法时要复制到的 DBF 字段的 1-D 数组。</value>
+  </DbFileSpec.Fields>
+
+  <DbFileSpec.FileName>
+    <summary>
+      为 DBFileSpec 对象分配一个文件名。
+    </summary>
+    <value>为 DBFileSpec 对象分配一个文件名。</value>
+  </DbFileSpec.FileName>
+
+  <DbFileSpec.Find>
+    <summary>
+      使用当前目录、SetDefault() 或 SetPath() 方法定位 DBFileSpec 对象中定义的文件。如果成功，将填充 DBFileSpec 的实例变量。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <example>
+      <code language="X#">
+        // 查找DBF
+        SetDefault( "C:\CAVOxx\SAMPLES\GSTUTOR" )
+        oDB := DBFileSpec{}
+        oDB:FileName := "CUSTOMER"
+
+        IF oDB:Find()
+            &lt;执行一些代码&gt;
+        ENDIF
+      </code>
+    </example>
+  </DbFileSpec.Find>
+
+  <DbFileSpec.ForBlock>
+    <summary>
+      用于 CopyTo() 方法的 FOR 条件代码块。
+    </summary>
+    <value>用于 CopyTo() 方法的 FOR 条件代码块。</value>
+  </DbFileSpec.ForBlock>
+
+  <DbFileSpec.FullPath>
+    <summary>
+      为 DBFileSpec 对象分配一个完整路径，包括驱动器、目录、文件名和扩展名。
+    </summary>
+    <value>为 DBFileSpec 对象分配一个完整路径，包括驱动器、目录、文件名和扩展名。</value>
+  </DbFileSpec.FullPath>
+
+  <DbFileSpec.HeaderSize>
+    <summary>
+      DBF 文件头的大小。
+    </summary>
+    <value>DBF 文件头的大小。</value>
+  </DbFileSpec.HeaderSize>
+
+  <DbFileSpec.HidRDDs>
+    <summary>
+      用于 CopyTo() 方法的“隐藏” RDDs(例如，DBFMEMO)的1-D数组。
+    </summary>
+    <value>用于 CopyTo() 方法的“隐藏” RDDs(例如，DBFMEMO)的1-D数组。</value>
+  </DbFileSpec.HidRDDs>
+
+  <DbFileSpec.IndexNames>
+    <summary>
+      具有驱动器、路径、文件名和扩展名信息的索引文件的1-D数组。
+    </summary>
+    <value>具有驱动器、路径、文件名和扩展名信息的索引文件的1-D数组。</value>
+    <remarks>
+      <note type="tip">在使用 OrderSpec:OrderCreate() 和 OrderSpec:OrderAdd() 方法时，不需要分配此数组。</note>
+    </remarks>
+  </DbFileSpec.IndexNames>
+
+  <DbFileSpec.IsAnsi>
+    <summary>
+      DBF 文件头中使用的 ANSI/OEM 设置。
+    </summary>
+    <value>DBF 文件头中使用的 ANSI/OEM 设置。</value>
+  </DbFileSpec.IsAnsi>
+
+  <DbFileSpec.LastUpDate>
+    <summary>
+      DBF 文件的最后更新日期，如 DBF 头中报告的那样。
+    </summary>
+    <value>DBF 文件的最后更新日期，如 DBF 头中报告的那样。</value>
+  </DbFileSpec.LastUpDate>
+
+  <DbFileSpec.MemAttr>
+    <summary>
+      备注文件属性。
+    </summary>
+    <value>备注文件属性。</value>
+  </DbFileSpec.MemAttr>
+
+  <DbFileSpec.MemBlockSize>
+    <summary>
+      备注文件中使用的备注块大小。
+    </summary>
+    <value>备注文件中使用的备注块大小。</value>
+  </DbFileSpec.MemBlockSize>
+
+  <DbFileSpec.MemDateChanged>
+    <summary>
+      作为日期类型返回的备注文件日期戳。
+    </summary>
+    <value>作为日期类型返回的备注文件日期戳。</value>
+  </DbFileSpec.MemDateChanged>
+
+  <DbFileSpec.MemFileExt>
+    <summary>
+      不包括文件名的备注文件扩展名。
+    </summary>
+    <value>不包括文件名的备注文件扩展名。</value>
+  </DbFileSpec.MemFileExt>
+
+  <DbFileSpec.MemFileName>
+    <summary>
+      不包括文件名扩展名的基本备注文件名。
+    </summary>
+    <value>不包括文件名扩展名的基本备注文件名。</value>
+  </DbFileSpec.MemFileName>
+
+  <DbFileSpec.MemFullPath>
+    <summary>
+      备注文件的完整路径，包括驱动器、目录、文件名和扩展名。
+    </summary>
+    <value>备注文件的完整路径，包括驱动器、目录、文件名和扩展名。</value>
+  </DbFileSpec.MemFullPath>
+
+  <DbFileSpec.MemName>
+    <summary>
+      备注文件的文件名和扩展名。
+    </summary>
+    <value>备注文件的文件名和扩展名。</value>
+  </DbFileSpec.MemName>
+
+  <DbFileSpec.MemSize>
+    <summary>
+      备注文件的大小。
+    </summary>
+    <value>备注文件的大小。</value>
+  </DbFileSpec.MemSize>
+
+  <DbFileSpec.MemTime>
+    <summary>
+      作为字符串返回的备注文件时间戳。
+    </summary>
+    <value>作为字符串返回的备注文件时间戳。</value>
+  </DbFileSpec.MemTime>
+
+  <DbFileSpec.Move>
+    <summary>
+      将与 DBFileSpec 对象关联的所有文件移动和/或重命名到不同的驱动器和/或目录。
+      更新 DBFileSpec 和/或 OrderSpec 实例变量。还将重命名自动打开的索引文件。只有 DBF、MEMO 和自动打开的索引文件会被重命名。
+    </summary>
+    <param name="oDBFSTarget">将 SELF 的文件移动到的驱动器和目录。也可以是一个现有的 DBFileSpec 对象。</param>
+    <param name="lIDX">逻辑参数。TRUE 还会移动与 SELF 关联的任何索引文件。默认值为 TRUE。</param>
+    <param name="lName">逻辑参数。如果在移动过程中发生文件冲突，TRUE 会导致目标文件自动重命名。默认值为 FALSE。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <example>
+      <code language="X#">
+        // 将CUSTOMER.DBF文件移动到C:\TEST目录：
+        SetDefault("C:\CAVO25\SAMPLES\GSTUTOR")
+        oDB := DBFileSpec{ }
+        oDB:FileName := "customer"
+
+        IF oDB:Find()
+            oDB:Move("C:\TEST\")
+        ENDIF
+
+        // 使用FileSpec对象进行移动
+        // 将CUSTOMER.DBF文件移动到C:\TEST目录：
+        SetDefault("C:\CAVO25\SAMPLES\GSTUTOR")
+        oFS := FileSpec{"C:\TEST\"}
+        oDB := DBFileSpec{ }
+        oDB:FileName := "customer"
+        
+        IF oDB:Find()
+            oDB:Move(oFS)
+        ENDIF
+        
+        // 将CUSTOMER.DBF文件移动到C:\TEST目录并重命名：
+        SetDefault("C:\CAVO25\SAMPLES\GSTUTOR")
+        oDB := DBFileSpec{ }
+        oDB:FileName := "customer"
+        IF oDB:Find()
+            oDB:Move("C:\TEST\NewFile")
+        ENDIF
+      </code>
+    </example>
+  </DbFileSpec.Move>
+
+  <DbFileSpec.Orders>
+    <summary>
+      与此 DBFileSpec 对象关联的 OrderSpec 对象的1-D数组。
+    </summary>
+    <value>与此 DBFileSpec 对象关联的 OrderSpec 对象的1-D数组。</value>
+    <remarks>
+      <note type="tip">在使用 OrderSpec:OrderCreate() 和 OrderSpec:OrderAdd() 方法时，不需要分配此数组。</note>
+    </remarks>
+  </DbFileSpec.Orders>
+
+  <DbFileSpec.RDD_Name>
+    <summary>
+      用于实例化的 RDD 的名称。
+    </summary>
+    <value>用于实例化的 RDD 的名称。</value>
+  </DbFileSpec.RDD_Name>
+
+  <DbFileSpec.RDD_Version>
+    <summary>
+      RDD 的版本号。
+    </summary>
+    <value>RDD 的版本号。</value>
+  </DbFileSpec.RDD_Version>
+
+  <DbFileSpec.RDDs>
+    <summary>
+      用于实例化的“隐藏” RDDs(例如，DBFMEMO)的数组。
+    </summary>
+    <value>用于实例化的“隐藏” RDDs(例如，DBFMEMO)的数组。</value>
+  </DbFileSpec.RDDs>
+
+  <DbFileSpec.RecCount>
+    <summary>
+      DBF 中的记录数。(请注意，“LastRec”在此类中不可用，只在 dbServer 类中可用)
+    </summary>
+    <value>DBF 中的记录数。(请注意，“LastRec”在此类中不可用，只在 dbServer 类中可用)</value>
+  </DbFileSpec.RecCount>
+
+  <DbFileSpec.Recno>
+    <summary>
+      用于 CopyTo() 方法的记录号，当需要单个记录时。
+    </summary>
+    <value>用于 CopyTo() 方法的记录号，当需要单个记录时。</value>
+  </DbFileSpec.Recno>
+
+  <DbFileSpec.Records>
+    <summary>
+      用于 CopyTo() 方法的记录数。
+    </summary>
+    <value>用于 CopyTo() 方法的记录数。</value>
+  </DbFileSpec.Records>
+
+  <DbFileSpec.RecSize>
+    <summary>
+      DBF 的记录大小。
+    </summary>
+    <value>DBF 的记录大小。</value>
+  </DbFileSpec.RecSize>
+
+  <DbFileSpec.Rename>
+    <summary> 
+      重命名与 DBFileSpec 对象关联的文件。只有 DBF/MEMO 和自动打开的索引文件会被重命名。
+      如果文件已经打开或在移动过程中存在文件名冲突，Rename() 不会重命名文件。
+      要将文件重命名到另一个目录，使用 Move() 方法并提供不同的目标文件名。
+    </summary>
+    <param name="oDBFSNewName">DBF 文件的新名称。</param>
+    <param name="lName">逻辑参数。如果在移动过程中发生文件冲突，TRUE 会导致目标文件自动重命名。默认值为 FALSE。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <example>
+      <code language="X#">
+        SetDefault("C:\CAVO2x\SAMPLES\GSTUTOR")
+        oDB := DBFileSpec{ }
+        oDB:FileName := "customer"
+
+        IF oDB:Find()
+            IF !oDB:Rename("NewFile", TRUE )
+            // 如果失败了，让用户知道…
+            ENDIF
+        ENDIF
+      </code>
+    </example>
+  </DbFileSpec.Rename>
+
+  <DbFileSpec.Rest>
+    <summary>
+      逻辑值，确定 CopyTo() 方法是复制所有记录还是当前记录到 EOF。
+    </summary>
+    <value>逻辑值，确定 CopyTo() 方法是复制所有记录还是当前记录到 EOF。</value>
+  </DbFileSpec.Rest>
+
+  <DbFileSpec.RLockCount>
+    <summary>
+      DBF 中的锁定记录数。
+    </summary>
+    <value>DBF 中的锁定记录数。</value>
+  </DbFileSpec.RLockCount>
+
+  <DbFileSpec.SDF>
+    <summary>
+      逻辑值，确定 CopyTo() 方法是否将记录复制到 SDF 文件。
+    </summary>
+    <value>逻辑值，确定 CopyTo() 方法是否将记录复制到 SDF 文件。</value>
+  </DbFileSpec.SDF>
+
+  <DbFileSpec.WhileBlock>
+    <summary>
+      与 CopyTo() 方法一起使用的 WHILE 条件代码块。
+    </summary>
+    <value>与 CopyTo() 方法一起使用的 WHILE 条件代码块。</value>
+  </DbFileSpec.WhileBlock>
+
+  <DBSelectionIndex>
+    <exclude />
+  </DBSelectionIndex>
+
+  <DBSelectionIndex.ctor>
+    <exclude />
+  </DBSelectionIndex.ctor>
+
+  <DBSelectionIndex.Eval>
+    <exclude />
+  </DBSelectionIndex.Eval>
+
+  <DbServer>
+    <summary>
+      创建一个可以操作现有 .DBF 数据库文件及其关联索引文件的数据服务。
+    </summary>
+    <examples>
+      一旦在 DBServer 对象中打开了 DBF 表，就可以通过 DBServer 类的方法对其进行操作，以下是一些示例：
+      <code language="X#">
+        oDBCust := DBServer{"customer"}
+        oDBCust:Skip(3)
+        ? oDBCust:CustName
+        oDBCust:CustNo := NewNumber
+        oDBCust:GoTo(86)
+        oDBCust:Delete()
+        oDBCust:Append()
+        oDBCust:Close()
+      </code>
+      表的字段可以被视为对象的导出实例变量。它们也可以通过 FieldGet() 和 FieldPut() 方法访问，字段通过符号、字符串或数字标识。
+      <code language="X#">
+        oDBCust := DBServer{"customer"}
+        oDBCust:CustNo := 1234
+        ? oDBCust:CustNo
+        oDBCust:FieldPut(#CustNo, 1234)
+        oDBCust:FieldPut("CustNo", 1234)
+        oDBCust:FieldPut(1, 1234)
+        ? oDBCust:FieldGet(#CustNo)
+        ? oDBCust:FieldGet("CustNo")
+        ? oDBCust:FieldGet(1)
+      </code>
+      (当然，这些字段并不是 DBServer 类的真实导出变量。请参阅“对象、类和方法”中的程序员指南，
+      了解如何使用 NoIVarGet() 和 NoIVarPut() 方法创建这些“虚拟”导出变量。)
+      所有通过命令或函数提供的传统数据库操作都可以作为 DBServer 对象的方法使用。
+      一般来说，它们的行为方式相同，但有两个例外：扩展的参数类型和一般的范围设置。
+      每当操作需要指定文件、别名、工作区或字段时，方法接受相应类的对象：文件的 FileSpec 对象，别名或工作区的 DBServer 对象，字段的 DataField 对象。
+      这些选项允许更一致地使用对象和它们所传达的所有好处。新的、面向对象的方法不是必需的：
+      文件可以被指定为对象或字符串，别名可以是对象、字符串或符号，字段可以是对象、字符串或符号。
+      经典的 SetRelation() 操作允许您链接服务，这样父服务中的移动会导致子服务中的自动移动。
+      原型情况是客户服务和 order 服务之间的关系，使 order 服务显示当前客户的 order：
+      <code language="X#">
+        oDBCust := DBServer{"customer"}
+        oDBCust:SetIndex("custname")
+        oDBOrder := DBServer{"order"}
+        oDBOrder:SetIndex("ordcstno")
+        oDBCust:SetRelation(oDBOrder,#CustNo)
+      </code>
+      建立了这种关系后，关系的父级中的任何移动都会导致客户端的相应重新定位：
+      移动到客户 Jones 会将 order 数据库定位到 Jones 的第一个 order，如果有的话。
+      DBServer:SetRelation() 方法的工作方式与传统的 Xbase DML 中的相应命令和函数完全相同。
+      但是，这种类型的关系并不是很有用。子数据库在 order 的开始位置定位正确，但在 order 的结束位置没有限制。
+      因此，使用服务的应用程序必须不断检查它是否仍在适当的客户 order 上。
+      DBServer:SetFilter() 对此没有太大帮助，因为如果您跳过了最后一个客户的 order， DBServer:Skip() 会继续扫描文件，
+      直到找到一个匹配的 order。这种行为对于数据窗口等通用工具特别繁琐，因为它们必须以一般的方式表达这些测试，同时为数据浏览提供支持。
+      这就是选择性关系更有价值的地方。如果我们建立一个选择性关系，那么对子服务的所有操作都将限制在与之匹配的记录上。
+      DBServer:GoTop()、DBServer:GoBottom()、DBServer:BOF、DBServer:EOF 和 DBServer:Skip() 的行为就好像只有与关系匹配的记录存在一样。
+      具体来说，如果您试图跳过最后一个适当的 order，Skip() 会失败并返回文件结束条件。
+      同样，如果您试图 GoTo() 一个不匹配的记录，GoTo() 会失败，就好像那个记录不存在一样，并停留在当前记录。
+      而像 Eval()、Count()、Sum() 等实用程序默认只对选择应用(尽管允许显式指定的范围违反这一限制)。
+      <code language="X#">
+        LOCAL aSum
+        oDBCust := DBServer{"customer"}
+        oDBCust:SetIndex("custname")
+        oDBOrder := DBServer{"order"}
+        oDBOrder:SetIndex("ordcstno")
+        oDBCust:SetSelectiveRelation(oDBOrder,#CustNo)
+        oDBCust:Seek("Jones")
+
+        DO WHILE ! oDBOrder:EOF
+        ? oDBOrder:OrderNumber
+        ENDDO
+
+        aSum := oDBOrder:Sum(#Charge)
+        ? "Number of orders:",oDBOrder:RecCount
+        ? "Total value:",oDBOrder:aSum[1]
+      </code>
+    </examples>
+    <remarks>
+      下表列出了反映当前活动选择的属性和方法：
+      <list type="table">
+        <listheader>
+          <term>方法或属性</term>
+          <description>描述</description>
+        </listheader>
+        <item>
+          <term>BOF</term>
+          <description>尝试将位置设置在选择中的第一个记录之前。</description>
+        </item>
+        <item>
+          <term>EOF</term>
+          <description>尝试将位置设置在选择中的最后一个记录之后。</description>
+        </item>
+        <item>
+          <term>Found</term>
+          <description>仅在选择中找到记录时(在 Seek()、Locate()、Continue() 之后)指示是否找到记录。</description>
+        </item>
+        <item>
+          <term>RecCount</term>
+          <description>返回选择中的记录数(请注意，LastRec 不依赖于选择)。</description>
+        </item>
+        <item>
+          <term>Average()</term>
+          <description>如果未指定范围，则在当前选择上进行计算，而不是在所有记录上进行计算。</description>
+        </item>
+        <item>
+          <term>Continue()</term>
+          <description>限制搜索到当前选择。</description>
+        </item>
+        <item>
+          <term>CopyDB(), CopySDF(), CopyDelimited() </term>
+          <description>如果未指定范围，则复制当前选择，而不是所有记录。</description>
+        </item>
+        <item>
+          <term>Count()</term>
+          <description>如果未指定范围，则在当前选择上进行计算，而不是在所有记录上进行计算</description>
+        </item>
+        <item>
+          <term>DeleteAll()</term>
+          <description>删除选择中的所有记录，而不是文件中的所有记录</description>
+        </item>
+        <item>
+          <term>Eval()</term>
+          <description>如果未指定范围，则在当前选择上评估代码块，而不是在所有记录上评估</description>
+        </item>
+        <item>
+          <term>GetArray()</term>
+          <description>限制数组到当前选择</description>
+        </item>
+        <item>
+          <term>GetLookupTable()</term>
+          <description>限制查找表到当前选择</description>
+        </item>
+        <item>
+          <term>GoTop()</term>
+          <description>转到选择中的第一个记录</description>
+        </item>
+        <item>
+          <term>GoTo()</term>
+          <description>如果记录号不在选择中，则失败</description>
+        </item>
+        <item>
+          <term>GoBottom()</term>
+          <description>转到选择中的最后一个记录</description>
+        </item>
+        <item>
+          <term>Locate()</term>
+          <description>仅在选择中找到记录时成功</description>
+        </item>
+        <item>
+          <term>LockSelection()</term>
+          <description>锁定当前选择中的所有记录</description>
+        </item>
+        <item>
+          <term>RecallAll()</term>
+          <description>召回选择中的所有记录，而不是文件中的所有记录</description>
+        </item>
+        <item>
+          <term>Replace()</term>
+          <description>如果未指定范围，则在当前选择上处理，而不是在所有记录上处理</description>
+        </item>
+        <item>
+          <term>Seek()</term>
+          <description>如果搜索值与选择值相同，则定位到当前选择的开头；否则，定位到文件的最后一个记录并设置EOF标志（忽略Softseek）</description>
+        </item>
+        <item>
+          <term>Skip()</term>
+          <description>如果移动会导致超出选择范围：定位到选择的最后一个记录并设置EOF标志，或者定位到选择的第一个记录并设置BOF标志，取决于移动的方向</description>
+        </item>
+        <item>
+          <term>Sort(), Sum(), Total()</term>
+          <description>如果未指定范围，则在当前选择上处理，而不是在所有记录上处理</description>
+        </item>
+      </list>
+      <note type="tip">
+        以下方法不受活动选择的限制:
+        AppendDB(), AppendDelimited(), 和 AppendSDF()，因为它们的范围参数适用于源文件，而不是这个服务 Delete() ,
+        因为它的默认是这条记录，而不是所有 Recall() ,因为它的默认是这条记录，而不是所有
+      </note>
+      几个Xbase数据库命令提供了一些选项，用于通过关键字指定操作范围：
+      ALL、REST、NEXT <paramref name="nRecords" />、RECORD <paramref name="nRecord" />，以及 FOR 和 WHILE 子句。
+      这些子句的语义，以及在指定了多个子句时它们的交互方式，都在程序员指南的"Using DBF Files"部分中描述。
+      相应的 DBServer 方法(如 Average()、AppendDB()、CopyDB()、Sort()、Sum()、Total() 等)允许在调用中作为参数指定 FOR 子句、WHILE 子句和范围。
+      此外，还可以使用简单的赋值(也提供了相应的访问)设置一个"通用服务范围"。
+      当在没有明确范围的情况下调用这些批量处理方法时，这个通用范围就会应用。这种方法在许多情况下可能更方便。
+      例如，要删除接下来的五条记录：
+      <code language="X#">
+        oDB:Scope := 5 // NEXT 5 records
+        oDB:Delete()
+        oDB:Scope := NIL // 不要忘记重置范围！
+      </code>
+      例如，要删除所有剩余的记录：
+      <code language="X#">
+        oDB:Scope := DBScopeRest // REST
+        oDB:Delete()
+        oDB:Scope := NIL // 不要忘记重置范围！
+      </code>
+      要计算新泽西州的Smiths的数量：
+      <code language="X#">
+        oDBCust:SetOrder("CustomerName") // 按名称排序
+        oDBCust:Seek("Smith") // 找到第一个Smith
+        oDBCust:WhileBlock := {||CustomerName = "Smith"}
+        // 当仍在Smiths上时...
+        oDBCust:ForBlock := {||State = "NJ"} // 在新泽西州的顾客
+        // 中...
+        Tally := oDBCust:Count() // 计算数量！
+        oDBCust:ClearScope() // 重置所有内容
+      </code>
+      请记住在后续操作中恢复作用域：作用域是持久的，并且在所有后续基于作用域的方法中都有效，直到被重置。
+      这种指定作用域的样式带来的便利性也伴随着长时间保持作用域的危险。可以使用 DBServer:ClearScope() 方法或将 NIL 分配给个体组件来重置作用域。
+      通用服务作用域可以通过以下方式设置：
+      <list type="table">
+        <listheader>
+          <term>属性</term>
+          <description>含义</description>
+        </listheader>
+        <item>
+          <term>ForBlock</term>
+          <description>指定FOR条件的字符串或代码块。</description>
+        </item>
+        <item>
+          <term>Scope</term>
+          <description>
+            DBSCOPEALL、DBSCOPEREST或一个数字 <paramref name="nRecords" />(意味着NEXT <paramref name="nRecords" />)。
+          </description>
+        </item>
+        <item>
+          <term>WhileBlock</term>
+          <description>指定WHILE条件的字符串或代码块。</description>
+        </item>
+      </list>
+
+      注意，这种方法不提供指定特定记录号的方式。很少需要处理特定记录(例如，记录5的平均工资)。
+      在需要时，例如对于 Delete()，使用 RecNo := <paramref name="n" />,
+      GoTo(<paramref name="n" />) 或 Seek(<paramref name="Value" />) 定位服务，然后调用 Delete()。 受通用服务作用域影响的方法包括：
+      <list type="table">
+        <listheader>
+          <term>方法名称</term>
+          <description>描述</description>
+        </listheader>
+        <item>
+          <term>AppendDB()</term>
+          <description>从DBF追加记录。</description>
+        </item>
+        <item>
+          <term>AppendDelimited()</term>
+          <description>从分隔文件追加记录。</description>
+        </item>
+        <item>
+          <term>AppendSDF()</term>
+          <description>从SDF文件追加记录。</description>
+        </item>
+        <item>
+          <term>Average()</term>
+          <description>计算表达式的平均值。</description>
+        </item>
+        <item>
+          <term>CopyDB()</term>
+          <description>将记录复制到DBF。</description>
+        </item>
+        <item>
+          <term>CopyDelimited()</term>
+          <description>将记录复制到分隔文件。</description>
+        </item>
+        <item>
+          <term>CopySDF()</term>
+          <description>将记录复制到SDF文件。</description>
+        </item>
+        <item>
+          <term>Count()</term>
+          <description>统计匹配的记录数量。</description>
+        </item>
+        <item>
+          <term>Delete()</term>
+          <description>删除记录。</description>
+        </item>
+        <item>
+          <term>Eval()</term>
+          <description>为每条记录评估代码块。</description>
+        </item>
+        <item>
+          <term>Join()</term>
+          <description>与另一个DBF合并，写入DBF。</description>
+        </item>
+        <item>
+          <term>Locate()</term>
+          <description>找到匹配条件的记录。</description>
+        </item>
+        <item>
+          <term>Recall()</term>
+          <description>恢复已删除的记录。</description>
+        </item>
+        <item>
+          <term>Replace()</term>
+          <description>用DBF中的数据替换值。</description>
+        </item>
+        <item>
+          <term>Sort()</term>
+          <description>将记录排序到DBF。</description>
+        </item>
+        <item>
+          <term>Sum()</term>
+          <description>计算表达式的和。</description>
+        </item>
+        <item>
+          <term>Total()</term>
+          <description>将字段汇总到DBF。</description>
+        </item>
+      </list>
+      当然，默认作用域是“无作用域”，因此这些方法与相应的命令和函数具有相同的默认行为。
+      它们大多数处理所有记录或所有剩余记录，取决于作用域如何定义；那些默认为“当前记录”的方法也具有相应的“所有”方法：
+      <list type="table">
+        <listheader>
+          <term>方法名称</term>
+          <description>描述</description>
+        </listheader>
+        <item>
+          <term>Delete()</term>
+          <description>删除当前记录。</description>
+        </item>
+        <item>
+          <term>DeleteAll()</term>
+          <description>删除所有记录。</description>
+        </item>
+        <item>
+          <term>Recall()</term>
+          <description>恢复当前记录。</description>
+        </item>
+        <item>
+          <term>RecallAll()</term>
+          <description>恢复所有记录。</description>
+        </item>
+      </list>
+      但请注意，如果指定了选择性关系，则默认源作用域是选择，而不是整个文件。因此，我们有四个级别的继承，关于操作的作用域：
+      1. 通过调用参数明确指定的作用域
+      2. 如果没有提供，则通过 ForBlock、WhileBlock 和Scope 属性设置的作用域
+      3. 如果没有设置，则指定的选择
+      4. 如果没有活跃的选择关系，则整个文件例外是 Delete() 和 Recall()，它们使用选项1和2，然后默认为当前记录。
+      DeleteAll() 和 RecallAll() 应用于当前选择，如果有；否则，应用于整个文件。当然，选择作用域对 Append... 方法不相关，因为条件应用于源文件，
+      而不是这个服务。
+      DBServer 编辑器生成了 DBServer 类的子类，一个具有特定信息的子类，如文件名和虚拟字段创建为访问/赋值方法。
+      不可能使用 DBServer 类来创建数据库文件；文件必须在打开服务之前存在。要创建数据库文件，
+      使用 DBCreate() (推荐)方法、VODBCreate() 函数或 DBServer 编辑器。
+      本节描述了在创建多个 DBServer 工作区或服务时使用的共享访问和别名机制，以及混合对象/过程操作。 工作区
+      创建 DBServer 对象时，会在工作区中打开数据库。没有指定是否应使用新或现有工作区的选项；DBServer 总是使用新工作区。
+      实例化后，新的工作区并未被选中；在实例化之前选中的工作区仍然保持活跃。因此，
+      实例化 DBServer 后发出的传统数据库命令和函数不应用于新打开的数据库。正确的操作新 DBServer 的方法是通过其方法。
+      共享访问 在同一个数据库文件上创建两个 DBServer 对象相当于在两个不同工作区中打开同一个文件。
+      两个服务(工作区)各自维护自己的位置和记录锁，并作为两个用户共享访问同一个文件的方式操作。
+      为了允许在同一个数据库文件上创建两个服务(打开同一个文件在两个工作区)，它们必须在共享模式下打开；否则，第二次尝试将产生共享冲突。
+      然而，这并不会引发错误条件，而是将对象的无效状态存储。使用 DBServer:Status 或 DBServer:Used 属性在实例化后验证文件是否成功打开。
+      共享模式可以作为实例化参数指定(例如，SetExclusive(FALSE) 在 Start() 函数中)，或作为系统默认(见 DBServer:Init())。 别名
+      当使用 DBServer 的方法来与数据库工作时，不需要别名；DBServer 对象提供了数据库的句柄。别名在操作 DBServer 对象时不起作用,
+      但系统内部需要每个工作区的唯一别名。
+      DBServer 自动构造唯一别名。如果文件在任何其他工作区或服务中未打开，它使用文件名作为传统方式的别名，但如果文件已经打开,
+      它会通过追加数字创建唯一别名。因此，两次打开 CUSTOMER 文件将产生两个别名 #Customer 和 #Customer_1。
+      唯一使用别名的原因是执行“混合”操作，使用传统的过程操作与 DBServer 对象。这种做法强烈不推荐,
+      因为 DBServer 对象可能不知道通过命令完成的操作，DBServer 方法可能在使用过程命令后出现故障
+      (更多详细信息，请见程序员指南中的“使用 DBF 文件”)。
+      可以从 DBServer 对象中检索自动生成的别名，以便选择工作区作为过程数据库操作的焦点：
+      <code language="X#">
+        oDBCust := DBServer{"customer"}
+        cCust := oDBCust:Alias
+        SELECT (cCust)
+        SKIP
+        DELETE
+        ? (cCust) -&gt; CustNo
+      </code>
+      我们在 RDD 类中所做的大多数更改都是为了提高 RDD 类的速度。其中一个更改可能会影响您的应用程序：
+      在旧实现中，Visual Objects 在每个 DbServer:Method 调用后都会恢复‘当前工作区’。这只有在您混合使用面向对象的 DBF 访问和传统的工作区导向 DBF 访问时才有用。
+      如果您只做面向对象的 DBF 访问，工作区切换是无必要的，并且可能对应用程序的性能产生负面影响。
+      因此，我们在 RDD 类中添加了一个开关，允许您启用/禁用这种恢复机制。Visual Objects 2.8 的默认值是 NOT 恢复工作区。这个开关是：
+      <code language="X#">
+        DbSetRestoreWorkarea(lEnable)
+      </code>
+      这是一个全局开关，它改变了 DBServer 类的行为。
+      lEnable 标志的默认值是 FALSE，这意味着工作区恢复被禁用。因此，在每个 DbServer 方法结束时，当前工作区是 DBServer 的工作区。
+      如果您将 lEnable 标志设置为 TRUE，每个 DBServer 方法在方法结束时都会恢复工作区到方法开始时的工作区值。这是旧行为，但需要一些额外的时间。
+      DbSetRestoreWorkarea() 的返回值是前一个值。 如果 lEnable 为 NIL，则不设置开关，SetRestoreWorkarea() 只返回当前值。
+      DbSetRestoreWorkarea() 也改变了内部函数 __DBSetSelect(siNew) 的行为。
+      如果您调用 DbSetRestoreWorkarea(TRUE)，它是默认的 __DBSetSelect()，与 VODBSetSelect() 相同；
+      如果您调用DbSetRestoreWorkarea(FALSE)，DBSetSelect() 为空，不做任何事情。
+      <note type="tip">
+        VO 2.8 中的 DbServer 类发生了一些主要的更改。请阅读本主题的底部部分，如果您从较老版本的 Visual Objects 迁移。
+      </note>
+    </remarks>
+  </DbServer>
+
+  <DbServer.LogicReturn>
+    <returns>
+      如果成功则返回 TRUE；否则，返回 FALSE(尽管某些记录可能仍已处理)。
+    </returns>
+  </DbServer.LogicReturn>
+
+  <DbServer.FileNameClause>
+    <span>
+      此参数标识要打开的 DBF 文件。
+      如果指定了字符串，则它完全对应于 DBUseArea() 函数的文件名参数；它可以包含带有驱动器和目录的完整路径，或仅包含文件名。
+      如果指定了 FileSpec 对象，则其文件名组件用作要打开的文件。它也可以包含带有驱动器和目录的完整路径，或仅包含文件名。
+      无论哪种类型的参数，如果仅指定文件名，DBServer 的工作方式与 USE 命令或 DBUseArea() 函数关于默认路径的工作方式相同——例如，
+      它受 SET PATH 和 SET DEFAULT 的影响。默认情况下假定扩展名为 DBF。
+      无论哪种情况，在成功创建 DBServer 对象后，它都包含一个带有原始文件规范的 FileSpec 对象。
+    </span>
+  </DbServer.FileNameClause>
+
+  <DbServer.ctor>
+    <summary>
+      构造一个服务对象。
+    </summary>
+    <param name="cFile">
+      要打开的文件名
+      <include file="Rdd.xml" path="doc/DbServer.FileNameClause/*" />
+    </param>
+    <param name="oFS">
+      一个带有要打开的文件名的 FileSpec 对象
+      <include file="Rdd.xml" path="doc/DbServer.FileNameClause/*" />
+    </param>
+    <param name="oFile">
+      一个带有要打开的文件名的字符串或 FileSpec 对象
+      <include file="Rdd.xml" path="doc/DbServer.FileNameClause/*" />
+    </param>
+    <param name="lShareMode">
+      标识文件是否应以共享模式打开。可以指定为常量 DBSHARED(TRUE) 或 DBEXCLUSIVE(FALSE)。
+      如果未指定，则默认值由 SetExclusive() 函数确定，该函数默认值为“独占”或 FALSE。
+    </param>
+    <param name="lReadOnlyMode">
+      标识文件是否应以只读模式打开。
+      可以指定为常量 DBREADONLY(TRUE) 或 DBREADWRITE(FALSE)。如果未指定，则默认值为读写或 FALSE。
+    </param>
+    <param name="xDriver">可以指定驱动程序。如果未指定，则默认为 RDDSetDefault() 指定的驱动程序，该驱动程序又默认为 DBFNTX。</param>
+    <param name="aRDD">
+      一个一维数组，包含主 RDD 继承特殊功能的 RDD 名称。这允许您使用具有特殊功能的 RDD，例如加密或解密，用于具有不同数据库驱动程序的不同数据服务。
+      这些 RDD 覆盖主 RDD(使用 <paramref name="cDriver" /> 参数指定)的特殊功能。如果多个 RDD(使用此参数指定)实现相同的功能，
+      则与列表中最后一个 RDD 关联的功能优先。如果省略 <paramref name="aRdds" />，则不假定有其他 RDD。
+    </param>
+    <param name="aParams">可选的参数值数组</param>
+    <returns>
+      与所有 Init() 方法一样，实例化返回对象。即使文件未成功打开(可能是因为文件不存在、已损坏或被其他用户锁定)，也会创建对象。
+      因此，在使用 DBServer 错误之前，请验证它是否已通过 DBServer:Used 或 Status 访问方法成功打开。
+    </returns>
+    <example>
+      以下示例演示了构造 DBServer 对象的几种不同方法：
+      <code language="X#">
+        // 仅指定DBF文件
+        oDBCust := DBServer{"CUSTOMER"}
+        // 指定所有四个参数
+        oDBCust := DBServer{"CUSTOMER",DBSHARED,DBREADONLY, "DBFNTX"}
+        // 使用FileSpec对象规范定义要打开的DBF文件(以“独占”读写模式)
+        oFSCust := FileSpec{"d:\data\customer"}
+        oDBCust := DBServer{oFSCust,,FALSE}
+      </code>
+    </example>
+  </DbServer.ctor>
+
+  <DbServer.Alias>
+    <summary>
+      表示工作区别名的字符串。
+    </summary>
+    <value>表示工作区别名的字符串。</value>
+    <remarks>
+      表示工作区别名的字符串。
+      <note type="tip">
+        强烈不推荐使用过程命令引用 DBServer 对象的“混合”操作。请参阅 CLASS DBServer 下的混合操作讨论。
+      </note>
+    </remarks>
+  </DbServer.Alias>
+  <DbServer.AliasSym>
+    <summary>
+      表示 DBServer 对象别名的符号。
+    </summary>
+    <value>表示 DBServer 对象别名的符号。</value>
+    <remarks>
+      表示 DBServer 对象别名的符号。
+      <note type="tip">
+        强烈不推荐使用过程命令引用 DBServer 对象的“混合”操作。请参阅 CLASS DBServer 下的混合操作讨论。
+      </note>
+    </remarks>
+  </DbServer.AliasSym>
+
+  <DbServer.Append>
+    <summary>
+      向表中追加一个空白记录；此空白记录成为当前位置，并准备分配数据值。如果 Append() 方法返回 TRUE，则记录会自动锁定。
+    </summary>
+    <param name="lReleaseLocks">指示是否应释放现有记录锁。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      默认行为是在追加新记录时释放现有锁。
+      如果要防止这种情况，需要传递值为 FALSE 的参数。 在操作之前发送 NotifyIntentToMove 消息。
+      如果成功，发送 NotifyAppend 消息。
+    </remarks>
+  </DbServer.Append>
+
+  <DbServer.AppendDB>
+    <summary>
+      从另一个 DBF 文件向表中追加新记录。
+    </summary>
+    <param name="oFSSource">
+      指定源文件的字符串或 filespec 对象，该文件以共享只读模式打开，并且可以在此或其他应用程序中打开。
+      此函数尝试以共享模式打开 <paramref name="oFSSource" />。如果文件不存在，则会引发运行时错误。
+      如果文件成功打开，则操作继续进行。有关解决并发冲突的更多信息，请参阅程序员指南中的“并发控制”章节。
+    </param>
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      如果追加了任何记录，则发送 NotifyFileChange 消息。
+    </remarks>
+  </DbServer.AppendDB>
+
+  <DbServer.AppendDelimited>
+    <summary>
+      从分隔文件(例如“逗号分隔值”(CSV)文件格式)向表中追加新记录。
+    </summary>
+    <param name="oFSSource">
+      指定包含要追加记录的源文件的字符串或 filespec 对象。
+      源文件以共享只读模式打开，并且可以在此或其他应用程序中打开。
+    </param>
+    <param name="cDelimiter">分隔数据库文件中字段的分隔符。如果省略，默认值为 NULL_STRING。</param>
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      如果追加了任何记录，则发送 NotifyFileChange 消息。
+    </remarks>
+  </DbServer.AppendDelimited>
+
+  <DbServer.AppendSDF>
+    <summary>
+      从 SDF 格式的文件向表中追加新记录。
+    </summary>
+    <param name="oFSSource">
+      指定包含要追加记录的源文件的字符串或 filespec 对象。
+      源文件以共享只读模式打开，并且可以在此或其他应用程序中打开。
+    </param>
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。 如果追加了任何记录，则发送 NotifyFileChange 消息。
+    </remarks>
+  </DbServer.AppendSDF>
+
+  <DbServer.Average>
+    <summary>
+      根据涉及的实际记录数计算一系列数值表达式的平均值。
+    </summary>
+    <param name="acbExpression">要计算平均值的单个表达式或要计算平均值的表达式数组。</param>
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <returns>
+      包含每个指定字段或表达式平均值的数组。如果指定了单个表达式，则返回长度为1的数组。
+    </returns>
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      操作完成后发送 NotifyRecordChange 消息。
+      Average() 方法允许在一次通过数据库时计算多个平均值。 成功完成后，当前记录将是最后一个文件记录，并且 EOF 将为 TRUE。
+    </remarks>
+  </DbServer.Average>
+
+  <DbServer.BLOBDirectExport>
+    <summary>
+      将二进制大对象(BLOB)指针的内容导出到文件。
+    </summary>
+    <param name="nPointer">
+      指向 BLOB 数据的指针。此指针可以使用 DBServer:BLOBDirectPut()、DBServer:BLOBDirectExport() 或 DBServer:FieldInfo(DBS_BLOB_POINTER,
+      <paramref name="nFieldPos" />)获取。
+    </param>
+    <param name="oFSTarget">
+      指定目标文件名称的字符串或 filespec 对象，包括可选的驱动器、目录和扩展名。有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。
+      不假定默认扩展名。 如果 <paramref name="oFSTarget" /> 不存在，则会创建它。如果存在，此方法尝试以独占模式打开文件，如果成功，
+      则文件会被写入而不会发出警告或错误。如果由于另一个进程正在使用文件而拒绝访问，则 NetErr() 设置为 TRUE，并且数据服务的 Status 属性设置。
+    </param>
+    <param name="cTarget">
+      指定目标文件名称的字符串，包括可选的驱动器、目录和扩展名。有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。
+      不假定默认扩展名。 如果 <paramref name="cTarget" /> 不存在，则会创建它。如果存在，此方法尝试以独占模式打开文件，
+      如果成功，则文件会被写入而不会发出警告或错误。如果由于另一个进程正在使用文件而拒绝访问，则 NetErr() 设置为 TRUE，
+      并且数据服务的Status属性设置。
+    </param>
+    <param name="kMode">
+      定义复制模式的常量，如下表所示：
+      <list type="table">
+        <listheader>
+          <term>常量</term>
+          <description>描述</description>
+        </listheader>
+        <item>
+          <term>
+            BLOB_EXPORT_APPEND
+          </term>
+          <description>追加到文件</description>
+        </item>
+        <item>
+          <term>
+            BLOB_EXPORT_OVERWRITE
+          </term>
+          <description>覆盖文件——这是默认值</description>
+        </item>
+      </list>
+    </param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      <note type="tip">
+        BLOB 文件(.DBV或.FPT)用于存储备注字段信息，作为某些 RDD 支持的标准 .DBt 文件机制的替代方案。
+        它是一种比使用 .DBt 文件更强大和高效的存储和检索大量数据的机制。
+        X# 提供了默认使用 BLOB 文件存储机制的 DBFCDX 驱动程序，以及可以与其他 RDD 一起使用的 DBFBLOB 驱动程序。
+        有关使用此驱动程序的更多信息，请参阅程序员指南中的“RDD特定”附录。
+      </note>
+    </remarks>
+    <example>
+      此示例从 BLOB 文件的根区域提取指针数组，然后使用其中一个指针将图片导出到文件：
+      <code language="X#">
+        FUNCTION PutPix()
+        LOCAL cPixFile AS STRING
+        LOCAL nPointer
+        LOCAL aBLOBPtrs AS ARRAY
+        LOCAL oDBCust AS DBServer
+
+        cPixFile := "picture.gif"
+        // 客户数据服务，每个客户的图片存储在名为Pix的字段中
+        oDBCust := Customer{}
+        // 假设程序先前将直接BLOB指针数组存储到BLOB文件的根区域。
+        // 我们想要的图片假设是第二个数组元素。
+        aBLOBPtrs := BLOBRootGet()
+        nPointer := aBLOBPtrs[2]
+        // 将指向的图片导出到文件
+        IF !oDBCust:BLOBDirectExport(nPointer, cPixFile, BLOB_EXPORT_OVERWRITE)
+        Alert("导出图片 " + cPixFile + " 失败！")
+        ELSE
+        // 显示图片的代码将在此处
+        ENDIF
+      </code>
+    </example>
+  </DbServer.BLOBDirectExport>
+
+  <DbServer.BLOBDirectGet>
+    <summary>
+      检索存储在 BLOB 文件中的数据，而无需引用特定字段。
+    </summary>
+    <param name="nPointer">
+      指向 BLOB 数据的指针。此指针可以使用 DBServer:BLOBDirectPut()、DBServer:BLOBDirectImport() 或 DBServer:FieldInfo(DBS_BLOB_POINTER,
+      <paramref name="nFieldPos" />) 获取。
+    </param>
+    <param name="nStart">
+      <paramref name="nPointer" />中的起始位置。如果 <paramref name="nStart" /> 为正，则起始位置相对于
+      <paramref name="nPointer" />中的最左字符。如果 <paramref name="nStart" /> 为负，
+      则相对于 <paramref name="nPointer" /> 中的最右字符。如果省略 <paramref name="nStart" />，则假定为1。
+    </param>
+    <param name="nCount">
+      从 <paramref name="nStart" /> 开始检索的数据字节数。
+      如果 <paramref name="nCount" /> 大于存储的数据量，则多余的数据将被忽略。
+      如果省略，DBServer:BLOBDirectGet() 将检索到数据的末尾。
+    </param>
+    <returns>
+      从 BLOB 文件中检索到的数据。返回值的数据类型取决于实际存储的数据。使用 ValType() 或 UsualType() 确定数据类型。
+    </returns>
+    <remarks>
+      <note type="tip">
+        <paramref name="nStart" /> 和 <paramref name="nCount" /> 仅适用于字符串数据。对于任何其他数据类型，它们将被忽略。
+      </note>
+      DBServer:BLOBDirectGet() 检索存储在 BLOB 文件中的数据，而无需引用数据服务中的特定字段。
+      当访问大于64KB的数据时(例如使用 BLOBImport() 方法创建的备注字段),它特别有用。
+    </remarks>
+    <include file="RDD.xml" path="doc/DbServer.BLOBDirectExample/*" />
+  </DbServer.BLOBDirectGet>
+
+  <DbServer.BLOBDirectExample>
+    <example>
+      此示例说明如何在 BLOB 文件中存储设置信息，然后有选择地检索存储的信息：
+      <code language="X#">
+        FUNCTION PutSettings(aColors AS ARRAY, aPaths AS ARRAY, aPW AS ARRAY) AS VOID
+        LOCAL aSettings AS ARRAY
+        LOCAL oDBSetup AS DBServer
+
+        oDBSetup  := Setup{}
+        aSettings := {}
+        AAdd(aSettings, oDBSetup:BLOBDirectPut(0, aColors))
+        AAdd(aSettings, oDBSetup:BLOBDirectPut(0, aPaths))
+        AAdd(aSettings, oDBSetup:BLOBDirectPut(0, aPW))
+        oDBSetup:BLOBRootPut(aSettings)
+        oDBSetup:Close()
+
+        FUNCTION GetColors() AS ARRAY
+        LOCAL aSettings AS ARRAY
+        LOCAL aColors AS ARRAY
+        LOCAL oDBSetup AS DBServer
+
+        oDBSetup  := Setup{}
+        aSettings := oDBSetup:BLOBRootGet()
+        aColors   := oDBSetup:BLOBDirectGet(aSettings[1])
+        oDBSetup:Close()
+
+        RETURN aColors
+      </code>
+    </example>
+  </DbServer.BLOBDirectExample>
+
+  <DbServer.BLOBDirectImport>
+    <summary>
+      将文件导入 BLOB 文件并返回指向数据的指针。
+    </summary>
+    <param name="nPointer">
+      指向导入后将释放的 BLOB 数据的指针。此指针可以使用 DBServer:BLOBDirectPut()、DBServer:BLOBDirectImport() 或 DBServer:FieldInfo(DBS_BLOB_POINTER,
+      <paramref name="nFieldPos" />) 获取。传递0将禁用数据释放。
+      重要！如果指定，DBServer:BLOBDirectImport() 会释放与 <paramref name="nOldPointer" /> 关联的空间，以供其他数据重用。
+      因此，在将其作为参数传递给此方法后，使用 <paramref name="nOldPointer" /> 与任何 BLOB 方法一起使用是非法的。使用方法的返回值来引用新存储的数据。
+    </param>
+    <param name="cSource">
+      包含要读取 BLOB 数据的文件名称的字符串，包括可选的驱动器、目录和扩展名。
+      有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。不假定默认扩展名。
+    </param>
+    <param name="oFSSource">
+      指定包含要读取 BLOB 数据的文件名称的字符串或 filespec 对象，包括可选的驱动器、目录和扩展名。
+      有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。不假定默认扩展名。
+    </param>
+    <returns>
+      存储在源文件中的 BLOB 图像的数字指针。
+    </returns>
+    <remarks>
+      此方法尝试以共享模式打开源文件。如果文件不存在，则会引发运行时错误。如果文件成功打开，则操作继续进行。
+      如果由于另一个进程独占使用文件而拒绝访问，则 NetErr() 设置为 TRUE，并且数据服务的 Status 属性设置。
+      有关解决并发冲突的更多信息，请参阅程序员指南中的“并发控制”章节。
+      <note type="tip">
+        源文件的大小没有限制，除了您必须有足够的磁盘空间来进行复制。
+      </note>
+      DBServer:BLOBDirectImport() 提供了一种将文件内容复制到BLOB文件中的机制。
+      DBServer:BLOBDirectImport() 与 DBServer:BLOBDirectExport() 一起使用，以在外部文件和 BLOB 文件之间来回传输数据。
+      您可以将 DBServer:BLOBDirectImport() 与各种文件类型一起使用，包括图像、文字处理文件和打印机字体。
+      这两种方法非常适合创建文档、图形、声音等数据库。
+      重要！使用 DBServer:BLOBDirectImport() 导入文件后，nNewPointer(返回值)是访问 BLOB 文件中数据的唯一方法。
+      由您(开发人员)提供此引用的永久存储(请参阅下面的示例)
+      <note type="tip">
+        DBServer:FieldInfo(DBS_BLOB_TYPE, <paramref name="nFieldPos" />) 将返回“C”(字符串)，
+        用于使用 DBServer:BLOBDirectImport() 创建的任何备注字段。
+      </note>
+    </remarks>
+    <include file="RDD.xml" path="doc/DbServer.BLOBDirectExample/*" />
+  </DbServer.BLOBDirectImport>
+
+  <DbServer.BLOBDirectPut>
+    <summary>
+      将数据放入 BLOB 文件中，而无需引用特定字段。
+    </summary>
+    <param name="nPointer">
+      对先前存储的 BLOB 数据的引用。
+      此引用可以使用 DBServer:BLOBDirectPut()、DBServer:BLOBDirectImport() 或 DBServer:FieldInfo(DBS_BLOB_POINTER,
+      <paramref name="nFieldPos" />) 获取。如果不为0，则 <paramref name="uBLOB" /> 替换 <paramref name="nOldPointer" /> 引用的数据；
+      否则，<paramref name="uBLOB" /> 将添加到 BLOB 文件的当前内容中。
+      重要！如果指定，DBServer:BLOBDirectPut() 会释放与 <paramref name="nOldPointer" /> 关联的空间，以供其他数据重用。
+      因此，在将其作为参数传递给此方法后，使用 <paramref name="nOldPointer" /> 与任何 BLOB 方法一起使用是非法的。使用方法的返回值来引用新存储的数据。
+    </param>
+    <param name="uBlob">
+      您要放入 BLOB 文件中的数据。<paramref name="uBLOB" /> 可以是任何 X# 常用数据类型，代码块和对象除外。
+    </param>
+    <returns>
+      指向<paramref name="uBLOB" />数据的数字指针。
+    </returns>
+    <remarks>
+      DBServer:BLOBDirectPut() 存储可变长度的 BLOB 数据，而无需与数据服务中的特定备注字段建立链接。
+      使用 DBServer:BLOBDirectPut() 将数据添加到 BLOB 文件后，您应存储方法的返回值，因为这是访问 BLOB 文件中数据的唯一方法。
+      由您(开发人员)提供此引用的永久存储(请参阅 DBServer:BLOBRootPut())。
+    </remarks>
+    <include file="RDD.xml" path="doc/DbServer.BLOBDirectExample/*" />
+  </DbServer.BLOBDirectPut>
+
+  <DbServer.BLOBExport>
+    <summary>
+      将由其备注字段编号标识的 BLOB 内容复制到文件。
+    </summary>
+    <param name="uField">表示数据库文件结构中字段位置的名称、编号或符号。</param>
+    <param name="cTarget">要复制记录的文件。</param>
+    <param name="oFSTarget">
+      指定目标文件名称的字符串或 filespec 对象，包括可选的驱动器、目录和扩展名。
+      有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。
+      不假定默认扩展名。
+      <paramref name="oFSTarget" />不存在，则会创建它。
+      如果存在，此方法尝试以独占模式打开文件，如果成功，则文件会被写入而不会发出警告或错误。
+      如果由于另一个进程正在使用文件而拒绝访问，则 NetErr() 设置为 TRUE，并且数据服务的 Status 属性设置。
+    </param>
+    <param name="kMode">
+      定义复制模式的常量，如下表所示：
+      <list type="table">
+        <listheader>
+          <term>常量</term>
+          <description>描述</description>
+        </listheader>
+        <item>
+          <term>
+            BLOB_EXPORT_APPEND
+          </term>
+          <description>追加到文件</description>
+        </item>
+        <item>
+          <term>
+            BLOB_EXPORT_OVERWRITE
+          </term>
+          <description>覆盖文件——这是默认值</description>
+        </item>
+      </list>
+    </param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <example>
+      此示例将存储图片的字段内容导出到.GIF文件，以便可以以编程方式显示该文件：
+      <code language="X#">
+        FUNCTION ShowPix()
+        LOCAL cPixFile := "picture.gif" AS STRING
+        LOCAL nPos
+        LOCAL oDBCust AS DBServer
+
+        // 客户数据库，每个客户的图片存储在名为Pix的字段中
+        oDBCust := Customer{}
+        nPos := oDBCust:FieldPos("Pix")
+
+        // 导出当前Pix字段的BLOB文件数据
+        IF !oDBCust:BLOBExport(nPos, cPixFile, BLOB_EXPORT_OVERWRITE)
+        Alert("导出图片 " + cPixFile + " 失败！")
+        ELSE
+        // 显示图片的代码将在此处
+        ENDIF
+      </code>
+    </example>
+  </DbServer.BLOBExport>
+
+  <DbServer.BLOBGet>
+    <summary>
+      获取由其备注字段编号标识的 BLOB 内容。
+    </summary>
+    <param name="uField">表示数据库文件结构中字段位置的名称、编号或符号。</param>
+    <param name="nStart">
+      备注字段中 BLOB 数据的起始位置。如果 <paramref name="nStart" /> 为正，
+      则起始位置相对于 <paramref name="uFieldPos" /> 中的最左字符。如果 <paramref name="nStart" /> 为负，
+      则相对于 <paramref name="uFieldPos" /> 中的最右字符。如果省略 <paramref name="nStart" />，则假定为1。
+    </param>
+    <param name="nCount">
+      从 <paramref name="nStart" /> 开始检索的数据字节数。
+      如果 <paramref name="nCount" /> 大于存储的数据量，则多余的数据将被忽略。如果省略，DBServer:BLOBGet() 将检索到数据的末尾。
+    </param>
+    <returns>
+      从备注字段中检索到的 BLOB 数据。返回值的数据类型取决于实际存储的数据。使用 ValType() 或 UsualType() 确定数据类型。
+      如果指示的字段不是备注字段，DBServer:BLOBGet() 返回 NIL。
+    </returns>
+    <remarks>
+      <note type="tip">
+        <paramref name="nStart" />和<paramref name="nCount" />仅适用于字符串数据。对于任何其他数据类型，它们将被忽略。
+      </note>
+      DBServer:BLOBGet() 与 DBServer:FieldGet() 非常相似。
+      然而，由于字符串类型变量不能大于64KB，DBServer:FieldGet() 在尝试检索此大小或更大的备注字段时会引发运行时错误。
+      DBServer:BLOBGet() 在尝试检索大于此大小的字段时也会引发错误；
+      但是，您可以通过使用小于64KB的 <paramref name="nCount" /> 来检索 BLOB 数据的任何子集。
+      <note type="tip">
+        小于64KB的 BLOB 数据可以使用标准方法(例如，在表达式中引用字段名称或使用 DBServer:FieldGet() 方法)从备注字段中检索。
+      </note>
+    </remarks>
+    <example>
+      此示例将文字处理文档中的信息导入字段，然后使用 DBServer:BLOBGet() 提取字段的前25个字符：
+      <code language="X#">
+        FUNCTION GetFirst25()
+        LOCAL nPos
+        LOCAL cStr AS STRING
+        LOCAL oDBCust := Customer{}
+
+        oDBCust := Customer{}
+        // 包含文字处理文档的字段
+        nPos := oDBCust:FieldPos("WP_DOC")
+
+        // 导入文件(可以大于64 KB)，然后获取前25个字符以显示给用户
+        IF oDBCust:BLOBImport(nPos, "c:\app\temp.doc")
+        cStr := oDBCust:BLOBGet(nPos, 1, 25)
+        ELSE
+        cStr := "错误：无法导入文件！"
+        ENDIF
+
+        oDBCust:Close()
+
+        RETURN cStr
+      </code>
+    </example>
+  </DbServer.BLOBGet>
+
+  <DbServer.BLOBImport>
+    <summary>
+      将文件的内容读取为由备注字段编号标识的 BLOB。
+    </summary>
+    <param name="uField">表示数据库文件结构中字段位置的名称、编号或符号。</param>
+    <param name="oFSSource">
+      指定包含要读取 BLOB 数据的文件名称的字符串或 filespec 对象，包括可选的驱动器、目录和扩展名。
+      有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。不假定默认扩展名。
+    </param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      此方法尝试以共享模式打开源文件。如果文件不存在，则会引发运行时错误。
+      如果文件成功打开，则操作继续进行。如果由于另一个进程独占使用文件而拒绝访问，则 NetErr() 设置为 TRUE，并且数据服务的 Status 属性设置。
+      有关解决并发冲突的更多信息，请参阅程序员指南中的“并发控制”章节。
+      <note type="tip">
+        源文件的大小没有限制，除了您必须有足够的磁盘空间来进行复制。
+      </note>
+      DBServer:BLOBImport() 提供了一种将文件内容复制到备注字段作为 BLOB 数据的机制。
+      DBServer:BLOBImport() 与 DBServer:BLOBExport() 一起使用，以在文件和备注字段之间来回传输 BLOB 数据。
+      您可以将 DBServer:BLOBImport() 与各种文件类型一起使用，包括图像、文字处理文件和打印机字体。
+      这两种方法非常适合创建文档、图形、声音等数据库。
+      DBServer:BlobImport() 在成功完成后发送 NotifyFieldChange 消息。
+      <note type="tip">
+        DBServer:FieldInfo(DBS_BLOB_TYPE, <paramref name="uFieldPos" />) 将返回“C”(字符串)，用于使用DBServer:BLOBImport()创建的任何备注字段。
+      </note>
+    </remarks>
+    <example>
+      此示例将文字处理文档中的信息导入字段，然后使用 DBServer:BLOBGet() 提取字段的前25个字符：
+      <code language="X#">
+        FUNCTION Populate()
+        LOCAL oDBCust AS DBServer
+
+        oDBCust := Customer{}
+        // 基于姓氏和ID构造唯一名称
+        DO WHILE .NOT. oDBCust:EOF
+        oDBCust:GetPix("Pix", ;
+        Substr(oDBCust:LastName, 1, 4) + oDBCust:CustID)
+        oDBCust:Skip()
+        ENDDO
+
+        METHOD GetPix(cPixField, cPixFile) CLASS Customer
+        LOCAL nPos
+        nPos := SELF:FieldPos(cPixField)
+        // 将图片文件导入指定字段
+        IF !SELF:BLOBImport(nPos, cPixFile)
+        Alert("导入图片 " + cPixFile + " 失败！")
+        ENDIF
+      </code>
+    </example>
+  </DbServer.BLOBImport>
+
+  <DbServer.BLOBRootGet>
+    <summary>
+      从 BLOB 文件的根区域检索数据。
+    </summary>
+    <returns>
+      从 BLOB 文件的根部检索到的数据。返回值的数据类型取决于实际存储的数据。使用 ValType() 或 UsualType() 确定数据类型。
+      请注意，如果从未使用 DBServer:BLOBRootPut() 写入根引用，DBServer:BLOBRootGet() 返回NIL。
+    </returns>
+    <remarks>
+      DBServer:BLOBRootGet() 允许从 BLOB 文件的根部检索 BLOB。
+      <note type="tip">
+        由于根数据不引用数据服务中的特定记录，因此不受 DBServer:RLock() 的影响，也不受 DataServer:ConcurrencyControl 设置的影响。
+        因此，如果数据服务以共享模式打开，则在调用 DBServer:BLOBRootGet() 之前应使用 DBServer:BLOBRootLock()。
+      </note>
+    </remarks>
+    <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*" />
+  </DbServer.BLOBRootGet>
+
+  <DbServer.BLOBRootLock>
+    <summary>
+      获取 BLOB 文件根区域的锁。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      在共享模式下访问数据服务时，使用 DBServer:BLOBRootLock() 获取 BLOB 文件根区域的锁，以便从根区域读取或写入数据。
+    </remarks>
+    <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*" />
+  </DbServer.BLOBRootLock>
+
+  <DbServer.BLOBRootPut>
+    <summary>
+      将数据存储在 BLOB 文件的根区域。
+    </summary>
+    <param name="uBlob">
+      您要放入 BLOB 文件根区域的数据。<paramref name="uBLOB" /> 可以是任何 X# 常用数据类型，代码块和对象除外。
+    </param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      DBServer:BLOBRootPut() 允许将一个(且仅一个)数据存储到 BLOB 文件的根区域(此数据没有大小限制)。
+      存储新数据后，DBServer:BLOBRootPut() 会释放与先前存储在 BLOB 文件根区域中的任何数据关联的空间。
+      <note type="tip">
+        由于根数据不引用数据服务中的特定记录，因此不受 DBServer:RLock() 的影响，也不受 DataServer:ConcurrencyControl 设置的影响。
+        因此，如果数据服务以共享模式打开，则在调用 DBServer:BLOBRootGet() 之前应使用 DBServer:BLOBRootLock()。
+      </note>
+    </remarks>
+    <example>
+      此示例使用 DBServer:BLOBRootPut() 在修改后将系统设置存储到BLOB文件：
+      <code language="X#">
+        FUNCTION UpdateSettings()
+        LOCAL aSettings AS ARRAY
+        LOCAL oDBCust AS DBServer
+
+        oDBCust := Customer{}
+
+        IF oDBCust:BLOBRootLock()
+        // 获取任何现有设置
+        aSettings := oDBCust:BLOBRootGet()
+
+        IF Empty(aSettings)
+        // 此函数将使用默认数据填充aSettings
+        aSettings := oDBCust:GetDefaultSettings()
+        ENDIF
+
+        // 此函数将允许用户修改设置。
+        IF oDBCust:ModifySettings(aSettings)
+        // 最后，存储设置
+        oDBCust:BLOBRootPut(aSettings)
+        ENDIF
+
+        oDBCust:BLOBRootUnlock()
+        ELSE
+        aSettings := {}
+        Alert("无法获取根锁")
+        ENDIF
+
+        oDBCust:Close()
+
+        RETURN aSettings
+      </code>
+    </example>
+  </DbServer.BLOBRootPut>
+
+  <DbServer.BLOBRootExample>
+    <example>
+      此示例说明如何在 BLOB 文件的根部存储信息以及如何为以共享模式打开的数据服务使用锁定。
+      <code language="X#">
+        FUNCTION GetSettings()
+        LOCAL aCustSettings AS ARRAY
+        LOCAL oDBCust AS DBServer
+
+        // Open a customer file in shared mode
+        oDBCust := Customer{}
+
+        IF oDBCust:BLOBRootLock()
+        aCustSettings := oDBCust:BLOBRootGet()
+        oDBCust:BLOBRootUnlock()
+        ELSE
+        Alert("Could not obtain root lock")
+        ENDIF
+
+        oDBCust:Close()
+
+        RETURN aCustSettings
+      </code>
+    </example>
+  </DbServer.BLOBRootExample>
+
+  <DbServer.BLOBRootUnlock>
+    <summary>
+      释放对 BLOB 文件根区域的锁定。
+    </summary>
+    <remarks>
+      使用 DBServer:BLOBRootUnlock() 释放先前通过 DBServer:BLOBRootLock() 获得的锁。
+      <note type="tip">
+        唯一需要使用 DBServer:BLOBRootLock() 或 DBServer:BLOBRootUnlock() 的方法是 DBServer:BLOBRootGet() 和 DBServer:BLOBRootPut()。
+      </note>
+    </remarks>
+    <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*" />
+  </DbServer.BLOBRootUnlock>
+
+  <DbServer.BoF>
+    <summary>
+      一个逻辑值，指示服务是否位于文件的开头，即第一条记录上。
+    </summary>
+    <value>一个逻辑值，指示服务是否位于文件的开头，即第一条记录上。</value>
+    <remarks>
+      一个逻辑值，指示服务是否位于文件的开头，即第一条记录上。
+      在尝试向后移动超出数据库文件中的第一条逻辑记录后，它返回 TRUE；否则，返回 FALSE。如果当前数据库文件不包含任何记录，BOF 也返回 TRUE。
+    </remarks>
+    <example>
+      此示例通过尝试将记录指针移动到第一条记录之前来演示 BOF：
+      <code language="X#">
+        CLASS Sales INHERIT DBServer
+        ...
+        FUNCTION BOFDemo()
+        LOCAL oDBSales AS Sales
+        oDBSales := Sales{}
+        ? ODBSales:BOF // 结果：FALSE
+        oDBSales:Skip(-1)
+        ? ODBSales:BOF // 结果：TRUE
+      </code>
+    </example>
+  </DbServer.BoF>
+
+  <DbServer.ClearFilter>
+    <summary>
+      清除使用 DBServer:SetFilter() 方法指定的过滤条件。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+  </DbServer.ClearFilter>
+
+  <DbServer.ClearIndex>
+    <summary>
+      清除当前与服务关联的所有索引。
+    </summary>
+    <param name="uOrder">order 的名称，或 order 在 order 列表中的序数位置。值为0表示控制索引，而不考虑其在列表中的实际位置。</param>
+    <param name="cOrdBag">order 所在的 order 包的名称。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+  </DbServer.ClearIndex>
+
+  <DbServer.ClearLocate>
+    <summary>
+      清除服务的 LOCATE 条件(如果有)。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+  </DbServer.ClearLocate>
+
+  <DbServer.ClearOrderScope>
+    <summary>
+      设置或清除控制顺序中键值范围的边界。
+    </summary>
+    <remarks>
+      DBServer:ClearOrderScope() 重置由 DBServer:OrderScope() 方法设置的值。
+    </remarks>
+  </DbServer.ClearOrderScope>
+
+  <DbServer.ClearRelation>
+    <summary>
+      清除此服务与其他服务之间的所有活动关系。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+  </DbServer.ClearRelation>
+
+  <DbServer.ClearScope>
+    <summary>
+      清除定义多记录操作默认范围的设置。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+  </DbServer.ClearScope>
+
+  <DbServer.Close>
+    <summary>
+      关闭数据库文件及其关联的索引文件。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      关闭后，如果将 <paramref name="oDBServer" /> 设置为 NULL_OBJECT，也将有助于垃圾收集器。
+    </remarks>
+  </DbServer.Close>
+
+  <DbServer.Commit>
+    <summary>
+      将所有更改从缓冲区提交到磁盘，确保所有缓冲区都已刷新。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      如果成功，发送 NotifyCompletion 消息。
+      如果与 Unlock() 方法一起使用，则应在调用 Unlock() 方法之前执行 Commit() 方法。
+      在扫描大量记录时使用 Commit() 可能会非常慢，因此您可能希望将 Commit() 语句限制为每10或20条记录，以加快处理速度。
+      请注意，DBServer:Commit() 可能由于多种原因而失败，从服务缺乏能力到锁定冲突和技术问题(如网络崩溃)。
+      使用 DBServer:Status 属性确定失败的确切原因。
+      DBCommit()函数
+    </remarks>
+  </DbServer.Commit>
+
+  <DbServer.ConcurrencyControl>
+    <summary>
+      一个常量，标识此数据服务的自动并发控制模式，确定何时以及如何锁定和释放记录：
+    </summary>
+    <value>一个常量，标识此数据服务的自动并发控制模式，确定何时以及如何锁定和释放记录：</value>
+    <remarks>
+      以下常量之一，标识此数据服务的自动并发控制模式，确定何时以及如何锁定和释放记录：
+      <list type="table">
+        <listheader>
+          <term>常量</term>
+          <description>描述</description>
+        </listheader>
+        <item>
+          <term>CCNONE</term>
+          <description>数据服务不提供自动记录锁定；应用程序需要显式进行所有锁定。</description>
+        </item>
+        <item>
+          <term>CCOPTIMISTIC</term>
+          <description>
+            除了追加时，记录刚刚追加时会被锁定，
+            并且只有在移出记录或显式调用 DataServer 或 DBServer Unlock()方法时才会释放锁定。
+            对于所有其他记录，在进行任何更新之前，记录会从磁盘重新读取。这是<b>默认</b>设置。
+          </description>
+        </item>
+        <item>
+          <term>CCSTABLE</term>
+          <description>窗口所在的记录始终保持锁定。请注意，当处于浏览视图时，光标所在的行表示当前记录。</description>
+        </item>
+        <item>
+          <term>CCREPEATABLE</term>
+          <description>所有已读取的记录都保持锁定。用户可以保证在返回先前查看的数据时，它们未被更改。</description>
+        </item>
+        <item>
+          <term>CCFILE</term>
+          <description>
+            服务提供的整个记录集中的所有记录在整个过程中都被锁定。
+            这对于与服务的所有记录关联的窗口来说并不实用，因为这相当于文件锁定。
+            它旨在与方法 DBServer:SetSelectiveRelation() 一起使用。
+          </description>
+        </item>
+      </list>
+    </remarks>
+    <example>
+      此示例设置 Sales:Init() 方法以接受服务的打开模式作为参数。
+      然后，使用 CCNONE 打开 oDBSales 服务，指示使用此服务的任何应用程序必须提供显式锁定的代码：
+      <code language="X#">
+        CLASS Sales INHERIT DBServer
+        ...
+        METHOD Init(kOpenMode) CLASS Sales
+        ...
+        SELF:ConcurrencyControl := kOpenMode
+        FUNCTION CreateSales()
+        LOCAL oDBSales AS Sales
+        oDBSales := Sales{CCNONE}
+        ...
+      </code>
+    </example>
+  </DbServer.ConcurrencyControl>
+
+  <DbServer.ConstructUniqueAlias>
+    <summary>基于文件名和可选的数字后缀创建唯一别名</summary>
+    <param name="cFileName">用于创建别名的文件名。</param>
+  </DbServer.ConstructUniqueAlias>
+
+  <DbServer.Continue>
+    <summary>
+      继续挂起的 DBServer:Locate() 操作，搜索下一个匹配的记录(类似于 DBContinue() 函数)。
+    </summary>
+    <returns>
+      如果成功，则返回 TRUE；否则，返回 FALSE。操作后，可以使用 DBServer:Found 访问确定是否找到记录。
+    </returns>
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      无论成功与否，操作完成后发送 NotifyRecordChange 消息。
+      Continue 尊重原始 Locate() 的 FOR 子句，但忽略任何 WHILE 子句和范围。如果要继续使用原始 Locate() 操作的 WHILE 子句进行搜索，
+      请将范围设置为 REST 并执行另一个 Locate()。
+      如果 DBServer:Found 返回 FALSE，则当前记录将是最后一条记录，并且 DBServer:EOF 将为 TRUE。
+    </remarks>
+  </DbServer.Continue>
+
+  <DbServer.CopyDB>
+    <summary>
+      将记录复制到另一个 DBF 文件。
+    </summary>
+    <param name="oFSTarget">
+      一个字符串或 filespec 对象，指定要将记录复制到的文件。该文件在操作期间以独占方式打开，因此不应该在其他地方以写入方式打开。
+    </param>
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      操作完成后发送 NotifyRecordChange 消息。
+      此方法不会打开新文件，它只是创建磁盘上的文件。如果您想在之后打开它，只需直接实例化它。
+    </remarks>
+    <example>
+      下面的示例创建文件并实例化它以打开它。
+      <code language="X#">
+        IF oDB1:CopyDB(oFSTarget)
+        oDB2 := DBServer{oFSTarget}
+        ELSE
+        ...
+        ENDIF
+      </code>
+    </example>
+  </DbServer.CopyDB>
+
+  <DbServer.CopyDelimited>
+    <summary>
+      将记录复制到分隔文件。
+    </summary>
+    <param name="oFSTarget">指定记录复制到的文件的字符串或文件规范对象。</param>
+    <param name="cDelimiter">分隔数据库文件中字段的分隔符。如果省略，则默认值为 NULL_STRING。</param>
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。 操作完成后发送 NotifyRecordChange 消息。
+    </remarks>
+  </DbServer.CopyDelimited>
+
+  <DbServer.CopySDF>
+    <summary>
+      将记录复制到 SDF 文件。
+    </summary>
+    <param name="oFSTarget">
+      一个字符串或 filespec 对象，指定要将记录复制到的文件。
+    </param>
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。 操作完成后发送 NotifyRecordChange 消息。
+    </remarks>
+  </DbServer.CopySDF>
+
+  <DbServer.CopyStructure>
+    <summary>
+      创建与发送消息的服务对象具有相同记录布局的DBF文件。
+    </summary>
+    <param name="cFileName">记录复制到的文件。</param>
+    <param name="oFSTarget">指定记录复制到的文件的文件规范对象。</param>
+    <param name="aFieldList">要包含在复制记录中的字段数组。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      如果成功，发送 NotifyCompletion 消息。
+      此方法不会打开新文件；它只是创建磁盘上的文件。如果您想在之后打开它，只需直接实例化它。
+    </remarks>
+    <example>
+      下面的示例创建文件并实例化它以打开它。
+      <code language="X#">
+        IF oDB1:CopyStructure(oFSTarget)
+        oDB2 := DBServer{oFSTarget}
+        ELSE
+        ...
+        ENDIF
+      </code>
+    </example>
+  </DbServer.CopyStructure>
+
+  <DbServer.Count>
+    <summary>
+      返回匹配指定范围的记录数。
+    </summary>
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <returns>
+      匹配范围的记录数。
+    </returns>
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      操作完成后发送 NotifyRecordChange 消息。
+      成功完成后，当前记录将是最后一条文件记录，并且 DBServer:EOF 将为 TRUE。
+    </remarks>
+    <example>
+      与 COUNT 命令的使用方式进行比较：
+      <code language="X#">
+        COUNT TO nBranchCnt FOR Branch = 100
+        nBranchCnt := oDBSales:Count({||Branch=100})
+      </code>
+    </example>
+  </DbServer.Count>
+
+  <DbServer.CreateIndex>
+    <summary>
+      创建包含一个 order 的索引文件。
+    </summary>
+    <param name="oFSIndex">指定要创建的索引文件名称的字符串或文件规范对象。</param>
+    <param name="cExpr">索引表达式。</param>
+    <param name="cbExpr">索引表达式。如果提供了代码块，则应与字符串表达式匹配；如果未提供代码块，则从字符串表达式创建一个代码块。</param>
+    <param name="lUnique">索引是否唯一。如果未指定，默认值由 SetUnique() 确定。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      在操作之前发送NotifyIntentToMove消息。 操作完成后发送 NotifyFileChange 消息。
+    </remarks>
+  </DbServer.CreateIndex>
+
+  <DbServer.CreateOrder>
+    <summary>
+      在现有索引文件中创建一个 order。行为取决于使用的驱动程序。
+    </summary>
+    <param name="cOrderName">要使用的 order 名称。</param>
+    <param name="cIndexFileName">索引文件的名称。</param>
+    <param name="cExpr">索引表达式。</param>
+    <param name="cbExpr">索引表达式。如果提供了代码块，则应与字符串表达式匹配；如果未提供代码块，则从字符串表达式创建一个代码块。</param>
+    <param name="lUnique">索引是否唯一。如果未指定，则默认值由 SetUnique() 确定。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      操作完成后发送 NotifyFileChange 消息。
+      此示例显示如何创建单一标志 order：
+      <code language="X#">
+        // 如果您想要按机会降序排列，请首先包含此行：
+        &lt;oDbServer&gt;:SetOrderCondition(,,,,,,,,,,TRUE)
+        IF &lt;oDbServer&gt;:CREATEORDER( "PlayerName", SELF:cPath + "Players", "Upper(LastName + FirstName + MiddleInit)" )
+        &lt;oDbServer&gt;:Commit()
+        ELSE
+        // 如果索引标签未成功创建，请告知某人：….
+        ENDIF
+        // 不要忘记将升序排列重新打开：
+        &lt;oDbServer&gt;:SetOrderCondition(,,,,,,,,,,FALSE)
+      </code>
+      DBCreateOrder()函数
+    </remarks>
+  </DbServer.CreateOrder>
+
+  <DbServer.DataField>
+    <summary>
+      检索指定字段位置的数据字段对象。
+    </summary>
+    <param name="uField">表示所需字段的名称、编号或符号。</param>
+  </DbServer.DataField>
+
+  <DbServer.DBStruct>
+    <summary>
+      包含此数据服务结构的数组，其长度(即元素数量)等于服务中的字段数。
+    </summary>
+    <value>
+      包含此数据服务结构的数组，其长度(即元素数量)等于服务中的字段数。
+    </value>
+    <remarks>
+      包含此数据服务结构的数组，其长度(即元素数量)等于服务中的字段数。 每个子数组由五个元素组成，按以下顺序包含以下信息：
+      <include file="RTComments.xml" path="Comments/DbStruct_Constants/*" />
+    </remarks>
+    <example>
+      此示例打开一个数据库文件，然后使用 DBServer:DBStruct 在别名表达式中创建一个包含数据库结构的数组。
+      然后使用 AEval() 列出字段名称：
+      <code language="X#">
+        CLASS Sales INHERIT DBServer
+        ...
+        FUNCTION StructDemo()
+        LOCAL aStruct AS ARRAY, oDBSales AS DBServer
+        oDBSales := Sales{}
+        aStruct := oDBSales:DBStruct
+        AEval(aStruct, {|aField|QOut(aField[DBS_NAME])})
+      </code>
+    </example>
+  </DbServer.DBStruct>
+
+  <DbServer.DbStructure>
+    <summary>从 DbServer 对象返回原始 DbStructure 数组。</summary>
+    <value>从 DbServer 对象返回原始 DbStructure 数组。</value>
+    <summary>由于这返回的是原始数组而不是其副本，因此您应该非常小心不要更改它！</summary>
+  </DbServer.DbStructure>
+
+  <DbServer.Delete>
+    <summary>
+      删除当前记录或指定范围内的记录。
+    </summary>
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      如果使用范围调用或如果服务范围处于活动状态，Delete() 在操作之前发送 NotifyIntentToMove 消息，
+      并在完成后发送 NotifyFileChange 消息(无论实际删除的记录数量如何)。
+      如果未使用范围并且 Delete() 仅适用于当前记录，则在成功时发送 NotifyRecordChange 消息。
+      如果指定了范围，则成功完成后，当前记录将是最后一条文件记录，并且 DBServer:EOF 将为 TRUE。
+      重要提示！由于范围是持久的，从处理方法(如 CopyDB() 或 Average())留下的范围可能会导致 Delete() 处理过多的记录。请记住在使用范围后重置范围。
+      即使记录被标记为删除，它仍然保留在文件中并且可以被恢复(SetDeleted() 函数的当前设置会影响是否可见已删除的记录)。
+      如果对字段进行了更改，则在标记为删除之前，这些更改会记录在记录中；因此，如果字段被恢复，它将正确反映删除操作之前所做的任何更改。
+      <note type="tip">
+        DBServer:Delete() 在删除发生后不会前进到下一条记录，不同于 DataWindow:Delete()(如果SetDeleted()为TRUE)。
+      </note>
+    </remarks>
+  </DbServer.Delete>
+
+  <DbServer.DeleteAll>
+    <summary>
+      删除表中的所有记录。
+    </summary>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      操作完成后发送 NotifyFileChange 消息。
+    </remarks>
+  </DbServer.DeleteAll>
+
+  <DbServer.Deleted>
+    <summary>
+      一个逻辑值，指示当前记录是否被标记为删除。
+    </summary>
+    <value>一个逻辑值，指示当前记录是否被标记为删除。</value>
+    <remarks>
+      指示当前记录是否被标记为删除的逻辑值。注意，需要 invoke 指针更改，例如 GoTop()，才能使过滤条件生效。
+    </remarks>
+    <example>
+      此示例使用 Deleted 作为 DBServer:SetFilter() 方法的过滤条件：
+      <code language="X#">
+        CLASS Sales INHERIT DBServer
+        ...
+        FUNCTION IgnoreDeleted()
+        LOCAL oDBSales AS Sales
+        oDBSales := Sales{}
+        oDBSales:SetFilter(!oDBSales:Deleted)
+        oDBSales:GoTop()
+        .
+        . &lt;处理记录&gt;
+        .
+        oDBSales:ClearFilter()
+      </code>
+      此示例使用 DBServer:SetFilter() 方法的复合过滤条件，并假设 Players.dbf 文件已在类级别打开：
+      <code language="X#">
+        CLASS Players INHERIT DBServer
+        ...
+        FUNCTION pbResetFilter()
+        Local cFilter
+        cFilter := [Season = '] + SELF:cSeason + [' .and. .not. empty(TeamNr) ]
+        cFilter += [ .and. empty(HomePhone)]
+        cFilter += [ .and. Gender = '] + SELF:cGender + [']
+        SELF:oPlayersServer:SetFilter(, cFilter ) // 注意逗号参数的位置
+        SELF:oPlayersServer:GoTop()
+        .
+        . &lt;处理记录&gt;
+        .
+        SELF:oPlayersServer:ClearFilter()
+      </code>
+    </example>
+  </DbServer.Deleted>
+
+  <DbServer.DeleteOrder>
+    <summary>
+      从索引文件中删除一个 order。
+    </summary>
+    <param name="uOrder">要删除的 order 的名称或编号。</param>
+    <param name="cIndexFileName">
+      如果指定的 order 名称在所有打开的 order 中是唯一的，或者使用了 order 编号，则不必指定索引文件。但是，如果指定了非唯一的 order 名称，则还应指定索引文件。
+    </param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+  </DbServer.DeleteOrder>
+
+  <DbServer.Driver>
+    <summary>
+      表示此服务使用的数据库驱动程序名称的字符串。
+    </summary>
+    <value>一个字符串，表示该服务使用的数据库驱动程序的名称。</value>
+    <remarks>
+      表示此服务使用的数据库驱动程序名称的字符串。
+      服务可以作为服务的实例化参数指定。如果未设置驱动程序，则使用默认驱动程序；可以通过 RDDSetDefault() 或 DBSetDriver() 设置。
+    </remarks>
+  </DbServer.Driver>
+
+  <DbServer.EoF>
+    <summary>
+      一个逻辑值，指示服务是否位于文件的末尾，即最后一条记录上
+    </summary>
+    <value>一个逻辑值，指示服务是否位于文件的末尾，即最后一条记录上</value>
+    <remarks>
+      一个逻辑值，指示服务是否位于文件的末尾，即最后一条记录上。
+      在尝试将记录指针移动到数据库文件中的最后一条逻辑记录之后，它返回 TRUE；否则，返回 FALSE。如果当前数据库文件不包含任何记录，EOF 返回 TRUE。
+    </remarks>
+    <example>
+      此示例演示将 EOF 用作定义 WHILE 循环的条件。请注意，在执行类似于下面的 DO 循环时，但您可能还包括其他字段到变量的比较，
+      始终将 EOF 作为 DO WHILE 行上的第一个条件。这可以防止在实际处于 EOF 条件时比较字段值：
+      <code language="X#">
+        CLASS Sales INHERIT DBServer
+        ...
+        FUNCTION EOFDemo()
+        LOCAL oDBSales AS Sales
+        oDBSales := Sales{}
+
+        DO WHILE !oDBSales:EOF
+        ...
+        oDBSales:Skip()
+        ENDDO
+      </code>
+    </example>
+  </DbServer.EoF>
+
+  <DbServer.ErrInfo>
+    <summary>
+      标识上次操作后错误条件的 Error 对象。
+    </summary>
+    <value>标识上次操作后错误条件的 Error 对象。</value>
+    <remarks>
+      标识上次操作后错误条件的 Error 对象。如果上次操作成功，DBServer:ErrInfo 返回 NULL_OBJECT。
+    </remarks>
+    <example>
+      此示例演示了一个 SEQUENCE 结构，其中 ErrInfo 传递给 RECOVER USING 语句：
+      <code language="X#">
+        CLASS Sales INHERIT DBServer
+        ...
+        FUNCTION EOFDemo()
+        LOCAL oDBSales AS Sales
+        oDBSales := Sales{}
+
+        BEGIN SEQUENCE
+        .
+        . &lt;一些可能失败的语句&gt;
+        .
+        RECOVER USING oDBSales:ErrInfo
+        .
+        . &lt;一些恢复语句&gt;
+        .
+        END SEQUENCE
+      </code>
+    </example>
+  </DbServer.ErrInfo>
+
+  <DbServer.Error>
+    <summary>
+      提供一种方法来处理在数据库处理期间引发的错误条件。
+    </summary>
+    <param name="oError">描述错误条件的 Error 对象。</param>
+    <param name="symMethod">引发错误的方法的符号名称。</param>
+    <remarks>
+      <note type="tip">
+        这是一个事件处理程序，会被其他方法自动调用；开发人员通常不需要调用 DBServer:Error() 方法，但可能希望替换或修改它。
+      </note>
+      DBServer 的所有方法都通过 recover 语句捕获严重错误并将其发送到此方法。
+      普通故障，如锁定冲突或记录未找到，不会引发错误条件；它们只是通过失败的返回值来指示。
+      标准的 Error() 处理方法会填充有关错误和引发错误的 DBServer 对象的更多信息，设置服务对象的状态值，
+      并在其标准的 Error() 处理方法中将问题传递给其客户端(如果有)。
+      如果没有客户端想要处理问题，该方法会通过发出与相同 Error 对象的 BREAK 将其传递到调用堆栈。
+      <note type="tip">
+        如果在处理一个错误时又出现了另一个错误，Error() 方法会立即中断。
+      </note>
+    </remarks>
+    <example>
+      Skip()方法像这样使用Error()方法：
+      <code language="X#">
+        METHOD Skip(n) CLASS DBServer
+        LOCAL oError AS USUAL
+
+        BEGIN SEQUENCE
+        RETURN (wWorkarea)-&gt;(VODBSkip(...))
+        RECOVER USING oError
+        SELF:Error(oError,#Skip)
+        RETURN FALSE
+        END SEQUENCE
+      </code>
+    </example>
+  </DbServer.Error>
+
+  <DbServer.ErrorInfo>
+    <summary>返回内部 ErrorInfo 对象，无论上次操作是否产生错误。</summary>
+    <value>内部 ErrorInfo 对象，无论上次操作是否产生错误。</value>
+  </DbServer.ErrorInfo>
+
+  <DbServer.Eval>
+    <summary>
+      为每个匹配范围和条件的记录评估代码块。如果方法没有传递条件或范围，则受一般服务范围的约束。
+    </summary>
+    <param name="cbBlock">为每个处理的记录执行的代码块。</param>
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      无论成功与否，完成后发送 NotifyFileChange 消息。
+      成功完成后，当前记录将是最后一个文件记录，DBServer:EOF 将为 TRUE。
+    </remarks>
+  </DbServer.Eval>
+
+  <DbServer.FCount>
+    <summary>
+      服务中的字段数。
+    </summary>
+    <value>服务中的字段数。</value>
+    <example>
+      此示例使用 FCount 作为处理当前工作区字段列表的 FOR 循环的上边界：
+      <code language="X#">
+        CLASS Sales INHERIT DBServer
+        ...
+        FUNCTION ListFields()
+        LOCAL nField AS SHORTINT, oDBSales AS Sales
+        oDBSales := Sales{}
+
+        FOR nField := 1 UPTO oDBSales:FCount
+        ? oDBSales:FieldName(nField)
+        NEXT
+      </code>
+    </example>
+  </DbServer.FCount>
+
+  <DbServer.FieldDesc>
+    <summary>这将返回一个空数组。对于在 DbServer 编辑器中绘制的服务，这将返回 DataFields 数组。</summary>
+    <value>一个空数组。对于在 DbServer 编辑器中绘制的服务，这将返回 DataFields 数组。</value>
+  </DbServer.FieldDesc>
+
+  <DbServer.FieldGet>
+    <summary>
+      获取由其位置标识的字段的内容。
+    </summary>
+    <param name="uField">表示所需字段的名称、编号或符号。</param>
+    <returns>
+      指定字段的值。如果<paramref name="nFieldPos" />不对应当前数据服务中任何字段的位置，DBServer:FieldGet() 返回 NIL。
+    </returns>
+    <remarks>
+      DBServer:FieldGet() 使用字段在数据库文件结构中的位置而不是字段名称来检索字段的值。在通用数据库服务函数中，这允许在不使用宏操作符的情况下检索字段值。
+      <note type="tip">
+        DBServer:FieldGet() 可以与 BLOB 字段(即与 BLOB 文件关联的备注字段)一起使用，前提是字段长度不超过64KB。
+        对于超过64KB的 BLOB 字段，请改用 DBServer:BLOBGet()。
+      </note>
+    </remarks>
+    <example>
+      此示例将 DBServer:FieldGet() 与使用宏操作符检索字段值的功能等效代码进行比较：
+      <code language="X#">
+        LOCAL nFieldPos := 1, FName, FVal
+        LOCAL oDBCust := Customer{} AS DBServer
+        // 使用宏操作符获取字段值
+        FName := oDBCust:FieldName(nFieldPos)
+        FVal := &amp;FName
+        // 使用FieldGet()获取字段值
+        FVal := oDBCust:FieldGet(nFieldPos)
+        FVal := oDBCust:FieldGet( #Fname )
+        Fval := oDBCust:FieldGet( "Fname" )
+      </code>
+    </example>
+  </DbServer.FieldGet>
+
+  <DbServer.FieldGetBytes>
+    <summary>
+      直接从工作区缓冲区读取字节数组。
+    </summary>
+    <param name="uField">
+      当前工作区中数据库文件结构中字段的位置。
+    </param>
+    <returns>
+      字段的值。如果nFieldPos不对应数据库文件中任何字段的位置，FieldGetBytes() 将生成错误。
+    </returns>
+  </DbServer.FieldGetBytes>
+
+  <DbServer.FieldGetFormatted>
+    <summary>
+      根据其 FieldSpec 对象的格式规范返回指定字段的内容。
+    </summary>
+    <param name="uField">表示所需字段的名称、编号或符号。</param>
+  </DbServer.FieldGetFormatted>
+
+  <DbServer.FieldHyperLabel>
+    <summary>
+      返回指定字段的超链接标签。
+    </summary>
+    <param name="uField">表示所需字段的名称、编号或符号。</param>
+    <returns>
+      字段超链接标签或NIL。
+    </returns>
+    <remarks>
+      通过访问超链接标签，可以访问注释字段的各种属性：
+      <code language="X#">
+        oDBServer:FieldHyperLabel(#LastName):Caption
+        oDBServer:FieldHyperLabel(#LastName):Description
+        oDBServer:FieldHyperLabel(#LastName):HelpContext
+      </code>
+    </remarks>
+  </DbServer.FieldHyperLabel>
+
+  <DbServer.FieldInfo>
+    <summary>
+      返回并可选更改有关字段的信息。
+    </summary>
+    <param name="kFieldInfoType">
+      指定信息类型。常量在下面的备注部分中描述。请注意，并非所有常量都支持所有 RDD。
+    </param>
+    <param name="uField">
+      表示字段在数据库文件结构中的位置的名称、编号或符号，或指向 BLOB 的数字指针。
+      仅某些设计用于与 BLOB 字段一起使用的 <paramref name="kFieldInfoType" /> 常量(在下面的常量部分中均有说明)允许使用指针指定字段；
+      所有其他常量都要求按位置指定字段。
+    </param>
+    <param name="uFieldVal">
+      如果指定，此参数用于更改设置的值。数据类型(以及是否可以指定 <paramref name="uNewSetting" />)，
+      取决于 <paramref name="kInfoType" /> 常量，并在下面的常量部分中记录。
+    </param>
+    <returns>
+      如果未指定 <paramref name="uNewSetting" />，DBServer:FieldInfo() 返回当前设置。
+      如果指定了 <paramref name="uNewSetting" />，则返回先前的设置。
+    </returns>
+    <remarks>
+      <include file="RTComments.xml" path="Comments/DBS_Constants/*" />
+      DBServer:FieldInfo() 检索有关字段(列)状态的信息。
+      可用的字段信息由 RDD 定义。在 DBF 模型中，这仅限于存储在 DBF 文件结构中的信息(即名称、长度、小数位数和数据类型)以及可以在运行时更改的字段别名。
+      为了支持其他数据库模型(例如基于字典的数据库)的 RDD，这些模型存储有关每个字段或列的更多信息，
+      X# RDD API 已得到增强。DBServer:FieldInfo() 方法设计为允许由第三方 RDD 开发人员定义的其他 <paramref name="kInfoType" /> 值。
+    </remarks>
+    <example>
+      以下示例使用 DBServer:FieldInfo() 检索字段信息：
+      <code language="X#">
+        METHOD DBOutStruct() CLASS Customer
+        LOCAL aStruct AS ARRAY
+        LOCAL wFcount AS DWORD
+        LOCAL i AS DWORD
+
+        aStruct := {}
+        wFcount := FCount()
+
+        FOR i := 1 UPTO wFcount
+        AAdd(aStruct,;
+        {SELF:FieldInfo(DBS_NAME, i),;
+        SELF:FieldInfo(DBS_TYPE, i),;
+        SELF:FieldInfo(DBS_LEN, i),;
+        SELF:FieldInfo(DBS_DEC, i)})
+        NEXT
+
+        RETURN aStruct
+      </code>
+      下一个示例说明了使用第三个参数为字段名称分配别名：
+      <code language="X#">
+        METHOD Start() CLASS App
+        LOCAL oDBDate AS DBServer
+        oDBDate := DateBook{}
+        oDBDate:FieldInfo(DBS_ALIAS,;
+        oDBDate:FieldPos("Name"),;
+        "NewName")
+        ? Name // 显示名称字段
+        ? NewName // 也显示名称字段
+        ...
+      </code>
+    </example>
+  </DbServer.FieldInfo>
+
+  <DbServer.FieldName>
+    <summary>
+      以字符串形式返回指定字段的名称。
+    </summary>
+    <param name="nFieldPosition">引用字段的编号。</param>
+    <remarks>
+      字段的超级标签中也包含一个名称，这两个名称在 DBServer 编辑器生成的代码中是相同的。
+    </remarks>
+  </DbServer.FieldName>
+
+  <DbServer.FieldPos>
+    <summary>
+      返回数据服务中指定字段的位置，作为从1开始的数字。
+    </summary>
+    <param name="cFieldName">所需字段的名称或符号。</param>
+    <returns>
+      数据服务结构中字段的位置，如果未找到则为零。
+    </returns>
+  </DbServer.FieldPos>
+
+  <DbServer.FieldPut>
+    <summary>
+      设置由其位置标识的字段的值。
+    </summary>
+    <param name="uField">表示所需字段的名称、编号或符号。</param>
+    <param name="uValue">要分配给字段的值。此表达式的数据类型必须与字段的数据类型匹配。</param>
+    <returns>
+      分配给字段的值。如果 <paramref name="nFieldPos" /> 不对应数据服务中任何字段的位置，DBServer:FieldPut() 返回 NIL。
+    </returns>
+    <remarks>
+      DBServer:FieldPut() 允许您使用字段在数据库文件结构中的位置而不是字段名称来设置字段的值。在通用数据库服务函数中，
+      这允许在不使用宏操作符的情况下设置字段值。
+      <note type="tip">
+        DBServer:FieldPut() 可以与 BLOB 字段(即与BLOB文件关联的备注字段)一起使用，前提是字段长度不超过64KB。
+      </note>
+      共享模式：对于共享数据库，此函数需要记录锁。
+      有关锁定的更多信息，请参阅《程序员指南》中的“并发控制”章节。
+    </remarks>
+    <example>
+      此示例将 DBServer:FieldPut() 与使用宏操作符设置字段值的功能等效代码进行比较：
+      <code language="X#">
+        LOCAL nFieldPos := 1, FName, FVal
+        LOCAL oDBCust := Customer{} AS DBServer
+        // 使用宏操作符设置字段值
+        FName := oDBCust:FieldName(nFieldPos)
+        oDBCust:&amp;FName := FVal
+        // 使用FieldPut()设置字段值示例：
+        oDBCust:FieldPut(nFieldPos, FVal)
+        oDBCust:FieldPut( #SSN, SELF:oDCsleSSN:Value )
+        oDBCust:FieldPut( "SSN", SELF:cSSN )
+      </code>
+    </example>
+  </DbServer.FieldPut>
+
+  <DbServer.FieldPutBytes>
+    <summary>将字节数组直接写入工作区缓冲区。</summary>
+    <param name="uField">数据库文件结构中字段的位置。</param>
+    <param name="bValue">要写入字段的值</param>
+  </DbServer.FieldPutBytes>
+
+  <DbServer.FieldSpec>
+    <summary>
+      返回指定字段中的 FieldSpec 对象。
+    </summary>
+    <param name="uField">表示所需字段的名称、编号或符号。</param>
+  </DbServer.FieldSpec>
+
+  <DbServer.FieldStatus>
+    <summary>
+      返回上次操作后的字段状态。
+    </summary>
+    <param name="uField">表示所需字段的名称、编号或符号。</param>
+    <returns>
+      如果发生了任何错误条件或验证失败，将返回一个 HyperLabel 对象，否则如果一切正常、验证通过或未进行验证尝试，将返回 NIL。
+    </returns>
+    <remarks>
+      DBServer:FieldStatus() 可用于了解有关验证失败的更多信息。
+      通过访问此超标签的属性，您不仅可以检索描述，还可以检索有关引发的条件的上下文相关帮助：
+      <code language="X#">
+        oDBServer:FieldStatus(#LastName):Caption
+        oDBServer:FieldStatus(#LastName):Description
+        oDBServer:FieldStatus(#LastName):HelpContext
+      </code>
+    </remarks>
+  </DbServer.FieldStatus>
+
+  <DbServer.FieldSym>
+    <summary>
+      返回指定字段的名称。
+    </summary>
+    <param name="uField">所需字段的数字。</param>
+    <remarks>
+      字段的超级标签中也包含一个名称，这两个名称在 DBServer 编辑器生成的代码中是相同的。
+    </remarks>
+  </DbServer.FieldSym>
+
+  <DbServer.FieldValidate>
+    <summary>
+      执行定义在字段的 FieldSpec 对象中的所有验证(例如，必需、最大和最小位数、最大和最小值、验证规则)并返回测试结果。
+    </summary>
+    <param name="uField">表示所需字段的名称、编号或符号。</param>
+    <param name="uValue">
+      要验证的值。其数据类型应与指定字段的数据类型兼容。如果类型无法转换为适当的数据类型，则视为验证失败。
+      有关数据类型转换规则，请参阅《程序员指南》；通常，任何合理的转换都会进行，包括将类似“TRUE”和“T”的字符串转换为逻辑值 TRUE。
+    </param>
+    <returns>
+      如果任何验证失败，则返回 FALSE；否则返回 TRUE。
+    </returns>
+  </DbServer.FieldValidate>
+
+  <DbServer.FileSpec>
+    <summary>
+      定义 DBF 文件路径和文件名的 FileSpec 对象。
+    </summary>
+    <value>定义 DBF 文件路径和文件名的 FileSpec 对象。</value>
+    <remarks>
+      定义 DBF 文件路径和文件名的 FileSpec 对象。如果 DBServer 最初是使用 FileSpec 对象实例化的，则这是原始的 FileSpec 对象;
+      如果服务最初是使用字符串格式的文件名实例化的，则会创建一个 FileSpec 对象。请注意，文件规范的路径与最初输入的路径完全相同。
+      要在文件规范中存储文件的完整路径，请使用 FileSpec:Find() 方法。
+    </remarks>
+    <example>
+      此示例使用 FileSpec 对象打开数据服务，然后基于服务的 FileSpec 属性检索信息：
+      <code language="X#">
+        oFSSales := FileSpec{"c:\data\cust\sales.dbf"}
+        oDBSales := DBServer{oFSSales}
+        ? oDBSales:FileSpec:Drive // C:
+        ? oDBSales:FileSpec:Extension // .DBF
+      </code>
+    </example>
+  </DbServer.FileSpec>
+
+  <DbServer.Filter>
+    <summary>
+      表示当前活动过滤器的字符串。
+    </summary>
+    <value>表示当前活动过滤器的字符串。</value>
+    <remarks>
+      表示当前活动过滤器的字符串。如果未设置过滤器，则返回 NULL_STRING。将字符串或代码块分配给 DBServer:Filter 等同于调用 DBSetFilter()。
+    </remarks>
+    <example>
+      此示例显示当前的过滤条件。此外，如果您已经有现有的过滤条件，您可能希望首先检索其:Filter 值，然后如果新的 SetFilter() 条件失败，
+      您可以将其重置为先前的过滤表达式：
+      <code language="X#">
+        CLASS Sales INHERIT DBServer
+        ...
+        FUNCTION IgnoreDeleted()
+        LOCAL oDBSales AS Sales
+        oDBSales := Sales{}
+        oDBSales:SetFilter(!oDBSales:Deleted)
+        oDBSales:GoTop() // 移动指针以调用过滤器
+        ? oDBSales:Filter // !oDBSales:Deleted
+        .
+        . &lt;处理记录&gt;
+        .
+        oDBSales:ClearFilter()
+        ? oDBSales:Filter // NULL_STRING
+      </code>
+    </example>
+  </DbServer.Filter>
+
+  <DbServer.FLock>
+    <summary>
+      锁定此服务使用的表以进行独占访问。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+  </DbServer.FLock>
+
+  <DbServer.ForBlock>
+    <summary>
+      “一般服务范围”的“For block”组件，如果在没有显式范围的情况下调用，则会影响多个批量处理方法。
+    </summary>
+    <value>
+      “一般服务范围”的“FOR block”组件，如果在没有显式范围的情况下调用，则会影响多个批量处理方法。
+    </value>
+    <remarks>
+      “一般服务范围”的“For block”组件，如果在没有显式范围的情况下调用，则会影响多个批量处理方法。
+      For block 可以指定为代码块或字符串。此访问始终返回代码块。
+      指定 For block 使方法处理所有记录，其中 For block 评估为 TRUE，当然受其他范围设置的限制。
+      指定 For block 使范围在其他情况下默认为 ALL，在这些情况下，它是“当前记录”，除非还指定了 WhileBlock，在这种情况下，它设置为 REST。
+    </remarks>
+    <example>
+      此示例将代码块分配给 ForBlock 以限制召回操作的范围：
+      <code language="X#">
+        // RECALL FOR Last == "Smith" REST
+        oDB:ForBlock := {|| Last == "Smith"}
+        oDB:Scope := DBSCOPEREST
+        oDB:Recall()
+        oDB:ClearScope()
+      </code>
+    </example>
+  </DbServer.ForBlock>
+
+  <DbServer.Found>
+    <summary>
+      指示上一次搜索操作是否成功的逻辑值。
+    </summary>
+    <value>指示上一次搜索操作是否成功的逻辑值。</value>
+    <remarks>
+      指示上一次搜索操作是否成功的逻辑值。注意，这是旧技术，主要用于向后兼容。通常，如果您正在
+      SEEK / FOUND 场景中，您可以简单地使用 IF oDB:Seek(…) 来检查 seek 是否成功 (FOUND) 或否。
+    </remarks>
+    <example>
+      此示例说明了记录移动操作后 Found 的行为：
+      <code language="X#">
+        CLASS Sales INHERIT DBServer
+        ...
+
+        METHOD Init() CLASS Sales
+        ...
+        SELF:SetIndex("sales")
+        ...
+        FUNCTION FoundDemo()
+        LOCAL oDBSales AS Sales
+        oDBSales := Sales{}
+        oDBSales:Seek("1000")
+        ? DBSales:Found // 结果：FALSE
+        oDBSales:Seek("100")
+        ? DBSales:Found // 结果：TRUE
+        DBSales:Skip()
+        ? DBSales:Found // 结果：FALSE
+      </code>
+    </example>
+  </DbServer.Found>
+
+  <DbServer.GetArray>
+    <summary>
+      从服务中的字段检索值数组，受当前活动选择的约束(如果有)。
+    </summary>
+    <param name="nMaxRows">应检索的最大行数。如果省略，则最多检索100行。</param>
+    <param name="uField1">要检索的字段的名称、编号或符号。如果省略，则检索第一个字段。</param>
+    <param name="uSearchValue">在当前控制顺序下要搜索的值。系统执行 Seek() 操作，然后从那里开始加载数组。</param>
+    <returns>
+      在指定字段中找到的值数组，按顺序移动，直到指定的最大行数或文件结束。如果选择处于活动状态，则方法仅包括该选择中的记录。值在当前控制顺序下检索(如果有)。
+      请注意，该方法在开始填充数组之前不会重新定位到开头。要么提供起始值，要么在使用该方法之前显式定位服务。(这允许增量读取，分段构建数组。)
+    </returns>
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      完成后发送 NotifyRecordChange 消息，并将服务定位在使用的最后一条记录或文件结束(最后一条文件记录)。
+      此方法的一种用途是填充用户界面中的验证列表。
+    </remarks>
+    <example>
+      以下示例填充产品名称数组，用于作为验证值，从指定的产品编号开始：
+      <code language="X#">
+        oDB := DBServer{"products",#Shared,#ReadOnly}
+        oDB:SetIndex("prodno")
+        aProducts := oDB:GetArray(100,#ProdName, 22750)
+        oDB:Close()
+      </code>
+    </example>
+  </DbServer.GetArray>
+
+  <DbServer.GetLocate>
+    <summary>
+      检索当前 LOCATE 条件的代码块，如果未设置代码块，则返回 NIL。
+    </summary>
+    <remarks>
+      DBServer:GetLocate() 返回 Locate() 方法中使用的 FOR 条件代码块。
+    </remarks>
+  </DbServer.GetLocate>
+
+  <DbServer.GetLookupTable>
+    <summary>
+      从服务中的两个字段检索两列值数组，受当前活动选择的约束(如果有)。
+    </summary>
+    <param name="nMaxRows">应检索的最大行数。如果省略，则最多检索100行。</param>
+    <param name="uField1">要检索的第一个字段的名称、编号或符号。如果省略，则检索第一个字段。</param>
+    <param name="uField2">要检索的第二个字段的名称、编号或符号。如果省略，则检索第二个字段。</param>
+    <param name="uSearchValue">在当前控制顺序下要搜索的值。系统执行 Seek() 操作，然后从那里开始加载数组。</param>
+    <returns>
+      该方法返回在指定字段中找到的两列值数组，按顺序移动，直到指定的最大行数或文件结束。如果选择处于活动状态，则方法仅包括该选择中的记录。值在当前控制顺序下检索(如果有)。
+      请注意，该方法在开始填充数组之前不会重新定位到开头。要么提供起始值，要么在使用该方法之前显式定位服务。(这允许增量读取，分段构建数组。)
+    </returns>
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      完成后发送 NotifyRecordChange 消息，并将服务定位在使用的最后一条记录或文件结束(最后一条文件记录)。
+      此方法的一种用途是填充用户界面中的翻译列表。生成的数组可以在 ATranslate() 中使用。
+    </remarks>
+    <example>
+      以下示例构建查找表，例如将产品代码翻译为产品名称，反之亦然，从指定的产品编号开始：
+      <code language="X#">
+        oDB := DBServer{"products",#Shared,#ReadOnly}
+        oDB:SetIndex("prodno")
+        aProducts := oDB:GetLookupTable(500,#ProdNo,#ProdName, 22750)
+        oDB:Close()
+      </code>
+    </example>
+  </DbServer.GetLookupTable>
+
+  <DbServer.GoBottom>
+    <summary>
+      将数据服务定位在最后一条记录。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      如果成功，发送 NotifyGoBottom 消息。
+      如果 DBServer:RecNo 大于 DBServer:LastRec，DBServer 将定位在最后一条记录，DBServer:EOF 将为 TRUE。
+    </remarks>
+  </DbServer.GoBottom>
+
+  <DbServer.GoTo>
+    <summary>
+      将数据服务定位在指定的记录号。
+    </summary>
+    <param name="nRecordNumber">要定位的记录号。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      如果成功，发送 NotifyRecordChange 消息。
+    </remarks>
+  </DbServer.GoTo>
+
+  <DbServer.GoTop>
+    <summary>
+      将数据服务定位在第一条记录。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      如果成功，发送 NotifyGoTop 消息。
+    </remarks>
+  </DbServer.GoTop>
+
+  <DbServer.Header>
+    <summary>
+      表示数据库文件头长度的数值。
+    </summary>
+    <value>一个表示数据库文件头长度的数值。</value>
+    <example>
+      以下示例使用 Header 定义一个访问方法，以返回数据服务的大小：
+      <code language="X#">
+        CLASS Sales INHERIT DBServer
+        ...
+
+        ACCESS Size CLASS Sales
+        RETURN (SELF:RecSize * SELF:RecCount) + ;
+        SELF:Header + 1
+      </code>
+    </example>
+  </DbServer.Header>
+
+  <DbServer.IndexExt>
+    <summary>
+      表示基于当前链接的数据库驱动程序的默认索引扩展名的字符串(例如，DBFNTX 驱动程序的“.NTX”)。
+    </summary>
+    <value>一个字符串，表示当前链接的数据库驱动程序的默认索引扩展名(例如，DBFNTX 驱动程序的“.NTX”)。</value>
+  </DbServer.IndexExt>
+
+  <DbServer.IndexKey>
+    <summary>
+      返回指定单序索引的键表达式。
+    </summary>
+    <param name="uOrder">order 的名称，或 order 在 order 列表中的序数位置。值为 0 表示控制索引，而不考虑其在列表中的实际位置。</param>
+    <returns>
+      指定索引的键表达式作为字符串；如果没有相应的 order 或 order 名称不唯一，则方法返回 NULL_STRING。
+    </returns>
+    <remarks>
+      键表达式实际上属于 order 而不是索引文件。当使用单序索引或 order 名称唯一标识 order 时，使用 IndexKey() 请求索引的键信息是可行的。
+      但不推荐这种做法，因为在使用不同驱动程序时请求可能会失败。
+    </remarks>
+  </DbServer.IndexKey>
+
+  <DbServer.IndexList>
+    <summary>这将返回一个空数组。对于在 DbServer 编辑器中绘制的服务，这将返回索引数组。</summary>
+    <value>一个空数组。对于在 DbServer 编辑器中绘制的服务，这将返回索引数组。</value>
+  </DbServer.IndexList>
+
+  <DbServer.IndexOrd>
+    <summary>
+      返回 order 列表中控制 order 的序数位置。(类似于 IndexOrd() 函数。)
+    </summary>
+    <returns>
+      一个整数值。返回的值等于当前工作区中打开的索引列表中控制索引的位置。值为0表示没有控制索引，记录按自然顺序访问。
+    </returns>
+  </DbServer.IndexOrd>
+
+  <DbServer.Info>
+    <summary>
+      返回并可选地更改有关数据服务的信息。
+    </summary>
+    <param name="kInfoType">
+      指定信息类型。
+      <include file="RTComments.xml" path="Comments/RddInfoParam/*" />
+    </param>
+    <param name="uInfo">
+      如果指定，此参数用于更改设置的值。数据类型(以及是否可以指定 <paramref name="uInfo" />)，
+      取决于 <paramref name="kInfoType" /> 常量，并在下面的常量部分中记录。
+    </param>
+    <returns>
+      如果未指定 <paramref name="uInfo" />，DBServer:RDDInfo() 返回当前设置。
+      如果指定了 <paramref name="uInfo" />，则返回先前的设置。
+    </returns>
+    <remarks>
+      <include file="RTComments.xml" path="Comments/DBI_Constants/*" />
+    </remarks>
+    <example>
+      以下示例返回数据服务信息：
+      <code language="X#">
+        // 与 oDBServer:Header 相同
+        oDBServer:Info(DBI_GETHEADERSIZE)
+        // 与 oDBServer:LUpdate 相同
+        oDBServer:Info(DBI_LASTUPDATE)
+        // 与 oDBServer:RecSize 相同
+        oDBServer:Info(DBI_GETRECSIZE)
+        // 获取完整路径
+        oDBServer:Info(DBI_FULLPATH)
+      </code>
+    </example>
+  </DbServer.Info>
+
+  <DbServer.Join>
+    <summary>
+      将此 DBServer 对象与另一个 DBServer 对象连接，并将结果放入指定的文件中。
+    </summary>
+    <param name="oDBSource">要与此 DBServer 对象连接的“其他” DBServer 对象。可以指定为 DBServer 对象，或作为在工作区中打开的表的别名。</param>
+    <param name="oFSTarget">一个字符串或文件规范对象，指定连接操作结果放置的文件。</param>
+    <param name="aFieldList">要包含在连接操作中的字段数组。</param>
+    <param name="cbForBlock">在范围内对每条记录进行评估的条件；如果为 TRUE，则记录包含在处理中。它提供了与记录处理命令的 FOR 子句相同的功能。</param>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      如果成功，发送 NotifyRecordChange 消息。
+    </remarks>
+  </DbServer.Join>
+
+  <DbServer.LastRec>
+    <summary>
+      当前数据库文件中的记录数。
+    </summary>
+    <value>当前数据库文件中的记录数。</value>
+    <remarks>
+      当前数据库文件中的记录数。过滤命令如 SET FILTER 或 SET DELETED 对返回值没有影响。
+    </remarks>
+    <example>
+      此示例使用 LastRec 定义一个访问方法以返回数据服务的大小：
+      <code language="X#">
+        CLASS Sales INHERIT DBServer
+        ...
+
+        ACCESS Size CLASS Sales
+        RETURN (SELF:RecSize * SELF:LastRec) + SELF:Header + 1
+      </code>
+    </example>
+  </DbServer.LastRec>
+
+  <DbServer.Locate>
+    <summary>
+      顺序搜索匹配条件的记录。如果方法没有传递条件或范围，则受一般服务范围的约束。
+    </summary>
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <returns>
+      如果找到匹配条件的记录，则返回 TRUE；如果未找到匹配项或操作因其他原因失败，则返回 FALSE。
+      之后，可以使用 Found 和 Status 访问方法来确定具体发生了什么。
+    </returns>
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      无论成功与否，操作完成后发送 NotifyRecordChange 消息。
+      如果未找到匹配项，当前记录将是最后一条文件记录，DBServer:EOF 将为 TRUE。
+    </remarks>
+  </DbServer.Locate>
+
+  <DbServer.LockCurrentRecord>
+    <summary>
+      锁定当前记录。此方法与调用 RLock() 并将当前记录号作为参数相同。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+  </DbServer.LockCurrentRecord>
+
+  <DbServer.LockSelection>
+    <summary>
+      锁定当前活动选择中的所有记录。
+    </summary>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      如果选择未激活，则在操作之前发送 NotifyIntentToMove 消息，并且功能与 FLock() 相同。
+    </remarks>
+    <example>
+      在 customer 和 order 服务之间设置选择性关系。
+      应用程序在“游标稳定性”模式下运行，这意味着当前活动记录保持锁定，从而保护其免受外部影响。
+      当 customer 记录被锁定时，与该 customer 对应的 order 记录也被锁定：
+      <code language="X#">
+        oDBCust := DBServer{"customer"}
+        oDBOrder := DBServer{"order"}
+        oDBOrder:SetIndex{("ORDCSTNO")
+        oDBCust:SetSelectiveRelation(oDBOrder,#CustNo)
+        ...
+        METHOD Skip() CLASS CustomerWindow
+        oDBCust:Skip() // 重新定位order服务
+        oDBCust:RLock() // 锁定customer记录
+        oDBOrder:LockSelection() // 锁定order记录
+      </code>
+    </example>
+  </DbServer.LockSelection>
+
+  <DbServer.Lupdate>
+    <summary>
+      服务使用的 DBF 文件的最后修改日期。
+    </summary>
+    <value>服务使用的 DBF 文件的最后修改日期。</value>
+  </DbServer.Lupdate>
+
+  <DbServer.MemoExt>
+    <summary>这将返回文件的备注扩展名(如果有)。例如 DBT 或 FPT。</summary>
+    <value>文件的备注扩展名(如果有)。</value>
+  </DbServer.MemoExt>
+
+  <DbServer.Name>
+    <summary>这将返回 DbServer 的名称。</summary>
+    <value>DbServer 的名称</value>
+  </DbServer.Name>
+
+  <DbServer.NoIVarGet>
+    <summary>
+      提供一个通用错误拦截，当对不存在的导出实例变量进行访问引用时(在任何类中)自动调用。在 DBServer 类中，它用于实现虚拟字段变量。
+      重要！NoIVarGet()不应直接调用；它由系统调用以处理无效引用。
+    </summary>
+    <param name="symFieldName">被引用的变量的符号名称。在 DBServer 类的标准用法中，这是一个字段名称。</param>
+    <remarks>
+      对于 DBServer，此方法用于拦截对字段名称作为导出变量的引用，这通常是不允许的。
+      如果字段名称有效，它会对相应的字段名称执行 FieldGet()，实际上将数据库字段转换为每个 DBServer对象的访问方法。
+      有关 NoIVarGet() 的更多信息，请参见《程序员指南》中的“对象、类和方法”。
+    </remarks>
+  </DbServer.NoIVarGet>
+
+  <DbServer.NoIVarPut>
+    <summary>
+      提供一个通用错误拦截，当对不存在的导出实例变量进行赋值引用时(在任何类中)自动调用。在 DBServer 类中，它用于实现虚拟字段变量。
+      重要！NoIVarPut() 不应直接调用；它由系统调用以处理无效引用。
+    </summary>
+    <param name="symFieldName">被引用的变量的符号名称。在 DBServer 类的标准用法中，这是一个字段名称。</param>
+    <param name="uValue">要分配给字段的值。此值的数据类型必须与字段的数据类型匹配。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      如果变量引用的是服务的有效字段，并且赋值成功，则发送 NotifyFieldChange 消息。
+      对于 DBServer，此方法用于拦截对字段名称作为导出变量的引用，这通常是不允许的。
+      如果字段名称有效，它会对相应的字段名称执行 FieldPut()，并使用传递的值，实际上将数据库字段转换为每个 DBServer 对象的赋值方法。
+      有关 NoIVarGet() 的更多信息，请参见《程序员指南》中的“对象、类和方法”。
+    </remarks>
+  </DbServer.NoIVarPut>
+
+  <DbServer.Notify>
+    <summary>
+      一个事件处理程序，用于响应此服务的方法中发生的事件，或与此服务以某种方式链接的其他服务中的事件。标准实现会通知服务的所有客户端该事件。
+      重要！此方法由数据服务的各种操作方法自动调用，通常不应由应用程序代码调用。
+    </summary>
+    <returns>
+      SELF，除非为<paramref name="kNotifyName" />指定了 NOTIFYINTENTTOMOVE。
+      在这种情况下，如果成功，返回值为 TRUE；否则为 FALSE。
+    </returns>
+    <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
+  </DbServer.Notify>
+
+  <DbServer.OleExt>
+    <summary>这将返回文件的OLE扩展名(如果有)。例如 DFL。</summary>
+    <value>文件的 OLE 扩展名(如果有)。</value>
+    <remarks>X# RDD 系统不支持 DFL 文件。</remarks>
+  </DbServer.OleExt>
+
+  <DbServer.OrderBottomScope>
+    <summary>
+      表示将在控制 order 的当前范围内包含的键值范围的底部边界的记录的键值。
+    </summary>
+    <value>表示将在控制 order 的当前范围内包含的键值范围的底部边界的记录的键值。</value>
+  </DbServer.OrderBottomScope>
+
+  <DbServer.OrderArgs>
+    <param name="uOrder">
+      order 的名称或表示其在 order 列表中的位置的数字。使用 order 名称是首选方法，因为使用多个 order 文件时，位置可能难以确定。
+      如果省略或为 NIL，则假定为控制 order。
+      指定无效值将引发运行时错误。
+    </param>
+    <param name="cIndex">
+      索引文件的名称，包括可选的驱动器和目录(不应指定扩展名)。
+      使用此参数和 <paramref name="uOrder" /> 消除当不同索引文件中有两个或多个同名 order 时的歧义。
+      如果当前进程未打开 <paramref name="cIndex" />，则会引发运行时错误。
+    </param>
+    <param name="oFSIndex">
+      一个字符串或文件规范对象，指定索引文件的名称，包括可选的驱动器和目录(不应指定扩展名)。
+      使用此参数和 <paramref name="cOrder" /> 消除当不同索引文件中有两个或多个同名 order 时的歧义。
+      如果当前进程未打开 <paramref name="oFSIndex" /> 则会引发运行时错误。
+    </param>
+  </DbServer.OrderArgs>
+
+  <DbServer.OrderDescend>
+    <summary>
+      返回并可选地更改 order 的降序标志。
+    </summary>
+    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
+    <param name="lNew">TRUE 动态打开 order 的降序标志，结果为降序。FALSE 动态关闭标志，结果为升序。</param>
+    <returns>
+      如果未指定 <paramref name="lNew" />，DBServer:OrderDescend() 返回当前设置。
+      如果指定了 <paramref name="lNewDescend" />，则返回先前的设置。
+    </returns>
+    <remarks>
+      DBServer:OrderDescend() 仅在运行时更改升序/降序标志——它不会更改实际索引文件中存储的降序标志。
+      <note type="tip">
+        如果您使用 DbServer:OrderDescend() 和范围，您需要交换顶部和底部范围值！
+        <code language="X#">
+          oServer:OrderScope (TOPSCOPE, cFrom)
+          oServer:OrderScope (BOTTOMSCOPE, cTo)
+          oServer:OrderDescend(,, TRUE)
+          oServer:OrderScope (TOPSCOPE, cTo)
+          oServer:OrderScope (BOTTOMSCOPE, cFrom)
+        </code>
+      </note>
+    </remarks>
+    <example>
+      以下示例说明了 DBServer:OrderDescend()；每个 order 都可以是升序和降序：
+      <code language="X#">
+        LOCAL oDBCust AS DBServer
+        oDBCust := Customer{}
+        oDBCust:CreateOrder("Last", "customer", "oDBCust:LastName")
+        oDBCust:SetOrderCondition(,,,,,,,,,, TRUE)
+        oDBCust:CreateOrder("First", "customer", "oDBCust:FirstName")
+        oDBCust:SetOrder("Last") // Last最初是按升序创建的
+        oDBCust:OrderDescend(,, TRUE) // 将其交换为降序
+        // Last现在将按降序处理
+        oDBCust:SetOrder("First") // First最初是按降序创建的
+        oDBCust:OrderDescend(,, FALSE) // 将其交换为升序
+        // First现在将按升序处理
+      </code>
+    </example>
+  </DbServer.OrderDescend>
+
+  <DbServer.OrderInfo>
+    <summary>
+      返回并可选地更改有关 order 和索引文件的信息。
+    </summary>
+    <param name="kOrderInfoType">
+      指定信息类型。常量列在下面。请注意，并非所有常量都支持所有 RDD。
+      这应该是备注部分中列出的 DBOI_ 常量之一。
+    </param>
+    <param name="oFSIndex">
+      一个字符串或文件规范对象，指定索引文件的名称，包括可选的驱动器和目录(不应指定扩展名)。
+      使用此参数和 <paramref name="cOrder" /> 消除当不同索引文件中有两个或多个同名order时的歧义。
+      如果当前进程未打开 <paramref name="oFSIndex" />，则会引发运行时错误。
+    </param>
+    <param name="uOrder">
+      您想要获取信息的 order 名称或表示其在 order 列表中的位置的数字(对于单序索引文件，order 名称是八个字母的索引文件名)。
+      使用 order 名称是首选方法，因为使用多个 order 文件时，位置可能难以确定。无效值将被忽略。
+      如果未指定索引文件或 order，则假定为控制 order。
+    </param>
+    <param name="uOrdVal">
+      如果指定，此参数用于更改设置的值。数据类型(以及是否可以指定 <paramref name="uOrdVal" />)，
+      取决于 <paramref name="kInfoType" /> 常量，并在下面的常量部分中记录。
+    </param>
+    <returns>
+      如果未指定 <paramref name="uNewSetting" />，DBServer:OrderInfo() 返回当前设置。
+      如果指定了 <paramref name="uNewSetting" />，则返回先前的设置。
+    </returns>
+    <remarks>
+      <include file="RTComments.xml" path="Comments/DBOI_Constants/*" />
+    </remarks>
+    <example>
+      此示例使用 DBOI_NAME 保存当前控制 order。更改为新控制 order后，它使用保存的值恢复原始 order：
+      <code language="X#">
+        oDBCust := Customer{}
+        oDBCust:SetIndex("name")
+        oDBCust:SetIndex("serial")
+        cOrder := oDBCust:OrderInfo(DBOI_NAME) // name
+        oDBCust:SetOrder("serial")
+        ? oDBCust:OrderInfo(DBOI_NAME) // serial
+        oDBCust:SetOrder(cOrder)
+        ? oDBCust:OrderInfo(DBOI_NAME) // name
+      </code>
+      此示例返回两个不同数据服务的默认索引文件扩展名(使用 DBOI_INDEXEXT)：
+      <code language="X#">
+        oDBSales := Sales{}
+        oDBCust := Customer{}
+        ? oDBSales:OrderInfo(DBOI_INDEXEXT) // .CDX
+        ? oDBCust:OrderInfo(DBOI_INDEXEXT) // .NTX
+      </code>
+      在此示例中，DBServer:OrderInfo(DBOI_INDEXEXT) 检查 CUSTOMER 索引文件的存在，而与数据服务关联的 RDD 无关：
+      <code language="X#">
+        oDBCust := Customer{}
+        IF !File("customer" + oDBCust:OrderInfo(DBOI_INDEXEXT))
+        oDBCust:CreateIndex("customer", "oDBCust:CustName")
+        ENDIF
+      </code>
+      此示例从同一索引文件中访问多个order的键表达式：
+      <code language="X#">
+        oDBCust := Customer{}
+        oDBCust:SetOrder("serial")
+        ? oDBCust:OrderInfo(DBOI_EXPRESSION,, "name")
+        // 结果：名称order的键表达式
+        ? oDBCust:OrderInfo(DBOI_EXPRESSION,, "serial")
+        // 结果：序列order的键表达式
+      </code>
+      在此示例中，ALL_CUST.MDX 包含三个 order，分别为 CUACCT、CUNAME、CUZIP。使用 DBOI_INDEXNAME 常量显示使用其 order 之一的索引文件的名称：
+      <code language="X#">
+        oDBCust := Customer{}
+        oDBCust:SetIndex("all_cust")
+        ? oDBCust:OrderInfo(DBOI_INDEXNAME,, "cuname")
+        // 返回：all_cust
+      </code>
+      以下示例在 order 列表中搜索 CUNAME：
+      <code language="X#">
+        oDBCust := Customer{}
+        oDBCust:SetIndex("cuacct")
+        oDBCust:SetIndex("cuname")
+        oDBCust:SetIndex("cuzip")
+        ? oDBCust:OrderInfo(DBOI_NUMBER,, "cuname") // 2
+      </code>
+      此示例从 order 中检索“for条件”：
+      <code language="X#">
+        oDBCust := Customer{}
+        oDBCust:SetOrderCondition("oDBCust:Acct &gt; 'AZZZZZ'")
+        oDBCust:CreateIndex("customer", "oDBCust:Acct")
+        oDBCust:OrderInfo(DBOI_CONDITION,, "customer")
+        // 返回：oDBCust:Acct &gt; 'AZZZZZ'
+      </code>
+    </example>
+  </DbServer.OrderInfo>
+
+
+  <DbServer.OrderIsUnique>
+    <summary>
+      返回给定 order 的唯一标志状态。
+    </summary>
+    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
+    <param name="cTarget">
+      索引文件的名称，包括可选的驱动器和目录(不应指定扩展名)。
+      使用此参数和 <paramref name="uOrder" /> 消除当不同索引文件中有两个或多个同名 order 时的歧义。
+      如果当前进程未打开 <paramref name="cTarget" />，则会引发运行时错误。
+    </param>
+    <returns>
+      指定 order 的唯一标志状态作为逻辑值。
+    </returns>
+    <example>
+      此示例显示使用各种 order 的 DBServer:OrderIsUnique() 的返回值：
+      <code language="X#">
+        oDBCust := Customer{}
+        oDBCust:CreateOrder("Last", "Customer",   "oDBCust:LastName",, TRUE)
+        oDBCust:CreateOrder("First", "Customer",  "oDBCust:FirstName")
+        oDBCust:CreateIndex("j:\test\tmp\age",    "oDBCust:Age",, TRUE)
+        oDBCust:SetOrder("Last")
+        ? oDBCust:OrderIsUnique() // 结果：TRUE，order为last
+        ? oDBCust:OrderIsUnique("First") // 结果：FALSE
+        ? oDBCust:OrderIsUnique("Age") // 结果：TRUE
+      </code>
+    </example>
+  </DbServer.OrderIsUnique>
+
+  <DbServer.OrderKeyAdd>
+    <summary>
+      向自定义构建的 order 添加键。
+    </summary>
+    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
+    <param name="uKeyValue">
+      您要为当前记录添加的特定键值。
+      数据类型必须与order的数据类型匹配。如果未指定，则为当前记录评估 order 的键表达式并将其添加到 order 中。
+    </param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      自定义构建的 order 是指不由 DBFCDX 驱动程序自动维护的 order。您可以使用 DBServer:OrderInfo(DBOI_CUSTOM,
+      ...)确定 order 是否为自定义构建。当您创建这样的 order 时，它最初是空的。
+      您必须手动使用 DBServer:OrderKeyAdd() 和 DBServer:OrderKeyDel() 添加和删除键。
+      DBServer:OrderKeyAdd() 评估键表达式(或 <paramref name="uKeyValue" />，如果指定)，
+      然后将当前记录的键添加到 order 中。如果 order 有条件，则仅在满足该条件时才添加键，并且仅在它落在当前范围内时才添加。
+      <note type="tip">
+        RDDs 可能允许您通过连续调用 DBServer:OrderKeyAdd() 为同一记录添加多个键。
+      </note>
+      DBServer:OrderKeyAdd() 将在以下情况下失败：
+      <list type="bullet">
+        <item>记录指针定位在无效记录上(即，位于 DBServer:EOF)</item>
+        <item>指定的 order 不是自定义构建的</item>
+        <item>指定的 order 不存在</item>
+        <item>未指定 order 且没有控制 order</item>
+      </list>
+      <note type="tip">
+        在标准 RDD 中，只有 DBFCDX RDD 支持自定义索引。此 RDD 不支持使用 <paramref name="uKeyValue" /> 参数。
+        它始终使用键表达式来计算要插入的键值。
+      </note>
+    </remarks>
+    <example>
+      此示例创建一个自定义索引并每隔五十条记录添加一次：
+      <code language="X#">
+        oDBCust := Customer{}
+        // 创建最初为空的自定义构建order
+        oDBCust:SetOrderCondition(,,,,,,,,,,,,, TRUE)
+        oDBCust:CreateIndex("last", "oDBCust:LastName")
+        // 每50条记录添加一次
+        FOR n := 1 UPTO oDBCust:RecCount STEP 50
+        oDBCust:GoTo(n)
+        oDBCust:OrderKeyAdd()
+        NEXT
+      </code>
+    </example>
+  </DbServer.OrderKeyAdd>
+
+  <DbServer.OrderKeyCount>
+    <summary>
+      返回 order 中的键数。
+    </summary>
+    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
+    <remarks>
+      DBServer:OrderKeyCount() 计算指定 order 中的键数并将结果作为数值返回。
+      如果 order 没有条件且未设置范围，DBServer:OrderKeyCount() 与 DBServer:RecCount 相同，返回数据服务中的记录数。
+      然而，对于条件 order，可能会有比记录少的键，因为某些记录可能不满足 order 的条件或不在 DBServer:OrderScope() 指定的范围内——在计算键时，
+      DBServer:OrderKeyCount() 尊重当前定义的范围和条件。
+      <note type="tip">
+        如果没有操作中的 order，DBServer:OrderKeyCount() 将返回0而不是 DBServer:RecCount() 的值。
+      </note>
+    </remarks>
+    <example>
+      此示例演示了使用各种 order 的 DBServer:OrderKeyCount()。
+      <code language="X#">
+        oDBCust := Customer{}
+        // 假设总共有1000条记录，
+        // 500条记录年龄小于30岁，和
+        // 895条记录收入少于50000
+        ? oDBCust:RecCount // 结果：1000
+        ? oDBCust:OrderKeyCount() // 结果：0
+        oDBCust:CreateIndex("age", "oDBCust:Age")
+        oDBCust:SetOrderCondition("oDBCust:Age &lt; 30")
+        oDBCust:CreateIndex("first", "oDBCust:FirstName")
+        oDBCust:SetOrderCondition("oDBCust:Salary &lt; 50000")
+        oDBCust:CreateIndex("last", "oDBCust:LastName")
+        // age是控制order
+        oDBCust:SetIndex("age")
+        oDBCust:SetIndex("first")
+        oDBCust:SetIndex("last")
+        ? oDBCust:RecCount // 结果：1000
+        ? oDBCust:OrderKeyCount() // 结果：1000
+        ? oDBCust:OrderKeyCount("first") // 结果：500
+        ? oDBCust:OrderKeyCount(3) // 结果：895
+      </code>
+    </example>
+  </DbServer.OrderKeyCount>
+
+  <DbServer.OrderKeyDel>
+    <summary>
+      从自定义构建的 order 中删除键。
+    </summary>
+    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      自定义构建的 order 是指不由 DBFCDX 驱动程序自动维护的 order。您可以使用 DBServer:OrderInfo(DBOI_CUSTOM,
+      ...)确定 order 是否为自定义构建。当您创建这样的 order 时，它最初是空的。
+      您必须手动使用 DBServer:OrderKeyAdd() 和 DBServer:OrderKeyDel() 添加和删除键。 DBServer:OrderKeyDel() 将在以下情况下失败：
+      <list type="bullet">
+        <item>
+          记录指针定位在无效记录上(例如，DBServer:EOF 返回 TRUE 或记录指针定位在超出order范围或条件的记录上)
+        </item>
+        <item>指定的 order 不是自定义构建的</item>
+        <item>指定的 order 不存在</item>
+        <item>
+          未指定 order 且没有控制 order
+        </item>
+      </list>
+    </remarks>
+    <example>
+      此示例创建一个自定义索引，添加每五十条记录，并删除每一百条记录：
+      <code language="X#">
+        oDBCust := Customer{}
+        // 创建最初为空的自定义构建order
+
+        oDBCust:SetOrderCondition(,,,,,,,,,,,,, TRUE)
+        oDBCust:CreateIndex("last", "oDBCust:LastName")
+        // 每50条记录添加一次
+        FOR n := 1 UPTO oDBCust:RecCount STEP 50
+        oDBCust:GoTo(n)
+        oDBCust:OrderKeyAdd()
+        NEXT
+        // 删除每100条记录
+        FOR n := 1 UPTO oDBCust:RecCount STEP 100
+        oDBCust:GoTo(n)
+        oDBCust:OrderKeyDel()
+        NEXT
+      </code>
+    </example>
+  </DbServer.OrderKeyDel>
+
+  <DbServer.OrderKeyGoTo>
+    <summary>
+      移动到控制 order 中由其逻辑记录号指定的记录。
+    </summary>
+    <param name="nKeyNo">逻辑记录号。如果指定的值不满足 orde 的范围或条件，记录指针将定位在文件末尾。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      DBServer:OrderKeyGoTo() 是 DBServer:OrderKeyNo() 的补充。DBServer:OrderKeyNo() 返回当前记录的逻辑记录号(即其在控制 order 中的位置)，
+      而 DBServer:OrderKeyGoTo() 将记录指针移动到指定的逻辑记录。
+      DBServer:OrderKeyGoTo() 在操作之前发送 NotifyIntentToMove 消息。操作成功完成后，它还会发送 NotifyRecordChange 消息。
+      提示：此方法在显示滚动条时非常有用。如果用户点击滚动条上的某个位置，您可以通过调用 DBServer:OrderKeyGoTo() 移动到相应的记录。
+    </remarks>
+    <example>
+      此示例显示物理记录号和逻辑记录号之间的区别：
+      <code language="X#">
+        oDBCust := Customer{}
+        oDBCust:SetIndex("first") // 使记录按名字顺序排列
+        oDBCust:OrderKeyGoTo(100) // 转到第100个逻辑记录
+        ? oDBCust:RECNO // 返回物理记录号
+        ? oDBCust:OrderKeyNo() // 返回100，逻辑记录号
+      </code>
+    </example>
+  </DbServer.OrderKeyGoTo>
+
+  <DbServer.OrderKeyNo>
+    <summary>
+      获取当前记录的逻辑记录号。
+    </summary>
+    <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
+    <returns>
+      当前记录在指定 order 中的相对位置，作为数值。DBServer:OrderKeyNo() 尊重 order 的范围和条件，
+      如果记录指针定位在无效记录上或 DBServer:EOF 为 TRUE，则返回零。
+    </returns>
+    <remarks>
+      DBServer:OrderKeyNo() 返回 order 中一个键的逻辑记录号。
+      这与物理记录号(使用 DBServer:RecNo 返回)不同，后者是记录在物理数据库文件中的相对位置。
+      DBServer:OrderKeyNo() 在操作之前发送 NotifyIntentToMove 消息。
+      提示：此方法在浏览器中查看记录时，对于显示滚动条和消息(如“记录 9/123”)非常有用。
+      默认情况下，DBServer:OrderKeyNo() 在当前选择的工作区上操作。如果您将其作为别名表达式的一部分指定，它将在未选择的工作区上操作。
+    </remarks>
+    <example>
+      此示例显示物理记录号和逻辑记录号之间的区别：
+      <code language="X#">
+        oDBCust := Customer{} // 假设有1000条记录
+        oDBCust:SetIndex("first") // 使记录按名字顺序排列
+        ? oDBCust:OrderKeyNo() // 结果：1
+        oDBCust:Skip(10)
+        ? oDBCust:OrderKeyNo() // 结果：11
+        ? oDBCust:RECNO // 结果：未知
+        oDBCust:GoBottom()
+        ? oDBCust:OrderKeyNo() // 结果：1000
+        ? oDBCust:RECNO // 结果：未知
+      </code>
+    </example>
+  </DbServer.OrderKeyNo>
+
+  <DbServer.OrderKeyNo>
+    <summary>
+      表示当前记录的逻辑记录号的数值。
+      DBServer:OrderKeyNo 分配在成功完成后发送 NotifyRecordChange 消息。
+    </summary>
+    <value>
+      表示当前记录的逻辑记录号的数值。
+      DBServer:OrderKeyNo 分配在成功完成后发送 NotifyRecordChange 消息。
+    </value>
+  </DbServer.OrderKeyNo>
+
+  <DbServer.OrderKeyVal>
+    <summary>
+      控制顺序中当前记录的键值。
+    </summary>
+    <value>控制顺序中当前记录的键值。</value>
+    <remarks>
+      控制顺序中当前记录的键值。数据类型与用于创建顺序的键表达式的数据类型相同。使用 ValType() 或 UsualType() 确定数据类型。
+    </remarks>
+  </DbServer.OrderKeyVal>
+
+
+  <DbServer.OrderScope>
+    <summary>
+      设置控制顺序中键值范围的边界。
+    </summary>
+    <param name="nScope">指定顶部 (TOPSCOPE) 或底部 (BOTTOMSCOPE) 边界的数字。</param>
+    <param name="uValue">
+      控制顺序当前范围内将包含的键值的顶部或底部范围。<paramref name="uValue" />
+      可以是与控制顺序中的键表达式数据类型匹配的表达式，也可以是返回正确数据类型的代码块。
+      省略 <paramref name="uValue" /> 或将其指定为 NIL
+      具有将指定范围重置为其原始默认值的特殊效果。默认的顶部范围是控制顺序中的第一个逻辑记录，默认的底部范围是最后一个逻辑记录。
+    </param>
+    <returns>
+      如果未指定 <paramref name="uNewValue" />，DBServer:OrderScope() 返回当前设置。
+      如果指定了 <paramref name="uNewValue" />，则返回先前的设置。
+    </returns>
+    <remarks>
+      使用 DBServer:OrderScope() 指定的值范围是包含的。换句话说，范围内的键将大于或等于顶部边界并小于或等于底部边界。
+      <note type="tip">
+        如果您使用 DbServer:OrderDescend() 和 Scopes，则需要交换顶部和底部范围值！
+        <code language="X#">
+          oServer:OrderScope (TOPSCOPE, cFrom)
+          oServer:OrderScope (BOTTOMSCOPE, cTo)
+          oServer:OrderDescend(,, TRUE)
+          oServer:OrderScope (TOPSCOPE, cTo)
+          oServer:OrderScope (BOTTOMSCOPE, cFrom)
+        </code>
+      </note>
+    </remarks>
+    <example>
+      此示例说明如何使用 DBServer:OrderScope() 设置顺序的各种范围限制。
+      虽然在下面的示例中未显示，但应在 OrderScope() 方法调用后立即使用
+      GoTop() 或其他指针机制来调用范围本身。调用 GoTop() 后检查 :EOF 还可以让您知道是否 实际上有任何记录匹配范围条件：
+      <code language="X#">
+        oDBFr := Friends{}
+        oDBFr:SetIndex("age")
+      </code>
+      <code language="X#">
+        oDBFr:OrderScope(BOTTOMSCOPE, 25) // 将 25 设为范围内的最低年龄
+        oDBFr:OrderScope(TOPSCOPE, 30) // 将 30 设为范围内的最高年龄
+        LIST Age // 显示年龄在 25 &lt;= Age &lt;= 30 的记录
+        oDBFr:OrderScope(BOTTOMSCOPE, 35)	// 将最高年龄更改为 35
+        LIST Age					// 显示年龄在 25 &lt;= Age &lt;= 35 的记录
+        oDBFr:OrderScope(TOPSCOPE, NIL)	// 重置顶部边界
+        LIST Age					// 显示年龄 &lt;= 35 的记录
+        oDBFr:OrderScope(BOTTOMSCOPE, NIL)	// 重置底部边界
+        LIST Age					// 显示所有记录
+      </code>    </example>
+  </DbServer.OrderScope>
+
+  <DbServer.OrderSkipUnique>
+    <summary>
+      将记录指针移动到控制顺序中的下一个或上一个唯一键。
+    </summary>
+    <param name="nDirection">指定方法将跳到下一个或上一个键。省略此值或将其指定为 1 跳到下一个唯一键。指定负值跳到上一个键。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      DBServer:OrderSkipUnique() 允许您使非唯一顺序看起来像唯一顺序。每次使用 DBServer:OrderSkipUnique()
+      时，您都会移动到下一个(或上一个)唯一键，就像您在唯一顺序中跳过一样。此方法消除了维护唯一顺序相关的问题，
+      同时为您提供了快速访问唯一键的功能。
+      DBServer:OrderSkipUnique() 在操作之前发送 NotifyIntentToMove 消息。
+      操作成功完成后，它还会发送 NotifyRecordChange 消息。
+    </remarks>
+    <example>
+      此示例使用 DBServer:OrderSkipUnique() 构建一个以字母 "J" 开头的唯一姓氏数组：
+      <code language="X#">
+        METHOD LastUnique() CLASS Customer
+        LOCAL aLast[0] AS ARRAY
+
+        SELF:SetIndex("last") // 使用姓氏顺序
+        ? SELF:OrderIsUnique() // 结果：FALSE
+        // 只查看 J 开头的姓氏
+        SELF:OrderScope(0, "J")
+        SELF:OrderScope(1, "J")
+        SELF:GoTop()
+
+        DO WHILE !SELF:EOF // 将所有唯一的 J
+        AADD(aLast, Last) // 姓氏添加到 aLast
+        SELF:OrderSkipUnique()
+        ENDDO
+        // 清除范围
+        SELF:OrderScope(0, NIL)
+        SELF:OrderScope(1, NIL)
+
+        RETURN aLast
+      </code>
+    </example>
+  </DbServer.OrderSkipUnique>
+
+  <DbServer.OrderTopScope>
+    <summary>
+      表示控制顺序当前范围内顶部边界记录的键值。
+    </summary>
+    <value>表示控制顺序当前范围内顶部边界记录的键值。</value>
+  </DbServer.OrderTopScope>
+
+ <DbServer.Pack>
+    <summary>
+      从数据库文件中删除已删除的记录。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      如果成功，则发送 NotifyFileChange 消息。
+    </remarks>
+  </DbServer.Pack>
+
+  <DbServer.PaintedStructure>
+    <summary>这将返回基于服务编辑器中绘制的 DataFields 和 Fieldspecs 的 DBSTRUCT 数组。</summary>
+    <value>基于服务编辑器中绘制的 DataFields 和 Fieldspecs 的 DBSTRUCT 数组。</value>
+  </DbServer.PaintedStructure>
+
+  <DbServer.RddInfo>
+    <summary>
+      返回并可选更改由 RDD 直接控制的设置。
+    </summary>
+    <param name="kRDDInfoType">
+      指定设置。 <include file="RTComments.xml" path="Comments/RddInfoParam/*" />
+    </param>
+    <param name="uRDDVal">
+      如果指定，此参数用于更改设置的值。 数据类型(以及是否可以指定 <paramref name="uNewSetting" />)，
+      取决于 <paramref name="kRDDInfoType" /> 常量，并在下面的常量部分中记录。
+    </param>
+    <returns>
+      如果未指定 <paramref name="uNewSetting" />，DBServer:RDDInfo() 返回当前设置。
+      如果指定了 <paramref name="uNewSetting" />，则返回先前的设置。
+    </returns>
+    <remarks>
+      <include file="RTComments.xml" path="Comments/RddInfoRemarks/*" />
+    </remarks>
+  </DbServer.RddInfo>
+
+  <DbServer.RddName>
+    <summary>
+      表示此服务使用的数据库驱动程序的名称的字符串。
+    </summary>
+    <value>表示此服务使用的数据库驱动程序的名称的字符串。</value>
+    <remarks>
+      表示此服务使用的数据库驱动程序的名称的字符串。
+      可以将服务指定为服务的实例化参数。如果未设置驱动程序，则使用默认驱动程序；可以通过 RDDSetDefault() 或 DBSetDriver() 设置。
+    </remarks>
+  </DbServer.RddName>
+
+  <DbServer.Rdds>
+    <summary>这将返回传递给 DbServer 构造函数的 RDD 列表。</summary>
+    <value>传递给 DbServer 构造函数的 RDD 列表。</value>
+  </DbServer.Rdds>
+
+  <DbServer.ReadOnly>
+    <summary>
+      指示文件是否以只读文件打开的逻辑值。这由服务的实例化参数确定。
+    </summary>
+    <value>指示文件是否以只读文件打开的逻辑值。这由服务的实例化参数确定。</value>
+    <example>
+      此示例函数仅在 ReadOnly 属性为 FALSE 时处理对服务的更新；否则，函数返回 FALSE：
+      <code language="X#">
+        FUNCTION SalesUpdates(oDBServer)
+        ...
+        IF oDBServer:ReadOnly
+        RETURN FALSE
+        ELSE
+        .
+        . &lt;Statements TO update server&gt;
+        .
+        RETURN TRUE
+        ENDIF
+      </code>
+    </example>
+  </DbServer.ReadOnly>
+
+  <DbServer.Recall>
+    <summary>
+      召回由指定范围指示的已删除记录。
+    </summary>
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      如果未传递范围且未激活范围，则在操作成功时发送 NotifyRecordChange 消息。
+      如果使用了范围，则无论处理的记录数如何，都会发送 NotifyFileChange 消息。
+      如果未设置服务范围，则召回当前记录。成功完成后，当前记录将是最后一个文件记录，DBServer:EOF 将为 TRUE。
+    </remarks>
+  </DbServer.Recall>
+
+  <DbServer.RecallAll>
+    <summary>
+      召回表中的所有已删除记录。
+    </summary>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      完成后发送 NotifyFileChange 消息。
+      成功完成后，当前记录将是最后一个文件记录，DBServer:EOF 将为 TRUE。
+    </remarks>
+  </DbServer.RecallAll>
+
+  <DbServer.RecCount>
+    <summary>
+      当前数据库文件中的记录数。
+    </summary>
+    <value>当前数据库文件中的记录数。</value>
+    <remarks>
+      当前数据库文件中的记录数。过滤命令(如 SET FILTER 或 SET DELETED)对返回值没有影响。此访问与 :LastRec 访问相同。
+    </remarks>
+    <example>
+      此示例使用 RecCount 定义一个访问方法以返回数据服务的大小：
+      <code language="X#">
+        CLASS Sales INHERIT DBServer
+        ...
+        ACCESS Size CLASS Sales
+        RETURN (SELF:RecSize * SELF:RecCount) + SELF:Header + 1
+      </code>
+    </example>
+  </DbServer.RecCount>
+
+  <DbServer.RecNo>
+    <summary>
+      表示当前记录号的数值，标识记录指针的位置。
+    </summary>
+    <value>表示当前记录号的数值，标识记录指针的位置。</value>
+    <remarks>
+      表示当前记录号的数值，标识记录指针的位置。 为 RecNo 分配一个值相当于执行 GoTo()；两者都将记录指针重新定位到给定记录上。
+      这两个语句是等效的：
+      <code language="X#">
+        oDBServer:RecNo := 1168
+        oDBServer:GoTo(1168)
+      </code>
+      如果服务包含 0 条记录的数据库文件，RecNo 返回 1，BOF 和 EOF 都返回 TRUE，RecCount/LastRec 返回 0。
+      如果记录指针移到最后一条记录之后，RecNo 返回
+      LastRec + 1，EOF 返回 TRUE。如果尝试移到第一条记录之前，RecNo 返回数据库文件中第一条逻辑记录的记录号，BOF 返回 TRUE。
+      DBServer:RecNo 分配在操作之前发送 NotifyIntentToMove 消息。
+    </remarks>
+    <example>
+      此示例在故意移动记录指针后查询 RecNo：
+      <code language="X#">
+        CLASS Sales INHERIT DBServer
+        ...
+        FUNCTION RecNoDemo()
+        LOCAL oDBSales AS Sales
+        oDBSales := Sales{}
+        oDBSales:GoTo(3)
+        ? oDBSales:RECNO // 结果：3
+        oDBSales:GoTop()
+        ? oDBSales:RECNO // 结果：1
+        oDBSales:GoBottom()
+        ? oDBSales:RECNO // 结果：10
+      </code>
+    </example>
+  </DbServer.RecNo>
+
+  <DbServer.RecordInfo>
+    <summary>
+      检索有关指定记录的信息。
+    </summary>
+    <param name="kRecInfoType">
+      检索的信息取决于指定的常量
+    </param>
+    <param name="nRecordNumber">指示要检索信息的记录；如果为 0 或省略，则指当前记录。</param>
+    <param name="uRecVal">
+      此参数保留用于允许更改信息而不仅仅是检索信息的 RDD。提供的 RDD(如《程序员指南》附录中的“RDD
+      细节”中所述)不支持此参数。要么省略参数，要么将其指定为 NIL。
+    </param>
+    <returns>
+      返回值的数据类型取决于请求的值。
+    </returns>
+    <remarks>
+      <include file="RTComments.xml" path="Comments/DBRI_Constants/*" />
+    </remarks>
+  </DbServer.RecordInfo>
+
+  <DbServer.RecSize>
+    <summary>
+      表示服务记录长度(以字节为单位)的数值。
+    </summary>
+    <value>表示服务记录长度(以字节为单位)的数值。</value>
+    <example>
+      此示例使用 RecSize 定义一个访问方法以返回数据服务的大小：
+      <code language="X#">
+        CLASS Sales INHERIT DBServer
+        ...
+        ACCESS Size CLASS Sales
+        RETURN (SELF:RecSize * SELF:RecCount) + SELF:Header + 1
+      </code>
+    </example>
+  </DbServer.RecSize>
+
+  <DbServer.Refresh>
+    <summary>
+      从数据库重新读取当前记录，丢弃所做的任何更改。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      如果成功，则发送 NotifyRecordChange 消息。
+      此命令丢弃对当前记录的所有更改。它作为在应用程序中实现撤消的一种方式非常有用。但是，它不能回滚已使用 DBServer:Commit()
+      提交的更改。另外，请注意，它仅适用于当前记录；数据服务和驱动程序不会缓冲对多个记录所做的更改。
+    </remarks>
+  </DbServer.Refresh>
+
+  <DbServer.Reindex>
+    <summary>
+      重新创建此服务的所有活动索引。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。 完成后发送 NotifyCompletion
+      消息。显然，在执行此方法之前，所有其他用户都应退出您的系统。
+    </remarks>
+  </DbServer.Reindex>
+
+  <DbServer.Relation>
+    <summary>
+      返回指定关系的链接表达式。
+    </summary>
+    <param name="nRelation">当前关系列表中所需关系的位置。关系根据使用 DBServer:SetRelation() 定义的顺序进行编号。</param>
+    <returns>
+      包含指定关系的链接表达式的字符串。如果没有为 <paramref name="nRelation" /> 设置关系，DBServer:Relation() 返回
+      NULL_STRING。
+    </returns>
+  </DbServer.Relation>
+
+  <DbServer.RelationChildren>
+    <summary>返回使用 SetRelation() 注册的子项数组</summary>
+    <value>返回使用 SetRelation() 注册的子项数组</value>
+  </DbServer.RelationChildren>
+
+  <DbServer.Replace>
+    <summary>
+      用新表达式替换与指定范围匹配的所有记录的一个或多个字段。
+    </summary>
+    <param name="acbExpression">单个表达式，评估后得出替换值，或评估后得出替换值的表达式数组。</param>
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      如果指定的范围处于活动状态，DBServer:Replace() 在操作之前发送 NotifyIntentToMove 消息。
+      无论成功与否，完成后都会发送 NotifyFileChange 消息。
+      如果未使用范围，则成功完成后，当前记录将是最后一个文件记录，DBServer:EOF 将为 TRUE。
+    </remarks>
+    <example>
+      以下示例演示了如何使用 DBServer:Replace() 方法：
+      <code language="X#">
+        // 将女性员工的工资增加 100
+        oDBEmp:Replace({||Salary+100}, #Salary, {||Sex="F"})
+        // 从等级中减去 20，分配 100 的加薪，
+        // 并为那些
+        // 新分配到 Proj20 的员工建立新的加薪日期
+        oDBEmp:Replace({"GRADE-20", "100", "NewDate"}, {#Grade, #Raise, #RaiseDate}, {|| NewAssignment(EmpNo) = Proj20})
+        // 将所有记录的信用状态字段分配为 0
+        oDBEmp:Replace(0,#CreditStatus)
+      </code>
+    </example>
+  </DbServer.Replace>
+
+  <DbServer.ResetNotification>
+    <summary>
+      恢复向服务的附加客户端广播 Notify 消息(在调用 DBServer:SuspendNotification() 之后)。
+    </summary>
+    <remarks>
+      此方法与 DBServer:SuspendNotification() 配合使用，后者暂停 Notify 消息的广播。
+      请注意，DBServer:SuspendNotification() 会堆叠其调用。因此，对于每次调用 DBServer:SuspendNotification()，需要相应地调用
+      DBServer:ResetNotification()。
+    </remarks>
+  </DbServer.ResetNotification>
+
+  <DbServer.Retries>
+    <summary>确定 DbServer 对象应重试失败操作的次数的设置。</summary>
+    <value>确定 DbServer 对象应重试失败操作的次数的设置。</value>
+  </DbServer.Retries>
+
+  <DbServer.RLock>
+    <summary>
+      锁定记录以进行独占写访问；其他用户仍然可以对记录进行只读引用。
+    </summary>
+    <param name="nRecordNumber">
+      要锁定的记录号。
+      指定的记录被锁定，并且先前的记录锁保持不变。
+      请注意，这可以是当前记录：明确指定当前记录表示应保持先前的锁。
+      如果省略或为 NIL 或 -1，则当前记录被锁定并释放所有先前的记录锁。
+    </param>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+  </DbServer.RLock>
+
+  <DbServer.RLockList>
+    <summary>
+      当前锁定的记录号数组。
+    </summary>
+    <value>当前锁定的记录号数组。</value>
+    <example>
+      以下方法处理数据服务中所有锁定的记录：
+      <code language="X#">
+        CLASS Sales INHERIT DBServer
+        ...
+        METHOD ProcessLocked() CLASS Sales
+        LOCAL siCount AS SHORTINT
+
+        FOR siCount := 1 UPTO ALen(SELF:RLockList)
+        SELF:GoTo(RLockList[siCount])
+        // 处理记录
+        NEXT
+
+        SELF:Unlock() // 释放所有锁
+      </code>
+    </example>
+  </DbServer.RLockList>
+
+  <DbServer.RLockVerify>
+    <summary>
+      确定此数据服务中的当前记录是否有任何挂起的更新，如果没有，则锁定它以进行独占写访问。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      此方法通过将服务最初定位在记录上时读取的值与相应数据库记录中的当前值进行比较来检查当前记录是否有挂起的更新。
+      如果值匹配，则表示自用户开始处理数据以来没有其他用户修改数据，因此，可以安全地锁定记录并让用户继续进行更新事务。(请注意，当记录被锁定时，其他用户仍然可以对记录进行只读引用。)
+      如果值不匹配，则表示其他人已更改记录，用户应从磁盘刷新值并重新启动事务。应用程序必须决定如何处理不同的值。请注意，可以使用 DBServer:Status 确定失败的原因。
+      此方法用于乐观并发控制。(有关更多信息，请参阅《程序员指南》中的“并发控制”。)
+    </remarks>
+  </DbServer.RLockVerify>
+
+  <DbServer.Scope>
+    <summary>
+      “通用服务范围”的“范围”组件，如果调用时没有显式范围，则会影响多个批量处理方法。范围的初始值为 NIL。
+    </summary>
+    <value>“通用服务范围”的“范围”组件，如果调用时没有显式范围，则会影响多个批量处理方法。范围的初始值为 NIL。</value>
+    <remarks>
+      以下常量表示要处理的记录范围，提供与记录处理命令的 ALL、REST 和 NEXT 子句相同的功能：
+    </remarks>
+    <example>
+      此示例说明了各种范围值如何影响召回操作的范围：
+      <code language="X#">
+        // RECALL FOR Last == "Smith" REST
+        oDB:ForBlock := {|| Last == "Smith"}
+        oDB:Scope := DBSCOPEREST
+        oDB:Recall()
+        // RECALL WHILE Last == "Smith" NEXT 10
+        oDB:WhileBlock := {|| Last == "Smith"}
+        oDB:Scope := 10
+        oDB:Recall()
+      </code>
+    </example>
+  </DbServer.Scope>
+
+  <DbServer.Seek>
+    <summary>
+      移动到控制顺序中具有指定键值的记录。
+    </summary>
+    <param name="uSearchExpr">指定与所需记录关联的键值。</param>
+    <param name="lSoftSeek">
+      确定如果未找到指定的键值，数据服务将如何定位：TRUE 执行软查找；FALSE 不执行。
+      如果省略 <paramref name="lSoftSeek" />，则使用当前的 SetSoftSeek() 设置。
+    </param>
+    <param name="lLast">
+      TRUE 查找指定键值的最后一个出现。FALSE(默认)查找第一个出现。<paramref name="lLast" /> 仅适用于 CDX 索引。
+    </param>
+    <returns>
+      如果找到指定的键值，则返回 TRUE；否则返回 FALSE。
+    </returns>
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      DBServer:Seek() 移动到键值等于 <paramref name="uKey" /> 的第一个逻辑记录。
+      如果找到这样的记录，它将成为当前记录，DBServer:Seek() 返回 TRUE。否则，DBServer:Seek() 返回 FALSE，数据服务的定位如下：
+      对于正常(非软)查找，数据服务定位到 DBServer:LastRec + 1，
+      DBServer:EOF 返回 TRUE；对于软查找，数据服务定位到键值大于指定键值的第一个记录。
+      如果不存在这样的记录，数据服务定位到 DBServer:LastRec + 1，DBServer:EOF 返回 TRUE。
+      对于没有控制顺序的数据服务，DBServer:Seek() 无效。
+      <note type="tip">
+        逻辑记录：DBServer:Seek() 对逻辑记录进行操作。记录按控制顺序处理。如果设置了过滤器，则仅考虑满足过滤条件的记录。
+        共享模式：对于共享文件，移动到不同记录可能会导致对当前记录的更新对其他进程可见。有关更多信息，请参阅《程序员指南》中的“并发控制”。
+      </note>
+    </remarks>
+    <example>
+      在此示例中，DBServer:Seek() 将指针移动到数据库 EMPLOYEE 中控制字段 sleLastName 的值与数据库中的记录匹配的记录：
+      <code language="X#">
+        IF Employee:Seek( UPPER( SELF:oDCsleLastName:Value ) )
+        Employee:ViewRecord()
+        ELSE
+
+        QOut("Not found")
+        END
+      </code>
+    </example>
+  </DbServer.Seek>
+
+  <DbServer.Select>
+    <summary>选择 DbServer 使用的工作区。</summary>
+    <returns>选择的先前工作区。</returns>
+  </DbServer.Select>
+
+  <DbServer.SelectionWorkArea>
+    <summary>当 dbserver 是关系中的子项时，父区域的工作区号。</summary>
+    <value>当 dbserver 是关系中的子项时，父区域的工作区号。</value>
+  </DbServer.SelectionWorkArea>
+
+  <DbServer.SetDataField>
+    <summary>
+      为指定字段分配 DataField 对象。
+    </summary>
+    <param name="nFieldPosition">所需字段的编号。</param>
+    <param name="oDataField">要分配的数据字段。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      验证新字段与实际数据库字段的兼容性(如果有)。此方法通常仅在数据服务实例化期间使用，最常见的是在子类的 Init() 方法中。
+      例如，DBServer 编辑器生成的代码使用此方法。
+    </remarks>
+  </DbServer.SetDataField>
+
+  <DbServer.SetFilter>
+    <summary>
+      设置过滤条件。
+    </summary>
+    <param name="cbFilterBlock">以可执行形式表示过滤条件的代码块。如果省略代码块，则过滤表达式的字符串版本将宏编译为代码块。</param>
+    <param name="cFilterText">过滤条件。如果省略，DBServer:Filter 访问方法返回 NULL_STRING。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      两个参数都指定过滤表达式，一个是代码块形式，一个是字符串形式。两个参数都是可选的，但必须提供至少一个。
+      指定这两种形式的原因是编译的代码块更快，而字符串版本可以通过 Filter 访问方法报告回来。
+      显然，如果指定了两种形式，它们应该定义相同的表达式。
+    </remarks>
+    <example>
+      以下示例演示了使用 DBServer:SetFilter() 设置过滤器的各种方法。过滤条件是客户编号(CustNo)超过 20,000。请注意，用户 GoTop()
+      方法通过移动记录指针来调用过滤表达式。
+      <code language="X#">
+        // 仅指定代码块
+        oDBCust:SetFilter({||CustNo &gt; 20000})
+        oDBCust:GoTop()
+        // 指定代码块和描述过滤文本的文本
+        oDBCust:SetFilter({||CustNo &gt; 20000}, "CustNo &gt; 20000")
+        oDBCust:GoTop()
+        // 仅指定过滤文本，将其编译为代码块
+        oDBCust:SetFilter(, "CustNo &gt; 20000")
+        oDBCust:GoTop()
+        // 仅指定过滤文本，将其编译为代码块
+        oDBCust:SetFilter(, [ Gender = '] + SELF:cGender + ['] )
+        oDBCust:GoTop()
+      </code>
+    </example>
+  </DbServer.SetFilter>
+
+  <DbServer.SetIndex>
+    <summary>
+      打开索引文件并选择其顺序作为控制顺序(如果这是第一个打开的索引)。
+    </summary>
+    <param name="oFSIndex">
+      指定索引文件的字符串或文件规范对象。文件类型默认为驱动程序(RDD)的本机类型。
+    </param>
+    <param name="cIndexFileName">
+      索引文件。文件类型默认为驱动程序(RDD)的本机类型。
+    </param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      如果成功，则发送 NotifyFileChange 消息。
+      如果索引文件包含多个顺序，则第一个顺序设置为控制顺序。服务定位到控制顺序中的第一个逻辑记录。
+    </remarks>
+    <example>
+      以下示例打开多个索引文件：
+      <code language="X#">
+        oSales := DBServer{"sales"}
+        oSales:SetIndex("firstname")
+        oSales:SetIndex("lastname")
+        IF oSales:Seek(cLast)
+        IF oSales:Deleted() .AND. RLock()
+        oSales:Recall()
+        ENDIF
+        ENDIF
+      </code>
+    </example>
+  </DbServer.SetIndex>
+
+  <DbServer.SetOrder>
+    <summary>
+      从已打开的索引文件中选择一个顺序作为控制顺序。
+    </summary>
+    <param name="uOrder">可以通过顺序号、顺序列表中的位置或名称来标识顺序。</param>
+    <param name="oFSIndex">
+      如果顺序由顺序列表中不唯一的顺序名称指定，则可以指定索引文件名，
+      作为 FileSpec 对象或字符串格式的文件名，带或不带文件类型。文件类型默认为驱动程序(RDD)的本机类型。但是请注意，SetOrder() 不会打开索引文件，
+      它仅引用已打开文件中的顺序。
+    </param>
+    <param name="cIndexFileName">
+      如果顺序由顺序列表中不唯一的顺序名称指定，则可以指定索引文件名，
+      作为 FileSpec 对象或字符串格式的文件名，带或不带文件类型。文件类型默认为驱动程序(RDD)的本机类型。
+      但是请注意，SetOrder() 不会打开索引文件，它仅引用已打开文件中的顺序。
+    </param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      如果成功，则发送 NotifyFileChange 消息。 更改控制顺序后，服务仍然定位在同一记录上。请注意，当 dbServer 对象首次实例化时，
+      如果使用 CDX 索引驱动程序并且自动打开索引设置为 TRUE，则将打开的标签将是按字母顺序排列的第一个标签 – 而不是您创建标签的顺序。
+      因此，通常应在执行任何类型的 Seek() 操作之前设置 SetOrder() 以确保设置正确的索引标签。
+    </remarks>
+  </DbServer.SetOrder>
+
+  <DbServer.SetOrderCondition>
+    <summary>
+      设置应用于索引和顺序创建的条件。如果未调用 SetOrderCondition()，则顺序创建受通用服务范围的约束。如果两者都未设置，则顺序没有条件。
+    </summary>
+    <param name="cFor">指定顺序的 FOR 条件的字符串。如果不需要此信息，可以指定 NULL_STRING。</param>
+    <param name="cbForBlock">
+      定义 FOR 条件的代码块，每个范围内的记录必须满足该条件才能被处理。只有满足条件的记录才会包含在结果顺序中。重复的键值不会添加到索引文件中。
+      FOR 条件作为索引文件的一部分存储，并在使用 DBServer:Reindex() 方法更新或重新创建索引时使用。FOR
+      子句提供了所有数据库更改的唯一范围。所有其他范围条件创建的顺序不反映数据库更新。
+      如果提供了字符串，则会动态编译为代码块。在 DBFNTX 驱动程序下，它的长度不能超过 250 个字符。
+    </param>
+    <param name="lAll">指定当前或指定工作区中的所有顺序。ALL 是 INDEX ON 的默认范围。</param>
+    <param name="cbWhileBlock">
+      指定另一个条件的代码块，每个记录在处理时必须满足该条件。一旦遇到导致条件失败的记录，顺序创建就会终止。
+      如果指定了 WHILE 子句，则数据按控制顺序处理。 WHILE 条件是临时的(即，它不会存储在文件中，也不会用于索引更新和重新索引目的)。
+      WHILE 条件创建临时顺序，但这些顺序不会更新。
+      使用 WHILE 条件比使用 FOR 条件更高效且更快。WHILE 条件仅处理 <paramref name="cbWhileCondition" /> 为 TRUE 的数据。
+      相比之下，FOR 条件处理数据源中的所有数据。
+    </param>
+    <param name="cbEvalBlock">
+      为每个处理的记录或如下所述评估的代码块。此代码块允许应用程序在顺序创建期间进行干预，这可能会非常耗时；
+      它可能用于更新屏幕，例如显示进度条或状态栏中的进度。
+    </param>
+    <param name="nStep">
+      修改 <paramref name="cbEvalBlock" /> 评估次数的数值表达式。此参数通过每 n
+      条记录而不是每条记录评估条件来提供性能增强。要逐条记录进行评估，请指定值 0 或省略参数。
+    </param>
+    <param name="nStart">开始评估的记录号。要从顶部开始，请指定值 0 或省略参数。</param>
+    <param name="nNext">
+      从 <paramref name="nStart" /> 开始处理的记录数。指定 0 以忽略此参数。
+    </param>
+    <param name="nRecno">要处理的单个记录号。指定 0 以忽略此参数。</param>
+    <param name="lRest">
+      指定处理范围是所有记录，还是从当前记录开始到文件末尾的所有记录。
+      此参数对应于记录处理命令的 REST 和 ALL 子句。如果为 TRUE，则范围为 REST；否则，范围为所有记录。
+    </param>
+    <param name="lDescending">指定键值对是按值的递减顺序还是递增顺序排序。如果为 TRUE，则顺序为降序，否则顺序为升序。</param>
+    <param name="lAdditive">指定在创建新顺序时是否应保持打开顺序。TRUE 指定应保持打开。FALSE 指定应关闭所有打开的顺序。默认值为 FALSE。</param>
+    <param name="lCurrent">
+      指定是否仅包括控制顺序中的记录以及当前范围内的记录。
+      TRUE 指定应使用控制顺序和范围来限制新创建的顺序的范围。
+      FALSE 指定数据库文件中的所有记录都包含在顺序中。默认值为 FALSE。
+    </param>
+    <param name="lCustom">
+      指定新顺序是否为自定义顺序(适用于支持此功能的 RDD)。
+      TRUE 指定将创建自定义顺序。自定义顺序最初为空，使您可以完全控制顺序维护。系统不会自动添加和删除自定义顺序中的键。
+      相反，您可以使用 DBServer:OrderKeyAdd() 和 DBServer:OrderKeyDel() 显式添加和删除键。
+      FALSE 指定标准的系统维护顺序。默认值为 FALSE。
+    </param>
+    <param name="lNoOptimize">
+      指定是否优化用于构建此顺序的 FOR 条件(适用于支持此功能的 RDD)。TRUE 优化 FOR 条件，FALSE 不优化。默认值为 FALSE。
+    </param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+  </DbServer.SetOrderCondition>
+
+  <DbServer.SetRelation>
+    <summary>
+      设置从此服务到子服务的关系。
+    </summary>
+    <param name="oDBChild">
+      附加到子服务的服务必须指定为 DBServer 对象(而不是别名)。
+      如果省略 <paramref name="oDBChild" />，则删除此服务的所有关系(推荐的方法是
+      ClearRelations() 方法)。
+    </param>
+    <param name="uRelation">服务的关系代码块或表示此服务字段的名称或符号；构造并宏编译代码块</param>
+    <param name="cRelation">当关系指定为代码块时，还可以提供代码块的字符串版本；它由 Relation() 方法返回。</param>
+    <param name="lSelective">这是否是选择性关系？</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      如果成功，则向子服务发送 NotifyRecordChange 消息。
+      一如既往，子工作区应具有与表达式匹配的控制索引。
+    </remarks>
+    <example>
+      API 可以采用以下形式：
+      <code language="X#">
+        oDBCustomer:SetRelation(oDBOrders, {||_FIELD-&gt;CustNo},"CustNo")
+        oDBCustomer:SetRelation(oDBOrders, #CustNo)
+        oDBCustomer:SetRelation(oDBOrders, {#LastName, #Initial, #FirstName})
+      </code>
+    </example>
+  </DbServer.SetRelation>
+
+  <DbServer.SetSelectiveRelation>
+    <summary>
+      设置从此服务到子服务的选择性关系；标准数据库操作仅限于匹配关系的记录。
+    </summary>
+    <param name="oDBChild">
+      附加到子服务的服务必须指定为 DBServer 对象(而不是别名)。
+      如果省略 <paramref name="oDBChild" />，则删除此服务的所有关系(推荐的方法是 ClearRelations() 方法)。
+    </param>
+    <param name="uRelation">服务的关系代码块或表示此服务字段的名称或符号；构造并宏编译代码块</param>
+    <param name="cRelation">当关系指定为代码块时，还可以提供代码块的字符串版本；它由 Relation() 方法返回。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      如果成功，则向子服务发送 NotifyRecordChange 消息。
+      一如既往，表达式应匹配或为子工作区控制索引的部分索引。
+    </remarks>
+    <example>
+      API 可以采用以下形式：
+      <code language="X#">
+        oDBCustomer:SetSelectiveRelation(oDBOrders, {||_FIELD-&gt;CustNo},"CustNo")
+        oDBCustomer:SetSelectiveRelation(oDBOrders, #CustNo)
+        oDBCustomer:SetSelectiveRelation(oDBOrders, {#LastName,#Initial,#FirstName})
+      </code>
+    </example>
+  </DbServer.SetSelectiveRelation>
+
+  <DbServer.Shared>
+    <summary>
+      指示服务是可共享还是独占的逻辑值。
+    </summary>
+    <value>指示服务是可共享还是独占的逻辑值。</value>
+    <remarks>
+      指示服务是可共享还是独占的逻辑值。DBServer:Shared 由服务的实例化参数确定；如果未指定，则使用 SetExclusive() 设置的默认值。
+    </remarks>
+    <example>
+      此示例函数仅在 Shared 属性为 FALSE 时处理对服务的更新；否则，函数返回 FALSE：
+      <code language="X#">
+        FUNCTION SalesUpdates(oDBServer)
+        ...
+        IF oDBServer:Shared
+        RETURN FALSE
+        ELSE
+        .
+        . &lt;Statements TO update server&gt;
+        .
+        RETURN TRUE
+        ENDIF
+      </code>
+    </example>
+  </DbServer.Shared>
+
+  <DbServer.Skip>
+    <summary>
+      将记录指针向前或向后移动指定数量的记录。
+    </summary>
+    <param name="nRecordCount">相对于当前记录要移动的记录数。正值表示向前移动，负值表示向后移动。如果省略，则假定为 +1。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      如果进行了移动，则发送 NotifyRecordChange 消息。
+      如果 DBServer:Skip() 将 DBServer 定位到最后一条记录之外，DBServer:EOF 将被设置，并且 DBServer 将定位在最后一条记录上。
+    </remarks>
+  </DbServer.Skip>
+
+  <DbServer.Sort>
+    <summary>
+      将记录按排序顺序复制到另一个数据库文件。如果方法没有传递条件或范围，则受通用服务范围的限制。
+    </summary>
+    <param name="cTarget">记录复制到的文件。</param>
+    <param name="oFSTarget">一个字符串或文件规范对象，指定记录复制到的文件。</param>
+    <param name="cTarget">记录复制到的文件。</param>
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      操作完成后发送 NotifyRecordChange 消息。
+      此方法不会打开新文件，它只是创建磁盘上的文件。如果您想在之后打开它，只需直接实例化它：
+      <code language="X#">
+        oDB1:Sort(oFSTarget)
+        oDB2 := DBServer{oFSTarget}
+      </code>
+    </remarks>
+  </DbServer.Sort>
+
+  <DbServer.Status>
+    <summary>
+      标识上次操作后状态的 HyperLabel 对象。如果
+    </summary>
+    <value>标识上次操作后状态的 HyperLabel 对象。如果</value>
+    <remarks>
+      标识上次操作后状态的 HyperLabel 对象。
+      如果上次操作成功，DBServer:Status 返回NULL_OBJECT；如果出现问题(无论是引发错误条件还是仅返回失败代码)，
+      DBServer:Status 返回一个信息丰富的 HyperLabel 对象。
+      通过访问此超标签的属性，您不仅可以检索引发的条件的描述，还可以检索有关引发条件的上下文相关帮助。
+    </remarks>
+    <example>
+      以下示例调用了几个 DBServer:Status 访问/分配方法：
+      <code language="X#">
+        oDataServer:Status:Caption
+        oDataServer:Status:Description
+        oDataServer:Status:HelpContext
+      </code>
+    </example>
+  </DbServer.Status>
+
+  <DbServer.Sum>
+    <summary>
+      计算一系列数值表达式的总和。
+    </summary>
+    <param name="acbExpression">Sum() 操作的单个表达式或 Sum() 操作的表达式数组。</param>
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <returns>
+      包含每个指定表达式或字段总和的数组。
+    </returns>
+    <remarks>
+      在操作之前发送NotifyIntentToMove消息。
+      成功完成后，当前记录将是最后一条文件记录，并且 DBServer:EOF 将为 TRUE。
+    </remarks>
+    <example>
+      以下示例计算了部门1348的工资、佣金和扣款总额：
+      <code language="X#">
+        aSums := oDB1:Sum({#Salary, #Commission, #Withholdings},{||Department=1348})
+        ? "Salary:", aSums[1]
+        ? "Commission:", aSums[2]
+        ? "Withholdings:", aSums[3]
+      </code>
+    </example>
+  </DbServer.Sum>
+
+  <DbServer.SuspendNotification>
+    <summary>
+      暂停向服务的附加客户端广播 Notify 消息。
+    </summary>
+    <remarks>
+      此方法很有用，例如，当服务在数据库中移动并且服务最终恢复到其原始位置时。因此，没有理由通知服务的客户端数据库中的位置变化。
+      请注意，DBServer:SuspendNotification() 会堆叠其调用。因此，对于每次调用 DBServer:SuspendNotification()，
+      需要有相应的调用 DBServer:ResetNotification()。
+    </remarks>
+  </DbServer.SuspendNotification>
+
+  <DbServer.TableExt>
+    <summary>返回打开的 DBF 的扩展名。通常是.DBF，但如果打开了具有不同扩展名的文件，则可能不同。</summary>
+    <value>打开的 DBF 的扩展名</value>
+  </DbServer.TableExt>
+
+  <DbServer.Total>
+    <summary>
+      按键值汇总记录，生成分组汇总，并将汇总记录写入另一个数据库。
+    </summary>
+    <param name="oFSTarget">一个字符串或文件规范对象，指定汇总数据写入的文件。</param>
+    <param name="cbKeyField">此服务中作为汇总基础的键字段。请注意，为了使汇总产生正确的结果，表应按此键字段进行索引或排序。</param>
+    <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      在操作之前发送 NotifyIntentToMove 消息。
+      操作完成后发送 NotifyRecordChange 消息。
+    </remarks>
+    <example>
+      此方法不会打开新文件，它只是创建磁盘上的文件。如果您想在之后打开它，只需直接实例化它。
+      <code language="X#">
+        IF oDB1:Total(oFSTarget)
+        oDB2 := DBServer{oFSTarget}
+        ELSE
+        ...
+        ENDIF
+      </code>
+    </example>
+  </DbServer.Total>
+
+  <DbServer.UnLock>
+    <summary>
+      释放指定的锁或所有锁。
+    </summary>
+    <param name="nRecordNumber">所需记录的编号。如果为0或省略，则释放此服务的所有锁，包括记录锁和文件锁。</param>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+  </DbServer.UnLock>
+
+  <DbServer.Update>
+    <summary>
+      使用另一个服务或表中的数据更新此服务。
+    </summary>
+    <param name="oDbServer">提供新数据的数据库。</param>
+    <param name="cbKey">定义服务之间记录匹配方式的键字段。</param>
+    <param name="lRandomFlag">指示其他数据库中的记录是否允许随机顺序。如果为 FALSE 或未指定，则其他数据库必须按指定键排序。</param>
+    <param name="cbReplace">执行更新操作的代码块。</param>
+    <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
+    <remarks>
+      <note type="tip">
+        此方法需要文件锁或独占访问。
+      </note>
+      操作完成后发送 NotifyFileChange 消息。
+      服务之间的匹配关系有两种不同的形式。
+      如果 <paramref name="lRandomFlag" /> 为 TRUE，则此服务必须按指定键进行索引，但其他服务可以按任何顺序排列；
+      如果未指定 <paramref name="lRandomFlag" /> 或为 FALSE，则两个服务必须按指定键进行索引或排序。
+      如果此服务中有多个记录具有匹配的键字段，则仅更新第一个记录。
+    </remarks>
+  </DbServer.Update>
+
+  <DbServer.Used>
+    <summary>
+      指示服务当前是否打开的逻辑值
+    </summary>
+    <value>指示服务当前是否打开的逻辑值</value>
+    <remarks>
+      指示服务当前是否打开的逻辑值。如果服务成功打开，DBServer:Used 返回 TRUE；
+      如果服务已关闭或发生严重错误导致表不可用，则返回 FALSE。在这种情况下，可以通过 DBServer:Status 或拦截错误条件获取更多信息。
+      如果 DBServer:Used 为 FALSE，则属性和方法返回 NIL、FALSE 或类似的空值。
+    </remarks>
+  </DbServer.Used>
+
+  <DbServer.WhileBlock>
+    <summary>
+      影响多个批处理方法的“通用服务范围”的“WHILE块”组件，如果它们在没有明确范围的情况下调用
+    </summary>
+    <value>影响多个批处理方法的“通用服务范围”的“WHILE块”组件，如果它们在没有明确范围的情况下调用</value>
+    <remarks>
+      影响多个批处理方法的“通用服务范围”的“WHILE块”组件，如果它们在没有明确范围的情况下调用。访问始终返回一个代码块。
+      指定WHILE块使方法处理所有剩余记录，直到WHILE块评估为FALSE，当然，受其他范围设置的限制。指定WHILE块使范围默认为REST。
+    </remarks>
+    <example>
+      此示例将代码块分配给 WhileBlock 以限制召回操作的范围：
+      <code language="X#">
+        // RECALL WHILE Last == "Smith" ALL
+        oDB:WhileBlock := {|| Last == "Smith"}
+        oDB:Scope := DBSCOPEALL
+        oDB:Recall()
+      </code>
+    </example>
+  </DbServer.WhileBlock>
+
+  <DbServer.WorkArea>
+    <summary>
+      表示服务的工作区编号
+    </summary>
+    <value>表示服务的工作区编号</value>
+  </DbServer.WorkArea>
+
+  <DbServer.Zap>
+    <summary>
+      永久删除服务中的所有记录并释放磁盘空间。
+    </summary>
+    <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+    <remarks>
+      <note type="tip">此方法需要独占访问。</note>
+      操作完成后发送 NotifyFileChange 消息。
+    </remarks>
+  </DbServer.Zap>
+
+
+</doc>

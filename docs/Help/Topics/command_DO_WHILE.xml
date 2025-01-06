@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-10-22T13:01:00.417-07:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T15:10:37.146+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>DO WHILE Statement</title>
   <keywords>
     <keyword>Branching</keyword>
@@ -18,7 +18,7 @@
       <para styleclass="Heading1">DO WHILE Statement</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Execute a loop while a condition is TRUE.</para>
+    <para styleclass="Normal">Executes a loop while a condition is TRUE.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">[DO] WHILE &lt;<text styleclass="Italic">lCondition</text>&gt;</para>
     <para styleclass="Normal"><tab />&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
@@ -32,11 +32,11 @@
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__ExitLoop" inline="false"/></para>
     <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">When the condition evaluates to TRUE, control passes into the structure and proceeds until an EXIT, LOOP, or ENDDO is encountered. &#160;ENDDO returns control to the DO WHILE statement and the process repeats itself. &#160;If the condition evaluates to FALSE, the DO WHILE construct terminates and control passes to the statement immediately following the ENDDO.</para>
+    <para styleclass="Normal">When the condition evaluates to TRUE, control passes into the structure and proceeds until an EXIT, LOOP, or ENDDO is encountered. &#160;ENDDO returns control to the DO WHILE statement and the process repeats itself. If the condition evaluates to FALSE, the DO WHILE construct terminates and control passes to the statement immediately following the ENDDO.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Use EXIT to terminate a DO WHILE structure based on a condition other than the DO WHILE condition. &#160;LOOP, by contrast, prevents execution of statements within a DO WHILE based on an intermediate condition, and returns to the most recent DO WHILE statement.</para>
+    <para styleclass="Normal">Use EXIT to terminate a DO WHILE structure based on a condition other than the DO WHILE condition. LOOP, by contrast, prevents execution of statements within a DO WHILE based on an intermediate condition, and returns to the most recent DO WHILE statement.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Control structures can be nested to any depth. &#160;The only requirement is that each control structure be properly nested.</para>
+    <para styleclass="Normal">Control structures can be nested to any depth. The only requirement is that each control structure be properly nested.</para>
     <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">This example demonstrates a typical control structure for a simple grouped report:</para>
     <para styleclass="Normal"></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-31T14:00:05.343+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T18:12:52.001+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-memvar</title>
   <keywords>
     <keyword>-memvar</keyword>
@@ -9,7 +9,7 @@
     <header>
       <para styleclass="Heading1">-memvar</para>
     </header>
-    <para styleclass="Normal">The -<text styleclass="Body Text">memvar</text> option tells the compiler to enable the support for &#160;&apos;memory variables&apos;. This option is also needed in the FoxPro dialect if you want to make local variables visible to the macro compiler.</para>
+    <para styleclass="Normal">The -<text styleclass="Body Text">memvar</text> option tells the compiler to enable the support for &#160;&apos;memory variables&apos;. This option is also needed in the FoxPro dialect if you want to make local variables visible to the macro compiler with the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">-fox2</link> compilation option.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Code with box">-memvar [+ | -] &#160;</para>
     <para styleclass="Heading2">Arguments</para>
@@ -23,6 +23,7 @@
     <para styleclass="Body Text">PRIVATE &lt;MemVarName,...&gt; </para>
     <para styleclass="Body Text">PARAMETERS &lt;ParameterName,,...&gt; </para>
     <para styleclass="Body Text"></para>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
     <para styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></para>
   </body>
 </topic>

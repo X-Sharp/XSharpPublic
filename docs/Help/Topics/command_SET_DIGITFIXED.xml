@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-16T14:29:09.569+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SET DIGITFIXED Command</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -15,17 +15,17 @@
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Change the setting that fixes the number of digits used to display numeric output.</para>
-        <para styleclass="Heading1"><text>Syntax</text></para>
+    <para styleclass="Normal">Changes the setting that fixes the number of digits used to display numeric output.</para>
+    <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">SET DIGITFIXED ON | OFF | (&lt;<text styleclass="Italic">lToggle</text>&gt;)</para>
-        <para styleclass="Heading1"><text>Arguments</text></para>
+    <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">ON <tab /></para>
     <para styleclass="List">OFF<tab /></para>
-    <para styleclass="List">lToggle<tab /><text styleclass="Body Text">A logical expression which must appear in parentheses. True is equivalent to ON, False to OFF</text></para>
-    <para styleclass="Heading1"><text>Description</text></para>
+    <para styleclass="List">lToggle<tab /><text styleclass="Body Text">A logical expression which must appear in parentheses. True is equivalent to ON, False to OFF.</text></para>
+    <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">SET DIGITFIXED is functionally equivalent to SetDigitFixed(). &#160;</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
-        <para styleclass="Heading1"><text>See Also</text></para>
+    <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDigitFixed.htm" domain="XSharpRef.chm">SetDigitFixed()</link></para>
     <para styleclass="Normal"></para>
   </body>

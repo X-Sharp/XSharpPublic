@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-14T14:39:10.853+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SET OPTIMIZE Command</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -24,11 +24,11 @@
     <para styleclass="List"></para>
     <para styleclass="List">OFF<tab />Turns optimization off.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;lToggle&gt;<tab />Turns optimization on if TRUE or off is FALSE.</para>
+    <para styleclass="List">&lt;lToggle&gt;<tab />Turns optimization on if TRUE, or off if FALSE.</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />Note: &#160;The initial default of this setting depends on the RDD. &#160;Check RDDInfo(_SET_OPTIMIZE) to find out the setting for the RDD in use for the current work area.</para>
+    <para styleclass="List"><tab />Note: &#160;The initial default of this setting depends on the RDD. Check RDDInfo(_SET_OPTIMIZE) to find out the setting for the RDD in use for the current work area.</para>
     <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">For RDDs that support optimization, such as DBFCDX, SET OPTIMIZE determines whether to optimize filters based on the orders open in the current work area. &#160;If this flag is ON, the RDD will optimize the search for records that meet the filter condition to the fullest extent possible, minimizing the need to read the actual data from the database file.</para>
+    <para styleclass="Normal">For RDDs that support optimization, such as DBFCDX, SET OPTIMIZE determines whether to optimize filters based on the orders open in the current work area. If this flag is ON, the RDD will optimize the search for records that meet the filter condition to the fullest extent possible, minimizing the need to read the actual data from the database file.</para>
     <para styleclass="Normal">If this flag is OFF, the RDD will not optimize.</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
     <para styleclass="Heading1">See Also</para>

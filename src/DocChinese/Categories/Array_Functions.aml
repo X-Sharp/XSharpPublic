@@ -1,0 +1,723 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:28 -->
+<topic id="cat-Array_Functions" revisionNumber="1" title="Array Functions">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <section address="Section1">
+      <title>Array Functions</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Assembly</para>
+              </entry>
+              <entry>
+                <para>Function</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AAdd(XSharp.__Array,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Add a new element to the end of an array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AClone(XSharp.__Array)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Duplicate a multidimensional array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ACloneShallow(XSharp.__Array)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Duplicate an array without its subarrays.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ACopy(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Copy elements from one array to another.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ADel(XSharp.__Array,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Delete an array element.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ADel(XSharp.__FoxArray,System.Int32,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Deletes an element from a one-dimensional array, or a row or column from a two-dimensional array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ADim(XSharp.__Array)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Calculate the # of dimensions in an array</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ADimPic(XSharp.__Array)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Calculate a string that represents the dimensions in an array</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ADir(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Fill a series of arrays with directory information.
+            Note:
+            ADir() is a compatibility function and therefore not recommended.
+            It is superseded by the Directory() function, which returns all file information in a multidimensional array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AElement(XSharp.__FoxArray,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Returns the number of an array element from the element's subscripts.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AEval(XSharp.__Array,XSharp.ICodeblock)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Execute a code block for each element in an array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AEvalA(XSharp.__Array,XSharp.ICodeblock)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Execute a code block for each element in an array and assign the return value to each element in the array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AEvalOld(XSharp.__Array,XSharp.ICodeblock,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Execute a code block for each element in an array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AFields(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Fill arrays with the structure of the current database file.
+            Note:
+            AFields() is a compatibility function and therefore not recommended.
+            It is superseded by DBStruct(), which does not require the existence of any arrays prior to invocation and returns a multidimensional array containing the current database file structure.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AFill(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Fill array elements with a specified value.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AIns(XSharp.__Array,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Insert an element into an array and assign it a NIL value.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AIns(XSharp.__FoxArray,System.UInt32,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Inserts an element into a one-dimensional array, or a row or column into a two-dimensional array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ALen(XSharp.__Array)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Return the number of elements in an array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ALen(XSharp.__FoxArray)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Returns the number of elements, rows, or columns in an array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ALines(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>-- todo --</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AReplicate(XSharp.__Usual,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            To create an array and fill its elements with a default value.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Array</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Create an uninitialized array with the specified number of elements and dimensions.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArrayBuild</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Create an empty array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArrayCreate(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Create an uninitialized, one-dimensional array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArrayDeProtect(XSharp.__Array)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Removes write protection from an entire array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArrayGet(XSharp.__Array,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Read an array element.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArrayInit(System.UInt32,XSharp.__Usual[]@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Create an initialized array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArrayNew</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Create an uninitialized array with the specified number of elements and dimensions.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArrayProtect(XSharp.__Array)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Protect an array from change in all functions except the one in which it was declared.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArrayPut(XSharp.__Array,System.UInt32,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Write a value to an array element.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArrayStore(XSharp.__Array,XSharp.__Usual*,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Store an array to a buffer.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArraySwap(XSharp.__Array,System.UInt32,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Replace an array element with a new value and return the old value.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Scan an array until a value is found or a code block returns TRUE.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScanBin(XSharp.__Array,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Scan a sorted array until a value is found or a code block returns 0.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScanBinExact(XSharp.__Array,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Scan a sorted array until there is an exact match or a code block returns 0.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScanExact(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Scan an array until there is an exact match or a code block returns TRUE.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ASize(XSharp.__Array,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Grow or shrink an array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ASize(XSharp.__Array,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>M:XSharp.VFP.Functions.ASize(XSharp.__Array,System.UInt32)VfpRuntimeDocs.xmlRuntimefunctions/asize/*</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ASort(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Sort an array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ASubScript(XSharp.__FoxArray,System.UInt32,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Returns the row or column subscript of an element from the element's number.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ATagInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>-- todo --</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ATail(XSharp.__Array)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Return the highest numbered element of an array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ATrueDel(XSharp.__Array,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Delete an array element.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AUsed(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>-- todo --</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Harbour</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Harbour.Functions.Hb_ADel(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+        Delete an element from an array and optionally adjust the length of the array.
+      </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Harbour</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Harbour.Functions.Hb_AIns(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+        Inserts a value at an array subscript position and optionally increases the length of array.
+      </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ShowArray(XSharp.__Array,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Dump the contents of an array to the terminal window</para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
+  </developerConceptualDocument>
+</topic>

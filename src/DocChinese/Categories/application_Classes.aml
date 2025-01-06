@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
+<topic id="cat-Application_Classes" revisionNumber="1" title="Application Classes">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <section address="Section1">
+      <title>Application Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>System.Linq</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:System.Linq.ExtensionMethods</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.App</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create an entity that represents the overall application. Please note that you have to create a subclass of App in your code and add a Start() method to this class. You can't add a Start() method to the App() class inside GUI Classes like you can in VO.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.AppWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Provide the base class from which all X# application windows are subclassed.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Clipboard</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>T:VO.ClipboardGui.xmldoc/Clipboard/*</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DragDropClient</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create the client for use in a drag-and-drop operation.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DragDropServer</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create the server for use in a drag-and-drop operation.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.IpcClient</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Register an application as a client able to request and receive data from a designated server application.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.IpcServer</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Register an application as a server able to access data on specific topics and update registered topics and update registered client applications.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.IpcTopic</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create topic (and items) to be supported by an IPC server and which IPC clients can request. These objects are used by IpcServer:AddTopic() and IpcClient:RequestData().
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.IpcTopicData</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Create a global memory object and pass a data handle back to the application.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ResourceFile</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Identify a file containing resource information.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ResourceID</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Identify and create a ResourceID using a numeric resource ID.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ResourceString</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Extract strings from a resource entity.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Codeblock</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Internal type that implements the VO Compatible CODEBLOCK type
+            This type has methods that normally are never directly called from user code.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IDynamicProperties2</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Debugger</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Debugger.GlobalsWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            The Globals Window shows the globals in all the loaded assemblies that were compiled with X#.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Debugger</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Debugger.MemVarsWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            The MemVars Window shows the Public and private memory variables for the current thread.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Debugger</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Debugger.SettingsWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            The Settings Window shows the global settings for the current thread.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Debugger</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Debugger.VariablesWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Debugger</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Debugger.WorkareasWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            The Workareas window shows the open workareas/cursors in the current thread.
+            Cursors for SqlExec() (FoxPro dialect) are also included.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VFP.NameValuePair</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VFP.PropertyContainer</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VFP.PropertyDescriptor</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
+  </developerConceptualDocument>
+</topic>

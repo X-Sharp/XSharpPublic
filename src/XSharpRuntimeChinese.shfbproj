@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <!-- The configuration and platform will be used to determine which assemblies to include from solution and
@@ -226,10 +226,10 @@
     <TopicVersion>100</TopicVersion>
     <MSHelpViewerSdkLinkType>Msdn</MSHelpViewerSdkLinkType>
     <CatalogName>VisualStudio15</CatalogName>
-    <ProjectSummary>            This is the generated documentation for the XSharp Runtime and VO SDK.&amp;lt%3bbr/&amp;gt%3b
-            Please note that DotNet does not know the concept of a function. Therefore the compiler converts functions to static methods of a compiler generated functions class. &amp;lt%3bbr/&amp;gt%3b
-            The same is true for DEFINES. These are added as constants fields in the functions class.&amp;lt%3bbr/&amp;gt%3b
-            The XSharp runtime has a couple of these classes:&amp;lt%3bbr/&amp;gt%3b
+    <ProjectSummary>            这是生成的 XSharp Runtime 和 VO SDK 文档。&amp;lt%3bbr/&amp;gt%3b
+            请注意，DotNet 没有函数的概念。因此，编译器会将函数转换为编译器生成的函数类的静态方法。 &amp;lt%3bbr/&amp;gt%3b
+            DEFINES 也是如此。这些字段作为常量字段添加到函数类中。&amp;lt%3bbr/&amp;gt%3b
+            XSharp 运行时有几个这样的类：&amp;lt%3bbr/&amp;gt%3b
             &amp;lt%3blist type=&amp;quot%3bbullet&amp;quot%3b&amp;gt%3b
             &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_Core_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.Core.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
             &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_RT_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.RT.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
@@ -240,25 +240,25 @@
             &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_Harbour_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.Harbour.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
             &amp;lt%3b/list&amp;gt%3b &amp;lt%3bbr /&amp;gt%3b
 
-			and more.
-            There is no need to do anything special when writing code. The compiler will automatically resolve function calls, such as:
-            &amp;lt%3bc&amp;gt%3bLeft%28cString,10%29 &amp;lt%3b/c&amp;gt%3b and will generate the following output  &amp;lt%3bc&amp;gt%3bXSharp.Core.Functions.Left%28cString,10%29&amp;lt%3b/c&amp;gt%3b.
-            The compiler will also translate a define such as  &amp;lt%3bc&amp;gt%3bFA_NORMAL &amp;lt%3b/c&amp;gt%3b  to   &amp;lt%3bc&amp;gt%3bXSharp.Core.Functions.FA_NORMAL&amp;lt%3b/c&amp;gt%3b.&amp;lt%3bbr/&amp;gt%3b
-            In fact the compiler will include the value of this DEFINE in the generated code.
-            You will not be able to see in the generated code that the value  &amp;lt%3bc&amp;gt%3b0x00000080 &amp;lt%3b/c&amp;gt%3bwas read from the &amp;lt%3bc&amp;gt%3bFA_NORMAL&amp;lt%3b/c&amp;gt%3b define.&amp;lt%3bbr/&amp;gt%3b
-            The source code for the XSharp Runtime is available &amp;lt%3ba href=&amp;quot%3bhttps://github.com/X-Sharp/XSharpPublic/tree/feature/Runtime/&amp;quot%3b _target=&amp;quot%3b_blank&amp;quot%3b &amp;gt%3bon GitHub. &amp;lt%3b/a&amp;gt%3b &amp;lt%3bbr/&amp;gt%3b
-            If you find bugs with this code, please report them  by sending an email to  bugreports%40xsharp.eu.&amp;lt%3bbr/&amp;gt%3b
-            Or even better,  locate the bug and send us a bugfix.&amp;lt%3bbr/&amp;gt%3b
-            The best way to do that is :&amp;lt%3bbr/&amp;gt%3b
+			以及更多。
+            编写代码时无需做任何特殊处理。编译器会自动解析函数调用，如:
+            &amp;lt%3bc&amp;gt%3bLeft%28cString,10%29 &amp;lt%3b/c&amp;gt%3b 将生成以下输出  &amp;lt%3bc&amp;gt%3bXSharp.Core.Functions.Left%28cString,10%29&amp;lt%3b/c&amp;gt%3b.
+            编译器也会翻译诸如  &amp;lt%3bc&amp;gt%3bFA_NORMAL &amp;lt%3b/c&amp;gt%3b  到   &amp;lt%3bc&amp;gt%3bXSharp.Core.Functions.FA_NORMAL&amp;lt%3b/c&amp;gt%3b.&amp;lt%3bbr/&amp;gt%3b
+            事实上，编译器会在生成的代码中包含该 DEFINE 的值。
+            在生成的代码中，您将无法看到&amp;lt%3bc&amp;gt%3b0x00000080&amp;lt%3b/c&amp;gt%3b的值是从&amp;lt%3bc&amp;gt%3bFA_NORMAL&amp;lt%3b/c&amp;gt%3b定义中读取的。&amp;lt%3bbr/&amp;gt%3b
+            XSharp 运行时的源代码可在&amp;lt%3ba href=&amp;quot%3bhttps://github.com/X-Sharp/XSharpPublic/tree/feature/Runtime/&amp;quot%3b _target=&amp;quot%3b_blank&amp;quot%3b &amp;gt%3b GitHub &amp;lt%3b/a&amp;gt%3b获取 。&amp;lt%3bbr/&amp;gt%3b
+            如果您发现此代码存在错误，请发送电子邮件至 bugreports%40xsharp.eu 进行报告。&amp;lt%3bbr/&amp;gt%3b
+            或者更好的办法是，找到错误并向我们发送错误修复程序。&amp;lt%3bbr/&amp;gt%3b
+            最好的办法是 ：&amp;lt%3bbr/&amp;gt%3b
             &amp;lt%3blist type=&amp;quot%3bbullet&amp;quot%3b&amp;gt%3b
-            &amp;lt%3bitem&amp;gt%3bCreate a Fork of our Github repository&amp;lt%3b/item&amp;gt%3b
-            &amp;lt%3bitem&amp;gt%3bCreate a unit test in the appropriate unit tests project&amp;lt%3b/item&amp;gt%3b
-            &amp;lt%3bitem&amp;gt%3bFix the problem&amp;lt%3b/item&amp;gt%3b
-            &amp;lt%3bitem&amp;gt%3bSend us a pull request for the unit test and the bug fix&amp;lt%3b/item&amp;gt%3b
+            &amp;lt%3bitem&amp;gt%3b创建 Github 仓库的 Fork&amp;lt%3b/item&amp;gt%3b
+            &amp;lt%3bitem&amp;gt%3b在相应的单元测试项目中创建单元测试&amp;lt%3b/item&amp;gt%3b
+            &amp;lt%3bitem&amp;gt%3b修复问题&amp;lt%3b/item&amp;gt%3b
+            &amp;lt%3bitem&amp;gt%3b向我们发送单元测试和错误修复的 pull 请求&amp;lt%3b/item&amp;gt%3b
             &amp;lt%3b/list&amp;gt%3b
-            Of course you can also discuss issues you have or send us your comments on the forum &amp;lt%3ba href=&amp;quot%3bhttps://www.xsharp.eu&amp;quot%3b  _target=&amp;quot%3b_blank&amp;quot%3b &amp;gt%3bon our website &amp;lt%3b/a&amp;gt%3b&amp;lt%3bbr/&amp;gt%3b
-            Finally, if you like what you are seeing, you can help to support the X# development by subscribing to the &amp;quot%3bFriends Of XSharp&amp;quot%3b %28FOX%29 program. &amp;lt%3bbr/&amp;gt%3b
-            More information about that program can be found at our website as well.&amp;lt%3bbr/&amp;gt%3b
+            当然，您也可以在我们网站的&amp;lt%3ba href=“https://www.xsharp.eu” _target=“_blank” &amp;gt%3b论坛&amp;lt%3b/a&amp;gt%3b上讨论您遇到的问题或向我们提出您的意见 &amp;lt%3b/a&amp;gt%3b 。
+            最后，如果您喜欢所看到的内容，可以通过订阅 “Friends Of XSharp”（FOX）计划来支持 X# 的开发。&amp;lt%3bbr/&amp;gt%3b
+            有关该计划的更多信息，请访问我们的网站。&amp;lt%3bbr/&amp;gt%3b
         </ProjectSummary>
     <WorkingPath>..\Artifacts\obj\Help\</WorkingPath>
     <SearchResultsDisplayVersion>X#</SearchResultsDisplayVersion>

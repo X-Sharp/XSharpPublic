@@ -445,17 +445,24 @@ partial class SQLRDD inherit DBFVFP
         if self:_oTd:SeekReturnsSubset
             var cSeekWhere := CurrentOrder:SeekExpression(seekInfo )
             self:_OpenTable(cSeekWhere)
+            if seekInfo:Last
+                return self:GoBottom()
+            else
+                return self:GoTop()
+            endif
         ELSE
             SELF:_ForceOpen()
             SELF:GoTop()
             oKey := SELF:CurrentOrder:VerifyKeyType(oKey)
+            SELF:RowNumber := 1
+            SELF:_Found := FALSE
             IF SELF:CurrentOrder:KeyCache:TryGetValue(oKey, out var nKey)
                 SELF:RowNumber := nKey
                 SELF:_Found := TRUE
-                RETURN TRUE
+                IF ! seekInfo:Last
+                    RETURN TRUE
+                endif
             ENDIF
-            SELF:RowNumber := 1
-            SELF:_Found := FALSE
             // Linear search for now
             DO WHILE ! SELF:EoF
                 var oRecKey := SELF:CurrentOrder:KeyValue
@@ -465,17 +472,34 @@ partial class SQLRDD inherit DBFVFP
                 var nDiff := SELF:KeyCompare(oRecKey, oKey)
                 if  nDiff == 0
                     SELF:_Found := TRUE
-                    RETURN TRUE
+                    EXIT
                 ELSEIF seekInfo:SoftSeek .AND. nDiff > 0
                     SELF:_Found := FALSE
-                    RETURN TRUE
+                    EXIT
                 endif
                 SELF:RowNumber += 1
                 SELF:_CheckEofBof()
                 SELF:SkipFilter(1)
             ENDDO
-            SELF:_Found := FALSE
-            RETURN TRUE
+            if seekInfo:Last
+                var foundRecord := SELF:RowNumber
+                SELF:RowNumber += 1
+                DO WHILE ! SELF:EoF
+                    var oRecKey := SELF:CurrentOrder:KeyValue
+                    // no need to add values to keycache, these values will be duplicates anyway
+                    var nDiff := SELF:KeyCompare(oRecKey, oKey)
+                    IF nDiff != 0
+                        EXIT
+                    ENDIF
+                    foundRecord := SELF:RowNumber
+                    SELF:RowNumber += 1
+                    SELF:_CheckEofBof()
+                    SELF:SkipFilter(1)
+                ENDDO
+                SELF:RowNumber := foundRecord
+                SELF:_SetEOF(FALSE)
+            endif
+
         endif
         return true
     end method

@@ -11,8 +11,7 @@
     /// <summary>
     /// Specifies whether memo fields of type Long text or Long binary are included in the WHERE clause when using automatic updating. This defaults to TRUE
     /// </summary>
-    /// <value></value>
-    property CompareMemo              as logic auto
+    property CompareMemo as logic auto
     /// <summary>
     /// Name of the Deleted column. When empty then rows will be physically deleted from the server
     /// </summary>
@@ -25,11 +24,11 @@
     /// Specifies whether the maximum value in the Recno column should be used as the RecCount property.
     /// This defaults to FALSE which means that the RecCount property returns the number of records in the table
     /// </summary>
-    property MaxRecnoAsRecCount       as logic auto
+    property MaxRecnoAsRecCount as logic auto
     /// <summary>
     /// What is the maximum number of records that the RDD should fetch when unfiltered.
     /// </summary>
-    property MaxRecords     as long auto
+    property MaxRecords as long auto
     /// <summary>
     /// Name of the Recno column. When empty then the relative row number is the record number
     /// </summary>
@@ -37,7 +36,7 @@
     /// <summary>
     /// Specifies whether a seek operation should return a subset of the records in the table.
     /// This defaults to TRUE which means that only the matching rows are returned.
-    /// When FALSE then all rows are returned, and the record pointer is positioned on the first matching row
+    /// When FALSE then all rows are returned, and a seek operation positions on the first matching row
     /// </summary>
     property SeekReturnsSubset as logic auto
     /// <summary>

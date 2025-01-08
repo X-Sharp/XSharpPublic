@@ -74,7 +74,6 @@ enum SqlRDDEventReason
     member MaxRecnoAsRecCount
 /// <summary>Should a seek return a subset (TRUE) or all rows (FALSE) </summary>
     member SeekReturnsSubset
-
 /// <summary>Retrieve TagName</summary>
     member TagName
 

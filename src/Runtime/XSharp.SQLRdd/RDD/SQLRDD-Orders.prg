@@ -105,6 +105,7 @@ partial class SQLRDD inherit DBFVFP
             oBag:Tags:Add(oTag)
             oBag:Save()
             CurrentOrder := oTag
+            CurrentOrder:ClearScopes()
             self:_CloseCursor()
             self:Connection:MetadataProvider:CreateIndex(SELF:_cTable, orderInfo)
             return TRUE
@@ -160,6 +161,7 @@ partial class SQLRDD inherit DBFVFP
             self:_CloseCursor()
             var currentRecord := SELF:RecNo
             SELF:CurrentOrder := self:FindOrder(orderInfo)
+            SELF:CurrentOrder:ClearCache()
             result := CurrentOrder != null
             if result .and. SELF:_recnoColumNo > -1
                 self:GoTo(currentRecord)
@@ -352,7 +354,7 @@ partial class SQLRDD inherit DBFVFP
             if workOrder != null
                 isOk := true
                 try
-                    info:Result := self:EvalBlock(workOrder:KeyCodeBlock)
+                    info:Result := workOrder:KeyValue
                 catch ex as Exception
                     isOk := false
                     self:_dbfError(ex, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX, "DBFCDX.OrderInfo")
@@ -414,6 +416,103 @@ partial class SQLRDD inherit DBFVFP
         end switch
         return info:Result
     end method
+
+   /// <summary>Perform a seek operation on the current selected index for the current Workarea.</summary>
+    /// <param name="info">An object containing containing the necessary seek information.</param>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <remarks>The result of the actial seek operation is stored in the Found property of the RDD and the EOF property.</remarks>
+    /// <remarks>
+    /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
+    /// </remarks>
+    override method Seek(seekInfo as DbSeekInfo) as logic
+        local oKey as object
+        // change behavior when all rows are read.
+        // In that case we can search in the local buffer
+        oKey := seekInfo:Value
+        if oKey == null         // Seek NIL
+            if seekInfo:Last
+                return self:GoBottom()
+            else
+                return self:GoTop()
+            endif
+        endif
+        if self:CurrentOrder == null
+            self:_dbfError(Subcodes.ERDD_DATATYPE, Gencode.EG_NOORDER, "SQLRDD:Seek","No current Order" )
+            return false
+        endif
+        if self:_oTd:SeekReturnsSubset
+            var cSeekWhere := CurrentOrder:SeekExpression(seekInfo )
+            self:_OpenTable(cSeekWhere)
+        ELSE
+            SELF:_ForceOpen()
+            SELF:GoTop()
+            oKey := SELF:CurrentOrder:VerifyKeyType(oKey)
+            IF SELF:CurrentOrder:KeyCache:TryGetValue(oKey, out var nKey)
+                SELF:RowNumber := nKey
+                SELF:_Found := TRUE
+                RETURN TRUE
+            ENDIF
+            SELF:RowNumber := 1
+            SELF:_Found := FALSE
+            // Linear search for now
+            DO WHILE ! SELF:EoF
+                var oRecKey := SELF:CurrentOrder:KeyValue
+                IF !(oRecKey IS NULL) .and. ! SELF:CurrentOrder:KeyCache:ContainsKey(oRecKey)
+                    SELF:CurrentOrder:KeyCache:Add(oRecKey, SELF:RowNumber)
+                endif
+                var nDiff := SELF:KeyCompare(oRecKey, oKey)
+                if  nDiff == 0
+                    SELF:_Found := TRUE
+                    RETURN TRUE
+                ELSEIF seekInfo:SoftSeek .AND. nDiff > 0
+                    SELF:_Found := FALSE
+                    RETURN TRUE
+                endif
+                SELF:RowNumber += 1
+                SELF:_CheckEofBof()
+                SELF:SkipFilter(1)
+            ENDDO
+            SELF:_Found := FALSE
+            RETURN TRUE
+        endif
+        return true
+    end method
+
+    PRIVATE METHOD KeyCompare(oRecKey as OBJECT, oKey as OBJECT) AS LONG
+        LOCAL result  AS INT64
+        IF oRecKey IS NULL
+            result := -1
+        ELSEIF oRecKey IS STRING var strRecKey
+            result := RuntimeState.StringCompare(strRecKey, oKey:ToString())
+        ELSEIF oRecKey IS LONG var nRecKey
+            result := nRecKey - (LONG) oKey
+        ELSEIF oRecKey IS INT64 var i64RecKey
+            result := i64RecKey - (INT64) oKey
+        ELSEIF oRecKey IS IFloat var fRecKey
+            result := (INT64) (fRecKey:Value - ((IFloat) oKey):Value)
+        ELSEIF oRecKey IS IDate var dRecKey
+            result := SELF:_DateCompare(dRecKey, (IDate) oKey)
+         ELSEIF oRecKey IS DateTime var dtRecKey
+            result := SELF:_DateTimeCompare(dtRecKey, (DateTime) oKey)
+        ELSE
+            result := 0
+        ENDIF
+        RETURN (LONG) result
+    END METHOD
+    PRIVATE METHOD _DateCompare(d1 as IDate, d2 as IDate) AS LONG
+        LOCAL result AS LONG
+        IF d1:Year != d2:Year
+            result := d1:Year - d2:Year
+        ELSEIF d1:Month != d2:Month
+            result := d1:Month - d2:Month
+        ELSE
+            result := d1:Day - d2:Day
+        ENDIF
+        RETURN result
+    END METHOD
+    PRIVATE METHOD _DateTimeCompare(d1 as DateTime, d2 as DateTime) AS LONG
+        return d1:CompareTo(d2)
+    END METHOD
 
 END CLASS
 END NAMESPACE // XSharp.SQLRdd

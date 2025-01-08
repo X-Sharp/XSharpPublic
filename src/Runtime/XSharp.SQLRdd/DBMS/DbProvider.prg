@@ -371,7 +371,7 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     /// <inheritdoc/>
     virtual method GetSqlColumnInfo(oInfo as RddFieldInfo, oConn as SqlDbConnection) as string
         local sResult := "" as string
-        var name := i"{SELF:QuoteIdentifier(oInfo.ColumnName)}"
+        var name := i"{SELF.QuoteIdentifier(oInfo.ColumnName)}"
         switch oInfo:FieldType
         case DbFieldType.Character
         case DbFieldType.VarChar

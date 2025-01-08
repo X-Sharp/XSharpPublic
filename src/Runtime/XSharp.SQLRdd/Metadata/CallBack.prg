@@ -36,6 +36,7 @@ CLASS SqlMetadataProviderCallBack Inherit SqlMetadataProviderAbstract
             _connection:TrimTrailingSpaces  := SELF:GetLogic(DefaultSection, SqlRDDEventReason.TrimTrailingSpaces, _connection:TrimTrailingSpaces)
             _connection:UpdateAllColumns    := SELF:GetLogic(DefaultSection, SqlRDDEventReason.UpdateAllColumns, _connection:UpdateAllColumns)
             _connection:MaxRecnoAsRecCount  := SELF:GetLogic(DefaultSection,  SqlRDDEventReason.MaxRecnoAsRecCount, _connection:MaxRecnoAsRecCount)
+            _connection:SeekReturnsSubset   := SELF:GetLogic(DefaultSection,  SqlRDDEventReason.SeekReturnsSubset, _connection:SeekReturnsSubset)
             hasDefaults := true
         endif
         RETURN
@@ -59,8 +60,9 @@ CLASS SqlMetadataProviderCallBack Inherit SqlMetadataProviderAbstract
         oTable:CompareMemo       := SELF:GetLogic(cTable, SqlRDDEventReason.CompareMemo,     _connection:CompareMemo)
         oTable:UpdateAllColumns  := SELF:GetLogic(DefaultSection, SqlRDDEventReason.UpdateAllColumns, _connection:UpdateAllColumns)
         oTable:MaxRecnoAsRecCount:= SELF:GetLogic(cTable, SqlRDDEventReason.MaxRecnoAsRecCount,   _connection:MaxRecnoAsRecCount)
+        oTable:SeekReturnsSubset := SELF:GetLogic(cTable, SqlRDDEventReason.SeekReturnsSubset,   _connection:SeekReturnsSubset)
 
-        // these fields have no defaults
+        // these fields have no connection wide defaults
         oTable:ServerFilter         := SELF:GetString(cTable, SqlRDDEventReason.ServerFilter,       DEFAULT_SERVERFILTER)
         oTable:ColumnList           := SELF:GetString(cTable, SqlRDDEventReason.ColumnList,         DEFAULT_COLUMNLIST)
         oTable:UpdatableColumns     := SELF:GetString(cTable, SqlRDDEventReason.UpdatableColumns,   DEFAULT_UPDATABLECOLUMNS)

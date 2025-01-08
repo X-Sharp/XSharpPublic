@@ -53,7 +53,6 @@ partial class SQLRDD inherit DBFVFP
     private _numHiddenColumns as long
     private _serverReccount as LONG
     private _baseRecno as logic
-    private _allRowsRead as logic
 
 #region Properties
     internal property Connection     as SqlDbConnection get _connection
@@ -75,6 +74,9 @@ partial class SQLRDD inherit DBFVFP
                 return
             endif
             _table := value
+            if _table is NULL
+                return
+            endif
             self:_RecCount   	:= _table:Rows:Count
             self:_phantomRow 	:= _table:NewRow()
             var prop := _table:GetType():GetProperty("EnforceConstraints", BindingFlags.Instance+BindingFlags.NonPublic)
@@ -105,15 +107,17 @@ partial class SQLRDD inherit DBFVFP
                 _recordKeyCache := Dictionary<long, long>{_RecCount}
                 // save the record numbers
                 var rowNum := 0
-                foreach row as DataRow in _table:Rows
-                    var obj     := row[self:_recnoColumNo]
-                    var recno  := Convert.ToInt32(obj)
-                    _recordKeyCache[recno] := rowNum
-                    rowNum++
-                    #ifdef TRACERDD
-                    System.Diagnostics.Debug.WriteLine("Datatable Row {0}, Record {1}", rowNum, recno )
-                    #endif
-                next
+                if _table:Rows:Count > 0
+                    foreach row as DataRow in _table:Rows
+                        var obj     := row[self:_recnoColumNo]
+                        var recno  := Convert.ToInt32(obj)
+                        _recordKeyCache[recno] := rowNum
+                        rowNum++
+                        #ifdef TRACERDD
+                        System.Diagnostics.Debug.WriteLine("Datatable Row {0}, Record {1}", rowNum, recno )
+                        #endif
+                    next
+                endif
             else
                 _recordKeyCache := null
             endif
@@ -130,8 +134,6 @@ partial class SQLRDD inherit DBFVFP
             super:GoTo(1)
             self:_baseRecno  := old
             SELF:_CheckEofBof()
-            var serverRowCount := _builder:GetRecCount()
-            self:_allRowsRead  := serverRowCount == _RecCount
         end set
     end property
 

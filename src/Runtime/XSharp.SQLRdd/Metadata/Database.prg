@@ -68,6 +68,7 @@ end class
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.TrimTrailingSpaces),"L", 1,0},_connection:TrimTrailingSpaces})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.CompareMemo),"L", 1,0},_connection:CompareMemo})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.MaxRecnoAsRecCount),"L", 1,0},_connection:MaxRecnoAsRecCount})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.SeekReturnsSubset),"L", 1,0},_connection:SeekReturnsSubset})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.UpdatableColumns),"C", 255,0},DEFAULT_UPDATABLECOLUMNS})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.ColumnList),"C", 255,0},DEFAULT_COLUMNLIST})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.KeyColumns),"C", 255,0},DEFAULT_KEYCOLUMNS})
@@ -247,12 +248,12 @@ end class
                 SELF:CreateDictionary()
             ELSE
                 // Check if the table dictionary has at least one record
-
                 cmd:CommandText := i"SELECT COUNT(*) FROM {tableDict}"
                 var count := cmd:ExecuteScalar()
                 if Convert.ToInt64(count) == 0
                     SELF:CreateDictionary()
                 endif
+                // Check new MaxRecnoAsRecCount field
                 cmd:CommandText := i"Select maxrecnoasreccount from {tableDict}"
                 local ok := false as logic
 
@@ -265,6 +266,23 @@ end class
                     if ok
                         colInfo := Connection:Provider:QuoteIdentifier(oInfo:Name)
                         cmd:CommandText := i"update {tableDict} set "+colInfo+" = "+Connection:Provider:FalseLiteral
+                        ok := cmd:ExecuteNonQuery(tableDict)
+                    endif
+                endif
+
+                // Check new SeekReturnsSubset field
+
+                cmd:CommandText := i"Select seekreturnssubset from {tableDict}"
+
+                ok := cmd:ExecuteNonQuery(tableDict)
+                if ! ok
+                    var oInfo := RddFieldInfo{nameof(SqlRDDEventReason.SeekReturnsSubset),"L", 1,0}
+                    var colInfo := Connection:Provider:GetSqlColumnInfo(oInfo, Connection)
+                    cmd:CommandText := i"alter table {tableDict} add "+colInfo
+                    ok := cmd:ExecuteNonQuery(tableDict)
+                    if ok
+                        colInfo := Connection:Provider:QuoteIdentifier(oInfo:Name)
+                        cmd:CommandText := i"update {tableDict} set "+colInfo+" = "+Connection:Provider:TrueLiteral
                         ok := cmd:ExecuteNonQuery(tableDict)
                     endif
                 endif
@@ -284,6 +302,7 @@ end class
                     _connection:CompareMemo         := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.CompareMemo),_connection:CompareMemo)
                     _connection:UpdateAllColumns    := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.UpdateAllColumns), _connection:UpdateAllColumns)
                     _connection:MaxRecnoAsRecCount  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.MaxRecnoAsRecCount), _connection:MaxRecnoAsRecCount)
+                    _connection:SeekReturnsSubset   := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.SeekReturnsSubset), _connection:SeekReturnsSubset)
                 endif
                 rdr:Close()
             endif
@@ -305,7 +324,11 @@ end class
         try
             var pos := SELF:_GetPos(rdr, cName)
             if pos >= 0
-                return rdr:GetString(pos):Trim()
+                var result := rdr:GetString(pos):Trim()
+                if String.IsNullOrEmpty(result)
+                    result := strDefault:Trim()
+                endif
+                return result
             endif
         catch
             return strDefault:Trim()
@@ -367,7 +390,10 @@ end class
                 oTable:TrimTrailingSpaces  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.TrimTrailingSpaces),_connection:TrimTrailingSpaces)
                 oTable:CompareMemo         := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.CompareMemo),_connection:CompareMemo)
                 oTable:MaxRecnoAsRecCount  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.MaxRecnoAsRecCount),_connection:MaxRecnoAsRecCount)
+                oTable:SeekReturnsSubset   := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.SeekReturnsSubset),_connection:SeekReturnsSubset)
                 oTable:UpdateAllColumns    := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.UpdateAllColumns),_connection:UpdateAllColumns)
+                // These values do not have a connection level default
+                oTable:ColumnList          := SELF:_GetString(rdr, nameof(SqlRDDEventReason.ColumnList),DEFAULT_COLUMNLIST)
                 oTable:UpdatableColumns    := SELF:_GetString(rdr, nameof(SqlRDDEventReason.UpdatableColumns),DEFAULT_UPDATABLECOLUMNS)
                 oTable:KeyColumns          := SELF:_GetString(rdr, nameof(SqlRDDEventReason.KeyColumns),DEFAULT_KEYCOLUMNS)
                 oTable:ServerFilter        := SELF:_GetString(rdr, nameof(SqlRDDEventReason.ServerFilter),DEFAULT_SERVERFILTER)
@@ -464,9 +490,10 @@ end class
             cmd:AddParameter("@p2",cIndex)
 
             var tbl     := cmd:GetDataTable(cTable)
-            var nOrdinal := 0
+            var nOrdinal := (int64) 0
             foreach row as DataRow in tbl:Rows
-                nOrdinal := Math.Max(nOrdinal, (Int32) row:Item[0])
+                var i64value := SELF:ToInt64(row:Item[0])
+                nOrdinal := Math.Max(nOrdinal, i64value)
             next
             nOrdinal++
             // create insert command
@@ -540,7 +567,21 @@ end class
         endif
 
         RETURN
-
+    private Method ToInt64(item as object) as Int64
+        local result as Int64
+        switch item
+        case l as long
+            result := (int64) l
+        case i64 as int64
+            result := i64
+        case f as IFloat
+            result := Convert.ToInt64 (f:Value)
+        case d as Decimal
+            result := Convert.ToInt64(d)
+        otherwise
+            result := Convert.ToInt64(item)
+        end switch
+        return result
 
 #region constants
     INTERNAL CONST TableDictionary   := "xs_tableinfo" as string

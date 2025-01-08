@@ -47,7 +47,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     private _databaseRestrictions as int
     private _tableRestrictions as int
 
-    #region Properties
+    #region Connection Only Properties
     /// <summary>Dictionary with properties defined by the Ado.Net provider</summary>
     property DataSourceProperties as Dictionary<string, string> get _datasourceProperties
 
@@ -93,59 +93,10 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
 
 #endregion
 
-#region Metadata Defaults
-
-
-    /// <summary>
-    /// Can the table be updated ?
-    /// </summary>
-    /// <remarks>This is the default value for the AllowUpdates property for tables opened with the RDD. This can be overridden at the table level</remarks>
-    PROPERTY AllowUpdates      as LOGIC auto
-    /// <summary>
-    /// Specifies whether memo fields of type Long text or Long binary are included in the WHERE clause when using automatic updating. This defaults to TRUE
-    /// </summary>
-    /// <remarks>This is the default value for the CompareMemo property for tables opened with the RDD. This can be overridden at the table level</remarks>
-    PROPERTY CompareMemo       as LOGIC auto
-    /// <summary>
-    /// Name of the Deleted column. When empty then rows will be physically deleted from the server
-    /// </summary>
-    /// <remarks>This is the default value for the DeletedColumn property for tables opened with the RDD. This can be overridden at the table level</remarks>
-    PROPERTY DeletedColumn      as STRING auto
-    /// <summary>
-    /// Can field names longer than 10 characters be used (true) or should they be truncated (false)
-    /// </summary>
-    /// <remarks>This is the default value for the LongFieldNames property for tables opened with the RDD. This can be overridden at the table level</remarks>
-    PROPERTY LongFieldNames     as LOGIC auto
-    /// <summary>
-    /// What is the maximum number of records that the RDD should fetch when unfiltered.
-    /// </summary>
-    /// <remarks>This is the default value for the MaxRecords property for tables opened with the RDD. This can be overridden at the table level</remarks>
-    PROPERTY MaxRecords         as INT auto
-    /// <summary>
-    /// Name of the Recno column. When empty then the relative row number is the record number
-    /// </summary>
-    /// <remarks>This is the default value for the RecnoColumn property for tables opened with the RDD. This can be overridden at the table level</remarks>
-    PROPERTY RecnoColumn        as STRING auto
-    /// <summary>
-    /// Should trailing spaces for string columns be trimmed?
-    /// </summary>
-    /// <remarks>This is the default value for the CompareMemo property for tables opened with the RDD. This can be overridden at the table level</remarks>
-    PROPERTY TrimTrailingSpaces as LOGIC auto
-    /// <summary>
-    /// Should all columns be updated when a record is updated?
-    /// </summary>
-    /// <remarks>This is the default value for the CompareMemo property for tables opened with the RDD. This can be overridden at the table level</remarks>
-    PROPERTY UpdateAllColumns as LOGIC auto
-    /// <summary>
-    /// Specifies whether the maximum value in the Recno column should be used as the RecCount property.
-    /// This defaults to FALSE which means that the RecCount property returns the number of records in the table
-    /// </summary>
-    property MaxRecnoAsRecCount       as logic auto
-
+#region Shared Properties
+// This includes the default properties that are shared between connection and table
+#include "..\Metadata.xh"
 #endregion
-
-
-
 
 #region static properties and methods
     internal const DefaultConnection := "DEFAULT" as string
@@ -208,34 +159,37 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         options:ConnectionString := cConnectionString
         var builder := Provider:CreateConnectionStringBuilder()
         foreach key as string in options:Keys
-            var value := options[key]:ToString()
+            var strValue := options[key]:ToString()
+            var isTrue  := strValue:ToLower() == "true"
             switch key:ToLower()
             case "allowupdates"
-                self:AllowUpdates := (value:ToLower() == "true")
+                self:AllowUpdates := isTrue
             case "comparememo"
-                self:CompareMemo := (value:ToLower() == "true")
+                self:CompareMemo := isTrue
             case "deletedcolumn"
-                self:DeletedColumn := value
+                self:DeletedColumn := strValue
             case "legacyfieldtypes"
-                self:LegacyFieldTypes := (value:ToLower() == "true")
+                self:LegacyFieldTypes := isTrue
             case "longfieldnames"
-                self:LongFieldNames := (value:ToLower() == "true")
+                self:LongFieldNames := isTrue
             case "maxrecords"
-                if Int32.TryParse(value, out var max)
+                if Int32.TryParse(strValue, out var max)
                     self:MaxRecords := max
                 endif
             case "recnocolumn"
-                self:RecnoColumn := value
+                self:RecnoColumn := strValue
             case "updateallcolumns"
-                self:UpdateAllColumns := (value:ToLower() == "true")
+                self:UpdateAllColumns := isTrue
+           case "seekreturnssubset"
+                self:SeekReturnsSubset := isTrue
            case "trimtrailingspaces"
-                self:TrimTrailingSpaces := (value:ToLower() == "true")
+                self:TrimTrailingSpaces := isTrue
             case "usenulls"
-                self:UseNulls := (value:ToLower() == "true")
+                self:UseNulls := isTrue
             case "maxrecnoasreccount"
-                self:MaxRecnoAsRecCount := (value:ToLower() == "true")
+                self:MaxRecnoAsRecCount := isTrue
             otherwise
-                builder:Add(key, value)
+                builder:Add(key, strValue)
             end switch
         next
         return builder:ConnectionString
@@ -303,6 +257,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         MaxRecords         := DEFAULT_MAXRECORDS
         DeletedColumn      := DEFAULT_DELETEDCOLUMN
         RecnoColumn        := DEFAULT_RECNOCOLUMN
+        SeekReturnsSubset  := DEFAULT_SEEKRETURNSSUBSET
         cConnectionString  := self:AnalyzeConnectionString(cConnectionString)
         self:ConnectionString := cConnectionString
         DbConnection    := Provider:CreateConnection()
@@ -872,6 +827,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     INTERNAL CONST DEFAULT_TRIMTRAILINGSPACES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_UPDATEALLCOLUMNS := FALSE AS LOGIC
     INTERNAL CONST DEFAULT_USENULLS := TRUE AS LOGIC
+    INTERNAL CONST DEFAULT_SEEKRETURNSSUBSET := TRUE AS LOGIC
     #region Events
     /// <summary>
     /// Event handler for the SqlRDD events

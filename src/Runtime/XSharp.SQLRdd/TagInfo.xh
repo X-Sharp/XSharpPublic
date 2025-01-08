@@ -1,0 +1,19 @@
+﻿// TagInfo.xh
+// Created by    : robert
+// Creation Date : 2/23/2024 1:45:21 PM
+// Created for   :
+// WorkStation   : LEDA
+
+// Common properties for SqlDbOrder and SqlDbTagInfo
+/// <summary>
+/// Index expression in Xbase format
+/// </summary>
+property Expression as string auto
+/// <summary>
+/// Index condition in Xbase format
+/// </summary>
+property Condition as string auto
+/// <summary>
+///  Should the index be unique ?
+/// </summary>
+property Unique    as logic  auto

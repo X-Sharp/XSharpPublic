@@ -49,6 +49,7 @@ CLASS SqlMetadataProviderIni Inherit SqlMetadataProviderAbstract
             _connection:DeletedColumn       := SELF:GetString(DefaultSection, nameof(SqlRDDEventReason.DeletedColumn), _connection:DeletedColumn)
             _connection:CompareMemo         := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.CompareMemo), _connection:CompareMemo)
             _connection:MaxRecnoAsRecCount  := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.MaxRecnoAsRecCount), _connection:MaxRecnoAsRecCount)
+            _connection:SeekReturnsSubset   := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.SeekReturnsSubset), _connection:SeekReturnsSubset)
             ENDIF
         RETURN
     END METHOD

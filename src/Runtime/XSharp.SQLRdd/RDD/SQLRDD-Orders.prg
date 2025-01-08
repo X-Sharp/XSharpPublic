@@ -161,11 +161,13 @@ partial class SQLRDD inherit DBFVFP
             self:_CloseCursor()
             var currentRecord := SELF:RecNo
             SELF:CurrentOrder := self:FindOrder(orderInfo)
-            SELF:CurrentOrder:ClearCache()
             result := CurrentOrder != null
-            if result .and. SELF:_recnoColumNo > -1
-                self:GoTo(currentRecord)
-            endif
+            IF result
+                SELF:CurrentOrder:ClearCache()
+                if SELF:_recnoColumNo > -1
+                    self:GoTo(currentRecord)
+                endif
+            ENDIF
         else
             result := super:OrderListFocus(orderInfo)
         endif

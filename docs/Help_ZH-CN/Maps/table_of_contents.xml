@@ -7187,12 +7187,12 @@
         <caption translate="true">YIELD  示例</caption>
       </topicref>
     </topicref>
-    <topicref type="weblink" id="449724048793663" build="HTML" modified="2024-07-15T07:00:42.140Z" icon="1" href="https://www.xsharp.eu/runtimehelp/html/R_Project_XSharpRef.htm" target="_blank">
+    <topicref type="weblink" id="449724048793663" build="HTML" modified="2024-07-15T07:00:42.140Z" icon="1" href="https://www.xsharp.eu/runtimehelp_ZH-CN/html/R_Project_XSharpRef_ZH-CN.htm" target="_blank">
       <caption translate="true">X# 运行时和 VO SDK 参考</caption>
     </topicref>
   </topicref>
-  <navref href="XSharpRef.chm::\XSharpRef.hhc" build="CHM,EBOOK,HTML,PDF,PRINT" id="432597435536033" modified="2018-06-08T13:40:36.423Z" merge="runtime">
-    <caption translate="true">XSharpRef.chm::\XSharpRef.hhc</caption>
+  <navref href="XSharpRef_ZH-CN.chm::\XSharpRef_ZH-CN.hhc" build="CHM,EBOOK,HTML,PDF,PRINT" id="432597435536033" modified="2018-06-08T13:40:36.423Z" merge="runtime">
+    <caption translate="true">XSharpRef_ZH-CN.chm::\XSharpRef_ZH-CN.hhc</caption>
   </navref>
   <topicref type="topic" id="424249573402452" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2024-06-04T22:56:16.783Z" icon="0" href="X-Examples">
     <caption translate="true">X# 示例</caption>

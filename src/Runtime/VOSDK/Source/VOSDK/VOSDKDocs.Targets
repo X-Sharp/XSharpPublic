@@ -1,6 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
-  <PropertyGroup Condition="'$(Configuration)' == 'Documentation' or '$(Configuration)' == 'DocChinese'">
-    <Import Project="$(Commondir)XmlCommon.Targets" />
-  </PropertyGroup>
+  <Import Condition="'$(Configuration)' == 'Documentation' or '$(Configuration)' == 'DocChinese'" Project="$(Commondir)XmlCommon.Targets" />
 </Project>

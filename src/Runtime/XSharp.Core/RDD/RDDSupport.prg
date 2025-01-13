@@ -114,8 +114,12 @@ CLASS DbOpenInfo
             RETURN FileName + Extension
         END GET
         SET
-            SELF:FileName  :=Path.ChangeExtension(value,null)
-            SELF:Extension :=Path.GetExtension( value )
+            SELF:FileName  := Path.ChangeExtension(value,null)
+            SELF:Extension := Path.GetExtension( value )
+            // Make sure that a filename that ends with a '.' like "Test." does not get changed to "Test.Dbf"
+            if String.IsNullOrEmpty(SELF:Extension) .and. value:EndsWith(".")
+                SELF:Extension := "."
+            ENDIF
         END SET
     END PROPERTY
 

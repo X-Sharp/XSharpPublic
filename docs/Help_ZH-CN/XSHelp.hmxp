@@ -34,6 +34,15 @@
               <task-config-value name="table_of_contents">Table of Contents</task-config-value>
             </task-config-group>
           </export-task>
+          <export-task name="Publish as HTM" format="HTM">
+            <task-config-group name="settings">
+              <task-config-value name="outputfile">..\..\artifacts\DocChinese\HTML\index.html</task-config-value>
+              <task-config-value name="skin">..\help\XSharp_WebHelp.hmskin</task-config-value>
+              <task-config-value name="make3include">HTML</task-config-value>
+              <task-config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER,OPT_WEBFONTS</task-config-value>
+              <task-config-value name="make3status">*</task-config-value>
+            </task-config-group>
+          </export-task>
         </export-tasks>
       </export-task-group>
     </export-task-groups>
@@ -479,7 +488,7 @@
 </body>
 </html>]]></config-value>
       <config-value name="googleanalytics">UA-68123763-1</config-value>
-      <config-value name="outputfile">..\..\artifacts\Help\HTML\index.html</config-value>
+      <config-value name="outputfile">..\..\artifacts\DocChinese\HTML\index.html</config-value>
       <config-value name="highlighthotspots">1</config-value>
       <config-value name="skin">..\help\XSharp_WebHelp.hmskin</config-value>
       <config-value name="searcheditor">0</config-value>
@@ -639,7 +648,7 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">0</config-value>
+          <config-value name="lastexport">3</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">6</config-value>

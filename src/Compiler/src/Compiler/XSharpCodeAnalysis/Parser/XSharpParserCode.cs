@@ -14,9 +14,12 @@ using System;
 using Antlr4.Runtime.Tree;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Atn;
 using Microsoft.CodeAnalysis;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
+
 
 #if !VSPARSER
 using MCT = Microsoft.CodeAnalysis.Text;
@@ -127,6 +130,39 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return CanFollowCast(c);
             }
             return true;
+        }
+        /// <summary>
+        /// Set Parser to SLL mode. This is faster, but aborts on the first error
+        /// </summary>
+        internal void SetSllMode()
+        {
+            this.Reset();
+            this.RemoveErrorListeners();
+            this.Interpreter.PredictionMode = PredictionMode.Sll;
+            // some options to have FAST parsing
+            this.Interpreter.tail_call_preserves_sll = false;
+            this.Interpreter.treat_sllk1_conflict_as_ambiguity = true;
+            this.ErrorHandler = new BailErrorStrategy();
+
+        }
+        /// <summary>
+        /// Set Parser to LL mode. This also retrieves the parse errors from the parser
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="parseErrors"></param>
+        internal void SetLLMode(string fileName, List<ParseErrorData> parseErrors)
+        {
+            this.Reset();
+            var errorListener = new XSharpErrorListener(fileName, parseErrors);
+            this.RemoveErrorListeners();
+            this.AddErrorListener(errorListener);
+            this.ErrorHandler = new XSharpErrorStrategy();
+            // we need to set force_global_context to get proper error messages. This makes parsing slower
+            // but gives better messages
+            this.Interpreter.treat_sllk1_conflict_as_ambiguity = false;
+            this.Interpreter.force_global_context = true;
+            this.Interpreter.enable_global_context_dfa = true;
+            this.Interpreter.PredictionMode = PredictionMode.Ll;
         }
 
         private static bool CanFollowCast(int c)

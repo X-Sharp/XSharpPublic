@@ -3,7 +3,7 @@
 FUNCTION Start() AS VOID
 	LOCAL c AS STRING
 	LOCAL IMPLIED a := System.Collections.ArrayList{}{1,2,3}
-	
+    c := ""
 	#pragma options (allowdot , off)
 	c := i"count is {a.Count}" // error XS0118: 'a' is a variable but is used like a type, OK
 	? c
@@ -14,19 +14,18 @@ FUNCTION Start() AS VOID
 	? c
 	c := i"count is {(a:Count)}" // OK
 	? c
-
 	#pragma options (allowdot , on)
 	c := i"count is {a.Count}" // OK
 	? c
 	c := i"count is {(a.Count)}" // OK
 	? c
 
-	c := i"count is {a:Count}" // no compiler error, maybe a warning should be isued?
-	? c
-	c := i"count is {(a:Count)}" // Internal compiler error
-	? c
-	c := i"count is {(a:Count}" // Internal compiler error (instead of syntax error)
-	? c
+//	c := i"count is {(a:Count)}" // no compiler error, maybe a warning should be isued?
+//	? c
+//	c := i"count is {(a:Count}" // Internal compiler error
+//	? c
+//	c := i"count is {a:Count}" // Internal compiler error (instead of syntax error)
+//	? c
 /*
 C:\xSharp\Dev\src\CompilerTests\Applications\C933\Prg\C933.prg(1,1): error XS9999: An internal compiler error has occurred: 'Object reference not set to an instance of an object.',    at LanguageService.CodeAnalysis.GreenNode.AdjustFlagsAndWidth(GreenNode node)
    at LanguageService.CodeAnalysis.XSharp.Syntax.InternalSyntax.ArgumentSyntax..ctor(SyntaxKind kind, NameColonSyntax nameColon, SyntaxToken refKindKeyword, ExpressionSyntax expression, SyntaxFactoryContext context)

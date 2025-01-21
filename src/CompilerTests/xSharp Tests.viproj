@@ -1,9 +1,9 @@
 [General]
-PROJECT = xSharp Tests
+PROJECT = xSharp Tests3
 IDEVersion = 1.06
 OutputFolder = %ProjectPath%\Bin\
 Description = 
-GUID = 723E53EA-0D2C-4FC9-B86E-F050D29A49D2
+GUID = 071D56A1-84A5-4459-9ADC-11854057BD47
 StartUpApp = B098889A-A74F-46CE-8771-3AAEEECA0F99
 PrgEncoding = Default
 SupportCF = 0

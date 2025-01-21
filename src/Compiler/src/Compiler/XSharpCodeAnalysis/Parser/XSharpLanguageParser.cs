@@ -269,12 +269,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // When parsing in Sll mode we do not record any parser errors.
                 // When this fails, then we try again with LL mode and then we record errors
-                parser.RemoveErrorListeners();
-                parser.Interpreter.PredictionMode = PredictionMode.Sll;
-                // some options to have FAST parsing
-                parser.Interpreter.tail_call_preserves_sll = false;
-                parser.Interpreter.treat_sllk1_conflict_as_ambiguity = true;
-                parser.ErrorHandler = new BailErrorStrategy();
+                parser.SetSllMode();
                 try
                 {
                     tree = buildTree(parser);
@@ -286,15 +281,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         string msg = _GetInnerExceptionMessage(e);
                         _options.ConsoleOutput.WriteLine("Antlr: SLL parsing failed with failure: " + msg + ". Trying again in LL mode.");
                     }
-                    var errorListener = new XSharpErrorListener(_fileName, parseErrors);
-                    parser.AddErrorListener(errorListener);
-                    parser.ErrorHandler = new XSharpErrorStrategy();
-                    // we need to set force_global_context to get proper error messages. This makes parsing slower
-                    // but gives better messages
-                    parser.Interpreter.treat_sllk1_conflict_as_ambiguity = false;
-                    parser.Interpreter.force_global_context = true;
-                    parser.Interpreter.enable_global_context_dfa = true;
-                    parser.Interpreter.PredictionMode = PredictionMode.Ll;
+                    parser.SetLLMode(_fileName, parseErrors);
                     _preprocessorTokenStream.Reset();
                     if (_options.Verbose && pp != null)
                     {
@@ -304,7 +291,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         pp.Close();
                     }
-                    parser.Reset();
                     try
                     {
                         tree = buildTree(parser);

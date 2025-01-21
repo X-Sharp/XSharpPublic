@@ -9,16 +9,16 @@
 #nullable disable
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Roslyn.Utilities;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using Microsoft.CodeAnalysis.PooledObjects;
+using Roslyn.Utilities;
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
@@ -9262,8 +9262,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string sMask = sbMask.ToString();
             ExpressionSyntax res;
             bool allowDot = _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context, PragmaOptions);
-            foreach (var e in expressions)
+            for (var iExpr = 0; iExpr < expressions.Count; iExpr++)
             {
+                var e = expressions[iExpr];
                 if (e.Length == 0)
                 {
                     var subexpr = GenerateLiteral("").WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExpressionExpected));
@@ -9295,7 +9296,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     expr = expr.Substring(0, pos);
                 }
-                res = ParseSubExpression(expr, out var extra, token);
+                var parseErrors = ParseErrorData.NewBag();
+                var xToken = (XSharpToken)token;
+                var newToken = new XSharpToken(token);
+                newToken.Text = expr;
+                res = ParseSubExpression(expr, out var extra, newToken, parseErrors);
+                if (parseErrors.Count > 0)
+                {
+                    _parseErrors.AddRange(parseErrors);
+                }
+                if (res == null)
+                {
+                    res = GenerateLiteral("");
+                    res.XNode = context;
+                    if (parseErrors.Count == 0)
+                    {
+                        res = res.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExpressionExpected));
+                    }
+                }
                 if (!string.IsNullOrEmpty(format))
                 {
                     format = format.Trim();
@@ -10443,14 +10461,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #region ExpressionParser
 
-        protected ExpressionSyntax ParseSubExpression(string expression, out string extraText, IToken starttoken)
+        protected ExpressionSyntax ParseSubExpression(string expression, out string extraText, IToken starttoken, List<ParseErrorData> parseErrors)
         {
             // do not include the standard defs here. These have already been processed at the file level
             var options = _options.WithNoStdDef(true);
             // add spaces to the offset of the first token in the result matches the offset of the "anchor"
             var lexer = XSharpLexer.Create(expression, _fileName, options);
             lexer.OffSet = starttoken.StartIndex;
-            var parseErrors = ParseErrorData.NewBag();
             extraText = null;
             BufferedTokenStream tokenStream;
             try
@@ -10483,6 +10500,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 token.Line += starttoken.Line - 1;
             }
             var parser = new XSharpParser(tokenStream);
+            parser.SetLLMode(_fileName, parseErrors);
             parser.Options = _options;
             XSharpParserRuleContext tree;
             try

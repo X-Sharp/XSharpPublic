@@ -103,12 +103,9 @@ namespace XSharp.Parser
             {
                 LexerHelper(sourceText, fileName, options, parseErrors, out tokens, out var ppStream, out includeFiles);
                 var parser = new XSharpParser(ppStream);
-                parser.Interpreter.tail_call_preserves_sll = false;     // default = true   Setting to FALSE will reduce memory used by parser
-                parser.Options = options;
                 tree = null;
-                parser.RemoveErrorListeners();
-                parser.Interpreter.PredictionMode = PredictionMode.Sll;
-                parser.ErrorHandler = new BailErrorStrategy();
+                parser.SetSllMode();
+                parser.Options = options;
                 try
                 {
                     if (options.Dialect == XSharpDialect.FoxPro)
@@ -122,12 +119,8 @@ namespace XSharp.Parser
                 }
                 catch (Exception)
                 {
-                    var errorListener = new XSharpErrorListener(fileName, parseErrors);
-                    parser.AddErrorListener(errorListener);
-                    parser.ErrorHandler = new XSharpErrorStrategy();
-                    parser.Interpreter.PredictionMode = PredictionMode.Ll;
+                    parser.SetLLMode(fileName, parseErrors);
                     ppStream.Reset();
-                    parser.Reset();
                     try
                     {
                         if (options.Dialect == XSharpDialect.FoxPro)

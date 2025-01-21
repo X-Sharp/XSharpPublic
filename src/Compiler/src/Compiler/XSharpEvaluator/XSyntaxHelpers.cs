@@ -45,15 +45,7 @@ namespace LanguageService.CodeAnalysis.CSharp.ExpressionEvaluator
                 tokenStream.Reset();
 
                 var parser = new XSharpParser(tokenStream) { Options = options };
-                var errorListener = new XSharpErrorListener(_fileName, parseErrors);
-                parser.AddErrorListener(errorListener);
-                parser.ErrorHandler = new InternalSyntax.XSharpErrorStrategy();
-                // we need to set force_global_context to get proper error messages. This makes parsing slower
-                // but gives better messages
-                parser.Interpreter.treat_sllk1_conflict_as_ambiguity = false;
-                parser.Interpreter.force_global_context = true;
-                parser.Interpreter.enable_global_context_dfa = true;
-                parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.Ll;
+                parser.SetLLMode(_fileName, parseErrors);
 
                 var _syntaxFactory = new InternalSyntax.ContextAwareSyntax(new InternalSyntax.SyntaxFactoryContext());
                 var treeTransform = InternalSyntax.XSharpLanguageParser.CreateTransform(parser, options,

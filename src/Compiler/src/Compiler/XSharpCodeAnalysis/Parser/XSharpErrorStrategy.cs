@@ -6,7 +6,6 @@
 //#define DUMP_TREE
 #nullable disable
 using System;
-using System.Diagnostics;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
@@ -54,7 +53,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 switch (t.Type)
                 {
                     case XSharpParser.RPAREN:
-                        missing = "'('" ;
+                        missing = "'('";
                         break;
                     case XSharpParser.RCURLY:
                         missing = "'{'";
@@ -84,7 +83,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                msg = "mismatched input " + GetTokenErrorDisplay(e.OffendingToken) ;
+                msg = "mismatched input " + GetTokenErrorDisplay(e.OffendingToken);
                 if (e.OffendingToken.Type == XSharpParser.EOS)
                 {
                     msg += Missing("closing ')' or '}'");
@@ -113,7 +112,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 input = "<unknown input>";
             }
             string msg;
-            char firsttoken = (Char) 0;
+            char firsttoken = (Char)0;
             char lasttoken = (Char)0;
             int count = 0;
             foreach (var c in input)
@@ -140,7 +139,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (e.OffendingToken.Type == XSharpLexer.EOS)
             {
                 string eos;
-                string missing  = " token";
+                string missing = " token";
                 if (count > 0)
                 {
                     switch (firsttoken)
@@ -171,18 +170,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             break;
                     }
                 }
+                else
+                {
+                    switch (e.StartToken.Type)
+                    {
+                        case XSharpLexer.LPAREN:
+                            missing = "')'";
+                            break;
+                        case XSharpLexer.LCURLY:
+                            missing = "'}'";
+                            break;
+                        case XSharpLexer.LBRKT:
+                            missing = "']'";
+                            break;
+                    }
+                }
                 if (e.OffendingToken.Text == "\r\n")
                     eos = "CRLF";
                 else if (e.OffendingToken.Text == ";")
                     eos = "';'";
                 else
-                    eos = "End of Statement";
-                msg = "unexpected " + eos +  Missing(missing);
+                    eos = "End of Expression";
+                msg = "unexpected " + eos + Missing(missing);
             }
             else
             {
-                if (input.Length > 50)  
-                    input = input.Substring(0, 50);      
+                if (input.Length > 50)
+                    input = input.Substring(0, 50);
                 msg = "unexpected input " + EscapeWSAndQuote(input);
             }
             TraceContext(recognizer, "ReportNoViableAlternative");
@@ -197,9 +211,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             s = s.Replace("\t", "TAB");
             return "'" + s + "'";
         }
-        protected string Missing (string missing)
+        protected string Missing(string missing)
         {
-            return ", are you missing a "+missing+" ?";
+            return ", are you missing a " + missing + " ?";
         }
         protected internal override void ConsumeUntil(Parser recognizer, IntervalSet set)
         {
@@ -212,7 +226,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ttype = ((ITokenStream)recognizer.InputStream).La(1);
             }
         }
-        int nestedLevel = 0; 
+        int nestedLevel = 0;
         public override void Recover(Parser recognizer, RecognitionException e)
         {
             base.Recover(recognizer, e);

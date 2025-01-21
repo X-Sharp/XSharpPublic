@@ -133,7 +133,7 @@ namespace LanguageService.CodeAnalysis.CSharp.ExpressionEvaluator
 
             return result;
         }
-        
+
         internal static void UpdateRuntimeAssemblies(CSharpCompilation compilation)
         {
             var xoptions = XSharpOptions;

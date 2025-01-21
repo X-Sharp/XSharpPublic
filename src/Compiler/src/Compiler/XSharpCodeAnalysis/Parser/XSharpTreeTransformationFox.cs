@@ -632,12 +632,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 string varName = varCtx.GetText();
                 if (context.Fld != null)
                 {
-                    var fielddecl = createField(context, varName, varType, context.Modifiers, context.Attributes, null);
+                    var fielddecl = createField(varCtx, varName, varType, context.Modifiers, context.Attributes, null);
+                    fielddecl.XNode = context;
                     list.Add(fielddecl);
                 }
                 else
                 {
                     var propdecl = createProperty(varCtx, varName, varType, context.Modifiers, context.Attributes, null);
+                    propdecl.XNode = context;
                     list.Add(propdecl);
                 }
             }
@@ -899,7 +901,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 
             }
-            ctor = createConstructor( context, members, fieldNames, ctor);
+            ctor = createConstructor(context, members, fieldNames, ctor);
             members.Add(ctor);
             MemberDeclarationSyntax m = _syntaxFactory.ClassDeclaration(
                 attributeLists: getAttributes(context.Attributes),
@@ -948,6 +950,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     modifiers: modifiers,
                                     declaration: decl,
                                     semicolonToken: SyntaxFactory.SemicolonToken);
+            fdecl.XNode = context;
             return fdecl;
         }
 
@@ -991,6 +994,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                    expressionBody: null,
                    initializer: eqvalue,
                    semicolonToken: SyntaxFactory.SemicolonToken);
+            prop.XNode = context;
             return prop;
         }
 
@@ -1084,6 +1088,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
                     var body = MakeBlock(stmts);
                     ctor = _syntaxFactory.ConstructorDeclaration(attributeLists, mods, id, initparams, chain, body, null, null);
+                    ctor.XGenerated = true;
                 }
             }
             _pool.Free(attributeLists);

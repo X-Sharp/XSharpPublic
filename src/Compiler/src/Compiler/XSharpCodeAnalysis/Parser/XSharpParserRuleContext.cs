@@ -40,7 +40,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return ParseTrivia($"/// <summary>This compiler generated class contains all the functions, globals and defines that are defined in the {modName} assembly. </summary>");
             }
             else if (node is MethodDeclarationSyntax mdecl &&
-                mdecl.Identifier.Text.Contains("$") )
+                mdecl.Identifier.Text.Contains("$"))
             {
                 if (mdecl.Parent is ClassDeclarationSyntax cds && cds.Identifier.Text.Contains("<"))
                 {
@@ -61,6 +61,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     summary = "Compiler generated helper method.";
                 }
+                return ParseTrivia("/// <summary>" + summary + "</summary>");
+            }
+            else if (node is MemberDeclarationSyntax && node is not ClassDeclarationSyntax)
+            {
+                var summary = "Compiler generated member";
                 return ParseTrivia("/// <summary>" + summary + "</summary>");
             }
             return default;

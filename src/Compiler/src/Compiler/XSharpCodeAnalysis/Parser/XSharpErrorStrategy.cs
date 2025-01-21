@@ -6,7 +6,6 @@
 //#define DUMP_TREE
 #nullable disable
 using System;
-using System.Diagnostics;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
@@ -171,12 +170,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             break;
                     }
                 }
+                else
+                {
+                    switch (e.StartToken.Type)
+                    {
+                        case XSharpLexer.LPAREN:
+                            missing = "')'";
+                            break;
+                        case XSharpLexer.LCURLY:
+                            missing = "'}'";
+                            break;
+                        case XSharpLexer.LBRKT:
+                            missing = "']'";
+                            break;
+                    }
+                }
                 if (e.OffendingToken.Text == "\r\n")
                     eos = "CRLF";
                 else if (e.OffendingToken.Text == ";")
                     eos = "';'";
                 else
-                    eos = "End of Statement";
+                    eos = "End of Expression";
                 msg = "unexpected " + eos +  Missing(missing);
             }
             else

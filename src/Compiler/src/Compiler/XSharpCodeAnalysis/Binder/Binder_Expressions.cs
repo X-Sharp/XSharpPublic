@@ -48,6 +48,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         left = newLeft;
                         bag.Clear();
                     }
+                    // If Left.Type is an ErrorType
+                    // Then use newLeft instead
+                    if (left.Type is ErrorTypeSymbol)
+                    {
+                        left = newLeft;
+                    }
                 }
             }
             if (left != null && !left.HasErrors && !(left.ExpressionSymbol is NamespaceOrTypeSymbol) &&

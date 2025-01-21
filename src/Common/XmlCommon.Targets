@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+<PropertyGroup >
+    <XmlDocFolder Condition="'$(Configuration)' == 'Documentation'">$(SolutionDir)Docs\</XmlDocFolder>
+    <XmlDocFolder Condition="'$(Configuration)' == 'DocChinese'">$(SolutionDir)DocChinese\</XmlDocFolder>
+    <PreBuildEvent>copy $(XmlDocFolder)*.xml $(ProjectDir) &gt; nul</PreBuildEvent>
+    <PostBuildEvent>erase $(ProjectDir)*.Xml</PostBuildEvent>
+    <RunPostBuildEvent>Allways</RunPostBuildEvent>
+  </PropertyGroup>
+</Project>

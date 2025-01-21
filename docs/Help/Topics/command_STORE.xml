@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-16T14:28:23.475+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>STORE Command</title>
   <keywords>
     <keyword>Adding<keyword>values to variables</keyword></keyword>
@@ -23,7 +23,7 @@
     <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">The STORE command is defined using the assignment operator (:=). &#160;</para>
     <para styleclass="Heading1">Notes</para>
-    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Assigning a value to an entire array: &#160;</text>In &lt;%APP%&gt;, neither the STORE command nor the assignment operators can assign a single value to an entire array. &#160;Use the AFill() function for this purpose.</para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Assigning a value to an entire array: </text>In &lt;%APP%&gt;, neither the STORE command nor the assignment operators can assign a single value to an entire array. Use the AFill() function for this purpose.</para>
     <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">These statements create and assign values to undeclared private variables:</para>
     <para styleclass="Normal"></para>
@@ -33,7 +33,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">STORE </text><text style="font-weight:normal; font-style:normal; color:#000000;">&quot;value&quot; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> cVar1, cVar2, cVar3</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">cVar1 := cVar2 := cVar3 := &quot;value&quot;</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">These statements assign values to the same field referenced explicitly with an alias. &#160;The first assignment uses the field alias (_FIELD-&gt;), where the second uses the actual alias name:</para>
+    <para styleclass="Normal">These statements assign values to the same field referenced explicitly with an alias. The first assignment uses the field alias (_FIELD-&gt;), where the second uses the actual alias name:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> sales </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">STORE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 1200.98 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> _FIELD-&gt;CustBal</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">S</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TORE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 1200.98 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Sales-&gt;CustBal</text></para>
     <para styleclass="Heading1">See Also</para>

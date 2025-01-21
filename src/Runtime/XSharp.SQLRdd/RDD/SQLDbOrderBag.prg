@@ -57,6 +57,7 @@ internal class SqlDbOrderBag INHERIT BaseIndex
     constructor(oRdd as SQLRDD, cName as string)
         super(oRdd)
         self:RDD      := oRdd
+        SELF:LogicalName := cName
         if File(cName)
             cName            := FPathName()
             SELF:Path        := System.IO.Path.GetDirectoryName(cName)
@@ -66,7 +67,6 @@ internal class SqlDbOrderBag INHERIT BaseIndex
             SELF:Path        := System.IO.Path.GetDirectoryName(rddPath)
             self:FileName    := System.IO.Path.GetFileNameWithoutExtension(rddPath)
         endif
-        SELF:LogicalName := SELF:FileName
         self:Tags        := List<SqlDbOrder>{}
         return
     end constructor

@@ -70,8 +70,13 @@ enum SqlRDDEventReason
     member Condition
 /// <summary>Specifies if the index tag is unique</summary>
     member Unique
-    /// <summary>Should the reccount be calculated from the highest value in the RecnoColumn</summary>
+/// <summary>Should the reccount be calculated from the highest value in the RecnoColumn</summary>
     member MaxRecnoAsRecCount
+/// <summary>Should a seek return a subset (TRUE) or all rows (FALSE) </summary>
+    member SeekReturnsSubset
+/// <summary>Retrieve TagName</summary>
+    member TagName
+
 end enum
 
 

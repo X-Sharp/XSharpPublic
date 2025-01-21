@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-14T14:25:58.706+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>GO Command</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -22,7 +22,7 @@
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code with box">GO[TO] &lt;<text styleclass="Italic">uRecID</text>&gt; | TOP | BOTTOM &#160;[[IN|ALIAS] &lt;workarea&gt;] </para>
     <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">&lt;uRecID&gt;<tab />The record to go to. &#160;The data type and interpretation of &lt;uRecID&gt; is determined by the RDD. &#160;For .DBF files, it is the record number. &#160;If &lt;uRecID&gt; does not exist, the work area is positioned to <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_LastRec.htm" domain="XSharpRef.chm" styleclass="Normal">LastRec()</link> + 1, and both <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Eof.htm" domain="XSharpRef.chm" styleclass="Normal">EoF()</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Bof.htm" domain="XSharpRef.chm" styleclass="Normal">BoF()</link> return TRUE.</para>
+    <para styleclass="List">&lt;uRecID&gt;<tab />The record to go to. The data type and interpretation of &lt;uRecID&gt; is determined by the RDD. For .DBF files, it is the record number. If &lt;uRecID&gt; does not exist, the work area is positioned to <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_LastRec.htm" domain="XSharpRef.chm" styleclass="Normal">LastRec()</link> + 1, and both <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Eof.htm" domain="XSharpRef.chm" styleclass="Normal">EoF()</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Bof.htm" domain="XSharpRef.chm" styleclass="Normal">BoF()</link> return TRUE.</para>
     <para styleclass="List"></para>
     <para styleclass="List">TOP<tab />Specifies the first logical record in the current work area.</para>
     <para styleclass="List"></para>
@@ -30,7 +30,7 @@
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__In" inline="false"/></para>
     <para styleclass="Heading1">Notes</para>
-    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Visibility: &#160;</text>Even though a particular record may not be visible (because, for example, of <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetFilter.htm" domain="XSharpRef.chm">DbSetFilter()</link>, SetDeleted(TRUE), or a conditional controlling order), you can still go to that record.</para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Visibility:</text><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text>Even though a particular record may not be visible (because, for example, of <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetFilter.htm" domain="XSharpRef.chm">DbSetFilter()</link>, SetDeleted(TRUE), or a conditional controlling order), you can still go to that record.</para>
     <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">This example saves the current record number, searches for a key, then restores the record pointer to the saved position:</para>
     <para styleclass="Normal"></para>

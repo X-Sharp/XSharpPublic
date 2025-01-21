@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T18:12:01.893+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-linkresource</title>
   <keywords>
     <keyword>-linkresource</keyword>
@@ -20,7 +20,7 @@
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal">By default, linked resources are public in the assembly when they are created with the X# compiler. To make the resources private, specify <text styleclass="Code Example">private</text> as the accessibility modifier. No other modifier other than <text styleclass="Code Example">public</text> or <text styleclass="Code Example">private</text> is allowed.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-linkresource requires one of The -target options other than -target:module.</para>
+    <para styleclass="Normal">-linkresource requires one of the -target options other than -target:module.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If <text styleclass="Code Example">filename</text> is a .NET Framework resource file created, for example, by Resgen.exe or in the development environment, it can be accessed with members in the System.Resources namespace. For more information, see System.Resources.ResourceManager. For all other resources, use the <text styleclass="Code Example">GetManifestResource</text>* methods in the Assembly class to access the resource at run time.</para>
     <para styleclass="Normal"></para>

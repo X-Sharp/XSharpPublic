@@ -59,7 +59,7 @@
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Allows code before the first entity in a source file. This will be compiled into a function with the same name as the PRG file.</li>
       <li styleclass="Normal">Adds support for the DoDefault() pseudo function.</li>
-      <li styleclass="Body Text">The NIL keyword in FoxPro has the property &apos;unitialized&apos; but a value of FALSE.</li>
+      <li styleclass="Normal">The NIL keyword in FoxPro has the property &apos;unitialized&apos; but a value of FALSE.</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

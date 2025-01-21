@@ -141,7 +141,7 @@ namespace XSharp.Build
 
         protected override string GetResponseFileSwitch(string responseFilePath)
         {
-            string newfile = Path.Combine(Path.GetDirectoryName(responseFilePath), "LastXSharpNativeResourceResponseFile.Rsp");
+            string newfile = Path.Combine(Path.GetTempPath(), "LastXSharpNativeResourceResponseFile.Rsp");
             Utilities.CopyFileSafe(responseFilePath, newfile);
             return ("\"" + responseFilePath + "\"");
         }

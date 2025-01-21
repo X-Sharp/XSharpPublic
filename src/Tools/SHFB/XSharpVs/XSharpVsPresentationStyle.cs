@@ -12,8 +12,6 @@ using System.Reflection;
 using Sandcastle.Core;
 using Sandcastle.Core.PresentationStyle;
 
-// Search for "TODO" to find changes that you need to make to this presentation style template.
-
 namespace XSharpVs
 {
     /// <summary>
@@ -21,7 +19,7 @@ namespace XSharpVs
     /// </summary>
     [PresentationStyleExport("VS2013XSharp", "VS2013XSharp", Version = XSharp.Constants.ProductVersion,
       Copyright = XSharp.Constants.Copyright, Description = "This style is similar to the one used for Visual " +
-        "Studio and MSDN online content but slighly adapter for X# documentation purposes.")]
+        "Studio and MSDN online content but slighly changed for X# documentation purposes.")]
     public sealed class VisualStudio2013Xs : PresentationStyleSettings
     {
         /// <inheritdoc />
@@ -38,7 +36,8 @@ namespace XSharpVs
             // The base path of the presentation style files relative to the assembly's location
             this.BasePath = "VS2013XSharp";
 
-            this.SupportedFormats = HelpFileFormats.HtmlHelp1 | HelpFileFormats.MSHelpViewer |HelpFileFormats.Website;
+            this.SupportedFormats = HelpFileFormats.HtmlHelp1 | HelpFileFormats.MSHelpViewer |
+                HelpFileFormats.Website;
 
             this.SupportsNamespaceGrouping = this.SupportsCodeSnippetGrouping = true;
 
@@ -64,8 +63,6 @@ namespace XSharpVs
             this.ContentFiles.Add(new ContentFiles(this.SupportedFormats, @"icons\*.*"));
             this.ContentFiles.Add(new ContentFiles(this.SupportedFormats, @"scripts\*.*"));
             this.ContentFiles.Add(new ContentFiles(this.SupportedFormats, @"styles\*.*"));
-
-            // By default, this will use the standard web file content from the Sandcastle Help File Builder
             this.ContentFiles.Add(new ContentFiles(HelpFileFormats.Website, null, @"Web\*.*",
                 String.Empty, new[] { ".aspx", ".html", ".htm", ".php" }));
 
@@ -119,7 +116,6 @@ namespace XSharpVs
                 "Send via e-mail: mailto:YourEmailAddress@Domain.com"));
 
             // Add the plug-in dependencies
-
             this.PlugInDependencies.Add(new PlugInDependency("Lightweight Website Style", null));
         }
     }

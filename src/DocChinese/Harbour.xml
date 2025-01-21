@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Runtimefunctions>
+  <hb_adel>
+    <summary>
+      从数组中删除一个元素，并且可以调整数组的长度。
+    </summary>
+    <param name="aArray">要从中删除元素的数组的名称。</param>
+    <param name="nPos">要删除的元素的下标。默认值：1。</param>
+    <param name="lAutoSize">布尔标志，指定是否调整数组的大小。默认值：.F.（不调整大小）。</param>
+    <returns>更改后的数组</returns>
+    <remarks> 
+      这个函数删除存储在nPos位置的元素值（不是元素本身！），并将所有后续的值向上移一位。 <br />
+      如果 lAutoSize 为 .T.，那么最后一个元素将被移除，并且数组的大小将减少一，否则数组的长度将保持不变，
+      并且最后一个元素将存储一个 NIL 值，就像在 ADel() 中一样。 
+    </remarks>
+    <seealso cref='O:XSharp.RT.Functions.ADel'>ADel</seealso>
+    <seealso cref='O:XSharp.Harbour.Functions.Hb_AIns'>Hb_AIns</seealso>
+    <example>
+      <code language="X#">
+        LOCAL aArray := {1,2,3,4}
+        hb_ADel( aArray, 2 )
+        ? Alen(aArray) // 4
+        ? ATail(aArray) // NIL
+        hb_ADel( aArray, 2, .T. )
+        ? Alen(aArray) // 3
+        ? ATail(aArray) // 4
+      </code>
+    </example>
+  </hb_adel>
+
+  <hb_ains>
+    <summary>
+      在数组的特定位置插入一个值，并且可以增加数组的长度。
+    </summary>
+    <param name="aArray">要插入元素的数组的名称。</param>
+    <param name="nPos">要插入元素的下标。默认值：1。</param>
+    <param name="xValue">要插入的值</param>
+    <param name="lAutoSize">
+      布尔标志，指定是否调整数组的大小。
+      默认值：.F.（不调整大小）。
+    </param>
+    <returns>更改后的数组</returns>
+    <remarks> 
+      此函数将 xValue 插入数组的 nPos 位置，将数组列表中的所有项向下移动一个位置。 <br />
+      如果lAutoSize为.T.，那么一个新元素将被添加到数组的末尾，腾出空间 来容纳之前的最后一个元素，这意味着数组的长度将增加1。 <br />
+      如果lAutoSize为.F.（或未传递），函数的行为类似于AIns()，即aArray的大小不会改变，并且aArray的最后一个项将被丢失。 
+    </remarks>
+    <seealso cref='O:XSharp.RT.Functions.AIns'>AIns</seealso>
+    <seealso cref='O:XSharp.Harbour.Functions.Hb_ADel'>Hb_ADel</seealso>
+    <example>
+      <code language="X#">
+        LOCAL aArray := {1,3,4}
+        hb_AIns( aArray, 2 ,2)
+        ? Alen(aArray) // 3
+        ? aTail(aArray) // 3
+        aArray := {1,3,4}
+        hb_AIns( aArray, 2 , 2, .T.)
+        ? Alen(aArray) // 4
+        ? ATail(aArray) // 4
+      </code>
+    </example>
+  </hb_ains>
+</Runtimefunctions>

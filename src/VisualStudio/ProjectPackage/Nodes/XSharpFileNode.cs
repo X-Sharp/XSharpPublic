@@ -98,9 +98,10 @@ namespace XSharp.Project
             {
                 if (IsForm || IsUserControl || IsNonMemberItem)
                     return true;
-#if VS17
+#if DEV17
                 if (!File.Exists(this.Url))
                     return true;
+                return false;
 #else
                 return base.SupportsIconMonikers;
 #endif
@@ -114,7 +115,7 @@ namespace XSharp.Project
                 return KnownMonikers.UserControl;
             if (IsNonMemberItem)
                 return KnownMonikers.HiddenFile;
-#if VS17
+#if DEV17
             if (!File.Exists(this.Url))
                 return KnownMonikers.MissingFile;
 #endif

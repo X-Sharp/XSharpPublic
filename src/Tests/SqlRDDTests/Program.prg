@@ -1,6 +1,7 @@
 ﻿using XSharp.RDD.SqlRDD
 using XSharp.RDD.SqlRDD.Providers
 using System.Data
+using System.Diagnostics
 using System.Data.Common
 using MySql.Data.MySqlClient
 using System.Collections.Generic
@@ -204,7 +205,7 @@ function TestParametersODBC() AS VOID
     local cmd  := null as SqlDbCommand
     TRY
         ? "Testing Parameters with ODBC"
-        var stopWatch := System.Diagnostics.Stopwatch{}
+        var stopWatch := Stopwatch{}
         stopWatch:Start()
 
         SqlDbSetProvider("ODBC")
@@ -561,6 +562,8 @@ FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs)
         case "Index:Customers"
             e:Value := "PK,CompanyName,ContactName,Address"
         end switch
+    case SqlRDDEventReason.SeekReturnsSubset
+        e:Value := FALSE
     end switch
     if showEvents
         ? "Event", e:Name, e:Reason:ToString(), e:Value
@@ -769,7 +772,8 @@ function TestTransaction()
                 DbCloseAll()
             endif
         CATCH e as Exception
-            ? e:Message
+            nop
+            //? e:Message
         END TRY
         RETURN
 FUNCTION TestGsTutor() AS VOID
@@ -783,13 +787,55 @@ FUNCTION TestGsTutor() AS VOID
         conn:MetadataProvider := SqlMetaDataProviderDatabase{conn}
         DbUseArea(,,"customer")
         ShowArray(DbStruct())
+        OrdSetFocus("CustNum")
+        var stopWatch := StopWatch{}
+        stopWatch:Start()
+        DbSeek(10)
+        ? stopWatch:Elapsed:ToString()
+        stopWatch:Restart()
+        ? "Recno", Recno(), Eof(), "Keycount", DbOrderInfo(DBOI_KEYCOUNT), DbOrderInfo(DBOI_KEYVAL)
+        ? stopWatch:Elapsed:ToString()
+        stopWatch:Restart()
+        DbSeek(10.0)
+        ? "Recno", Recno(), Eof(), "Keycount", DbOrderInfo(DBOI_KEYCOUNT), DbOrderInfo(DBOI_KEYVAL)
+        ? stopWatch:Elapsed:ToString()
+        stopWatch:Restart()
+        DbSeek((INT64) 20)
+        ? "Recno", Recno(), Eof(), "Keycount", DbOrderInfo(DBOI_KEYCOUNT), DbOrderInfo(DBOI_KEYVAL)
+        ? stopWatch:Elapsed:ToString()
+        stopWatch:Restart()
+        DbSeek(20,TRUE)
+        ? "Recno", Recno(), Eof(), "Keycount", DbOrderInfo(DBOI_KEYCOUNT), DbOrderInfo(DBOI_KEYVAL)
+        wait
+        OrdCreate("Customer", "CustName","LastName+FirstName")
+        OrdCreate("Customer", "CustNum","CustNum")
         DbCloseArea()
         DbUseArea(,,"orders")
         ShowArray(DbStruct())
+        OrdSetFocus("Order_Date")
+        stopWatch:Restart()
+        DbSeek(DateTime.Now)
+        ? stopWatch:Elapsed:ToString()
+        ? "Recno", Recno(), Eof(), "Keycount", DbOrderInfo(DBOI_KEYCOUNT), DbOrderInfo(DBOI_KEYVAL)
+        stopWatch:Restart()
+        DbSeek(1993.10.11)
+        ? stopWatch:Elapsed:ToString()
+        ? "Recno", Recno(), Eof(), "Keycount", DbOrderInfo(DBOI_KEYCOUNT), DbOrderInfo(DBOI_KEYVAL)
+        OrdSetFocus("OrdCust")
+        OrdScope(TOPSCOPE, 10)
+        OrdScope(BOTTOMSCOPE, 10)
+        stopWatch:Restart()
+        DbSeek(10,FALSE, FALSE)
+        ? stopWatch:Elapsed:ToString()
+        ? "Recno", Recno(), Eof(), "Keycount", DbOrderInfo(DBOI_KEYCOUNT), DbOrderInfo(DBOI_KEYVAL)
+        stopWatch:Restart()
+        DbSeek(10,FALSE, TRUE)
+        ? stopWatch:Elapsed:ToString()
+        ? "Recno", Recno(), Eof(), "Keycount", DbOrderInfo(DBOI_KEYCOUNT), DbOrderInfo(DBOI_KEYVAL)
         DbCloseArea()
 
     CATCH e as Exception
-        ? e:Message
+        ? e:ToString()
     END TRY
     RETURN
 

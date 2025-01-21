@@ -21740,16 +21740,8 @@
       If <paramref name="lNewSetting" /> is specified, the previous setting is returned.
     </returns>
     <remarks>
-      SetCPU() is an environment function that returns the numeric identifier of the central processor.
+      SetCPU is a compatibility function. It does not really do anything in X#.
     </remarks>
-    <example>
-      This example queries the processor type:
-      <code language="X#">
-        FUNCTION Start()
-        &#0009;QOut("CPU type: ", SetCPU())
-        &#0009;WAIT
-      </code>
-    </example>
     <seealso cref='O:XSharp.Core.Functions.SetMath'>SetMath</seealso>
   </setcpu>
   <setdatecountry>
@@ -22566,26 +22558,13 @@
     <summary>
       Return and optionally change the setting that determines the internal operational characteristics of the underlying floating-point system.
     </summary>
-
-    <param name="nNewSetting">One of the following values, indicating the type of math processor to be used:</param>
-    <param name="Value">Indicates</param>
-    <param name="0">No floating point is present.&#0009;</param>
-    <param name="387">A 387 math coprocessor is in use.&#0009;</param>
-    <param name="486">At least a 486 with a built-in math coprocessor is in use.</param>
     <returns>
       If <paramref name="nNewSetting" /> is not specified, SetMath() returns the current setting.<br/>
       If <paramref name="nNewSetting" /> is specified, the previous setting is returned.
     </returns>
     <remarks>
+	SetMath is a compatibility function. It does not really do anything in X#.
     </remarks>
-    <example>
-      This example uses SetMath() to check the current setting against a value of 486:
-      <code language="X#">
-        IF SetMath() != 486
-        &#0009;? "Not a 486 unit"
-        ENDIF
-      </code>
-    </example>
     <seealso cref='O:XSharp.Core.Functions.SetCpu'>SetCPU</seealso>
   </setmath>
   <setnatdll>

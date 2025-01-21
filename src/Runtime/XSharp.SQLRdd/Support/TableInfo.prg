@@ -17,8 +17,16 @@ begin namespace XSharp.RDD.SqlRDD
 /// </summary>
 [DebuggerDisplay("{Name,nq}, {Columns.Count}")];
 class SqlDbTableInfo inherit SqlDbObject
+    #region Fields
+    protected _connection as SqlDbConnection
+    #endregion
 
-  /// <summary>
+    #region Shared Properties
+    // This includes the default properties that are shared between connection and table
+    #include "..\Metadata.xh"
+    #endregion
+    #region Table Only properties
+    /// <summary>
     /// List of columns
     /// </summary>
     /// <value></value>
@@ -42,22 +50,9 @@ class SqlDbTableInfo inherit SqlDbObject
     property RealName as string auto
 
     /// <summary>
-    /// Can the table be updated ?
-    /// </summary>
-    property AllowUpdates   as logic auto
-
-    /// <summary>
     /// List of columns that have to be selected. Defaults to "*", which means all columns
     /// </summary>
     property ColumnList as string auto
-    /// <summary>
-    /// Name of the Recno column. When empty then the relative row number is the record number
-    /// </summary>
-    property RecnoColumn    as string auto
-    /// <summary>
-    /// Name of the Deleted column. When empty then rows will be physically deleted from the server
-    /// </summary>
-    property DeletedColumn  as string auto
     /// <summary>
     /// Specifies a comma separated list of columns that must be used for update commands. Defaults to all columns
     /// </summary>
@@ -67,53 +62,23 @@ class SqlDbTableInfo inherit SqlDbObject
     /// </summary>
     property Indexes     as List<SqlDbIndexInfo>  auto get private set
     /// <summary>
-    /// Can field names longer than 10 characters be used (true) or should they be truncated (false)
-    /// </summary>
-    property LongFieldNames as logic auto
-    /// <summary>
-    /// What is the maximum number of records that the RDD should fetch when unfiltered.
-    /// </summary>
-    property MaxRecords     as long auto
-    /// <summary>
     /// Additional server side filter that will be used as (additional) where clause when fetching data. This must be
     /// a valid SQL expression for the target server
     /// </summary>
     property ServerFilter   as string auto
-    /// <summary>
-    /// Should trailing spaces for string columns be trimmed?
-    /// </summary>
-    property TrimTrailingSpaces as logic auto
-    /// <summary>
-    /// Should all columns be updated, or only the columns that were changed
-    /// </summary>
-    property UpdateAllColumns as logic auto
 
     /// <summary>
     /// Specifies a comma-delimited list of fields in the view and includes fields from the cursor
     /// </summary>
     property UpdatableColumns   as String auto
 
-    /// <summary>
-    /// Specifies whether memo fields of type Long text or Long binary are included in the WHERE clause when using automatic updating. This defaults to TRUE
-    /// </summary>
-    /// <value></value>
-    property CompareMemo              as logic auto
-
-    /// <summary>
-    /// Specifies whether the maximum value in the Recno column should be used as the RecCount property.
-    /// This defaults to FALSE which means that the RecCount property returns the number of records in the table
-    /// </summary>
-    property MaxRecnoAsRecCount       as logic auto
-
     internal property HasRecnoColumn        as LOGIC GET !String.IsNullOrEmpty(SELF:RecnoColumn)
     internal property HasDeletedColumn      as LOGIC GET !String.IsNullOrEmpty(SELF:DeletedColumn)
     internal property HasServerFilter       as LOGIC GET !String.IsNullOrEmpty(SELF:ServerFilter)
     internal property HasKeyColumns         as LOGIC GET !String.IsNullOrEmpty(SELF:KeyColumns) .and. SELF:KeyColumns != "*"
     internal property HasUpdatableColumns   as LOGIC GET !String.IsNullOrEmpty(SELF:UpdatableColumns) .and. SELF:UpdatableColumns != "*"
+    #endregion
 
-
-
-    protected _connection as SqlDbConnection
 
     /// <summary>
     /// Create a new instance of the SqlDbTableInfo class
@@ -179,19 +144,7 @@ end class
 /// This class stores metadata for index tags
 /// </summary>
 class SqlDbTagInfo inherit SqlDbObject
-    /// <summary>
-    /// Index expression in Xbase format
-    /// </summary>
-    property Expression as string auto
-    /// <summary>
-    /// Index condition in Xbase format
-    /// </summary>
-    property Condition as string auto
-    /// <summary>
-    ///  Should the index be unique ?
-    /// </summary>
-    property Unique    as logic  auto
-
+    #include "..\TagInfo.xh"
     /// <summary>
     /// Index to which the tag belongs
     /// </summary>

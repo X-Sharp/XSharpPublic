@@ -2418,7 +2418,9 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             VAR atts := SELF:TokensAsString(SELF:ParseAttributes())
             VAR sId   := ""
             VAR sTypeName := ""
-            isSelf := SELF:Expect(XSharpLexer.SELF)
+            IF SELF:Expect(XSharpLexer.SELF)
+                isSelf := TRUE
+            ENDIF
             IF SELF:IsId(SELF:La1)
                 sId  += SELF:ConsumeAndGetText()
             ENDIF

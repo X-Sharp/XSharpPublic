@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="ac449d30-9cb1-4c13-b775-b6eba943f6b1" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;"> APPEND FROM Command (non FoxPro)</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Import records from a database or text file.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>APPEND FROM &lt;xcSourceFile&gt; [FIELDS &lt;idFieldList&gt;] <para/>
+[&lt;Scope&gt;] [WHILE &lt;lCondition&gt;] [FOR &lt;lCondition&gt;] <para/>
+[SDF] | [DELIMITED [WITH &lt;xcDelimiter&gt; | BLANK]] | <para/>
+[VIA &lt;cDriver&gt;] [INHERIT FROM &lt;acRDDs&gt;]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>FROM &lt;xcSourceFile&gt;</entry><entry>The name of the source file from which to add records, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD. &#160;For text files, it is .TXT.</entry></row></table><table><row><entry></entry><entry>This command attempts to open &lt;xcSourceFile&gt; in shared mode. &#160;If the file does not exist, a runtime error is raised. &#160;If the file is successfully opened, the operation proceeds. &#160;If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE. &#160;</entry></row></table><para>&#160;</para>
+<table><row><entry>FIELDS &lt;idFieldList&gt;</entry><entry>The list of fields to append from &lt;xcSourceFile&gt;. &#160;The default is all fields.</entry></row></table><table><row><entry></entry><entry>Only fields with the same names and types in both files are appended. &#160;If fields with the same name do not match in data type, a runtime error is raised.</entry></row></table><para>&#160;</para>
+<para>&#160;</para>
+<para>&#160;</para>
+<para>&#160;</para>
+<table><row><entry>&lt;Scope&gt;</entry><entry>The portion of the current database file to process. &#160;The default is all visible records. Scope is one or more clauses of:<para/>
+[NEXT &lt;NEXT&gt;] &#160; &#160; &#160; &#160;Optionally specifies the number of records to process starting <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;with the first record of the source file. <para/>
+[RECORD &lt;rec&gt;] &#160; &#160; &#160; &#160;An optional record ID If specified, the processing begins <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;with this data record in the source file. <para/>
+[&lt;rest:REST&gt;] &#160; &#160; &#160; &#160;The option REST specifies whether records are sequentially <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;searched only from the current up to the last record. <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;If a condition is specified, the option ALL is the default value.<para/>
+[ALL] &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;The option ALL specifies that all records from the source file are imported. <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;This is the default setting. </entry></row></table><para>&#160;</para>
+<table><row><entry>WHILE &lt;lCondition&gt;</entry><entry>A condition that each visible record within the scope must meet, starting with the current record. &#160;As soon as the while condition fails, the process terminates. &#160;If no &lt;Scope&gt; is specified, having a while condition changes the default scope to the rest of the visible records in the file.</entry></row></table><para>&#160;</para>
+<table><row><entry>FOR &lt;lCondition&gt;</entry><entry>A condition that each visible record within the scope must meet in order to be processed. &#160;If a record does not meet the specified condition, it is ignored and the next visible record is processed. &#160;If no &lt;Scope&gt; or WHILE clause is specified, having a for condition changes the default scope to all visible records.</entry></row></table><para>&#160;</para>
+<table><row><entry>SDF</entry><entry>A System Data Format file with format specifications as shown in the table below. &#160;Records and fields are fixed length.</entry></row></table><table><row><entry></entry><entry></entry></row></table><para>&#160;</para>
+<table><row><entry>File Element</entry><entry>Format &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Character fields</entry><entry>Padded with trailing blanks &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Date fields</entry><entry>yyyymmdd &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Logical fields</entry><entry>T or F &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Memo fields</entry><entry>Ignored &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Numeric fields</entry><entry>Padded with leading blanks or zeros &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Field separator</entry><entry>None &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Record separator</entry><entry>Carriage return/linefeed &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>End of file marker</entry><entry>1A hex or Chr(26) &#160; &#160; &#160; &#160;</entry></row></table><para>&#160;</para>
+<table><row><entry>DELIMITED [WITH &lt;xcDelimiter&gt;]</entry></row></table><table><row><entry></entry><entry>A text file in which character fields are enclosed in double quote marks (the default delimiter) or the specified &lt;xcDelimiter&gt;. &#160;Fields and records are variable length, and the format specifications are shown in the table below:</entry></row></table><para>&#160;</para>
+<para>&#160;</para>
+<table><row><entry>File Element</entry><entry>Format &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Character fields</entry><entry>Can be delimited, with trailing blanks truncated &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Date fields</entry><entry>yyyymmdd &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Logical fields</entry><entry>T or F &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Memo fields</entry><entry>Ignored &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Numeric fields</entry><entry>Leading zeros can be truncated &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Field separator</entry><entry>Comma &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Record separator</entry><entry>Carriage return/linefeed &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>End of file marker</entry><entry>1A hex or Chr(26) &#160; &#160; &#160; &#160;</entry></row></table><para>Note: &#160;Delimiters are not required and APPEND FROM correctly handles character fields not enclosed with them. &#160;</para>
+<para>&#160;</para>
+<table><row><entry>DELIMITED WITH BLANK</entry></row></table><table><row><entry></entry><entry>A text file in which fields are separated by one space and character fields are not enclosed in delimiters. &#160;The format specifications are shown in the table below:</entry></row></table><para>&#160;</para>
+<table><row><entry>File Element</entry><entry>Format &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Character fields</entry><entry>Not delimited, trailing blanks can be truncated &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Date fields</entry><entry>yyyymmdd &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Logical fields</entry><entry>T or F &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Memo fields</entry><entry>Ignored &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Numeric fields</entry><entry>Leading zeros can be truncated &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Field separator</entry><entry>Single blank space &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Record separator</entry><entry>Carriage return/linefeed &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>End of file marker</entry><entry>1A hex or Chr(26) &#160; &#160; &#160; &#160;</entry></row></table><para>Warning! &#160;If the DELIMITED WITH clause is specified on an APPEND FROM command line, it must be the last clause specified.</para>
+<para>&#160;</para>
+<table><row><entry>VIA &lt;cDriver&gt;</entry><entry>The name of the RDD that will service the work area. &#160;If not specified, the default RDD as determined by <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_RT_Functions_RddSetDefault.htm -->RDDSetDefault() is used.</entry></row></table><para>&#160;</para>
+<table><row><entry>INHERIT FROM &lt;acRDDs&gt;</entry></row></table><table><row><entry></entry><entry>A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality. &#160;This allows you to use RDDs with special capabilities, like encryption or decryption, in different work areas with different database drivers. &#160;These RDDs overlay special functions of the main RDD (specified with the VIA clause). &#160;If multiple RDDs (specified with this INHERIT FROM clause) implement the same function, the function associated with the last RDD in the list takes precedence.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<para>Deleted records:  If <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDeleted.htm -->SetDeleted()  is FALSE, deleted records in &lt;xcSourceFile&gt; are appended to the current database file and retain their deleted status. &#160;If SetDeleted() is TRUE, however, deleted records are not visible and are, therefore, not processed.</para>
+<para>&#160;</para>
+<para>Unmatched field widths:  If a field in the current database file is character type and has a field length greater than the incoming &lt;xcSourceFile&gt; data, APPEND FROM pads the source data with blanks. &#160;If the current field is character data type and its field length is less than the incoming source data, the source data is truncated to fit. &#160;If the current field is numeric type and the incoming source data has more digits than the current field length, a runtime error is raised.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example demonstrates an APPEND FROM command using a fields list and a condition:</para>
+<para>&#160;</para>
+<para>USE sales NEW<para/>
+APPEND FROM branchfile FIELDS Branch, Salesman, Amount FOR Branch = 100</para>
+<para>&#160;</para>
+<para>The next example demonstrates how a &lt;Scope&gt; can be specified to import a particular record from another database file:</para>
+<para>&#160;</para>
+<para>APPEND RECORD 5 FROM temp</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="afff88e4-8ef5-4ba6-b258-ed25aed855c9">COPY TO</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbApp.htm -->DbApp(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbAppDelim.htm -->DbAppDelim(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbAppSdf.htm -->DbAppSDF(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_RT_Functions_RddSetDefault.htm -->RDDSetDefault(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDefault.htm -->SetDefault(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetPath.htm -->SetPath(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDeleted.htm -->SetDeleted() </para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+
+
+    <relatedTopics>
+    <link xlink:href="command_append_blank" />
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

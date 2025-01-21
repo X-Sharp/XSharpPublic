@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="6dba281e-c295-40b6-b305-66237fc6c5a3" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_terminal.html -->Terminal Window&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">TEXT Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare a block of text that can be assigned to a variable or send to an output device.</para>
+<para>There are several different variations of the TEXT Statement:</para>
+<para>&#183;<!-- TODO: Unknown topic link: text-command-(core).html -->Core TEXT Command</para><para>&#183;<!-- TODO: Unknown topic link: text-command-(non-core).html -->Non-Code TEXT Command</para><para>&#183;<!-- TODO: Unknown topic link: text-command-(foxpro).html -->FoxPro TEXT Command</para><para>&#160;</para>
+<para>The different variations of the TEXT commands are implemented as User Defined commands in XSharpDefs.xh or one of the other header files.</para>
+<para>All of these commands map to the preprocessor directives <!-- TODO: Unknown topic link: pp-text.html -->#text and <!-- TODO: Unknown topic link: pp-endtext.html -->#endtext where the actual work is done.</para>
+<para>&#160;</para>
+<para>&#160;</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

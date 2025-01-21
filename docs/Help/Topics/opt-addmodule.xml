@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T17:35:48.997+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-addmodule</title>
   <keywords>
     <keyword>-addmodule</keyword>
@@ -17,7 +17,7 @@
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal">All modules added with -addmodule must be in the same directory as the output file at run time. That is, you can specify a module in any directory at compile time but the module must be in the application directory at run time. If the module is not in the application directory at run time, you will get a TypeLoadException.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">file cannot contain an assembly. For example, if the output file was created with -target:module, its metadata can be imported with -addmodule.</para>
+    <para styleclass="Normal">A file cannot contain an assembly. For example, if the output file was created with -target:module, its metadata can be imported with -addmodule.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If the output file was created with a -target option other than -target:module, its metadata cannot be imported with -addmodule but can be imported with -reference.</para>
     <para styleclass="Normal"></para>

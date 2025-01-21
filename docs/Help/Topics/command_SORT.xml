@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-14T14:43:02.870+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SORT Command</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -19,11 +19,11 @@
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code with box">SORT TO &lt;xcTargetFile&gt; ON &lt;idFieldList&gt; [&lt;Scope&gt;] [WHILE &lt;lCondition&gt;] [FOR &lt;lCondition&gt;]</para>
     <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target database file to write the sorted records, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD.</para>
+    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target database file to write the sorted records, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. The default extension for database files is determined by the RDD.</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;</para>
+    <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;</para>
     <para styleclass="List"></para>
-    <para styleclass="List">ON &lt;idFieldList&gt;<tab />The sort keys, specified as a comma-separated list of field names. &#160;You may optionally add, after each field name, /A (to sort in dictionary order), /C (to ignore capitalization), or /D (to sort in descending order). &#160;The default setting is /A.</para>
+    <para styleclass="List">ON &lt;idFieldList&gt;<tab />The sort keys, specified as a comma-separated list of field names. You may optionally add, after each field name, /A (to sort in dictionary order), /C (to ignore capitalization), or /D (to sort in descending order). The default setting is /A.</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
     <para styleclass="List"><snippet src="__While" inline="false"/></para>

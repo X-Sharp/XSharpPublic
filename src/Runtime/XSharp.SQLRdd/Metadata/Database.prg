@@ -39,7 +39,6 @@ end class
     private indexDict       as string
     private indexColumn       as string
 
-
     /// <summary>
     /// Create a new instance of the DatabaseMetadataProvider class.
     /// </summary>
@@ -68,6 +67,7 @@ end class
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.TrimTrailingSpaces),"L", 1,0},_connection:TrimTrailingSpaces})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.CompareMemo),"L", 1,0},_connection:CompareMemo})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.MaxRecnoAsRecCount),"L", 1,0},_connection:MaxRecnoAsRecCount})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.SeekReturnsSubset),"L", 1,0},_connection:SeekReturnsSubset})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.UpdatableColumns),"C", 255,0},DEFAULT_UPDATABLECOLUMNS})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.ColumnList),"C", 255,0},DEFAULT_COLUMNLIST})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.KeyColumns),"C", 255,0},DEFAULT_KEYCOLUMNS})
@@ -247,12 +247,12 @@ end class
                 SELF:CreateDictionary()
             ELSE
                 // Check if the table dictionary has at least one record
-
                 cmd:CommandText := i"SELECT COUNT(*) FROM {tableDict}"
                 var count := cmd:ExecuteScalar()
                 if Convert.ToInt64(count) == 0
                     SELF:CreateDictionary()
                 endif
+                // Check new MaxRecnoAsRecCount field
                 cmd:CommandText := i"Select maxrecnoasreccount from {tableDict}"
                 local ok := false as logic
 
@@ -268,6 +268,23 @@ end class
                         ok := cmd:ExecuteNonQuery(tableDict)
                     endif
                 endif
+
+                // Check new SeekReturnsSubset field
+
+                cmd:CommandText := i"Select seekreturnssubset from {tableDict}"
+
+                ok := cmd:ExecuteNonQuery(tableDict)
+                if ! ok
+                    var oInfo := RddFieldInfo{nameof(SqlRDDEventReason.SeekReturnsSubset),"L", 1,0}
+                    var colInfo := Connection:Provider:GetSqlColumnInfo(oInfo, Connection)
+                    cmd:CommandText := i"alter table {tableDict} add "+colInfo
+                    ok := cmd:ExecuteNonQuery(tableDict)
+                    if ok
+                        colInfo := Connection:Provider:QuoteIdentifier(oInfo:Name)
+                        cmd:CommandText := i"update {tableDict} set "+colInfo+" = "+Connection:Provider:TrueLiteral
+                        ok := cmd:ExecuteNonQuery(tableDict)
+                    endif
+                endif
             ENDIF
             // Read the defaults from the database
             cmd:AddParameter("@p1",DefaultSection)
@@ -275,15 +292,7 @@ end class
             local rdr := cmd:ExecuteReader("Metadata") as DbDataReader
             if rdr != null
                 if rdr:Read() .and. rdr.HasRows
-                    _connection:LongFieldNames      := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.LongFieldNames),_connection:LongFieldNames )
-                    _connection:AllowUpdates        := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.AllowUpdates),_connection:AllowUpdates)
-                    _connection:MaxRecords          := SELF:_GetNumber(rdr, nameof(SqlRDDEventReason.MaxRecords), _connection:MaxRecords)
-                    _connection:RecnoColumn         := SELF:_GetString(rdr, nameof(SqlRDDEventReason.RecnoColumn), _connection:RecnoColumn )
-                    _connection:DeletedColumn       := SELF:_GetString(rdr, nameof(SqlRDDEventReason.DeletedColumn), _connection:DeletedColumn )
-                    _connection:TrimTrailingSpaces  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.TrimTrailingSpaces),_connection:TrimTrailingSpaces)
-                    _connection:CompareMemo         := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.CompareMemo),_connection:CompareMemo)
-                    _connection:UpdateAllColumns    := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.UpdateAllColumns), _connection:UpdateAllColumns)
-                    _connection:MaxRecnoAsRecCount  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.MaxRecnoAsRecCount), _connection:MaxRecnoAsRecCount)
+                    SUPER:GetDefaults(rdr)
                 endif
                 rdr:Close()
             endif
@@ -292,57 +301,11 @@ end class
         return
     end method
 
-    private method _GetPos(rdr as DbDataReader, cName as string) AS Long
-        var pos := rdr:GetOrdinal(cName)
-        if pos >= 0
-            return pos
-        else
-            Throw Exception{String.Format("Field {0} not found in the resultset", cName)}
-        endif
-    end method
-
-    private method _GetString(rdr as DbDataReader, cName as string, strDefault as string) as string
-        try
-            var pos := SELF:_GetPos(rdr, cName)
-            if pos >= 0
-                return rdr:GetString(pos):Trim()
-            endif
-        catch
-            return strDefault:Trim()
-        end try
-        return strDefault
-    end method
-
-    private method _GetNumber(rdr as DbDataReader, cName as string, nDefault as int) as int
-        try
-            var pos := SELF:_GetPos(rdr, cName)
-            if pos >= 0
-                var num := rdr:GetDecimal(pos)
-                return Convert.ToInt32(num)
-            endif
-        catch
-            return nDefault
-        end try
-        return nDefault
-    end method
-
-    private method _GetLogic(rdr as DbDataReader, cName as string, lDefault as LOGIC) as logic
-        try
-            var pos := SELF:_GetPos(rdr, cName)
-            if pos >= 0
-                return rdr:GetBoolean(pos)
-            endif
-        catch
-            return lDefault
-        end try
-        return lDefault
-    end method
 
     /// <inheritdoc />
     OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlDbTableInfo
         local oTable as SqlDbTableInfo
         SELF:ReadDefaults()
-
         if SELF:FindInCache(cTable, out oTable)
             return oTable
         endif
@@ -358,20 +321,8 @@ end class
         local rdr := cmd:ExecuteReader() as DbDataReader
         if rdr != null
             if rdr:Read()
-                oTable:RealName            := SELF:_GetString(rdr, nameof(SqlRDDEventReason.RealName),cTable)
-                oTable:LongFieldNames      := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.LongFieldNames), _connection:LongFieldNames)
-                oTable:AllowUpdates        := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.AllowUpdates), _connection:AllowUpdates)
-                oTable:MaxRecords          := SELF:_GetNumber(rdr, nameof(SqlRDDEventReason.MaxRecords),_connection:MaxRecords)
-                oTable:RecnoColumn         := SELF:_GetString(rdr, nameof(SqlRDDEventReason.RecnoColumn),_connection:RecnoColumn)
-                oTable:DeletedColumn       := SELF:_GetString(rdr, nameof(SqlRDDEventReason.DeletedColumn),_connection:DeletedColumn)
-                oTable:TrimTrailingSpaces  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.TrimTrailingSpaces),_connection:TrimTrailingSpaces)
-                oTable:CompareMemo         := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.CompareMemo),_connection:CompareMemo)
-                oTable:MaxRecnoAsRecCount  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.MaxRecnoAsRecCount),_connection:MaxRecnoAsRecCount)
-                oTable:UpdateAllColumns    := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.UpdateAllColumns),_connection:UpdateAllColumns)
-                oTable:UpdatableColumns    := SELF:_GetString(rdr, nameof(SqlRDDEventReason.UpdatableColumns),DEFAULT_UPDATABLECOLUMNS)
-                oTable:KeyColumns          := SELF:_GetString(rdr, nameof(SqlRDDEventReason.KeyColumns),DEFAULT_KEYCOLUMNS)
-                oTable:ServerFilter        := SELF:_GetString(rdr, nameof(SqlRDDEventReason.ServerFilter),DEFAULT_SERVERFILTER)
-                var cIndexes               := SELF:_GetString(rdr, nameof(SqlRDDEventReason.Indexes),DEFAULT_INDEXES)
+                SUPER:ReadTable(oTable, rdr)
+                var cIndexes  := SELF:GetString(rdr, SqlRDDEventReason.Indexes,DEFAULT_INDEXES)
                 rdr:Close()
                 if (!String.IsNullOrEmpty(cIndexes))
                     var aIndexes := cIndexes:Split(c",")
@@ -404,10 +355,10 @@ end class
         var oIndex  := SqlDbIndexInfo{oTable, cIndexName}
         if rdr != null
             while rdr:Read()
-                var oTag           := SqlDbTagInfo{oIndex, SELF:_GetString(rdr, nameof(TagName),"")}
-                oTag:Expression    := SELF:_GetString(rdr, nameof(SqlRDDEventReason.Expression),DEFAULT_EXPRESSION)
-                oTag:Condition     := SELF:_GetString(rdr, nameof(SqlRDDEventReason.Condition),DEFAULT_CONDITION)
-                oTag:Unique        := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.Unique), DEFAULT_UNIQUE)
+                var oTag           := SqlDbTagInfo{oIndex, SELF:GetString(rdr, SqlRDDEventReason.TagName,"")}
+                oTag:Expression    := SELF:GetString(rdr, SqlRDDEventReason.Expression,DEFAULT_EXPRESSION)
+                oTag:Condition     := SELF:GetString(rdr, SqlRDDEventReason.Condition,DEFAULT_CONDITION)
+                oTag:Unique        := SELF:GetLogic (rdr, SqlRDDEventReason.Unique, DEFAULT_UNIQUE)
                 oIndex:Tags:Add(oTag)
             enddo
             rdr:Close()
@@ -464,9 +415,10 @@ end class
             cmd:AddParameter("@p2",cIndex)
 
             var tbl     := cmd:GetDataTable(cTable)
-            var nOrdinal := 0
+            var nOrdinal := (int64) 0
             foreach row as DataRow in tbl:Rows
-                nOrdinal := Math.Max(nOrdinal, (Int32) row:Item[0])
+                var i64value := SELF:ToInt64(row:Item[0])
+                nOrdinal := Math.Max(nOrdinal, i64value)
             next
             nOrdinal++
             // create insert command
@@ -540,17 +492,88 @@ end class
         endif
 
         RETURN
+#region Helper Methods
+    private Method ToInt64(item as object) as Int64
+        local result as Int64
+        switch item
+        case l as long
+            result := (int64) l
+        case i64 as int64
+            result := i64
+        case f as IFloat
+            result := Convert.ToInt64 (f:Value)
+        case d as Decimal
+            result := Convert.ToInt64(d)
+        otherwise
+            result := Convert.ToInt64(item)
+        end switch
+        return result
+    private method GetPos(rdr as DbDataReader, cName as string) AS Long
+        var pos := rdr:GetOrdinal(cName)
+        if pos >= 0
+            return pos
+        else
+            Throw Exception{String.Format("Field {0} not found in the resultset", cName)}
+        endif
+    end method
+
+#endregion
+
+#region Overridden Getmethods from Abstract
+    override method GetString(oPar as OBJECT, nReason as SqlRDDEventReason, strDefault as string) as string
+        try
+            var rdr := (DbDataReader) oPar
+            var pos := SELF:GetPos(rdr, nReason:ToString())
+            if pos >= 0
+                var result := rdr:GetString(pos):Trim()
+                if String.IsNullOrEmpty(result)
+                    result := strDefault:Trim()
+                endif
+                return result
+            endif
+        catch
+            return strDefault:Trim()
+        end try
+        return strDefault
+    end method
+
+    override method GetInt(oPar as object, nReason as SqlRDDEventReason, nDefault as int) as int
+        try
+            var rdr := (DbDataReader) oPar
+            var pos := SELF:GetPos(rdr, nReason:ToString())
+            if pos >= 0
+                var num := rdr:GetDecimal(pos)
+                return Convert.ToInt32(num)
+            endif
+        catch
+            return nDefault
+        end try
+        return nDefault
+    end method
+
+    override method GetLogic(oPar as object, nReason as SqlRDDEventReason, lDefault as LOGIC) as logic
+        try
+            var rdr := (DbDataReader) oPar
+            var pos := SELF:GetPos(rdr, nReason:ToString())
+            if pos >= 0
+                return rdr:GetBoolean(pos)
+            endif
+        catch
+            return lDefault
+        end try
+        return lDefault
+    end method
+
+#endregion
 
 
 #region constants
     INTERNAL CONST TableDictionary   := "xs_tableinfo" as string
     INTERNAL CONST IndexDictionary   := "xs_indexinfo" as string
-    INTERNAL CONST DefaultSection    := "defaults" as string
     INTERNAL CONST TableName         := nameof(TableName) as string
     INTERNAL CONST IndexName         := nameof(IndexName) as string
     INTERNAL CONST TagName           := nameof(TagName) as string
     INTERNAL CONST Ordinal           := nameof(Ordinal) as string
-
 #endregion
 END CLASS
 

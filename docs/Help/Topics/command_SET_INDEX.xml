@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-16T13:52:01.897+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SET INDEX Command</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -21,23 +21,23 @@
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code with box">SET INDEX TO [&lt;xcIndexFileList&gt; [ADDITIVE]]</para>
     <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">TO &lt;xcIndexFileList&gt;<tab />The names of the index files to open, including an optional drive, directory, and extension for each. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT). &#160;</para>
+    <para styleclass="List">TO &lt;xcIndexFileList&gt;<tab />The names of the index files to open, including an optional drive, directory, and extension for each. See SetDefault() and SetPath() for file searching and creation rules. The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT). &#160;</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />If a file in the list does not exist, a runtime error is raised. &#160;If it exists, this command attempts to open the file in the same mode as the corresponding database file. &#160;If access is denied because, for example, another process is using the file and this one is asking for exclusive use, NetErr() is set to TRUE. &#160;Otherwise, the file open is successful, the command proceeds to the next file in the list.</para>
+    <para styleclass="List"><tab />If a file in the list does not exist, a runtime error is raised. If the file exists, this command attempts to open it in the same mode as the corresponding database file. If access is denied - because, for example, another process is using the file and this one is asking for exclusive use - NetErr() is set to TRUE. Otherwise, the file opens succesfully, and the command proceeds to the next file in the list.</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />Concurrency conflicts with index files are rare since they should be used with only one database file. &#160;If a concurrency problem arises, it will normally be when you attempt to open the database file. &#160;</para>
+    <para styleclass="List"><tab />Concurrency conflicts with index files are rare since they should be used with only one database file. If a concurrency problem arises, it usually occurs when you attempt to open the database file. &#160;</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />SET INDEX TO with no file name clears the current order list.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">ADDITIVE<tab />Adds the orders from the indicated index files to the current order list, leaving the controlling order intact. &#160;If not specified, a new order list is constructed from the indicated index files, replacing the current order list.</para>
+    <para styleclass="List">ADDITIVE<tab />Adds the orders from the indicated index files to the current order list, leaving the controlling order intact. If not specified, a new order list is constructed from the indicated index files, replacing the current order list.</para>
     <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">If no order list exists for the work area or if SET INDEX is replacing the current order list, the type of RDD determines whether or not the controlling order is set. &#160;For RDDs that support only single-order index files (such as DBFNTX), the controlling order is set to the order in the specified index file. &#160;For RDDs that support multi-order index files (such as DBFMDX), you usually need to set the controlling order explicitly (using, for example, SET ORDER or <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetOrder.htm" domain="XSharpRef.chm">DbSetOrder()</link> otherwise, the data file may be processed in natural order even though there is an order list in effect.</para>
+    <para styleclass="Normal">If no order list exists for the work area or if SET INDEX is replacing the current order list, the type of RDD determines whether or not the controlling order is set. For RDDs that support only single-order index files (such as DBFNTX), the controlling order is set to the order in the specified index file. &#160;For RDDs that support multi-order index files (such as DBFMDX), you usually need to set the controlling order explicitly (using, for example, SET ORDER or <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetOrder.htm" domain="XSharpRef.chm">DbSetOrder()</link>). Otherwise, the data file may be processed in natural order even though there is an order list in effect.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">After the new index files are opened, the work area is positioned to the first logical record in the controlling order and all subsequent database operations process the records using the controlling order.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">During database processing, all orders in the order list are updated whenever a key value is added or changed, respecting any for condition or unique flag in the order. &#160;To change the controlling order without affecting the current order list, use SET ORDER or DBSetOrder(). &#160;To find out information about a particular order or index file, use DBOrderInfo().</para>
+    <para styleclass="Normal">During database processing, all orders in the order list are updated whenever a key value is added or changed, respecting any for condition or unique flag in the order. &#160;To change the controlling order without affecting the current order list, use SET ORDER or DBSetOrder(). To find out information about a particular order or index file, use DBOrderInfo().</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">SET INDEX TO when specified with an index file list is functionally equivalent to using several DBSetIndex() function calls. &#160;If no ADDITIVE clause is specified, the command calls DBClearFilter() first. &#160;</para>
+    <para styleclass="Normal">SET INDEX TO when specified with an index file list is functionally equivalent to using several DBSetIndex() function calls. If no ADDITIVE clause is specified, the command calls DBClearFilter() first. &#160;</para>
     <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">This example opens a database and several associated index files:</para>
     <para styleclass="Normal"></para>

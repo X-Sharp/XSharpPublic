@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <members></members>
+    <Console>
+        <summary>
+            封装一个 Win32 控制台应用程序。
+        </summary>
+        <remarks> 
+            两个库的实现之间一个明显的区别可以在从命令行启动应用程序时看到。<br />
+            一个 Terminal Lite 应用程序将分配一个新窗口，而一个 Console Classes 应用程序将在启动时所在的窗口中运行。<br />
+            根据命令行设置，一个 Console Classes 应用程序也可以全屏运行，而 Terminal Lite 应用程序不能。
+            另外，使用 Console Classes 不需要与应用程序一起分发额外的运行时DLL。 <br />
+            <note type="tip">
+                要在 Win32 控制台中运行应用程序，必须在应用程序选项对话框中将应用程序类型设置为控制台。
+                否则，将创建一个单独的控制台窗口。<br />
+                您也可以在普通 Windows 应用程序中使用 Console 类来创建一个单独的控制台窗口，例如，输出一些调试信息。
+            </note>
+        </remarks>
+    </Console>
+
+    <Console.ctor>
+        <summary>
+            实例化一个新的 Console 对象。
+        </summary>
+        <param name="lNew">
+            一个逻辑值，如果设置为 TRUE，强制分配一个新控制台窗口。默认为 FALSE。
+        </param>
+        <remarks> 
+            构造函数分配一个新控制台窗口。<br />
+            默认情况下，或者如果 <paramref name="lNew" /> 参数设置为 FALSE，并且应用程序从命令行启动, X# 首先尝试使用已经打开的控制台窗口。<br />
+            如果失败了，或者如果 <paramref name="lNew" /> 参数设置为 TRUE， Console{} 分配并打开一个新控制台窗口。 
+        </remarks>
+        <example> 
+            这个代码片段创建并清除一个新控制台窗口： 
+            <code language="X#">
+                FUNCTION Start()
+                LOCAL oCon AS Console
+                oCon := Console{}
+                oCon:Clear()
+            </code>
+        </example>
+    </Console.ctor>
+
+    <Console.Clear>
+        <summary>
+            清除控制台窗口的输出。
+        </summary>
+        <example> 
+            这个代码片段创建并清除一个新的控制台窗口的输出： 
+            <code language="X#">
+                FUNCTION Start()
+                LOCAL oCon AS Console
+                oCon := Console{}
+                oCon:Clear()
+            </code>
+        </example>
+    </Console.Clear>
+
+    <Console.CursorPos>
+        <summary>
+            作为 ConsoleCoord 对象的当前光标位置。
+        </summary>
+        <value>作为 ConsoleCoord 对象的当前光标位置。</value>
+    </Console.CursorPos>
+
+    <Console.CursorSize>
+        <summary>
+            整数，指定当前游光标大小。
+        </summary>
+        <value>整数，指定当前游光标大小。</value>
+    </Console.CursorSize>
+
+    <Console.CursorVisible>
+        <summary>
+            逻辑型，指定光标是否可见。
+        </summary>
+        <value>逻辑型，指定光标是否可见。</value>
+    </Console.CursorVisible>
+
+    <Console.Destroy>
+        <summary>
+            提供一种去实体化的方法。
+        </summary>
+        <remarks>
+            当不再需要 Console 对象时，可以使用该方法。<br />
+            Console:Destroy() 会删除 Console 对象的实例，并允许关闭和释放该对象打开或创建的任何资源，而无需等待垃圾回收器。
+        </remarks>
+        <returns>
+            NIL
+        </returns>
+    </Console.Destroy>
+
+    <Console.Read>
+        <summary>
+            读取控制台输入缓冲区。
+        </summary>
+        <returns>
+            包含输入字符的字符串。
+        </returns>
+        <remarks>
+            Console:Read() 方法最多可读取 256 个字符的控制台输入缓冲区。
+        </remarks>
+        <example> 
+            以下各行用于等待、读取和回显控制台输入。 
+            <code language="X#">
+                FUNCTION Start(p)
+                LOCAL oCon AS Console
+                LOCAL sInput AS STRING
+                oCon := Console{}
+                oCon:Clear()
+                oCon:Write("Enter text: ")
+                sInput := oCon:Read()
+                oCon:Write("You entered : " + sInput)
+            </code>
+        </example>
+    </Console.Read>
+
+    <Console.Size>
+        <summary>
+            ConsoleCoord 对象的控制台大小。
+        </summary>
+        <value>ConsoleCoord 对象的控制台大小。</value>
+    </Console.Size>
+
+    <Console.TextAttribute>
+        <summary>
+            指定当前文本特性(attributes)的单词。
+        </summary>
+        <value>指定当前文本特性(attributes)的单词。</value>
+        <remarks>
+            <para>使用 _Or() 可以使用以下常量的任意组合：</para>
+            <list type="table">
+                <item>
+                    <term>FOREGROUND_BLUE</term>
+                </item>
+                <item>
+                    <term>FOREGROUND_GREEN</term>
+                </item>
+                <item>
+                    <term>FOREGROUND_RED</term>
+                </item>
+                <item>
+                    <term>FOREGROUND_INTENSITY</term>
+                </item>
+                <item>
+                    <term>BACKGROUND_BLUE</term>
+                </item>
+                <item>
+                    <term>BACKGROUND_GREEN</term>
+                </item>
+                <item>
+                    <term>BACKGROUND_RED</term>
+                </item>
+                <item>
+                    <term>BACKGROUND_INTENSITY</term>
+                </item>
+            </list>
+        </remarks>
+    </Console.TextAttribute>
+
+    <Console.Title>
+        <summary>
+            指定控制台应用程序标题的字符串。
+        </summary>
+        <value>指定控制台应用程序标题的字符串。</value>
+    </Console.Title>
+
+    <Console.Wait>
+        <summary>
+            等待控制台窗口上的键盘按下或鼠标点击。
+        </summary>
+        <returns>
+            一个字符，表示按下的键或点击的鼠标按钮。一般来说，这个返回值不应该被使用。
+        </returns>
+        <remarks>
+            这个方法等待控制台上的键盘按下或鼠标点击。
+        </remarks>
+        <example> 
+            下面的代码行显示当前日期，然后等待键盘按下 
+            <code language="X#">
+                FUNCTION Start(p)
+                LOCAL oCon AS Console
+                LOCAL sInput AS STRING
+                oCon := Console{}
+                oCon:Clear()
+                oCon:Write("今天是: " + DTOC(TODAY())
+                oCon:WriteLine("任意键继续...")
+                sInput := oCon:Wait()
+            </code>
+        </example>
+    </Console.Wait>
+
+    <Console.Write>
+        <summary>
+            将字符串写入控制台窗口。
+        </summary>
+        <param name="sMsg">要写入控制台的字符串。</param>
+        <remarks>
+            这个方法将字符串写入控制台。字符串被写入当前光标位置。
+        </remarks>
+        <example> 
+            下面的代码等待、读取并回显控制台输入。 
+            <code language="X#">
+                FUNCTION Start(p)
+                LOCAL oCon AS Console
+                LOCAL sInput AS STRING
+                oCon := Console{}
+                oCon:Clear()
+                oCon:Write("Enter text: ")
+                sInput := oCon:Read()
+                oCon:Write("You entered : " + sInput)
+            </code>
+        </example>
+    </Console.Write>
+
+    <Console.WriteError>
+        <summary>
+            将错误消息字符串写入 StdErr 句柄。
+        </summary>
+        <param name="sMsg">要写入 StdErr 句柄的字符串。</param>
+    </Console.WriteError>
+
+    <Console.WriteLine>
+        <summary>
+            将字符串写入控制台窗口，并开始新的一行。
+        </summary>
+        <param name="sMsg">要写入控制台的字符串。</param>
+    </Console.WriteLine>
+
+    <ConsoleCoord>
+        <summary>
+            一个封装控制台窗口坐标的辅助类。
+        </summary>
+        <remarks>
+            ConsoleCoord 类封装了用于 Console:Size 和 Console:CursorPos 属性的 x 和 y 值。
+        </remarks>
+    </ConsoleCoord>
+
+    <ConsoleCoord.X>
+        <summary>
+            X 轴位置或对象的宽度
+        </summary>
+    </ConsoleCoord.X>
+
+    <ConsoleCoord.Y>
+        <summary>
+            Y 轴位置或对象的高度
+        </summary>
+    </ConsoleCoord.Y>
+
+    <ConsoleCoord.ctor>
+        <summary>
+            实例化一个 ConsoleCoord 对象。
+        </summary>
+        <param name="nX">指定 x 轴位置或宽度的整数值。</param>
+        <param name="nY">指定 y 轴位置或高度的整数值。</param>
+        <remarks>
+            ConsoleCoord{} 实例化一个新的 ConsoleCoord 对象，可以用于 Console:Size 和 Console:CursorPos 属性。
+        </remarks>
+    </ConsoleCoord.ctor>
+</doc>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-19T12:46:44.743+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-11-14T15:23:49.379+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>CLASS Statement (Xbase++ dialect)</title>
   <keywords>
     <keyword>Binding of instance variables</keyword>
@@ -47,18 +47,18 @@
     <para styleclass="Body Text"><tab /><tab />[&lt;Body&gt;]</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">Attributes<tab />An optional list of one or more attributes that describe meta information for am entity, such as for example the [TestMethod] attribute on a method containing tests in a MsTest class library. Please note that Attributes must be on the same line or suffixed with a semi colon when they are written on the line above that keyword.<tab /></para>
+    <para styleclass="List">Attributes<tab />An optional list of one or more attributes that describe meta-information for am entity, such as, for example, the [TestMethod] attribute on a method containing tests in a MsTest class library. Please note that Attributes must be on the same line or suffixed with a semi-colon when they are written on the line above that keyword.<tab /></para>
     <para styleclass="List"></para>
-    <para styleclass="List">Modifiers<tab />An optional list of modifiers that specify the visibility or scope of the entity, allowed values are STATIC, FREEZE and FINAL</para>
+    <para styleclass="List">Modifiers<tab />An optional list of modifiers that specify the visibility or scope of the entity; allowed values are STATIC, FREEZE and FINAL.</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__includeIdClass" inline="false"/></para>
     <para styleclass="List">FROM &lt;idParentClass&gt;<tab />The name of an existing class (called a superclass) from which the new class inherits methods and instance variables (with the exception of HIDDEN). X# does NOT allow multiple inheritance.</para>
     <para styleclass="List"></para>
     <para styleclass="List">SHARING &lt;<text styleclass="Italic">idParentClass</text>&gt;<tab />This clause is not supported by X#.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">IMPLEMENTS <text styleclass="Normal">&lt;idInterface&gt;</text><tab /><text styleclass="Normal">The name(s) of the interface(s) that this class implements</text></para>
+    <para styleclass="List">IMPLEMENTS <text styleclass="Normal">&lt;idInterface&gt;</text><tab /><text styleclass="Normal">The name(s) of the interface(s) that this class implements.</text></para>
     <para styleclass="List"></para>
-    <para styleclass="List"><text styleclass="Normal">ClassMembers</text><tab /><text styleclass="Normal">This may be a list of variable declarations, method declarations and inline method implementations</text></para>
+    <para styleclass="List"><text styleclass="Normal">ClassMembers</text><tab /><text styleclass="Normal">This may be a list of variable declarations, method declarations and inline method implementations.</text></para>
     <para styleclass="List"></para>
     <para styleclass="List"><text styleclass="Normal">[CLASS] METHOD</text><tab /><text styleclass="Normal">This implements one or more methods outside of the class declaration. The CLASS keyword indicates that it is a STATIC method, as opposed to an INSTANCE method.</text></para>
     <para styleclass="Heading1">ClassMembers</para>

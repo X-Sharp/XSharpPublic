@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-05T10:00:42.317+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T18:21:19.481+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-ns</title>
   <keywords>
     <keyword>-ns</keyword>
@@ -15,7 +15,7 @@
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="List"><text styleclass="Code Example">namespaceName</text>&#32;<tab />The name of the default namespace for all types declared in the application or class library. </para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">If The -ns option is not specified, then types that are not prefixed with a namespace and types that are not in a BEGIN NAMESPACE .. END NAMESPACE construct will be compiled as so-called global types.</para>
+    <para styleclass="Normal">If the -ns option is not specified, then types that are not prefixed with a namespace and types that are not in a BEGIN NAMESPACE .. END NAMESPACE construct will be compiled as so-called global types.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The -ns option will work on the following types:</para>
     <para styleclass="Normal"></para>
@@ -31,18 +31,16 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The default namespace is used for any declared types that do not have an explicit namespace in their name.</para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
-    <para styleclass="Normal"></para>
     <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Language &#160;tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">Change the value of the &quot;Prefix classes with default namespace&quot; property</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></li>
-      <li styleclass="Normal" style="margin-left:13px;">The build system will then generate a command line option that combines this property with the Default Namespace that is specified on the <link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Application">Application Tab</link> of the project properties</li>
+      <li styleclass="Normal" style="margin-left:13px;">Change the value of the &quot;Prefix classes with default namespace&quot; property.</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link>.</li>
+      <li styleclass="Normal" style="margin-left:13px;">The build system will then generate a command line option that combines this property with the Default Namespace that is specified on the <link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Application">Application Tab</link> of the project properties.</li>
     </list>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">When the following code is compiled without -ns compiler option the following types will be produced:</para>
-    <para styleclass="Normal"></para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Customer </li>
       <li styleclass="Normal" style="margin-left:13px;">Point </li>

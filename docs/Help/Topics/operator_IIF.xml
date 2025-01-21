@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T16:54:12.316+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>IIF Operator</title>
   <body>
     <header>
@@ -22,13 +22,13 @@
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">The return type of the IIF operator is determined by the following rules:</para>
     <para styleclass="Body Text">Given:</para>
-    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">tT is the type of trueExpression</li>
       <li styleclass="Body Text">tF is the type of falseExpression</li>
       <li styleclass="Body Text">tR is the return type of the IIF expression</li>
     </list>
     <para styleclass="Body Text"></para>
-    <list id="13" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">If tT and tF are the same type, tR is that type. </li>
       <li styleclass="Body Text">If tT and/or tF is USUAL, then tT or tF is converted to USUAL if necessary, and tR is USUAL. </li>
       <li styleclass="Body Text">If tT can be implicitly converted to tF, tR is tF. </li>
@@ -39,14 +39,14 @@
     <para styleclass="Body Text">In cases 5 and 6, it may be possible to resolve the error by specifying an explicit cast on trueExpression or falseExpression.</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">This behavior is different than in some other XBase dialects In these dialects the return is usually determined by the following rules</para>
-    <list id="14" type="ol" listtype="decimal" formatstring="&#37;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">If tT and tF are the same type, tR is that type. </li>
-      <li styleclass="Body Text">Otherwise tT and tR are implicitly converted to USUAL and tR is USUAL. </li>
+      <li styleclass="Body Text">Otherwise, tT and tR are implicitly converted to USUAL and tR is USUAL. </li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">You can use the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo10">/vo10</link> compiler option to enable this behavior in X#, but this is only recommended for code originally written in other environments, such as Visual Objects.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Heading2">Note</para>
-    <para styleclass="Normal">For compatibility with Visual Objects and several other dialects the IF() operator is also supported</para>
+    <para styleclass="Heading2"><text style="color:#0000ff;">Note</text></para>
+    <para styleclass="Normal">For compatibility with Visual Objects and several other dialects the IF() operator is also supported.</para>
   </body>
 </topic>

@@ -1,0 +1,657 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:28 -->
+<topic id="cat-Sql_Functions" revisionNumber="1" title="Sql Functions">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <section address="Section1">
+      <title>Sql Functions</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Assembly</para>
+              </entry>
+              <entry>
+                <para>Function</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ASessions(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>-- todo --</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ASqlHandles(XSharp.__Array,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Stores numeric references to all active SQL connection statement handles in an array.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VOSQLClasses.Functions.DotNetType2VOType(System.Data.DataTable,System.Data.DataColumn,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>M:XSharp_VOSQLClasses.Functions.DotNetType2VOType(System.Data.DataTable,System.Data.DataColumn,System.String)Sql.xmldoc/DotNetType2VOType/*</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.DToCSQL(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Convert a date to a string in "YYYY-MM-DD" format</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VOSQLClasses.Functions.DToCSQL(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Convert a date to a string in "YYYY-MM-DD" format</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Data</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Data.Functions.GetSqlFactory</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Retrieve the default SQL factory.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.GetSQLProperty(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.MakeTimeStamp(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Convert a date and seconds to a timestamp string in "YYYY-MM-DD HH:MM:SS.NNN" format</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Refresh(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>-- todo --</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Requery(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>-- todo --</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQL_LEN_DATA_AT_EXEC(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlCancel(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Requests cancellation of an executing SQL statement.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlColumns(System.Int32,System.String,System.String,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Stores a list of column names and information about each column for the specified data source table to a X# cursor.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlCommit(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Commits a transaction.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlConnect(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Establishes a connection to a data source.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLConnectErrorMsg(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Return and optionally change the setting that determines whether to display connection error messages.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VOSQLClasses.Functions.SQLConnectErrorMsg(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Return and optionally change the setting that determines whether to display connection error messages.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlDeleteWhiteSpace(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>**Missing documentation **</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlDisconnect(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Terminates a connection to a data source.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLDropMyConnection(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Disconnect the ODBC data source.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlExec(System.Int32,System.String,System.String,XSharp.__Array)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Sends a SQL statement to the data source, where the statement is processed.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLGetDataSources</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Identify the available ODBC data sources.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VOSQLClasses.Functions.SQLGetDataSources</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Identify the available ODBC data sources.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLGetMyConnection(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Connect to the ODBC source specified.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlGetProp(System.Int32,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Retrieves the current or default settings for an active connection.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlIdleDisconnect(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>-- todo --</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlIsBinaryType(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper function to determine if an ODBC type is Binary</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlIsCharType(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper function to determine if an ODBC type is Character</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlIsLongType(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper function to determine if an ODBC type is Long (BLOB, MEMO etc)</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlMoreResults(System.Int32,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Copies another result set to a X# cursor if more result sets are available.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLOpenConnection</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Connect to a list of ODBC sources.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlParameters(System.Int32,System.Object)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlPrepare(System.Int32,System.String,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Prepares a SQL statement for remote execution by SqlExec( ).
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlRollBack(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Cancels any changes made during the current transaction.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLSetConnection(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Return and optionally change the default SQL connection.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VOSQLClasses.Functions.SQLSetConnection(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Return and optionally change the default SQL connection.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlSetFactory</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This function allows you to choose the Ado.Net provider that is used for the subsequent SqlConnect() or SqlStringConnect() calls.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlSetProp(System.Int32,System.String,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Specifies settings for an active connection. You can use SqlSetProp( ) to specify settings at the connection level.
+            To specify application default settings at the environment level, include 0 as the statement handle.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlSetStmtConcurrency(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Return and optionally change the default concurrency mode for SQLSelect objects
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlSetStmtCursorType(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Return and optionally change the default cursor type used by for SQLSelect objects
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlSetStmtSimulateCursor(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Return and optionally change the default cursor simulation mode used by for SQLSelect objects
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlStringConnect(System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Establishes a connection to a data source using a connection string.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlTables(System.Int32,System.String,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Stores the names of tables in a data source to a X# cursor.
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VOSQLClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VOSQLClasses.Functions.SQLThrowOutOfMemoryError</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
+  </developerConceptualDocument>
+</topic>

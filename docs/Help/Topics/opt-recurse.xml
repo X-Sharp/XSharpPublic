@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-12T12:17:09.192+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-recurse</title>
   <keywords>
     <keyword>-recurse</keyword>
@@ -22,7 +22,6 @@
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Compiles all X# files in the current directory:</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">xsc *.prg &#160;</para>
     <para styleclass="Normal"></para>

@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="01c5c1c9-fdc5-439f-b315-74a43eea5c13" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">CLOSE Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Close specified file type.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>CLOSE [&lt;xcAlias&gt; | ALL | ALTERNATE | DATABASES | INDEXES]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;xcAlias&gt;</entry><entry>The alias identifier for the work area where all files are closed.</entry></row></table><para>&#160;</para>
+<table><row><entry>ALL</entry><entry>Closes database and index files in all work areas, releasing all active filters, relations, and format definitions.</entry></row></table><para>&#160;</para>
+<table><row><entry>ALTERNATE</entry><entry>Closes the currently open alternate file.</entry></row></table><para>&#160;</para>
+<table><row><entry>DATABASES</entry><entry>Closes all database, memo, and associated index files in all work areas, and releases all active filters and relations. &#160;It does not, however, have any effect on the active format.</entry></row></table><para>&#160;</para>
+<table><row><entry>INDEXES</entry><entry>Closes all index files and clears the order list in the current work area.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>CLOSE with no option closes the current database and associated files. &#160;A number of other operations close files as a side effect, but it is always a good idea to explicitly close files when you are finished using them.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbCloseArea.htm -->DBCloseArea(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_Core_Functions_FClose.htm -->FClose(), <link xlink:href="9085df4a-da8f-4ed6-948a-db58aa0eeb27">SET INDEX</link>, <link xlink:href="9afbce44-d16f-4cde-a11e-74871ec4b08a">USE</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

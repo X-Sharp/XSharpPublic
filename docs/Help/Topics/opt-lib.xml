@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T18:07:48.137+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-lib</title>
   <keywords>
     <keyword>-lib</keyword>
@@ -17,7 +17,7 @@
     <para styleclass="List"><text styleclass="Code Example">dir2</text><tab /><text styleclass="Normal">One or more additional directories to search in for assembly references. Separate additional directory names with a comma, and without white space between them.</text></para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal">The compiler searches for assembly references that are not fully qualified in the following order:</para>
-    <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Current working directory. This is the directory from which the compiler is invoked.</li>
       <li styleclass="Normal" style="margin-left:13px;">The common language runtime system directory.</li>
       <li styleclass="Normal" style="margin-left:13px;">Directories specified by -lib.</li>
@@ -32,8 +32,8 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Because the compiler can reference the assembly does not imply the common language runtime will be able to find and load the assembly at runtime. See How the Runtime Locates Assemblies for details on how the runtime searches for referenced assemblies.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">To set this compiler option in the Visual Studio development environment</para>
-    <list id="3" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <para styleclass="Normal">To set this compiler option in the Visual Studio development environment:</para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Property Pages dialog box.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the References Path property page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Modify the contents of the list box.</li>

@@ -22,15 +22,15 @@ internal class SqlDbExpression inherit SqlDbObject
     property Funcs		as IList<SqlDbToken> auto
     property HasFunctions	as logic auto
     property CurToken 	as int auto
-    property KeyLen		as int get self:XsKey:Length
+    property KeyLength  as int get self:XsKey:Length
     property ColumnList as List<string> auto
     property Translated as logic auto
     property Segments	as IList<SqlDbSegment> auto
     property Widths		as IList<long> auto
     private _provider   as ISqlDbProvider
 
-    property OrderListString as string => SELF:List2String(self:OrderList)
-    property ColumnListString as string => SELF:List2String(self:ColumnList)
+    property OrderListStr as string => SELF:List2String(self:OrderList)
+    property ColumnListStr as string => SELF:List2String(self:ColumnList)
 
 
     constructor(oOwner as SqlDbOrder, cIndexExpr as string)
@@ -309,7 +309,7 @@ internal class SqlDbExpression inherit SqlDbObject
             self:AddToken(symType, token)
         endif
     protect method ParseXsKey() as void
-        var token    := StringBuilder{self:KeyLen}
+        var token    := StringBuilder{self:KeyLength}
         var symType  := TokenType.None
         var aPars	  	:= List<TokenType>{}
         local cEnd	:= '\0'	as char

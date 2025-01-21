@@ -106,7 +106,6 @@
         </remarks>
     </Directory>
     <Set>
-        <summary>Set() define</summary>
         <seealso cref='T:XSharp.Set'>Set Enum</seealso>
         <seealso cref='O:XSharp.RT.Functions.Set' >Set() function</seealso>
         <remarks>
@@ -116,12 +115,10 @@
         </remarks>
     </Set>
     <DateCountry>
-        <summary>DateFormat define</summary>
         <seealso cref='T:XSharp.DateCountry'>DateCountry Enum</seealso>
         <remarks>This define has the same value as a member of the DateCountry enum. You can use either the define or the enum value in your code.</remarks>
     </DateCountry>
     <NationMessage>
-        <summary>Nation message define</summary>
         <seealso cref='T:XSharp.VOErrors'>VOErrors Enum</seealso>
         <remarks>This define has the same value as a member of the VOErrors enum. You can use either the define or the enum value in your code.</remarks>
     </NationMessage>

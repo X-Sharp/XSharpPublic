@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-12T13:22:42.252+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-vo7</title>
   <keywords>
     <keyword>-vo7</keyword>
@@ -17,23 +17,24 @@
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal">Visual Objects allows implicit casts between types with different semantics, whereas X# normally requires explicit casts in such cases.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">For example, Visual Objects allows implicit conversions between integer types and pointer types. While pointers are integers, they have different semantics. Integers are numerical values and pointers are addresses representing memory locations. In addition to the difference in semantics, the size of a pointer is dependent upon the underlying platform whereas the size of an integer does not change from platform to platform (with the exception of System.IntPtr).</para>
+    <para styleclass="Normal">For example, Visual Objects allows implicit conversions between integer types and pointer types. While pointers are integers, they have different semantics. Integers are numerical values and pointers are addresses representing memory locations. In addition to the difference in semantics, the size of a pointer dependson the underlying platform, while the size of an integer does not change from platform to platform (with the exception of System.IntPtr).</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">While is it possible (and often necessary) to cast between types with different semantics, it should always be done via an explicit cast. This not only insures that the correct conversion code is generated (if necessary), it also self-documents the fact that you are casting one type to another type that has a different meaning.</para>
+    <para styleclass="Normal">While is it possible (and often necessary) to cast between types with different semantics, this should always be done via an explicit cast. This not only ensures that the correct conversion code is generated (if necessary), it also self-documents the fact that you are casting one type to another type with a different meaning.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">X# supports most of the casts that Visual Objects supports, but in cases where the types have different semantics, an explicit cast is usually required. However, this can cause a large number of compiler errors in existing Visual Objects code.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Using -vo7 allows the following conversions to be performed implicitly, allowing existing Visual Objects code to compile:</para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="3">
       <tr style="vertical-align:top">
         <td style="width:177px;">
-          <para styleclass="Normal">From</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">From</text></para>
         </td>
         <td style="width:265px;">
-          <para styleclass="Normal">To</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">To</text></para>
         </td>
         <td style="width:750px;">
-          <para styleclass="Normal">Operation Performed</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Operation Performed</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -44,7 +45,7 @@
           <para styleclass="Normal">strongly typed PTR (e.g. INT PTR)</para>
         </td>
         <td style="width:750px;">
-          <para styleclass="Normal">None, the types are binary compatible. However, the code may fail at runtime if the data the pointer points to is not the correct type.</para>
+          <para styleclass="Normal">None, the types are binary compatible. However, the code may fail at runtime if the data the pointer references is not of the correct type.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -55,7 +56,7 @@
           <para styleclass="Normal">strongly typed PTR (e.g. INT PTR) </para>
         </td>
         <td style="width:750px;">
-          <para styleclass="Normal">None, the types are binary compatible. However, the code may fail at runtime if the data the pointer points to is not the correct type. Note that this conversion is only allowed when the target platform is set to x86.</para>
+          <para styleclass="Normal">None, the types are binary compatible. However, the code may fail at runtime if the data the pointer references is not of the correct type. Note that this conversion is only allowed when the target platform is set to x86.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -66,7 +67,7 @@
           <para styleclass="Normal">strongly typed PTR (e.g. INT PTR)</para>
         </td>
         <td style="width:750px;">
-          <para styleclass="Normal">None, the types are binary compatible. However, the code may fail at runtime if the data the pointer points to is not the correct type. Note that this conversion is only allowed when the target platform is set to x64 or Itanium.</para>
+          <para styleclass="Normal">None, the types are binary compatible. However, the code may fail at runtime if the data the pointer references is not of the correct type. Note that this conversion is only allowed when the target platform is set to x64 or Itanium.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -92,16 +93,18 @@
         </td>
       </tr>
     </table></para>
+    <para styleclass="Heading3"></para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
-    <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Dialect tab. </li>
       <li styleclass="Normal" style="margin-left:13px;">Change the value.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">Click here to see the property page</link></li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">Click here to see the property page</link>.</li>
     </list>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
     <para styleclass="Heading3"><text styleclass="Heading2">Example</text></para>
-    <para styleclass="Normal">The following code is valid in Visual Objects, but will not compile in X# unless -vo7 is used, because CreateObject() returns OBJECT and there is no implicit conversion from OBJECT to a more derived type (such a conversion cannot be guaranteed to be safe, and implicit conversions are always safe).</para>
+    <para styleclass="Normal">The following code is valid in Visual Objects, but will not compile in X# unless -vo7 is used, because CreateObject() returns OBJECT. There is no implicit conversion from OBJECT to a more derived type, because such a conversion cannot be guaranteed to be safe, while implicit conversions are always safe.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">...</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> f </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> s </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SYMBOL</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">s := #foo</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">f := CreateObject( s ) </text><text style="font-weight:bold; font-style:italic; color:#339966;">// no implicit conversion from &apos;OBJECT&apos; to &apos;foo&apos;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
     <para styleclass="Normal"></para>

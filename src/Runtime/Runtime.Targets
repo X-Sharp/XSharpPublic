@@ -2,7 +2,5 @@
 <!-- Specific targets for Framework type projects-->
 <Project>
   <Import Project="Runtime.Common.Targets" />
-  <PropertyGroup>
-  </PropertyGroup>
 </Project>
 

@@ -18,59 +18,68 @@ begin namespace XSharp.RDD.SqlRDD
 /// The Order class.
 /// </summary>
 internal class SqlDbOrder inherit SqlDbObject
+
+#include "..\Taginfo.xh"
+
     private _KeyCodeBlock as ICodeblock
     private _ForCodeBlock as ICodeblock
+    private _Expression   as SqlDbExpression
+    private _KeyCache     as IDictionary<object,Int>
     property KeyCodeBlock as ICodeblock get _KeyCodeBlock
     property ForCodeBlock as ICodeblock get _ForCodeBlock
     property OrderBag     as SqlDbOrderBag auto
     property RDD    	  as SQLRDD   auto
-    property Expression   as string   auto
-    property SQLKey		  as string   auto
+    property SQLKey		  as string   get _Expression:SQLKey
     property cbExpr		  as object   auto
     property uTopScope	  as object   auto
     property uBotScope	  as object   auto
     property Descending   as logic    auto
-    property Unique    	  as logic    auto
-    property KeyLength	  as int     auto
-    property HasFunctions as logic  auto
-    property Condition    as string auto
-    property Conditional  as logic get !String.IsNullOrEmpty(Condition)
-    property TopScope     as object auto
-    property BottomScope  as object auto
-    property HasScopes  as logic get TopScope != null .or. BottomScope != null
-    property SqlWhere   as string auto
-    property Segments	as IList<SqlDbSegment>   auto
-    property ColumnList	as IList<string>    auto
-    property OrderList	as IList<string>    auto
-    property OrderListString as string auto
-    property Provider   as ISqlDbProvider get RDD:Provider
-    property Connection as SqlDbConnection get RDD:Connection
-    property FileName   as string get self:OrderBag:FileName+"_"+self:Name
+    property KeyLength	  as int      get _Expression:KeyLength
+    property HasFunctions as logic    get _Expression:HasFunctions
+    property Conditional  as logic    get !String.IsNullOrEmpty(Condition)
+    property TopScope     as object   auto
+    property BottomScope  as object   auto
+    property HasScopes    as logic    get TopScope != null .or. BottomScope != null
+    property SqlWhere     as string   auto
+    property Segments	  as IList<SqlDbSegment>   get _Expression:Segments
+    property ColumnList	  as IList<string>    get _Expression:ColumnList
+    property OrderList	  as IList<string>    get _Expression:OrderList
+    property OrderListStr as string get _Expression:OrderListStr
+    property Provider     as ISqlDbProvider get RDD:Provider
+    property Connection   as SqlDbConnection get RDD:Connection
+    property FileName     as string get self:OrderBag:FileName+"_"+self:Name
+
+    property KeyCache     as IDictionary<object,Int>
+        get
+            if _KeyCache == null
+                _KeyCache := Dictionary<object,Int>{}
+            endif
+            return _KeyCache
+        end get
+    end property
 
     constructor(oRDD as SQLRDD, cName as string, cIndexExpr as string, oBag as SqlDbOrderBag)
         super(cName)
         self:RDD            := oRDD
         self:Expression     := cIndexExpr
         self:OrderBag       := oBag
-        var oExp            := SqlDbExpression{self,cIndexExpr}
-        self:HasFunctions 	:= oExp:HasFunctions
-        self:SQLKey			:= oExp:SQLKey
-        self:OrderList 	    := oExp:OrderList
-        self:OrderListString := oExp:OrderListString
-        self:ColumnList	    := oExp:ColumnList
-        self:Segments		:= oExp:Segments
-        self:KeyLength      := oExp:KeyLen
-
-        self:_KeyCodeBlock := self:RDD:Compile(cIndexExpr)
+        SELF:_Expression    := SqlDbExpression{self,cIndexExpr}
+        self:_KeyCodeBlock  := self:RDD:Compile(cIndexExpr)
         self:ClearScopes()
         return
     end constructor
 
     method ClearScopes() as void
         self:TopScope      := null
-        self:BottomScope      := null
+        self:BottomScope   := null
+        self:ClearCache()
         return
     end method
+    METHOD ClearCache() as void
+        SELF:_KeyCache      := null
+    end method
+
+    PROPERTY KeyValue as OBJECT GET SELF:RDD:EvalBlock(SELF:_KeyCodeBlock)
 
     method SetCondition(cForExpr as string) as logic
         if ! String.IsNullOrEmpty(cForExpr)
@@ -83,6 +92,61 @@ internal class SqlDbOrder inherit SqlDbObject
         endif
         return false
     end method
+
+    method VerifyKeyType(oExpr as OBJECT) AS OBJECT
+        var conn := SELF:RDD:Connection
+        var tmp := conn:UseNulls
+        conn:UseNulls := FALSE
+        var keyValue := SELF:KeyValue
+        conn:UseNulls := tmp
+        SWITCH keyValue
+        CASE strValue as String
+            IF oExpr is String
+                RETURN oExpr
+            ELSE
+                RETURN oExpr:ToString()
+            ENDIF
+        CASE intValue as LONG
+            IF oExpr is LONG
+                RETURN oExpr
+            ELSEIF oExpr is INT64 var i64Value
+                return Convert.ToInt32(i64Value)
+            ELSEIF oExpr is IFloat var flValue
+                return Convert.ToInt32(flValue:Value)
+            ENDIF
+        CASE i64Value as INT64
+            IF oExpr is INT64
+                RETURN oExpr
+            ELSEIF oExpr is INT var iValue
+                return Convert.ToInt64(iValue)
+            ELSEIF oExpr is IFloat var flValue
+                return Convert.ToInt64(flValue:Value)
+            ENDIF
+        CASE dValue as IDate
+            IF oExpr is IDate
+                RETURN oExpr
+            ELSEIF oExpr is DateTime var dtValue
+                RETURN DbDate{dtValue:Year,dtValue:Month,dtValue:Day}
+            ENDIF
+        CASE dtValue as DateTime
+            IF oExpr is DateTime
+                RETURN oExpr
+            ELSEIF oExpr is IDate var dValue
+                RETURN DateTime{dValue:Year,dValue:Month,dValue:Day}
+            ENDIF
+        CASE flValue as IFloat
+            IF oExpr is IFloat
+                RETURN oExpr
+            ELSEIF oExpr is LONG var lValue
+                RETURN DbFloat{lValue,10,0}
+            ELSEIF oExpr is INT64 var iValue
+                RETURN DbFloat{iValue,10,0}
+            ENDIF
+        OTHERWISE
+            NOP
+        END SWITCH
+        SELF:RDD:_dbfError( Subcodes.ERDD_VAR_TYPE, Gencode.EG_DATATYPE,SELF:FileName)
+        RETURN NULL
 
     method SetOrderScope( oValue as object, nInfo as DbOrder_Info) as void
         switch nInfo

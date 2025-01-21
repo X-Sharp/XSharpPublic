@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="3910e899-798b-4188-834b-5046aaa0cd3c" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_vardecl.html -->Variable Declaration&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">STATIC Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare and initialize static variables and arrays.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>STATIC [LOCAL] &lt;idVar&gt; [:= &lt;uValue&gt;] [, ...] [AS | IS &lt;idType&gt;] [, ...]</para>
+<para>STATIC [LOCAL] DIM &lt;ArraySpec&gt; [, ...] AS | IS &lt;idType&gt; [, ...]</para>
+<para>STATIC [LOCAL] &lt;ArraySpec&gt; [, ...] [AS ARRAY] [, ...]</para>
+<para>&#160;</para>
+<para>Note:  The STATIC statement is shown using several syntax diagrams for convenience only. &#160;You can declare variables, dynamic arrays, and dimensioned arrays using a single STATIC statement if each definition is separated by a comma.</para>
+<para>&#160;</para>
+<table><row><entry>AS &lt;idType&gt;</entry><entry>Specifies the data type. &#160;If omitted, then depending on the compiler options the type will be either USUAL or determined by the compiler.</entry></row></table><para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>The STATIC keyword serves as a lifetime modifier for variables declared with the LOCAL statement, preventing them from being released from memory when the creating entity returns to its calling routine. &#160;It is listed here as a separate entry because, the LOCAL keyword being optional, STATIC can stand alone in a routine as a variable declaration statement. &#160;Refer to the LOCAL statement for a description and notes concerning static variable declarations.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="d8822cca-7c06-4150-b83c-2dd9b531186d">LOCAL</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

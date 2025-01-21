@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="818667b2-8b9c-4b21-a45f-7cdfe5b4f670" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">_DLL Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare an entity defined in a DLL to the compiler.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>&#160;[Attributes] [Modifiers] _DLL FUNCTION | PROCEDURE<para/>
+&#160;[([&lt;idParam&gt; [AS | REF &lt;idType&gt;] [, ...])] <para/>
+&#160;[AS &lt;idType&gt;]<para/>
+&#160;[&lt;idConvention&gt;]<para/>
+&#160;:&lt;idDLL&gt;.&lt;idEntity&gt;<para/>
+&#160;[CharSet= AUTO|ANSI|UNICODE]</para>
+<para>Arguments</para>
+<table><row><entry>&lt;idEntity&gt;</entry><entry>The name or number of the entity as defined in the DLL. &#160;This is normally, but not necessarily, the same as the entity name defined in &lt;EntityDeclaration&gt;, which may define an alias by which the entity is called in your application. &#160;&lt;idEntity&gt; must be part of the public protocol of the DLL identified by &lt;idDLL&gt;.<para/>
+IdEntity may also be specified as a literal string. This should be done to specify names of exported functions in DLLs that contain characters that are not allowed as part of an identifier in X#.</entry></row></table><table><row><entry>&lt;idParam&gt;</entry><entry>A &#160;parameter variable. &#160;A variable specified in this manner is automatically declared local. &#160;These variables, also called formal parameters, are used to receive arguments that you pass when you call the entity.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS | REF|OUT|IN &lt;idType&gt;</entry><entry>Specifies the data type of the parameter variable (called strong typing). &#160;AS indicates that the parameter must be passed by value, and REF indicates that it must be passed by reference with the @ operator. OUT is a special kind of REF parameter that does not have to be assigned before the call and must be assigned inside the body of the entity. IN parameters are passed as READONLY references.<para/>
+The last parameter in the list can also be declared as PARAMS &lt;idType&gt;[] which will tell the compiler that the function/method may receive zero or more optional parameters.<para/>
+Functions or Methods of the CLIPPER calling convention are compiled to a function with a single parameter that this declared as Args PARAMS USUAL[]<para/>
+&#160;</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idConvention&gt;</entry><entry>Specifies the calling convention for this entity. &#160;&lt;idConvention&gt; must be one of the following:</entry></row></table><para>&#111; &#160; &#160; &#160; &#160;CLIPPER</para><para>&#111; &#160; &#160; &#160; &#160;STRICT</para><para>&#111; &#160; &#160; &#160; &#160;PASCAL</para><para>&#111; &#160; &#160; &#160; &#160;CALLBACK</para><para>&#111; &#160; &#160; &#160; &#160;THISCALL</para><table><row><entry></entry><entry>Most calling conventions are for backward compatibility only. <para/>
+There are 2 exceptions:<para/>
+CLIPPER declares that a method has untyped parameters. This is usually only needed for methods without any declared parameters. Otherwise the compiler will assume CLIPPER calling convention when it detects untyped parameters. <para/>
+Methods and Functions in external DLL may have STRICT, PASCAL, CALLBACK</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idDLL&gt;</entry><entry>The name of the DLL file that contains the entity definition, specified without an extension or path name (that is, its base name). &#160;A .DLL extension is assumed (with some exceptions determined by Windows that may have an .EXE extension), and the rules used to search for the file at runtime are explained in the Description section below.</entry></row></table><para>&#160;</para>
+<table><row><entry>Charset</entry><entry>Optionally specifies which character set string parameters have</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>_DLL declares an entity that is used by your application but defined in a DLL. &#160;This statement tells the compiler not only the location and name (or number) of the DLL entity, but also its calling convention (that is, what parameters it expects and the type of value that it returns). &#160;When you declare an entity with the _DLL statement, it also indicates to the compiler that the entity has no additional source code following its declaration.</para>
+<para>Once declared, the entity may be called in your application in the standard way.</para>
+<para>&#160;</para>
+<para>Warning:  Entity names contained within the _DLL statement are case sensitive. This is in direct contradiction to the X# compiler which is not case sensitive but is consistent with Windows calling protocols. For this reason you must take extra care if Case Sensitization is turned on or you have the Caps Lock on.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>The following examples illustrate _DLL declarations for two Windows API functions:</para>
+<para>_DLL FUNCTION MessageBeep(siLevel AS SHORTINT) AS VOID PASCAL:User.MessageBeep<para/>
+&#160;<para/>
+_DLL FUNCTION MessageBox(hwndParent AS PTR, pszText AS PSZ, &#160;pszCapt AS PSZ, dwFlags AS DWORD) ;<para/>
+ &#160; AS LONG PASCAL:User.MessageBox<para/>
+// You can also declare a function with &quot;normal&quot; string parameters if you want. Add the ANSI or UNICODE clause to indicate which version you want to call.<para/>
+_DLL FUNCTION MessageBox(hwndParent AS PTR, pszText AS STRING, &#160;pszCapt AS STRING, dwFlags AS DWORD) ;<para/>
+ &#160; AS LONG PASCAL:User.MessageBox ANSI</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="2a5aba7a-b709-40e1-9bd0-f31d73c511b7">ACCESS</link>, <link xlink:href="91993c4b-eb98-471f-a272-3feaddceb3d0">ASSIGN</link>, <link xlink:href="14cdd669-1822-49e7-b700-7abebe59013c">FUNCTION</link>, <link xlink:href="77b4131b-7ffd-4fad-ae60-b9ca0ec84fc7">METHOD</link>, <link xlink:href="76e253bd-c169-4078-b086-64feffe160c1">PROCEDURE</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

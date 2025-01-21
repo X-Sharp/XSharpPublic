@@ -664,34 +664,6 @@ partial class SQLRDD inherit DBFVFP
         RETURN result
     end method
 
-    /// <summary>Perform a seek operation on the current selected index for the current Workarea.</summary>
-    /// <param name="info">An object containing containing the necessary seek information.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-    /// <remarks>The result of the actial seek operation is stored in the Found property of the RDD and the EOF property.</remarks>
-    /// <remarks>
-    /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
-    /// </remarks>
-    override method Seek(seekInfo as DbSeekInfo) as logic
-        local oKey as object
-        // change behavior when all rows are read.
-        // In that case we can search in the local buffer
-        oKey := seekInfo:Value
-        if oKey == null         // Seek NIL
-            if seekInfo:Last
-                return self:GoBottom()
-            else
-                return self:GoTop()
-            endif
-        endif
-        if self:CurrentOrder == null
-            self:_dbfError(Subcodes.ERDD_DATATYPE, Gencode.EG_NOORDER, "SQLRDD:Seek","No current Order" )
-            return false
-        endif
-        var cSeekExpr := CurrentOrder:SeekExpression(seekInfo )
-        self:_OpenTable(cSeekExpr)
-        return true
-    end method
-
     /// <summary>Is the current row deleted?</summary>
     /// <remarks>
     /// When a DeletedColumn is defined, then his will return the value of that column.

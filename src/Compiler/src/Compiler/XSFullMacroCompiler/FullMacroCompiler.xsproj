@@ -64,23 +64,20 @@
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE;RUNTIME</DefineConstants>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <WarningLevel>4</WarningLevel>
     <WarningsAsErrors />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>TRACE;RUNTIME</DefineConstants>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <WarningsAsErrors />
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
@@ -132,6 +129,9 @@
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
+  <Target Name="SignWithXSharpKey" AfterTargets="PostBuildEvent" Condition="'$(UseXSharpKey)' == 'true'">
+    <Exec Command="&quot;$(SDK40ToolsPath)sn.exe&quot;  -q -R $(TargetPath) $(AssemblyOriginatorKeyFile)" />
+  </Target>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent />
@@ -142,7 +142,4 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  <Target Name="SignWithXSharpKey" AfterTargets="PostBuildEvent" Condition="'$(UseXSharpKey)' == 'true'">
-    <Exec Command="&quot;$(SDK40ToolsPath)sn.exe&quot;  -q -R $(TargetPath) $(AssemblyOriginatorKeyFile)" />
-  </Target>
 </Project>

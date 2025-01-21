@@ -65,7 +65,7 @@
       <DocumentationSource sourceFile="..\Artifacts\Documentation\XSharp.Harbour.xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>2.21.0.5</HelpFileVersion>
+    <HelpFileVersion>2.22.0.1</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -182,10 +182,10 @@
       <Argument Key="logoAltText" Value="X#" />
       <Argument Key="logoPlacement" Value="right" />
       <Argument Key="logoAlignment" Value="center" />
-      <Argument Key="maxVersionParts" Value="2" />
+      <Argument Key="maxVersionParts" Value="" />
       <Argument Key="defaultLanguage" Value="xs" />
       <Argument Key="includeEnumValues" Value="true" />
-      <Argument Key="baseSourceCodeUrl" Value="https://github.com/X-Sharp/XSharpPublic/blob/feature/Runtime/src/" />
+      <Argument Key="baseSourceCodeUrl" Value="https://github.com/X-Sharp/XSharpPublic/blob/main/src/" />
       <Argument Key="requestExampleUrl" Value="mailto:info@xsharp.eu" />
     </TransformComponentArguments>
     <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>
@@ -215,7 +215,7 @@
     </PlugInConfigurations>
     <RootNamespaceTitle>X# Runtime and SDK Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
-    <CopyrightText>Copyright &amp;#169%3b 2015-2024 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b Computer Associates.</CopyrightText>
+    <CopyrightText>Copyright &amp;#169%3b 2015-2025 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b Computer Associates.</CopyrightText>
     <BuildLogFile>..\Artifacts\Obj\Help\BuildLog.log</BuildLogFile>
     <CatalogProductId>VS</CatalogProductId>
     <CatalogVersion>100</CatalogVersion>

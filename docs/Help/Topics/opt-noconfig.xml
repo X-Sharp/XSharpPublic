@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T18:16:53.759+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-noconfig</title>
   <keywords>
     <keyword>-noconfig</keyword>
@@ -16,7 +16,7 @@
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal">The xsc.rsp file references all the assemblies shipped with the .NET Framework. The actual references that the Visual Studio .NET development environment includes depend on the project type.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">You can modify the xsc.rsp file and specify additional compiler options that should be included in every compilation from the command line with xsc.exe (except The -noconfig option).</para>
+    <para styleclass="Normal">You can modify the xsc.rsp file and specify additional compiler options that should be included in every compilation from the command line with xsc.exe (except the -noconfig option).</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The compiler processes the options passed to the xsc command last. Therefore, any option on the command line overrides the setting of the same option in the xsc.rsp file.</para>
     <para styleclass="Normal"></para>

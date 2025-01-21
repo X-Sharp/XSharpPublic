@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-11T17:09:04.692+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>#pragma warning(s)</title>
   <keywords>
     <keyword>#pragma warning</keyword>
@@ -13,23 +13,23 @@
       <para styleclass="Heading1">#pragma warning(s)</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">The #pragma warning directive allow you to suppress certain compiler warnings for a piece of code. <br/>We support both C# style pragma warnings commands (fully) and Vulcan style pragmas (partially)</para>
-    <para styleclass="Heading3"></para>
+    <para styleclass="Normal">The #pragma warning directive allows you to suppress certain compiler warnings for a piece of code. <br/>We support both C# style pragma warnings commands (fully) and Vulcan style pragmas (partially).</para>
+    <para styleclass="Normal"></para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code with box">#pragma warnings( <text style="font-style:italic;">number</text>, <text style="font-style:italic;">state</text> )<br/>#pragma warnings ( <text style="font-style:italic;">pop </text>)<br/>#pragma warning <text style="font-style:italic;">state2</text> [&lt;<text style="font-style:italic;">errornumbers</text>&gt;]</para>
-    <para styleclass="Heading3">Note</para>
-    <para styleclass="NotesBox">#pragma directives must appear between before the first entity or between entities and cannot appear in the middle of an entity</para>
+    <para styleclass="Heading3"><text style="color:#0000ff;">Note</text></para>
+    <para styleclass="NotesBox">#pragma directives must appear before the first entity or between entities and cannot appear in the middle of an entity.</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="Normal"></para>
     <para styleclass="List">number<tab />Warning number to disable. Can be both numeric or in the form of XSnnnn</para>
     <para styleclass="List">state<tab />Off | Default<tab />Disables a warning or switches it back to the situation from the command line</para>
-    <para styleclass="List">pop<tab />Switchs all warnings back to their default value</para>
+    <para styleclass="List">pop<tab />Switches all warnings back to their default value</para>
     <para styleclass="List">state2 <tab />Disable | Restore Disables or restores the warning numbers that follow. <br/>When no error numbers are specified, then disable disables all warning and restore restores all warning to their default value</para>
     <para styleclass="List">errornumbers<tab />(Optional) comma separated list of numbers or names (XSnnnn) </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3">Note: </para>
-    <para styleclass="NotesBox"><text style="font-style:normal;">The compiler does NOT check if the numbers are valid or if they are indeed warnings. So you can specify non existent numbers and/or numbers that represent errors in stead of warnings. The compiler will not warn you when that is the case.</text></para>
-    <para styleclass="Heading3">C# style syntax</para>
+    <para styleclass="Heading3"><text style="color:#0000ff;">Note: </text></para>
+    <para styleclass="Heading3" style="margin-top:0px;"><text styleclass="NotesBox" style="font-style:normal;">The compiler does NOT check if the numbers are valid or if they are indeed warnings. So you can specify non existent numbers and/or numbers that represent errors instead of warnings. The compiler will not warn you when that is the case.</text></para>
+    <para styleclass="Heading3"><text style="color:#0000ff;">C# style syntax</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="7" colcount="2">
       <tr style="vertical-align:top">
@@ -89,8 +89,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading3">Vulcan style syntax</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Heading3"><text style="color:#0000ff;">Vulcan style syntax</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="7" colcount="2">
       <tr style="vertical-align:top">
         <td style="width:342px;">

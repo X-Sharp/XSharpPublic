@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING XSharp
@@ -8,47 +8,35 @@ BEGIN NAMESPACE XSharp
 /// <summary>Values that match the XBase DateCountry defines. They are used to set the date format.</summary>
 /// <remarks>Please note that although there are different values for British and French, the date formats are the same.</remarks>
 PUBLIC ENUM DateCountry
-    // <summary>mm/dd/yy  mm/dd/yyyy</summary>
-	MEMBER American := 1   
-
-    // <summary>yy.mm.dd  yyyy.mm.dd</summary>
-	MEMBER Ansi     := 2    
-
-    // <summary>dd/mm/yy  dd/mm/yyyy</summary>
-	MEMBER British  := 3    
-
-    // <summary>dd/mm/yy  dd/mm/yyyy</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.American/*" />
+	MEMBER American := 1
+    /// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.Ansi/*" />
+	MEMBER Ansi     := 2
+    /// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.British/*" />
+	MEMBER British  := 3
+    /// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.British/*" />
 	MEMBER French   := 4
-    
-    // <summary>dd.mm.yy  dd.mm.yyyy</summary>
-	MEMBER German   := 5    
-
-    // <summary>dd-mm-yy  dd-mm-yyyy</summary>
-	MEMBER Italian  := 6    
-
-    // <summary>dd-mm-yy  dd-mm-yyyy</summary>
-    MEMBER Dutch    := 6    
-
-    // <summary>yy/mm/dd  yyyy/mm/dd</summary>
-	MEMBER Japanese := 7    
-
-    // <summary>mm-dd-yy  mm-dd-yyyy </summary>
-	MEMBER USA      := 8    
-
-    // <summary>yy/mm/dd  yyyy/mm/dd</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.German/*" />
+	MEMBER German   := 5
+    /// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.Italian/*" />
+	MEMBER Italian  := 6
+    /// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.Italian/*" />
+    MEMBER Dutch    := 6
+    /// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.Japanese/*" />
+    MEMBER Japanese := 7
+    /// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.Japanese/*" />
+	MEMBER USA      := 8
+    /// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.Taiwan/*" />
 	MEMBER Taiwan   := 9
-
-    // <summary>mm/dd/yy  mm/dd/yyyy</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.American/*" />
 	MEMBER MDY      := 10
-
-    // <summary>dd/mm/yy  dd/mm/yyyy</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.British/*" />
 	MEMBER DMY      := 11
-
-    // <summary>yy/mm/dd  yyyy/mm/dd</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.Taiwan/*" />
 	MEMBER YMD      := 12
-    // <summary>Get the format from the System</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.System/*" />
     MEMBER System   := 99
-    // <summary>Get the format from the System</summary>
+    /// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.System/*" />
     MEMBER Windows  := 99
 END ENUM
 
@@ -63,33 +51,33 @@ END ENUM
 
 END NAMESPACE
 #region defines
-/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.American/*" />
 DEFINE AMERICAN := DateCountry.American
-/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.Ansi/*" />
 DEFINE ANSI     := DateCountry.Ansi
-/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.British/*" />
 DEFINE BRITISH  := DateCountry.British
-/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.British/*" />
 DEFINE FRENCH   := DateCountry.French
-/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.German/*" />
 DEFINE GERMAN   := DateCountry.German
-/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.Italian/*" />
 DEFINE ITALIAN  := DateCountry.Italian
-/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.Italian/*" />
 DEFINE DUTCH    := DateCountry.Dutch
-/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.Japanese/*" />
 DEFINE JAPANESE := DateCountry.Japanese
-/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
-DEFINE USA      := DateCountry.USA  
-/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.USA/*" />
+DEFINE USA      := DateCountry.USA
+/// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.British/*" />
 DEFINE DMY      := DateCountry.DMY
-/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.American/*" />
 DEFINE MDY      := DateCountry.MDY
-/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.Japanese/*" />
 DEFINE YMD      := DateCountry.YMD
-/// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
+/// <include file="XSharp.CoreDefines.xml" path="members/DateCountry.Taiwan/*" />
 DEFINE TAIWAN   := DateCountry.Taiwan
 
 #endregion
 
-	
+

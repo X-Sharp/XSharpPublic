@@ -15,8 +15,6 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
 /// The SqlMetadataProviderCallBack class. Provides metadata for the RDD from a callback function.
 /// </summary>
 CLASS SqlMetadataProviderCallBack Inherit SqlMetadataProviderAbstract
-    private const DefaultSection := "Defaults" as string
-    private hasDefaults := false as logic
     /// <summary>
     /// Construct a new instance of the SqlMetadataProviderAbstract class.
     /// </summary>
@@ -25,46 +23,15 @@ CLASS SqlMetadataProviderCallBack Inherit SqlMetadataProviderAbstract
         SUPER(conn)
         RETURN
 
-    PRIVATE METHOD ReadDefaults() AS VOID
-        if ! hasDefaults
-            _connection:AllowUpdates        := SELF:GetLogic(DefaultSection, SqlRDDEventReason.AllowUpdates,    _connection:AllowUpdates)
-            _connection:CompareMemo         := SELF:GetLogic(DefaultSection, SqlRDDEventReason.CompareMemo,     _connection:CompareMemo )
-            _connection:DeletedColumn       := SELF:GetString(DefaultSection, SqlRDDEventReason.DeletedColumn,  _connection:DeletedColumn )
-            _connection:LongFieldNames      := SELF:GetLogic(DefaultSection, SqlRDDEventReason.LongFieldNames, _connection:LongFieldNames)
-            _connection:MaxRecords          := SELF:GetInt(DefaultSection, SqlRDDEventReason.MaxRecords,        _connection:MaxRecords )
-            _connection:RecnoColumn         := SELF:GetString(DefaultSection, SqlRDDEventReason.RecnoColumn,    _connection:RecnoColumn )
-            _connection:TrimTrailingSpaces  := SELF:GetLogic(DefaultSection, SqlRDDEventReason.TrimTrailingSpaces, _connection:TrimTrailingSpaces)
-            _connection:UpdateAllColumns    := SELF:GetLogic(DefaultSection, SqlRDDEventReason.UpdateAllColumns, _connection:UpdateAllColumns)
-            _connection:MaxRecnoAsRecCount  := SELF:GetLogic(DefaultSection,  SqlRDDEventReason.MaxRecnoAsRecCount, _connection:MaxRecnoAsRecCount)
-            hasDefaults := true
-        endif
-        RETURN
-    END METHOD
-
     /// <inheritdoc/>
     OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlDbTableInfo
         local oTable as SqlDbTableInfo
-        SELF:ReadDefaults()
+        SELF:GetDefaults(DefaultSection)
         if SELF:FindInCache(cTable, out oTable)
             return oTable
         endif
         oTable := SqlDbTableInfo{cTable, Connection}
-        oTable:RealName          := SELF:GetString(cTable, SqlRDDEventReason.RealName, cTable)
-        oTable:AllowUpdates      := SELF:GetLogic(cTable, SqlRDDEventReason.AllowUpdates,   _connection:AllowUpdates)
-        oTable:DeletedColumn     := SELF:GetString(cTable, SqlRDDEventReason.DeletedColumn, _connection:DeletedColumn)
-        oTable:LongFieldNames    := SELF:GetLogic(cTable, SqlRDDEventReason.LongFieldNames, _connection:LongFieldNames)
-        oTable:MaxRecords        := SELF:GetInt(cTable, SqlRDDEventReason.MaxRecords,       _connection:MaxRecords)
-        oTable:RecnoColumn       := SELF:GetString(cTable, SqlRDDEventReason.RecnoColumn,   _connection:RecnoColumn)
-        oTable:TrimTrailingSpaces:= SELF:GetLogic(cTable, SqlRDDEventReason.TrimTrailingSpaces, _connection:TrimTrailingSpaces)
-        oTable:CompareMemo       := SELF:GetLogic(cTable, SqlRDDEventReason.CompareMemo,     _connection:CompareMemo)
-        oTable:UpdateAllColumns  := SELF:GetLogic(DefaultSection, SqlRDDEventReason.UpdateAllColumns, _connection:UpdateAllColumns)
-        oTable:MaxRecnoAsRecCount:= SELF:GetLogic(cTable, SqlRDDEventReason.MaxRecnoAsRecCount,   _connection:MaxRecnoAsRecCount)
-
-        // these fields have no defaults
-        oTable:ServerFilter         := SELF:GetString(cTable, SqlRDDEventReason.ServerFilter,       DEFAULT_SERVERFILTER)
-        oTable:ColumnList           := SELF:GetString(cTable, SqlRDDEventReason.ColumnList,         DEFAULT_COLUMNLIST)
-        oTable:UpdatableColumns     := SELF:GetString(cTable, SqlRDDEventReason.UpdatableColumns,   DEFAULT_UPDATABLECOLUMNS)
-        oTable:KeyColumns           := SELF:GetString(cTable, SqlRDDEventReason.KeyColumns,         DEFAULT_KEYCOLUMNS)
+        SUPER:ReadTable(oTable, cTable)
 
         var cIndexes := SELF:GetString(cTable, SqlRDDEventReason.Indexes, DEFAULT_INDEXES)
         if (!String.IsNullOrEmpty(cIndexes))
@@ -103,14 +70,16 @@ CLASS SqlMetadataProviderCallBack Inherit SqlMetadataProviderAbstract
         oIndex:Tags:Add(oTag)
         RETURN oTag
     END METHOD
-    private method GetString(cSection as string, nReason as SqlRDDEventReason, cDefault as STRING) AS STRING
-        RETURN Connection:RaiseStringEvent(null, nReason, cSection, cDefault)
+#region Overridden Getmethods from Abstract
+    override  method GetString(oPar as OBJECT, nReason as SqlRDDEventReason, cDefault as STRING) AS STRING
+        RETURN _connection:RaiseStringEvent(_connection, nReason, (string) oPar, cDefault)
     END METHOD
-    private method GetLogic(cSection as string, nReason as SqlRDDEventReason, lDefault as LOGIC) AS LOGIC
-        RETURN Connection:RaiseLogicEvent(null, nReason, cSection, lDefault)
+    override method GetLogic(oPar as OBJECT, nReason as SqlRDDEventReason, lDefault as LOGIC) AS LOGIC
+        RETURN _connection:RaiseLogicEvent(_connection, nReason, (string) oPar, lDefault)
     END METHOD
-    private method GetInt(cSection as string, nReason as SqlRDDEventReason, nDefault as INT) AS INT
-        RETURN Connection:RaiseIntEvent(null, nReason, cSection, nDefault)
+    override method GetInt(oPar as OBJECT, nReason as SqlRDDEventReason, nDefault as INT) AS INT
+        RETURN _connection:RaiseIntEvent(_connection, nReason, (string) oPar, nDefault)
     END METHOD
+#endregion
 END CLASS
 END NAMESPACE // XSharp.SQLRdd.Metadata

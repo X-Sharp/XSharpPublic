@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<functions>
+    <ads>
+        <summary>查看 ADS 文档，了解更多关于此函数的信息。</summary>
+        <remarks>
+            此函数调用 Avantage Client Engine 中的同名方法。<br /> 
+            Visual Objects 和 X# 中的 ADS API 之间的一些重要区别:
+            <list type="table">
+                <item>
+                    <term>Handles</term>
+                    <description>
+                        在 Visual Objects 中句柄(如表句柄、索引句柄、连接句柄等)被声明为 DWORD。<br />
+                        在 X# 中，它们被声明为 IntPtr，因为在32位模式下应用程序运行时可以是32位，
+                        但在64位模式下应用程序运行时可以是64位。
+                    </description>
+                </item>
+                <item>
+                    <term>String parameters</term>
+                    <description>
+                        在 Visual Objects 中，所有字符串参数都被声明为 PSZ。在 X# 中，你可以使用普通字符串。<br />
+                        .Net 运行时负责管理 unicode 字符串和本地 Ansi 字符串之间的转换。
+                    </description>
+                </item>
+            </list>
+        </remarks>
+        <returns>
+            Advantage Client Engine 中的所有方法都是成功时返回0，失败时返回错误代码。<br />
+            大多数错误编号都定义在 AceError 枚举中。<br />
+            你可以调用 AdsGetLastError() 来检索错误代码的消息。
+        </returns>
+        <seealso cref='T:XSharp.ADS.AceError'>AceError 枚举</seealso>
+        <seealso cref='O:XSharp.RDD.Functions.AdsGetLastError'>AdsGetLastError 函数</seealso>
+    </ads>
+</functions>

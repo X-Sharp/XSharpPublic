@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-12-12T14:01:38.524+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-warn</title>
   <keywords>
     <keyword>-warn</keyword>
@@ -13,14 +13,15 @@
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Code with box">-warn:option &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">option</text><tab />The warning level you want displayed for the compilation: Lower numbers show only high severity warnings; higher numbers show more warnings. Valid values are 0-4:</para>
+    <para styleclass="List"><text styleclass="Code Example">option</text><tab />The warning level you want displayed for the compilation: lower numbers show only high severity warnings; higher numbers show more warnings. Valid values are 0-4:</para>
+    <para styleclass="List"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="2">
       <tr style="vertical-align:top">
         <td style="width:285px;">
-          <para styleclass="Normal">Warning level</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Warning level</text></para>
         </td>
         <td style="width:917px;">
-          <para styleclass="Normal">Meaning</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Meaning</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -72,13 +73,12 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">-w is the short form of -warn.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
-    <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Build property page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Modify the Warning Level property.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link></li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link>.</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">For information on how to set this compiler option programmatically, see WarningLevel.</para>

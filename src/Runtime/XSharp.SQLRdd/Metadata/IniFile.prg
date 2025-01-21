@@ -15,8 +15,6 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
 CLASS SqlMetadataProviderIni Inherit SqlMetadataProviderAbstract
     protect _fileName as STRING
     protect _ini      as SqlDbIniFile
-    private const DefaultSection := "Defaults" as string
-    private hasDefaults as LOGIC
 
     /// <summary>
     /// Construct a new instance of the SqlMetadataProviderIni class.
@@ -37,48 +35,18 @@ CLASS SqlMetadataProviderIni Inherit SqlMetadataProviderAbstract
         _ini      := SqlDbIniFile{_fileName}
         RETURN
     END CONSTRUCTOR
-    PRIVATE METHOD ReadDefaults() AS VOID
-        if ! hasDefaults
-            hasDefaults := true
-            _connection:LongFieldNames      := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.LongFieldNames), _connection:LongFieldNames)
-            _connection:TrimTrailingSpaces  := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.TrimTrailingSpaces), _connection:TrimTrailingSpaces)
-            _connection:UpdateAllColumns    := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.UpdateAllColumns), _connection:UpdateAllColumns)
-            _connection:AllowUpdates        := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.AllowUpdates), _connection:AllowUpdates)
-            _connection:MaxRecords          := SELF:GetInt(DefaultSection,    nameof(SqlRDDEventReason.MaxRecords), _connection:MaxRecords)
-            _connection:RecnoColumn         := SELF:GetString(DefaultSection, nameof(SqlRDDEventReason.RecnoColumn), _connection:RecnoColumn)
-            _connection:DeletedColumn       := SELF:GetString(DefaultSection, nameof(SqlRDDEventReason.DeletedColumn), _connection:DeletedColumn)
-            _connection:CompareMemo         := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.CompareMemo), _connection:CompareMemo)
-            _connection:MaxRecnoAsRecCount  := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.MaxRecnoAsRecCount), _connection:MaxRecnoAsRecCount)
-            ENDIF
-        RETURN
-    END METHOD
 
     /// <inheritdoc />
     OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlDbTableInfo
         local oTable as SqlDbTableInfo
-        SELF:ReadDefaults()
+        SUPER:GetDefaults(DefaultSection)
         if SELF:FindInCache(cTable, out oTable)
             return oTable
         endif
         oTable := SqlDbTableInfo{cTable, Connection}
-        oTable:RealName          := SELF:GetString(cTable,  nameof(SqlRDDEventReason.RealName),      cTable)
-        oTable:AllowUpdates      := SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.AllowUpdates),  _connection:AllowUpdates)
-        oTable:DeletedColumn     := SELF:GetString(cTable,  nameof(SqlRDDEventReason.DeletedColumn), _connection:DeletedColumn)
-        oTable:LongFieldNames    := SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.LongFieldNames),_connection:LongFieldNames)
-        oTable:UpdateAllColumns  := SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.UpdateAllColumns),_connection:UpdateAllColumns)
-        oTable:MaxRecords        := SELF:GetInt(cTable,     nameof(SqlRDDEventReason.MaxRecords),    _connection:MaxRecords)
-        oTable:RecnoColumn       := SELF:GetString(cTable,  nameof(SqlRDDEventReason.RecnoColumn),   _connection:RecnoColumn)
-        oTable:TrimTrailingSpaces:= SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.TrimTrailingSpaces), _connection:TrimTrailingSpaces)
-        oTable:CompareMemo       := SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.CompareMemo),   _connection:CompareMemo)
-        oTable:MaxRecnoAsRecCount:= SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.MaxRecnoAsRecCount),   _connection:MaxRecnoAsRecCount)
+        SUPER:ReadTable(oTable, cTable)
 
-        // these fields have no defaults
-        oTable:ServerFilter         := SELF:GetString(cTable, nameof(SqlRDDEventReason.ServerFilter), DEFAULT_SERVERFILTER)
-        oTable:ColumnList           := SELF:GetString(cTable, nameof(SqlRDDEventReason.ColumnList), DEFAULT_COLUMNLIST)
-        oTable:UpdatableColumns     := SELF:GetString(cTable, nameof(SqlRDDEventReason.UpdatableColumns), DEFAULT_UPDATABLECOLUMNS)
-        oTable:KeyColumns           := SELF:GetString(cTable, nameof(SqlRDDEventReason.KeyColumns), DEFAULT_KEYCOLUMNS)
-
-        var cIndexes := SELF:GetString(cTable, nameof(SqlRDDEventReason.Indexes), DEFAULT_INDEXES)
+        var cIndexes := SELF:GetString(cTable, SqlRDDEventReason.Indexes, DEFAULT_INDEXES)
         if (!String.IsNullOrEmpty(cIndexes))
             var aIndexes := cIndexes:Split(c",")
             foreach var cIndex in aIndexes
@@ -97,7 +65,7 @@ CLASS SqlMetadataProviderIni Inherit SqlMetadataProviderAbstract
         // Indexes are stored in a section TableName_IndexName
         var cSection := "Index:"+cIndexName
         var oIndex  := SqlDbIndexInfo{oTable, cIndexName}
-        var cTags    := SELF:GetString(cSection, nameof(SqlRDDEventReason.Tags), DEFAULT_TAGS)
+        var cTags    := SELF:GetString(cSection, SqlRDDEventReason.Tags, DEFAULT_TAGS)
         if (!String.IsNullOrEmpty(cTags))
             var aTags := cTags:Split(c",")
             foreach var cTag in aTags
@@ -109,23 +77,23 @@ CLASS SqlMetadataProviderIni Inherit SqlMetadataProviderAbstract
     PROTECTED METHOD GetTagInfo(oIndex as SqlDbIndexInfo, tagName as STRING) AS SqlDbTagInfo
         var cSection := "Tag:"+oIndex:Name+":"+tagName
         var oTag := SqlDbTagInfo{oIndex, tagName}
-        oTag:Expression    := SELF:GetString(cSection, nameof(SqlRDDEventReason.Expression ), DEFAULT_EXPRESSION)
-        oTag:Condition     := SELF:GetString(cSection, nameof(SqlRDDEventReason.Condition ), DEFAULT_CONDITION)
-        oTag:Unique        := SELF:GetLogic(cSection, nameof(SqlRDDEventReason.Unique ), DEFAULT_UNIQUE)
+        oTag:Expression    := SELF:GetString(cSection, SqlRDDEventReason.Expression , DEFAULT_EXPRESSION)
+        oTag:Condition     := SELF:GetString(cSection, SqlRDDEventReason.Condition , DEFAULT_CONDITION)
+        oTag:Unique        := SELF:GetLogic(cSection, SqlRDDEventReason.Unique , DEFAULT_UNIQUE)
         oIndex:Tags:Add(oTag)
         RETURN oTag
     END METHOD
-
-    private method GetString(cSection as string, cKey as string, cDefault as STRING) AS STRING
-        RETURN _ini:GetString(cSection, cKey, cDefault)
+#region Overridden Getmethods from Abstract
+    override method GetString(oPar as OBJECT, nReason as SqlRDDEventReason, cDefault as STRING) as STRING
+        RETURN _ini:GetString((string) oPar, nReason:ToString(), cDefault)
     END METHOD
-    private method GetLogic(cSection as string, cKey as string, lDefault as LOGIC) AS LOGIC
-        RETURN _ini:GetLogic(cSection, cKey, lDefault)
+    override method GetLogic(oPar as OBJECT,  nReason as SqlRDDEventReason, lDefault as LOGIC) AS LOGIC
+        RETURN _ini:GetLogic((string) oPar, nReason:ToString(), lDefault)
     END METHOD
-    private method GetInt(cSection as string, cKey as string, nDefault as INT) AS INT
-        RETURN _ini:GetInt(cSection, cKey, nDefault)
+    override method GetInt(oPar as OBJECT,  nReason as SqlRDDEventReason, nDefault as INT) AS INT
+        RETURN _ini:GetInt((string) oPar, nReason:ToString(), nDefault)
     END METHOD
-
+#endregion
 END CLASS
 END NAMESPACE // XSharp.SQLRdd.Metadata
 

@@ -24,7 +24,6 @@
     <PPO>false</PPO>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <ErrorReport>prompt</ErrorReport>
     <CommonInclude>$(CommonDir)</CommonInclude>
     <AZ>false</AZ>
     <CS>true</CS>
@@ -62,9 +61,9 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>false</UseSharedCompilation>
     <PlatformTarget>AnyCPU</PlatformTarget>
-	<RuntimeIdentifier>win</RuntimeIdentifier>
+    <RuntimeIdentifier>win</RuntimeIdentifier>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)' == 'Documentation'" >
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -74,13 +73,23 @@
 	<vo15>true</vo15>
 	<vo5>false</vo5>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+<PropertyGroup Condition="'$(Configuration)' == 'DocChinese'" >
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE;DOCUMENTATION;RUNTIME</DefineConstants>
+    <DisabledWarnings>1591,9015,169,649</DisabledWarnings>
+    <CommandLineOption>/noclipcall</CommandLineOption>
+	<vo15>true</vo15>
+	<vo5>false</vo5>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" >
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>TRACE;RUNTIME</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" >
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>

@@ -14,6 +14,7 @@ global OleDbConnStr := "Provider=sqloledb;Data Source=(local);Initial Catalog=No
 global showEvents := true as logic
 
 function Start as void
+    TestTriss()
     //TestProviders()
     //estSqlServer()
     //TestODBC()
@@ -37,7 +38,7 @@ function Start as void
     //TestTransaction()
     //testCreate()
     //FillGsTutor()
-    TestGsTutor()
+    //TestGsTutor()
     wait
     return
 
@@ -510,12 +511,12 @@ Function DumpConnection(conn as SqlDbConnection) as void
         ? "State   ",conn:DbConnection:State:ToString()
         ? "IsOpen  ", conn:IsOpen
         var coll := conn:GetMetaDataCollections()
-        ? "Collections: ", coll:Count
-        foreach var name in coll
-            var table := conn:GetMetaDataCollection(Name)
-            DumpMetadataCollection(Name, table)
-            Console.ReadLine()
-        next
+//         ? "Collections: ", coll:Count
+//         foreach var name in coll
+//             var table := conn:GetMetaDataCollection(Name)
+//             DumpMetadataCollection(Name, table)
+//             Console.ReadLine()
+//         next
         var tables := conn:GetTables("TABLE")
         ? "# of Tables : ", tables:Count
         foreach var Name in tables
@@ -562,8 +563,8 @@ FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs)
         case "Index:Customers"
             e:Value := "PK,CompanyName,ContactName,Address"
         end switch
-    case SqlRDDEventReason.SeekReturnsSubset
-        e:Value := FALSE
+//     case SqlRDDEventReason.SeekReturnsSubset
+//         e:Value := FALSE
     end switch
     if showEvents
         ? "Event", e:Name, e:Reason:ToString(), e:Value
@@ -776,6 +777,18 @@ function TestTransaction()
             //? e:Message
         END TRY
         RETURN
+
+FUNCTION TestTriss() AS VOID
+        SqlDbSetProvider("SQLSERVER")
+        RddSetDefault("SQLRDD")
+        SqlDbOpenConnection("Server=(local);Initial catalog=Triss2000Test;Trusted_Connection=True;", EventHandler)
+        var conn  := SqldbGetConnection("DEFAULT")
+        conn:MetadataProvider := SqlMetaDataProviderDatabase{conn}
+        local oSrv := dbShellServer{"Printer"} as dbShellServer
+        do while ! oSrv:Eof
+            ? oSrv:Skip(1)
+        enddo
+
 FUNCTION TestGsTutor() AS VOID
     local aOrders as array
     aOrders := {}
@@ -785,31 +798,31 @@ FUNCTION TestGsTutor() AS VOID
         SqlDbOpenConnection("Server=(local);Initial catalog=GsTutor;Trusted_Connection=True;", EventHandler)
         var conn  := SqldbGetConnection("DEFAULT")
         conn:MetadataProvider := SqlMetaDataProviderDatabase{conn}
-        DbUseArea(,,"customer")
-        ShowArray(DbStruct())
-        OrdSetFocus("CustNum")
+        local oSrv := dbShellServer{"Customer"} as DbServer
+        ShowArray(oSrv:DbStruct)
+        oSrv:SetOrder("CustNum")
         var stopWatch := StopWatch{}
         stopWatch:Start()
-        DbSeek(10)
+        oSrv:Seek(10)
         ? stopWatch:Elapsed:ToString()
         stopWatch:Restart()
-        ? "Recno", Recno(), Eof(), "Keycount", DbOrderInfo(DBOI_KEYCOUNT), DbOrderInfo(DBOI_KEYVAL)
+        ? "Recno", oSrv:Recno, oSrv:Eof, "Keycount",oSrv:OrderInfo(DBOI_KEYCOUNT), oSrv:OrderKeyVal
         ? stopWatch:Elapsed:ToString()
         stopWatch:Restart()
-        DbSeek(10.0)
-        ? "Recno", Recno(), Eof(), "Keycount", DbOrderInfo(DBOI_KEYCOUNT), DbOrderInfo(DBOI_KEYVAL)
+        oSrv:Seek(10.0)
+        ? "Recno", oSrv:Recno, oSrv:Eof, "Keycount",oSrv:OrderInfo(DBOI_KEYCOUNT), oSrv:OrderKeyVal
         ? stopWatch:Elapsed:ToString()
         stopWatch:Restart()
-        DbSeek((INT64) 20)
-        ? "Recno", Recno(), Eof(), "Keycount", DbOrderInfo(DBOI_KEYCOUNT), DbOrderInfo(DBOI_KEYVAL)
+        oSrv:Seek((INT64) 20)
+        ? "Recno", oSrv:Recno, oSrv:Eof, "Keycount",oSrv:OrderInfo(DBOI_KEYCOUNT), oSrv:OrderKeyVal
         ? stopWatch:Elapsed:ToString()
         stopWatch:Restart()
-        DbSeek(20,TRUE)
-        ? "Recno", Recno(), Eof(), "Keycount", DbOrderInfo(DBOI_KEYCOUNT), DbOrderInfo(DBOI_KEYVAL)
+        oSrv:Seek(20,TRUE)
+        ? "Recno", oSrv:Recno, oSrv:Eof, "Keycount",oSrv:OrderInfo(DBOI_KEYCOUNT), oSrv:OrderKeyVal
         wait
-        OrdCreate("Customer", "CustName","LastName+FirstName")
-        OrdCreate("Customer", "CustNum","CustNum")
-        DbCloseArea()
+        oSrv:CreateOrder("CustName","Customer","LastName+FirstName")
+        oSrv:CreateOrder("CustName","CustNum","CustNum")
+        oSrv:Close()
         DbUseArea(,,"orders")
         ShowArray(DbStruct())
         OrdSetFocus("Order_Date")
@@ -839,3 +852,7 @@ FUNCTION TestGsTutor() AS VOID
     END TRY
     RETURN
 
+
+
+    FUNCTION GetGlobal() AS usual CLIPPER
+        RETURN NULL_OBJECT

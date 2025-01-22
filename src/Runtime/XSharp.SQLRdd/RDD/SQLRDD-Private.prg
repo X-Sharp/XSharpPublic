@@ -75,8 +75,10 @@ partial class SQLRDD inherit DBFVFP
             endif
             _table := value
             if _table is NULL
+                SELF:_hasData := FALSE
                 return
             endif
+            SELF:_hasData := TRUE
             self:_RecCount   	:= _table:Rows:Count
             self:_phantomRow 	:= _table:NewRow()
             var prop := _table:GetType():GetProperty("EnforceConstraints", BindingFlags.Instance+BindingFlags.NonPublic)
@@ -499,7 +501,6 @@ partial class SQLRDD inherit DBFVFP
         try
             _command:CommandText := self:_BuildSqlStatement(sWhereClause)
             _command:ClearParameters()
-            self:_hasData        := true
             self:DataTable       := _command:GetDataTable(self:Alias)
             self:_GetRecCount()
         catch as Exception

@@ -17,7 +17,7 @@
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants)NET46;NET472</DefineConstants>
     <DefineConstants Condition="'$(TargetFramework)' != 'net472'">$(DefineConstants)NETCOREAPP</DefineConstants>
-    <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
+    <DefineConstants>$(DefineConstants);XSHARP;COMMITHASH</DefineConstants>
     <!--Use the C# compiler created in this solution-->
     <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>

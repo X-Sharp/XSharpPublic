@@ -376,7 +376,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeIdentifier(text);
                     break;
             }
-            (token as CommonToken).Type = XSharpParser.ID;
+            if (token.Type != XSharpParser.THISFORM)
+            {
+                if (token is CommonToken ct)
+                {
+                    ct.Type = XSharpParser.ID;
+                }
+            }
             r.XNode = new XTerminalNodeImpl(token);
             return r;
         }

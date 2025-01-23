@@ -8895,16 +8895,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Put(context.Start.SyntaxIdentifier());
         }
-        public override void ExitKeywordxs([NotNull] XP.KeywordxsContext context)
-        {
-            // caught by the keyword/identifier rule
-        }
-        public override void ExitKeywordvo([NotNull] XP.KeywordvoContext context)
-        {
-            // caught by the keyword/identifier rule
-        }
 
-        public override void ExitKeywordxpp([NotNull] XP.KeywordxppContext context)
+        public override void ExitKeywordsoft([NotNull] XP.KeywordsoftContext context)
         {
             // caught by the keyword/identifier rule
         }

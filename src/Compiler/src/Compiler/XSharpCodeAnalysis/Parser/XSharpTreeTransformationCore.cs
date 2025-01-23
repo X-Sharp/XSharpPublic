@@ -8950,16 +8950,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Put(context.Start.SyntaxIdentifier());
         }
-        public override void ExitKeywordxs([NotNull] XP.KeywordxsContext context)
-        {
-            // caught by the keyword/identifier rule
-        }
-        public override void ExitKeywordvo([NotNull] XP.KeywordvoContext context)
-        {
-            // caught by the keyword/identifier rule
-        }
 
-        public override void ExitKeywordxpp([NotNull] XP.KeywordxppContext context)
+        public override void ExitKeywordsoft([NotNull] XP.KeywordsoftContext context)
         {
             // caught by the keyword/identifier rule
         }
@@ -9262,9 +9254,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string sMask = sbMask.ToString();
             ExpressionSyntax res;
             bool allowDot = _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context, PragmaOptions);
-            for (var iExpr = 0; iExpr < expressions.Count; iExpr++)
+            foreach (var e in expressions)
             {
-                var e = expressions[iExpr];
                 if (e.Length == 0)
                 {
                     var subexpr = GenerateLiteral("").WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExpressionExpected));

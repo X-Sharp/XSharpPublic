@@ -4238,43 +4238,17 @@ public partial class XSharpBaseListener : IXSharpListener {
 	public virtual void ExitParserLiteralValue([NotNull] XSharpParser.ParserLiteralValueContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XSharpParser.keywordvo"/>.
+	/// Enter a parse tree produced by <see cref="XSharpParser.keywordsoft"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterKeywordvo([NotNull] XSharpParser.KeywordvoContext context) { }
+	public virtual void EnterKeywordsoft([NotNull] XSharpParser.KeywordsoftContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XSharpParser.keywordvo"/>.
+	/// Exit a parse tree produced by <see cref="XSharpParser.keywordsoft"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitKeywordvo([NotNull] XSharpParser.KeywordvoContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="XSharpParser.keywordxs"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterKeywordxs([NotNull] XSharpParser.KeywordxsContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="XSharpParser.keywordxs"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitKeywordxs([NotNull] XSharpParser.KeywordxsContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="XSharpParser.keywordxpp"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterKeywordxpp([NotNull] XSharpParser.KeywordxppContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="XSharpParser.keywordxpp"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitKeywordxpp([NotNull] XSharpParser.KeywordxppContext context) { }
+	public virtual void ExitKeywordsoft([NotNull] XSharpParser.KeywordsoftContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="XSharpParser.xppclass"/>.
@@ -4470,19 +4444,6 @@ public partial class XSharpBaseListener : IXSharpListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitXppinlineMethod([NotNull] XSharpParser.XppinlineMethodContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="XSharpParser.keywordfox"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterKeywordfox([NotNull] XSharpParser.KeywordfoxContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="XSharpParser.keywordfox"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitKeywordfox([NotNull] XSharpParser.KeywordfoxContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="XSharpParser.foxclass"/>.

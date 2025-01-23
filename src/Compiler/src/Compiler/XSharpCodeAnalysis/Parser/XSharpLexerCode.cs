@@ -1519,7 +1519,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     // In that case we change the type from Keyword to ID
                     if (_isValidIdentifier(t) && Expect('.'))
                     {
-                        if (t.Type != SELF && t.Type != SUPER && t.Type != FOX_M)
+                        if (t.Type != SELF && t.Type != SUPER && t.Type != FOX_M && t.Type != THISFORM)
                         {
                             t.Type = ID;
                         }
@@ -1699,12 +1699,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                     break;
                 // Next tokens only at Start of Line
+                case CATCH:
                 case FOREACH:
                 case FINALLY:
-                case CATCH:
+                case NOP:
                 case REPEAT:
                 case UNTIL:
                 case YIELD:
+
                 // XPP tokens at start of line only
                 case ENDCLASS:
                 case ENDSEQUENCE:
@@ -1719,16 +1721,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case DIMENSION:
                 case DECLARE:
                 case LPARAMETERS:
-                case NOP:
                     if (!StartOfLine(lastToken))
                     {
                         return ID;
                     }
                     break;
                 case FUNCTION:
+                case PROCEDURE:
                     if (text.Length == 4)
                     {
-                        // if specified as FUNC then we want to make sure that it is not a type
+                        // if specified as FUNC or PROC then we want to make sure that it is not a type
                         if (!StartOfLine(lastToken) && !IsModifier(lastToken)
                             && lastToken != RBRKT && lastToken != END
                             && lastToken != LOCAL && lastToken != DLL)
@@ -2300,6 +2302,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 var vfpKeywords = new XSharpKeywords
                 {
                     // normal keywords
+                    {"THISFORM", THISFORM},
                     {"THIS_ACCESS",THISACCESS },
                     {"HELPSTRING",HELPSTRING },
                     {"DIMENSION",DIMENSION},

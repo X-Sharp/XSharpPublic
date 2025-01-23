@@ -87,7 +87,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var csReference = compilationReference as CSharpCompilationReference;
                 if (csReference == null)
                 {
-                    throw new NotSupportedException(string.Format(CSharpResources.CantReferenceCompilationOf, compilationReference.GetType(), "C#"));
+                    throw new NotSupportedException(string.Format(CSharpResources.CantReferenceCompilationOf, compilationReference.GetType(), LanguageNames.CSharp));
                 }
 
                 var result = new AssemblyDataForCompilation(csReference.Compilation, csReference.Properties.EmbedInteropTypes);

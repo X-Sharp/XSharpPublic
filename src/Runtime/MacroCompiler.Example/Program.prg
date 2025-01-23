@@ -4,7 +4,7 @@ USING System.Linq
 USING System.Text
 USING XSharp.Runtime
 USING XSharp.MacroCompiler
-
+global gu := 1.0 as USUAL
 BEGIN NAMESPACE MacroCompilerTest
 
     function Start() as void
@@ -16,6 +16,7 @@ BEGIN NAMESPACE MacroCompilerTest
         ReportMemory("initial")
         VAR mc := CreateMacroCompiler()
         VAR fmc := CreateFoxMacroCompiler()
+        EvalMacro(mc,"{||IsFloat(gu)}", TRUE)
 
         //EvalMacro(mc, "{|| 0000.00.00 }" ,NULL_DATE)
         //ParseMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}")

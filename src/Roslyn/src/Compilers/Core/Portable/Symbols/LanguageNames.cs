@@ -17,8 +17,11 @@ namespace Microsoft.CodeAnalysis
         /// <summary>
         /// The common name used for the C# language.
         /// </summary>
+#if XSHARP
+        public const string CSharp = "X#";
+#else
         public const string CSharp = "C#";
-
+#endif
         /// <summary>
         /// The common name used for the Visual Basic language.
         /// </summary>

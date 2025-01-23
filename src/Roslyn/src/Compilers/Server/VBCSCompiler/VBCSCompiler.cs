@@ -13,7 +13,11 @@ namespace Microsoft.CodeAnalysis.CompilerServer
     {
         public static int Main(string[] args)
         {
+#if XSHARP
+            using var logger = new CompilerServerLogger("XSCompiler");
+#else
             using var logger = new CompilerServerLogger("VBCSCompiler");
+#endif
 
             NameValueCollection appSettings;
             try

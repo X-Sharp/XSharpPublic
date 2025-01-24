@@ -935,8 +935,8 @@ BEGIN NAMESPACE VFPXPorterLib
 //             ENDIF
             // Create the File based on the Form Name, or the scx file in case of trouble...
             LOCAL destFile AS STRING
-            destFile := Path.Combine(SELF:Settings:OutputPath, outFileName )
-            destFile := Path.ChangeExtension( destFile, "prg")
+            destFile := Path.Combine(SELF:Settings:OutputPath, outFileName ) + ".prg"
+            //destFile := Path.ChangeExtension( destFile, "prg")
             RETURN destFile
         END METHOD
 

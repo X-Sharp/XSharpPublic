@@ -30,7 +30,7 @@ METHOD AddAccelerator(oAccelerator)
       IF hAc != NULL_PTR
 
 
-         dwCount := DWORD(CopyAcceleratorTable(hAc, NULL_PTR, 0l))
+         dwCount := DWORD(CopyAcceleratorTable(hAc, NULL_PTR, 0L))
          IF dwCount > 1
             IF (pMem := MemAlloc(_SIZEOF(_winAccel)*dwCount)) != NULL_PTR
                CopyAcceleratorTable(hAc, pMem, INT(_CAST,dwCount))

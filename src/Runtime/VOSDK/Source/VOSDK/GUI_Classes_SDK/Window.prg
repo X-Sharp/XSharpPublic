@@ -1159,7 +1159,7 @@ METHOD __ProcessHelp(oEvent AS @@Event) AS LOGIC STRICT
 
 
             oCurrentHelp:Show(cKey, sHelpInfo)
-            SELF:EventReturnValue := 1l
+            SELF:EventReturnValue := 1L
             RETURN TRUE
         ENDIF
     ENDIF
@@ -2197,7 +2197,7 @@ METHOD DateTimeSelectionChanged(oDateTimeSelectionEvent)
 
 
 
-    RETURN 0l
+    RETURN 0L
 
 
 
@@ -2926,7 +2926,7 @@ METHOD HelpRequest(oHelpRequestEvent)
         cHelpContext:=oEvt:HelpContext
         IF NULL_STRING != cHelpContext
             oCurrentHelp:show(cHelpContext, oEvt:HelpInfo)
-            SELF:EventReturnValue := 1l
+            SELF:EventReturnValue := 1L
         ELSE
             dwType := oEvt:HelpType
             DO CASE

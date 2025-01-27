@@ -246,7 +246,7 @@ METHOD GetAllPaneClients(aChildren)
 
 
    IF oPanes != NULL_OBJECT
-	   liCount := oPanes:Width * oPanes:Height - 1l
+	   liCount := oPanes:Width * oPanes:Height - 1L
 
 
 		FOR liPane := 0 UPTO liCount
@@ -418,7 +418,7 @@ ASSIGN Layout(oDimension)
 
 	liWidth  := oPanes:Width
    liHeight := oPanes:Height
-   liCount  := liWidth * liHeight - 1l
+   liCount  := liWidth * liHeight - 1L
 
 
    hSplit := SELF:Handle()
@@ -436,8 +436,8 @@ ASSIGN Layout(oDimension)
 
 
    //force the same size for each pane
-   liWidth  *= 50l
-   liHeight *= 50l
+   liWidth  *= 50L
+   liHeight *= 50L
 
 
 	GetClientRect(hSplit, @sRect)
@@ -447,8 +447,8 @@ ASSIGN Layout(oDimension)
    SetWindowPos(hSplit, 0, 0, 0, liWidth, liHeight, dwFlags)
 
 
-   sSize:cx := 51l
-	sSize:cy := 51l
+   sSize:cx := 51L
+	sSize:cy := 51L
    FOR liPane := 0 UPTO liCount
        PCALL(gpfnSpltPaneExtSet, hSplit, liPane, @sSize)
    NEXT  // liPane

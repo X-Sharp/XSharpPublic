@@ -6,7 +6,7 @@ PARTIAL CLASS DbServer
 /// <include file="Rdd.xml" path="doc/DbServer.RddInfo/*" />
 METHOD RDDINFO( kRDDInfoType, uRDDVal )
 	//SE-060601
-   LOCAL dwCurrentWorkArea AS DWORD
+   LOCAL dwCurrentWorkArea AS DWORD 
 	LOCAL oError AS USUAL
 
 
@@ -628,7 +628,7 @@ METHOD ResetNotification()
 
 
 	IF siSuspendNotification > 0
-		siSuspendNotification -= 1
+		siSuspendNotification--
 	ENDIF
 
 
@@ -1712,7 +1712,7 @@ METHOD Sum(acbExpression,cbForBlock,cbWhileBlock,uScope)
 METHOD SuspendNotification()
 
 
-	siSuspendNotification += 1
+	siSuspendNotification++
 	RETURN SELF
 
 

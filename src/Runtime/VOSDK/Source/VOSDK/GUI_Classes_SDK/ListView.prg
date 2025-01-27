@@ -97,13 +97,13 @@ METHOD __SetItem(strucItem AS _winLV_Item, oLVItem AS ListViewItem) AS VOID STRI
 
 	   strucItem:mask := _OR(LVIF_TEXT, LVIF_IMAGE)
 	   //strucItem.iItem    := nIndex
-		strucItem:iSubItem := LONGINT(_CAST, dwIndex) -1l
+		strucItem:iSubItem := LONGINT(_CAST, dwIndex) -1L
 		IF liSubImage = 0
          IF strucItem:iSubItem > 0
-         	strucItem:iImage := -1l
+         	strucItem:iImage := -1L
          ENDIF
 		ELSE
-		   strucItem:iImage := liSubImage - 1l
+		   strucItem:iImage := liSubImage - 1L
 		ENDIF
 
 
@@ -797,14 +797,14 @@ METHOD GetItemAttributes(nItem)
 		FOR dwIndex := 1 TO SELF:ColumnCount
 			aBuf[1] := 0
 			strucItem:mask := _OR(LVIF_TEXT, LVIF_IMAGE)
-			strucItem:iSubItem := LONGINT(_CAST, dwIndex) - 1l
+			strucItem:iSubItem := LONGINT(_CAST, dwIndex) - 1L
 			strucItem:pszText := @aBuf[1]
 			strucItem:cchTextMax := 256
 			ListView_GetItem(hWnd, @strucItem)
 			//pszText := @aBuf[1]
 			//ListView_GetItemText(hHandle, DWORD(nItem - 1), INT(_CAST, dwIndex - 1), pszText, 256)
 			oListViewColumn := SELF:__GetColumnFromIndex(dwIndex)
-			oListViewItem:SetText(Psz2String(strucItem:pszText), oListViewColumn:NameSym, strucItem:iImage+1l)
+			oListViewItem:SetText(Psz2String(strucItem:pszText), oListViewColumn:NameSym, strucItem:iImage+1L)
 			//RvdH 060608 optimized
 			//IF !Empty(oListViewColumn:__ValueList)
 			IF ALen(oListViewColumn:__ValueList) > 0
@@ -1502,7 +1502,7 @@ METHOD SetExLVStyle(kExStyle, lEnable)
 	ENDIF
 
 
-	SendMessage(SELF:Handle(), LVM_SETEXTENDEDLISTVIEWSTYLE, kExStyle, IIF(lEnable, kExStyle, 0l))
+	SendMessage(SELF:Handle(), LVM_SETEXTENDEDLISTVIEWSTYLE, kExStyle, IIF(lEnable, kExStyle, 0L))
 
 
 	RETURN SELF
@@ -2442,7 +2442,7 @@ METHOD GetText(symColumnName, nRefImageIndex)
 		RETURN aColumn[2]
 	ELSE
 		IF IsNumeric(nRefImageIndex)
-			nRefImageIndex := 0l
+			nRefImageIndex := 0L
 		ENDIF
 	ENDIF
 
@@ -2591,7 +2591,7 @@ METHOD SetText(cNewText, symColumnName, nImageIndex)
 		aColumn[2] := cNewText
 	ELSE
 	   // otherwise, add the new entry to the end of the list
-	   aColumn    := {symColumnName, cNewText, 0l}
+	   aColumn    := {symColumnName, cNewText, 0L}
 	   AAdd(aColumnText, aColumn)
 	ENDIF
 

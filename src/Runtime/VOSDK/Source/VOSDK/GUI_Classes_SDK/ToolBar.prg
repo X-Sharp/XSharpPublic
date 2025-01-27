@@ -103,7 +103,7 @@ CLASS ToolBar INHERIT Control
             hWnd       := hWndTB
             __WCRegisterControl(SELF)
             hWnd       := hwndParent
-            SendMessage(hWndTB, TB_BUTTONSTRUCTSIZE, _SIZEOF(_winTBBUTTON), 0l)
+            SendMessage(hWndTB, TB_BUTTONSTRUCTSIZE, _SIZEOF(_winTBBUTTON), 0L)
             SendMessage(hWndTB, TB_SETBITMAPSIZE, 0u, MakeLong(LoWord(DWORD(oButtonSize:Width)), LoWord(DWORD(oButtonSize:Height))))
             oImagelist := oTb:ImageList
             IF oImageList != NULL_OBJECT
@@ -256,7 +256,7 @@ CLASS ToolBar INHERIT Control
         IF IsNumeric(iPos)
             liPos := iPos
         ELSE
-            liPos := -1l
+            liPos := -1L
         ENDIF
         MemClear(@rbBand, _SIZEOF(_winREBARBANDINFO))
         rbBand:cbSize := _SIZEOF(_winREBARBANDINFO) //COMPAT_REBARBANDINFO_SIZE
@@ -366,7 +366,7 @@ CLASS ToolBar INHERIT Control
             rbBand:cyMinChild := HiWord((DWORD) SendMessage(hWndNewTB, TB_GETBUTTONSIZE, 0, 0)) + (DWORD) IIF(_AND(dwSubStyle, TBSTYLE_FLAT) = TBSTYLE_FLAT,2, 6)
             IF SELF:__ButtonStyle != TB_ICONONLY
                 hDC := GetDC(hWndNewTB)
-                IF (hFont := SendMessage(hWndNewTB, WM_GETFONT, 0l, 0l)) != NULL_PTR
+                IF (hFont := SendMessage(hWndNewTB, WM_GETFONT, 0L, 0L)) != NULL_PTR
                     SelectObject(hdc, hFont)
                 ENDIF
                 GetTextExtentPoint(hDC, String2Psz( "M"), 1, @sSize)
@@ -492,19 +492,19 @@ CLASS ToolBar INHERIT Control
                             IF nButtonID < 0
                                 strucButton:iBitmap := nButtonID
                             ELSEIF nButtonID <= IDT_CUSTOMBITMAP
-                                strucButton:iBitmap := nButtonID - 1l
+                                strucButton:iBitmap := nButtonID - 1L
                             ELSEIF IsLong(nPosition)
-                                strucButton:iBitmap := oExtraBitMap:FirstImageIndex + nPosition - 1l
+                                strucButton:iBitmap := oExtraBitMap:FirstImageIndex + nPosition - 1L
                             ELSE
-                                strucButton:iBitmap := 1l
+                                strucButton:iBitmap := 1L
                             ENDIF
                         ELSE
                             strucButton:iBitmap := nButtonID - 1
                         ENDIF
                     ELSE
-                        strucButton:iBitmap := -1l
+                        strucButton:iBitmap := -1L
                     ENDIF
-                    strucButton:iString := -1l
+                    strucButton:iString := -1L
                     IF SELF:__ButtonStyle != TB_ICONONLY
                         IF IsString(cTitle)
                             IF ! cTitle == NULL_STRING
@@ -795,7 +795,7 @@ CLASS ToolBar INHERIT Control
             SELF:SetStyle(TBSTYLE_FLAT, lFlat)
             //SE-070427
             IF (dwUpdateCount := ALen(SELF:aUpdates)) > 0  //only if MED menu exists
-                IF nImageCount = -1l //Undefined mode
+                IF nImageCount = -1L //Undefined mode
                     //Setting of bitmap mode and assigning the default bitmap
                     oBitmap := Bitmap{ResourceID{"IDB_DEFTOOLBAR", _GetInst()}, BMP_3DTRANSPARENT}
                     nImageCount := 132
@@ -890,7 +890,7 @@ CLASS ToolBar INHERIT Control
                     dwcount := DWORD(_CAST,SendMessage(hWnd, RB_GETBANDCOUNT, 0, 0))
                     IF hWndMainTB != NULL_PTR
                         rbBand:fMask      := RBBIM_CHILDSIZE
-                        SendMessage(hwndMainTB, TB_GETMAXSIZE, 0l, LONGINT(_CAST,@sSize))
+                        SendMessage(hwndMainTB, TB_GETMAXSIZE, 0L, LONGINT(_CAST,@sSize))
                         rbBand:cxMinChild := DWORD(sSize:cx)
                         rbBand:cyMinChild := DWORD(sSize:cy + IIF(lFlat,2, 6))
                         //rbBand.cxMinChild := LoWord(DWORD(_CAST, SendMessage(hwndMainTB, TB_GETBUTTONSIZE, 0, 0))) * SELF:ButtonCount + 26
@@ -902,7 +902,7 @@ CLASS ToolBar INHERIT Control
                         SendMessage(hWnd, RB_SETBANDINFO, 0U, LONGINT(_CAST, @rbBand))
                         //delete the following 3 code lines, if MED band order is corrected.
                         IF dwCount > 1
-                            SendMessage(hWnd, RB_MOVEBAND, 0, LONGINT(_CAST, dwCount) - 1l)
+                            SendMessage(hWnd, RB_MOVEBAND, 0, LONGINT(_CAST, dwCount) - 1L)
                         ENDIF
                     ENDIF
                     IF dwCount > 1
@@ -1095,7 +1095,7 @@ CLASS ToolBar INHERIT Control
         Default(@symTB, #MAINTOOLBAR)
         hwndTB := SELF:__FindToolBarHandle(symTB)
         IF (hWndTB != NULL_PTR)
-            liLength := SendMessage(hWndTB, TB_GETBUTTONTEXT, DWORD(nButtonID), 0l)
+            liLength := SendMessage(hWndTB, TB_GETBUTTONTEXT, DWORD(nButtonID), 0L)
             IF liLength > 0
                 pszText := MemAlloc(DWORD(liLength + 1))
                 SendMessage(hWndTB, TB_GETBUTTONTEXT, DWORD(nButtonID), LONGINT(_CAST, pszText))
@@ -1134,7 +1134,7 @@ CLASS ToolBar INHERIT Control
         IF hWndTB != NULL_PTR
             RETURN SendMessage(hWndTB, TB_GETSTATE, nMenuItemID, 0)
         ENDIF
-        RETURN -1l
+        RETURN -1L
 
 
     /// <include file="Gui.xml" path="doc/ToolBar.GetTipText/*" />
@@ -1221,11 +1221,11 @@ CLASS ToolBar INHERIT Control
         //Moved to Create() SE-050729
         //oBitmap := Bitmap{ResourceID{"IDB_DEFTOOLBAR", _GetInst()}, BMP_3DTRANSPARENT}
         //nImageCount := 132
-        nImageCount := -1l //Unintialized mode
+        nImageCount := -1L //Unintialized mode
         // Three image modes exist
-        // nImageCount = -1l Unintialized.
-        // nImageCount =  0l Toolbar uses only Imagelists, using of Bitmaps is impossible.
-        // nImageCount >  0l Toolbar uses only Bitmaps, using of Imagelists is impossible.
+        // nImageCount = -1L Unintialized.
+        // nImageCount =  0L Toolbar uses only Imagelists, using of Bitmaps is impossible.
+        // nImageCount >  0L Toolbar uses only Bitmaps, using of Imagelists is impossible.
         //PP-030910
         //PP-040515
         SELF:Divider := ! lEnableBands

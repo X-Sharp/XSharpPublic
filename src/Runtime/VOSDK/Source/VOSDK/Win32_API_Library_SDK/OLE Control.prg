@@ -6,12 +6,12 @@ VOSTRUCT _winCONTROLINFO
 	MEMBER hAccel AS PTR
 	MEMBER cAccel AS WORD
 	MEMBER dwFlags AS DWORD
-	
+
 VOSTRUCT _winCONNECTDATA
 	MEMBER pUnk AS PTR
 	MEMBER dwCookie AS DWORD
-	
-	
+
+
 VOSTRUCT _winLICINFO
 	MEMBER cbLicInfo AS LONGINT
 	MEMBER fRuntimeKeyAvail AS LOGIC
@@ -24,18 +24,18 @@ VOSTRUCT _WINCAUUID
 VOSTRUCT tagCALPOLESTR
 	MEMBER cElems AS DWORD
 	MEMBER pElems  AS PSZ
-	
-	
-	
-	
-	
+
+
+
+
+
 VOSTRUCT _winCADWORD
 	MEMBER  cElems AS DWORD
 	MEMBER  pElems AS DWORD PTR
-	
-	
-	
-	
+
+
+
+
 VOSTRUCT _winOCPFIPARAMS
 	MEMBER cbStructSize AS DWORD
 	MEMBER hWndOwner AS PTR
@@ -48,10 +48,10 @@ VOSTRUCT _winOCPFIPARAMS
 	MEMBER lpPages AS _winGUID
 	MEMBER lcid AS DWORD
 	MEMBER dispidInitialProperty AS LONGINT
-	
-	
-	
-	
+
+
+
+
 VOSTRUCT winPROPPAGEINFO
 	MEMBER  cb AS DWORD
 	MEMBER  pszTitle AS PSZ
@@ -59,8 +59,8 @@ VOSTRUCT winPROPPAGEINFO
 	MEMBER  pszDocString AS PSZ
 	MEMBER  pszHelpFile AS PSZ
 	MEMBER  dwHelpContext AS DWORD
-	
-	
+
+
 VOSTRUCT _winFONTDESC
 	MEMBER cbSizeofstruct AS DWORD
 	MEMBER lpstrName AS PSZ
@@ -70,46 +70,46 @@ VOSTRUCT _winFONTDESC
 	MEMBER fItalic AS LOGIC
 	MEMBER fUnderline AS LOGIC
 	MEMBER fStrikethrough AS LOGIC
-	
-	
+
+
 VOSTRUCT bmp_win
-	
+
 	MEMBER hbitmap AS PTR
 	MEMBER  hpal AS PTR
-	
-	
+
+
 VOSTRUCT wmf_win
 	MEMBER hmeta AS PTR
 	MEMBER xExt AS INT
 	MEMBER yExt AS INT
-	
+
 VOSTRUCT icon_win
 	MEMBER  hicon AS PTR
-	
+
 VOSTRUCT _winPICTDESC
 	MEMBER cbSizeofstruct AS DWORD
 	MEMBER picType AS DWORD
 	MEMBER  uPICTDESC IS uPICTDESC_win
-	
-	
+
+
 _DLL FUNC OleCreatePropertyFrame(hwndOwner AS PTR, x AS DWORD, y AS DWORD,;
 		lpszCaption AS PSZ, cObjects AS DWORD, ppUnk  AS PTR,;
 		cPages AS DWORD, pPageClsId AS _winGUID, lcid AS DWORD,;
 		dwReserved AS DWORD, prReserved AS PTR) AS LONG PASCAL:MFCANS32.OleCreatePropertyFrame
-	
-	
+
+
 _DLL FUNC OleCreatePropertyFrameIndirect(lpParams AS _winOCPFIPARAMS);
 		AS LONG PASCAL:MFCANS32.OleCreatePropertyFrameIndirect
-	
-	
-	
+
+
+
 _DLL FUNC OleTranslateColor(clr AS DWORD,  hpal AS PTR, lpcolorref AS DWORD);
 		AS LONG PASCAL:OLEPRO32.OleTranslateColor
-	
-	
+
+
 _DLL FUNC OleCreateFontIndirect( lpFontdesc AS _winFontDesc, riid AS _winGUID,;
 		lplpvpbj AS PTR) AS LONG PASCAL:MFCANS32.OleCreateFontIndirect
-	
+
 UNION uPICTDESC_win
 	MEMBER bmp IS bmp_win
 	MEMBER wmf IS wmf_win
@@ -165,8 +165,8 @@ DEFINE XFORMCOORDS_HIMETRICTOCONTAINER := 0x4
 DEFINE XFORMCOORDS_CONTAINERTOHIMETRIC := 0x8
 DEFINE PROPPAGESTATUS_DIRTY    := 0x1
 DEFINE PROPPAGESTATUS_VALIDATE := 0x2
-DEFINE PICTURE_SCALABLE        := 0x1l
-DEFINE PICTURE_TRANSPARENT     := 0x2l
+DEFINE PICTURE_SCALABLE        := 0x1L
+DEFINE PICTURE_TRANSPARENT     := 0x2L
 DEFINE PICTYPE_UNINITIALIZED  := DWORD(_CAST, 0xffffffff)
 DEFINE PICTYPE_NONE        := 0
 DEFINE PICTYPE_BITMAP      := 1

@@ -1177,7 +1177,7 @@ FUNCTION GetFrameWidth(hWnd AS PTR) AS DWORD STRICT
 
 
 	IF (hWnd == NULL_PTR)
-		RETURN 0l
+		RETURN 0L
 	ENDIF
 
 
@@ -1189,7 +1189,7 @@ FUNCTION GetFrameWidth(hWnd AS PTR) AS DWORD STRICT
 	AdjustWindowRectEx(@sRect, dwStyle, FALSE, dwExStyle)
 
 
-	RETURN DWORD(10l - sRect:Left)
+	RETURN DWORD(10L - sRect:Left)
 
 
 	// Calculates the width of the windowframe depending of the windowstyles.

@@ -521,7 +521,7 @@ ACCESS TextColor
 
 
 	IF SELF:oTextColor == NULL_OBJECT
-      oTextColor := Color{GetSysColor(COLOR_WINDOWTEXT), -1l}
+      oTextColor := Color{GetSysColor(COLOR_WINDOWTEXT), -1L}
 	ENDIF
 	RETURN oTextColor
 

@@ -140,8 +140,8 @@ METHOD Dispatch(oEvent)
 		//SE-060522 S.Ebert
 		IF ! lHelpOn
 			SELF:HelpRequest(HelpRequestEvent{oEvt})
-			IF SELF:EventReturnValue = 1l
-				RETURN 1l
+			IF SELF:EventReturnValue = 1L
+				RETURN 1L
 			ENDIF
 		ENDIF
 		strHelpInfo := PTR(_CAST, oEvt:lParam)
@@ -606,7 +606,7 @@ METHOD Dispatch(oEvent)
 		IF oObject != NULL_OBJECT
 			IF oObject:Contextmenu != NULL_OBJECT
 				oObject:Contextmenu:ShowAsPopup(oObject, oEvt:lParam)
-				RETURN (SELF:EventReturnValue := 1l)
+				RETURN (SELF:EventReturnValue := 1L)
 			ENDIF
 		ENDIF
 
@@ -701,7 +701,7 @@ FUNCTION __Dispatch_MeasureItem(oEvent AS @@event, oWindow AS OBJECT) AS LONGINT
 	IF oControl != NULL_OBJECT .AND. IsMethod(oControl, #ODMeasureItem)
 		Send(oControl, #ODMeasureItem, oEvent)
 		oWindow:EventReturnValue := 1L
-		RETURN 1l
+		RETURN 1L
 	ENDIF
 	IF oWindow IS Window VAR oWin
 		oWin:Default(oEvent)

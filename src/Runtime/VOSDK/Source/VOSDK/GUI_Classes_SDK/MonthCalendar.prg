@@ -99,7 +99,7 @@ METHOD Dispatch (oEvent)
 
 	IF oEvt:message == WM_GetDlgCode
 		SELF:EventReturnValue := DLGC_WANTARROWS
-		RETURN 1l
+		RETURN 1L
 	ENDIF
 
 

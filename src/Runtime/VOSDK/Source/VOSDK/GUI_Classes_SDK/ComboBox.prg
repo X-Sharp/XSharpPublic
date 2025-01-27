@@ -361,7 +361,7 @@ METHOD GetItemAttributes(uItemNumber)
 
    IF uItemNumber > 0
 	   cbxi:mask  := _OR(CBEIF_IMAGE, CBEIF_SELECTEDIMAGE, CBEIF_OVERLAY, CBEIF_INDENT)
-	   cbxi:iItem := uItemNumber -1l
+	   cbxi:iItem := uItemNumber -1L
 
 
 	   IF SendMessage(SELF:Handle(), CBEM_GETITEM, 0, LONGINT(_CAST, @cbxi)) != 0
@@ -436,7 +436,7 @@ METHOD InsertItem(uComboBoxExItem)
    oComboBoxExItem:__SetValues(@cbxi)
 
 
-	lPosition := SendMessage(SELF:Handle(), CBEM_INSERTITEM, 0, LONGINT(_CAST, @cbxi)) + 1l
+	lPosition := SendMessage(SELF:Handle(), CBEM_INSERTITEM, 0, LONGINT(_CAST, @cbxi)) + 1L
 
 
    //RvdH 070615 Free ptr allocated in __SetValues
@@ -490,7 +490,7 @@ METHOD SetExCBStyle(kExStyle, lEnable)
 	ENDIF
 
 
-	SendMessage(SELF:Handle(), CBEM_SETEXTENDEDSTYLE, kExStyle, IIF(lEnable, kExStyle, 0l))
+	SendMessage(SELF:Handle(), CBEM_SETEXTENDEDSTYLE, kExStyle, IIF(lEnable, kExStyle, 0L))
 
 
 	RETURN SELF
@@ -543,9 +543,9 @@ CLASS ComboBoxExItem INHERIT VObject
  /// <exclude />
 	METHOD __GetValues(cbxi AS _winCOMBOBOXEXITEM) AS VOID STRICT
 	//SE-060519
-	SELF:ItemIndex          := cbxi:iItem + 1l
-	SELF:ImageIndex         := cbxi:iImage + IIF(cbxi:iImage >= 0, 1l, 0l)
-	SELF:SelectedImageIndex := cbxi:iSelectedImage + IIF(cbxi:iSelectedImage >= 0, 1l, 0l)
+	SELF:ItemIndex          := cbxi:iItem + 1L
+	SELF:ImageIndex         := cbxi:iImage + IIF(cbxi:iImage >= 0, 1L, 0L)
+	SELF:SelectedImageIndex := cbxi:iSelectedImage + IIF(cbxi:iSelectedImage >= 0, 1L, 0L)
 	SELF:OverlayImageIndex  := cbxi:iOverlay
 	SELF:Indent             := cbxi:iIndent
 	RETURN
@@ -575,7 +575,7 @@ METHOD __SetValues(cbxi AS _winCOMBOBOXEXITEM) AS VOID STRICT
    	cbxi:mask   := _OR(cbxi:mask, CBEIF_IMAGE)
    	cbxi:iImage := SELF:ImageIndex
    	IF cbxi:iImage > 0
-   		cbxi:iImage -=1l
+   		cbxi:iImage -=1L
    	ENDIF
    ENDIF
 
@@ -584,7 +584,7 @@ METHOD __SetValues(cbxi AS _winCOMBOBOXEXITEM) AS VOID STRICT
    	cbxi:mask           := _OR(cbxi:mask, CBEIF_SELECTEDIMAGE)
    	cbxi:iSelectedImage := SELF:SelectedImageIndex
    	IF cbxi:iSelectedImage > 0
-   		cbxi:iSelectedImage -=1l
+   		cbxi:iSelectedImage -=1L
    	ENDIF
    ENDIF
 

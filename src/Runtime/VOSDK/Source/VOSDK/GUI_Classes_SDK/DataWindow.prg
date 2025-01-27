@@ -2359,7 +2359,7 @@ METHOD HelpRequest(oHelpRequestEvent)
 			.AND. SELF:CurrentView == #FormView ;
 			.AND. (NULL_STRING != (cHelpContext := oHelpRequestEvent:HelpContext))
 		SELF:HelpDisplay:Show(cHelpContext, oHelpRequestEvent:HelpInfo) //SE-060522
-		SELF:EventReturnValue := 1l
+		SELF:EventReturnValue := 1L
 	ELSE
 		SUPER:HelpRequest(oHelpRequestEvent)
 	ENDIF

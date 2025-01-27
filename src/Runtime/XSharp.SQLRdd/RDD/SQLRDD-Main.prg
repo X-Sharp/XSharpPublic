@@ -609,7 +609,7 @@ partial class SQLRDD inherit DBFVFP
     /// When a RecnoColumn is defined, then this will return the value of that column.
     /// Otherwise the relative position inside the cursor will be returned.
     /// </remarks>
-    override property RecNo		as int
+    override property RecNo		as DWORD
         get
             self:ForceRel()
             if !SELF:_baseRecno .and. self:_recnoColumNo > -1 .and. ! SELF:EoF

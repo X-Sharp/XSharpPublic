@@ -311,12 +311,13 @@ class VOOwnerDrawnLabel inherit VOLabel  implements  IVOControlProperties, IVOCo
 //	#define WM_NCHITTEST 0X0084
 //	#define HTTRANSPARENT (-1)
 
-	VIRTUAL PROTECT METHOD WndProc(m REF Message) AS VOID
-		IF (m:Msg == WM_NCHITTEST)
-			m:Result := (IntPtr)HTTRANSPARENT
-		ELSE
-			SUPER:WndProc( REF m)
-		ENDIF
+        // Disabled because this disabled the Mouse Events
+// 	VIRTUAL PROTECT METHOD WndProc(m REF Message) AS VOID
+// 		IF (m:Msg == WM_NCHITTEST)
+// 			m:Result := (IntPtr)HTTRANSPARENT
+// 		ELSE
+// 			SUPER:WndProc( REF m)
+// 		ENDIF
 
 
 	VIRTUAL PROTECT METHOD OnPaint(e AS PaintEventArgs) AS VOID

@@ -1205,18 +1205,14 @@ queryContinuation   : I=INTO Id=identifier Body=queryBody
 
 // All New Vulcan and X# keywords can also be recognized as Identifier
 identifier          : ID            // No rule names, we use the Start property to access the token
-                    | keywordxs
-                    | keywordxpp
-                    | keywordfox
+                    | keywordsoft
                     | {!IsCoreVO}? xbaseType     // VO, Vulcan and Core allow TYPE(something)
                     | {!IsCoreVO}? nativeType    // VO, Vulcan and Core allow TYPE(something)
                     ;
 
 identifierString    : ID            // No rule names, we use the Start property to access the token
                     | STRING_CONST
-                    | keywordxs
-                    | keywordxpp
-                    | keywordfox
+                    | keywordsoft
                     | xbaseType    
                     | nativeType   
                     ;
@@ -1303,7 +1299,8 @@ parserLiteralValue  : Year=INT_CONST DOT Month=INT_CONST DOT Day=INT_CONST
                       .*? RCURLY
                     ;
                     
-
+/*
+// this rule is not used by the parser
 keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | DLL | DO
                     | ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FOR | FUNCTION
                     | HIDDEN | IF | IIF | IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE
@@ -1314,8 +1311,9 @@ keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST 
                     )
                     ;
 
-
-keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS | NEW | OUT | REF | SET |  VALUE | VIRTUAL | INTERNAL
+ */
+ 
+keywordsoft         : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS | NEW | OUT | REF | SET |  VALUE | VIRTUAL | INTERNAL
                     // The following did not exist in Vulcan
                     | ADD | ARGLIST | ASCENDING | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM
                     | GROUP | INIT | INTO | JOIN | LET | NAMEOF | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE
@@ -1332,15 +1330,19 @@ keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     | DEFINE | TRY | SWITCH | EVENT| EXPLICIT | FIELD | FOREACH | UNTIL | PARAMETERS | YIELD | MEMVAR | NOP
                     | PARTIAL | SEALED | ABSTRACT | UNSAFE | SCOPE | NAMESPACE | LOCK | IMPLICIT | IMPLIED | INITONLY | PROPERTY | INTERFACE
                     | VOSTRUCT | UNION | DECLARE | OPERATOR
+                    // Xbase++ keywords
+                    | SHARING | SHARED | ASSIGNMENT | EXPORTED | READONLY | NOSAVE 
+                    // context sensitive keywords. No need to include these. They are recognized in context by the lexer.
+                    // ENDCLASS, ENDSEQUENCE, FREEZE, FINAL, INTRODUCE, SYNC, DEFERRED, INLINE
+                    // FoxPro keywords
+                    | OLEPUBLIC | EXCLUDE | THISACCESS | HELPSTRING | NOINIT 
+                    | FOX_AND | FOX_OR | FOX_NOT | FOX_XOR | THEN | FOX_M | EACH 
+                    | THISFORM
+                      // These tokens are already marked as 'only valid in a certain context ' in the lexer
+                      // ENDDEFINE | DIMENSION | LPARAMETERS | ENDFOR | SCAN | ENDSCAN | ENDTRY | ENDPROC | ENDFUNC | ENDWITH | ENDDEFINE                    
                     )
                     ;
 
-/// XBase++ Parser definities
-
-keywordxpp         : Token=(SHARING| SHARED| ASSIGNMENT| EXPORTED| READONLY| NOSAVE )
-                   ;
-                   // context sensitive keywords. No need to include these. They are recognized in context by the lexer.
-                   // ENDCLASS, ENDSEQUENCE, FREEZE, FINAL, INTRODUCE, SYNC, DEFERRED, INLINE
                     
 
 
@@ -1450,15 +1452,7 @@ xppinlineMethod     : Attributes=attributes?                                 // 
                     ;
 
 
-/// FoxPro Parser definities
-keywordfox          :  Token=( OLEPUBLIC | EXCLUDE| THISACCESS| HELPSTRING| NOINIT | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR | THEN | FOX_M| EACH )
-                      // These tokens are already marked as 'only valid in a certain context ' in the lexer
-                      // ENDDEFINE | DIMENSION | LPARAMETERS | ENDFOR | SCAN | ENDSCAN | ENDTRY | ENDPROC | ENDFUNC | ENDWITH | ENDDEFINE
-                    ;
 // class declaration
-// text ... endtext
-
-
 
 foxclass            : (Attributes=attributes)?
                       D=DEFINE (Modifiers=classModifiers)?

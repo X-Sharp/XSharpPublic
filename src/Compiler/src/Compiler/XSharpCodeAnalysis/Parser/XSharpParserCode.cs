@@ -377,6 +377,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             HasExplicitVirtual = 1 << 21,
             HasExplicitOverride = 1 << 22,
             IsProperty = 1 << 23,
+            HasThisForm = 1 << 24,
         }
         #endregion
 
@@ -548,6 +549,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 get { return flags.HasFlag(MemberFlags.HasExplicitVirtual); }
                 set { setFlags(MemberFlags.HasExplicitVirtual, value); }
             }
+
+            public bool HasThisForm
+            {
+                get { return flags.HasFlag(MemberFlags.HasThisForm); }
+                set { setFlags(MemberFlags.HasThisForm, value); }
+            }
+
             #endregion
             internal Dictionary<string, MemVarFieldInfo> Fields = null;
             internal MemVarFieldInfo AddField(string name, string Alias, XSharpParserRuleContext context)

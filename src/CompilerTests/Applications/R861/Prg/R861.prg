@@ -4,8 +4,8 @@ Test{}
 TestArrays()
 CLASS Test
 	PUBLIC s := "asd" AS STRING
-
-	PROPERTY thisform AS Object GET SELF
+    PROPERTY ThisForm AS Object => SELF
+	METHOD FindForm AS Object => SELF
 
 	CONSTRUCTOR()
 		? this.s:Length // OK

@@ -81,13 +81,26 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
                     sResult += " default 0"
                 endif
             endif
-        case DbFieldType.Date
-            sResult := i"{oInfo.ColumnName} date"
-        case DbFieldType.DateTime
-            sResult := i"{oInfo.ColumnName} datetime"
+        case DbFieldType.Memo
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} nvarchar(MAX)"
 
+        case DbFieldType.Date
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} date"
+        case DbFieldType.DateTime
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} datetime"
+        case DbFieldType.Currency
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} decimal default 0"
         case DbFieldType.Number when oInfo:Decimals == 0
             sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} int default 0"
+        case DbFieldType.Double
+        case DbFieldType.Float
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} float default 0"
+        case DbFieldType.Blob
+        case DbFieldType.General
+        case DbFieldType.Picture
+        case DbFieldType.VarBinary
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} varbinary(MAX)"
+
         otherwise
             sResult := super:GetSqlColumnInfo(oInfo, oConn)
         end switch

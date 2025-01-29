@@ -2749,10 +2749,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected string GetStaticGlobalClassname()
         {
             string filename = PathUtilities.GetFileName(_fileName);
-            var filepath = PathUtilities.GetDirectoryName(_fileName);
             filename = PathUtilities.RemoveExtension(filename);
             filename = RemoveUnwantedCharacters(filename);
-            filename = "$" + filename + "_" + filepath.GetHashCode().ToString("X8") + "$";
+            filename = "$" + filename + "_" + _fileName.GetHashCode().ToString("X8") + "$";
             return filename;
         }
 
@@ -8895,16 +8894,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Put(context.Start.SyntaxIdentifier());
         }
-        public override void ExitKeywordxs([NotNull] XP.KeywordxsContext context)
-        {
-            // caught by the keyword/identifier rule
-        }
-        public override void ExitKeywordvo([NotNull] XP.KeywordvoContext context)
-        {
-            // caught by the keyword/identifier rule
-        }
 
-        public override void ExitKeywordxpp([NotNull] XP.KeywordxppContext context)
+        public override void ExitKeywordsoft([NotNull] XP.KeywordsoftContext context)
         {
             // caught by the keyword/identifier rule
         }

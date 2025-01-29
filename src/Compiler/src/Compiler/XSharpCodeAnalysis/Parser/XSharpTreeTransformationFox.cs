@@ -243,6 +243,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        public override void EnterKeywordsoft([NotNull] XP.KeywordsoftContext context)
+        {
+            base.EnterKeywordsoft(context);
+            if (CurrentMember != null && context.Start.Type == XSharpLexer.THISFORM)
+            {
+                CurrentMember.Data.HasThisForm = true;
+            }
+        }
+
+        public override void ExitNameExpression([NotNull] XP.NameExpressionContext context)
+        {
+            base.ExitNameExpression(context);
+            if (context.Start.Type == XP.THISFORM)
+            {
+                // Translate to Xs$ThisForm
+                if (CurrentMember != null && CurrentMember.Data.HasThisForm)
+                {
+                    var expr = GenerateSimpleName(XSharpSpecialNames.ThisForm);
+                    context.Put(expr);
+                }
+            }
+        }
+        protected override void ImplementThisForm(XP.IMemberWithBodyContext context, SyntaxListBuilder<StatementSyntax> stmts)
+        {
+            if (context.Data.HasThisForm)
+            {
+                // Add local Xs$ThisForm and assign the result of FindForm()
+                var callfindForm = GenerateThisMethodCall(XSharpSpecialNames.FindForm, EmptyArgumentList());
+                var thisformdecl = GenerateLocalDecl(XSharpSpecialNames.ThisForm, ObjectType, callfindForm);
+                thisformdecl.XGenerated = true;
+                stmts.Add(thisformdecl);
+            }
+        }
         public override void ExitFoxmemvardeclStmt([NotNull] XP.FoxmemvardeclStmtContext context)
         {
             context.PutList(context.Decl.GetList<StatementSyntax>());

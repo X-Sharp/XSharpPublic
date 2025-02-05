@@ -1,0 +1,3 @@
+STATIC DEFINE testdefine1 := 1
+	
+STATIC FUNCTION Test1() AS VOID

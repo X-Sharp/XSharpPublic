@@ -213,5 +213,6 @@ namespace XSharp
         internal const string DebugType = nameof(DebugType);
         internal const string DebuggerWorkingDirectory = nameof(DebuggerWorkingDirectory);
         internal const string EnableUnmanagedDebugging = nameof(EnableUnmanagedDebugging);
+        internal const string TargetFramework = nameof(TargetFramework);
     }
 }

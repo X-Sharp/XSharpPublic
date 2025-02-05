@@ -159,11 +159,10 @@ namespace Microsoft.CodeAnalysis
         {
 #if XSHARP
             string? assemblyVersion = type.Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
-            string? hash = GetShortCommitHash(type);
 #else
             string? assemblyVersion = GetInformationalVersionWithoutHash(type);
-            string? hash = GetShortCommitHash(type);
 #endif
+            string? hash = GetShortCommitHash(type);
             return $"{assemblyVersion} ({hash})";
         }
 

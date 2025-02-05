@@ -42,6 +42,10 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="UITools2022" Path="|UITools2022|" AssemblyName="|UITools2022;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="UITools2022" Path="|UITools2022|" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="UITools2022" Path="|UITools2022;PkgdefProjectOutputGroup|" />
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="XSharp.VisualStudio.ProjectSystem.Managed" Path="|XSharp.VisualStudio.ProjectSystem.Managed|" />
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="XSharp.VisualStudio.ProjectSystem.Managed.VS" Path="|XSharp.VisualStudio.ProjectSystem.Managed.VS|" />
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharp.VisualStudio.ProjectSystem.Managed.VS.pkgdef" />
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharpProjectSelectors.pkgdef" />
     </Assets>
     <Content>
         <ProjectTemplate>ProjectTemplates</ProjectTemplate>

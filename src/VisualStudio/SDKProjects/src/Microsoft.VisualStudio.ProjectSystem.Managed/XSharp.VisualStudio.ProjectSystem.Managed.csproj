@@ -22,7 +22,6 @@
     <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
     <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>
-    <CodeModel>$(Solutiondir)..\..\Artifacts\Common\Debug\XSharp.CodeModel.dll</CodeModel>
 
   </PropertyGroup>
 
@@ -47,19 +46,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="XSharp.VisualStudio.ProjectSystem.Managed.VS"/>
+    <InternalsVisibleTo Include="XSharp.VisualStudio.ProjectSystem.Managed.VS" />
     <InternalsVisibleTo Include="Microsoft.VisualStudio.ProjectSystem.Managed.VSCode" />
     <InternalsVisibleTo Include="Microsoft.VisualStudio.ProjectSystem.Managed.UnitTests" />
     <InternalsVisibleTo Include="Microsoft.VisualStudio.ProjectSystem.Managed.VS.UnitTests" />
     <InternalsVisibleTo Include="Microsoft.VisualStudio.ProjectSystem.Managed.VSCode.UnitTests" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" Key="$(MoqPublicKey)" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="$(CodeModel)">
-      <Private>True</Private>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVsix>true</IncludeInVsix>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>
@@ -718,6 +710,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
   </ItemGroup>
+
   <Target Name="AddFilesForNpmPackage" DependsOnTargets="Build;SatelliteDllsProjectOutputGroup" Condition="'$(TargetFramework)' == '$(NetCoreTargetFramework)'">
     <ItemGroup>
       <NpmContent Include="exports.json" />

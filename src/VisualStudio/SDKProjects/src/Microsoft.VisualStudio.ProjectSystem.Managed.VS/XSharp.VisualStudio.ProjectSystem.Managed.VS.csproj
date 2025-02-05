@@ -1,10 +1,10 @@
 ﻿<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information. -->
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$(Solutiondir)eng\imports\VisualStudio.props" />
+  <Import Project="..\..\eng\imports\VisualStudio.props" />
 
   <PropertyGroup>
-    <CSCToolExe>e:\XSharp\DevPublic\src\VsProjectSystem\csc\csc.exe</CSCToolExe>
+    <CSCToolExe>$(Solutiondir)VisualStudio\SdkProjects\csc\csc.exe</CSCToolExe>
     <EnableXlfLocalization>false</EnableXlfLocalization>
     <StrongNameKeyId>XSharp</StrongNameKeyId>
     <RootNamespace>Microsoft.VisualStudio</RootNamespace>
@@ -23,10 +23,10 @@
     <PackageTags>XSharp Roslyn Managed Project System VisualStudio</PackageTags>
     <NoWarn>$(NoWarn);NU5125</NoWarn>
     <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
-    <CodeModel>$(Solutiondir)..\..\Artifacts\Common\Debug\XSharp.CodeModel.dll</CodeModel>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\XSharpCodeModelXs\CodeModel.xsproj" />
     <ProjectReference Include="..\Microsoft.VisualStudio.ProjectSystem.Managed\XSharp.VisualStudio.ProjectSystem.Managed.csproj" />
   </ItemGroup>
 
@@ -105,21 +105,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\..\Common\Constants.cs" Link="Constants.cs" />
-    <Compile Include="..\..\..\Common\XSharpConstants.cs" Link="XSharpConstants.cs" />
-    <Compile Include="..\..\..\VisualStudio\ProjectBase\Wix\XProjectFileConstants.cs" Link="XProjectFileConstants.cs" />
+    <Compile Include="$(Solutiondir)Common\Constants.cs" Link="Constants.cs" />
+    <Compile Include="$(Solutiondir)Common\XSharpConstants.cs" Link="XSharpConstants.cs" />
+    <Compile Include="$(Solutiondir)VisualStudio\ProjectBase\Wix\XProjectFileConstants.cs" Link="XProjectFileConstants.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="WPF" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="$(CodeModel)">
-      <Private>True</Private>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVsix>true</IncludeInVsix>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <XamlPropertyRule Include="ProjectSystem\VS\Rules\BuildAccelerationIncompatiblePackage.xaml">
@@ -230,7 +222,6 @@
     <Compile Include="**\CSharpImplicitUsingsControl*.cs" />
   </ItemGroup>-->
   <PropertyGroup>
-    <PreBuildEvent>copy $(CodeModel) $(OutDir)</PreBuildEvent>
     <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
     <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>

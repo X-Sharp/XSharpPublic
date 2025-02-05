@@ -783,7 +783,7 @@ BEGIN NAMESPACE XSharpModel
         ENDIF
         VAR result := XDatabase.FindFunction(name, projectIds)
         VAR xmember := SELF:GetGlobalMember(result)
-        SELF:LogTypeMessage(ie"FindFunction {name}, result {iif (xmember != NULL, xmember.FullName, \"not found\"} ")
+        SELF:LogTypeMessage(ie"FindFunction {name}, result {iif (xmember != NULL, xmember.FullName, \"not found\")} ")
         RETURN xmember
 
     METHOD FindGlobalOrDefine(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMemberSymbol
@@ -796,7 +796,7 @@ BEGIN NAMESPACE XSharpModel
         ENDIF
         VAR result := XDatabase.FindProjectGlobalOrDefine(name, projectIds)
         VAR xmember := SELF:GetGlobalMember(result)
-        SELF:LogTypeMessage(ie"FindGlobalOrDefine {name}, result {iif (xmember != NULL, xmember.FullName, \"not found\"} ")
+        SELF:LogTypeMessage(ie"FindGlobalOrDefine {name}, result {iif (xmember != NULL, xmember.FullName, \"not found\")} ")
         RETURN xmember
 
     PRIVATE METHOD GetGlobalMember(result AS IList<XDbResult>) AS IXMemberSymbol
@@ -1055,7 +1055,7 @@ BEGIN NAMESPACE XSharpModel
                 return SELF:Lookup(typeName, usings)
             endif
         endif
-        SELF:LogTypeMessage(ie"Lookup {typeName}, result {iif(_lastFound != NULL, _lastFound.FullName, \"not found\" } ")
+        SELF:LogTypeMessage(ie"Lookup {typeName}, result {iif(_lastFound != NULL, _lastFound.FullName, \"not found\" )} ")
         RETURN _lastFound
 
 

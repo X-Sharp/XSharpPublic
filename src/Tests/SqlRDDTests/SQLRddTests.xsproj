@@ -22,21 +22,21 @@
     <VO2>false</VO2>
     <VO3>false</VO3>
     <VO4>false</VO4>
-    <VO5>false</VO5>
-    <VO6>false</VO6>
-    <VO7>False</VO7>
+    <VO5>True</VO5>
+    <VO6>False</VO6>
+    <VO7>True</VO7>
     <VO8>false</VO8>
-    <VO9>False</VO9>
+    <VO9>True</VO9>
     <VO10>false</VO10>
     <VO11>false</VO11>
     <VO12>false</VO12>
     <VO13>false</VO13>
     <VO14>False</VO14>
     <VO15>True</VO15>
-    <VO16>false</VO16>
+    <VO16>True</VO16>
     <AZ>false</AZ>
     <CS>false</CS>
-    <LB>False</LB>
+    <LB>True</LB>
     <NamedArgs>false</NamedArgs>
     <OVF>false</OVF>
     <Unsafe>True</Unsafe>
@@ -63,7 +63,7 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings />
+    <DisabledWarnings>9025,9026,9032</DisabledWarnings>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
@@ -89,6 +89,15 @@
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
+    <Compile Include="C:\temp\___IVO_dbAbstract.prg">
+      <Link>___IVO_dbAbstract.prg</Link>
+    </Compile>
+    <Compile Include="C:\temp\___IVO_dbDynamic.prg">
+      <Link>___IVO_dbDynamic.prg</Link>
+    </Compile>
+    <Compile Include="C:\temp\___IVO_dbShellServer.prg">
+      <Link>___IVO_dbShellServer.prg</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -105,6 +114,16 @@
       <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\VOSDK\Source\VOSDK\RDD_Classes_SDK\VORDDClasses.xsproj">
+      <Name>VORDDClasses</Name>
+      <Project>{d7079298-1712-4b03-ad76-4ec53bfe8356}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\VOSDK\Source\VOSDK\System_Classes_SDK\VOSystemClasses.xsproj">
+      <Name>VOSystemClasses</Name>
+      <Project>{ac2aebff-69ff-405d-b7d9-6e5cb1db914c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Runtime\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
@@ -118,11 +137,6 @@
     <ProjectReference Include="..\..\Runtime\XSharp.RT\XSharp.RT.xsproj">
       <Name>XSharp.RT</Name>
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Runtime\XSharp.SQLRdd\XSharp.SQLRDD.xsproj">
-      <Name>XSharp.SQLRDD</Name>
-      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9373}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Runtime\XSharp.VFP\XSharp.VFP.xsproj">
@@ -143,6 +157,15 @@
     <Content Include="SqlRdd.Ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="XSharp.SQLRdd, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.SQLRdd</Name>
+      <AssemblyName>XSharp.SQLRdd.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>C:\SqlRdd\Beta1\Debug\XSharp.SQLRdd.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

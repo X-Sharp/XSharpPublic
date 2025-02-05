@@ -337,23 +337,26 @@
     </example>
     <seealso cref='O:XSharp.RT.Functions.AClone'>AClone</seealso>
   </acloneshallow>
+  <arraycommon>
+    <param name="nStart">
+      The starting element.<br/>
+      A negative value starts from the end.<br/>
+      If <paramref name="nCount" /> is positive, the default value is 1; if <paramref name="nCount" /> is negative, the default value is the length of the array.
+    </param>
+    <param name="nCount">
+      The number of elements to process from <paramref name="nStart" />.<br/>
+      A negative value starts from the end.<br/>
+      The default is all elements to the end of the array.
+    </param>
+
+  </arraycommon>
   <acopy>
     <summary>
       Copy elements from one array to another.
     </summary>
-
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraycommon/*" />
     <param name="aSource">The array to copy elements from.</param>
     <param name="aTarget">The array to copy elements to.</param>
-    <param name="nStart">
-      The starting element position in <paramref name="aSource" />. <br/>
-      A negative value starts from the end. <br/>
-      If <paramref name="nCount" /> is positive, the default value is 1; if <paramref name="nCount" /> is negative, the default value is the length of the array.
-    </param>
-    <param name="nCount">
-      The number of elements to copy from <paramref name="aSource" />, beginning at <paramref name="nStart" />. <br/>
-      A negative value starts from the end. <br/>
-      If <paramref name="nCount" /> is not specified, all elements in <paramref name="aSource" /> beginning with the starting element are copied.
-    </param>
     <param name="nTargetPos">
       The starting element position in <paramref name="aTarget" /> to receive elements from <paramref name="aSource" />. <br/>
       The default value is 1.
@@ -560,16 +563,7 @@
 
     <param name="aArray">The array to traverse.</param>
     <param name="cbBlock">The code block to execute.</param>
-    <param name="nStart">
-      The starting element.<br/>
-      A negative value starts from the end.<br/>
-      If <paramref name="nCount" /> is positive, the default value is 1; if <paramref name="nCount" /> is negative, the default value is the length of the array.
-    </param>
-    <param name="nCount">
-      The number of elements to process from <paramref name="nStart" />.<br/>
-      A negative value starts from the end.<br/>
-      The default is all elements to the end of the array.
-    </param>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraycommon/*" />
     <returns>
       A reference to <paramref name="aArray" />.<br/>
       The return value of the code block or is ignored — to assign the return value to each element in the array, use the AEvalA() function.
@@ -616,16 +610,7 @@
 
     <param name="aArray">The array to traverse.</param>
     <param name="cbBlock">The code block to execute.</param>
-    <param name="nStart">
-      The starting element.<br/>
-      A negative value starts from the end.<br/>
-      If <paramref name="nCount" /> is positive, the default value is 1; if <paramref name="nCount" /> is negative, the default value is the length of the array.
-    </param>
-    <param name="nCount">
-      The number of elements to process from <paramref name="nStart" />.<br/>
-      A negative value starts from the end. <br/>
-      The default is all elements to the end of the array.
-    </param>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraycommon/*" />
     <returns>
       A reference to <paramref name="aArray" />.
     </returns>
@@ -658,16 +643,7 @@
 
     <param name="aArray">The array to traverse.</param>
     <param name="cbBlock">The code block to execute.</param>
-    <param name="nStart">
-      The starting element<br/>
-      A negative value starts from the end.<br/>
-      If <paramref name="nCount" /> is positive, the default value is 1; if <paramref name="nCount" /> is negative, the default value is the length of the array.
-    </param>
-    <param name="nCount">
-      The number of elements to process from <paramref name="nStart" />.<br/>
-      A negative value starts from the end.<br/>
-      The default is all elements to the end of the array.
-    </param>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraycommon/*" />
     <returns>
       A reference to <paramref name="aArray" />.<br/>
       The return value of the code block is ignored.<br/>
@@ -770,16 +746,7 @@
 
     <param name="aTarget">The array to fill.</param>
     <param name="uValue">The value to place in each array element.</param>
-    <param name="nStart">
-      The starting element.<br/>
-      A negative value starts from the end.<br/>
-      If <paramref name="nCount" /> is positive, the default value is 1; if <paramref name="nCount" /> is negative, the default value is the length of the array.
-    </param>
-    <param name="nCount">
-      The number of elements to process from <paramref name="nStart" />.<br/>
-      A negative value starts from the end.<br/>
-      The default is all elements to the end of the array.
-    </param>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraycommon/*" />
     <returns>
       A reference to <paramref name="aTarget" />.
     </returns>
@@ -1538,16 +1505,7 @@
       The value to scan for.<br/>
       Unless this argument is a code block, it must match the data type of the elements in <paramref name="aTarget" />.
     </param>
-    <param name="nStart">
-      The starting element.<br/>
-      A negative value starts from the end.<br/>
-      If <paramref name="nCount" /> is positive, the default value is 1; if <paramref name="nCount" /> is negative, the default value is the length of the array.
-    </param>
-    <param name="nCount">
-      The number of elements to process from <paramref name="nStart" />.<br/>
-      A negative value starts from the end.<br/>
-      The default is all elements to the end of the array.
-    </param>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraycommon/*" />
     <returns>
       If <paramref name="uSearch" /> is a code block, AScan() returns the position of the first element for which the code block returns TRUE.<br/>
       Otherwise, AScan() returns the position of the first matching element.<br/>
@@ -1702,16 +1660,7 @@
       The value to scan for.<br/>
       Unless this argument is a code block, it must match the data type of the elements in <paramref name="aTarget" />.
     </param>
-    <param name="nStart">
-      The starting element.<br/>
-      A negative value starts from the end.<br/>
-      If <paramref name="nCount" /> is positive, the default value is 1; if <paramref name="nCount" /> is negative, the default value is the length of the array.
-    </param>
-    <param name="nCount">
-      The number of elements to process from <paramref name="nStart" />.<br/>
-      A negative value starts from the end.<br/>
-      The default is all elements to the end of the array.
-    </param>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraycommon/*" />
     <returns>
       If <paramref name="uSearch" /> is a code block, AScanExact() returns the position of the element if the code block returned TRUE.<br/>
       Otherwise, AScanExact() returns the position of the first exact-matching element.<br/>
@@ -1832,7 +1781,7 @@
     <seealso cref='O:XSharp.RT.Functions.AFill'>AFill</seealso>
     <seealso cref='O:XSharp.RT.Functions.AIns'>AIns</seealso>
   </asize>
-  <asort>
+  <asortcommon>
     <summary>
       Sort an array.
     </summary>
@@ -1846,6 +1795,13 @@
       The number of elements to process from <paramref name="nStart" />.<br/>
       The default is all elements to the end of the array.
     </param>
+    <returns>
+      A reference to <paramref name="aTarget" />.
+    </returns>
+
+  </asortcommon>
+  <asort>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/asortcommon/*" />
     <param name="cbOrder">
       A code block used to determine the sort order.<br/>
       This argument is used to change the sorting order to descending or dictionary order.<br/>
@@ -1858,9 +1814,6 @@
 
       &#0009;&#0009;Elements with high values are sorted toward the end of the array (the last element)
     </param>
-    <returns>
-      A reference to <paramref name="aTarget" />.
-    </returns>
     <remarks>
       ASort() sorts all or part of an array.<br/>
       The array may contains USUALs of mixed types.<br/>
@@ -1898,7 +1851,68 @@
     </example>
     <seealso cref='O:XSharp.RT.Functions.AScan'>AScan</seealso>
     <seealso cref='O:XSharp.RT.Functions.Eval'>Eval</seealso>
+    <seealso cref='O:XSharp.RT.Functions.ASortFunc'>ASortFunc</seealso>
+    <seealso cref='O:XSharp.RT.Functions.ASortEx'>AsortEx</seealso>
   </asort>
+  <asortex>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/asortcommon/*" />
+    <param name="compBlock">
+      The codeblock that is called to sort the elements. Should return signed integer, like IComparer.Compare
+    </param>
+    <remarks>
+      ASortEx() sorts all or part of an array.<br/>
+      The array may contains USUALs of mixed types.<br/>
+    </remarks>
+    <example>
+      This example creates an array of five unsorted elements, sorts the array in ascending order, then sorts the array in descending order using a code block:
+      <code language="X#">
+        LOCAL testArray AS ARRAY
+        testArray  := {"Fred", "Kate", "Fred", "ALVIN", "friend"}
+        ASortEx(testArray, 1,ALen(testArray), {|a,b|
+        if upper(a) &lt; upper(b)
+         return -1
+     elseif upper(a) &gt; upper(b)
+        return 1
+        endif
+        return 0
+        })
+        // The sort order after the code has run is ALVIN, Fred, Fred, friend, Kate
+      </code>
+    </example>
+    <seealso cref='O:XSharp.RT.Functions.ASort'>ASort</seealso>
+    <seealso cref='O:XSharp.RT.Functions.ASortFunc'>AsortFunc</seealso>
+    <seealso cref='M:System.Collections.IComparer.Compare'>IComparer.Compare</seealso>
+  </asortex>
+  <asortfunc>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/asortcommon/*" />
+    <param name="compFunction">
+      The function that is called to sort the elements. Should return signed integer, like IComparer.Compare
+    </param>
+    <remarks>
+      ASortFunc() sorts all or part of an array.<br/>
+    </remarks>
+    <example>
+      This example creates an array of five unsorted elements, sorts the array in ascending order:
+      <code language="X#">
+        LOCAL FUNCTION SortFunc(a as usual,b as usual) AS INT
+          if upper(a) &lt; upper(b)
+            return -1
+          elseif upper(a) &gt;> upper(b)
+              return 1
+          endif
+          return 0
+        END FUNCTION
+        LOCAL testArray AS ARRAY
+        testArray  := {"Fred", "Kate", "Fred", "ALVIN", "friend"}
+        ASortFunc(testArray, 1,ALen(testArray), SortFunc)
+        // The sort order after the code has run is ALVIN, Fred, Fred, friend, Kate
+      </code>
+    </example>
+    <seealso cref='O:XSharp.RT.Functions.ASort'>ASort</seealso>
+    <seealso cref='O:XSharp.RT.Functions.ASortEx'>AsortEx</seealso>
+    <seealso cref='M:System.Collections.IComparer.Compare'>IComparer.Compare</seealso>
+  </asortfunc>
+
   <aspadr>
     <summary>
       Convert a value to a right-padded string.
@@ -2935,17 +2949,9 @@
     <seealso cref='O:XSharp.RT.Functions.BLOBDirectImport'>BLOBDirectImport</seealso>
     <seealso cref='O:XSharp.RT.Functions.BLOBExport'>BLOBExport</seealso>
   </blobdirectexport>
-  <blobdirectget>
-    <summary>
-      Retrieve data stored in a BLOB file without referencing a specific field.
-    </summary>
-
-    <param name="nPointer">
-      A pointer to the BLOB data.<br/>
-      This pointer can be obtained using BLOBDirectPut(), BLOBDirectImport(), or DBFieldInfo(DBS_BLOB_POINTER, <paramref name="nFieldPos" />).
-    </param>
+  <blobcommon>
     <param name="nStart">
-      The starting position in <paramref name="nPointer" />.<br/>
+      The starting position.<br/>
       If <paramref name="nStart" /> is positive, the starting position is relative to the leftmost character in <paramref name="nPointer" />.<br/>
       If <paramref name="nStart" /> is negative, it is relative to the rightmost character in <paramref name="nPointer" />.<br/>
       If <paramref name="nStart" /> is omitted, it is assumed to be 1.
@@ -2953,8 +2959,19 @@
     <param name="nCount">
       The number of bytes of data to retrieve, beginning at <paramref name="nStart" />.<br/>
       If <paramref name="nCount" /> is larger than the amount of data stored, excess data is ignored.<br/>
-      If omitted, BLOBDirectGet() retrieves to the end of the data.
+      If omitted, the function retrieves to the end of the data.
     </param>
+    <param name="nPointer">
+      A pointer to the BLOB data.<br/>
+      This pointer can be obtained using BLOBDirectPut(), BLOBDirectImport(), or DBFieldInfo(DBS_BLOB_POINTER, <paramref name="nFieldPos" />).
+    </param>
+
+  </blobcommon>
+  <blobdirectget>
+    <summary>
+      Retrieve data stored in a BLOB file without referencing a specific field.
+    </summary>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/blobcommon/*" />
     <returns>
       The data retrieved from the BLOB file.<br/>
       The data type of the return value depends on the actual data stored.<br/>
@@ -3009,11 +3026,9 @@
       Use the function's return value to refer to the newly stored data.
     </param>
     <param name="cSourceFile">
-      The name of the file from which to read the BLOB data, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  No default extension is assumed.<br/>
-
-      &#0009;<br/>
-
-      &#0009;This function attempts to open <paramref name="cSourceFile" /> in shared mode.<br/>
+      The name of the file from which to read the BLOB data, including an optional drive, directory, and extension.  
+      See SetDefault() and SetPath() for file searching and creation rules.  No default extension is assumed.<br/>
+      This function attempts to open <paramref name="cSourceFile" /> in shared mode.<br/>
       If the file does not exist, a runtime error is raised.<br/>
       If the file is successfully opened, the operation proceeds.<br/>
       If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.
@@ -3024,15 +3039,20 @@
     <remarks>
       BLOBDirectImport() provides a mechanism for copying the contents of a file into a BLOB file.
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
-      BLOBDirectImport() is used in conjunction with BLOBDirectExport() to transfer data back and forth between external files and BLOB files.  You can use BLOBDirectImport() with a variety of file types, including graphics images, word processor files, and printer fonts.<br/>
+      BLOBDirectImport() is used in conjunction with BLOBDirectExport() to transfer 
+      data back and forth between external files and BLOB files.  
+      You can use BLOBDirectImport() with a variety of file types, including graphics images, 
+      word processor files, and printer fonts.<br/>
       These two functions are excellent for creating databases of documents, graphics, sounds, and so on.
-      &#0009;After importing a file with BLOBDirectImport(), nNewPointer, the return value, is the only way to access the data from the BLOB file.<br/>
+      After importing a file with BLOBDirectImport(), nNewPointer, the return value, is the only 
+      way to access the data from the BLOB file.<br/>
       It is up to you, the developer, to provide permanent storage for this reference (see example below)
       Note:  DBFieldInfo(DBS_BLOB_TYPE, <paramref name="nFieldPos" />) will return "C" (string) for any memo field created using BLOBDirectImport().
     </remarks>
     <example>
       This example imports a .BMP file to be part of an array of startup data.<br/>
-      The data, stored in the root area of the BLOB file, could then be used to display the application's startup screen:
+      The data, stored in the root area of the BLOB file, could then be used to display 
+      the application's startup screen:
       <code language="X#">
         FUNCTION PutPix()
         &#0009;LOCAL cBMPFile AS STRING
@@ -3046,7 +3066,7 @@
         &#0009;AAdd(aSettings, StartPaths())
         &#0009;// Get default color settings
         &#0009;AAdd(aSettings, DefaultColors())
-        &#0009;&#0009;// Get company logo for display at startup.
+        &#0009;// Get company logo for display at startup.
         &#0009;// There is nothing to free because this
         &#0009;// is the first time importing.
         &#0009;nPointer := BLOBDirectImport(0, cBMPFile)
@@ -3187,17 +3207,7 @@
     </summary>
 
     <param name="nFieldPos">The position of the field in the database file structure.</param>
-    <param name="nStart">
-      The starting position in the memo field of the BLOB data.<br/>
-      If <paramref name="nStart" /> is positive, the starting position is relative to the leftmost character in <paramref name="nFieldPos" />.<br/>
-      If <paramref name="nStart" /> is negative, it is relative to the rightmost character in <paramref name="nFieldPos" />.<br/>
-      If <paramref name="nStart" /> is omitted, it is assumed to be 1.
-    </param>
-    <param name="nCount">
-      The number of bytes of data to retrieve, beginning at <paramref name="nStart" />.<br/>
-      If <paramref name="nCount" /> is larger than the amount of data stored, excess data is ignored.<br/>
-      If omitted, BLOBGet() retrieves to the end of the data.
-    </param>
+    <include file="VoFunctionDocs.xml" path="Runtimefunctions/blobcommon/*" />
     <returns>
       The BLOB data retrieved from the memo field.<br/>
       The data type of the return value depends on the actual data stored.<br/>
@@ -3220,7 +3230,7 @@
         &#0009;// Field that contains word processor
         &#0009;// documentation
         &#0009;nPos := FIELDPOS("WP_DOC")
-        &#0009;&#0009;// Import a file (can be larger than 64 KB), then
+        &#0009;// Import a file (can be larger than 64 KB), then
         &#0009;// obtain the first 25 characters to show to the
         &#0009;// user
         &#0009;IF BLOBImport(nPos, "c:\application\temp.doc")
@@ -3245,9 +3255,9 @@
 
     <param name="nFieldPos">The position of the field in the database file structure.</param>
     <param name="cSourceFile">
-      The name of the file from which to read the BLOB data, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  No default extension is assumed.<br/>
-
-      &#0009;This function attempts to open <paramref name="cSourceFile" /> in shared mode.<br/>
+      The name of the file from which to read the BLOB data, including an optional drive, directory, and extension.  
+      See SetDefault() and SetPath() for file searching and creation rules.  No default extension is assumed.<br/>
+      This function attempts to open <paramref name="cSourceFile" /> in shared mode.<br/>
       If the file does not exist, a runtime error is raised.<br/>
       If the file is successfully opened, the operation proceeds.<br/>
       If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.
@@ -3258,12 +3268,16 @@
     <remarks>
       BLOBImport() provides a mechanism for copying the contents of a file into a memo field as BLOB data.
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
-      BLOBImport() is used in conjunction with BLOBExport() to transfer BLOB data back and forth between files and memo fields.  You can use BLOBImport() with a variety of file types, including graphics images, word processor files, and printer fonts.<br/>
+      BLOBImport() is used in conjunction with BLOBExport() to transfer BLOB data back 
+      and forth between files and memo fields.  You can use BLOBImport() with a variety of file types, 
+      including graphics images, word processor files, and printer fonts.<br/>
       These two functions are excellent for creating databases of documents, graphics, sounds, and so on.
-      Note:  DBFieldInfo(DBS_BLOB_TYPE, <paramref name="nFieldPos" />) will return "C" (string) for any memo field created using BLOBImport().
+      Note:  DBFieldInfo(DBS_BLOB_TYPE, <paramref name="nFieldPos" />) will return "C" (string) for 
+      any memo field created using BLOBImport().
     </remarks>
     <example>
-      This example imports information from a word processing document into a field, then uses BLOBGet() to extract the first 25 characters of the field:
+      This example imports information from a word processing document into a field, 
+      then uses BLOBGet() to extract the first 25 characters of the field:
       <code language="X#">
         FUNCTION Populate()
         &#0009;USE customer NEW INHERIT FROM {"DBFBLOB"}

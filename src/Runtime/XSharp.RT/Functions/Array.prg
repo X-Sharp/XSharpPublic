@@ -1121,3 +1121,55 @@ FUNCTION AEvalOld(aArray AS ARRAY ,cbBlock AS ICodeblock) AS ARRAY
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF uStart, REF uCount, "AEvalOld")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, uStart,uCount , FALSE)
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asortfunc/*" />
+function ASortFunc(aTarget as array, nStart as usual, nCount as usual, compFunction as System.Func<usual, usual, int>) as array
+    var comp := ArraySortComparerFunction{compFunction}
+    aTarget:Sort(nStart, nCount, comp)
+    return aTarget
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asortex/*" />
+function ASortEx(aTarget as array, nStart as usual, nCount as usual, compBlock as CodeBlock) as array
+    var comp := ArraySortComparerBlock{ compBlock }
+    aTarget:Sort(nStart, nCount, comp)
+    return aTarget
+
+#region Helper Classes
+
+internal class ArraySortComparerFunction implements System.Collections.Generic.IComparer<usual>
+
+   private _compFunc as System.Func<usual, usual, int>
+
+   constructor(compFunc as System.Func<usual, usual, int>)
+      if compFunc == null
+         throw ArgumentNullException{"compFunc"}
+      endif
+      _compFunc := compFunc
+      return
+
+   method Compare(x as usual, y as usual) as int => _compFunc:Invoke(x, y)
+
+end class
+
+
+internal class ArraySortComparerBlock implements System.Collections.Generic.IComparer<usual>
+
+   private _compBlock as ICodeblock
+
+   constructor(compBlock as CodeBlock)
+      if compBlock == null
+         throw ArgumentNullException{"compBlock"}
+      endif
+      _compBlock := compBlock
+      return
+
+   method Compare(x as usual, y as usual) as int
+        local uRes as USUAL
+        uRes := _compBlock:EvalBlock(x, y)
+        if IsNumeric(uRes)
+            RETURN (INT) uRes
+        ENDIF
+        throw InvalidOperationException{i"Codeblock returns {uRes}. Numeric result expected"}
+
+end class
+#endregion

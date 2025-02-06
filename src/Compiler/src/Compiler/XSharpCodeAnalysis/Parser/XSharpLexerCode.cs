@@ -436,14 +436,33 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return;
         }
 
-        void parseToEol()
+        bool parseToEol()
         {
+            bool endsWithSemicolon = false;
             var la1 = La(1);
             while (la1 != EOF && la1 != '\r' && la1 != '\n')
             {
+                if (ExpectAny(' ', '\t'))
+                {
+                    ;// skip whitespace
+                }
+                else
+                {
+                    if (la1 == ';')
+                    {
+                        endsWithSemicolon = true;
+                    }
+                    else if (endsWithSemicolon)
+                    {
+                        // non whitespace after semicolon
+                        // will reset the endsWithSemicolon flag
+                        endsWithSemicolon = false;
+                    }
+                }
                 parseOne();
                 la1 = La(1);
             }
+            return endsWithSemicolon;
         }
 
         bool tryParseNewLine()
@@ -475,11 +494,21 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 parseOne();
         }
 
-        void parseSlComment()
+        void parseSlComment(bool allowSemicolonContinue = false)
         {
             parseType(SL_COMMENT);
             _tokenChannel = TokenConstants.HiddenChannel;
-            parseToEol();
+            var endsWithSemicolon = parseToEol();
+            // FoxPro dialect allows * comments to continue on the next line when the line ends with a semicolon
+            if (Dialect == XSharpDialect.FoxPro && endsWithSemicolon && allowSemicolonContinue)
+            {
+                while (endsWithSemicolon)
+                {
+                    tryParseNewLine();
+                    parseType(SL_COMMENT);
+                    endsWithSemicolon = parseToEol();
+                }
+            }
         }
 
         void parseDocComment()
@@ -1186,7 +1215,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     case '*':
                         parseOne(MULT);
                         if (AllowOldStyleComments && StartOfLine(LastToken))
-                            parseSlComment();
+                            parseSlComment(allowSemicolonContinue: true);
                         else if (Expect('='))
                             parseOne(ASSIGN_MUL);
                         else if (Expect('*'))

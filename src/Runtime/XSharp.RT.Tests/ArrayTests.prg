@@ -14,7 +14,49 @@ USING XUnit
 // Array tests are not working correctly yet with the current build
 BEGIN NAMESPACE XSharp.RT.Tests
 
-	CLASS ArrayTests
+
+    CLASS ArrayTests
+
+ 		[Trait("Category", "Array")];
+		[Fact];
+        METHOD AsortFuncTest() AS VOID
+            LOCAL FUNCTION SortFunc(a as usual,b as usual) AS INT
+                if upper(a) < upper(b)
+                    return -1
+                elseif upper(a) > upper(b)
+                    return 1
+                endif
+                return 0
+            END FUNCTION
+            LOCAL testArray AS ARRAY
+            testArray  := {"Fred", "Kate", "Fred", "ALVIN", "friend"}
+            ASortFunc(testArray, 1,ALen(testArray), SortFunc)
+            Assert.Equal(testArray[1],"ALVIN")
+            Assert.Equal(testArray[2],"Fred")
+            Assert.Equal(testArray[3],"Fred")
+            Assert.Equal(testArray[4],"friend")
+            Assert.Equal(testArray[5],"Kate")
+		RETURN
+    [Trait("Category", "Array")];
+    [Fact];
+     METHOD AsortExTest() AS VOID
+         LOCAL testArray AS ARRAY
+         testArray  := {"Fred", "Kate", "Fred", "ALVIN", "friend"}
+         // Use multi line codeblock feature below
+         ASortEx(testArray, 1,ALen(testArray), {|a,b|
+             if upper(a) < upper(b)
+                 return -1
+             elseif upper(a) > upper(b)
+                 return 1
+             endif
+             return 0
+            })
+         Assert.Equal(testArray[1],"ALVIN")
+         Assert.Equal(testArray[2],"Fred")
+         Assert.Equal(testArray[3],"Fred")
+         Assert.Equal(testArray[4],"friend")
+         Assert.Equal(testArray[5],"Kate")
+         RETURN
 
  		[Trait("Category", "Array")];
 		[Fact];

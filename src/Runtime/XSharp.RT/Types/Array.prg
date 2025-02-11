@@ -26,7 +26,7 @@ BEGIN NAMESPACE XSharp
 PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializable
     [NOSHOW] PRIVATE CONST FoxArrayName := "XSharp.__FoxArray" AS STRING
     [NOSHOW] STATIC FoxArrayHelpers := FoxArrayHelpers {} AS FoxArrayHelpers
-    [NOSHOW] INTERNAL PROPERTY __IsFoxArray AS LOGIC GET SELF:GetType():FullName == FoxArrayName
+    [NOSHOW] VIRTUAL PROTECTED INTERNAL PROPERTY __IsFoxArray AS LOGIC GET FALSE
     [NOSHOW] INTERNAL STATIC SuppressArrayIndexErrors := FALSE AS LOGIC  // used for Get_Element to emulate strange VO behaviour
 
     /// <inheritdoc />

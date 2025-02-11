@@ -27,6 +27,7 @@ BEGIN NAMESPACE XSharp
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE _nCols := 0 AS DWORD
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        OVERRIDE PROTECTED INTERNAL PROPERTY __IsFoxArray AS LOGIC GET TRUE
         PROPERTY MultiDimensional AS LOGIC GET _nCols > 0
         PROPERTY Columns          AS LONG GET (LONG) _nCols
         PROPERTY Rows             AS LONG

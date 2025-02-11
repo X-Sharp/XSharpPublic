@@ -56,6 +56,21 @@ BEGIN NAMESPACE XSharp
     DELEGATE MacroCompilerResolveAmbiguousMatch(m1 AS MemberInfo, m2 AS MemberInfo, args AS System.Type[]) AS LONG
 
     /// <summary>
+    /// You can register a function / method with this prototype in the RuntimeState to intercept errors in the macro compiler
+    /// </summary>
+    /// <param name="cMacro">Source of the macro that causes the error</param>
+    /// <param name="oEx">Exception describing the problem</param>
+    /// <returns>An object that implements ICodeblock, or NULL to tell the macro compiler to throw the error/</returns>
+    /// <remarks>
+    /// This delegate is called when the macro compiler encounters an error.
+    /// The delegate can decide to return a codeblock that will be used instead of the original codeblock
+    /// In theory you can 'patch' the cMacro and call the macro compiler again.
+    /// However that may cause an other error, resulting in an endless loop.
+    /// </remarks>
+    /// <seealso cref="ICodeblock"/>
+    DELEGATE MacroCompilerErrorHandler(cMacro as STRING, oEx as Exception) AS ICodeblock
+
+    /// <summary>
 	/// This interface extends the Macro compiler and adds a method that is called to decide between ambigous methods or constructors
 	/// </summary>
 	/// <seealso cref="SetMacroDuplicatesResolver"/>

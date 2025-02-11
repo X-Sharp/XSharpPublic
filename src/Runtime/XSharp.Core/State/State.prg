@@ -53,6 +53,7 @@ CLASS XSharp.RuntimeState
 	STATIC CONSTRUCTOR
         AutoLock        := NULL
         AutoUnLock      := NULL
+        MacroCompilerErrorHandler := NULL
         detectDialect()
         SWITCH System.Environment.OSVersion:Platform
         CASE System.PlatformID.Win32NT
@@ -1001,6 +1002,11 @@ CLASS XSharp.RuntimeState
             ENDIF
         END SET
     END PROPERTY
+
+    /// <summary>
+    /// You can register an error handler that will be called when the macrocompiler encounters an error
+    /// </summary>
+    PUBLIC STATIC PROPERTY MacroCompilerErrorHandler as MacroCompilerErrorHandler AUTO
 	/// <summary>This event is thrown when one of the codepages of the runtimestate is changed</summary>
     /// <remarks>Clients can refresh cached information by registering to this event</remarks>
     /// <seealso cref="DosCodePage" />

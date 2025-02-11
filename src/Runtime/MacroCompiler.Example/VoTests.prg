@@ -694,9 +694,32 @@ BEGIN NAMESPACE MacroCompilerTest
         //typed and untyped parameters
         TestMacro(mc,"{|a,b| a + b }", Args(1,2), 3, typeof(INT))
         TestMacro(mc,"{|a as int,b as int| a + b }", Args(1,2), 3, typeof(INT))
+        RuntimeState.MacroCompilerErrorHandler := SubstituteErrorWithNil
+        TestMacro(mc, "{|| Left('abc,10) }", Args(),NULL, typeof(OBJECT))
+        RuntimeState.MacroCompilerErrorHandler := SubstituteErrorWithNilMacro
+        TestMacro(mc, "{|| 0h }", Args(),NULL, typeof(OBJECT))
+        TestMacro(mc, "{|| 0h1 }", Args(),NULL, typeof(OBJECT))
+        RuntimeState.MacroCompilerErrorHandler := NULL
+        TestMacro(mc, "{|| Left('abc,10) }", Args(),typeof(Exception),NULL, ErrorCode.UnterminatedString)
 
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         RETURN
+
+        FUNCTION SubstituteErrorWithNil (cmacro as string, oEx as Exception) as ICodeblock
+            Console.WriteLine()
+            Console.WriteLine(i"Intercepted error in macro ""{cmacro}"" :")
+            Console.WriteLine(oEx:Message)
+            //Console.ReadLine()
+            return {|| NIL}
+
+        FUNCTION SubstituteErrorWithNilMacro (cmacro as string, oEx as Exception) as ICodeblock
+            //Console.ReadLine()
+            Console.WriteLine()
+            Console.WriteLine(i"Intercepted error in macro ""{cmacro}"" :")
+            Console.WriteLine(oEx:Message)
+            // Recursive, dangerous
+            return MCompile("NIL")
+
 
 END NAMESPACE
 

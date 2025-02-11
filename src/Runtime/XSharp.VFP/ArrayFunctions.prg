@@ -8,11 +8,11 @@ USING XSharp.Internal
 
 
 INTERNAL FUNCTION FoxALen(a as ARRAY) AS DWORD
-RETURN ALen( (__FoxArray) a, 0)
+RETURN XSharp.VFP.Functions.ALen( (__FoxArray) a, 0)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alen/*" />
 FUNCTION ALen(a AS __FoxArray) AS DWORD
-    RETURN ALen(a, 0)
+    RETURN XSharp.VFP.Functions.ALen(a, 0)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alen/*" />
 FUNCTION ALen(a AS __FoxArray, nArrayAttribute AS LONG) AS DWORD
@@ -35,7 +35,7 @@ FUNCTION ALen(a AS __FoxArray, nArrayAttribute AS LONG) AS DWORD
 
 /// <exclude/>
 FUNCTION __FoxALen(a AS __FoxArray) AS DWORD
-    RETURN ALen(a, 0)
+    RETURN XSharp.VFP.Functions.ALen(a, 0)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/aelement/*" />
 FUNCTION AElement(ArrayName AS __FoxArray, nRowSubscript AS DWORD) AS USUAL

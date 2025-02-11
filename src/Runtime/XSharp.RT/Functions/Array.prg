@@ -958,14 +958,24 @@ INTERNAL STRUCTURE ArraySortComparer  IMPLEMENTS System.Collections.Generic.ICom
         IF x == y
             RETURN 0
         ENDIF
-        LOCAL u AS USUAL
-        u := _cb:EvalBlock( x, y )
-        RETURN IIF (  (LOGIC) u , -1, 1 )
+        // There could be a problem when the codeblock uses <= comparison operators.
+        // we check for that by calling the codeblock twice, the second time with the arguments reversed
+        local l1 := Eval(_cb, x, y) as logic
+        if ! l1
+            return 1
+        else
+            local l2 := Eval(_cb , y, x) as logic
+            // when x <= y and y <= x then they are equal, so return 0
+            if l2
+                return 0
+            else
+                return -1
+            endif
+        endif
 
+END STRUCTURE
 
-        END STRUCTURE
-
-INTERNAL STRUCTURE ArraySortComparer<T, U>  IMPLEMENTS System.Collections.Generic.IComparer<T>
+internal structure ArraySortComparer<T>  IMPLEMENTS System.Collections.Generic.IComparer<T>
 
     PRIVATE _cb AS @@Func<T,T,LOGIC>
 
@@ -977,18 +987,27 @@ INTERNAL STRUCTURE ArraySortComparer<T, U>  IMPLEMENTS System.Collections.Generi
         IF Object.Equals(x, y)
             RETURN 0
         ENDIF
-        LOCAL u AS LOGIC
-        u := SELF:_cb( x, y )
-        RETURN IIF (  u , -1, 1 )
-
-
-        END STRUCTURE
+        // There could be a problem when the codeblock uses <= comparison operators.
+        // we check for that by calling the codeblock twice, the second time with the arguments reversed
+        local l1 := SELF:_cb( x, y) as logic
+        if ! l1
+            return 1
+        else
+            local l2 := SELF:_cb(y, x) as logic
+            // when x <= y and y <= x then they are equal, so return 0
+            if l2
+                return 0
+            else
+                return -1
+            endif
+        endif
+end structure
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asort/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION ASort<T>(aTarget AS __ArrayBase<T> ,nStart AS INT,nCount AS INT,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T>
     ARRAYNULL aTarget
-    aTarget:Sort( nStart, nCount, ArraySortComparer<T, LOGIC> { cbOrder } )
+    aTarget:Sort( nStart, nCount, ArraySortComparer<T> { cbOrder } )
     RETURN aTarget
 
 
@@ -996,7 +1015,7 @@ FUNCTION ASort<T>(aTarget AS __ArrayBase<T> ,nStart AS INT,nCount AS INT,cbOrder
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION ASort<T>(aTarget AS __ArrayBase<T> ,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T>
     ARRAYNULL aTarget
-    aTarget:Sort( ArraySortComparer<T, LOGIC> { cbOrder } )
+    aTarget:Sort( ArraySortComparer<T> { cbOrder } )
     RETURN aTarget
 
 
@@ -1121,3 +1140,55 @@ FUNCTION AEvalOld(aArray AS ARRAY ,cbBlock AS ICodeblock) AS ARRAY
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF uStart, REF uCount, "AEvalOld")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, uStart,uCount , FALSE)
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asortfunc/*" />
+function ASortFunc(aTarget as array, nStart as usual, nCount as usual, compFunction as System.Func<usual, usual, int>) as array
+    var comp := ArraySortComparerFunction{compFunction}
+    aTarget:Sort(nStart, nCount, comp)
+    return aTarget
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asortex/*" />
+function ASortEx(aTarget as array, nStart as usual, nCount as usual, compBlock as CodeBlock) as array
+    var comp := ArraySortComparerBlock{ compBlock }
+    aTarget:Sort(nStart, nCount, comp)
+    return aTarget
+
+#region Helper Classes
+
+internal structure ArraySortComparerFunction implements System.Collections.Generic.IComparer<usual>
+
+   private _compFunc as System.Func<usual, usual, int>
+
+   constructor(compFunc as System.Func<usual, usual, int>)
+      if compFunc == null
+         throw ArgumentNullException{"compFunc"}
+      endif
+      _compFunc := compFunc
+      return
+
+   method Compare(x as usual, y as usual) as int => _compFunc:Invoke(x, y)
+
+end structure
+
+
+internal structure ArraySortComparerBlock implements System.Collections.Generic.IComparer<usual>
+
+   private _compBlock as ICodeblock
+
+   constructor(compBlock as CodeBlock)
+      if compBlock == null
+         throw ArgumentNullException{"compBlock"}
+      endif
+      _compBlock := compBlock
+      return
+
+   method Compare(x as usual, y as usual) as int
+        local uRes as USUAL
+        uRes := _compBlock:EvalBlock(x, y)
+        if IsNumeric(uRes)
+            RETURN (INT) uRes
+        ENDIF
+        throw InvalidOperationException{i"Codeblock returns {uRes}. Numeric result expected"}
+
+end structure
+#endregion

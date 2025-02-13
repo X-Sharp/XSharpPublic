@@ -376,6 +376,40 @@ BEGIN NAMESPACE XSharp.RT.Tests
             s := u
             Assert.Equal(s, "")
 
+		[Fact, Trait("Category", "IntegerFunction")];
+        METHOD IntgerFunctionTests() AS VOID
+
+			Assert.True( Integer (1.9)  == 1 )
+			Assert.True( Integer (1.1)  == 1 )
+			Assert.True( Integer (0.1)  == 0 )
+			Assert.True( Integer (-0.1) == 0 )
+			Assert.True( Integer (-1.1) == -1 )
+			Assert.True( Integer (-1.9) == -1 )
+			
+			LOCAL fd := SetFloatDelta(0.2) AS REAL8
+
+			Assert.True( Integer (1.9)  == 1 )
+			Assert.True( Integer (1.1)  == 1 )
+			Assert.True( Integer (0.1)  == 0 )
+			Assert.True( Integer (-0.1) == 0 )
+			Assert.True( Integer (-1.1) == -1 )
+			Assert.True( Integer (-1.9) == -1 )
+
+			Assert.True( Integer ($1.9)  == 1 )
+			Assert.True( Integer ($1.1)  == 1 )
+			Assert.True( Integer ($0.1)  == 0 )
+			Assert.True( Integer (-$0.1) == 0 )
+			Assert.True( Integer (-$1.1) == -1 )
+			Assert.True( Integer (-$1.9) == -1 )
+
+			Assert.True( Integer (1.9m)  == 1 )
+			Assert.True( Integer (1.1m)  == 1 )
+			Assert.True( Integer (0.1m)  == 0 )
+			Assert.True( Integer (-0.1m) == 0 )
+			Assert.True( Integer (-1.1m) == -1 )
+			Assert.True( Integer (-1.9m) == -1 )
+
+			SetFloatDelta(fd)
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

@@ -385,7 +385,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.True( Integer (-0.1) == 0 )
 			Assert.True( Integer (-1.1) == -1 )
 			Assert.True( Integer (-1.9) == -1 )
-			
+
 			LOCAL fd := SetFloatDelta(0.2) AS REAL8
 
 			Assert.True( Integer (1.9)  == 1 )
@@ -410,6 +410,30 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.True( Integer (-1.9m) == -1 )
 
 			SetFloatDelta(fd)
+
+		[Fact, Trait("Category", "Settings")];
+        METHOD SettingsTest() as VOID
+            var dec := Set(Set.Decimals)
+            Set(Set.Decimals, 1.0)
+            var dec1 := Set(Set.Decimals)
+            Assert.True( dec1 is Long)
+            Assert.True( dec1 == 1L)
+            Set(Set.Decimals, 2.0)
+            var dec2 := Set(Set.Decimals)
+            Assert.True( dec2 is Long)
+            Assert.True( dec2 == 2L)
+            Set(Set.Decimals, dec)
+            var ext := Set(Set.Exact)
+            Set(Set.Exact, "ON")
+            Assert.True( Set(Set.Exact) == TRUE)
+            Set(Set.Exact, "OFF")
+            Assert.True( Set(Set.Exact) == FALSE)
+            Set(Set.Exact,ext)
+
+            RETURN
+
+
+
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-14T15:30:15.476+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-02-13T11:19:31.142+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>ENUM Statement</title>
   <keywords>
     <keyword>ENUM</keyword>
@@ -12,7 +12,7 @@
       <para styleclass="Heading1">ENUM Statement</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Declare an enum to &#160;the compiler.</para>
+    <para styleclass="Normal">Declare an enumeration to the compiler.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal"><tab />[attributes] [Modifiers] </para>
     <para styleclass="Normal"><tab />ENUM &lt;idEnumName&gt; [AS type] &#160; </para>

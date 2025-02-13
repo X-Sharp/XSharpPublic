@@ -1,27 +1,35 @@
 ﻿
 using Community.VisualStudio.Toolkit;
+
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using Microsoft.VisualStudio;
+using LanguageService.SyntaxTree;
+
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
+
 using Task = System.Threading.Tasks.Task;
 
 namespace XSharp.LanguageService.Commands
 {
     internal class CommentCommand : AbstractCommand
     {
+
         readonly static string[] CommentChars = new[] { "//", "&&", "*" };
 
         public static async Task InitializeAsync()
         {
+            var cmdToggleBlock = await VS.Commands.FindCommandAsync("Edit.ToggleBlockComment");
+            var cmdToggleLine = await VS.Commands.FindCommandAsync("Edit.ToggleLineComment");
+            var cmdCommentSelection = await VS.Commands.FindCommandAsync("Edit.CommentSelection");
+            var cmdUnCommentSelection = await VS.Commands.FindCommandAsync("Edit.UncommentSelection");
+
             // We need to manually intercept the commenting command, because language services swallow these commands.
-            await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.COMMENT_BLOCK, () => Execute(Comment));
-            await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.COMMENTBLOCK, () => Execute(Comment));
-            await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.UNCOMMENT_BLOCK, () => Execute(Uncomment));
-            await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.UNCOMMENTBLOCK, () => Execute(Uncomment));
+            await VS.Commands.InterceptAsync(cmdCommentSelection, () => Execute(CommentSelection));
+            await VS.Commands.InterceptAsync(cmdUnCommentSelection, () => Execute(UncommentSelection));
+            await VS.Commands.InterceptAsync(cmdToggleBlock, () => Execute(ToggleBlockComment));
+            await VS.Commands.InterceptAsync(cmdToggleLine, () => Execute(ToggleLineComment));
         }
 
-        private static (int, int) swapNumbers(int start, int end)
+        private static (int, int) SortLowHigh(int start, int end)
         {
             if (start > end)
             {
@@ -30,132 +38,184 @@ namespace XSharp.LanguageService.Commands
             return (start, end);
         }
 
-        private static void Comment(DocumentView doc)
+
+        private static void UnCommentBlock(DocumentView doc, ITextEdit editsession, IToken token)
         {
-            // Todo: add check to see if we have a block marked on a single line
-            // in that case surround with /* */
+            var text = token.Text;
+            if (text.StartsWith("/*") && text.EndsWith("*/"))
+            {
+                text = text.Substring(2, text.Length - 4);
+                editsession.Replace(token.StartIndex, token.Text.Length, text);
+            }
+        }
+        private static void CommentBlock(DocumentView doc, ITextEdit editsession, SnapshotSpan selection)
+        {
+            var text = selection.GetText();
+            text = "/*" + text + "*/";
+            editsession.Replace(selection, text);
+        }
+        private static void CommentLine(DocumentView doc, ITextEdit editsession, SnapshotSpan selection)
+        {
+            var text = selection.GetText();
+            text = "// " + text;
+            editsession.Replace(selection, text);
+        }
+        private static void UnCommentLine(DocumentView doc, ITextEdit editsession, SnapshotSpan selection)
+        {
+            var text = selection.GetText();
+            var ws = text.Substring(0, text.Length - text.TrimStart().Length);
+            text = text.TrimStart();
+            text = text.Substring(2).TrimStart();
+            text = ws + text;
+            editsession.Replace(selection, text);
+
+        }
+
+        private static void ToggleBlockComment(DocumentView doc)
+        {
             var snapshot = doc.TextBuffer.CurrentSnapshot;
             var sel = doc.TextView.Selection;
-            if (sel.Mode == TextSelectionMode.Box)
-            {
-                return;
-            }
-            var (start, end) = swapNumbers(sel.Start.Position.Position, sel.End.Position.Position);
             using (var editsession = doc.TextBuffer.CreateEdit())
             {
-                var startLine = snapshot.GetLineFromPosition(start);
-                var endLine = snapshot.GetLineFromPosition(end);
-                if (startLine.LineNumber == endLine.LineNumber && start != end)
+                foreach (var selection in sel.SelectedSpans)
                 {
-                    var text = snapshot.GetText(start, end - start);
-                    text = "/*" + text + "*/";
-                    var span = new SnapshotSpan(snapshot, start, end - start);
-                    editsession.Replace(span, text);
+                    var (start, end) = SortLowHigh(selection.Start.Position, selection.End.Position);
+                    if (OnMultiLineComment(doc, snapshot, start, out var token))
+                    {
+                        UnCommentBlock(doc, editsession, token);
+                    }
+                    else
+                    {
+                        CommentBlock(doc, editsession, selection);
+                    }
                 }
-                else
+                editsession.Apply();
+            }
+
+        }
+
+        private static bool OnMultiLineComment(DocumentView doc, ITextSnapshot snapshot, int start, out IToken token)
+        {
+            var xdoc = doc.TextBuffer.GetDocument();
+            token = null;
+            var line = snapshot.GetLineFromPosition(start);
+            if (xdoc.LineState.Get(line.LineNumber, out var state))
+            {
+                if (state.HasFlag(LineFlags.MultiLineComments))
                 {
                     do
                     {
-                        var line = snapshot.GetLineFromPosition(start);
-
-                        editsession.Insert(line.Start.Position, CommentChars[0] + " ");
-                        start = line.EndIncludingLineBreak.Position;
-                        if (start == end)
+                        // Find token that starts the ML comment
+                        var tokens = xdoc.GetTokensInSingleLine(line, true);
+                        foreach (XSharpToken t in tokens)
+                        {
+                            if (t.Type == XSharpLexer.ML_COMMENT)
+                            {
+                                token = t;
+                                return true;
+                            }
+                        }
+                        if (line.LineNumber > 0)
+                        {
+                            line = snapshot.GetLineFromLineNumber(line.LineNumber - 1);
+                        }
+                        else
+                        {
                             break;
-                    } while (start < end);
+                        }
+                    } while (true);
+                }
+            }
+            return false;
+        }
+
+        private static void ToggleLineComment(DocumentView doc)
+        {
+            var snapshot = doc.TextBuffer.CurrentSnapshot;
+            var sel = doc.TextView.Selection;
+            using (var editsession = doc.TextBuffer.CreateEdit())
+            {
+                foreach (var selection in sel.SelectedSpans)
+                {
+                    bool done = false;
+                    var (start, end) = SortLowHigh(selection.Start.Position, selection.End.Position);
+                    do
+                    {
+                        var line = snapshot.GetLineFromPosition(start);
+                        var span = line.Extent;
+                        var text = line.GetText();
+                        if (text.TrimStart().StartsWith("//"))
+                        {
+                            UnCommentLine(doc, editsession, span);
+                        }
+                        else
+                        {
+                            CommentLine(doc, editsession, span);
+                        }
+                        start = line.EndIncludingLineBreak.Position;
+                    } while (!done && start < end);
                 }
                 editsession.Apply();
             }
         }
 
-        private static void Uncomment(DocumentView doc)
+        private static void CommentSelection(DocumentView doc)
+        {
+            // Todo: add check to see if we have a block marked on a single line
+            // in that case surround with /* */
+            var snapshot = doc.TextBuffer.CurrentSnapshot;
+            var sel = doc.TextView.Selection;
+            using (var editsession = doc.TextBuffer.CreateEdit())
+            {
+                foreach (var selection in sel.SelectedSpans)
+                {
+                    var (start, end) = SortLowHigh(selection.Start.Position, selection.End.Position);
+                    bool singleLine = start != end && selection.Start.GetContainingLine().LineNumber == selection.End.GetContainingLine().LineNumber;
+                    if (singleLine)
+                    {
+                        CommentBlock(doc, editsession, selection);
+                    }
+                    else
+                    {
+                        // selection may have multiple lines
+                        do
+                        {
+                            var line = snapshot.GetLineFromPosition(start);
+                            CommentLine(doc, editsession, line.Extent);
+                            start = line.EndIncludingLineBreak.Position;
+                        } while (start < end);
+                    }
+                }
+                editsession.Apply();
+            }
+        }
+        private static void UncommentSelection(DocumentView doc)
         {
             var snapshot = doc.TextBuffer.CurrentSnapshot;
             var sel = doc.TextView.Selection;
-            if (sel.Mode == TextSelectionMode.Box)
-            {
-                return;
-            }
-            var (start, end) = swapNumbers(sel.Start.Position.Position, sel.End.Position.Position);
             using (var editsession = doc.TextBuffer.CreateEdit())
             {
-                bool done = false;
-                // check to see if we are on a MultiLine commenttoken
-                var xdoc = doc.TextBuffer.GetDocument();
-                do
+                foreach (var selection in sel.SelectedSpans)
                 {
-                    var line = snapshot.GetLineFromPosition(start);
-                    if (xdoc.LineState.Get(line.LineNumber, out var state))
+                    var (start, end) = SortLowHigh(selection.Start.Position, selection.End.Position);
+                    if (OnMultiLineComment(doc, snapshot, start, out var token))
                     {
-                        if (state.HasFlag(LineFlags.MultiLineComments))
-                        {
-                            // remove multi line comments
-                            do
-                            {
-                                var tokens = xdoc.GetTokensInSingleLine(line, true);
-                                foreach (XSharpToken token in tokens)
-                                {
-                                    if (token.Type == XSharpLexer.ML_COMMENT)
-                                    {
-                                        if (token.StartIndex <= start && token.StopIndex >= end)
-                                        {
-                                            var text = token.Text;
-                                            if (text.StartsWith("/*") && text.EndsWith("*/"))
-                                            {
-                                                text = text.Substring(2, text.Length - 4);
-                                                editsession.Replace(token.StartIndex, token.Text.Length, text);
-                                                done = true;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                                if (!done)
-                                {
-                                    if (line.LineNumber > 0)
-                                    {
-                                        line = xdoc.GetLine(line.LineNumber - 1);
-                                    }
-                                    else
-                                    {
-                                        done = true;
-                                    }
-                                }
-                            } while (!done);
-                        }
-
-                        if (!done)
-                        {
-                            var originalText = line.GetText();
-                            var trimmedText = originalText.TrimStart(new char[] { ' ', '\t' });
-                            string leading = "";
-                            if (trimmedText.Length < originalText.Length)
-                            {
-                                leading = originalText.Substring(0, originalText.Length - trimmedText.Length);
-                            }
-                            int lenToDelete = 0;
-                            foreach (var str in CommentChars)
-                            {
-                                if (trimmedText.StartsWith(str))
-                                {
-                                    lenToDelete = str.Length;
-                                    // delete whitespace after comment chars?
-                                    if (trimmedText.Length > str.Length && char.IsWhiteSpace(trimmedText[lenToDelete]))
-                                        lenToDelete++;
-                                    break;
-                                }
-                            }
-                            if (lenToDelete != 0)
-                            {
-                                var pos = line.Start.Position + leading.Length;
-                                Span commentCharSpan = new Span(pos, lenToDelete);
-                                editsession.Delete(commentCharSpan);
-                            }
-                        }
+                        UnCommentBlock(doc, editsession, token);
                     }
-                    start = line.EndIncludingLineBreak.Position;
-                } while (!done && start < end);
+                    else
+                    {
+                        // selection may have multiple lines
+                        do
+                        {
+                            var line = snapshot.GetLineFromPosition(start);
+                            UnCommentLine(doc, editsession, line.Extent);
+                            start = line.EndIncludingLineBreak.Position;
+                            if (start == end)
+                                break;
+                        } while (start <= end);
 
+                    }
+                }
                 editsession.Apply();
             }
         }

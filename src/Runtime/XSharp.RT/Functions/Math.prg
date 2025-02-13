@@ -161,7 +161,7 @@ FUNCTION Integer(nValue AS USUAL) AS USUAL
         LOCAL lPositive AS LOGIC
         DO CASE
         CASE nValue:IsFloat
-            lPositive := ((FLOAT)nValue):Value > 0.0d
+            lPositive := nValue:_r8Value > 0.0d
         CASE nValue:IsDecimal
             lPositive := nValue:_decimalValue > 0.0m
         CASE nValue:IsCurrency

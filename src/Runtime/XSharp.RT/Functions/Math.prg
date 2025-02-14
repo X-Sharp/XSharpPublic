@@ -50,15 +50,15 @@ FUNCTION ASin(nExpression AS USUAL) AS FLOAT
     RETURN Math.Asin((REAL8) nExpression)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/atan2/*" />
-FUNCTION Atan2(nY as USUAL, nX AS USUAL) AS FLOAT
+FUNCTION Atan2(nY AS USUAL, nX AS USUAL) AS FLOAT
     RETURN Math.Atan2((REAL8) nY, (REAL8) nX)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dtor/*" />
-FUNCTION DToR(nExpression as USUAL) AS REAL8
-    RETURN (Real8) nExpression / 180.0 * Math.PI
+FUNCTION DToR(nExpression AS USUAL) AS REAL8
+    RETURN (REAL8) nExpression / 180.0 * Math.PI
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rtod/*" />
-FUNCTION RToD(nExpression as USUAL) AS REAL8
+FUNCTION RToD(nExpression AS USUAL) AS REAL8
     RETURN ((REAL8) nExpression / Math.PI) * 180.0
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/pi/*" />
@@ -158,7 +158,18 @@ FUNCTION Integer(nValue AS USUAL) AS USUAL
     IF nValue:IsInteger
         result := nValue
     ELSEIF nValue:IsFractional
-        IF nValue > 0.0
+        LOCAL lPositive AS LOGIC
+        DO CASE
+        CASE nValue:IsFloat
+            lPositive := nValue:_r8Value > 0.0d
+        CASE nValue:IsDecimal
+            lPositive := nValue:_decimalValue > 0.0m
+        CASE nValue:IsCurrency
+            lPositive := nValue:_currencyValue > $0.0
+        OTHERWISE // just in case a new type is introduced
+            lPositive := nValue > 0.0
+        END CASE
+        IF lPositive
             result := Floor(nValue)
         ELSE
             result := Ceil(nValue)
@@ -279,10 +290,10 @@ FUNCTION Tan(nNum AS USUAL) AS FLOAT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mod/*" />
 FUNCTION Mod(nDividend AS USUAL, nDivisor AS USUAL) AS USUAL
-local resType := __UsualType.Void as __UsualType
-switch nDividend:_usualType
+LOCAL resType := __UsualType.Void AS __UsualType
+SWITCH nDividend:_usualType
 CASE __UsualType.Long
-    switch nDivisor:_usualType
+    SWITCH nDivisor:_usualType
     CASE __UsualType.Long
         resType := __UsualType.Long
     CASE __UsualType.Int64
@@ -293,9 +304,9 @@ CASE __UsualType.Long
         resType := __UsualType.Currency
     CASE __UsualType.Decimal
         resType := __UsualType.Decimal
-    end switch
+    END SWITCH
 CASE __UsualType.Int64
-    switch nDivisor:_usualType
+    SWITCH nDivisor:_usualType
     CASE __UsualType.Long
     CASE __UsualType.Int64
         resType := __UsualType.Int64
@@ -305,9 +316,9 @@ CASE __UsualType.Int64
         resType := __UsualType.Currency
     CASE __UsualType.Decimal
         resType := __UsualType.Decimal
-    end switch
+    END SWITCH
 CASE __UsualType.Float
-    switch nDivisor:_usualType
+    SWITCH nDivisor:_usualType
     CASE __UsualType.Long
     CASE __UsualType.Int64
     CASE __UsualType.Float
@@ -316,14 +327,14 @@ CASE __UsualType.Float
         resType := __UsualType.Currency
     CASE __UsualType.Decimal
         resType := __UsualType.Decimal
-    end switch
+    END SWITCH
 CASE __UsualType.Currency
     resType := __UsualType.Currency
 CASE __UsualType.Decimal
     resType := __UsualType.Decimal
-end switch
+END SWITCH
 
-switch resType
+SWITCH resType
 CASE __UsualType.Long
     RETURN (LONG) nDividend % (LONG) nDivisor
 CASE __UsualType.Int64
@@ -334,10 +345,10 @@ CASE __UsualType.Currency
     RETURN (CURRENCY) nDividend % (CURRENCY) nDivisor
 CASE __UsualType.Decimal
     RETURN (DECIMAL) nDividend % (DECIMAL) nDivisor
-end switch
+END SWITCH
 IF !IsNumeric(nDividend)
     THROW Error.ArgumentError("Mod", nameof(nDividend),"nDividend must be numeric")
-endif
+ENDIF
 THROW Error.ArgumentError("Mod", nameof(nDivisor),"nDivisor must be numeric")
 
 

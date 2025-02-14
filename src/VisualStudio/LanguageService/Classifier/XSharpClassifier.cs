@@ -882,6 +882,7 @@ namespace XSharp.LanguageService
                 nextToken = tokens[i];
                 if (nextToken.Line == lastFound.Line
                     && nextToken.Type != XSharpLexer.NL
+                    && nextToken.Type != XSharpLexer.WS
                     && nextToken.Type != XSharpLexer.EOS)
                     lastFound = nextToken;
                 else

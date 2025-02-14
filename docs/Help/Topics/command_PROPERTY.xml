@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-14T15:15:42.042+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-02-13T11:29:10.121+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>PROPERTY Statement</title>
   <keywords>
     <keyword>Access() Methods</keyword>
@@ -21,7 +21,7 @@
       <para styleclass="Heading1">PROPERTY Statement</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Declare a method to access a non-exported or virtual instance variable.</para>
+    <para styleclass="Normal">Declare a property to a class, which can be used for reading, writing and computing data from/to it.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">PROPERTY</text>&lt;<text styleclass="Italic">idName</text>&gt;</para>
     <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>

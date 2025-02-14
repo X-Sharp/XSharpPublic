@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-14T15:51:15.639+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-02-13T11:31:08.975+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>STRUCTURE Statement</title>
   <keywords>
     <keyword>END STRUCTURE</keyword>
@@ -11,7 +11,7 @@
       <para styleclass="Heading1">STRUCTURE Statement</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Declare a class name to the compiler.</para>
+    <para styleclass="Normal">Declare a structure name to the compiler.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">STRUCTURE </text>&lt;<text styleclass="Italic">idStructure</text>&gt; <br/><tab />[IMPLEMENTS &lt;idInterface&gt;[, &lt;IdInterface2&gt;,..]</para>
     <para styleclass="Normal"><tab />[StructureMembers]</para>

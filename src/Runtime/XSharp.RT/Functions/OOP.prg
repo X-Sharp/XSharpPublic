@@ -562,7 +562,7 @@ internal static class OOPHelpers
                     result := oDefAttrib:Value
                     // for usuals there is no need to convert.
                     if oPar:ParameterType != typeof(usual)
-                        result := Convert.ChangeType(result,oPar:ParameterType)
+                        result := OOPHelpers.ValueConvert(result, oPar:ParameterType)
                     endif
                 end switch
             end if

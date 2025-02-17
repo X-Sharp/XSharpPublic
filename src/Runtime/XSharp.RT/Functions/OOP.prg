@@ -605,7 +605,8 @@ internal static class OOPHelpers
         return t:GetMember(cName, memberType, flags)
 
     static method GetField(t as System.Type, cName as string, lInstance as LOGIC, lSelf as LOGIC) as FieldInfo
-        foreach var m in GetMembers(t, cName, MemberTypes.Field,lInstance, lSelf)
+        var members := GetMembers(t, cName, MemberTypes.Field,lInstance, lSelf)
+        foreach var m in members
             if m is FieldInfo var fldInfo
                 return fldInfo
             endif
@@ -613,7 +614,8 @@ internal static class OOPHelpers
         return null
 
     static method GetProperty(t as System.Type, cName as string, lInstance as LOGIC, lSelf as LOGIC) as PropertyInfo
-        foreach var m in GetMembers(t, cName, MemberTypes.Property,lInstance, lSelf)
+        var members := GetMembers(t, cName, MemberTypes.Property,lInstance, lSelf)
+        foreach var m in members
             if m is PropertyInfo var propInfo
                 return propInfo
             endif
@@ -637,17 +639,21 @@ internal static class OOPHelpers
                 if (atts:Length > 0)
                     return 1U
                 endif
-                return 0U
             endif
+            return 0U
         endif
 
         do while t != null
             var pi :=  OOPHelpers.GetProperty(t, cName, true, true)
-            if pi != null .and. ( (lGet .and. pi:CanRead) .or. (.not. lGet .and. pi:CanWrite) )
-                return 3U
-            else
-                t := t:BaseType
+            if pi != null
+                if lGet .and. pi:CanRead
+                    return 3U
+                endif
+                if ! lGet .and. pi:CanWrite
+                    return 3U
+                endif
             endif
+            t := t:BaseType
         enddo
 
         return 0U
@@ -1288,22 +1294,22 @@ internal static class OOPHelpers
                     try
                         return oOperator:Invoke(null, <object>{oValue})
                     catch
-                        local ex as Error
-                        ex := Error{Gencode.EG_WRONGCLASS, "", "Could not convert value "+oValue:ToString() + " to type " + toType:Name}
-                        ex:FuncSym := __function__
-                        ex:Stack := ErrorStack()
-                        throw ex
-
+                        // do not throw error here. We will try to convert the value below with Convert.ChangeType
                     end try
                 endif
             endif
             // when we get here then there is no operator and we will try to change the type..
+            // or the call to the operator failed
             local oRet as object
             try
                 oRet := uValue
                 oRet := Convert.ChangeType(oRet, toType)
             catch
-                oRet := uValue
+                local ex as Error
+                ex := Error{Gencode.EG_WRONGCLASS, "", "Could not convert value "+oValue:ToString() + " to type " + toType:Name}
+                ex:FuncSym := __function__
+                ex:Stack := ErrorStack()
+                throw ex
             end try
             return oRet
         endif

@@ -578,6 +578,17 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			EXPORT symUsual := #SymUsual AS USUAL
 		END CLASS
 
+        [Fact, Trait("Category", "OOP")];
+        METHOD IVarInfoTest() AS VOID
+            local test := xxTest{} as usual
+            Assert.True(IVarGetInfo(test, #symVerkauf) == 3)
+            Assert.True(IVarPutInfo(test, #symVerkauf) == 3)
+            Assert.True(IVarGetInfo(test, #xxIVar) == 2)
+            Assert.True(IVarPutInfo(test, #xxIVar) == 2)
+            Assert.True(IVarGetInfo(test, #xxInstance) == 1)
+            Assert.True(IVarPutInfo(test, #xxInstance) == 1)
+            Assert.True(IVarGetInfo(test, #xxPrivate) == 0)
+            Assert.True(IVarPutInfo(test, #xxPrivate) == 0)
 
         [Fact, Trait("Category", "OOP")];
 		METHOD IVarsLateBound() AS VOID
@@ -797,3 +808,20 @@ CLASS OOpVisTestClass
 
 
 END CLASS
+public class xxTestBase
+	virtual public access SymVerkauf as symbol
+		return null_symbol
+
+	virtual public assign SymVerkauf(val as symbol) as void
+		nop()
+end class
+
+public class xxTest inherit xxTestBase
+    // difference in case with parent access/assign
+    // This results in the Type.GetMembers() to return more than one property
+    public xxIVar as INT
+    instance xxInstance as INT
+    private xxPrivate as INT
+	public override assign symVerkauf(val as symbol) as void
+		nop()
+end class

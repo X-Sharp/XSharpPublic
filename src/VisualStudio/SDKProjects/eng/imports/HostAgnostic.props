@@ -34,9 +34,13 @@
     <PackageReference Include="System.Threading.Tasks.Dataflow" />
     
     <PackageReference Include="Microsoft.IO.Redist" Condition="'$(TargetFramework)' == 'net472'" />
+    <PackageReference Include="System.Text.Json" />
 
     <!-- VS MEF -->
     <PackageReference Include="Microsoft.VisualStudio.Composition" />
+
+    <!-- Pin MessagePack to a patched version with security vulnerable fix -->
+    <PackageReference Include="MessagePack" />
 
     <!-- Roslyn -->
     <PackageReference Include="Microsoft.CSharp" />
@@ -56,7 +60,7 @@
 
     <!-- 3rd party -->
     <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="IsExternalInit" PrivateAssets="all" />
+    <PackageReference Include="PolySharp" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers" />
 
     <!-- Host-Agnostic Visual Studio -->
     <PackageReference Include="Microsoft.VisualStudio.ImageCatalog" />

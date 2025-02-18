@@ -3,12 +3,14 @@
 namespace Microsoft.VisualStudio.ProjectSystem.Tree.Dependencies.Subscriptions.MSBuildDependencies;
 
 [Export(typeof(IMSBuildDependencyFactory))]
-[AppliesTo(ProjectCapability.DependenciesTree + " & " + ProjectCapabilities.ComReferences)]
+[AppliesTo(AppliesTo)]
 internal sealed class ComDependencyFactory : MSBuildDependencyFactoryBase
 {
+    public const string AppliesTo = ProjectCapability.DependenciesTree + " & " + ProjectCapabilities.ComReferences;
+
     private static readonly DependencyFlagCache s_flagCache = new(
-        resolved: DependencyTreeFlags.ComDependency + DependencyTreeFlags.SupportsBrowse,
-        unresolved: DependencyTreeFlags.ComDependency);
+        resolved: DependencyTreeFlags.ComDependency + DependencyTreeFlags.SupportsObjectBrowser + DependencyTreeFlags.SupportsBrowse,
+        unresolved: DependencyTreeFlags.ComDependency + DependencyTreeFlags.SupportsObjectBrowser);
 
     public override DependencyGroupType DependencyGroupType => DependencyGroupTypes.Com;
 

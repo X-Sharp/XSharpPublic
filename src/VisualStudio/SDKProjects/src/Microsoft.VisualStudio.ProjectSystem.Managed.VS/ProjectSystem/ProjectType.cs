@@ -2,8 +2,8 @@
 
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace Microsoft.VisualStudio
-{
+namespace Microsoft.VisualStudio;
+
     /// <summary>
     ///     Represents the managed project types in Visual Studio.
     /// </summary>
@@ -94,5 +94,4 @@ namespace Microsoft.VisualStudio
         ///     A <see cref="string"/> representing the deprecated C# (xproj) project type based on the Common Project System (CPS).
         /// </summary>
         public const string LegacyXProj = "8BB2217D-0F2D-49D1-97BC-3654ED321F3B";
-    }
 }

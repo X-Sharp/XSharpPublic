@@ -53,6 +53,10 @@
                   ReadOnly="True"
                   Visible="False" />
 
+  <StringProperty Name="NETCoreSdkVersion"
+                  ReadOnly="True"
+                  Visible="False" />
+
   <StringProperty Name="NoWarn"
                   ReadOnly="True"
                   Visible="False" />
@@ -98,6 +102,10 @@
                   Visible="False" />
 
   <StringProperty Name="RestoreAdditionalProjectSources"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="RestoreEnablePackagePruning"
                   ReadOnly="True"
                   Visible="False" />
 

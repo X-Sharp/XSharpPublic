@@ -48,9 +48,21 @@ internal sealed class PackageRestoreCycleDetector(
     private int _nuGetRestoreSuccesses;
     private int _nuGetRestoreCyclesDetected;
     private int _counter;
+    private ProjectConfiguration? _priorActiveProjectConfiguration;
 
-    public async Task<bool> IsCycleDetectedAsync(Hash hash, CancellationToken cancellationToken)
+    public async Task<bool> IsCycleDetectedAsync(Hash hash, ProjectConfiguration activeProjectConfiguration, CancellationToken cancellationToken)
     {
+        _priorActiveProjectConfiguration ??= activeProjectConfiguration;
+
+        if (!Equals(_priorActiveProjectConfiguration, activeProjectConfiguration))
+        {
+            // The active configuration changed. Treat this as a reset. This prevents flagging a
+            // cycle when the user switches configurations repeatedly in certain repositories.
+            _priorActiveProjectConfiguration = activeProjectConfiguration;
+            Reset();
+            return false;
+        }
+
         // Ensure we have a stopwatch running throughout restores. We will stop it when we either
         // have two consecutive restores at the same hash, or when we detect a cycle.
         _stopwatch.Start();
@@ -120,12 +132,12 @@ internal sealed class PackageRestoreCycleDetector(
             _nuGetRestoreCyclesDetected++;
 
             // Send telemetry.
-            _telemetryService.PostProperties(TelemetryEventName.NuGetRestoreCycleDetected, new[]
-            {
-                (TelemetryPropertyName.NuGetRestoreCycleDetected.RestoreDurationMillis, (object)_stopwatch.Elapsed.TotalMilliseconds),
+            _telemetryService.PostProperties(TelemetryEventName.NuGetRestoreCycleDetected,
+            [
+                (TelemetryPropertyName.NuGetRestoreCycleDetected.RestoreDurationMillis, _stopwatch.Elapsed.TotalMilliseconds),
                 (TelemetryPropertyName.NuGetRestoreCycleDetected.RestoreSuccesses, _nuGetRestoreSuccesses),
                 (TelemetryPropertyName.NuGetRestoreCycleDetected.RestoreCyclesDetected, _nuGetRestoreCyclesDetected)
-            });
+            ]);
 
             // Notify the user.
             await _userNotificationService.ShowErrorAsync(
@@ -140,10 +152,13 @@ internal sealed class PackageRestoreCycleDetector(
 
         void Reset()
         {
-            _stopwatch.Reset();
-            _counter = 0;
-            _values.Clear();
-            _lookupTable.Clear();
+            lock (_lock)
+            {
+                _stopwatch.Reset();
+                _counter = 0;
+                _values.Clear();
+                _lookupTable.Clear();
+            }
         }
     }
 }

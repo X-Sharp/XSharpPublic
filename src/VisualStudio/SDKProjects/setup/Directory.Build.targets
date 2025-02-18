@@ -48,8 +48,8 @@
     <CollectUpToDateCheckInputDesignTimeDependsOn>$(CollectUpToDateCheckInputDesignTimeDependsOn);AddUpToDateCheckVSIXSourceItems</CollectUpToDateCheckInputDesignTimeDependsOn>
     <CollectUpToDateCheckOutputDesignTimeDependsOn>$(CollectUpToDateCheckOutputDesignTimeDependsOn);AddUpToDateCheckTargetVsixContainer</CollectUpToDateCheckOutputDesignTimeDependsOn>
   </PropertyGroup>
-  
-  <Target Name="AddUpToDateCheckVSIXSourceItems" DependsOnTargets="GetVsixSourceItems" Condition="'$(IsVsixProject)' == 'true'">
+  <!--<Target Name="AddUpToDateCheckVSIXSourceItems" DependsOnTargets="GetVsixSourceItems" Condition="'$(IsVsixProject)' == 'true'">-->
+  <Target Name="AddUpToDateCheckVSIXSourceItems" Condition="'$(IsVsixProject)' == 'true'">
     <ItemGroup>
       <UpToDateCheckInput Include="@(VSIXSourceItem)" Set="VsixItems" />
     </ItemGroup>

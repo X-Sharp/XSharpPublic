@@ -2,8 +2,8 @@
 
 using Microsoft.VisualStudio.ProjectSystem;
 
-namespace Microsoft.VisualStudio.Packaging
-{
+namespace Microsoft.VisualStudio.Packaging;
+
     /// <summary>
     ///     Represents set of capabilities for .NET-based projects that are always present ("fixed").
     /// </summary>
@@ -66,5 +66,4 @@ namespace Microsoft.VisualStudio.Packaging
                                           ProjectCapability.VisualBasic + "; " +
                                           ProjectCapabilities.SharedImports + "; " +
                                           ProjectCapability.UseProjectEvaluationCache;
-    }
 }

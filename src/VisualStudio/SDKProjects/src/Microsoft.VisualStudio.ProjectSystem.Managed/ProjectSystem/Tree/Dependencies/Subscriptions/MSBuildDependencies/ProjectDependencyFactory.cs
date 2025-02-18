@@ -2,15 +2,15 @@
 
 namespace Microsoft.VisualStudio.ProjectSystem.Tree.Dependencies.Subscriptions.MSBuildDependencies;
 
-// TODO also filter AppliesTo to ProjectCapabilities.ProjectReferences? same for other dependency types
-
 [Export(typeof(IMSBuildDependencyFactory))]
-[AppliesTo(ProjectCapability.DependenciesTree + " & " + ProjectCapabilities.ProjectReferences)]
+[AppliesTo(AppliesTo)]
 internal sealed class ProjectDependencyFactory : MSBuildDependencyFactoryBase
 {
+    public const string AppliesTo = ProjectCapability.DependenciesTree + " & " + ProjectCapabilities.ProjectReferences;
+
     private static readonly DependencyFlagCache s_flagCache = new(
-        resolved: DependencyTreeFlags.ProjectDependency + DependencyTreeFlags.SupportsBrowse,
-        unresolved: DependencyTreeFlags.ProjectDependency + DependencyTreeFlags.SupportsBrowse);
+        resolved: DependencyTreeFlags.ProjectDependency + DependencyTreeFlags.SupportsBrowse + DependencyTreeFlags.SupportsObjectBrowser,
+        unresolved: DependencyTreeFlags.ProjectDependency + DependencyTreeFlags.SupportsBrowse + DependencyTreeFlags.SupportsObjectBrowser);
 
     public override DependencyGroupType DependencyGroupType => DependencyGroupTypes.Projects;
 

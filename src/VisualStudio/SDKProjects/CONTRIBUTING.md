@@ -17,5 +17,5 @@ For additional information, see the following:
 - [Architecture](docs/repo/architecture.md)
 - [Rules of the Project System](docs/repo/rules-of-the-project-system.md)
 - [Visual Studio Threading Guidelines](https://github.com/Microsoft/vs-threading/blob/master/doc/index.md)
-- [Common Project System (CPS) Documention](https://github.com/microsoft/vsprojectsystem)
+- [Common Project System (CPS) Documention](https://github.com/microsoft/VSProjectSystem)
 - [Code of Conduct](https://github.com/dotnet/home/blob/master/guidance/be-nice.md)

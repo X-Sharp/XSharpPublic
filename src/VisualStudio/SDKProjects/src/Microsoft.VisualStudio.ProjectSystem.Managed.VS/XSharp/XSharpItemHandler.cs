@@ -25,14 +25,14 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices.Handlers
             _project = project;
         }
 
-        public void Handle(IWorkspaceProjectContext context, IComparable version, IImmutableDictionary<string, IProjectChangeDescription> projectChanges, ContextState state, IManagedProjectDiagnosticOutputService logger)
+        public void Handle(IWorkspaceProjectContext context, IImmutableDictionary<string, IProjectChangeDescription> projectChanges, ContextState state, IManagedProjectDiagnosticOutputService logger)
         {
             foreach ((_, IProjectChangeDescription projectChange) in projectChanges)
             {
                 if (!projectChange.Difference.AnyChanges)
                     continue;
 
-                IProjectChangeDiff difference = HandlerServices.NormalizeRenames(projectChange.Difference);
+                IProjectChangeDiff difference = projectChange.Difference.NormalizeRenames();
 
                 foreach (string includePath in difference.RemovedItems)
                 {

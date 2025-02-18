@@ -21,7 +21,7 @@
     <PackageTags>XSharp Roslyn Managed Project System VisualStudio</PackageTags>
     <NoWarn>$(NoWarn);NU5125</NoWarn>
     <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
-    <CodeModel>$(Solutiondir)..\..\Artifacts\Common\Debug\XSharp.CodeModel.dll</CodeModel>
+    <CodeModel>E:\XSharp\Dev30\Artifacts\Common\Release\XSharp.CodeModel.dll</CodeModel>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +32,7 @@
     <PackageReference Include="Microsoft.VisualStudio.HotReload.Components" />
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.Query" />
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.VS" />
+    <PackageReference Include="IsExternalInit" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

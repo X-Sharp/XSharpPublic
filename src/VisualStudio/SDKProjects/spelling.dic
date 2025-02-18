@@ -1,6 +1,7 @@
 appsettings
 args
 async
+asynch
 awaiter
 blazor
 boolean
@@ -8,6 +9,7 @@ bstr
 cmdid
 combobox
 commandbar
+cshtml
 csproj
 debuggable
 debugsettings
@@ -52,6 +54,7 @@ proj
 projectsystem
 projitems
 readonly
+refactorings
 referencesource
 renamer
 resw

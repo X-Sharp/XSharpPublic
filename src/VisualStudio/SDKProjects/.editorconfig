@@ -72,28 +72,28 @@ dotnet_style_readonly_field = true:warning
 
 # Naming Rules
 dotnet_naming_rule.interfaces_must_be_pascal_cased_and_prefixed_with_I.symbols                        = interface_symbols
-dotnet_naming_rule.interfaces_must_be_pascal_cased_and_prefixed_with_i.style = pascal_case_and_prefix_with_I_style
-dotnet_naming_rule.interfaces_must_be_pascal_cased_and_prefixed_with_i.severity = warning
+dotnet_naming_rule.interfaces_must_be_pascal_cased_and_prefixed_with_I.style                          = pascal_case_and_prefix_with_I_style
+dotnet_naming_rule.interfaces_must_be_pascal_cased_and_prefixed_with_I.severity                       = warning
 
 dotnet_naming_rule.externally_visible_members_must_be_pascal_cased.symbols                            = externally_visible_symbols
-dotnet_naming_rule.externally_visible_members_must_be_pascal_cased.style = pascal_case_style
-dotnet_naming_rule.externally_visible_members_must_be_pascal_cased.severity = warning
+dotnet_naming_rule.externally_visible_members_must_be_pascal_cased.style                              = pascal_case_style
+dotnet_naming_rule.externally_visible_members_must_be_pascal_cased.severity                           = warning
 
 dotnet_naming_rule.parameters_must_be_camel_cased.symbols                                             = parameter_symbols
-dotnet_naming_rule.parameters_must_be_camel_cased.style = camel_case_style
-dotnet_naming_rule.parameters_must_be_camel_cased.severity = warning
+dotnet_naming_rule.parameters_must_be_camel_cased.style                                               = camel_case_style
+dotnet_naming_rule.parameters_must_be_camel_cased.severity                                            = warning
 
 dotnet_naming_rule.constants_must_be_pascal_cased.symbols                                             = constant_symbols
-dotnet_naming_rule.constants_must_be_pascal_cased.style = pascal_case_style
-dotnet_naming_rule.constants_must_be_pascal_cased.severity = warning
+dotnet_naming_rule.constants_must_be_pascal_cased.style                                               = pascal_case_style
+dotnet_naming_rule.constants_must_be_pascal_cased.severity                                            = warning
 
 dotnet_naming_rule.private_static_fields_must_be_camel_cased_and_prefixed_with_s_underscore.symbols   = private_static_field_symbols
-dotnet_naming_rule.private_static_fields_must_be_camel_cased_and_prefixed_with_s_underscore.style = camel_case_and_prefix_with_s_underscore_style
-dotnet_naming_rule.private_static_fields_must_be_camel_cased_and_prefixed_with_s_underscore.severity = warning
+dotnet_naming_rule.private_static_fields_must_be_camel_cased_and_prefixed_with_s_underscore.style     = camel_case_and_prefix_with_s_underscore_style
+dotnet_naming_rule.private_static_fields_must_be_camel_cased_and_prefixed_with_s_underscore.severity  = warning
 
 dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.symbols   = private_field_symbols
-dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.style = camel_case_and_prefix_with_underscore_style
-dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.severity = warning
+dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.style     = camel_case_and_prefix_with_underscore_style
+dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.severity  = warning
 
 # Symbols
 dotnet_naming_symbols.externally_visible_symbols.applicable_kinds                                     = class,struct,enum,property,method,field,event,delegate
@@ -132,6 +132,9 @@ dotnet_naming_style.pascal_case_and_prefix_with_I_style.capitalization          
 
 # CSharp code style settings:
 [*.cs]
+
+# Use file-scoped namespaces
+csharp_style_namespace_declarations = file_scoped:error
 
 # Prefer "var" only when the type is apparent
 csharp_style_var_for_built_in_types = false:suggestion
@@ -386,6 +389,7 @@ dotnet_diagnostic.IDE0030WithoutSuggestion.severity = error
 dotnet_diagnostic.IDE0031.severity = warning      # Use null propagation (nullable)
 dotnet_diagnostic.IDE0051.severity = warning      # Private member unused
 dotnet_diagnostic.IDE0052.severity = warning      # Remove unread private members
+dotnet_diagnostic.IDE0059.severity = error        # Unnecessary assignment
 dotnet_diagnostic.IDE0079.severity = warning      # Unused suppresion
 dotnet_diagnostic.IDE0083.severity = warning      # Use pattern matching
 dotnet_diagnostic.IDE0084.severity = warning      # Use IsNot

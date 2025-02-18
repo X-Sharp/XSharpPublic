@@ -161,13 +161,6 @@
       <DataAccess>None</DataAccess>
       <RuleInjection>None</RuleInjection>
     </XamlPropertyRule>
-    <XamlPropertyRule Include="ProjectSystem\Rules\SuggestedWorkload.xaml">
-      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
-      <SubType>Designer</SubType>
-      <XlfInput>false</XlfInput>
-      <DataAccess>None</DataAccess>
-      <RuleInjection>None</RuleInjection>
-    </XamlPropertyRule>
     <Compile Update="ProjectSystem\Rules\Dependencies\ResolvedPackageReference.cs">
       <DependentUpon>ResolvedPackageReference.xaml</DependentUpon>
     </Compile>
@@ -415,6 +408,18 @@
       <RuleInjection>None</RuleInjection>
     </XamlPropertyRule>
 
+    <Compile Update="ProjectSystem\Rules\CollectedPrunePackageReference.cs">
+      <DependentUpon>CollectedPrunePackageReference.xaml</DependentUpon>
+    </Compile>
+    <XamlPropertyRule Include="ProjectSystem\Rules\CollectedPrunePackageReference.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <XlfInput>false</XlfInput>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+      <DataAccess>None</DataAccess>
+      <RuleInjection>None</RuleInjection>
+    </XamlPropertyRule>
+
     <Compile Update="ProjectSystem\Rules\CollectedPackageDownload.cs">
       <DependentUpon>CollectedPackageDownload.xaml</DependentUpon>
     </Compile>
@@ -542,6 +547,14 @@
       <XlfInput>false</XlfInput>
       <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
       <SubType>Designer</SubType>
+      <DataAccess>None</DataAccess>
+      <RuleInjection>None</RuleInjection>
+    </XamlPropertyRule>
+    
+    <XamlPropertyRule Include="ProjectSystem\Rules\SuggestedVisualStudioComponentId.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+      <XlfInput>false</XlfInput>
       <DataAccess>None</DataAccess>
       <RuleInjection>None</RuleInjection>
     </XamlPropertyRule>

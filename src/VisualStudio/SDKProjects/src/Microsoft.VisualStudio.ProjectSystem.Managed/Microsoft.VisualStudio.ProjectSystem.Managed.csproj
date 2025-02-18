@@ -20,7 +20,7 @@
     <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
     <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>
-    <CodeModel>$(Solutiondir)..\..\Artifacts\Common\Debug\XSharp.CodeModel.dll</CodeModel>
+    <CodeModel>E:\XSharp\Dev30\Artifacts\Common\Release\XSharp.CodeModel.dll</CodeModel>
 
   </PropertyGroup>
 
@@ -164,13 +164,6 @@
     <XamlPropertyRule Include="ProjectSystem\Rules\Dependencies\PackageReference.xaml">
       <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
       <SubType>Designer</SubType>
-      <DataAccess>None</DataAccess>
-      <RuleInjection>None</RuleInjection>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="ProjectSystem\Rules\SuggestedWorkload.xaml">
-      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
-      <SubType>Designer</SubType>
-      <XlfInput>false</XlfInput>
       <DataAccess>None</DataAccess>
       <RuleInjection>None</RuleInjection>
     </XamlPropertyRule>
@@ -421,6 +414,18 @@
       <RuleInjection>None</RuleInjection>
     </XamlPropertyRule>
 
+    <Compile Update="ProjectSystem\Rules\CollectedPrunePackageReference.cs">
+      <DependentUpon>CollectedPrunePackageReference.xaml</DependentUpon>
+    </Compile>
+    <XamlPropertyRule Include="ProjectSystem\Rules\CollectedPrunePackageReference.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <XlfInput>false</XlfInput>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+      <DataAccess>None</DataAccess>
+      <RuleInjection>None</RuleInjection>
+    </XamlPropertyRule>
+  
     <Compile Update="ProjectSystem\Rules\CollectedPackageDownload.cs">
       <DependentUpon>CollectedPackageDownload.xaml</DependentUpon>
     </Compile>
@@ -552,6 +557,13 @@
       <RuleInjection>None</RuleInjection>
     </XamlPropertyRule>
 
+    <XamlPropertyRule Include="ProjectSystem\Rules\SuggestedVisualStudioComponentId.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+      <XlfInput>false</XlfInput>
+      <DataAccess>None</DataAccess>
+      <RuleInjection>None</RuleInjection>
+    </XamlPropertyRule>
     <Compile Update="ProjectSystem\Rules\SupportedTargetFrameworkAlias.cs">
       <DependentUpon>SupportedTargetFrameworkAlias.xaml</DependentUpon>
     </Compile>

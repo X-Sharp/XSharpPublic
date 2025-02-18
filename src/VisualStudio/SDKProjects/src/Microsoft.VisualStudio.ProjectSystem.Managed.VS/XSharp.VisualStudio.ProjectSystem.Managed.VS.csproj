@@ -4,7 +4,7 @@
   <Import Project="..\..\eng\imports\VisualStudio.props" />
 
   <PropertyGroup>
-    <CSCToolExe>$(Solutiondir)VisualStudio\SdkProjects\csc\csc.exe</CSCToolExe>
+    <CSCToolExe>e:\XSharp\Dev30\src\VisualStudio\SDKProjects\csc\csc.exe</CSCToolExe>
     <EnableXlfLocalization>false</EnableXlfLocalization>
     <StrongNameKeyId>XSharp</StrongNameKeyId>
     <RootNamespace>Microsoft.VisualStudio</RootNamespace>
@@ -23,10 +23,10 @@
     <PackageTags>XSharp Roslyn Managed Project System VisualStudio</PackageTags>
     <NoWarn>$(NoWarn);NU5125</NoWarn>
     <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
+    <Commondir>e:\XSharp\Dev30\src\Common\</Commondir>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\XSharpCodeModelXs\CodeModel.xsproj" />
     <ProjectReference Include="..\Microsoft.VisualStudio.ProjectSystem.Managed\XSharp.VisualStudio.ProjectSystem.Managed.csproj" />
   </ItemGroup>
 
@@ -34,6 +34,7 @@
     <PackageReference Include="Microsoft.VisualStudio.HotReload.Components" />
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.Query" />
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.VS" />
+    <PackageReference Include="IsExternalInit" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -103,15 +104,25 @@
       <SubType>Designer</SubType>
     </VSCTCompile>
   </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
+  </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="$(Solutiondir)Common\Constants.cs" Link="Constants.cs" />
-    <Compile Include="$(Solutiondir)Common\XSharpConstants.cs" Link="XSharpConstants.cs" />
-    <Compile Include="$(Solutiondir)VisualStudio\ProjectBase\Wix\XProjectFileConstants.cs" Link="XProjectFileConstants.cs" />
+    <Compile Include="$(Commondir)Constants.cs" Link="Constants.cs" />
+    <Compile Include="$(Commondir)XSharpConstants.cs" Link="XSharpConstants.cs" />
+    <Compile Include="$(Commondir)XProjectFileConstants.cs" Link="XProjectFileConstants.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="WPF" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="XSharp.CodeModel">
+      <HintPath>E:\XSharp\Dev30\Artifacts\Common\Release\XSharp.CodeModel.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <XamlPropertyRule Include="ProjectSystem\VS\Rules\BuildAccelerationIncompatiblePackage.xaml">

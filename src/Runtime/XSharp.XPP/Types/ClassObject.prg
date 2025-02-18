@@ -35,7 +35,7 @@ abstract class XSharp.XPP.ClassObject implements ILateBound
     /// <param name="cName">Name of the property/field to read</param>
     /// <returns>the result of reading the property or field</returns>
     virtual method NoIvarGet(cName as string) as usual
-        var mem := OOPHelpers.GetMember(self:_Type, cName)
+        var mem := OOPHelpers.GetMemberFromCache(self:_Type, cName)
         if mem != null
             if mem is FieldInfo var fld .and. fld:IsStatic
                 return fld:GetValue(null)
@@ -46,7 +46,7 @@ abstract class XSharp.XPP.ClassObject implements ILateBound
         endif
         foreach fld as FieldInfo in  _Type:GetFields()
             if fld:IsStatic .and. String.Compare(fld:Name, cName, true) == 0
-                OOPHelpers.AddMember(_Type, cName, fld)
+                OOPHelpers.AddMemberToCache(_Type, cName, fld)
                 return fld:GetValue(null)
             endif
         next
@@ -68,7 +68,7 @@ abstract class XSharp.XPP.ClassObject implements ILateBound
     virtual method NoIvarPut(cName as string, uValue as usual) as void
         local oValue as object
         // get member from cache
-        var mem := OOPHelpers.GetMember(self:_Type, cName)
+        var mem := OOPHelpers.GetMemberFromCache(self:_Type, cName)
         if mem != null
             if mem is FieldInfo var fld .and. fld:IsStatic
                 oValue := OOPHelpers.ValueConvert(uValue, fld:FieldType)
@@ -86,7 +86,7 @@ abstract class XSharp.XPP.ClassObject implements ILateBound
                 oValue := OOPHelpers.ValueConvert(uValue, fld:FieldType)
                 fld:SetValue(null, oValue)
                 // add member to cache
-                OOPHelpers.AddMember(self:_Type, cName, fld)
+                OOPHelpers.AddMemberToCache(self:_Type, cName, fld)
                 return
             endif
         next
@@ -95,7 +95,7 @@ abstract class XSharp.XPP.ClassObject implements ILateBound
                 oValue := OOPHelpers.ValueConvert(uValue, prop:PropertyType)
                 prop:SetValue(null, (object) uValue)
                 // add member to cache
-                OOPHelpers.AddMember(self:_Type, cName, prop)
+                OOPHelpers.AddMemberToCache(self:_Type, cName, prop)
                 return
             endif
         next

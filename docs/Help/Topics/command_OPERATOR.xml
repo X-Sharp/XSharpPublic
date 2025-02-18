@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-14T15:14:34.311+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-02-13T11:25:55.202+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>OPERATOR Statement</title>
   <keywords>
     <keyword>Compile-time declaration</keyword>
@@ -14,7 +14,7 @@
       <para styleclass="Heading1">OPERATOR Statement</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Declare a method to access a non-exported or virtual instance variable.</para>
+    <para styleclass="Normal">Declare an operator method for a class which defines how standard operators like &quot;+&quot;, &quot;-&quot;, &quot;++&quot; etc operate when used with instances of the class as arguments</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal"><tab />[Attributes] [Modifiers] <tab /><text style="font-weight:bold;">OPERATOR </text>&lt;<text styleclass="Italic">operatortype</text>&gt;</para>
     <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>

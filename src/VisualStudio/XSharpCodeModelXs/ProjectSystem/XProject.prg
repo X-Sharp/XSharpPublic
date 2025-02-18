@@ -21,7 +21,7 @@ USING XSharp.Settings
 #pragma options ("az", ON)
 BEGIN NAMESPACE XSharpModel
     [DebuggerDisplay("{NameId,nq}")];
-        CLASS XProject
+    CLASS XProject
 #region Fields
     // Fields
     PROTECTED _id    := -1                    AS INT64
@@ -411,10 +411,10 @@ BEGIN NAMESPACE XSharpModel
         RETURN NULL
 
     STATIC METHOD IsXSharpProject(fileName as string) AS LOGIC
-         if (String.IsNullOrEmpty(fileName))
-                return false
-         endif
-         return String.Equals(System.IO.Path.GetExtension(fileName), ".xsproj", StringComparison.OrdinalIgnoreCase)
+        if (String.IsNullOrEmpty(fileName))
+            return false
+        endif
+        return String.Equals(System.IO.Path.GetExtension(fileName), ".xsproj", StringComparison.OrdinalIgnoreCase)
 
     METHOD AddProjectReference(Url AS STRING) AS LOGIC
         IF !IsXSharpProject(Url)

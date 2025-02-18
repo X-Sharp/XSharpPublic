@@ -201,10 +201,11 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.Equal( 0, (INT) a[1])
 			Assert.Equal( 8, (INT) a[6])
 
-			a := {8,2,1,4,3,0}
+			a := {8,2,1,4,3,0,8}
 			ASort(a , 0 , 100)
 			Assert.Equal( 0, (INT) a[1])
-			Assert.Equal( 8, (INT) a[6])
+            Assert.Equal( 8, (INT) a[6])
+            Assert.Equal( 8, (INT) a[7])
 
 			a := {8,2,1,4,3,0}
 			ASort(a , 0 , 100,IntegerSorter{})
@@ -215,13 +216,22 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.Equal( 0, (INT) a[6])
 			Assert.Equal( 8, (INT) a[1])
 
-            a := {{ 1,1}, {1,2}, {2,3}, {2,4}}
+            a := {{ 1,1}, {2,3}, {1,2}, {2,4}}
             ASort(a, 0, 4, {|x,y| IIF (x[1] == y[1], x[2] <= y[2], x[1] < y[1])})
 
 			Assert.Equal( 1, (INT) a[1,2])
 			Assert.Equal( 2, (INT) a[2,2])
 			Assert.Equal( 3, (INT) a[3,2])
 			Assert.Equal( 4, (INT) a[4,2])
+
+            a := {{ 1,1}, {2,3}, {1,2}, {2,4}}
+            ASort(a, 0, 4, {|x,y| x[1] <= y[1]})
+
+			Assert.Equal( 1, (INT) a[1,2])
+			Assert.Equal( 2, (INT) a[2,2])
+			Assert.Equal( 3, (INT) a[3,2])
+			Assert.Equal( 4, (INT) a[4,2])
+
 
 
 		[Trait("Category", "Array")];

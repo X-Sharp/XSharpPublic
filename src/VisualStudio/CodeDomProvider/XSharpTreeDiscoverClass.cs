@@ -279,7 +279,6 @@ namespace XSharp.CodeDom
             }
             CurrentType = newClass;
         }
-       
 
         public override void EnterClass_(XSharpParser.Class_Context context)
         {
@@ -428,6 +427,7 @@ namespace XSharp.CodeDom
                 CurrentType = null;
             }
         }
+
         public override void ExitStructure_([NotNull] XSharpParser.Structure_Context context)
         {
             closeType(context._Members);
@@ -445,7 +445,6 @@ namespace XSharp.CodeDom
             closeType(context._Members);
             base.ExitInterface_(context);
         }
-
 
         public override void EnterMethod([NotNull] XSharpParser.MethodContext context)
         {
@@ -520,8 +519,6 @@ namespace XSharp.CodeDom
             _locals.Clear();
         }
 
-
-
         public override void EnterEvent_([NotNull] XSharpParser.Event_Context context)
         {
             // Nested types are stored in Source code completely, so no need to analyze
@@ -548,7 +545,6 @@ namespace XSharp.CodeDom
             this.addClassMember(new XMemberType(evt.Name, MemberTypes.Event, false, null, "Void"));
             SaveSourceCode(evt, context);
         }
-
         public override void EnterConstructor([NotNull] XSharpParser.ConstructorContext context)
         {
             // Nested types are stored in Source code completely, so no need to analyze
@@ -697,7 +693,6 @@ namespace XSharp.CodeDom
             }
             return local;
         }
-
         
         private IXTypeSymbol findType(CodeExpression expr)
         {

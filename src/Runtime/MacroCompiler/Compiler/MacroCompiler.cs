@@ -106,6 +106,14 @@ namespace XSharp.Runtime
             var m = compiler.Compile(macro);
             if (m.Diagnostic != null)
             {
+                if (RuntimeState.MacroCompilerErrorHandler != null)
+                {
+                    var result = RuntimeState.MacroCompilerErrorHandler(macro, m.Diagnostic);
+                    if (result != null)
+                    {
+                        return result;
+                    }
+                }
                 throw m.Diagnostic;
             }
             if (m.CreatesAutoVars)
@@ -123,6 +131,14 @@ namespace XSharp.Runtime
             var m = compiler.Compile(macro);
             if (m.Diagnostic != null)
             {
+                if (RuntimeState.MacroCompilerErrorHandler != null)
+                {
+                    var result = RuntimeState.MacroCompilerErrorHandler(macro, m.Diagnostic);
+                    if (result != null)
+                    {
+                        return result;
+                    }
+                }
                 throw m.Diagnostic;
             }
             if (m.CreatesAutoVars)
@@ -138,6 +154,14 @@ namespace XSharp.Runtime
             var m = compiler.Compile(macro);
             if (m.Diagnostic != null)
             {
+                if (RuntimeState.MacroCompilerErrorHandler != null)
+                {
+                    var result = RuntimeState.MacroCompilerErrorHandler(macro, m.Diagnostic);
+                    if (result != null)
+                    {
+                        return new _Codeblock(result, macro, isCodeblock,false);
+                    }
+                }
                 throw m.Diagnostic;
             }
             if (m.CreatesAutoVars)
@@ -152,6 +176,14 @@ namespace XSharp.Runtime
             var m = compiler.Compile(macro);
             if (m.Diagnostic != null)
             {
+                if (RuntimeState.MacroCompilerErrorHandler != null)
+                {
+                    var result = RuntimeState.MacroCompilerErrorHandler(macro, m.Diagnostic);
+                    if (result != null)
+                    {
+                        return new _Codeblock(result, macro, true, false); ;
+                    }
+                }
                 throw m.Diagnostic;
             }
             if (m.CreatesAutoVars)

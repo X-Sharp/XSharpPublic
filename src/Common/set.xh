@@ -35,10 +35,10 @@
 
 #command  SET EXACT <x:ON,OFF,&>      =>  Set( Set.Exact, <(x)> )
 #command  SET FIXED <x:ON,OFF,&>      =>  Set( Set.Fixed, <(x)> )
-#command  SET DECIMALS TO <x>         =>  Set( Set.Decimals, <(x)>)
+#command  SET DECIMALS TO <x>         =>  Set( Set.Decimals, <x>)
 #command  SET DECIMALS TO             =>  Set( Set.Decimals, 0)
 #command  SET DIGITFIXED <x:ON,OFF,&> =>  Set( Set.DigitFixed, <(x)> )
-#command  SET DIGITS TO <x>           =>  Set( Set.Digits, <(x)>)
+#command  SET DIGITS TO <x>           =>  Set( Set.Digits, <x>)
 #command  SET DIGITS TO               =>  Set( Set.Digits, 10)
 
 #command  SET INTERNATIONAL TO <id>   => SetInternational(#<id>)

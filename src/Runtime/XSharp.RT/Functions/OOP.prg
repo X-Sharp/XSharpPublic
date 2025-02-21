@@ -1295,6 +1295,7 @@ internal static class OOPHelpers
                         return oOperator:Invoke(null, <object>{oValue})
                     catch
                         // do not throw error here. We will try to convert the value below with Convert.ChangeType
+                        nop
                     end try
                 endif
             endif

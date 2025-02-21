@@ -1732,12 +1732,12 @@ METHOD OrderScope( nScope, uValue )
 		DEFAULT(REF nScope, TOPSCOPE)
 		IF nScope == TOPSCOPE
 			n := DBOI_SCOPETOP
-			IF IsNil( uValue )
+			IF IsNil( uValue ) .AND. PCount() >1
 				n := DBOI_SCOPETOPCLEAR
 			ENDIF
 		ELSE
 			n := DBOI_SCOPEBOTTOM
-			IF IsNil( uValue )
+			IF IsNil( uValue ) .AND. PCount() >1
 				n := DBOI_SCOPEBOTTOMCLEAR
 			ENDIF
 		ENDIF

@@ -20,7 +20,6 @@
     <NamedArgs>False</NamedArgs>
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
-    <PlatformTarget>x86</PlatformTarget>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
     <WarningsAsErrors />

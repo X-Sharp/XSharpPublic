@@ -396,7 +396,7 @@ internal static class OOPHelpers
                 else
                     sb:Append(  ", ")
                 endif
-                sb:Append( i"{p:Name} AS {GetTypename(p:ParameterType)}")
+                sb:Append( p:Name+" AS "+GetTypename(p:ParameterType))
             next
             sb:AppendLine(")")
         next
@@ -517,7 +517,7 @@ internal static class OOPHelpers
                 if oArg != null
                     oArgs[nArg] := oArg
                 else
-                    oArgs[nArg] := nil
+                    oArgs[nArg] := null
                 endif
             next
         endcase

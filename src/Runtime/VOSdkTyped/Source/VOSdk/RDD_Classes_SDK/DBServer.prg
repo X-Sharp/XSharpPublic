@@ -679,7 +679,7 @@ partial class DbServer inherit DataServer
         endcase
 
         return
- 
+
 
     /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
     constructor( cFile as usual, lShareMode := null as object, lReadOnlyMode := null as object, xDriver:= "" as string, aRDD := null_array as array)
@@ -757,7 +757,7 @@ partial class DbServer inherit DataServer
                 cTemp + "_" + cFileName }
 
 
-            oHLStatus := nil
+            oHLStatus := NULL_OBJECT
 
 
             self:wWorkArea := VoDbSetSelect( -1 )

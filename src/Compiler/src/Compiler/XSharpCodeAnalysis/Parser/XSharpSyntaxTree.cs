@@ -285,7 +285,7 @@ namespace Microsoft.CodeAnalysis
             get
             {
                 var n = XNode;
-                return n is XSharpParserRuleContext prc && prc.Start.Type == XSharpLexer.NIL;
+                return n is XSharpParserRuleContext prc && prc.Start?.Type == XSharpLexer.NIL;
             }
 
         }

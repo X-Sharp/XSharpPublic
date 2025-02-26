@@ -559,11 +559,7 @@ internal static class OOPHelpers
                     endif
 
                 otherwise
-                    result := oDefAttrib:Value
-                    // for usuals there is no need to convert.
-                    if oPar:ParameterType != typeof(usual)
-                        result := OOPHelpers.ValueConvert(result, oPar:ParameterType)
-                    endif
+                    result := OOPHelpers.ValueConvert(oDefAttrib:Value, oPar:ParameterType)
                 end switch
             end if
         endif
@@ -1254,7 +1250,10 @@ internal static class OOPHelpers
 
 
     static method ValueConvert(uValue as usual,toType as System.Type) as object
-        local oValue := null as object
+        local oResult := uValue as OBJECT
+        if oResult?:GetType() == toType
+            RETURN oResult
+        endif
         if toType == typeof(float)
             return (float) uValue
         elseif uValue:SystemType == toType
@@ -1275,24 +1274,23 @@ internal static class OOPHelpers
                 return (object) uValue
             elseif uValue:IsPtr .and. (toType == typeof(ptr) .or. toType:IsPointer)
                 return IntPtr{(ptr) uValue}
-            else
+            elseif oResult != null
                 // check to see if the source type contains an implicit converter
-                local oRealValue := uValue as object
-                var oOperator := FindOperator(oRealValue:GetType(), toType)
+                var oOperator := FindOperator(oResult:GetType(), toType)
                 if oOperator != null_object
-                    oValue := oRealValue
+                    NOP
                 else
                     oOperator := FindOperator(typeof(usual), toType)
                     if oOperator != null_object
                         // box the usual
-                        oValue := __castclass(object, uValue)
+                        oResult := __castclass(object, uValue)
                     endif
                 endif
                 if oOperator != null_object
                     // oValue is either a boxed USUAL (for operators of the USUAL type)
                     // or the real thing, depending on the operator that was chosen
                     try
-                        return oOperator:Invoke(null, <object>{oValue})
+                        return oOperator:Invoke(null, <object>{oResult})
                     catch
                         // do not throw error here. We will try to convert the value below with Convert.ChangeType
                         nop
@@ -1301,18 +1299,20 @@ internal static class OOPHelpers
             endif
             // when we get here then there is no operator and we will try to change the type..
             // or the call to the operator failed
-            local oRet as object
             try
-                oRet := uValue
-                oRet := Convert.ChangeType(oRet, toType)
+                if toType:IsEnum
+                    oResult := System.Enum.ToObject(toType, oResult)
+                else
+                    oResult := Convert.ChangeType(oResult, toType)
+                endif
             catch
                 local ex as Error
-                ex := Error{Gencode.EG_WRONGCLASS, "", "Could not convert value "+oValue:ToString() + " to type " + toType:Name}
+                ex := Error{Gencode.EG_WRONGCLASS, "", i"Could not convert value {oResult} to type {toType}" }
                 ex:FuncSym := __function__
                 ex:Stack := ErrorStack()
                 throw ex
             end try
-            return oRet
+            return oResult
         endif
 
     static method DoSend(oObject as object, cMethod as string, args as usual[], cCaller as string) as usual

@@ -54,9 +54,9 @@ namespace XSharp.Project
             this.lblGeneralLine = new System.Windows.Forms.Label();
             this.txtDefineConstants = new System.Windows.Forms.TextBox();
             this.lblDefineConstants = new System.Windows.Forms.Label();
-            this.lblDisabledWarnings = new System.Windows.Forms.Label();
+            this.lblNoWarn = new System.Windows.Forms.Label();
             this.cboWarningLevel = new System.Windows.Forms.ComboBox();
-            this.txtDisabledWarnings = new System.Windows.Forms.TextBox();
+            this.txtNoWarn = new System.Windows.Forms.TextBox();
             this.txtOutputPath = new System.Windows.Forms.TextBox();
             this.btnOutputPathBrowse = new System.Windows.Forms.Button();
             this.lblIntermediateOutputPath = new System.Windows.Forms.Label();
@@ -107,9 +107,9 @@ namespace XSharp.Project
             this.mainPanel.Controls.Add(this.panelTop, 0, 0);
             this.mainPanel.Controls.Add(this.txtDefineConstants, 1, 1);
             this.mainPanel.Controls.Add(this.lblDefineConstants, 0, 1);
-            this.mainPanel.Controls.Add(this.lblDisabledWarnings, 0, 9);
+            this.mainPanel.Controls.Add(this.lblNoWarn, 0, 9);
             this.mainPanel.Controls.Add(this.cboWarningLevel, 1, 8);
-            this.mainPanel.Controls.Add(this.txtDisabledWarnings, 1, 9);
+            this.mainPanel.Controls.Add(this.txtNoWarn, 1, 9);
             this.mainPanel.Controls.Add(this.txtOutputPath, 1, 16);
             this.mainPanel.Controls.Add(this.btnOutputPathBrowse, 2, 16);
             this.mainPanel.Controls.Add(this.lblIntermediateOutputPath, 0, 17);
@@ -423,18 +423,18 @@ namespace XSharp.Project
             this.lblDefineConstants.TabIndex = 4;
             this.lblDefineConstants.Text = "Defines for the preprocessor";
             // 
-            // lblDisabledWarnings
+            // lblNoWarn
             // 
-            this.lblDisabledWarnings.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblDisabledWarnings.AutoSize = true;
-            this.lblDisabledWarnings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.lblDisabledWarnings.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lblDisabledWarnings.Location = new System.Drawing.Point(20, 210);
-            this.lblDisabledWarnings.Margin = new System.Windows.Forms.Padding(20, 3, 3, 6);
-            this.lblDisabledWarnings.Name = "lblDisabledWarnings";
-            this.lblDisabledWarnings.Size = new System.Drawing.Size(99, 13);
-            this.lblDisabledWarnings.TabIndex = 15;
-            this.lblDisabledWarnings.Text = "&Suppress warnings:";
+            this.lblNoWarn.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblNoWarn.AutoSize = true;
+            this.lblNoWarn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.lblNoWarn.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.lblNoWarn.Location = new System.Drawing.Point(20, 210);
+            this.lblNoWarn.Margin = new System.Windows.Forms.Padding(20, 3, 3, 6);
+            this.lblNoWarn.Name = "lblNoWarn";
+            this.lblNoWarn.Size = new System.Drawing.Size(99, 13);
+            this.lblNoWarn.TabIndex = 15;
+            this.lblNoWarn.Text = "&Suppress warnings:";
             // 
             // cboWarningLevel
             // 
@@ -455,16 +455,16 @@ namespace XSharp.Project
             this.cboWarningLevel.Size = new System.Drawing.Size(125, 21);
             this.cboWarningLevel.TabIndex = 16;
             // 
-            // txtDisabledWarnings
+            // txtNoWarn
             // 
-            this.txtDisabledWarnings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDisabledWarnings.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.txtDisabledWarnings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.txtDisabledWarnings.Location = new System.Drawing.Point(198, 207);
-            this.txtDisabledWarnings.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
-            this.txtDisabledWarnings.Name = "txtDisabledWarnings";
-            this.txtDisabledWarnings.Size = new System.Drawing.Size(300, 20);
-            this.txtDisabledWarnings.TabIndex = 17;
+            this.txtNoWarn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtNoWarn.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.txtNoWarn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.txtNoWarn.Location = new System.Drawing.Point(198, 207);
+            this.txtNoWarn.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
+            this.txtNoWarn.Name = "txtNoWarn";
+            this.txtNoWarn.Size = new System.Drawing.Size(300, 20);
+            this.txtNoWarn.TabIndex = 17;
             // 
             // txtOutputPath
             // 
@@ -850,9 +850,9 @@ namespace XSharp.Project
         internal System.Windows.Forms.Label treatWarningsAsErrorsLineLabel;
         internal System.Windows.Forms.Label treatWarningsAsErrorsLabel;
         internal System.Windows.Forms.Label lblWarningLevel;
-        internal System.Windows.Forms.Label lblDisabledWarnings;
+        internal System.Windows.Forms.Label lblNoWarn;
         internal System.Windows.Forms.ComboBox cboWarningLevel;
-        internal System.Windows.Forms.TextBox txtDisabledWarnings;
+        internal System.Windows.Forms.TextBox txtNoWarn;
         internal System.Windows.Forms.RadioButton rbWarningNone;
         internal System.Windows.Forms.RadioButton rbWarningAll;
         internal System.Windows.Forms.RadioButton rbWarningSpecific;

@@ -36,9 +36,9 @@ namespace XSharp.Project
         {
             if (value is string str)
             {
-                if (String.Compare(str, "Always", true) == 0) return RunPostBuildEvent.Always;
-                if (String.Compare(str, "OnOutputUpdated", true) == 0) return RunPostBuildEvent.OnOutputUpdated;
-                if (String.Compare(str, "OnBuildSuccess", true) == 0) return RunPostBuildEvent.OnBuildSuccess;
+                if (string.Compare(str, nameof(RunPostBuildEvent.Always), true) == 0) return RunPostBuildEvent.Always;
+                if (string.Compare(str, nameof(RunPostBuildEvent.OnOutputUpdated), true) == 0) return RunPostBuildEvent.OnOutputUpdated;
+                if (string.Compare(str, nameof(RunPostBuildEvent.OnBuildSuccess), true) == 0) return RunPostBuildEvent.OnBuildSuccess;
 
             }
             return RunPostBuildEvent.Always;
@@ -149,10 +149,10 @@ namespace XSharp.Project
                             result = XSharpProjectFileConstants.DialectCore;
                             break;
                         case Dialect.VO:
-                            result = XSharpProjectFileConstants.DialectVO; 
+                            result = XSharpProjectFileConstants.DialectVO;
                             break;
                         case Dialect.Vulcan:
-                            result = XSharpProjectFileConstants.DialectVulcan;  
+                            result = XSharpProjectFileConstants.DialectVulcan;
                             break;
                         case Dialect.Harbour:
                             result = XSharpProjectFileConstants.DialectHarbour;
@@ -222,11 +222,11 @@ namespace XSharp.Project
         {
             if (value is string str)
             {
-                if (string.Compare(str, "x86", true) == 0) return Platform.x86;
-                if (string.Compare(str, "anycpu", true) == 0) return Platform.AnyCPU;
-                if (string.Compare(str, "x64", true) == 0) return Platform.x64;
-                if (string.Compare(str, "arm", true) == 0) return Platform.Arm;
-                if (string.Compare(str, "itanium", true) == 0) return Platform.Itanium;
+                if (string.Compare(str, nameof(Platform.x86), true) == 0) return Platform.x86;
+                if (string.Compare(str, nameof(Platform.AnyCPU), true) == 0) return Platform.AnyCPU;
+                if (string.Compare(str, nameof(Platform.x64), true) == 0) return Platform.x64;
+                if (string.Compare(str, nameof(Platform.Arm), true) == 0) return Platform.Arm;
+                if (string.Compare(str, nameof(Platform.Itanium), true) == 0) return Platform.Itanium;
 
             }
             return Platform.AnyCPU;
@@ -293,12 +293,12 @@ namespace XSharp.Project
         {
             if (value is string str)
             {
-                if (string.Compare(str, "none", true) == 0) return DebugType.None;
-                if (string.Compare(str, "full", true) == 0) return DebugType.Full;
+                if (string.Compare(str, nameof(DebugType.None), true) == 0) return DebugType.None;
+                if (string.Compare(str, nameof(DebugType.Full), true) == 0) return DebugType.Full;
+                if (string.Compare(str, nameof(DebugType.Pdbonly), true) == 0) return DebugType.Pdbonly;
+                if (string.Compare(str, nameof(DebugType.Portable), true) == 0) return DebugType.Portable;
+                if (string.Compare(str, nameof(DebugType.Embedded), true) == 0) return DebugType.Embedded;
                 if (string.Compare(str, "pdb-only", true) == 0) return DebugType.Pdbonly;
-                if (string.Compare(str, "pdbonly", true) == 0) return DebugType.Pdbonly;
-                if (string.Compare(str, "portable", true) == 0) return DebugType.Portable;
-                if (string.Compare(str, "embedded", true) == 0) return DebugType.Embedded;
 
             }
             return DebugType.None;

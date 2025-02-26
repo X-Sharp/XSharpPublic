@@ -43,7 +43,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>9032;9043;618;162;165;649;9025</DisabledWarnings>
+    <NoWarn>9032;9043;618;162;165;649;9025</NoWarn>
     <WarningLevel>4</WarningLevel>
     <PPO>false</PPO>
   </PropertyGroup>
@@ -56,9 +56,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>9032;9043;618;162;165;649;9025</DisabledWarnings>
+    <NoWarn>9032;9043;618;162;165;649;9025</NoWarn>
     <PPO>false</PPO>
-  </PropertyGroup>
+  
+</PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />

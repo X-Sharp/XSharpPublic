@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -19,16 +19,6 @@ namespace Microsoft.VisualStudio.Project
     [CLSCompliant(false)]
     public class XProjectConfig : ProjectConfig
     {
-        internal const string X86Platform = "x86";
-        internal const string X64Platform = "x64";
-        internal const string IA64Platform = "ia64";
-        internal const string AnyCpuPlatform = "AnyCPU";
-
-        internal const string DebugConfiguration = "Debug";
-        internal const string ReleaseConfiguration = "Release";
-
-        internal const string ConfigConditionString = " '$(Configuration)' == '{0}' ";
-        internal const string PlatformConditionString = " '$(Platform)' == '{0}' ";
         internal const string ConfigAndPlatformConditionString = " '$(Configuration)|$(Platform)' == '{0}|{1}' ";
 
         /// <summary>

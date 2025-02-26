@@ -172,8 +172,8 @@ class BuildPropertyPagePanel
     const descOptimize := "Should compiler optimize output? (/optimize)" as string
     const captUseSharedCompilation := "Use Shared Compiler" as string
     const descUseSharedCompilation := "Should the shared compiler be used to compile the project? (Faster, but may hide some compiler errors) (/shared)" as string
-    const captDisabledWarnings := "Suppress Specific Warnings" as string
-    const descDisabledWarnings := "Specify a list of warnings to suppress (/nowarn)" as string
+    const captNoWarn := "Suppress Specific Warnings" as string
+    const descNoWarn := "Specify a list of warnings to suppress (/nowarn)" as string
     const captWarningLevel := "Warning Level" as string
     const descWarningLevel := "Set the warning level to a value between 0 and 4 (/warn)" as string
     const captTreatWarningsAsErrors := "Warnings As Errors" as string

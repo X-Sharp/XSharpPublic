@@ -44,14 +44,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DisabledWarnings>9032;9043;165;649;9025;9026;9076;9020;9021</DisabledWarnings>
+    <NoWarn>9032;9043;165;649;9025;9026;9076;9020;9021</NoWarn>
 ;    <CommandLineOption>/define:__VULCAN__</CommandLineOption>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
     <DefineConstants>TRACE</DefineConstants>
-    <DisabledWarnings>9032;9043;618;162;165;649;9025</DisabledWarnings>
+    <NoWarn>9032;9043;618;162;165;649;9025</NoWarn>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>

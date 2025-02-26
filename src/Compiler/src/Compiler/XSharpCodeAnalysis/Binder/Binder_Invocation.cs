@@ -63,11 +63,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             return arguments;
         }
 
-
-private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxNode syntax, CSharpCompilation compilation,DiagnosticBag diagnostics)
+        private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxNode syntax, CSharpCompilation compilation, DiagnosticBag diagnostics)
         {
             TypeSymbol parameterType = parameter.Type;
-            var defaultExpr = parameter.GetVODefaultParameter(syntax, compilation);
+            var defaultExpr = parameter.GetVODefaultParameter(syntax, compilation, diagnostics);
             if (defaultExpr == null)
                 return null;
             if (!Equals(defaultExpr.Type, parameterType))

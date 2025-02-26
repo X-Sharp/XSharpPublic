@@ -28,13 +28,20 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        internal static BoundStatement RewriteXSharpMethod(MethodSymbol method, 
-            BoundStatement body, 
+        internal static BoundStatement RewriteXSharpMethod(MethodSymbol method,
+            BoundStatement body,
             int methodOrdinal,
             TypeCompilationState compilationState,
             DiagnosticBag diagnostics)
         {
-
+            var methodNode = method.GetNonNullSyntaxNode();
+            if (!methodNode.XGenerated)
+            {
+                foreach (var par in method.Parameters)
+                {
+                    par.ValidateDefaultParameter(diagnostics);
+                }
+            }
             switch (method.Name)
             {
                 case XSharpSpecialNames.AppInit:
@@ -56,8 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case MethodKind.PropertyGet:
                 case MethodKind.PropertySet:
-                    var node = method.GetNonNullSyntaxNode();
-                    if (node.XGenerated)
+                    if (methodNode.XGenerated)
                     {
                         if (body is BoundBlock oldbody )
                         {
@@ -68,7 +74,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
             }
 
-            var xnode = method.GetNonNullSyntaxNode().XNode as XSharpParserRuleContext;
+            var xnode = methodNode.XNode as XSharpParserRuleContext;
             if (xnode is XSharpParser.ClsmethodContext cmc)
             {
                 xnode = cmc.Member;
@@ -79,7 +85,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (xnode is XSharpParser.IMemberContext iec)
             {
-                 body = LocalRewriter.RemoveUnusedVars(iec.Data, body, diagnostics);
+                body = LocalRewriter.RemoveUnusedVars(iec.Data, body, diagnostics);
             }
 
             return body;

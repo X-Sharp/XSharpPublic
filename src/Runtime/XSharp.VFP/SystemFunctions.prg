@@ -23,7 +23,7 @@ FUNCTION Sys(nSetting, uNewValue, uContextParam3) AS USUAL CLIPPER
 
     CASE 3
         // Legal File Name
-        VAR tempFileName = GUID.NewGuid():ToString()
+        VAR tempFileName = System.Guid.NewGuid():ToString()
         retVal := tempFileName:Replace("-", "")
         retVal := Left(retVal,8)
 
@@ -40,10 +40,11 @@ FUNCTION Sys(nSetting, uNewValue, uContextParam3) AS USUAL CLIPPER
         RETURN FALSE
 
     CASE 2003 // Current directory.
-        retVal := Environment.CurrentDirectory
-        IF ( retVal:IndexOf(":") >= 0 )
-            retVal := retVal:SubString( retVal:IndexOf(":")+1 )
+        var strRetVal := Environment.CurrentDirectory
+        IF ( strRetVal:IndexOf(":") >= 0 )
+            strRetVal := strRetVal:Substring( strRetVal:IndexOf(":")+1 )
         ENDIF
+        retVal := strRetVal
 
     CASE 2015 // Returns a unique 10-character procedure name that begins with an underscore followed by a combination of letters and numbers.
         VAR str := "_" + Sys(3)
@@ -57,7 +58,7 @@ FUNCTION Sys(nSetting, uNewValue, uContextParam3) AS USUAL CLIPPER
         // Try to set a value
         IF !IsNil(uNewValue)
             IF IsNumeric(uContextParam3) .AND. (uContextParam3 > 0 )
-                retVal := str( uContextParam3 ) // Bring you back your setting
+                retVal := Str( uContextParam3 ) // Bring you back your setting
             ELSE
                 SWITCH uNewValue // This what VFP returns on MY computer ;)
                 CASE 1

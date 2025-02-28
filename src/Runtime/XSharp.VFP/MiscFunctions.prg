@@ -5,6 +5,10 @@
 //
 
 
+/// <include file="VFPDocs.xml" path="Runtimefunctions/id/*" />
+FUNCTION Id( ) AS STRING
+    RETURN Sys(0)
+
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/iscolor/*" />
 FUNCTION IsColor( ) AS LOGIC
     RETURN TRUE

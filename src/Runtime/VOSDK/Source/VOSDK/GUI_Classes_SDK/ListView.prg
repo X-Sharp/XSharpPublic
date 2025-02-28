@@ -493,22 +493,18 @@ METHOD DeleteItem(nItem)
 METHOD Destroy()  AS USUAL CLIPPER
 
     if oLargeImageList != NULL_OBJECT
-        oLargeImageList:Destroy()
         ListView_SetImageList(SELF:Handle(), NULL, LVSIL_NORMAL)
     	oLargeImageList := NULL_OBJECT
     endif
     if oSmallImageList != NULL_OBJECT
-        oSmallImageList:Destroy()
         ListView_SetImageList(SELF:Handle(), NULL, LVSIL_SMALL)
     	oSmallImageList := NULL_OBJECT
     endif
     if oStateImageList != NULL_OBJECT
-        oStateImageList:Destroy()
 	    ListView_SetImageList(SELF:Handle(), NULL, LVSIL_STATE)
     	oStateImageList := NULL_OBJECT
     endif
     if oDragImageList != NULL_OBJECT
-        oDragImageList:Destroy()
     	oDragImageList := NULL_OBJECT
     endif
 	aColumns := NULL_ARRAY

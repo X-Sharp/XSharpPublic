@@ -48,7 +48,7 @@ CLASS SplitWindow INHERIT ChildAppWindow
         RETURN SELF
 
     /// <include file="Gui.xml" path="doc/SplitWindow.Dispatch/*" />
-    METHOD Dispatch(oEvent AS @@Event)
+    METHOD Dispatch(oEvent AS @@Event) AS LONG
         LOCAL oEvt := oEvent AS Event
         IF (oEvt:uMsg == WM_SETFOCUS) .AND. oSplitView != NULL_OBJECT
             VAR oPane := oSplitView:GetPaneClient(1)

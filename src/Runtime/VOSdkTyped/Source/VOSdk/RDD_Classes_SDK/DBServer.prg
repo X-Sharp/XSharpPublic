@@ -757,7 +757,7 @@ partial class DbServer inherit DataServer
                 cTemp + "_" + cFileName }
 
 
-            oHLStatus := nil
+            oHLStatus := NULL_OBJECT
 
 
             self:wWorkArea := VoDbSetSelect( -1 )

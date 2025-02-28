@@ -64,10 +64,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
 
-private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxNode syntax, CSharpCompilation compilation, BindingDiagnosticBag diagnostics)
+        private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxNode syntax, CSharpCompilation compilation, BindingDiagnosticBag diagnostics)
         {
             TypeSymbol parameterType = parameter.Type;
-            var defaultExpr = parameter.GetVODefaultParameter(syntax, compilation);
+            var defaultExpr = parameter.GetVODefaultParameter(syntax, compilation, diagnostics);
             if (defaultExpr == null)
                 return null;
             if (!Equals(defaultExpr.Type, parameterType))
@@ -345,7 +345,7 @@ private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxN
             }
             if (node.Expression.Kind() == SyntaxKind.SimpleMemberAccessExpression
                 && node.Expression is MemberAccessExpressionSyntax maes &&
-                maes.Expression is IdentifierNameSyntax ins )
+                maes.Expression is IdentifierNameSyntax ins)
             {
                 // oTest:DoSomething(1)
                 // this may be a method call or a array access

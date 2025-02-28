@@ -39,7 +39,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public const int VO_NOT = BIT_NOT;
         public const int VO_OR = BIT_OR;
         public const int VO_XOR = BIT_XOR;
-        #endregion                          
+        #endregion
         #region Static Helper Methods
         // Several Help methods that can be used for colorizing in an editor
         public const int EOF = IntStreamConstants.Eof;
@@ -77,6 +77,27 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 || (iToken > PP_FIRST && iToken < PP_LAST)
                 || iToken == SEMI;
         }
+        public static bool IsWordOperator(int iToken)
+        {
+            switch (iToken)
+            {
+                case BIT_AND:
+                case BIT_OR:
+                case BIT_NOT:
+                case BIT_XOR:
+                case LOGIC_AND:
+                case LOGIC_OR:
+                case LOGIC_NOT:
+                case LOGIC_XOR:
+                case FOX_AND:
+                case FOX_OR:
+                case FOX_NOT:
+                case FOX_XOR:
+                    return true;
+            }
+            return false;
+        }
+
         public static bool IsConstant(int iToken)
         {
             return IsLiteral(iToken);
@@ -119,7 +140,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return false;
         }
         /// <summary>
-        /// Return true if the operator can be used between 2 identifiers, such as 
+        /// Return true if the operator can be used between 2 identifiers, such as
         /// DOT, COLON, ALIAS, COLONCOLON
         /// </summary>
         /// <param name="iToken"></param>

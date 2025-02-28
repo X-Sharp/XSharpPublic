@@ -27,7 +27,7 @@ using static Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.XSharpLanguageP
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using TokenType = System.Int32;
-  
+
     internal class XSharpPreprocessor
     {
         static Dictionary<string, string> embeddedHeaders = null;
@@ -251,7 +251,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         bool ProcessingIncludeFile => _files.Count > 0;
         public string StdDefs { get; set; } = string.Empty;
         internal List<PragmaBase> Pragmas;
-
 
         void addMacro(string macro, TokenType type)
         {
@@ -617,7 +616,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #endif
         }
 
-
         /// <summary>
         /// Pre-processes the input stream. Reads #Include files, processes #ifdef commands and translations from #defines, macros and UDCs
         /// </summary>
@@ -816,8 +814,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return _fileName;
             }
         }
-
-
         XSharpToken FixToken(XSharpToken token)
         {
             return token;
@@ -898,7 +894,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return _defStates.Count == 0 || _defStates.Peek();
         }
-
 
         bool IsDefinedMacro(XSharpToken t)
         {
@@ -1377,7 +1372,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return true;
 
         }
-
 
         private bool IsDefined(string define, XSharpToken token)
         {
@@ -2191,7 +2185,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             error = ErrorCode.WRN_IllegalPPWarning;
                             errortoken = i2;
                         }
-
                     }
                     else
                     {

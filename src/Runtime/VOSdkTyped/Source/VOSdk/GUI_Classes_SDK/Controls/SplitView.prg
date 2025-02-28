@@ -307,7 +307,7 @@ CLASS SplitView INHERIT Control
 
 		RETURN SELF
 
-	METHOD Dispatch(oEvent  AS @@Event)
+	METHOD Dispatch(oEvent  AS @@Event) AS LONG
 		//LOCAL oSize 	AS Dimension
 		//LOCAL lResize 	AS LOGIC
 		//LOCAL oEvt := oEvent AS @@Event

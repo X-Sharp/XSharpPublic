@@ -176,7 +176,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             hasErrors = true;
                             break;
                     }
-
                 }
             }
             for (int i = 0; i < right.Length && !hasErrors; i++)
@@ -367,14 +366,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (string.Compare(left, 0, right, 0, left.Length - 1, StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    // exp1 and expn 
+                    // exp1 and expn
                     if (left.Length == right.Length && right.EndsWith("1"))
                         return true;
                     // exp and expn
                     if (left.Length == right.Length + 1)
                         return true;
                 }
-
             }
             // try the other way around
             if (first)
@@ -447,7 +445,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
-
         }
         PPMatchToken[] analyzeMatchTokens(XSharpToken[] matchTokens, Dictionary<string, PPMatchToken> markers, int nestLevel = 0)
         {
@@ -463,7 +460,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
 
                     case XSharpLexer.LT:
-                        // These conditions match IsName() as last condition 
+                        // These conditions match IsName() as last condition
                         // because the other matches are faster
                         if (matchTokens.La(i + 2) == XSharpLexer.GT
                             && matchTokens.IsName(i + 1))
@@ -618,7 +615,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         result.Add(new PPMatchToken(token, PPTokenType.Token));
                         break;
                 }
-
             }
             if (nestLevel == 0)
             {
@@ -719,7 +715,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                     }
                 }
-
             }
             return mt;
         }
@@ -846,7 +841,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var token = resultTokens[i];
                 if (token.HasTrivia)
                 {
-                    // Add trivia tokens to result 
+                    // Add trivia tokens to result
                     result.AddRange(token.Trivia.Select(x => new PPResultToken(x, PPTokenType.Token)));
                 }
                 switch (token.Type)
@@ -937,7 +932,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XSharpLexer.LBRKT:
                         /*
                          * eat block
-                        * [ ... ], 
+                        * [ ... ],
                         * when nested then this is seen as a repeated result clause
                          */
                         _flags |= PPRuleFlags.HasOptionalResult;
@@ -971,7 +966,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     _flags |= PPRuleFlags.HasOptionalResult;
 
                                 }
-
                             }
                         }
                         else
@@ -1108,7 +1102,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         return true;
                     }
                 }
-
             }
             return false;
         }
@@ -1301,7 +1294,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // the token in the rule is the match marker
             // the words to be checked are the MoreTokens
             // This list includes the original commas because some restricted markers can have more than word:
-            // LIST ....  [<toPrint: TO PRINTER>] 
+            // LIST ....  [<toPrint: TO PRINTER>]
             // where others have a list of single words
             // #command SET CENTURY <x:ON,OFF,&>      => __SetCentury( <(x)> )
             XSharpToken lastToken = null;
@@ -1345,7 +1338,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     // when the ampersand is the last token, then we also include the following token
                     // This happens when we match the rule
-                    // #command SET CENTURY <x:ON,OFF,&>      => __SetCentury( <(x)> ) 
+                    // #command SET CENTURY <x:ON,OFF,&>      => __SetCentury( <(x)> )
                     // with the source SET CENTURY &MyVar
                     // This generates the output __SetCentury((MyVar))
                     // And this code
@@ -1558,7 +1551,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 break;
                             }
                         }
-
                     }
                     // truncate spaces at the end
                     iEnd = trimHiddenTokens(tokens, iSource, iEnd);
@@ -1576,7 +1568,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     break;
                 case PPTokenType.MatchOptional:
-                    // 
+                    //
                     // Get sublist of optional token and match with source
                     if (matchOptionalToken(mToken, tokens, ref iSource, matchInfo, matchedWithToken, ref iRule))
                     {
@@ -1590,7 +1582,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (end > tokens.Count - 1)
                 end = tokens.Count - 1;
-            while (start < end && tokens[end].Channel == Channel.Hidden )
+            while (start < end && tokens[end].Channel == Channel.Hidden)
             {
                 end--;
             }
@@ -1620,7 +1612,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     iRule++;
                 }
             }
-            // try to match remaining optional match markers until no matching 
+            // try to match remaining optional match markers until no matching
             // items are found or until the end of the token list is reached
             while (hasSkippedMarkers)
             {
@@ -1730,7 +1722,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                 }
             }
-            // we need to determine the tokens at the end of the tokens list that are not matched 
+            // we need to determine the tokens at the end of the tokens list that are not matched
             // in the results and then copy these to the result as well
             if (isTopLevel)
             {
@@ -2023,7 +2015,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     first = false;
                 action(resultToken, tokens, element, result);
             }
-
         }
         void blockifyResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
@@ -2264,7 +2255,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case PPTokenType.ResultSmartStringify:
                     // Only works when input text is delimited with parentheses
                     // if the match marker is a list then each element is stringified and it stays a list
-                    // for example: 
+                    // for example:
                     // #command SET CENTURY <x:ON,OFF,&>      => __SetCentury( <(x)> )
                     // the contents of x must be converted to a string
 

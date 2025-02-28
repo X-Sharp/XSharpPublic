@@ -326,7 +326,7 @@ METHOD WalkNode(oNode AS XmlNode) AS VOID
 		// Items to delete
 
 		VAR aTemp := List<STRING>{}
-		aTemp:Add("DisabledWarnings")
+		aTemp:Add("NoWarn")
 		aTemp:Add("ProjectName")
 		aTemp:Add("ProjectExt")
 		aTemp:Add("ProjectDir")

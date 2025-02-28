@@ -102,6 +102,7 @@ namespace XSharp
     {
         internal const string Allowdot = nameof(Allowdot);
         internal const string AllowOldStyleAssignments = nameof(AllowOldStyleAssignments);
+        internal const string AnyCPU = nameof(AnyCPU);
         internal const string AssemblyName = nameof(AssemblyName);
         internal const string AssemblyOriginatorKeyFile = nameof(AssemblyOriginatorKeyFile);
         internal const string AutoGenerateBindingRedirects = nameof(AutoGenerateBindingRedirects);
@@ -122,6 +123,7 @@ namespace XSharp
         internal const string DialectVulcan = "Vulcan.NET";
         internal const string DialectXPP = "Xbase++";
         internal const string DisabledWarnings = nameof(DisabledWarnings);
+        internal const string NoWarn = nameof(NoWarn);
         internal const string DocumentationFile = nameof(DocumentationFile);
         internal const string EnforceSelf = nameof(EnforceSelf);
         internal const string EnforceOverride = nameof(EnforceOverride);

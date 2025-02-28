@@ -80,10 +80,10 @@ namespace XSharp.Project
             this.toolTip1.SetToolTip(txtCommandLineOption, BuildPropertyPagePanel.CmdLineDescription);
             this.toolTip1.SetToolTip(lblCommandLineOption, BuildPropertyPagePanel.CmdLineDescription);
 
-            this.txtDisabledWarnings.Tag = XSharpProjectFileConstants.DisabledWarnings;
-            this.lblDisabledWarnings.Text = BuildPropertyPagePanel.captDisabledWarnings;
-            this.toolTip1.SetToolTip(lblDisabledWarnings, BuildPropertyPagePanel.descDisabledWarnings);
-            this.toolTip1.SetToolTip(txtDisabledWarnings, BuildPropertyPagePanel.descDisabledWarnings);
+            this.txtNoWarn.Tag = XSharpProjectFileConstants.NoWarn;
+            this.lblNoWarn.Text = BuildPropertyPagePanel.captNoWarn;
+            this.toolTip1.SetToolTip(lblNoWarn, BuildPropertyPagePanel.descNoWarn);
+            this.toolTip1.SetToolTip(txtNoWarn, BuildPropertyPagePanel.descNoWarn);
 
             this.txtOutputPath.Tag = XSharpProjectFileConstants.OutputPath;
             this.lblOutputPath.Text = BuildPropertyPagePanel.captOutputPath;
@@ -124,6 +124,8 @@ namespace XSharp.Project
             Color defaultForeground = SystemColors.WindowText;
             UpdateWindowColors(this, defaultBackground, defaultForeground);
         }
+
+
         /// <summary>
         /// Adjust the  color values. Adjusts the text color and text
         /// area background color
@@ -163,7 +165,7 @@ namespace XSharp.Project
             {
                 if (string.Compare(e.PropertyName, XSharpProjectFileConstants.PlatformTarget, true) == 0)
                 {
-                    chkPrefer32Bit.Enabled = e.NewValue.ToLower() == "anycpu";
+                    chkPrefer32Bit.Enabled = e.NewValue.ToLower() == XSharpProjectFileConstants.AnyCPU.ToLower();
                 }
             }
         }
@@ -185,8 +187,8 @@ namespace XSharp.Project
         {
             base.BindProperties();
             this.chkXMLDocumentationFile.Checked = !string.IsNullOrEmpty(ParentPropertyPage.GetProperty(XSharpProjectFileConstants.DocumentationFile));
-            var platform = ParentPropertyPage.GetProperty(XSharpProjectFileConstants.PlatformTarget) ?? "anycpu";
-            if (string.Compare(platform, "anycpu",true) == 0)
+            var platform = ParentPropertyPage.GetProperty(XSharpProjectFileConstants.PlatformTarget) ?? XSharpProjectFileConstants.AnyCPU;
+            if (string.Compare(platform, XSharpProjectFileConstants.AnyCPU, true) == 0)
             {
                 this.chkPrefer32Bit.Enabled = true;
             }

@@ -2,7 +2,8 @@ USING System.Windows.Forms
 USING System.Collections.Generic
 USING System.Reflection
 USING System.Text
-
+using System.Runtime.Versioning
+[assembly: TargetFramework(".NETFramework,Version=v4.6", FrameworkDisplayName := ".NET Framework 4.6")]
 [STAThread];
 FUNCTION Start() AS VOID
 	Application.EnableVisualStyles()

@@ -9,7 +9,7 @@
 PARTIAL CLASS Window
 
 /// <include file="Gui.xml" path="doc/Window.Dispatch/*" />
-	METHOD Dispatch(oEvent AS @@Event)
+	METHOD Dispatch(oEvent AS @@Event) AS LONG
 		RETURN SELF:EventReturnValue
 
 	//LOCAL msg IS _winMSG

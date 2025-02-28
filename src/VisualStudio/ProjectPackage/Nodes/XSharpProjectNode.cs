@@ -5,14 +5,16 @@
 //
 #undef USEPROJECTVERSION
 using Community.VisualStudio.Toolkit;
+
 using EnvDTE;
+
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -21,9 +23,13 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+
 using VSLangProj;
+
 using XSharp.Settings;
+
 using XSharpModel;
+
 using File = System.IO.File;
 using MBC = Microsoft.Build.Construction;
 using MSBuild = Microsoft.Build.Evaluation;
@@ -1088,7 +1094,6 @@ namespace XSharp.Project
                     }
                 }
             }
-            SetDialectOptions();
         }
 
         void AddProjectProperty(string propertyName, string value)
@@ -1985,7 +1990,7 @@ namespace XSharp.Project
         #region IVsDesignTimeAssemblyResolution
 
         //private DesignTimeAssemblyResolution designTimeAssemblyResolution;
-        private ConfigCanonicalName _config = new ConfigCanonicalName("Debug", "AnyCPU");
+        private ConfigCanonicalName _config = new ConfigCanonicalName("Debug", XSharpProjectFileConstants.AnyCPU);
 
         public override void SetConfiguration(ConfigCanonicalName config)
         {
@@ -2328,8 +2333,6 @@ namespace XSharp.Project
                     }
                 }
             }
-#else
-
 #endif
             StringWriter backup = new StringWriter();
             BuildProject.Save(backup);
@@ -2339,7 +2342,7 @@ namespace XSharp.Project
             {
                 return VSConstants.S_OK;
             }
-            var str2 = str.ReplaceEx("anycpu", "AnyCPU", StringComparison.OrdinalIgnoreCase);
+            var str2 = str.ReplaceEx(XSharpProjectFileConstants.AnyCPU, XSharpProjectFileConstants.AnyCPU, StringComparison.OrdinalIgnoreCase);
             if (str2 != str)
             {
                 ok = false;
@@ -2367,6 +2370,10 @@ namespace XSharp.Project
                 ok = false;
             }
             if (ok && str.IndexOf("<DocumentationFile>true", StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                ok = false;
+            }
+            if (ok && str.IndexOf(XSharpProjectFileConstants.DisabledWarnings, StringComparison.OrdinalIgnoreCase) != -1)
             {
                 ok = false;
             }
@@ -2403,11 +2410,13 @@ namespace XSharp.Project
             }
             if (str.IndexOf("XSharp.VO", StringComparison.OrdinalIgnoreCase) >= 0 && str.IndexOf("XSharp.RT", StringComparison.OrdinalIgnoreCase) == -1)
             {
-                if (str.IndexOf("<Dialect>VO</Dialect>", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                    str.IndexOf("<Dialect>Vulcan</Dialect>", StringComparison.OrdinalIgnoreCase) >= 0)
+                switch (this.Dialect)
                 {
-                    ok = false;
-                    dialectVO = true;
+                    case XDialect.Vulcan:
+                    case XDialect.VO:
+                        dialectVO = true;
+                        ok = false;
+                        break;
                 }
             }
             if (!ok)
@@ -2430,26 +2439,27 @@ namespace XSharp.Project
             return result;
         }
 
-        private bool updateProperty(Microsoft.Build.Construction.ProjectPropertyElement prop)
+        private bool UpdateDocumentationFile(MBC.ProjectPropertyGroupElement group)
         {
             try
             {
-                if (string.Equals(prop.Name, DocumentationFile, StringComparison.OrdinalIgnoreCase))
+                foreach (var prop in group.Properties.Where(p => string.Equals(p.Name, DocumentationFile, StringComparison.OrdinalIgnoreCase)))
                 {
-                    string sValue = prop.Value;
-                    if (string.Equals(sValue, "true", StringComparison.OrdinalIgnoreCase))
+                    string sValue = prop.Value.Trim().ToLower();
+                    switch (sValue)
                     {
-                        var prop2 = this.BuildProject.Properties.Where(p => p.Name.ToLower() == "assemblyname").FirstOrDefault();
-                        if (!String.IsNullOrEmpty(prop2?.UnevaluatedValue))
-                            prop.Value = System.IO.Path.ChangeExtension(prop2.UnevaluatedValue, ".Xml");
-                        else
+                        case "true":
+                            var prop2 = this.BuildProject.Properties.Where(p => p.Name.ToLower() == "assemblyname").FirstOrDefault();
+                            if (!string.IsNullOrEmpty(prop2?.UnevaluatedValue))
+                                prop.Value = Path.ChangeExtension(prop2.UnevaluatedValue, ".Xml");
+                            else
+                                prop.Value = "";
+                            return true;
+                        case "false":
                             prop.Value = "";
-                        return true;
-                    }
-                    else if (string.Equals(sValue, "false", StringComparison.OrdinalIgnoreCase))
-                    {
-                        prop.Value = "";
-                        return true;
+                            return true;
+                        default:
+                            return false;
                     }
                 }
             }
@@ -2485,6 +2495,14 @@ namespace XSharp.Project
             var groupDict = new Dictionary<string, MBC.ProjectPropertyGroupElement>();
             var debugInclude = "";
             var debugNoStdDefs = "";
+            // Rename DisabledWarnings  to NoWarn
+            foreach (var ppe in xml.Properties.
+                Where(p => string.Equals(p.Name, XSharpProjectFileConstants.DisabledWarnings, StringComparison.OrdinalIgnoreCase)))
+            {
+                ppe.Name = XSharpProjectFileConstants.NoWarn;
+                changed = true;
+            }
+
             foreach (var group in groups.Where(g => g.Condition.Trim().Length > 0))
             {
                 string condition = group.Condition;
@@ -2503,7 +2521,7 @@ namespace XSharp.Project
                     changed = true;
 
                 }
-                var newcondition = System.Text.RegularExpressions.Regex.Replace(condition, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
+                var newcondition = System.Text.RegularExpressions.Regex.Replace(condition, XSharpProjectFileConstants.AnyCPU, XSharpProjectFileConstants.AnyCPU, System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
                 if (condition != newcondition)
                 {
                     changed = true;
@@ -2578,22 +2596,19 @@ namespace XSharp.Project
             }
             foreach (var group in groupDict.Values)
             {
-                foreach (var prop in group.Properties)
-                {
-                    if (updateProperty(prop))
-                        changed = true;
-                }
+                if (UpdateDocumentationFile(group))
+                    changed = true;
             }
             // Add ProjectVersion and IncludePaths & NoStandardDefs to first Propertygroup without condition.
             var grp = groups.Where(g => g.Condition.Trim().Length == 0).FirstOrDefault();
             if (grp != null)
             {
-                if (!String.IsNullOrEmpty(debugInclude))
+                if (!string.IsNullOrEmpty(debugInclude))
                 {
                     if (addProperty(grp, IncludePaths, debugInclude))
                         changed = true;
                 }
-                if (!String.IsNullOrEmpty(debugNoStdDefs))
+                if (!string.IsNullOrEmpty(debugNoStdDefs))
                 {
                     if (addProperty(grp, Nostandarddefs, debugNoStdDefs))
                         changed = true;
@@ -2632,13 +2647,13 @@ namespace XSharp.Project
         private bool addProperty(MBC.ProjectPropertyGroupElement grp, string Name, string Value)
         {
             bool changed = false;
-            var prop = grp.Properties.Where(p => String.Equals(p.Name, Name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            var prop = grp.Properties.Where(p => string.Equals(p.Name, Name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
             if (prop == null)
             {
                 grp.AddProperty(Name, Value);
                 changed = true;
             }
-            else if (prop.Value != Value && !String.IsNullOrEmpty(Value))
+            else if (prop.Value != Value && !string.IsNullOrEmpty(Value))
             {
                 prop.Value = Value;
                 changed = true;

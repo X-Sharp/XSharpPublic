@@ -254,7 +254,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 Error(ErrorCode.ERR_ExpressionTreeContainsAssignment, node);
             }
-
+#if XSHARP
+            node = XsVisitAssignmentOperator(node);
+#endif
             return base.VisitAssignmentOperator(node);
         }
 

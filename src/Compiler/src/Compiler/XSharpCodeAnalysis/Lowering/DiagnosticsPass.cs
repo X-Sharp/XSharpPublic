@@ -55,6 +55,24 @@ namespace Microsoft.CodeAnalysis.CSharp
                 rightType = bcv.Operand.Type;
             }
             GenerateWarning(rightType, leftType, node);
+            WarnForNilAssignment(node.Right, leftType);
+        }
+
+        void WarnForNilAssignment(BoundExpression rightNode, TypeSymbol leftType)
+        {
+            if (rightNode.Syntax.XIsNil)
+            {
+                if (!leftType.IsUsualType())
+                {
+                    Error(ErrorCode.WRN_ConversionFromNilNotSupported, rightNode, leftType);
+                }
+            }
+
+        }
+        private BoundAssignmentOperator XsVisitAssignmentOperator(BoundAssignmentOperator node)
+        {
+            WarnForNilAssignment(node.Right, node.Left.Type);
+            return node;
         }
 
         private void GenerateWarning(TypeSymbol sourceType, TypeSymbol targetType, BoundNode node)

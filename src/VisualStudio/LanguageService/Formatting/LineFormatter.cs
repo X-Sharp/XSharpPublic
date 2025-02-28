@@ -261,14 +261,6 @@ namespace XSharp.LanguageService
                 case XSharpLexer.TRUE_CONST:        // Constant
                 case XSharpLexer.FALSE_CONST:       // Constant
                 case XSharpLexer.MACRO:             // __TERM__
-                case XSharpLexer.LOGIC_AND:         // Operator
-                case XSharpLexer.LOGIC_OR:          // Operator
-                case XSharpLexer.LOGIC_NOT:         // Operator
-                case XSharpLexer.LOGIC_XOR:         // Operator
-                case XSharpLexer.VO_AND:            // Operator
-                case XSharpLexer.VO_OR:             // Operator
-                case XSharpLexer.VO_NOT:            // Operator
-                case XSharpLexer.VO_XOR:            // Operator
                     syncKeyword = SyncKeywordCase;
                     break;
                 default:
@@ -280,7 +272,7 @@ namespace XSharp.LanguageService
                     {
                         syncKeyword = false;
                     }
-                    else if (XSharpLexer.IsKeyword(token.Type))
+                    else if (XSharpLexer.IsKeyword(token.Type) || XSharpLexer.IsWordOperator(token.Type))
                     {
                         syncKeyword = SyncKeywordCase;
                     }

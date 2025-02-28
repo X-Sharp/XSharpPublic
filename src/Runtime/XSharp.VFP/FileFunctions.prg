@@ -257,3 +257,9 @@ FUNCTION DefaultExt( cFileName AS STRING, cDefault  AS STRING) AS STRING
     endif
     return cFileName
 
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/drivetype/*" />
+FUNCTION DriveType( cDrive as string) as DWORD
+    RETURN Win32.GetDriveType(cDrive)
+
+

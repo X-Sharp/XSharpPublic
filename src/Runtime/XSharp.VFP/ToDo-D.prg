@@ -23,12 +23,7 @@ FUNCTION DisplayPath( cFilename, nMaxLength )
     THROW NotImplementedException{}
     // RETURN ""
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/drivetype/*" />
 
-FUNCTION DriveType( cDrive )
-    THROW NotImplementedException{}
-    // RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dropoffline/*" />

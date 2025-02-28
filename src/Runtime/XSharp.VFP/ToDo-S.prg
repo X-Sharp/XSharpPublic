@@ -55,12 +55,12 @@ FUNCTION StrExtract( cSearchExpression, cBeginDelim , cEndDelim , nOccurrence, n
     THROW NotImplementedException{}
     // RETURN ""
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sys/*" />
-
-FUNCTION Sys( nSetting, uNewValue) AS USUAL
-    THROW NotImplementedException{}
-    // RETURN NIL
+// /// <summary>-- todo --</summary>
+// /// <include file="VFPDocs.xml" path="Runtimefunctions/sys/*" />
+//
+// FUNCTION Sys( nSetting, uNewValue) AS USUAL
+//     THROW NotImplementedException{}
+//     // RETURN NIL
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sysmetric/*" />

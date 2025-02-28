@@ -73,7 +73,7 @@ CLASS MultiMediaContainer INHERIT Control
 
 		//RETURN SUPER:Destroy()
 
-	METHOD Dispatch(oEvent AS @@Event)
+	METHOD Dispatch(oEvent AS @@Event) AS LONG
 		//Todo Implement
 		//LOCAL ps IS _winPAINTSTRUCT
 		LOCAL oEvt := oEvent AS @@Event

@@ -8,6 +8,7 @@
 // Common members for Controls
 
 PROTECTED oProperties AS VOControlProperties
+PROPERTY EnableDispatch AS LOGIC GET oProperties:EnableDispatch SET oProperties:EnableDispatch := VALUE
 PROPERTY ControlProperties AS VOControlProperties GET oProperties
 PROPERTY Control AS VOSDK.Control
    GET

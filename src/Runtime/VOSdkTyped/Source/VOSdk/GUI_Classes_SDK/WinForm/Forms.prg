@@ -22,7 +22,7 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 	#region Fields
 	PROTECT oProperties AS VOFormProperties
 	PROTECT oToolTip	AS VOToolTip
-	PROTECT _lIsClosing AS LOGIC
+    PROTECT _lIsClosing AS LOGIC
 	STATIC PRIVATE oSmallIconFieldInfo AS FieldInfo
 	#endregion
 
@@ -38,7 +38,8 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 
 	#endregion
 
-	#region Properties
+    #region Properties
+    PROPERTY EnableDispatch as LOGIC AUTO
 	PROPERTY Window		AS Window
 		GET
 		IF oProperties != NULL_OBJECT
@@ -114,8 +115,12 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 	VIRTUAL PROTECT METHOD WndProc(msg REF Message) AS VOID
 
 		TRY
-			LOCAL lCallSuper AS LOGIC
-			lCallSuper := TRUE
+            LOCAL lCallSuper AS LOGIC
+            lCallSuper := TRUE
+            LOCAL lDispatchResult := 0 as LONG
+            IF SELF:EnableDispatch .and. SELF:Window != NULL
+                lDispatchResult := SELF:Window:Dispatch(Event{ref msg})
+            ENDIF
 			IF msg:Msg == WM_SYSCOMMAND
 				// This code is necessary because CodeJock intercepts the double click on title bar of
 				// a minimized window and closes the window .
@@ -126,7 +131,7 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 					ENDIF
 				ENDIF
 			ENDIF
-			IF lCallSuper
+			IF lCallSuper .and. lDispatchResult == 0
 				SUPER:WndProc(REF msg)
 			ENDIF
 			IF ! SELF:IsDisposed  .and. SELF:IsAttached
@@ -175,8 +180,8 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 			LOCAL oWindow AS Window
 			oWindow := SELF:Window
 			IF oWindow:__Form == SELF
-				SELF:oProperties := NULL_OBJECT
-				IF ! oWindow:IsClosing
+                SELF:oProperties := NULL_OBJECT
+                IF ! oWindow:IsClosing
 					oWindow:Close(Event{})
 				ENDIF
 				oWindow:Destroy()

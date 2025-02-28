@@ -12,7 +12,7 @@ CLASS __ExplorerLV INHERIT ListView
 METHOD DefaultSort(oLVItem1, oLVItem2)
 	LOCAL s1, s2 AS STRING
     local oLVI1, oLVI2 as ListViewItem
-    
+
 	s1 := ((ListViewItem) oLVItem1):GetText(symSortCol)
 	s2 := ((ListViewItem) oLVItem2):GetText(symSortCol)
 
@@ -25,7 +25,7 @@ METHOD DefaultSort(oLVItem1, oLVItem2)
 	ENDIF
 
  /// <exclude />
-METHOD Dispatch(oEvent  AS @@Event)
+METHOD Dispatch(oEvent  AS @@Event) AS LONG
 	LOCAL oEvt := oEvent AS @@Event
 
 
@@ -47,7 +47,7 @@ END CLASS
 CLASS __ExplorerTV INHERIT TreeView
 
  /// <exclude />
-METHOD Dispatch(oEvent AS @@Event)
+METHOD Dispatch(oEvent AS @@Event) AS LONG
 	LOCAL oEvt := oEvent AS @@Event
 
 	IF (oEvt:uMsg == WM_CHAR)	.AND. (oEvt:wParam == 0x00000009)

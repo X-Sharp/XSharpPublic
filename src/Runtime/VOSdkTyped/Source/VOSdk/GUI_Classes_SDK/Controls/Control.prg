@@ -72,6 +72,22 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
     END SET
     END PROPERTY
 
+    PROPERTY EnableDispatch as LOGIC
+        GET
+            IF oCtrl IS IVOControlProperties VAR oVOC
+                RETURN oVOC:EnableDispatch
+            ENDIF
+            RETURN FALSE
+        END GET
+        SET
+            IF oCtrl IS IVOControlProperties VAR oVOC
+                oVOC:EnableDispatch := value
+            ENDIF
+        END SET
+
+    END PROPERTY
+
+
     METHOD OnHandleCreated(o AS OBJECT, e AS EventArgs) AS VOID
         IF oFormSurface != NULL_OBJECT
             oFormSurface:__AddTool(SELF)
@@ -567,7 +583,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         //RETURN SetWindowTheme(SELF:handle(),"","")
 
     /// <include file="Gui.xml" path="doc/Control.Dispatch/*" />
-    METHOD Dispatch(oEvent AS @@Event)
+    METHOD Dispatch(oEvent AS @@Event) AS LONG
         /*
         LOCAL oEvt := oEvent AS @@event
         LOCAL msg AS DWORD

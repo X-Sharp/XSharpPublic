@@ -1,17 +1,14 @@
 ﻿FUNCTION Start( ) AS VOID
     try
-        LOCAL coll as Collection
-        coll = CREATEOBJECT("Collection")
-        ? coll.Count
-        coll.Add(1,"aaa")
-        coll.Add(2,"bbb")
-        coll.Add(3,"aAa")
-        coll.Add(4,"bBb")
-        ? coll.KeySort
-        ? coll.Count
-        coll.KeySort = 4
-        FOR each var item in coll
-            ?  item, coll.GetKey(item)
+        ? DefaultExt("abc","def")
+        ? DefaultExt("abc.","def")
+        ? DriveType("C:")
+        ? DriveType("G:")
+        ? DriveType("X:")
+        ? DriveType("A:")
+        ? FullPath("testss.txt", "xsharp.core.dll")
+        for var i := 1 to 34
+            ? "Sysmetric", i, SysMetric(i)
         next
     catch e as exception
         ? e:ToString()

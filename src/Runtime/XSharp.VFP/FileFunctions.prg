@@ -263,3 +263,17 @@ FUNCTION DriveType( cDrive as string) as DWORD
     RETURN Win32.GetDriveType(cDrive)
 
 
+/// <include file="VFPDocs.xml" path="Runtimefunctions/fullpath/*" />
+FUNCTION FullPath( cFileName1 as string, cFileName2 := "" as STRING) AS STRING
+    IF File(cFileName1)
+        RETURN FPathName()
+    ENDIF
+    cFileName1 := Path.Combine(Environment.CurrentDirectory, cFileName1)
+    // todo: when cFileName2 is not empty, then the relative path must be calculated
+    // unfortunately System.UI.Path.RelativePath() does not exist in the .Net Framework
+//     if File(cFileName2)
+//         cFileName2 := FPathName()
+//     Endif
+//     var cFilePath := Path.GetDirectoryName(cFileName2)
+//     RETURN Path.GetRelativePath(cFileName1, cFilePath)
+    RETURN cFileName1

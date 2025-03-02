@@ -6,7 +6,7 @@ CLASS Button INHERIT TextControl
  /// <exclude />
 METHOD __GetImage()
 	//PP-030915
-	IF oImage is ButtonImageList var oBMI
+	IF oImage IS ButtonImageList VAR oBMI
 		RETURN oBMI:Image
 	ENDIF
 	RETURN oImage
@@ -39,7 +39,7 @@ METHOD __Update() AS Control STRICT
 	IF SELF:Modified
 		cText := SELF:TextValue
 		uOldValue := AsString(uValue)
-		IF oFieldSpec IS FieldSpec var oFs
+		IF oFieldSpec IS FieldSpec VAR oFs
 			uValue := oFs:Val(cText)
 			// If theres a picture clause we need to reformat the data at this point
 			//RvdH 060608 optimized
@@ -86,11 +86,8 @@ ASSIGN CurrentText(cValue)
 	RETURN
 /// <inheritdoc />
 METHOD Destroy()
-    if self:oImage != null
-        self:oImage:Destroy()
-    endif
     SUPER:Destroy()
-    return NULL
+    RETURN NULL
 
 /// <include file="Gui.xml" path="doc/Button.Image/*" />
 ACCESS Image
@@ -110,12 +107,12 @@ ASSIGN Image(oNewImage)
 		IF oNewImage IS Icon .OR. oNewImage IS Bitmap
 			oImage := oNewImage
 			lStyle := GetWindowLong(SELF:Handle(), GWL_STYLE)
-			IF oNewImage IS Icon var oIcon
+			IF oNewImage IS Icon VAR oIcon
 				dwType 		:= IMAGE_ICON
 				lSetStyle 	:= BS_ICON
 				oIcon			:= oNewImage
 				hImage 		:= oIcon:Handle()
-			ELSEIF oNewImage IS Bitmap var oBitMap
+			ELSEIF oNewImage IS Bitmap VAR oBitMap
 				dwType 		:= IMAGE_BITMAP
 				lSetStyle 	:= BS_BITMAP
 				hImage 		:= oBitMap:Handle()
@@ -138,7 +135,7 @@ ASSIGN Image(oNewImage)
 /// <include file="Gui.xml" path="doc/Button.ImageList/*" />
 ACCESS ImageList
 	//PP-030915
-	IF oImage is ImageList
+	IF oImage IS ImageList
 		RETURN oImage
 	ENDIF
 	RETURN NULL_OBJECT

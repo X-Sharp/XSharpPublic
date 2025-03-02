@@ -416,11 +416,10 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kComboType, kStyle)
 
 /// <inheritdoc />
 METHOD Destroy()
-    if self:oImgList != nil
-        self:oImgList:Destroy()
+    IF SELF:oImgList != NIL
         SendMessage(hWnd, CBEM_SETIMAGELIST, 0, 0)
-        self:oImgList := NULL
-    endif
+        SELF:oImgList := NULL
+    ENDIF
     SUPER:Destroy()
     RETURN NIL
 

@@ -44,8 +44,15 @@ BEGIN NAMESPACE XSharp.VFP
 
         [DllImport("user32.dll", SetLastError := TRUE)];
 		[RETURN:MarshalAs(UnmanagedType.Bool)];
-		INTERNAL STATIC EXTERN METHOD PostMessage(hWnd AS IntPtr , Msg AS DWORD , wParam AS IntPtr , lParam AS IntPtr ) AS LOGIC
+        INTERNAL STATIC EXTERN METHOD PostMessage(hWnd AS IntPtr , Msg AS DWORD , wParam AS IntPtr , lParam AS IntPtr ) AS LOGIC
+
+
+
 	END CLASS
+
+    [DllImport("kernel32.dll", CharSet := CharSet.Auto,  SetLastError := TRUE)];
+    PUBLIC STATIC EXTERN METHOD GetDriveType(lpRootPathName AS STRING) AS DWORD
+
 
 	PUBLIC STATIC METHOD FindMessageBox(caption AS STRING ) AS IntPtr
 		RETURN UnsafeNativeMethods.FindWindow("#32770", caption)

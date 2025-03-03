@@ -66,7 +66,7 @@ CLASS AppWindow INHERIT Window
         RETURN SELF
 
     /// <include file="Gui.xml" path="doc/AppWindow.Dispatch/*" />
-    METHOD Dispatch(oEvt AS @@Event)
+    METHOD Dispatch(oEvt AS @@Event) AS LONG
         //Todo Dispatch ?
         //LOCAL oEvt := oEvent AS @@Event
         //LOCAL dwMsg AS DWORD

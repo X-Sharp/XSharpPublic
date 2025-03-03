@@ -24,12 +24,7 @@ FUNCTION FontMetric( nAttribute , cFontName, nFontSize , cFontStyle) AS LONG CLI
 
 
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/fullpath/*" />
 
-FUNCTION FullPath( cFileName1 , uPath) AS STRING CLIPPER
-    THROW NotImplementedException{}
-    // RETURN ""
 
 
 

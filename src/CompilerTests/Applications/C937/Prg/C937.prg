@@ -1,4 +1,4 @@
-﻿// 937. Late bound problem with enums
+// 937. Late bound problem with enums
 // https://github.com/X-Sharp/XSharpPublic/issues/1696
 
 /*
@@ -39,8 +39,7 @@ FUNCTION Start() AS VOID
 	u:IVar := TestEnum.Three
 	xAssert( u:IVar == TestEnum.Three)
 	u:Prop := TestEnum.Two
-    xAssert( u:Prop == TestEnum.Two)
-    wait
+	xAssert( u:Prop == TestEnum.Two)
 
 PROC xAssert(l AS LOGIC)
 IF l

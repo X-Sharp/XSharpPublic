@@ -98,7 +98,8 @@ DELEGATE WndProc(msg REF Message) AS VOID
 CLASS VOControlProperties INHERIT VOProperties
 	PROPERTY oWFC AS System.Windows.Forms.Control  AUTO GET PRIVATE SET
 	PROPERTY Control AS VOSDK.Control AUTO GET PRIVATE SET
-	PROPERTY Window AS VOSDK.Window AUTO GET PRIVATE SET
+    PROPERTY Window AS VOSDK.Window AUTO GET PRIVATE SET
+    PROPERTY EnableDispatch as LOGIC AUTO
 	PROTECT _lHandleDoubleClickThroughMouseUp AS LOGIC
 
     PUBLIC EVENT OnWndProc AS WndProc
@@ -108,10 +109,11 @@ CLASS VOControlProperties INHERIT VOProperties
         IF OnWndProc != NULL
             SELF:OnWndProc( REF m)
         ENDIF
-        VAR oEvent := Event{REF m}
-        SELF:Control:Dispatch( oEvent)
-        SELF:Window:Dispatch( oEvent)
-
+        IF SELF:EnableDispatch
+            VAR oEvent := Event{REF m}
+            SELF:Control:Dispatch( oEvent)
+            SELF:Window:Dispatch( oEvent)
+        ENDIF
 
 	ACCESS ModifierKeys AS Keys
 		RETURN System.Windows.Forms.Control.ModifierKeys

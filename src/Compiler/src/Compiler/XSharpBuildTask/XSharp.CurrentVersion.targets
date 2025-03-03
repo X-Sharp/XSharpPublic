@@ -281,7 +281,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
             DebugType="$(DebugType)"
             DefineConstants="$(DefineConstants)"
             DelaySign="$(DelaySign)"
-            DisabledWarnings="$(DisabledWarnings)"
+            DisabledWarnings="$(DisabledWarnings);$(NoWarn)"
             DocumentationFile="@(DocFileItem)"
             EmitDebugInformation="$(EmitDebugInformation)"
             EnvironmentVariables="$(XscEnvironment)"

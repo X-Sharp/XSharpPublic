@@ -438,17 +438,14 @@ METHOD DeleteItem(symName, lChildsOnly)
 METHOD Destroy()  AS USUAL CLIPPER
     // One customer reported problems, so we clear this now.
     if oImageList != NULL_OBJECT
-        oImageList:Destroy()
         TreeView_SetImageList(SELF:Handle(), NULL, TVSIL_NORMAL)
     	oImageList := NULL_OBJECT
     endif
     if oStateImageList != NULL_OBJECT
-        oStateImageList:Destroy()
         TreeView_SetImageList(SELF:Handle(), NULL, TVSIL_STATE)
     	oStateImageList := NULL_OBJECT
     endif
     if oDragImageList != NULL_OBJECT
-        oDragImageList:Destroy()
     	oDragImageList := NULL_OBJECT
     endif
 	aValues := NULL_ARRAY

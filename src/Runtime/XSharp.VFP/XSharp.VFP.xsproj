@@ -72,6 +72,7 @@
     <Compile Include="PrinterFunctions.prg" />
     <Compile Include="SQL\EmbeddedSql.prg" />
     <Compile Include="SQL\SQLFunctions.prg" />
+    <Compile Include="SystemFunctions.prg" />
     <Compile Include="ToDo-TUVWX.prg" />
     <Compile Include="ToDo-S.prg" />
     <Compile Include="ToDo-QR.prg" />
@@ -106,6 +107,7 @@
     <Compile Include="UI\AutoCloseMessageBox.prg" />
     <Compile Include="UI\Dialogs.prg" />
     <Compile Include="Win32.prg" />
+    <Compile Include="WindowFunctions.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Classes" />

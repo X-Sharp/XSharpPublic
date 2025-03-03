@@ -396,7 +396,7 @@ internal static class OOPHelpers
                 else
                     sb:Append(  ", ")
                 endif
-                sb:Append( i"{p:Name} AS {GetTypename(p:ParameterType)}")
+                sb:Append( p:Name+" AS "+GetTypename(p:ParameterType))
             next
             sb:AppendLine(")")
         next
@@ -517,7 +517,7 @@ internal static class OOPHelpers
                 if oArg != null
                     oArgs[nArg] := oArg
                 else
-                    oArgs[nArg] := nil
+                    oArgs[nArg] := null
                 endif
             next
         endcase
@@ -559,11 +559,7 @@ internal static class OOPHelpers
                     endif
 
                 otherwise
-                    result := oDefAttrib:Value
-                    // for usuals there is no need to convert.
-                    if oPar:ParameterType != typeof(usual)
-                        result := OOPHelpers.ValueConvert(result, oPar:ParameterType)
-                    endif
+                    result := OOPHelpers.ValueConvert(oDefAttrib:Value, oPar:ParameterType)
                 end switch
             end if
         endif
@@ -591,6 +587,36 @@ internal static class OOPHelpers
 
         return aList
 
+    static method GetMembers(t as System.Type, cName as string, memberType as MemberTypes, lInstance as LOGIC, lSelf as LOGIC) as MemberInfo[]
+        var flags := BindingFlags.IgnoreCase| BindingFlags.Public
+        if (lInstance)
+            flags := flags | BindingFlags.Instance
+        else
+            flags := flags | BindingFlags.Static
+        endif
+        if (lSelf)
+            flags := flags | BindingFlags.NonPublic
+        endif
+        // GetMember returns all members that match the name
+        return t:GetMember(cName, memberType, flags)
+
+    static method GetField(t as System.Type, cName as string, lInstance as LOGIC, lSelf as LOGIC) as FieldInfo
+        var members := GetMembers(t, cName, MemberTypes.Field,lInstance, lSelf)
+        foreach var m in members
+            if m is FieldInfo var fldInfo
+                return fldInfo
+            endif
+        next
+        return null
+
+    static method GetProperty(t as System.Type, cName as string, lInstance as LOGIC, lSelf as LOGIC) as PropertyInfo
+        var members := GetMembers(t, cName, MemberTypes.Property,lInstance, lSelf)
+        foreach var m in members
+            if m is PropertyInfo var propInfo
+                return propInfo
+            endif
+        next
+        return null
     static method IVarHelper(o as object, cName as string, lGet as logic) as dword
 
         if o == null
@@ -599,7 +625,7 @@ internal static class OOPHelpers
 
         var t := o:GetType()
 
-        var fi := t:GetField( cName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic  | BindingFlags.IgnoreCase)
+        var fi := OOPHelpers.GetField(t, cName, true, true)
         if fi != null
             if fi:IsPublic
                 return 2U
@@ -609,17 +635,21 @@ internal static class OOPHelpers
                 if (atts:Length > 0)
                     return 1U
                 endif
-                return 0U
             endif
+            return 0U
         endif
 
         do while t != null
-            var pi := t:GetProperty( cName , BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase )
-            if pi != null .and. ( (lGet .and. pi:CanRead) .or. (.not. lGet .and. pi:CanWrite) )
-                return 3U
-            else
-                t := t:BaseType
+            var pi :=  OOPHelpers.GetProperty(t, cName, true, true)
+            if pi != null
+                if lGet .and. pi:CanRead
+                    return 3U
+                endif
+                if ! lGet .and. pi:CanWrite
+                    return 3U
+                endif
             endif
+            t := t:BaseType
         enddo
 
         return 0U
@@ -655,8 +685,10 @@ internal static class OOPHelpers
         var list := List<string>{}
         var aInfo := t:GetMethods( BindingFlags.Instance | BindingFlags.Public )
         foreach oMI as MethodInfo in aInfo
-            if !oMI:IsSpecialName .and. ! list:Contains(oMI:Name)
-                list:Add(oMI:Name )
+            // convert to uppercase. We do not want duplicates that only differ by case
+            var name := oMI:Name:ToUpper()
+            if !oMI:IsSpecialName .and. ! list:Contains(name)
+                list:Add(name)
             endif
         next
         return list:ToVoSymArray()
@@ -715,34 +747,26 @@ internal static class OOPHelpers
             return null
         endif
         lSelf := lSelf .or. EmulateSelf
-        var mi := OOPHelpers.GetMember(t, cName)
+        var mi := OOPHelpers.GetMemberFromCache(t, cName)
         if mi != null
             if mi is PropertyInfo var pi
                 // we must check. Sometimes in a subclass the Access was overwritten but not the assign
                 // then we want to read the assign from the parent class
-                if lAccess .and. pi:CanRead .and. IsPropertyMethodVisible(pi:GetMethod, lSelf)
+                if lAccess .and. pi:CanRead .and. IsVisible(pi:GetMethod, lSelf)
                     return pi
-                elseif ! lAccess .and. pi:CanWrite .and. IsPropertyMethodVisible(pi:SetMethod, lSelf)
+                elseif ! lAccess .and. pi:CanWrite .and. IsVisible(pi:SetMethod, lSelf)
                     return pi
                 endif
             else
                 return null
             endif
-            //        else
-            //            var pi := OOPHelpers.FindProperty(t:BaseType, cName, lAccess, lSelf)
-            //            if pi != null
-            //                return pi
-            //            endif
         endif
 
-        var bf := BindingFlags.Instance | BindingFlags.IgnoreCase |  BindingFlags.DeclaredOnly | BindingFlags.Public
-        if lSelf
-            bf |= BindingFlags.NonPublic
-        endif
+
         do while t != null
-            var oInfo := t:GetProperty( cName, bf)
+            var oInfo := OOPHelpers.GetProperty(t, cName, true, lSelf)
             if oInfo != null .and. ( (lAccess .and. oInfo:CanRead) .or. (.not. lAccess .and. oInfo:CanWrite) )
-                AddMember(t, cName, oInfo)
+                AddMemberToCache(t, cName, oInfo)
                 return oInfo
             else
                 t := t:BaseType
@@ -750,7 +774,7 @@ internal static class OOPHelpers
         enddo
         return null
 
-    static method IsPropertyMethodVisible(oMethod as MethodInfo, lSelf as logic) as logic
+    static method IsVisible(oMethod as MethodInfo, lSelf as logic) as logic
         if oMethod == null_object
             return false
         elseif oMethod:IsPublic
@@ -759,7 +783,7 @@ internal static class OOPHelpers
         return lSelf
 
 
-    static method GetMember(t as Type, cName as string) as MemberInfo
+    static method GetMemberFromCache(t as Type, cName as string) as MemberInfo
         if t != null .and. ! String.IsNullOrEmpty(cName) .and. fieldPropCache:TryGetValue(t, out var fields)
             if fields:TryGetValue(cName, out var result)
                 return result
@@ -767,10 +791,9 @@ internal static class OOPHelpers
         endif
         return null
 
-    static method AddMember(t as Type, cName as string, mi as MemberInfo) as logic
+    static method AddMemberToCache(t as Type, cName as string, mi as MemberInfo) as logic
         if t != null .and. ! String.IsNullOrEmpty(cName)
-            local fields as ConcurrentDictionary<string, MemberInfo>
-            if ! fieldPropCache:TryGetValue(t, out fields)
+            if ! fieldPropCache:TryGetValue(t, out var fields)
                 fields := ConcurrentDictionary<string, MemberInfo> {StringComparer.OrdinalIgnoreCase}
                 fieldPropCache:TryAdd( t, fields)
             endif
@@ -787,7 +810,7 @@ internal static class OOPHelpers
             return null
         endif
         lSelf := lSelf .or. EmulateSelf
-        var mi := OOPHelpers.GetMember(t, cName)
+        var mi := OOPHelpers.GetMemberFromCache(t, cName)
         if mi != null
             if mi is FieldInfo var fi .and. IsFieldVisible(fi, lSelf)
                 return fi
@@ -795,16 +818,12 @@ internal static class OOPHelpers
             return null     // it must be a property then
         endif
         var bt := t
-        var bf := BindingFlags.Instance | BindingFlags.IgnoreCase |  BindingFlags.DeclaredOnly | BindingFlags.Public
-        if lSelf
-            bf |= BindingFlags.NonPublic
-        endif
         do while t != null
-            var oInfo := t:GetField( cName, bf )
+            var oInfo := OOPHelpers.GetField(t, cName, true, lSelf)
             if oInfo != null
                 // check for readonly (initonly) fields
                 if lAccess .or. ! oInfo:Attributes:HasFlag(FieldAttributes.InitOnly)
-                    OOPHelpers.AddMember(bt, cName, oInfo)
+                    OOPHelpers.AddMemberToCache(bt, cName, oInfo)
                     return oInfo
                 endif
             else
@@ -1023,15 +1042,14 @@ internal static class OOPHelpers
         return null
 
     static method CacheOverLoads(t as System.Type, cMethod as string, ml as IList<MethodInfo>) as logic
-        local type as ConcurrentDictionary<string, IList<MethodInfo> >
-        if !overloadCache:TryGetValue(t, out type)
-            type := ConcurrentDictionary<string, IList<MethodInfo> >{StringComparer.OrdinalIgnoreCase}
-            overloadCache:TryAdd(t, type)
+        if !overloadCache:TryGetValue(t, out var typeDict)
+            typeDict := ConcurrentDictionary<string, IList<MethodInfo> >{StringComparer.OrdinalIgnoreCase}
+            overloadCache:TryAdd(t, typeDict)
         endif
-        if type:ContainsKey(cMethod)
+        if typeDict:ContainsKey(cMethod)
             return false
         endif
-        type:TryAdd(cMethod, ml)
+        typeDict:TryAdd(cMethod, ml)
         return true
 
     static method SendHelper(oObject as object, cMethod as string, uArgs as usual[], result out usual, lCallBase as logic) as logic
@@ -1232,7 +1250,10 @@ internal static class OOPHelpers
 
 
     static method ValueConvert(uValue as usual,toType as System.Type) as object
-        local oValue := null as object
+        local oResult := uValue as OBJECT
+        if oResult?:GetType() == toType
+            RETURN oResult
+        endif
         if toType == typeof(float)
             return (float) uValue
         elseif uValue:SystemType == toType
@@ -1253,43 +1274,45 @@ internal static class OOPHelpers
                 return (object) uValue
             elseif uValue:IsPtr .and. (toType == typeof(ptr) .or. toType:IsPointer)
                 return IntPtr{(ptr) uValue}
-            else
+            elseif oResult != null
                 // check to see if the source type contains an implicit converter
-                local oRealValue := uValue as object
-                var oOperator := FindOperator(oRealValue:GetType(), toType)
+                var oOperator := FindOperator(oResult:GetType(), toType)
                 if oOperator != null_object
-                    oValue := oRealValue
+                    NOP
                 else
                     oOperator := FindOperator(typeof(usual), toType)
                     if oOperator != null_object
                         // box the usual
-                        oValue := __castclass(object, uValue)
+                        oResult := __castclass(object, uValue)
                     endif
                 endif
                 if oOperator != null_object
                     // oValue is either a boxed USUAL (for operators of the USUAL type)
                     // or the real thing, depending on the operator that was chosen
                     try
-                        return oOperator:Invoke(null, <object>{oValue})
+                        return oOperator:Invoke(null, <object>{oResult})
                     catch
-                        local ex as Error
-                        ex := Error{Gencode.EG_WRONGCLASS, "", "Could not convert value "+oValue:ToString() + " to type " + toType:Name}
-                        ex:FuncSym := __function__
-                        ex:Stack := ErrorStack()
-                        throw ex
-
+                        // do not throw error here. We will try to convert the value below with Convert.ChangeType
+                        nop
                     end try
                 endif
             endif
             // when we get here then there is no operator and we will try to change the type..
-            local oRet as object
+            // or the call to the operator failed
             try
-                oRet := uValue
-                oRet := Convert.ChangeType(oRet, toType)
+                if toType:IsEnum
+                    oResult := System.Enum.ToObject(toType, oResult)
+                else
+                    oResult := Convert.ChangeType(oResult, toType)
+                endif
             catch
-                oRet := uValue
+                local ex as Error
+                ex := Error{Gencode.EG_WRONGCLASS, "", i"Could not convert value {oResult} to type {toType}" }
+                ex:FuncSym := __function__
+                ex:Stack := ErrorStack()
+                throw ex
             end try
-            return oRet
+            return oResult
         endif
 
     static method DoSend(oObject as object, cMethod as string, args as usual[], cCaller as string) as usual

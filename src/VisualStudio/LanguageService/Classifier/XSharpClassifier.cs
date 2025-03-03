@@ -69,6 +69,18 @@ namespace XSharp.LanguageService
         #endregion
 
         #region Properties
+
+        public bool IsFoxPro
+        {
+            get
+            {
+                if (_file == null)
+                    return false;
+                if (_file.Project == null)
+                    return false;
+                return _file.Project.ParseOptions.Dialect == XDialect.FoxPro;
+            }
+        }
         public ITextSnapshot Snapshot
         {
             get
@@ -403,7 +415,7 @@ namespace XSharp.LanguageService
                     var canJump = block.CanJump;
                     foreach (var child in block.Children)
                     {
-                        // Jump statements are also children of the block 
+                        // Jump statements are also children of the block
                         // but should not result in a region
                         // HACK
                         // the two JUMP keywords are hard coded for simplicity
@@ -624,17 +636,14 @@ namespace XSharp.LanguageService
                         }
 
                     }
-                    else if (XSharpLexer.IsKeyword(tokenType))
+                    else if (XSharpLexer.IsKeyword(tokenType) ||
+                        XSharpLexer.IsWordOperator(tokenType))
                     {
                         type = xsharpKeywordType;
                     }
                     else if (XSharpLexer.IsOperator(tokenType))
                     {
                         type = xsharpOperatorType;
-                        // we are no longer marking these with BraceOpen and BraceClose
-                        // to avoid accidental matching of an Open paren with an ENDIF keyword
-
-
                     }
                     if (type != null)
                     {
@@ -661,11 +670,11 @@ namespace XSharp.LanguageService
 
         private void addKw(XKeyword kw, int iLine)
         {
-            
+
             if (kw.IsEmpty)
                 return;
             var isContinued = _document.HasLineState(iLine, LineFlags.IsContinued);
-            
+
             if ( isContinued)
             {
                 var afterAttribute = _document.HasLineState(iLine-1, LineFlags.StartsWithAttribute);
@@ -767,7 +776,7 @@ namespace XSharp.LanguageService
                         }
                     }
                     currentLine.Add(token);
- 
+
                     // Orphan End ?
                     if ((keywordContext != null) && (keywordContext.Line != token.Line) && (keywordContext.Type == XSharpLexer.END))
                     {
@@ -800,7 +809,7 @@ namespace XSharp.LanguageService
                                 case XSharpLexer.PP_DEFINE:
                                     ScanForRegion(token, iToken, tokens, ref iLastPPDefine, snapshot, regionTags);
                                     break;
-                                case XSharpLexer.DEFINE when _file.Project.ParseOptions.Dialect != XDialect.FoxPro:
+                                case XSharpLexer.DEFINE when IsFoxPro:
                                     ScanForRegion(token, iToken, tokens, ref iLastDefine, snapshot, regionTags);
                                     break;
                                 case XSharpLexer.SL_COMMENT:

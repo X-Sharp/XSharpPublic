@@ -578,6 +578,17 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			EXPORT symUsual := #SymUsual AS USUAL
 		END CLASS
 
+        [Fact, Trait("Category", "OOP")];
+        METHOD IVarInfoTest() AS VOID
+            local test := xxTest{} as usual
+            Assert.True(IVarGetInfo(test, #symVerkauf) == 3)
+            Assert.True(IVarPutInfo(test, #symVerkauf) == 3)
+            Assert.True(IVarGetInfo(test, #xxIVar) == 2)
+            Assert.True(IVarPutInfo(test, #xxIVar) == 2)
+            Assert.True(IVarGetInfo(test, #xxInstance) == 1)
+            Assert.True(IVarPutInfo(test, #xxInstance) == 1)
+            Assert.True(IVarGetInfo(test, #xxPrivate) == 0)
+            Assert.True(IVarPutInfo(test, #xxPrivate) == 0)
 
         [Fact, Trait("Category", "OOP")];
 		METHOD IVarsLateBound() AS VOID
@@ -609,7 +620,26 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			IVarPutSelf( u , "PrivateSET" , "abc")
 			Assert.True( u:PrivateSET == "abc" )
 			Assert.True( IVarGetSelf(u , "PrivateSET") == "abc" )
-		RETURN
+            RETURN
+
+        [Fact, Trait("Category", "OOP")];
+        METHOD Conversion_LateBound() as void
+            	LOCAL u AS USUAL
+	            u := TestClassLB{}
+
+	            Assert.True( u:TestMethod(TestEnum.Two) == TestEnum.Two)
+
+	            Assert.True( u:TestMethodDefault(2,TestEnum.Three) == "Three2" )
+	            Assert.True( u:TestMethodDefault(,TestEnum.Three)  == "Three1" )
+
+	            Assert.True( u:TestMethodDefault2(1,TestEnum.One)  == "One1" )
+	            Assert.True( u:TestMethodDefault2(2)               == "Two2" )
+
+	            u:IVar := TestEnum.Three
+	            Assert.True( u:IVar == TestEnum.Three)
+	            u:Prop := TestEnum.Two
+                Assert.True( u:Prop == TestEnum.Two)
+        return
 
 		INTERNAL CLASS TestIVars
 			PROPERTY InternalGet AS STRING AUTO INTERNAL GET SET
@@ -797,3 +827,39 @@ CLASS OOpVisTestClass
 
 
 END CLASS
+public class xxTestBase
+	virtual public access SymVerkauf as symbol
+		return null_symbol
+
+	virtual public assign SymVerkauf(val as symbol) as void
+		nop()
+end class
+
+public class xxTest inherit xxTestBase
+    // difference in case with parent access/assign
+    // This results in the Type.GetMembers() to return more than one property
+    public xxIVar as INT
+    instance xxInstance as INT
+    private xxPrivate as INT
+	public override assign symVerkauf(val as symbol) as void
+		nop()
+end class
+
+ENUM TestEnum
+	MEMBER One
+	MEMBER Two
+	MEMBER Three
+END ENUM
+
+CLASS TestClassLB
+	EXPORT IVar AS TestEnum
+	PROPERTY Prop AS TestEnum AUTO
+	METHOD TestMethod(e AS TestEnum) AS TestEnum
+	RETURN e
+	METHOD TestMethodDefault(n := 1 AS INT, e AS TestEnum) AS STRING
+	RETURN e:ToString() + n:ToString()
+	METHOD TestMethodDefault2(n AS INT, e := TestEnum.Two AS TestEnum) AS STRING
+	RETURN e:ToString() + n:ToString()
+END CLASS
+
+

@@ -532,7 +532,7 @@ namespace XSharp.LanguageService
             return null;
         }
 
-        
+
         /// <summary>
         /// Retrieve the CompletionType based on :
         ///  The Token list returned by GetTokenList()
@@ -668,7 +668,7 @@ namespace XSharp.LanguageService
                         continue;
                     case XSharpLexer.LBRKT:
                         if (symbols.Count == 0)
-                        { 
+                        {
                             startOfExpression = true;
                         }
                         else if (symbols.Peek().TypeName != KnownTypes.SystemArray)
@@ -741,7 +741,7 @@ namespace XSharp.LanguageService
                         startOfExpression = false;
                         state = CompletionState.Namespaces;
                         continue;
-                    #endregion 
+                    #endregion
                     case XSharpLexer.CLASS:
                     case XSharpLexer.STRUCTURE:
                     case XSharpLexer.VOSTRUCT:
@@ -776,8 +776,8 @@ namespace XSharp.LanguageService
                                 {
                                     None,
                                     Define = 1,                 // #define
-                                    Command = 2,                 // #command 
-                                    Translate = 3,               // #translate 
+                                    Command = 2,                 // #command
+                                    Translate = 3,               // #translate
                                     XCommand = 4,                // #xcommand
                                     XTranslate = 5,              // #xtranslate
                                 }
@@ -814,7 +814,7 @@ namespace XSharp.LanguageService
                         symbols.Push(ent);
                         result.Add(ent);
                         continue;
-                        
+
                     default:
                         hasBracket = false;
                         if (XSharpLexer.IsOperator(currentToken.Type))
@@ -865,7 +865,7 @@ namespace XSharp.LanguageService
                 {
                     if (findType && currentType != null  && !currentType.IsGlobalType())
                     {
-                        // Add current typename, so we will find nested types 
+                        // Add current typename, so we will find nested types
                         additionalUsings.Add(currentType.FullName);
                     }
                 }
@@ -1085,7 +1085,8 @@ namespace XSharp.LanguageService
                 }
             }
             if (result.Count == 0 && (XSharpLexer.IsKeyword(currentToken.Type) ||
-                XSharpLexer.IsPPKeyword(currentToken.Type) ))
+                XSharpLexer.IsPPKeyword(currentToken.Type) ||
+                XSharpLexer.IsWordOperator(currentToken.Type)))
             {
                 ((XSharpToken)currentToken).Text = XLiterals.FormatKeyword(currentToken.Text);
                 var sym = new XKeywordSymbol(currentToken.Text);
@@ -1458,7 +1459,7 @@ namespace XSharp.LanguageService
                 }
                 else
                 {
-                    
+
                     var ctors = type.GetConstructors().Where(x => x.IsVisible(minVisibility));
                     result.AddRange(ctors);
                 }
@@ -1781,7 +1782,7 @@ namespace XSharp.LanguageService
             else
             {
                 tmp = type.GetMembers(name, true).Where(x => x.Kind.IsClassMethod(location.Dialect)).ToList();
-                if (tmp.Count == 0 && !isTicked) 
+                if (tmp.Count == 0 && !isTicked)
                 {
                     tmp = type.GetMembers(name + "`").Where(x => x.Kind.IsClassMethod(location.Dialect)).ToList();
                 }
@@ -1943,7 +1944,7 @@ namespace XSharp.LanguageService
             foreach (XSourceEntity entity in file.EntityList)
             {
                 if (entity is IXMemberSymbol member && member.Kind.IsLocal())
-                { 
+                {
                 if (entity.Name == name && current.Range.StartLine <= entity.Range.StartLine &&
                     current.Range.EndLine > entity.Range.EndLine)
                     {

@@ -1,5 +1,5 @@
 // R803: When the OUT parameter to a function was not passed
-// then the compiler was passing in a reference to __Usual._NIL 
+// then the compiler was passing in a reference to __Usual._NIL
 // causing assignment to the out parameter to update the _NIL
 
 FUNCTION Start AS VOID
@@ -38,7 +38,7 @@ RETURN
 
 
 
-FUNCTION TestMe(val := NULL AS USUAL, lRef := NULL OUT USUAL) AS LOGIC
+FUNCTION TestMe(val := NIL AS USUAL, lRef := NIL OUT USUAL) AS LOGIC
 //? val, ValType(val), UsualType(val)
 lRef := TRUE
 RETURN val = NIL
@@ -49,4 +49,4 @@ IF .not. l
 	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
 END IF
 ? "Assertion passed"
-RETURN 
+RETURN

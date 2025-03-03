@@ -45,6 +45,9 @@ end interface
 /// This interface declares the link between a Windows Forms Control and the matching VOSDK.Control
 /// </summary>
 interface IVOControlProperties inherit IVOControl
+
+    property EnableDispatch as logic get set
+
     /// <summary>
     /// The VOSDK.Control object that this Windows Forms Control is linked to
     /// </summary>

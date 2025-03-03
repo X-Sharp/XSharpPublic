@@ -37,7 +37,6 @@ namespace XSharp.LanguageService.Commands
         }
         public static void InitializeCommands()
         {
-            System.Threading.Tasks.Task result = null;
             foreach (var type in typeof(AbstractCommand).Assembly.GetTypes())
             {
                 if (type.IsSubclassOf(typeof(AbstractCommand)))
@@ -45,7 +44,7 @@ namespace XSharp.LanguageService.Commands
                     var m = type.GetMethod("InitializeAsync");
                     if (m != null)
                     {
-                        result = (System.Threading.Tasks.Task)m.Invoke(null, null);
+                        var _ = m.Invoke(null, null);
                     }
                 }
             }

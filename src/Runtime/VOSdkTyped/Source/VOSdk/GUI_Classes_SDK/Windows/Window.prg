@@ -98,6 +98,8 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
 
     property __Form as VOForm get oWnd
 
+    PROPERTY EnableDispatch as LOGIC GET __Form:EnableDispatch SET __Form:EnableDispatch := value
+
     property TopMost as logic
         get
             return self:__Form:TopMost

@@ -588,7 +588,6 @@ ENUM DbFieldType AS BYTE
 
     /// <include file="XSharp.CoreDefines.xml" path="members/DbFieldType.Blob/*" />
     MEMBER Blob			:= 87
-    //MEMBER Character 		:= 67
     /// <include file="XSharp.CoreDefines.xml" path="members/DbFieldType.Currency/*" />
     MEMBER Currency		:= 89
     /// <include file="XSharp.CoreDefines.xml" path="members/DbFieldType.Double/*" />

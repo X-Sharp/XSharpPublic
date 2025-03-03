@@ -93,7 +93,7 @@ namespace XSharp.LanguageService
                 {
                     libraryManager.RegisterHierarchy(hier, prj, prj.ProjectNode);
                 }
-                
+
             }
 
         }
@@ -711,7 +711,7 @@ namespace XSharp.LanguageService
             var tokens = stream.GetTokens();
             foreach (var token in tokens)
             {
-                if (XSharpLexer.IsKeyword(token.Type))
+                if (XSharpLexer.IsKeyword(token.Type) || XSharpLexer.IsWordOperator(token.Type))
                 {
                     sb.Append(XLiterals.FormatKeyword(token.Text));
                 }

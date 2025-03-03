@@ -113,7 +113,7 @@
             DebugType="$(DebugType)"
             DefineConstants="$(DefineConstants)"
             DelaySign="$(DelaySign)"
-            DisabledWarnings="$(DisabledWarnings)"
+            DisabledWarnings="$(DisabledWarnings);$(NoWarn)"
             DisableSdkPath="$(DisableSdkPath)"
             DocumentationFile="@(DocFileItem)"
             EmbedAllSources="$(EmbedAllSources)"

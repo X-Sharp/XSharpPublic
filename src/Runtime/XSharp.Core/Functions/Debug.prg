@@ -128,8 +128,12 @@ FUNCTION ProcName(wActivation AS INT, lShowSignature AS LOGIC) AS STRING
             name := stringBuilder:ToString()
         ELSE
 		    VAR t  := mi:DeclaringType
-		    IF t == NULL
-			    name := mi:Name:ToUpperInvariant()
+            IF t == NULL
+                IF mi:Module:GetType():FullName:Contains("System.Reflection.Emit")
+                    name := "SCRIPT"
+                else
+                    name := mi:Name:ToUpperInvariant()
+                endif
             ELSE
     	        name := String.Concat( mi:DeclaringType:Name, iif (mi:IsStatic, ".", ":"), mi:Name ):ToUpperInvariant()
 

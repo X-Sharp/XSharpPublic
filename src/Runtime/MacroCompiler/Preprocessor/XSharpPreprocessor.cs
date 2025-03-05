@@ -357,6 +357,7 @@ namespace XSharp.MacroCompiler.Preprocessor
 
 #if MACROCOMPILER
             addMacro("__XSHARP_RT__", XSharpLexer.TRUE_CONST);
+            ProcessIncludeFile("XsharpDefs.xh", null);
 #else
             if (_options.XSharpRuntime)
             {
@@ -511,7 +512,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             addParseError(new ParseErrorData(token, error, args));
         }
- 
+
         private void addParseError(ParseErrorData error)
         {
 #if !VSPARSER
@@ -1205,7 +1206,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                     dirs.Add(p);
             }
             if (includeFileName != null)
-            { 
+            {
                 var path = Path.GetDirectoryName(includeFileName);
                 if (!string.IsNullOrEmpty(path) && !dirs.Contains(path))
                     dirs.Add(path);
@@ -1321,7 +1322,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 }
                 else
                 {
-                    // Most likely the Standard Header file. 
+                    // Most likely the Standard Header file.
                     DebugOutput("{0} Include Standard Header file {1}", fname, resolvedIncludeFileName);
                 }
             }
@@ -1753,7 +1754,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                     result.Add(_textProps.LCurly);
                     result.Add(_textProps.RCurly);
 
-                    // UniqueName:Add( .....( 
+                    // UniqueName:Add( .....(
                     temp.Add(_textProps.List);
                     temp.Add(_textProps.Colon);
                     temp.Add(new XSharpPPToken(XSharpLexer.ID, "Append", _textProps.Start, true));
@@ -2655,7 +2656,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
             if (usedRules.Count > 0)
             {
-                // somerule => #Error 
+                // somerule => #Error
                 result.TrimLeadingSpaces();
                 if (result.Count > 0 && result[0].Channel == Channel.PreProcessor)
                 {

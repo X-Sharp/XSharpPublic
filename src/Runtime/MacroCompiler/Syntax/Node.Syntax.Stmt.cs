@@ -122,13 +122,13 @@ namespace XSharp.MacroCompiler.Syntax
         internal ForeachStmt(Token t, VarDecl d, Expr e, Stmt s) : base(t) { ForDecl = d; Expr = e; Stmt = s; }
         public override string ToString() => "FOREACH " + (ForDecl is ImpliedVarDecl ? "VAR " : "") + ForDecl.ToString() + " IN " + Expr + "\n  " + Stmt.ToString().Replace("\n", "\n  ") + "\nNEXT";
     }
-    internal partial class IfStmt : Stmt
+    /// <summary>
+    /// This is a special version of the DoCaseStmt with different keywords
+    /// </summary>
+    internal partial class IfStmt : DoCaseStmt
     {
-        internal Expr Cond;
-        internal Stmt StmtIf;
-        internal Stmt StmtElse;
-        internal IfStmt(Token t, Expr cond, Stmt si, Stmt se) : base(t) { Cond = cond; StmtIf = si; StmtElse = se; }
-        public override string ToString() => "IF " + Cond.ToString() + "\n  " + StmtIf.ToString().Replace("\n", "\n  ") + (StmtElse != null ? "\nELSE\n  " + StmtElse.ToString().Replace("\n", "\n  ") : "") + "\nENDIF";
+        internal IfStmt(Token t, CaseBlock[] cases, Stmt otherwise) : base(t, cases, otherwise) { }
+        public override string ToString() => "IF " + String.Join("\n", Array.ConvertAll(Cases, (x) => x.ToString())) + (Otherwise != null ? "\nELSE\n  " + Otherwise.ToString().Replace("\n", "\n  ") : "") + "\nEND IF";
     }
     internal partial class DoCaseStmt : Stmt
     {
@@ -142,7 +142,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal Expr Cond;
         internal Stmt Stmt;
         internal CaseBlock(Token t, Expr cond, Stmt s) : base(t) { Cond = cond; Stmt = s; }
-        public override string ToString() => "CASE " + Cond.ToString() + "\n  " + Stmt.ToString().Replace("\n", "\n  ");
+        public override string ToString() => Token.Text  + Cond.ToString() + "\n  " + Stmt.ToString().Replace("\n", "\n  ");
     }
 
     internal partial class SwitchStmt : Stmt

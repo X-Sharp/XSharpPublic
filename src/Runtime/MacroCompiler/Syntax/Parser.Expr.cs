@@ -135,7 +135,7 @@ namespace XSharp.MacroCompiler
                         var o = ConsumeAndGet();
                         return new SizeOfExpr(ParseParenType(), o);
                     }
-                case TokenType.DEFAULT when La(2) == TokenType.LPAREN && La(3) == TokenType.ID:
+                case TokenType.DEFAULT when La(2) == TokenType.LPAREN && La(3) != TokenType.ADDROF:
                     {
                         var o = ConsumeAndGet();
                         return new DefaultExpr(ParseParenType(), o);

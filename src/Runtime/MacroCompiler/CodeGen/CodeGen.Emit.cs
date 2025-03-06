@@ -204,7 +204,7 @@ namespace XSharp.MacroCompiler
                 case NativeType.String:
                     ilg.Emit(OpCodes.Ldstr, c.String);
                     break;
-                case NativeType.VODate:
+                case NativeType.Date:
                     EmitConstant_I4(ilg, c.DateTime.Value.Year);
                     EmitConstant_I4(ilg, c.DateTime.Value.Month);
                     EmitConstant_I4(ilg, c.DateTime.Value.Day);

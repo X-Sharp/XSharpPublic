@@ -14,6 +14,15 @@ USING XSharp.MacroCompiler
 
 BEGIN NAMESPACE MacroCompilerTest
 
+CLASS FoxTestClass
+        PRIVATE _p as INT
+        PROTECTED PROPERTY p AS INT GET _p SET _p := value
+        CONSTRUCTOR()
+            p := 42
+            RETURN
+    END CLASS
+
+
     FUNCTION FoxTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         Console.WriteLine("Running FOX tests ...")
         TestGlobals.tsi := teststruct{1}
@@ -138,6 +147,10 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "Qout(.NULL.),.NULL."      ,Args(), DBNull.Value, typeof(DBNull))
         SetDecimalSep(asc("."))
         TestMacro(mc, "Str(123,7,2)", Args(), " 123.00", typeof(string))
+        // The macro compiler can access private and protected fields and properties
+        TestMacro(mc, e"{|fc| fc:p}", Args(FoxTestClass{}), 42,typeof(INT))
+        TestMacro(mc, e"{|fc| fc:_p}", Args(FoxTestClass{}), 42,typeof(INT))
+
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         RETURN
 

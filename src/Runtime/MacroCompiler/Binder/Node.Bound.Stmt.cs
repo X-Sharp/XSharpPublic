@@ -407,8 +407,10 @@ namespace XSharp.MacroCompiler.Syntax
             return null;
         }
     }
-    internal partial class IfStmt : DoCaseStmt
+    internal partial class IfStmt : CondStmt
     {
+        // Binding handled by parent CondStmt
+        // Static method is used to create for IIF() constructs
         internal static IfStmt Bound(Expr cond, Stmt sTrue, Stmt sFalse)
         {
             var cb = new CaseBlock(null, cond, sTrue);
@@ -416,7 +418,11 @@ namespace XSharp.MacroCompiler.Syntax
             return new IfStmt(null, cases, sFalse);
         }
     }
-    partial class DoCaseStmt : Stmt
+    internal partial class DoCaseStmt : CondStmt
+    {
+        // Binding handled by parent CondStmt
+    }
+    internal partial class CondStmt : Stmt
     {
         internal override Node Bind(Binder b)
         {

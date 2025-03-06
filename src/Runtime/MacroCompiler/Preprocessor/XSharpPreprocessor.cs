@@ -1837,9 +1837,6 @@ namespace XSharp.MacroCompiler.Preprocessor
                     result.Add(_textProps.Colon);
                     result.Add(new XSharpPPToken(XSharpLexer.ID, "ToString", anchor, true));
                     result.Add(_textProps.LParen);
-                }
-                if (_textProps.textVarName != null)
-                {
                     result.Add(_textProps.RParen);
                 }
                 if (_textProps.textEndFunc?.Count > 0)

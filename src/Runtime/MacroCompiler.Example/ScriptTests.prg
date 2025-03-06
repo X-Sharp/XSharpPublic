@@ -480,7 +480,6 @@ FUNCTION FoxScriptTests AS VOID
 
 FUNCTION TestPreProcessor(sc AS XSharp.Runtime.MacroCompiler) AS VOID
     TestMacro(sc, String.Join(e"\n",<STRING>{;
-    "#include ""XSharpDefs.xh"" ",;
     "PARAMETERS a, b, c",;
     "#define AAA",;
     "#ifdef AAA",;
@@ -504,7 +503,6 @@ FUNCTION TestUDC(sc AS XSharp.Runtime.MacroCompiler) AS VOID
     DbCloseArea()
 
     TestMacro(sc, String.Join(e"\n",<STRING>{;
-    "#include ""XSharpDefs.xh"" ",;
     "USE TEST",;
     "i:=1",;
     "DO WHILE ! EOF()",;
@@ -523,7 +521,6 @@ FUNCTION TestUDC(sc AS XSharp.Runtime.MacroCompiler) AS VOID
     XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
     sc := CreateFoxScriptCompiler()
     TestMacro(sc, String.Join(e"\n",<STRING>{;
-    "#include ""XSharpDefs.xh"" ",;
     "LPARAMETERS fileName",;
     "LOCAL recCount",;
     "USE (fileName)",;
@@ -539,10 +536,9 @@ FUNCTION TestUDC(sc AS XSharp.Runtime.MacroCompiler) AS VOID
     "ENDSCAN",;
     "recCount = LastRec()",;
     "CLOSE ",;
-    "RETURN '0'"}),Args("test"), "0", typeof(STRING))
+    "RETURN recCount"}),Args("test"), 10, typeof(DWORD))
 
     TestMacro(sc, String.Join(e"\n",<STRING>{;
-        "#include ""XSharpDefs.xh"" ",;
         "x := ''",;
         "TEXT TO x",;
         "aaa",;

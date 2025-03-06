@@ -125,17 +125,24 @@ namespace XSharp.MacroCompiler.Syntax
     /// <summary>
     /// This is a special version of the DoCaseStmt with different keywords
     /// </summary>
-    internal partial class IfStmt : DoCaseStmt
+    internal partial class IfStmt : CondStmt
     {
         internal IfStmt(Token t, CaseBlock[] cases, Stmt otherwise) : base(t, cases, otherwise) { }
         public override string ToString() => "IF " + String.Join("\n", Array.ConvertAll(Cases, (x) => x.ToString())) + (Otherwise != null ? "\nELSE\n  " + Otherwise.ToString().Replace("\n", "\n  ") : "") + "\nEND IF";
     }
-    internal partial class DoCaseStmt : Stmt
+    internal partial class DoCaseStmt : CondStmt
+    {
+        internal DoCaseStmt(Token t, CaseBlock[] cases, Stmt otherwise) : base(t, cases, otherwise) { }
+        public override string ToString() => "DO CASE\n" + String.Join("\n", Array.ConvertAll(Cases, (x) => x.ToString())) + (Otherwise != null ? "\nOTHERWISE\n  " + Otherwise.ToString().Replace("\n", "\n  ") : "") + "\nEND CASE";
+    }
+
+    internal abstract partial class CondStmt
     {
         internal CaseBlock[] Cases;
         internal Stmt Otherwise;
-        internal DoCaseStmt(Token t, CaseBlock[] cases, Stmt otherwise) : base(t) { Cases = cases; Otherwise = otherwise; }
-        public override string ToString() => "DO CASE\n" + String.Join("\n", Array.ConvertAll(Cases, (x) => x.ToString())) + (Otherwise != null ? "\nOTHERWISE\n  " + Otherwise.ToString().Replace("\n", "\n  ") : "") + "\nEND CASE";
+        internal CondStmt(Token t, CaseBlock[] cases, Stmt otherwise) : base(t) { Cases = cases; Otherwise = otherwise; }
+        public abstract override string ToString();
+
     }
     internal partial class CaseBlock : Node
     {

@@ -130,7 +130,7 @@ FUNCTION ProcName(wActivation AS INT, lShowSignature AS LOGIC) AS STRING
 		    VAR t  := mi:DeclaringType
             IF t == NULL
                 IF mi:Module:GetType():FullName:Contains("System.Reflection.Emit")
-                    name := "SCRIPT"
+                    name := "[SCRIPT]"
                 else
                     name := mi:Name:ToUpperInvariant()
                 endif

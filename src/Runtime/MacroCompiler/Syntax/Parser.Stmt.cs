@@ -562,7 +562,7 @@ namespace XSharp.MacroCompiler
                 Expect(TokenType.IF);
             }
             else
-                Require(Expect(TokenType.ENDIF), ErrorCode.Expected, "END IF");
+                Require(TokenType.ENDIF);
             parseEos();
             return new IfStmt(i, cases.ToArray(),  se);
         }

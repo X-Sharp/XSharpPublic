@@ -241,7 +241,15 @@ namespace XSharp.MacroCompiler.Syntax
     {
         // Emit handled by parent
     }
-    internal partial class DoCaseStmt : Stmt
+    internal partial class DoCaseStmt
+    {
+        // Emit handled by parent CondStmt
+    }
+    internal partial class IfStmt
+    {
+        // Emit handled by parent CondStmt
+    }
+    internal partial class CondStmt : Stmt
     {
         internal override void EmitStmt(ILGenerator ilg)
         {

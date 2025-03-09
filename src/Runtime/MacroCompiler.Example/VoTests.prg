@@ -584,8 +584,11 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a| TestByRef(a) }", Args("123"), "123", typeof(string))
         TestMacro(mc, "{ |x| (x)-1 } ",Args(2),1,typeof(int))
         TestMacro(mc, "{ || (int)(-5.1) } ",Args(),-5,typeof(int))
-        TestMacro(mc, '"#include ""c:\Program Files (x86)\XSharp\Include\XSharpDefs.xh"" "', Args(), "#include ""c:\Program Files (x86)\XSharp\Include\XSharpDefs.xh"" ", typeof(string))
-        TestMacro(mc, "'#include ''c:\Program Files (x86)\XSharp\Include\XSharpDefs.xh'' '", Args(), '#include ''c:\Program Files (x86)\XSharp\Include\XSharpDefs.xh'' ', typeof(string))
+        TestMacro(mc, "{ || TestInNotNil(10) } ",Args(),true,typeof(logic))
+        TestMacro(mc, "{ || TestRefNotZero(10) } ",Args(),true,typeof(logic))
+        TestMacro(mc, '"#include ""XSharpDefs.xh"" "', Args(), "#include ""XSharpDefs.xh"" ", typeof(string))
+        TestMacro(mc, "'#include ''XSharpDefs.xh'' '", Args(), '#include ''XSharpDefs.xh'' ', typeof(string))
+        TestMacro(mc, "'#include [XSharpDefs.xh] '", Args(), '#include [XSharpDefs.xh] ', typeof(string))
 
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet, "MyMemVarGet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")

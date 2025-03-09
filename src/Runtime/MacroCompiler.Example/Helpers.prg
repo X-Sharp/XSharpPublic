@@ -151,10 +151,11 @@ BEGIN NAMESPACE MacroCompilerTest
 
             VAR res := cb:EvalBlock(args)
             LOCAL match AS LOGIC
-            IF IsArray(expect)
-                match := XSharp.RT.Functions.ALen((ARRAY) expect) = XSharp.RT.Functions.ALen((ARRAY) res)
-                FOR VAR i := 1 TO XSharp.RT.Functions.ALen(expect)
-                    IF expect[i] != ((ARRAY)res)[i]
+            IF expect is __Array VAR a
+                var r := (ARRAY) res
+                match := XSharp.RT.Functions.ALen(a) = XSharp.RT.Functions.ALen(r)
+                FOR VAR i := 1 TO XSharp.RT.Functions.ALen(a)
+                    IF a[i] != r[i]
                         match := FALSE
                     END
                 NEXT

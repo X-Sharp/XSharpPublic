@@ -12,6 +12,12 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
+function TestInNotNil(u in usual) as logic
+    return u != nil
+
+function TestRefNotZero(u ref int) as logic
+    return u != 0
+
 FUNCTION FoxArrayTest(a1, a2, a3) CLIPPER
     local result := 42 as INT
     FOREACH var arg in _Args()
@@ -20,7 +26,6 @@ FUNCTION FoxArrayTest(a1, a2, a3) CLIPPER
         ENDIF
     next
     RETURN result
-
 
 FUNCTION TestI(i as int) as int
     return i

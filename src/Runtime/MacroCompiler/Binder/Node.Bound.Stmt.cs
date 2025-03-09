@@ -407,36 +407,30 @@ namespace XSharp.MacroCompiler.Syntax
             return null;
         }
     }
-    internal partial class IfStmt : Stmt
+    internal partial class IfStmt : CondStmt
     {
-        internal override Node Bind(Binder b)
-        {
-            b.OpenScope();
-            b.Bind(ref Cond);
-            Cond.RequireGetAccess();
-            b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
-            b.BindStmt(ref StmtIf);
-            b.CloseScope();
-
-            b.OpenScope();
-            b.BindStmt(ref StmtElse);
-            b.CloseScope();
-
-            return null;
-        }
+        // Binding handled by parent CondStmt
+        // Static method is used to create for IIF() constructs
         internal static IfStmt Bound(Expr cond, Stmt sTrue, Stmt sFalse)
         {
-            return new IfStmt(null, cond, sTrue, sFalse);
+            var cb = new CaseBlock(null, cond, sTrue);
+            var cases = new CaseBlock[] { cb };
+            return new IfStmt(null, cases, sFalse);
         }
     }
-    internal partial class DoCaseStmt : Stmt
+    internal partial class DoCaseStmt : CondStmt
+    {
+        // Binding handled by parent CondStmt
+    }
+    internal partial class CondStmt : Stmt
     {
         internal override Node Bind(Binder b)
         {
             for(int i = 0; i < Cases.Length; i++)
                 b.Bind(ref Cases[i]);
             b.OpenScope();
-            b.Bind(ref Otherwise);
+            if (Otherwise != null)
+                b.Bind(ref Otherwise);
             b.CloseScope();
             return null;
         }

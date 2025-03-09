@@ -9,7 +9,7 @@ USING System.Reflection
 USING System.Diagnostics
 USING System.Runtime.InteropServices
 
-define EMPTY_ERRORSTACK := "*EmptyCallStack*"
+DEFINE EMPTY_ERRORSTACK := "*EmptyCallStack*"
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/debout32/*" />
 FUNCTION DebOut32( pszText AS STRING ) AS VOID
@@ -66,63 +66,63 @@ FUNCTION ProcLine(dwActivation AS INT) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/procname/*" />
 FUNCTION ProcName() AS STRING
-	RETURN ProcName( 1)
+	RETURN ProcName( 1, FALSE)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/procname/*" />
 FUNCTION ProcName(wActivation AS INT) AS STRING
-    RETURN ProcName(wActivation , FALSE)
+    RETURN ProcName(wActivation + 1, FALSE)
 FUNCTION ProcName(wActivation AS INT, lShowSignature AS LOGIC) AS STRING
    LOCAL st := StackTrace{ TRUE } AS StackTrace
    LOCAL name := "" AS STRING
 
     IF ( wActivation + 1 < st:FrameCount .AND. wActivation >= 0)
 		VAR mi := st:GetFrame( wActivation + 1 ):GetMethod()
-        if lShowSignature
-            var stringBuilder := System.Text.StringBuilder{}
-            if mi:DeclaringType != null
+        IF lShowSignature
+            VAR stringBuilder := System.Text.StringBuilder{}
+            IF mi:DeclaringType != NULL
                 stringBuilder:Append(mi:DeclaringType:FullName:Replace('+', '.'))
                 stringBuilder:Append(".")
-            endif
+            ENDIF
             stringBuilder:Append(mi:Name)
-            var first := true
-            if mi is MethodInfo var m .and. m:IsGenericMethod
-                var genericArguments := m:GetGenericArguments()
+            VAR first := TRUE
+            IF mi IS MethodInfo VAR m .and. m:IsGenericMethod
+                VAR genericArguments := m:GetGenericArguments()
                 stringBuilder:Append("<")
 
-                foreach var arg in genericArguments
-                    if (!first)
+                FOREACH VAR arg IN genericArguments
+                    IF (!first)
                         stringBuilder:Append(",")
-                    else
-                        first := false
-                    endif
+                    ELSE
+                        first := FALSE
+                    ENDIF
                     stringBuilder:Append(arg:Name)
-                next
+                NEXT
                 stringBuilder:Append(">")
-            endif
+            ENDIF
             stringBuilder:Append("(")
-            first := true
-            foreach var param in mi:GetParameters()
-                if (!first)
+            first := TRUE
+            FOREACH VAR param IN mi:GetParameters()
+                IF (!first)
                     stringBuilder:Append(",")
-                else
-                    first := false
-                endif
-                var str := "<UnknownType>"
-                if param.ParameterType != null
+                ELSE
+                    first := FALSE
+                ENDIF
+                VAR str := "<UnknownType>"
+                IF param.ParameterType != NULL
                     str := param.ParameterType.Name
-                endif
-                var dir := " as "
-                if param:IsIn
-                    if param:IsOut
+                ENDIF
+                VAR dir := " as "
+                IF param:IsIn
+                    IF param:IsOut
                         dir := " ref "
-                    else
+                    ELSE
                         dir := " as  "
-                    endif
-                elseif param:IsOut
+                    ENDIF
+                ELSEIF param:IsOut
                     dir := " out "
-                endif
+                ENDIF
                 stringBuilder.Append(param.Name+dir+str)
-            next
+            NEXT
             stringBuilder:Append(")")
 
             name := stringBuilder:ToString()
@@ -131,9 +131,9 @@ FUNCTION ProcName(wActivation AS INT, lShowSignature AS LOGIC) AS STRING
             IF t == NULL
                 IF mi:Module:GetType():FullName:Contains("System.Reflection.Emit")
                     name := "[SCRIPT]"
-                else
+                ELSE
                     name := mi:Name:ToUpperInvariant()
-                endif
+                ENDIF
             ELSE
     	        name := String.Concat( mi:DeclaringType:Name, iif (mi:IsStatic, ".", ":"), mi:Name ):ToUpperInvariant()
 
@@ -179,7 +179,7 @@ FUNCTION ErrorStack(oStackTrace AS System.Diagnostics.StackTrace, wActivation :=
 
     IF ErrorStackSettings.ErrorStackVOFormat
 	    IF wStart <= oStackTrace:FrameCount - 1
-		    for var i := wStart upto (oStackTrace:FrameCount - 1)
+		    FOR VAR i := wStart UPTO (oStackTrace:FrameCount - 1)
 			    VAR oFrame := oStackTrace:GetFrame((INT)i)
 			    VAR oMethod := oFrame:GetMethod()
 			    VAR cStackLine := oMethod:Name:ToUpper()
@@ -193,7 +193,7 @@ FUNCTION ErrorStack(oStackTrace AS System.Diagnostics.StackTrace, wActivation :=
 			    cStackLine += " (Line: " + oFrame:GetFileLineNumber():ToString() + ")" + CRLF
     	        cResult += " "+cStackLine
 		    NEXT
-	    else
+	    ELSE
 		    cResult := EMPTY_ERRORSTACK + CRLF
 	    ENDIF
     ELSE

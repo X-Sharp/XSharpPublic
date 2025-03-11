@@ -60,14 +60,15 @@ namespace XSharp.MacroCompiler
     }
     internal partial class SymbolList : Symbol
     {
-        internal MemberTypes SymbolTypes;
+        internal MemberTypes SymbolTypes = 0;
         internal List<Symbol> Symbols;
         internal SymbolList() { Symbols = new List<Symbol>(); }
-        internal SymbolList(Symbol s): this() { Add(s); SymbolTypes = 0; }
+        internal SymbolList(Symbol s): this() { Add(s); }
         internal void Add(Symbol s) { Symbols.Add(s); SymbolTypes |= (s as MemberSymbol)?.MemberType ?? 0; }
         internal bool HasMethod { get { return SymbolTypes.HasFlag(MemberTypes.Method); } }
         internal bool HasConstructor { get { return SymbolTypes.HasFlag(MemberTypes.Constructor); } }
         internal bool HasProperty { get { return SymbolTypes.HasFlag(MemberTypes.Property); } }
+        internal bool HasField { get { return SymbolTypes.HasFlag(MemberTypes.Field); } }
         internal bool HasMethodBase { get { return HasMethod || HasConstructor; } }
         internal override Symbol Lookup(string name)
         {

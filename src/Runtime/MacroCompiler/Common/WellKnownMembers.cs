@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Diagnostics;
+using System.ComponentModel;
 
 namespace XSharp.MacroCompiler
 {
@@ -130,8 +131,16 @@ namespace XSharp.MacroCompiler
                 var s = Binder.LookupFullName(name.Replace("global::", "").Split('.').Select(n => n.Replace('@', '.')).ToArray());
                 if (s == null)
                     continue;
-                if (s is SymbolList)
+                if (s is SymbolList list)
                 {
+                    if (list.HasField && list.HasProperty)
+                    {
+                        // .Net 8 and .Net 9 have a System.Decimal.Zero field and property.
+                        // The property is the implementation of an interface
+                        // We want to have the field in this case
+                        var fld = (FieldSymbol) list.Symbols.Find(x => x is FieldSymbol);
+                        return fld;
+                    }
                     var isStatic = proto.Contains('$');
                     var args = proto.Replace(")", "").Split('(').Last().Split(',');
                     var argTypes = args.Select(x => Binder.LookupFullName(x) as TypeSymbol).ToArray();

@@ -5,40 +5,41 @@
 //
 
 USING System.Reflection
-USING System.Collections.Generic
+USING System.Linq
+USING System.Collections.Concurrent
 USING XSharp.Internal
+using XSharp.RT
 
 [AllowLateBinding];
-abstract class XSharp.XPP.Abstract
+abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
     PRIVATE inSend := FALSE AS LOGIC
-    private static classObjects as Dictionary<System.Type, ClassObject>
+    private static classObjects as ConcurrentDictionary<System.Type, ClassObject>
 
-    internal static method GetClassObject(type as System.Type) as ClassObject
-        IF classObjects:ContainsKey(type)
-            RETURN classObjects[type]
+    internal static method GetClassObject(oType as System.Type) as ClassObject
+        IF classObjects:TryGetValue(oType, out var result)
+            RETURN result
         ENDIF
-        var result := XSharp.XPP.StaticClassObject{type}
-        classObjects:Add(type, result)
+        result := XSharp.XPP.StaticClassObject{oType}
+        classObjects:TryAdd(oType, result)
         RETURN result
-    internal static method RemoveClassObject(type as System.Type) as logic
-        if classObjects:ContainsKey(type)
-            classObjects:Remove(type)
+    internal static method RemoveClassObject(oType as System.Type) as logic
+        if classObjects:TryRemove(oType, out var _)
             return true
         endif
         return false
 
 
     STATIC CONSTRUCTOR
-        classObjects := Dictionary<System.Type, ClassObject>{}
+        classObjects := ConcurrentDictionary<System.Type, ClassObject>{}
 
     /// <summary>Retrieves the name of the class an object belongs to.</summary>
     /// <returns>The method returns a character string representing the name of a class.</returns>
     METHOD ClassName() AS STRING
         RETURN SELF:GetType():Name
 
-        /// <summary>Retrieves the class object (System.Type) of a class.</summary>
-        /// <returns>The method returns the class object of a class.</returns>
-        /// <remarks>The X# XPP implementation returns a System.Type object as class object.</remarks>
+    /// <summary>Retrieves the class object (System.Type) of a class.</summary>
+    /// <returns>The method returns the class object of a class.</returns>
+    /// <remarks>The X# XPP implementation returns a System.Type object as class object.</remarks>
     METHOD ClassObject() AS OBJECT STRICT
         RETURN Abstract.GetClassObject(SELF:GetType())
 
@@ -48,7 +49,7 @@ abstract class XSharp.XPP.Abstract
             LOCAL bBlock := uBlock AS CODEBLOCK
             aParams := USUAL[]{ PCOunt()-1 }
             // The pseudo function _ARGS() returns the Clipper arguments array
-            System.Array.Copy(_ARGS(),1, aParams, 0, PCount()-1)
+            System.Array.Copy(_ARGS(),1, aParams, 0, PCOunt()-1)
             RETURN XSharp.RT.Functions.Eval(bBlock, aParams)
         ELSE
             THROW ArgumentException{"Missing Codeblock parameter", nameof(uBlock)}
@@ -61,6 +62,18 @@ abstract class XSharp.XPP.Abstract
         if ClassHelpers.IsInstanceofRuntimeClass(self)
             return ClassHelpers.CallIVarGet(self, cName)
         ENDIF
+        var mem := OOPHelpers.GetFieldOrProperty(self:GetType(), cName)
+        // Note that XBase++ allows to call Static members with an instance syntax
+        // So we are not filtering here
+        if mem is FieldInfo var fld
+            return fld:GetValue(self)
+        endif
+        if mem is PropertyInfo var  prop .and. prop:CanRead
+            if prop:GetIndexParameters():Length == 0
+                return prop:GetValue(self)
+            endif
+        endif
+
         var oError := Error.VOError( EG_NOVARMETHOD, __FUNCTION__, nameof(cName), 2, <object>{self, cName} )
         oError:Description := oError:Message+" '"+cName+"'"
         throw oError
@@ -69,20 +82,35 @@ abstract class XSharp.XPP.Abstract
         if ClassHelpers.IsInstanceofRuntimeClass(self)
             ClassHelpers.CallIVarPut(self, cName, uValue)
         ENDIF
-       var oError := Error.VOError( EG_NOVARMETHOD, __FUNCTION__, nameof(cName), 2, <object>{self, cName} )
-       oError:Description := oError:Message+" '"+cName+"'"
-       throw oError
-        /// <summary>Handles assign operations to undefined instance variables. </summary>
-        /// <param name="cName">The fieldname to assign.</param>
-        /// <param name="uValue">The value of an assignment. </param>
-        /// <returns>The return value of the method is ignored.</returns>
+        var mem := OOPHelpers.GetFieldOrProperty(self:GetType(), cName)
+        // Note that XBase++ allows to call Static members with an instance syntax
+        // So we are not filtering here
+        if mem is FieldInfo var fld
+            var oValue := OOPHelpers.ValueConvert(uValue, fld:FieldType)
+            fld:SetValue(self, oValue)
+            RETURN
+        endif
+        if mem is PropertyInfo var  prop .and. prop:CanWrite
+            if prop:GetIndexParameters():Length == 0
+                var oValue := OOPHelpers.ValueConvert(uValue, prop:PropertyType)
+                prop:SetValue(self, oValue)
+                return
+            endif
+        endif
+        var oError := Error.VOError( EG_NOVARMETHOD, __FUNCTION__, nameof(cName), 2, <object>{self, cName} )
+        oError:Description := oError:Message+" '"+cName+"'"
+        throw oError
+    /// <summary>Handles assign operations to undefined instance variables. </summary>
+    /// <param name="cName">The fieldname to assign.</param>
+    /// <param name="uValue">The value of an assignment. </param>
+    /// <returns>The return value of the method is ignored.</returns>
     METHOD SetNoIVar(cName AS USUAL , uValue  AS USUAL) AS VOID
         SELF:NoIvarPut(cName, uValue)
         RETURN
 
-        /// <summary>Handles access operations to undefined instance variables. </summary>
-        /// <param name="cName">The fieldname to access.</param>
-        /// <returns></returns>
+    /// <summary>Handles access operations to undefined instance variables. </summary>
+    /// <param name="cName">The fieldname to access.</param>
+    /// <returns></returns>
     METHOD GetNoIVar(cName AS USUAL ) AS USUAL STRICT
         RETURN SELF:NoIvarGet(cName)
 
@@ -93,13 +121,25 @@ abstract class XSharp.XPP.Abstract
     VIRTUAL METHOD NoMethod(cName, uParams) AS USUAL CLIPPER
         LOCAL cMethod AS STRING
         cMethod := RuntimeState.NoMethod
+        var uArgs := _ARGS()
         IF ! SELF:inSend
             SELF:inSend := TRUE
             TRY
                 if ClassHelpers.IsInstanceofRuntimeClass(self)
-                    return ClassHelpers.CallMethod(self, cMethod, _ARGS())
+                    return ClassHelpers.CallMethod(self, cMethod, uArgs)
                 ENDIF
-                RETURN __InternalSend(SELF, cMethod,  _ARGS())
+                var t := self:GetType()
+                do while t != typeof(System.Object)
+                    var overloads := OOPHelpers.FindOverloads(t, cMethod, false):ToArray()
+                    var mi  := OOPHelpers.FindBestOverLoad<MethodInfo>(overloads, cMethod, uArgs)
+                    if mi != null
+                        if OOPHelpers.SendHelper(null, mi, uArgs, out var result)
+                            return result
+                        endif
+                    endif
+                    t := t:BaseType
+                enddo
+                RETURN __InternalSend(SELF, cMethod,  uArgs)
             FINALLY
                 SELF:inSend := FALSE
             END TRY

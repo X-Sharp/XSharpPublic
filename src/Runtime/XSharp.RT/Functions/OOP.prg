@@ -869,6 +869,24 @@ internal static class OOPHelpers
         next
         return false
 
+    static method GetFieldOrProperty(oType as System.Type, cName as STRING) as Object
+        var mem := OOPHelpers.GetMemberFromCache(oType, cName)
+        if mem != null
+            RETURN mem
+        endif
+        foreach fld as FieldInfo in  oType:GetFields()
+            if String.Compare(fld:Name, cName, true) == 0
+                OOPHelpers.AddMemberToCache(oType, cName, fld)
+                return fld
+            endif
+        next
+        foreach prop as PropertyInfo in  oType:GetProperties()
+            if prop:CanRead .and. String.Compare(prop:Name, cName, true) == 0
+                OOPHelpers.AddMemberToCache(oType, cName, prop)
+                return prop
+            endif
+        next
+        RETURN NULL_OBJECT
     static method IVarGet(oObject as object, cIVar as string, lSelf as logic) as usual
         local t as Type
         local result as object

@@ -143,42 +143,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
         // XBase Type Names
         #region Properties
-        protected TypeSyntax UsualType =>
-            _options.XSharpRuntime
-            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Usual)
-            : GenerateQualifiedName(VulcanQualifiedTypeNames.Usual);
-        protected TypeSyntax FloatType =>
-            _options.XSharpRuntime
-            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Float)
-            : GenerateQualifiedName(VulcanQualifiedTypeNames.Float);
-        protected TypeSyntax CurrencyType =>
-            _options.XSharpRuntime
-            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Currency)
-            : GenerateQualifiedName(VulcanQualifiedTypeNames.Usual);
-        protected TypeSyntax BinaryType =>
-            _options.XSharpRuntime
-            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Binary)
-            : GenerateQualifiedName(VulcanQualifiedTypeNames.Usual);
-        protected TypeSyntax DateType =>
-            _options.XSharpRuntime
-            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Date)
-            : GenerateQualifiedName(VulcanQualifiedTypeNames.Date);
-        protected TypeSyntax SymbolType =>
-            _options.XSharpRuntime
-            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Symbol)
-            : GenerateQualifiedName(VulcanQualifiedTypeNames.Symbol);
-        protected TypeSyntax PszType =>
-            _options.XSharpRuntime
-            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Psz)
-            : GenerateQualifiedName(VulcanQualifiedTypeNames.Psz);
-        protected TypeSyntax CodeblockType =>
-            _options.XSharpRuntime
-            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Codeblock)
-            : GenerateQualifiedName(VulcanQualifiedTypeNames.Codeblock);
-        protected TypeSyntax ArrayType =>
-            _options.XSharpRuntime
-            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Array)
-            : GenerateQualifiedName(VulcanQualifiedTypeNames.Array);
+        protected TypeSyntax UsualType => GenerateQualifiedName(XSharpQualifiedTypeNames.Usual);
+        protected TypeSyntax FloatType => GenerateQualifiedName(XSharpQualifiedTypeNames.Float);
+        protected TypeSyntax CurrencyType => GenerateQualifiedName(XSharpQualifiedTypeNames.Currency);
+        protected TypeSyntax BinaryType => GenerateQualifiedName(XSharpQualifiedTypeNames.Binary);
+        protected TypeSyntax DateType => GenerateQualifiedName(XSharpQualifiedTypeNames.Date);
+        protected TypeSyntax SymbolType => GenerateQualifiedName(XSharpQualifiedTypeNames.Symbol);
+        protected TypeSyntax PszType => GenerateQualifiedName(XSharpQualifiedTypeNames.Psz);
+        protected TypeSyntax CodeblockType => GenerateQualifiedName(XSharpQualifiedTypeNames.Codeblock);
+        protected TypeSyntax ArrayType =>GenerateQualifiedName(XSharpQualifiedTypeNames.Array);
         protected ArrayTypeSyntax ArrayOfUsual
         {
             get
@@ -3491,7 +3464,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var attr = _pool.Allocate<AttributeListSyntax>();
             attr.AddRange(atts);
-            GenerateAttributeList(attr, _options.XSharpRuntime ? XSharpQualifiedTypeNames.IsInstance : VulcanQualifiedTypeNames.IsInstance);
+            GenerateAttributeList(attr, XSharpQualifiedTypeNames.IsInstance);
             atts = attr.ToList();
             _pool.Free(attr);
             return atts;
@@ -3846,10 +3819,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (_options.NoClipCall)
                 return MakeDefault(UsualType);
-            if (_options.XSharpRuntime)
-                return GenerateQualifiedName(XSharpQualifiedFunctionNames.UsualNIL);
-            else
-                return GenerateQualifiedName(VulcanQualifiedFunctionNames.UsualNIL);
+            return GenerateQualifiedName(XSharpQualifiedFunctionNames.UsualNIL);
 
         }
 
@@ -6088,9 +6058,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //
                 var args = MakeArgumentList(MakeArgument(varname));
                 stmt = GenerateExpressionStatement(GenerateMethodCall(
-                    _options.XSharpRuntime ?
-                    XSharpQualifiedFunctionNames.StringArrayInit :
-                    VulcanQualifiedFunctionNames.StringArrayInit, args, true), sub);
+                    XSharpQualifiedFunctionNames.StringArrayInit, args, true), sub);
                 stmt.XNode = sub.Parent as XSharpParserRuleContext;
                 stmts.Add(stmt);
 
@@ -7915,7 +7883,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExpressionSyntax mcall;
             if (_options.HasRuntime)
             {
-                mcall = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.Chr : VulcanQualifiedFunctionNames.Chr, argList);
+                mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.Chr, argList);
             }
             else
             {

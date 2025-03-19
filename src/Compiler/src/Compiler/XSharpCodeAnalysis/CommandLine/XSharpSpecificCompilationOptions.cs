@@ -27,7 +27,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             var includeDir = Environment.GetEnvironmentVariable("INCLUDE");
 #if NETSTANDARD2_0_OR_GREATER
             string XSharpIncludeDir = String.Empty;
-            string VulcanIncludeDir = string.Empty;
             try
             {
                 string key;
@@ -38,31 +37,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 XSharpIncludeDir = (string)Microsoft.Win32.Registry.GetValue(key, global::XSharp.Constants.RegistryValue, "");
             }
             catch (Exception) { }
-            try
-            {
-                string key;
-                if (Environment.Is64BitProcess)
-                    key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Grafx\Vulcan.NET";
-                else
-                    key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Grafx\Vulcan.NET";
-                VulcanIncludeDir = (string)Microsoft.Win32.Registry.GetValue(key, "InstallPath", "");
-            }
-            catch (Exception) { }
             if (!string.IsNullOrEmpty(XSharpIncludeDir))
             {
                 XSharpIncludeDir = Path.Combine(XSharpIncludeDir, @"Include\");
             }
 
-            if (!string.IsNullOrEmpty(VulcanIncludeDir))
-            {
-                VulcanIncludeDir = Path.Combine(VulcanIncludeDir, @"Include\");
-            }
             if (string.IsNullOrEmpty(includeDir))
                 includeDir = XSharpIncludeDir;
             else
                 includeDir += ";" + XSharpIncludeDir;
-            if (!string.IsNullOrEmpty(VulcanIncludeDir))
-                includeDir += ";" + VulcanIncludeDir;
 #else
             if (string.IsNullOrEmpty(includeDir))
                 includeDir = "";
@@ -131,8 +114,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Xpp1 { get; internal set; } = false;
         //public bool Fox1 { get; internal set; } = false;
         public bool Fox2 { get; internal set; } = false;
-        public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);
-        public bool VulcanRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRT);
         public bool XSharpRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT);
         public bool XSharpVOIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO);
         public bool XSharpVFPIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVFP);
@@ -265,12 +246,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             switch (System.IO.Path.GetFileNameWithoutExtension(filename).ToLower())
             {
-                case VulcanAssemblyNames.VulcanRTFuncs:
-                    this.RuntimeAssemblies |= RuntimeAssemblies.VulcanRTFuncs;
-                    break;
-                case VulcanAssemblyNames.VulcanRT:
-                    this.RuntimeAssemblies |= RuntimeAssemblies.VulcanRT;
-                    break;
                 case XSharpAssemblyNames.SdkDefines:
                     this.RuntimeAssemblies |= RuntimeAssemblies.SdkDefines;
                     break;

@@ -28,8 +28,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        internal static BoundStatement RewriteXSharpMethod(MethodSymbol method, 
-            BoundStatement body, 
+        internal static BoundStatement RewriteXSharpMethod(MethodSymbol method,
+            BoundStatement body,
             int methodOrdinal,
             TypeCompilationState compilationState,
             BindingDiagnosticBag diagnostics)

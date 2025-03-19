@@ -105,7 +105,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return added;
         }
 
-        private static void CreateMethodCall(CSharpCompilation compilation, SyntaxNode node, 
+        private static void CreateMethodCall(CSharpCompilation compilation, SyntaxNode node,
                                                 MethodSymbol sym, List<BoundStatement> statements)
         {
             var args = ImmutableArray<BoundExpression>.Empty;
@@ -208,7 +208,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundLiteral lit;
             if (value is bool)
                 lit = new BoundLiteral(syntax, ConstantValue.Create(( bool) value), prop.Type) { WasCompilerGenerated = true };
-            else 
+            else
                 lit = new BoundLiteral(syntax, ConstantValue.Create((int)value), prop.Type) { WasCompilerGenerated = true };
 
             var ass = new BoundAssignmentOperator(syntax, bpa, lit, isRef: false, lit.Type) { WasCompilerGenerated = true };
@@ -234,30 +234,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             // Generate RuntimeState field assignments when  the runtime supports the fields we expect
             var comp = method.DeclaringCompilation;
-            var vrt = comp.GetBoundReferenceManager().GetReferencedAssemblies().Where(x => x.Value.Name == "VulcanRT");
-            if (vrt.Count() != 0)
-            {
-                var vulcanrt = (AssemblySymbol) vrt.First().Value;
-                var type = vulcanrt.GetTypeByMetadataName("Vulcan.Runtime.State");
-                if (type is { })
-                {
-                    string[] names = { XSharpSpecialNames.RTCompilerOptionOvf,
-                                    XSharpSpecialNames.RTCompilerOptionOvf,
-                                    XSharpSpecialNames.RTCompilerOptionVO11};
-                    bool[] values = { comp.Options.CheckOverflow ,
-                                        comp.Options.CheckOverflow ,
-                                        comp.Options.VOArithmeticConversions};
-
-                    for (int n = 0; n < names.Length; n++)
-                    {
-                        var mem = type.GetMembers(names[n]);
-                        if (mem.Length == 1 && mem[0] is FieldSymbol fld)
-                        {
-                            newstatements.Add(vulcanruntimeStateAssign(oldbody.Syntax, fld, values[n]));
-                        }
-                    }
-                 }
-            }
             var xc = comp.GetBoundReferenceManager().GetReferencedAssemblies().Where(x => x.Value.Name == "XSharp.Core");
             if (xc.Count() != 0)
             {
@@ -407,7 +383,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //return statement;
             //var newstatements = new List<BoundStatement>();
             //var oldbody = statement as BoundBlock;
-            //// Add exit procedures 
+            //// Add exit procedures
             //foreach (var stmt in oldbody.Statements)
             //{
             //    if (!(stmt is BoundSequencePointWithSpan))
@@ -439,7 +415,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //                        && !field.IsConst
             //                        && field.IsStatic
             //                        && field.ContainingType.IsStatic
-            //                        && field.ContainingType.Name.StartsWith( "Functions", StringComparison.Ordinal) 
+            //                        && field.ContainingType.Name.StartsWith( "Functions", StringComparison.Ordinal)
             //                        )
             //                    {
             //                        newstatements.Add(ClearGlobal(compilation, statement.Syntax, field));
@@ -501,7 +477,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             continue;
                         if (decl.LocalSymbol == pcount)     // no need for local to store PCount
                             continue;
-                        newStmts.Add(decl); 
+                        newStmts.Add(decl);
                         break;
                     case BoundKind.TryStatement:
                         if (level == null)

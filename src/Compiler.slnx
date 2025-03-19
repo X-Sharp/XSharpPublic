@@ -1,0 +1,132 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Public" />
+    <BuildType Name="Release" />
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/CSharp/">
+    <Project Path="Compiler/src/Tools/csc/csc.csproj" />
+    <Project Path="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+    <Project Path="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj">
+      <BuildType Solution="Public|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Folder Name="/Roslyn/" />
+  <Folder Name="/Roslyn/Core/" Id="441f585b-4a2a-0f26-4883-a6cdb0b5009d">
+    <Project Path="Roslyn/src/Compilers/Core/AnalyzerDriver/AnalyzerDriver.shproj" />
+    <Project Path="Roslyn/src/Compilers/Server/VBCSCompiler/VBCSCompilerCommandLine.shproj" />
+    <Project Path="Roslyn/src/Dependencies/Collections/Microsoft.CodeAnalysis.Collections.shproj" />
+    <Project Path="Roslyn/src/Dependencies/PooledObjects/Microsoft.CodeAnalysis.PooledObjects.shproj" />
+  </Folder>
+  <Folder Name="/Roslyn/CSharp/" Id="6558fc84-8d43-b2c3-faff-990604592679">
+    <Project Path="Roslyn/src/Compilers/CSharp/csc/CscCommandLine.shproj" />
+    <Project Path="Roslyn/src/Compilers/CSharp/CSharpAnalyzerDriver/CSharpAnalyzerDriver.shproj" />
+  </Folder>
+  <Folder Name="/Roslyn/Tools/" Id="927886e5-8481-2654-9a6e-b65d0cba1fd6">
+    <Project Path="Roslyn/src/Tools/Source/CompilerGeneratorTools/Source/BoundTreeGenerator/CompilersBoundTreeGenerator.csproj">
+      <BuildType Solution="Public|*" Project="Debug" />
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="Roslyn/src/Tools/Source/CompilerGeneratorTools/Source/CSharpErrorFactsGenerator/CSharpErrorFactsGenerator.csproj">
+      <BuildType Solution="Public|*" Project="Debug" />
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="Roslyn/src/Tools/Source/CompilerGeneratorTools/Source/CSharpSyntaxGenerator/CSharpSyntaxGenerator.csproj">
+      <BuildType Solution="Public|*" Project="Debug" />
+      <Platform Solution="*|x64" Project="x64" />
+    </Project>
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Common/BuildNumber.h" />
+    <File Path="Common/CommonAssemblyInfo.cs" />
+    <File Path="Common/commonAssemblyInfo.prg" />
+    <File Path="Common/Constants.cs" />
+    <File Path="Common/constants.prg" />
+    <File Path="Common/ConstantsMethods.cs" />
+    <File Path="Common/CustomDefs.xh" />
+    <File Path="Common/dbcmd.xh" />
+    <File Path="Common/FoxProCmd.xh" />
+    <File Path="Common/FoxProSet.xh" />
+    <File Path="Common/FoxProSql.xh" />
+    <File Path="Common/GuidStrings.cs" />
+    <File Path="Common/HarbourCmd.xh" />
+    <File Path="Common/memvar.xh" />
+    <File Path="Common/NativeResourceDefines.xh" />
+    <File Path="Common/README.md" />
+    <File Path="Common/set.xh" />
+    <File Path="Common/version.Targets" />
+    <File Path="Common/version.xh" />
+    <File Path="Common/VFPProperties.xh" />
+    <File Path="Common/XbasePPCmd.xh" />
+    <File Path="Common/XSharp.snk" />
+    <File Path="Common/XSharpConstants.cs" />
+    <File Path="Common/XSharpDefs.xh" />
+    <File Path="Compiler/eng/Versions.props" />
+    <File Path="Compiler/src/Compiler/CompilerCommon.props" />
+    <File Path="Compiler/src/Compiler/XSharpCodeAnalysis/Antlr.props" />
+    <File Path="Compiler/src/Compiler/XSharpCodeAnalysis/Extra.Targets" />
+  </Folder>
+  <Folder Name="/Tools/">
+    <Project Path="Tools/Mono.Cecil/XSharp.MonoCecil.csproj">
+      <BuildType Solution="Public|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Folder Name="/XSharp/" />
+  <Folder Name="/XSharp/Build/" Id="2dca04a6-e0f9-d770-ac74-3f1fd3f9552f">
+    <Project Path="Compiler/src/Compiler/XSharpBuildTask/XSharp.Build.csproj" />
+  </Folder>
+  <Folder Name="/XSharp/Compiler/" Id="e0df48e9-298a-2769-7ee0-b8e75888becc">
+    <Project Path="Compiler/src/Compiler/xsc/xsc.csproj">
+      <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+      <BuildType Solution="Public|x64" Project="Debug" />
+    </Project>
+    <Project Path="Compiler/src/Compiler/XSCompiler/XSCompiler.csproj">
+      <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+    </Project>
+    <Project Path="Compiler/src/Compiler/XSharpCodeAnalysis/XSharpCodeAnalysis.csproj">
+      <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+    </Project>
+    <Project Path="Compiler/src/Compiler/XSharpCodeAnalysis/XSharpVSParser.csproj">
+      <BuildDependency Project="Compiler/src/Compiler/XSharpCodeAnalysis/XSharpCodeAnalysis.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+    </Project>
+    <Project Path="Compiler/src/Compiler/XSharpEvaluator/XSharpEvaluator.csproj">
+      <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+    </Project>
+  </Folder>
+  <Folder Name="/XSharp/NuGet/" Id="be2843ab-9320-73b9-bbe3-73b6005d785f">
+    <Project Path="Compiler/src/NuGet/XSharp.Compiler.Tools/XSharp.Compiler.Tools.csproj">
+      <BuildDependency Project="Compiler/src/Compiler/XSCompiler/XSCompiler.csproj" />
+      <BuildDependency Project="Compiler/src/Compiler/XSharpBuildTask/XSharp.Build.csproj" />
+      <BuildDependency Project="Compiler/src/Compiler/XSharpCodeAnalysis/XSharpCodeAnalysis.csproj" />
+      <BuildDependency Project="Compiler/src/Scripting/XSharpScripting/XSharpScripting.csproj" />
+      <BuildDependency Project="Compiler/src/Scripting/xsi/xsi.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+    </Project>
+  </Folder>
+  <Folder Name="/XSharp/Scripting/" Id="ca6f962b-cb36-c82f-ba67-10ab26d274be">
+    <Project Path="Compiler/src/Scripting/XSharpScripting/XSharpScripting.csproj">
+      <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+      <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+    </Project>
+    <Project Path="Compiler/src/Scripting/xsi/xsi.csproj">
+      <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
+      <BuildDependency Project="Compiler/src/Compiler/XSCompiler/XSCompiler.csproj" />
+    </Project>
+  </Folder>
+</Solution>

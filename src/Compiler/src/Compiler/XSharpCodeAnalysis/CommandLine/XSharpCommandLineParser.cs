@@ -394,7 +394,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Vo16 = positive;
                     encode = true;
                     break;
-                case "vo17":    // VO Compatible BEGIN SEQUENCE 
+                case "vo17":    // VO Compatible BEGIN SEQUENCE
                     options.Vo17 = positive;
                     encode = true;
                     break;
@@ -510,12 +510,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             "XSharp.Core.DLL, XSharp.RT.DLL, XSharp.VFP.DLL");
                     }
                 }
-                if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded && options.Dialect.LikeVO())
-                {
-                    // Ok;
-                    withRT = true;
-                }
-                else if (options.XSharpRTIncluded && options.XSharpCoreIncluded)
+                if (options.XSharpRTIncluded && options.XSharpCoreIncluded)
                 {
                     // Ok;
                     withRT = true;

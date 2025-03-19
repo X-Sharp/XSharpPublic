@@ -36,16 +36,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {XSharpAssemblyNames.VoSystem, XSharpTargetDLL.VOSystemClasses},
                 {XSharpAssemblyNames.VoReport, XSharpTargetDLL.VOReportClasses},
                 {XSharpAssemblyNames.VoInet, XSharpTargetDLL.VOInternetClasses},
-                // Vulcan
-                {VulcanAssemblyNames.VulcanRT, XSharpTargetDLL.VulcanRT},
-                {VulcanAssemblyNames.VulcanRTFuncs, XSharpTargetDLL.VulcanRTFuncs},
-                {VulcanAssemblyNames.VulcanVoConsole, XSharpTargetDLL.VulcanVOConsoleClasses},
-                {VulcanAssemblyNames.VulcanVoGui, XSharpTargetDLL.VulcanVOGuiClasses},
-                {VulcanAssemblyNames.VulcanVoSystem, XSharpTargetDLL.VulcanVOSystemClasses},
-                {VulcanAssemblyNames.VulcanVoRdd, XSharpTargetDLL.VulcanVORDDClasses},
-                {VulcanAssemblyNames.VulcanVoSql, XSharpTargetDLL.VulcanVOSQLClasses},
-                {VulcanAssemblyNames.VulcanVoInet, XSharpTargetDLL.VulcanVOInternetClasses},
-                {VulcanAssemblyNames.VulcanVoWin32, XSharpTargetDLL.VulcanVOWin32Api}
             };
         }
 
@@ -87,7 +77,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             return type is { } &&
                 type.ContainingAssembly.IsRT() &&
-                (type.Name == OurTypeNames.IsInstance || type.Name == OurTypeNames.IsVoInstance);
+                type.Name == OurTypeNames.IsInstance;
         }
         internal static bool IsUsualType(this TypeSymbol type)
         {
@@ -398,8 +388,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 case XSharpTargetDLL.VFP:
                 case XSharpTargetDLL.Harbour:
                 case XSharpTargetDLL.RTDebugger:
-                case XSharpTargetDLL.VulcanRT:
-                case XSharpTargetDLL.VulcanRTFuncs:
                     return true;
             }
             return false;
@@ -421,14 +409,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 case XSharpTargetDLL.VOInternetClasses:
                 case XSharpTargetDLL.VOConsoleClasses:
                 case XSharpTargetDLL.VOReportClasses:
-                case XSharpTargetDLL.VulcanVOWin32Api:
-                case XSharpTargetDLL.VulcanVOSystemClasses:
-                case XSharpTargetDLL.VulcanVORDDClasses:
-                case XSharpTargetDLL.VulcanVOSQLClasses:
-                case XSharpTargetDLL.VulcanVOGuiClasses:
-                case XSharpTargetDLL.VulcanVOInternetClasses:
-                case XSharpTargetDLL.VulcanVOConsoleClasses:
-                case XSharpTargetDLL.VulcanVOReportClasses:
                     return true;
             }
             return false;

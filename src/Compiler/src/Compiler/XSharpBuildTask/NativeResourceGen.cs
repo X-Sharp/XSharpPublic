@@ -331,12 +331,6 @@ namespace XSharp.Build
                 if(!string.IsNullOrEmpty(incpath)) {
                     defincpath = incpath + ";" + defincpath;
                 }
-                // Find the Vulcan Include path
-                string vulcanIncludeDir = Utilities.VulcanIncludeDir();
-                if(!string.IsNullOrEmpty(vulcanIncludeDir))
-                {
-                    defincpath += ";" + vulcanIncludeDir;
-                }
                 // please note that the path should not end with a backslash
                 if (defincpath.EndsWith(@"\"))
                    defincpath = defincpath.Substring(0, defincpath.Length - 1);
@@ -359,11 +353,11 @@ namespace XSharp.Build
                 ; // do nothing
             }
             else
-            { 
+            {
                 base.LogEventsFromTextOutput(singleLine, messageImportance);
             }
         }
-        
+
     }
 }
 

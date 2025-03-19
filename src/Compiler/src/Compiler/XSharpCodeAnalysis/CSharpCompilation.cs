@@ -60,16 +60,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        internal NamedTypeSymbol GetRtType(WellKnownType xsName, WellKnownType vulName)
-        {
-            return GetWellKnownType(Options.XSharpRuntime ? xsName : vulName);
-        }
         #region cached types
         internal NamedTypeSymbol UsualType()
         {
             if (_usualType is null)
             {
-                _usualType = GetRtType(WellKnownType.XSharp___Usual, WellKnownType.Vulcan___Usual);
+                _usualType = GetWellKnownType(WellKnownType.XSharp___Usual);
             }
             return _usualType;
         }
@@ -77,7 +73,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (_pszType is null)
             {
-                _pszType = GetRtType(WellKnownType.XSharp___Psz, WellKnownType.Vulcan___Psz);
+                _pszType = GetWellKnownType(WellKnownType.XSharp___Psz);
             }
             return _pszType;
         }
@@ -85,7 +81,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (_dateType is null)
             {
-                _dateType = GetRtType(WellKnownType.XSharp___Date, WellKnownType.Vulcan___VODate);
+                _dateType = GetWellKnownType(WellKnownType.XSharp___Date);
             }
             return _dateType;
         }
@@ -93,7 +89,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (_symbolType is null)
             {
-                _symbolType = GetRtType(WellKnownType.XSharp___Symbol, WellKnownType.Vulcan___Symbol);
+                _symbolType = GetWellKnownType(WellKnownType.XSharp___Symbol);
             }
             return _symbolType;
         }
@@ -101,7 +97,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (_floatType is null)
             {
-                _floatType = GetRtType(WellKnownType.XSharp___Float, WellKnownType.Vulcan___VOFloat);
+                _floatType = GetWellKnownType(WellKnownType.XSharp___Float);
             }
             return _floatType;
         }
@@ -119,7 +115,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (_arrayType is null)
             {
-                _arrayType = GetRtType(WellKnownType.XSharp___Array, WellKnownType.Vulcan___Array);
+                _arrayType = GetWellKnownType(WellKnownType.XSharp___Array);
             }
             return _arrayType;
         }
@@ -127,7 +123,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (_codeblockType is null)
             {
-                _codeblockType = GetRtType(WellKnownType.XSharp_Codeblock, WellKnownType.Vulcan_Codeblock);
+                _codeblockType = GetWellKnownType(WellKnownType.XSharp_Codeblock);
             }
             return _codeblockType;
         }
@@ -135,7 +131,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (_windateType is null)
             {
-                _windateType = GetRtType(WellKnownType.XSharp___WinDate, WellKnownType.XSharp___WinDate);
+                _windateType = GetWellKnownType(WellKnownType.XSharp___WinDate);
             }
             return _windateType;
         }
@@ -143,7 +139,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (_rtFuncsType is null)
             {
-                _rtFuncsType = GetRtType(WellKnownType.XSharp_RT_Functions, WellKnownType.VulcanRTFuncs_Functions);
+                _rtFuncsType = GetWellKnownType(WellKnownType.XSharp_RT_Functions);
             }
             return _rtFuncsType;
         }
@@ -156,7 +152,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return _vfpFunctionsType;
         }
         #endregion
-        #region uncached types 
+        #region uncached types
         internal NamedTypeSymbol ArrayBaseType()
         {
             return GetWellKnownType(WellKnownType.XSharp___ArrayBase_T1);
@@ -176,20 +172,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         internal NamedTypeSymbol ClassLibraryType()
         {
-            return GetRtType(WellKnownType.XSharp_Internal_ClassLibraryAttribute, WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute);
+            return GetWellKnownType(WellKnownType.XSharp_Internal_ClassLibraryAttribute);
         }
         internal NamedTypeSymbol ImplicitNamespaceType()
         {
-            return GetRtType(WellKnownType.XSharp_ImplicitNamespaceAttribute, WellKnownType.Vulcan_VulcanImplicitNamespaceAttribute);
+            return GetWellKnownType(WellKnownType.XSharp_ImplicitNamespaceAttribute);
         }
 
         internal NamedTypeSymbol CompilerServicesType()
         {
-            return GetRtType(WellKnownType.XSharp_Internal_CompilerServices,WellKnownType.Vulcan_Internal_CompilerServices);
+            return GetWellKnownType(WellKnownType.XSharp_Internal_CompilerServices);
         }
         internal NamedTypeSymbol VOStructAttributeType()
         {
-            return GetRtType(WellKnownType.XSharp_Internal_VoStructAttribute,WellKnownType.Vulcan_Internal_VOStructAttribute);
+            return GetWellKnownType(WellKnownType.XSharp_Internal_VoStructAttribute);
         }
         #endregion
     }

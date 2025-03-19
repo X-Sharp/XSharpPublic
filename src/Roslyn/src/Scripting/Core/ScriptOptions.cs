@@ -82,7 +82,7 @@ namespace Microsoft.CodeAnalysis.Scripting
         /// </summary>
         /// <remarks>
         /// The array may contain both resolved and unresolved references (<see cref="UnresolvedMetadataReference"/>).
-        /// Unresolved references are resolved when the script is about to be executed 
+        /// Unresolved references are resolved when the script is about to be executed
         /// (<see cref="Script.RunAsync(object, CancellationToken)"/>.
         /// Any resolution errors are reported at that point through <see cref="CompilationErrorException"/>.
         /// </remarks>
@@ -180,12 +180,6 @@ namespace Microsoft.CodeAnalysis.Scripting
                 AllowOldStyleAssignments = true };
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             var arefs = assemblies.Where(a => !a.IsDynamic && (a.Location.ToLower().Contains("xsharp.core.dll") || a.Location.ToLower().Contains("xsharp.rt.dll")));
-            if (arefs.Count() == 0)
-            {
-                arefs = assemblies.Where(a => !a.IsDynamic && (a.Location.ToLower().Contains("vulcanrt.dll") || a.Location.ToLower().Contains("vulcanrtfuncs.dll")));
-                XsOptions.Dialect = CSharp.XSharpDialect.Vulcan;
-                XsOptions.RuntimeAssemblies = CSharp.RuntimeAssemblies.VulcanRT | CSharp.RuntimeAssemblies.VulcanRTFuncs;
-            }
             if (arefs.Count() == 0)
             {
                 XsOptions.Dialect = CSharp.XSharpDialect.Core;

@@ -340,19 +340,6 @@ namespace Microsoft.CodeAnalysis
         System_Runtime_CompilerServices_IsConst,
         System_Runtime_InteropServices_MarshalAsAttribute,
 
-        Vulcan_Internal_VOStructAttribute,
-        Vulcan_Internal_VulcanClassLibraryAttribute,
-        Vulcan_Internal_CompilerServices,
-        Vulcan_VulcanImplicitNamespaceAttribute,
-        VulcanRTFuncs_Functions,
-        Vulcan_Codeblock,
-        Vulcan___VOFloat,
-        Vulcan___VODate,
-        Vulcan___Symbol,
-        Vulcan___Psz,
-        Vulcan___Usual,
-        Vulcan___Array,
-        Vulcan___WinBool,
         XSharp_Internal_VoStructAttribute,
         XSharp_Internal_ClassLibraryAttribute,
         XSharp_Internal_CompilerServices,
@@ -702,19 +689,6 @@ namespace Microsoft.CodeAnalysis
 #if XSHARP
             "System.Runtime.CompilerServices.IsConst",
             "System.Runtime.InteropServices.MarshalAsAttribute",
-            "Vulcan.Internal.VOStructAttribute",
-            "Vulcan.Internal.VulcanClassLibraryAttribute",
-            "Vulcan.Internal.CompilerServices",
-            "Vulcan.VulcanImplicitNamespaceAttribute",
-            "VulcanRTFuncs.Functions",
-            "Vulcan.Codeblock",
-            "Vulcan.__VOFloat",
-            "Vulcan.__VODate",
-            "Vulcan.__Symbol",
-            "Vulcan.__Psz",
-            "Vulcan.__Usual",
-            "Vulcan.__Array",
-            "Vulcan.__WinBool",
             "XSharp.Internal.VoStructAttribute",
             "XSharp.Internal.ClassLibraryAttribute",
             "XSharp.Internal.CompilerServices",
@@ -811,7 +785,7 @@ namespace Microsoft.CodeAnalysis
                 // Once the last real id minus WellKnownType.ExtSentinel cannot fit into a byte, it is time to add a new sentinel.
                 _ = new int[255 - ((int)WellKnownType.NextAvailable - 1 - (int)WellKnownType.ExtSentinel)];
             }
-#endif 
+#endif
         }
 
         public static bool IsWellKnownType(this WellKnownType typeId)

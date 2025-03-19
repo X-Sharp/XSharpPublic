@@ -19,8 +19,8 @@ namespace Microsoft.CodeAnalysis.CSharp
     public enum RuntimeAssemblies : int
     {
         None = 0,
-        VulcanRT = 0x01,
-        VulcanRTFuncs = 0x02,
+        //VulcanRT = 0x01,
+        //VulcanRTFuncs = 0x02,
         XSharpCore = 0x04,
         XSharpData = 0x08,
         XSharpRT = 0x10,
@@ -61,8 +61,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         Harbour,
         // The following are strictly not a target but
         // we use this in the OverloadResolution
-        VulcanRT,
-        VulcanRTFuncs,
         // All Dlls before VOWin32API will use "spoecial" function class names
         // XSharp SDK DLLs
         VOWin32Api,
@@ -74,15 +72,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         VOConsoleClasses,
         RTDebugger,
         VOReportClasses,
-        // Vulcan SDK DLLs
-        VulcanVOWin32Api,
-        VulcanVOSystemClasses,
-        VulcanVORDDClasses,
-        VulcanVOSQLClasses,
-        VulcanVOGuiClasses,
-        VulcanVOInternetClasses,
-        VulcanVOConsoleClasses,
-        VulcanVOReportClasses,
     }
 
     public sealed partial class CSharpParseOptions
@@ -154,8 +143,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 #else
         public IList<string> IncludePaths { get; private set; } = new List<string>();
 #endif
-        public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);
-        public bool VulcanRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRT);
         public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT) |
             RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         public bool VOUntypedAllowed { get; private set; } = true;

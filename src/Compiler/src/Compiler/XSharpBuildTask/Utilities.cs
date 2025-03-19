@@ -64,29 +64,7 @@ namespace XSharp.Build
             return Path.Combine(XSharpDir(), "include");
         }
 
-        internal static string VulcanIncludeDir()
-        {
-            string vulcanIncludeDir;
-            try
-            {
-                string key;
-                if (Environment.Is64BitProcess)
-                    key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Grafx\Vulcan.NET";
-                else
-                    key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Grafx\Vulcan.NET";
-                vulcanIncludeDir = (string)Registry.GetValue(key, "InstallPath", "");
-                if (! string.IsNullOrEmpty(vulcanIncludeDir))
-                    vulcanIncludeDir = Path.Combine(vulcanIncludeDir, "Include");
-                else
-                    vulcanIncludeDir = "";
-            }
-            catch (Exception)
-            {
-                vulcanIncludeDir = "";
-            }
-            return vulcanIncludeDir;
-        }
-        internal static bool CopyFileSafe(string source, string target)
+       internal static bool CopyFileSafe(string source, string target)
         {
             try
             {

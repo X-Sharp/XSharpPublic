@@ -3,10 +3,10 @@
 USING System.Reflection
 FUNCTION Start( ) AS VOID
 	// ClipperCallingConvention applied:
-	? TypeOf(Child):GetConstructors()[1]:GetCustomAttribute(TypeOf(Vulcan.Internal.ClipperCallingConventionAttribute))
+	? TypeOf(Child):GetConstructors()[1]:GetCustomAttribute(TypeOf(XSharp.Internal.ClipperCallingConventionAttribute))
 	// ClipperCallingConvention not applied:
-	? TypeOf(ChildDll):GetConstructors()[1]:GetCustomAttribute(TypeOf(Vulcan.Internal.ClipperCallingConventionAttribute))
-	
+	? TypeOf(ChildDll):GetConstructors()[1]:GetCustomAttribute(TypeOf(XSharp.Internal.ClipperCallingConventionAttribute))
+
 	? CreateInstance("Parent")
 	? CreateInstance("Parent" , 1, 2 ,3)
 

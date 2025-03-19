@@ -30,6 +30,7 @@ DefaultPropertiesGuid = 25819EAF-9863-441B-90D0-A9072599943A
 
 [Recent References]
 RecentReference = Browse:E:\XSharp\Dev30\Artifacts\Debug\XSharp.VO.dll
+RecentReference = GAC:XSharp.VO,v4,
 
 [Application Groups]
 ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,4C0321AA-30EF-4AE1-A0E0-ADF576B643B4
@@ -40265,6 +40266,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,
 [C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT Resources]
 [C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT Native Resources]
 [C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT License files]
@@ -42551,6 +42553,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,
 [C356 - Issues with PSZ CAST and DIM array Resources]
 [C356 - Issues with PSZ CAST and DIM array Native Resources]
 [C356 - Issues with PSZ CAST and DIM array License files]
@@ -44831,6 +44834,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,
 [C375 - Cannot assign USUAL to VOSTRUCT Resources]
 [C375 - Cannot assign USUAL to VOSTRUCT Native Resources]
 [C375 - Cannot assign USUAL to VOSTRUCT License files]
@@ -45672,6 +45676,7 @@ CopyToBin = 0
 ReferenceGAC = XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 ReferenceGAC = VOWin32APILibrary,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,
 [C381 - Helpdisplay Resources]
 [C381 - Helpdisplay Native Resources]
 [C381 - Helpdisplay License files]
@@ -46401,6 +46406,7 @@ ReferenceGAC = VOSystemClasses,1,0,2.6.0.0
 ReferenceGAC = VOGUIClasses,1,0,2.6.0.0
 ReferenceGAC = VORDDClasses,1,0,2.6.0.0
 ReferenceGAC = VOWin32APILibrary,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,
 [C386 - Probem embedding native resource files Resources]
 [C386 - Probem embedding native resource files Native Resources]
 NativeResourceFile = %AppPath%\Prg\C386.rc
@@ -50498,6 +50504,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,
 [C418 - Problem using VulcanLoadLibrary() with x# compiled dlls Resources]
 [C418 - Problem using VulcanLoadLibrary() with x# compiled dlls Native Resources]
 [C418 - Problem using VulcanLoadLibrary() with x# compiled dlls License files]
@@ -55314,6 +55321,7 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 ReferenceGAC = VOGUIClasses,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,
 [C458 - Name conflict between DEFINE and METHOD Resources]
 [C458 - Name conflict between DEFINE and METHOD Native Resources]
 [C458 - Name conflict between DEFINE and METHOD License files]
@@ -57133,6 +57141,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,
 [C472 - Issues with /vo16 Resources]
 [C472 - Issues with /vo16 Native Resources]
 [C472 - Issues with /vo16 License files]
@@ -59794,6 +59803,7 @@ ReferenceGAC = VOSystemClasses,1,0,2.6.0.0
 ReferenceGAC = VOGUIClasses,1,0,2.6.0.0
 ReferenceGAC = VORDDClasses,1,0,2.6.0.0
 ReferenceGAC = VOWin32APILibrary,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,
 [C493 - VO compatibility isssues with VOSTRUCTs Resources]
 [C493 - VO compatibility isssues with VOSTRUCTs Native Resources]
 NativeResourceFile = %AppPath%\Resources\C493.rc
@@ -65700,6 +65710,7 @@ ReferenceGAC = VOGUIClasses,1,0,2.6.0.0
 ReferenceGAC = VORDDClasses,1,0,2.6.0.0
 ReferenceGAC = VOSystemClasses,1,0,2.6.0.0
 ReferenceGAC = VOWin32APILibrary,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Resources]
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Native Resources]
 NativeResourceFile = %AppPath%\Resources\C541.rc

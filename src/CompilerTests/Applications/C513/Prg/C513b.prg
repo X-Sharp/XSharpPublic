@@ -5,6 +5,6 @@
 [assembly: AssemblyTitleAttribute( "Just a test" )]
 [assembly: AssemblyDescriptionAttribute( "another test" )]
 [assembly: ClsCompliant( FALSE )]
-[assembly: Vulcan.VulcanImplicitNamespaceAttribute( "test" )]
+[assembly: XSharp.ImplicitNamespaceAttribute( "test" )]
 [assembly: SecurityRulesAttribute (SecurityRuleSet.Level1)]
 

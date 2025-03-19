@@ -1,5 +1,6 @@
 // 356. error XS1503: Argument 1: cannot convert from 'byte' to 'string'
 #pragma warnings(165, off) // uniassigned local
+#pragma warnings(618, off) // uniassigned local
 #pragma warnings(9068, off) // auto psz
 #pragma warnings(9071, off)   //  Parameter needs a(n) 'Out' modifier. This modifier was automatically added.
 FUNCTION Start() AS VOID

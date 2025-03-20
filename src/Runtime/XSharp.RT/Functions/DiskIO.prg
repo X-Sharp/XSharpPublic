@@ -37,7 +37,7 @@ FUNCTION ADir(cFileSpec ,acFileNames ,anSizes ,adDates,acTimes,acAttributes) AS 
 		aAttribs  := acAttributes
 		lHasArg := TRUE
 	ENDIF
-    if aAttribs != NULL_ARRAY
+    IF aAttribs != NULL_ARRAY
         aFiles := Directory(cFileSpec,FA_NORMAL+FC_HIDDEN+FC_SYSTEM+FC_READONLY)
     ELSE
         aFiles := Directory(cFileSpec,FA_NORMAL)    
@@ -89,14 +89,14 @@ FUNCTION Directory(cFileSpec AS STRING, uAttributes := NIL AS USUAL) AS ARRAY
 	IF (nAttr & FA_VOLUME ) != 0
 		TRY
 			AAdd(aReturn, {DriveInfo{cFileSpec}:VolumeLabel, 0, NULL_DATE, "00:00:00", "V"})
-        CATCH as Exception
+        CATCH AS Exception
             NOP
             
 		END TRY
 	ENDIF
     lWild := cFileSpec:Contains("*") .or. cFileSpec:Contains("?") 
     IF ! lWild
-        local sPathSep as STRING
+        LOCAL sPathSep AS STRING
         sPathSep := System.IO.Path.DirectorySeparatorChar:ToString()
 	    IF System.IO.Directory.Exists(cFileSpec)
             IF _AND( nAttr,FA_DIRECTORY ) != (DWORD) FA_DIRECTORY
@@ -164,7 +164,7 @@ FUNCTION Directory(cFileSpec AS STRING, uAttributes := NIL AS USUAL) AS ARRAY
 	ENDIF
 	
 	IF ALen(aReturn) > 1
-		aReturn := ASort( aReturn, 1, aReturn:Length, {|x,y| x[1] < y[1] } )	
+		aReturn := ASort( aReturn, 1, aReturn:Length, {|x AS ARRAY , y AS ARRAY| String.Compare( (STRING)x[1] , (STRING)y[1] , StringComparison.InvariantCultureIgnoreCase ) <= 0 } )	
 	ENDIF
 	RETURN aReturn
 

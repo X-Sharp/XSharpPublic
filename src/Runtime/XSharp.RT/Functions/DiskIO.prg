@@ -94,6 +94,9 @@ FUNCTION Directory(cFileSpec AS STRING, uAttributes := NIL AS USUAL) AS ARRAY
             
 		END TRY
 	ENDIF
+	IF cFileSpec:EndsWith("\")
+		cFileSpec += "*"
+	END IF
     lWild := cFileSpec:Contains("*") .or. cFileSpec:Contains("?") 
     IF ! lWild
         LOCAL sPathSep AS STRING
@@ -145,10 +148,9 @@ FUNCTION Directory(cFileSpec AS STRING, uAttributes := NIL AS USUAL) AS ARRAY
 	
 	
 	// Directory info
-	IF _AND( nAttr, FA_DIRECTORY) == (DWORD) FA_DIRECTORY .AND. ( cFileSpec:Contains( "*" ) || cFileSpec:Contains( "?" ) )
-	    cPath := Path.GetDirectoryName( cFileSpec )
+	IF _AND( nAttr, FA_DIRECTORY) == (DWORD) FA_DIRECTORY .AND. ( cFileSpec:Contains( "*" ) .OR. cFileSpec:Contains( "?" ) )
         VAR cName := Path.GetFileName( cFileSpec )
-		IF cPath != Path.GetPathRoot( cFileSpec ) .AND. ( cName == "*.*" || cName == "*" )
+		IF cPath != Path.GetPathRoot( cFileSpec ) .AND. ( cName == "*.*" .OR. cName == "*" .OR. cName == "*." )
 			DirectoryHelper.AddDirectoryInfo( aReturn, cPath, nAttr, "." )
 			DirectoryHelper.AddDirectoryInfo( aReturn, cPath, nAttr, ".." )
 		ENDIF         

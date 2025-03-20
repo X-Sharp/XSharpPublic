@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-23T13:20:15.392+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-20T21:49:55.761+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# 文档</title>
   <keywords>
     <keyword>版本历史</keyword>
@@ -23,7 +23,7 @@
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.05; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
-    <para styleclass="Normal">本文档仍在不断的完整过程中。文档中的某些部分尚不完整。</para>
+    <para styleclass="Normal">本文档仍在不断的完善过程中。文档中的某些部分尚不完整。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">关于简体中文版文档，鉴于译者对 .NET 和 X# 中非 VFP 方言及其有限的熟悉程度，如果您发现错误，请与译者联系。</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="weblink" href="mailto:&lt;%LINK_CAPTION%&gt;">Email：411618689@qq.com</link> 或 <link displaytype="text" defaultstyle="true" type="weblink" href="mailto:&lt;%LINK_CAPTION%&gt;">openvfp@163.com</link>&#32;</para>

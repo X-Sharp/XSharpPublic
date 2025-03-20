@@ -39,7 +39,7 @@ namespace XSharp.MacroCompiler
         XSharp___ArrayBase_T1,
         XSharp___WinBool,
     }
- 
+
     public static partial class Compilation
     {
         static string[] TypeNames =
@@ -52,24 +52,24 @@ namespace XSharp.MacroCompiler
             "System.Collections.IEnumerator",
             "System.Collections.Generic.IEnumerator`1",
             "System.Exception",
-            XSharpQualifiedTypeNames.ClipperCallingConvention + "|" + VulcanQualifiedTypeNames.ClipperCallingConvention,
-            XSharpQualifiedTypeNames.DefaultParameterAttribute + "|" + VulcanQualifiedTypeNames.DefaultParameterAttribute,
-            "XSharp.Internal.VOStructAttribute|Vulcan.Internal.VOStructAttribute",
-            "XSharp.Internal.ClassLibraryAttribute|Vulcan.Internal.VulcanClassLibraryAttribute",
-            "XSharp.Internal.CompilerServices|Vulcan.Internal.CompilerServices",
-            XSharpQualifiedTypeNames.WrappedException + "|" + VulcanQualifiedTypeNames.WrappedException,
-            XSharpQualifiedTypeNames.Error + "|" + VulcanQualifiedTypeNames.Error,
-            "XSharp.ImplicitNamespaceAttribute|Vulcan.VulcanImplicitNamespaceAttribute",
-            "XSharp.RT.Functions|VulcanRTFuncs.Functions",
-            "XSharp.Codeblock|Vulcan.Codeblock",
-            "XSharp.__Float|Vulcan.__VOFloat",
-            "XSharp.__Date|Vulcan.__VODate",
-            "XSharp.__Symbol|Vulcan.__Symbol",
-            "XSharp.__Psz|Vulcan.__Psz",
-            "XSharp.__Usual|Vulcan.__Usual",
-            "XSharp.__Array|Vulcan.__Array",
+            XSharpQualifiedTypeNames.ClipperCallingConvention ,
+            XSharpQualifiedTypeNames.DefaultParameterAttribute,
+            "XSharp.Internal.VOStructAttribute",
+            "XSharp.Internal.ClassLibraryAttribute",
+            "XSharp.Internal.CompilerServices",
+            XSharpQualifiedTypeNames.WrappedException ,
+            XSharpQualifiedTypeNames.Error ,
+            "XSharp.ImplicitNamespaceAttribute",
+            "XSharp.RT.Functions",
+            "XSharp.Codeblock",
+            "XSharp.__Float",
+            "XSharp.__Date",
+            "XSharp.__Symbol",
+            "XSharp.__Psz",
+            "XSharp.__Usual",
+            "XSharp.__Array",
             "XSharp.__ArrayBase`1",
-            "XSharp.__WinBool|Vulcan.__WinBool",
+            "XSharp.__WinBool",
         };
 
         static TypeSymbol[] WellKnownTypeSymbols;

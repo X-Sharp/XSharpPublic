@@ -34,6 +34,31 @@ FUNCTION ScriptTests AS VOID
           "return false",;
         "END",;
         ""}),Args(), true, typeof(logic))
+    // elseif
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "x := 2",;
+        "IF x == 1",;
+          "return true",;
+        "ELSEIF x == 2",;
+          "return true",;
+        "ELSEIF x == 3",;
+          "return true",;
+        "ELSE",;
+          "return false",;
+        "END",;
+        ""}),Args(), true, typeof(logic))
+    // Elseif no else
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "x := 42",;
+        "IF x == 1",;
+          "return true",;
+        "ELSEIF x == 2",;
+          "return true",;
+        "ELSEIF x == 3",;
+          "return true",;
+        "END",;
+        "return false",;
+        ""}),Args(), false, typeof(logic))
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         "x := ;","10",;
         "DO CASE",;
@@ -45,6 +70,17 @@ FUNCTION ScriptTests AS VOID
           "return x",;
         "END CASE",;
         "return -1",;
+        ""}),Args(), 10, typeof(int))
+    // without otherwise
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "x := ;","10",;
+        "DO CASE",;
+        "CASE x == 0",;
+          "return true",;
+        "case x == 1",;
+          "return true",;
+        "END CASE",;
+        "return x",;
         ""}),Args(), 10, typeof(int))
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         "x := 1",;
@@ -151,9 +187,40 @@ FUNCTION ScriptTests AS VOID
         "? 1+1, 10, 100",;
         "?? 5, 6, 7",;
         "??"}),Args(), null, null)
+    // DO Switch
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         "x := 123",;
         "DO SWITCH x",;
+        "CASE k as USUAL",;
+            "x := 1",;
+        "CASE 1",;
+            "x := 1",;
+        "CASE 123",;
+        "CASE 1234",;
+        "CASE 12345",;
+            "x := 0",;
+        "OTHERWISE",;
+            "x := -1",;
+        "END",;
+        "x"}),Args(), 1, typeof(int))
+    // Begin Switch
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "x := 123",;
+        "BEGIN SWITCH x",;
+        "CASE k as USUAL",;
+            "x := 1",;
+        "CASE 1",;
+            "x := 1",;
+        "CASE 123",;
+        "CASE 1234",;
+        "CASE 12345",;
+            "x := 0",;
+        "END",;
+        "x"}),Args(), 1, typeof(int))
+    // Switch
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "x := 123",;
+        "SWITCH x",;
         "CASE k as USUAL",;
             "x := 1",;
         "CASE 1",;
@@ -211,6 +278,44 @@ FUNCTION ScriptTests AS VOID
             "y += l",;
         "NEXT",;
         "y"}), Args(), 15, typeof(int))
+    // Nested codeblock and private variable
+    EvalMacro(sc, String.Join(e"\n",<STRING>{;
+        " private n",;
+        " local a	as array",;
+        " local nPos	as dword",;
+        " a := {1,2,3,4,5}",;
+        " n := 3",;
+        " nPos := ascan(a,{|x|x=n})",;
+        "nPos"}), Args(), 3, typeof(int))
+
+    // Nested codeblock and local variable
+    // This works because we make the local visible
+    // as a pseudo private variable
+    EvalMacro(sc, String.Join(e"\n",<STRING>{;
+        " local n as dword",;
+        " local a	as array",;
+        " local nPos	as dword",;
+        " a := {1,2,3,4,5}",;
+        " n := 3",;
+        " __LocalPut('n',n)",;
+        " __LocalPut('a',a)",;
+        " __LocalPut('nPos',nPos)",;
+        " nPos := ascan(a,{|x|x=n})",;
+        " __LocalsClear()",;
+        "nPos"}), Args(), 3, typeof(int))
+    // Nested codeblock and local variable
+    // This fails
+#ifdef FAIL    
+    EvalMacro(sc, String.Join(e"\n",<STRING>{;
+        " local n as dword",;
+        " local a	as array",;
+        " local nPos	as dword",;
+        " a := {1,2,3,4,5}",;
+        " n := 3",;
+        " nPos := ascan(a,{|x|x=n})",;
+        "nPos"}), Args(), 3, typeof(int))
+#endif
+
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         "LPARAMETERS a, b, c",;
         "RETURN A+B+C"}), Args(1,2,3), 6, typeof(int))
@@ -376,7 +481,6 @@ FUNCTION FoxScriptTests AS VOID
 
 FUNCTION TestPreProcessor(sc AS XSharp.Runtime.MacroCompiler) AS VOID
     TestMacro(sc, String.Join(e"\n",<STRING>{;
-    "#include ""XSharpDefs.xh"" ",;
     "PARAMETERS a, b, c",;
     "#define AAA",;
     "#ifdef AAA",;
@@ -400,7 +504,6 @@ FUNCTION TestUDC(sc AS XSharp.Runtime.MacroCompiler) AS VOID
     DbCloseArea()
 
     TestMacro(sc, String.Join(e"\n",<STRING>{;
-    "#include ""XSharpDefs.xh"" ",;
     "USE TEST",;
     "i:=1",;
     "DO WHILE ! EOF()",;
@@ -419,7 +522,6 @@ FUNCTION TestUDC(sc AS XSharp.Runtime.MacroCompiler) AS VOID
     XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
     sc := CreateFoxScriptCompiler()
     TestMacro(sc, String.Join(e"\n",<STRING>{;
-    "#include ""XSharpDefs.xh"" ",;
     "LPARAMETERS fileName",;
     "LOCAL recCount",;
     "USE (fileName)",;
@@ -435,10 +537,9 @@ FUNCTION TestUDC(sc AS XSharp.Runtime.MacroCompiler) AS VOID
     "ENDSCAN",;
     "recCount = LastRec()",;
     "CLOSE ",;
-    "RETURN '0'"}),Args("test"), "0", typeof(STRING))
+    "RETURN recCount"}),Args("test"), 10, typeof(DWORD))
 
     TestMacro(sc, String.Join(e"\n",<STRING>{;
-        "#include ""XSharpDefs.xh"" ",;
         "x := ''",;
         "TEXT TO x",;
         "aaa",;

@@ -1465,7 +1465,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 if (!hidingMemberIsNew && !IsShadowingSynthesizedRecordMember(hidingMember) && !diagnosticAdded && !hidingMember.IsAccessor() && !hidingMember.IsOperator())
                 {
 #if XSHARP
-                    if (!isFunction)
+                    if (!isFunction && !(hidingMember.Kind == SymbolKind.Property && hiddenMembers[0].Kind == SymbolKind.Field))
                     {
                         diagnostics.Add(ErrorCode.WRN_NewRequired, hidingMemberLocation, hidingMember, hiddenMembers[0]);
                     }

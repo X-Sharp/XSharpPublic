@@ -39,11 +39,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 var attr = GetDefaultParamAttribute(param);
                 if (attr != null)
                 {
+                    int desc = attr.CommonConstructorArguments[1].DecodeValue<int>(SpecialType.System_Int32);
                     var arg = attr.CommonConstructorArguments[0];
                     if (arg.Value == null)
                     {
-                        diagnostics.Add(ErrorCode.ERR_ValueCantBeNull, param.GetNonNullSyntaxNode().Location, param.Type);
-                        return false;
+                        switch (desc)
+                        {
+                            case 4:
+                                return param.Type.IsPszType();
+                            case 3:
+                                return param.Type.IsSymbolType();
+                            default:
+                                if (param.Type.SpecialType == SpecialType.System_IntPtr ||
+                                    param.Type.IsVoidPointer())
+                                    return true;
+                                diagnostics.Add(ErrorCode.ERR_ValueCantBeNull, param.GetNonNullSyntaxNode().Location, param.Type);
+                                return false;
+                        }
                     }
                 }
             }

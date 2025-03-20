@@ -60,14 +60,15 @@ namespace XSharp.MacroCompiler
     }
     internal partial class SymbolList : Symbol
     {
-        internal MemberTypes SymbolTypes;
+        internal MemberTypes SymbolTypes = 0;
         internal List<Symbol> Symbols;
         internal SymbolList() { Symbols = new List<Symbol>(); }
-        internal SymbolList(Symbol s): this() { Add(s); SymbolTypes = 0; }
+        internal SymbolList(Symbol s): this() { Add(s); }
         internal void Add(Symbol s) { Symbols.Add(s); SymbolTypes |= (s as MemberSymbol)?.MemberType ?? 0; }
         internal bool HasMethod { get { return SymbolTypes.HasFlag(MemberTypes.Method); } }
         internal bool HasConstructor { get { return SymbolTypes.HasFlag(MemberTypes.Constructor); } }
         internal bool HasProperty { get { return SymbolTypes.HasFlag(MemberTypes.Property); } }
+        internal bool HasField { get { return SymbolTypes.HasFlag(MemberTypes.Field); } }
         internal bool HasMethodBase { get { return HasMethod || HasConstructor; } }
         internal override Symbol Lookup(string name)
         {
@@ -161,12 +162,12 @@ namespace XSharp.MacroCompiler
             foreach (var m in GetMemberInfoList(Type, flags))
             {
                 lock (this)
-                { 
+                {
                     var ms = MemberSymbol.Create(this, m);
                     if (ms != null)
                     {
                         if (! MemberTable.ContainsKey(m))
-                        { 
+                        {
                             MemberTable.Add(m, ms);
                         }
                         AddMember(m.Name, ms);
@@ -255,8 +256,13 @@ namespace XSharp.MacroCompiler
     internal partial class DynamicSymbol : TypedSymbol
     {
         internal string Name;
+        internal XSharpDialect Dialect;
         internal override TypeSymbol Type { get { return (Binder.LookupFullName(XSharpQualifiedFunctionNames.IVarGet) as MethodSymbol)?.Type ?? Compilation.Get(NativeType.Object); } }
-        internal DynamicSymbol(string name) : base(AccessMode.GetSet) { Name = name; }
+        internal DynamicSymbol(string name, XSharpDialect dialect) : base(AccessMode.GetSet)
+        {
+            Name = name;
+            Dialect = dialect;
+        }
         internal override Symbol Lookup(string name) { return null; }
     }
     internal partial class DynamicExprSymbol : TypedSymbol

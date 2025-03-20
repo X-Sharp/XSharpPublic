@@ -2,11 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 
 namespace XSharp.MacroCompiler.Syntax
 {
@@ -28,7 +24,7 @@ namespace XSharp.MacroCompiler.Syntax
         FIRST_KEYWORD,
 
         // Entity keywords [entity]
-        ACCESS, ALIGN, ASPEN, ASSIGN, CALLBACK, CLASS, CLIPPER, DEFINE, DLL, DLLEXPORT, EXPORT, FASTCALL, 
+        ACCESS, ALIGN, ASPEN, ASSIGN, CALLBACK, CLASS, CLIPPER, DEFINE, DLL, DLLEXPORT, EXPORT, FASTCALL,
         FUNC, FUNCTION, GLOBAL, HIDDEN, INHERIT, INIT1, INIT2, INIT3, INSTANCE, MEMBER, METHOD, PARAMETERS, LPARAMETERS, PASCAL,
         PRIVATE, PROC, PROCEDURE, PROTECTED, PUBLIC, STRICT, THISCALL, UNION,
         USING, WINCALL,
@@ -83,7 +79,7 @@ namespace XSharp.MacroCompiler.Syntax
         CHAR, INT64, UINT64,
 
         // XSharp Types
-        DYNAMIC, DECIMAL, DATETIME, CURRENCY, BINARY, 
+        DYNAMIC, DECIMAL, DATETIME, CURRENCY, BINARY,
         LAST_TYPE,
 
         // UDC Tokens that should be shown in the keyword color [entity]
@@ -103,7 +99,7 @@ namespace XSharp.MacroCompiler.Syntax
 
         // Relational operators
         FIRST_OPERATOR,
-        LT, LTE, GT, GTE, EQ, EEQ, SUBSTR, NEQ, NEQ2, 
+        LT, LTE, GT, GTE, EQ, EEQ, SUBSTR, NEQ, NEQ2,
 
         // Prefix and postfix Operators
         INC, DEC,
@@ -124,7 +120,7 @@ namespace XSharp.MacroCompiler.Syntax
 
 
         // Operators
-        LOGIC_AND, LOGIC_OR, LOGIC_NOT, LOGIC_XOR, 
+        LOGIC_AND, LOGIC_OR, LOGIC_NOT, LOGIC_XOR,
 
         // Symbols
         LPAREN, RPAREN, LCURLY, RCURLY, LBRKT, RBRKT, COLON, COMMA, PIPE, AMP, ADDROF, ALIAS, DOT, COLONCOLON, BACKSLASH, ELLIPSIS,
@@ -157,7 +153,7 @@ namespace XSharp.MacroCompiler.Syntax
         UDCSEP, // =>
 
         // Ids
-        ID, 
+        ID,
 
         // Comments
         DOC_COMMENT, SL_COMMENT, ML_COMMENT,
@@ -414,7 +410,7 @@ namespace XSharp.MacroCompiler.Syntax
                 {"USUAL", TokenType.USUAL},
                 {"VOID", TokenType.VOID},
                 {"WORD", TokenType.WORD},
-                
+
 			    // Null types
 			    {"NIL", TokenType.NIL},
                 {"NULL", TokenType.NULL},
@@ -601,8 +597,8 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 // VO keywords that cannot be abbreviated
                 {"_SIZEOF", TokenType.SIZEOF},
-                {"_TYPEOF", TokenType.TYPEOF},  
-                
+                {"_TYPEOF", TokenType.TYPEOF},
+
                 // Vulcan keywords
                 {"CHAR", TokenType.CHAR},
                 {"DEFAULT", TokenType.DEFAULT},
@@ -736,8 +732,8 @@ namespace XSharp.MacroCompiler.Syntax
                 { "#IF", TokenType.PP_IF},			        // #if <condition>   <statements>...[#else]   <statements>...#endif
                 { "#USING", TokenType.USING},
                 { "#STDOUT", TokenType.PP_STDOUT},			// #stdout [<message>]
-                { "#TEXT", TokenType.PP_TEXT},			    // 
-                { "#ENDTEXT", TokenType.PP_ENDTEXT},		// 
+                { "#TEXT", TokenType.PP_TEXT},			    //
+                { "#ENDTEXT", TokenType.PP_ENDTEXT},		//
             };
 
             //=================

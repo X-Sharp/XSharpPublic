@@ -37,6 +37,12 @@ internal static class OOPHelpers
             where asm:IsDefined(typeof( ClassLibraryAttribute ), false) ;
             select asm
 
+    static method MethodMatches(m as MethodInfo, cName as STRING) AS LOGIC
+        if m:IsSpecialName
+            RETURN FALSE
+        endif
+        return String.Equals(m:Name, cName, StringComparison.OrdinalIgnoreCase)
+
     static method FindClipperFunctions(cFunction as string) as MethodInfo[]
         var cla := typeof( ClassLibraryAttribute )
         local aMethods as List<MethodInfo>
@@ -63,7 +69,7 @@ internal static class OOPHelpers
                         list := OOPHelpers.FindOverloads(oType, cFunction, false)
                         aMI := oType:GetMethods(bf)
                         foreach oM as MethodInfo in aMI
-                            if ! oM:IsSpecialName .and. String.Compare(oM:Name, cFunction, true) == 0
+                            if MethodMatches(oM, cFunction)
                                 if ! list:Contains(oM)
                                     list:Add( oM )
                                 endif
@@ -201,7 +207,9 @@ internal static class OOPHelpers
             else
                 bf |= BindingFlags.Static
             endif
-            oMI := t:GetMethod(cName, bf)
+            // suppress setters and getters
+            var methods := t:GetMethods(bf)
+            oMI := methods:FirstOrDefault( { m  => MethodMatches(m, cName) } )
         catch as System.Reflection.AmbiguousMatchException
             oMI := null
         end try
@@ -720,20 +728,20 @@ internal static class OOPHelpers
             var aInfo := type:GetMembers(BindingFlags.Instance + BindingFlags.Public + BindingFlags.NonPublic)
             foreach oInfo as MemberInfo in aInfo
                 var name := oInfo:Name:ToUpperInvariant()
-                do case
-                case oInfo:MemberType == MemberTypes.Field
-                    if listVar:IndexOf(name)  == -1 .and. ((FieldInfo)oInfo):IsPublic
+                switch oInfo
+                case fld as FieldInfo
+                    if listVar:IndexOf(name)  == -1 .and. fld:IsPublic
                         listVar:Add(name)
                     end if
-                case oInfo:MemberType == MemberTypes.Property
+                case prop as PropertyInfo when ! prop:IsSpecialName
                     if listVar:IndexOf(name)  == -1
                         listVar:Add(name)
                     end if
-                case oInfo:MemberType == MemberTypes.Method
-                    if listMethod:IndexOf(name)  == -1 .and. .not. ((MethodInfo)oInfo):IsSpecialName
+                case m as MethodInfo when ! m:IsSpecialName
+                    if listMethod:IndexOf(name)  == -1
                         listMethod:Add(name)
                     end if
-                end case
+                end switch
             next
             var aInstance := listVar:ToVoSymArray()
             var aMethod   := listMethod:ToVoSymArray()
@@ -861,6 +869,24 @@ internal static class OOPHelpers
         next
         return false
 
+    static method GetFieldOrProperty(oType as System.Type, cName as STRING) as Object
+        var mem := OOPHelpers.GetMemberFromCache(oType, cName)
+        if mem != null
+            RETURN mem
+        endif
+        foreach fld as FieldInfo in  oType:GetFields()
+            if String.Compare(fld:Name, cName, true) == 0
+                OOPHelpers.AddMemberToCache(oType, cName, fld)
+                return fld
+            endif
+        next
+        foreach prop as PropertyInfo in  oType:GetProperties()
+            if prop:CanRead .and. String.Compare(prop:Name, cName, true) == 0
+                OOPHelpers.AddMemberToCache(oType, cName, prop)
+                return prop
+            endif
+        next
+        RETURN NULL_OBJECT
     static method IVarGet(oObject as object, cIVar as string, lSelf as logic) as usual
         local t as Type
         local result as object
@@ -1021,7 +1047,7 @@ internal static class OOPHelpers
             bf := BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly
         endif
         foreach var minfo in t:GetMethods(bf)
-            if !minfo:IsSpecialName .and. String.Compare(minfo:Name, cMethod, StringComparison.OrdinalIgnoreCase) == 0
+            if MethodMatches(minfo, cMethod)
                 list:Add(minfo)
             endif
         next

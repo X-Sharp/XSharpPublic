@@ -282,7 +282,7 @@ FUNCTION File(cFileSpec AS STRING) AS LOGIC
                 NEXT
             ENDIF
         ENDIF
-    CATCH e as Exception
+    CATCH e AS Exception
         XSharp.IO.File.SetErrorState(e)
     END TRY
     RETURN FALSE
@@ -321,6 +321,11 @@ INTERNAL FUNCTION __GetSearchPaths() AS STRING[]
 LOCAL aDefault AS STRING[]
 aDefault := SetPathArray()
 IF aDefault != NULL
+    IF aDefault:Length > 0
+        #pragma options("az", off)
+        aDefault[aDefault:Length]  := System.Environment.CurrentDirectory // Current dir might have changed since the last call
+        #pragma options("az", default)
+    END IF
     RETURN aDefault
 ENDIF
 
@@ -337,9 +342,7 @@ IF !String.IsNullOrEmpty(cPath)
     VAR aElements := cPath:Split(<CHAR>{ ';' }, StringSplitOptions.RemoveEmptyEntries )
     aPaths:AddRange(aElements)
 ENDIF
-IF ! aPaths:Contains(System.Environment.CurrentDirectory)
-    aPaths:Add(System.Environment.CurrentDirectory)
-ENDIF
+aPaths:Add(System.Environment.CurrentDirectory) // Always add the current directory as the last element
 aDefault := aPaths:ToArray()
 SetPathArray(aDefault)
 RETURN aDefault

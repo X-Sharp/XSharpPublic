@@ -29,18 +29,37 @@ FUNCTION Sys(nSetting, uNewValue, uContextParam3) AS USUAL CLIPPER
 
     CASE 5 // Default drive or volume.
         retVal := GetDefault()
+        IF ( String.IsNullOrEmpty(retVal))
+            retVal := CurDrive() + ":"
+        ELSE
+            // "SET DEFAULT TO" can contain a Path, get the Drive
+            retVal := retVal:Substring(0,1) + ":"
+        ENDIF
 
     CASE 16 // Executing program file name.
         // VAR asm := AppDomain.CurrentDomain.BaseDirectory
-        VAR asm := System.Reflection.Assembly.GetExecutingAssembly()
-        VAR path := asm:Location
-        retVal := path
+        // VAR asm := System.Reflection.Assembly.GetExecutingAssembly()
+        // VAR path := asm:Location
+        // retVal := path
+        VAR level := 1
+        // Add one, due to Issue #1704
+        VAR calling = ProcName(level + 1)
+        // Change Colon to Dot, to provide a VFP-Compatible result
+        calling = calling:Replace(":", ".")
+        // Remove the static FUNCTIONS class from X#
+        IF calling:StartsWith("FUNCTIONS.")
+            calling = calling:Substring(10)
+        ENDIF
+        // Where ?
+        VAR file = ProcFile(level)
+        retVal := "PROCEDURE " + calling + " " + file
+        retval := retVal:ToUpper()
 
     CASE 987 // Map Remote Data to ANSI.
         RETURN FALSE
 
     CASE 2003 // Current directory.
-        var strRetVal := Environment.CurrentDirectory
+        VAR strRetVal := Environment.CurrentDirectory
         IF ( strRetVal:IndexOf(":") >= 0 )
             strRetVal := strRetVal:Substring( strRetVal:IndexOf(":")+1 )
         ENDIF
@@ -58,7 +77,7 @@ FUNCTION Sys(nSetting, uNewValue, uContextParam3) AS USUAL CLIPPER
         // Try to set a value
         IF !IsNil(uNewValue)
             IF IsNumeric(uContextParam3) .AND. (uContextParam3 > 0 )
-                retVal := Str( uContextParam3 ) // Bring you back your setting
+                retVal := str( uContextParam3 ) // Bring you back your setting
             ELSE
                 SWITCH uNewValue // This what VFP returns on MY computer ;)
                 CASE 1

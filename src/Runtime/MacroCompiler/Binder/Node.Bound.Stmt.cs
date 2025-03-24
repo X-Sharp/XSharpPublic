@@ -41,20 +41,20 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            if (b.Options.Dialect == XSharpDialect.FoxPro)
+            if (Expr is ExprList el && el.Exprs.Count> 0)
             {
-                if (Expr is ExprList el && el.Exprs.Count> 0)
+                for (int i = 0; i < el.Exprs.Count; i++)
                 {
-                    var node = el.Exprs.First();
-                    if (node is BinaryExpr bin && bin.Kind == TokenType.EQ)
+                    var node = el.Exprs[i];
+                    if (node is BinaryExpr bin && bin.Kind == TokenType.EQ && b.Options.AllowOldStyleAssignments)
                     {
                         var token = new Token(TokenType.ASSIGN, bin.Token.Text);
                         var newnode = new AssignExpr(bin.Left, token, bin.Right);
-                        el.Exprs[0] = newnode;
+                        el.Exprs[i] = newnode;
                     }
                 }
             }
-                b.Bind(ref Expr);
+            b.Bind(ref Expr);
             return null;
         }
         internal static ExprStmt Bound(Expr e)

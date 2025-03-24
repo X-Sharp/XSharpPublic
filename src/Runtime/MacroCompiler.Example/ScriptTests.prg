@@ -28,6 +28,11 @@ FUNCTION ScriptTests AS VOID
         ""}),Args(), 123, typeof(int))
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         "x := 1",;
+        "x = 123, y = 321",;
+        "return x+y",;
+        ""}),Args(), 123+321, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "x := 1",;
         "IF x == 1",;
           "return true",;
         "ELSE",;
@@ -305,7 +310,7 @@ FUNCTION ScriptTests AS VOID
         "nPos"}), Args(), 3, typeof(int))
     // Nested codeblock and local variable
     // This fails
-#ifdef FAIL    
+#ifdef FAIL
     EvalMacro(sc, String.Join(e"\n",<STRING>{;
         " local n as dword",;
         " local a	as array",;

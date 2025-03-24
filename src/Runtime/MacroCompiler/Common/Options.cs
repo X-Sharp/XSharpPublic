@@ -54,6 +54,7 @@ namespace XSharp.MacroCompiler
         public bool AllowPackedDotOperators = true;
         public bool AllowMissingSyntax = true;
         public bool AllowExtraneousSyntax = true;
+        public bool AllowOldStyleAssignments = true;
 
         public bool VOFloatConstants = true;
         public bool VODateConstants = true;

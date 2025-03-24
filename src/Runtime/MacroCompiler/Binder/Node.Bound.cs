@@ -376,12 +376,12 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = Symbol.Type();
             return null;
         }
-        internal static new BinaryExpr Bound(Expr Left, Token t, Expr Right, BinaryOperatorKind kind, BindOptions options)
+        internal static new BinaryExpr Bound(Expr Left, Token t, Expr Right, BinaryOperatorKind kind, Binder b)
         {
             Left.RequireGetAccess();
             Right.RequireGetAccess();
             var e = new BinaryExpr(Left, t, Right);
-            e.Symbol = Binder.BindBinaryOperation(e, kind, options | BindOptions.Logic);
+            e.Symbol = b.BindBinaryLogicOperation(e, kind);
             e.Datatype = e.Symbol.Type();
             return e;
         }

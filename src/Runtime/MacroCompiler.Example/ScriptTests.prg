@@ -27,9 +27,9 @@ FUNCTION ScriptTests AS VOID
         "123",;
         ""}),Args(), 123, typeof(int))
     TestMacro(sc, String.Join(e"\n",<STRING>{;
-        "x := 1",;
-        "x = 123, y = 321",;
-        "return x+y",;
+        "x := 1, y := 3",;
+        "x = 123, y = 321, z = x = 123",;
+        "return IIF(z,x+y,-1)",;
         ""}),Args(), 123+321, typeof(int))
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         "x := 1",;

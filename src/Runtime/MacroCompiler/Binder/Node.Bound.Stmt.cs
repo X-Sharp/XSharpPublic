@@ -39,19 +39,37 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class ExprStmt : Stmt
     {
+        Expr FixOldStyleAssignment(Expr e, Binder b)
+        {
+            if (e is BinaryExpr bin && b.Options.AllowOldStyleAssignments)
+            {
+                var top = bin;
+                var left = bin.Left;
+                var right = bin.Right;
+                while (left is BinaryExpr lb)
+                {
+                    left = lb.Left;
+                    if (left is not BinaryExpr && lb.Kind == TokenType.EQ)
+                    {
+                        top.Left = lb.Right;
+                        right = bin;
+                    }
+                    top = lb;
+                }
+                var token = new Token(TokenType.ASSIGN, bin.Token.Text);
+                var newnode = new AssignExpr(left, token, right);
+                return newnode;
+            }
+            return null;
+        }
         internal override Node Bind(Binder b)
         {
             if (Expr is ExprList el && el.Exprs.Count> 0)
             {
                 for (int i = 0; i < el.Exprs.Count; i++)
                 {
-                    var node = el.Exprs[i];
-                    if (node is BinaryExpr bin && bin.Kind == TokenType.EQ && b.Options.AllowOldStyleAssignments)
-                    {
-                        var token = new Token(TokenType.ASSIGN, bin.Token.Text);
-                        var newnode = new AssignExpr(bin.Left, token, bin.Right);
-                        el.Exprs[i] = newnode;
-                    }
+                    if (FixOldStyleAssignment(el.Exprs[i], b) is Expr e)
+                        el.Exprs[i] = e;
                 }
             }
             b.Bind(ref Expr);

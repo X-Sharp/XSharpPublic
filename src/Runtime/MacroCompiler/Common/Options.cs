@@ -57,6 +57,7 @@ namespace XSharp.MacroCompiler
 
         public bool VOFloatConstants = true;
         public bool VODateConstants = true;
+        public bool VOIntegerDivisions = true;
 
         public bool FoxParenArrayAccess = false;
 

@@ -324,7 +324,7 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Right);
             Left.RequireGetSetAccess();
             Right.RequireGetAccess();
-            Right = BinaryExpr.Bound(Left.Cloned(b), Token, Right, BinaryOperatorSymbol.OperatorKind(Kind), b.Options.Binding);
+            Right = BinaryExpr.Bound(Left.Cloned(b), Token, Right, BinaryOperatorSymbol.OperatorKind(Kind), b);
             b.Convert(ref Right, Left.Datatype);
             Symbol = Left.Symbol;
             Datatype = Left.Datatype;
@@ -334,7 +334,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             Left.RequireGetSetAccess();
             Right.RequireGetAccess();
-            Right = BinaryExpr.Bound(Left.Cloned(b), Left.Token, Right, kind, b.Options.Binding);
+            Right = BinaryExpr.Bound(Left.Cloned(b), Left.Token, Right, kind, b);
             b.Convert(ref Right, Left.Datatype);
             return new AssignOpExpr(Left, Left.Token, Right) { Symbol = Left.Symbol, Datatype = Left.Datatype };
         }
@@ -354,12 +354,12 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = Symbol.Type();
             return null;
         }
-        internal static BinaryExpr Bound(Expr Left, Token t, Expr Right, BinaryOperatorKind kind, BindOptions options)
+        internal static BinaryExpr Bound(Expr Left, Token t, Expr Right, BinaryOperatorKind kind, Binder b)
         {
             Left.RequireGetAccess();
             Right.RequireGetAccess();
             var e = new BinaryExpr(Left, t, Right);
-            e.Symbol = Binder.BindBinaryOperation(e, kind, options);
+            e.Symbol = b.BindBinaryOperation(e, kind);
             e.Datatype = e.Symbol.Type();
             return e;
         }

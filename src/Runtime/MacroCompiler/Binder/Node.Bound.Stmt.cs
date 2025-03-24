@@ -117,7 +117,7 @@ namespace XSharp.MacroCompiler.Syntax
                     var paramArray = IdExpr.Bound((b.Entity as Script).ParamArray);
                     VarDecls[i].Initializer =
                         IifExpr.Bound(
-                            BinaryExpr.Bound(ArrayLengthExpr.Bound(paramArray), Token, LiteralExpr.Bound(Constant.Create(i)), BinaryOperatorKind.GreaterThan, b.Options.Binding),
+                            BinaryExpr.Bound(ArrayLengthExpr.Bound(paramArray), Token, LiteralExpr.Bound(Constant.Create(i)), BinaryOperatorKind.GreaterThan, b),
                             ArrayAccessExpr.Bound(paramArray, ArgList.Bound(LiteralExpr.Bound(Constant.Create(argIdx))), b),
                             DefaultExpr.Bound(b, b.ObjectType),
                             b.Options.Binding);
@@ -331,17 +331,17 @@ namespace XSharp.MacroCompiler.Syntax
             switch (Dir.Type)
             {
                 case TokenType.UPTO:
-                    WhileExpr = BinaryExpr.Bound(Iter, Dir, Final, BinaryOperatorKind.LessThanOrEqual, b.Options.Binding);
+                    WhileExpr = BinaryExpr.Bound(Iter, Dir, Final, BinaryOperatorKind.LessThanOrEqual, b);
                     IncrExpr = AssignOpExpr.Bound(Iter, Step, BinaryOperatorKind.Addition, b);
                     break;
                 case TokenType.DOWNTO:
-                    WhileExpr = BinaryExpr.Bound(Iter, Dir, Final, BinaryOperatorKind.GreaterThanOrEqual, b.Options.Binding);
+                    WhileExpr = BinaryExpr.Bound(Iter, Dir, Final, BinaryOperatorKind.GreaterThanOrEqual, b);
                     IncrExpr = AssignOpExpr.Bound(Iter, Step, BinaryOperatorKind.Subtraction, b);
                     break;
                 case TokenType.TO:
-                    var step_pos = BinaryExpr.Bound(Step, Dir, LiteralExpr.Bound(Constant.Create(0)), BinaryOperatorKind.GreaterThanOrEqual, b.Options.Binding);
-                    var whileExprUpTo = BinaryExpr.Bound(Iter, Dir, Final, BinaryOperatorKind.LessThanOrEqual, b.Options.Binding);
-                    var whileExprDownTo = BinaryExpr.Bound(Iter, Dir, Final, BinaryOperatorKind.GreaterThanOrEqual, b.Options.Binding);
+                    var step_pos = BinaryExpr.Bound(Step, Dir, LiteralExpr.Bound(Constant.Create(0)), BinaryOperatorKind.GreaterThanOrEqual, b);
+                    var whileExprUpTo = BinaryExpr.Bound(Iter, Dir, Final, BinaryOperatorKind.LessThanOrEqual, b);
+                    var whileExprDownTo = BinaryExpr.Bound(Iter, Dir, Final, BinaryOperatorKind.GreaterThanOrEqual, b);
                     WhileExpr = IifExpr.Bound(step_pos, whileExprUpTo, whileExprDownTo, b.Options.Binding);
                     IncrExpr = AssignOpExpr.Bound(Iter, Step, BinaryOperatorKind.Addition, b);
                     break;
@@ -372,7 +372,7 @@ namespace XSharp.MacroCompiler.Syntax
                 IterDecl = VarDecl.Bound(iter, LiteralExpr.Bound(Constant.Create(b.Options.ArrayBase)), b.Options.Binding);
                 WhileExpr = BinaryExpr.Bound(IdExpr.Bound(iter), Token,
                     MethodCallExpr.Bound(array, Compilation.Get(WellKnownMembers.System_Array_get_Length), array, ArgList.Empty),
-                    b.Options.ArrayZero ? BinaryOperatorKind.LessThan : BinaryOperatorKind.LessThanOrEqual, b.Options.Binding);
+                    b.Options.ArrayZero ? BinaryOperatorKind.LessThan : BinaryOperatorKind.LessThanOrEqual, b);
                 IncrExpr = AssignOpExpr.Bound(IdExpr.Bound(iter), LiteralExpr.Bound(Constant.Create(1)), BinaryOperatorKind.Addition, b);
                 ForDecl.Initializer = ArrayAccessExpr.Bound(array, new ArgList(new List<Arg>(1) { new Arg(IdExpr.Bound(iter)) }), b);
             }
@@ -502,7 +502,7 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Expr);
             Expr.RequireGetAccess();
             var s = b.FindOuter<SwitchStmt>() ?? throw Error(ErrorCode.Internal);
-            Cond = BinaryExpr.Bound(Expr, Expr.Token, IdExpr.Bound(s.SwitchValue), BinaryOperatorKind.ExactEqual, b.Options.Binding);
+            Cond = BinaryExpr.Bound(Expr, Expr.Token, IdExpr.Bound(s.SwitchValue), BinaryOperatorKind.ExactEqual, b);
             b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
             if (When != null)
             {
@@ -837,7 +837,7 @@ namespace XSharp.MacroCompiler.Syntax
 
             Expr du = AsTypeExpr.Bound(IdExpr.Bound(u), IdExpr.Bound(Compilation.Get(WellKnownTypes.System_IDisposable)));
             b.Cache(ref du);
-            var cond = BinaryExpr.Bound(du, Expr.Token, LiteralExpr.Bound(Constant.Null), BinaryOperatorKind.NotEqual, b.Options.Binding);
+            var cond = BinaryExpr.Bound(du, Expr.Token, LiteralExpr.Bound(Constant.Null), BinaryOperatorKind.NotEqual, b);
             var exit = IfStmt.Bound(cond,
                 ExprStmt.Bound(MethodCallExpr.Bound(b, null, Compilation.Get(WellKnownMembers.System_IDisposable_Dispose), du, ArgList.Empty)),
                 null);

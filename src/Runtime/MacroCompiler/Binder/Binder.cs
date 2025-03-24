@@ -37,6 +37,7 @@ namespace XSharp.MacroCompiler
         Special = 512,
         Logic = 1024,
         Cast = 2048,
+        ForceUsual = 4096,
 
         None = 0,
         Default = AllowDynamic | AllowInexactComparisons | AllowImplicitNarrowingConversions

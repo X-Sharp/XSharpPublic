@@ -41,9 +41,17 @@ namespace XSharp.MacroCompiler
     {
         public static MacroOptions Default { get => new MacroOptions(); }
 
-        public static MacroOptions VisualObjects { get => new MacroOptions() { AllowMemvarAlias = false, AllowDotAccess = false, Dialect = XSharpDialect.VO }; }
+        public static MacroOptions VisualObjects { get => new MacroOptions() {
+            AllowMemvarAlias = false,
+            AllowDotAccess = false,
+            Dialect = XSharpDialect.VO,
+        }; }
 
-        public static MacroOptions FoxPro { get => new MacroOptions() { Dialect = XSharpDialect.FoxPro, FoxParenArrayAccess = XSharp.RuntimeState.CompilerOptionFox2 }; }
+        public static MacroOptions FoxPro { get => new MacroOptions() {
+            Dialect = XSharpDialect.FoxPro,
+            FoxParenArrayAccess = XSharp.RuntimeState.CompilerOptionFox2,
+            AllowOldStyleAssignments = true,
+        }; }
 
         public XSharpDialect Dialect = XSharpDialect.VO;
 
@@ -54,7 +62,7 @@ namespace XSharp.MacroCompiler
         public bool AllowPackedDotOperators = true;
         public bool AllowMissingSyntax = true;
         public bool AllowExtraneousSyntax = true;
-        public bool AllowOldStyleAssignments = true;
+        public bool AllowOldStyleAssignments = false;
 
         public bool VOFloatConstants = true;
         public bool VODateConstants = true;

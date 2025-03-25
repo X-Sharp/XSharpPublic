@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T18:29:36.083+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-24T21:55:59.643+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-lb</title>
   <keywords>
     <keyword>-lb</keyword>
@@ -10,7 +10,7 @@
       <para styleclass="Heading1">-lb</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-lb选项指定编译器是否允许代码使用后期绑定技术调用方法或 GET/SET 属性</para>
+    <para styleclass="Normal">-lb 选项指定编译器是否允许代码使用后期绑定技术调用方法或 GET/SET 属性</para>
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-lb[+|-]</para>
     <para styleclass="Heading2">参数</para>
@@ -24,7 +24,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">-lb 选项与 Visual Objects Only Early 选项正好相反。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">与早期绑定相比，晚期绑定产生的运行时开销要大得多，而且无法进行编译时参数和返回值检查。如果对象不支持正在访问的字段或属性、正在调用的成员或不正确的参数类型或计数，任何延迟绑定调用都有可能在运行时失败。只有在现有代码中或没有其他可行的替代方法时，才能使用早期绑定。</para>
+    <para styleclass="Normal">与早期绑定相比，后期绑定产生的运行时开销要大得多，而且无法进行编译时参数和返回值检查。如果对象不支持正在访问的字段或属性、正在调用的成员或不正确的参数类型或计数，任何延迟绑定调用都有可能在运行时失败。只有在现有代码中或没有其他可行的替代方法时，才能使用早期绑定。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>

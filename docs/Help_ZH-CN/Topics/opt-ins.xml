@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T12:07:29.178+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-24T22:15:33.983+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-ins</title>
   <keywords>
     <keyword>-ins</keyword>
@@ -10,11 +10,11 @@
       <para styleclass="Heading1">-ins</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-ins选项指定编译器是否应自动包含以VO/Vulcan方言编译的程序集中的名称空间，这些名称空间带有ImplicitNameSpaceAttribute(隐含名称空间属性)。</para>
+    <para styleclass="Normal">-ins 选项指定编译器是否应自动包含以 VO/Vulcan 方言编译的程序集中的名称空间，这些名称空间带有 ImplicitNameSpaceAttribute(隐含名称空间属性)。</para>
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-ins[+|-]</para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab/>指定 + 或 -ins，可指示编译器自动包含标有 VulcanImplicitNameSpaceAttribute 的程序集的命名空间。</para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />指定 + 或 -ins，可指示编译器自动包含标有 VulcanImplicitNameSpaceAttribute 的程序集的命名空间。</para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">类库可通过特殊属性进行编译：</para>
     <para styleclass="Normal"></para>
@@ -24,7 +24,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
       <li styleclass="Normal" style="margin-left:13px;">点击 Language 选项卡 </li>
       <li styleclass="Normal" style="margin-left:13px;">在 Namespaces 部分，编辑 Enable Implicit Lookup of Namespaces(启用隐式命名空间查询) 属性</li>

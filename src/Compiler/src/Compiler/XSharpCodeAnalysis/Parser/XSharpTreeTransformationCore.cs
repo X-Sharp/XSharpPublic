@@ -7339,8 +7339,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             ArgumentSyntax arg;
             ExpressionSyntax expr;
-            // If dialect VO and VulcanRTFuncs included
-            // Simply generate call to VulcanRTFuncs.Functions.QOut or QQOut
+            // If Runtime included
+            // Simply generate call to Functions.QOut or QQOut
             // This is done in VOTreeTransForm
             context.SetSequencePoint(context.end);
             if (!(context._Exprs?.Count > 0))

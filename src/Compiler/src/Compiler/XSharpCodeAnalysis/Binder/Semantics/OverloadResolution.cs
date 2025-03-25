@@ -841,7 +841,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo
             ) where TMember : Symbol
         {
-            // Prefer the member not declared in VulcanRT, if applicable
+            // Prefer the member not declared in the runtime, if applicable
             var parsLeft = m1.Member.GetParameters();
             var parsRight = m2.Member.GetParameters();
             var type1 = m1.Member.ContainingType;

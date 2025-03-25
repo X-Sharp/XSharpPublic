@@ -307,7 +307,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var symbols = Binder.GetCandidateMembers(usualType, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 2)
             {
-                // There should be 2 overloads in VulcanRTFuncs:
+                // There should be 2 overloads in the runtime
                 // public static bool __InexactEquals(__Usual ul, string uR)
                 // public static bool __InexactEquals(__Usual uL, __Usual uR)
                 // Switch to overload with string when RHS = STRING
@@ -351,7 +351,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var symbols = Binder.GetCandidateMembers(usualType, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 2)
             {
-                // There should be 2 overloads in VulcanRTFuncs:
+                // There should be 2 overloads in the runtime
                 // public static bool __InexactNotEquals(__Usual ul, string uR)
                 // public static bool __InexactNotEquals(__Usual uL, __Usual uR)
                 // Switch to overload with string when RHS = STRING

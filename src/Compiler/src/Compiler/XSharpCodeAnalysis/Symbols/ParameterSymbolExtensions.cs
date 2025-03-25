@@ -14,7 +14,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     {
         public static CSharpAttributeData GetDefaultParamAttribute(this ParameterSymbol param)
         {
-            if (param is { }) // prevent calling equals operator on ParameterSymbol
+            if (param is not null)
             {
                 var attrs = param.GetAttributes();
                 foreach (var attr in attrs)
@@ -34,16 +34,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             // this will generate an error for parameters declared as
             // xx := NULL AS FLOAT
-            if (param is { } && param.Type.IsValueType)
+            if (param is not null && param.Type.IsValueType && !param.Type.IsUsualType())
             {
                 var attr = GetDefaultParamAttribute(param);
                 if (attr != null)
                 {
+                    int desc = attr.CommonConstructorArguments[1].DecodeValue<int>(SpecialType.System_Int32);
                     var arg = attr.CommonConstructorArguments[0];
                     if (arg.Value == null)
                     {
+                        switch (desc)
+                        {
+                            case 4:
+                                return param.Type.IsPszType();
+                            case 3:
+                                return param.Type.IsSymbolType();
+                            default:
+                                if (param.Type.SpecialType == SpecialType.System_IntPtr ||
+                                    param.Type.IsVoidPointer())
+                                    return true;
                         diagnostics.Add(ErrorCode.ERR_ValueCantBeNull, param.GetNonNullSyntaxNode().Location, param.Type);
                         return false;
+                        }
                     }
                 }
             }
@@ -62,11 +74,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return new BoundDefaultExpression(syntax, param.Type);
             }
             var arg = attr.CommonConstructorArguments[0];
-            if (arg.Value == null)
+            int desc = attr.CommonConstructorArguments[1].DecodeValue<int>(SpecialType.System_Int32);
+            if (arg.Value == null && desc == 0)
             {
                 return new BoundDefaultExpression(syntax, param.Type);
             }
-            int desc = attr.CommonConstructorArguments[1].DecodeValue<int>(SpecialType.System_Int32);
             if (desc == 0 && param.Type.IsPszType())
             {
                 desc = 4;

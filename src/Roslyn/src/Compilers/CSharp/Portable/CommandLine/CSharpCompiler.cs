@@ -137,7 +137,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     var ppoFile = FileNameUtilities.ChangeExtension(normalizedFilePath, ".ppo");
                     if (ppoFile != null )
-                    { 
+                    {
                         touchedFilesLogger.AddWritten(ppoFile);
                     }
                 }

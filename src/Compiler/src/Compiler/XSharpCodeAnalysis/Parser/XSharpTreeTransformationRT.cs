@@ -462,8 +462,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             rhs = MakeSimpleMemberAccess(rhs, GenerateSimpleName("Module"));
             stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs), null, true));
-            // rest of the statements is generated in the LocalRewriter with a check for the existence of the fields in VulcanRT.
-            // in Vulcan.Runtime.State
             var body = MakeBlock(stmts);
             stmts.Clear();
 
@@ -1859,7 +1857,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitQoutStmt([NotNull] XP.QoutStmtContext context)
         {
-            // Simply generate call to VulcanRTFuncs.Functions.QOut or QQOut
+            // Simply generate call to Functions.QOut or QQOut
             // and pass list of expressions as argument
             ArgumentSyntax arg;
             string methodName;

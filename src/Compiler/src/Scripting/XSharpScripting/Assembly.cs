@@ -11,12 +11,12 @@
 #if !XSHARP_RUNTIME
 namespace Microsoft.CodeAnalysis.Scripting
 {
-    internal class ScriptingResources : LanguageService.CodeAnalysis.Scripting.ScriptingResources { }
+    internal class ScriptingResources : Microsoft.CodeAnalysis.Scripting.ScriptingResources { }
 }
 
 namespace Microsoft.CodeAnalysis.CSharp.Scripting
 {
-    internal class CSharpScriptingResources : LanguageService.CodeAnalysis.Scripting.XSharpScriptingResources { }
+    internal class CSharpScriptingResources : Microsoft.CodeAnalysis.Scripting.XSharpScriptingResources { }
 }
 #endif
 // HACK ENDS HERE

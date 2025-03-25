@@ -534,7 +534,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     else
                     {
                         AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(),
-                            "XSharp.Core.DLL and XSharp.RT.DLL or VulcanRT.DLL and VulcanRTFuncs.DLL");
+                            "XSharp.Core.DLL and XSharp.RT.DLL");
                     }
                     newDialect = XSharpDialect.Core;
                 }

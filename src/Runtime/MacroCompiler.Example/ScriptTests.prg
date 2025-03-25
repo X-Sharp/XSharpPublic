@@ -482,6 +482,8 @@ FUNCTION FoxScriptTests AS VOID
         "x = 123, y = 321, z = x = 123",;
         "return IIF(z,x+y,-1)",;
         ""}),Args(), 123+321, typeof(int))
+    TestMacro(sc, "x = 123", Args(), 123, typeof(int))
+    TestMacro(sc, "return x = 123", Args(), "Variable does not exist", typeof(XSharp.Error))
     RETURN
 
 FUNCTION TestPreProcessor(sc AS XSharp.Runtime.MacroCompiler) AS VOID

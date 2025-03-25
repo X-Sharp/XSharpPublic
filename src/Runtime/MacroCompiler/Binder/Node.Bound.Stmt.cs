@@ -46,7 +46,8 @@ namespace XSharp.MacroCompiler.Syntax
                 var top = bin;
                 var left = bin.Left;
                 var right = bin.Right;
-                while (left is BinaryExpr lb)
+                var eqLevel = Parser.OpPrecedence(TokenType.EQ);
+                while (left is BinaryExpr lb && Parser.OpPrecedence(lb.Token.Type) >= eqLevel)
                 {
                     left = lb.Left;
                     if (left is not BinaryExpr && lb.Kind == TokenType.EQ)
@@ -56,9 +57,12 @@ namespace XSharp.MacroCompiler.Syntax
                     }
                     top = lb;
                 }
-                var token = new Token(TokenType.ASSIGN, bin.Token.Text);
-                var newnode = new AssignExpr(left, token, right);
-                return newnode;
+                if (top.Kind == TokenType.EQ)
+                {
+                    var token = new Token(TokenType.ASSIGN, bin.Token.Text);
+                    var newnode = new AssignExpr(left, token, right);
+                    return newnode;
+                }
             }
             return null;
         }
@@ -87,7 +91,10 @@ namespace XSharp.MacroCompiler.Syntax
         {
             if (Expr != null)
             {
-                b.Bind(ref Expr);
+                if (this is not ReturnStmt)
+                    base.Bind(b);
+                else
+                    b.Bind(ref Expr);
                 if (b.ResultType == null)
                 {
                     b.ResultType = Expr.Datatype;

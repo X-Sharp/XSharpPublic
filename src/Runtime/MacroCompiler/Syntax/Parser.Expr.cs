@@ -1109,6 +1109,8 @@ namespace XSharp.MacroCompiler
         static readonly Oper[] PrefixOpers;
         static readonly Oper AliasExpr;
 
+        internal static int OpPrecedence(TokenType tt) => Opers[(int)tt]?.level ?? 0;
+
         static Parser()
         {
             Opers = new Oper[(int)TokenType.LAST];

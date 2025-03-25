@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-09-27T11:51:40.362+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-24T22:18:54.520+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Language(语言)</title>
   <keywords>
     <keyword>Additional Include paths</keyword>
@@ -131,7 +131,7 @@
           <para styleclass="Normal">(溢出异常)</para>
         </td>
         <td style="width:780px;">
-          <para styleclass="Normal">检查数字表达式的溢出，如 CHECKED 关键字。</para>
+          <para styleclass="Normal">检查数字表达式的溢出，就像 CHECKED 关键字。</para>
         </td>
         <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ovf">/ovf</link></para>
@@ -241,7 +241,7 @@
           <para styleclass="Normal">(使用默认命名空间为类加前缀)</para>
         </td>
         <td style="width:780px;">
-          <para styleclass="Normal">为所有没有命名空间前缀且不在 begin 命名空间中的类添加前缀 ...end namespace 块替换为程序集的命名空间。</para>
+          <para styleclass="Normal">为所有没有命名空间前缀且不在 begin namespace ... end namespace 块中的类加上程序集命名空间的前缀。</para>
         </td>
         <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ns">/ns:&lt;Namespace&gt;</link></para>

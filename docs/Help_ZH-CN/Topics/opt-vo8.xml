@@ -1,37 +1,37 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T12:07:29.774+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-24T22:27:40.555+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-vo8</title>
   <keywords>
     <keyword>-vo8</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo8<tab/><tab/>兼容预处理器 </para>
+      <para styleclass="Heading1">-vo8<tab /><tab />兼容预处理器 </para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-vo8选项可启用与Visual-Objects兼容的预处理器行为。</para>
+    <para styleclass="Normal">-vo8 选项可启用与 Visual-Objects 兼容的预处理器行为。</para>
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-vo8[+|-]</para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab/>指定 + 或 -vo8，可以改变预处理器的某些方面，使其行为类似于 Visual Objects。</para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />指定 + 或 -vo8，可以改变预处理器的某些方面，使其行为类似于 Visual Objects。</para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">与 Visual Objects 不同，X# 使用基于文件的预处理器，它具有 C、C++ 和 Clipper 等语言中传统预处理器的特征。-vo8 选项控制以下行为：</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Heading3" style="font-family:Symbol; font-size:12pt; color:#00a8d2;">
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Heading3" style="font-family:Symbol; font-size:12pt; color:#00a8d2;">
       <li styleclass="Heading3"><text style="font-weight:bold;">大小写敏感</text></li>
     </list>
     <para styleclass="Normal">在传统的预处理器中，#define foo 1 和 #define FOO 2 分别声明两个独立的预处理器符号，因为预处理器符号是区分大小写的。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">然而，在 Visual Objects 中，DEFINE foo := 1 和 DEFINE FOO := 2 声明的是同一个实体(由于实体声明重复，编译器会出错)。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">在 X# 中，默认情况下，即禁用 -vo8(未使用或指定&quot;-vo8-&quot;)时，预处理器符号始终区分大小写。启用 -vo8 时，符号的大小写敏感性由 -cs 选项的状态决定：</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">启用 -cs 时，编译器将所有标识符和类型名都视为区分大小写，那么预处理器符号也仍然区分大小写</li>
-      <li styleclass="Normal">当禁用 -cs 时，预处理器符号不区分大小写，行为方式与 VO 中相同。</li>
+    <para styleclass="Normal">在 X# 中，默认情况下，即禁用 -vo8(未使用或指定&quot;-vo8-&quot;)时，预处理器符号始终区分大小写。启用 -vo8 时，符号的大小写敏感性由 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-cs">-cs</link> 选项的状态决定：</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">启用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-cs">-cs</link> 时，编译器将所有标识符和类型名都视为区分大小写，那么预处理器符号也仍然区分大小写</li>
+      <li styleclass="Normal">当禁用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-cs">-cs</link> 时，预处理器符号不区分大小写，行为方式与 VO 中相同。</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">因此，当启用 -vo8 而禁用 -cs 时，#define foo 1 和 #define FOO 2 声明了相同的预处理器符号(并且会因为重新定义而导致编译器警告)。</para>
+    <para styleclass="Normal">因此，当启用 -vo8 而禁用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-cs">-cs</link> 时，#define foo 1 和 #define FOO 2 声明了相同的预处理器符号(并且会因为重新定义而导致编译器警告)。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">以下代码在 Visual Objects 中有效：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo := &quot;bar&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? Foo </text><text style="font-weight:bold; font-style:italic; color:#339966;">// &quot;bar&quot;</text></para>
@@ -39,7 +39,7 @@
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo &quot;bar&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? Foo</text></para>
     <para styleclass="Normal">使用 -vo8(而不是 -cs)选项可以编译上述示例。除了使用 -vo8，还可以修改代码，使要替换文本的大小写与 #define 中使用的大小写一致。</para>
     <para styleclass="Normal"></para>
-    <list id="2" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:12pt; color:#00a8d2;">
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:12pt; color:#00a8d2;">
       <li styleclass="Normal"><text styleclass="Heading3">#ifdef</text></li>
     </list>
     <para styleclass="Normal"></para>
@@ -56,7 +56,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <list id="3" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="3" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
       <li styleclass="Normal" style="margin-left:13px;">点击 Dialect 选项卡 </li>
       <li styleclass="Normal" style="margin-left:13px;">更改值</li>

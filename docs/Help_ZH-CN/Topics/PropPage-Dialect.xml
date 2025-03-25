@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-10T20:43:07.739+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-24T22:21:53.219+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Dialect(方言)</title>
   <keywords>
     <keyword>-fox1</keyword>
@@ -50,7 +50,7 @@
           <para styleclass="Normal">(虚拟所有实例化方法)</para>
         </td>
         <td style="width:701px; height:15px;">
-          <para styleclass="Normal">默认情况下在所有方法中添加虚拟修饰符(这是 Visual Objects 的正常行为)。</para>
+          <para styleclass="Normal">默认情况下在所有方法中添加 virtual 修饰符(这是 Visual Objects 的正常行为)。</para>
         </td>
         <td style="width:131px; height:15px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo3">-vo3</link></para>

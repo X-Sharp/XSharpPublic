@@ -31,6 +31,10 @@ BEGIN NAMESPACE VFPXPorterLib
         CONSTRUCTOR( )
             RETURN
 
+        METHOD ClearResultText AS VOID STRICT
+            BufferedSink.Instance:Clear()
+            RETURN
+
         PROPERTY ResultText AS STRING
             GET
                 VAR log := BufferedSink.Instance:Log

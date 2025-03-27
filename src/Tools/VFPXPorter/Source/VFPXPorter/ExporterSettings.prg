@@ -32,6 +32,9 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:iniSettings:Reset()
 		END METHOD
 
+        METHOD ResetWarning() AS VOID
+            SELF:iniSettings:ReadValue( "Startup", "Warning", TRUE )
+
 		PROPERTY Warning AS LOGIC GET SELF:iniSettings:ReadValue( "Startup", "Warning", TRUE ) ;
 			SET SELF:iniSettings:WriteValue( "Startup", "Warning", VALUE )
 

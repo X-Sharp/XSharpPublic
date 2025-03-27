@@ -164,8 +164,7 @@ BEGIN NAMESPACE VFPXPorter
 			IF MessageBox.Show( "Are you sure ?", "Reset Settings", MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes
 				SELF:iniSettings:Reset()
 				SELF:LoadSettings()
-				// Force read to reset
-				VAR dummy := SELF:iniSettings:Warning
+                SELF:iniSettings:ResetWarning()
 			ENDIF
 			RETURN
 		END METHOD

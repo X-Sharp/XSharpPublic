@@ -13,14 +13,14 @@ PUBLIC PARTIAL CLASS ExportItemWindow	;
         INHERIT System.Windows.Forms.Form
     PROPERTY xPorter AS IXPorter AUTO
     PROPERTY extension AS STRING AUTO
-        
+
     PROPERTY Settings AS XPorterSettings AUTO
-        
+
     PUBLIC CONSTRUCTOR() STRICT //ExportWindow
         SELF:InitializeComponent()
         extension := "scx"
         RETURN
-        
+
     PRIVATE METHOD exportButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID
         // Check what we try to export
         SELF:infoStripError:Text := ""
@@ -34,18 +34,18 @@ PUBLIC PARTIAL CLASS ExportItemWindow	;
             RETURN
         ENDIF
         SELF:DoExport()
-        
+
     PUBLIC METHOD DoExport() AS VOID
         // DoBackup, ProcessFirst
         SELF:Processing( TRUE )
         SELF:backgroundExport:RunWorkerAsync()
         RETURN
-        
+
     METHOD Processing( state AS LOGIC ) AS VOID
         SELF:exportButton:Enabled := !state
         SELF:cancelBtn:Visible := state
-        
-        
+
+
     PRIVATE METHOD scxButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
         LOCAL ofd AS OpenFileDialog
         //
@@ -104,7 +104,7 @@ PUBLIC PARTIAL CLASS ExportItemWindow	;
         ENDIF
         //
         //SELF:xPorter:Settings := SELF:Settings
-        VAR dummy := SELF:xPorter:ResultText // This will clear the ResultText
+        SELF:xPorter:ClearResultText()
         SELF:xPorter:Analyze(TRUE)
         SELF:resultText:Text := SELF:xPorter:ResultText
         RETURN
@@ -158,7 +158,7 @@ PUBLIC PARTIAL CLASS ExportItemWindow	;
     PRIVATE METHOD cancelBtn_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
         SELF:backgroundExport:CancelAsync()
         RETURN
-        
-        
+
+
 END CLASS
 END NAMESPACE

@@ -293,7 +293,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var func = _syntaxFactory.MethodDeclaration(
                 attributeLists: MakeCompilerGeneratedAttribute(),
                 modifiers: TokenListWithDefaultVisibility(false, SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword),
-                returnType: UsualType,
+                returnType: ObjectType,
                 explicitInterfaceSpecifier: null,
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: null,
@@ -351,8 +351,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // XPP allows to declare an ACCESS METHOD and then declare the method body without ACCESS prefix !
             // The method is called with an optional parameter (the value from the property)
             // In the method body the user needs to check for the type to see if the getter or setter is called.
-            // 
-            // 
+            //
+            //
             /*
              // example from XbZLog.prg
              Class XbZ_LogWriter
@@ -411,7 +411,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // include [SHARED], [READONLY] [ASSIGNMENT HIDDEN | PROTECTED | EXPORTED]  and [NOSAVE] modifiers
             // on top of the visibility modifier
             // The [Readonly] clause and [Assignment] clause are not supported yet
-            // In as future build we will create a private backing Ivar and 
+            // In as future build we will create a private backing Ivar and
             // Create a property with Getter and Setter with property visibility
             // to emulate the possible combinations of [ReadOnly] and Assignment and Visibility
             // The following table lists what should be done
@@ -448,7 +448,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 varList.Add(variable);
                 SyntaxToken isReadonly = null;
                 // calculate modifiers
-                // each field is added separately so we can later decide which field to keep and which one to delete when they are duplicated by a 
+                // each field is added separately so we can later decide which field to keep and which one to delete when they are duplicated by a
                 var modifiers = decodeXppMemberModifiers(context, context.Visibility, false,
                     context.Modifiers?._Tokens, false, isReadonly);
                 if (context.Assignment != null || context.ReadOnly != null)
@@ -1057,8 +1057,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             entities.AddRange(context._Entities.Where(e => !(e.GetChild(0) is XP.XppmethodContext)));
             _exitNamespace(context, context.Name.GetText(), entities);
         }
-        #endregion 
-        #region Modifiers 
+        #endregion
+        #region Modifiers
         public override void ExitXppclassModifiers([NotNull] XP.XppclassModifiersContext context)
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
@@ -1114,7 +1114,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     switch (m.Type)
                     {
                         case XP.DEFERRED: // DEFERRED METHOD becomes ABSTRACT METHOD
-                        case XP.ABSTRACT: // 
+                        case XP.ABSTRACT: //
                             kw = SyntaxFactory.MakeToken(SyntaxKind.AbstractKeyword, m.Text);
                             break;
                         case XP.FINAL: // FINAL METHOD will generate non virtual method, even when the Default Virtual is on
@@ -1150,7 +1150,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         case XP.STATIC:
                             // remove visibility modifiers
                             // STATIC member (Visibility only in the scope of the prg).
-                            // member becomes Internal 
+                            // member becomes Internal
                             kw = SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword, m.Text);
                             var tmp = modifiers.ToList();
                             modifiers.Clear();

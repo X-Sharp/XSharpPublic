@@ -22,6 +22,7 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
         result := XSharp.XPP.StaticClassObject{oType}
         classObjects:TryAdd(oType, result)
         RETURN result
+
     internal static method RemoveClassObject(oType as System.Type) as logic
         if classObjects:TryRemove(oType, out var _)
             return true
@@ -118,7 +119,11 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
     /// <param name="uParams">The parameters to send to the method.</param>
     /// <returns>The return value will be interpreted as the return value of the called undefined method. </returns>
     /// <remarks>If an undefined method is called, a runtime error is raised.</remarks>
+#ifdef DOC
+    VIRTUAL METHOD NoMethod() AS USUAL CLIPPER
+#else
     VIRTUAL METHOD NoMethod(cName, uParams) AS USUAL CLIPPER
+#endif
         LOCAL cMethod AS STRING
         cMethod := RuntimeState.NoMethod
         var uArgs := _ARGS()

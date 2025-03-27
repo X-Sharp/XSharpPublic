@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T20:58:55.857+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-24T22:14:44.343+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-undeclared</title>
   <body>
     <header>
@@ -15,7 +15,7 @@
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">这不适用于 Core 和 Vulcan 方言。</para>
     <para styleclass="Normal">当编译器检测到 &quot;未知标识符 &quot;时，它会认为这是当前工作区中的一个字段或内存变量。</para>
-    <para styleclass="Normal">只有同时启用 -memvar 时，编译器选项才会生效。</para>
+    <para styleclass="Normal">只有同时启用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">-memvar</link> 时，编译器选项才会生效。</para>
     <para styleclass="Normal" style="margin-left:13px;"></para>
     <para styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">查看属性页</link></para>
   </body>

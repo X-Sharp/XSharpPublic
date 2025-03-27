@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T02:06:31.353+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-24T22:19:54.424+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-ns</title>
   <keywords>
     <keyword>-ns</keyword>
@@ -14,17 +14,17 @@
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-ns[: ]namespaceName</para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">namespaceName</text> <tab/>应用程序或类库中声明的所有类型的默认命名空间名称。 </para>
+    <para styleclass="List"><text styleclass="Code Example">namespaceName</text>&#32;<tab />应用程序或类库中声明的所有类型的默认命名空间名称。 </para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">如果未指定 -ns 选项，则未以命名空间为前缀的类型和未在 BEGIN NAMESPACE ... END NAMESPACE 结构中的类型将被编译为所谓的全局类型。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">-ns 选项适用于以下类型：</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">类</li>
       <li styleclass="Normal" style="margin-left:13px;">接口 </li>
       <li styleclass="Normal" style="margin-left:13px;">结构体 </li>
-      <li styleclass="Normal" style="margin-left:13px;">虚结构体</li>
+      <li styleclass="Normal" style="margin-left:13px;">Vostructs</li>
       <li styleclass="Normal" style="margin-left:13px;">委托</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
@@ -34,7 +34,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
       <li styleclass="Normal" style="margin-left:13px;">点击 Language 选项卡</li>
       <li styleclass="Normal" style="margin-left:13px;">编辑 “Prefix classes with Default Namespace(使用默认命名空间为类加前缀)”属性</li>
@@ -45,7 +45,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">在不使用 -ns 编译器选项的情况下编译以下代码时，将产生以下类型：</para>
     <para styleclass="Normal"></para>
-    <list id="2" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Customer </li>
       <li styleclass="Normal" style="margin-left:13px;">Point </li>
       <li styleclass="Normal" style="margin-left:13px;">MyProject.Customer </li>
@@ -53,11 +53,11 @@
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">CLASS Customer<br/>.<br/>.<br/>END CLASS<br/><br/>STRUCT Point<br/>.<br/>.<br/>END STRUCT<br/><br/>ENUM CustomerType<br/>.<br/>END ENUM<br/><br/>CLASS MyProject.Customer<br/>.<br/>.<br/>END CLASS<br/><br/><br/>BEGIN NAMESPACE MyProject.Data<br/>CLASS Customer<br/>.<br/>.<br/>END CLASS<br/>END NAMESPACE<br/></para>
-    <para styleclass="Normal"> </para>
+    <para styleclass="Normal">&#32;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">如果使用 -ns:MyNameSpace 选项编译相同的代码，将产生以下类型：</para>
     <para styleclass="Normal"></para>
-    <list id="3" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">MyNameSpace.Customer </li>
       <li styleclass="Normal" style="margin-left:13px;">MyNameSpace.Point </li>
       <li styleclass="Normal" style="margin-left:13px;">MyProject.Customer </li>

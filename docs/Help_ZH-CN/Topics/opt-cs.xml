@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T18:27:14.474+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-24T22:00:11.292+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-cs</title>
   <keywords>
     <keyword>-cs</keyword>
@@ -10,7 +10,7 @@
       <para styleclass="Heading1">-cs</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-cs选项指示编译器将所有标识符和类型名称视为区分大小写。</para>
+    <para styleclass="Normal">-cs 选项指示编译器将所有标识符和类型名称视为区分大小写。</para>
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-cs[+|-]</para>
     <para styleclass="Heading2">参数</para>

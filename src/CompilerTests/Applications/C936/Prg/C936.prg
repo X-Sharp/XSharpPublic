@@ -9,6 +9,11 @@ CLASS TestBase
 	METHOD TestMethodWorking(x := 1 AS INT) AS USUAL
 		? i"TestMethodWorking {x}"
 	RETURN x
+	
+	METHOD TestNull(s := NULL_STRING AS USUAL, p := NULL_PSZ AS USUAL, o := NULL_OBJECT AS USUAL) AS USUAL // 3 errors XS037
+	RETURN s
+	METHOD TestNull_PTR(p := NULL_PTR AS USUAL) AS USUAL // 3 errors XS037
+	RETURN AsString(p)
 
 END CLASS
 
@@ -28,6 +33,19 @@ FUNCTION Start() AS VOID STRICT
 	xAssert( test.TestMethodNotWorking(2) == 2)
 	xAssert( test2.TestMethodNotWorking(2) == 2)
 
+	xAssert( test:TestNull("abc") == "abc") // OK
+	xAssert( test2:TestNull("abc") == "abc") // error
+	
+	LOCAL p AS USUAL
+	p := NULL_PSZ // OK
+	p := NULL_PTR // OK
+	
+	test:TestNull_PTR() // OK
+	test:TestNull_PTR(NULL_PTR) // OK
+
+	test2:TestNull_PTR() // error
+	test2:TestNull_PTR(NULL_PTR) // OK
+
 
 PROC xAssert(l AS LOGIC)
 	IF l
@@ -38,4 +56,4 @@ PROC xAssert(l AS LOGIC)
 RETURN
 
 
-PROCEDURE TestNull(x := NULL AS FLOAT) AS VOID // no error
+//PROCEDURE TestNull(x := NULL AS FLOAT) AS VOID // no error

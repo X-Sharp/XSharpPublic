@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2025-03-28T14:23:49.767+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-04-01T01:29:39.054+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -84,19 +84,20 @@
     <para styleclass="Heading2">XIDE</para>
     <para styleclass="Heading3">General</para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"></li>
-    </list>
-    <para styleclass="Heading3">Editor</para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"></li>
-    </list>
-    <para styleclass="Heading3">Designers</para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"></li>
+      <li styleclass="Normal">Added toolbar button to collapse all nodes in the Project window</li>
+      <li styleclass="Normal">Added support for selecting the editor color for escaped literals in the Preferences window and through the plugin system</li>
+      <li styleclass="Normal">Added context menu option to copy all contents/only code in the Find results window</li>
+      <li styleclass="Normal">The control order window now support moving items (tab order) with the keyboard, by using CTRL or SHIFT + Up/Down</li>
+      <li styleclass="Normal">Fixed a problem with incorrectly highliting Func&lt;T&gt; as a keyword</li>
+      <li styleclass="Normal">Project/application export now includes also native resource files (.rc)</li>
+      <li styleclass="Normal">Some improvements to the TipOfTheDay window</li>
     </list>
     <para styleclass="Heading3">Plugin System</para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"></li>
+      <li styleclass="Normal">Added callback method Plugin:OnProjectItemSelected() that gets called when any item is selected in the Project tool window</li>
+      <li styleclass="Normal">Added method PluginService:GetPropertiesPad() AS PropertiesPad for retrieving the Properties tool window</li>
+      <li styleclass="Normal">Added support for handling (through PluginService:GetSelectedProjectItem()) many more item types in the Project tool window: ReferenceGroup, Reference, Resource files etc</li>
+      <li styleclass="Normal">Fixed a problem (crash) with manipulating hidden editor files</li>
     </list>
     <para styleclass="Heading2">Documentation</para>
     <para styleclass="Heading3">Bug fixes</para>

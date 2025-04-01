@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 
+<!--
 ***********************************************************************************************
 Versions.props
 Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
@@ -13,9 +13,9 @@ See License.txt in the project root for license information.
   <PropertyGroup>
       <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <MajorVersion>2</MajorVersion>
-    <MinorVersion>22</MinorVersion>
+    <MinorVersion>23</MinorVersion>
     <PatchVersion>0</PatchVersion>
-    <PreReleaseVersionLabel>1</PreReleaseVersionLabel>
+    <PreReleaseVersionLabel>0</PreReleaseVersionLabel>
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
     <!--
       By default the assembly version in official builds is "$(MajorVersion).$(MinorVersion).0.0".

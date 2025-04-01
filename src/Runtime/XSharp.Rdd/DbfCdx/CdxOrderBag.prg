@@ -438,10 +438,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN BYTE[]{CDXPAGE_SIZE *nSize}
 
         METHOD Read(nPage AS LONG, buffer AS BYTE[]) AS LOGIC
+            if self:Shared .and. !self:IsLocked
+                self:SLock()
+            endif
             SELF:ThrowIfNeedsLock()
             RETURN SELF:_stream:SafeReadAt(nPage, buffer)
 
         METHOD Read(oPage AS CdxPage) AS LOGIC
+            if self:Shared .and. !self:IsLocked
+                self:SLock()
+            endif
             SELF:ThrowIfNeedsLock()
             IF SELF:_root != NULL
                 oPage:Generation := SELF:_root:RootVersion
@@ -588,7 +594,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN
 
         INTERNAL METHOD ThrowIfNeedsLock() AS VOID
-            IF SELF:_needsLock && SELF:Shared
+            IF SELF:_needsLock && SELF:Shared && ! SELF:IsLocked
                 THROW CdxLockException{}
             ENDIF
             RETURN

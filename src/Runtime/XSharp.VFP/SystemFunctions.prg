@@ -33,7 +33,7 @@ FUNCTION Sys(nSetting, uNewValue, uContextParam3) AS USUAL CLIPPER
             retVal := CurDrive() + ":"
         ELSE
             // "SET DEFAULT TO" can contain a Path, get the Drive
-            retVal := retVal:Substring(0,1) + ":"
+            retVal := ((string) retVal):Substring(0,1) + ":"
         ENDIF
 
     CASE 16 // Executing program file name.
@@ -53,7 +53,7 @@ FUNCTION Sys(nSetting, uNewValue, uContextParam3) AS USUAL CLIPPER
         // Where ?
         VAR file = ProcFile(level)
         retVal := "PROCEDURE " + calling + " " + file
-        retval := retVal:ToUpper()
+        retVal := ((string) retVal):ToUpper()
 
     CASE 987 // Map Remote Data to ANSI.
         RETURN FALSE
@@ -77,7 +77,7 @@ FUNCTION Sys(nSetting, uNewValue, uContextParam3) AS USUAL CLIPPER
         // Try to set a value
         IF !IsNil(uNewValue)
             IF IsNumeric(uContextParam3) .AND. (uContextParam3 > 0 )
-                retVal := str( uContextParam3 ) // Bring you back your setting
+                retVal := Str( uContextParam3 ) // Bring you back your setting
             ELSE
                 SWITCH uNewValue // This what VFP returns on MY computer ;)
                 CASE 1

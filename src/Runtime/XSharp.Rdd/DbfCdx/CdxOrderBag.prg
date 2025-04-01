@@ -101,6 +101,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 // Exception ?
                 RETURN FALSE
             ENDIF
+            var oOldTag := SELF:_oRdd:CurrentOrder
             VAR oTag := SELF:_FindTagByName(cTag)
             VAR lOk := TRUE
             IF oTag != NULL_OBJECT
@@ -117,6 +118,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 // Read the tag from disk to get all the normal stuff
                 oTag  := CdxTag{SELF,oTag:Header:PageNo, oTag:OrderName}
                 SELF:AddTag(oTag)
+            ELSE
+                IF SELF:Tags:Count == 0
+                    SELF:Close()
+                    FErase(SELF:FullPath)
+                    SELF:_oRdd:_indexList:CurrentOrder := oOldTag
+                    SELF:_oRdd:GoTop()
+                endif
             ENDIF
             RETURN lOk
 

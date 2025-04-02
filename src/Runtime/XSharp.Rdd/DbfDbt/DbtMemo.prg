@@ -123,17 +123,24 @@ BEGIN NAMESPACE XSharp.RDD
             objType := oValue:GetType()
             objTypeCode := Type.GetTypeCode( objType )
             //
+            LOCAL nLen as LONG
             IF ( objTypeCode == TypeCode.Char )
                 str := STRING{ (CHAR)oValue, 1 }
+                nLen := 1
             ELSEIF ( objTypeCode == TypeCode.String )
-                str := oValue ASTYPE STRING
+                str := (STRING) oValue
+                nLen := str:Length
             ENDIF
             // Not a Char, Not a String
             IF ( str == NULL )
                 memoBlock := (BYTE[])oValue
+                nLen := memoBlock:Length
             ELSE
-                memoBlock := BYTE[]{str:Length}
-                _oRdd:_GetBytes(str, memoBlock, 0, str:Length)
+                memoBlock := BYTE[]{str:Length*2} // allow for multi byte characters
+                nLen := _oRdd:_GetBytes(str, memoBlock, 0, memoBlock:Length)
+                if nLen != memoBlock:Length
+                    Array.Resize(REF memoBlock, nLen)
+                endif
             ENDIF
             // Now, calculate where we will write the Datas
             LOCAL blockNbr AS INT64
@@ -148,7 +155,7 @@ BEGIN NAMESPACE XSharp.RDD
                 blockLen := SELF:_getValueLength( nFldPos )
                 IF blockLen > 0
                     // Compare the number of Blocks : Do we need more blocks ?
-                    newBlock := ( memoBlock:Length / SELF:_blockSize ) > ( blockLen / SELF:BlockSize )
+                    newBlock := ( nLen / SELF:_blockSize ) > ( blockLen / SELF:BlockSize )
                 ENDIF
             ENDIF
             IF newBlock

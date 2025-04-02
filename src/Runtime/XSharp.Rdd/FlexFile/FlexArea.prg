@@ -89,8 +89,11 @@ INTERNAL CLASS FlexArea
    PROTECTED METHOD _GetBytes(sValue as STRING) AS BYTE[]
         local bytes as byte[]
         IF SELF:_oRdd IS DBF var oDBF
-            bytes := byte[]{sValue:Length}
-            oDBF:_GetBytes(sValue, bytes, 0, sValue:Length)
+            bytes := byte[]{sValue:Length*2}
+            var nLen := oDBF:_GetBytes(sValue, bytes, 0, bytes:Length)
+            if nLen != bytes:Length
+                Array.Resize(REF bytes, nLen)
+            endif
         else
             bytes := RuntimeState.WinEncoding:GetBytes(sValue)
         endif
@@ -705,18 +708,25 @@ INTERNAL CLASS FlexArea
 
     METHOD Zap() AS LOGIC
         IF SELF:IsOpen
-            _oStream:SafeSetLength(0)
+            _oStream:SetLength(0)
             SELF:_foxHeader:Clear()
+            var size := FoxHeader.FOXHEADER_LENGTH
             IF SELF:IsFlex
                 SELF:_flexHeader:Clear()
-                //                 SELF:LenIndex:Clear()
-                //                 SELF:LenIndex:Clear()
+                size += FlexHeader.FLEXHEADER_LENGTH
+#ifdef DELETEDBLOCKS
+                SELF:LenIndex:Clear()
+                SELF:LenIndex:Clear()
+#endif
             ENDIF
+            _nextFree :=  (DWORD) SELF:RoundToBlockSize(size) / _blockSize
             SELF:WriteHeader()
-            //            IF SELF:IsFlex
-            //                 SELF:LenIndex:Init(SELF)
-            //                 SELF:LocIndex:Init(SELF)
-            //            ENDIF
+#ifdef DELETEDBLOCKS
+            IF SELF:IsFlex
+                SELF:LenIndex:Init(SELF)
+                SELF:LocIndex:Init(SELF)
+            ENDIF
+#endif
             RETURN TRUE
         ENDIF
         RETURN FALSE
@@ -1139,11 +1149,11 @@ INTERNAL CLASS FlexArea
         SWITCH otc
         CASE TypeCode.String
             VAR sValue := (STRING) oValue
-            bData := BYTE[] { sValue:Length+FlexMemoToken.TokenLength}
+            var bytes := SELF:_GetBytes(sValue)
+            bData := BYTE[] { bytes:Length+FlexMemoToken.TokenLength}
             token := FlexMemoToken{bData, _oStream}
             token:DataType := FlexFieldType.String
-            token:Length   := sValue:Length
-            var bytes := SELF:_GetBytes(sValue)
+            token:Length   := bytes:Length
             System.Array.Copy(bytes,0, bData,FlexMemoToken.TokenLength, bytes:Length)
             RETURN bData
         CASE TypeCode.Object

@@ -19,53 +19,55 @@
     <DocDir>$(ArtifactsDir)Documentation</DocDir>
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 4.6</FrameworkVersion>
-    <OutputPath>\Help\</OutputPath>
+    <OutputPath>$(ArtifactsDir)Help</OutputPath>
     <HtmlHelpName>XSharpRef</HtmlHelpName>
     <Language>en-US</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="$(DocDir)\XSharp.Rdd.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Core.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Core.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RDD.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VO.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VO.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Data.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Data.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOGUIClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOGUIClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOInternetClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOInternetClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VORDDClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VORDDClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSQLClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSQLClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSystemClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSystemClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.xml" />
-    </DocumentationSources>
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Core.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Core.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RDD.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RT.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RT.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VO.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VO.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Data.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Data.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOGUIClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOGUIClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOInternetClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOInternetClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VORDDClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VORDDClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOSQLClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOSQLClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOSystemClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOSystemClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOReportClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOReportClasses.xml" />
+</DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
     <HelpFileVersion>2.23.0.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
@@ -81,7 +83,7 @@
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
     <IndentHtml>False</IndentHtml>
-    <BuildAssemblerVerbosity>AllMessages</BuildAssemblerVerbosity>
+    <BuildAssemblerVerbosity>OnlyErrors</BuildAssemblerVerbosity>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, PublicCompilerGenerated, NonBrowsable</VisibleItems>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="Advantage" isDocumented="True">This namespace contains the exposed RDDs for Advantage.</NamespaceSummaryItem>
@@ -178,17 +180,25 @@
     </ComponentConfigurations>
     <MissingTags>AutoDocumentCtors, Namespace, AutoDocumentDispose</MissingTags>
     <TransformComponentArguments>
+      <Argument Key="RobotsMetadata" Value="" />
+      <Argument Key="BibliographyDataFile" Value="" />
       <Argument Key="logoFile" Value="logo100.jpg" />
       <Argument Key="logoHeight" Value="50" />
       <Argument Key="logoWidth" Value="" />
       <Argument Key="logoAltText" Value="X#" />
       <Argument Key="logoPlacement" Value="right" />
       <Argument Key="logoAlignment" Value="center" />
+      <Argument Key="LogoUrl" Value="" />
       <Argument Key="maxVersionParts" Value="" />
       <Argument Key="defaultLanguage" Value="xs" />
       <Argument Key="includeEnumValues" Value="true" />
+      <Argument Key="EnumMemberSortOrder" Value="Value" />
+      <Argument Key="FlagsEnumValueFormat" Value="IntegerValue" />
+      <Argument Key="FlagsEnumSeparatorSize" Value="0" />
+      <Argument Key="IncludeIntegerEnumSeparators" Value="true" />
       <Argument Key="baseSourceCodeUrl" Value="https://github.com/X-Sharp/XSharpPublic/blob/main/src/" />
       <Argument Key="requestExampleUrl" Value="mailto:info@xsharp.eu" />
+      <Argument Key="ShowParametersOnAllMethods" Value="False" />
     </TransformComponentArguments>
     <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>
     <BinaryTOC>True</BinaryTOC>
@@ -201,18 +211,6 @@
     </FooterText>
     <SourceCodeBasePath>E:\XSharp\Dev\src\</SourceCodeBasePath>
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
-    <PlugInConfigurations>
-      <PlugInConfig id="XSharp Function Output" enabled="False">
-        <configuration />
-      </PlugInConfig>
-<PlugInConfig id="XPath Reflection File Filter" enabled="False"><configuration>
-  <expressions>
-    <expression>/reflection/apis/api[starts-with(apidata/@name,"$")]</expression>
-    <expression>/reflection/apis/api/elements/element[starts-with(@api,"$")]</expression>
-    <expression>/reflection/apis/api[starts-with(apidata/@name,"__")]</expression>
-    <expression>/reflection/apis/api/elements/element[starts-with(@api,"__")]</expression>
-  </expressions>
-</configuration></PlugInConfig></PlugInConfigurations>
     <RootNamespaceTitle>X# Runtime and SDK Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169%3b 2015-2025 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b Computer Associates.</CopyrightText>
@@ -246,7 +244,7 @@
             The compiler will also translate a define such as  &amp;lt%3bc&amp;gt%3bFA_NORMAL &amp;lt%3b/c&amp;gt%3b  to   &amp;lt%3bc&amp;gt%3bXSharp.Core.Functions.FA_NORMAL&amp;lt%3b/c&amp;gt%3b.&amp;lt%3bbr/&amp;gt%3b
             In fact the compiler will include the value of this DEFINE in the generated code.
             You will not be able to see in the generated code that the value  &amp;lt%3bc&amp;gt%3b0x00000080 &amp;lt%3b/c&amp;gt%3bwas read from the &amp;lt%3bc&amp;gt%3bFA_NORMAL&amp;lt%3b/c&amp;gt%3b define.&amp;lt%3bbr/&amp;gt%3b
-            The source code for the XSharp Runtime is available &amp;lt%3ba href=&amp;quot%3bhttps://github.com/X-Sharp/XSharpPublic/tree/feature/Runtime/&amp;quot%3b _target=&amp;quot%3b_blank&amp;quot%3b &amp;gt%3bon GitHub. &amp;lt%3b/a&amp;gt%3b &amp;lt%3bbr/&amp;gt%3b
+            The source code for the XSharp Runtime is available &amp;lt%3ba href=&amp;quot%3bhttps://github.com/X-Sharp/XSharpPublic/tree/main/&amp;quot%3b _target=&amp;quot%3b_blank&amp;quot%3b &amp;gt%3bon GitHub. &amp;lt%3b/a&amp;gt%3b &amp;lt%3bbr/&amp;gt%3b
             If you find bugs with this code, please report them  by sending an email to  bugreports%40xsharp.eu.&amp;lt%3bbr/&amp;gt%3b
             Or even better,  locate the bug and send us a bugfix.&amp;lt%3bbr/&amp;gt%3b
             The best way to do that is :&amp;lt%3bbr/&amp;gt%3b

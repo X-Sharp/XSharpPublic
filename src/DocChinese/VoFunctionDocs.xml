@@ -8149,8 +8149,11 @@
     </returns>
     <remarks>
       如果 <paramref name="uVar" /> 等于 NIL，Default() 将 <paramref name="uDefault" /> 分配给 <paramref name="uVar" />。<br/>
-      它在功能上等同于以下任一代码示例：
-      <code language="X#">
+        它在功能上等同于以下任一代码示例：
+        与其使用 Default(@<paramref name="uVar" />, 0)，您可以使用 EnforceNumeric(@<paramref name="uVar" />)，它除了检查 <paramref name="uVar" /> 是否为 NIL 外，还会在 <paramref name="uVar" /> 既不是数字也不是 NIL 时调用错误系统。当 <paramref name="uDefault" /> 是其数据类型的空值（EmptyUsual()）时，您也可以使用 EnforceType()；如果 <paramref name="uVar" /> 不是特定数据类型，这会引发错误。<br/>
+        因此，您可以调用 EnforceType(@<paramref name="uVar" />, STRING)，而不是调用 Default(@<paramref name="uVar" />, NULL_STRING)。
+    </remarks>
+    <code language="X#">
         IF uVar = NIL
         &#0009;uVar := uDefault
         ENDIF
@@ -8158,9 +8161,6 @@
         &#0009;uVar := uDefault
         ENDIF
       </code>
-      与其使用 Default(@<paramref name="uVar" />, 0)，您可以使用 EnforceNumeric(@<paramref name="uVar" />)，它除了检查 <paramref name="uVar" /> 是否为 NIL 外，还会在 <paramref name="uVar" /> 既不是数字也不是 NIL 时调用错误系统。当 <paramref name="uDefault" /> 是其数据类型的空值（EmptyUsual()）时，您也可以使用 EnforceType()；如果 <paramref name="uVar" /> 不是特定数据类型，这会引发错误。<br/>
-      因此，您可以调用 EnforceType(@<paramref name="uVar" />, STRING)，而不是调用 Default(@<paramref name="uVar" />, NULL_STRING)。
-    </remarks>
     <example>
       此示例使用 Default() 检查函数中的所有参数：
       <code language="X#">
@@ -8395,7 +8395,7 @@
       一个子数组的数组，每个子数组包含与 <paramref name="cFileSpec" /> 匹配的每个文件的信息。<br/>
       子数组元素的引用如下（见下面的示例）：
       <include file="RTComments.xml" path="Comments/FileAttributes/*"  />
-      如果没有找到与 <paramref name="cFileSpec" /> 匹配的文件，或者如果 <paramref name="cFileSpec" /> 
+      如果没有找到与 <paramref name="cFileSpec" /> 匹配的文件，或者如果 <paramref name="cFileSpec" />
       是非法路径或文件规范，Directory() 返回一个空数组。
     </returns>
     <remarks>
@@ -18935,7 +18935,7 @@
       <code language="X#">
         USE customer
         SET INDEX TO first&#0009;&#0009;&#0009;// 按名字排序记录
-        &#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// 
+        &#0009;&#0009;&#0009;&#0009;&#0009;&#0009;//
         OrdKeyGoTo(100)&#0009;&#0009;&#0009;&#0009;// 转到第100个逻辑记录
         ? RECNO()&#0009;&#0009;&#0009;&#0009;&#0009;// 返回物理记录
         &#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// 编号
@@ -19218,7 +19218,7 @@
     </example>
     <seealso cref='O:XSharp.RT.Functions.DbSetOrder'>DBSetOrder</seealso>
   </ordsetfocus>
-  
+
   <ordsetrelation>
     <summary>
       将指定的工作区与当前工作区关联。
@@ -19299,7 +19299,7 @@
         &#0009;ENDDO
         &#0009;SET SCOPE TO&#0009;&#0009;&#0009;// 清除范围
         &#0009;RETURN aLast&#0009;&#0009;&#0009;// 返回唯一 J 名称的数组
-        &#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// 
+        &#0009;&#0009;&#0009;&#0009;&#0009;&#0009;//
       </code>
     </example>
     <seealsocmd>INDEX</seealsocmd>
@@ -21454,7 +21454,7 @@
     <remarks>
       SetCPU() 是一個相容性函數。它在 X# 中並沒有真正做任何事情。
     </remarks>
-   
+
     <seealso cref='O:XSharp.Core.Functions.SetMath'>SetMath</seealso>
   </setcpu>
 
@@ -22641,7 +22641,7 @@
       此示例将时间显示方式从 24:00:00 更改为 24.00.00：
       <code language="X#">
         FUNCTION Start()
-        &#0009;SetTimeSep(Asc(".")) 
+        &#0009;SetTimeSep(Asc("."))
         &#0009;QOut(Time())&#0009;&#0009;&#0009;// 24.00.00
       </code>
     </example>

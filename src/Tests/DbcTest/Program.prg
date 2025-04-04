@@ -1,18 +1,23 @@
-﻿FUNCTION Start( ) AS VOID
-    try
-        ? DefaultExt("abc","def")
-        ? DefaultExt("abc.","def")
-        ? DriveType("C:")
-        ? DriveType("G:")
-        ? DriveType("X:")
-        ? DriveType("A:")
-        ? FullPath("testss.txt", "xsharp.core.dll")
-        for var i := 1 to 34
-            ? "Sysmetric", i, SysMetric(i)
-        next
-    catch e as exception
-        ? e:ToString()
-    end try
-    wait
-    RETURN
+﻿Using System
+Using System.Collections.Generic
+Using System.Linq
+Using System.Text
 
+Function Start() As Void Strict
+    System.Console.OutputEncoding = System.Text.Encoding.GetEncoding(936)
+    Use  c:\temp\testchar
+    DoWork()
+    Use  c:\temp\testmemo
+    DoWork()
+    Use  c:\temp\testvarchar
+    DoWork()
+    wait
+    Return
+End Function
+FUNCTION DoWork()
+    FIELD a, b
+    Append Blank
+    Replace a With "005", b With "中国"
+    ? a
+    ? b
+    RETURN TRUE

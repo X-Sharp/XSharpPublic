@@ -510,7 +510,7 @@ Function DumpConnection(conn as SqlDbConnection) as void
         ? "ConnStr ",conn:DbConnection:ConnectionString
         ? "State   ",conn:DbConnection:State:ToString()
         ? "IsOpen  ", conn:IsOpen
-        var coll := conn:GetMetaDataCollections()
+        //var coll := conn:GetMetaDataCollections()
 //         ? "Collections: ", coll:Count
 //         foreach var name in coll
 //             var table := conn:GetMetaDataCollection(Name)
@@ -773,8 +773,7 @@ function TestTransaction()
                 DbCloseAll()
             endif
         CATCH e as Exception
-            nop
-            //? e:Message
+            ? e:Message
         END TRY
         RETURN
 
@@ -784,21 +783,21 @@ FUNCTION TestTriss() AS VOID
         SqlDbOpenConnection("Server=(local);Initial catalog=Triss2000Test;Trusted_Connection=True;", EventHandler)
         var conn  := SqldbGetConnection("DEFAULT")
         conn:MetadataProvider := SqlMetaDataProviderDatabase{conn}
-        local oSrv := dbShellServer{"Printer"} as dbShellServer
+        local oSrv := dbServer{"Printer"} as dbServer
         do while ! oSrv:Eof
             ? oSrv:Skip(1)
         enddo
 
 FUNCTION TestGsTutor() AS VOID
-    local aOrders as array
-    aOrders := {}
+//     local aOrders as array
+//     aOrders := {}
     TRY
         SqlDbSetProvider("SQLSERVER")
         RddSetDefault("SQLRDD")
         SqlDbOpenConnection("Server=(local);Initial catalog=GsTutor;Trusted_Connection=True;", EventHandler)
         var conn  := SqldbGetConnection("DEFAULT")
         conn:MetadataProvider := SqlMetaDataProviderDatabase{conn}
-        local oSrv := dbShellServer{"Customer"} as DbServer
+        local oSrv := dbServer{"Customer"} as DbServer
         ShowArray(oSrv:DbStruct)
         oSrv:SetOrder("CustNum")
         var stopWatch := StopWatch{}

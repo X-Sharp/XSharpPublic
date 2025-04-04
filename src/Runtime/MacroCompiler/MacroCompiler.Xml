@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>XSharp.MacroCompiler</name>
+    </assembly>
+    <members>
+        <member name="T:XSharp.MacroCompiler.Syntax.IfStmt">
+            <summary>
+            This is a special version of the DoCaseStmt with different keywords
+            </summary>
+        </member>
+        <member name="T:XSharp.MacroCompiler.UsualMacro.MacroMemVarCodeblock">
+            <summary>
+            This class holds a codeblock that creates memory variables. The Eval() method initializes
+            the memory level and releases the allocated memory variables at the end.
+            </summary>
+        </member>
+        <member name="T:XSharp.MacroCompiler.Preprocessor.PPRuleDictionary">
+            <summary>
+            This class is a dictionary of 'First tokens' in a PP Rule with the matching rules
+            New rules are inserted at the top of the list, so they get preference over existing
+            rules.
+            </summary>
+        </member>
+        <member name="T:XSharp.MacroCompiler.Preprocessor.PPMatchRange">
+            <summary>
+            This struct holds the start and end location of the tokens in the source 
+            that match a match marker in a UDC
+            It may also hold a list of MatchRanges, which is the case for List markers
+            or Repeated markers
+            </summary>
+        </member>
+        <member name="T:XSharp.MacroCompiler.Preprocessor.PPUsedRules">
+            <summary>
+            This class is used to monitor recursion for #Translate and #command in the Preprocessor
+            </summary>
+        </member>
+        <member name="M:XSharp.MacroCompiler.Preprocessor.PPUsedRules.HasRecursion(XSharp.MacroCompiler.Preprocessor.PPRule,System.Collections.Generic.IList{XSharp.MacroCompiler.Syntax.Token})">
+            <summary>
+            Check for recursion, and add the rule to the list of rules that have been used
+            </summary>
+            <param name="rule"></param>
+            <param name="tokens"></param>
+            <returns>True when the rule with the same tokens list is found in the list</returns>
+        </member>
+        <member name="P:XSharp.MacroCompiler.Preprocessor.PPRule.LookupKey">
+            <summary>
+            Returns the key that is stored in the RuleTable. Depending on the type of the UDC
+            This is the while first word or the first word abbreviated to 4 chars (dBase compatible)
+            </summary>
+        </member>
+        <member name="T:XSharp.MacroCompiler.Preprocessor.PPRuleToken">
+            <summary>
+            Base class for rule tokens
+            </summary>
+        </member>
+        <member name="T:XSharp.MacroCompiler.Preprocessor.PPMatchToken">
+            <summary>
+            UDC Match tokens.
+            Can be a normal literal token or a special Match Marker
+            Match markers do not have to have a Result marker.
+            </summary>
+        </member>
+        <member name="T:XSharp.MacroCompiler.Preprocessor.PPResultToken">
+            <summary>
+            UDC Result tokens.
+            Can be a normal literal token or a special Result Marker
+            For result markers we set the property Matched to indicate that a matching 
+            Match marker is found. Unmatched Result markers make a UDC invalid
+            </summary>
+        </member>
+        <member name="M:XSharp.MacroCompiler.Preprocessor.XSharpPreprocessor.PreProcess">
+            <summary>
+            Pre-processes the input stream. Reads #Include files, processes #ifdef commands and translations from #defines, macros and UDCs
+            </summary>
+            <returns>Translated input stream</returns>
+        </member>
+        <member name="M:XSharp.MacroCompiler.Preprocessor.XSharpPreprocessor.ReadLine(System.Collections.Generic.IList{XSharp.MacroCompiler.Syntax.Token})">
+            <summary>
+            Reads the a line from the input stream until the EOS token and skips hidden tokens
+            </summary>
+            <returns>List of tokens EXCLUDING the EOS but including statement separator char ;</returns>
+        </member>
+        <member name="P:XSharp.MacroCompiler.Preprocessor.XSharpPreprocessor.SourceName">
+            <summary>
+            Returns the name of the active source. Can be the main prg file, but also an active #include file
+            </summary>
+        </member>
+    </members>
+</doc>

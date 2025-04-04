@@ -7,7 +7,6 @@
     <Dialect>Core</Dialect>
     <AZ>true</AZ>
     <NamedArgs>True</NamedArgs>
-    <DocumentationFile>XSharp.Core.Xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <compile Remove="CollationHelpers\*.prg" />

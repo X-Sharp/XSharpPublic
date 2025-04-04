@@ -7,7 +7,7 @@
     <ProjectGuid>223BE288-7390-48C2-8C3D-6742287962DC</ProjectGuid>
     <AssemblyName>XSharp.VORDDClasses</AssemblyName>
     <Name>XSharp.VO.RDDClasses</Name>
-    <OutputName>XSharpRDDClasses</OutputName>
+    <OutputName>XSharp.VO.RDDClasses</OutputName>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Unsafe>false</Unsafe>
@@ -26,30 +26,12 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <WarningsAsErrors />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>XSharp.VORDDClasses.Xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
-    <DocumentationFile>XSharp.VORDDClasses.Xml</DocumentationFile>
-  </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
       <Link>SDKAssemblyinfo.prg</Link>
     </Compile>
-    <Compile Include="AdsSQLServer.prg" />
-    <Compile Include="DBDefine.prg" />
-    <Compile Include="DBFileSpec.prg" />
-    <Compile Include="DBFuncs.prg" />
-    <Compile Include="DBOrderSpec.prg" />
-    <Compile Include="DBSelIndex.prg" />
-    <Compile Include="DBServer.prg" />
-    <Compile Include="DBServer1.prg" />
-    <Compile Include="DBServer2.prg" />
-    <Compile Include="DBServer3.prg" />
-    <Compile Include="DBServer4.prg" />
-    <Compile Include="DBServerA.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg" />
+    <Compile Include="**\*.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
@@ -81,5 +63,8 @@
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
+    <DocumentationFile>XSharp.VORDDClasses.Xml</DocumentationFile>
   </PropertyGroup>
 </Project>

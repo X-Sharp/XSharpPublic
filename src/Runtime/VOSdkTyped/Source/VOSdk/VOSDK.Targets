@@ -63,17 +63,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <RuntimeIdentifier>win</RuntimeIdentifier>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Documentation'" >
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE;DOCUMENTATION;RUNTIME</DefineConstants>
-    <DisabledWarnings>1591,9015,169,649</DisabledWarnings>
-    <CommandLineOption>/noclipcall</CommandLineOption>
-	<vo15>true</vo15>
-	<vo5>false</vo5>
-  </PropertyGroup>
-<PropertyGroup Condition="'$(Configuration)' == 'DocChinese'" >
+<PropertyGroup Condition="$(Configuration.Contains('Doc'))" >
+    <DocumentationFile>$(AssemblyName).Xml</DocumentationFile>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>

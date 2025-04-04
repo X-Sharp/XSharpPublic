@@ -134,17 +134,29 @@
     </ComponentConfigurations>
     <MissingTags>AutoDocumentCtors, Namespace, AutoDocumentDispose</MissingTags>
     <TransformComponentArguments>
-      <Argument Key="logoFile" Value="logo100.jpg" />
-      <Argument Key="logoHeight" Value="50" />
-      <Argument Key="logoWidth" Value="" />
-      <Argument Key="logoAltText" Value="X#" />
-      <Argument Key="logoPlacement" Value="right" />
-      <Argument Key="logoAlignment" Value="center" />
-      <Argument Key="maxVersionParts" Value="2" />
-      <Argument Key="defaultLanguage" Value="xs" />
-      <Argument Key="includeEnumValues" Value="true" />
-      <Argument Key="baseSourceCodeUrl" Value="https://github.com/X-Sharp/XSharpPublic/blob/feature/Runtime/src/" />
-      <Argument Key="requestExampleUrl" Value="mailto:info@xsharp.eu" />
+      <Argument Key="RobotsMetadata" Value="" />
+      <Argument Key="BibliographyDataFile" Value="" />
+      <Argument Key="RootBreadcrumbTitleText" Value="Docs" />
+      <Argument Key="ResizableTocColumn" Value="False" />
+      <Argument Key="CollapsibleSections" Value="True" />
+      <Argument Key="LogoFile" Value="logo100.jpg" />
+      <Argument Key="LogoHeight" Value="50" />
+      <Argument Key="LogoWidth" Value="" />
+      <Argument Key="LogoAltText" Value="X#" />
+      <Argument Key="LogoPlacement" Value="right" />
+      <Argument Key="LogoAlignment" Value="center" />
+      <Argument Key="LogoUrl" Value="" />
+      <Argument Key="MaxVersionParts" Value="2" />
+      <Argument Key="DefaultLanguage" Value="xs" />
+      <Argument Key="IncludeEnumValues" Value="true" />
+      <Argument Key="EnumMemberSortOrder" Value="Value" />
+      <Argument Key="FlagsEnumValueFormat" Value="IntegerValue" />
+      <Argument Key="FlagsEnumSeparatorSize" Value="0" />
+      <Argument Key="IncludeIntegerEnumSeparators" Value="true" />
+      <Argument Key="BaseSourceCodeUrl" Value="https://github.com/X-Sharp/XSharpPublic/blob/dev/src/" />
+      <Argument Key="RequestExampleUrl" Value="mailto:info@xsharp.eu" />
+      <Argument Key="ShowParametersOnAllMethods" Value="False" />
+      <Argument Key="AlwaysShowTopLevelAutoOutline" Value="False" />
     </TransformComponentArguments>
     <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>
     <BinaryTOC>True</BinaryTOC>
@@ -165,7 +177,7 @@
     <RootNamespaceTitle>Class Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169%3b 2023-2024 XSharp BV, All rights reserved.</CopyrightText>
-    <BuildLogFile>..\..\Dev\Artifacts\Obj\Help\BuildLog.log</BuildLogFile>
+    <BuildLogFile>..\Artifacts\Obj\Help\BuildLog.log</BuildLogFile>
     <CatalogProductId>VS</CatalogProductId>
     <CatalogVersion>100</CatalogVersion>
     <VendorName>XSharp BV</VendorName>

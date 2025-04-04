@@ -23,9 +23,6 @@
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
   </PropertyGroup>
-  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
-    <DocumentationFile>XSharp.XPP.Xml</DocumentationFile>
-  </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Compile Include="..\..\Common\commonAssemblyInfo.prg">

@@ -61,7 +61,8 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>false</UseSharedCompilation>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Documentation'" >
+  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
+    <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -71,16 +72,6 @@
 	<vo15>true</vo15>
 	<vo5>false</vo5>
   </PropertyGroup>
-<PropertyGroup Condition="'$(Configuration)' == 'DocChinese'" >
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE;DOCUMENTATION;RUNTIME</DefineConstants>
-    <DisabledWarnings>165,169,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573</DisabledWarnings>
-    <CommandLineOption>/noclipcall </CommandLineOption>
-	<vo15>true</vo15>
-	<vo5>false</vo5>
-  </PropertyGroup>  
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" >
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>

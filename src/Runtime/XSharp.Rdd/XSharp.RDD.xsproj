@@ -26,12 +26,6 @@
     <DebugType>full</DebugType>
     <EmitDebugInformation>true</EmitDebugInformation>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Documentation'">
-    <DocumentationFile>XSharp.Rdd.Xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'DocChinese'">
-    <DocumentationFile>XSharp.Rdd.Xml</DocumentationFile>
-  </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Compile Include="ACE\ACE.prg" />

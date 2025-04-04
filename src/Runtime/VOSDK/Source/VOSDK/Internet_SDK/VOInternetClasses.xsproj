@@ -15,12 +15,6 @@
     <Allowdot>false</Allowdot>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>VOInternetClasses.Xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
-    <DocumentationFile>VOInternetClasses.Xml</DocumentationFile>
-  </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
@@ -53,25 +47,7 @@
     <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
       <Link>SDKAssemblyinfo.prg</Link>
     </Compile>
-    <Compile Include="CEmail.prg" />
-    <Compile Include="CFtp.prg" />
-    <Compile Include="CHttp.prg" />
-    <Compile Include="CIMAP.prg" />
-    <Compile Include="CINetDial.prg" />
-    <Compile Include="CMailAbstract.prg" />
-    <Compile Include="CMessage.prg" />
-    <Compile Include="CNEWS.prg" />
-    <Compile Include="CNNTP.prg" />
-    <Compile Include="CPop.prg" />
-    <Compile Include="CSession.prg" />
-    <Compile Include="CSmtp.prg" />
-    <Compile Include="CSocket.prg" />
-    <Compile Include="CStorage.prg" />
-    <Compile Include="Defines.prg" />
-    <Compile Include="Funcs Coder.prg" />
-    <Compile Include="FUNCS.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg" />
-    <Compile Include="RC.prg" />
+    <Compile Include="**\*.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties" />

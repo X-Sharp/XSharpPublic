@@ -6,5 +6,9 @@
     <PreBuildEvent>copy $(XmlDocFolder)*.xml $(ProjectDir) &gt; nul</PreBuildEvent>
     <PostBuildEvent>erase $(ProjectDir)*.Xml</PostBuildEvent>
     <RunPostBuildEvent>Allways</RunPostBuildEvent>
+    <DefineConstants>$(DefineConstants);DOCUMENTATION</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
+    <DocumentationFile>$(AssemblyName).Xml</DocumentationFile>
   </PropertyGroup>
 </Project>

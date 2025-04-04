@@ -89,15 +89,6 @@
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Compile Include="C:\temp\___IVO_dbAbstract.prg">
-      <Link>___IVO_dbAbstract.prg</Link>
-    </Compile>
-    <Compile Include="C:\temp\___IVO_dbDynamic.prg">
-      <Link>___IVO_dbDynamic.prg</Link>
-    </Compile>
-    <Compile Include="C:\temp\___IVO_dbShellServer.prg">
-      <Link>___IVO_dbShellServer.prg</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>

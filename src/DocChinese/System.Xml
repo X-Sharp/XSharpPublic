@@ -567,15 +567,11 @@
         <summary> 
             一个事件处理程序，用于响应在此服务的方法中或在以某种方式链接到此服务的其他服务中发生的事件。标准实现会通知服务的所有客户端该事件。 <br />
             重要提示！此方法由数据服务的各种操作方法自动调用，通常不应由应用程序代码调用。 </summary>
-        <param name="kNotification">标识事件，指定为以下常量之一：</param>
-        <param name="uDescription">仅用于某些通知类型。</param>
         <returns> 
             SELF，除非为 <paramref name="kNotifyName" /> 指定了 NOTIFYINTENTTOMOVE。在这种情况下，如果成功，则返回
             TRUE；否则返回 FALSE。 
         </returns>
-        <remarks>
-            <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
-        </remarks>
+		<include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
     </DataServer.Notify>
 
     <DataServer.PostInit>

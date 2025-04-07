@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-05T11:57:03.245+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-26T20:42:30.454+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>生成配置</title>
   <body>
     <header>
@@ -22,7 +22,7 @@
     <para styleclass="Body Text">默认情况下，使用 Visual Studio 模板创建的项目中包含调试和发布配置。调试配置支持应用程序的调试，而发布配置则生成可部署的应用程序版本。有关详细信息，请参阅 <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-set-debug-and-release-configurations?view=vs-2019">在 Visual Studio 中设置调试和发布配置</link> 。您还可以创建自定义解决方案配置和项目配置。有关更多信息，请参阅 <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/visualstudio/ide/how-to-create-and-edit-configurations?view=vs-2019">创建和编辑配置</link>。</para>
     <para styleclass="Heading2">解决方案配置</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">解决方案配置指定如何生成和部署解决方案中的项目。要修改解决方案配置或定义新配置，请在 &quot;配置管理器&quot; 的 &quot;活动解决方案配置&quot; 下选择 &quot;编 辑&quot; 或 &quot;新建&quot;。</para>
+    <para styleclass="Normal">解决方案配置指定如何生成和部署解决方案中的项目。要修改解决方案配置或定义新配置，请在 &quot;配置管理器&quot; 的 &quot;活动解决方案配置&quot; 下选择 &quot;编辑&quot; 或 &quot;新建&quot;。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">解决方案配置中项目上下文框中的每个条目都代表解决方案中的一个项目。对于活动解决方案配置和活动解决方案平台的每种组合，您都可以设置每个项目的使用方式。(有关解决方案平台的更多信息，请参阅 <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/visualstudio/ide/understanding-build-platforms?view=vs-2019">将项目配置为面向平台</link>)。</para>
     <para styleclass="Normal"></para>

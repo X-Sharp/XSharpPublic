@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T02:34:30.768+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-26T20:52:13.979+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Keyword Coloring(关键字颜色)</title>
   <keywords>
     <keyword>Keyword Coloring</keyword>
@@ -16,7 +16,7 @@
     <para styleclass="Normal">关键词</para>
     <para styleclass="Normal">标识符</para>
     <para styleclass="Normal">注释(单行、多行等)</para>
-    <para styleclass="Normal">操作符(+. -, := etc)</para>
+    <para styleclass="Normal">操作符(+. -, := 等)</para>
     <para styleclass="Normal">字符串(也用于字符常数)</para>
     <para styleclass="Normal">数字(也用于日期和日期时间字面量形式)</para>
     <para styleclass="Normal">字面量(NIL、符号、_AND、_OR、_NOT、_XOR)</para>

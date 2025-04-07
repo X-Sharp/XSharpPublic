@@ -7,6 +7,8 @@
     </ReturnsLogic>
     <commonblocks>
         <notify>
+		<span>
+
             <param name="kNotification">Identifies the event, specified as one of the constants in the table below.</param>
             <param name="uDescription">Used only with some notification types. See descriptions in the table below</param>
             <remarks>
@@ -154,6 +156,7 @@
                     ENDIF
                 </code>
             </remarks>
+			</span>
         </notify>
         <scopeparams>
             <param name="aFieldList">An array of fields from the source file that are to be included. The default is all fields.</param>

@@ -35,16 +35,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             // We only generate the function doc for the default tree to avoid generating an empty line for every prg file.
             if (node is ClassDeclarationSyntax && node.XDefaultTree)
             {
-                var options = (CSharpParseOptions) cu.SyntaxTree.Options;
+                var options = (CSharpParseOptions)cu.SyntaxTree.Options;
                 var modName = options.CommandLineArguments.CompilationOptions.ModuleName;
                 return ParseTrivia($"/// <summary>This compiler generated class contains all the functions, globals and defines that are defined in the {modName} assembly. </summary>");
             }
-            else if (node is MethodDeclarationSyntax mdecl &&
-                mdecl.Identifier.Text.Contains("$"))
+            else if (node is MethodDeclarationSyntax mdecl)
             {
-                if (mdecl.Parent is ClassDeclarationSyntax cds && cds.Identifier.Text.Contains("<"))
+                if (mdecl.Parent is ClassDeclarationSyntax cds &&
+                    cds.Identifier.Text.Contains("<"))
                 {
-                    // Suppress comment for <Module>$AppInit and <Module>$AppExit
+                    // Suppress comment for methods in the <Module> class.
                     return default;
                 }
                 var id = mdecl.Identifier.Text;
@@ -315,7 +315,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 if (iBPLength < 0)
                     iBPLength = 1;
             }
-
         }
         public void ClearSequencePoint()
         {
@@ -427,8 +426,5 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return ToString();
         }
-
     }
 }
-
-

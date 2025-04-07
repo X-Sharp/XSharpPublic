@@ -11,20 +11,13 @@
     <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
     <TargetPlatFormIdentifier>windows</TargetPlatFormIdentifier>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Documentation'" >
+  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
+    <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DisabledWarnings>165,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573</DisabledWarnings>
-    <CommandLineOption>/noclipcall</CommandLineOption>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'DocChinese'" >
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DisabledWarnings>165,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573</DisabledWarnings>
+    <NoWarn>165,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573</NoWarn>
     <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
 </Project>

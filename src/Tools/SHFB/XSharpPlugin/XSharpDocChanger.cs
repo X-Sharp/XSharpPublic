@@ -434,6 +434,9 @@ namespace XSharpDocs
         {
             var path = topic.FileName;
             string fileWhole = File.ReadAllText(topic.FileName);
+            var len = fileWhole.Length;
+            fileWhole = fileWhole.Replace("</tr>", "</tr>\r\n");
+            var len2 = fileWhole.Length;
             string newFileWhole = fileWhole;
             bool isSdk = path.IndexOf(pageTypedVoSDK, StringComparison.OrdinalIgnoreCase) > 0;
             switch (topic.Type)
@@ -495,6 +498,11 @@ namespace XSharpDocs
                 return;
             }
             // For all lines
+            // convert </tr> to </tr>\r\n to redule the line lengths
+            var source = File.ReadAllText(path);
+            source = source.Replace("</tr>", "</tr>\r\n");
+            File.WriteAllText(path, source);
+            source = null;
             string[] fileLines = File.ReadAllLines(path);
             List<Tuple<string, int>> newLines = new List<Tuple<string, int>>();
             int i = 0, count = 0;

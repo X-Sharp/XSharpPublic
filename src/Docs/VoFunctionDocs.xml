@@ -3026,7 +3026,7 @@
       Use the function's return value to refer to the newly stored data.
     </param>
     <param name="cSourceFile">
-      The name of the file from which to read the BLOB data, including an optional drive, directory, and extension.  
+      The name of the file from which to read the BLOB data, including an optional drive, directory, and extension.
       See SetDefault() and SetPath() for file searching and creation rules.  No default extension is assumed.<br/>
       This function attempts to open <paramref name="cSourceFile" /> in shared mode.<br/>
       If the file does not exist, a runtime error is raised.<br/>
@@ -3039,19 +3039,19 @@
     <remarks>
       BLOBDirectImport() provides a mechanism for copying the contents of a file into a BLOB file.
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
-      BLOBDirectImport() is used in conjunction with BLOBDirectExport() to transfer 
-      data back and forth between external files and BLOB files.  
-      You can use BLOBDirectImport() with a variety of file types, including graphics images, 
+      BLOBDirectImport() is used in conjunction with BLOBDirectExport() to transfer
+      data back and forth between external files and BLOB files.
+      You can use BLOBDirectImport() with a variety of file types, including graphics images,
       word processor files, and printer fonts.<br/>
       These two functions are excellent for creating databases of documents, graphics, sounds, and so on.
-      After importing a file with BLOBDirectImport(), nNewPointer, the return value, is the only 
+      After importing a file with BLOBDirectImport(), nNewPointer, the return value, is the only
       way to access the data from the BLOB file.<br/>
       It is up to you, the developer, to provide permanent storage for this reference (see example below)
       Note:  DBFieldInfo(DBS_BLOB_TYPE, <paramref name="nFieldPos" />) will return "C" (string) for any memo field created using BLOBDirectImport().
     </remarks>
     <example>
       This example imports a .BMP file to be part of an array of startup data.<br/>
-      The data, stored in the root area of the BLOB file, could then be used to display 
+      The data, stored in the root area of the BLOB file, could then be used to display
       the application's startup screen:
       <code language="X#">
         FUNCTION PutPix()
@@ -3255,7 +3255,7 @@
 
     <param name="nFieldPos">The position of the field in the database file structure.</param>
     <param name="cSourceFile">
-      The name of the file from which to read the BLOB data, including an optional drive, directory, and extension.  
+      The name of the file from which to read the BLOB data, including an optional drive, directory, and extension.
       See SetDefault() and SetPath() for file searching and creation rules.  No default extension is assumed.<br/>
       This function attempts to open <paramref name="cSourceFile" /> in shared mode.<br/>
       If the file does not exist, a runtime error is raised.<br/>
@@ -3268,15 +3268,15 @@
     <remarks>
       BLOBImport() provides a mechanism for copying the contents of a file into a memo field as BLOB data.
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
-      BLOBImport() is used in conjunction with BLOBExport() to transfer BLOB data back 
-      and forth between files and memo fields.  You can use BLOBImport() with a variety of file types, 
+      BLOBImport() is used in conjunction with BLOBExport() to transfer BLOB data back
+      and forth between files and memo fields.  You can use BLOBImport() with a variety of file types,
       including graphics images, word processor files, and printer fonts.<br/>
       These two functions are excellent for creating databases of documents, graphics, sounds, and so on.
-      Note:  DBFieldInfo(DBS_BLOB_TYPE, <paramref name="nFieldPos" />) will return "C" (string) for 
+      Note:  DBFieldInfo(DBS_BLOB_TYPE, <paramref name="nFieldPos" />) will return "C" (string) for
       any memo field created using BLOBImport().
     </remarks>
     <example>
-      This example imports information from a word processing document into a field, 
+      This example imports information from a word processing document into a field,
       then uses BLOBGet() to extract the first 25 characters of the field:
       <code language="X#">
         FUNCTION Populate()
@@ -6173,12 +6173,12 @@
       DBFieldInfo() retrieves information about the state of a field (column).
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       <include file="RTComments.xml" path="Comments/DBS_Constants/*"  />
-      The field information that is available is defined by the RDD.  
-      In the DBF work area model, this is limited to the information stored in the DBF file structure 
+      The field information that is available is defined by the RDD.
+      In the DBF work area model, this is limited to the information stored in the DBF file structure
       (that is, name, length, number of decimals, and data type) plus the field alias that can be changed at runtime.
-      To support RDDs for other database models (such as dictionary based databases) that store more information about 
+      To support RDDs for other database models (such as dictionary based databases) that store more information about
       each field or column, the X# RDD API has been enhanced.<br/>
-      The DBFieldInfo() and VODBFieldInfo() functions are designed to allow for 
+      The DBFieldInfo() and VODBFieldInfo() functions are designed to allow for
       additional <paramref name="kInfoType" /> values that can be defined by third-party RDD developers.
     </remarks>
     <example>
@@ -8266,7 +8266,12 @@
     <remarks>
       Default() assigns <paramref name="uDefault" /> to <paramref name="uVar" /> if <paramref name="uVar" /> is equal to NIL.<br/>
       It is functionally equivalent to either of these code samples:
-      <code language="X#">
+      Instead of Default(@<paramref name="uVar" />, 0), you could use EnforceNumeric(@<paramref name="uVar" />), which, besides checking <paramref name="uVar" />
+	  against NIL, calls the error system if <paramref name="uVar" /> is neither numeric nor NIL.
+	  You could also use EnforceType() whenever <paramref name="uDefault" /> is the empty value (EmptyUsual()) for its data type; this raises an error if <paramref name="uVar" /> is not a specific data type.<br/>
+      Therefore, instead of calling Default(@<paramref name="uVar" />, NULL_STRING), you could call EnforceType(@<paramref name="uVar" />, STRING).
+    </remarks>
+    <code language="X#">
         IF uVar = NIL
         &#0009;uVar := uDefault
         ENDIF
@@ -8274,9 +8279,6 @@
         &#0009;uVar := uDefault
         ENDIF
       </code>
-      Instead of Default(@<paramref name="uVar" />, 0), you could use EnforceNumeric(@<paramref name="uVar" />), which, besides checking <paramref name="uVar" /> against NIL, calls the error system if <paramref name="uVar" /> is neither numeric nor NIL.  You could also use EnforceType() whenever <paramref name="uDefault" /> is the empty value (EmptyUsual()) for its data type; this raises an error if <paramref name="uVar" /> is not a specific data type.<br/>
-      Therefore, instead of calling Default(@<paramref name="uVar" />, NULL_STRING), you could call EnforceType(@<paramref name="uVar" />, STRING).
-    </remarks>
     <example>
       This example uses Default() to check all parameters in a function:
       <code language="X#">
@@ -8478,10 +8480,10 @@
       If you do not specify a drive and directory, the Windows defaults are used.
     </param>
     <param name="uAttributes">
-      Specifies inclusion of files with special attributes in the returned information.  
-      <paramref name="uAttributes" /> can be a string or a numeric.  When specified as a 
-      string it can contain one or more of the characters listed in the table below.  
-      When specified as a numeric it can contain one or more of the constants listed in 
+      Specifies inclusion of files with special attributes in the returned information.
+      <paramref name="uAttributes" /> can be a string or a numeric.  When specified as a
+      string it can contain one or more of the characters listed in the table below.
+      When specified as a numeric it can contain one or more of the constants listed in
       the following table:<br/>
 
       <list type="table">
@@ -8518,7 +8520,7 @@
       An array of subarrays, with each subarray containing information about each file matching <paramref name="cFileSpec" />.<br/>
       The subarray elements are referenced as follows (see example below):
       <include file="RTComments.xml" path="Comments/FileAttributes/*"  />
-      If no files are found matching <paramref name="cFileSpec" /> or if <paramref name="cFileSpec" /> 
+      If no files are found matching <paramref name="cFileSpec" /> or if <paramref name="cFileSpec" />
       is an illegal path or file specification, Directory() returns an empty array.
     </returns>
     <remarks>

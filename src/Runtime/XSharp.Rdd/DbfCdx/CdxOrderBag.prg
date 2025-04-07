@@ -101,6 +101,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 // Exception ?
                 RETURN FALSE
             ENDIF
+            var oOldTag := SELF:_oRdd:CurrentOrder
             VAR oTag := SELF:_FindTagByName(cTag)
             VAR lOk := TRUE
             IF oTag != NULL_OBJECT
@@ -117,6 +118,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 // Read the tag from disk to get all the normal stuff
                 oTag  := CdxTag{SELF,oTag:Header:PageNo, oTag:OrderName}
                 SELF:AddTag(oTag)
+            ELSE
+                IF SELF:Tags:Count == 0
+                    SELF:Close()
+                    FErase(SELF:FullPath)
+                    SELF:_oRdd:_indexList:CurrentOrder := oOldTag
+                    SELF:_oRdd:GoTop()
+                endif
             ENDIF
             RETURN lOk
 
@@ -430,10 +438,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN BYTE[]{CDXPAGE_SIZE *nSize}
 
         METHOD Read(nPage AS LONG, buffer AS BYTE[]) AS LOGIC
+            if self:Shared .and. !self:IsLocked
+                self:SLock()
+            endif
             SELF:ThrowIfNeedsLock()
             RETURN SELF:_stream:SafeReadAt(nPage, buffer)
 
         METHOD Read(oPage AS CdxPage) AS LOGIC
+            if self:Shared .and. !self:IsLocked
+                self:SLock()
+            endif
             SELF:ThrowIfNeedsLock()
             IF SELF:_root != NULL
                 oPage:Generation := SELF:_root:RootVersion
@@ -580,7 +594,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN
 
         INTERNAL METHOD ThrowIfNeedsLock() AS VOID
-            IF SELF:_needsLock && SELF:Shared
+            IF SELF:_needsLock && SELF:Shared && ! SELF:IsLocked
                 THROW CdxLockException{}
             ENDIF
             RETURN

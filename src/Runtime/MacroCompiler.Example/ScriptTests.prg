@@ -305,7 +305,7 @@ FUNCTION ScriptTests AS VOID
         "nPos"}), Args(), 3, typeof(int))
     // Nested codeblock and local variable
     // This fails
-#ifdef FAIL    
+#ifdef FAIL
     EvalMacro(sc, String.Join(e"\n",<STRING>{;
         " local n as dword",;
         " local a	as array",;
@@ -477,6 +477,13 @@ FUNCTION FoxScriptTests AS VOID
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         e"RETURN \"fox; // comment!",;
         e" string\""}), Args(), "fox string", typeof(STRING))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "x := 1, y := 3",;
+        "x = 123, y = 321, z = x = 123",;
+        "return IIF(z,x+y,-1)",;
+        ""}),Args(), 123+321, typeof(int))
+    TestMacro(sc, "x = 123", Args(), 123, typeof(int))
+    TestMacro(sc, "return x = 123", Args(), "Variable does not exist", typeof(XSharp.Error))
     RETURN
 
 FUNCTION TestPreProcessor(sc AS XSharp.Runtime.MacroCompiler) AS VOID

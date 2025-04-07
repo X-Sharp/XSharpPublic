@@ -12,23 +12,12 @@
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>VOReportClasses.Xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
-    <DocumentationFile>VOReportClasses.Xml</DocumentationFile>
-  </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
       <Link>SDKAssemblyinfo.prg</Link>
     </Compile>
-    <Compile Include="Declares.prg" />
-    <Compile Include="Defines.prg" />
-    <Compile Include="Methods.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg" />
-    <Compile Include="ReportLangDef.prg" />
-    <Compile Include="Structures.prg" />
+    <Compile Include="**\*.prg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">

@@ -7,7 +7,7 @@
     <ProjectGuid>{91816960-eb2d-4e4a-ae67-4edc5bd38940}</ProjectGuid>
     <AssemblyName>XSharp.VOSQLClasses</AssemblyName>
     <Name>XSharp.VO.SQLClasses</Name>
-    <OutputName>XSSQLClasses</OutputName>
+    <OutputName>XSharp.VOSQLClasses</OutputName>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Unsafe>false</Unsafe>
@@ -25,12 +25,7 @@
     <Allowdot>false</Allowdot>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>XSharp.VOSQLClasses.Xml</DocumentationFile>
-    <DisabledWarnings>1591,9015,169,649,1573</DisabledWarnings>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
-    <DocumentationFile>XSharp.VOSQLClasses.Xml</DocumentationFile>
+  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DisabledWarnings>1591,9015,169,649,1573</DisabledWarnings>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
@@ -38,28 +33,7 @@
     <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
       <Link>SDKAssemblyinfo.prg</Link>
     </Compile>
-    <Compile Include="SQL.prg" />
-    <Compile Include="SQLExt.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg" />
-    <Compile Include="SQLCatalog.prg" />
-    <Compile Include="SqlListSubclasses.prg" />
-    <Compile Include="SQLColumn.prg" />
-    <Compile Include="SQLColumnAttributes.prg" />
-    <Compile Include="SQLConnection.prg" />
-    <Compile Include="SQLData.prg" />
-    <Compile Include="SQLDefines.prg" />
-    <Compile Include="SQLErrorInfo.prg" />
-    <Compile Include="SQLFunctions.prg" />
-    <Compile Include="SQLLangDef.prg" />
-    <Compile Include="SQLParameter.prg" />
-    <Compile Include="SQLSelect1.prg" />
-    <Compile Include="SQLSelect2.prg" />
-    <Compile Include="SQLSelect3.prg" />
-    <Compile Include="SQLSelect4.prg" />
-    <Compile Include="SQLSelectA.prg" />
-    <Compile Include="SQLStatement.prg" />
-    <Compile Include="SQLTable.prg" />
-    <Compile Include="SQLValue.prg" />
+    <Compile Include="**\*.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

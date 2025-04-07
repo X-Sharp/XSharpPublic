@@ -42,9 +42,6 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DisabledWarnings>$(DisabledWarnings);108,114</DisabledWarnings>
   </PropertyGroup>
-  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
-    <DocumentationFile>XSharp.VFP.UI.Xml</DocumentationFile>
-  </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />

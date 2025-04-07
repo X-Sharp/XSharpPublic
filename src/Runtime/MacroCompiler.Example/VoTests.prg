@@ -705,6 +705,8 @@ BEGIN NAMESPACE MacroCompilerTest
         RuntimeState.MacroCompilerErrorHandler := NULL
         TestMacro(mc, "{|| Left('abc,10) }", Args(),typeof(Exception),NULL, ErrorCode.UnterminatedString)
 
+        TestMacro(mc, "{|| 10/6 }", Args(), FLOAT(10)/6, typeof(FLOAT))
+
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         RETURN
 

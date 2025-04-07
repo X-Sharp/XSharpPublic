@@ -7,7 +7,7 @@
     <ProjectGuid>AC2AEBFF-69FF-405D-B7D9-6E5CB1DB914C</ProjectGuid>
     <AssemblyName>VOSystemClasses</AssemblyName>
     <Name>VOSystemClasses</Name>
-    <OutputName>VOSystemClasses</OutputName>
+    <OutputName>VOSystemClasses</OutputName> 
     <PlatformTarget>AnyCPU</PlatformTarget>
     <VO4>false</VO4>
     <VO6>false</VO6>
@@ -22,29 +22,13 @@
     <WarningLevel>4</WarningLevel>
     <WarningsAsErrors />
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>VoSystemClasses.Xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
-    <DocumentationFile>VoSystemClasses.Xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
       <Link>SDKAssemblyinfo.prg</Link>
     </Compile>
-    <Compile Include="Class Def.prg" />
-    <Compile Include="DataField.prg" />
-    <Compile Include="DataServer.prg" />
-    <Compile Include="DBError.prg" />
-    <Compile Include="FieldSpec.prg" />
-    <Compile Include="FileSpec.prg" />
-    <Compile Include="Hyperlabel.prg" />
-    <Compile Include="ObjCodeBlock.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg" />
-    <Compile Include="SystemLangDef.prg" />
+    <Compile Include="**\*.prg" />    
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">

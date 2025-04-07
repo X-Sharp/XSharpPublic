@@ -511,7 +511,7 @@ class XSharp.XPP.DynamicClassObject inherit ClassObject
     private _desc as ClassHelpers.ClassDescriptor
     property Name as string get _name
     internal property Descriptor as  ClassHelpers.ClassDescriptor get _desc
-    property Type  as System.Type get _Type
+    override property Type  as System.Type get _Type
 #endregion
     internal constructor(oType as System.Type, cName as string, oDesc  as ClassHelpers.ClassDescriptor)
         super(oType)

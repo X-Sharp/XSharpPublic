@@ -29,6 +29,8 @@ BEGIN NAMESPACE VFPXPorterLib
 
         PROPERTY ErrorText AS STRING GET
 
+        METHOD ClearResultText as VOID STRICT
+
         PROPERTY Worker AS BackgroundWorker SET
 
     END INTERFACE

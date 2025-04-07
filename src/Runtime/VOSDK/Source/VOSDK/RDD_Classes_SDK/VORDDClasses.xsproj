@@ -24,30 +24,12 @@
     <WarningLevel>4</WarningLevel>
     <WarningsAsErrors />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>VORDDClasses.Xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
-    <DocumentationFile>VORDDClasses.Xml</DocumentationFile>
-  </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
       <Link>SDKAssemblyinfo.prg</Link>
     </Compile>
-    <Compile Include="AdsSQLServer.prg" />
-    <Compile Include="DBDefine.prg" />
-    <Compile Include="DBFileSpec.prg" />
-    <Compile Include="DBFuncs.prg" />
-    <Compile Include="DBOrderSpec.prg" />
-    <Compile Include="DBSelIndex.prg" />
-    <Compile Include="DBServer.prg" />
-    <Compile Include="DBServer1.prg" />
-    <Compile Include="DBServer2.prg" />
-    <Compile Include="DBServer3.prg" />
-    <Compile Include="DBServer4.prg" />
-    <Compile Include="DBServerA.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg" />
+    <Compile Include="**\*.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

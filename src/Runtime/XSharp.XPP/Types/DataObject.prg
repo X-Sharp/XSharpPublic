@@ -120,7 +120,11 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract IMPLEMENTS IDynamicPrope
         RETURN SELF
 
     /// <include file="XPPComments.xml" path="Comments/NoMethod/*" />
+#ifdef DOC
+    OVERRIDE METHOD NoMethod() AS USUAL CLIPPER
+#else
     OVERRIDE METHOD NoMethod(cName, uParams) AS USUAL CLIPPER
+#endif
         LOCAL aParams AS USUAL[]
         LOCAL cMethod AS STRING
         cMethod := RuntimeState.NoMethod

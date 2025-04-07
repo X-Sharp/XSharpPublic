@@ -2969,11 +2969,10 @@
             Names of single-entry index files are returned based on their order in the <b>Index</b> clause of <b>Use</b> or <b>Set Index</b>. For more information, see Use Command and Set Index Command.
             Tag names from the structural compound index file (if one exists for the table) are returned.
             Tag names from other open compound index files are returned, again in the order in which the tags were created in the compound index files and in the order in which the compound index files are specified in the <b>Index</b> clause for <b>Use</b> or <b>Set Index</b>.
-
-            <param name="uArea">
-                Returns tag names and index file names from files open in another work area. nWorkArea specifies a work area number and cTableAlias specifies a table alias. By default, tag names and index file names are returned from files in the current work area.
-            </param>
         </param>
+		<param name="uArea">
+			Returns tag names and index file names from files open in another work area. nWorkArea specifies a work area number and cTableAlias specifies a table alias. By default, tag names and index file names are returned from files in the current work area.
+		</param>
         <returns>
             Character. <b>TAG( )</b> returns an index tag name as an uppercase character string.
         </returns>

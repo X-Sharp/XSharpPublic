@@ -18,12 +18,6 @@
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>XSharp.Data.Xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
-    <DocumentationFile>XSharp.Data.Xml</DocumentationFile>
-  </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Compile Include="CursorAdapter.prg" />

@@ -18,7 +18,7 @@ using XSharp.RT
 [DebuggerDisplay("ClassObject {Type.FullName}")];
 abstract class XSharp.XPP.ClassObject implements ILateBound
     protected _Type as System.Type
-    PROPERTY Type as System.Type => _Type
+    virtual property Type as System.Type => _Type
 
     constructor(t as System.Type)
         self:_Type := t

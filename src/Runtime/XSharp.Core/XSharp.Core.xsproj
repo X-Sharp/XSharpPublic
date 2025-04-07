@@ -25,9 +25,6 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>Pdbonly</DebugType>
   </PropertyGroup>
-  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
-    <DocumentationFile>XSharp.Core.Xml</DocumentationFile>
-  </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Folder Include="Collations\" />
@@ -51,17 +48,17 @@
     <Compile Include="Defines.prg" />
     <Compile Include="ErrorEnum.prg" />
     <Compile Include="Functions\AssemblyLoader.prg" />
+    <Compile Include="Functions\Conversions.prg" />
     <Compile Include="Functions\Convert.prg" />
     <Compile Include="Functions\Debug.prg" />
-    <Compile Include="Functions\Error.prg" />
-    <Compile Include="Functions\FileSearch.prg" />
     <Compile Include="Functions\DT.prg" />
+    <Compile Include="Functions\Error.prg" />
     <Compile Include="Functions\File.prg" />
     <Compile Include="Functions\FileIO.prg" />
-    <Compile Include="Functions\Conversions.prg" />
+    <Compile Include="Functions\FileSearch.prg" />
     <Compile Include="Functions\Macro.prg" />
     <Compile Include="Functions\Memo.prg" />
-    <Compile Include="Functions\Misc.prg" />
+    <Compile Include="Functions\misc.prg" />
     <Compile Include="Functions\Numeric.prg" />
     <Compile Include="Functions\OS.prg" />
     <Compile Include="Functions\String.prg" />
@@ -71,35 +68,35 @@
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="RDD\BaseIndex.prg" />
     <Compile Include="RDD\BaseMemo.prg" />
-    <Compile Include="RDD\DbDate.prg" />
-    <Compile Include="RDD\DbCurrency.prg" />
-    <Compile Include="RDD\DataSession.prg" />
+    <Compile Include="RDD\CoreDb.prg" />
     <Compile Include="RDD\CursorProperties.prg" />
+    <Compile Include="RDD\DatabaseProperties.prg" />
+    <Compile Include="RDD\DatabasePropertyCollection.prg" />
+    <Compile Include="RDD\DataSession.prg" />
     <Compile Include="RDD\DbColumnInfo.prg" />
     <Compile Include="RDD\DbcSupport.prg" />
+    <Compile Include="RDD\DbCurrency.prg" />
+    <Compile Include="RDD\DbDate.prg" />
     <Compile Include="RDD\DbFloat.prg" />
-    <Compile Include="RDD\DatabaseProperties.prg" />
     <Compile Include="RDD\IDbRow.prg" />
-    <Compile Include="RDD\DatabasePropertyCollection.prg" />
-    <Compile Include="RDD\RddFieldInfo.prg" />
-    <Compile Include="RDD\RDDNotifications.prg" />
-    <Compile Include="RDD\RDDDefines.prg" />
-    <Compile Include="RDD\RddEnums.prg" />
     <Compile Include="RDD\IMemo.prg" />
     <Compile Include="RDD\IOrder.prg" />
     <Compile Include="RDD\IRDD.prg" />
+    <Compile Include="RDD\RDDDefines.prg" />
+    <Compile Include="RDD\RddEnums.prg" />
     <Compile Include="RDD\RddError.prg" />
-    <Compile Include="RDD\RegisteredRDD.prg" />
+    <Compile Include="RDD\RddFieldInfo.prg" />
+    <Compile Include="RDD\RDDNotifications.prg" />
     <Compile Include="RDD\RDDSupport.prg" />
-    <Compile Include="RDD\CoreDb.prg" />
     <Compile Include="RDD\RDDWrapper.prg" />
-    <Compile Include="RDD\SqlProperties.prg" />
+    <Compile Include="RDD\RegisteredRDD.prg" />
     <Compile Include="RDD\SQLHelpers.prg" />
+    <Compile Include="RDD\SqlProperties.prg" />
     <Compile Include="RDD\Workarea.prg" />
     <Compile Include="RDD\Workareas.prg" />
     <Compile Include="State\Enums.prg" />
-    <Compile Include="State\Get.prg" />
     <Compile Include="State\EnumSet.prg" />
+    <Compile Include="State\Get.prg" />
     <Compile Include="State\Set.prg" />
     <Compile Include="State\State.prg" />
     <Compile Include="Types\Attributes.prg" />
@@ -107,46 +104,16 @@
     <Compile Include="Types\Dialect.prg" />
     <Compile Include="Types\Error.prg" />
     <Compile Include="Types\ErrorEnums.prg" />
+    <Compile Include="Types\FileStream.prg" />
     <Compile Include="Types\Interfaces.prg" />
     <Compile Include="Types\MacroSupport.prg" />
     <Compile Include="Types\SharedFileStream.prg" />
     <Compile Include="Types\StreamExtensions.prg" />
-    <Compile Include="Types\FileStream.prg" />
     <Compile Include="Types\UsualType.prg" />
     <Compile Include="Types\WrappedException.prg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Collations\Brazil.collation" />
-    <None Include="Collations\Croatia.collation" />
-    <None Include="Collations\Czech852.collation" />
-    <None Include="Collations\CZech895.collation" />
-    <None Include="Collations\Danish.collation" />
-    <None Include="Collations\Dutch.collation" />
-    <None Include="Collations\Finnish.collation" />
-    <None Include="Collations\French.collation" />
-    <None Include="Collations\Generic.collation" />
-    <None Include="Collations\German.collation" />
-    <None Include="Collations\German2.collation" />
-    <None Include="Collations\Hung852.collation" />
-    <None Include="Collations\HungCwi.collation" />
-    <None Include="Collations\Italian.collation" />
-    <None Include="Collations\Norwegn.collation" />
-    <None Include="Collations\Pol-Iso.collation" />
-    <None Include="Collations\Pol-Maz.collation" />
-    <None Include="Collations\Pol852.collation" />
-    <None Include="Collations\Port850.collation" />
-    <None Include="Collations\Port860.collation" />
-    <None Include="Collations\Romania.collation" />
-    <None Include="Collations\Russian.collation" />
-    <None Include="Collations\Serbia.collation" />
-    <None Include="Collations\SL-W-95.collation" />
-    <None Include="Collations\SL-W-AS7.collation" />
-    <None Include="Collations\SL-W-EE.collation" />
-    <None Include="Collations\Slov852.collation" />
-    <None Include="Collations\Slov895.collation" />
-    <None Include="Collations\Spanish.collation" />
-    <None Include="Collations\Swedish.collation" />
-    <None Include="Collations\Uk.collation" />
+    <None Include="**\*.collation" />
     <None Include="README.md" />
     <None Include="State\GetSet.xh" />
   </ItemGroup>
@@ -156,87 +123,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Language\Croatia.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Czech852.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Danish.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Dutch.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Finnish.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\French.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Generic.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\German.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Hung852.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Italian.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Norwegn.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Pol852.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Port850.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Romania.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Russian.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Serbia.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\SL-W-EE.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Slov852.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Spanish.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Swedish.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Turkish.resx">
+    <EmbeddedResource Include="Language\*.resx">
       <SubType>Designer</SubType>
       <Generator>None</Generator>
     </EmbeddedResource>

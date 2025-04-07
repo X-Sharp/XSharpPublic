@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <!-- The configuration and platform will be used to determine which assemblies to include from solution and
@@ -65,8 +65,8 @@
       <DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.Xml" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.dll" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.xml" />
-<DocumentationSource sourceFile="$(DocDir)\VOReportClasses.dll" />
-<DocumentationSource sourceFile="$(DocDir)\VOReportClasses.xml" />
+      <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.dll" />
+      <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
     <HelpFileVersion>2.23.0.0</HelpFileVersion>
@@ -78,11 +78,11 @@
     <SdkLinkTarget>Blank</SdkLinkTarget>
     <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
-    <PresentationStyle>VS2013</PresentationStyle>
-    <CleanIntermediates>True</CleanIntermediates>
+    <PresentationStyle>VS2013XSharp</PresentationStyle>
+    <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
-    <IndentHtml>False</IndentHtml>
+    <IndentHtml>True</IndentHtml>
     <BuildAssemblerVerbosity>OnlyErrors</BuildAssemblerVerbosity>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, PublicCompilerGenerated, NonBrowsable</VisibleItems>
     <NamespaceSummaries>
@@ -264,6 +264,20 @@
     <MaximumGroupParts>2</MaximumGroupParts>
     <SaveComponentCacheCapacity>0</SaveComponentCacheCapacity>
     <TocOrder>-1</TocOrder>
+    <PlugInConfigurations>
+      <PlugInConfig id="XSharp Function Output" enabled="True">
+        <configuration />
+      </PlugInConfig>
+      <PlugInConfig id="XPath Reflection File Filter" enabled="True">
+        <configuration>
+          <expressions>
+            <expression>/reflection/apis/api[contains(@id,"N:") and string-length(@id)=2]</expression>
+            <expression>/reflection/apis/api[starts-with(apidata/@name,"$")]</expression>
+            <expression>/reflection/apis/api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression>
+          </expressions>
+        </configuration>
+      </PlugInConfig>
+    </PlugInConfigurations>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

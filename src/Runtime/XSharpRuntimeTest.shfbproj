@@ -23,50 +23,8 @@
     <HtmlHelpName>XSharpRef</HtmlHelpName>
     <Language>en-US</Language>
     <DocumentationSources>
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Rdd.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Core.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Core.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RDD.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VO.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VO.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Data.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Data.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOGUIClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOGUIClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOInternetClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOInternetClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VORDDClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VORDDClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSQLClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSQLClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSystemClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSystemClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.xml" />
+      <DocumentationSource sourceFile="..\..\Artifacts\Documentation\XSharp.Rdd.dll" />
+      <DocumentationSource sourceFile="..\..\Artifacts\Documentation\XSharp.Rdd.xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
     <HelpFileVersion>2.23.0.0</HelpFileVersion>
@@ -82,9 +40,9 @@
     <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
-    <IndentHtml>True</IndentHtml>
+    <IndentHtml>False</IndentHtml>
     <BuildAssemblerVerbosity>OnlyErrors</BuildAssemblerVerbosity>
-    <VisibleItems>Attributes, ExplicitInterfaceImplementations, PublicCompilerGenerated, NonBrowsable</VisibleItems>
+    <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, PublicCompilerGenerated, NonBrowsable</VisibleItems>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="Advantage" isDocumented="True">This namespace contains the exposed RDDs for Advantage.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp" isDocumented="True">This namespace contains the classes and structures that are used to implement the XBase types, such as USUAL, SYMBOL DATE and FLOAT.</NamespaceSummaryItem>

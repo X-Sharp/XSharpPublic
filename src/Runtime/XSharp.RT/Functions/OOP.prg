@@ -189,31 +189,36 @@ internal static class OOPHelpers
         return ret
 
     static method FindMethod(t as System.Type, cName as string, lSelf as logic, lInstance := true as logic ) as MethodInfo
-        local oMI := null as MethodInfo
-
         if t == null .or. String.IsNullOrEmpty(cName)
             return null
         end if
+        var mlist := FindOverloads(t, cName, lSelf)
+        RETURN OOPHelpers.FindMethod(mlist, lSelf, lInstance)
 
-        try
-            var bf := BindingFlags.IgnoreCase | BindingFlags.Public
-            if lSelf
-                bf |= BindingFlags.NonPublic
-            else
-                bf |= BindingFlags.Public
-            endif
-            if lInstance
-                bf |= BindingFlags.Instance
-            else
-                bf |= BindingFlags.Static
-            endif
-            // suppress setters and getters
-            var methods := t:GetMethods(bf)
-            oMI := methods:FirstOrDefault( { m  => MethodMatches(m, cName) } )
-        catch as System.Reflection.AmbiguousMatchException
+    static method FindMethod(mlist as IList<MethodInfo>, lSelf as logic, lInstance := true as logic ) as MethodInfo
+
+        local oMI as MethodInfo
+
+        if mlist?:Count() == 1
+            oMI := mlist?:First()
+        else
             oMI := null
-        end try
-
+        endif
+        if oMI != null
+            if lInstance .and. oMI:IsStatic
+                // we have a static method and we are looking for an instance method
+                oMI := null
+            elseif ! lInstance .and. !oMI:IsStatic
+                // we have an instance method and we are looking for a static method
+                oMI := null
+            endif
+        endif
+        if oMI != null .and. ! oMI:IsPublic
+            if ! lSelf
+                // we have a private method and we are looking for a public method
+                oMI := null
+            endif
+        endif
         return oMI
 
     static method CompareMethods(m1 as MethodBase, m2 as MethodBase, uArgs as usual[]) as long
@@ -315,8 +320,8 @@ internal static class OOPHelpers
         next
         return pars:Count
 
-    static method FindBestOverLoad<T>(overloads as T[], cFunction as string, uArgs as usual[]) as T where T is MethodBase
-        if overloads:Length <= 1
+    static method FindBestOverLoad<T>(overloads as IList<T>, cFunction as string, uArgs as usual[]) as T where T is MethodBase
+        if overloads:Count <= 1
             return overloads:FirstOrDefault()
         endif
         // More than one
@@ -1039,22 +1044,26 @@ internal static class OOPHelpers
         return lOk
 
     static method FindOverloads(t as System.Type, cMethod as string, lInstance as logic) as IList<MethodInfo>
-        var list := List<MethodInfo>{}
+        var mlist := GetCachedOverLoads(t, cMethod)
+        if mlist != null .and. mlist:Count() > 0
+            return mlist
+        endif
+        mlist := List<MethodInfo>{}
         local bf as BindingFlags
         if lInstance
-            bf := BindingFlags.Instance | BindingFlags.Public
+            bf := BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
         else
-            bf := BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly
+            bf := BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic| BindingFlags.DeclaredOnly
         endif
         foreach var minfo in t:GetMethods(bf)
             if MethodMatches(minfo, cMethod)
-                list:Add(minfo)
+                mlist:Add(minfo)
             endif
         next
-        if list:Count > 0
-            CacheOverLoads(t, cMethod, list)
+        if mlist:Count > 1
+            CacheOverLoads(t, cMethod, mlist)
         endif
-        return list
+        return mlist
 
     static method GetCachedOverLoads(t as System.Type, cMethod as string) as IList<MethodInfo>
         if t == null .or. String.IsNullOrEmpty(cMethod)
@@ -1092,20 +1101,19 @@ internal static class OOPHelpers
         if cMethod == null
             throw Error.NullArgumentError( cMethod, nameof(cMethod), 2 )
         endif
-        local mi := null as MethodInfo
         cMethod := cMethod:ToUpperInvariant()
-        var list := OOPHelpers.GetCachedOverLoads(t, cMethod)
-        if list == null
-            mi := OOPHelpers.FindMethod(t, cMethod, false, true)
+        var mlist := OOPHelpers.GetCachedOverLoads(t, cMethod)
+        if mlist == null
+            // Get the overloads and stored them
+            mlist := OOPHelpers.FindOverloads(t, cMethod, true)
         endif
+        // Find public instance methods. Returns NULL when there is more than one overload
+        // we do not use mlist here because we also want to check for visibility and static/instance
+        var mi := OOPHelpers.FindMethod(mlist, false, true)
         if mi == null
-            if list == null
-                list := OOPHelpers.FindOverloads(t, cMethod, true)
-            endif
             try
-                if list:Count > 0
-                    var mis := list:ToArray()
-                    mi := OOPHelpers.FindBestOverLoad(mis, cMethod,uArgs)
+                if mlist:Count > 0
+                    mi := OOPHelpers.FindBestOverLoad(mlist, cMethod,uArgs)
                 endif
             catch as Error
                 throw

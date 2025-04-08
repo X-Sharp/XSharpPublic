@@ -760,7 +760,7 @@ internal static class OOPHelpers
             return null
         endif
         lSelf := lSelf .or. EmulateSelf
-        var mi := OOPHelpers.GetMemberFromCache(t, cName)
+        var mi := OOPHelpers.GetFieldOrPropertyFromCache(t, cName)
         if mi != null
             if mi is PropertyInfo var pi
                 // we must check. Sometimes in a subclass the Access was overwritten but not the assign
@@ -796,7 +796,7 @@ internal static class OOPHelpers
         return lSelf
 
 
-    static method GetMemberFromCache(t as Type, cName as string) as MemberInfo
+    static method GetFieldOrPropertyFromCache(t as Type, cName as string) as MemberInfo
         if t != null .and. ! String.IsNullOrEmpty(cName) .and. fieldPropCache:TryGetValue(t, out var fields)
             if fields:TryGetValue(cName, out var result)
                 return result
@@ -810,10 +810,7 @@ internal static class OOPHelpers
                 fields := ConcurrentDictionary<string, MemberInfo> {StringComparer.OrdinalIgnoreCase}
                 fieldPropCache:TryAdd( t, fields)
             endif
-            if !fields:ContainsKey(cName)
-                fields:TryAdd(cName, mi)
-                return true
-            endif
+            return fields:TryAdd(cName, mi)
         endif
         return false
 
@@ -823,7 +820,7 @@ internal static class OOPHelpers
             return null
         endif
         lSelf := lSelf .or. EmulateSelf
-        var mi := OOPHelpers.GetMemberFromCache(t, cName)
+        var mi := OOPHelpers.GetFieldOrPropertyFromCache(t, cName)
         if mi != null
             if mi is FieldInfo var fi .and. IsFieldVisible(fi, lSelf)
                 return fi
@@ -875,22 +872,30 @@ internal static class OOPHelpers
         return false
 
     static method GetFieldOrProperty(oType as System.Type, cName as STRING) as Object
-        var mem := OOPHelpers.GetMemberFromCache(oType, cName)
+        // This method is used in the XPP Abstract class
+        var mem := OOPHelpers.GetFieldOrPropertyFromCache(oType, cName)
         if mem != null
             RETURN mem
         endif
-        foreach fld as FieldInfo in  oType:GetFields()
-            if String.Compare(fld:Name, cName, true) == 0
+        var bf := BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.IgnoreCase
+        var oClass := oType
+        do while oClass != null
+            var fld := oClass:GetField(cName, bf)
+            if fld != null
                 OOPHelpers.AddMemberToCache(oType, cName, fld)
                 return fld
             endif
-        next
-        foreach prop as PropertyInfo in  oType:GetProperties()
-            if prop:CanRead .and. String.Compare(prop:Name, cName, true) == 0
+            oClass := oClass:BaseType
+        enddo
+        oClass := oType
+        do while oClass != null
+            var prop := oClass:GetProperty(cName, bf)
+            if prop != null .and. prop:CanRead
                 OOPHelpers.AddMemberToCache(oType, cName, prop)
                 return prop
             endif
-        next
+            oClass := oClass:BaseType
+        enddo
         RETURN NULL_OBJECT
     static method IVarGet(oObject as object, cIVar as string, lSelf as logic) as usual
         local t as Type
@@ -1084,8 +1089,7 @@ internal static class OOPHelpers
         if typeDict:ContainsKey(cMethod)
             return false
         endif
-        typeDict:TryAdd(cMethod, ml)
-        return true
+        return typeDict:TryAdd(cMethod, ml)
 
     static method SendHelper(oObject as object, cMethod as string, uArgs as usual[], result out usual, lCallBase as logic) as logic
         local t := oObject?:GetType() as Type

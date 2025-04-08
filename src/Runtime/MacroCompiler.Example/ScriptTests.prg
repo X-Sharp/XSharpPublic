@@ -483,6 +483,9 @@ FUNCTION FoxScriptTests AS VOID
         "return IIF(z,x+y,-1)",;
         ""}),Args(), 123+321, typeof(int))
     TestMacro(sc, "x = 123", Args(), 123, typeof(int))
+    TestMacro(sc, "1 = 2", Args(), false, typeof(logic)) // LHS is not an identifier
+    public MyTestVar := Error{}
+    TestMacro(sc, "MyTestVar.Gencode = 123", Args(), 123, typeof(int))
     TestMacro(sc, "return x = 123", Args(), "Variable does not exist", typeof(XSharp.Error))
     RETURN
 

@@ -64,7 +64,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             elseif nLen < nSize
                 Array.Clear( Buffer, nOffSet+nLen, nSize-nLen)
             endif
-			SELF:RDD:_GetBytes( sValue, Buffer, nOffSet, nLen)
+            IF nLen > 0
+                SELF:RDD:_GetBytes( sValue, Buffer, nOffSet, nLen)
+            endif
 			isHot := TRUE
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)];

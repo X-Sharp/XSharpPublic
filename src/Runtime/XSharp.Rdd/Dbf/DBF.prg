@@ -1247,8 +1247,10 @@ PROTECTED INTERNAL METHOD _GetString(buffer AS BYTE[], nOffset as LONG, nLength 
     return result
 
 PROTECTED INTERNAL METHOD _GetBytes(strValue AS STRING, buffer AS BYTE[], nOffset as LONG, nLength as LONG) AS LONG
-    var tmp := Byte[]{nLength*2} // allow for double byte characters
-    var nBytes := SELF:_Encoding:GetBytes(strValue, 0, strValue:Length, tmp, 0)
+    var buffSize := nLength*2 // allow for double byte characters
+    var tmp := Byte[]{buffSize}
+    var nLen := Math.Min(strValue:Length, buffSize)
+    var nBytes := SELF:_Encoding:GetBytes(strValue, 0, nLen, tmp, 0)
     if SELF:_OemConvert
         Oem2AnsiA(tmp)
     ENDIF

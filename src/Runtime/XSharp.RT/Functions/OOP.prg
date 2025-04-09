@@ -576,6 +576,10 @@ internal static class OOPHelpers
                 end switch
             end if
         endif
+        if oPar:ParameterType != result:GetType()
+            // convert to the correct type
+            result := OOPHelpers.ValueConvert(result, oPar:ParameterType)
+        endif
         return result
 
     static method IsMethod( t as System.Type, cName as string ) as logic

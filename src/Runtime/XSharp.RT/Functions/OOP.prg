@@ -189,31 +189,36 @@ internal static class OOPHelpers
         return ret
 
     static method FindMethod(t as System.Type, cName as string, lSelf as logic, lInstance := true as logic ) as MethodInfo
-        local oMI := null as MethodInfo
-
         if t == null .or. String.IsNullOrEmpty(cName)
             return null
         end if
+        var mlist := FindOverloads(t, cName, lSelf)
+        RETURN OOPHelpers.FindMethod(mlist, lSelf, lInstance)
 
-        try
-            var bf := BindingFlags.IgnoreCase | BindingFlags.Public
-            if lSelf
-                bf |= BindingFlags.NonPublic
-            else
-                bf |= BindingFlags.Public
-            endif
-            if lInstance
-                bf |= BindingFlags.Instance
-            else
-                bf |= BindingFlags.Static
-            endif
-            // suppress setters and getters
-            var methods := t:GetMethods(bf)
-            oMI := methods:FirstOrDefault( { m  => MethodMatches(m, cName) } )
-        catch as System.Reflection.AmbiguousMatchException
+    static method FindMethod(mlist as IList<MethodInfo>, lSelf as logic, lInstance := true as logic ) as MethodInfo
+
+        local oMI as MethodInfo
+
+        if mlist?:Count() == 1
+            oMI := mlist?:First()
+        else
             oMI := null
-        end try
-
+        endif
+        if oMI != null
+            if lInstance .and. oMI:IsStatic
+                // we have a static method and we are looking for an instance method
+                oMI := null
+            elseif ! lInstance .and. !oMI:IsStatic
+                // we have an instance method and we are looking for a static method
+                oMI := null
+            endif
+        endif
+        if oMI != null .and. ! oMI:IsPublic
+            if ! lSelf
+                // we have a private method and we are looking for a public method
+                oMI := null
+            endif
+        endif
         return oMI
 
     static method CompareMethods(m1 as MethodBase, m2 as MethodBase, uArgs as usual[]) as long
@@ -315,8 +320,8 @@ internal static class OOPHelpers
         next
         return pars:Count
 
-    static method FindBestOverLoad<T>(overloads as T[], cFunction as string, uArgs as usual[]) as T where T is MethodBase
-        if overloads:Length <= 1
+    static method FindBestOverLoad<T>(overloads as IList<T>, cFunction as string, uArgs as usual[]) as T where T is MethodBase
+        if overloads:Count <= 1
             return overloads:FirstOrDefault()
         endif
         // More than one
@@ -571,6 +576,10 @@ internal static class OOPHelpers
                 end switch
             end if
         endif
+        if oPar:ParameterType != result:GetType()
+            // convert to the correct type
+            result := OOPHelpers.ValueConvert(result, oPar:ParameterType)
+        endif
         return result
 
     static method IsMethod( t as System.Type, cName as string ) as logic
@@ -755,7 +764,7 @@ internal static class OOPHelpers
             return null
         endif
         lSelf := lSelf .or. EmulateSelf
-        var mi := OOPHelpers.GetMemberFromCache(t, cName)
+        var mi := OOPHelpers.GetFieldOrPropertyFromCache(t, cName)
         if mi != null
             if mi is PropertyInfo var pi
                 // we must check. Sometimes in a subclass the Access was overwritten but not the assign
@@ -791,7 +800,7 @@ internal static class OOPHelpers
         return lSelf
 
 
-    static method GetMemberFromCache(t as Type, cName as string) as MemberInfo
+    static method GetFieldOrPropertyFromCache(t as Type, cName as string) as MemberInfo
         if t != null .and. ! String.IsNullOrEmpty(cName) .and. fieldPropCache:TryGetValue(t, out var fields)
             if fields:TryGetValue(cName, out var result)
                 return result
@@ -805,10 +814,7 @@ internal static class OOPHelpers
                 fields := ConcurrentDictionary<string, MemberInfo> {StringComparer.OrdinalIgnoreCase}
                 fieldPropCache:TryAdd( t, fields)
             endif
-            if !fields:ContainsKey(cName)
-                fields:TryAdd(cName, mi)
-                return true
-            endif
+            return fields:TryAdd(cName, mi)
         endif
         return false
 
@@ -818,7 +824,7 @@ internal static class OOPHelpers
             return null
         endif
         lSelf := lSelf .or. EmulateSelf
-        var mi := OOPHelpers.GetMemberFromCache(t, cName)
+        var mi := OOPHelpers.GetFieldOrPropertyFromCache(t, cName)
         if mi != null
             if mi is FieldInfo var fi .and. IsFieldVisible(fi, lSelf)
                 return fi
@@ -870,22 +876,30 @@ internal static class OOPHelpers
         return false
 
     static method GetFieldOrProperty(oType as System.Type, cName as STRING) as Object
-        var mem := OOPHelpers.GetMemberFromCache(oType, cName)
+        // This method is used in the XPP Abstract class
+        var mem := OOPHelpers.GetFieldOrPropertyFromCache(oType, cName)
         if mem != null
             RETURN mem
         endif
-        foreach fld as FieldInfo in  oType:GetFields()
-            if String.Compare(fld:Name, cName, true) == 0
+        var bf := BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.IgnoreCase
+        var oClass := oType
+        do while oClass != null
+            var fld := oClass:GetField(cName, bf)
+            if fld != null
                 OOPHelpers.AddMemberToCache(oType, cName, fld)
                 return fld
             endif
-        next
-        foreach prop as PropertyInfo in  oType:GetProperties()
-            if prop:CanRead .and. String.Compare(prop:Name, cName, true) == 0
+            oClass := oClass:BaseType
+        enddo
+        oClass := oType
+        do while oClass != null
+            var prop := oClass:GetProperty(cName, bf)
+            if prop != null .and. prop:CanRead
                 OOPHelpers.AddMemberToCache(oType, cName, prop)
                 return prop
             endif
-        next
+            oClass := oClass:BaseType
+        enddo
         RETURN NULL_OBJECT
     static method IVarGet(oObject as object, cIVar as string, lSelf as logic) as usual
         local t as Type
@@ -1039,22 +1053,26 @@ internal static class OOPHelpers
         return lOk
 
     static method FindOverloads(t as System.Type, cMethod as string, lInstance as logic) as IList<MethodInfo>
-        var list := List<MethodInfo>{}
+        var mlist := GetCachedOverLoads(t, cMethod)
+        if mlist != null .and. mlist:Count() > 0
+            return mlist
+        endif
+        mlist := List<MethodInfo>{}
         local bf as BindingFlags
         if lInstance
-            bf := BindingFlags.Instance | BindingFlags.Public
+            bf := BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
         else
-            bf := BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly
+            bf := BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic| BindingFlags.DeclaredOnly
         endif
         foreach var minfo in t:GetMethods(bf)
             if MethodMatches(minfo, cMethod)
-                list:Add(minfo)
+                mlist:Add(minfo)
             endif
         next
-        if list:Count > 0
-            CacheOverLoads(t, cMethod, list)
+        if mlist:Count > 1
+            CacheOverLoads(t, cMethod, mlist)
         endif
-        return list
+        return mlist
 
     static method GetCachedOverLoads(t as System.Type, cMethod as string) as IList<MethodInfo>
         if t == null .or. String.IsNullOrEmpty(cMethod)
@@ -1075,8 +1093,7 @@ internal static class OOPHelpers
         if typeDict:ContainsKey(cMethod)
             return false
         endif
-        typeDict:TryAdd(cMethod, ml)
-        return true
+        return typeDict:TryAdd(cMethod, ml)
 
     static method SendHelper(oObject as object, cMethod as string, uArgs as usual[], result out usual, lCallBase as logic) as logic
         local t := oObject?:GetType() as Type
@@ -1092,20 +1109,19 @@ internal static class OOPHelpers
         if cMethod == null
             throw Error.NullArgumentError( cMethod, nameof(cMethod), 2 )
         endif
-        local mi := null as MethodInfo
         cMethod := cMethod:ToUpperInvariant()
-        var list := OOPHelpers.GetCachedOverLoads(t, cMethod)
-        if list == null
-            mi := OOPHelpers.FindMethod(t, cMethod, false, true)
+        var mlist := OOPHelpers.GetCachedOverLoads(t, cMethod)
+        if mlist == null
+            // Get the overloads and stored them
+            mlist := OOPHelpers.FindOverloads(t, cMethod, true)
         endif
+        // Find public instance methods. Returns NULL when there is more than one overload
+        // we do not use mlist here because we also want to check for visibility and static/instance
+        var mi := OOPHelpers.FindMethod(mlist, false, true)
         if mi == null
-            if list == null
-                list := OOPHelpers.FindOverloads(t, cMethod, true)
-            endif
             try
-                if list:Count > 0
-                    var mis := list:ToArray()
-                    mi := OOPHelpers.FindBestOverLoad(mis, cMethod,uArgs)
+                if mlist:Count > 0
+                    mi := OOPHelpers.FindBestOverLoad(mlist, cMethod,uArgs)
                 endif
             catch as Error
                 throw
@@ -1274,6 +1290,25 @@ internal static class OOPHelpers
         next
         return null_object
 
+    static method IsNumericTypeCode(tc as TypeCode) as logic
+        switch tc
+        case TypeCode.Byte
+        case TypeCode.SByte
+        case TypeCode.Int16
+        case TypeCode.Int32
+        case TypeCode.Int64
+        case TypeCode.UInt16
+        case TypeCode.UInt32
+        case TypeCode.UInt64
+        case TypeCode.Double
+        case TypeCode.Single
+        case TypeCode.Decimal
+            return true
+        otherwise
+            return false
+        end switch
+
+
 
     static method ValueConvert(uValue as usual,toType as System.Type) as object
         local oResult := uValue as OBJECT
@@ -1285,6 +1320,11 @@ internal static class OOPHelpers
         elseif uValue:SystemType == toType
             return uValue
         else
+
+            var tc := Type.GetTypeCode(toType)
+            if IsNumericTypeCode(tc) .and. ! uValue:IsNumeric
+                uValue := Val(uValue:ToString())
+            endif
             if toType == typeof(usual)
                 // return a boxed usual
                 return __castclass(object, uValue)

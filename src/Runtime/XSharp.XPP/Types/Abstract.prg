@@ -59,15 +59,35 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
     VIRTUAL METHOD HasIVar(cName AS STRING) AS LOGIC
         RETURN IVarGetInfo(SELF, cName) != 0
 
+
+    STATIC METHOD IsMemberAccessible(mem as MemberInfo, st as System.Diagnostics.StackTrace) AS LOGIC
+        var memType  := mem:DeclaringType
+        for var i := 0 to st:FrameCount - 1
+            var frame := st:GetFrame(i)
+            var m := frame:GetMethod()
+            if m:DeclaringType != typeof(Abstract) .and. m:DeclaringType:IsAssignableFrom(memType)
+                return TRUE
+            endif
+        next
+        RETURN FALSE
     VIRTUAL METHOD NoIvarGet(cName AS STRING) AS USUAL
         if ClassHelpers.IsInstanceofRuntimeClass(self)
             return ClassHelpers.CallIVarGet(self, cName)
         ENDIF
         var mem := OOPHelpers.GetFieldOrProperty(self:GetType(), cName)
         // Note that XBase++ allows to call Static members with an instance syntax
+        // XBase++ also allows to call private members on untype fields in a method of the same class
         // So we are not filtering here
+
         if mem is FieldInfo var fld
-            return fld:GetValue(self)
+            if fld:IsPrivate
+                if !IsMemberAccessible(fld, System.Diagnostics.StackTrace{false})
+                    fld := NULL
+                endif
+            endif
+            if fld != null
+                return fld:GetValue(self)
+            endif
         endif
         if mem is PropertyInfo var  prop .and. prop:CanRead
             if prop:GetIndexParameters():Length == 0
@@ -87,8 +107,16 @@ abstract class XSharp.XPP.Abstract IMPLEMENTS ILateBound
         // Note that XBase++ allows to call Static members with an instance syntax
         // So we are not filtering here
         if mem is FieldInfo var fld
-            var oValue := OOPHelpers.ValueConvert(uValue, fld:FieldType)
-            fld:SetValue(self, oValue)
+
+            if fld:IsPrivate
+                if !IsMemberAccessible(fld, System.Diagnostics.StackTrace{false})
+                    fld := null
+                endif
+            endif
+            if fld != null
+                var oValue := OOPHelpers.ValueConvert(uValue, fld:FieldType)
+                fld:SetValue(self, oValue)
+            endif
             RETURN
         endif
         if mem is PropertyInfo var  prop .and. prop:CanWrite

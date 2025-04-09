@@ -57,7 +57,8 @@ namespace XSharp.MacroCompiler.Syntax
                     }
                     top = lb;
                 }
-                if (top.Kind == TokenType.EQ)
+                if (top.Kind == TokenType.EQ &&
+                    (top.Left is IdExpr || top.Left is QualifiedNameExpr))
                 {
                     var token = new Token(TokenType.ASSIGN, bin.Token.Text);
                     var newnode = new AssignExpr(left, token, right);

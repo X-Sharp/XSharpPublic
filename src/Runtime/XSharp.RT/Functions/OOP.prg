@@ -1290,6 +1290,25 @@ internal static class OOPHelpers
         next
         return null_object
 
+    static method IsNumericTypeCode(tc as TypeCode) as logic
+        switch tc
+        case TypeCode.Byte
+        case TypeCode.SByte
+        case TypeCode.Int16
+        case TypeCode.Int32
+        case TypeCode.Int64
+        case TypeCode.UInt16
+        case TypeCode.UInt32
+        case TypeCode.UInt64
+        case TypeCode.Double
+        case TypeCode.Single
+        case TypeCode.Decimal
+            return true
+        otherwise
+            return false
+        end switch
+
+
 
     static method ValueConvert(uValue as usual,toType as System.Type) as object
         local oResult := uValue as OBJECT
@@ -1301,6 +1320,11 @@ internal static class OOPHelpers
         elseif uValue:SystemType == toType
             return uValue
         else
+
+            var tc := Type.GetTypeCode(toType)
+            if IsNumericTypeCode(tc) .and. ! uValue:IsNumeric
+                uValue := Val(uValue:ToString())
+            endif
             if toType == typeof(usual)
                 // return a boxed usual
                 return __castclass(object, uValue)

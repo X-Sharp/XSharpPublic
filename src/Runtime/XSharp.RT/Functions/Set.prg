@@ -128,8 +128,9 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
                 state:Settings[nSetting] := cNew:ToUpper() == "ON"
             ELSE
                 TRY
-                    IF oNew:GetType() != oOld:GetType()
-                        oNew := OOPHelpers.ValueConvert(oNew, oOld:GetType())
+                    var oOldType := oOld:GetType()
+                    IF oNew:GetType() != oOldType
+                        oNew := OOPHelpers.ValueConvert(oNew, oOldType)
                     ENDIF
                     state:Settings[nSetting] := oNew
                 CATCH

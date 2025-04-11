@@ -20,14 +20,6 @@ FUNCTION Scheme( nSchemeNumber , nColorPairNumber) AS STRING
     // RETURN ""
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/seek/*" />
-
-FUNCTION Seek(eExpression , uArea , uIndex ) AS LOGIC
-    THROW NotImplementedException{}
-    // RETURN FALSE
-
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/setfldstate/*" />
 
 FUNCTION SetFldState( uField, nFieldState , uArea) AS LOGIC

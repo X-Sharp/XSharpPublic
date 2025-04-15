@@ -576,7 +576,7 @@ internal static class OOPHelpers
                 end switch
             end if
         endif
-        if oPar:ParameterType != result:GetType()
+        if result != null
             // convert to the correct type
             result := OOPHelpers.ValueConvert(result, oPar:ParameterType)
         endif

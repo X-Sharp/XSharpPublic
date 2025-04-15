@@ -572,7 +572,7 @@ internal static class OOPHelpers
                     endif
 
                 otherwise
-                    result := OOPHelpers.ValueConvert(oDefAttrib:Value, oPar:ParameterType)
+                    result := oDefAttrib:Value
                 end switch
             end if
         endif

@@ -1323,7 +1323,12 @@ internal static class OOPHelpers
 
             var tc := Type.GetTypeCode(toType)
             if IsNumericTypeCode(tc) .and. ! uValue:IsNumeric
-                uValue := Val(uValue:ToString())
+                if uValue:IsLogic
+                    uValue := (int) uValue
+                else
+                    // convert to numeric
+                    uValue := Val(uValue:ToString())
+                endif
             endif
             if toType == typeof(usual)
                 // return a boxed usual

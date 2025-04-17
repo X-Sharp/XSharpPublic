@@ -163,6 +163,7 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
     STATIC OPERATOR IMPLICIT(r8 AS REAL8) AS CURRENCY
         RETURN CURRENCY{r8}
 
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(fl AS FLOAT) AS CURRENCY
         RETURN CURRENCY{fl:Value}

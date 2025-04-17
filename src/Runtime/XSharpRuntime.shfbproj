@@ -24,52 +24,51 @@
     <Language>en-US</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="$(DocDir)\XSharp.Rdd.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Core.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Core.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RDD.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VO.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VO.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Data.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Data.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOGUIClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOGUIClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOInternetClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOInternetClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VORDDClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VORDDClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSQLClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSQLClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSystemClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSystemClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.xml" />
-    </DocumentationSources>
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Core.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Core.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RDD.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RT.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RT.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VO.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VO.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Data.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Data.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOGUIClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOGUIClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOInternetClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOInternetClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VORDDClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VORDDClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOSQLClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOSQLClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOSystemClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOSystemClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOReportClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOReportClasses.xml" /></DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>2.23.0.0</HelpFileVersion>
+    <HelpFileVersion>2.23.0.1</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -79,7 +78,7 @@
     <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013XSharp</PresentationStyle>
-    <CleanIntermediates>False</CleanIntermediates>
+    <CleanIntermediates>True</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
     <IndentHtml>True</IndentHtml>
@@ -205,15 +204,15 @@
     <IncludeFavorites>True</IncludeFavorites>
     <WebsiteSdkLinkType>Msdn</WebsiteSdkLinkType>
     <AppendMarkdownFileExtensionsToUrls>False</AppendMarkdownFileExtensionsToUrls>
-    <FeedbackEMailAddress>info%40xsharp.eu</FeedbackEMailAddress>
-    <FeedbackEMailLinkText>info%40xsharp.eu</FeedbackEMailLinkText>
+    <FeedbackEMailAddress>info@xsharp.eu</FeedbackEMailAddress>
+    <FeedbackEMailLinkText>info@xsharp.eu</FeedbackEMailLinkText>
     <FooterText>
     </FooterText>
     <SourceCodeBasePath>E:\XSharp\Dev\src\</SourceCodeBasePath>
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
     <RootNamespaceTitle>X# Runtime and SDK Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
-    <CopyrightText>Copyright &amp;#169%3b 2015-2025 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b Computer Associates.</CopyrightText>
+    <CopyrightText>Copyright &amp;#169; 2015-2025 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169; Computer Associates.</CopyrightText>
     <BuildLogFile>$(Artifactsdir)\Obj\Help\BuildLog.log</BuildLogFile>
     <CatalogProductId>VS</CatalogProductId>
     <CatalogVersion>100</CatalogVersion>
@@ -296,7 +295,7 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="RtDocs\icons\" />
+    <Folder Include="icons\" />
     <Folder Include="RtDocs\Categories\" />
     <Folder Include="RtDocs\" />
   </ItemGroup>
@@ -379,7 +378,7 @@
     <ContentLayout Include="RtDocs\Content.content" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="RtDocs\icons\logo100.jpg">
+    <Content Include="icons\logo100.jpg">
       <ImageId>logo100</ImageId>
       <AlternateText>logo 100</AlternateText>
     </Content>

@@ -342,7 +342,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     [NOSHOW] PRIVATE STATIC PROPERTY _IsFoxPro  AS LOGIC            [NODEBUG] [INLINE] GET XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
     [NOSHOW] PRIVATE PROPERTY _isByRef		    AS LOGIC	        [NODEBUG] [INLINE] GET _flags:IsByRef
     [NOSHOW] INTERNAL PROPERTY _usualType	    AS __UsualType      [NODEBUG] [INLINE] GET _flags:UsualType
-    /// No checks for typeflag. These private properties should always be accessed after checking the correct type
+    // No checks for typeflag. These private properties should always be accessed after checking the correct type
     [NOSHOW] INTERNAL PROPERTY _arrayValue      AS ARRAY			[NODEBUG] [INLINE] GET (ARRAY) _refData
     [NOSHOW] INTERNAL PROPERTY _codeblockValue  AS ICodeblock		[NODEBUG] [INLINE] GET (ICodeblock) _refData
     [NOSHOW] INTERNAL PROPERTY _currencyValue	AS CURRENCY	        [NODEBUG] [INLINE] GET __Currency{ (System.Decimal) _refData}
@@ -2655,12 +2655,12 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// Note this generates error XS0553.
     /// However our compiler needs this one. Therefore disable XS0553
-    /// <include file="RTComments.xml" path="Comments/Operator/*" />
 #pragma warnings (553, off)
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(val AS OBJECT) AS __Usual
         RETURN __Usual{val}
-#pragma warnings (553, on)
+#pragma warnings (553, default)
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(val AS LOGIC) AS __Usual

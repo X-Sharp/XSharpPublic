@@ -292,6 +292,7 @@ PUBLIC CLASS __ArrayBase<T> ;
             _internalList:Add(u)
         ENDIF
 
+    /// <exclude />
     PUBLIC VIRTUAL METHOD Add(u AS T) AS VOID
         SELF:__Add(u)
         RETURN

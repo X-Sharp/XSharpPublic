@@ -1762,6 +1762,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //result.TrimLeadingSpaces();
             // after certain tokens (->, and . for example) keywords must be changed to identifiers
             adjustKeywordsToIdentifiers(result);
+            bool doc;
+#if VSPARSER
+            doc = true;
+#else
+            doc = _options.DocumentationMode != DocumentationMode.None;
+#endif
+            if (tokens[0].HasTrivia && doc)
+            {
+                var first = result.Where(t => !t.IsTrivia).FirstOrDefault();
+                if (first != null)
+                    first.Trivia = tokens[0].Trivia;
+            }
             return result;
         }
         void adjustKeywordsToIdentifiers(IList<XSharpToken> result)

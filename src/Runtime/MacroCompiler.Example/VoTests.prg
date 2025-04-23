@@ -707,6 +707,13 @@ BEGIN NAMESPACE MacroCompilerTest
 
         TestMacro(mc, "{|| 10/6 }", Args(), FLOAT(10)/6, typeof(FLOAT))
 
+
+        TestMacro(mc,"{|oTest| oTest:Testx(5)}", Args( Test{}), 5, typeof(INT))
+        TestMacro(mc,"{|oTest| oTest:Testx('abc')}", Args( Test{}), "abc", typeof(STRING))
+        TestMacro(mc,"{|oTest| ((ITest)oTest):Testx(5)}", Args( Test{}), 5, typeof(INT))
+        TestMacro(mc,"{|oTest| ((ITest)oTest):Testx('abc')}", Args( Test{}), "abc", typeof(STRING))
+
+
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         RETURN
 

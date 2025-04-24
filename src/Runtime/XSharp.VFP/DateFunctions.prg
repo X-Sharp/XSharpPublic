@@ -54,7 +54,26 @@ LOCAL dDate AS DATE
     END TRY
 
 	RETURN dDate
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/gomonth/*" />
+FUNCTION GoMonth( dExpression AS USUAL , iNumberOfMonths AS INT ) AS DATE
+    if IsDate(dExpression)
+        RETURN GoMonth ( (Date) dExpression , iNumberOfMonths )
+    endif
+    if IsDateTime(dExpression)
+        RETURN GoMonth ( (DateTime) dExpression , iNumberOfMonths )
+    endif
+    THROW Error.ArgumentError(__ENTITY__, nameof(dExpression),__VfpStr(VFPErrors.VFP_INVALID_PARAMETER, nameof(dExpression), "'DATE' or 'DATETIME'" ), 1)
 
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/quarter/*" />
+FUNCTION Quarter( dExpression  AS USUAL , nMonth  := 1 AS INT ) AS INT
+    if IsDate(dExpression)
+        RETURN Quarter ( (Date) dExpression , nMonth )
+    endif
+    if IsDateTime(dExpression)
+        RETURN Quarter ( (DateTime) dExpression , nMonth )
+    endif
+    THROW Error.ArgumentError(__ENTITY__, nameof(dExpression),__VfpStr(VFPErrors.VFP_INVALID_PARAMETER, nameof(dExpression), "'DATE' or 'DATETIME'" ), 1)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/quarter/*" />
@@ -64,8 +83,8 @@ FUNCTION Quarter( dExpression  AS DATE , nMonth  := 1 AS INT ) AS INT
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/quarter/*" />
 FUNCTION Quarter( tExpression  AS DateTime , nMonth  := 1 AS INT ) AS INT
-	IF  ! (nMonth  > 0 .AND. nMonth  < 13 )
-		THROW ArgumentException { __VfpStr(VFPErrors.VFP_INVALID_RANGE, nameof(nMonth), nMonth , "1-12"), nameof(nMonth) }
+    IF  ! (nMonth  > 0 .AND. nMonth  < 13 )
+        THROW Error.ArgumentError(__ENTITY__, nameof(nMonth), __VfpStr(VFPErrors.VFP_INVALID_RANGE, nameof(nMonth), nMonth , "1-12") ,1)
     ENDIF
 
    	IF ((DATE) tExpression ):IsEmpty
@@ -74,8 +93,17 @@ FUNCTION Quarter( tExpression  AS DateTime , nMonth  := 1 AS INT ) AS INT
 
 	VAR dtOffset := tExpression :AddMonths( 1 - (INT) nMonth  )
 
-	RETURN  (INT) System.Math.Ceiling((DECIMAL)dtOffset:Month / 3)
+    RETURN  (INT) System.Math.Ceiling((DECIMAL)dtOffset:Month / 3)
 
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/week/*" />
+FUNCTION Week( dExpression AS USUAL, nFirstWeek := 1 AS LONG, nFirstDayOfWeek := 1 AS LONG) AS LONG
+    if IsDate(dExpression)
+        RETURN Week ( (Date) dExpression , nFirstWeek, nFirstDayOfWeek )
+    endif
+    if IsDateTime(dExpression)
+        RETURN Week ( (DateTime) dExpression , nFirstWeek, nFirstDayOfWeek )
+    endif
+    THROW Error.ArgumentError(__ENTITY__, nameof(dExpression),__VfpStr(VFPErrors.VFP_INVALID_PARAMETER, nameof(dExpression), "'DATE' or 'DATETIME'" ), 1)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/week/*" />
@@ -112,9 +140,17 @@ FUNCTION Week( tExpression AS DateTime, nFirstWeek := 1 AS LONG, nFirstDayOfWeek
     RETURN calendar:GetWeekOfYear ( tExpression, week, day)
 
 
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mdy/*" />
+FUNCTION MDY ( tExpression AS USUAL ) AS STRING
+    if IsDate(tExpression)
+        RETURN MDY( (Date) tExpression )
+    endif
+    if IsDateTime(tExpression)
+        RETURN MDY ( (DateTime) tExpression  )
+    endif
+    THROW Error.ArgumentError(__ENTITY__, nameof(tExpression),__VfpStr(VFPErrors.VFP_INVALID_PARAMETER, nameof(tExpression), "'DATE' or 'DATETIME'" ), 1)
 
-
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mdy/*" />
 FUNCTION MDY ( tExpression AS DateTime ) AS STRING
     RETURN MDY ( (DATE) tExpression  )
 
@@ -128,6 +164,17 @@ FUNCTION MDY ( dExpression AS DATE ) AS STRING
 
 	RETURN CMonth(dExpression) + " " + PadL(Day(dExpression), 2 , "0" )  + ", " + ;
 			IIF ( SetCentury() , dExpression:ToString("yyyy") , dExpression:ToString("yy")  )
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
+FUNCTION DMY ( tExpression  AS USUAL ) AS STRING
+    if IsDate(tExpression)
+        RETURN DMY( (Date) tExpression )
+    endif
+    if IsDateTime(tExpression)
+        RETURN DMY ( (DateTime) tExpression  )
+    endif
+    THROW Error.ArgumentError(__ENTITY__, nameof(tExpression),__VfpStr(VFPErrors.VFP_INVALID_PARAMETER, nameof(tExpression), "'DATE' or 'DATETIME'" ), 1)
+
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
 FUNCTION DMY ( tExpression  AS DateTime ) AS STRING

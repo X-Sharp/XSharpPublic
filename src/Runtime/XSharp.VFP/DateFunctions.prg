@@ -53,7 +53,16 @@ LOCAL dDate AS DATE
 
     END TRY
 
-	RETURN dDate
+    RETURN dDate
+
+INTERNAL FUNCTION _DateTimeError( sParameter as STRING, argNum as DWORD, aArgs PARAMS OBJECT[]) AS Error
+    var err := Error.ArgumentError(ProcName(1), sParameter,__VfpStr(VFPErrors.VFP_INVALID_PARAMETER, sParameter, "'DATE' or 'DATETIME'" ), 1)
+    err:Args := aArgs
+    err:ArgNum := argNum
+    err:Stack := ErrorStack(1)
+    RETURN err
+
+
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/gomonth/*" />
 FUNCTION GoMonth( dExpression AS USUAL , iNumberOfMonths AS INT ) AS DATE
     if IsDate(dExpression)
@@ -62,7 +71,7 @@ FUNCTION GoMonth( dExpression AS USUAL , iNumberOfMonths AS INT ) AS DATE
     if IsDateTime(dExpression)
         RETURN GoMonth ( (DateTime) dExpression , iNumberOfMonths )
     endif
-    THROW Error.ArgumentError(__ENTITY__, nameof(dExpression),__VfpStr(VFPErrors.VFP_INVALID_PARAMETER, nameof(dExpression), "'DATE' or 'DATETIME'" ), 1)
+    THROW _DateTimeError(nameof(dExpression), 1, dExpression, iNumberOfMonths)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/quarter/*" />
@@ -73,7 +82,7 @@ FUNCTION Quarter( dExpression  AS USUAL , nMonth  := 1 AS INT ) AS INT
     if IsDateTime(dExpression)
         RETURN Quarter ( (DateTime) dExpression , nMonth )
     endif
-    THROW Error.ArgumentError(__ENTITY__, nameof(dExpression),__VfpStr(VFPErrors.VFP_INVALID_PARAMETER, nameof(dExpression), "'DATE' or 'DATETIME'" ), 1)
+    THROW _DateTimeError(nameof(dExpression),1, dExpression, nMonth)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/quarter/*" />
@@ -103,7 +112,7 @@ FUNCTION Week( dExpression AS USUAL, nFirstWeek := 1 AS LONG, nFirstDayOfWeek :=
     if IsDateTime(dExpression)
         RETURN Week ( (DateTime) dExpression , nFirstWeek, nFirstDayOfWeek )
     endif
-    THROW Error.ArgumentError(__ENTITY__, nameof(dExpression),__VfpStr(VFPErrors.VFP_INVALID_PARAMETER, nameof(dExpression), "'DATE' or 'DATETIME'" ), 1)
+    THROW _DateTimeError(nameof(dExpression), 1, dExpression, nFirstWeek,nFirstDayOfWeek)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/week/*" />
@@ -148,7 +157,7 @@ FUNCTION MDY ( tExpression AS USUAL ) AS STRING
     if IsDateTime(tExpression)
         RETURN MDY ( (DateTime) tExpression  )
     endif
-    THROW Error.ArgumentError(__ENTITY__, nameof(tExpression),__VfpStr(VFPErrors.VFP_INVALID_PARAMETER, nameof(tExpression), "'DATE' or 'DATETIME'" ), 1)
+    THROW _DateTimeError(nameof(tExpression), 1, tExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mdy/*" />
 FUNCTION MDY ( tExpression AS DateTime ) AS STRING
@@ -173,7 +182,7 @@ FUNCTION DMY ( tExpression  AS USUAL ) AS STRING
     if IsDateTime(tExpression)
         RETURN DMY ( (DateTime) tExpression  )
     endif
-    THROW Error.ArgumentError(__ENTITY__, nameof(tExpression),__VfpStr(VFPErrors.VFP_INVALID_PARAMETER, nameof(tExpression), "'DATE' or 'DATETIME'" ), 1)
+    THROW _DateTimeError(nameof(tExpression),1, tExpression)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />

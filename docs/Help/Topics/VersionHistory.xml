@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2025-04-17T08:24:44.842+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-04-25T15:47:06.870+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -12,7 +12,7 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Body Text" style="tabstops:96px left,144px left,240px left,488px left,1998px left ;">Note: When an item has a matching GitHub ticket, the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> , where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X#, we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue.</para>
-    <para styleclass="Heading1">Changes in 2.23.0.1</para>
+    <para styleclass="Heading1">Changes in 2.23.0.2</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Heading3">New features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -33,6 +33,7 @@
     <para styleclass="Heading3">New features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Added additional sort functions ASortFunc() and ASortEx() for arrays allowing .Net style sorting (#1683)</li>
+      <li styleclass="Normal">Added untyped overloads for VFP functions GoMonth(), Quarter(), Week(), DMY() and MDY() (#1724)</li>
       <li styleclass="Normal">Implemented the Seek() function in the VFP runtime library (#1718)</li>
       <li styleclass="Normal">Allow to register special error handler that is called for errors during macro compilation (#1686)<br/>To use this, declare a function or method with the following prototype:<br/><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">DELEGATE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> CodeblockErrorHandler(cMacro </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">STRING</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">, oException </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Exception) </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> ICodeBlock</text></li>
     </list>
@@ -63,24 +64,20 @@
       <li styleclass="Normal">Fixed problem with opening dbf files with no extension (#1671)</li>
       <li styleclass="Normal">Fixed problem with DbServer:OrderScope() always returning NIL without a new value and setting the scope to NIL (#1694)</li>
     </list>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">VOSDK</text></para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text"></li>
-    </list>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Typed SDK</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Typed VO SDK</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed problem with MouseMove( oMev) not being called for a FixedText (#1680)</li>
-    </list>
-    <para styleclass="Heading2">VOXporter</para>
-    <para styleclass="Heading3">New features</para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"></li>
+      <li styleclass="Body Text">Added a property EnableDispatch to the Window class. When set to TRUE then the Dispatch() method is called. (#1721)</li>
     </list>
     <para styleclass="Heading2">Visual Studio integration</para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed editor problem with incorrectly displaying region markers for multiline statements with comments (#1667)</li>
       <li styleclass="Body Text">Fixed incorrect code highlight of the &quot;is not null&quot; code pattern (#1699)</li>
+    </list>
+    <para styleclass="Heading3">New Features</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Added support for the editor commands Edit.ToggleLineComment and Edit.ToggleBlockComment</li>
     </list>
     <para styleclass="Heading2">XIDE</para>
     <para styleclass="Heading3">General</para>
@@ -92,8 +89,8 @@
       <li styleclass="Normal">Fixed a problem with incorrectly highlighting Func&lt;T&gt; as a keyword</li>
       <li styleclass="Normal">Project/application export now includes also native resource files (.rc)</li>
       <li styleclass="Normal">Some improvements to the TipOfTheDay window</li>
-      <li styleclass="Normal">Messages in the Errors tool window can now be sorted by file, application etc, by clicking on their respective column header</li>
-      <li styleclass="Normal">Improved functionality of the Remove/Remove All toolbar button in the Breakpoins, Bookmarks and Watch tool windows</li>
+      <li styleclass="Normal">Messages in the Errors tool window can now be sorted by file, application etc., by clicking on their respective column header</li>
+      <li styleclass="Normal">Improved functionality of the Remove/Remove All toolbar button in the Breakpoints, Bookmarks and Watch tool windows</li>
       <li styleclass="Normal">Fixed modifying values of local variables in the debugger (still can&apos;t modify object members though)</li>
       <li styleclass="Normal">A lot of improvements to the Edit-&gt;Sort Entities command</li>
     </list>

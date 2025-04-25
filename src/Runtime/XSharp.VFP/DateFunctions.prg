@@ -64,25 +64,23 @@ INTERNAL FUNCTION _DateTimeError( sParameter as STRING, argNum as DWORD, aArgs P
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/gomonth/*" />
-FUNCTION GoMonth( dExpression AS USUAL , iNumberOfMonths AS INT ) AS DATE
-    if IsDate(dExpression)
-        RETURN GoMonth ( (Date) dExpression , iNumberOfMonths )
+FUNCTION GoMonth( uExpression AS USUAL , iNumberOfMonths AS INT ) AS DATE
+    if IsDate(uExpression)
+        RETURN GoMonth ( (Date) uExpression , iNumberOfMonths )
+    elseif IsDateTime(uExpression)
+        RETURN GoMonth ( (DateTime) uExpression , iNumberOfMonths )
     endif
-    if IsDateTime(dExpression)
-        RETURN GoMonth ( (DateTime) dExpression , iNumberOfMonths )
-    endif
-    THROW _DateTimeError(nameof(dExpression), 1, dExpression, iNumberOfMonths)
+    THROW _DateTimeError(nameof(uExpression), 1, uExpression, iNumberOfMonths)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/quarter/*" />
-FUNCTION Quarter( dExpression  AS USUAL , nMonth  := 1 AS INT ) AS INT
-    if IsDate(dExpression)
-        RETURN Quarter ( (Date) dExpression , nMonth )
+FUNCTION Quarter( uExpression  AS USUAL , nMonth  := 1 AS INT ) AS INT
+    if IsDate(uExpression)
+        RETURN Quarter ( (Date) uExpression , nMonth )
+    elseif IsDateTime(uExpression)
+        RETURN Quarter ( (DateTime) uExpression , nMonth )
     endif
-    if IsDateTime(dExpression)
-        RETURN Quarter ( (DateTime) dExpression , nMonth )
-    endif
-    THROW _DateTimeError(nameof(dExpression),1, dExpression, nMonth)
+    THROW _DateTimeError(nameof(uExpression),1, uExpression, nMonth)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/quarter/*" />
@@ -105,14 +103,13 @@ FUNCTION Quarter( tExpression  AS DateTime , nMonth  := 1 AS INT ) AS INT
     RETURN  (INT) System.Math.Ceiling((DECIMAL)dtOffset:Month / 3)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/week/*" />
-FUNCTION Week( dExpression AS USUAL, nFirstWeek := 1 AS LONG, nFirstDayOfWeek := 1 AS LONG) AS LONG
-    if IsDate(dExpression)
-        RETURN Week ( (Date) dExpression , nFirstWeek, nFirstDayOfWeek )
+FUNCTION Week( uExpression AS USUAL, nFirstWeek := 1 AS LONG, nFirstDayOfWeek := 1 AS LONG) AS LONG
+    if IsDate(uExpression)
+        RETURN Week ( (Date) uExpression , nFirstWeek, nFirstDayOfWeek )
+    elseif IsDateTime(uExpression)
+        RETURN Week ( (DateTime) uExpression , nFirstWeek, nFirstDayOfWeek )
     endif
-    if IsDateTime(dExpression)
-        RETURN Week ( (DateTime) dExpression , nFirstWeek, nFirstDayOfWeek )
-    endif
-    THROW _DateTimeError(nameof(dExpression), 1, dExpression, nFirstWeek,nFirstDayOfWeek)
+    THROW _DateTimeError(nameof(uExpression), 1, uExpression, nFirstWeek,nFirstDayOfWeek)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/week/*" />
@@ -150,14 +147,13 @@ FUNCTION Week( tExpression AS DateTime, nFirstWeek := 1 AS LONG, nFirstDayOfWeek
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mdy/*" />
-FUNCTION MDY ( tExpression AS USUAL ) AS STRING
-    if IsDate(tExpression)
-        RETURN MDY( (Date) tExpression )
+FUNCTION MDY ( uExpression AS USUAL ) AS STRING
+    if IsDate(uExpression)
+        RETURN MDY( (Date) uExpression )
+    elseif IsDateTime(uExpression)
+        RETURN MDY ( (DateTime) uExpression  )
     endif
-    if IsDateTime(tExpression)
-        RETURN MDY ( (DateTime) tExpression  )
-    endif
-    THROW _DateTimeError(nameof(tExpression), 1, tExpression)
+    THROW _DateTimeError(nameof(uExpression), 1, uExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mdy/*" />
 FUNCTION MDY ( tExpression AS DateTime ) AS STRING
@@ -175,14 +171,13 @@ FUNCTION MDY ( dExpression AS DATE ) AS STRING
 			IIF ( SetCentury() , dExpression:ToString("yyyy") , dExpression:ToString("yy")  )
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
-FUNCTION DMY ( tExpression  AS USUAL ) AS STRING
-    if IsDate(tExpression)
-        RETURN DMY( (Date) tExpression )
+FUNCTION DMY ( uExpression  AS USUAL ) AS STRING
+    if IsDate(uExpression)
+        RETURN DMY( (Date) uExpression )
+    elseif IsDateTime(uExpression)
+        RETURN DMY ( (DateTime) uExpression  )
     endif
-    if IsDateTime(tExpression)
-        RETURN DMY ( (DateTime) tExpression  )
-    endif
-    THROW _DateTimeError(nameof(tExpression),1, tExpression)
+    THROW _DateTimeError(nameof(uExpression),1, uExpression)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />

@@ -450,6 +450,9 @@
         <summary>
             Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
         </summary>
+        <param name="uExpression">
+            Specifies the Date or DateTime expression from which <b>DMY( )</b> returns a character string in day-month-year format.
+        </param>
         <param name="dExpression">
             Specifies the Date expression from which <b>DMY( )</b> returns a character string in day-month-year format.
         </param>
@@ -857,6 +860,9 @@
         </remarks>
     </getwordnum>
     <gomonth>
+        <param name="uExpression">
+            Specifies a date or datetime expression for which GoMonth( ) returns the date.
+        </param>
         <param name="dExpression">
             Specifies a date expression for which GoMonth( ) returns the date.
         </param>
@@ -1295,6 +1301,9 @@
         <summary>
             Returns the specified date or datetime expression in month-day-year format with the name of the month spelled out.
         </summary>
+        <param name="uExpression">
+            Specifies the date or datetime expression to return in month-day-year format.
+        </param>
         <param name="dExpression">
             Specifies the date expression to return in month-day-year format.
         </param>
@@ -1642,6 +1651,9 @@
         <summary>
             Returns the quarter of the year in which a date or datetime expression occurs.
         </summary>
+        <param name="uExpression">
+            Specifies the <b>Date</b> or <b>DateTime</b> expression for which you want <b>Quarter( )</b> to return a value.
+        </param>
         <param name="dExpression">
             Specifies the <b>Date</b> expression for which you want <b>Quarter( )</b> to return a value.
         </param>
@@ -3089,6 +3101,7 @@
         <summary>
             Returns a number representing the week of the year from a Date or DateTime expression.
         </summary>
+        <param name="uExpression">Specifies the Date or DateTime for which WEEK( ) returns the week of the year.</param>
         <param name="dExpression">Specifies the Date for which WEEK( ) returns the week of the year.</param>
         <param name="tExpression">Specifies the DateTime expression for which WEEK( ) returns the week of the year.</param>
         <param name="nFirstWeek">
@@ -3215,21 +3228,21 @@
             Specifies the column subscript. If the array is two-dimensional, include both nRowSubscript and nColumnSubscript.
         </param>
         <remarks>
-            You can refer to an element in a two-dimensional array in one of two ways. 
-            The first method uses two subscripts to specify the row and column position of the element in the array, 
-            and the second method uses a single-element number. AELEMENT( ) returns the element number when supplied 
+            You can refer to an element in a two-dimensional array in one of two ways.
+            The first method uses two subscripts to specify the row and column position of the element in the array,
+            and the second method uses a single-element number. AELEMENT( ) returns the element number when supplied
             with an element's row and column subscripts.
-            The functions ADEL( ), ADIR( ), AFIELDS( ), AINS( ), ALEN( ), ASCAN( ), ASORT( ), and ASUBSCRIPT( ) 
-            can manipulate two-dimensional arrays and require that elements be referred to by their element number. 
-            AELEMENT( ) facilitates conversion from subscripts to an element number for use by these functions. 
+            The functions ADEL( ), ADIR( ), AFIELDS( ), AINS( ), ALEN( ), ASCAN( ), ASORT( ), and ASUBSCRIPT( )
+            can manipulate two-dimensional arrays and require that elements be referred to by their element number.
+            AELEMENT( ) facilitates conversion from subscripts to an element number for use by these functions.
             The corresponding row and column subscripts can be returned from an element number with ASUBSCRIPT( ).
             <code language="X#">
                 DIMENSION gaMyArray(2,3)
             </code>
-            An element can be referred to by its subscripts or its element number. 
+            An element can be referred to by its subscripts or its element number.
             The commands <c>STORE 'INVOICE' TO gaMyArray(2, 1) </c> and
             <c>STORE 'INVOICE' TO gaMyArray(4) </c>both store the character string INVOICE to the same array element.
-            In one-dimensional arrays, an element number is identical to its single-row subscript. 
+            In one-dimensional arrays, an element number is identical to its single-row subscript.
             It isn't necessary to use AELEMENT( ) with one-dimensional arrays.
         </remarks>
     </aelement>
@@ -3241,8 +3254,8 @@
             Specifies the array from which the element, row, or column is deleted.
         </param>
         <param name="nElementNumber">
-            Specifies the number of the element, row, or column to delete from the array. 
-            If the array is multidimensional, nElementNumber will specify the row. 
+            Specifies the number of the element, row, or column to delete from the array.
+            If the array is multidimensional, nElementNumber will specify the row.
             You must include the optional 2 argument to delete a column from the array.
             For more information on how to reference elements in an array, see DIMENSION Command.
         </param>
@@ -3250,10 +3263,10 @@
             Numeric
         </returns>
         <remarks>
-            Deleting an element or row from an array doesn't change the size of the array; 
-            instead, the trailing elements, rows, or columns are moved towards the start of 
-            the array, and the last element, row, or column in the array is set to False (.F.). 
-            If you delete a column, values of the elements in the deleted column are set to False (.F.), 
+            Deleting an element or row from an array doesn't change the size of the array;
+            instead, the trailing elements, rows, or columns are moved towards the start of
+            the array, and the last element, row, or column in the array is set to False (.F.).
+            If you delete a column, values of the elements in the deleted column are set to False (.F.),
             but trailing elements are not moved.
             If the element, row, or column is successfully deleted, 1 is returned.
         </remarks>
@@ -3392,5 +3405,5 @@
             </code>
         </example>
     </target>
-    
+
 </Runtimefunctions>

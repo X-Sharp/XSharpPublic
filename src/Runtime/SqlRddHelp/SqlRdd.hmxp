@@ -123,7 +123,7 @@
     <config-group name="project">
       <config-value name="title" translate="true">X# SQLRDD Help</config-value>
       <config-value name="author" translate="true">Robert van der Hulst</config-value>
-      <config-value name="copyright" translate="true">© 2024 XSharp BV</config-value>
+      <config-value name="copyright" translate="true">© 2025 XSharp BV</config-value>
       <config-value name="versionmajor">1</config-value>
       <config-value name="versionminor">0</config-value>
       <config-value name="versionbuild">0</config-value>

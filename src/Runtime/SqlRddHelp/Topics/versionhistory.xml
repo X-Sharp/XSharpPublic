@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-03-14T12:43:32.659+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-04-23T15:27:29.559+02:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Version History</title>
   <keywords>
     <keyword translate="true">BeforeConnect</keyword>
@@ -9,6 +9,13 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Version History</text></para>
     </header>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Version 1.0.0.3 April 2025</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Third Beta</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">We have added a setting </text><text styleclass="Normal" style="font-weight:bold;" translate="true">SeekReturnsSubset</text><text styleclass="Normal" translate="true">, which controls the behavior for Seek() operations. When TRUE (the default) then a Seek operation returns just the row(s) that match the Seek key.</text><br/><text styleclass="Normal" translate="true">When false, then all rows are returned and the cursor is positions on the first row that matches the key. You can then also Skip -1 to reach the rows before the row that matches the key</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">We have added the setting </text><text styleclass="Normal" style="font-weight:bold;" translate="true">MaxRecnoAsRecCount </text><text styleclass="Normal" translate="true">which controls how the RecCount in the RDD is calculated. When this setting is TRUE then the RecCount will be calculated from the maximum value of the Recno column. That could result in a RecCount that is larger than the physical # of rows in the table. This setting is only used for tables that have a RecnoColumn.</text></li>
+      <li styleclass="Normal"></li>
+    </list>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Version 1.0.0.1 - March 2024</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Second beta. Changes are:</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

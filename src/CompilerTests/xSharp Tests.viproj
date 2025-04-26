@@ -34,6 +34,7 @@ RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll
 RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VFP.dll
 RecentReference = GAC:XSharp.Core,v4,2.6.0.0
 RecentReference = GAC:XSharp.RT,v4,2.6.0.0
+RecentReference = Browse:E:\XSharp\Dev30\Artifacts\Debug\VOWin32APILibrary.dll
 
 [Application Groups]
 ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,723E53EA-0D2C-4FC9-B86E-F050D29A49D2
@@ -121419,11 +121420,12 @@ ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
 ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
 ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VFP.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev30\Artifacts\Debug\VOWin32APILibrary.dll,1,1
 [Tester Resources]
 [Tester Native Resources]
 [Tester License files]
 [Tester General Options]
-Switches=/ppo
+Switches=
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -121435,7 +121437,7 @@ VO5=0
 VO6=0
 VO7=0
 VO8=0
-VO9=1
+VO9=0
 VO10=0
 VO11=0
 VO12=0
@@ -121447,7 +121449,7 @@ VO17=0
 FOX1=0
 FOX2=0
 XPP1=0
-LateBound=1
+LateBound=0
 Unsafe=0
 Undeclared=0
 EnforceSelf=0
@@ -121460,8 +121462,8 @@ FOvf=0
 ModernSyntax=0
 NamedArgs=0
 InitLocals=0
-AllowOldStyleAssignments=1
-AllowDotOption=1
+AllowOldStyleAssignments=0
+AllowDotOption=0
 ResponseOnly=0
 [Tester Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
@@ -136639,8 +136641,8 @@ FileType = Code
 CopyToBin = 0
 [C934 - Problem calling error handler from BEGIN...END SEQUENCE References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C934 - Problem calling error handler from BEGIN...END SEQUENCE Resources]
 [C934 - Problem calling error handler from BEGIN...END SEQUENCE Native Resources]
 [C934 - Problem calling error handler from BEGIN...END SEQUENCE License files]
@@ -136887,8 +136889,8 @@ CopyToBin = 0
 [C936 - Exception with default parameters from type float References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C936 - Exception with default parameters from type float Resources]
 [C936 - Exception with default parameters from type float Native Resources]
 [C936 - Exception with default parameters from type float License files]
@@ -137008,8 +137010,8 @@ CopyToBin = 0
 [C937 - Late bound problem with enums References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C937 - Late bound problem with enums Resources]
 [C937 - Late bound problem with enums Native Resources]
 [C937 - Late bound problem with enums License files]
@@ -137129,8 +137131,8 @@ CopyToBin = 0
 [C938 - Latebound assign of iVars References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C938 - Latebound assign of iVars Resources]
 [C938 - Latebound assign of iVars Native Resources]
 [C938 - Latebound assign of iVars License files]

@@ -60,7 +60,7 @@
     <OutputPath>$(BinariesDir)$(ProjectName)\$(Configuration)</OutputPath>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>MSB3277</DisabledWarnings>
+    <NoWarn>MSB3277</NoWarn>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <WarningLevel>4</WarningLevel>

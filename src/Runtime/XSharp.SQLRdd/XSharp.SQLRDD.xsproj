@@ -24,7 +24,7 @@
     <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DisabledWarnings />
+    <NoWarn />
     <DebugType>full</DebugType>
     <DebuggerCommand>
     </DebuggerCommand>
@@ -34,7 +34,7 @@
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
     <EmitDebugInformation>true</EmitDebugInformation>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <DisabledWarnings />
+    <NoWarn />
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -136,12 +136,9 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>bin\DocChinese\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <OutputPath>bin\DocChinese\</OutputPath>
-  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'" />
 </Project>

@@ -16,7 +16,7 @@
     <unsafe>true</unsafe>
     <CS>false</CS>
     <vo15>true</vo15>
-    <DisabledWarnings>165, 168</DisabledWarnings>
+    <NoWarn>165, 168</NoWarn>
     <NamedArgs>false</NamedArgs>
     <InitLocals>false</InitLocals>
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
@@ -40,11 +40,11 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>False</Prefer32Bit>
     <RegisterForComInterop>False</RegisterForComInterop>
-    <DisabledWarnings>165, 168</DisabledWarnings>
+    <NoWarn>165, 168</NoWarn>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
-    <DisabledWarnings>165, 168, 1591,649,414,169,67,9015</DisabledWarnings>
+    <NoWarn>165, 168, 1591,649,414,169,67,9015</NoWarn>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>

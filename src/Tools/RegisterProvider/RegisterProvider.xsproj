@@ -30,7 +30,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings />
+    <NoWarn />
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <CommandLineOption />
@@ -48,7 +48,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings />
+    <NoWarn />
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <CommandLineOption />
@@ -88,4 +88,14 @@
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
 </Project>

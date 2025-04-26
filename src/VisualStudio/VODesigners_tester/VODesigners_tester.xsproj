@@ -26,13 +26,13 @@
     <EmitDebugInformation>true</EmitDebugInformation>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <DisabledWarnings />
+    <NoWarn />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
     <DefineConstants>TRACE</DefineConstants>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <DisabledWarnings />
+    <NoWarn />
     <AssemblyOriginatorKeyFile />
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
@@ -67,4 +67,14 @@
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
 </Project>

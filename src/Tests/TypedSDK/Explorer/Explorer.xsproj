@@ -58,7 +58,7 @@
     <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>9032%3b9043%3b618%3b162%3b649%3b9025%3b9021</DisabledWarnings>
+    <NoWarn>9032%3b9043%3b618%3b162%3b649%3b9025%3b9021</NoWarn>
     <PPO>false</PPO>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <Prefer32Bit>False</Prefer32Bit>
@@ -74,7 +74,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>9032%3b9043%3b618%3b162%3b649%3b9025%3b9021</DisabledWarnings>
+    <NoWarn>9032%3b9043%3b618%3b162%3b649%3b9025%3b9021</NoWarn>
     <PPO>false</PPO>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
     <Prefer32Bit>False</Prefer32Bit>
@@ -240,12 +240,9 @@
     <PostBuildEvent />
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>bin\DocChinese\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <OutputPath>bin\DocChinese\</OutputPath>
-  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'" />
 </Project>

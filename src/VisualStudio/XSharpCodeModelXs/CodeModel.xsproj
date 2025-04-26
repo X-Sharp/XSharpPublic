@@ -28,7 +28,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <DisabledWarnings>1591,219,165</DisabledWarnings>
+    <NoWarn>1591,219,165</NoWarn>
     <WarningLevel>4</WarningLevel>
     <DefineConstants>DEBUG</DefineConstants>
     <DocumentationFile>XSharp.CodeModel.Xml</DocumentationFile>
@@ -36,7 +36,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <DisabledWarnings>1591,219,165</DisabledWarnings>
+    <NoWarn>1591,219,165</NoWarn>
     <WarningLevel>4</WarningLevel>
     <DefineConstants>
     </DefineConstants>

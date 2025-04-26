@@ -16,7 +16,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>True</Prefer32Bit>
     <ErrorReport>prompt</ErrorReport>
-    <DisabledWarnings>1591</DisabledWarnings>
+    <NoWarn>1591</NoWarn>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <ApplicationIcon>$(SolutionDir)Tools\VOXporter\Source\VOXPorter\Resources\XSharp.ico</ApplicationIcon>
@@ -28,12 +28,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DefineConstants>NDEBUG</DefineConstants>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DisabledWarnings>1591</DisabledWarnings>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <DisabledWarnings>1591,9043</DisabledWarnings>
+    <NoWarn>1591,9043</NoWarn>
     <WarningLevel>0</WarningLevel>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
@@ -101,4 +101,14 @@
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
 </Project>

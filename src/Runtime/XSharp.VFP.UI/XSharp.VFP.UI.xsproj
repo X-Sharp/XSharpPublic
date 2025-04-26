@@ -40,7 +40,7 @@
     <WarningLevel>4</WarningLevel>
     <WarningsAsErrors />
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DisabledWarnings>$(DisabledWarnings);108,114</DisabledWarnings>
+    <NoWarn>$(DisabledWarnings);108,114</NoWarn>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>

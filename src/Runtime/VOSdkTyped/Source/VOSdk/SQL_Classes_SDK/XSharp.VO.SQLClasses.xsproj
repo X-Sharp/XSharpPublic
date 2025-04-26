@@ -26,7 +26,7 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
-    <DisabledWarnings>1591,9015,169,649,1573</DisabledWarnings>
+    <NoWarn>1591,9015,169,649,1573</NoWarn>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>

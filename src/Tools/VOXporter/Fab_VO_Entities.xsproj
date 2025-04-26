@@ -17,7 +17,7 @@
     <vo15>false</vo15>
     <Nostandarddefs>True</Nostandarddefs>
     <Allowdot>True</Allowdot>
-    <DisabledWarnings>165</DisabledWarnings>
+    <NoWarn>165</NoWarn>
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
     <PlatformTarget>x86</PlatformTarget>
     <NamedArgs>True</NamedArgs>
@@ -87,4 +87,14 @@
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
 </Project>

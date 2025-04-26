@@ -23,7 +23,7 @@
     <WarningsAsErrors />
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-     <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DefineConstants>DEBUG;TRACE;RUNTIME;DOCUMENTATION</DefineConstants>
@@ -78,6 +78,7 @@
     <Compile Include="Types\CompilerServices.prg" />
     <Compile Include="Types\Binary.prg" />
     <Compile Include="Types\Globals.prg" />
+    <Compile Include="Types\Usual.prg" />
     <Compile Include="Types\WinDate.prg" />
     <Compile Include="Types\Currency.prg" />
     <Compile Include="Types\Date.prg" />
@@ -87,7 +88,6 @@
     <Compile Include="Types\PSZ.prg" />
     <Compile Include="Types\FixedMemory.prg" />
     <Compile Include="Types\Symbol.prg" />
-    <Compile Include="Types\Usual.prg" />
     <Compile Include="Types\WinBool.prg" />
   </ItemGroup>
   <ItemGroup>
@@ -121,5 +121,9 @@
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
+    <DocumentationFile>XSharp.RT.Xml</DocumentationFile>
+    <DefineConstants>$(DefineConstants);DOCUMENTATION</DefineConstants>
   </PropertyGroup>
 </Project>

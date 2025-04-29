@@ -305,7 +305,7 @@
                                                                         ;
       => DbCopy(                                                        ;
                    <(file)>, <fields>,                                  ;
-                   <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>       ;
+                   <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>,      ;
                    <rdd>, { <(hdnlist)> }, <.noopt.>)
 
 

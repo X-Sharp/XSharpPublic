@@ -16,7 +16,7 @@
     <para styleclass="Normal">关键词</para>
     <para styleclass="Normal">标识符</para>
     <para styleclass="Normal">注释(单行、多行等)</para>
-    <para styleclass="Normal">操作符(+. -, := etc)</para>
+    <para styleclass="Normal">操作符(+. -, := 等)</para>
     <para styleclass="Normal">字符串(也用于字符常数)</para>
     <para styleclass="Normal">数字(也用于日期和日期时间字面量形式)</para>
     <para styleclass="Normal">字面量(NIL、符号、_AND、_OR、_NOT、_XOR)</para>

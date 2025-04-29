@@ -58,7 +58,7 @@
     </list>
     <para styleclass="Normal"></para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">增加对 BEGIN SEQUENCE ... END SEQUENCE 的支持。</li>
+      <li styleclass="Normal">增加对 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_BEGIN_SEQUENCE">BEGIN SEQUENCE ... END SEQUENCE</link> 的支持。</li>
     </list>
     <para styleclass="Normal"></para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

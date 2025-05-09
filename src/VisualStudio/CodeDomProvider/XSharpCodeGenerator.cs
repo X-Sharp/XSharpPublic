@@ -569,6 +569,7 @@ namespace XSharp.CodeDom
                     }
                     this.Indent++;
                     this.GenerateStatements(e.Statements);
+                    base.Output.Write(keywordEND + keywordCONSTRUCTOR);
                 }
                 this.Indent--;
                 if (e.HasEndingTrivia())
@@ -622,6 +623,7 @@ namespace XSharp.CodeDom
             base.Output.WriteLine();
             this.Indent++;
             this.GenerateStatements(e.Statements);
+            base.Output.Write(keywordEND + keywordFUNCTION);
             this.Indent--;
             base.Output.WriteLine();
             if (e.HasEndingTrivia())
@@ -972,7 +974,7 @@ namespace XSharp.CodeDom
                     }
                     this.Indent--;
                     // close the method.
-                    this.Output.Write("END METHOD");
+                    this.Output.Write(keywordEND+keywordMETHOD);
                     base.Output.WriteLine();
                     if (e.HasEndingTrivia())
                     {

@@ -1,12 +1,11 @@
-﻿//
-using Microsoft.Build.Framework;
+﻿using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Globalization;
 using System.IO;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Text;
 // Disable errors about public methods and properties that are not part of a declared API
 #pragma warning disable RS0016
@@ -58,17 +57,103 @@ namespace XSharp.Build
             var sb = new StringBuilder();
             foreach (var att in AssemblyAttributes)
             {
-                var name = att.ItemSpec;
-                if (name.EndsWith("Attribute"))
+                var attName = att.ItemSpec;
+
+                var customMetadata = att.CloneCustomMetadata();
+                List<object> orderedParameters = new List<object>(new object[customMetadata.Count + 1] /* max possible slots needed */);
+                var namedParameters = new NameValueCollection();
+
+                foreach (DictionaryEntry entry in customMetadata)
                 {
-                    name = name.Substring(0, name.Length - "Attribute".Length);
+                    string name = (string)entry.Key;
+                    string value = (string)entry.Value;
+                    if (name.StartsWith("_Parameter", StringComparison.OrdinalIgnoreCase))
+                    {
+
+                        if (!Int32.TryParse(name.Substring("_Parameter".Length), out var index))
+                        {
+                            base.Log.LogError("Invalid parameter name: " + name);
+                            return null;
+                        }
+
+                        if (index > orderedParameters.Count || index < 1)
+                        {
+                            base.Log.LogError("Invalid parameter number: " + name);
+                            return null;
+                        }
+
+                        // "_Parameter01" and "_Parameter1" would overwrite each other
+
+                        orderedParameters[index - 1] = value;
+                    }
+                    else
+                    {
+                        namedParameters.Add(name, value);
+
+                    }
                 }
-                var value = att.GetMetadata("_Parameter1");
-                sb.Append("[Assembly: " + name + "(\"");
-                sb.Append(value);
-                sb.AppendLine("\")]");
+                sb.Append("[Assembly: ");
+                sb.Append(attName + "(");
+                bool encounteredNull = false;
+                int iPars = 0;
+                for (int i = 0; i < orderedParameters.Count; i++)
+                {
+                    if (orderedParameters[i] == null)
+                    {
+                        // All subsequent args should be null, else a slot was missed
+                        encounteredNull = true;
+                        continue;
+                    }
+                   if (encounteredNull)
+                    {
+                        base.Log.LogError("Parameter {0} follows null parameter", i + 1);
+                        return null;
+                    }
+                    if (iPars > 0)
+                    {
+                        sb.Append(", ");
+                    }
+                    var value = orderedParameters[i];
+                    sb.Append(Obj2String(value));
+                    iPars++;
+                }
+                foreach (var name in namedParameters.AllKeys)
+                {
+                    if (iPars > 0)
+                    {
+                        sb.Append(", ");
+                    }
+                    sb.Append(name + " := ");
+                    sb.Append(Obj2String(namedParameters[name]));
+                    iPars++;
+                }
+                sb.Append(")]");
+                sb.AppendLine();
             }
             return sb.ToString();
+        }
+        string Obj2String(object o)
+        {
+            switch (o)
+            {
+                case short si:
+                    return si.ToString(CultureInfo.InvariantCulture);
+                case ushort usi:
+                    return usi.ToString(CultureInfo.InvariantCulture);
+                case int i:
+                    return i.ToString(CultureInfo.InvariantCulture);
+                case uint ui:
+                    return ui.ToString(CultureInfo.InvariantCulture);
+                case long i64:
+                    return i64.ToString(CultureInfo.InvariantCulture);
+                case ulong ui64:
+                    return ui64.ToString(CultureInfo.InvariantCulture);
+                case string s:
+                    return '"' + s + '"';
+                case null:
+                    return "null";
+            }
+            return o.ToString();
         }
     }
 }

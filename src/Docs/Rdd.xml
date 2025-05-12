@@ -1777,7 +1777,7 @@
         FUNCTION IgnoreDeleted()
         LOCAL oDBSales AS Sales
         oDBSales := Sales{}
-        oDBSales:SetFilter(!oDBSales:Deleted)
+        oDBSales:SetFilter("!Deleted()")
         oDBSales:GoTop()
         .
         . &lt;Process records&gt;
@@ -2191,9 +2191,9 @@
         FUNCTION IgnoreDeleted()
         LOCAL oDBSales AS Sales
         oDBSales := Sales{}
-        oDBSales:SetFilter(!oDBSales:Deleted)
+        oDBSales:SetFilter("!Deleted()")
         oDBSales:GoTop()		// move pointer to invoke filter
-        ? oDBSales:Filter		// !oDBSales:Deleted
+        ? oDBSales:Filter		// !Deleted()
         .
         . &lt;Process records&gt;
         .

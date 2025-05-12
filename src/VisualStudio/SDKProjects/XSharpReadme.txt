@@ -24,7 +24,7 @@ src\Microsoft.VisualStudio.ProjectSystem.Managed.VS\ProjectSystem\ProjectType.cs
 Directory.Build.props
 
 We have renamed:
-ProjectSystem.Sln to XSProjectSstem.sln
+ProjectSystem.Sln to XSProjectSystem.sln
 
 We will make the following changes later:
 - Change the PublicKey by setting the StrongNameKey property in the project files to XSharp

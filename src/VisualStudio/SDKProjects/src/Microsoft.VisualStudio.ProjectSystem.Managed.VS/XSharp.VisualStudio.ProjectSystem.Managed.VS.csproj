@@ -43,12 +43,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="ProjectSystem\VS\LanguageServices\CSharp\CSharpCodeDomProvider.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ProjectSystem\VS\LanguageServices\VisualBasic\VisualBasicCodeDomProvider.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Update="ProjectSystem\VS\PropertyPages\GetProfileNameDialog.xaml.cs">
       <DependentUpon>GetProfileNameDialog.xaml</DependentUpon>
     </Compile>
@@ -84,6 +78,37 @@
 
   <ItemGroup>
     <None Include="**\*.xlf" />
+    <Compile Remove="ProjectSystem\VS\Automation\CSharp\**" />
+    <Compile Remove="ProjectSystem\VS\Automation\VisualBasic\**" />
+    <Compile Remove="ProjectSystem\VS\CSharp\**" />
+    <Compile Remove="ProjectSystem\VS\FSharp\**" />
+    <Compile Remove="ProjectSystem\VS\LanguageServices\CSharp\**" />
+    <Compile Remove="ProjectSystem\VS\LanguageServices\VisualBasic\**" />
+    <Compile Remove="ProjectSystem\VS\Properties\CSharp\**" />
+    <Compile Remove="ProjectSystem\VS\Properties\FSharp\**" />
+    <Compile Remove="ProjectSystem\VS\Properties\VisualBasic\**" />
+    <Compile Remove="ProjectSystem\VS\VisualBasic\**" />
+    <EmbeddedResource Remove="ProjectSystem\VS\Automation\CSharp\**" />
+    <EmbeddedResource Remove="ProjectSystem\VS\Automation\VisualBasic\**" />
+    <EmbeddedResource Remove="ProjectSystem\VS\CSharp\**" />
+    <EmbeddedResource Remove="ProjectSystem\VS\FSharp\**" />
+    <EmbeddedResource Remove="ProjectSystem\VS\LanguageServices\CSharp\**" />
+    <EmbeddedResource Remove="ProjectSystem\VS\LanguageServices\VisualBasic\**" />
+    <EmbeddedResource Remove="ProjectSystem\VS\Properties\CSharp\**" />
+    <EmbeddedResource Remove="ProjectSystem\VS\Properties\FSharp\**" />
+    <EmbeddedResource Remove="ProjectSystem\VS\Properties\VisualBasic\**" />
+    <EmbeddedResource Remove="ProjectSystem\VS\VisualBasic\**" />
+    <None Remove="ProjectSystem\VS\Automation\CSharp\**" />
+    <None Remove="ProjectSystem\VS\Automation\VisualBasic\**" />
+    <None Remove="ProjectSystem\VS\CSharp\**" />
+    <None Remove="ProjectSystem\VS\FSharp\**" />
+    <None Remove="ProjectSystem\VS\LanguageServices\CSharp\**" />
+    <None Remove="ProjectSystem\VS\LanguageServices\VisualBasic\**" />
+    <None Remove="ProjectSystem\VS\Properties\CSharp\**" />
+    <None Remove="ProjectSystem\VS\Properties\FSharp\**" />
+    <None Remove="ProjectSystem\VS\Properties\VisualBasic\**" />
+    <None Remove="ProjectSystem\VS\VisualBasic\**" />
+    <Compile Remove="ProjectSystem\VS\LanguageServices\Handlers\CommandLineNotificationHandler.cs" />
     <Compile Remove="XSharp\IgnoresAccessChecksToAttribute.cs" />
     <EmbeddedResource Update="ProjectSystem\VS\PropertyPages\PropertyPageResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

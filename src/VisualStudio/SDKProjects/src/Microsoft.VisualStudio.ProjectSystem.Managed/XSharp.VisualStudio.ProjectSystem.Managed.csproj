@@ -700,6 +700,39 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="ProjectSystem\Imaging\CSharp\**" />
+    <Compile Remove="ProjectSystem\Imaging\FSharp\**" />
+    <Compile Remove="ProjectSystem\Imaging\VisualBasic\**" />
+    <Compile Remove="ProjectSystem\LanguageServices\CSharp\**" />
+    <Compile Remove="ProjectSystem\LanguageServices\FSharp\**" />
+    <Compile Remove="ProjectSystem\LanguageServices\VisualBasic\**" />
+    <Compile Remove="ProjectSystem\SpecialFileProviders\CSharp\**" />
+    <Compile Remove="ProjectSystem\SpecialFileProviders\VisualBasic\**" />
+    <EmbeddedResource Remove="ProjectSystem\Imaging\CSharp\**" />
+    <EmbeddedResource Remove="ProjectSystem\Imaging\FSharp\**" />
+    <EmbeddedResource Remove="ProjectSystem\Imaging\VisualBasic\**" />
+    <EmbeddedResource Remove="ProjectSystem\LanguageServices\CSharp\**" />
+    <EmbeddedResource Remove="ProjectSystem\LanguageServices\FSharp\**" />
+    <EmbeddedResource Remove="ProjectSystem\LanguageServices\VisualBasic\**" />
+    <EmbeddedResource Remove="ProjectSystem\SpecialFileProviders\CSharp\**" />
+    <EmbeddedResource Remove="ProjectSystem\SpecialFileProviders\VisualBasic\**" />
+    <None Remove="ProjectSystem\Imaging\CSharp\**" />
+    <None Remove="ProjectSystem\Imaging\FSharp\**" />
+    <None Remove="ProjectSystem\Imaging\VisualBasic\**" />
+    <None Remove="ProjectSystem\LanguageServices\CSharp\**" />
+    <None Remove="ProjectSystem\LanguageServices\FSharp\**" />
+    <None Remove="ProjectSystem\LanguageServices\VisualBasic\**" />
+    <None Remove="ProjectSystem\SpecialFileProviders\CSharp\**" />
+    <None Remove="ProjectSystem\SpecialFileProviders\VisualBasic\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ProjectSystem\DesignTimeTargets\Microsoft.CSharp.DesignTime.targets" />
+    <None Remove="ProjectSystem\DesignTimeTargets\Microsoft.FSharp.DesignTime.targets" />
+    <None Remove="ProjectSystem\DesignTimeTargets\Microsoft.VisualBasic.DesignTime.targets" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="ProjectSystem\Rules\Items\Resource.FSharp.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>

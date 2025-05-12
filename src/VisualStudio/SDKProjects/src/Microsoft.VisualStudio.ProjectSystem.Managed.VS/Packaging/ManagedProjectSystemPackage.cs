@@ -38,11 +38,11 @@ namespace Microsoft.VisualStudio.Packaging;
         // Get access to project services scope services.
         IProjectServiceAccessor projectServiceAccessor = componentModel.GetService<IProjectServiceAccessor>();
 
-            // Find package services in global scope.
-            IEnumerable<IPackageService> globalPackageServices = componentModel.GetExtensions<IPackageService>();
+        // Find package services in global scope.
+        IEnumerable<IXPackageService> globalPackageServices = componentModel.GetExtensions<IXPackageService>();
 
-            // Find package services in project service scope.
-            IEnumerable<IPackageService> projectServicesPackageServices = projectServiceAccessor.GetProjectService().Services.ExportProvider.GetExportedValues<IPackageService>(ExportContractNames.Scopes.ProjectService);
+        // Find package services in project service scope.
+        IEnumerable<IXPackageService> projectServicesPackageServices = projectServiceAccessor.GetProjectService().Services.ExportProvider.GetExportedValues<IXPackageService>(ExportContractNames.Scopes.ProjectService);
 
         // We initialize these on the main thread.
         await JoinableTaskFactory.SwitchToMainThreadAsync();

@@ -29,10 +29,10 @@ namespace Microsoft.VisualStudio.ProjectSystem.Imaging.XSharp
             { ".vnmnu", MenuIcon}
         };
 
-        //private static ProjectImageMoniker SourceIcon => XSharpImagesMonikers.FileImage.ToProjectSystemType();
+        private static ProjectImageMoniker SourceIcon => XSharpImagesMonikers.FileImage.ToProjectSystemType();
         private static ProjectImageMoniker HeaderIcon => KnownMonikers.CPPHeaderFile.ToProjectSystemType();
         private static ProjectImageMoniker ResourceIcon => KnownMonikers.ResourceType.ToProjectSystemType();
-        private static ProjectImageMoniker SourceIcon => KnownMonikers.VBSourceFile.ToProjectSystemType(); 
+        //private static ProjectImageMoniker SourceIcon => KnownMonikers.VBSourceFile.ToProjectSystemType(); 
         private static ProjectImageMoniker FormIcon => KnownMonikers.WindowsForm.ToProjectSystemType();
         private static ProjectImageMoniker DatabaseIcon => KnownMonikers.Database.ToProjectSystemType();
         private static ProjectImageMoniker FieldIcon => KnownMonikers.Column.ToProjectSystemType();

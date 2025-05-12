@@ -5,7 +5,7 @@
     <Identity Id="EDDCB5BE-3C18-444E-8E50-AE06CD345872" Version="|%CurrentProject%;GetVsixVersion|" Language="en-US" Publisher="XSharp BV" />
     <DisplayName>XSharp Managed project system</DisplayName>
     <Description xml:space="preserve">XSharp managed projectsystem.</Description>
-    <PackageId>Microsoft.VisualStudio.ProjectSystem.Managed</PackageId>
+    <PackageId>XSharp.VisualStudio.ProjectSystem.Managed</PackageId>
     <AllowClientRole>true</AllowClientRole>
   </Metadata>
   <Installation SystemComponent="true" Experimental="true">

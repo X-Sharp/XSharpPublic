@@ -261,9 +261,9 @@ internal sealed class Workspace : OnceInitializedOnceDisposedUnderLockAsync, IWo
             _logger.WriteLine("Initializing workspace from evaluation data");
 
             IProjectRuleSnapshot snapshot = evaluationUpdate.Value.EvaluationRuleUpdate.CurrentState[ConfigurationGeneral.SchemaName];
-
             snapshot.Properties.TryGetValue(ConfigurationGeneral.LanguageServiceNameProperty, out string? languageName);
             snapshot.Properties.TryGetValue(ConfigurationGeneral.MSBuildProjectFullPathProperty, out string? projectFilePath);
+#if !XSHARP
 
             if (string.IsNullOrEmpty(languageName) || string.IsNullOrEmpty(projectFilePath))
             {
@@ -275,7 +275,7 @@ internal sealed class Workspace : OnceInitializedOnceDisposedUnderLockAsync, IWo
 
                 return;
             }
-
+#endif
             try
             {
                 ProjectInstance projectInstance = evaluationUpdate.Value.ProjectSnapshot.ProjectInstance;
@@ -288,15 +288,32 @@ internal sealed class Workspace : OnceInitializedOnceDisposedUnderLockAsync, IWo
 
                 object? hostObject = _unconfiguredProject.Services.HostObject;
 
-                // Call into Roslyn to initialize language service for this project
-                _context = await _workspaceProjectContextFactory.Value.CreateProjectContextAsync(
+#if XSHARP
+                if (_unconfiguredProject.FullPath.ToLower().EndsWith(".xsproj"))
+                {
+                    languageName = "X#";
+                    _context = new XSharpWorkspaceProjectContext(_projectGuid,
+                                                    _contextId,
+                                                    languageName,
+                                                    evaluationData,
+                                                    hostObject,
+                                                    cancellationToken);
+                }
+                else
+                {
+#endif
+
+                    // Call into Roslyn to initialize language service for this project
+                    _context = await _workspaceProjectContextFactory.Value.CreateProjectContextAsync(
                     _projectGuid,
                     _contextId,
                     languageName,
                     evaluationData,
                     hostObject,
                     cancellationToken);
-
+#if XSHARP
+                }
+#endif
                 evaluationData.Release();
 
                 _contextCreated.TrySetResult();

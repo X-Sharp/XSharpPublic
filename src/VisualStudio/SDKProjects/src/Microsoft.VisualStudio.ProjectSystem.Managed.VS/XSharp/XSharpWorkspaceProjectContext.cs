@@ -53,7 +53,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
             }
         }
 
-        internal XSharpWorkspaceProjectContext(Guid projectGuid, string? contextId, string languageName, 
+        internal XSharpWorkspaceProjectContext(Guid projectGuid, string? contextId, string languageName,
             EvaluationData evaluationData, object? hostObject, CancellationToken cancellationToken)
         {
             Guid = Guid.NewGuid();
@@ -118,6 +118,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
 
         public void AddDynamicFile(string filePath, IEnumerable<string>? folderNames = null)
         {
+
             _xSharpProject?.AddFile(filePath); 
         }
 

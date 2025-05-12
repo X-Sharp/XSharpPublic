@@ -21,6 +21,7 @@
     <PackageTags>XSharp Roslyn Managed Project System VisualStudio</PackageTags>
     <NoWarn>$(NoWarn);NU5125</NoWarn>
     <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
+    <Commondir>e:\XSharp\Dev30\src\Common\</Commondir>
     <CodeModel>E:\XSharp\Dev30\Artifacts\Common\Release\XSharp.CodeModel.dll</CodeModel>
   </PropertyGroup>
 
@@ -104,9 +105,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\..\Common\Constants.cs" Link="Constants.cs" />
-    <Compile Include="..\..\..\Common\XSharpConstants.cs" Link="XSharpConstants.cs" />
-    <Compile Include="..\..\..\VisualStudio\ProjectBase\Wix\XProjectFileConstants.cs" Link="XProjectFileConstants.cs" />
+    <Compile Include="$(Commondir)Constants.cs" Link="Constants.cs" />
+    <Compile Include="$(Commondir)XSharpConstants.cs" Link="XSharpConstants.cs" />
+    <Compile Include="$(Commondir)XProjectFileConstants.cs" Link="XProjectFileConstants.cs" />
   </ItemGroup>
 
   <ItemGroup>

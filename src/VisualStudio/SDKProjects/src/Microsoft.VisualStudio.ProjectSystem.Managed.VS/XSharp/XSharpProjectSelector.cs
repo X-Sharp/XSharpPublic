@@ -11,10 +11,10 @@ using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.IAsyncServiceProvider
 
 namespace Microsoft.VisualStudio.ProjectSystem.VS.XSharp
 {
-    [Export(typeof(IPackageService))]
+    [Export(typeof(IXPackageService))]
     [Guid("DF89AA3B-6AE6-4971-8F78-1A03B346A7D5")]
     [ProvideObject(typeof(XSharpProjectSelector), RegisterUsing = RegistrationMethod.Assembly)]
-    internal sealed class XSharpProjectSelector : IVsProjectSelector, IPackageService, IDisposable
+    internal sealed class XSharpProjectSelector : IVsProjectSelector, IXPackageService, IDisposable
     {
         private const string MSBuildXmlNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
 
@@ -45,7 +45,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.VS.XSharp
             var doc = XDocument.Load(pszFilename);
             GetProjectFactoryGuid(doc, out guidProjectFactory);
         }
-
+         
         internal static void GetProjectFactoryGuid(XDocument doc, out Guid guidProjectFactory)
         {
             var nsm = new XmlNamespaceManager(new NameTable());

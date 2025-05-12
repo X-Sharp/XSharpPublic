@@ -6,3 +6,4 @@ using Microsoft.VisualStudio;
 // we also update src/ProductData/AssemblyVersions.tt inside VS repo, which is done during VS insertion.
 [assembly: ProvideCodeBaseBindingRedirection("XSharp.VisualStudio.ProjectSystem.Managed")]
 [assembly: ProvideCodeBaseBindingRedirection("XSharp.VisualStudio.ProjectSystem.Managed.VS")]
+[assembly: ProvideCodeBaseBindingRedirection("XSharp.CodeModel")]

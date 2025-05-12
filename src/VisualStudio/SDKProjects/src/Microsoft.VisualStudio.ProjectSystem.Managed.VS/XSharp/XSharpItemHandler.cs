@@ -36,7 +36,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices.Handlers
 
                 foreach (string includePath in difference.RemovedItems)
                 {
-                    if (IsDynamicFile(includePath))
+                    if (IsDynamicFile(includePath) || IsSourceFile(includePath))
                     {
                         RemoveFromContextIfPresent(context, includePath, logger);
                     }
@@ -44,7 +44,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices.Handlers
 
                 foreach (string includePath in difference.AddedItems)
                 {
-                    if (IsDynamicFile(includePath))
+                    if (IsDynamicFile(includePath) || IsSourceFile(includePath))
                     {
                         IImmutableDictionary<string, string> metadata = projectChange.After.Items.GetValueOrDefault(includePath, ImmutableStringDictionary<string>.EmptyOrdinal);
 
@@ -55,7 +55,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices.Handlers
                 // We Remove then Add changed items to pick up the Linked metadata
                 foreach (string includePath in difference.ChangedItems)
                 {
-                    if (IsDynamicFile(includePath))
+                    if (IsDynamicFile(includePath) || IsSourceFile(includePath))
                     {
                         IImmutableDictionary<string, string> metadata = projectChange.After.Items.GetValueOrDefault(includePath, ImmutableStringDictionary<string>.EmptyOrdinal);
 
@@ -74,8 +74,16 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices.Handlers
             {
                 string[]? folderNames = FileItemServices.GetLogicalFolderNames(Path.GetDirectoryName(_project.FullPath), fullPath, metadata);
 
-                logger.WriteLine("Adding dynamic file '{0}'", fullPath);
-                context.AddDynamicFile(fullPath, folderNames);
+                if (IsSourceFile(includePath))
+                {
+                    logger.WriteLine("Adding source file '{0}'", fullPath);
+                    context.AddSourceFile(fullPath, true, folderNames);
+                }
+                else
+                {
+                    logger.WriteLine("Adding dynamic file '{0}'", fullPath);
+                    context.AddDynamicFile(fullPath, folderNames);
+                }
                 bool added = _paths.Add(fullPath);
                 Assumes.True(added);
             }
@@ -87,8 +95,16 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices.Handlers
 
             if (_paths.Contains(fullPath))
             {
-                logger.WriteLine("Removing dynamic file '{0}'", fullPath);
-                context.RemoveDynamicFile(fullPath);
+                if (IsSourceFile(includePath))
+                {
+                    logger.WriteLine("Removing source file '{0}'", fullPath);
+                    context.RemoveSourceFile(fullPath);
+                }
+                else
+                {
+                    logger.WriteLine("Removing dynamic file '{0}'", fullPath);
+                    context.RemoveDynamicFile(fullPath);
+                }
 
                 bool removed = _paths.Remove(fullPath);
                 Assumes.True(removed);
@@ -109,6 +125,18 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices.Handlers
                 case XFileType.VOReport:
                 case XFileType.VOSqlTable:
                 case XFileType.NativeResource:
+                case XFileType.Header:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        private static bool IsSourceFile(string includePath)
+        {
+            var ft = XFileTypeHelpers.GetFileType(includePath);
+            switch (ft)
+            {
+                case XFileType.SourceCode:
                     return true;
                 default:
                     return false;

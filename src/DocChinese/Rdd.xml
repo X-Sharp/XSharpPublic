@@ -2020,7 +2020,7 @@
         FUNCTION IgnoreDeleted()
         LOCAL oDBSales AS Sales
         oDBSales := Sales{}
-        oDBSales:SetFilter(!oDBSales:Deleted)
+        oDBSales:SetFilter("!Deleted()")
         oDBSales:GoTop()
         .
         . &lt;处理记录&gt;
@@ -2484,9 +2484,9 @@
         FUNCTION IgnoreDeleted()
         LOCAL oDBSales AS Sales
         oDBSales := Sales{}
-        oDBSales:SetFilter(!oDBSales:Deleted)
+        oDBSales:SetFilter("!Deleted()")
         oDBSales:GoTop() // 移动指针以调用过滤器
-        ? oDBSales:Filter // !oDBSales:Deleted
+        ? oDBSales:Filter		// !Deleted()
         .
         . &lt;处理记录&gt;
         .

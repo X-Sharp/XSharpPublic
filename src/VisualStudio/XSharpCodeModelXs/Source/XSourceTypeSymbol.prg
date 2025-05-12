@@ -249,7 +249,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Clone AS XSourceTypeSymbol
          GET
             IF SELF:IsPartial .AND. SELF:File != NULL
-               RETURN SUPER:File:Project:Lookup(SELF:FullName, SELF:File:Usings:ToArray())
+               RETURN SUPER:File:Project:Lookup(SELF:FullName, SELF:File:Usings:ToArray()) astype XSourceTypeSymbol
             ENDIF
             RETURN SELF
          END GET

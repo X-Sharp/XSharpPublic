@@ -63,7 +63,7 @@ namespace XSharp.LanguageService
         readonly List<XDropDownMember> _members = null;
         readonly Dictionary<string, int> _membersDict = null;	// to speed up the lookup of members
         readonly List<XDropDownMember> _types = null;
-        readonly List<XProject> _projects = null;   
+        readonly List<XProject> _projects = null;
         XFile _file = null;
         uint _lastHashCode = 0;
         private int _lastLine;
@@ -164,7 +164,7 @@ namespace XSharp.LanguageService
                 textView.LostAggregateFocus += TextView_LostAggregateFocus;
                 textView.Closed += TextView_Closed;
                 StartOnIdleAsync(textViewAdapter).FireAndForget();
-                
+
 
             }
         }
@@ -412,7 +412,7 @@ namespace XSharp.LanguageService
                 // Load members from all partial type definitions inside this project
                 var usings = new List<string>();
                 usings.Add(type.Namespace);
-                var fullType = _file.Project.Lookup(type.Name, usings);
+                var fullType = _file.Project.Lookup(type.Name, usings) as XSourceTypeSymbol;
                 if (fullType != null)
                 {
                     members.AddRange(fullType.XMembers);
@@ -472,7 +472,7 @@ namespace XSharp.LanguageService
                         // load methods from other files
                         var usings = new List<string>();
                         usings.Add(xType.Namespace);
-                        var fullType = _file.Project.Lookup(xType.Name, usings);
+                        var fullType = _file.Project.Lookup(xType.Name, usings) as XSourceTypeSymbol;
                         if (fullType != null)
                         {
                             foreach (var member in fullType.XMembers)
@@ -838,7 +838,7 @@ namespace XSharp.LanguageService
                         imageIndex = _members[index].Glyph;
                     break;
                 case PROJECTINDEX: // projects
-                    imageIndex = projectIcon; 
+                    imageIndex = projectIcon;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

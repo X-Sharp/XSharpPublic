@@ -20,13 +20,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <DisabledWarnings>165</DisabledWarnings>
+    <NoWarn>165</NoWarn>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <DefineConstants>TRACE</DefineConstants>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <DisabledWarnings>165</DisabledWarnings>
+    <NoWarn>165</NoWarn>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
@@ -62,4 +62,14 @@
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
 </Project>

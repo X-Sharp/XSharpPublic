@@ -37,7 +37,7 @@
     <ApplicationIcon />
     <Prefer32Bit>True</Prefer32Bit>
     <ErrorReport>prompt</ErrorReport>
-    <DisabledWarnings>1591</DisabledWarnings>
+    <NoWarn>1591</NoWarn>
     <NamedArgs>True</NamedArgs>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <Allowdot>True</Allowdot>
@@ -51,7 +51,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <UseSharedCompilation>false</UseSharedCompilation>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DisabledWarnings>1591</DisabledWarnings>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -118,4 +118,14 @@
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
 </Project>

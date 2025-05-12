@@ -48,10 +48,10 @@ partial class SQLRDD inherit DBFVFP
     /// 0 based Column Number for the column that has the record number
     /// </summary>
     private _recnoColumNo   as long
-    private _recordKeyCache as Dictionary<long, long>
+    private _recordKeyCache as Dictionary<dword, long>
 
     private _numHiddenColumns as long
-    private _serverReccount as LONG
+    private _serverReccount as dword
     private _baseRecno as logic
 
 #region Properties

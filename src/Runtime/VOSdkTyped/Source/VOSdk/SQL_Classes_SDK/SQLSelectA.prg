@@ -134,13 +134,13 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
     /// <include file="Sql.xml" path="doc/SQLSelect.LastRec/*" />
-    PROPERTY LastRec AS LONG
+    PROPERTY LastRec AS DWORD
         GET
             IF ! SELF:__ForceOpen()
                 RETURN 0
             ENDIF
             IF SELF:oTable != NULL
-                RETURN SELF:oTable:Rows:Count
+                RETURN (DWORD) SELF:oTable:Rows:Count
             ENDIF
             RETURN 0
         END GET
@@ -192,11 +192,11 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
     PROPERTY ReadOnly as LOGIC GET SELF:lReadOnly SET SELF:lReadOnly := value
 
     /// <include file="Sql.xml" path="doc/SQLSelect.RecCount/*" />
-    PROPERTY RecCount AS LONG GET SELF:LastRec
+    PROPERTY RecCount AS DWORD GET SELF:LastRec
 
 
     /// <include file="Sql.xml" path="doc/SQLSelect.RecNo/*" />
-    PROPERTY RecNo AS LONG
+    PROPERTY RecNo AS DWORD
         GET
             IF ! SELF:__ForceOpen()
                 RETURN 0

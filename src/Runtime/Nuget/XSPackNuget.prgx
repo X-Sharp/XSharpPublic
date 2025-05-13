@@ -1,0 +1,125 @@
+USING System
+USING System.Collections.Generic
+USING System.Linq
+USING System.Text
+USING System.Diagnostics
+
+VAR Tool := ""
+IF Args:Count >= 1
+	Tool := Args[0]
+ENDIF
+
+VAR Root := "..\Dev"
+
+VAR VersionFile := Root + "\src\Common\BuildNumber.h"
+
+VAR SourceFolder := Root + "\Artifacts\Release"
+VAR Version := GetBuildNumber( VersionFile )
+
+IF Args:Count >= 2
+	SourceFolder := Args[1]
+ENDIF
+IF Args:Count >= 3
+	Version := Args[2]
+ENDIF
+
+IF String.IsNullOrEmpty( Tool )
+	Console.WriteLine( "Usage : XSPackNuget <Tool> [<SourceFolder> [<Version>] ]" )
+    Console.WriteLine( "<Tool> should be Core, RT, VOSDK, VO, VFP, XPP")
+	Console.WriteLine( "<SourceFolder> indicate the Path where files are stored")
+	Console.WriteLine( "<Version> indicate the version of the package to generate")
+	RETURN
+ENDIF
+
+Console.WriteLine( "Running XSPackNuget ..." )
+Console.WriteLine( "Tool : " + Tool )
+Console.WriteLine( "Source Folder : " + SourceFolder )
+Console.WriteLine( "Version : " + Version )
+//
+var result := CheckNuGet()
+IF ( ! result )
+    Console.WriteLine( "The application 'Microsoft.NuGet' is NOT installed." )
+    Console.WriteLine( "Please run : winget install Microsoft.NuGet" )
+    RETURN
+ENDIF
+
+CreateNuSpec( SourceFolder, Tool, Version )
+
+IF !RunNuget( Tool, Version )
+	Console.WriteLine( "Something went wrong...." )
+ENDIF
+Console.WriteLine( "Done." )
+
+FUNCTION GetBuildNumber( versionFile AS STRING ) AS String
+	VAR version := "3.0.0"
+	VAR number := ""
+	VAR versionDef := "FILEVERSION_NUMBER"
+	//
+	VAR content := File.ReadLines( versionFile )
+	FOREACH VAR line in content
+		VAR pos := line:IndexOf( versionDef )
+		IF ( pos >= 0 )
+			number := line:SubString( pos + versionDef:Length + 1 )
+			number := number:Replace( e"\"", "" )
+			version := number:Trim()
+			EXIT
+ 		ENDIF
+	NEXT
+	// More than 3 digits and ends with .0 ?
+	IF ( version:Count( { c => c == '.' } ) == 3 ) .AND. version:EndsWith( ".0" )
+		version := version:SubString( 0, version:Length - 2 )
+	ENDIF
+RETURN version
+
+FUNCTION CheckNuGet() AS LOGIC
+	VAR result := FALSE
+	//
+	var startInfo := ProcessStartInfo{}
+	startInfo:FileName := "winget.exe"
+	startInfo:Arguments := "list"
+	startInfo:RedirectStandardOutput := true
+	startInfo:UseShellExecute := false
+	startInfo:CreateNoWindow := true
+
+	BEGIN USING var WinGetExe := Process.Start(startInfo)
+		BEGIN USING VAR reader := WinGetExe:StandardOutput
+			var execResult := reader:ReadToEnd()
+			result := execResult:Contains( "Microsoft.NuGet" )
+		END USING
+	END USING
+RETURN result
+
+PROCEDURE CreateNuSpec( sourceFolder AS STRING, tool AS String, version AS STRING )
+	VAR source := "XSharp." + tool + ".nuspec.txt"
+	VAR destination := "XSharp." + tool + "." + version +".nuspec"
+	VAR content := ""
+	//
+	content := File.ReadAllText( source )
+	content := content:Replace( "$SourceFolder", sourceFolder )
+	content := content:Replace( "$Version", version )
+	File.WriteAllText( destination, content )
+	//
+RETURN
+
+FUNCTION RunNuget( tool AS String, version AS STRING ) AS LOGIC
+	VAR fileName := "XSharp." + tool + "." + version + ".nuspec"
+	VAR nupkg := "XSharp." + tool + "." + version + ".nupkg"
+	VAR success := false
+	//
+	var startInfo := ProcessStartInfo{}
+	startInfo:FileName := "nuget.exe"
+	startInfo:Arguments := "pack " + fileName
+	startInfo:RedirectStandardOutput := true
+	startInfo:UseShellExecute := false
+	startInfo:CreateNoWindow := true
+
+	BEGIN USING var WinGetExe := Process.Start(startInfo)
+		BEGIN USING VAR reader := WinGetExe:StandardOutput
+			var execResult := reader:ReadToEnd()
+			success := execResult:Contains( nupkg )
+			IF !success
+				Console.WriteLine( execResult )
+			ENDIF
+		END USING
+	END USING
+RETURN success

@@ -1914,7 +1914,7 @@ namespace XSharp.Project
         public XSourceTypeSymbol ResolveXType(string name, IList<string> usings)
         {
             var model = this.ProjectModel;
-            XSourceTypeSymbol result = model.Lookup(name, usings);
+            XSourceTypeSymbol result = model.Lookup(name, usings) as XSourceTypeSymbol;
             if (result != null)
                 return result;
             return result;

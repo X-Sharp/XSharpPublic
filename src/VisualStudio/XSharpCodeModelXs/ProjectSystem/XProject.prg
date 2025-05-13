@@ -979,7 +979,7 @@ BEGIN NAMESPACE XSharpModel
         RETURN myusings:ToList()
 
 
-    PRIVATE _lastFound := NULL AS XSourceTypeSymbol
+    PRIVATE _lastFound := NULL AS IXTypeSymbol
     PRIVATE _lastName  := NULL AS STRING
 
     METHOD GetTypesLike( startWith AS STRING, usings AS IList<STRING>) AS IList<XSourceTypeSymbol>
@@ -1015,11 +1015,11 @@ BEGIN NAMESPACE XSharpModel
         endif
         RETURN result
 
-    METHOD Lookup(typeName AS STRING) AS XSourceTypeSymbol
+    METHOD Lookup(typeName AS STRING) AS IXTypeSymbol
         VAR usings := List<STRING>{}
         RETURN SELF:Lookup(typeName, usings)
 
-    METHOD Lookup(typeName AS STRING, usings AS IList<STRING>) AS XSourceTypeSymbol
+    METHOD Lookup(typeName AS STRING, usings AS IList<STRING>) AS IXTypeSymbol
         // lookup Type definition in this project and X# projects referenced by this project
         SELF:LogTypeMessage(i"Lookup {typeName}")
         VAR originalName := typeName
@@ -1051,6 +1051,17 @@ BEGIN NAMESPACE XSharpModel
             var elements := originalName:Split(<char>{'.'})
             var first := SELF:Lookup(elements.First(), usings)
             if first != NULL
+                if elements.Length > 1
+                    var mem := elements[1]
+                    foreach var m in first.Members
+                        if String.Equals(m.Name, mem, StringComparison.OrdinalIgnoreCase)
+                            m.Resolve()
+                            _lastFound := m.ResolvedType
+                            return _lastFound
+                        endif
+                    next
+                endif
+
                 typeName := first:FullName + "." + typeName
                 return SELF:Lookup(typeName, usings)
             endif
@@ -1301,11 +1312,13 @@ BEGIN NAMESPACE XSharpModel
         sb:AppendLine("END CLASS")
         VAR walker := SourceWalker{oFile, FALSE}
         walker:Parse(sb:ToString())
-        foreach var entity in walker:EntityList
-            if entity is XSourceMemberSymbol var sms
-                entities:Add(sms)
-            endif
-        next
+        if (walker:EntityList != null)
+            foreach var entity in walker:EntityList
+                if entity is XSourceMemberSymbol var sms
+                    entities:Add(sms)
+                endif
+            next
+        endif
         if entities:Count == list:Count
             FOR var i := 0 to entities:Count-1
                 var entity := (XSourceMemberSymbol) entities[i]

@@ -69,6 +69,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY TypeParameters AS IList<STRING> GET
       PROPERTY DeclaringType  AS STRING GET
       PROPERTY IsExtension    AS LOGIC GET
+      METHOD Resolve() as VOID
       PROPERTY XMLSignature   AS STRING GET
       PROPERTY OriginalTypeName  AS STRING GET
       PROPERTY IsGeneric      AS LOGIC GET

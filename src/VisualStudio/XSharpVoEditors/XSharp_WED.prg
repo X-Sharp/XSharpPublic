@@ -352,7 +352,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
         VAR rootNs := oFile:Project:ProjectNode:RootNameSpace
         VAR usings := List<STRING>{}
         usings:Add(rootNs)
-        oType := oProject:Lookup(cClass,usings)
+        oType := oProject:Lookup(cClass,usings) ASTYPE XSharpModel.XSourceTypeSymbol
         IF cName:ToUpper() == "CLASSDECLARATION"
             IF (oType != NULL_OBJECT)
                 oType:OpenEditor()

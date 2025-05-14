@@ -9,7 +9,7 @@ IF Args:Count >= 1
 	Tool := Args[0]
 ENDIF
 
-VAR Root := "..\Dev"
+VAR Root := "..\..\.."
 
 VAR VersionFile := Root + "\src\Common\BuildNumber.h"
 

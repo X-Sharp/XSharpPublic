@@ -10,30 +10,43 @@ IF Args:Count >= 1
 ENDIF
 
 VAR Root := "..\..\.."
-
+VAR Build := "Release"
 VAR VersionFile := Root + "\src\Common\BuildNumber.h"
 
-VAR SourceFolder := Root + "\Artifacts\Release"
 VAR Version := GetBuildNumber( VersionFile )
 
 IF Args:Count >= 2
-	SourceFolder := Args[1]
+	Build := Args[1]
 ENDIF
+
+VAR SourceFolder := Root + "\Artifacts\" + Build
+VAR OutputFolder := Root + "\Artifacts\Packages\" + Build
+
 IF Args:Count >= 3
-	Version := Args[2]
+	SourceFolder := Args[2]
+ENDIF
+IF Args:Count >= 4
+	OutputFolder := Args[3]
+ENDIF
+IF Args:Count >= 5
+	Version := Args[4]
 ENDIF
 
 IF String.IsNullOrEmpty( Tool )
-	Console.WriteLine( "Usage : XSPackNuget <Tool> [<SourceFolder> [<Version>] ]" )
+	Console.WriteLine( "Usage : XSPackNuget <Tool> [ <Build> [ <SourceFolder> [ <OutputFolder> [<VersionNumber>] ] ] ] " )
     Console.WriteLine( "<Tool> should be Core, RT, VOSDK, VO, VFP, XPP")
-	Console.WriteLine( "<SourceFolder> indicate the Path where files are stored")
-	Console.WriteLine( "<Version> indicate the version of the package to generate")
+    Console.WriteLine( "<Build> indicate the Build version to use. Release per default.")
+	Console.WriteLine( "<SourceFolder> indicate the Path where files are stored. Artifacts\<Build> per default")
+	Console.WriteLine( "<OutputFolder> indicate the Path where the packages are generated. Artifacts\Packages\<Build> per default")
+	Console.WriteLine( "<VersionNumber> indicate the version of the package to generate. Using current version number per default.")
 	RETURN
 ENDIF
 
 Console.WriteLine( "Running XSPackNuget ..." )
 Console.WriteLine( "Tool : " + Tool )
+Console.WriteLine( "Build : " + Build )
 Console.WriteLine( "Source Folder : " + SourceFolder )
+Console.WriteLine( "Output Folder : " + OutputFolder )
 Console.WriteLine( "Version : " + Version )
 //
 var result := CheckNuGet()
@@ -45,7 +58,7 @@ ENDIF
 
 CreateNuSpec( SourceFolder, Tool, Version )
 
-IF !RunNuget( Tool, Version )
+IF !RunNuget( Tool, Version, OutputFolder )
 	Console.WriteLine( "Something went wrong...." )
 ENDIF
 Console.WriteLine( "Done." )
@@ -101,14 +114,14 @@ PROCEDURE CreateNuSpec( sourceFolder AS STRING, tool AS String, version AS STRIN
 	//
 RETURN
 
-FUNCTION RunNuget( tool AS String, version AS STRING ) AS LOGIC
+FUNCTION RunNuget( tool AS String, version AS STRING, outputDirectory AS STRING ) AS LOGIC
 	VAR fileName := "XSharp." + tool + "." + version + ".nuspec"
 	VAR nupkg := "XSharp." + tool + "." + version + ".nupkg"
 	VAR success := false
 	//
 	var startInfo := ProcessStartInfo{}
 	startInfo:FileName := "nuget.exe"
-	startInfo:Arguments := "pack " + fileName
+	startInfo:Arguments := "pack " + fileName + " -OutputDirectory " + outputDirectory
 	startInfo:RedirectStandardOutput := true
 	startInfo:UseShellExecute := false
 	startInfo:CreateNoWindow := true

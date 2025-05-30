@@ -8,30 +8,27 @@ using System.Collections.Generic
 
 global options := "TrimTrailingSpaces=False;UseNulls=False;" as STRING
 
-global SqlConnStr := "Server=(local);Initial catalog=Northwind;Trusted_Connection=True;"+options as STRING
-global ODBCConnStr := "Driver={SQL Server};Server=(local);Database=Northwind;Trusted_Connection=Yes;"+options as STRING
-global OleDbConnStr := "Provider=sqloledb;Data Source=(local);Initial Catalog=Northwind;Integrated Security=SSPI;"+options as STRING
+global SqlConnStr := "Server=(local);Initial catalog=Northwind;Trusted_Connection=True;LegacyFieldTypes=False;"+options as STRING
+global ODBCConnStr := "Driver={SQL Server};Server=LEDA;Database=Northwind;Trusted_Connection=Yes;"+options as STRING
+global OleDbConnStr := "Provider=sqloledb;Data Source=LEDA;Initial Catalog=Northwind;Integrated Security=SSPI;"+options as STRING
 global showEvents := true as logic
 
 function Start as void
-    TestTriss()
     //TestProviders()
-    //estSqlServer()
+    //TestSqlServer()
     //TestODBC()
     //TestOLEDB()
     //     TestRDDODBC()
     //     TestRDDOLEDB()
     //TestRDDSql()
-    //     TestCommandSql()
-    //     TestCommandSql()
-    //     TestCommandODBC()
-    //     TestCommandODBC()
-    //     TestCommandOLEDB()
-    //     TestCommandOLEDB()
-    //     TestParametersODBC()
-    //     TestParametersSQL()
-    //     TestParametersOLEDB()
-    //TestTable()
+
+//     TestCommandSql()
+//     TestCommandODBC()
+//     TestCommandOLEDB()
+//     TestParametersODBC()
+//     TestParametersSQL()
+//     TestParametersOLEDB()
+    TestTable()
     //TestCreateIndex()
     //TestServerFilter()
     //TestTableRecno()
@@ -176,13 +173,15 @@ function ListSeek as void
     ? "Seek Customer with key ALFKI"
     DbSetOrder("PK")
     DbSeek("ALFKI")
-    do while ! Eof() .and. Recno() < 10
+    var iCounter := 0
+    do while ! Eof() .and. iCounter++ < 5
         ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
         DbSkip(1)
     enddo
     ? "Seek Customer with key GOURL"
     DbSeek("GOURL")
-    do while ! Eof() .and. Recno() < 10
+    iCounter := 0
+    do while ! Eof() .and. iCounter++ < 5
         ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
         DbSkip(1)
     enddo
@@ -563,8 +562,8 @@ FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs)
         case "Index:Customers"
             e:Value := "PK,CompanyName,ContactName,Address"
         end switch
-//     case SqlRDDEventReason.SeekReturnsSubset
-//         e:Value := FALSE
+     case SqlRDDEventReason.SeekReturnsSubset
+         e:Value := TRUE
     end switch
     if showEvents
         ? "Event", e:Name, e:Reason:ToString(), e:Value
@@ -575,7 +574,7 @@ function TestProviders as void
     local oProv as ISqlDbProvider
     local oProvider := MySqlClientFactory.Instance AS DbProviderFactory
     ? oProvider:CreateConnection():GetType():FullName
-    local aTest := {"Advantage","ODBC","OLEDB","SQLSERVER","MySql","ORACLE"}
+    local aTest := {"ODBC","OLEDB","SQLSERVER","MySql","ORACLE", "PostgreSql"} // "Advantage",
     foreach strProv as STRING in aTest
         if SqlDbSetProvider(strProv)
             oProv := SqlDbGetProvider()
@@ -776,17 +775,6 @@ function TestTransaction()
             ? e:Message
         END TRY
         RETURN
-
-FUNCTION TestTriss() AS VOID
-        SqlDbSetProvider("SQLSERVER")
-        RddSetDefault("SQLRDD")
-        SqlDbOpenConnection("Server=(local);Initial catalog=Triss2000Test;Trusted_Connection=True;", EventHandler)
-        var conn  := SqldbGetConnection("DEFAULT")
-        conn:MetadataProvider := SqlMetaDataProviderDatabase{conn}
-        local oSrv := dbServer{"Printer"} as dbServer
-        do while ! oSrv:Eof
-            ? oSrv:Skip(1)
-        enddo
 
 FUNCTION TestGsTutor() AS VOID
 //     local aOrders as array

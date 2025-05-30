@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2025-04-23T15:04:46.331+02:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic modified="2025-04-30T13:33:14.035+02:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Connection Strings</title>
   <body>
     <header>
@@ -9,7 +9,7 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The connection strings for the various DBMS&apos;s are all slightly different. We recommand that yo check the documentation for the DotNet provider for these.</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The SQLRDD has added support for the following extra elements in the connection string.</text><br/><text styleclass="Normal" translate="true">Each of the settings can be enabled/disabled with a True/False value.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="10" colcount="4">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="12" colcount="4">
       <thead style="vertical-align:top">
         <td style="width:174px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Keyword (case insensitive)</text></para>
@@ -30,6 +30,20 @@
         </td>
         <td style="width:339px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Should updates for tables be allowed by default</text></para>
+        </td>
+        <td style="width:61px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">TRUE</text></para>
+        </td>
+        <td style="width:142px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:174px;">
+          <para styleclass="Body Text"><text styleclass="Body Text" translate="true">CompareMemo</text></para>
+        </td>
+        <td style="width:339px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Should memo columns be included when generating where clause for updates or deletes?</text></para>
         </td>
         <td style="width:61px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">TRUE</text></para>
@@ -75,6 +89,20 @@
         </td>
         <td style="width:61px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">True</text></para>
+        </td>
+        <td style="width:142px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:174px;">
+          <para styleclass="Body Text"><text styleclass="Body Text" translate="true">Maxrecords</text></para>
+        </td>
+        <td style="width:339px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The maximum number of rows to return</text></para>
+        </td>
+        <td style="width:61px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">1000</text></para>
         </td>
         <td style="width:142px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>

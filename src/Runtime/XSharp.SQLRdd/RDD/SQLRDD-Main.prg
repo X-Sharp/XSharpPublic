@@ -399,7 +399,18 @@ partial class SQLRDD inherit DBFVFP
             bag:Close()
         next
         _connection:UnregisterRdd(self)
+        var indexes := List<string>{}
+        foreach var index in self:OrderBagList
+            indexes:Add(index:FullPath)
+        next
+
         lOk := super:Close()
+        foreach var indexFile in indexes
+            if File.Exists(indexFile)
+                File.Delete(indexFile)
+            endif
+        next
+
         if File.Exists(SELF:FileName)
             File.Delete(SELF:FileName)
         endif

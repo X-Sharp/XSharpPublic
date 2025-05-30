@@ -176,6 +176,8 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 if Int32.TryParse(strValue, out var max)
                     self:MaxRecords := max
                 endif
+            case "maxrecnoasreccount"
+                self:MaxRecnoAsRecCount := isTrue
             case "recnocolumn"
                 self:RecnoColumn := strValue
             case "updateallcolumns"
@@ -186,8 +188,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 self:TrimTrailingSpaces := isTrue
             case "usenulls"
                 self:UseNulls := isTrue
-            case "maxrecnoasreccount"
-                self:MaxRecnoAsRecCount := isTrue
             otherwise
                 builder:Add(key, strValue)
             end switch

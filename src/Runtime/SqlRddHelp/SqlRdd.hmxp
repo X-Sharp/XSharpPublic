@@ -8,10 +8,21 @@
           <export-task name="Publish as CHM" format="CHM">
             <task-config-group name="settings">
               <task-config-value name="outputfile">sqlrdd.chm</task-config-value>
-              <task-config-value name="skin">..\..\..\..\Dev\docs\Help\XSharp.hmskin</task-config-value>
+              <task-config-value name="skin">..\..\..\docs\Help\XSharp.hmskin</task-config-value>
               <task-config-value name="deletetemp">1</task-config-value>
               <task-config-value name="make0include">CHM</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
+            </task-config-group>
+          </export-task>
+          <export-task name="New Publish Definition" format="PDF">
+            <task-config-group name="settings">
+              <task-config-value name="outputfile">SqlRdd.pdf</task-config-value>
+              <task-config-value name="template">..\..\..\docs\Help\Standard_manual_A4.mnl</task-config-value>
+              <task-config-value name="highlighthotspots">0</task-config-value>
+              <task-config-value name="exportcomments">0</task-config-value>
+              <task-config-value name="exportcommentsdate">36526</task-config-value>
+              <task-config-value name="make4include">PDF</task-config-value>
+              <task-config-value name="make4status">*</task-config-value>
             </task-config-group>
           </export-task>
         </export-tasks>
@@ -131,11 +142,11 @@
       <config-value name="bidimode"></config-value>
       <config-value name="charset" translate="true">DEFAULT_CHARSET</config-value>
       <config-value name="deffont">font-family:'MS Sans Serif'; font-size:8pt; color:#000000;</config-value>
-      <config-value name="contents">Welcome</config-value>
+      <config-value name="contents">The-SqlRDD</config-value>
       <config-value name="autohelpstart">0</config-value>
       <config-value name="autohelpincrement">1</config-value>
       <config-value name="autohelpanchor">0</config-value>
-      <config-value name="searchpath">.\Images\;.\;.\Baggage\;.\Maps\;.\Topics\</config-value>
+      <config-value name="searchpath">.\Images\;.\;.\Maps\;.\Topics\</config-value>
       <config-value name="imageshortcuts"></config-value>
       <config-value name="imageshortcuts_includebaggage">1</config-value>
       <config-value name="make0include">CHM</config-value>
@@ -147,6 +158,8 @@
       <config-value name="historyfilecount">10</config-value>
       <config-value name="historykeepdeletedfiles">0</config-value>
       <config-value name="vcsmanuallycheckout">0</config-value>
+      <config-value name="make4include">PDF</config-value>
+      <config-value name="make4status">*</config-value>
     </config-group>
     <config-group name="hlp">
       <config-value name="citation" translate="true"></config-value>
@@ -169,7 +182,7 @@ AA(0x46,2,Find())
       <config-value name="usesecondarywindows">0</config-value>
       <config-value name="outputfile">sqlrdd.chm</config-value>
       <config-value name="deletetemp">1</config-value>
-      <config-value name="skin">..\..\..\..\Dev\docs\Help\XSharp.hmskin</config-value>
+      <config-value name="skin">..\..\..\docs\Help\XSharp.hmskin</config-value>
     </config-group>
     <config-group name="hxs">
       <config-value name="namespace"></config-value>
@@ -417,7 +430,7 @@ AA(0x46,2,Find())
       <config-value name="outputfile">.\RddHtml\index.html</config-value>
     </config-group>
     <config-group name="pdf">
-      <config-value name="template">..\Docs\Standard_manual_A4.mnl</config-value>
+      <config-value name="template">..\..\..\docs\Help\Standard_manual_A4.mnl</config-value>
       <config-value name="style">0</config-value>
       <config-value name="createoutline">1</config-value>
       <config-value name="createhotspots">1</config-value>
@@ -445,7 +458,10 @@ AA(0x46,2,Find())
       <config-value name="cidfontmode">0</config-value>
       <config-value name="newfontsubsetting">1</config-value>
       <config-value name="textasglyphs">0</config-value>
-      <config-value name="outputfile">adordd.pdf</config-value>
+      <config-value name="outputfile">SqlRdd.pdf</config-value>
+      <config-value name="highlighthotspots">0</config-value>
+      <config-value name="exportcomments">0</config-value>
+      <config-value name="exportcommentsdate">36526</config-value>
     </config-group>
     <config-group name="rtf">
       <config-value name="papersize">A4 210 x 297 mm</config-value>
@@ -518,7 +534,7 @@ AA(0x46,2,Find())
       </config-group>
     </config-group>
     <variables>
-      <variable type="text" translate="true"></variable>
+      <variable id="TXTVERSION" type="text" translate="true">1.0.0.3 - Beta 3</variable>
     </variables>
     <helpcontext-numbers>
       <helpcontext-number href="BasicUsage" value="1030"/>

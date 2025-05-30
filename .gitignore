@@ -244,3 +244,4 @@ XSharp/src/Setup/Preprocessed.iss
 /src/Tools/VFPXPorter/Source/VFPXPorterLib/Data/Templates/Tools/XSharp.VFP.UI.dll
 *.chw
 /src/Compiler/src/Compiler/XSharpBuildTask/XSharp.Build.dll
+/Artifact/SqlRddHelp

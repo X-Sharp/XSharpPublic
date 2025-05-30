@@ -2661,8 +2661,7 @@
       <summary>Field contains Unicode text</summary>
     </member>
     <member name="T:XSharp.RDD.Enums.DbFieldInfo">
-      <summary>This enum specifies the various values that the FieldInfo method for the IRDD interface accepts.
-            </summary>
+      <summary>This enum specifies the various values that the FieldInfo method for the IRDD interface accepts.</summary>
     </member>
     <member name="F:XSharp.RDD.Enums.DbFieldInfo.DBS_NAME">
       <summary>Returns the name of the field.</summary>
@@ -2713,22 +2712,16 @@
       <summary>Returns the length of the BLOB data in a memo field as an unsigned long integer.</summary>
     </member>
     <member name="F:XSharp.RDD.Enums.DbFieldInfo.DBS_BLOB_OFFSET">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbFieldInfo.DBS_BLOB_POINTER">
       <summary>Returns a numeric pointer to the BLOB data associated with a memo field.</summary>
     </member>
     <member name="F:XSharp.RDD.Enums.DbFieldInfo.DBS_BLOB_DIRECT_TYPE">
-      <summary>Returns the type of data in a BLOB as an unsigned long integer, without referencing a particular memo field.
-             With this constant, you must specify the BLOB using a numeric pointer obtained from BLOBDirectPut(), BLOBDirectImport(),
-             or DBFieldInfo(DBS_BLOB_POINTER, &lt;nFieldPos&gt;).
-            </summary>
+      <summary>Returns the type of data in a BLOB as an unsigned long integer, without referencing a particular memo field.   With this constant, you must specify the BLOB using a numeric pointer obtained from BLOBDirectPut(), BLOBDirectImport(),   or DBFieldInfo(DBS_BLOB_POINTER, &lt;nFieldPos&gt;).  </summary>
     </member>
     <member name="F:XSharp.RDD.Enums.DbFieldInfo.DBS_BLOB_DIRECT_LEN">
-      <summary>Returns the length of data in a BLOB as an unsigned long integer, without referencing a particular memo field.
-             With this constant, you must specify the BLOB using a numeric pointer obtained from BLOBDirectPut(), BLOBDirectImport(),
-             or DBFieldInfo(DBS_BLOB_POINTER, &lt;nFieldPos&gt;).
-            </summary>
+      <summary>Returns the length of data in a BLOB as an unsigned long integer, without referencing a particular memo field.   With this constant, you must specify the BLOB using a numeric pointer obtained from BLOBDirectPut(), BLOBDirectImport(),   or DBFieldInfo(DBS_BLOB_POINTER, &lt;nFieldPos&gt;).  </summary>
     </member>
     <member name="F:XSharp.RDD.Enums.DbFieldInfo.DBS_STRUCT">
       <summary>Return the RDD FieldInfo structure</summary>
@@ -2794,8 +2787,9 @@
       <summary>'0'    VFP Type, contains Null Flags</summary>
     </member>
     <member name="T:XSharp.RDD.Enums.DbInfo">
-      <summary>This enum specifies the various values that the Info method for the IRDD interface accepts.
-            </summary>
+      <summary>
+      This enum specifies the various values that the Info method for the IRDD interface accepts.
+    </summary>
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.DBI_ISDBF">
       <summary>Logical: Is the RDD DBF based ?</summary>
@@ -2825,7 +2819,7 @@
       <summary>String:  Get table file extension</summary>
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.DBI_READONLY">
-      <summary>Logic: is the file opened readonly</summary>
+      <summary>String:  Get table file extension</summary>
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.DBI_ISFLOCK">
       <summary>Logic: Is there a file lock active? </summary>
@@ -2897,7 +2891,7 @@
       <summary>Number: The DOS Codepage</summary>
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.DBI_BLOB_RECOVER">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.DBI_NEWINDEXLOCK">
       <summary>Logic:  Use new index lock mechanism</summary>
@@ -2924,25 +2918,25 @@
       <summary>Stream: The memo file name</summary>
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.DBI_DB_VERSION">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.DBI_RDD_VERSION">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.DBI_RDD_LIST">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.DBI_MEMOFIELD">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.DBI_VO_MACRO_SYNTAX">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.DBI_RDD_OBJECT">
       <summary>Returns RDD Object.</summary>
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.DBI_LOCKSCHEME">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.DBI_ISREADONLY">
       <summary>Harbour extension: Was the file opened readonly?</summary>
@@ -3008,7 +3002,7 @@
       <summary>Harbour extension: DBF header updating modes</summary>
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.DBI_RM_SUPPORTED">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.DBI_RM_CREATE">
       <summary>Harbour record map extension: create new empty work area record map</summary>
@@ -3044,76 +3038,76 @@
       <summary>Refresh the current data in the SQLRDD</summary>
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_INFO_HANDLE">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_FILE_RECOVER">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_FILE_INTEGRITY">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_OFFSET">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_POINTER">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_LEN">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_TYPE">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_EXPORT">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_ROOT_UNLOCK">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_ROOT_PUT">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_ROOT_GET">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_ROOT_LOCK">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_IMPORT">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_DIRECT_PUT">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_DIRECT_GET">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_GET">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_DIRECT_EXPORT">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_DIRECT_IMPORT">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_NMODE">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_EXPORT_APPEND">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_EXPORT_OVERWRITE">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_DIRECT_TYPE">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_DIRECT_LEN">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.BLOB_USER">
-      <summary></summary>
+      <summary />
     </member>
     <member name="F:XSharp.RDD.Enums.DbInfo.DBI_USER">
       <summary>Start of user defined DBI values</summary>
@@ -3266,8 +3260,7 @@
       <summary>This message is sent after an operation failed. The Data parameter is the description of the operation.</summary>
     </member>
     <member name="T:XSharp.RDD.Enums.DbOrder_Info">
-      <summary>This enum specifies the various values that the OrderInfo method for the IRDD interface accepts.
-            </summary>
+      <summary>This enum specifies the various values that the OrderInfo method for the IRDD interface accepts.</summary>
     </member>
     <member name="F:XSharp.RDD.Enums.DbOrder_Info.DBOI_CONDITION">
       <summary>String: The order's conditional expression</summary>
@@ -3401,9 +3394,13 @@
     <member name="F:XSharp.RDD.Enums.DbOrder_Info.DBOI_VALIDATE">
       <summary>Logic: Validate the current order. Errors are written to a text file in the folder of the index. Only supported by DBFCDX</summary>
     </member>
+    <member name="F:XSharp.RDD.Enums.DbOrder_Info.DBOI_USER">
+      <summary>Start of user defined values</summary>
+    </member>
     <member name="T:XSharp.RDD.Enums.DbRecordInfo">
-      <summary>This enum specifies the various values that the RecordInfo method for the IRDD interface accepts.
-            </summary>
+      <summary>
+      This enum specifies the various values that the RecordInfo method for the IRDD interface accepts.
+    </summary>
     </member>
     <member name="F:XSharp.RDD.Enums.DbRecordInfo.DBRI_DELETED">
       <summary>Gets the deleted flag for the record.</summary>
@@ -3472,10 +3469,11 @@
       <summary>The RDD has the ability to transfer an entire row.</summary>
     </member>
     <member name="T:XSharp.RDD.Enums.RddInfo">
-      <summary>This enum specifies the various values that the RDDInfo method for the IRDD interface accepts.
-             <note type="tip">
-             These enums are also available as DEFINES and can therefore also be used without the "RDDInfo." prefix.
-             </note></summary>
+      <summary>
+      This enum specifies the various values that the RDDInfo method for the IRDD interface accepts.
+      <note type="tip">
+        These enums are also available as DEFINES and can therefore also be used without the "RDDInfo." prefix.
+      </note></summary>
     </member>
     <member name="F:XSharp.RDD.Enums.RddInfo.RDDI_ISDBF">
       <summary>Does this RDD support DBFs?</summary>

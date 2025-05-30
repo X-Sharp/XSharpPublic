@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-03-12T17:42:21.210+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic modified="2025-05-30T16:08:02.821+02:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Record Numbers and Reccount</title>
   <body>
     <header>
@@ -27,7 +27,6 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The RDD will assign the current maximum value of the Recno Column +1 to the record number of the newly appended record, and after the record is written to the server then the RDD will fetch the real value of the record number. In theory it is possible that 2 users are appending a record to the same SQL table at the same time. They will initially both get the same record number. However after the record was written to the SQL table then both result sets will have a unique number for that column.</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Retrieving the new record number is either done by executing the code that is defined in the provider for </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\P_XSharp_RDD_SqlRDD_Providers_SqlDbProvider_GetIdentity.htm" domain="SqlRDDClasses.chm" styleclass="Normal" translate="true">GetIdentity</link><text styleclass="Normal" translate="true">.</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">When the provider does not support that, then a query is executed to retrieve the maximum value of the Recno Column.</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

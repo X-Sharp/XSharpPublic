@@ -1812,8 +1812,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         MethodSymbol implementedMethod,
                         MethodSymbol implementingMethod,
                         bool isExplicit,
-                        bool checkReturnType,
-                        bool checkParameterTypes,
                         BindingDiagnosticBag diagnostics)
                     {
                         ReportMismatchInReturnType<(TypeSymbol implementingType, bool isExplicit)> reportMismatchInReturnType =
@@ -1869,12 +1867,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             implementedMethod,
                             implementingMethod,
                             diagnostics,
-                            checkReturnType ? reportMismatchInReturnType : null,
-                            checkParameterTypes ? reportMismatchInParameterType : null,
+                            reportMismatchInReturnType,
+                            reportMismatchInParameterType,
                             (implementingType, isExplicit));
 
-                        if (checkParameterTypes &&
-                            SourceMemberContainerTypeSymbol.RequiresValidScopedOverrideForRefSafety(implementedMethod))
+                        if (SourceMemberContainerTypeSymbol.RequiresValidScopedOverrideForRefSafety(implementedMethod))
                         {
                             SourceMemberContainerTypeSymbol.CheckValidScopedOverride(
                                 implementedMethod,
@@ -1893,30 +1890,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 allowVariance: true,
                                 invokedAsExtensionMethod: false);
                         }
-
-                        if (checkParameterTypes)
-                        {
-                            SourceMemberContainerTypeSymbol.CheckRefReadonlyInMismatch(
-                                implementedMethod, implementingMethod, diagnostics,
-                                static (diagnostics, implementedMethod, implementingMethod, implementingParameter, _, arg) =>
-                                {
-                                    var (implementedParameter, implementingType) = arg;
-                                    var location = GetImplicitImplementationDiagnosticLocation(implementedMethod, implementingType, implementingMethod);
-                                    // Reference kind modifier of parameter '{0}' doesn't match the corresponding parameter '{1}' in overridden or implemented member.
+                        SourceMemberContainerTypeSymbol.CheckRefReadonlyInMismatch(
+                            implementedMethod, implementingMethod, diagnostics,
+                            static (diagnostics, implementedMethod, implementingMethod, implementingParameter, _, arg) =>
+                            {
+                                var (implementedParameter, implementingType) = arg;
+                                var location = GetImplicitImplementationDiagnosticLocation(implementedMethod, implementingType, implementingMethod);
+                                // Reference kind modifier of parameter '{0}' doesn't match the corresponding parameter '{1}' in overridden or implemented member.
 #if XSHARP
                                     if (!(implementingParameter.RefKind == RefKind.Ref && implementedParameter.RefKind == RefKind.Out))
 #endif
-                                    diagnostics.Add(ErrorCode.WRN_OverridingDifferentRefness, location, implementingParameter, implementedParameter);
-                                },
-                                implementingType,
-                                invokedAsExtensionMethod: false);
-                        }
+                                diagnostics.Add(ErrorCode.WRN_OverridingDifferentRefness, location, implementingParameter, implementedParameter);
+                            },
+                            implementingType,
+                            invokedAsExtensionMethod: false);
 
                         if (implementingMethod.HasUnscopedRefAttributeOnMethodOrProperty())
                         {
                             if (implementedMethod.HasUnscopedRefAttributeOnMethodOrProperty())
                             {
-                                if (!implementingMethod.IsExplicitInterfaceImplementation && implementingMethod is SourceMethodSymbolWithAttributes &&
+                                if (!implementingMethod.IsExplicitInterfaceImplementation && implementingMethod is SourceMethodSymbol &&
                                     implementedMethod.ContainingModule != implementingMethod.ContainingModule)
                                 {
                                     checkRefStructInterfacesFeatureAvailabilityOnUnscopedRefAttribute(implementingMethod.HasUnscopedRefAttribute ? implementingMethod : implementingMethod.AssociatedSymbol, diagnostics);
@@ -1950,10 +1943,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     implementedProperty.GetMethod,
                                     implementingGetMethod,
                                     isExplicit: isExplicit,
-                                    checkReturnType: true,
-                                    // Don't check parameters on the getter if there is a setter
-                                    // because they will be a subset of the setter
-                                    checkParameterTypes: implementingGetMethod?.AssociatedSymbol != implementingProperty || implementingSetMethod?.AssociatedSymbol != implementingProperty,
                                     diagnostics);
                             }
 
@@ -1964,8 +1953,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     implementedProperty.SetMethod,
                                     implementingSetMethod,
                                     isExplicit: isExplicit,
-                                    checkReturnType: false,
-                                    checkParameterTypes: true,
                                     diagnostics);
                             }
                             break;
@@ -1983,8 +1970,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 implementedMethod,
                                 implementingMethod,
                                 isExplicit: isExplicit,
-                                checkReturnType: true,
-                                checkParameterTypes: true,
                                 diagnostics);
                             break;
                         default:

@@ -10,7 +10,7 @@ Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.CodeAnalysis.VisualBasic
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Roslyn.Test.Utilities
-Imports Roslyn.Test.Utilities.TestMetadata
+Imports Basic.Reference.Assemblies
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
 
@@ -9361,7 +9361,7 @@ Public Class TestCase
 End Class
     </file>
 </compilation>
-            Dim comp = CreateEmptyCompilationWithReferences(source, {Net40.mscorlib}, TestOptions.ReleaseDll) ' NOTE: 4.0, Not 4.5, so it's missing the async helpers.
+            Dim comp = CreateEmptyCompilationWithReferences(source, {Net40.References.mscorlib}, TestOptions.ReleaseDll) ' NOTE: 4.0, Not 4.5, so it's missing the async helpers.
             comp.AssertTheseEmitDiagnostics(
  <errors>
 BC31091: Import of type 'AsyncVoidMethodBuilder' from assembly or module 'AsyncVoid.dll' failed.
@@ -9397,7 +9397,7 @@ Public Class TestCase
 End Class
     </file>
 </compilation>
-            Dim comp = CreateEmptyCompilationWithReferences(source, {Net40.mscorlib}, TestOptions.ReleaseDll) ' NOTE: 4.0, Not 4.5, so it's missing the async helpers.
+            Dim comp = CreateEmptyCompilationWithReferences(source, {Net40.References.mscorlib}, TestOptions.ReleaseDll) ' NOTE: 4.0, Not 4.5, so it's missing the async helpers.
             comp.AssertTheseEmitDiagnostics(
  <errors>
 BC31091: Import of type 'AsyncTaskMethodBuilder' from assembly or module 'AsyncTask.dll' failed.
@@ -9434,7 +9434,7 @@ Public Class TestCase
 End Class
     </file>
 </compilation>
-            Dim comp = CreateEmptyCompilationWithReferences(source, {Net40.mscorlib}, TestOptions.ReleaseDll) ' NOTE: 4.0, Not 4.5, so it's missing the async helpers.
+            Dim comp = CreateEmptyCompilationWithReferences(source, {Net40.References.mscorlib}, TestOptions.ReleaseDll) ' NOTE: 4.0, Not 4.5, so it's missing the async helpers.
             comp.AssertTheseEmitDiagnostics(
  <errors>
 BC31091: Import of type 'AsyncTaskMethodBuilder(Of )' from assembly or module 'AsyncTask_T.dll' failed.
@@ -12327,6 +12327,53 @@ End Class
             Dim compilation = CreateCompilation(source, options:=TestOptions.ReleaseExe)
             CompileAndVerify(compilation, expectedOutput:="1")
         End Sub
+
+        <Fact()>
+        Public Sub CompilerLoweringPreserveAttribute_01()
+            Dim source1 = "
+Imports System
+Imports System.Runtime.CompilerServices
+
+<CompilerLoweringPreserve>
+<AttributeUsage(AttributeTargets.Field Or AttributeTargets.Parameter)>
+Public Class Preserve1Attribute
+    Inherits Attribute
+End Class
+
+<CompilerLoweringPreserve>
+<AttributeUsage(AttributeTargets.Parameter)>
+Public Class Preserve2Attribute
+    Inherits Attribute
+End Class
+
+<AttributeUsage(AttributeTargets.Field Or AttributeTargets.Parameter)>
+Public Class Preserve3Attribute
+    Inherits Attribute
+End Class
+"
+            Dim source2 = "
+Imports System.Threading.Tasks
+
+Class Test1
+    Async Function M2(<Preserve1,Preserve2,Preserve3> x As Integer) As Task(Of Integer)
+        Await Task.Yield()
+        Return x
+    End Function
+End Class
+"
+
+            Dim validate = Sub(m As ModuleSymbol)
+                               AssertEx.SequenceEqual(
+                                   {"Preserve1Attribute"},
+                                   m.GlobalNamespace.GetMember("Test1.VB$StateMachine_1_M2.$VB$Local_x").GetAttributes().Select(Function(a) a.ToString()))
+                           End Sub
+
+            Dim comp1 = CreateCompilation(
+                {source1, source2, CompilerLoweringPreserveAttributeDefinition},
+                options:=TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All))
+            CompileAndVerify(comp1, symbolValidator:=validate).VerifyDiagnostics()
+        End Sub
+
     End Class
 End Namespace
 

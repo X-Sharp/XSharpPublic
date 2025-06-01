@@ -209,6 +209,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public override int GetHashCode() => _underlyingType.GetHashCode();
 
+        internal override bool HasCompilerLoweringPreserveAttribute => false;
+
 #if !DEBUG
         void Cci.IReference.Dispatch(Cci.MetadataVisitor visitor)
         {

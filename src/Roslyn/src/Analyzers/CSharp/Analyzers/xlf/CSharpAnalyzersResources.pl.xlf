@@ -237,6 +237,11 @@
         <target state="translated">Wykryto nieosiągalny kod</target>
         <note />
       </trans-unit>
+      <trans-unit id="Use_System_Threading_Lock">
+        <source>Use 'System.Threading.Lock'</source>
+        <target state="translated">Użyj typu „System.Threading.Lock”</target>
+        <note>{Locked="System.Threading.Lock"} "System.Threading.Lock" is the name of a .Net type and should not be localized.</note>
+      </trans-unit>
       <trans-unit id="Use_Utf8_string_literal">
         <source>Use UTF-8 string literal</source>
         <target state="translated">Użyj literału ciągu UTF-8</target>
@@ -415,6 +420,11 @@
       <trans-unit id="Use_tuple_to_swap_values">
         <source>Use tuple to swap values</source>
         <target state="translated">Użyj krotki do zamiany wartości</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Use_unbound_generic_type">
+        <source>Use unbound generic type</source>
+        <target state="translated">Użyj niepowiązanego typu ogólnego</target>
         <note />
       </trans-unit>
       <trans-unit id="Using_directives_must_be_placed_inside_of_a_namespace_declaration">

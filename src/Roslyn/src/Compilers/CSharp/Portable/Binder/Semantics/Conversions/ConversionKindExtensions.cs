@@ -53,6 +53,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case ObjectCreation:
                 case InlineArray:
                 case CollectionExpression:
+                case ImplicitSpan:
 #if XSHARP
                 case ExplicitIntegerToPointer:
                 case IntPtr:
@@ -70,6 +71,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case ExplicitUserDefined:
                 case ExplicitPointerToPointer:
                 case ExplicitPointerToInteger:
+                case ExplicitSpan:
 #if !XSHARP
                 case ExplicitIntegerToPointer:
                 case IntPtr:

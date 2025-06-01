@@ -245,7 +245,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 rewrittenReceiver = sequence.Value;
             }
 
-            return node.Update(node.MemberSymbol, rewrittenArguments, node.ArgumentNamesOpt, node.ArgumentRefKindsOpt, node.Expanded, node.ArgsToParamsOpt, node.DefaultArguments, node.ResultKind, node.ReceiverType, node.Type);
+            return node.Update(node.MemberSymbol, rewrittenArguments, node.ArgumentNamesOpt, node.ArgumentRefKindsOpt, node.Expanded, node.ArgsToParamsOpt, node.DefaultArguments, node.ResultKind, node.AccessorKind, node.ReceiverType, node.Type);
         }
 
         // Rewrite object initializer member assignments and add them to the result.
@@ -320,6 +320,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 memberInit.ArgsToParamsOpt,
                                 memberInit.DefaultArguments,
                                 memberInit.ResultKind,
+                                memberInit.AccessorKind,
                                 memberInit.ReceiverType,
                                 memberInit.Type);
                         }
@@ -692,7 +693,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             rewrittenLeft.Expanded,
                             rewrittenLeft.ArgsToParamsOpt,
                             rewrittenLeft.DefaultArguments,
-                            oldNodeOpt: null,
+                            rewrittenLeft,
                             isLeftOfAssignment: !isRhsNestedInitializer);
                     }
                     else

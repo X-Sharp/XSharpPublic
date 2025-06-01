@@ -329,6 +329,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
     }
 
+    internal enum AccessorKind : byte
+    {
+        Unknown,
+        Get,
+        Set,
+        Both
+    }
+
     internal partial class BoundIndexerAccess
     {
         public override Symbol? ExpressionSymbol
@@ -342,6 +350,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return !this.OriginalIndexersOpt.IsDefault ? LookupResultKind.OverloadResolutionFailure : base.ResultKind;
             }
+        }
+
+        public BoundIndexerAccess Update(AccessorKind accessorKind)
+        {
+            return this.Update(
+                ReceiverOpt,
+                InitialBindingReceiverIsSubjectToCloning,
+                Indexer,
+                Arguments,
+                ArgumentNamesOpt,
+                ArgumentRefKindsOpt,
+                Expanded,
+                accessorKind,
+                ArgsToParamsOpt,
+                DefaultArguments,
+                Type);
         }
     }
 

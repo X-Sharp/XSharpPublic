@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -238,7 +239,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ? BadExpression(node).MakeCompilerGenerated()
                 : BindValue(node.Expression, diagnostics, BindValueKind.RValue);
 
-            if (!argument.HasAnyErrors)
+            if (elementType is { } && node.Expression != null)
             {
                 argument = GenerateConversionForAssignment(elementType, argument, diagnostics);
             }
@@ -474,8 +475,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             CompoundUseSiteInfo<AssemblySymbol> useSiteInfo = GetNewCompoundUseSiteInfo(diagnostics);
             var binder = this.LookupSymbolsWithFallback(result, node.Identifier.ValueText, arity: 0, useSiteInfo: ref useSiteInfo, options: LookupOptions.LabelsOnly);
 
-            ReportFieldOrValueContextualKeywordConflictIfAny(node, node.Identifier, diagnostics);
-
             // result.Symbols can be empty in some malformed code, e.g. when a labeled statement is used an embedded statement in an if or foreach statement
             // In this case we create new label symbol on the fly, and an error is reported by parser
             var symbol = result.Symbols.Count > 0 && result.IsMultiViable ?
@@ -555,8 +554,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundStatement BindLocalFunctionStatement(LocalFunctionStatementSyntax node, BindingDiagnosticBag diagnostics)
         {
             MessageID.IDS_FeatureLocalFunctions.CheckFeatureAvailability(diagnostics, node.Identifier);
-
-            ReportFieldOrValueContextualKeywordConflictIfAny(node, node.Identifier, diagnostics);
 
             // already defined symbol in containing block
             var localSymbol = this.LookupLocalFunction(node.Identifier);
@@ -978,7 +975,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             Debug.Assert(declarator != null);
 
-            return BindVariableDeclaration(LocateDeclaredVariableSymbol(declarator, typeSyntax, kind, diagnostics),
+            return BindVariableDeclaration(LocateDeclaredVariableSymbol(declarator, typeSyntax, kind),
                                            kind,
                                            isVar,
                                            declarator,
@@ -1222,10 +1219,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             return arguments;
         }
 
-        private SourceLocalSymbol LocateDeclaredVariableSymbol(VariableDeclaratorSyntax declarator, TypeSyntax typeSyntax, LocalDeclarationKind outerKind, BindingDiagnosticBag diagnostics)
+        private SourceLocalSymbol LocateDeclaredVariableSymbol(VariableDeclaratorSyntax declarator, TypeSyntax typeSyntax, LocalDeclarationKind outerKind)
         {
-            ReportFieldOrValueContextualKeywordConflictIfAny(declarator, declarator.Identifier, diagnostics);
-
             LocalDeclarationKind kind = outerKind == LocalDeclarationKind.UsingVariable ? LocalDeclarationKind.UsingVariable : LocalDeclarationKind.RegularVariable;
             return LocateDeclaredVariableSymbol(declarator.Identifier, typeSyntax, declarator.Initializer, kind);
         }
@@ -1535,7 +1530,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             bool hasErrors = op1.HasAnyErrors || op2.HasAnyErrors;
 
-            if (!op1.HasAnyErrors)
+            if (op1.Type is { } lhsType && !lhsType.IsErrorType())
             {
 #if XSHARP
                 XsCheckPsz2String(node, op1, diagnostics);
@@ -1547,7 +1542,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
                 // Build bound conversion. The node might not be used if this is a dynamic conversion
                 // but diagnostics should be reported anyways.
-                var conversion = GenerateConversionForAssignment(op1.Type, op2, diagnostics, isRef ? ConversionForAssignmentFlags.RefAssignment : ConversionForAssignmentFlags.None);
+                var conversion = GenerateConversionForAssignment(lhsType, op2,
+                    hasErrors ? BindingDiagnosticBag.Discarded : diagnostics,
+                    isRef ? ConversionForAssignmentFlags.RefAssignment : ConversionForAssignmentFlags.None);
 
                 // If the result is a dynamic assignment operation (SetMember or SetIndex),
                 // don't generate the boxing conversion to the dynamic type.
@@ -1618,12 +1615,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     var leftEscape = GetRefEscape(op1, _localScopeDepth);
                     var rightEscape = GetRefEscape(op2, _localScopeDepth);
-                    if (leftEscape < rightEscape)
+                    if (!rightEscape.IsConvertibleTo(leftEscape))
                     {
                         var errorCode = (rightEscape, _inUnsafeRegion) switch
                         {
-                            (ReturnOnlyScope, false) => ErrorCode.ERR_RefAssignReturnOnly,
-                            (ReturnOnlyScope, true) => ErrorCode.WRN_RefAssignReturnOnly,
+                            ({ IsReturnOnly: true }, false) => ErrorCode.ERR_RefAssignReturnOnly,
+                            ({ IsReturnOnly: true }, true) => ErrorCode.WRN_RefAssignReturnOnly,
                             (_, false) => ErrorCode.ERR_RefAssignNarrower,
                             (_, true) => ErrorCode.WRN_RefAssignNarrower
                         };
@@ -1639,12 +1636,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                         leftEscape = GetValEscape(op1, _localScopeDepth);
                         rightEscape = GetValEscape(op2, _localScopeDepth);
 
-                        Debug.Assert(leftEscape == rightEscape || op1.Type.IsRefLikeOrAllowsRefLikeType());
+                        Debug.Assert(leftEscape.Equals(rightEscape) || op1.Type.IsRefLikeOrAllowsRefLikeType());
 
-                        // We only check if the safe-to-escape of e2 is wider than the safe-to-escape of e1 here,
-                        // we don't check for equality. The case where the safe-to-escape of e2 is narrower than
-                        // e1 is handled in the if (op1.Type.IsRefLikeType) { ... } block later.
-                        if (leftEscape > rightEscape)
+                        // We only check if the left SafeContext is convertible to the right here
+                        // in order to give a more useful diagnostic.
+                        // Later on we check if right SafeContext is convertible to left,
+                        // which effectively means these SafeContexts must be equal.
+                        if (!leftEscape.IsConvertibleTo(rightEscape))
                         {
                             Debug.Assert(op1.Kind != BoundKind.Parameter); // If the assert fails, add a corresponding test.
 
@@ -1819,26 +1817,43 @@ namespace Microsoft.CodeAnalysis.CSharp
                 new CSDiagnosticInfo(ErrorCode.ERR_BadEventUsageNoField, leastOverridden);
         }
 
+#nullable enable
         internal static bool AccessingAutoPropertyFromConstructor(BoundPropertyAccess propertyAccess, Symbol fromMember)
         {
-            return AccessingAutoPropertyFromConstructor(propertyAccess.ReceiverOpt, propertyAccess.PropertySymbol, fromMember);
+            return AccessingAutoPropertyFromConstructor(propertyAccess.ReceiverOpt, propertyAccess.PropertySymbol, fromMember, propertyAccess.AutoPropertyAccessorKind);
         }
 
-        private static bool AccessingAutoPropertyFromConstructor(BoundExpression receiver, PropertySymbol propertySymbol, Symbol fromMember)
+        private static bool AccessingAutoPropertyFromConstructor(BoundExpression? receiver, PropertySymbol propertySymbol, Symbol fromMember, AccessorKind accessorKind)
+        {
+            if (!HasSynthesizedBackingField(propertySymbol, out var sourceProperty))
+            {
+                return false;
+            }
+
+            var propertyIsStatic = propertySymbol.IsStatic;
+
+            return sourceProperty is { } &&
+                sourceProperty.CanUseBackingFieldDirectlyInConstructor(useAsLvalue: accessorKind != AccessorKind.Get) &&
+                TypeSymbol.Equals(sourceProperty.ContainingType, fromMember.ContainingType, TypeCompareKind.AllIgnoreOptions) &&
+                IsConstructorOrField(fromMember, isStatic: propertyIsStatic) &&
+                (propertyIsStatic || receiver?.Kind == BoundKind.ThisReference);
+        }
+
+        private static bool HasSynthesizedBackingField(PropertySymbol propertySymbol, [NotNullWhen(true)] out SourcePropertySymbolBase? sourcePropertyDefinition)
         {
             if (!propertySymbol.IsDefinition && propertySymbol.ContainingType.Equals(propertySymbol.ContainingType.OriginalDefinition, TypeCompareKind.IgnoreNullableModifiersForReferenceTypes))
             {
                 propertySymbol = propertySymbol.OriginalDefinition;
             }
 
-            var sourceProperty = propertySymbol as SourcePropertySymbolBase;
-            var propertyIsStatic = propertySymbol.IsStatic;
+            if (propertySymbol is SourcePropertySymbolBase { BackingField: { } } sourceProperty)
+            {
+                sourcePropertyDefinition = sourceProperty;
+                return true;
+            }
 
-            return (object)sourceProperty != null &&
-                    sourceProperty.IsAutoPropertyWithGetAccessor &&
-                    TypeSymbol.Equals(sourceProperty.ContainingType, fromMember.ContainingType, TypeCompareKind.AllIgnoreOptions) &&
-                    IsConstructorOrField(fromMember, isStatic: propertyIsStatic) &&
-                    (propertyIsStatic || receiver.Kind == BoundKind.ThisReference);
+            sourcePropertyDefinition = null;
+            return false;
         }
 
         private static bool IsConstructorOrField(Symbol member, bool isStatic)
@@ -1848,6 +1863,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                                                 MethodKind.Constructor) ||
                     (member as FieldSymbol)?.IsStatic == isStatic;
         }
+#nullable disable
 
         private TypeSymbol GetAccessThroughType(BoundExpression receiver)
         {
@@ -1962,6 +1978,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             IncrementAssignment = 1 << 2,
             CompoundAssignment = 1 << 3,
             PredefinedOperator = 1 << 4,
+            InterpolatedString = 1 << 5,
         }
 
         internal BoundExpression GenerateConversionForAssignment(TypeSymbol targetType, BoundExpression expression, BindingDiagnosticBag diagnostics, ConversionForAssignmentFlags flags = ConversionForAssignmentFlags.None)
@@ -1998,7 +2015,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             XsCheckConversionForAssignment(targetType, ref expression, diagnostics, (flags & ConversionForAssignmentFlags.DefaultParameter) != 0, (flags & ConversionForAssignmentFlags.RefAssignment) != 0);
 #endif
 
-            conversion = (flags & ConversionForAssignmentFlags.IncrementAssignment) == 0 ?
+            conversion = (flags & (ConversionForAssignmentFlags.IncrementAssignment | ConversionForAssignmentFlags.InterpolatedString)) == 0 ?
                                  this.Conversions.ClassifyConversionFromExpression(expression, targetType, isChecked: CheckOverflowAtRuntime, ref useSiteInfo) :
                                  this.Conversions.ClassifyConversionFromType(expression.Type, targetType, isChecked: CheckOverflowAtRuntime, ref useSiteInfo);
 
@@ -2034,7 +2051,19 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 if ((flags & ConversionForAssignmentFlags.DefaultParameter) == 0)
                 {
-                    GenerateImplicitConversionError(diagnostics, expression.Syntax, conversion, expression, targetType);
+                    if ((flags & ConversionForAssignmentFlags.InterpolatedString) != 0)
+                    {
+                        // error CS0029: Cannot implicitly convert type '{0}' to '{1}'
+                        diagnostics.Add(
+                            ErrorCode.ERR_NoImplicitConv,
+                            expression.Syntax,
+                            expression.Type,
+                            targetType);
+                    }
+                    else
+                    {
+                        GenerateImplicitConversionError(diagnostics, expression.Syntax, conversion, expression, targetType);
+                    }
                 }
 
                 // Suppress any additional diagnostics
@@ -2583,15 +2612,76 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
+#nullable enable
         private BoundStatement BindIfStatement(IfStatementSyntax node, BindingDiagnosticBag diagnostics)
         {
-            var condition = BindBooleanExpression(node.Condition, diagnostics);
-            var consequence = BindPossibleEmbeddedStatement(node.Statement, diagnostics);
-            BoundStatement alternative = (node.Else == null) ? null : BindPossibleEmbeddedStatement(node.Else.Statement, diagnostics);
+            return bindIfStatement(this, node, diagnostics);
 
-            BoundStatement result = new BoundIfStatement(node, condition, consequence, alternative);
-            return result;
+            static BoundStatement bindIfStatement(Binder binder, IfStatementSyntax node, BindingDiagnosticBag diagnostics)
+            {
+                var stack = ArrayBuilder<(Binder, IfStatementSyntax IfStatementSyntax, BoundExpression Condition, BoundStatement Consequence)>.GetInstance();
+
+                BoundStatement? alternative;
+                while (true)
+                {
+                    var condition = binder.BindBooleanExpression(node.Condition, diagnostics);
+                    var consequence = binder.BindPossibleEmbeddedStatement(node.Statement, diagnostics);
+                    stack.Push((binder, node, condition, consequence));
+
+                    if (node.Else == null)
+                    {
+                        alternative = null;
+                        break;
+                    }
+
+                    var elseStatementSyntax = node.Else.Statement;
+                    if (elseStatementSyntax is IfStatementSyntax ifStatementSyntax)
+                    {
+                        var b = binder.GetBinder(ifStatementSyntax);
+                        Debug.Assert(b != null);
+
+                        if (b.TryGetBoundElseIfStatement(ifStatementSyntax, out alternative))
+                        {
+                            break;
+                        }
+
+                        binder = b;
+                        node = ifStatementSyntax;
+                    }
+                    else
+                    {
+                        alternative = binder.BindPossibleEmbeddedStatement(elseStatementSyntax, diagnostics);
+                        break;
+                    }
+                }
+
+                BoundStatement result;
+                do
+                {
+                    BoundExpression condition;
+                    BoundStatement consequence;
+                    (binder, node, condition, consequence) = stack.Pop();
+                    result = new BoundIfStatement(node, condition, consequence, alternative);
+                    if (stack.Any())
+                    {
+                        result = binder.WrapWithVariablesIfAny(node, result);
+                    }
+                    alternative = result;
+                }
+                while (stack.Any());
+
+                stack.Free();
+
+                return result;
+            }
         }
+
+        protected virtual bool TryGetBoundElseIfStatement(IfStatementSyntax node, out BoundStatement? alternative)
+        {
+            alternative = null;
+            return false;
+        }
+#nullable disable
 
         internal BoundExpression BindBooleanExpression(ExpressionSyntax node, BindingDiagnosticBag diagnostics)
         {
@@ -3157,7 +3247,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             
 #endif
 
-            if (!argument.HasAnyErrors)
+            if (!argument.HasAnyErrors || argument.Kind == BoundKind.UnboundLambda)
             {
                 if (returnRefKind != RefKind.None)
                 {
@@ -3242,8 +3332,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             var declaration = node.Declaration;
             if (declaration != null)
             {
-                ReportFieldOrValueContextualKeywordConflictIfAny(declaration, declaration.Identifier, diagnostics);
-
                 // Note: The type is being bound twice: here and in LocalSymbol.Type. Currently,
                 // LocalSymbol.Type ignores diagnostics so it seems cleaner to bind the type here
                 // as well. However, if LocalSymbol.Type is changed to report diagnostics, we'll
@@ -3679,7 +3767,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundNode BindPrimaryConstructorBody(TypeDeclarationSyntax typeDecl, BindingDiagnosticBag diagnostics)
         {
             Debug.Assert(typeDecl.ParameterList is object);
-            Debug.Assert(typeDecl.Kind() is SyntaxKind.RecordDeclaration or SyntaxKind.ClassDeclaration);
+            Debug.Assert(typeDecl.Kind() is SyntaxKind.RecordDeclaration or SyntaxKind.ClassDeclaration or SyntaxKind.RecordStructDeclaration or SyntaxKind.StructDeclaration);
 
             BoundExpressionStatement initializer;
             ImmutableArray<LocalSymbol> constructorLocals;
@@ -3994,10 +4082,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var constructorUseSiteInfo = new CompoundUseSiteInfo<AssemblySymbol>(diagnostics, constructor.ContainingAssembly);
             constructorUseSiteInfo.Add(baseConstructor.GetUseSiteInfo());
-            if (Binder.ReportConstructorUseSiteDiagnostics(diagnosticsLocation, diagnostics, suppressUnsupportedRequiredMembersError: constructor.HasSetsRequiredMembers, constructorUseSiteInfo))
-            {
-                return null;
-            }
+            Binder.ReportConstructorUseSiteDiagnostics(diagnosticsLocation, diagnostics, suppressUnsupportedRequiredMembersError: constructor.HasSetsRequiredMembers, constructorUseSiteInfo);
 
             diagnostics.Add(diagnosticsLocation, useSiteInfo);
 

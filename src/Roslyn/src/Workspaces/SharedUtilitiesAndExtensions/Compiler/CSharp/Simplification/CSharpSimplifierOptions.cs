@@ -28,21 +28,23 @@ internal sealed record class CSharpSimplifierOptions : SimplifierOptions, IEquat
     [DataMember] public CodeStyleOption2<bool> AllowEmbeddedStatementsOnSameLine { get; init; } = CodeStyleOption2.TrueWithSilentEnforcement;
     [DataMember] public CodeStyleOption2<PreferBracesPreference> PreferBraces { get; init; } = s_defaultPreferBraces;
     [DataMember] public CodeStyleOption2<bool> PreferThrowExpression { get; init; } = CodeStyleOption2.TrueWithSuggestionEnforcement;
+    [DataMember] public CodeStyleOption2<bool> ImplicitObjectCreationWhenTypeIsApparent { get; init; } = CodeStyleOption2.FalseWithSilentEnforcement;
 
     public CSharpSimplifierOptions()
     {
     }
 
-    public CSharpSimplifierOptions(IOptionsReader options, CSharpSimplifierOptions? fallbackOptions)
-        : base(options, fallbackOptions ??= Default, LanguageNames.CSharp)
+    public CSharpSimplifierOptions(IOptionsReader options)
+        : base(options, LanguageNames.CSharp)
     {
-        VarForBuiltInTypes = options.GetOption(CSharpCodeStyleOptions.VarForBuiltInTypes, fallbackOptions.VarForBuiltInTypes);
-        VarWhenTypeIsApparent = options.GetOption(CSharpCodeStyleOptions.VarWhenTypeIsApparent, fallbackOptions.VarWhenTypeIsApparent);
-        VarElsewhere = options.GetOption(CSharpCodeStyleOptions.VarElsewhere, fallbackOptions.VarElsewhere);
-        PreferSimpleDefaultExpression = options.GetOption(CSharpCodeStyleOptions.PreferSimpleDefaultExpression, fallbackOptions.PreferSimpleDefaultExpression);
-        AllowEmbeddedStatementsOnSameLine = options.GetOption(CSharpCodeStyleOptions.AllowEmbeddedStatementsOnSameLine, fallbackOptions.AllowEmbeddedStatementsOnSameLine);
-        PreferBraces = options.GetOption(CSharpCodeStyleOptions.PreferBraces, fallbackOptions.PreferBraces);
-        PreferThrowExpression = options.GetOption(CSharpCodeStyleOptions.PreferThrowExpression, fallbackOptions.PreferThrowExpression);
+        VarForBuiltInTypes = options.GetOption(CSharpCodeStyleOptions.VarForBuiltInTypes);
+        VarWhenTypeIsApparent = options.GetOption(CSharpCodeStyleOptions.VarWhenTypeIsApparent);
+        VarElsewhere = options.GetOption(CSharpCodeStyleOptions.VarElsewhere);
+        PreferSimpleDefaultExpression = options.GetOption(CSharpCodeStyleOptions.PreferSimpleDefaultExpression);
+        AllowEmbeddedStatementsOnSameLine = options.GetOption(CSharpCodeStyleOptions.AllowEmbeddedStatementsOnSameLine);
+        PreferBraces = options.GetOption(CSharpCodeStyleOptions.PreferBraces);
+        PreferThrowExpression = options.GetOption(CSharpCodeStyleOptions.PreferThrowExpression);
+        ImplicitObjectCreationWhenTypeIsApparent = options.GetOption(CSharpCodeStyleOptions.ImplicitObjectCreationWhenTypeIsApparent);
     }
 
     public UseVarPreference GetUseVarPreference()

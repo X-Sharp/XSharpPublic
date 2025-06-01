@@ -285,6 +285,8 @@ namespace Microsoft.CodeAnalysis
             }
 
             string? urlFormat = null;
+            string? message = null;
+
             foreach (var (name, value) in this.CommonNamedArguments)
             {
                 if (urlFormat is null && name == ObsoleteAttributeData.UrlFormatPropertyName && IsStringProperty(ObsoleteAttributeData.UrlFormatPropertyName))
@@ -292,13 +294,18 @@ namespace Microsoft.CodeAnalysis
                     urlFormat = value.ValueInternal as string;
                 }
 
-                if (urlFormat is not null)
+                if (message is null && name == ObsoleteAttributeData.MessagePropertyName && IsStringProperty(ObsoleteAttributeData.MessagePropertyName))
+                {
+                    message = value.ValueInternal as string;
+                }
+
+                if (urlFormat is not null && message is not null)
                 {
                     break;
                 }
             }
 
-            return new ObsoleteAttributeData(ObsoleteAttributeKind.Experimental, message: null, isError: false, diagnosticId, urlFormat);
+            return new ObsoleteAttributeData(ObsoleteAttributeKind.Experimental, message: message, isError: false, diagnosticId, urlFormat);
         }
 
         /// <summary>

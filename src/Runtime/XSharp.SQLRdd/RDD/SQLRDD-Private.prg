@@ -371,7 +371,6 @@ partial class SQLRDD inherit DBFVFP
     private method _GetWhereClause(row as DataRow) as string
         var sbWhere    := StringBuilder{}
         local iCounter := 1 as long
-        _command:ClearParameters()
         foreach var c in self:_keyColumns
             if sbWhere:Length > 0
                 sbWhere:Append(SqlDbProvider.AndClause)
@@ -437,7 +436,12 @@ partial class SQLRDD inherit DBFVFP
         _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
         var res := _command:ExecuteScalar()
         if (hasRowCount)
-            return res is int var i .and. i == 1
+            var i64 := (int64) Convert.ChangeType(res, typeof(int64))
+            IF i64 == 1
+                return true
+            else
+                return false
+            endif
         endif
         return true
     end method
@@ -458,6 +462,7 @@ partial class SQLRDD inherit DBFVFP
     end method
 
     private method _ExecuteDeleteStatement(row as DataRow) as logic
+        _command:ClearParameters()
         var strWhere := SELF:_GetWhereClause(row)
         var sb := StringBuilder{}
         sb:Append(Provider:DeleteStatement)

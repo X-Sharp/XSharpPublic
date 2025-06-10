@@ -531,9 +531,9 @@ partial class SQLRDD inherit DBFVFP
         endif
         LOCAL isOK := TRUE AS LOGIC
         //
+        SELF:GoCold()
         IF nToSkip == 0
-            // Refresh current Recno
-            SELF:GoCold()
+            NOP
         ELSE
             var newRow := SELF:RowNumber + nToSkip
             IF newRow > 0

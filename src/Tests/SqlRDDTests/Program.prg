@@ -14,6 +14,7 @@ global OleDbConnStr := "Provider=sqloledb;Data Source=LEDA;Initial Catalog=North
 global showEvents := true as logic
 
 function Start as void
+    TestBeta3()
     //TestProviders()
     //TestSqlServer()
     //TestODBC()
@@ -28,7 +29,7 @@ function Start as void
 //     TestParametersODBC()
 //     TestParametersSQL()
 //     TestParametersOLEDB()
-    TestTable()
+    //TestTable()
     //TestCreateIndex()
     //TestServerFilter()
     //TestTableRecno()
@@ -38,6 +39,29 @@ function Start as void
     //TestGsTutor()
     wait
     return
+
+    function TestBeta3() as void
+        SqlDbSetProvider("SQLSERVER")
+        var handle := SqlDbOpenConnection(SqlConnStr)
+        DbUseArea(TRUE,"SQLRDD","CUSTOMER")
+        DbZap()
+        DbAppend()
+        FieldPut(1,"AAA")
+        DbAppend()
+        FieldPut(1,"BBB")
+        DbSkip()
+        ? LastRec()
+        DbCloseArea()
+
+        DbUseArea(TRUE,"SQLRDD","CUSTOMER")
+        ? FieldGet(1) // AAA, OK
+        FieldPut(1,"CCC")
+        DbSkip()
+        ? FieldGet(1) // Elizabeth, wrong!
+        FieldPut(1,"DDD")
+        DbCloseArea()
+        wait
+        return
 
 function TestCreate() as void
     local aStruct as array
@@ -537,6 +561,7 @@ function DumpStructure(oTd as SqlDbTableInfo) as VOID
 FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs) AS OBJECT
     // Tags default
     switch e:Reason
+        
     case SqlRDDEventReason.Condition
         e:Value := ""
     case SqlRDDEventReason.Unique

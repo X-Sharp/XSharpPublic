@@ -348,13 +348,13 @@ partial class SQLRDD inherit DBFVFP
                         if self:_deletedColumnNo > -1
                             if !wasNew
                                 // already written with _deletedColumnNo with the correct value
-                                lOk := SELF:_ExecuteUpdateStatement(row, true)
+                                lOk := SELF:_ExecuteUpdateStatement(row)
                                 if lOk
                                     row:AcceptChanges()
                                 endif
                             endif
                         else
-                            lOk := SELF:_ExecuteDeleteStatement(row, true)
+                            lOk := SELF:_ExecuteDeleteStatement(row)
                             // we do not clear the fields, but leave the row unchanged.
                             // the DBF has the deleted flag. This emulates what DBF files do
 
@@ -366,7 +366,7 @@ partial class SQLRDD inherit DBFVFP
                             lOk := SELF:_ExecuteInsertStatement(row)
                             row:AcceptChanges()
                         elseif row:RowState.HasFlag(DataRowState.Modified)
-                            lOk := SELF:_ExecuteUpdateStatement(row, true)
+                            lOk := SELF:_ExecuteUpdateStatement(row)
                             row:AcceptChanges()
                         endif
                     endif

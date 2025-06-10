@@ -358,6 +358,8 @@ partial class SQLRDD inherit DBFVFP
             elseif hasGetIdentity
                 _command:ExecuteScalar()
                 row[_recnoColumNo] := _builder:GetMaxRecno()
+            else
+                _command:ExecuteNonQuery()
             endif
             _command:Connection:CommitTrans()
         catch
@@ -366,34 +368,31 @@ partial class SQLRDD inherit DBFVFP
         return true
     end method
 
-    private method _GetWhereClause(row as DataRow, originalData := TRUE as logic) as string
+    private method _GetWhereClause(row as DataRow) as string
         var sbWhere    := StringBuilder{}
         local iCounter := 1 as long
+        _command:ClearParameters()
         foreach var c in self:_keyColumns
-            var oldname := i"@o{iCounter}"
             if sbWhere:Length > 0
                 sbWhere:Append(SqlDbProvider.AndClause)
             endif
             sbWhere:Append(Provider:QuoteIdentifier(c:ColumnName))
-            local colValue as object
-            if originalData
-                colValue := row[c:ColumnName,DataRowVersion.Original]
-            else
-                colValue := row[c:ColumnName]
-            endif
-            if colValue == DBNull.Value
+            var colValue := row[c:ColumnName,DataRowVersion.Original]
+            if colValue == DBNull.Value .or. colValue is null
                 sbWhere:Append(" is null")
             else
+                var oldname := i"@o{iCounter}"
                 sbWhere:Append(" = ")
                 sbWhere:Append(oldname)
                 _command:AddParameter(oldname, colValue)
             endif
             ++iCounter
         next
+        _command:BindParameters()
         return sbWhere:ToString()
     end method
 
-    private method _ExecuteUpdateStatement(row as DataRow, originalData as LOGIC) as logic
+    private method _ExecuteUpdateStatement(row as DataRow) as logic
         var sbColumns  := StringBuilder{}
         local iCounter := 1 as long
         _command:ClearParameters()
@@ -401,19 +400,16 @@ partial class SQLRDD inherit DBFVFP
             if c:AutoIncrement .or. c:ColumnName == SELF:_oTd:RecnoColumn
                 loop
             endif
-
-            if originalData
-                if !self:_oTd:UpdateAllColumns
-                    // only update columns that are changed
-                    local isEqual := true as Logic
-                    if row[c, DataRowVersion.Original] != DBNull.Value .and. row[c, DataRowVersion.Current] != DBNull.Value
-                        isEqual := row[c, DataRowVersion.Original].ToString().Trim().Equals(row[c, DataRowVersion.Current].ToString().Trim())
-                    else
-                        isEqual := row[c, DataRowVersion.Original].Equals(row[c, DataRowVersion.Current])
-                    endif
-                    if isEqual
-                        loop
-                    endif
+            if !self:_oTd:UpdateAllColumns
+                // only update columns that are changed
+                local isEqual := true as Logic
+                if row[c, DataRowVersion.Original] != DBNull.Value .and. row[c, DataRowVersion.Current] != DBNull.Value
+                    isEqual := row[c, DataRowVersion.Original].ToString().Trim().Equals(row[c, DataRowVersion.Current].ToString().Trim())
+                else
+                    isEqual := row[c, DataRowVersion.Original].Equals(row[c, DataRowVersion.Current])
+                endif
+                if isEqual
+                    loop
                 endif
             endif
             var name    := i"@p{iCounter}"
@@ -426,8 +422,7 @@ partial class SQLRDD inherit DBFVFP
             _command:AddParameter(name, row[c])
             ++iCounter
         next
-        var strWhere := SELF:_GetWhereClause(row, originalData)
-        _command:BindParameters()
+        var strWhere := SELF:_GetWhereClause(row)
         var sb := StringBuilder{}
         sb:Append(Provider:UpdateStatement)
         sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(self:_cTable))
@@ -462,10 +457,8 @@ partial class SQLRDD inherit DBFVFP
         return oValue
     end method
 
-    private method _ExecuteDeleteStatement(row as DataRow, originalData as LOGIC) as logic
-        _command:ClearParameters()
-        var strWhere := SELF:_GetWhereClause(row, originalData)
-        _command:BindParameters()
+    private method _ExecuteDeleteStatement(row as DataRow) as logic
+        var strWhere := SELF:_GetWhereClause(row)
         var sb := StringBuilder{}
         sb:Append(Provider:DeleteStatement)
         sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(self:_cTable))

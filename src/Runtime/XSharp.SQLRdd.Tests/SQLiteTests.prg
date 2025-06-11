@@ -2,19 +2,20 @@ USING XUnit
 using XSharp.RDD.SqlRDD
 using XSharp.RDD.SqlRDD.Providers
 
-BEGIN NAMESPACE XSharp.SQLRdd.Tests
+BEGIN NAMESPACE SqlRDD.SQLiteTests
 
-	CLASS SQLiteTests
+    CLASS SQLiteTests
+        static private factory as System.Data.Common.DbProviderFactory
+        STATIC CONSTRUCTOR
+			// This makes sure that the provider is linked in
+            factory := System.Data.SQLite.SQLiteFactory.Instance
 
 		[Fact, Trait("Category", "DBFFuncs")];
 		METHOD DBCreate_Tests() AS VOID
 
 			LOCAL hConn := IntPtr.Zero AS IntPtr
 			LOCAL cDataFile := "gstutor.db" AS STRING
-			//LOCAL fact AS System.Data.Common.DbProviderFactory
-			// This makes sure that the provider is linked in
-            var Fact := System.Data.SQLite.SQLiteFactory.Instance
-            ? Fact:ToString()
+			//LOCAL fact AS
 			Assert.True(SqlDbSetProvider("SQLITE"))
 			hConn := SqlDbOpenConnection(i"Data Source={cDataFile};Pooling=False;LegacyFieldTypes=True;") //
 			//      hConn:= SqlDbOpenConnection("Server=(local);Initial catalog=gsTutor;Trusted_Connection=True;") // LegacyFieldTypes=True;

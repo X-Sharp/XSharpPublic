@@ -394,6 +394,7 @@ partial class SQLRDD inherit DBFVFP
     private method _ExecuteUpdateStatement(row as DataRow) as logic
         var sbColumns  := StringBuilder{}
         local iCounter := 1 as long
+        local lColumnChanged := false as logic
         _command:ClearParameters()
         foreach c as DataColumn in DataTable:Columns
             if c:AutoIncrement .or. c:ColumnName == SELF:_oTd:RecnoColumn
@@ -410,6 +411,7 @@ partial class SQLRDD inherit DBFVFP
                 if isEqual
                     loop
                 endif
+                lColumnChanged := true
             endif
             var name    := i"@p{iCounter}"
             if sbColumns:Length > 0
@@ -421,6 +423,10 @@ partial class SQLRDD inherit DBFVFP
             _command:AddParameter(name, row[c])
             ++iCounter
         next
+        if ! lColumnChanged
+            // no columns changed, so we do not update this row
+            return TRUE
+        endif
         var strWhere := SELF:_GetWhereClause(row)
         var sb := StringBuilder{}
         sb:Append(Provider:UpdateStatement)

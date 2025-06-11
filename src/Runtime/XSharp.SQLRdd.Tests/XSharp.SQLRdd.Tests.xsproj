@@ -33,6 +33,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="System.Data.SQLite.Core">
+      <Version>1.0.119</Version>
+    </PackageReference>
     <PackageReference Include="xunit">
       <Version>2.9.3</Version>
     </PackageReference>
@@ -50,6 +53,9 @@
     </Compile>
     <Compile Include="SQLiteTests.prg" />
     <Compile Include="SqlTest.prg" />
+    <Content Include="gstutor.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="TestClass.xh">
       <SubType>Code</SubType>
     </None>

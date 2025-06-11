@@ -36,7 +36,7 @@ FUNCTION LoremIpsum( maxLength AS LONG , minWords AS LONG , maxWords AS LONG , m
     "nibh", "euismod", "tincidunt", "ut", "laoreet", "dolore", "magna", "aliquam", "erat" }
     //
     IF ( rand == NULL )
-        rand := Random{ (LONG)DateTime.Now.Ticks }
+        rand := Random{ (LONG)DateTime.Now:Ticks }
     ENDIF
     numSentences := rand:NEXT(maxSentences - minSentences) + minSentences + 1
     numWords := rand:NEXT(maxWords - minWords) + minWords + 1

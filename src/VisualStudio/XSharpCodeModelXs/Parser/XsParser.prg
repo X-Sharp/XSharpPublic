@@ -937,9 +937,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                         ENDIF
                     ENDIF
                 ELSEIF InFoxClass .AND. (CurrentEntity:Kind == Kind.Class .OR. CurrentEntity:Kind == Kind.Field)
-                    IF SELF:La1 == XSharpLexer.ID .AND. SELF:IsAssignOp(SELF:La2)
-                        entityKind := Kind.Field
-                    ELSEIF SELF:La1 == XSharpLexer.ID .AND. SELF:Lt1:Text:EndsWith("COMATTRIB", StringComparison.OrdinalIgnoreCase)
+                    IF SELF:La1 == XSharpLexer.ID
                         entityKind := Kind.Field
                     ENDIF
                 ELSEIF CurrentType?:Kind == Kind.Enum

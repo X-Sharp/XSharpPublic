@@ -1,0 +1,172 @@
+﻿//
+// Note 1: If this does not compile then you need to restore the Nuget Packages for XUnit
+// You can do that by right clicking on the project item in the solution explorer
+// and choosing 'Manage Nuget packages'
+// You can also set a setting inside Visual Studio to make sure the Nuget Packages get restored
+// automatically. See: Tools - Nuget Package Manager - Package Manager Settings
+//
+// Note 2: Inside Visual Studio you should open the Test - Windows - Test Explorer Window
+// From there you can run the tests and see which tests succeeded and which tests failed
+//
+USING System
+USING System.Collections.Generic
+USING System.Linq
+USING System.Text
+USING XUnit
+using XSharp.RDD.SqlRDD
+using XSharp.RDD.SqlRDD.Providers
+
+
+static global options := "TrimTrailingSpaces=False;UseNulls=False;" as STRING
+#undef NEEDS_SETUP
+
+
+/// <summary>
+/// This class is used to set up the test environment for the SQL RDD tests.
+/// It creates the SQL Server Northwind database
+/// </summary>
+CLASS TestFixture IMPLEMENTS IDisposable
+    PROPERTY Handle as IntPtr AUTO
+    CONSTRUCTOR() STRICT
+        SqlDbSetProvider(providerName)
+        Handle := SqlDbOpenConnection(ConnectionString)
+#ifdef NEEDS_SETUP
+        var connection := SqlDbGetConnection(Handle)
+        var dbconnection := connection:DbConnection
+        var cmd := dbconnection:CreateCommand()
+        var script := System.IO.File.ReadAllText("script\instnwnd.sql")
+        var cmds := script:Split(<String>{e"\nGO",e"\ngo",e"\nGo",e"\ngO"},StringSplitOptions.RemoveEmptyEntries)
+        foreach var scmd in cmds
+            cmd:CommandText := scmd
+            cmd:ExecuteNonQuery()
+        next
+#endif
+        return
+
+    METHOD Dispose() AS VOID
+
+        SqlDbCloseConnection(Handle)
+        Handle := 0
+
+
+        RETURN
+END CLASS
+
+/// <summary>
+/// This class contains the tests for the SQL RDD
+/// We use the SQLRDD.Ini file for the settings
+/// </summary>
+
+CLASS TestClass IMPLEMENTS IClassFixture<TestFixture>
+    PROPERTY Handle as IntPtr AUTO
+    PROPERTY connection as SqlDbConnection AUTO
+    CONSTRUCTOR(fixture as TestFixture) STRICT
+        Handle := fixture:Handle
+        connection := SqlDbGetConnection(Handle)
+
+        [Fact, Trait("Category", "Connection")];
+            METHOD TestConnection AS VOID
+        Assert.NotEqual(Handle, IntPtr.Zero)
+        Assert.NotEqual(connection, NULL)
+        Assert.Equal(connection:Provider:Name:ToLower(), ProviderName:ToLower())
+        RETURN
+
+
+        [Fact, Trait("Category", "Indexes")];
+            METHOD TestCreateIndex() AS VOID
+        LOCAL lOk as LOGIC
+        lOk := VoDbUseArea(true, "SQLRDD","Customers","Customers",true, true)
+        Assert.Equal(lOk, TRUE)
+        lOk := DbCreateOrder("Name","Customers","Upper(ContactName)")
+        Assert.True(OrdName() == "Name")
+        Assert.Equal(lOk, TRUE)
+        lOk := DbCreateOrder("City","Customers","Upper(City)")
+        Assert.Equal(lOk, TRUE)
+        Assert.True(OrdName() == "City")
+        lOk := VODbCloseArea()
+        Assert.Equal(lOk, TRUE)
+
+        [Fact, Trait("Category", "Indexes")];
+        METHOD TestSeek() AS VOID
+        LOCAL lOk as LOGIC
+        lOk := VoDbUseArea(true, "SQLRDD","Customers","Customers",true, true)
+        Assert.Equal(lOk, TRUE)
+        lOk := DbSetOrder("PK")
+        Assert.Equal(lOk, TRUE)
+        lOk := DbSeek("ALFKI")
+        Assert.Equal(lOk, TRUE)
+        Assert.Equal( Recno(), 1U)
+        Assert.Equal(LastRec(),91U)
+        lOk := DbSeek("ANATR")
+        Assert.Equal(lOk, TRUE)
+        Assert.Equal( Recno(), 1U)
+        lOk := DbSeek("WOLZA")
+        Assert.Equal(lOk, TRUE)
+        Assert.Equal( Recno(), 1U)
+        lOk := VODbCloseArea()
+        Assert.Equal(lOk, TRUE)
+
+        [Fact, Trait("Category", "Indexes")];
+        METHOD TestSeekAllRecords() AS VOID
+        LOCAL lOk as LOGIC
+        lOk := VoDbUseArea(true, "SQLRDD","CustomersAll","Customers",true, true)
+        Assert.Equal(lOk, TRUE)
+        lOk := DbSetOrder("PK")
+        Assert.Equal(lOk, TRUE)
+        lOk := DbSeek("ALFKI")
+        Assert.Equal(lOk, TRUE)
+        Assert.Equal( Recno(), 1U)
+        Assert.Equal(LastRec(),91U)
+        lOk := DbSeek("ANATR")
+        Assert.Equal(lOk, TRUE)
+        Assert.Equal( Recno(), 2U)
+        lOk := DbSeek("WOLZA")
+        Assert.Equal(lOk, TRUE)
+        Assert.Equal( Recno(), 91U)
+        lOk := VODbCloseArea()
+        Assert.Equal(lOk, TRUE)
+        [Fact, Trait("Category", "Indexes")];
+        METHOD TestServerFilter() AS VOID
+        LOCAL lOk as LOGIC
+        lOk := VoDbUseArea(true, "SQLRDD","CustomersBrazil","Customers",true, true)
+        Assert.Equal(lOk, TRUE)
+        Assert.Equal( Recno(), 1U)
+        Assert.Equal(LastRec(),9U)
+        lOk := VODbCloseArea()
+        Assert.Equal(lOk, TRUE)
+
+        [Fact, Trait("Category", "Indexes")];
+        METHOD TestScope() AS VOID
+        LOCAL lOk as LOGIC
+        lOk := VoDbUseArea(true, "SQLRDD","Customers","Customers",true, true)
+        Assert.Equal(lOk, TRUE)
+        lOk := DbSetOrder("Address") // defined in SqlRdd.Ini
+        DbOrderInfo(DBOI_SCOPETOP,,,"BRAZIL")
+        DbOrderInfo(DBOI_SCOPEBOTTOM,,,"CANADA")
+        var nCount := (DWORD) DbOrderInfo(DBOI_KEYCOUNT)
+        Assert.Equal(nCount, 12U)
+        lOk := VODbCloseArea()
+        Assert.Equal(lOk, TRUE)
+        return
+
+        [Fact, Trait("Category", "Functions")];
+        METHOD TestFunctions AS VOID
+        local oProv as ISqlDbProvider
+        local aTest := {ProviderName}
+        foreach strProv as STRING in aTest
+        if SqlDbSetProvider(strProv)
+            oProv := SqlDbGetProvider()
+            local strResult as STRING
+            strResult := oProv:Name
+            Assert.NotNull(strResult)
+            strResult := oProv:SelectTopStatement
+            Assert.NotNull(strResult)
+            strResult := oProv:GetFunction("LEFT(%1%,%2%)")
+            Assert.NotNull(strResult)
+            strResult := oProv:GetFunction("ALLTRIM(%1%)")
+            Assert.NotNull(strResult)
+            strResult := oProv:GetFunction("DTOS(%1%)")
+            Assert.NotNull(strResult)
+        endif
+        next
+END CLASS

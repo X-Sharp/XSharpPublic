@@ -26,7 +26,6 @@ internal class SqlDbExpression inherit SqlDbObject
     property ColumnList as List<string> auto
     property Translated as logic auto
     property Segments	as IList<SqlDbSegment> auto
-    property Widths		as IList<long> auto
     private _provider   as ISqlDbProvider
 
     property OrderListStr as string => SELF:List2String(self:OrderList)
@@ -51,12 +50,10 @@ internal class SqlDbExpression inherit SqlDbObject
         if self:Segments:Count > 1
             foreach var oSeg in self:Segments
                 var oExp 			:= SqlDbExpression{oOwner, oSeg:Key}
-                //oExp:CalculateColumnWidths()
                 oSeg:HasFunctions   := oExp:HasFunctions
                 oSeg:SQLKey			:= oExp:SQLKey
                 oSeg:OrderList 	    := oExp:OrderList
                 oSeg:ColumnList	    := oExp:ColumnList
-                oSeg:Widths		    := oExp:Widths
             next
         else
             var oSeg := self:Segments:First()
@@ -64,7 +61,6 @@ internal class SqlDbExpression inherit SqlDbObject
             oSeg:SQLKey			:= self:SQLKey
             oSeg:OrderList 	    := self:OrderList
             oSeg:ColumnList	    := self:ColumnList
-            oSeg:Widths		    := self:Widths
         endif
         return
     protect method TranslateField(cIndexExpr as string) as string
@@ -133,28 +129,6 @@ internal class SqlDbExpression inherit SqlDbObject
             endif
         endif
         return
-    method CalculateColumnWidths as void
-        /*
-        LOCAL dw 	AS DWORD
-        LOCAL cCol	AS STRING
-        LOCAL nWidth AS DWORD
-        LOCAL nPos	AS DWORD
-        TRACE ENTER
-        SELF:aWidths := ArrayNew(ALen(SELF:aColumns))
-        FOR dw := 1 TO ALen(SELF:aColumns)
-        cCol   := aColumns[dw]
-        nPos	:= FieldPos(cCol)
-        IF nPos > 0
-        nWidth := SELF:Owner:oWorkArea:aColumnWidths[nPos]
-        ELSE
-        nWidth := 0
-        ENDIF
-        aWidths[dw] := nWidth
-        TRACE cCol, nWidth
-        NEXT
-        RETURN
-        */
-
 
     protect method GetExpression(nLevel as dword) as string
         local cKey	 as string

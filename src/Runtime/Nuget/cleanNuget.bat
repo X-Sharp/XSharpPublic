@@ -1,0 +1,2 @@
+del *.nupkg
+del *.nuspec

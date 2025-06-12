@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>XSharp.VFP</id>
+    <version>$Version</version>
+    <title>XSharp Visual FoxPro Runtime</title>
+    <authors>XSharp B.V.</authors>
+    <owners>XSharp B.V.</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/X-Sharp/XSharpPublic/src/License.txt</licenseUrl>
+    <icon>icon\Xsharp.png</icon>
+	  <readme>Readme.md</readme>
+    <description>XSharp Visual FoxPro Runtime</description>
+    <copyright>Copyright (C) 2015 and beyond by XSharp B.V.</copyright>
+    <tags>XSharp, VFP, Runtime</tags>
+    <repository type="git" url="https://github.com/X-Sharp/XSharpPublic.git" />
+	<dependencies>
+      <group targetFramework=".NETFramework4.6">
+        <dependency id="XSharp.RT" version="$Version" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="icon\Xsharp.png" target="icon\Xsharp.png" />
+    <file src="Readme.VFP.md"  target="Readme.md" />
+    <file src="$SourceFolder\XSharp.VFP.dll" target="lib\net46\XSharp.VFP.dll" />
+    <file src="$SourceFolder\XSharp.VFP.UI.dll" target="lib\net46\XSharp.VFP.UI.dll" />
+  </files>
+</package>

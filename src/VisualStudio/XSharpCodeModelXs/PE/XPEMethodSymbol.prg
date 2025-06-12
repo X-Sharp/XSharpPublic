@@ -88,7 +88,7 @@ CLASS XPEMethodSymbol  INHERIT XPEMemberSymbol
             SELF:_signature:ReadGenericParameters(def:GenericParameters)
         ENDIF
         SELF:IsSpecialName := def:IsSpecialName
-    PROTECTED INTERNAL OVERRIDE METHOD Resolve() AS VOID
+    PUBLIC OVERRIDE METHOD Resolve() AS VOID
         IF ! _resolved .and. _methoddef != NULL
             // Add Generic parameters first so have that info when processing the parameters
             IF _methoddef:HasGenericParameters

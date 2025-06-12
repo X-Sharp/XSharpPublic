@@ -35,7 +35,7 @@ ABSTRACT CLASS XPEMemberSymbol     INHERIT XPESymbol IMPLEMENTS IXMemberSymbol
 
 #endregion
 
-    PROTECTED INTERNAL VIRTUAL METHOD Resolve() AS VOID
+    PUBLIC VIRTUAL METHOD Resolve() AS VOID
         IF SELF:_custatts != NULL
             FOREACH VAR custatt IN SELF:_custatts
                 SWITCH custatt:AttributeType:FullName

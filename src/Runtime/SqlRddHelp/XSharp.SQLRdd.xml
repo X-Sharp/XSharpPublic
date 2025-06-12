@@ -511,6 +511,12 @@
             Can field names longer than 10 characters be used (true) or should they be truncated (false)
             </summary>
     </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.MaxRecnoAsRecCount">
+      <summary>
+            Specifies whether the maximum value in the Recno column should be used as the RecCount property.
+            This defaults to FALSE which means that the RecCount property returns the number of records in the table
+            </summary>
+    </member>
     <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.MaxRecords">
       <summary>
             What is the maximum number of records that the RDD should fetch when unfiltered.
@@ -551,6 +557,13 @@
     <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.Schema">
       <summary>Cache for the Table Schemas</summary>
     </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.SeekReturnsSubset">
+      <summary>
+            Specifies whether a seek operation should return a subset of the records in the table.
+            This defaults to TRUE which means that only the matching rows are returned.
+            When FALSE then all rows are returned, and a seek operation positions on the first matching row
+            </summary>
+    </member>
     <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.State">
       <summary>Connection State</summary>
     </member>
@@ -571,7 +584,7 @@
     </member>
     <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.UpdateAllColumns">
       <summary>
-            Should all columns be updated when a record is updated?
+            Should all columns be updated, or only the columns that were changed
             </summary>
     </member>
     <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.UseNulls">
@@ -808,7 +821,6 @@
       <summary>
             Specifies whether memo fields of type Long text or Long binary are included in the WHERE clause when using automatic updating. This defaults to TRUE
             </summary>
-      <value></value>
     </member>
     <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.DeletedColumn">
       <summary>
@@ -835,6 +847,12 @@
             Can field names longer than 10 characters be used (true) or should they be truncated (false)
             </summary>
     </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.MaxRecnoAsRecCount">
+      <summary>
+            Specifies whether the maximum value in the Recno column should be used as the RecCount property.
+            This defaults to FALSE which means that the RecCount property returns the number of records in the table
+            </summary>
+    </member>
     <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.MaxRecords">
       <summary>
             What is the maximum number of records that the RDD should fetch when unfiltered.
@@ -849,6 +867,13 @@
     <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.RecnoColumn">
       <summary>
             Name of the Recno column. When empty then the relative row number is the record number
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.SeekReturnsSubset">
+      <summary>
+            Specifies whether a seek operation should return a subset of the records in the table.
+            This defaults to TRUE which means that only the matching rows are returned.
+            When FALSE then all rows are returned, and a seek operation positions on the first matching row
             </summary>
     </member>
     <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.SelectStatement">
@@ -1018,6 +1043,7 @@
         </span>
       </returns>
     </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.GoToId(System.Object)"></member>
     <member name="M:XSharp.RDD.SqlRDD.SQLRDD.GoTop">
       <summary>Position the cursor to the first logical row.</summary>
       <returns>
@@ -1336,6 +1362,15 @@
     <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.Unique">
       <summary>Specifies if the index tag is unique</summary>
     </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.MaxRecnoAsRecCount">
+      <summary>Should the reccount be calculated from the highest value in the RecnoColumn</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.SeekReturnsSubset">
+      <summary>Should a seek return a subset (TRUE) or all rows (FALSE) </summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.TagName">
+      <summary>Retrieve TagName</summary>
+    </member>
     <member name="T:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider">
       <summary>
             Interface for SQL Database Providers
@@ -1422,6 +1457,11 @@
             DbProviderFactory for this provider
             </summary>
     </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.FalseLiteral">
+      <summary>
+            Literal value for the False value
+            </summary>
+    </member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.GetFunction(System.String)">
       <summary>
             Get the translation for an XBase function to a SQL function
@@ -1478,6 +1518,11 @@
     <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.SelectTopStatement">
       <summary>
             Syntax for the statement to select a limited number of rows from the table
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.TrueLiteral">
+      <summary>
+            Literal value for the True value
             </summary>
     </member>
     <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.TypeName">
@@ -1631,6 +1676,11 @@
             The DbProviderFactory for this provider
             </summary>
     </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.FalseLiteral">
+      <summary>
+            Literal value for the False value
+            </summary>
+    </member>
     <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.FieldDefinitionListMacro">
       <summary>Literal that can be used in SQL statements to indicate a fielddefinition list</summary>
     </member>
@@ -1742,6 +1792,11 @@
     </member>
     <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.TopCountMacro">
       <summary>Literal that can be used in SQL statements to indicate the top count</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.TrueLiteral">
+      <summary>
+            Literal value for the True value
+            </summary>
     </member>
     <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.TypeName">
       <summary>
@@ -1975,6 +2030,11 @@
             Name of the DLL that contains the DbProviderFactory
             </summary>
     </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgreSQL.FalseLiteral">
+      <summary>
+            Literal value for the False value
+            </summary>
+    </member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgreSQL.GetFunctions">
       <summary>
             Get a dictionary with the functions that are supported by this provider,
@@ -2002,6 +2062,11 @@
     <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgreSQL.SelectTopStatement">
       <summary>
             Syntax for the statement to select a limited number of rows from the table
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgreSQL.TrueLiteral">
+      <summary>
+            Literal value for the True value
             </summary>
     </member>
     <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgreSQL.TypeName">
@@ -2091,6 +2156,7 @@
             Name of the DLL that contains the DbProviderFactory
             </summary>
     </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderSqlServer.FalseLiteral"></member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderSqlServer.GetFunctions">
       <summary>
             Get a dictionary with the functions that are supported by this provider,
@@ -2115,6 +2181,7 @@
       <param name="oConn">Connection to the database</param>
       <returns>a string in SQL syntax</returns>
     </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderSqlServer.TrueLiteral"></member>
     <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderSqlServer.TypeName">
       <summary>
             Type name of the DbProviderFactory
@@ -2150,6 +2217,7 @@
       <param name="cTable">TableName</param>
       <param name="info">Object with information</param>
     </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.GetDefaults(System.Object)"></member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.GetIndexInfo(XSharp.RDD.SqlRDD.SqlDbTableInfo,System.String)">
       <summary>
             Get the metadata for an Index
@@ -2158,6 +2226,9 @@
       <param name="cIndexName">Name of the index to lookup the data for</param>
       <returns>Filled SqlDbIndexInfo object</returns>
     </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.GetInt(System.Object,XSharp.RDD.SqlRDD.SqlRDDEventReason,System.Int32)"></member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.GetLogic(System.Object,XSharp.RDD.SqlRDD.SqlRDDEventReason,System.Boolean)"></member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.GetString(System.Object,XSharp.RDD.SqlRDD.SqlRDDEventReason,System.String)"></member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.GetTableInfo(System.String)">
       <summary>
             Get the metadata for a table
@@ -2165,6 +2236,7 @@
       <param name="cTable">Name of the table to lookup the data for</param>
       <returns>Filled SqlDbTableInfo object</returns>
     </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.ReadTable(XSharp.RDD.SqlRDD.SqlDbTableInfo,System.Object)"></member>
     <member name="T:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderCallBack">
       <summary>
             The SqlMetadataProviderCallBack class. Provides metadata for the RDD from a callback function.
@@ -2184,6 +2256,9 @@
       <param name="cIndexName">Name of the index to lookup the data for</param>
       <returns>Filled SqlDbIndexInfo object</returns>
     </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderCallBack.GetInt(System.Object,XSharp.RDD.SqlRDD.SqlRDDEventReason,System.Int32)"></member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderCallBack.GetLogic(System.Object,XSharp.RDD.SqlRDD.SqlRDDEventReason,System.Boolean)"></member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderCallBack.GetString(System.Object,XSharp.RDD.SqlRDD.SqlRDDEventReason,System.String)"></member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderCallBack.GetTableInfo(System.String)">
       <summary>
             Get the metadata for a table
@@ -2224,6 +2299,9 @@
       <param name="cIndexName">Name of the index to lookup the data for</param>
       <returns>Filled SqlDbIndexInfo object</returns>
     </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderDatabase.GetInt(System.Object,XSharp.RDD.SqlRDD.SqlRDDEventReason,System.Int32)"></member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderDatabase.GetLogic(System.Object,XSharp.RDD.SqlRDD.SqlRDDEventReason,System.Boolean)"></member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderDatabase.GetString(System.Object,XSharp.RDD.SqlRDD.SqlRDDEventReason,System.String)"></member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderDatabase.GetTableInfo(System.String)">
       <summary>
             Get the metadata for a table
@@ -2257,6 +2335,9 @@
       <param name="cIndexName">Name of the index to lookup the data for</param>
       <returns>Filled SqlDbIndexInfo object</returns>
     </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderIni.GetInt(System.Object,XSharp.RDD.SqlRDD.SqlRDDEventReason,System.Int32)"></member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderIni.GetLogic(System.Object,XSharp.RDD.SqlRDD.SqlRDDEventReason,System.Boolean)"></member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderIni.GetString(System.Object,XSharp.RDD.SqlRDD.SqlRDDEventReason,System.String)"></member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderIni.GetTableInfo(System.String)">
       <summary>
             Get the metadata for a table

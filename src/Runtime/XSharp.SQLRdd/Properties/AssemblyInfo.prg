@@ -15,8 +15,6 @@ USING XSharp.Internal
 [assembly: AssemblyDescription("XSharp SQLRDD DLL, holds the SQL RDD")]
 
 // in the core dialect the next attributes are not included automatically
-[assembly: ImplicitNamespace("XSharp")]
-[assembly: ImplicitNamespace("XSharp.ADS")]
 [assembly: CompilerVersionAttribute("X# "+__VERSION__ +" - dialect:"+__DIALECT__ )]
 [assembly: ClassLibrary("XSharp.RDD.SqlRDD.Functions","XSharp")]
 [assembly: RuntimeCompatibility(WrapNonExceptionThrows := TRUE)]
@@ -25,8 +23,8 @@ USING XSharp.Internal
 [ASSEMBLY: AssemblyCopyright(XSharp.Constants.Copyright)]
 [ASSEMBLY: AssemblyCulture("")]
 
-[ASSEMBLY: AssemblyVersion("1.0.0.1")]
-[ASSEMBLY: AssemblyFileVersion("1.0.0.1")]
-[assembly: AssemblyInformationalVersion("1.0.0.1 - beta 2")]
+[ASSEMBLY: AssemblyVersion("1.0.0.4")]
+[ASSEMBLY: AssemblyFileVersion("1.0.0.4")]
+[assembly: AssemblyInformationalVersion("1.0.0.4 - beta 4")]
 [assembly: ImplicitNamespace("XSharp.RDD.SqlRDD")]
 [assembly: ImplicitNamespace("XSharp.RDD.SqlRDD.Providers")]

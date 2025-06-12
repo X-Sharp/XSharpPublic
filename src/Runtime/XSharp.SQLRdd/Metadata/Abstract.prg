@@ -102,6 +102,7 @@ ABSTRACT CLASS SqlMetadataProviderAbstract IMPLEMENTS ISqlMetadataProvider
         oTable:TrimTrailingSpaces:= SELF:GetLogic(oPar,   SqlRDDEventReason.TrimTrailingSpaces, _connection:TrimTrailingSpaces)
         oTable:CompareMemo       := SELF:GetLogic(oPar,   SqlRDDEventReason.CompareMemo,   _connection:CompareMemo)
         oTable:MaxRecnoAsRecCount:= SELF:GetLogic(oPar,   SqlRDDEventReason.MaxRecnoAsRecCount,   _connection:MaxRecnoAsRecCount)
+        oTable:SeekReturnsSubset := SELF:GetLogic(oPar,   SqlRDDEventReason.SeekReturnsSubset,   _connection:SeekReturnsSubset)
         // these fields have no connection level defaults
         oTable:ServerFilter      := SELF:GetString(oPar, SqlRDDEventReason.ServerFilter, DEFAULT_SERVERFILTER)
         oTable:ColumnList        := SELF:GetString(oPar, SqlRDDEventReason.ColumnList, DEFAULT_COLUMNLIST)

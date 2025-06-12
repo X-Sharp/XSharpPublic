@@ -21,30 +21,28 @@ internal class SqlDbOrder inherit SqlDbObject
 
 #include "..\Taginfo.xh"
 
-    private _KeyCodeBlock as ICodeblock
-    private _ForCodeBlock as ICodeblock
-    private _Expression   as SqlDbExpression
+    property DbExpression   as SqlDbExpression auto get private set
     private _KeyCache     as IDictionary<object,Int>
-    property KeyCodeBlock as ICodeblock get _KeyCodeBlock
-    property ForCodeBlock as ICodeblock get _ForCodeBlock
+    property KeyCodeBlock as ICodeblock auto get private set
+    property ForCodeBlock as ICodeblock auto get private set
     property OrderBag     as SqlDbOrderBag auto
-    property RDD    	  as SQLRDD   auto
-    property SQLKey		  as string   get _Expression:SQLKey
-    property cbExpr		  as object   auto
-    property uTopScope	  as object   auto
-    property uBotScope	  as object   auto
-    property Descending   as logic    auto
-    property KeyLength	  as int      get _Expression:KeyLength
-    property HasFunctions as logic    get _Expression:HasFunctions
+    property RDD    	  as SQLRDD   auto get private set
+    property SQLKey		  as string   get DbExpression:SQLKey
+    property cbExpr		  as object   auto get private set
+    property uTopScope	  as object   auto get private set
+    property uBotScope	  as object   auto get private set
+    property Descending   as logic    auto get protected internal set
+    property KeyLength	  as int      auto get private set
+    property HasFunctions as logic    get DbExpression:HasFunctions
     property Conditional  as logic    get !String.IsNullOrEmpty(Condition)
-    property TopScope     as object   auto
-    property BottomScope  as object   auto
+    property TopScope     as object   auto get private set
+    property BottomScope  as object   auto get private set
     property HasScopes    as logic    get TopScope != null .or. BottomScope != null
-    property SqlWhere     as string   auto
-    property Segments	  as IList<SqlDbSegment>   get _Expression:Segments
-    property ColumnList	  as IList<string>    get _Expression:ColumnList
-    property OrderList	  as IList<string>    get _Expression:OrderList
-    property OrderListStr as string get _Expression:OrderListStr
+    property SqlWhere     as string   auto get private set
+    property Segments	  as IList<SqlDbSegment>   get DbExpression:Segments
+    property ColumnList	  as IList<string>    get DbExpression:ColumnList
+    property OrderList	  as IList<string>    get DbExpression:OrderList
+    property OrderListStr as string get DbExpression:OrderListStr
     property Provider     as ISqlDbProvider get RDD:Provider
     property Connection   as SqlDbConnection get RDD:Connection
     property FileName     as string get self:OrderBag:FileName+"_"+self:Name
@@ -63,11 +61,19 @@ internal class SqlDbOrder inherit SqlDbObject
         self:RDD            := oRDD
         self:Expression     := cIndexExpr
         self:OrderBag       := oBag
-        SELF:_Expression    := SqlDbExpression{self,cIndexExpr}
-        self:_KeyCodeBlock  := self:RDD:Compile(cIndexExpr)
+        SELF:DbExpression    := SqlDbExpression{self,cIndexExpr}
+        self:KeyCodeBlock  := self:RDD:Compile(cIndexExpr)
         self:ClearScopes()
         return
     end constructor
+
+    method CalculateKeyLength() as void
+        var result := self:RDD:EvalBlock(self:KeyCodeBlock) // this will set the KeyValue property
+        if result is string var strValue
+            self:KeyLength := strValue:Length
+        endif
+        return
+    end method
 
     method ClearScopes() as void
         self:TopScope      := null
@@ -79,14 +85,14 @@ internal class SqlDbOrder inherit SqlDbObject
         SELF:_KeyCache      := null
     end method
 
-    PROPERTY KeyValue as OBJECT GET SELF:RDD:EvalBlock(SELF:_KeyCodeBlock)
+    PROPERTY KeyValue as OBJECT GET SELF:RDD:EvalBlock(SELF:KeyCodeBlock)
 
     method SetCondition(cForExpr as string) as logic
         if ! String.IsNullOrEmpty(cForExpr)
             var oExp := SqlDbExpression{self,cForExpr}
             self:Condition  := cForExpr
             self:SqlWhere   := oExp:SQLKey
-            self:_ForCodeBlock := self:RDD:Compile(cForExpr)
+            self:ForCodeBlock := self:RDD:Compile(cForExpr)
 
             return true
         endif

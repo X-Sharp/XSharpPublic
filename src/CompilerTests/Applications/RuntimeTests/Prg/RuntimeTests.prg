@@ -31,7 +31,7 @@ FUNCTION Start() AS INT
      "C836", "C837", "C840", "C846", "C847", "C848", "C849", "C850","C851","C853",;
      "C857", "C859", "C860", "C865", "C866", "C867", "C869", "C870","C871","C873","C874",;
      "C877", "C878", "C879", "C880", "C881", "C882", "C884", "C885", "C886", "C887", ;
-     "C893", "C895", "C897", "C898", "C900", "C901", "C902", "C902b", "C903", "C904", ;
+     "C893", "C895", "C897", "C898", "C899","C900", "C901", "C902", "C902b", "C903", "C904", ;
      "C905", "C908", "C913", "C914", "C915", "C921", "C926", "C932", "C936", ;
 ;
 	 "R678", "R681", "R690", "R698", "R699", "R700" ,"R701", "R702", "R710",;
@@ -45,8 +45,7 @@ FUNCTION Start() AS INT
 	 "R875", "R876", "R878", "R879", "R883", "R884", "R885", "R886", "R888", /*"R888b",*/ "R889", ; // R888b needs /xpp1
 	 "R890", "R892", "R895", "R896", "R897", "R899", "R900", "R902", "R903", "R904", "R905", "R905b",;
 	 "R906", "R907", "R908", "R909", "R910", "R911", "R912", "R913", "R914", "R918", "R919",;
-	 "R920", "R921", "R923", "R924",;
-	 "C899"; // run last because it changes settings
+	 "R920", "R921", "R923", "R924", "R929";
 	 }
 
 	#ifdef GUI
@@ -118,6 +117,11 @@ FUNCTION DoTest(cExe AS STRING) AS LOGIC
 
 	// todo: set the correct dialect by calling
 	oMethod := oType:GetMethod("Start",BindingFlags.IgnoreCase+BindingFlags.Static+BindingFlags.Public)
+    var settings := RuntimeState.GetInstance():Settings
+    var backup := Dictionary<Set, object>{}
+    foreach var entry in settings
+        backup:Add(entry:Key, entry:Value)
+    next
 	TRY
 	    IF oMethod == NULL
 	        ? "Could not find Start method in assembly "+oAssembly:GetName():FullName
@@ -138,6 +142,11 @@ FUNCTION DoTest(cExe AS STRING) AS LOGIC
 		System.Windows.Forms.MessageBox.Show(e:ToString() , "Runtime test " + cExe + " failed:")
 		#endif
 	END TRY
+	settings:Clear()
+    foreach var entry in backup
+        settings:Add(entry:Key, entry:Value)
+    next
+
 	VoDbCloseAll()
 RETURN lSucces
 

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2025-04-23T15:27:29.559+02:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic modified="2025-06-10T15:30:55.018+02:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Version History</title>
   <keywords>
     <keyword translate="true">BeforeConnect</keyword>
@@ -9,15 +9,25 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Version History</text></para>
     </header>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Version 1.0.0.3 April 2025</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Third Beta</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Version 1.0.0.4 June 2025</text></para>
+    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Fourth Beta</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">We have added a setting </text><text styleclass="Normal" style="font-weight:bold;" translate="true">SeekReturnsSubset</text><text styleclass="Normal" translate="true">, which controls the behavior for Seek() operations. When TRUE (the default) then a Seek operation returns just the row(s) that match the Seek key.</text><br/><text styleclass="Normal" translate="true">When false, then all rows are returned and the cursor is positions on the first row that matches the key. You can then also Skip -1 to reach the rows before the row that matches the key</text></li>
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">We have added the setting </text><text styleclass="Normal" style="font-weight:bold;" translate="true">MaxRecnoAsRecCount </text><text styleclass="Normal" translate="true">which controls how the RecCount in the RDD is calculated. When this setting is TRUE then the RecCount will be calculated from the maximum value of the Recno column. That could result in a RecCount that is larger than the physical # of rows in the table. This setting is only used for tables that have a RecnoColumn.</text></li>
-      <li styleclass="Normal"></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">We have fixed an issue that would cause inserts to fail when a table did not have an identity column</text></li>
+    </list>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Version 1.0.0.3 May 2025</text></para>
+    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Third Beta</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">We have moved some common code from the various MetaData providers in the abstract parent class.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">The DbProvider class now has a virtual </text><text styleclass="Normal" style="font-weight:bold;" translate="true">TrueLiteral</text><text styleclass="Normal" translate="true"> and </text><text styleclass="Normal" style="font-weight:bold;" translate="true">FalseLiteral</text><text styleclass="Normal" translate="true"> property that can be overridden in a subclass.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">We have added a setting </text><text styleclass="Normal" style="font-weight:bold;" translate="true">SeekReturnsSubset</text><text styleclass="Normal" translate="true">, which controls the behavior for Seek() operations. When </text><text styleclass="Normal" style="font-weight:bold;" translate="true">TRUE </text><text styleclass="Normal" translate="true">(the default) then a Seek operation returns just the row(s) that match the Seek key. This is compatible with the previous behavior. When </text><text styleclass="Normal" style="font-weight:bold;" translate="true">FALSE</text><text styleclass="Normal" translate="true">, then all rows are returned and the cursor is positioned on the first row that matches the key. You can then also Skip -1 to reach the rows before the row that matches the key</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">We have added the setting </text><text styleclass="Normal" style="font-weight:bold;" translate="true">MaxRecnoAsRecCount </text><text styleclass="Normal" translate="true">which controls how the RecCount in the RDD is calculated. When this setting is </text><text styleclass="Normal" style="font-weight:bold;" translate="true">TRUE</text><text styleclass="Normal" translate="true"> then the RecCount will be calculated from the maximum value of the Recno column. &#160;That could result in a RecCount that is larger than the physical # of rows in the table. This setting is only used for tables that have a RecnoColumn.</text><br/><text styleclass="Normal" translate="true">When set to FALSE (the default) then the RDD does a select count(*) on the table. When you have declared a server side filter, then that filter is included on the Select count(*) statement.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">The RDD is no longer creating a xs_license table in the database</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">When a table has a recno column, then the recno is always added as last column to order by clause, to make sure that records with duplicate keys are shown in recno order</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">When a table has a recno column, then switching the index order will move the record pointer to the row that contains that record number. Otherwise the record pointer will be on the first row in the table in the selected order</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Seek NIL will move the record pointer to the first record in the index to be compatible with other RDDs</text></li>
     </list>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Version 1.0.0.1 - March 2024</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Second beta. Changes are:</text></para>
+    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Second beta. Changes are:</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Normal" translate="true">We Implemented Pack() and Zap()</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Several changes in the providers</text></li>
@@ -52,10 +62,9 @@
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Some Ado.Net providers are returning System.Decimal values for columns without decimals. These are now converted to Integer values.</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">The SqlDbConnection class now reads several properties from the Ado.Net datasource and stores these in the DataSourceProperties collection</text></li>
     </list>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Version 1.0.0.0 - February 2024</text></para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">First Beta</text></li>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Heading3" style="font-family:Symbol; font-size:12pt; color:#00a8d2;">
+      <li styleclass="Heading3"><text styleclass="Heading3" translate="true">First Beta</text></li>
     </list>
   </body>
 </topic>

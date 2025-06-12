@@ -57,17 +57,21 @@ namespace XSharp.LanguageService.Commands
         private static void CommentLine(DocumentView doc, ITextEdit editsession, SnapshotSpan selection)
         {
             var text = selection.GetText();
-            text = "// " + text;
-            editsession.Replace(selection, text);
+            var trimmed = text.TrimStart();
+            var prefix = text.Substring(0, text.Length - trimmed.Length);
+            var newtext = prefix + "// " + trimmed;
+            editsession.Replace(selection, newtext);
         }
         private static void UnCommentLine(DocumentView doc, ITextEdit editsession, SnapshotSpan selection)
         {
             var text = selection.GetText();
-            var ws = text.Substring(0, text.Length - text.TrimStart().Length);
-            text = text.TrimStart();
-            text = text.Substring(2).TrimStart();
-            text = ws + text;
-            editsession.Replace(selection, text);
+            var trimmed = text.TrimStart();
+            var prefix = text.Substring(0, text.Length - trimmed.Length);
+            if (trimmed.StartsWith("//"))
+            {
+                text = prefix + trimmed.Substring(2).TrimStart();
+                editsession.Replace(selection, text);
+            }
 
         }
 
@@ -144,7 +148,8 @@ namespace XSharp.LanguageService.Commands
                         var line = snapshot.GetLineFromPosition(start);
                         var span = line.Extent;
                         var text = line.GetText();
-                        if (text.TrimStart().StartsWith("//"))
+                        var trimmed = text.TrimStart();
+                        if (trimmed.StartsWith("//"))
                         {
                             UnCommentLine(doc, editsession, span);
                         }

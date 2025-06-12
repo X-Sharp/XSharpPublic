@@ -78,6 +78,8 @@ namespace XSharp.Project
 
         #endregion
         #region Properties
+
+        internal string ItemType => this.ItemNode.ItemName;
         /// <summary>
         /// Gets an index into the default <b>ImageList</b> of the icon to show for this file.
         /// </summary>
@@ -159,6 +161,19 @@ namespace XSharp.Project
             return result;
         }
 
+        private void ResetFileType()
+        {
+            DetermineFileType();
+        }
+
+        internal void BuildActionChanged( )
+        {
+            this.ResetFileType();
+            var prjNode = this.ProjectMgr as XSharpProjectNode;
+            prjNode.ProjectModel.RemoveFile(this.Url);
+            prjNode.ProjectModel.AddFile(this.Url, this.FileType);
+        }
+
         protected override int ExcludeFromProject()
         {
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
@@ -191,6 +206,7 @@ namespace XSharp.Project
         {
             // Parse the contents of the file and see if we have a windows form or a windows control
             XSharpProjectNode projectNode = ProjectMgr as XSharpProjectNode;
+            this.ResetFileType();
             XSharpModel.XFile xFile = projectNode.ProjectModel.FindXFile(this.Url);
             if (xFile == null)
             {
@@ -539,12 +555,27 @@ namespace XSharp.Project
             }
         }
         private XFileType _fileType = XFileType.Unknown;
+
+        private void DetermineFileType()
+        {
+            _fileType = XFileTypeHelpers.GetFileType(this.Url);
+            if (_fileType == XFileType.SourceCode)
+            {
+                if (!string.Equals(ItemType, "Compile", StringComparison.OrdinalIgnoreCase))
+                {
+                    _fileType = XFileType.Other;
+                }
+            }
+
+        }
         internal XFileType FileType
         {
             get
             {
                 if (_fileType == XFileType.Unknown)
-                    _fileType = XFileTypeHelpers.GetFileType(this.Url);
+                {
+                    DetermineFileType();
+                }
                 return _fileType;
             }
         }

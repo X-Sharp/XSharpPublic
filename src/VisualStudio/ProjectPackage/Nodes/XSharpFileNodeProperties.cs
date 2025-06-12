@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -44,7 +44,7 @@ namespace XSharp.Project
             : base(node)
         {
         }
-
+        XSharpFileNode XNode => (XSharpFileNode)Node;
         public new string Extension
         {
             get
@@ -60,7 +60,7 @@ namespace XSharp.Project
             get { return "file:///" + Node.Url; }
         }
 
-        // 
+        //
        [Browsable(false)]
         [SRCategoryAttribute(SR.Advanced)]
         [LocDisplayName("SubType")]
@@ -97,6 +97,8 @@ namespace XSharp.Project
             set
             {
                 Node.ItemNode.ItemName = value.ToString();
+                XNode.BuildActionChanged();
+
             }
         }
 
@@ -136,7 +138,7 @@ namespace XSharp.Project
                     default:
                         var xnode = this.Node as XSharpFileNode;
                         if (xnode.FileType == XSharpModel.XFileType.License)
-                            return BuildActionEnum.EmbeddedResource; 
+                            return BuildActionEnum.EmbeddedResource;
                         var action = BuildActionEnum.None;
                         if (Enum.TryParse<BuildActionEnum>(XSharpBuildAction.ToString(), out action))
                             return action;

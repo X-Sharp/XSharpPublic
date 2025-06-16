@@ -697,7 +697,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 && expr.Kind == BoundKind.Literal && ((BoundLiteral)expr).IsLiteralNull())
             {
                 if (valueKind == BindValueKind.RValue)
-                { 
+                {
                     return true;
                 }
                 if (valueKind == BindValueKind.RefOrOut)
@@ -1720,7 +1720,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(propertySyntax != null);
 #if XSHARP
             if ((RequiresReferenceToLocation(valueKind) || checkingReceiver) &&
-                propertySymbol.RefKind == RefKind.None && ! (propertySymbol is XsVariableSymbol) && false)
+                propertySymbol.RefKind == RefKind.None && !(propertySymbol is XsVariableSymbol) && false)
 #else
             if ((RequiresReferenceToLocation(valueKind) || checkingReceiver) &&
                 propertySymbol.RefKind == RefKind.None)
@@ -5737,9 +5737,4 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
     }
-#if XSHARP
-            bool isNil = field.Name == "_NIL" && field.ContainingType.Name == "__Usual";
-            if (!field.IsReadOnly && ! isNil )
-#else
-#endif
 }

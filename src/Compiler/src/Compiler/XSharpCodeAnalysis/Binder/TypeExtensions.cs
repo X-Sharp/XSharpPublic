@@ -40,9 +40,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 return base.Visit(node);
             }
-            protected override BoundExpression VisitExpressionWithoutStackGuard(BoundExpression expr)
+            protected override BoundNode? VisitExpressionOrPatternWithoutStackGuard(BoundNode expr)
             {
-                return (BoundExpression)base.Visit(expr);
+                return base.Visit(expr);
             }
         }
 
@@ -86,9 +86,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     node.Syntax.XNoWarning = true;
                 return base.Visit(node);
             }
-            protected override BoundExpression VisitExpressionWithoutStackGuard(BoundExpression expr)
+            protected override BoundNode? VisitExpressionOrPatternWithoutStackGuard(BoundNode expr)
             {
-                return (BoundExpression)base.Visit(expr);
+                return base.Visit(expr);
             }
         }
 

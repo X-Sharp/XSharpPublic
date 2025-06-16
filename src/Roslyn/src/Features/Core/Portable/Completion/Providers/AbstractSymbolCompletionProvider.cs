@@ -25,10 +25,6 @@ namespace Microsoft.CodeAnalysis.Completion.Providers;
 internal abstract partial class AbstractSymbolCompletionProvider<TSyntaxContext> : LSPCompletionProvider
     where TSyntaxContext : SyntaxContext
 {
-    protected AbstractSymbolCompletionProvider()
-    {
-    }
-
     protected abstract (string displayText, string suffix, string insertionText) GetDisplayAndSuffixAndInsertionText(ISymbol symbol, TSyntaxContext context);
 
     protected abstract Task<ImmutableArray<SymbolAndSelectionInfo>> GetSymbolsAsync(
@@ -108,11 +104,23 @@ internal abstract partial class AbstractSymbolCompletionProvider<TSyntaxContext>
         // We might get symbol w/o name but CanBeReferencedByName is still set to true, 
         // need to filter them out.
         // https://github.com/dotnet/roslyn/issues/47690
-        var symbolGroups = from symbol in symbols
-                           let texts = GetDisplayAndSuffixAndInsertionText(symbol.Symbol, contextLookup(symbol))
-                           where !string.IsNullOrWhiteSpace(texts.displayText)
-                           group symbol by texts into g
-                           select g;
+        //
+        // Use SymbolReferenceEquivalenceComparer.Instance as the value comparer as we
+        // don't want symbols with just the same name to necessarily match
+        // (as the default comparer on SymbolAndSelectionInfo does)
+        var symbolGroups = new MultiDictionary<(string displayText, string suffix, string insertionText), SymbolAndSelectionInfo>(
+            capacity: symbols.Length,
+            comparer: EqualityComparer<(string, string, string)>.Default,
+            valueComparer: SymbolReferenceEquivalenceComparer.Instance);
+
+        foreach (var symbol in symbols)
+        {
+            var texts = GetDisplayAndSuffixAndInsertionText(symbol.Symbol, contextLookup(symbol));
+            if (!string.IsNullOrWhiteSpace(texts.displayText))
+            {
+                symbolGroups.Add(texts, symbol);
+            }
+        }
 
         using var _ = ArrayBuilder<CompletionItem>.GetInstance(out var itemListBuilder);
         var typeConvertibilityCache = new Dictionary<ITypeSymbol, bool>(SymbolEqualityComparer.Default);
@@ -120,8 +128,12 @@ internal abstract partial class AbstractSymbolCompletionProvider<TSyntaxContext>
         foreach (var symbolGroup in symbolGroups)
         {
             var includeItemInTargetTypedCompletion = false;
-            var arbitraryFirstContext = contextLookup(symbolGroup.First());
-            var symbolList = symbolGroup.ToImmutableArray();
+            using var symbolListBuilder = TemporaryArray<SymbolAndSelectionInfo>.Empty;
+            foreach (var symbol in symbolGroup.Value)
+                symbolListBuilder.Add(symbol);
+
+            var symbolList = symbolListBuilder.ToImmutableAndClear();
+            var arbitraryFirstContext = contextLookup(symbolList[0]);
 
             if (completionContext.CompletionOptions.TargetTypedCompletionFilter)
             {
@@ -149,6 +161,20 @@ internal abstract partial class AbstractSymbolCompletionProvider<TSyntaxContext>
         }
 
         return itemListBuilder.ToImmutableAndClear();
+    }
+
+    /// <summary>
+    /// Alternative comparer to SymbolAndSelectionInfo's default which considers both the full symbol and preselect.
+    /// </summary>
+    private sealed class SymbolReferenceEquivalenceComparer : IEqualityComparer<SymbolAndSelectionInfo>
+    {
+        public static readonly SymbolReferenceEquivalenceComparer Instance = new();
+
+        public bool Equals(SymbolAndSelectionInfo x, SymbolAndSelectionInfo y)
+            => x.Symbol == y.Symbol && x.Preselect == y.Preselect;
+
+        public int GetHashCode(SymbolAndSelectionInfo symbol)
+            => Hash.Combine(symbol.Symbol.GetHashCode(), symbol.Preselect ? 1 : 0);
     }
 
     protected static bool TryFindFirstSymbolMatchesTargetTypes(
@@ -285,9 +311,7 @@ internal abstract partial class AbstractSymbolCompletionProvider<TSyntaxContext>
 
         // We want the resultant contexts ordered in the same order the related documents came in.  Importantly, the
         // context for *our* starting document should be placed first.
-        contextAndSymbolLists = contextAndSymbolLists
-            .OrderBy((tuple1, tuple2) => documentIdToIndex[tuple1.documentId] - documentIdToIndex[tuple2.documentId])
-            .ToImmutableArray();
+        contextAndSymbolLists = [.. contextAndSymbolLists.OrderBy((tuple1, tuple2) => documentIdToIndex[tuple1.documentId] - documentIdToIndex[tuple2.documentId])];
 
         var symbolToContextMap = UnionSymbols(contextAndSymbolLists);
         var missingSymbolsMap = FindSymbolsMissingInLinkedContexts(symbolToContextMap, contextAndSymbolLists);
@@ -306,15 +330,23 @@ internal abstract partial class AbstractSymbolCompletionProvider<TSyntaxContext>
     private static Dictionary<SymbolAndSelectionInfo, TSyntaxContext> UnionSymbols(
         ImmutableArray<(DocumentId documentId, TSyntaxContext syntaxContext, ImmutableArray<SymbolAndSelectionInfo> symbols)> linkedContextSymbolLists)
     {
+        using var _ = PooledHashSet<(string Name, SymbolKind Kind)>.GetInstance(out var symbolNameAndKindSet);
+
         // To correctly map symbols back to their SyntaxContext, we do care about assembly identity.
         // We don't care about assembly identity when creating the union.
         var result = new Dictionary<SymbolAndSelectionInfo, TSyntaxContext>();
         foreach (var (documentId, syntaxContext, symbols) in linkedContextSymbolLists)
         {
+            symbolNameAndKindSet.Clear();
+
             // We need to use the SemanticModel any particular symbol came from in order to generate its description correctly.
             // Therefore, when we add a symbol to set of union symbols, add a mapping from it to its SyntaxContext.
-            foreach (var symbol in symbols.GroupBy(s => new { s.Symbol.Name, s.Symbol.Kind }).Select(g => g.First()))
-                result.TryAdd(symbol, syntaxContext);
+            foreach (var symbolAndSelectionInfo in symbols)
+            {
+                var symbolNameAndKind = (symbolAndSelectionInfo.Symbol.Name, symbolAndSelectionInfo.Symbol.Kind);
+                if (symbolNameAndKindSet.Add(symbolNameAndKind))
+                    result.TryAdd(symbolAndSelectionInfo, syntaxContext);
+            }
         }
 
         return result;

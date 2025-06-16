@@ -102,7 +102,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 get { return true; }
             }
 
-            internal sealed override bool IsMetadataVirtual(bool ignoreInterfaceImplementationChanges = false)
+            internal sealed override bool IsMetadataVirtual(IsMetadataVirtualOption option = IsMetadataVirtualOption.None)
             {
                 return true;
             }
@@ -212,7 +212,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             internal override bool HasUnscopedRefAttribute => false;
 
-            internal sealed override void AddSynthesizedAttributes(Emit.PEModuleBuilder modulebuilder, ref ArrayBuilder<SynthesizedAttributeData> attributes)
+            internal sealed override void AddSynthesizedAttributes(Emit.PEModuleBuilder modulebuilder, ref ArrayBuilder<CSharpAttributeData> attributes)
             {
                 base.AddSynthesizedAttributes(modulebuilder, ref attributes);
 

@@ -1197,7 +1197,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             ordinal,
                             locations,
                             syntaxRefs) :
-                        new SourceMethodTypeParameterSymbol(
+                        new SourceNotOverridingMethodTypeParameterSymbol(
                             this,
                             name,
                             ordinal,

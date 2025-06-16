@@ -76,7 +76,6 @@ Namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeFixes.UnitTests
                 Dim fixes = Await codefixService.GetFixesAsync(
                     document,
                     (Await document.GetSyntaxRootAsync()).FullSpan,
-                    CodeActionOptions.DefaultProvider,
                     CancellationToken.None)
 
                 Assert.Equal(0, fixes.Count())
@@ -92,7 +91,6 @@ Namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeFixes.UnitTests
                 fixes = Await codefixService.GetFixesAsync(
                     document,
                     (Await document.GetSyntaxRootAsync()).FullSpan,
-                    CodeActionOptions.DefaultProvider,
                     CancellationToken.None)
                 Assert.Equal(1, fixes.Count())
 
@@ -102,7 +100,6 @@ Namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeFixes.UnitTests
                 fixes = Await codefixService.GetFixesAsync(
                     document,
                     (Await document.GetSyntaxRootAsync()).FullSpan,
-                    CodeActionOptions.DefaultProvider,
                     CancellationToken.None)
 
                 Assert.Equal(0, fixes.Count())
@@ -151,7 +148,6 @@ Namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeFixes.UnitTests
                 Dim fixes = Await codefixService.GetFixesAsync(
                     document,
                     (Await document.GetSyntaxRootAsync()).FullSpan,
-                    CodeActionOptions.DefaultProvider,
                     CancellationToken.None)
 
                 Assert.Equal(0, fixes.Count())
@@ -167,7 +163,6 @@ Namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeFixes.UnitTests
                 fixes = Await codefixService.GetFixesAsync(
                     document,
                     (Await document.GetSyntaxRootAsync()).FullSpan,
-                    CodeActionOptions.DefaultProvider,
                     CancellationToken.None)
 
                 Assert.Equal(0, fixes.Count())
@@ -299,7 +294,7 @@ Namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeFixes.UnitTests
 
                 ' Make sure we don't crash
                 Dim unused = Await codefixService.GetMostSevereFixAsync(
-                    document, Text.TextSpan.FromBounds(0, 0), New DefaultCodeActionRequestPriorityProvider(), CodeActionOptions.DefaultProvider, CancellationToken.None)
+                    document, Text.TextSpan.FromBounds(0, 0), New DefaultCodeActionRequestPriorityProvider(), CancellationToken.None)
             End Using
         End Function
 
@@ -356,11 +351,11 @@ Namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeFixes.UnitTests
                 Return Task.CompletedTask
             End Function
 
-            Public Function GetOnTheFlyDocsAsync(symbolSignature As String, declarationCode As ImmutableArray(Of String), language As String, cancellationToken As CancellationToken) As Task(Of String) Implements ICopilotCodeAnalysisService.GetOnTheFlyDocsAsync
-                Return Task.FromResult("")
+            Public Function GetOnTheFlyDocsAsync(symbolSignature As String, declarationCode As ImmutableArray(Of String), language As String, cancellationToken As CancellationToken) As Task(Of (responseString As String, isQuotaExceeded As Boolean)) Implements ICopilotCodeAnalysisService.GetOnTheFlyDocsAsync
+                Return Task.FromResult(("", False))
             End Function
 
-            Public Function IsAnyExclusionAsync(cancellationToken As CancellationToken) As Task(Of Boolean) Implements ICopilotCodeAnalysisService.IsAnyExclusionAsync
+            Public Function IsFileExcludedAsync(filePath As String, cancellationToken As CancellationToken) As Task(Of Boolean) Implements ICopilotCodeAnalysisService.IsFileExcludedAsync
                 Return Task.FromResult(False)
             End Function
         End Class

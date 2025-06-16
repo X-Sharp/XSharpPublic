@@ -106,6 +106,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal override bool HasUnscopedRefAttribute => false;
 
+        internal override int TryGetOverloadResolutionPriority() => 0;
+
         internal new string GetDebuggerDisplay()
         {
             if (string.IsNullOrEmpty(Alias))

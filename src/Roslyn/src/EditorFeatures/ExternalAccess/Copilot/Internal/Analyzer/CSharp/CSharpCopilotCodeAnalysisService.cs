@@ -57,7 +57,7 @@ internal sealed partial class CSharpCopilotCodeAnalysisService : AbstractCopilot
     protected override Task StartRefinementSessionCoreAsync(Document oldDocument, Document newDocument, Diagnostic? primaryDiagnostic, CancellationToken cancellationToken)
         => _lazyExternalCopilotService.Value.StartRefinementSessionAsync(oldDocument, newDocument, primaryDiagnostic, cancellationToken);
 
-    protected override Task<string> GetOnTheFlyDocsCoreAsync(string symbolSignature, ImmutableArray<string> declarationCode, string language, CancellationToken cancellationToken)
+    protected override Task<(string responseString, bool isQuotaExceeded)> GetOnTheFlyDocsCoreAsync(string symbolSignature, ImmutableArray<string> declarationCode, string language, CancellationToken cancellationToken)
         => _lazyExternalCopilotService.Value.GetOnTheFlyDocsAsync(symbolSignature, declarationCode, language, cancellationToken);
 
     protected override async Task<ImmutableArray<Diagnostic>> GetDiagnosticsIntersectWithSpanAsync(
@@ -80,6 +80,6 @@ internal sealed partial class CSharpCopilotCodeAnalysisService : AbstractCopilot
         return filteredDiagnostics.ToImmutable();
     }
 
-    protected override Task<bool> IsAnyExclusionCoreAsync(CancellationToken cancellationToken)
-        => _lazyExternalCopilotService.Value.IsAnyExclusionAsync(cancellationToken);
+    protected override Task<bool> IsFileExcludedCoreAsync(string filePath, CancellationToken cancellationToken)
+        => _lazyExternalCopilotService.Value.IsFileExcludedAsync(filePath, cancellationToken);
 }

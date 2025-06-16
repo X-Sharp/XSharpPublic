@@ -158,7 +158,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return OneOrMany.Create(default(SyntaxList<AttributeListSyntax>));
         }
 
-        internal sealed override bool IsMetadataVirtual(bool ignoreInterfaceImplementationChanges = false)
+        internal sealed override bool IsMetadataVirtual(IsMetadataVirtualOption option = IsMetadataVirtualOption.None)
         {
             return true;
         }
@@ -179,6 +179,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal override bool GenerateDebugInfo
         {
             get { return true; }
+        }
+
+        internal sealed override int TryGetOverloadResolutionPriority()
+        {
+            return 0;
         }
     }
 }

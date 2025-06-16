@@ -1223,7 +1223,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // ERR_NameIllegallyOverrides3 = 7040, // Not used anymore due to 'Single Meaning' relaxation changes
         ERR_ResourceFileNameNotUnique = 7041,
         ERR_DllImportOnGenericMethod = 7042,
-        ERR_EncUpdateFailedMissingAttribute = 7043,
+        ERR_EncUpdateFailedMissingSymbol = 7043,
 
         ERR_ParameterNotValidForType = 7045,
         ERR_AttributeParameterRequired1 = 7046,
@@ -1567,7 +1567,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_AutoPropsInRoStruct = 8341,
         ERR_FieldlikeEventsInRoStruct = 8342,
         // ERR_RefStructInterfaceImpl = 8343,
-        ERR_BadSpecialByRefIterator = 8344,
+        // ERR_BadSpecialByRefIterator = 8344,
         ERR_FieldAutoPropCantBeByRefLike = 8345,
         ERR_StackAllocConversionNotPossible = 8346,
 
@@ -2067,7 +2067,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_ScopedMismatchInParameterOfPartial = 8988,
 
         // param-nullchecking feature removed from C# 11
-        ERR_ParameterNullCheckingNotSupported = 8989,
+        // ERR_ParameterNullCheckingNotSupported = 8989,
         // ERR_DiscardCannotBeNullChecked = 8990,
         // ERR_MustNullCheckInImplementation = 8991,
         // ERR_NonNullableValueTypeIsNullChecked = 8992,
@@ -2330,7 +2330,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // available 9219,
         // available 9220,
         // available 9221,
-        // available 9222,
+        ERR_CollectionInitializerInfiniteChainOfAddCalls = 19222,
         ERR_ParamsCollectionInfiniteChainOfConstructorCalls = 19223,
         ERR_ParamsMemberCannotBeLessVisibleThanDeclaringMember = 19224,
         ERR_ParamsCollectionConstructorDoesntInitializeRequiredMember = 19225,
@@ -2374,9 +2374,27 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_PartialPropertySignatureDifference = 19256,
         ERR_PartialPropertyRequiredDifference = 19257,
 
-        INF_IdentifierConflictWithContextualKeyword = 19258,
+        WRN_FieldIsAmbiguous = 19258,
 
         ERR_InlineArrayAttributeOnRecord = 19259,
+        ERR_FeatureNotAvailableInVersion13 = 19260,
+
+        ERR_CannotApplyOverloadResolutionPriorityToOverride = 19261,
+        ERR_CannotApplyOverloadResolutionPriorityToMember = 19262,
+        ERR_PartialPropertyDuplicateInitializer = 19263,
+
+        WRN_UninitializedNonNullableBackingField = 19264,
+        WRN_UnassignedInternalRefField = 19265,
+        WRN_AccessorDoesNotUseBackingField = 19266,
+
+        ERR_IteratorRefLikeElementType = 19267,
+
+        WRN_ExperimentalWithMessage = 19268,
+
+        WRN_UnscopedRefAttributeOldRules = 19269,
+        WRN_InterceptsLocationAttributeUnsupportedSignature = 19270,
+
+        ERR_EmbeddedAttributeMustFollowPattern = 19271,
 
         // Note: you will need to do the following after adding errors:
         //  1) Update ErrorFacts.IsBuildOnlyDiagnostic (src/Compilers/CSharp/Portable/Errors/ErrorFacts.cs)
@@ -2384,6 +2402,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         // Note: you will need to do the following after adding warnings:
         //  1) Re-generate compiler code (eng\generate-compiler-code.cmd).
         //  2) Update ErrorFacts.IsBuildOnlyDiagnostic (src/Compilers/CSharp/Portable/Errors/ErrorFacts.cs)
+        //  3) Update ErrorFacts.GetWarningLevel (src/Compilers/CSharp/Portable/Errors/ErrorFacts.cs)
+        //  4) Update DiagnosticTest.WarningLevel_2 (src/Compilers/CSharp/Test/Syntax/Diagnostics/DiagnosticTest.cs)
 
         #region X#-only messages
         WRN_UnsafeImplied = 9001,

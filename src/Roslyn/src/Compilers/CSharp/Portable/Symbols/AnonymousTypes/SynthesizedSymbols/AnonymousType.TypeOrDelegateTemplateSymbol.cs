@@ -125,6 +125,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             internal sealed override bool HasCodeAnalysisEmbeddedAttribute => false;
 
+            internal sealed override bool HasCompilerLoweringPreserveAttribute => false;
+
             internal sealed override bool IsInterpolatedStringHandlerType => false;
 
             internal sealed override ImmutableArray<Symbol> GetEarlyAttributeDecodingMembers()

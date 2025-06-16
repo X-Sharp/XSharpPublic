@@ -1,0 +1,14 @@
+POST http://localhost:5185/api/customers
+content-type: application/json
+
+{
+    "CustNum": 1001,
+    "FirstName": "Fabrice",
+    "LastName": "Foray",
+	"Address": "",
+	"City": "",
+	"State": "",
+	"Zip": "",
+	"Phone": "",
+	"Fax": ""
+}

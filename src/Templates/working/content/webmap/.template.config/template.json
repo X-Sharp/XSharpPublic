@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "XSharp B.V.",
+  "classifications": [ "Web","WebAPI","Web API","API","Service" ],
+  "identity": "XSharpBV.WebMap.XSharp",
+  "name": "XSharp WebApp Application - RESTful",
+  "description": "A project for creating a RESTful application that can run on .NET on Windows, Linux and macOS. This application is using MapGet/MapPost for routing.",
+  "sourceName":"XSharp.WebMap",
+  "shortName": "xswebmap",
+  "tags": {
+    "language": "X#",
+    "type": "project"
+  },
+  "preferNameDirectory": true,
+  "defaultName": "xsweb1"
+}

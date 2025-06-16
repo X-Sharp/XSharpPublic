@@ -55,7 +55,7 @@ See License.txt in the project root for license information.
 
     <XSharpCompilerSrc>$(Solutiondir)Compiler\src\Compiler\</XSharpCompilerSrc>
     <Configurations>Debug;Release;Public</Configurations>
-    <Langversion>latest</Langversion>
+    <Langversion>preview</Langversion>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>

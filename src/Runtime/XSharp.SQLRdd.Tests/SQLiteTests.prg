@@ -168,6 +168,84 @@ BEGIN NAMESPACE SqlRDD.SQLiteTests
 
 			SqlDbCloseConnection(hConn)
 
+		[Fact, Trait("Category", "SQLRDD")];
+		METHOD CompositeOrder() AS VOID
+
+			LOCAL hConn := GetSQLiteConnection() AS IntPtr
+
+			DbUseArea(TRUE,"SQLRDD","CUSTOMER")
+
+			DbZap()
+
+			DbAppend();FieldPut(1,2);FieldPut(2,"A")
+			DbAppend();FieldPut(1,1);FieldPut(2,"C")
+			DbAppend();FieldPut(1,1);FieldPut(2,"B")
+			DbAppend();FieldPut(1,1);FieldPut(2,"A")
+			DbAppend();FieldPut(1,1);FieldPut(2,"B")
+			DbAppend();FieldPut(1,3);FieldPut(2,"A")
+			
+			Assert.True( OrdCreate("test","test","FIRSTNAME + Str(CUSTNUM)") )
+
+			LOCAL cTest AS STRING
+
+			DbGoTop()
+
+			cTest := ""
+			DO WHILE .not. eof()
+				cTest += AllTrim( FieldGet(2) ) + AsString( FieldGet(1) )
+				DbSkip()
+			END DO
+			Assert.Equal( "A1A2A3B1B1C1", cTest) // empty
+
+			DbCloseArea()
+
+			SqlDbCloseConnection(hConn)
+
+		[Fact, Trait("Category", "SQLRDD")];
+		METHOD FilterTest() AS VOID
+
+			LOCAL hConn := GetSQLiteConnection() AS IntPtr
+
+			DbUseArea(TRUE,"SQLRDD","CUSTOMER")
+
+			DbZap()
+
+			DbAppend();FieldPut(2,"AB")
+			DbAppend();FieldPut(2,"CA")
+			DbAppend();FieldPut(2,"BA")
+			DbAppend();FieldPut(2,"AB")
+			DbAppend();FieldPut(2,"BC")
+			DbAppend();FieldPut(2,"AA")
+			
+			
+			Assert.True( DbSetFilter('FIRSTNAME="A"') )
+			
+			DbGoTop()
+
+			LOCAL cTest AS STRING
+			cTest := ""
+			DO WHILE .not. eof()
+				cTest += AllTrim( FieldGet(2) )
+				FieldPut( 2, "ZZ")
+				DbGoTop()
+			END DO
+			Assert.Equal( "ABABAA", cTest)
+
+			DbCloseArea()
+
+			DbUseArea(TRUE,"SQLRDD","CUSTOMER")
+			DbGoTop()
+			cTest := ""
+			DO WHILE .not. eof()
+				cTest += AllTrim( FieldGet(2) )
+				DbSkip()
+			END DO
+			Assert.Equal( "ZZCABAZZBCZZ", cTest)
+
+			DbCloseArea()
+
+			SqlDbCloseConnection(hConn)
+
 	END CLASS
 
 END NAMESPACE

@@ -72,7 +72,11 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Reference Include="XSharp.CodeAnalysis">
       <HintPath>$(VsExternalDir)XSharp.CodeAnalysis.dll</HintPath>
@@ -129,6 +133,12 @@
     <Compile Include="Commands\CommandXsHelp.cs" />
     <Compile Include="Commands\CommandXPorter.cs" />
     <Compile Include="Commands\CommandVoXPorter.cs" />
+    <Compile Include="Commands\CreateWindowsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Commands\CreateWindowsForm.Designer.cs">
+      <DependentUpon>CreateWindowsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Commands\XSharpBaseCommand.cs" />
     <Compile Include="ExternalAssemblies.cs" />
     <Compile Include="FileCodeModel\CodeDomCodeAttribute.cs" />
@@ -491,6 +501,9 @@
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Internal\ResourceInternal\Resource.resX">
     </ZipItem>
+    <EmbeddedResource Include="Commands\CreateWindowsForm.resx">
+      <DependentUpon>CreateWindowsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx">
       <DependentUpon>Resources.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -746,7 +759,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.527</Version>
+      <Version>17.0.533</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>
@@ -754,17 +767,17 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Data.Sqlite">
-      <Version>8.0.10</Version>
+      <Version>9.0.6</Version>
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools">
-      <Version>17.12.2069</Version>
+      <Version>17.14.2094</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" GeneratePathProperty="true">
-      <Version>2.1.10</Version>
+      <Version>2.1.11</Version>
       <IncludeAssets>all</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.DiaSymReader">

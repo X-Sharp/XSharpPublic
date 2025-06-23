@@ -845,6 +845,7 @@ namespace XSharp.Project
             var project = (XSharpProjectNode)this.ProjectMgr;
             var name = this.GetMkDocument();
             base.Remove(removeFromStorage);
+            project.ProjectModel.RemoveFile(name);
             project.RemoveURL(name);
         }
         protected override bool RenameDocument(string oldName, string newName, out HierarchyNode newNodeOut)

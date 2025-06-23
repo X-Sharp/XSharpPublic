@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic modified="2025-06-23T13:47:16.548+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-06-23T15:53:13.553+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -13,66 +13,31 @@
     </header>
     <para styleclass="Body Text" style="tabstops:96px left,144px left,240px left,488px left,1998px left ;">Note: When an item has a matching GitHub ticket, the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> , where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X#, we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue.</para>
     <para styleclass="Heading1">Changes in 2.24.0.0</para>
-    <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
-    <para styleclass="Heading3">New features</para>
-    <para styleclass="Heading2"><text styleclass="Heading3">Bug fixes</text></para>
+    <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text><br/><text styleclass="Heading3">Bug fixes</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Documentation generation for VFP classes for members without visibility modifier was not working (#1664)</li>
       <li styleclass="Normal">Fixed an issue with default parameter values, where the type of the default did not match the type of the parameter. For example using a LONG default value for a Decimal parameter (#1733)</li>
     </list>
-    <para styleclass="Heading2">Build System</para>
-    <para styleclass="Heading2"><text styleclass="Heading3">Bug fixes</text></para>
+    <para styleclass="Heading2">Build System<br/><text styleclass="Heading3">Bug fixes</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">The WriteCodeFragment task now properly supports the _Parameter1, _Parameter2 etc parameters, just like the C# build system does.</li>
     </list>
-    <para styleclass="Heading2">Runtime</para>
-    <para styleclass="Heading3">New features</para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"></li>
-    </list>
-    <para styleclass="Heading3">Bug fixes</para>
+    <para styleclass="Heading2">Runtime<br/><text styleclass="Heading3">Bug fixes</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Fixed an issue with late bound calls to overloaded methods.</li>
     </list>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Macro compiler</text></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"></li>
-    </list>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">RDD System</text></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"></li>
-    </list>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Typed VO SDK</text></para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text"></li>
-    </list>
-    <para styleclass="Heading2">Visual Studio integration</para>
-    <para styleclass="Heading3">Bug fixes</para>
+    <para styleclass="Heading2">Visual Studio integration<br/><text styleclass="Heading3">Bug fixes</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">When a file was deleted from a project, then the file would not be deleted from the intellisense database. This has been fixed.</li>
       <li styleclass="Body Text">Goto definition no longer includes source from prg files with buildaction None (#1630)</li>
       <li styleclass="Body Text">Intellisense was not showing field in VFP classes for fields without visibility modifier (#1725)</li>
       <li styleclass="Body Text">The ToggleLineComment and ToggleBlockComment functions were not properly maintaining leading whitespace (#1728)</li>
       <li styleclass="Body Text">Fixed an issue with Code Generation for AssemblyCustomAttributes</li>
-      <li styleclass="Body Text">The code generator now automatically generates END CONSTRUCTOR, END METHOD etc.</li>
     </list>
     <para styleclass="Heading3">New Features</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added context menu option to generate Windows Forms Form from an existing VO Form (#1366)</li>
-    </list>
-    <para styleclass="Heading2">XIDE</para>
-    <para styleclass="Heading3">General</para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"></li>
-    </list>
-    <para styleclass="Heading3">Plugin System</para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"></li>
-    </list>
-    <para styleclass="Heading2">Documentation</para>
-    <para styleclass="Heading3">Bug fixes</para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"></li>
+      <li styleclass="Body Text">The code generator now automatically generates END CONSTRUCTOR, END METHOD etc.</li>
     </list>
     <para styleclass="Heading1">Changes in 2.23.0.2</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>

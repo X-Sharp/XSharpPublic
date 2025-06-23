@@ -773,6 +773,7 @@
 				<xs:attribute name="value_to" type="xs:string"/>
 				<xs:attribute name="dateformat" type="xs:string"/>
 				<xs:attribute name="excludeself" type="xs:boolean" default="false"/>
+				<xs:attribute name="listtype" type="xs:string"/>
 				<xs:attribute name="addinfo" type="xs:string"/>
 				<xs:attribute name="inline" type="xs:boolean" default="false"/>
 				<xs:attribute name="translate" type="xs:boolean"/>
@@ -862,6 +863,7 @@
 			<xs:element name="anchor" type="anchor.class" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="br" type="br.class" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="line" type="line.class" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="printcommand" type="printcommand.class" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="tab" type="tab.class" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="var" type="var.class" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="figurelabel" type="figurelabel.class" minOccurs="0" maxOccurs="unbounded"/>
@@ -891,6 +893,16 @@
 		</xs:choice>
 		<xs:attribute name="styleclass" type="xs:string"/>
 		<xs:attribute name="style" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="printcommand.class" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Print command</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:anySimpleType">
+				<xs:attribute name="orientation" type="xs:integer"/>
+			</xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 	<xs:complexType name="repository.class" mixed="false">
 		<xs:annotation>

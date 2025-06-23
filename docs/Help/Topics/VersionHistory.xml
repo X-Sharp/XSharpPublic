@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2025-06-23T15:53:13.553+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-06-24T02:40:35.453+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -11,7 +11,7 @@
     <header>
       <para styleclass="Heading1">Version History</para>
     </header>
-    <para styleclass="Body Text" style="tabstops:96px left,144px left,240px left,488px left,1998px left ;">Note: When an item has a matching GitHub ticket, the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> , where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X#, we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue.</para>
+    <para styleclass="Body Text">Note: When an item has a matching GitHub ticket, the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> , where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X#, we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue.</para>
     <para styleclass="Heading1">Changes in 2.24.0.0</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text><br/><text styleclass="Heading3">Bug fixes</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -24,7 +24,9 @@
     </list>
     <para styleclass="Heading2">Runtime<br/><text styleclass="Heading3">Bug fixes</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Fixed an issue with late bound calls to overloaded methods.</li>
+      <li styleclass="Normal">Fixed an issue with late bound calls to overloaded methods (#1696)</li>
+      <li styleclass="Normal">Fixed problem with ambiguous call error on the GoMonth() function (VFP dialect) (#1724)</li>
+      <li styleclass="Normal">Fixed problem with the COPY TO command when using the VIA clause (#1726)</li>
     </list>
     <para styleclass="Heading2">Visual Studio integration<br/><text styleclass="Heading3">Bug fixes</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -39,6 +41,11 @@
       <li styleclass="Body Text">Added context menu option to generate Windows Forms Form from an existing VO Form (#1366)</li>
       <li styleclass="Body Text">The code generator now automatically generates END CONSTRUCTOR, END METHOD etc.</li>
     </list>
+    <para styleclass="Heading2">VOXporter</para>
+    <para styleclass="Heading3">New features</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Add special tags &quot;VXP-NOCHANGE&quot;, &quot;{VOXP:NOCHANGE}&quot; that instruct VOXporter to not modify at all the code from a module/prg file &#160;(#1723)</li>
+    </list>
     <para styleclass="Heading1">Changes in 2.23.0.2</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Heading3">New features</para>
@@ -47,6 +54,7 @@
     </list>
     <para styleclass="Heading2"><text styleclass="Heading3">Bug fixes</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Body Text">Fixed a problem with XML documentation generation for class properties in the VFP dialect (#1664)</text></li>
       <li styleclass="Normal"><text styleclass="Body Text">Fixed compiler crash with syntax errors in interpolated strings (#1672)</text></li>
       <li styleclass="Normal"><text styleclass="Body Text">Fixed problems with static entities when an app has prg files with similar names (#1677)</text></li>
       <li styleclass="Normal"><text styleclass="Body Text">Fixed conflict between same named access and field in a parent class (#1679)</text></li>
@@ -72,7 +80,7 @@
       <li styleclass="Normal">Fixed problem with Integer() function depending on the SetFloatDelta() setting (#1676)</li>
       <li styleclass="Normal">Fixed several problems with default method parameters in late bound calls (#1684)</li>
       <li styleclass="Normal">Fixed problem with IVarGetInfo() with overrided ASSIGN methods with different casing (#1692)</li>
-      <li styleclass="Normal">Fixed problem with ENUM parameters in alte bound calls (#1696)</li>
+      <li styleclass="Normal">Fixed problem with ENUM parameters in alte bound calls (#<text styleclass="Body Text">1696</text>)</li>
       <li styleclass="Normal">Fixed (handled) exception inside FindMethod() in late bound code with similar named method and assign (#1702)</li>
       <li styleclass="Normal">Fixed problem with ProcName(x) returning incorrect results (#1704)</li>
       <li styleclass="Normal">Fixed problem with calling class access method through object instance in the XBase++ dialect (#1705)</li>
@@ -85,6 +93,7 @@
       <li styleclass="Normal">Allowed the macro compiler to access protected and private members in the FoxPro dialect (#1662)</li>
       <li styleclass="Normal">Fixed macro compiler problem with IN parameters (#1675)</li>
       <li styleclass="Normal">Fixed various problems with scripting and ExecScript() (#1646, #1682)</li>
+      <li styleclass="Normal">Fixed problem with failing to find overload with explicit cast to interface (#1720)</li>
     </list>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">RDD System</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

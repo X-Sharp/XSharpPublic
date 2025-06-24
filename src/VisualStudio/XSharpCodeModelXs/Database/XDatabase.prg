@@ -544,6 +544,7 @@ STATIC CLASS XDatabase
     STATIC METHOD DeleteOrphanFiles() AS List<STRING>
         VAR result := List<STRING>{}
         IF IsDbOpen
+            Log("Delete Orphan files")
             BEGIN LOCK oConn
                 TRY
                     var project := XSolution.OrphanedFilesProject
@@ -568,6 +569,7 @@ STATIC CLASS XDatabase
     STATIC METHOD GetOpenDesignerFiles() AS List<STRING>
         VAR result := List<STRING>{}
         IF IsDbOpen
+            Log("Get Open Designer files")
             BEGIN LOCK oConn
                 TRY
                     USING VAR cmd := CreateCommand("SELECT FullName from OpenDesignerFiles", oConn)
@@ -587,6 +589,7 @@ STATIC CLASS XDatabase
     STATIC METHOD SaveOpenDesignerFiles(Files AS List<STRING>) AS LOGIC
         VAR result := TRUE
         IF IsDbOpen
+            Log("Save Open Designer files")
             BEGIN LOCK oConn
                 TRY
                     USING VAR cmd := CreateCommand("DELETE from OpenDesignerFiles", oConn)
@@ -609,6 +612,7 @@ STATIC CLASS XDatabase
     STATIC METHOD GetProjectsPerFile(file as XFile) AS List<Int64>
         VAR result := List<INT64>{}
         IF IsDbOpen
+            Log("Get Projects for file: "+file:FullPath)
             BEGIN LOCK oConn
                 TRY
                     USING VAR cmd := CreateCommand("SELECT DISTINCT IdProject from FilesPerProject where IdFile = $file", oConn)
@@ -688,6 +692,7 @@ STATIC CLASS XDatabase
     STATIC METHOD GetFileNames(oProject AS XProject) AS List<STRING>
         VAR result := List<STRING>{}
         IF IsDbOpen
+            Log("Get File Names for "+oProject:Name)
             BEGIN LOCK oConn
                 TRY
                     USING VAR cmd := CreateCommand("SELECT FileName from ProjectFiles where idProject = "+oProject:Id:ToString(), oConn)
@@ -709,6 +714,7 @@ STATIC CLASS XDatabase
     STATIC METHOD GetProjectIncludeFiles(oProject AS XProject) AS List<STRING>
         VAR result := List<STRING>{}
         IF IsDbOpen
+            Log("Get Includes for "+oProject:Name)
             TRY
                 BEGIN LOCK oConn
                     USING VAR cmd := CreateCommand("SELECT FileName from ProjectIncludeFiles where idProject = "+oProject:Id:ToString(), oConn)
@@ -719,7 +725,7 @@ STATIC CLASS XDatabase
                     ENDDO
                 END LOCK
             CATCH e as Exception
-                Log("Error getting includ files for project   : "+oProject:Name)
+                Log("Error getting include files for project   : "+oProject:Name)
                 XSettings.Exception(e, __FUNCTION__)
             END TRY
         ENDIF
@@ -730,6 +736,7 @@ STATIC CLASS XDatabase
         IF ! IsDbOpen .OR. String.IsNullOrEmpty(cFileName)
             RETURN
         ENDIF
+        Log(i"Delete Project {cFileName}")
         BEGIN LOCK oConn
             TRY
                 USING VAR cmd := CreateCommand("", oConn)
@@ -757,7 +764,7 @@ STATIC CLASS XDatabase
         IF ! IsDbOpen .OR. String.IsNullOrEmpty(cFileName)
             RETURN
         ENDIF
-        Log(i"Delete Project info for project {cFileName}")
+        Log(i"Delete File {cFileName}")
         BEGIN LOCK oConn
             TRY
                 USING VAR cmd := CreateCommand("", oConn)

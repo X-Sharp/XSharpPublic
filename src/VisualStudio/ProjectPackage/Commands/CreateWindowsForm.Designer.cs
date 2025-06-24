@@ -43,7 +43,7 @@
             // lblOriginalForm
             // 
             this.lblOriginalForm.AutoSize = true;
-            this.lblOriginalForm.Location = new System.Drawing.Point(29, 50);
+            this.lblOriginalForm.Location = new System.Drawing.Point(29, 14);
             this.lblOriginalForm.Name = "lblOriginalForm";
             this.lblOriginalForm.Size = new System.Drawing.Size(98, 13);
             this.lblOriginalForm.TabIndex = 0;
@@ -52,7 +52,7 @@
             // lblNewForm
             // 
             this.lblNewForm.AutoSize = true;
-            this.lblNewForm.Location = new System.Drawing.Point(29, 88);
+            this.lblNewForm.Location = new System.Drawing.Point(29, 49);
             this.lblNewForm.Name = "lblNewForm";
             this.lblNewForm.Size = new System.Drawing.Size(85, 13);
             this.lblNewForm.TabIndex = 1;
@@ -60,7 +60,7 @@
             // 
             // tbOriginalForm
             // 
-            this.tbOriginalForm.Location = new System.Drawing.Point(151, 47);
+            this.tbOriginalForm.Location = new System.Drawing.Point(148, 14);
             this.tbOriginalForm.Name = "tbOriginalForm";
             this.tbOriginalForm.ReadOnly = true;
             this.tbOriginalForm.Size = new System.Drawing.Size(288, 20);
@@ -68,7 +68,7 @@
             // 
             // tbNewForm
             // 
-            this.tbNewForm.Location = new System.Drawing.Point(151, 85);
+            this.tbNewForm.Location = new System.Drawing.Point(148, 49);
             this.tbNewForm.Name = "tbNewForm";
             this.tbNewForm.Size = new System.Drawing.Size(288, 20);
             this.tbNewForm.TabIndex = 3;
@@ -77,7 +77,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(273, 186);
+            this.btnCancel.Location = new System.Drawing.Point(273, 150);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 4;
@@ -86,7 +86,7 @@
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(364, 188);
+            this.btnOk.Location = new System.Drawing.Point(361, 150);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 5;
@@ -97,7 +97,7 @@
             // lblFileName
             // 
             this.lblFileName.AutoSize = true;
-            this.lblFileName.Location = new System.Drawing.Point(148, 156);
+            this.lblFileName.Location = new System.Drawing.Point(148, 120);
             this.lblFileName.Name = "lblFileName";
             this.lblFileName.Size = new System.Drawing.Size(257, 13);
             this.lblFileName.TabIndex = 6;
@@ -106,7 +106,7 @@
             // lblFolder
             // 
             this.lblFolder.AutoSize = true;
-            this.lblFolder.Location = new System.Drawing.Point(29, 124);
+            this.lblFolder.Location = new System.Drawing.Point(29, 84);
             this.lblFolder.Name = "lblFolder";
             this.lblFolder.Size = new System.Drawing.Size(64, 13);
             this.lblFolder.TabIndex = 7;
@@ -115,7 +115,7 @@
             // lblFolderName
             // 
             this.lblFolderName.AutoSize = true;
-            this.lblFolderName.Location = new System.Drawing.Point(148, 124);
+            this.lblFolderName.Location = new System.Drawing.Point(148, 84);
             this.lblFolderName.Name = "lblFolderName";
             this.lblFolderName.Size = new System.Drawing.Size(64, 13);
             this.lblFolderName.TabIndex = 8;
@@ -124,7 +124,7 @@
             // lblFileNames
             // 
             this.lblFileNames.AutoSize = true;
-            this.lblFileNames.Location = new System.Drawing.Point(29, 156);
+            this.lblFileNames.Location = new System.Drawing.Point(29, 120);
             this.lblFileNames.Name = "lblFileNames";
             this.lblFileNames.Size = new System.Drawing.Size(56, 13);
             this.lblFileNames.TabIndex = 9;
@@ -136,8 +136,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(468, 231);
-            this.ControlBox = false;
+            this.ClientSize = new System.Drawing.Size(468, 197);
             this.Controls.Add(this.lblFileNames);
             this.Controls.Add(this.lblFolderName);
             this.Controls.Add(this.lblFolder);
@@ -148,7 +147,7 @@
             this.Controls.Add(this.tbOriginalForm);
             this.Controls.Add(this.lblNewForm);
             this.Controls.Add(this.lblOriginalForm);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "CreateWindowsForm";

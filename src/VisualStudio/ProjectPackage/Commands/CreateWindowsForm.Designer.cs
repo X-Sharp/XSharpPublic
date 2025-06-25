@@ -38,66 +38,68 @@
             this.lblFolder = new System.Windows.Forms.Label();
             this.lblFolderName = new System.Windows.Forms.Label();
             this.lblFileNames = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblOriginalForm
             // 
             this.lblOriginalForm.AutoSize = true;
-            this.lblOriginalForm.Location = new System.Drawing.Point(29, 14);
+            this.lblOriginalForm.Location = new System.Drawing.Point(15, 25);
             this.lblOriginalForm.Name = "lblOriginalForm";
-            this.lblOriginalForm.Size = new System.Drawing.Size(98, 13);
-            this.lblOriginalForm.TabIndex = 0;
-            this.lblOriginalForm.Text = "Original ClassName";
+            this.lblOriginalForm.Size = new System.Drawing.Size(104, 13);
+            this.lblOriginalForm.TabIndex = 2;
+            this.lblOriginalForm.Text = "Original class name :";
             // 
             // lblNewForm
             // 
             this.lblNewForm.AutoSize = true;
-            this.lblNewForm.Location = new System.Drawing.Point(29, 49);
+            this.lblNewForm.Location = new System.Drawing.Point(15, 60);
             this.lblNewForm.Name = "lblNewForm";
-            this.lblNewForm.Size = new System.Drawing.Size(85, 13);
-            this.lblNewForm.TabIndex = 1;
-            this.lblNewForm.Text = "New ClassName";
+            this.lblNewForm.Size = new System.Drawing.Size(91, 13);
+            this.lblNewForm.TabIndex = 0;
+            this.lblNewForm.Text = "New class name :";
             // 
             // tbOriginalForm
             // 
-            this.tbOriginalForm.Location = new System.Drawing.Point(148, 14);
+            this.tbOriginalForm.Location = new System.Drawing.Point(134, 25);
             this.tbOriginalForm.Name = "tbOriginalForm";
             this.tbOriginalForm.ReadOnly = true;
-            this.tbOriginalForm.Size = new System.Drawing.Size(288, 20);
-            this.tbOriginalForm.TabIndex = 2;
+            this.tbOriginalForm.Size = new System.Drawing.Size(341, 20);
+            this.tbOriginalForm.TabIndex = 3;
             // 
             // tbNewForm
             // 
-            this.tbNewForm.Location = new System.Drawing.Point(148, 49);
+            this.tbNewForm.Location = new System.Drawing.Point(134, 60);
             this.tbNewForm.Name = "tbNewForm";
-            this.tbNewForm.Size = new System.Drawing.Size(288, 20);
-            this.tbNewForm.TabIndex = 3;
+            this.tbNewForm.Size = new System.Drawing.Size(341, 20);
+            this.tbNewForm.TabIndex = 1;
             this.tbNewForm.TextChanged += new System.EventHandler(this.tbNewForm_TextChanged);
             // 
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(273, 150);
+            this.btnCancel.Location = new System.Drawing.Point(424, 193);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 4;
+            this.btnCancel.Size = new System.Drawing.Size(91, 23);
+            this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "&Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(361, 150);
+            this.btnOk.Location = new System.Drawing.Point(327, 193);
             this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(75, 23);
-            this.btnOk.TabIndex = 5;
-            this.btnOk.Text = "&Ok";
+            this.btnOk.Size = new System.Drawing.Size(91, 23);
+            this.btnOk.TabIndex = 1;
+            this.btnOk.Text = "&OK";
             this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 
             // lblFileName
             // 
             this.lblFileName.AutoSize = true;
-            this.lblFileName.Location = new System.Drawing.Point(148, 120);
+            this.lblFileName.Location = new System.Drawing.Point(134, 131);
             this.lblFileName.Name = "lblFileName";
             this.lblFileName.Size = new System.Drawing.Size(257, 13);
             this.lblFileName.TabIndex = 6;
@@ -106,16 +108,16 @@
             // lblFolder
             // 
             this.lblFolder.AutoSize = true;
-            this.lblFolder.Location = new System.Drawing.Point(29, 84);
+            this.lblFolder.Location = new System.Drawing.Point(15, 95);
             this.lblFolder.Name = "lblFolder";
-            this.lblFolder.Size = new System.Drawing.Size(64, 13);
+            this.lblFolder.Size = new System.Drawing.Size(71, 13);
             this.lblFolder.TabIndex = 7;
-            this.lblFolder.Text = "FolderName";
+            this.lblFolder.Text = "Folder name :";
             // 
             // lblFolderName
             // 
             this.lblFolderName.AutoSize = true;
-            this.lblFolderName.Location = new System.Drawing.Point(148, 84);
+            this.lblFolderName.Location = new System.Drawing.Point(134, 95);
             this.lblFolderName.Name = "lblFolderName";
             this.lblFolderName.Size = new System.Drawing.Size(64, 13);
             this.lblFolderName.TabIndex = 8;
@@ -124,11 +126,27 @@
             // lblFileNames
             // 
             this.lblFileNames.AutoSize = true;
-            this.lblFileNames.Location = new System.Drawing.Point(29, 120);
+            this.lblFileNames.Location = new System.Drawing.Point(15, 131);
             this.lblFileNames.Name = "lblFileNames";
-            this.lblFileNames.Size = new System.Drawing.Size(56, 13);
+            this.lblFileNames.Size = new System.Drawing.Size(63, 13);
             this.lblFileNames.TabIndex = 9;
-            this.lblFileNames.Text = "FileNames";
+            this.lblFileNames.Text = "File names :";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.tbOriginalForm);
+            this.groupBox1.Controls.Add(this.lblFileNames);
+            this.groupBox1.Controls.Add(this.lblOriginalForm);
+            this.groupBox1.Controls.Add(this.lblFolderName);
+            this.groupBox1.Controls.Add(this.lblNewForm);
+            this.groupBox1.Controls.Add(this.lblFolder);
+            this.groupBox1.Controls.Add(this.tbNewForm);
+            this.groupBox1.Controls.Add(this.lblFileName);
+            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(503, 174);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
             // 
             // CreateWindowsForm
             // 
@@ -136,17 +154,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(468, 197);
-            this.Controls.Add(this.lblFileNames);
-            this.Controls.Add(this.lblFolderName);
-            this.Controls.Add(this.lblFolder);
-            this.Controls.Add(this.lblFileName);
+            this.ClientSize = new System.Drawing.Size(528, 228);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.tbNewForm);
-            this.Controls.Add(this.tbOriginalForm);
-            this.Controls.Add(this.lblNewForm);
-            this.Controls.Add(this.lblOriginalForm);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -154,8 +165,9 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Create Windows Form";
             this.VisibleChanged += new System.EventHandler(this.CreateWindowsForm_VisibleChanged);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -171,5 +183,6 @@
         private System.Windows.Forms.Label lblFolder;
         private System.Windows.Forms.Label lblFolderName;
         private System.Windows.Forms.Label lblFileNames;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }

@@ -32,7 +32,7 @@ FUNCTION Start() AS INT
      "C857", "C859", "C860", "C865", "C866", "C867", "C869", "C870","C871","C873","C874",;
      "C877", "C878", "C879", "C880", "C881", "C882", "C884", "C885", "C886", "C887", ;
      "C893", "C895", "C897", "C898", "C899","C900", "C901", "C902", "C902b", "C903", "C904", ;
-     "C905", "C908", "C913", "C914", "C915", "C921", "C926", "C932", "C936", ;
+     "C905", "C908", "C913", "C914", "C915", "C921", "C926", "C932", "C936", "C937", "C938", "C939", ;
 ;
 	 "R678", "R681", "R690", "R698", "R699", "R700" ,"R701", "R702", "R710",;
 	 "R711", "R712", "R725", "R729", "R730", "R732","R735", "R736","R741","R742","R743",;
@@ -117,11 +117,11 @@ FUNCTION DoTest(cExe AS STRING) AS LOGIC
 
 	// todo: set the correct dialect by calling
 	oMethod := oType:GetMethod("Start",BindingFlags.IgnoreCase+BindingFlags.Static+BindingFlags.Public)
-    var settings := RuntimeState.GetInstance():Settings
-    var backup := Dictionary<Set, object>{}
-    foreach var entry in settings
+    VAR settings := RuntimeState.GetInstance():Settings
+    VAR backup := Dictionary<Set, OBJECT>{}
+    FOREACH VAR entry IN settings
         backup:Add(entry:Key, entry:Value)
-    next
+    NEXT
 	TRY
 	    IF oMethod == NULL
 	        ? "Could not find Start method in assembly "+oAssembly:GetName():FullName
@@ -143,9 +143,9 @@ FUNCTION DoTest(cExe AS STRING) AS LOGIC
 		#endif
 	END TRY
 	settings:Clear()
-    foreach var entry in backup
+    FOREACH VAR entry IN backup
         settings:Add(entry:Key, entry:Value)
-    next
+    NEXT
 
 	VoDbCloseAll()
 RETURN lSucces

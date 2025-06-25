@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2025-06-24T02:40:35.453+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-06-25T16:17:53.385+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -45,6 +45,15 @@
     <para styleclass="Heading3">New features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Add special tags &quot;VXP-NOCHANGE&quot;, &quot;{VOXP:NOCHANGE}&quot; that instruct VOXporter to not modify at all the code from a module/prg file &#160;(#1723)</li>
+    </list>
+    <para styleclass="Heading2">XIDE</para>
+    <para styleclass="Heading3">General</para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Added View-&gt;Hide Side Panes (SHIFT+F4) option to quickly show/hide the left/right panes in the IDE</li>
+      <li styleclass="Normal">Enabled the Debug-&gt;View DB Workareas debug window</li>
+      <li styleclass="Normal">Fixed problem with new applications defaulting to CLR2 when no gallery template is used</li>
+      <li styleclass="Normal">Added folder button for &quot;App to run&quot; option in th application properties window</li>
+      <li styleclass="Normal">Added several &quot;Tip of the day&quot; items</li>
     </list>
     <para styleclass="Heading1">Changes in 2.23.0.2</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>

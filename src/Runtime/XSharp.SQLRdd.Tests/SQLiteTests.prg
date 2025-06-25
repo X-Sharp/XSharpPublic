@@ -162,7 +162,7 @@ BEGIN NAMESPACE SqlRDD.SQLiteTests
 
 			DbGoTop() //  error Column 'custnum' does not belong to table CUSTOMER
 			
-			Assert.Equals( 1 , (INT) FieldGet(1) )
+			Assert.Equal( 1 , (INT) FieldGet(1) )
 
 			DbCloseArea()
 

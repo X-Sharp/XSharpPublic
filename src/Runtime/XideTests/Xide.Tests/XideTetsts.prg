@@ -2,7 +2,7 @@ USING System.Windows.Forms
 USING System.Collections.Generic
 USING System.Reflection
 USING System.Text
-using System.Runtime.Versioning
+USING System.Runtime.Versioning
 [assembly: TargetFramework(".NETFramework,Version=v4.6", FrameworkDisplayName := ".NET Framework 4.6")]
 [STAThread];
 FUNCTION Start() AS VOID
@@ -13,13 +13,14 @@ FUNCTION Start() AS VOID
 	XSharp.RuntimeState.WinCodePage := 1252
 
 	XideUnitTest.Initialize()
-	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.Core.Tests.StringTests):Assembly)
-	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.RT.Tests.ArrayBaseTests):Assembly)
-	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.VO.Tests.WinDateTests):Assembly)
-	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.RDD.Tests.TestDBF):Assembly)
-	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.VFP.Tests.NumericTests):Assembly)
-	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.XPP.Tests.MiscTests):Assembly)
-	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.Harbour.Tests.GeneralTests):Assembly)
+//	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.Core.Tests.StringTests):Assembly)
+//	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.RT.Tests.ArrayBaseTests):Assembly)
+//	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.VO.Tests.WinDateTests):Assembly)
+//	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.RDD.Tests.TestDBF):Assembly)
+//	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.VFP.Tests.NumericTests):Assembly)
+//	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.XPP.Tests.MiscTests):Assembly)
+//	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.Harbour.Tests.GeneralTests):Assembly)
+	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.SQLRdd.Tests.SQLiteTests):Assembly)
 
 //	XideUnitTest.AddTestsFromAssembly(TypeOf(StringTests):Assembly)
 

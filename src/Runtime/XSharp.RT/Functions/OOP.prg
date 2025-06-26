@@ -1047,9 +1047,11 @@ internal static class OOPHelpers
             bf := BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic| BindingFlags.DeclaredOnly| BindingFlags.IgnoreCase
         endif
         foreach mi as MethodInfo in t:GetMember(cMethod, MemberTypes.Method, bf)
-            mlist:Add(mi)
+            if ! mi:IsSpecialName // suppress getters and setters and operator methods
+                mlist:Add(mi)
+            endif
         next
-            CacheOverLoads(t, cMethod, mlist:ToArray())
+        CacheOverLoads(t, cMethod, mlist:ToArray())
         return mlist
 
     static method GetCachedOverLoads(t as System.Type, cMethod as string) as IList<MethodInfo>

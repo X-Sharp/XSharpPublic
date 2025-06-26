@@ -54,7 +54,7 @@ CLASS XSourceEntity INHERIT XSourceSymbol IMPLEMENTS IXSymbol, IXSourceSymbol
     METHOD ForceComplete() AS VOID
         LOCAL ParentName AS STRING
         LOCAL thisName AS STRING
-        LOCAL tmp AS XSourceTypeSymbol
+        LOCAL tmp AS IXTypeSymbol
 
         IF SELF:Parent == NULL .AND. ! String.IsNullOrEmpty(SELF:ParentName)
 
@@ -75,7 +75,14 @@ CLASS XSourceEntity INHERIT XSourceSymbol IMPLEMENTS IXSymbol, IXSourceSymbol
                 ENDIF
             ENDIF
         ENDIF
-
+    METHOD Resolve() AS VOID
+        IF SELF:ResolvedType == null
+            var name := SELF:TypeName
+            SELF:ResolvedType := SELF:File:FindType(name)
+            if (SELF:ResolvedType != NULL)
+                SELF:TypeName     := SELF:ResolvedType:FullName
+            endif
+        ENDIF
 
 #region Complexer properties
         // Properties

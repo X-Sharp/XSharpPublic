@@ -2186,7 +2186,7 @@ namespace XSharp.CodeDom
                     }
                     else
                     {
-                        base.Output.WriteLine();
+                        base.Output.WriteLine(";");
                     }
                 }
             }

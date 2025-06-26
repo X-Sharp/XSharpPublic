@@ -105,7 +105,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     static constructor()
         Connections     := List<SqlDbConnection>{}
         DefaultCached   := true
-        AppDomain.CurrentDomain:ProcessExit += EventHandler{CurrentDomain_ProcessExit}
+        AppDomain.CurrentDomain:ProcessExit += CurrentDomain_ProcessExit
     end constructor
 
     internal static method CurrentDomain_ProcessExit(sender as object, e as EventArgs) as void
@@ -160,7 +160,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         var builder := Provider:CreateConnectionStringBuilder()
         foreach key as string in options:Keys
             var strValue := options[key]:ToString()
-            var isTrue  := strValue:ToLower() == "true"
+            var isTrue   := strValue:ToLower() == "true"
             switch key:ToLower()
             case "allowupdates"
                 self:AllowUpdates := isTrue
@@ -176,6 +176,8 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 if Int32.TryParse(strValue, out var max)
                     self:MaxRecords := max
                 endif
+            case "maxrecnoasreccount"
+                self:MaxRecnoAsRecCount := isTrue
             case "recnocolumn"
                 self:RecnoColumn := strValue
             case "updateallcolumns"
@@ -186,8 +188,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 self:TrimTrailingSpaces := isTrue
             case "usenulls"
                 self:UseNulls := isTrue
-            case "maxrecnoasreccount"
-                self:MaxRecnoAsRecCount := isTrue
             otherwise
                 builder:Add(key, strValue)
             end switch

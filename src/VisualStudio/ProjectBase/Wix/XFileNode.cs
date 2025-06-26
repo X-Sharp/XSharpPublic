@@ -65,7 +65,7 @@ namespace Microsoft.VisualStudio.Project
         // Properties
         // =========================================================================================
 
-       
+
 
         /// <summary>
         /// Menu Command Id for File item.
@@ -491,7 +491,7 @@ namespace Microsoft.VisualStudio.Project
             }
             else
             {
-                if (!(this.NodeProperties is FileNodeProperties))
+                if (this.NodeProperties is XFileNodeNonMemberProperties)
                 {
                     change = true;
                 }

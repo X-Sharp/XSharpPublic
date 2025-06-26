@@ -25,7 +25,9 @@
     </member>
     <member name="M:XSharp.RDD.DBF._getMemoBlockNumber(System.Int32)"></member>
     <member name="M:XSharp.RDD.DBF.AddField(XSharp.RDD.Support.RddFieldInfo)">
-      <summary>Add a column.</summary>
+      <summary>
+            Add a Field to the _Fields List. Fields are added in the order of method call
+            </summary>
       <param name="info">RddFieldInfo object.</param>
       <returns>
         <span>
@@ -393,6 +395,7 @@
         </span>
       </returns>
     </member>
+    <member name="P:XSharp.RDD.DBF.NullColumn"></member>
     <member name="M:XSharp.RDD.DBF.Open(XSharp.RDD.Support.DbOpenInfo)">
       <summary>Open a table.</summary>
       <param name="info">object describing the file to open.</param>
@@ -834,6 +837,7 @@
     </member>
     <member name="M:XSharp.RDD.DBFCDX.__Goto(System.Int32)"></member>
     <member name="M:XSharp.RDD.DBFCDX._CloseAllIndexes(XSharp.RDD.Support.DbOrderInfo,System.Boolean)"></member>
+    <member name="M:XSharp.RDD.DBFCDX.ClearFilter"></member>
     <member name="M:XSharp.RDD.DBFCDX.Close"></member>
     <member name="M:XSharp.RDD.DBFCDX.Create(XSharp.RDD.Support.DbOpenInfo)"></member>
     <member name="P:XSharp.RDD.DBFCDX.Driver"></member>
@@ -857,6 +861,7 @@
     <member name="M:XSharp.RDD.DBFCDX.OrderListRebuild"></member>
     <member name="M:XSharp.RDD.DBFCDX.Pack"></member>
     <member name="M:XSharp.RDD.DBFCDX.Seek(XSharp.RDD.Support.DbSeekInfo)"></member>
+    <member name="M:XSharp.RDD.DBFCDX.SetFilter(XSharp.RDD.Support.DbFilterInfo)"></member>
     <member name="M:XSharp.RDD.DBFCDX.SkipRaw(System.Int32)"></member>
     <member name="M:XSharp.RDD.DBFCDX.Zap"></member>
     <member name="T:XSharp.RDD.DbfCharacterColumn">
@@ -1076,6 +1081,18 @@
         </markup>
       </summary>
     </member>
+    <member name="M:XSharp.RDD.DBFFPT.Create(XSharp.RDD.Support.DbOpenInfo)">
+      <summary>Create a table.</summary>
+      <param name="info">object describing the file to create.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
     <member name="P:XSharp.RDD.DBFFPT.Driver">
       <summary>Driver (RDD) name of the object.</summary>
     </member>
@@ -1252,6 +1269,58 @@
       <param name="buffer">Record buffer for the current record</param>
       <param name="oValue">Value to write.</param>
     </member>
+    <member name="T:XSharp.RDD.DBFMEMOCDX">
+      <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
+    </member>
+    <member name="M:XSharp.RDD.DBFMEMOCDX.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DBFMEMOCDX</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.DBFMEMOCDX.Create(XSharp.RDD.Support.DbOpenInfo)">
+      <summary>Create a table.</summary>
+      <param name="info">object describing the file to create.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="P:XSharp.RDD.DBFMEMOCDX.Driver">
+      <summary>Driver (RDD) name of the object.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DBFMEMOCDX.FieldInfo(System.Int32,System.Int32,System.Object)"></member>
+    <member name="M:XSharp.RDD.DBFMEMOCDX.GetValue(System.Int32)">
+      <summary>Get a value for the specified column.</summary>
+      <param name="nFldPos">The ONE based position of the column whose value you want to obtain.</param>
+      <returns>The value of the specified field.</returns>
+    </member>
+    <member name="M:XSharp.RDD.DBFMEMOCDX.Info(System.Int32,System.Object)">
+      <summary>Retrieve and optionally change information about a work area.</summary>
+      <param name="nOrdinal">Specifies the type of information.</param>
+      <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
+    </member>
+    <member name="M:XSharp.RDD.DBFMEMOCDX.PutValue(System.Int32,System.Object)"></member>
+    <member name="M:XSharp.RDD.DBFMEMOCDX.PutValueFile(System.Int32,System.String)">
+      <summary>Read (Import) a value from an external file and write it to the specified column.</summary>
+      <param name="nFldPos">ONE based position for which the value should be written.</param>
+      <param name="fileName">Name of the file that needs to be read from.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
     <member name="T:XSharp.RDD.DbfMemoColumn">
       <summary>Class for reading / writing Memo Columns. This class returns and writes the block numbers.</summary>
     </member>
@@ -1358,7 +1427,9 @@
       </summary>
     </member>
     <member name="M:XSharp.RDD.DBFVFP.AddField(XSharp.RDD.Support.RddFieldInfo)">
-      <summary>Add a column.</summary>
+      <summary>
+            Add a Field to the _Fields List. Fields are added in the order of method call
+            </summary>
       <param name="info">RddFieldInfo object.</param>
       <returns>
         <span>
@@ -1387,6 +1458,7 @@
     <member name="P:XSharp.RDD.DBFVFP.FieldCount"></member>
     <member name="M:XSharp.RDD.DBFVFP.FieldInfo(System.Int32,System.Int32,System.Object)"></member>
     <member name="M:XSharp.RDD.DBFVFP.Info(System.Int32,System.Object)"></member>
+    <member name="P:XSharp.RDD.DBFVFP.NullColumn"></member>
     <member name="M:XSharp.RDD.DBFVFP.Open(XSharp.RDD.Support.DbOpenInfo)"></member>
     <member name="T:XSharp.RDD.ERDD">
       <summary>Common RDD Error numbers</summary>

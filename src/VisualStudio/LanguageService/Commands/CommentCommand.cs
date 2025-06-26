@@ -23,10 +23,14 @@ namespace XSharp.LanguageService.Commands
             var cmdUnCommentSelection = await VS.Commands.FindCommandAsync("Edit.UncommentSelection");
 
             // We need to manually intercept the commenting command, because language services swallow these commands.
-            await VS.Commands.InterceptAsync(cmdCommentSelection, () => Execute(CommentSelection));
-            await VS.Commands.InterceptAsync(cmdUnCommentSelection, () => Execute(UncommentSelection));
-            await VS.Commands.InterceptAsync(cmdToggleBlock, () => Execute(ToggleBlockComment));
-            await VS.Commands.InterceptAsync(cmdToggleLine, () => Execute(ToggleLineComment));
+            if (cmdCommentSelection != null)
+                await VS.Commands.InterceptAsync(cmdCommentSelection, () => Execute(CommentSelection));
+            if (cmdUnCommentSelection != null)
+                await VS.Commands.InterceptAsync(cmdUnCommentSelection, () => Execute(UncommentSelection));
+            if (cmdToggleBlock != null)
+                await VS.Commands.InterceptAsync(cmdToggleBlock, () => Execute(ToggleBlockComment));
+            if (cmdToggleLine != null)
+                await VS.Commands.InterceptAsync(cmdToggleLine, () => Execute(ToggleLineComment));
         }
 
         private static (int, int) SortLowHigh(int start, int end)

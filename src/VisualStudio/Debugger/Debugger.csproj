@@ -98,7 +98,7 @@
       <Version>15.9.28307</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.Debugger.VSDConfigTool">
-      <Version>16.10.1051404</Version>
+      <Version>16.0.2032702</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

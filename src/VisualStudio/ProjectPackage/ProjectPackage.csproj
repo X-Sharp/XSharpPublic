@@ -771,7 +771,7 @@
       <Version>15.8.525</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Threading">
-      <Version>15.8.209</Version>
+      <Version>15.3.20</Version>
     </PackageReference>
     <Content Include="$(VSExternalDir)XSharp.MonoCecil.dll">
       <Link>XSharp.MonoCecil.dll</Link>

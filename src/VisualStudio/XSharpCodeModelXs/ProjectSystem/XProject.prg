@@ -640,11 +640,13 @@ BEGIN NAMESPACE XSharpModel
         SELF:_SourceFilesDict:Clear()
         SELF:_OtherFilesDict:Clear()
     METHOD AddFile(filePath AS STRING) AS LOGIC
+        VAR type := XFileTypeHelpers.GetFileType(filePath)
+        RETURN SELF:AddFile(filePath, type)
+    METHOD AddFile(filePath AS STRING, type as XFileType ) AS LOGIC
         LOCAL xamlCodeBehindFile AS STRING
         SELF:WriteOutputMessage(i"AddFile {filePath}")
         // DO NOT read the file ID from the database here.
         // This is called during startup of the solution, we try to do as little as possible
-        VAR type := XFileTypeHelpers.GetFileType(filePath)
         IF type == XFileType.SourceCode
             SELF:_SourceFilesDict:Add(filePath)
             var xFile := XFile{filePath, SELF}
@@ -656,6 +658,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:_OtherFilesDict:Add(filePath)
         ELSE
             SELF:_OtherFilesDict:Add(filePath)
+            XDatabase.DeleteFile(filePath)
         ENDIF
         IF SELF:Name != OrphanedFilesProject.OrphanName .and. XSolution.OrphanedFilesProject != NULL
             if filePath != XSolution.BuiltInFunctions

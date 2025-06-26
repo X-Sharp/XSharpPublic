@@ -23,10 +23,14 @@ namespace XSharp.LanguageService.Commands
             var cmdUnCommentSelection = await VS.Commands.FindCommandAsync("Edit.UncommentSelection");
 
             // We need to manually intercept the commenting command, because language services swallow these commands.
-            await VS.Commands.InterceptAsync(cmdCommentSelection, () => Execute(CommentSelection));
-            await VS.Commands.InterceptAsync(cmdUnCommentSelection, () => Execute(UncommentSelection));
-            await VS.Commands.InterceptAsync(cmdToggleBlock, () => Execute(ToggleBlockComment));
-            await VS.Commands.InterceptAsync(cmdToggleLine, () => Execute(ToggleLineComment));
+            if (cmdCommentSelection != null)
+                await VS.Commands.InterceptAsync(cmdCommentSelection, () => Execute(CommentSelection));
+            if (cmdUnCommentSelection != null)
+                await VS.Commands.InterceptAsync(cmdUnCommentSelection, () => Execute(UncommentSelection));
+            if (cmdToggleBlock != null)
+                await VS.Commands.InterceptAsync(cmdToggleBlock, () => Execute(ToggleBlockComment));
+            if (cmdToggleLine != null)
+                await VS.Commands.InterceptAsync(cmdToggleLine, () => Execute(ToggleLineComment));
         }
 
         private static (int, int) SortLowHigh(int start, int end)
@@ -57,17 +61,21 @@ namespace XSharp.LanguageService.Commands
         private static void CommentLine(DocumentView doc, ITextEdit editsession, SnapshotSpan selection)
         {
             var text = selection.GetText();
-            text = "// " + text;
-            editsession.Replace(selection, text);
+            var trimmed = text.TrimStart();
+            var prefix = text.Substring(0, text.Length - trimmed.Length);
+            var newtext = prefix + "// " + trimmed;
+            editsession.Replace(selection, newtext);
         }
         private static void UnCommentLine(DocumentView doc, ITextEdit editsession, SnapshotSpan selection)
         {
             var text = selection.GetText();
-            var ws = text.Substring(0, text.Length - text.TrimStart().Length);
-            text = text.TrimStart();
-            text = text.Substring(2).TrimStart();
-            text = ws + text;
-            editsession.Replace(selection, text);
+            var trimmed = text.TrimStart();
+            var prefix = text.Substring(0, text.Length - trimmed.Length);
+            if (trimmed.StartsWith("//"))
+            {
+                text = prefix + trimmed.Substring(2).TrimStart();
+                editsession.Replace(selection, text);
+            }
 
         }
 
@@ -144,7 +152,8 @@ namespace XSharp.LanguageService.Commands
                         var line = snapshot.GetLineFromPosition(start);
                         var span = line.Extent;
                         var text = line.GetText();
-                        if (text.TrimStart().StartsWith("//"))
+                        var trimmed = text.TrimStart();
+                        if (trimmed.StartsWith("//"))
                         {
                             UnCommentLine(doc, editsession, span);
                         }

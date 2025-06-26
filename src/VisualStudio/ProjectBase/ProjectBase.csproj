@@ -198,14 +198,14 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.527</Version>
+      <Version>15.0.533</Version>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Build">
-      <Version>15.9.20</Version>
+      <Version>15.9.30</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build.Tasks.Core">
-      <Version>15.9.20</Version>
+      <Version>15.9.30</Version>
     </PackageReference>
     <PackageReference Include="System.Design">
       <Version>4.0.0</Version>

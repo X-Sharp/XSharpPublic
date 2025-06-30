@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2025-06-25T16:17:53.385+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-06-30T14:46:39.686+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -54,6 +54,13 @@
       <li styleclass="Normal">Fixed problem with new applications defaulting to CLR2 when no gallery template is used</li>
       <li styleclass="Normal">Added folder button for &quot;App to run&quot; option in th application properties window</li>
       <li styleclass="Normal">Added several &quot;Tip of the day&quot; items</li>
+      <li styleclass="Normal">Added Preferences/Highlight active file caption option</li>
+      <li styleclass="Normal">Added Preferences/Paint file captions per application option</li>
+      <li styleclass="Normal">Added keyboard shortcut information to the File-&gt;Navigate menu items</li>
+      <li styleclass="Normal">Added &quot;Dock To Pane&quot; options to tab page context menu of toolwindows</li>
+      <li styleclass="Normal">Added Detach/Attach to main IDE window context menu options for editor files</li>
+      <li styleclass="Normal">Added regular context menu options also for files in floating windows</li>
+      <li styleclass="Normal">Toolwindows can now be closed also with middle mouse button click</li>
     </list>
     <para styleclass="Heading1">Changes in 2.23.0.2</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>

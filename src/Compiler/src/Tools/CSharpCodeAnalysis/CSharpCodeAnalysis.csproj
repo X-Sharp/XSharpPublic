@@ -115,11 +115,5 @@
   <ItemGroup>
     <None Remove="$(CSharpSource)Syntax\Syntax.xsd" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Update="CodeAnalysisResources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>CodeAnalysisResources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+
 </Project>

@@ -224,6 +224,15 @@ namespace Microsoft.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to attribute.
+        /// </summary>
+        public static string Attribute {
+            get {
+                return ResourceManager.GetString("Attribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Illegal built-in operator name &apos;{0}&apos;.
         /// </summary>
         public static string BadBuiltInOps1 {
@@ -654,6 +663,15 @@ namespace Microsoft.CodeAnalysis {
         public static string ExceptionEnablingMulticoreJit {
             get {
                 return ResourceManager.GetString("ExceptionEnablingMulticoreJit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}; file may be locked by {1}.
+        /// </summary>
+        public static string ExceptionMessage_FileMayBeLockedBy {
+            get {
+                return ResourceManager.GetString("ExceptionMessage_FileMayBeLockedBy", resourceCulture);
             }
         }
         
@@ -1732,6 +1750,15 @@ namespace Microsoft.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot emit native PDB for method &apos;{0}&apos; because its debug metadata size {1} is over the limit {2}..
+        /// </summary>
+        public static string SymWriterMetadataOverLimit {
+            get {
+                return ResourceManager.GetString("SymWriterMetadataOverLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Windows PDB writer doesn&apos;t support deterministic compilation: &apos;{0}&apos;.
         /// </summary>
         public static string SymWriterNotDeterministic {
@@ -1827,6 +1854,15 @@ namespace Microsoft.CodeAnalysis {
         public static string TupleUnderlyingTypeMustBeTupleCompatible {
             get {
                 return ResourceManager.GetString("TupleUnderlyingTypeMustBeTupleCompatible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; type does not have the expected constructor.
+        /// </summary>
+        public static string Type0DoesNotHaveExpectedConstructor {
+            get {
+                return ResourceManager.GetString("Type0DoesNotHaveExpectedConstructor", resourceCulture);
             }
         }
         

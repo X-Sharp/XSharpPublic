@@ -27,12 +27,14 @@
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <NoWarn>1591,219,165</NoWarn>
     <WarningLevel>4</WarningLevel>
     <DefineConstants>DEBUG</DefineConstants>
     <DocumentationFile>XSharp.CodeModel.Xml</DocumentationFile>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <NoWarn>219,165,1591</NoWarn>
+    <WarningsAsErrors />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>

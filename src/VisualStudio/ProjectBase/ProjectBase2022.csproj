@@ -211,9 +211,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine">
       <Version>17.14.1051801</Version>
     </PackageReference>
-    <PackageReference Include="System.Reflection.Metadata">
-      <Version>8.0.1</Version>
-    </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
     </PackageReference>

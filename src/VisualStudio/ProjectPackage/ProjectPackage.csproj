@@ -11,6 +11,7 @@
     <CheckNewtonsoftJsonVersion>false</CheckNewtonsoftJsonVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Ngen>false</Ngen>
+    <RuntimeIdentifiers>win-x86</RuntimeIdentifiers>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -54,6 +55,7 @@
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <NoWarn>VSTHRD010;VSSDK006;1762;NU1605;NU1903</NoWarn>
     <DeployExtension>True</DeployExtension>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -412,10 +414,6 @@
     <ZipItem Include="Templates\ProjectItems\Code\ClassFox\ClassFox.png" />
     <ZipItem Include="Templates\ProjectItems\Code\ClassFox\Class.prg" />
     <ZipItem Include="Templates\ProjectItems\Code\ClassFox\ClassFox.vstemplate" />
-    <Content Include="XSharp.Designers.pkgdef">
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="XSharp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -424,6 +422,10 @@
       <Generator>VsctGenerator</Generator>
       <LastGenOutput>Menus.cs</LastGenOutput>
     </VSCTCompile>
+    <Content Include="XSharp.Designers.pkgdef">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="XSharpVSIXLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -764,7 +766,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.DiaSymReader">
-      <Version>1.4.0</Version>
+      <Version>2.0.0</Version>
       <IncludeAssets>all</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Text.UI.Wpf">
@@ -806,7 +808,7 @@
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <!-- This import the files which makes up the project base classes -->
   <PropertyGroup>

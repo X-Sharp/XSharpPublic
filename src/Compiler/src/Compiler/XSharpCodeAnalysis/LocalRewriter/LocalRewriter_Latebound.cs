@@ -48,7 +48,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var nameExpr = _factory.Literal(name);
             if (IsFoxAccessMember(loweredReceiver, node.Syntax.XNode, out var areaName))
             {
-                string method = ReservedNames.FieldGetWaUndeclared;
+                var method = _compilation.RuntimeFunctionsType().GetMethod(ReservedNames.FieldGetWaUndeclared);
                 var exprUndeclared = _factory.Literal(_compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, syntax));
                 var areaExpr = _factory.Literal(areaName);
                 var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), method, areaExpr, nameExpr, exprUndeclared);
@@ -65,10 +65,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             var usualType = _compilation.UsualType();
             if (TypeSymbol.Equals(constructedFrom, usualType))
             {
-                loweredReceiver = _factory.StaticCall(usualType, ReservedNames.ToObject, loweredReceiver);
+                var toObject = usualType.GetMethod(ReservedNames.ToObject);
+                loweredReceiver = _factory.StaticCall(usualType, toObject, loweredReceiver);
             }
             loweredReceiver = MakeConversionNode(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false);
-            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.IVarGet, loweredReceiver, nameExpr);
+            var iVarGet = _compilation.RuntimeFunctionsType().GetMethod(ReservedNames.IVarGet);
+            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), iVarGet, loweredReceiver, nameExpr);
         }
 
         bool allowLateBound(SyntaxNode syntax, TypeSymbol type)
@@ -99,7 +101,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var nameExpr = _factory.Literal(name);
             if (IsFoxAccessMember(loweredReceiver, node.Syntax.XNode, out var areaName))
             {
-                string method = ReservedNames.FieldSetWaUndeclared;
+                var method = _compilation.RuntimeFunctionsType().GetMethod(ReservedNames.FieldSetWaUndeclared);
                 var exprUndeclared = _factory.Literal(_compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, syntax));
                 var areaExpr = _factory.Literal(areaName);
                 var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), method, areaExpr, nameExpr, value, exprUndeclared);
@@ -117,10 +119,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (constructedFrom.IsUsualType())
             {
-                loweredReceiver = _factory.StaticCall(usualType, ReservedNames.ToObject, loweredReceiver);
+                var toObject = usualType.GetMethod(ReservedNames.ToObject);
+                loweredReceiver = _factory.StaticCall(usualType, toObject, loweredReceiver);
             }
             loweredReceiver = MakeConversionNode(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false);
-            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.IVarPut, loweredReceiver, nameExpr, value);
+            var iVarPut = _compilation.RuntimeFunctionsType().GetMethod(ReservedNames.IVarPut);
+            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), iVarPut, loweredReceiver, nameExpr, value);
 
 
         }
@@ -180,7 +184,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             var aArgs = _factory.Array(usualType, convArgs.ToImmutableAndFree());
             // Note: Make sure the first parameter in __InternalSend() in the runtime is a USUAL!
             loweredReceiver = MakeConversionNode(loweredReceiver, usualType, false);
-            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.InternalSend,
+            var internalSend = _compilation.RuntimeFunctionsType().GetMethod(ReservedNames.InternalSend);
+            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), internalSend,
                     loweredReceiver,
                     _factory.Literal(name),
                     aArgs);
@@ -206,7 +211,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             var aArgs = _factory.Array(usualType, convArgs.ToImmutableAndFree());
             loweredReceiver = MakeConversionNode(loweredReceiver, _compilation.ArrayType(), false);
-            var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.ASend,
+            var aSend = _compilation.RuntimeFunctionsType().GetMethod(ReservedNames.ASend);
+            var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), aSend,
                     loweredReceiver,
                     _factory.Literal(name),
                     aArgs);

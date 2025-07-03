@@ -495,6 +495,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             argumentNamesOpt: default,
                             argumentRefKindsOpt: default,
                             expanded: false,
+                            accessorKind: AccessorKind.Unknown,
                             argsToParamsOpt: default,
                             defaultArguments: default,
                             type: usualType,
@@ -1286,7 +1287,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             ps = new XsVariableSymbol(name, getsym, setsym, tUsual);
                         }
 
-                        expression = new BoundPropertyAccess(node, null, ThreeState.False, ps, LookupResultKind.Viable, Compilation.UsualType());
+                        expression = new BoundPropertyAccess(node, null, ThreeState.False, ps, AccessorKind.Unknown, LookupResultKind.Viable, Compilation.UsualType());
                         if (!Compilation.Options.MacroScript && !declared)
                         {
                             Error(diagnostics, warning, node.Location, name);

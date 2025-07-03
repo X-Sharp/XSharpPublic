@@ -152,7 +152,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             return result;
         }
 
+#if !XSHARP
         private static BoundAttribute BindAttributeCore(Binder binder, AttributeSyntax node, NamedTypeSymbol attributeType, Symbol? attributedMember, BindingDiagnosticBag diagnostics)
+#else
+        private BoundAttribute BindAttributeCore(Binder binder, AttributeSyntax node, NamedTypeSymbol attributeType, Symbol? attributedMember, BindingDiagnosticBag diagnostics)
+#endif
         {
             Debug.Assert(binder.SkipSemanticModelBinder() == binder.GetRequiredBinder(node).SkipSemanticModelBinder());
             binder = binder.WithAdditionalFlags(BinderFlags.AttributeArgument);

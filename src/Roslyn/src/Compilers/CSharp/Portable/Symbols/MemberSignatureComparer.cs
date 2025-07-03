@@ -512,7 +512,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 compareKind |= TypeCompareKind.IgnoreCustomModifiersAndArraySizesAndLowerBounds;
             }
             if (member1.GetParameterCount() > 0 && !HaveSameParameterTypes(member1.GetParameters().AsSpan(), typeMap1, member2.GetParameters().AsSpan(), typeMap2,
-                                                                           _refKindCompareMode, compareKind))
+                                                                           _refKindCompareMode, considerDefaultValues: _considerDefaultValues, compareKind))
 #else
             if (member1.GetParameterCount() > 0 && !HaveSameParameterTypes(member1.GetParameters().AsSpan(), typeMap1, member2.GetParameters().AsSpan(), typeMap2,
                                                                            _refKindCompareMode, considerDefaultValues: _considerDefaultValues, _typeComparison))

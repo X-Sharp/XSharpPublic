@@ -73,6 +73,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     __LocalsClear()
                 */
                 var rtType = _compilation.RuntimeFunctionsType();
+                var localPut = rtType.GetMethod(ReservedNames.LocalPut);
+                var localGet = rtType.GetMethod(ReservedNames.LocalGet);
+                var localsUpdated = rtType.GetMethod(ReservedNames.LocalsUpdated);
+                var localsClear = rtType.GetMethod(ReservedNames.LocalsClear);
                 var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
                 var block = ImmutableArray.CreateBuilder<BoundExpression>();
                 var usual = _compilation.UsualType();
@@ -83,7 +87,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     BoundExpression value = new BoundThisReference(expression.Syntax, _compilation.GetSpecialType(SpecialType.System_Object));
                     value = MakeConversionNode(value, usual, false);
                     var localname = _factory.Literal("_THIS");
-                    var mcall = _factory.StaticCall(rtType, ReservedNames.LocalPut, localname, value);
+                    var mcall = _factory.StaticCall(rtType, localPut, localname, value);
                     mcall.WasCompilerGenerated = true;
                     exprs.Add(mcall);
                 }
@@ -112,13 +116,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // __LocalPut("name", (USUAL) localvar)
                     var value = MakeConversionNode(localvar, usual, false);
                     value.WasCompilerGenerated = true;
-                    var mcall = _factory.StaticCall(rtType, ReservedNames.LocalPut, localname, value);
+                    var mcall = _factory.StaticCall(rtType, localPut, localname, value);
                     mcall.WasCompilerGenerated = true;
                     exprs.Add(mcall);
 
                     // create assignment expression for inside the block that is executed when locals are updated
                     // LocalVar := (CorrectType) __LocalGet("name")
-                    mcall = _factory.StaticCall(rtType, ReservedNames.LocalGet, localname);
+                    mcall = _factory.StaticCall(rtType, localGet, localname);
                     mcall.WasCompilerGenerated = true;
                     value = MakeConversionNode(mcall, localvar.Type!, false);
                     value.WasCompilerGenerated = true;
@@ -145,7 +149,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (writeAccess)
                 {
                     // create condition  __LocalsUpdated()
-                    var cond = _factory.StaticCall(rtType, ReservedNames.LocalsUpdated);
+                    var cond = _factory.StaticCall(rtType, localsUpdated);
                     var t = _factory.Literal(true);
                     var f = _factory.Literal(false);
                     cond.WasCompilerGenerated = true;
@@ -160,7 +164,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (count > 0)
                 {
                     // __LocalsClear()
-                    var clear = _factory.StaticCall(rtType, ReservedNames.LocalsClear);
+                    var clear = _factory.StaticCall(rtType, localsClear);
                     exprs.Add(VisitExpression(clear));
                 }
 

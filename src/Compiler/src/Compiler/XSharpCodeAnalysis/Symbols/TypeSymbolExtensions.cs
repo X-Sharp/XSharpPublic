@@ -557,5 +557,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return strType;
         }
+        public static MethodSymbol GetMethod(this TypeSymbol type, string name)
+        {
+            return type.GetMembers(name).FirstOrDefault() as MethodSymbol;
+        }
     }
 }

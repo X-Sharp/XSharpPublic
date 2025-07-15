@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2025-07-02T15:56:30.736+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-07-04T22:31:08.171+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>版本历史</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -14,54 +14,61 @@
     <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="font-family:&apos;Times New Roman&apos;; text-decoration:none; vertical-align:baseline; color:#000000;">您可以访问 https://github.com/X-Sharp/XSharpPublic/issues/nnn 其中 nnnn 是票据编号。</text></para>
     <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="font-family:&apos;Times New Roman&apos;; text-decoration:none; vertical-align:baseline; color:#000000;">如果您在 X# 中发现问题，我们建议您在 GitHub 上报告。我们会通知您问题的处理进度。</text></para>
     <para styleclass="Heading1">Changes in 2.24.0.1</para>
-    <para styleclass="Heading1"><text styleclass="Heading2">编译器</text><br/><text styleclass="Heading3">错误修复</text></para>
+    <para styleclass="Heading1"><text styleclass="Heading2">编译器</text><br/><text styleclass="Heading3">Bug修复</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">为不带可见性修饰符的成员的 VFP 类生成文档的功能失效（#1664）</li>
+      <li styleclass="Normal">为不带可见性修饰符的 VFP 类成员生成文档的功能失效（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1664" target="_blank">#1664</link>）</li>
     </list>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">修正了默认参数值的类型与参数类型不匹配的问题。例如，为十进制参数使用长默认值 (#1733)</li>
+      <li styleclass="Normal">修正了默认参数值的类型与参数类型不匹配的问题。例如，为十进制参数使用Long默认值 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1733" target="_blank">#1733</link>)</li>
     </list>
-    <para styleclass="Heading2">构建系统<br/><text styleclass="Heading3">错误修复</text></para>
+    <para styleclass="Heading2">生成系统<br/><text styleclass="Heading3">Bug修复</text></para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">WriteCodeFragment 任务现在可以像 C# 编译系统一样，正确支持 _Parameter1 和 _Parameter2 等参数。</li>
     </list>
-    <para styleclass="Heading2">运行时间<br/><text styleclass="Heading3">错误修复</text></para>
+    <para styleclass="Heading2">运行时<br/><text styleclass="Heading3">Bug修复</text></para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">修正了对重载方法的后期绑定调用问题 (#1696)</li>
+      <li styleclass="Normal">修正了对重载方法的后期绑定调用问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1696" target="_blank">#1696</link>)</li>
     </list>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">修正了 GoMonth() 函数（VFP 方言）的模糊调用错误问题 (#1724)</li>
-      <li styleclass="Normal">修正了使用 VIA 子句时 COPY TO 命令的问题 (#1726)</li>
+      <li styleclass="Normal">修正了 GoMonth() 函数(VFP 方言)的模糊调用错误问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1724" target="_blank">#1724</link>)</li>
+      <li styleclass="Normal">修正了使用 VIA 子句时 COPY TO 命令的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1726" target="_blank">#1726</link>)</li>
     </list>
-    <para styleclass="Heading2">Visual Studio 集成<br/><text styleclass="Heading3">错误修复</text></para>
+    <para styleclass="Heading2">Visual Studio 集成<br/><text styleclass="Heading3">Bug修复</text></para>
     <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">从项目中删除文件时，该文件不会从 intellisense 数据库中删除。这一问题已得到修复。</li>
-      <li styleclass="Body Text">Goto 定义不再包括构建行为为 &quot;无 &quot;的 prg 文件的源代码 (#1630)</li>
-      <li styleclass="Body Text">对于没有可见性修饰符的字段，Intellisense 无法显示 VFP 类中的字段（#1725）</li>
-      <li styleclass="Body Text">ToggleLineComment 和 ToggleBlockComment 函数未正确保持前导空白 (#1728)</li>
-      <li styleclass="Body Text">修复了装配自定义属性的代码生成问题</li>
+      <li styleclass="Body Text">Goto 定义不再包括 B<text styleclass="f_bodytext" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">uildAction 文件属性设置</text>为 &quot;None&quot;的 prg 文件的源代码 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1630" target="_blank">#1630</link>)</li>
+      <li styleclass="Body Text">对于没有可见性修饰符的字段，Intellisense 无法显示 VFP 类中的字段（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1725" target="_blank">#1725</link>）</li>
+      <li styleclass="Body Text">ToggleLineComment 和 ToggleBlockComment 函数未正确保持前导空白 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1728" target="_blank">#1728</link>)</li>
+      <li styleclass="Body Text">修复了 AssemblyCustomAttributes 的代码生成问题</li>
     </list>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">修复了 VS 2017 和 VS 2019 中调试器表达式评估器的一个问题</li>
     </list>
-    <para styleclass="Heading3">新功能</para>
+    <para styleclass="Heading3">新特性</para>
     <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">添加了从现有 VO 表单生成 Windows 窗体表单的上下文菜单选项 (#1366)</li>
-      <li styleclass="Body Text">代码生成器现在可自动生成END CONSTRUCTOR、END METHOD 等。</li>
+      <li styleclass="Body Text">添加了从现有 VO 表单生成 Windows 窗体表单的上下文菜单选项 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1366" target="_blank">#1366</link>)</li>
+      <li styleclass="Body Text">代码生成器现在可自动生成 END CONSTRUCTOR、END METHOD 等代码。</li>
     </list>
     <para styleclass="Heading2">VOXporter</para>
-    <para styleclass="Heading3">新功能</para>
+    <para styleclass="Heading3">新特性</para>
     <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">添加特殊标记 &quot;VXP-NOCHANGE&quot;、&quot;{VOXP:NOCHANGE}&quot;，指示 VOXporter 完全不修改模块/prg 文件中的代码 (#1723))</li>
+      <li styleclass="Normal">添加特殊标记 &quot;VXP-NOCHANGE&quot;、&quot;{VOXP:NOCHANGE}&quot;，指示 VOXporter 完全不修改模块/prg 文件中的代码 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1723" target="_blank">#1723</link>)</li>
     </list>
     <para styleclass="Heading2">XIDE</para>
-    <para styleclass="Heading3">一般情况</para>
+    <para styleclass="Heading3">常规</para>
     <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">添加了 &quot;查看-&gt;隐藏侧窗格&quot;（SHIFT+F4）选项，可在集成开发环境中快速显示/隐藏左/右窗格</li>
-      <li styleclass="Normal">启用调试-&gt;查看 DB 工作区调试窗口</li>
+      <li styleclass="Normal">添加了 &quot;查看-&gt;隐藏侧边栏&quot;(SHIFT+F4)选项，可在集成开发环境中快速显示/隐藏左/右边栏</li>
+      <li styleclass="Normal">启用&quot;调试-&gt;查看 DB 工作区&quot;调试窗口</li>
       <li styleclass="Normal">修复了在未使用图库模板时新应用程序默认为 CLR2 的问题</li>
       <li styleclass="Normal">为应用程序属性窗口中的 &quot;要运行的应用程序 &quot;选项添加了文件夹按钮</li>
       <li styleclass="Normal">添加了几个 &quot;每日提示 &quot;项目</li>
+      <li styleclass="Normal">·新增“首选项/突出显示活动文件标题”选项</li>
+      <li styleclass="Normal">·新增“首选项/按应用程序绘制文件标题”选项</li>
+      <li styleclass="Normal">·在“文件-&gt;导航”菜单项中添加了键盘快捷键信息</li>
+      <li styleclass="Normal">·在工具窗口的选项卡页面上下文菜单中添加了“停靠到窗格”选项</li>
+      <li styleclass="Normal">·在编辑器文件的主 IDE 窗口上下文菜单中添加了“分离/连接”选项</li>
+      <li styleclass="Normal">·在浮动窗口中的文件也添加了常规上下文菜单选项</li>
+      <li styleclass="Normal">·工具窗口现在也可以通过中间鼠标按钮点击关闭</li>
     </list>
     <para styleclass="Heading1">Changes in 2.23.0.2</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>

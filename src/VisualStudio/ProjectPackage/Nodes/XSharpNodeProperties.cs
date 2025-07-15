@@ -132,6 +132,9 @@ namespace XSharp.Project
         {
         }
 
+        public XSharpFileNode XNode => (XSharpFileNode)this.Node;
+
+
         // =========================================================================================
         // Properties
         // =========================================================================================
@@ -152,7 +155,12 @@ namespace XSharp.Project
 
             set
             {
-                base.BuildAction = value;
+                if (value != base.BuildAction)
+                {
+                    base.BuildAction = value;
+                    XNode.BuildActionChanged(value)
+
+                }
             }
         }
     }

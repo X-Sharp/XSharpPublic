@@ -8,6 +8,7 @@
   <Rule.DataSource>
     <DataSource Persistence="ProjectFile" Label="Configuration" ItemType="Compile" HasConfigurationCondition="false" />
   </Rule.DataSource>
+
   <Rule.Categories>
     <Category Name="Advanced" DisplayName="Advanced" />
     <Category Name="Misc" DisplayName="Misc" />

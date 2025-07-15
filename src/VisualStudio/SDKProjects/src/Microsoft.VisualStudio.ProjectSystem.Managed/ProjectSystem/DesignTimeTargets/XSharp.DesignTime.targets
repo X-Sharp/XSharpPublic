@@ -18,18 +18,18 @@
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Import Project="XSharp.Managed.DesignTime.targets" />
+  <Import Project="$(XsMSBuildManagedFolder)\Microsoft.Managed.DesignTime.targets" />
 
   <!-- Properties -->
   <PropertyGroup>
     <AppDesignerFolder Condition="'$(AppDesignerFolder)' == ''">Properties</AppDesignerFolder>
     <AppDesignerFolderContentsVisibleOnlyInShowAllFiles Condition="'$(AppDesignerFolderContentsVisibleOnlyInShowAllFiles)' == ''">false</AppDesignerFolderContentsVisibleOnlyInShowAllFiles>
     <LanguageServiceName Condition="'$(LanguageServiceName)' == ''">X#</LanguageServiceName>
-    <LanguageServiceId Condition="'$(LanguageServiceId)'==''">{694DD9B6-B865-4C5B-AD85-86356E9C88DC}</LanguageServiceId>
+    <LanguageServiceId Condition="'$(LanguageServiceId)'==''">{e9b6ee0f-9bfa-4cff-a60b-51a08bbc5050}</LanguageServiceId>
     <TemplateLanguage Condition="'$(TemplateLanguage)' == ''">XSharp</TemplateLanguage>
-    <AddItemTemplatesGuid Condition="'$(AddItemTemplatesGuid)' == ''">{FAE04EC0-301F-11d3-BF4B-00C04F79EFBC}</AddItemTemplatesGuid>
-    <CmdUIContextGuid Condition="'$(CmdUIContextGuid)' == ''">{FAE04EC1-301F-11d3-BF4B-00C04F79EFBC}</CmdUIContextGuid>
-    <GeneratorsTypeGuid Condition="'$(GeneratorsTypeGuid)' == ''">{FAE04EC1-301F-11d3-BF4B-00C04F79EFBC}</GeneratorsTypeGuid>
+    <AddItemTemplatesGuid Condition="'$(AddItemTemplatesGuid)' == ''">{e299fb7b-d273-4678-9acf-b37b4af04a12}</AddItemTemplatesGuid>
+    <CmdUIContextGuid Condition="'$(CmdUIContextGuid)' == ''">{e299fb7b-d273-4678-9acf-b37b4af04a12}</CmdUIContextGuid>
+    <GeneratorsTypeGuid Condition="'$(GeneratorsTypeGuid)' == ''">{e299fb7b-d273-4678-9acf-b37b4af04a12}</GeneratorsTypeGuid>
     <DesignerFunctionVisibility Condition="'$(DesignerFunctionVisibility)' == ''">Private</DesignerFunctionVisibility>
     <DesignerVariableNaming Condition="'$(DesignerVariableNaming)' == ''">Camel</DesignerVariableNaming>
     <DesignerHiddenCodeGeneration Condition="'$(DesignerHiddenCodeGeneration)' == ''">Declarations</DesignerHiddenCodeGeneration>
@@ -42,7 +42,6 @@
     <ProjectCapability Include="
                           XSharp;
                           Managed;
-		                  SingleTargetBuildForStartupProjects;
                           ClassDesigner;
                           SharedProjectReferences;
                           ProjectPropertiesEditor;" />
@@ -61,11 +60,11 @@
     <PropertyPageSchema Include="$(XSharpXamlDir)DialectPage.XSharp.xaml">
       <Context>Project</Context>
     </PropertyPageSchema>
-	
+
     <PropertyPageSchema Include="$(XSharpXamlDir)DebugPropertyPage.XSharp.xaml">
       <Context>Project</Context>
     </PropertyPageSchema>
-	
+
     <PropertyPageSchema Include="$(XSharpXamlDir)BuildPropertyPage.XSharp.xaml">
       <Context>Project</Context>
     </PropertyPageSchema>
@@ -73,20 +72,20 @@
     <PropertyPageSchema Include="$(XSharpXamlDir)ReferencesPage.XSharp.xaml">
       <Context>Project</Context>
     </PropertyPageSchema>
-	
+
     <PropertyPageSchema Include="$(XSharpXamlDir)SettingsPropertyPage.XSharp.xaml">
       <Context>Project</Context>
     </PropertyPageSchema>
-	
+
     <PropertyPageSchema Include="$(XSharpXamlDir)VOBinary.xaml">
       <Context>File</Context>
     </PropertyPageSchema>
 
-   <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.xaml">
+    <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.xaml">
       <Context>File</Context>
     </PropertyPageSchema>
-	
-   <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.BrowseObject.xaml">
+
+    <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.BrowseObject.xaml">
       <Context>BrowseObject</Context>
     </PropertyPageSchema>
 
@@ -94,7 +93,7 @@
       <Context>BrowseObject</Context>
     </PropertyPageSchema>
 
-	<PropertyPageSchema Include="$(ManagedXamlNeutralResourcesDirectory)EditorConfigFiles.xaml">
+    <PropertyPageSchema Include="$(ManagedXamlNeutralResourcesDirectory)EditorConfigFiles.xaml">
       <Context>File</Context>
     </PropertyPageSchema>
 
@@ -108,11 +107,11 @@
 
   <!-- 
       Returns Xsc command-line arguments for the language service 
-	  The _CheckCompileDesignTimePrerequisite target checks to make sure that 
-	  both SkipCompilerExecution and ProvideCommandLineArgs are set to true.
-	  When that happens, then the xsc task will create items for each of the command-line arguments
-	  and will not execute xsc.exe
-	  These items are picked up by the managed project system and fed to the language service.
+    The _CheckCompileDesignTimePrerequisite target checks to make sure that 
+    both SkipCompilerExecution and ProvideCommandLineArgs are set to true.
+    When that happens, then the xsc task will create items for each of the command-line arguments
+    and will not execute xsc.exe
+    These items are picked up by the managed project system and fed to the language service.
   -->
   <Target Name="CompileDesignTime"
           Returns="@(_CompilerCommandLineArgs)"

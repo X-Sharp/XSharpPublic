@@ -14,7 +14,7 @@ FUNCTION Sys(nSetting, uNewValue, uContextParam3) AS USUAL CLIPPER
     SWITCH nSetting
 
     CASE 0 // Network machine information.
-        retVal := __GetEnv("USERDOMAIN") + " # " + __GetEnv("USERNAME")
+        retVal := __GetEnv("COMPUTERNAME") + " # " + __GetEnv("USERNAME")
 
     CASE 1 // Returns the current system date as a Julian day number character string.
         VAR currentDate := DateTime.Now

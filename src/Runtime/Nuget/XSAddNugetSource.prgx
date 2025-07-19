@@ -9,6 +9,7 @@ VAR appDataRoamingPath := Environment.GetFolderPath(Environment.SpecialFolder.Ap
 VAR nugetConfigPath := Path.Combine(appDataRoamingPath, "NuGet\\nuget.config")
 VAR xsharpOffLine := "XSharp Offline Packages"
 VAR sourceUrl := GetXSharpInstallationPath()
+sourceUrl := Path.Combine(sourceUrl, "NuGet")
 
 local doc as XDocument
 IF !File.Exists(nugetConfigPath)

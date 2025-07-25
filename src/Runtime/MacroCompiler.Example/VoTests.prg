@@ -714,6 +714,12 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc,"{|oTest| ((ITest)oTest):Testx('abc')}", Args( Test{}), "abc", typeof(STRING))
 
 
+        TestMacro(mc,"{||GetTest():TestMethod1(1, 2)}", Args(), 1, typeof(INT))
+        TestMacro(mc,"{||GetTest():TestMethod2(1, 2)}", Args(), 2, typeof(INT))
+        // Test to call strongly typed method that is declared in an interface but implemented in a base class
+
+
+
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         RETURN
 
@@ -735,6 +741,25 @@ BEGIN NAMESPACE MacroCompilerTest
 
 END NAMESPACE
 
+
+function GetTest() as TestTyped
+	var o := TestTyped{}
+	return o
+end function
+
+
+public interface ITestTyped
+   public method TestMethod1(owin, udb, uParamsInit) as usual clipper
+   public method TestMethod2(oWin := nil as usual, uDb := nil as usual, uParamsInit := nil as usual) as usual
+end interface
+
+public class TestTyped implements ITestTyped
+   public method TestMethod1(owin, udb, uParamsInit) as usual clipper
+      return 1
+
+   public method TestMethod2(oWin := nil as usual, uDb := nil as usual, uParamsInit := nil as usual) as usual
+		return 2
+end class
 
 
 

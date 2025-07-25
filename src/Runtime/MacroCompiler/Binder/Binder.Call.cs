@@ -9,6 +9,8 @@ namespace XSharp.MacroCompiler
 {
     using Syntax;
 
+    using System.ComponentModel;
+
     internal partial class Binder
     {
         internal MemberSymbol BindMethodCall(Expr expr, Symbol symbol, ArgList args, out Expr self, out Expr writeBack)
@@ -123,9 +125,20 @@ namespace XSharp.MacroCompiler
                     if (mbase == null )
                         continue;
                     var meth = mbase as MethodSymbol;
+                    TypeSymbol type = null;
+                    if (expr is MemberAccessExpr mae)
+                    {
+                        type = mae.Expr.Datatype;
+                    }
+
                     // skip abstract methods, but not methods from an interface
-                    if (meth != null && meth.Method.IsAbstract && !meth.Method.DeclaringType.IsInterface)
-                        continue;
+                    // unless the type itself is an interface
+                    if (meth != null && meth.Method.IsAbstract && type != null)
+                    {
+                        if (type.Type != meth.Method.DeclaringType)
+                            continue;
+                    }
+
                     if (meth?.Method.IsStatic == isStatic || mbase is ConstructorSymbol)
                     {
                         CheckArguments(mbase, mbase.Parameters, args, ref ovRes, options);

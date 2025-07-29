@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2025-07-04T22:31:08.171+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-07-22T11:42:15.253+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>版本历史</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -329,13 +329,13 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">这通常会导致与之前相同的编译结果。你可能看到的唯一区别是，当你用此版本打开项目文件时，文件会自动更新。</para>
     <para styleclass="Heading3">FoxPro 方言</para>
-    <para styleclass="Normal">到目前为止，DEFINE CLASS 语法不仅可用于创建继承自 FoxPro 兼容自定义类的类，还可用于创建继承自其他 .Net 类的类。事实证明这有点复杂。</para>
+    <para styleclass="Normal">到目前为止，DEFINE CLASS 语法不仅可用于创建继承自 FoxPro 兼容 Custom 类的类，还可用于创建继承自其他 .Net 类的类。事实证明这有点复杂。</para>
     <para styleclass="Body Text"><text style="font-style:normal; text-decoration:none; color:#000000;">此外，还有一个 /fox1 编译器选项，可使 DEFINE CLASS 命令中的 AS ParentClass 子句成为可选项。没有 AS ParentClass 的类将自动从自定义类继承。</text></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><text style="font-style:normal; text-decoration:none; color:#000000;">我们做了以下更改：</text></para>
     <list id="18" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text"><text style="font-style:normal; text-decoration:none; color:#000000;">AS BaseType 子句将像在 Visual FoxPro 中一样是强制性的</text></li>
-      <li styleclass="Body Text"><text style="font-style:normal; text-decoration:none; color:#000000;">ParentType 必须是自定义或从自定义派生的类。</text></li>
+      <li styleclass="Body Text"><text style="font-style:normal; text-decoration:none; color:#000000;">ParentType 必须是 Custom 类或从 Custom 类派生的类。</text></li>
       <li styleclass="Body Text"><text style="font-style:normal; text-decoration:none; color:#000000;">/fox1 编译器现已过时</text></li>
     </list>
     <para styleclass="Body Text"></para>
@@ -5524,7 +5524,7 @@
     <para styleclass="Heading1"></para>
     <para styleclass="Heading1">Changes in 0.1.7</para>
     <list id="140" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List1">&quot;ns&quot;(为没有命名空间的类添加默认命名空间)已经实现</li>
+      <li styleclass="List1">&quot;<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ns">ns</link>&quot;(为没有命名空间的类添加默认命名空间)已经实现</li>
       <li styleclass="List1">实现了 “<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo3">vo3</link>” 编译器选项(使所有方法都成为虚方法)。</li>
       <li styleclass="List1">修正了括号之间表达式的发送操作符编译不正确的问题</li>
       <li styleclass="List1">现在支持字符串的关系运算符(&gt;, &gt;=, &lt;, &lt;=)。它们使用 String.Compare() 方法实现。</li>

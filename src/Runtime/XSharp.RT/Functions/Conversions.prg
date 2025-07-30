@@ -318,8 +318,8 @@ internal function _descendingString(s as string) as string
         encoding := StringHelpers.DosEncoding
     endif
     local bytes := encoding:GetBytes( s ) as byte[]
-    local nlen := bytes:Length as int
-    for local i := 1 as int upto nlen
+    local nLen := bytes:Length as int
+    for local i := 1 as int upto nLen
     if bytes[i] != 0
         bytes[i] := (byte) ( (int)256 - (int)bytes[i] )
     endif
@@ -440,7 +440,7 @@ function PadR( uValue as usual, nLength as int, cFillChar := " " as string ) as 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/str/*" />
 function Str(nNumber ,nLength ,nDecimals ) as string clipper
-    if PCount() < 1 .or. pCount() > 3
+    if PCount() < 1 .or. PCount() > 3
         return ""
     endif
 
@@ -781,17 +781,17 @@ function StrToFloat(c as string) as float
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/val/*" />
 function Val(cNumber as string) as usual
-    local isCurrency as logic
+    local IsCurrency as logic
     if String.IsNullOrEmpty(cNumber)
         return 0
     endif
     cNumber := AllTrim(cNumber)
-    isCurrency := cNumber:StartsWith("$")
-    if isCurrency
+    IsCurrency := cNumber:StartsWith("$")
+    if IsCurrency
         cNumber := cNumber:Substring(1)
     endif
     var result := _VOVal(cNumber)
-    if isCurrency
+    if IsCurrency
         return __Currency{ (real8) result }
     endif
     return result
@@ -1052,72 +1052,71 @@ function Bin2F(cFloat as string) as float
     ENDIF
     RETURN (float) result
 
-#pragma options("az", off)
+#pragma options("az", on)
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/f2bin/*" />
 function F2Bin(fValue as float) as string
     LOCAL aResult := BYTE[]{10} AS BYTE[]
-    LOCAL bias := EXTENDEDFLOATBIAS as INT
-    LOCAL exponent AS INT
-    LOCAL exponentBiased AS INT
-    LOCAL scale AS REAL8
-    LOCAL mantissa AS REAL8
-    LOCAL mantissaRaw AS UINT64
-    LOCAL i AS INT
-    LOCAL cResult AS STRING
     LOCAL rValue AS REAL8
-    local negative AS logic
-    local preal8 as real8 ptr
-    local special as logic
     rValue := fValue:Value
-    preal8 := @rValue
-    if System.Double.IsNaN(rValue)
+
+    switch rValue
+    case Double.NaN
         // Mantissa = not 0
         // Exponent = 0x7FFF
-        aResult[1] := 0x01
-        aResult[9] := 0xFF
-        aResult[10] := 0x7F // Sign bit irrelevant
-    elseif System.Double.IsPositiveInfinity(rValue)
+        aResult[0] := 0x01
+        aResult[8] := 0xFF
+        aResult[9] := 0x7F // Sign bit irrelevant
+    case System.Double.PositiveInfinity
         // Mantissa = 0
         // Exponent = 0x7FFF
-        aResult[9] := 0xFF
-        aResult[10] := 0x7F // no sign bit
-    elseif System.Double.IsNegativeInfinity(rValue)
+        aResult[8] := 0xFF
+        aResult[9] := 0x7F // no sign bit
+    case System.Double.NegativeInfinity
         // Mantissa = 0
         // Exponent = 0xFFFF (with sign bit set)
-        aResult[9] := 0xFF
-        aResult[10] := 0xFF // set sign bit
+        aResult[8] := 0xFF
+        aResult[9] := 0xFF // set sign bit
+    otherwise
+        F2BinWorker(rValue, aResult)
+    end switch
+    var cResult := __Bytes2String(aResult)
+RETURN cResult
+
+internal function F2BinWorker(rValue as real8, aResult as byte[]) as void
+    local negative  AS logic
+    LOCAL exponent := 0 AS INT
+    LOCAL exponentBiased AS INT
+    LOCAL scale  := 1.0 AS REAL8
+    LOCAL mantissa AS REAL8
+    LOCAL mantissaRaw AS UINT64
+    if rValue < 0.0
+        negative := true
+        rValue := -rValue
     else
-        if rValue < 0.0
-            negative := true
-            rValue := -rValue
-        endif
-        // make sure we have a mantissa value between 1.0 and 2.0
-        exponent    := 0
-        scale       := 1.0
-        mantissa    := rValue
-        DO WHILE mantissa >= 2.0
-            exponent += 1
-            scale    *= 2.0
-            mantissa /= 2.0
-        ENDDO
-
-        exponentBiased := bias + exponent
-        mantissaRaw := (UINT64)(mantissa * (2.0 ^ 63))
-
-        // Mantisse (8 Bytes, Little Endian)
-        FOR i := 1 TO 8
-            aResult[i] := (BYTE)((mantissaRaw >> ((i-1) * 8)) & 0xFF)
-        NEXT
-
-        // Exponent (2 Bytes, Little Endian)
-        aResult[9]  := (BYTE)(exponentBiased & 0xFF)
-        aResult[10] := (BYTE)((exponentBiased >> 8) & 0xFF)
-        if negative
-            aResult[10] |= 0x80 // Setze das Vorzeichenbit
-        endif
+        negative := false
     endif
-    cResult := __Bytes2String(aResult)
-    RETURN cResult
+    // make sure we have a mantissa value between 1.0 and 2.0
+    mantissa    := rValue
+    DO WHILE mantissa >= 2.0
+        exponent += 1
+        scale    *= 2.0
+        mantissa /= 2.0
+    ENDDO
+    exponentBiased  := EXTENDEDFLOATBIAS + exponent
+    mantissaRaw     := (UINT64)(mantissa * (2.0 ^ 63))
 
+    // Mantisse (8 Bytes, Little Endian)
+    FOR VAR i := 0 TO 7
+        aResult[i] := (BYTE)((mantissaRaw >> ((i) * 8)) & 0xFF)
+    NEXT
 
+    // Exponent (2 Bytes, Little Endian)
+    aResult[8] := (BYTE)(exponentBiased & 0xFF)
+    aResult[9] := (BYTE)((exponentBiased >> 8) & 0xFF)
+    if negative
+        aResult[9] |= 0x80 // Set Sign bit
+    endif
+end function
+
+#pragma options("az", default)
 

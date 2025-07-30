@@ -116,10 +116,11 @@ BEGIN NAMESPACE XSharp.RT.Tests
 
 		[Fact, Trait("Category", "Val")];
 		METHOD ValTest() AS VOID
-			LOCAL u AS USUAL
+        LOCAL u AS USUAL
+            RuntimeState.Dialect := XSharpDialect.VO
             SetDecimalSep('.')
             SetThousandSep(',')
-            SetDecimal(2)
+            SetDecimal(3)
 			u := Val("1.234")
 			Assert.Equal(1.234, (FLOAT) u)
 			SetDecimalSep(',')
@@ -197,7 +198,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.Equal("123,456", AsString(Val("  123.456"  )))
 			Assert.Equal("123,456", AsString(Val("  123,456"  )))
 
-			Assert.True(Val(NULL) == 0)
+            Assert.True(Val(NULL) == 0)
 
 		[Fact, Trait("Category", "Val")];
 		METHOD ValTests2() AS VOID
@@ -436,7 +437,18 @@ BEGIN NAMESPACE XSharp.RT.Tests
 
             RETURN
 
-
+        [Fact, Trait("Category", "Conversions")];
+        METHOD F2BinTest() as VOID
+            local f2 as float
+            local s as string
+            foreach var f in F2BinValues()
+                s := F2Bin(f)
+                f2 := bin2f(s)
+                Assert.Equal(f, f2)
+            next
+            RETURN
+        static METHOD F2BinValues() as float[]
+            return <float>{ 1.23456, 1.23E5, 9.87E-1, -1.23456, -1.23E5, -9.87E-1, 2.0, -2.0, System.Double.NaN, System.Double.PositiveInfinity, System.Double.NegativeInfinity }
 
 
 	END CLASS

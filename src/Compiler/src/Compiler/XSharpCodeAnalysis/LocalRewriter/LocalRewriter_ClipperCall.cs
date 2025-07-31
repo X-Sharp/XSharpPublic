@@ -173,7 +173,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var varSym = new XsFoxMemberAccessSymbol(amc.AreaName, amc.FieldName, (MethodSymbol)get[0], (MethodSymbol)set[0], usual);
                         if (get.Length > 0 && set.Length > 0)
                         {
-                            boundProperties[i] = new BoundPropertyAccess(a.Syntax, null, ThreeState.False, varSym, LookupResultKind.Viable, varSym.Type);
+                            boundProperties[i] = new BoundPropertyAccess(a.Syntax, null, ThreeState.False, varSym, AccessorKind.Both, LookupResultKind.Viable, varSym.Type);
                         }
                     }
                     else if (a is BoundCall bc && bc.PropertyAccess != null)
@@ -200,7 +200,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                             var lasgn = _factory.AssignmentExpression(bla, arg) as BoundAssignmentOperator;
                             exprs.Add(VisitAssignmentOperator(lasgn, true));
                         }
-                        bi = bi.Update(bi.ReceiverOpt, ThreeState.False, bi.Indexer, blas.ToImmutableArrayOrEmpty(), bi.ArgumentNamesOpt, bi.ArgumentRefKindsOpt, bi.Expanded, bi.ArgsToParamsOpt, bi.DefaultArguments, bi.Type);
+                        bi = bi.Update(bi.ReceiverOpt, ThreeState.False, bi.Indexer, blas.ToImmutableArrayOrEmpty(),
+                            bi.ArgumentNamesOpt, bi.ArgumentRefKindsOpt, bi.Expanded, bi.AccessorKind, bi.ArgsToParamsOpt, bi.DefaultArguments, bi.Type);
                         boundProperties[i] = bi;
                         var newarg = VisitExpression(bi);
                         newarg = MakeConversionNode(newarg, _compilation.UsualType(), @checked: false);

@@ -84,6 +84,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return BindMemberAccessWithBoundLeft(node, left, node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
         }
+        private BoundExpression XsBindIndexerAccess(BoundExpression expr, BindingDiagnosticBag diagnostics)
+        {
+            if (expr is BoundIndexerAccess bia && bia.AccessorKind == AccessorKind.Unknown)
+            {
+               expr = bia.Update(AccessorKind.Get); 
+            }
+            return expr;
+        }
 
         private bool BindVOPointerDereference(CastExpressionSyntax node, TypeWithAnnotations targetType, BoundExpression operand,
             BindingDiagnosticBag diagnostics, out BoundExpression expression)
@@ -495,6 +503,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             argumentNamesOpt: default,
                             argumentRefKindsOpt: default,
                             expanded: false,
+                            accessorKind: AccessorKind.Both,
                             argsToParamsOpt: default,
                             defaultArguments: default,
                             type: usualType,
@@ -1286,7 +1295,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             ps = new XsVariableSymbol(name, getsym, setsym, tUsual);
                         }
 
-                        expression = new BoundPropertyAccess(node, null, ThreeState.False, ps, LookupResultKind.Viable, Compilation.UsualType());
+                        expression = new BoundPropertyAccess(node, null, ThreeState.False, ps, AccessorKind.Both, LookupResultKind.Viable, Compilation.UsualType());
                         if (!Compilation.Options.MacroScript && !declared)
                         {
                             Error(diagnostics, warning, node.Location, name);

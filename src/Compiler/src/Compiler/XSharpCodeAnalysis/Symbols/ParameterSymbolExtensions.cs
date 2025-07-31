@@ -34,7 +34,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             // this will generate an error for parameters declared as
             // xx := NULL AS FLOAT
-            if (param is not null && param.Type.IsValueType && !param.Type.IsUsualType())
+            if (param is not null && param.Type.IsValueType
+                && !param.Type.IsUsualType() && !param.Type.IsNullableType())
             {
                 var attr = GetDefaultParamAttribute(param);
                 if (attr != null)
@@ -55,7 +56,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     return true;
                                 diagnostics.Add(ErrorCode.ERR_ValueCantBeNull, param.GetNonNullSyntaxNode().Location, param.Type);
                                 return false;
-
                         }
                     }
                 }

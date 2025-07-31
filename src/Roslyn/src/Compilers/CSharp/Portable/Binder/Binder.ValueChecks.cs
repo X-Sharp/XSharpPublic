@@ -513,6 +513,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var propertyAccess = (BoundPropertyAccess)expr;
                         if (HasSynthesizedBackingField(propertyAccess.PropertySymbol, out _))
                         {
+#if XSHARP
+                            var accessorKind = GetAccessorKind(valueKind);
+                            if (propertyAccess.PropertySymbol is XsVariableSymbol)
+                                accessorKind = AccessorKind.Both; // X# MemVars always have both accessors
+
+                            expr = propertyAccess.Update(
+                                propertyAccess.ReceiverOpt,
+                                propertyAccess.InitialBindingReceiverIsSubjectToCloning,
+                                propertyAccess.PropertySymbol,
+                                autoPropertyAccessorKind: accessorKind,
+                                propertyAccess.ResultKind,
+                                propertyAccess.Type);
+#else
+
                             expr = propertyAccess.Update(
                                 propertyAccess.ReceiverOpt,
                                 propertyAccess.InitialBindingReceiverIsSubjectToCloning,
@@ -520,6 +534,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 autoPropertyAccessorKind: GetAccessorKind(valueKind),
                                 propertyAccess.ResultKind,
                                 propertyAccess.Type);
+#endif
                         }
                     }
 #if DEBUG

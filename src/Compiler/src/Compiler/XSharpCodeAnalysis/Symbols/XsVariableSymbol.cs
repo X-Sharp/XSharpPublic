@@ -78,7 +78,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public override ImmutableArray<Location> Locations => throw new System.NotImplementedException();
 
-        public override ImmutableArray<SyntaxReference> DeclaringSyntaxReferences => throw new System.NotImplementedException();
+        public override ImmutableArray<SyntaxReference> DeclaringSyntaxReferences => _getMethod.DeclaringSyntaxReferences;
 
         public override Accessibility DeclaredAccessibility => Accessibility.Public;
 

@@ -9912,6 +9912,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             lookupResult.Free();
+#if XSHARP
+        indexerAccessExpression = XsBindIndexerAccess(indexerAccessExpression, diagnostics);
+#endif
             return indexerAccessExpression;
         }
 

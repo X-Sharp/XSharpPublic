@@ -25,7 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // when calling a USUAL[] function we allow 1 usual param and wrap it as params as well
             // REF USUAL is not allowed
             TypeWithAnnotations elementType;
-            if (allowUnexpandedForm && normalResult.Result.IsValid && IsValidParams(_binder, leastOverriddenMember, out elementType) && Compilation.Options.HasRuntime)
+            if (allowUnexpandedForm && normalResult.Result.IsValid && IsValidParams(_binder, leastOverriddenMember, true, out elementType) && Compilation.Options.HasRuntime)
             {
                 // Find Params argument
                 BoundExpression paramsArg = null;
@@ -72,7 +72,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             AnalyzedArguments arguments, bool completeResults, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
         {
             TypeWithAnnotations elementType;
-            if (result.IsValid && IsValidParams(_binder, constructor, out elementType) && Compilation.Options.HasRuntime)
+            if (result.IsValid && IsValidParams(_binder, constructor, true, out elementType) && Compilation.Options.HasRuntime)
             {
                 // Find Params argument
                 BoundExpression paramsArg = null;

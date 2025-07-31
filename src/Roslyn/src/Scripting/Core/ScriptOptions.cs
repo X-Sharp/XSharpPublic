@@ -194,6 +194,14 @@ namespace Microsoft.CodeAnalysis.Scripting
             }
 #endif
         }
+#if XSHARP
+        private static MetadataReference CreateReferenceFromAssembly(Assembly assembly)
+        {
+            return MetadataReference.CreateFromAssemblyInternal(assembly, s_assemblyReferenceProperties);
+        }
+
+
+#endif
 
         private ScriptOptions(ScriptOptions other)
             : this(filePath: other.FilePath,

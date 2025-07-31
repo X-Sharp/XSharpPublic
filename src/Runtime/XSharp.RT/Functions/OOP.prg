@@ -77,7 +77,7 @@ internal static class OOPHelpers
                         next
                         if list:Count > 0
                             aMethods:AddRange(list)
-                        endif
+                        endif 
                     endif
                 end try
             endif

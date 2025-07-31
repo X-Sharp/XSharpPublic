@@ -1851,7 +1851,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 sourcePropertyDefinition = sourceProperty;
                 return true;
             }
-
+#if XSHARP
+            if (propertySymbol is XsVariableSymbol)
+            {
+                sourcePropertyDefinition = null;
+                return true; // X# variables are always auto-properties 
+            }
+#endif
             sourcePropertyDefinition = null;
             return false;
         }

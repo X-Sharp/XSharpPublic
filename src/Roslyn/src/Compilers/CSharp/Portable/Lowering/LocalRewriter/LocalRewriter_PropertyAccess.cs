@@ -38,8 +38,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (isLeftOfAssignment && propertySymbol.RefKind == RefKind.None)
                 {
                     return oldNodeOpt != null ?
-                        oldNodeOpt.Update(rewrittenReceiverOpt, ThreeState.Unknown, propertySymbol, resultKind, type) :
-                        new BoundPropertyAccess(syntax, rewrittenReceiverOpt, ThreeState.Unknown, propertySymbol, resultKind, type);
+                        oldNodeOpt.Update(rewrittenReceiverOpt, ThreeState.Unknown, propertySymbol, AccessorKind.Both, resultKind, type) :
+                        new BoundPropertyAccess(syntax, rewrittenReceiverOpt, ThreeState.Unknown, propertySymbol, AccessorKind.Both, resultKind, type);
                 }
                 else
                 {

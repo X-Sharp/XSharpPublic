@@ -539,7 +539,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public override BoundNode VisitIndexerAccess(BoundIndexerAccess node)
         {
 #if XSHARP
-            XsVisitIndexerAccess(node);
+            node = XsVisitIndexerAccess(node);
 #endif
             var indexer = node.Indexer;
             var method = indexer.GetOwnOrInheritedGetMethod() ?? indexer.GetOwnOrInheritedSetMethod();

@@ -113,10 +113,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (destination.IsUsualType())
                 {
                     var usualType = _binder.Compilation.UsualType();
-                    var op = usualType.GetOperators(WellKnownMemberNames.ImplicitConversionName)
-                        .WhereAsArray(o => o.ParameterCount == 1
-                        && o.Parameters[0].Type.IsObjectType()
-                        && o.ReturnType.IsUsualType())
+                    var op = (MethodSymbol)  usualType.GetMembers(WellKnownMemberNames.ImplicitConversionName)
+                        .WhereAsArray(o => o.GetParameterCount() == 1
+                        && o.GetParameters()[0].Type.IsObjectType()
+                        && o.GetTypeOrReturnType().Type.IsUsualType())
                         .First();
                     if (op != null)
                     {

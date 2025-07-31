@@ -204,7 +204,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private static BoundExpressionStatement xsharpruntimeStateAssign(SyntaxNode syntax, PropertySymbol prop, object value)
         {
-            var bpa = new BoundPropertyAccess(syntax, null, ThreeState.False, prop, LookupResultKind.Viable,prop.Type) { WasCompilerGenerated = true };
+            var bpa = new BoundPropertyAccess(syntax, null, ThreeState.False, prop, AccessorKind.Both, LookupResultKind.Viable,prop.Type) { WasCompilerGenerated = true };
             BoundLiteral lit;
             if (value is bool)
                 lit = new BoundLiteral(syntax, ConstantValue.Create(( bool) value), prop.Type) { WasCompilerGenerated = true };

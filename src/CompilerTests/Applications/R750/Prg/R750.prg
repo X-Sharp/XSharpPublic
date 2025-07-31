@@ -1,15 +1,15 @@
 // R750 ByRef dword passed to Clipper Calling Convention
-FUNCTION Start() AS VOID STRICT    
+FUNCTION Start() AS VOID STRICT
     LOCAL iRow AS DWORD
-    
+
     iRow := 100
-    ? iRow   
-    
-    Header(@iRow)   
-    xAssert(iRow == 0)
-    
     ? iRow
-    
+
+    XHeader(@iRow)
+    xAssert(iRow == 0)
+
+    ? iRow
+
     LOCAL i AS INT
     LOCAL w AS DWORD
     LOCAL b AS BYTE
@@ -39,15 +39,15 @@ FUNCTION Start() AS VOID STRICT
     xAssert(ul == TRUE)
     xAssert(ud == Today())
     xAssert(ud2 == NULL_DATE)
-    
-RETURN	
-   
-FUNCTION Header(iRow)
+
+RETURN
+
+FUNCTION XHeader(iRow)
     ? iRow
-    xAssert(iRow == 100)    
+    xAssert(iRow == 100)
     iRow := 0
     ? iRow
-    
+
     RETURN NIL
 
 FUNCTION BiggerTest(i,w,b,c,l,d,d2)
@@ -59,10 +59,10 @@ l := TRUE
 d := Today()
 d2 := Today()
     RETURN NIL
-    
+
 
 PROC xAssert(l AS LOGIC)
 IF .not. l
 	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
 END IF
-? "Assertion passed"    
+? "Assertion passed"

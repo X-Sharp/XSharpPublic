@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -16,6 +17,19 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
+
+    // extension for _factory StaticCal
+    static class FactoryExtensions
+    {
+        public static BoundExpression StaticCall(this SyntheticBoundNodeFactory factory, NamedTypeSymbol type, string name, params BoundExpression[] arguments)
+        {
+            var method = type.GetMembers(name).OfType<MethodSymbol>().FirstOrDefault();
+            if (method is null)
+                throw new InvalidOperationException($"Method {name} not found in type {type.Name}");
+            return factory.Call(factory.Type(type), method, arguments);
+        }
+    }
+
     internal partial class LocalRewriter
     {
         private BoundExpression XsAdjustBoundCall(BoundExpression expression)

@@ -254,19 +254,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 #if XSHARP
-            if (TypeSymbol.Equals(attributeType, Compilation.GetWellKnownType(WellKnownType.XSharp_Internal_DefaultParameterValueAttribute)) && analyzedArguments.ConstructorArguments.Arguments.Count == 2)
+            if (TypeSymbol.Equals(attributeType, binder.Compilation.GetWellKnownType(WellKnownType.XSharp_Internal_DefaultParameterValueAttribute)) && analyzedArguments.ConstructorArguments.Arguments.Count == 2)
             {
+               
                 var ca = analyzedArguments.ConstructorArguments.Arguments;
                 if (ca[0] is BoundConversion bcv && bcv.Operand is BoundFieldAccess bfa && bfa.FieldSymbol != null)
                 {
                     if (bcv.Operand.Type?.SpecialType == SpecialType.System_IntPtr && bfa.FieldSymbol.IsConst == true && ca[1]?.ConstantValueOpt?.Int32Value == 0)
                     {
-                        var dv = new BoundLiteral(ca[0].Syntax, ConstantValue.Create(0L), Compilation.GetSpecialType(SpecialType.System_Int64));
+                        var dv = new BoundLiteral(ca[0].Syntax, ConstantValue.Create(0L), binder.Compilation.GetSpecialType(SpecialType.System_Int64));
                         ca[0] = new BoundConversion(ca[0].Syntax, dv, Conversion.Boxing, false, false,
                             conversionGroupOpt: null,
                             constantValueOpt: null,
-                            Compilation.ObjectType);
-                        ca[1] = new BoundLiteral(ca[1].Syntax, ConstantValue.Create(5), Compilation.GetSpecialType(SpecialType.System_Int32));
+                            binder.Compilation.ObjectType);
+                        ca[1] = new BoundLiteral(ca[1].Syntax, ConstantValue.Create(5), binder.Compilation.GetSpecialType(SpecialType.System_Int32));
                         boundConstructorArguments = analyzedArguments.ConstructorArguments.Arguments.ToImmutable();
                     }
                 }

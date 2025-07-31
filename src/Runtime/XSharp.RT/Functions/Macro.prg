@@ -352,7 +352,7 @@ INTERNAL GLOBAL _fullMacroCompiler AS Assembly
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/execscript/*" />
 FUNCTION ExecScript( cExpression, eParameter1, eParameter2, eParameterN ) AS USUAL CLIPPER
-    RETURN ExecScriptFast(cExpression, eParameter1, eParameter2, eParameterN )
+    RETURN ExecScriptFast(_Args() )
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/execscript/*" />
 FUNCTION ExecScriptSlow( cExpression, eParameter1, eParameter2, eParameterN ) AS USUAL CLIPPER

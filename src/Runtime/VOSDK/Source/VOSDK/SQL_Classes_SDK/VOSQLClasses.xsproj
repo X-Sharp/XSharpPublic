@@ -13,12 +13,6 @@
     <Allowdot>false</Allowdot>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>VOSQLClasses.Xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
-    <DocumentationFile>VOSQLClasses.Xml</DocumentationFile>
-  </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
@@ -51,39 +45,10 @@
     <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
       <Link>SDKAssemblyinfo.prg</Link>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.prg" />
-    <Compile Include="SQLCatalog.prg" />
-    <Compile Include="SQLColumn.prg" />
-    <Compile Include="SQLColumnAttributes.prg" />
-    <Compile Include="SQLConnection.prg" />
-    <Compile Include="SQLData.prg" />
-    <Compile Include="SQLDefines.prg" />
-    <Compile Include="SQLErrorInfo.prg" />
-    <Compile Include="SQLFunctions.prg" />
-    <Compile Include="SQLLangDef.prg" />
-    <Compile Include="SQLListColumnPrivileges.prg" />
-    <Compile Include="SQLListColumns.prg" />
-    <Compile Include="SQLListForeignKeys.prg" />
-    <Compile Include="SQLListPrimaryKeys.prg" />
-    <Compile Include="SQLListProcedureColumns.prg" />
-    <Compile Include="SQLListProcedures.prg" />
-    <Compile Include="SQLListSpecialColumns.prg" />
-    <Compile Include="SQLListStatistics.prg" />
-    <Compile Include="SQLListTablePrivileges.prg" />
-    <Compile Include="SQLListTables.prg" />
-    <Compile Include="SQLListTypeInfo.prg" />
-    <Compile Include="SQLParameter.prg" />
-    <Compile Include="SQLSelect1.prg" />
-    <Compile Include="SQLSelect2.prg" />
-    <Compile Include="SQLSelect3.prg" />
-    <Compile Include="SQLSelect4.prg" />
-    <Compile Include="SQLSelectA.prg" />
-    <Compile Include="SQLStatement.prg" />
-    <Compile Include="SQLTable.prg" />
-    <Compile Include="SQLValue.prg" />
+    <Compile Include="**\*.prg" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties" />
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="..\VOSDKDocs.Targets" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">

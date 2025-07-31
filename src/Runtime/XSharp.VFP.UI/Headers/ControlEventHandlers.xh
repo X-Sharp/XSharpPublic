@@ -233,7 +233,7 @@ PRIVATE METHOD OnVFPInteractiveChange( sender AS OBJECT, e AS System.EventArgs) 
 PRIVATE _VFPClick AS VFPOverride
 [System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Click")];
 [System.ComponentModel.DefaultValue(NULL)];
-PROPERTY vfpCLick AS STRING GET _VFPClick?:SendTo SET Set_Click( VFPOverride{SELF, VALUE} )
+PROPERTY vfpClick AS STRING GET _VFPClick?:SendTo SET Set_Click( VFPOverride{SELF, VALUE} )
 
 METHOD Set_Click( methodCall AS VFPOverride ) AS VOID
 	SELF:Click += System.EventHandler{ SELF, @OnVFPClick() }

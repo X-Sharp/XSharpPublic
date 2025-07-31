@@ -584,8 +584,11 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a| TestByRef(a) }", Args("123"), "123", typeof(string))
         TestMacro(mc, "{ |x| (x)-1 } ",Args(2),1,typeof(int))
         TestMacro(mc, "{ || (int)(-5.1) } ",Args(),-5,typeof(int))
-        TestMacro(mc, '"#include ""c:\Program Files (x86)\XSharp\Include\XSharpDefs.xh"" "', Args(), "#include ""c:\Program Files (x86)\XSharp\Include\XSharpDefs.xh"" ", typeof(string))
-        TestMacro(mc, "'#include ''c:\Program Files (x86)\XSharp\Include\XSharpDefs.xh'' '", Args(), '#include ''c:\Program Files (x86)\XSharp\Include\XSharpDefs.xh'' ', typeof(string))
+        TestMacro(mc, "{ || TestInNotNil(10) } ",Args(),true,typeof(logic))
+        TestMacro(mc, "{ || TestRefNotZero(10) } ",Args(),true,typeof(logic))
+        TestMacro(mc, '"#include ""XSharpDefs.xh"" "', Args(), "#include ""XSharpDefs.xh"" ", typeof(string))
+        TestMacro(mc, "'#include ''XSharpDefs.xh'' '", Args(), '#include ''XSharpDefs.xh'' ', typeof(string))
+        TestMacro(mc, "'#include [XSharpDefs.xh] '", Args(), '#include [XSharpDefs.xh] ', typeof(string))
 
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet, "MyMemVarGet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")
@@ -702,6 +705,21 @@ BEGIN NAMESPACE MacroCompilerTest
         RuntimeState.MacroCompilerErrorHandler := NULL
         TestMacro(mc, "{|| Left('abc,10) }", Args(),typeof(Exception),NULL, ErrorCode.UnterminatedString)
 
+        TestMacro(mc, "{|| 10/6 }", Args(), FLOAT(10)/6, typeof(FLOAT))
+
+
+        TestMacro(mc,"{|oTest| oTest:Testx(5)}", Args( Test{}), 5, typeof(INT))
+        TestMacro(mc,"{|oTest| oTest:Testx('abc')}", Args( Test{}), "abc", typeof(STRING))
+        TestMacro(mc,"{|oTest| ((ITest)oTest):Testx(5)}", Args( Test{}), 5, typeof(INT))
+        TestMacro(mc,"{|oTest| ((ITest)oTest):Testx('abc')}", Args( Test{}), "abc", typeof(STRING))
+
+
+        TestMacro(mc,"{||GetTest():TestMethod1(1, 2)}", Args(), 1, typeof(INT))
+        TestMacro(mc,"{||GetTest():TestMethod2(1, 2)}", Args(), 2, typeof(INT))
+        // Test to call strongly typed method that is declared in an interface but implemented in a base class
+
+
+
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         RETURN
 
@@ -723,6 +741,25 @@ BEGIN NAMESPACE MacroCompilerTest
 
 END NAMESPACE
 
+
+function GetTest() as TestTyped
+	var o := TestTyped{}
+	return o
+end function
+
+
+public interface ITestTyped
+   public method TestMethod1(owin, udb, uParamsInit) as usual clipper
+   public method TestMethod2(oWin := nil as usual, uDb := nil as usual, uParamsInit := nil as usual) as usual
+end interface
+
+public class TestTyped implements ITestTyped
+   public method TestMethod1(owin, udb, uParamsInit) as usual clipper
+      return 1
+
+   public method TestMethod2(oWin := nil as usual, uDb := nil as usual, uParamsInit := nil as usual) as usual
+		return 2
+end class
 
 
 

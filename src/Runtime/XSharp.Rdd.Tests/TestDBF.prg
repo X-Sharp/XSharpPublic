@@ -410,7 +410,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
                     VAR db := (DbDate) o
 					dt := DateTime{ db:Year, db:Month, db:Day}
 				ENDIF
-				Assert.Equal( DateTime.Now.ToString("yyyyMMdd"), dt:ToString("yyyyMMdd") )
+				Assert.Equal( DateTime.Now:ToString("yyyyMMdd"), dt:ToString("yyyyMMdd") )
 				myDBF:Skip(1)
 			NEXT
 			//
@@ -442,7 +442,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			// Now, Add some Data
 			LOCAL rnd AS Random
 			//
-			rnd := Random{ (LONG)DateTime.Now.Ticks }
+			rnd := Random{ (LONG)DateTime.Now:Ticks }
 			//"ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0"
 			// 3000 samples
 			FOR VAR i := 1 TO 3000
@@ -466,7 +466,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "Zap")];
 		METHOD CheckZap() AS VOID
 			//
-            var fileName := TempFileName()
+            VAR fileName := TempFileName()
 			SELF:CheckCreateAppendDBF(fileName)
 			//
 			VAR dbInfo := DbOpenInfo{ fileName, "XMenTest", 1, FALSE, FALSE }
@@ -487,7 +487,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "Zap")];
 		METHOD CheckZapAppend() AS VOID
 			//
-            var file := TempFileName()
+            VAR file := TempFileName()
 			SELF:CheckCreateAppendDBF(file)
 			//
 			VAR dbInfo := DbOpenInfo{ file, "XMenTest", 1, FALSE, FALSE }
@@ -518,7 +518,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "Pack")];
 		METHOD CheckPack() AS VOID
 			//
-            var file := TempFileName()
+            VAR file := TempFileName()
 			SELF:CheckCreateAppendDBF(file)
 			//
 			VAR dbInfo := DbOpenInfo{ file, "", 1, FALSE, FALSE }
@@ -546,7 +546,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CheckCreateDBFMemo() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0;BIOGRAPHY,M,10,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-            var cFile := TempFileName()
+            VAR cFile := TempFileName()
 			VAR dbInfo := DbOpenInfo{cFile , "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
@@ -573,7 +573,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			Assert.Equal( TRUE, isFile  )
 			RETURN
 
-        PRIVATE METHOD CreateFileHelper(cFilename as STRING, data OUT STRING[], Memos OUT List<String>) AS DbOpenInfo
+        PRIVATE METHOD CreateFileHelper(cFilename AS STRING, data OUT STRING[], Memos OUT List<STRING>) AS DbOpenInfo
             LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0;BIOGRAPHY,M,10,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
 			VAR dbInfo := DbOpenInfo{ cFilename, "XMenTest", 1, FALSE, FALSE }
@@ -612,11 +612,11 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				myDBF:PutValue( 5, Memos[ Memos:Count -1 ] )
 			NEXT
 			myDBF:Close()
-            return dbInfo
+            RETURN dbInfo
 
 		[Fact, Trait("Dbf", "CreateAppendDBT")];
 		METHOD CheckCreateAppendDBFDBT() AS STRING
-            var file := TempFileName()
+            VAR file := TempFileName()
 			VAR dbInfo := SELF:CreateFileHelper(file, OUT VAR data, OUT VAR Memos)
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
 
@@ -637,7 +637,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
                     VAR db := (DbDate) o
 					dt := DateTime{db:Year, db:Month, db:Day}
 				ENDIF
-				Assert.Equal( DateTime.Now.ToString("yyyyMMdd"), dt:ToString("yyyyMMdd") )
+				Assert.Equal( DateTime.Now:ToString("yyyyMMdd"), dt:ToString("yyyyMMdd") )
 				// Now the Memo
 				LOCAL temp1 AS STRING
 				LOCAL temp2 AS STRING
@@ -655,7 +655,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "ModifyDBT")];
 		METHOD CheckModifyDBT() AS VOID
 			// Create and put some Data
-			var cFile := SELF:CheckCreateAppendDBFDBT()
+			VAR cFile := SELF:CheckCreateAppendDBFDBT()
 			// Now Modify in the same space
 			VAR dbInfo := DbOpenInfo{ cFile, "XMenTest", 1, FALSE, FALSE }
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
@@ -691,7 +691,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "ModifyDBT_2")];
 		METHOD CheckModifyDBT_2() AS VOID
 			// Create and put some Data
-			VAR dbInfo := SELF:CreateFileHelper(TempFileName(), OUT var _, OUT VAR _)
+			VAR dbInfo := SELF:CreateFileHelper(TempFileName(), OUT VAR _, OUT VAR _)
 			// Now Modify in the same space
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
 			VAR Memos := List<STRING>{}
@@ -742,7 +742,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CheckDbfInBuffer() AS VOID
             VAR stream := System.IO.MemoryStream{200101}
             FOR VAR i := 1 TO 200101
-                stream:WriteByte((Byte)i)
+                stream:WriteByte((BYTE)i)
             NEXT
             stream:Position := 0
 
@@ -828,12 +828,12 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 
 			RETURN
         STATIC PRIVATE nCounter AS LONG
-        STATIC PRIVATE gate := Object{} as Object
-        STATIC METHOD TempFilename() as STRING
+        STATIC PRIVATE gate := OBJECT{} AS OBJECT
+        STATIC METHOD TempFilename() AS STRING
             BEGIN LOCK gate
             nCounter += 1
-            end lock
-            return "TestDBF"+nCounter:ToString()
+            END LOCK
+            RETURN "TestDBF"+nCounter:ToString()
 	END CLASS
 END NAMESPACE // XSharp.RDD.Tests
 

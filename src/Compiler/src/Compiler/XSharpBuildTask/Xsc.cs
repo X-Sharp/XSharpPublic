@@ -564,7 +564,7 @@ namespace XSharp.Build
         /// arguments in the response file.
         /// </summary>
         /// <remarks>
-        /// This will be the same value whether the build occurs on .NET Core or .NET Framework. 
+        /// This will be the same value whether the build occurs on .NET Core or .NET Framework.
         /// </remarks>
         internal string GenerateToolArguments()
         {
@@ -636,6 +636,7 @@ namespace XSharp.Build
                 string? DevPath = System.Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpDev);
                 if (!string.IsNullOrEmpty(DevPath))
                 {
+                    DevPath = DevPath.Trim();
                     string testPath = Path.Combine(DevPath, toolName);
                     if (File.Exists(testPath))
                     {
@@ -998,38 +999,38 @@ namespace XSharp.Build
     {
         /// <summary>
         /// Split a command line by the same rules as Main would get the commands except the original
-        /// state of backslashes and quotes are preserved.  For example in normal Windows command line 
+        /// state of backslashes and quotes are preserved.  For example in normal Windows command line
         /// parsing the following command lines would produce equivalent Main arguments:
-        /// 
+        ///
         ///     - /r:a,b
         ///     - /r:"a,b"
-        /// 
-        /// This method will differ as the latter will have the quotes preserved.  The only case where 
+        ///
+        /// This method will differ as the latter will have the quotes preserved.  The only case where
         /// quotes are removed is when the entire argument is surrounded by quotes without any inner
-        /// quotes. 
+        /// quotes.
         /// </summary>
         /// <remarks>
         /// Rules for command line parsing, according to MSDN:
-        /// 
+        ///
         /// Arguments are delimited by white space, which is either a space or a tab.
-        ///  
-        /// A string surrounded by double quotation marks ("string") is interpreted 
-        /// as a single argument, regardless of white space contained within. 
+        ///
+        /// A string surrounded by double quotation marks ("string") is interpreted
+        /// as a single argument, regardless of white space contained within.
         /// A quoted string can be embedded in an argument.
-        ///  
-        /// A double quotation mark preceded by a backslash (\") is interpreted as a 
+        ///
+        /// A double quotation mark preceded by a backslash (\") is interpreted as a
         /// literal double quotation mark character (").
-        ///  
-        /// Backslashes are interpreted literally, unless they immediately precede a 
+        ///
+        /// Backslashes are interpreted literally, unless they immediately precede a
         /// double quotation mark.
-        ///  
-        /// If an even number of backslashes is followed by a double quotation mark, 
-        /// one backslash is placed in the argv array for every pair of backslashes, 
+        ///
+        /// If an even number of backslashes is followed by a double quotation mark,
+        /// one backslash is placed in the argv array for every pair of backslashes,
         /// and the double quotation mark is interpreted as a string delimiter.
-        ///  
-        /// If an odd number of backslashes is followed by a double quotation mark, 
-        /// one backslash is placed in the argv array for every pair of backslashes, 
-        /// and the double quotation mark is "escaped" by the remaining backslash, 
+        ///
+        /// If an odd number of backslashes is followed by a double quotation mark,
+        /// one backslash is placed in the argv array for every pair of backslashes,
+        /// and the double quotation mark is "escaped" by the remaining backslash,
         /// causing a literal double quotation mark (") to be placed in argv.
         /// </remarks>
         public static List<string> SplitCommandLineIntoArguments(string commandLine, bool removeHashComments)
@@ -1126,8 +1127,8 @@ namespace XSharp.Build
                     }
                 }
 
-                // If the quote string is surrounded by quotes with no interior quotes then 
-                // remove the quotes here. 
+                // If the quote string is surrounded by quotes with no interior quotes then
+                // remove the quotes here.
                 if (quoteCount == 2 && builder[0] == '"' && builder[builder.Length - 1] == '"')
                 {
                     builder.Remove(0, length: 1);

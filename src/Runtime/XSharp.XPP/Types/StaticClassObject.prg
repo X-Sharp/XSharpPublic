@@ -14,7 +14,7 @@ using XSharp.RT
 /// This object allows to access static members and methods late bound
 /// Such as <code>Example():Fieldname</code>
 /// </summary>
-[DebuggerDisplay("ClassObject {type.FullName}")];
+[DebuggerDisplay("ClassObject {Type.FullName}")];
 class XSharp.XPP.StaticClassObject inherit ClassObject
 
     constructor(t as System.Type)

@@ -36,6 +36,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var sourceType = expression.Type;
             var syntax = expression.Syntax;
+            if (sourceType is null || targetType is null)
+                return false;
             if (Equals(sourceType, targetType))
                 return true;
 

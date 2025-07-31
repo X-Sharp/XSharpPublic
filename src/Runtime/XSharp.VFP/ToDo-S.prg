@@ -20,14 +20,6 @@ FUNCTION Scheme( nSchemeNumber , nColorPairNumber) AS STRING
     // RETURN ""
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/seek/*" />
-
-FUNCTION Seek(eExpression , uArea , uIndex ) AS LOGIC
-    THROW NotImplementedException{}
-    // RETURN FALSE
-
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/setfldstate/*" />
 
 FUNCTION SetFldState( uField, nFieldState , uArea) AS LOGIC
@@ -55,15 +47,3 @@ FUNCTION StrExtract( cSearchExpression, cBeginDelim , cEndDelim , nOccurrence, n
     THROW NotImplementedException{}
     // RETURN ""
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sys/*" />
-
-FUNCTION Sys( nSetting, uNewValue) AS USUAL
-    THROW NotImplementedException{}
-    // RETURN NIL
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sysmetric/*" />
-FUNCTION SysMetric( nScreenElement AS LONG) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0

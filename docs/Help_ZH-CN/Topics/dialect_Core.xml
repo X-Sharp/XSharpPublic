@@ -13,7 +13,7 @@
     <para styleclass="Normal">在使用 &quot;Core &quot;方言编译时，编译器和运行时会有以下 &quot;特殊 &quot;行为。</para>
     <para styleclass="Heading2">编译器</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">不允许</text>用 4 个字母缩写关键字。</li>
+      <li styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">不允许</text>用 4 个字母缩写关键字。</li>
     </list>
     <para styleclass="Normal"></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

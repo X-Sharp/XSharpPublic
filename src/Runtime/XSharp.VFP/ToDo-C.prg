@@ -14,13 +14,6 @@ FUNCTION Candidate (nIndexNumber , uArea)
 
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/ceiling/*" />
-
-FUNCTION Ceiling (nExpression)
-    THROW NotImplementedException{}
-    // RETURN 0
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/compobj/*" />
 
 FUNCTION CompObj (oExpression1, oExpression2)

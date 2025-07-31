@@ -105,7 +105,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     static constructor()
         Connections     := List<SqlDbConnection>{}
         DefaultCached   := true
-        AppDomain.CurrentDomain:ProcessExit += EventHandler{CurrentDomain_ProcessExit}
+        AppDomain.CurrentDomain:ProcessExit += CurrentDomain_ProcessExit
     end constructor
 
     internal static method CurrentDomain_ProcessExit(sender as object, e as EventArgs) as void
@@ -160,7 +160,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         var builder := Provider:CreateConnectionStringBuilder()
         foreach key as string in options:Keys
             var strValue := options[key]:ToString()
-            var isTrue  := strValue:ToLower() == "true"
+            var isTrue   := strValue:ToLower() == "true"
             switch key:ToLower()
             case "allowupdates"
                 self:AllowUpdates := isTrue
@@ -176,6 +176,8 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 if Int32.TryParse(strValue, out var max)
                     self:MaxRecords := max
                 endif
+            case "maxrecnoasreccount"
+                self:MaxRecnoAsRecCount := isTrue
             case "recnocolumn"
                 self:RecnoColumn := strValue
             case "updateallcolumns"
@@ -186,8 +188,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 self:TrimTrailingSpaces := isTrue
             case "usenulls"
                 self:UseNulls := isTrue
-            case "maxrecnoasreccount"
-                self:MaxRecnoAsRecCount := isTrue
             otherwise
                 builder:Add(key, strValue)
             end switch
@@ -258,6 +258,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         DeletedColumn      := DEFAULT_DELETEDCOLUMN
         RecnoColumn        := DEFAULT_RECNOCOLUMN
         SeekReturnsSubset  := DEFAULT_SEEKRETURNSSUBSET
+        MaxRecnoAsRecCount := DEFAULT_MAXRECNOASRECCOUNT
         cConnectionString  := self:AnalyzeConnectionString(cConnectionString)
         self:ConnectionString := cConnectionString
         DbConnection    := Provider:CreateConnection()
@@ -279,7 +280,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         self:ForceOpen()
         SELF:_FillMetadataCollections()
         SELF:_FillDataSourceProperties()
-        SELF:_CheckLicenseTables()
+        SELF:_CheckConnectionTable()
         SELF:_Login()
         // Todo: Check for # of open users and close the connection when no users are left and then throw an exception
         return
@@ -732,42 +733,17 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
 
 
 
-    private method _CheckLicenseTables() as void
-        if SELF:DoesTableExist(CONNECTIONSTABLE) .and. self:DoesTableExist(LICENSETABLE)
+    private method _CheckConnectionTable() as void
+        if SELF:DoesTableExist(CONNECTIONSTABLE)
             return
         endif
         var sb := StringBuilder{}
         sb:Append(SELF:Provider:CreateTableStatement)
-        sb:Replace(SqlDbProvider.TableNameMacro,LICENSETABLE)
-        sb:Replace(SqlDbProvider.FieldDefinitionListMacro, "name varchar(50), value varchar(50)")
-        using var cmd := SqlDbCommand{"Licenses", self, false}
-        cmd:CommandText := sb:ToString()
-        cmd:ExecuteNonQuery("License")
-        sb:Clear()
-        sb:Append(SELF:Provider:CreateTableStatement)
+        using var cmd := SqlDbCommand{"ConnectionTable", self, false}
+
         sb:Replace(SqlDbProvider.TableNameMacro,CONNECTIONSTABLE)
         sb:Replace(SqlDbProvider.FieldDefinitionListMacro, "station varchar(50), username varchar(50), lastlogin varchar(10), refcount int")
         cmd:CommandText := sb:ToString()
-        cmd:ExecuteNonQuery("License")
-
-        sb:Clear()
-        sb:Append("Insert into "+LICENSETABLE+"( name, value) values(@p1, @p2)")
-        cmd:CommandText := sb:ToString()
-        cmd:ClearParameters()
-        cmd:AddParameter("@p1","version")
-        cmd:AddParameter("@p2","SQLRDD Beta 2")
-        cmd:ExecuteNonQuery("License")
-        cmd:ClearParameters()
-        cmd:AddParameter("@p1","serial")
-        cmd:AddParameter("@p2","1234567890")
-        cmd:ExecuteNonQuery("License")
-        cmd:ClearParameters()
-        cmd:AddParameter("@p1","users")
-        cmd:AddParameter("@p2","999")
-        cmd:ExecuteNonQuery("License")
-        cmd:ClearParameters()
-        cmd:AddParameter("@p1","validationcode")
-        cmd:AddParameter("@p2","AAAA-BBBB-CCCC-DDDD")
         cmd:ExecuteNonQuery("License")
 
 
@@ -781,12 +757,13 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         var dDate   := DateTime.Now
         var today   := dDate:Year:ToString()+"-"+dDate:Month:ToString("0#")+"-"+dDate:Day:ToString("0#")
         SELF:BeginTrans()
+        // clear old logins
         using var cmd := SqlDbCommand{"Licenses", self, false}
         cmd:CommandText := "Delete from "+CONNECTIONSTABLE+" where lastlogin < @p3"
         cmd:ClearParameters()
         cmd:AddParameter("@p1",user)
         cmd:AddParameter("@p2",station)
-        cmd:AddParameter("@p3",today:ToString())
+        cmd:AddParameter("@p3",today)
         cmd:ExecuteNonQuery("License")
         var sWhere := "where username = @p1 and station = @p2 and lastlogin = @p3"
         if lIn
@@ -794,15 +771,15 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             var result := Convert.ToInt64(cmd:ExecuteScalar())
             if result == 0
                 cmd:CommandText := "Insert into "+CONNECTIONSTABLE+"(username, station, lastlogin, refcount) values(@p1, @p2, @p3, 0)"
-                cmd:ExecuteNonQuery("License")
+                cmd:ExecuteNonQuery("Login")
             endif
             cmd:CommandText := "Update "+CONNECTIONSTABLE+" set refcount = refcount + 1 "+sWhere
-            cmd:ExecuteNonQuery("License")
+            cmd:ExecuteNonQuery("Login")
         else
             cmd:CommandText := "Update "+CONNECTIONSTABLE+" set refcount = refcount - 1 "+sWhere
-            cmd:ExecuteNonQuery("License")
+            cmd:ExecuteNonQuery("Logout")
             cmd:CommandText := "delete from "+CONNECTIONSTABLE+" "+sWhere+" and refcount <= 0"
-            cmd:ExecuteNonQuery("License")
+            cmd:ExecuteNonQuery("Logout")
 
         endif
         SELF:CommitTrans()
@@ -815,7 +792,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
 
     #endregion
 
-    INTERNAL CONST LICENSETABLE := "xs_license" as string
     INTERNAL CONST CONNECTIONSTABLE := "xs_connections" as string
     INTERNAL CONST DEFAULT_ALLOWUPDATES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_COMPAREMEMO := TRUE AS LOGIC
@@ -823,11 +799,12 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     INTERNAL CONST DEFAULT_LEGACYFIELDTYPES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_LONGFIELDNAMES := FALSE AS LOGIC
     INTERNAL CONST DEFAULT_MAXRECORDS := 1000 AS INT
-    INTERNAL CONST DEFAULT_RECNOCOLUMN := "xs_recno" AS STRING
+    INTERNAL CONST DEFAULT_RECNOCOLUMN := "" AS STRING
     INTERNAL CONST DEFAULT_TRIMTRAILINGSPACES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_UPDATEALLCOLUMNS := FALSE AS LOGIC
     INTERNAL CONST DEFAULT_USENULLS := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_SEEKRETURNSSUBSET := TRUE AS LOGIC
+    INTERNAL CONST DEFAULT_MAXRECNOASRECCOUNT := FALSE AS LOGIC
     #region Events
     /// <summary>
     /// Event handler for the SqlRDD events

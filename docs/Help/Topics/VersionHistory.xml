@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2025-01-10T10:02:07.542+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-07-02T15:54:07.546+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -11,7 +11,154 @@
     <header>
       <para styleclass="Heading1">Version History</para>
     </header>
-    <para styleclass="Body Text" style="tabstops:96px left,144px left,240px left,488px left,1998px left ;">Note: When an item has a matching GitHub ticket, the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> , where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X#, we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue.</para>
+    <para styleclass="Body Text">Note: When an item has a matching GitHub ticket, the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> , where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X#, we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue.</para>
+    <para styleclass="Heading1">Changes in 2.24.0.1</para>
+    <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text><br/><text styleclass="Heading3">Bug fixes</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Documentation generation for VFP classes for members without visibility modifier was not working (#1664)</li>
+      <li styleclass="Normal">Fixed an issue with default parameter values, where the type of the default did not match the type of the parameter. For example using a LONG default value for a Decimal parameter (#1733)</li>
+    </list>
+    <para styleclass="Heading2">Build System<br/><text styleclass="Heading3">Bug fixes</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The WriteCodeFragment task now properly supports the _Parameter1, _Parameter2 etc parameters, just like the C# build system does.</li>
+    </list>
+    <para styleclass="Heading2">Runtime<br/><text styleclass="Heading3">Bug fixes</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Fixed an issue with late bound calls to overloaded methods (#1696)</li>
+      <li styleclass="Normal">Fixed problem with ambiguous call error on the GoMonth() function (VFP dialect) (#1724)</li>
+      <li styleclass="Normal">Fixed problem with the COPY TO command when using the VIA clause (#1726)</li>
+    </list>
+    <para styleclass="Heading2">Visual Studio integration<br/><text styleclass="Heading3">Bug fixes</text></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">When a file was deleted from a project, then the file would not be deleted from the intellisense database. This has been fixed.</li>
+      <li styleclass="Body Text">Goto definition no longer includes source from prg files with buildaction None (#1630)</li>
+      <li styleclass="Body Text">Intellisense was not showing field in VFP classes for fields without visibility modifier (#1725)</li>
+      <li styleclass="Body Text">The ToggleLineComment and ToggleBlockComment functions were not properly maintaining leading whitespace (#1728)</li>
+      <li styleclass="Body Text">Fixed an issue with Code Generation for AssemblyCustomAttributes</li>
+      <li styleclass="Body Text">Fixed a problem with the Debugger Expression Evaluator in VS 2017 and VS 2019</li>
+    </list>
+    <para styleclass="Heading3">New Features</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Added context menu option to generate Windows Forms Form from an existing VO Form (#1366)</li>
+      <li styleclass="Body Text">The code generator now automatically generates END CONSTRUCTOR, END METHOD etc.</li>
+    </list>
+    <para styleclass="Heading2">VOXporter</para>
+    <para styleclass="Heading3">New features</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Add special tags &quot;VXP-NOCHANGE&quot;, &quot;{VOXP:NOCHANGE}&quot; that instruct VOXporter to not modify at all the code from a module/prg file &#160;(#1723)</li>
+    </list>
+    <para styleclass="Heading2">XIDE</para>
+    <para styleclass="Heading3">General</para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Added View-&gt;Hide Side Panes (SHIFT+F4) option to quickly show/hide the left/right panes in the IDE</li>
+      <li styleclass="Normal">Enabled the Debug-&gt;View DB Workareas debug window</li>
+      <li styleclass="Normal">Fixed problem with new applications defaulting to CLR2 when no gallery template is used</li>
+      <li styleclass="Normal">Added folder button for &quot;App to run&quot; option in th application properties window</li>
+      <li styleclass="Normal">Added several &quot;Tip of the day&quot; items</li>
+      <li styleclass="Normal">Added Preferences/Highlight active file caption option</li>
+      <li styleclass="Normal">Added Preferences/Paint file captions per application option</li>
+      <li styleclass="Normal">Added keyboard shortcut information to the File-&gt;Navigate menu items</li>
+      <li styleclass="Normal">Added &quot;Dock To Pane&quot; options to tab page context menu of toolwindows</li>
+      <li styleclass="Normal">Added Detach/Attach to main IDE window context menu options for editor files</li>
+      <li styleclass="Normal">Added regular context menu options also for files in floating windows</li>
+      <li styleclass="Normal">Toolwindows can now be closed also with middle mouse button click</li>
+    </list>
+    <para styleclass="Heading1">Changes in 2.23.0.2</para>
+    <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
+    <para styleclass="Heading3">New features</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Body Text">Added a compiler warning when assigning a constant &quot;NIL&quot; to a non-usual var (#1688)</text></li>
+    </list>
+    <para styleclass="Heading2"><text styleclass="Heading3">Bug fixes</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Body Text">Fixed a problem with XML documentation generation for class properties in the VFP dialect (#1664)</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">Fixed compiler crash with syntax errors in interpolated strings (#1672)</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">Fixed problems with static entities when an app has prg files with similar names (#1677)</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">Fixed conflict between same named access and field in a parent class (#1679)</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">Fixed problem with the star (*) comment line marker when used with a semi-colon (;) in the VFP dialect (#1685)</text></li>
+    </list>
+    <para styleclass="Heading2">Build System</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Moved suppressed warnings from the DisabledWarnings property to NoWarn (#1697)</li>
+    </list>
+    <para styleclass="Heading2">Runtime</para>
+    <para styleclass="Heading3">New features</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Added additional sort functions ASortFunc() and ASortEx() for arrays allowing .Net style sorting (#1683)</li>
+      <li styleclass="Normal">Added untyped overloads for VFP functions GoMonth(), Quarter(), Week(), DMY() and MDY() (#1724)</li>
+      <li styleclass="Normal">Implemented the Seek() function in the VFP runtime library (#1718)</li>
+      <li styleclass="Normal">Allow to register special error handler that is called for errors during macro compilation (#1686)<br/>To use this, declare a function or method with the following prototype:<br/><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">DELEGATE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> CodeblockErrorHandler(cMacro </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">STRING</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">, oException </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Exception) </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> ICodeBlock</text></li>
+    </list>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><br/><text styleclass="Normal">And register it as the codeblock error handler like this:</text><br/><text styleclass="Normal">RuntimeState.CodeBlockErrorHandler := CodeBlockErrorHandler</text><br/><text styleclass="Normal">When the function / method returns NULL then an exception is thrown.</text><br/><text styleclass="Normal">When the function/ error handler returns a Codeblock then this codeblock is used to evaluate the macro. For example:</text><br/><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> CodeBlockErrorHandler(cMacro </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">STRING</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">, oEx </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Exception) </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> ICodeblock</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; ? Mmacro</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; ? oEx:Message</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#339966;">// Visual Objects returns NIL when an error like this happens</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> {|| NIL }</text><br/><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Start() </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VOID</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">STRICT</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; RuntimeState.MacroCompilerErrorHandler := CodeBlockErrorHandler</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; ? &amp;(&quot;&apos;aaa&apos;bbb&apos;&quot;) &#160; &#160;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#339966;">// uneven # of single quotes, an error.</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#339966;">// Returns NIL because the ErrorHandler returns a codeblock with NIL</text></para>
+    <para styleclass="Heading3">Bug fixes</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Fixed problem with COPY TO ARRAY / DbCopyToArray() with fields of type &quot;G&quot; (#1530)</li>
+      <li styleclass="Normal">Fixed problem with ASort() returning inconsistent results when using the .Net Framework 4.5 sorting routines (#1653)</li>
+      <li styleclass="Normal">Fixed problem with Integer() function depending on the SetFloatDelta() setting (#1676)</li>
+      <li styleclass="Normal">Fixed several problems with default method parameters in late bound calls (#1684)</li>
+      <li styleclass="Normal">Fixed problem with IVarGetInfo() with overrided ASSIGN methods with different casing (#1692)</li>
+      <li styleclass="Normal">Fixed problem with ENUM parameters in alte bound calls (#<text styleclass="Body Text">1696</text>)</li>
+      <li styleclass="Normal">Fixed (handled) exception inside FindMethod() in late bound code with similar named method and assign (#1702)</li>
+      <li styleclass="Normal">Fixed problem with ProcName(x) returning incorrect results (#1704)</li>
+      <li styleclass="Normal">Fixed problem with calling class access method through object instance in the XBase++ dialect (#1705)</li>
+      <li styleclass="Normal">Fixed problem with File() function not finding files after changing the current directory with DirChange() (#1706)</li>
+      <li styleclass="Normal">Fixed several compatibility issues with the Directory() function (#1707 and #1708)</li>
+    </list>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Macro compiler</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Integer divisions in macros now return a float result instead of INT (#1641)</li>
+      <li styleclass="Normal">Allowed the macro compiler to access protected and private members in the FoxPro dialect (#1662)</li>
+      <li styleclass="Normal">Fixed macro compiler problem with IN parameters (#1675)</li>
+      <li styleclass="Normal">Fixed various problems with scripting and ExecScript() (#1646, #1682)</li>
+      <li styleclass="Normal">Fixed problem with failing to find overload with explicit cast to interface (#1720)</li>
+    </list>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">RDD System</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Fixed problem with opening dbf files with no extension (#1671)</li>
+      <li styleclass="Normal">Fixed problem with DbServer:OrderScope() always returning NIL without a new value and setting the scope to NIL (#1694)</li>
+    </list>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Typed VO SDK</text></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed problem with MouseMove( oMev) not being called for a FixedText (#1680)</li>
+      <li styleclass="Body Text">Added a property EnableDispatch to the Window class. When set to TRUE then the Dispatch() method is called. (#1721)</li>
+    </list>
+    <para styleclass="Heading2">Visual Studio integration</para>
+    <para styleclass="Heading3">Bug fixes</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed editor problem with incorrectly displaying region markers for multiline statements with comments (#1667)</li>
+      <li styleclass="Body Text">Fixed incorrect code highlight of the &quot;is not null&quot; code pattern (#1699)</li>
+    </list>
+    <para styleclass="Heading3">New Features</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Added support for the editor commands Edit.ToggleLineComment and Edit.ToggleBlockComment</li>
+    </list>
+    <para styleclass="Heading2">XIDE</para>
+    <para styleclass="Heading3">General</para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Added toolbar button to collapse all nodes in the Project window</li>
+      <li styleclass="Normal">Added support for selecting the editor color for escaped literals in the Preferences window and through the plugin system</li>
+      <li styleclass="Normal">Added context menu option to copy all contents/only code in the Find results window</li>
+      <li styleclass="Normal">The control order window now support moving items (tab order) with the keyboard, by using CTRL or SHIFT + Up/Down</li>
+      <li styleclass="Normal">Fixed a problem with incorrectly highlighting Func&lt;T&gt; as a keyword</li>
+      <li styleclass="Normal">Project/application export now includes also native resource files (.rc)</li>
+      <li styleclass="Normal">Some improvements to the TipOfTheDay window</li>
+      <li styleclass="Normal">Messages in the Errors tool window can now be sorted by file, application etc., by clicking on their respective column header</li>
+      <li styleclass="Normal">Improved functionality of the Remove/Remove All toolbar button in the Breakpoints, Bookmarks and Watch tool windows</li>
+      <li styleclass="Normal">Fixed modifying values of local variables in the debugger (still can&apos;t modify object members though)</li>
+      <li styleclass="Normal">A lot of improvements to the Edit-&gt;Sort Entities command</li>
+    </list>
+    <para styleclass="Heading3">Plugin System</para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Added callback method Plugin:OnProjectItemSelected() that gets called when any item is selected in the Project tool window</li>
+      <li styleclass="Normal">Added method PluginService:GetPropertiesPad() AS PropertiesPad for retrieving the Properties tool window</li>
+      <li styleclass="Normal">Added support for handling (through PluginService:GetSelectedProjectItem()) many more item types in the Project tool window: ReferenceGroup, Reference, Resource files etc</li>
+      <li styleclass="Normal">Fixed a problem (crash) with manipulating hidden editor files</li>
+    </list>
+    <para styleclass="Heading2">Documentation</para>
+    <para styleclass="Heading3">Bug fixes</para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Fixed documentation problems for the topics CONSTRUCTOR, DESTRUCTOR, ENUM, EVENT, FUNCTION, METHOD OPERATOR, PROPERTY, STRUCTURE (#1655)</li>
+    </list>
     <para styleclass="Heading1">Changes in 2.22.0.1</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Heading3">Bug fixes</para>

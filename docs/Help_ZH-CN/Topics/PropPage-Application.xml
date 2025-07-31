@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-09-27T11:45:59.826+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-24T21:40:04.246+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Application(应用程序)</title>
   <keywords>
     <keyword>Application Icon</keyword>
@@ -63,7 +63,7 @@
           <para styleclass="Normal">(方言)</para>
         </td>
         <td style="width:465px; height:19px;">
-          <para styleclass="Normal">选择编译此项目时要使用的编译器方言。更改方言也可能会更改语言页面上的 <link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">&apos;Allow Named Arguments&apos;</link> (允许命名参数)设置。</para>
+          <para styleclass="Normal">选择编译此项目时要使用的编译器方言。更改方言也可能会更改Language(语言)页面上的 <link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">&apos;Allow Named Arguments&apos;</link> (允许命名参数)设置。</para>
         </td>
         <td style="height:19px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-dialect">-dialect</link></para>
@@ -100,7 +100,7 @@
           <para styleclass="Normal">(目标框架)</para>
         </td>
         <td style="width:465px; height:19px;">
-          <para styleclass="Normal">输出程序集所使用的公共语言运行时版本。</para>
+          <para styleclass="Normal">输出程序集所使用的公共语言运行时(CLR：Common Language Runtime)版本。</para>
         </td>
         <td style="height:19px;">
           <para styleclass="Normal">这不是编译器的命令行选项，而是控制加载参考程序集的位置。</para>

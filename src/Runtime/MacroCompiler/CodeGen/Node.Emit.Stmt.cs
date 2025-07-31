@@ -241,22 +241,15 @@ namespace XSharp.MacroCompiler.Syntax
     {
         // Emit handled by parent
     }
-    internal partial class IfStmt : Stmt
+    internal partial class DoCaseStmt
     {
-        internal override void EmitStmt(ILGenerator ilg)
-        {
-            Cond.Emit(ilg, true);
-            var lb = ilg.DefineLabel();
-            var le = ilg.DefineLabel();
-            ilg.Emit(OpCodes.Brtrue, lb);
-            StmtElse?.Emit(ilg);
-            ilg.Emit(OpCodes.Br, le);
-            ilg.MarkLabel(lb);
-            StmtIf?.Emit(ilg);
-            ilg.MarkLabel(le);
-        }
+        // Emit handled by parent CondStmt
     }
-    internal partial class DoCaseStmt : Stmt
+    internal partial class IfStmt
+    {
+        // Emit handled by parent CondStmt
+    }
+    internal partial class CondStmt : Stmt
     {
         internal override void EmitStmt(ILGenerator ilg)
         {
@@ -265,7 +258,8 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 c.Emit(ilg, le);
             }
-            Otherwise.Emit(ilg);
+            if (Otherwise != null)
+                Otherwise.Emit(ilg);
             ilg.MarkLabel(le);
         }
     }
@@ -315,7 +309,7 @@ namespace XSharp.MacroCompiler.Syntax
                 Stmt?.Emit(ilg);
                 ilg.Emit(OpCodes.Br, end);
             }
-            else
+            else if (NextBlock != null)
             {
                 ilg.Emit(OpCodes.Br, NextBlock.Entry(ilg));
             }

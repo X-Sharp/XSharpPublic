@@ -259,6 +259,10 @@ CLASS RddFieldInfo
         CASE DbFieldType.Blob
         CASE DbFieldType.General
             SELF:Length := 4
+        CASE DbFieldType.Character
+            IF SELF:Decimals != 0
+                SELF:Length := SELF:Decimals * 256 + SELF:Length
+            ENDIF
         END SWITCH
         IF !SELF:FieldType:HasDecimals()
             SELF:Decimals := 0

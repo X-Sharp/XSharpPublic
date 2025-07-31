@@ -1255,16 +1255,18 @@ PROTECTED INTERNAL METHOD _GetString(buffer AS BYTE[], nOffset as LONG, nLength 
     endif
     return result
 
-PROTECTED INTERNAL METHOD _GetBytes(strValue AS STRING, buffer AS BYTE[], nOffset as LONG, nLength as LONG) AS VOID
+PROTECTED INTERNAL METHOD _GetBytes(strValue AS STRING, buffer AS BYTE[], nOffset as LONG, nLength as LONG) AS LONG
+    var buffSize := nLength*2 // allow for double byte characters
+    var tmp := Byte[]{buffSize}
+    var nLen := Math.Min(strValue:Length, buffSize)
+    var nBytes := SELF:_Encoding:GetBytes(strValue, 0, nLen, tmp, 0)
     if SELF:_OemConvert
-        var tmp := Byte[]{nLength}
-        SELF:_Encoding:GetBytes(strValue, 0, nLength, tmp, 0)
         Oem2AnsiA(tmp)
-        Array.Copy(tmp, 0, buffer, nOffset, nLength)
-    ELSE
-        SELF:_Encoding:GetBytes(strValue, 0, nLength, buffer, nOffset)
+    ENDIF
+    if buffer != null
+        Array.Copy(tmp, 0, buffer, nOffset, iif(nBytes > nLength, nLength, nBytes))
     endif
-    RETURN
+    RETURN nBytes
 
 
     // Write the DBF file Header : Last DateTime of modification (now), Current Reccount

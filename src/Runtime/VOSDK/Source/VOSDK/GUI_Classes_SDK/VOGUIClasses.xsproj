@@ -15,12 +15,6 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <EmitDebugInformation>True</EmitDebugInformation>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>VOGUIClasses.Xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
-    <DocumentationFile>VOGUIClasses.Xml</DocumentationFile>
-  </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Folder Include="Properties\" />
@@ -58,172 +52,16 @@
     <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
       <Link>SDKAssemblyinfo.prg</Link>
     </Compile>
-    <Compile Include="Accelerator.prg" />
-    <Compile Include="AnimationControl.prg" />
-    <Compile Include="Application Window.prg" />
-    <Compile Include="Application.prg" />
-    <Compile Include="BaseListBox.prg" />
-    <Compile Include="Bitmap.prg" />
-    <Compile Include="BitmapObject.prg" />
-    <Compile Include="BoundingBox.prg" />
-    <Compile Include="Brush.prg" />
-    <Compile Include="Button.prg" />
-    <Compile Include="CAPAINT.prg" />
-    <Compile Include="CheckBox.prg" />
-    <Compile Include="ChildAppWindow.prg" />
-    <Compile Include="ClipBoard.prg" />
-    <Compile Include="Color.prg" />
-    <Compile Include="ComboBox.prg" />
-    <Compile Include="Control.prg" />
-    <Compile Include="ControlWindow.prg" />
-    <Compile Include="Cursor.prg" />
-    <Compile Include="CustomControl.prg" />
-    <Compile Include="DataBrowser.prg" />
-    <Compile Include="DataDialog.prg" />
-    <Compile Include="DataListView.prg" />
-    <Compile Include="DataWindow.prg" />
-    <Compile Include="DateTimePicker.prg" />
-    <Compile Include="DDImp.prg" />
-    <Compile Include="DialogWindow.prg" />
-    <Compile Include="Dispatch.prg" />
-    <Compile Include="DocApp.prg" />
-    <Compile Include="DragDropClient.prg" />
-    <Compile Include="DragDropServer.prg" />
-    <Compile Include="DrawObject.prg" />
-    <Compile Include="Edit.prg" />
-    <Compile Include="EditWindow.prg" />
-    <Compile Include="EllipseObject.prg" />
-    <Compile Include="Event.prg" />
-    <Compile Include="EventContext.prg" />
-    <Compile Include="Explorer Window.prg" />
-    <Compile Include="FixedBitmap.prg" />
-    <Compile Include="FixedIcon.prg" />
-    <Compile Include="FixedImage.prg" />
-    <Compile Include="FixedText.prg" />
-    <Compile Include="Font.prg" />
-    <Compile Include="FormattedString.prg" />
-    <Compile Include="FormattedTextObject.prg" />
-    <Compile Include="FormDialogWindow.prg" />
-    <Compile Include="FormFrame.prg" />
-    <Compile Include="GroupBox.prg" />
-    <Compile Include="GUILangDef.prg" />
-    <Compile Include="HelpDisplay.prg" />
-    <Compile Include="HotKeyEdit.prg" />
-    <Compile Include="Hyperlink.prg" />
-    <Compile Include="Icon.prg" />
-    <Compile Include="ImageList.prg" />
-    <Compile Include="IPAddress.prg" />
-    <Compile Include="IPCClient.prg" />
-    <Compile Include="IPCEvent.prg" />
-    <Compile Include="IPCServer.prg" />
-    <Compile Include="IPCTopic.prg" />
-    <Compile Include="LineObject.prg" />
-    <Compile Include="ListBox.prg" />
-    <Compile Include="ListView.prg" />
-    <Compile Include="Menu.prg" />
-    <Compile Include="MLE.prg" />
-    <Compile Include="MMContainer.prg" />
-    <Compile Include="ModelessDialog.prg" />
-    <Compile Include="MonthCalendar.prg" />
-    <Compile Include="Ole Defines.prg" />
-    <Compile Include="OleControl.prg" />
-    <Compile Include="OleDragEvent.prg" />
-    <Compile Include="OleObject.prg" />
-    <Compile Include="OleWindows.prg" />
-    <Compile Include="Pair.prg" />
-    <Compile Include="Pen.prg" />
-    <Compile Include="PieObject.prg" />
-    <Compile Include="Pointer.prg" />
-    <Compile Include="Printer.prg" />
-    <Compile Include="PrintingDevice.prg" />
-    <Compile Include="ProgressBar.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg" />
-    <Compile Include="PushButton.prg" />
-    <Compile Include="RadioButton.prg" />
-    <Compile Include="RadioButtonGroup.prg" />
-    <Compile Include="RectangleObject.prg" />
-    <Compile Include="ResFile.prg" />
-    <Compile Include="ResID.prg" />
-    <Compile Include="ResStr.prg" />
-    <Compile Include="RichTextEdit.prg" />
-    <Compile Include="ScrollBar.prg" />
-    <Compile Include="ShapeObject.prg" />
-    <Compile Include="ShellWindow.prg" />
-    <Compile Include="Slider.prg" />
-    <Compile Include="Spinner.prg" />
-    <Compile Include="Split Window.prg" />
-    <Compile Include="StandardDialog.prg" />
-    <Compile Include="StatusBar.prg" />
-    <Compile Include="SysLink.prg" />
-    <Compile Include="TabControl.prg" />
-    <Compile Include="Temp.prg" />
-    <Compile Include="TextBox.prg" />
-    <Compile Include="TextControl.prg" />
-    <Compile Include="TextObject.prg" />
-    <Compile Include="ToolBar.prg" />
-    <Compile Include="TopAppWindow.prg" />
-    <Compile Include="TreeView.prg" />
-    <Compile Include="VOWinForm\ChildWinForm.prg" />
-    <Compile Include="VOWinForm\VOWinFormApp.prg" />
-    <Compile Include="VOWinForm\WindowStyle.prg" />
-    <Compile Include="VOWinForm\WinFormVOWindow.prg">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="VOWinForm\WinFormVOWindowHost.prg" />
-    <Compile Include="WCDefine.prg" />
-    <Compile Include="WCError.prg" />
-    <Compile Include="WCFunc.prg" />
-    <Compile Include="WCResource.prg" />
-    <Compile Include="WCStructures.prg" />
-    <Compile Include="WindApp.prg" />
-    <Compile Include="WinDefs.prg" />
-    <Compile Include="Window.prg" />
-    <Compile Include="WindowScrollBar.prg" />
-    <Compile Include="XP Theme Support.prg" />
-    <Compile Include="_Win32.prg" />
+    <Compile Include="**\*.prg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\VoRedist\CaPaint.dll">
-      <Link>CaPaint.dll</Link>
-    </None>
-    <None Include="..\..\..\..\VoRedist\CATO3CNT.DLL">
-      <Link>CATO3CNT.DLL</Link>
+    <None Include="..\..\..\..\VoRedist\*.dll">
+      <Link>Redist\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\..\..\VoRedist\CATO3DAT.DLL">
-      <Link>CATO3DAT.DLL</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\VoRedist\CATO3MSK.DLL">
-      <Link>CATO3MSK.DLL</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\VoRedist\CATO3NBR.DLL">
-      <Link>CATO3NBR.DLL</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\VoRedist\CATO3SBR.DLL">
-      <Link>CATO3SBR.DLL</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\VoRedist\CATO3SPL.DLL">
-      <Link>CATO3SPL.DLL</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\VoRedist\Cato3tbr.dll">
-      <Link>Cato3tbr.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\VoRedist\CATO3TIM.DLL">
-      <Link>CATO3TIM.DLL</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\CAVOTB.BMP" />
-    <None Include="Resources\HAND.CUR" />
-    <None Include="Resources\HELP.CUR" />
-    <None Include="Resources\MULTI.CUR" />
-    <None Include="Resources\SINGLE.CUR" />
-    <None Include="Resources\WINS.ICO" />
+    <None Include="Resources\*.BMP" />
+    <None Include="Resources\*.CUR" />
+    <None Include="Resources\*.ICO" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.ComponentModel.Primitives" />
@@ -236,16 +74,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <NativeResource Include="Resources\CurHand.rc" />
-    <NativeResource Include="Resources\CursorHelp.rc" />
-    <NativeResource Include="Resources\DragMultip.rc" />
-    <NativeResource Include="Resources\DragSingle.rc" />
-    <NativeResource Include="Resources\GeneralHelp.rc" />
-    <NativeResource Include="Resources\HelpCursor.rc" />
-    <NativeResource Include="Resources\IDB_DEFTOOLBAR.rc" />
-    <NativeResource Include="Resources\IDD_DEFDLG.rc" />
-    <NativeResource Include="Resources\IDD_DEFDLG2.rc" />
-    <NativeResource Include="Resources\IDI_DEFICON.rc" />
+    <NativeResource Include="Resources\*.rc" />
   </ItemGroup>
   <Import Project="..\VOSDKDocs.Targets" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">

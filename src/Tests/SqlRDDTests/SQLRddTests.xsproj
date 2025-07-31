@@ -63,7 +63,7 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>9025,9026,9032</DisabledWarnings>
+    <NoWarn>9025,9026,9032</NoWarn>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
@@ -89,15 +89,6 @@
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Compile Include="C:\temp\___IVO_dbAbstract.prg">
-      <Link>___IVO_dbAbstract.prg</Link>
-    </Compile>
-    <Compile Include="C:\temp\___IVO_dbDynamic.prg">
-      <Link>___IVO_dbDynamic.prg</Link>
-    </Compile>
-    <Compile Include="C:\temp\___IVO_dbShellServer.prg">
-      <Link>___IVO_dbShellServer.prg</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -139,6 +130,11 @@
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.SQLRdd\XSharp.SQLRDD.xsproj">
+      <Name>XSharp.SQLRDD</Name>
+      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9373}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Runtime\XSharp.VFP\XSharp.VFP.xsproj">
       <Name>XSharp.VFP</Name>
       <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
@@ -157,15 +153,6 @@
     <Content Include="SqlRdd.Ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="XSharp.SQLRdd, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.SQLRdd</Name>
-      <AssemblyName>XSharp.SQLRdd.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>C:\SqlRdd\Beta1\Debug\XSharp.SQLRdd.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

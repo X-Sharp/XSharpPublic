@@ -353,6 +353,7 @@ STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>, ISerializable
         RETURN p:_value
 
         // PSZ -> STRING
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] [INLINE];
     OPERATOR IMPLICIT( p AS PSZ ) AS STRING
         // Rolled back fix for #1234 because it causes side effects

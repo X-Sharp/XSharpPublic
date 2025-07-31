@@ -16,6 +16,10 @@ FUNCTION MToN( mExpression AS CURRENCY) AS FLOAT
 FUNCTION NToM( nExpression AS FLOAT) AS CURRENCY
     RETURN (CURRENCY) nExpression
 
+/// <include file="VFPDocs.xml" path="Runtimefunctions/ceiling/*" />
+FUNCTION Ceiling (nExpression) AS USUAL CLIPPER
+    RETURN Ceil(nExpression)
+
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sign/*" />
 FUNCTION Sign( nExpression AS USUAL) AS LONG

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T10:56:03.521+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-02-14T19:41:00.411+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>METHOD 语句</title>
   <keywords>
     <keyword>Classes<keyword>declaring() Methods</keyword></keyword>
@@ -41,9 +41,6 @@
     <para styleclass="Code Example">SELF:&lt;idMethod&gt;([&lt;uArgList&gt;])</para>
     <para styleclass="Normal">类、实例变量(参见本指南中的 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS 语句</link>)和方法是面向对象编程的基本单元。 您将在应用程序中使用方法来组织特定对象类的计算代码块。</para>
     <para styleclass="Heading1">备注</para>
-    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Start() 方法： &#160;所有应用程序都必须有一个名为 Start() 的函数或过程。 </text></para>
-    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Start() 是应用程序执行时的启动例程。 Start()必须声明为不带参数或带字符串数组参数，并且必须具有 Int 返回值或 Void 类型。</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">VO 兼容性：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">VO 有两个特殊的方法名称，用于构造和销毁类对象： Init() 和 Axit()。</para>
@@ -89,6 +86,9 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">参数：除了在 METHOD 声明语句中指定方法参数外，还可以使用 PARAMETERS 语句来指定参数。 但不推荐这种做法，因为它效率较低，而且不提供编译时完整性验证。 有关详细信息，请参阅本指南中的 PARAMETERS 语句。</text></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:64px left ;"><snippet src="__IncludeStrongTyping" inline="false"/></para>
+    <para styleclass="Heading1">用单一表达式代替主体(main body)的方法</para>
+    <para styleclass="Normal">方法(以及其他所有可以包含代码的实体类型)可以在定义实体的同一行代码中使用 =&gt; 操作符，而不是使用正文(regular body)，将代码包含为一个单一表达式。单一表达式可以返回值，也可以不返回值：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">METHOD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> SimpleMethod() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS VOID</text><text style="font-weight:normal; font-style:normal; color:#000000;"> =&gt; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SELF</text><text style="font-weight:normal; font-style:normal; color:#000000;">:CallAnotherMethod()</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">METHOD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> SimpleMethodWithReturnValue() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS INT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> =&gt; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SELF</text><text style="font-weight:normal; font-style:normal; color:#000000;">:nSomeIvar + 1</text></para>
     <para styleclass="Heading1">示例</para>
     <para styleclass="Normal">该示例创建了一个二维坐标类，其中包含初始化坐标、绘制表格和绘制点的方法：</para>
     <para styleclass="Normal"></para>

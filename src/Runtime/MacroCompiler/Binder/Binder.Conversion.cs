@@ -330,8 +330,14 @@ namespace XSharp.MacroCompiler
         {
             if (type.IsByRef)
             {
-                if (TypesMatch(expr.Datatype, type.ElementType))
+                if (TypesMatch(expr.Datatype, type.ElementType) && expr.Symbol.HasRefAccess)
                     return ConversionSymbol.CreateByRef();
+                var inner = Conversion(expr, type.ElementType, options);
+                var outer = ConversionSymbol.CreateByRef();
+                if (inner.Exists)
+                {
+                    return ConversionSymbol.Create(outer, new ConversionToTemp(inner, type.ElementType));
+                }
             }
             else
             {

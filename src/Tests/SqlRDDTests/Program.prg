@@ -8,29 +8,27 @@ using System.Collections.Generic
 
 global options := "TrimTrailingSpaces=False;UseNulls=False;" as STRING
 
-global SqlConnStr := "Server=(local);Initial catalog=Northwind;Trusted_Connection=True;"+options as STRING
-global ODBCConnStr := "Driver={SQL Server};Server=(local);Database=Northwind;Trusted_Connection=Yes;"+options as STRING
-global OleDbConnStr := "Provider=sqloledb;Data Source=(local);Initial Catalog=Northwind;Integrated Security=SSPI;"+options as STRING
+global SqlConnStr := "Server=(local);Initial catalog=Northwind;Trusted_Connection=True;LegacyFieldTypes=False;"+options as STRING
+global ODBCConnStr := "Driver={SQL Server};Server=LEDA;Database=Northwind;Trusted_Connection=Yes;"+options as STRING
+global OleDbConnStr := "Provider=sqloledb;Data Source=LEDA;Initial Catalog=Northwind;Integrated Security=SSPI;"+options as STRING
 global showEvents := true as logic
 
 function Start as void
-    TestTriss()
+    TestBeta3()
     //TestProviders()
-    //estSqlServer()
+    //TestSqlServer()
     //TestODBC()
     //TestOLEDB()
     //     TestRDDODBC()
     //     TestRDDOLEDB()
     //TestRDDSql()
-    //     TestCommandSql()
-    //     TestCommandSql()
-    //     TestCommandODBC()
-    //     TestCommandODBC()
-    //     TestCommandOLEDB()
-    //     TestCommandOLEDB()
-    //     TestParametersODBC()
-    //     TestParametersSQL()
-    //     TestParametersOLEDB()
+
+//     TestCommandSql()
+//     TestCommandODBC()
+//     TestCommandOLEDB()
+//     TestParametersODBC()
+//     TestParametersSQL()
+//     TestParametersOLEDB()
     //TestTable()
     //TestCreateIndex()
     //TestServerFilter()
@@ -41,6 +39,29 @@ function Start as void
     //TestGsTutor()
     wait
     return
+
+    function TestBeta3() as void
+        SqlDbSetProvider("SQLSERVER")
+        var handle := SqlDbOpenConnection(SqlConnStr)
+        DbUseArea(TRUE,"SQLRDD","CUSTOMER")
+        DbZap()
+        DbAppend()
+        FieldPut(1,"AAA")
+        DbAppend()
+        FieldPut(1,"BBB")
+        DbSkip()
+        ? LastRec()
+        DbCloseArea()
+
+        DbUseArea(TRUE,"SQLRDD","CUSTOMER")
+        ? FieldGet(1) // AAA, OK
+        FieldPut(1,"CCC")
+        DbSkip()
+        ? FieldGet(1) // Elizabeth, wrong!
+        FieldPut(1,"DDD")
+        DbCloseArea()
+        wait
+        return
 
 function TestCreate() as void
     local aStruct as array
@@ -176,13 +197,15 @@ function ListSeek as void
     ? "Seek Customer with key ALFKI"
     DbSetOrder("PK")
     DbSeek("ALFKI")
-    do while ! Eof() .and. Recno() < 10
+    var iCounter := 0
+    do while ! Eof() .and. iCounter++ < 5
         ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
         DbSkip(1)
     enddo
     ? "Seek Customer with key GOURL"
     DbSeek("GOURL")
-    do while ! Eof() .and. Recno() < 10
+    iCounter := 0
+    do while ! Eof() .and. iCounter++ < 5
         ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
         DbSkip(1)
     enddo
@@ -510,7 +533,7 @@ Function DumpConnection(conn as SqlDbConnection) as void
         ? "ConnStr ",conn:DbConnection:ConnectionString
         ? "State   ",conn:DbConnection:State:ToString()
         ? "IsOpen  ", conn:IsOpen
-        var coll := conn:GetMetaDataCollections()
+        //var coll := conn:GetMetaDataCollections()
 //         ? "Collections: ", coll:Count
 //         foreach var name in coll
 //             var table := conn:GetMetaDataCollection(Name)
@@ -538,6 +561,7 @@ function DumpStructure(oTd as SqlDbTableInfo) as VOID
 FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs) AS OBJECT
     // Tags default
     switch e:Reason
+        
     case SqlRDDEventReason.Condition
         e:Value := ""
     case SqlRDDEventReason.Unique
@@ -563,8 +587,8 @@ FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs)
         case "Index:Customers"
             e:Value := "PK,CompanyName,ContactName,Address"
         end switch
-//     case SqlRDDEventReason.SeekReturnsSubset
-//         e:Value := FALSE
+     case SqlRDDEventReason.SeekReturnsSubset
+         e:Value := TRUE
     end switch
     if showEvents
         ? "Event", e:Name, e:Reason:ToString(), e:Value
@@ -575,7 +599,7 @@ function TestProviders as void
     local oProv as ISqlDbProvider
     local oProvider := MySqlClientFactory.Instance AS DbProviderFactory
     ? oProvider:CreateConnection():GetType():FullName
-    local aTest := {"Advantage","ODBC","OLEDB","SQLSERVER","MySql","ORACLE"}
+    local aTest := {"ODBC","OLEDB","SQLSERVER","MySql","ORACLE", "PostgreSql"} // "Advantage",
     foreach strProv as STRING in aTest
         if SqlDbSetProvider(strProv)
             oProv := SqlDbGetProvider()
@@ -773,32 +797,20 @@ function TestTransaction()
                 DbCloseAll()
             endif
         CATCH e as Exception
-            nop
-            //? e:Message
+            ? e:Message
         END TRY
         RETURN
 
-FUNCTION TestTriss() AS VOID
-        SqlDbSetProvider("SQLSERVER")
-        RddSetDefault("SQLRDD")
-        SqlDbOpenConnection("Server=(local);Initial catalog=Triss2000Test;Trusted_Connection=True;", EventHandler)
-        var conn  := SqldbGetConnection("DEFAULT")
-        conn:MetadataProvider := SqlMetaDataProviderDatabase{conn}
-        local oSrv := dbShellServer{"Printer"} as dbShellServer
-        do while ! oSrv:Eof
-            ? oSrv:Skip(1)
-        enddo
-
 FUNCTION TestGsTutor() AS VOID
-    local aOrders as array
-    aOrders := {}
+//     local aOrders as array
+//     aOrders := {}
     TRY
         SqlDbSetProvider("SQLSERVER")
         RddSetDefault("SQLRDD")
         SqlDbOpenConnection("Server=(local);Initial catalog=GsTutor;Trusted_Connection=True;", EventHandler)
         var conn  := SqldbGetConnection("DEFAULT")
         conn:MetadataProvider := SqlMetaDataProviderDatabase{conn}
-        local oSrv := dbShellServer{"Customer"} as DbServer
+        local oSrv := dbServer{"Customer"} as DbServer
         ShowArray(oSrv:DbStruct)
         oSrv:SetOrder("CustNum")
         var stopWatch := StopWatch{}

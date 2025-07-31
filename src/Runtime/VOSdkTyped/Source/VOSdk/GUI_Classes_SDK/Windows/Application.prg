@@ -196,6 +196,7 @@ CLASS App INHERIT VObject
 #endregion
 END CLASS
 
+GLOBAL gEnableDispatch := FALSE AS LOGIC
 GLOBAL glCAPaintInit := FALSE AS LOGIC
 GLOBAL gsymBrowserDef := #DataBrowser AS SYMBOL
 //GLOBAL gsymBrowserDef := #DataListView AS SYMBOL

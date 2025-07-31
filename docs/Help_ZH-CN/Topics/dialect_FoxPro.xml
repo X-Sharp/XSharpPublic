@@ -73,7 +73,7 @@
     </list>
     <para styleclass="Normal"></para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">添加了 TEXT ... ENDTEXT 语句。</li>
+      <li styleclass="Normal">添加了 <link displaytype="text" defaultstyle="true" type="topiclink" href="TEXT-Command-(FoxPro)">TEXT ... ENDTEXT</link> 语句。</li>
     </list>
     <para styleclass="Normal"></para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

@@ -7,28 +7,28 @@
         <param name="uArea">
             指定必须在哪个工作区打开文件。它和 USE 命令的 IN 子句中的值相同。
         </param>
-        <param name="cDataFile"> 
+        <param name="cDataFile">
             要打开的数据库文件的名称，包括可选的驱动器、目录和扩展名。<br /> 如果数据库文件有对应的备注文件，备注文件也会被自动打开。<br />
             数据库文件和备注文件的默认扩展名由 RDD 确定。
-            <span style="color:red;font-weight:bold">译者注</span>：对于 VFP 方言来说，通常其扩展名为 dbf 和 fpt<br /> 
+            <span style="color:red;font-weight:bold">译者注</span>：对于 VFP 方言来说，通常其扩展名为 dbf 和 fpt<br />
             如果数据库文件或其对应的备注文件不存在，将引发运行时错误。<br />
-            请参阅 SetDefault() 和 SetPath() 以了解文件搜索和创建规则。 
+            请参阅 SetDefault() 和 SetPath() 以了解文件搜索和创建规则。
         </param>
-        <param name="cAlias"> 
+        <param name="cAlias">
             当打开<paramref name="cDataFile" />时，要与工作区关联的标识符名称。<br />
-            如果未指定，别名默认为数据库文件名。在单个应用程序中，不允许重复的别名。 
+            如果未指定，别名默认为数据库文件名。在单个应用程序中，不允许重复的别名。
         </param>
-        <param name="lShared"> 
+        <param name="lShared">
             TRUE：尝试以共享方式打开<paramref name="cDataFile" />。<br />
-            FALSE：尝试以独占(非共享)方式打开 <paramref name="xcDataFile" />，拒绝所有其他进程访问，直到关闭数据库文件为止。<br /> 
-            如果省略 <paramref name="lShared" />，则当前的 SetExclusive() 设置确定是否允许共享访问。<br /> 
-            但是，强烈建议您在 USE 命令中指定打开模式，而不是依赖 SetExclusive() 为您确定。 
+            FALSE：尝试以独占(非共享)方式打开 <paramref name="xcDataFile" />，拒绝所有其他进程访问，直到关闭数据库文件为止。<br />
+            如果省略 <paramref name="lShared" />，则当前的 SetExclusive() 设置确定是否允许共享访问。<br />
+            但是，强烈建议您在 USE 命令中指定打开模式，而不是依赖 SetExclusive() 为您确定。
         </param>
-        <param name="lReadOnly"> 
+        <param name="lReadOnly">
             TRUE：尝试以只读属性打开<paramref name="cDataFile" />，禁止对工作区进行更新。<br />
-            FALSE：尝试以读写属性打开<paramref name="cDataFile" />，允许更新。<br /> 
-            如果省略 <paramref name="lReadOnly" />，默认值为 FALSE。<br /> 
-            如果无法使用指定属性访问 <paramref name="cDataFile" />，将引发运行时错误。 
+            FALSE：尝试以读写属性打开<paramref name="cDataFile" />，允许更新。<br />
+            如果省略 <paramref name="lReadOnly" />，默认值为 FALSE。<br />
+            如果无法使用指定属性访问 <paramref name="cDataFile" />，将引发运行时错误。
         </param>
         <param name="lOnline">
             等效于 USE 命令的 ONlINE 子句。
@@ -79,26 +79,26 @@
     </addbs>
 
     <addproperty>
-        <summary> 
-            在运行时向对象添加新属性。<br /> 
-            您可以使用 <b>AddProperty()</b> 
-            向 X# 对象添加属性和属性值，包括从 X# 类、COM 类和 <b>SCATTER...NAME</b> 命令创建的对象。 
+        <summary>
+            在运行时向对象添加新属性。<br />
+            您可以使用 <b>AddProperty()</b>
+            向 X# 对象添加属性和属性值，包括从 X# 类、COM 类和 <b>SCATTER...NAME</b> 命令创建的对象。
         </summary>
-        <param name="oObjectName"> 
-            指定要向其添加属性的对象名称。<br /> 
-            如果 oObjectName 不是有效的对象，X# 会生成相应的消息。 
+        <param name="oObjectName">
+            指定要向其添加属性的对象名称。<br />
+            如果 oObjectName 不是有效的对象，X# 会生成相应的消息。
         </param>
-        <param name="cPropertyName"> 
-            指定要添加到对象的新属性的名称。<br /> 
-            如果您指定的属性名称不存在，该属性将被创建并添加。 
+        <param name="cPropertyName">
+            指定要添加到对象的新属性的名称。<br />
+            如果您指定的属性名称不存在，该属性将被创建并添加。
         </param>
-        <param name="eNewValue"> 
-            指定要为新属性设置的值。<br /> 
+        <param name="eNewValue">
+            指定要为新属性设置的值。<br />
             如果您省略 eNewValue，并且该属性存在，X# 将保持该属性的值不变。<br />
-            如果您省略 eNewValue，并且该属性是新增的，X# 将该新属性的值设置为 False (.F.)。 
+            如果您省略 eNewValue，并且该属性是新增的，X# 将该新属性的值设置为 False (.F.)。
         </param>
-        <returns> 
-            逻辑型。下表描述了 <b>AddProperty( )</b> 的返回值，以及尝试为对象添加已存在的属性时的行为。 
+        <returns>
+            逻辑型。下表描述了 <b>AddProperty( )</b> 的返回值，以及尝试为对象添加已存在的属性时的行为。
             <list type="table">
                 <listheader>
                     <term>返回值</term>
@@ -106,58 +106,58 @@
                 </listheader>
                 <item>
                     <term>True (.T.)</term>
-                    <description> 
+                    <description>
                         当 <b>AddProperty( )</b>成功添加属性时:<br /> 当新属性是一个数组属性，并且数组已经存在时，
-                        <b>AddProperty()</b> 会根据 cPropertyName 指定的维度重新定义数组。 
+                        <b>AddProperty()</b> 会根据 cPropertyName 指定的维度重新定义数组。
                         如果您指定了 eNewValue 的值，所有数组元素将被设置为该值。
                         如果您省略了 eNewValue，所有数组元素将被设置为 False (.F.)。<br /><br />
 
-                        如果新属性不是数组属性，但现有的属性是一个数组属性。该属性将保持为数组属性，维度相同。 
-                        如果您指定了 eNewValue 的值，所有数组元素将被设置为该值。 
-                        如果您省略 eNewValue，所有数组元素将被设置为 False(.F.)。<br /><br /> 
-                        
-                        如果新属性不是数组属性，并且现有的属性也不是数组属性或不是只读的 X# 本地(native)属性。 
+                        如果新属性不是数组属性，但现有的属性是一个数组属性。该属性将保持为数组属性，维度相同。
+                        如果您指定了 eNewValue 的值，所有数组元素将被设置为该值。
+                        如果您省略 eNewValue，所有数组元素将被设置为 False(.F.)。<br /><br />
+
+                        如果新属性不是数组属性，并且现有的属性也不是数组属性或不是只读的 X# 本地(native)属性。
                         如果您指定了 eNewValue 的值，现有的属性将被设置为该值。 如果您省略 eNewValue，现有的属性值将保持不变。<br /><br />
 
-                        如果指定的属性已经是对象的成员，但被标记为 <b>Hidden</b> 或 <b>Protected</b>。 
+                        如果指定的属性已经是对象的成员，但被标记为 <b>Hidden</b> 或 <b>Protected</b>。
                         X# 将生成错误，"没有找到指定的属性名(错误1734 <span style="color:red;font-weight:bold">译者注</span>：VFP 的错误编号)"，
-                        并且该属性的值不会被设置为传递给 <b>AddProperty( )</b> 的值。 
+                        并且该属性的值不会被设置为传递给 <b>AddProperty( )</b> 的值。
                     </description>
                 </item>
                 <item>
                     <term>
                         False (.F.)
                     </term>
-                    <description> 
+                    <description>
                         当 <b>AddProperty( )</b> 未能成功添加属性时。 <br />
-                        如果该属性是一个数组属性，并且现有的属性不是数组属性。现有的属性将保持不变。 
+                        如果该属性是一个数组属性，并且现有的属性不是数组属性。现有的属性将保持不变。
                     </description>
                 </item>
             </list>
         </returns>
-        <remarks> 
-            您可以使用 <b>AddProperty( )</b> 为对象创建数组属性。这样做时，如果提供了 eNewValue，每个元素在数组中都将被初始化为 eNewValue 的值。 
-            否则，每个属性在数组中的值将被设置为 False (.F.)。有关为对象创建数组属性的更多信息，请参阅示例部分。<br /><br /> 
-            
-            X# 将新属性作为 <b>Public</b> 属性添加。您不能指定该属性为 <b>Protected</b> 或 <b>Hidden</b>。<br /> 
+        <remarks>
+            您可以使用 <b>AddProperty( )</b> 为对象创建数组属性。这样做时，如果提供了 eNewValue，每个元素在数组中都将被初始化为 eNewValue 的值。
+            否则，每个属性在数组中的值将被设置为 False (.F.)。有关为对象创建数组属性的更多信息，请参阅示例部分。<br /><br />
+
+            X# 将新属性作为 <b>Public</b> 属性添加。您不能指定该属性为 <b>Protected</b> 或 <b>Hidden</b>。<br />
             如果现有的属性是只读的 X# 本地(native)属性，例如 <b>BaseClass</b> 属性，X# 将生成错误，"没有找到指定的属性名(错误1734)"。<br />
-            如果属性名称无效，例如，属性名称包含空格或其他非法字符，X# 将生成错误，"不正确的属性名(错误1470)"。<br /><br /> 
-            
-            对于从本地 X# 类派生的对象实例，<b>AddProperty( )</b> 将尊重内置 <b>AddProperty</b> 方法的可见性设置。 <br /> 
-            如果 <b>AddProperty</b> 方法被标记为 <b>Hidden</b> 或 <b>Protected</b>，<b>ADDPROPERTY( )</b> 不会创建新属性，并返回 False (.F.)。 <br /> 
+            如果属性名称无效，例如，属性名称包含空格或其他非法字符，X# 将生成错误，"不正确的属性名(错误1470)"。<br /><br />
+
+            对于从本地 X# 类派生的对象实例，<b>AddProperty( )</b> 将尊重内置 <b>AddProperty</b> 方法的可见性设置。 <br />
+            如果 <b>AddProperty</b> 方法被标记为 <b>Hidden</b> 或 <b>Protected</b>，<b>ADDPROPERTY( )</b> 不会创建新属性，并返回 False (.F.)。 <br />
             如果 <b>AddProperty</b> 方法被标记为 <b>Public</b>(默认)，则<b>ADDPROPERTY( )</b> 将创建属性，并返回 True (.T.)。 <br />
             这保护了原始类设计。<br />
             <note>这不适用于使用 X# OLEPUBLIC 类创建的 COM 对象。</note>
-            <b>AddProperty( )</b> 不适用于 <b>For EACH</b> 命令的对象引用。然而，您可以使用 <b>AddProperty</b> 方法代替。 
-            <b>示例1</b><br /> 
+            <b>AddProperty( )</b> 不适用于 <b>For EACH</b> 命令的对象引用。然而，您可以使用 <b>AddProperty</b> 方法代替。
+            <b>示例1</b><br />
             下面的示例向使用 <b>SCATTER</b> 命令创建的对象添加新属性。<br />
                 <code language="X#">
                 Use customers
                 SCATTER NAME oCust
                 ADDPROPERTY(oCust,"MyProperty")
             </code><br />
-            <b>示例2</b><br /> 
-            下面的示例为对象 oMyForm 创建属性数组，并显示其内容：1 和 "Two"。 
+            <b>示例2</b><br />
+            下面的示例为对象 oMyForm 创建属性数组，并显示其内容：1 和 "Two"。
             <code language="X#">
                 oMyForm = CreateObject('Form')
                 ADDPROPERTY(oMyForm, 'MyArray(2)', 1)
@@ -173,21 +173,21 @@
         <summary>
             将所有活动的 SQL 连接句柄的数字引用存储在一个数组中。
         </summary>
-        <param name="ArrayName"> 
-            指定要在其中存储语句句柄信息的数组。<br /> 
-            与 VFP 不同的是，调用此函数时数组必须存在。如果数组不足以存储信息，X# 会自动增加数组大小。如果数组比必要的大，X# 会截断数组。 
+        <param name="ArrayName">
+            指定要在其中存储语句句柄信息的数组。<br />
+            与 VFP 不同的是，调用此函数时数组必须存在。如果数组不足以存储信息，X# 会自动增加数组大小。如果数组比必要的大，X# 会截断数组。
         </param>
         <param name="nStatementHandle">
             使用相同的共享连接，包括 nStatementHandle，用语句句柄填充数组。
         </param>
-        <returns> 
-            数值。 <b>ASQLHandles( )</b>返回正在使用的语句句柄的数量。如果没有可用的语句句柄， 
-            <b>ASQLHandles( )</b>返回 0 并且不修改数组。 
+        <returns>
+            数值。 <b>ASQLHandles( )</b>返回正在使用的语句句柄的数量。如果没有可用的语句句柄，
+            <b>ASQLHandles( )</b>返回 0 并且不修改数组。
         </returns>
-        <remarks> 
-            您可以在其他 X# SQL 函数中使用对语句句柄的引用，例如 <b>SQLEXEC( )</b> 和 <b>SQLDISCONNECT( )</b>。<br /> 
-            您可以使用 <b>SQLCONNECT( )</b> 和 <b>SQLSTRINGCONNECT()</b> 函数创建和返回新的语句句柄。 <br /> 
-            有关更多信息，请参阅 SQLCONNECT( ) 函数和 SQLSTRINGCONNECT( ) 函数。 
+        <remarks>
+            您可以在其他 X# SQL 函数中使用对语句句柄的引用，例如 <b>SQLEXEC( )</b> 和 <b>SQLDISCONNECT( )</b>。<br />
+            您可以使用 <b>SQLCONNECT( )</b> 和 <b>SQLSTRINGCONNECT()</b> 函数创建和返回新的语句句柄。 <br />
+            有关更多信息，请参阅 SQLCONNECT( ) 函数和 SQLSTRINGCONNECT( ) 函数。
         </remarks>
     </asqlhandles>
 
@@ -207,13 +207,13 @@
         <returns>
             数值
         </returns>
-        <remarks> 
+        <remarks>
             如果数组是一维的，nElementNumber 为元素编号，nSubscript 为 1。 ASubscript( ) 将返回 nElementNumber。<br />
-            如果数组是二维的，nElementNumber 为元素编号，nSubscript 为 1 或 2。 在 nSubscript 中指定 1 将返回元素的行下标，指定 2 将返回元素的列下标。<br /> 
-            有关如何引用数组中的元素的更多信息，请参阅 DIMENSION。<br /><br /> 
-            
+            如果数组是二维的，nElementNumber 为元素编号，nSubscript 为 1 或 2。 在 nSubscript 中指定 1 将返回元素的行下标，指定 2 将返回元素的列下标。<br />
+            有关如何引用数组中的元素的更多信息，请参阅 DIMENSION。<br /><br />
+
             您可以通过两种方式引用二维变量数组中的元素。<br />
-            第一种方法使用两个下标指定数组中元素的行和列位置。<br /> 
+            第一种方法使用两个下标指定数组中元素的行和列位置。<br />
             第二种方法使用元素编号。 使用 ASubscript( ) 从元素的编号获取元素的行或列下标。<br />
             在以下示例中，创建了一个有两行三列的数组。 Display MEMORY 显示了数组元素的内容，按照元素编号顺序列出。<br />
             <code language="X#">
@@ -227,32 +227,32 @@
                 ( 2, 2) L .F. (element number 5)
                 ( 2, 3) L .F. (element number 6)
             </code>
-            每个命令都将字符字符串 INVOICE 存储到同一个数组元素中： 
+            每个命令都将字符字符串 INVOICE 存储到同一个数组元素中：
             <code language="X#">
                 STORE 'INVOICE' TO gaMyArray(2, 1)
                 STORE 'INVOICE' TO gaMyArray(4)
             </code>
-            在一维数组中，元素的编号与其单个行下标相同。 一维数组没有必要使用 ASubscript( )。 
+            在一维数组中，元素的编号与其单个行下标相同。 一维数组没有必要使用 ASubscript( )。
         </remarks>
     </asubscript>
 
     <at>
         <summary>返回另一个字符表达式或备注字段中第一个出现的字符表达式或备注字段的开始数值位置，从最左边的字符开始计数。</summary>
         <param name="cSearchExpression">指定At( )在 cExpressionSearched 中搜索的字符表达式。</param>
-        <param name="cExpressionSearched"> 
-            指定 cSearchExpression 搜索的字符表达式。<br /> 
-            cSearchExpression 和 cExpressionSearched 都可以是任意大小的备注字段。 
+        <param name="cExpressionSearched">
+            指定 cSearchExpression 搜索的字符表达式。<br />
+            cSearchExpression 和 cExpressionSearched 都可以是任意大小的备注字段。
         </param>
-        <param name="nOccurrence"> 
-            指定在 cExpressionSearched 中搜索的 cSearchExpression 的第几次出现(第一，第二，第三，等等)。<br /> 
+        <param name="nOccurrence">
+            指定在 cExpressionSearched 中搜索的 cSearchExpression 的第几次出现(第一，第二，第三，等等)。<br />
             默认情况下，At( )搜索cSearchExpression的首次出现(nOccurrence = 1)。
-            包括 nOccurrence 允许您在 cExpressionSearched 中搜索 cSearchExpression 的额外出现。<br /> 
+            包括 nOccurrence 允许您在 cExpressionSearched 中搜索 cSearchExpression 的额外出现。<br />
             AT_C( ) 如果 nOccurrence 大于 cSearchExpression 在 cExpressionSearched 中出现的次数，则返回0。
         </param>
         <returns>数值</returns>
-        <remarks> 
+        <remarks>
             At( )在第二个字符表达式中搜索第一个字符表达式的第一个出现。然后，它返回一个整数，指示在找到字符表达式中的第一个字符的位置。<br />
-            如果没有找到字符表达式，At( )返回0。<br /> At( )执行的搜索是区分大小写的。要执行不区分大小写的搜索，请使用AtC( )。 
+            如果没有找到字符表达式，At( )返回0。<br /> At( )执行的搜索是区分大小写的。要执行不区分大小写的搜索，请使用AtC( )。
         </remarks>
         <seealso cref="O:XSharp.VFP.Functions.AtC">AtC 函数</seealso>
         <seealso cref="O:XSharp.VFP.Functions.At_C">At_C 函数</seealso>
@@ -270,14 +270,14 @@
     <atc>
         <summary>返回另一个字符表达式或备注字段中第一个出现的字符表达式或备注字段的开始数值位置，不区分大小写。</summary>
         <param name="cSearchExpression">指定 AtC( ) 在 cExpressionSearched 中搜索的字符表达式。</param>
-        <param name="cExpressionSearched"> 
-            指定 cSearchExpression 搜索的字符表达式。<br /> 
-            cSearchExpression 和 cExpressionSearched 都可以是任意大小的备注字段。 
+        <param name="cExpressionSearched">
+            指定 cSearchExpression 搜索的字符表达式。<br />
+            cSearchExpression 和 cExpressionSearched 都可以是任意大小的备注字段。
         </param>
-        <param name="nOccurrence"> 
-            指定在 cExpressionSearched 中搜索的 cSearchExpression 的第几次出现(第一，第二，第三，等等)。<br /> 
-            默认情况下，AtcC( )搜索 cSearchExpression 的首次出现(nOccurrence = 1)。 
-            包括 nOccurrence 允许您在 cExpressionSearched 中搜索 cSearchExpression 的额外出现。 
+        <param name="nOccurrence">
+            指定在 cExpressionSearched 中搜索的 cSearchExpression 的第几次出现(第一，第二，第三，等等)。<br />
+            默认情况下，AtcC( )搜索 cSearchExpression 的首次出现(nOccurrence = 1)。
+            包括 nOccurrence 允许您在 cExpressionSearched 中搜索 cSearchExpression 的额外出现。
         </param>
         <returns>数值</returns>
         <seealso cref="O:XSharp.VFP.Functions.At">At 函数</seealso>
@@ -292,8 +292,8 @@
         <param name="nIndexNumber">
             下表适用于具有结构性复合索引和一个或多个复合索引的表
         </param>
-        <param name="uArea"> 
-            指定要返回其打开复合索引文件名的工作区号或别名的表。<br /> 如果省略此参数，CDX( ) 将返回当前选择的工作区中的表的复合索引文件名。 
+        <param name="uArea">
+            指定要返回其打开复合索引文件名的工作区号或别名的表。<br /> 如果省略此参数，CDX( ) 将返回当前选择的工作区中的表的复合索引文件名。
         </param>
         <returns>
             字符
@@ -325,7 +325,7 @@
                     </description>
                 </item>
             </list>
-            下表适用于没有结构性复合索引但有一个或多个复合索引的表： 
+            下表适用于没有结构性复合索引但有一个或多个复合索引的表：
             <list type="table">
                 <listheader>
                     <term>nIndexNumber</term>
@@ -349,16 +349,16 @@
                 </item>
             </list>
             CDX( ) 函数与 MDX( ) 函数相同。<br /> 一个.cdx(复合)索引由一个包含许多索引标识的物理文件组成。每个索引标识都是与关联表相关的索引顺序引用。<br /><br />
-            有两种类型的.cdx文件：标准复合索引(.cdx)和结构.cdx。 <br /> 
+            有两种类型的.cdx文件：标准复合索引(.cdx)和结构.cdx。 <br />
             一个标准复合索引(.cdx)可能与其关联表有不同的名称，并且可以位于与其关联表不同的目录中。
             一个表可以有多个复合索引文件。您可以使用Use或Set Index的Index子句打开复合索引。<br />
-            一个结构.cdx必须与其关联表有相同的名称，并且必须位于与其关联表相同的目录中。一个表只能有一个结构索引文件。 
+            一个结构.cdx必须与其关联表有相同的名称，并且必须位于与其关联表相同的目录中。一个表只能有一个结构索引文件。
             当使用Use打开关联表时，结构.cdx文件会自动打开和更新。<br /><br />
 
             CDX( ) 忽略了在 Use 或 Set Index 的 Index 子句中指定的任何.idx(Microsoft FoxBASE+和FoxPro 1.0兼容索引)文件。<br />
-            使用 TAG( ) 返回.cdx中包含的单个标识名，并使用NDX( ) 返回打开的.idx文件名。<br /> 
-            当 Set FullPath 为 ON 时，CDX( ) 返回.cdx的路径和名称。<br /> 
-            当 Set FullPath 为 OFF 时，CDX( ) 返回.cdx的驱动器和名称。 
+            使用 TAG( ) 返回.cdx中包含的单个标识名，并使用NDX( ) 返回打开的.idx文件名。<br />
+            当 Set FullPath 为 ON 时，CDX( ) 返回.cdx的路径和名称。<br />
+            当 Set FullPath 为 OFF 时，CDX( ) 返回.cdx的驱动器和名称。
         </remarks>
         <example>
             <code language="X#">
@@ -384,20 +384,20 @@
         </summary>
         <param name="cSearchIn"> 指定<b>ChrTran()</b>替换字符的表达式。 </param>
         <param name="cSearchFor"> 指定<b>ChrTran()</b>在<paramref name='cSearchIn' />中查找的字符所在的表达式。 </param>
-        <param name="cReplaceWith"> 
-            指定包含替换字符的表达式。 如果 <paramref name='cSearchFor' /> 中的字符在 <paramref name='cSearchIn' /> 中找到， 
-            则 <paramref name='cSearchIn' /> 中的字符将被 <paramref name='cReplaceWith' /> 中的字符替换, 
-            该字符在 <paramref name='cReplaceWith' /> 中的位置与 <paramref name='cSearchFor' /> 中的相应字符相同。 
-            如果 <paramref name='cReplaceWith' /> 中的字符少于 <paramref name='cSearchFor' /> 中的字符, 
-            则 <paramref name='cSearchIn' /> 中的额外字符将从 <paramref name='cSearchIn' /> 中删除。 
-            如果 <paramref name='cReplaceWith' /> 中的字符多于<paramref name='cSearchFor' />中的字符, 
-            则 <paramref name='cReplaceWith' /> 中的额外字符将被忽略。 
+        <param name="cReplaceWith">
+            指定包含替换字符的表达式。 如果 <paramref name='cSearchFor' /> 中的字符在 <paramref name='cSearchIn' /> 中找到，
+            则 <paramref name='cSearchIn' /> 中的字符将被 <paramref name='cReplaceWith' /> 中的字符替换,
+            该字符在 <paramref name='cReplaceWith' /> 中的位置与 <paramref name='cSearchFor' /> 中的相应字符相同。
+            如果 <paramref name='cReplaceWith' /> 中的字符少于 <paramref name='cSearchFor' /> 中的字符,
+            则 <paramref name='cSearchIn' /> 中的额外字符将从 <paramref name='cSearchIn' /> 中删除。
+            如果 <paramref name='cReplaceWith' /> 中的字符多于<paramref name='cSearchFor' />中的字符,
+            则 <paramref name='cReplaceWith' /> 中的额外字符将被忽略。
         </param>
         <returns>
             字符
         </returns>
         <remarks>
-            <b>ChrTranC()</b> 和 <b>ChrTran()</b> 之间的区别在 X# 中可以忽略，因为所有字符都是unicode的，所以不区分单字节和双字节字符。 
+            <b>ChrTranC()</b> 和 <b>ChrTran()</b> 之间的区别在 X# 中可以忽略，因为所有字符都是unicode的，所以不区分单字节和双字节字符。
         </remarks>
         <example>
             <code language="X#">
@@ -416,21 +416,21 @@
         </summary>
         <param name="cSearchIn"> 指定 <b>ChrTranC()</b> 替换字符的表达式。 </param>
         <param name="cSearchFor"> 指定<b> ChrTranC()</b> 在 <paramref name='cSearchIn' /> 中查找的字符所在的表达式。 </param>
-        <param name="cReplaceWith"> 
-            指定包含替换字符的表达式。 如果 <paramref name='cSearchFor' /> 中的字符在 <paramref name='cSearchIn' /> 中找到, 
-            则 <paramref name='cSearchIn' /> 中的字符将被 <paramref name='cReplaceWith' /> 中的字符替换, 
-            该字符在 <paramref name='cReplaceWith' /> 中的位置与 <paramref name='cSearchFor' /> 中的相应字符相同。 
-            如果 <paramref name='cReplaceWith' /> 中的字符少于 <paramref name='cSearchFor' /> 中的字符, 
-            则 <paramref name='cSearchIn' /> 中的额外字符将从 <paramref name='cSearchIn' /> 中删除。 
-            如果 <paramref name='cReplaceWith' /> 中的字符多于 <paramref name='cSearchFor' /> 中的字符, 
-            则 <paramref name='cReplaceWith' /> 中的额外字符将被忽略。 
+        <param name="cReplaceWith">
+            指定包含替换字符的表达式。 如果 <paramref name='cSearchFor' /> 中的字符在 <paramref name='cSearchIn' /> 中找到,
+            则 <paramref name='cSearchIn' /> 中的字符将被 <paramref name='cReplaceWith' /> 中的字符替换,
+            该字符在 <paramref name='cReplaceWith' /> 中的位置与 <paramref name='cSearchFor' /> 中的相应字符相同。
+            如果 <paramref name='cReplaceWith' /> 中的字符少于 <paramref name='cSearchFor' /> 中的字符,
+            则 <paramref name='cSearchIn' /> 中的额外字符将从 <paramref name='cSearchIn' /> 中删除。
+            如果 <paramref name='cReplaceWith' /> 中的字符多于 <paramref name='cSearchFor' /> 中的字符,
+            则 <paramref name='cReplaceWith' /> 中的额外字符将被忽略。
         </param>
         <returns>
             字符
         </returns>
-        <remarks> 
+        <remarks>
             在 X# 中，可以忽略 <b>ChrTranC()</b> 和 <b>ChrTran()</b>
-            之间的区别，因为所有字符都是unicode的，所以不区分单字节和双字节字符。 
+            之间的区别，因为所有字符都是unicode的，所以不区分单字节和双字节字符。
         </remarks>
         <seealso cref="O:XSharp.VFP.Functions.ChrTran">ChrTran 函数</seealso>
         <seealso cref='O:XSharp.RT.Functions.StrTran'>StrTran 函数</seealso>
@@ -451,14 +451,17 @@
         <summary>
             从日期或日期时间表达式返回以"日-月-年"格式的字符表达式(例如，31 May 1998)。月份名称不缩写。
         </summary>
+        <param name="uExpression">
+            指定 <b>DMY( )</b> 从中返回以"日-月-年"格式的字符字符串的日期表达式。
+        </param>
         <param name="dExpression"> 指定 <b>DMY( )</b> 从中返回以"日-月-年"格式的字符字符串的日期表达式。 </param>
         <param name="tExpression"> 指定 <b>DMY( )</b> 从中返回以"日-月-年"格式的字符字符串的日期时间表达式。 </param>
         <returns>
             字符
         </returns>
-        <remarks> 
+        <remarks>
             如果 Set CENTURY 为 OFF，<b>DMY( )</b> 返回以 "dd-Month-yy" 格式的字符字符串(例如，16 February 98)。 <br />
-            如果 Set CENTURY 为 ON，格式为 "dd-Month-yyyy"(例如，16 February 1998)。 
+            如果 Set CENTURY 为 ON，格式为 "dd-Month-yyyy"(例如，16 February 1998)。
         </remarks>
         <example>
             <code language="X#">
@@ -476,16 +479,16 @@
         <summary>
             在远程计算机上创建已注册的 COM 对象(例如 X# 自动化服务器)的实例。
         </summary>
-        <param name="cClsIdOrcProgId"> 
-            指定要实例化的 COM 对象的 CLSID(类标识符) 或 PROGID(程序化标识符)。<br /> 
-            如果您包括 CLSID，COM 对象必须在您指定的远程服务器上注册。 如果您包括 PROGID，COM 对象必须在您的本地计算机和您指定的远程计算机上注册。 
-            尝试使用未在本地计算机上注册的 PROGID 将生成 OLE 错误代码 0x800401f3，"无效的类字符串。"<br /> 
-            对于在本地机器上创建的 Visual FoxPro 自动化服务，您可以使用服务对象的 CLSID 和 PROGID 属性来确定本地 CLSID 和 PROGID 值。 
+        <param name="cClsIdOrcProgId">
+            指定要实例化的 COM 对象的 CLSID(类标识符) 或 PROGID(程序化标识符)。<br />
+            如果您包括 CLSID，COM 对象必须在您指定的远程服务器上注册。 如果您包括 PROGID，COM 对象必须在您的本地计算机和您指定的远程计算机上注册。
+            尝试使用未在本地计算机上注册的 PROGID 将生成 OLE 错误代码 0x800401f3，"无效的类字符串。"<br />
+            对于在本地机器上创建的 Visual FoxPro 自动化服务，您可以使用服务对象的 CLSID 和 PROGID 属性来确定本地 CLSID 和 PROGID 值。
         </param>
-        <param name="cComputerName"> 
-            指定在其上实例化 COM 对象的远程计算机。<br /> 
-            如果 cComputerName 为空字符串，COM 对象将在本地计算机或根据注册表指定的重定向机器上实例化。 
-            cComputerName 支持通用命名约定(UNC)名称，如"\\myserver"和"myserver"，以及域系统名称(DNS)名称。 
+        <param name="cComputerName">
+            指定在其上实例化 COM 对象的远程计算机。<br />
+            如果 cComputerName 为空字符串，COM 对象将在本地计算机或根据注册表指定的重定向机器上实例化。
+            cComputerName 支持通用命名约定(UNC)名称，如"\\myserver"和"myserver"，以及域系统名称(DNS)名称。
         </param>
         <param name="cIID">
             指定 cCLSID | cPROGID 的接口 ID GUID，当您创建早期绑定的类实例时。
@@ -494,24 +497,24 @@
         <returns>
             对象
         </returns>
-        <remarks> 
+        <remarks>
             如果它成功实例化，CreateObjectEx( ) 返回 COM 对象的对象引用。 CreateObjectEx( )不能用于实例化 X# 类，
             如表单–使用 CreateObject( ) 实例化 X# 类。 注意，您只能将 CreateObjectEx( ) 缩写到至少 13 个字符，区别于 CreateObject( )函数。<br />
             当您使用 CreateObject( ) 调用某些COM类时，它们返回"不支持此接口"，因为它们不支持 IDispatch 接口。
-            使用cIID参数，您现在可以在应用程序中访问这些类。<br /><br /> 
-            
-            如果您传递空字符串("")作为 cIID，X# 将尝试获取指定的 CLSID 或 PROGID 的默认接口(IID)。因为它支持通过 cIID 的早期绑定， 
-            CreateObjectEx( ) 可以通过避免大部分 IDispatch 调用所带来的开销来帮助提高性能。<br /> 
-            CreateObjectEx( ) 支持创建新的早期绑定对象。 然而，可能您已经有了一个 X# 组件，并且您想通过早期绑定来调用它。 
-            您可以在现有的 COM 对象上使用 GETINTERFACE( ) 支持。 <br /><br /> 
-            
-            有关使用 X# 创建自动化服务的更多信息，请参阅共享信息和添加 OLE。 
+            使用cIID参数，您现在可以在应用程序中访问这些类。<br /><br />
+
+            如果您传递空字符串("")作为 cIID，X# 将尝试获取指定的 CLSID 或 PROGID 的默认接口(IID)。因为它支持通过 cIID 的早期绑定，
+            CreateObjectEx( ) 可以通过避免大部分 IDispatch 调用所带来的开销来帮助提高性能。<br />
+            CreateObjectEx( ) 支持创建新的早期绑定对象。 然而，可能您已经有了一个 X# 组件，并且您想通过早期绑定来调用它。
+            您可以在现有的 COM 对象上使用 GETINTERFACE( ) 支持。 <br /><br />
+
+            有关使用 X# 创建自动化服务的更多信息，请参阅共享信息和添加 OLE。
         </remarks>
         <example>
             <code language="X#">
                 x = CreateObjectEx("excel.application","", "{000208D5-0000-0000-C000-000000000046}")
             </code>
-            下面是一个有效的 excel 应用程序对象的函数调用。它将返回 excel.application 的默认接口。 
+            下面是一个有效的 excel 应用程序对象的函数调用。它将返回 excel.application 的默认接口。
             <code language="X#">
                 x = CreateObjectEx("excel.application","","")
             </code>
@@ -522,23 +525,23 @@
         <summary>
             返回一个逻辑值，指示是否使用 Descending 关键字创建了索引标识，或者是否在 Use、Set Index 或 Set Order 中包含了 Descending 关键字。
         </summary>
-        <param name="uIndex"> 
-            指定一个复合索引文件的名称或索引编号，带有CDXFileName。<br /> 
+        <param name="uIndex">
+            指定一个复合索引文件的名称或索引编号，带有CDXFileName。<br />
             指定了Descending( )测试的索引标识或索引文件。<br />
-            nIndexNumber 通常是一个从1开始的整数，用于返回每个索引标识的额外值。<br /> 
+            nIndexNumber 通常是一个从1开始的整数，用于返回每个索引标识的额外值。<br />
             就为 .IDX 主控单项索引文件或主控索引标识(如果存在)返回一个值。<br />
             随着nIndexNumber的增加，对于结构性复合索引(如果存在)的每个标识的值将被返回。<br /> 这些值按照结构性复合索引中标识创建的顺序返回。<br />
             之后，对于任何打开的独立复合索引中的每个标识的值将被返回。<br /> 这些值按照独立复合索引中标识创建的顺序返回。<br />
-            如果nIndexNumber大于打开的单项.idx文件和结构性复合索引和独立复合索引标识的总数，则返回空字符串。 
+            如果nIndexNumber大于打开的单项.idx文件和结构性复合索引和独立复合索引标识的总数，则返回空字符串。
         </param>
-        <param name="uArea"> 
-            返回其他工作区中打开的索引文件或标识的值，而不是当前工作区。指定工作区号或表别名。<br /> 
-            如果您指定的别名没有对应的表，X# 将生成错误消息。 
+        <param name="uArea">
+            返回其他工作区中打开的索引文件或标识的值，而不是当前工作区。指定工作区号或表别名。<br />
+            如果您指定的别名没有对应的表，X# 将生成错误消息。
         </param>
         <returns>
             逻辑型
         </returns>
-        <remarks> 
+        <remarks>
         您可以通过两种方式在表中以降序排列记录:<br />
             <list type="bullet">
                 <term>您可以在 Index 命令中包含 Descending 关键字，以在复合.cdx中创建降序索引标识。</term>
@@ -548,11 +551,11 @@
             </list>
             <br /><br />
             Descending( ) 可以确定索引标识是否以降序创建。如果您指定的索引标识是以降序创建的,Descending( ) 返回 true (.T.)。<br />
-            Descending( ) 也可以确定主索引标识或主控单项索引(.idx)文件是否以降序排列。Descending( ) 返回 true (.T.)。<br /> 
-            如果您在 Use、Set Index 或 Set Order 中为主索引标识或单项索引(.idx)文件指定了降序。<br /> 
-            如果您不包括任何可选参数，Descending( ) 将返回主索引标识或主控单项索引文件的值。<br /> 
+            Descending( ) 也可以确定主索引标识或主控单项索引(.idx)文件是否以降序排列。Descending( ) 返回 true (.T.)。<br />
+            如果您在 Use、Set Index 或 Set Order 中为主索引标识或单项索引(.idx)文件指定了降序。<br />
+            如果您不包括任何可选参数，Descending( ) 将返回主索引标识或主控单项索引文件的值。<br />
             如果您不包括任何可选参数，并且主索引标识或.idx文件不是有效的(例如，您已经发出 Set Order TO 以将表置于物理记录顺序)，
-            Descending( ) 返回 false (.F.)。 
+            Descending( ) 返回 false (.F.)。
         </remarks>
         <example>
             <code language="X#">
@@ -607,25 +610,25 @@
         <summary>
             返回表中指定编号的字段名。
         </summary>
-        <param name="uField"> 
+        <param name="uField">
             指定字段名。主要用于在使用 nFlag 参数时，检索数据库容器(DBC)中存储的实际字段标题。<br />
-            如果字段标题是一个表达式(=)，则会评估该表达式。否则，将返回实际的字符串字面量。 <br /> 
+            如果字段标题是一个表达式(=)，则会评估该表达式。否则，将返回实际的字符串字面量。 <br />
             如果在运行时无法评估表达式，将引发错误，并返回实际的字段名。 <br /><br />
 
-            或指定字段编号。如果 nFieldNumber 为1，则返回表中第一个字段的名称；<br /> 
+            或指定字段编号。如果 nFieldNumber 为1，则返回表中第一个字段的名称；<br />
             如果 nFieldNumber 为2，则返回表中第二个字段的名称，以此类推。<br />
-            如果 nFieldNumber 大于字段的数量，将返回空字符串。 字段名以大写形式返回。 
+            如果 nFieldNumber 大于字段的数量，将返回空字符串。 字段名以大写形式返回。
         </param>
-        <param name="uArea"> 
-            指定返回字段名的工作区号或表的别名。 <b>Field( )</b> 如果在指定的工作区中没有打开表，将返回空字符串。<br /> 
+        <param name="uArea">
+            指定返回字段名的工作区号或表的别名。 <b>Field( )</b> 如果在指定的工作区中没有打开表，将返回空字符串。<br />
             或<br />
-            指定返回字段名的表的别名。 如果指定了不存在的表别名，X# 将生成错误消息。 
+            指定返回字段名的表的别名。 如果指定了不存在的表别名，X# 将生成错误消息。
         </param>
         <param name="nFlag">
             指定是否返回实际字段名或字段标题。
         </param>
         <returns> 字符型。如果省略了可选参数，<b>Field( )</b> 将返回当前选择的工作区中打开的表的字段名。 </returns>
-        <remarks> 
+        <remarks>
             您可以使用 <b>Select( )</b> 函数来确定当前的工作区号。您可以使用 <b>Alias( )</b> 函数来确定当前工作区中表的别名。
             <br />有关更多信息，请参阅 Select( ) 函数和 Alias( ) 函数。<br />
             <list type="table">
@@ -635,9 +638,9 @@
                 </listheader>
                 <item>
                     <term>0</term>
-                    <description> 
+                    <description>
                         返回实际字段名。<br />
-                        <b>Field( )</b> 保留返回的字段名的大小写，只要表存储在DBC中。 
+                        <b>Field( )</b> 保留返回的字段名的大小写，只要表存储在DBC中。
                     </description>
                 </item>
                 <item>
@@ -697,18 +700,18 @@
         <summary>
             返回在 Set Filter 中指定的表过滤表达式。
         </summary>
-        <param name="uArea"> 
-            指定 Filter( ) 返回过滤表达式的表的工作区。 如果在指定的工作区中没有打开表，Filter( ) 返回空字符串。<br /> 
+        <param name="uArea">
+            指定 Filter( ) 返回过滤表达式的表的工作区。 如果在指定的工作区中没有打开表，Filter( ) 返回空字符串。<br />
             或者<br />
-            指定 Filter( ) 返回过滤表达式的表的别名。<br /> 
-            如果指定的表别名不存在，X# 会生成错误消息。 
+            指定 Filter( ) 返回过滤表达式的表的别名。<br />
+            如果指定的表别名不存在，X# 会生成错误消息。
         </param>
         <returns>
             字符
         </returns>
-        <remarks> 
-            如果省略可选参数，Filter( ) 返回当前选择的工作区中打开的表的过滤表达式。<br /> 
-            有关创建过滤器的更多信息，请参阅 Set Filter。 
+        <remarks>
+            如果省略可选参数，Filter( ) 返回当前选择的工作区中打开的表的过滤表达式。<br />
+            有关创建过滤器的更多信息，请参阅 Set Filter。
         </remarks>
         <example>
             <code language="X#">
@@ -737,32 +740,32 @@
         <summary>
             返回打开的单项索引(.idx)文件或索引标识的索引过滤表达式，结果为大写。
         </summary>
-        <param name="nIndexNumber"> 
+        <param name="nIndexNumber">
             指定返回过滤表达式的索引文件或标识。<b>For( )</b>
-            按以下顺序返回过滤表达式， 随着 nIndexNumber 从1增加到所有打开的单项文件和结构复合索引及独立复合索引标识的总数：<br /> 
-            1.首先返回单项索引文件的过滤表达式(如果有打开的)。单项索引文件在 Use 或 Set Index 中包含的顺序决定了返回过滤表达式的顺序。<br /> 
+            按以下顺序返回过滤表达式， 随着 nIndexNumber 从1增加到所有打开的单项文件和结构复合索引及独立复合索引标识的总数：<br />
+            1.首先返回单项索引文件的过滤表达式(如果有打开的)。单项索引文件在 Use 或 Set Index 中包含的顺序决定了返回过滤表达式的顺序。<br />
             2.接下来返回结构复合索引中每个标识的过滤表达式(如果存在)。过滤表达式按结构索引中创建标识的顺序返回。<br />
-            3.最后返回所有打开的独立复合索引中每个标识的过滤表达式。过滤表达式按独立复合索引中创建标识的顺序返回。<br /> 
-            如果索引或索引标识在创建时没有 For 子句，或者 nIndexNumber 大于所有打开的单项文件和结构复合及独立复合索引标识的总数，则返回空字符串。 
+            3.最后返回所有打开的独立复合索引中每个标识的过滤表达式。过滤表达式按独立复合索引中创建标识的顺序返回。<br />
+            如果索引或索引标识在创建时没有 For 子句，或者 nIndexNumber 大于所有打开的单项文件和结构复合及独立复合索引标识的总数，则返回空字符串。
         </param>
-        <param name="uArea"> 
+        <param name="uArea">
             指定<b>For( )</b>返回索引过滤表达式的表的工作区。 如果在指定的工作区中没有打开表，<b>For( )</b>返回空字符串。<br />
-            或者<br /> 
-            指定<b>For( )</b>返回索引过滤表达式的表的别名。 如果指定的表别名不存在，X#会生成错误消息。 
+            或者<br />
+            指定<b>For( )</b>返回索引过滤表达式的表的别名。 如果指定的表别名不存在，X#会生成错误消息。
         </param>
         <returns>
             字符
         </returns>
-        <remarks> 
-            如果不包括任何可选参数，<b>For( )</b> 返回主索引文件或索引标记的索引过滤表达式。 
-            如果主索引文件或索引标记未生效(例如，您已发出 <b>Set Order TO</b> 将表置于物理记录顺序)，<b>For( )</b> 返回空字符串。<br /> 
-            您可以在 X# 中创建过滤索引。 如果在 Index 中包含可选的 For lExpression 子句，索引文件将作为表的过滤器。 
+        <remarks>
+            如果不包括任何可选参数，<b>For( )</b> 返回主索引文件或索引标记的索引过滤表达式。
+            如果主索引文件或索引标记未生效(例如，您已发出 <b>Set Order TO</b> 将表置于物理记录顺序)，<b>For( )</b> 返回空字符串。<br />
+            您可以在 X# 中创建过滤索引。 如果在 Index 中包含可选的 For lExpression 子句，索引文件将作为表的过滤器。
             只有匹配过滤表达式lExpression的记录才可显示和访问。
             仅为匹配过滤表达式的记录在索引文件中创建索引键。<br /><br />
 
-            <b>Use</b> 和 <b>Set Index</b> 都支持索引文件名列表，使您可以为表打开多个索引文件。 
-            任何单条目索引文件名、结构复合或独立复合索引文件名的组合都可以包含在索引文件名列表中。 
-            <b>For( )</b> 类似于 SYS(2021)，并为兼容dBASE IV而提供。 
+            <b>Use</b> 和 <b>Set Index</b> 都支持索引文件名列表，使您可以为表打开多个索引文件。
+            任何单条目索引文件名、结构复合或独立复合索引文件名的组合都可以包含在索引文件名列表中。
+            <b>For( )</b> 类似于 SYS(2021)，并为兼容dBASE IV而提供。
         </remarks>
     </for>
 
@@ -806,17 +809,17 @@
         <param name="cString">
             指定要计算单词数量的字符串。
         </param>
-        <param name="cDelimiters"> 
-            可选。指定一个或多个用于分隔 cString 中单词的可选字符。默认分隔符是空格、制表符、回车和换行符。<br /> 
-            请注意，<b>GetWordCount( )</b> 将 cDelimiters 中的每个字符用作单独的分隔符，而不是将整个字符串用作单个分隔符。 
+        <param name="cDelimiters">
+            可选。指定一个或多个用于分隔 cString 中单词的可选字符。默认分隔符是空格、制表符、回车和换行符。<br />
+            请注意，<b>GetWordCount( )</b> 将 cDelimiters 中的每个字符用作单独的分隔符，而不是将整个字符串用作单个分隔符。
         </param>
         <returns>
             数值
         </returns>
         <remarks>
-            <b>GetWordCount( )</b> 默认假定单词由空格或制表符分隔。<br /> 
+            <b>GetWordCount( )</b> 默认假定单词由空格或制表符分隔。<br />
             如果您指定另一个字符作为分隔符，此函数将忽略空格和制表符，仅使用指定的字符。 <br />
-            如果您使用 "AAA aaa, BBB bbb, CCC ccc." 作为 <b>GetWordCount( )</b> 的目标字符串，您可以得到以下所有结果。 
+            如果您使用 "AAA aaa, BBB bbb, CCC ccc." 作为 <b>GetWordCount( )</b> 的目标字符串，您可以得到以下所有结果。
             <code language="X#">
                 cString = "AAA aaa, BBB bbb, CCC ccc."
                 ? GetWordCount(cString) &amp;&amp; 6 - 以 " " 分隔的字符组
@@ -833,34 +836,37 @@
         <param name="cString">
             指定要计算的字符串。
         </param>
-        <param name="nIndex"> 
-            指定要返回的单词的索引位置。例如，如果 nIndex 为 3，<b>GetWordNum( )</b> 返回第三个单词(如果 cString 包含三个或更多单词)。 
+        <param name="nIndex">
+            指定要返回的单词的索引位置。例如，如果 nIndex 为 3，<b>GetWordNum( )</b> 返回第三个单词(如果 cString 包含三个或更多单词)。
         </param>
-        <param name="cDelimiters"> 
-            可选。指定一个或多个用于分隔 cString 中单词的可选字符。默认分隔符是空格、制表符、回车和换行符。<br /> 
-            请注意，<b>GetWordNum( )</b> 将 cDelimiters 中的每个字符用作单独的分隔符，而不是将整个字符串用作单个分隔符。 
+        <param name="cDelimiters">
+            可选。指定一个或多个用于分隔 cString 中单词的可选字符。默认分隔符是空格、制表符、回车和换行符。<br />
+            请注意，<b>GetWordNum( )</b> 将 cDelimiters 中的每个字符用作单独的分隔符，而不是将整个字符串用作单个分隔符。
         </param>
         <returns>
             字符
         </returns>
-        <remarks> 
-            返回目标字符串 cString 中由 nIndex 指定位置的单词。 
-            如果 cString 中的单词少于 nIndex，<b>GetWordNum( )</b> 返回一个空字符串。 
+        <remarks>
+            返回目标字符串 cString 中由 nIndex 指定位置的单词。
+            如果 cString 中的单词少于 nIndex，<b>GetWordNum( )</b> 返回一个空字符串。
         </remarks>
     </getwordnum>
 
     <gomonth>
+        <param name="uExpression">
+            指定日期表达式。相对于此日期，gomonth( ) 函数返回日期。
+        </param>
         <param name="dExpression">
             指定日期表达式。相对于此日期，gomonth( ) 函数返回日期。
         </param>
         <param name="tExpression">
             指定一个日期/时间表达式，GoMonth( ) 将返回相对该日期表达式的日期。
         </param>
-        <param name="iNumberOfMonths"> 
-            指定从日期或日期/时间开始的月份数。<br /> 
-            如果 nNumberOfMonths 为正，GoMonth( ) 返回日期或日期/时间之后 nNumberOfMonths 个月的日期。<br /> 
-            如果 nNumberOfMonths 为负，GoMonth( ) 返回日期或日期/时间之前 nNumberOfMonths 个月的日期。<br /> 
-            例如，-1 表示 -31 天。 
+        <param name="iNumberOfMonths">
+            指定从日期或日期/时间开始的月份数。<br />
+            如果 nNumberOfMonths 为正，GoMonth( ) 返回日期或日期/时间之后 nNumberOfMonths 个月的日期。<br />
+            如果 nNumberOfMonths 为负，GoMonth( ) 返回日期或日期/时间之前 nNumberOfMonths 个月的日期。<br />
+            例如，-1 表示 -31 天。
         </param>
         <summary>
             返回指定日期或日期/时间表达式之前或之后指定月份数的日期。
@@ -897,9 +903,9 @@
         <returns>
             数值
         </returns>
-        <remarks> 
-            Hour( ) 返回基于24小时格式的数值，不受当前 SET HOURS 设置的影响。<br /> 
-            例如，如果 SET HOURS 是 12 或 24，以下命令返回 13： 
+        <remarks>
+            Hour( ) 返回基于24小时格式的数值，不受当前 SET HOURS 设置的影响。<br />
+            例如，如果 SET HOURS 是 12 或 24，以下命令返回 13：
             <code language="X#">
                 ? Hour({^1998-02-16 1:00p})
             </code>
@@ -917,44 +923,44 @@
         <summary>
             评估条件列表中的结果(最多支持100对)。
         </summary>
-        <param name="lCondition"> 
+        <param name="lCondition">
             指定一个逻辑表达式作为条件进行评估。<br /> 如果 lCondition 评估为 False (.F.)，
-            <b>ICase( )</b> 将继续评估下一个条件;如果它评估为 True (.T.)，返回该条件对应的 eResult。<br /> 
-            如果 lCondition 评估为 null (.NULL.)，X# 将 lCondition 视为评估为 False (.F.)。 
+            <b>ICase( )</b> 将继续评估下一个条件;如果它评估为 True (.T.)，返回该条件对应的 eResult。<br />
+            如果 lCondition 评估为 null (.NULL.)，X# 将 lCondition 视为评估为 False (.F.)。
         </param>
         <param name="eResult">指定 lCondition 评估为 True (.T.) 时要返回的结果。</param>
-        <param name="lCondition2"> 
-            指定一个逻辑表达式作为条件进行评估。<br /> 
-            如果 lCondition2 评估为 False (.F.)，<b>ICase( )</b> 将继续评估下一个条件；如果它评估为 True (.T.)，返回该条件对应的 eResult。<br /> 
-            如果 lCondition 评估为 null(.NULL.)，X# 将 lCondition 视为评估为 False (.F.)。 
+        <param name="lCondition2">
+            指定一个逻辑表达式作为条件进行评估。<br />
+            如果 lCondition2 评估为 False (.F.)，<b>ICase( )</b> 将继续评估下一个条件；如果它评估为 True (.T.)，返回该条件对应的 eResult。<br />
+            如果 lCondition 评估为 null(.NULL.)，X# 将 lCondition 视为评估为 False (.F.)。
         </param>
         <param name="eResult2">指定 lCondition2 评估为 True (.T.) 时要返回的结果。</param>
         <param name="eOtherwiseResult">包含所有条件评估为 False (.F.) 时返回的结果。</param>
         <returns>
-            <b>ICase( )</b> 一旦 lCondition 评估为 True (.T.)，就返回第一个 eResult。 <br /> 
-            如果所有条件评估为 False(.F.)，<b>ICase( )</b> 返回 eOtherwiseResult。 <br /> 
-            如果省略 eOtherwiseResult，并且所有条件评估为 False(.F.)，<b>ICase( )</b> 
-            返回 null (.NULL.)。 
+            <b>ICase( )</b> 一旦 lCondition 评估为 True (.T.)，就返回第一个 eResult。 <br />
+            如果所有条件评估为 False(.F.)，<b>ICase( )</b> 返回 eOtherwiseResult。 <br />
+            如果省略 eOtherwiseResult，并且所有条件评估为 False(.F.)，<b>ICase( )</b>
+            返回 null (.NULL.)。
         </returns>
-        <remarks> 
-            您必须始终传递一组两个参数给 <b>ICase( )</b>。<br /> 
-            
+        <remarks>
+            您必须始终传递一组两个参数给 <b>ICase( )</b>。<br />
+
             如果传递奇数个参数，最后一个参数将被视为 eOtherwiseResult 的返回值。<br />
             您可以为 <b>ICase( )</b> 传递最多 100 对参数。 如果在过滤表达式中使用长的 <b>ICase( )</b> 表达式，
-            例如在 <b>FOR</b> 或 <b>WHERE</b> 子句中， 请确保 <b>Sys(3055)</b> 设置为适当的复杂性级别，以避免生成错误。<br /> 
-            有关更多信息，请参阅 Sys(3055) - FOR 和 WHERE 子句复杂性。 
+            例如在 <b>FOR</b> 或 <b>WHERE</b> 子句中， 请确保 <b>Sys(3055)</b> 设置为适当的复杂性级别，以避免生成错误。<br />
+            有关更多信息，请参阅 Sys(3055) - FOR 和 WHERE 子句复杂性。
         </remarks>
-        <example> 
+        <example>
             以下示例演示了使用 <b>ICase( )</b> 评估表达式并根据这些表达式的结果返回某些值的不同场景。 由于第一个表达式评估为
-            True(.T.)，以下代码行显示 "First is true"。 
+            True(.T.)，以下代码行显示 "First is true"。
             <code language="X#">
                 ? ICase(1+1=2,"First is true",1+1=3,"Second is false","None are true")
             </code>
-            由于第一个表达式评估为 False (.F.)，但第二个表达式评估为 True (.T.)，以下代码行显示 "Second is true"。 
+            由于第一个表达式评估为 False (.F.)，但第二个表达式评估为 True (.T.)，以下代码行显示 "Second is true"。
             <code language="X#">
                 ? ICase(1+2=2,"First is false",1+2=3,"Second is true","None are true")
             </code>
-            由于第一个和第二个表达式评估为 False(.F.)，以下代码行显示 "None are true"，这是指定的最后一个结果。 
+            由于第一个和第二个表达式评估为 False(.F.)，以下代码行显示 "None are true"，这是指定的最后一个结果。
             <code language="X#">
                 ? ICase(1+2=2,"First is false",1+1=3,"Second is false","None are true")
             </code>
@@ -968,18 +974,18 @@
         <param name="uIndex">
             指定复合索引文件的名称。您指定的复合索引文件可以是与表自动打开的结构性复合索引文件，也可以是独立的复合索引文件。
         </param>
-        <param name="nIndex"> 
-            指定 <b>IDXCOLLATE( )</b> 返回排序序列的索引或索引标识。 
-            <b>IDXCOLLATE( )</b> 按照 nIndexNumber 从 1 增加到打开的索引文件和索引标识的总数的顺序返回索引和索引标识的排序序列：<br /> 
+        <param name="nIndex">
+            指定 <b>IDXCOLLATE( )</b> 返回排序序列的索引或索引标识。
+            <b>IDXCOLLATE( )</b> 按照 nIndexNumber 从 1 增加到打开的索引文件和索引标识的总数的顺序返回索引和索引标识的排序序列：<br />
             首先返回单项 .idx 索引文件(如果有打开的)。<br />
             单项索引文件在 <b>Use</b> 或 <b>Set Index</b> 中包含的顺序决定了返回排序序列的顺序。<br />
             接下来返回结构性复合索引(如果存在)中的标识的排序序列。按照在结构性复合索引中创建标识的顺序返回排序序列。<br />
             最后返回任何打开的独立复合索引中的标识的排序序列。按照在独立复合索引中创建标识的顺序返回排序序列。 如果 nIndexNumber 大于打开的索引文件总数，则返回空字符串。<br />
         </param>
-        <param name="uArea"> 
+        <param name="uArea">
             指定要返回其锁定状态的表的工作区号。如果省略 cTableAlias 和 nWorkArea，则返回当前工作区中打开的表的排序序列。<br />
-            或<br /> 
-            指定要返回其锁定状态的表的别名。如果指定的别名不是打开的表，则会生成“别名未找到”错误消息。 
+            或<br />
+            指定要返回其锁定状态的表的别名。如果指定的别名不是打开的表，则会生成“别名未找到”错误消息。
         </param>
         <returns>
             字符型
@@ -1025,10 +1031,10 @@
         <summary>
             返回表的锁定状态。
         </summary>
-        <param name="uArea"> 
+        <param name="uArea">
             指定要返回其锁定状态的表的工作区号。如果省略 cTableAlias 和 nWorkArea，则返回当前工作区中打开的表的锁定状态。<br />
-            或<br /> 
-            指定要返回其锁定状态的表的别名。如果指定的别名不是打开的表，则会生成“别名未找到”错误消息。 
+            或<br />
+            指定要返回其锁定状态的表的别名。如果指定的别名不是打开的表，则会生成“别名未找到”错误消息。
         </param>
         <returns>
             逻辑型
@@ -1063,15 +1069,15 @@
         <returns>
             逻辑型
         </returns>
-        <remarks> 
+        <remarks>
             如果表以只读方式打开，ISREADONLY( ) 返回 true (.T.)；否则，ISREADONLY( ) 返回 false (.F.)。 <br />
             您可以通过在使用 Use 打开表时包含 NOUPDATE 选项、在打开表的对话框中选中“只读”复选框，或为表分配 MS-DOS 只读属性来以只读方式打开表。 <br />
             您不能将非当前数据库别名传递给 ISREADONLY( ) 函数。<br />
-            为了确保数据库存在，您可以使用如下代码： 
+            为了确保数据库存在，您可以使用如下代码：
             <code language="X#">
                 !EMPTY(DBC())
-            </code> 
-            使用 Select–SQL 命令创建的游标始终是只读的。 
+            </code>
+            使用 Select–SQL 命令创建的游标始终是只读的。
         </remarks>
         <example>
             <code language="X#">
@@ -1091,10 +1097,10 @@
         <param name="nRecordNumber">
             指定返回锁定状态的记录号。如果省略 nRecordNumber，则返回当前记录的锁定状态。
         </param>
-        <param name="uArea"> 
+        <param name="uArea">
             指定返回记录锁定状态的表的工作区号。如果省略 cTableAlias 和 nWorkArea，则返回当前工作区中打开的表的记录锁定状态。<br />
-            或者<br /> 
-            指定返回记录锁定状态的表的别名。 
+            或者<br />
+            指定返回记录锁定状态的表的别名。
         </param>
         <returns>
             逻辑型
@@ -1219,7 +1225,7 @@
             <b>LeftC( )</b> 设计用于包含双字节字符的表达式。<br />
             如果表达式仅包含单字节字符，<b>LeftC( )</b> 等同于 <b>LEFT( )</b>。 <br />
             <b>LeftC( )</b> 返回包含单字节和双字节字符任意组合的字符表达式中的指定数量的字符。 <b>LeftC( )</b> 与起始位置为 1 的 <b>SubStrC( )</b> 相同。<br />
-            此函数对于处理如平假名和片假名等双字节字符集非常有用。 
+            此函数对于处理如平假名和片假名等双字节字符集非常有用。
         </remarks>
     </leftc>
 
@@ -1235,7 +1241,7 @@
             <b>LenC( )</b> 设计用于包含双字节字符的表达式。<br />
             如果表达式仅包含单字节字符，<b>LenC( )</b> 等同于 <b>LEN( )</b>。 <br />
             <b>LenC( )</b> 返回包含单字节和双字节字符任意组合的字符表达式或备注字段中的字符数。 <br />
-            此函数对于处理如平假名和片假名等双字节字符集非常有用。 
+            此函数对于处理如平假名和片假名等双字节字符集非常有用。
         </remarks>
     </lenc>
 
@@ -1243,26 +1249,26 @@
         <summary>
             确定一个字符表达式是否与另一个字符表达式匹配。
         </summary>
-        <param name="cExpression1"> 
+        <param name="cExpression1">
             指定 <b>LikeC( )</b> 用于与 cExpression2 比较的字符表达式。
             cExpression1 可以包含通配符，如 * 和 ?。问号 (?) 匹配 cExpression2 中的任何单个字符，星号 (*) 匹配任意数量的字符。
-            您可以在 cExpression1 中任意组合和混合使用任意数量的通配符。 
+            您可以在 cExpression1 中任意组合和混合使用任意数量的通配符。
         </param>
-        <param name="cExpression2"> 
+        <param name="cExpression2">
             指定 <b>LikeC( )</b> 用于与 cExpression1 比较的字符表达式。
-            cExpression2 必须与 cExpression1 字符对字符匹配，<b>LIKE(</b> <b>)</b> 才会返回 true (.T.)。 
+            cExpression2 必须与 cExpression1 字符对字符匹配，<b>LIKE(</b> <b>)</b> 才会返回 true (.T.)。
         </param>
         <returns>
             逻辑型
         </returns>
         <remarks>
-            <b>LikeC( )</b> 设计用于包含双字节字符的表达式。如果表达式仅包含单字节字符，LikeC( ) 等同于 LIKE( )。 
+            <b>LikeC( )</b> 设计用于包含双字节字符的表达式。如果表达式仅包含单字节字符，LikeC( ) 等同于 LIKE( )。
             <b>LikeC( )</b> 确定一个字符表达式是否与另一个字符表达式匹配。如果 cExpression1 与 cExpression2 匹配，
-            <b>LikeC( )</b> 返回 true(.T.)；否则，返回 false (.F.)。 
+            <b>LikeC( )</b> 返回 true(.T.)；否则，返回 false (.F.)。
             <b>SET COMPATIBLE</b> 确定 <b>LikeC( )</b> 如何比较 cExpression1 和 cExpression2 中的空格。
             如果 <b>SET COMPATIBLE</b> 设置为 ON 或 DB4，则在比较之前，cExpression1 和 cExpression2 中的所有尾随空格都会被删除。
-            如果 <b>SET COMPATIBLE</b> 设置为 OFF 或 FOXPLUS，则在比较中会使用 cExpression1 和 cExpression2 中的任何尾随空格。 
-            此函数对于处理如平假名和片假名等双字节字符集非常有用。 
+            如果 <b>SET COMPATIBLE</b> 设置为 OFF 或 FOXPLUS，则在比较中会使用 cExpression1 和 cExpression2 中的任何尾随空格。
+            此函数对于处理如平假名和片假名等双字节字符集非常有用。
         </remarks>
     </likec>
 
@@ -1281,10 +1287,10 @@
             如果 nIndexNumber 为 2，则返回第二个复合索引文件的名称，依此类推。<br />
             如果 nIndexNumber 大于打开的复合索引文件的数量，则返回空字符串。
         </param>
-        <param name="uArea"> 
-            指定用于在当前工作区以外的工作区中打开的复合索引文件的工作区编号。如果省略此可选参数，则返回当前工作区的复合索引文件名。<br /> 
+        <param name="uArea">
+            指定用于在当前工作区以外的工作区中打开的复合索引文件的工作区编号。如果省略此可选参数，则返回当前工作区的复合索引文件名。<br />
             或<br />
-            指定用于在当前工作区以外的工作区中打开的复合索引文件的表别名。如果省略此可选参数，则返回当前工作区的复合索引文件名。 
+            指定用于在当前工作区以外的工作区中打开的复合索引文件的表别名。如果省略此可选参数，则返回当前工作区的复合索引文件名。
         </param>
         <returns>
             字符型
@@ -1303,6 +1309,9 @@
         <summary>
             返回指定的日期或日期时间表达式，以月-日-年格式，并拼出月份的名称。
         </summary>
+        <param name="uExpression">
+            指定要以月-日-年格式返回的日期表达式。
+        </param>
         <param name="dExpression">
             指定要以月-日-年格式返回的日期表达式。
         </param>
@@ -1339,25 +1348,25 @@
         <summary>
             显示一个用户定义的对话框。
         </summary>
-        <param name="eMessageText"> 
+        <param name="eMessageText">
             指定出现在对话框中的文本。<br />
-            您也可以指定任何其他值代替 <paramref name="eMessageText" />。运行时会在显示之前将该值转换为字符串。 
+            您也可以指定任何其他值代替 <paramref name="eMessageText" />。运行时会在显示之前将该值转换为字符串。
         </param>
         <param name="nDialogBoxType">
             指定对话框中出现的按钮和图标、对话框显示时的默认按钮以及对话框的行为。<br />
             有关更多信息，请参见备注。
         </param>
-        <param name="cTitleBarText"> 
+        <param name="cTitleBarText">
             指定出现在对话框标题栏中的文本。<br />
-            如果省略 <paramref name="cTitleBarText" />,则程序名称会出现在标题栏中。 
+            如果省略 <paramref name="cTitleBarText" />,则程序名称会出现在标题栏中。
         </param>
-        <param name="nTimeOut"> 
+        <param name="nTimeOut">
             指定在没有键盘或鼠标输入的情况下，X# 显示 <paramref name="eMessageText" /> 的毫秒数，然后清除 <paramref name="eMessageText" />。 <br />
-            您可以指定任何有效的超时值。小于 1 的值在用户输入之前永不超时，并且行为与省略 nTimeout 参数相同。 
+            您可以指定任何有效的超时值。小于 1 的值在用户输入之前永不超时，并且行为与省略 nTimeout 参数相同。
         </param>
-        <returns> 
+        <returns>
             数值型。<b>MessageBox( )</b> 返回一个值，该值指示在对话框中选择了哪个按钮。 <br />
-            下面的表格列出了 <b>MessageBox( )</b> 为每个按钮返回的值。 
+            下面的表格列出了 <b>MessageBox( )</b> 为每个按钮返回的值。
             <list type="table">
                 <listheader>
                     <term>值</term>
@@ -1400,13 +1409,13 @@
                     <description>否</description>
                 </item>
             </list>
-            在带有取消按钮的对话框中，按 Esc 退出对话框返回的值与选择取消相同(2)。 当发生超时时，<b>MessageBox( )</b> 返回值为 -1。 
+            在带有取消按钮的对话框中，按 Esc 退出对话框返回的值与选择取消相同(2)。 当发生超时时，<b>MessageBox( )</b> 返回值为 -1。
         </returns>
-        <remarks> 
+        <remarks>
             在下表中，对话框按钮值 0 到 5 指定对话框中出现的按钮。 <br />
             图标值 16、32、48 和 64 指定对话框中出现的图标。 <br />
             默认值 0、256 和 512 指定对话框中的默认按钮。 用以指定显示对话框时所选择的默认按钮。 <br />
-            省略 nDialogBoxType 等同于为 nDialogBoxType 指定值 0。 
+            省略 nDialogBoxType 等同于为 nDialogBoxType 指定值 0。
             <list type="table">
                 <listheader>
                     <term>值</term>
@@ -1480,19 +1489,19 @@
                 </item>
             </list>
             nDialogBoxType 可以是前面表格中每个表格的最多三个值的总和。 <br />
-            例如，如果 nDialogBoxType 为 290(2+32+256)，则指定的对话框具有以下特征：<br /> 
-            - 中止、重试和忽略按钮。<br /> 
-            - 消息框显示问号图标。<br /> 
+            例如，如果 nDialogBoxType 为 290(2+32+256)，则指定的对话框具有以下特征：<br />
+            - 中止、重试和忽略按钮。<br />
+            - 消息框显示问号图标。<br />
             - 第二个按钮，重试，是默认按钮。<br /><br />
             <p />
             使用定义的常量如 MB_ABORTRETRYIGNORE + MB_ICONQUESTION + MB_DEFBUTTON2 比 2 + 32 + 256 更具可读性。<br />
             问号图标不再推荐使用，因为它不能清楚地表示特定类型的消息，并且将消息措辞为问题可能适用于任何消息类型。此外，用户可能会将消息符号问号与帮助信息混淆。因此，不建议在消息框中使用问号符号。
             系统继续支持包含仅用于向后兼容。 <p />
             <b>MessageBox( )</b> 函数根据传递的参数类型有几种重载。 <br />
-            第一个参数是必需的，并且始终是 eMessageText。 但是，可选的第二个参数可以是 nDialogBoxType(如果类型为 <b>Numeric</b>)或 
+            第一个参数是必需的，并且始终是 eMessageText。 但是，可选的第二个参数可以是 nDialogBoxType(如果类型为 <b>Numeric</b>)或
             cTitleBarText(如果类型为 <b>Character</b>)。 <br />
             nTimeout 参数始终假定为传递的第二个可选数字参数。<br />
-            有效示例包括： 
+            有效示例包括：
             <code language="X#">
                 MessageBox("HELLO","MyTitle",68,6000)
                 MessageBox("HELLO",68,"MyTitle",6000)
@@ -1578,13 +1587,13 @@
             NDX( ) 忽略索引文件列表中的复合索引 (.cdx) 文件名。<br />
             如果 nIndexNumber 大于索引文件列表中的 .idx 文件数量，NDX( ) 返回空字符串。
         </param>
-        <param name="uArea"> 
+        <param name="uArea">
             指定在当前工作区以外的工作区中打开的 .IDX 文件的工作区编号。如果在您指定的工作区中没有打开表，NDX( ) 返回空字符串。如果省略
             nWorkArea，NDX( ) 返回当前工作区中与表一起打开的 .idx 文件名。 <br />
-            或<br /> 
+            或<br />
             指定在当前工作区以外的工作区中打开的 .idx 文件的表别名。<br />
             如果没有表具有您包含的别名，X# 会生成错误消息。<br />
-            如果省略 cTableAlias，NDX( ) 返回当前工作区中与表一起打开的 .idx 文件名。 
+            如果省略 cTableAlias，NDX( ) 返回当前工作区中与表一起打开的 .idx 文件名。
         </param>
         <returns>
             字符型
@@ -1627,10 +1636,10 @@
         <summary>
             返回当前或指定表的控制索引文件或控制标识的名称。
         </summary>
-        <param name="uArea"> 
+        <param name="uArea">
             指定 Order( ) 返回其控制索引文件名或控制标识名的表的工作区。 <br />
-            或<br /> 
-            指定 Order( ) 返回其控制索引文件名或控制标识名的表别名。 
+            或<br />
+            指定 Order( ) 返回其控制索引文件名或控制标识名的表别名。
         </param>
         <param name="nPath">
             指定驱动器和目录与单条目或复合索引文件名一起返回。数值表达式 nPath 可以有任何值。
@@ -1662,17 +1671,20 @@
         <summary>
             返回日期或日期时间表达式所在的年份的季度。
         </summary>
+        <param name="uExpression">
+            指定要返回其季度的<b>日期</b>表达式。
+        </param>
         <param name="dExpression"> 指定要返回其季度的<b>日期</b>表达式。 </param>
         <param name="tExpression"> 指定要返回其季度的<b>日期时间</b>表达式。 </param>
         <param name="nMonth">
             指定要检查的季度的可选起始月份。您可以使用此参数来指定基于财政年度而非日历年的季度。
         </param>
-        <returns> 
+        <returns>
             数值型数据类型。<br />
             <b>Quarter( )</b> 返回日期所在的年份的季度，值可以是0、1、2、3或4。 <br />
             如果传递一个空的<b>日期</b>或<b>日期时间</b>值，<b>Quarter( )</b> 返回0，例如，
-            <code  language="X#"> 
-                Quarter(NULL_DATE) 
+            <code  language="X#">
+                Quarter(NULL_DATE)
             </code>
         </returns>
         <seealso cref='O:XSharp.RT.Functions.CMonth'>CMonth( ) 函数</seealso>
@@ -1688,17 +1700,17 @@
         <summary>
             返回字符表达式或备注字段在另一个字符表达式或备注字段中最后一次出现的位置。
         </summary>
-        <param name="cSearchExpression"> 
-            指定 <b>RAt()</b> 在 <paramref name='cExpressionSearched' />中查找的字符表达式。 
+        <param name="cSearchExpression">
+            指定 <b>RAt()</b> 在 <paramref name='cExpressionSearched' />中查找的字符表达式。
         </param>
-        <param name="cExpressionSearched"> 
+        <param name="cExpressionSearched">
             指定 <b>RAt()</b> 搜索的字符表达式。 <br />
-            字符表达式 <paramref name='cSearchExpression' /> 和 <paramref name='cExpressionSearched' /> 可以是任意大小的备注字段。 
+            字符表达式 <paramref name='cSearchExpression' /> 和 <paramref name='cExpressionSearched' /> 可以是任意大小的备注字段。
         </param>
-        <param name="nOccurrence"> 
+        <param name="nOccurrence">
             指定 <b>RAt( )</b> 在 <paramref name='cExpressionSearched' /> 中从右向左搜索 <paramref name='cSearchExpression' /> 的第几次出现。 <br />
             默认情况下，<b>RAt()</b> 搜索 <paramref name='cSearchExpression' /> 的最后一次出现(nOccurrence 等于 1)。 <br />
-            如果 nOccurrence 为 2，<b>RAt()</b> 搜索倒数第二次出现，依此类推。 
+            如果 nOccurrence 为 2，<b>RAt()</b> 搜索倒数第二次出现，依此类推。
         </param>
         <returns>
             数值型
@@ -1711,17 +1723,17 @@
         <summary>
             返回字符表达式或备注字段在另一个字符表达式或备注字段中最后一次出现的位置。
         </summary>
-        <param name="cSearchExpression"> 
-            指定 <b>RAtC()</b> 在 <paramref name='cExpressionSearched' /> 中查找的字符表达式。 
+        <param name="cSearchExpression">
+            指定 <b>RAtC()</b> 在 <paramref name='cExpressionSearched' /> 中查找的字符表达式。
         </param>
-        <param name="cExpressionSearched"> 
+        <param name="cExpressionSearched">
             指定 <b>RAtC()</b> 搜索的字符表达式。 <br />
-            字符表达式 <paramref name='cSearchExpression' /> 和 <paramref name='cExpressionSearched' /> 可以是任意大小的备注字段。 
+            字符表达式 <paramref name='cSearchExpression' /> 和 <paramref name='cExpressionSearched' /> 可以是任意大小的备注字段。
         </param>
-        <param name="nOccurrence"> 
+        <param name="nOccurrence">
             指定 <b>RAtC( )</b> 在 <paramref name='cExpressionSearched' /> 中从右向左搜索 <paramref name='cSearchExpression' /> 的第几次出现。 <br />
             默认情况下，<b>RAtC()</b> 搜索 <paramref name='cSearchExpression' /> 的最后一次出现(nOccurrence 等于 1)。 <br />
-            如果 nOccurrence 为 2，<b>RAtC()</b> 搜索倒数第二次出现，依此类推。 
+            如果 nOccurrence 为 2，<b>RAtC()</b> 搜索倒数第二次出现，依此类推。
         </param>
         <returns>
             数值型
@@ -1734,14 +1746,14 @@
         <summary>
             返回在特定工作区中打开的表的指定关系表达式。
         </summary>
-        <param name="nRelationNumber"> 
+        <param name="nRelationNumber">
             指定返回的关系。<br />
-            例如，如果 nRelationNumber 为 3，<b>RELATION( )</b> 返回为第三个创建的关系的关系表达式。 
+            例如，如果 nRelationNumber 为 3，<b>RELATION( )</b> 返回为第三个创建的关系的关系表达式。
         </param>
-        <param name="uArea"> 
+        <param name="uArea">
             指定在另一个工作区中打开的表的工作区。如果指定的工作区中没有打开表，<b>RELATION( )</b> 返回空字符串。 <br />
             或<br />
-            指定在另一个工作区中打开的表的表别名。 
+            指定在另一个工作区中打开的表的表别名。
         </param>
         <returns>
             字符型
@@ -1782,14 +1794,14 @@
             指定要从对象中删除的现有属性的名称。您只能指定属性名称，不能指定事件或方法名称。
         </param>
         <returns> 逻辑型。<b>REMOVEPROPERTY( )</b> 如果成功删除属性，则返回 True (.T.)；否则，返回 False (.F.)。 </returns>
-        <remarks> 
+        <remarks>
             您可以使用 <b>REMOVEPROPERTY( )</b> 删除属性，但不能删除方法或事件。<br />
-            您可以将 <b>REMOVEPROPERTY( )</b> 与从 X# 类、COM 类、<b>SCATTER...NAME</b> 命令、<b>_VFP</b> 和 <b>_SCREEN</b> 创建的对象实例一起使用。 
+            您可以将 <b>REMOVEPROPERTY( )</b> 与从 X# 类、COM 类、<b>SCATTER...NAME</b> 命令、<b>_VFP</b> 和 <b>_SCREEN</b> 创建的对象实例一起使用。
             属性必须是可见的 <b>Public</b>，而不是 <b>Hidden</b> 或 <b>Protected</b>，并且已添加到对象的实例中，
             通常使用 <b>ADDPROPERTY( )</b> 函数、<b>AddProperty</b> 方法或 <b>SCATTER...NAME</b> 命令，以便可以使用 <b>REMOVEPROPERTY( )</b> 删除它们。<br />
             如果属性是用于创建对象实例的类定义的成员，则无法删除该属性。 <br />
             <b>REMOVEPROPERTY( )</b> 函数不会删除特定数组元素的属性。要删除数组，只需提供数组名称。 <br />
-            <b>示例 1</b> 以下示例向使用 <b>SCATTER</b> 命令创建的对象添加新属性，然后将其删除。 
+            <b>示例 1</b> 以下示例向使用 <b>SCATTER</b> 命令创建的对象添加新属性，然后将其删除。
             <code language="X#">
                 Use customers
                 SCATTER NAME oCust
@@ -1797,7 +1809,7 @@
                 REMOVEPROPERTY(oCust,"MyProperty")
             </code>
 
-            <b>示例 2</b> 以下示例为对象 oMyForm 创建一个属性数组，显示其内容 1 和 "Two"，然后将其删除。 
+            <b>示例 2</b> 以下示例为对象 oMyForm 创建一个属性数组，显示其内容 1 和 "Two"，然后将其删除。
             <code language="X#">
                 oMyForm = CreateObject('Form')
                 ADDPROPERTY(oMyForm, 'MyArray(2)', 1)
@@ -1883,13 +1895,13 @@
         </summary>
         <remarks>
             <b>SqlCancel( )</b> 取消异步模式下 <b>SqlColumns( )</b>、<b>SqlExec( )</b>、<b>SqlMoreResults( )</b> 和 <b>SqlTables( )</b> 的执行。 <br />
-            要建立异步模式，请使用 <b>SqlSetProp( )</b> 函数。 
+            要建立异步模式，请使用 <b>SqlSetProp( )</b> 函数。
         </remarks>
         <param name="nStatementHandle">
             指定要取消其 SQL 语句的活动语句句柄。
         </param>
-        <returns> 
-            数值型。<b>SqlCancel( )</b> 如果 SQL 语句成功取消，则返回 1；如果存在连接级别错误，则返回 -1；如果存在环境级别错误，则返回 -2。 
+        <returns>
+            数值型。<b>SqlCancel( )</b> 如果 SQL 语句成功取消，则返回 1；如果存在连接级别错误，则返回 -1；如果存在环境级别错误，则返回 -2。
         </returns>
         <example>
             <code language="X#">
@@ -1910,24 +1922,24 @@
         <param name="nStatementHandle">
             指定一个活动语句句柄。
         </param>
-        <param name="cTableName"> 
+        <param name="cTableName">
             指定返回列名的表的名称。TableName 可以包含通配符字符 ? 和 *。 问号 (?) 匹配任何单个字符，星号 (*) 匹配任意数量的字符。
         </param>
-        <param name="cType"> 
-            指定结果集中列信息的格式。该值必须是 "Foxpro" 或 "Native"<br /> 
+        <param name="cType">
+            指定结果集中列信息的格式。该值必须是 "Foxpro" 或 "Native"<br />
             Native 格式选项以与数据源相同的格式存储表的列信息。Foxpro 格式选项以与将数据源表导入 X# 时创建的 X# 表或游标相同的格式存储列信息。<br />
-            Foxpro 或 Native，格式选项默认为 Foxpro。<br /> 
-            备注部分显示了 Foxpro 格式的结果集中的列。 
+            Foxpro 或 Native，格式选项默认为 Foxpro。<br />
+            备注部分显示了 Foxpro 格式的结果集中的列。
         </param>
         <param name="cCursorName">
             指定结果集的 X# 游标的名称。如果不包括游标名称，X# 使用默认名称 SQLRESULT。
         </param>
-        <returns> 
+        <returns>
             数值型或逻辑型。<br />
             <b>SqlColumns( )</b> 如果游标成功创建，则返回 1；<br />
             如果 <b>SqlColumns( )</b> 仍在执行，则返回 0；<br />
             如果发生连接级别错误，则返回 -1；<br />
-            如果发生环境级别错误，则返回 -2。 
+            如果发生环境级别错误，则返回 -2。
         </returns>
         <remarks>
             <b>SqlColumns( )</b> 是四个可以同步或异步执行的函数之一。 <br />
@@ -1954,10 +1966,10 @@
                     <term>Field_dec</term>
                     <description>小数位数</description>
                 </item>
-            </list> 
+            </list>
             Native 格式的结果集中的列取决于数据源。<br />
             如果使用 cTableName 指定的表不存在且格式设置为 Native，<b>SqlColumns( )</b> 返回 true (.T.) 并创建一个空表或游标。<br />
-            如果使用 cTableName 指定的表不存在且格式设置为 Foxpro，<b>SqlColumns( )</b> 返回 false (.F.)。 
+            如果使用 cTableName 指定的表不存在且格式设置为 Foxpro，<b>SqlColumns( )</b> 返回 false (.F.)。
         </remarks>
         <example>
             <code language="X#">
@@ -1975,16 +1987,16 @@
         <summary>
             提交事务。
         </summary>
-        <param name="nStatementHandle"> 
-            指定由 <b>SqlConnect( )</b> 返回的数据源的语句句柄。 
+        <param name="nStatementHandle">
+            指定由 <b>SqlConnect( )</b> 返回的数据源的语句句柄。
         </param>
-        <returns> 
-            数值型。<b>SqlCommit( )</b> 如果事务成功提交，则返回 1；否则，返回 -1。<br /> 
-            如果 <b>SqlCommit( )</b> 返回 -1，您可以使用 <b>AError( )</b> 来确定事务无法提交的原因。 
+        <returns>
+            数值型。<b>SqlCommit( )</b> 如果事务成功提交，则返回 1；否则，返回 -1。<br />
+            如果 <b>SqlCommit( )</b> 返回 -1，您可以使用 <b>AError( )</b> 来确定事务无法提交的原因。
         </returns>
-        <remarks> 
-            如果手动事务生效(<b>SqlSetProp( )</b> 的 Transactions 属性设置为 Manual），您可以向远程表发送多个更新，并使用 <b>SqlCommit( )</b> 提交所有更新。<br /> 
-            更新可以使用 <b>SqlRollBack( )</b> 回滚。 
+        <remarks>
+            如果手动事务生效(<b>SqlSetProp( )</b> 的 Transactions 属性设置为 Manual），您可以向远程表发送多个更新，并使用 <b>SqlCommit( )</b> 提交所有更新。<br />
+            更新可以使用 <b>SqlRollBack( )</b> 回滚。
         </remarks>
         <example>
             <code language="X#">
@@ -2003,7 +2015,7 @@
     <sqlconnectoverload>
         <overloads>
             <summary>
-                <b>SqlConnect( )</b> 函数有两种不同的重载。 您可以传递数据源、用户ID和密码，或者传递现有(共享)语句的句柄。 
+                <b>SqlConnect( )</b> 函数有两种不同的重载。 您可以传递数据源、用户ID和密码，或者传递现有(共享)语句的句柄。
             </summary>
             <seealso cref="O:XSharp.VFP.Functions.SqlDisconnect">SqlDisconnect()</seealso>
             <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
@@ -2019,11 +2031,11 @@
             建立与数据源的连接。
         </summary>
         <param name="nStatementHandle">
-            这指定为由 nStatementHandle 表示的底层共享连接创建一个新的语句句柄。新的语句句柄使用 nStatementHandle 提供的设置，而不是使用默认设置。<br /> 
+            这指定为由 nStatementHandle 表示的底层共享连接创建一个新的语句句柄。新的语句句柄使用 nStatementHandle 提供的设置，而不是使用默认设置。<br />
             您不能为未共享的连接创建新的语句句柄。
         </param>
-        <param name="cDataSourceName"> 
-            这指定一个 ODBC 数据源名称。对于非 ODBC 连接，我们建议您使用 <b>SqlStringConnect()</b> 进行连接。 
+        <param name="cDataSourceName">
+            这指定一个 ODBC 数据源名称。对于非 ODBC 连接，我们建议您使用 <b>SqlStringConnect()</b> 进行连接。
         </param>
         <param name="cUserID">
             指定用于登录数据源的用户标识符。如果 ODBC 数据源中存储了用户 ID/密码，则可以省略此项。
@@ -2031,39 +2043,39 @@
         <param name="cPassword">
             指定用于访问数据源的密码。如果 ODBC 数据源中存储了用户 ID/密码，则可以省略此项。
         </param>
-        <param name="lShared"> 
-            指定是否创建共享连接。<br /> 
+        <param name="lShared">
+            指定是否创建共享连接。<br />
             False (.F.) - <b>SqlConnect( )</b> 不创建共享连接。(默认)<br />
-            True (.T.) - <b>SqlConnect( )</b> 创建共享连接。 
+            True (.T.) - <b>SqlConnect( )</b> 创建共享连接。
         </param>
-        <returns> 
-            数值数据类型。<br /> 
-            如果成功连接到数据源，<b>SqlConnect( )</b> 返回一个正的非零数值作为语句句柄。 <br /> 
-            如果无法建立连接，<b>SqlConnect( )</b> 返回 -1。<br /> 
-            您应将此语句句柄存储在内存变量中，并在需要连接句柄的后续函数调用中使用该变量。 
+        <returns>
+            数值数据类型。<br />
+            如果成功连接到数据源，<b>SqlConnect( )</b> 返回一个正的非零数值作为语句句柄。 <br />
+            如果无法建立连接，<b>SqlConnect( )</b> 返回 -1。<br />
+            您应将此语句句柄存储在内存变量中，并在需要连接句柄的后续函数调用中使用该变量。
         </returns>
         <remarks>
-            <b>SqlConnect( )</b> 和 <b>SqlStringConnect( )</b> 函数返回一个数值作为语句句柄，而不是连接句柄。<br /> 
+            <b>SqlConnect( )</b> 和 <b>SqlStringConnect( )</b> 函数返回一个数值作为语句句柄，而不是连接句柄。<br />
             您不能直接获取连接句柄。您仍然可以使用 <b>SqlSetProp( )</b> 和 <b>SqlGetProp( )</b> 函数通过传递该连接的语句句柄和字符串
-            "Shared" 作为参数来设置和获取连接属性。所有其他 SQL 函数使用语句句柄而不是连接句柄。<br /> 
-            如果您发出类似 
+            "Shared" 作为参数来设置和获取连接属性。所有其他 SQL 函数使用语句句柄而不是连接句柄。<br />
+            如果您发出类似
             <code language="X#">
                 SqlConnect(cConnectionName, .T.)
-            </code> 
+            </code>
             的语句，并且已经有一个具有相同名称的共享连接打开，则该连接的设置不会更改为数据库容器(DBC) 中存储的设置。<br />
-            但是，新的语句句柄将使用 DBC 中的语句设置。<br /> 
+            但是，新的语句句柄将使用 DBC 中的语句设置。<br />
             您必须禁用开放数据库连接 (ODBC) 登录对话框，以支持 Microsoft 事务服务器的 SQL 直通。 <br />
-            要禁用 ODBC 登录对话框，请使用语句 
+            要禁用 ODBC 登录对话框，请使用语句
             <code language="X#">
                 SqlSetProp(nStatementHandle, 'DispLogin', 3)
             </code>
-            其中 cStatementHandle 是 <b>SqlConnect( )</b> 返回的语句句柄。您还可以在连接设计器中禁用 ODBC 登录对话框。 
+            其中 cStatementHandle 是 <b>SqlConnect( )</b> 返回的语句句柄。您还可以在连接设计器中禁用 ODBC 登录对话框。
         </remarks>
         <example>
-            <b>示例 1</b><br /> 
-            以下示例假设存在并可用一个名为 MyFoxSQLNT 的 ODBC 数据源。<b>SqlConnect( )</b> 返回一个数值，该数值存储在名为 <b>gnConnHandle</b> 的变量中。<br /> 
-            如果您成功连接到数据源，<b>SqlConnect( )</b> 返回一个正数，出现一个对话框，并调用 <b>SqlDisconnect( )</b> 以断开与数据源的连接。<br /> 
-            如果您无法连接到数据源，<b>SqlConnect( )</b> 返回一个负数并显示一条消息。 
+            <b>示例 1</b><br />
+            以下示例假设存在并可用一个名为 MyFoxSQLNT 的 ODBC 数据源。<b>SqlConnect( )</b> 返回一个数值，该数值存储在名为 <b>gnConnHandle</b> 的变量中。<br />
+            如果您成功连接到数据源，<b>SqlConnect( )</b> 返回一个正数，出现一个对话框，并调用 <b>SqlDisconnect( )</b> 以断开与数据源的连接。<br />
+            如果您无法连接到数据源，<b>SqlConnect( )</b> 返回一个负数并显示一条消息。
             <code language="X#">
                 STORE SqlConnect('MyFoxSQLNT', 'myUserID', 'myPassword') TO gnConnHandle
 
@@ -2074,15 +2086,15 @@
                     = SqlDisconnect(gnHandle)
                 ENDIF
             </code>
-            <b>示例 2</b><br /> 
-            以下每个示例都创建新的共享连接。出现选择数据源对话框，并且 <b>SqlConnect( )</b> 将结果连接创建为共享连接。 
+            <b>示例 2</b><br />
+            以下每个示例都创建新的共享连接。出现选择数据源对话框，并且 <b>SqlConnect( )</b> 将结果连接创建为共享连接。
             <code language="X#">
                 SqlConnect(.T.)
                 SqlConnect( myConnectionName, .T. )
                 SqlConnect( myDataSourceName, myUserID, myPassword, .T. )
             </code>
-            <b>示例 3</b><br /> 
-            以下每个示例都基于现有的共享连接创建一个新的语句句柄。 
+            <b>示例 3</b><br />
+            以下每个示例都基于现有的共享连接创建一个新的语句句柄。
             <code language="X#">
                 SqlConnect( nStatementHandleValue )
                 SqlConnect( myConnectionName, .T. )
@@ -2100,16 +2112,16 @@
         <summary>
             终止与数据源的连接。
         </summary>
-        <param name="nStatementHandle"> 
-            指定由 <b>SqlConnect( )</b> 返回的数据源的语句句柄。<br /> 
-            指定 0 作为 nStatementHandle 以终止所有活动连接。 
+        <param name="nStatementHandle">
+            指定由 <b>SqlConnect( )</b> 返回的数据源的语句句柄。<br />
+            指定 0 作为 nStatementHandle 以终止所有活动连接。
         </param>
-        <returns> 
-            数值型。<b>SqlDisconnect( )</b> 如果成功终止连接，返回 1；如果有连接级别错误，返回 -1；如果有环境级别错误，返回 -2。 
+        <returns>
+            数值型。<b>SqlDisconnect( )</b> 如果成功终止连接，返回 1；如果有连接级别错误，返回 -1；如果有环境级别错误，返回 -2。
         </returns>
         <remarks>
             <b>SqlDisconnect( )</b> 终止与数据源的连接。您必须提供建立连接时 <b>SqlConnect( )</b> 返回的语句句柄。<br />
-            如果在异步函数序列或事务期间执行 <b>SqlDisconnect( )</b>，<b>SqlDisconnect( )</b> 会生成错误。 
+            如果在异步函数序列或事务期间执行 <b>SqlDisconnect( )</b>，<b>SqlDisconnect( )</b> 会生成错误。
         </remarks>
         <example>
             <code language="X#">
@@ -2131,48 +2143,48 @@
         <summary>
             发送 SQL 语句到数据源，并在数据源中处理该语句。
         </summary>
-        <param name="nStatementHandle"> 
+        <param name="nStatementHandle">
             指定由 <b>SqlConnect( )</b> 函数返回的数据源的语句句柄。<br />
-            有关更多信息，请参见 SqlConnect( ) 函数。 
+            有关更多信息，请参见 SqlConnect( ) 函数。
         </param>
-        <param name="cSQLCommand"> 
-            指定传递到数据源的 SQL 语句。<br /> 
+        <param name="cSQLCommand">
+            指定传递到数据源的 SQL 语句。<br />
             SQL 语句可以包含参数化的 Where 子句，这会创建一个参数化视图。在发出 <b>SqlExec( )</b> 之前，必须定义 Where 子句中的所有参数。 例如，如果参数是变量，则必须在发出 <b>SqlExec( )</b> 之前创建并初始化这些变量。<br />
-            有关参数化视图的更多信息，请参见如何：创建参数化视图。<br /> 
-            您可以在 SQL 语句中包含表达式。X# 在将 SQL 语句传递到数据源之前会评估所有表达式。 X# 可以将内存变量名、函数调用和括号中的表达式评估为参数值。 
+            有关参数化视图的更多信息，请参见如何：创建参数化视图。<br />
+            您可以在 SQL 语句中包含表达式。X# 在将 SQL 语句传递到数据源之前会评估所有表达式。 X# 可以将内存变量名、函数调用和括号中的表达式评估为参数值。
             <note type="tip">
                 X# 目前不支持参数化查询
             </note>
         </param>
-        <param name="cCursorName"> 
+        <param name="cCursorName">
             指定结果集发送到的 X# 游标的名称。如果不包含游标名称，X# 使用默认名称 SQLRESULT。<br />
-            对于多个结果集，新游标名称通过在第一个游标名称后附加一个递增的数字来派生。 
+            对于多个结果集，新游标名称通过在第一个游标名称后附加一个递增的数字来派生。
         </param>
         <param name="aCountInfo">
             指定一个数组，用于填充行计数信息。数组会调整大小以容纳所有结果集。<br />
             数组有两列：1 – 别名，2 – 计数。
         </param>
-        <returns> 
+        <returns>
             数值型。<b>SqlExec( )</b> 返回结果集的数量(如果有多个)。<br />
             <b>SqlExec( )</b> 返回 0 表示仍在执行，返回 1 表示已完成执行。<br />
-            <b>SqlExec( )</b> 返回 -1 表示发生连接级别错误。 
+            <b>SqlExec( )</b> 返回 -1 表示发生连接级别错误。
         </returns>
-        <remarks> 
+        <remarks>
             如果您要传递的 SQL 语句很长，请检查它是否超过了 X# 中字符串字面量的最大长度(255 个字符)。<br />
-            较长的字符串会导致“命令包含无法识别的短语/关键字”错误。但是，如果将长 SQL 语句分成几个连接的字面量，则可以传递长 SQL 语句。例如： 
+            较长的字符串会导致“命令包含无法识别的短语/关键字”错误。但是，如果将长 SQL 语句分成几个连接的字面量，则可以传递长 SQL 语句。例如：
             <code language="X#">
                 lnRetVal = SqlExec(lnHandle, "Select &lt;long list of fields&gt; " + ;
                                                 "From &lt;several tables&gt; " + ;
                                                 "Where &lt;complex filter expression&gt;")
             </code>
             如果 <b>SqlExec( )</b> 用于执行用 <b>SqlPrepare( )</b> 准备的 SQL 语句，则只需要连接句柄参数 nStatementHandle。应省略 cSQLCommand 和 CursorName 参数。<br />
-            有关更多信息，请参见 SqlPrepare( ) 函数。<br /> 
+            有关更多信息，请参见 SqlPrepare( ) 函数。<br />
             如果 SQL 语句生成一个结果集，<b>SqlExec( )</b> 将结果集存储到指定的 X# 游标中。 <br />
             如果 SQL 语句生成两个或更多结果集，
             您可以通过使用 SqlSetProp( ) 函数将连接的 BatchMode 属性设置为 False (.F.) 并在每次调用 SqlMoreResults( ) 函数时更改游标名称来命名每个结果集。
             否则，SqlExec( ) 通过在第一个结果集名称后附加顺序编号来命名每个结果集。<br />
             <b>SqlExec( )</b> 是四个可以同步或异步执行的函数之一。 <b>SqlSetProp( )</b> 的异步设置决定这些函数是同步还是异步执行。 <br />
-            在异步模式下，您必须重复调用 <b>SqlExec( )</b> 直到它返回一个非 0 的值(仍在执行)。 
+            在异步模式下，您必须重复调用 <b>SqlExec( )</b> 直到它返回一个非 0 的值(仍在执行)。
             <list type="table">
                 <listheader>
                     <term>列</term>
@@ -2184,9 +2196,9 @@
                     <term>别名</term>
                     <description>0</description>
                     <description>字符型</description>
-                    <description> 
-                        表示 SQL 命令未返回任何结果。要么没有返回记录，要么 SQL 命令在返回结果之前失败。 
-                        (最终 <b>SqlMoreResults</b> 调用)或执行在任何结果处理之前失败。只能在第一行。 该行的计数列包含值 -1。 
+                    <description>
+                        表示 SQL 命令未返回任何结果。要么没有返回记录，要么 SQL 命令在返回结果之前失败。
+                        (最终 <b>SqlMoreResults</b> 调用)或执行在任何结果处理之前失败。只能在第一行。 该行的计数列包含值 -1。
                     </description>
                 </item>
                 <item>
@@ -2213,8 +2225,8 @@
                 </item>
             </list>
         </remarks>
-        <example> 
-            以下示例展示了使用 <b>SqlExec( )</b> 执行临时查询以及调用或创建存储过程的各种方法： 
+        <example>
+            以下示例展示了使用 <b>SqlExec( )</b> 执行临时查询以及调用或创建存储过程的各种方法：
             <code language="X#">
                 Clear
                 LOCAL lnConn
@@ -2302,7 +2314,7 @@
                     =MessageBox("连接错误 = " + ;
                     ALLTRIM(STR(nHandle)),0,"连接结果")
                 ENDIF
-                
+
                 =SqlDisconnect(nHandle)
             </code>
         </example>
@@ -2338,9 +2350,9 @@
         <param name="nStatementHandle">
             指定由 SqlConnect() 返回的数据源的语句句柄。
         </param>
-        <param name="cCursorName"> 
+        <param name="cCursorName">
             指定结果集发送到的 X# 游标的名称。如果不包含游标名称，X# 使用默认名称 SQLRESULT。<br />
-            对于多个结果集，新游标名称通过在第一个游标名称后附加一个递增的数字来派生。 
+            对于多个结果集，新游标名称通过在第一个游标名称后附加一个递增的数字来派生。
         </param>
         <param name="aCountInfo">
             指定用于填充行计数信息的数组的名称。如果数组不存在，则会创建该数组。<br />
@@ -2353,9 +2365,9 @@
             SqlSetProp() 的批处理模式选项的设置决定了 SqlExec() 是以批处理模式还是非批处理模式执行。<br />
             如果发生连接级别错误，SqlMoreResults() 返回 -1；如果发生环境级别错误，返回 -2。
         </returns>
-        <remarks> 
+        <remarks>
             SqlMoreResults() 确定是否有更多结果集可用，这些结果集是通过在非批处理模式下执行 SqlExec() 的 SQL 语句生成的。<br />
-            如果有更多结果集可用，它们会被逐个复制到 X# 游标中。<br /> 
+            如果有更多结果集可用，它们会被逐个复制到 X# 游标中。<br />
             SqlMoreResults() 是四个可以同步或异步执行的函数之一。 SqlSetProp() 的异步设置决定这些函数是同步还是异步执行。 <br />
             在异步模式下，必须重复调用 SqlMoreResults() 直到它返回一个非 0 的值(仍在执行)。<br />
             <list type="table">
@@ -2369,9 +2381,9 @@
                     <term>别名</term>
                     <description>0</description>
                     <description>字符型</description>
-                    <description> 
-                        表示 SQL 命令未返回任何结果。可能是没有记录返回，或者 SQL 命令在返回结果之前失败了。 
-                        (最后一次 <b>SqlMoreResults</b> 调用)或执行在任何结果处理之前失败。只能在第一行。 该行的计数列包含值 -1。 
+                    <description>
+                        表示 SQL 命令未返回任何结果。可能是没有记录返回，或者 SQL 命令在返回结果之前失败了。
+                        (最后一次 <b>SqlMoreResults</b> 调用)或执行在任何结果处理之前失败。只能在第一行。 该行的计数列包含值 -1。
                     </description>
                 </item>
                 <item>
@@ -2420,17 +2432,17 @@
         <param name="nStatementHandle">
             指定由 SqlConnect( ) 返回的数据源的语句句柄。
         </param>
-        <param name="cSQLCommand"> 
-            指定传递到数据源的 SQL 语句。<br /> 
+        <param name="cSQLCommand">
+            指定传递到数据源的 SQL 语句。<br />
             SQL 语句可以包含参数化的 Where 子句，这会创建一个参数化视图。在发出 SqlPrepare( ) 之前，必须定义 Where 子句中的所有参数。 <br />
-            例如，如果参数是变量，则必须在发出 SqlPrepare( ) 之前创建并初始化这些变量。 
+            例如，如果参数是变量，则必须在发出 SqlPrepare( ) 之前创建并初始化这些变量。
             <note type="tip">
                 X# 目前不支持参数化查询
             </note>
         </param>
-        <param name="cCursorName"> 
+        <param name="cCursorName">
             指定结果集发送到的 X# 游标的名称。如果不包含游标名称，X# 使用默认名称 SQLRESULT。<br />
-            对于多个结果集，新游标名称通过在第一个游标名称后附加一个递增的数字来派生。 
+            对于多个结果集，新游标名称通过在第一个游标名称后附加一个递增的数字来派生。
         </param>
         <returns>
             数值型
@@ -2466,9 +2478,9 @@
             数值型。如果事务成功回滚，SqlRollBack( ) 返回 1；否则，返回 -1。<br />
             如果 SqlRollBack( ) 返回 -1，您可以使用 AError( ) 确定事务无法回滚的原因。
         </returns>
-        <remarks> 
+        <remarks>
             如果手动事务生效(SqlSetProp( ) 事务属性设置为手动，则您可以向远程表发送多个更新。 所有更新都可以使用 SqlRollBack( ) 回滚。<br />
-            更新可以使用 SqlCommit( ) 提交。 
+            更新可以使用 SqlCommit( ) 提交。
         </remarks>
         <example>
             <code language="X#">
@@ -2485,8 +2497,8 @@
     </sqlrollback>
 
     <sqlsetfactory>
-        <summary> 
-            此函数允许您选择用于后续 <b>SqlConnect()</b> 或 <b>SqlStringConnect()</b> 调用的 Ado.Net 提供程序。 
+        <summary>
+            此函数允许您选择用于后续 <b>SqlConnect()</b> 或 <b>SqlStringConnect()</b> 调用的 Ado.Net 提供程序。
         </summary>
         <param name="cFactory">这是一个内置 SQL Factory 的名称，作为字符串。目前有效的值是："ODBC"、"OLEDB" 和 "SQLSERVER"。</param>
         <param name="oFactory">一个实现 ISqlFactory 的对象。此对象用于创建连接及其命令等。</param>
@@ -2516,10 +2528,10 @@
             数值型。SqlSetProp( ) 成功时返回 1。
             否则，如果发生连接级别错误，则返回 -1；如果发生环境级别错误，则返回 -2。
         </returns>
-        <remarks> 
-            您可以使用 SqlGetProp( ) 返回指定设置的当前值。<br /> 
+        <remarks>
+            您可以使用 SqlGetProp( ) 返回指定设置的当前值。<br />
             您必须禁用开放数据库连接 (ODBC) 登录对话框以支持 Microsoft 事务服务器的 SQL 直通。 <br />
-            要禁用 ODBC 登录对话框，请使用语句 
+            要禁用 ODBC 登录对话框，请使用语句
             <code language="X#">
                 SqlSetProp(cStatementHandle, 'DispLogin', 3)
             </code>
@@ -2570,24 +2582,24 @@
                 </item>
                 <item>
                     <term>DisconnectRollback</term>
-                    <description> 
-                        指定当为最后一个连接句柄调用 SqlDisconnect( ) 时，是否提交或回滚挂起的事务。<br /> 
-                        默认值为 false (.F.)，表示当为最后一个连接句柄调用 SqlDisconnect( ) 时提交挂起的事务。<br /> 
-                        指定 true (.T.) 以在为最后一个连接句柄调用 SqlDisconnect( ) 时回滚挂起的事务。<br /> 
-                        自动事务处理的连接不受此设置影响。 
+                    <description>
+                        指定当为最后一个连接句柄调用 SqlDisconnect( ) 时，是否提交或回滚挂起的事务。<br />
+                        默认值为 false (.F.)，表示当为最后一个连接句柄调用 SqlDisconnect( ) 时提交挂起的事务。<br />
+                        指定 true (.T.) 以在为最后一个连接句柄调用 SqlDisconnect( ) 时回滚挂起的事务。<br />
+                        自动事务处理的连接不受此设置影响。
                     </description>
                     <description>读/写</description>
                 </item>
                 <item>
                     <term>DispLogin</term>
-                    <description> 
-                        包含一个数值，确定何时显示 ODBC 登录对话框。DispLogin 可以取以下值：<br /> 
-                        1 或 DB_PROMPTCOMPLETE(来自 Foxpro.H)。1 是默认值。<br /> 
-                        2 或 DB_PROMPTALWAYS(来自 Foxpro.H)。<br /> 
-                        3 或 DB_PROMPTNEVER(来自 Foxpro.H)。<br /> 
-                        如果指定 1 或 DB_PROMPTCOMPLETE，X# 仅在缺少任何必需信息时显示 ODBC 登录对话框。<br /> 
-                        如果指定 2 或 DB_PROMPTALWAYS，始终显示 ODBC 登录对话框，使您可以在连接之前更改设置。<br /> 
-                        如果指定 3 或 DB_PROMPTNEVER，不显示 ODBC 登录对话框，如果所需的登录信息不可用，X# 会生成错误。读/写。 
+                    <description>
+                        包含一个数值，确定何时显示 ODBC 登录对话框。DispLogin 可以取以下值：<br />
+                        1 或 DB_PROMPTCOMPLETE(来自 Foxpro.H)。1 是默认值。<br />
+                        2 或 DB_PROMPTALWAYS(来自 Foxpro.H)。<br />
+                        3 或 DB_PROMPTNEVER(来自 Foxpro.H)。<br />
+                        如果指定 1 或 DB_PROMPTCOMPLETE，X# 仅在缺少任何必需信息时显示 ODBC 登录对话框。<br />
+                        如果指定 2 或 DB_PROMPTALWAYS，始终显示 ODBC 登录对话框，使您可以在连接之前更改设置。<br />
+                        如果指定 3 或 DB_PROMPTNEVER，不显示 ODBC 登录对话框，如果所需的登录信息不可用，X# 会生成错误。读/写。
                     </description>
                     <description>读/写</description>
                 </item>
@@ -2616,9 +2628,9 @@
                 </item>
                 <item>
                     <term>PacketSize</term>
-                    <description> 
-                        连接使用的网络数据包大小。调整此值可以提高性能。 默认值为 4096 字节(4K)。<br /> 
-                        更改此属性并不适用于所有提供程序。 
+                    <description>
+                        连接使用的网络数据包大小。调整此值可以提高性能。 默认值为 4096 字节(4K)。<br />
+                        更改此属性并不适用于所有提供程序。
                     </description>
                     <description>读/写</description>
                 </item>
@@ -2642,9 +2654,9 @@
                 </item>
                 <item>
                     <term>Transactions</term>
-                    <description> 
-                        包含一个数值，确定连接如何管理远程表上的事务。事务可以取以下值：<br /> 
-                        1 或 DB_TRANSAUTO(来自 Foxpro.H)。1 是默认值。远程表的事务处理自动处理。<br /> 
+                    <description>
+                        包含一个数值，确定连接如何管理远程表上的事务。事务可以取以下值：<br />
+                        1 或 DB_TRANSAUTO(来自 Foxpro.H)。1 是默认值。远程表的事务处理自动处理。<br />
                         2 或 DB_TRANSMANUAL(来自 Foxpro.H)。事务处理通过 SqlCommit( ) 和 SqlRollBack( ) 手动处理。<br />
                     </description>
                     <description>读/写</description>
@@ -2695,7 +2707,7 @@
         <overloads>
             <summary>
                 <b>SqlStringConnect( )</b> 函数有 3 种不同的重载。您可以传递一个连接字符串， 这样运行时将尝试使用该字符串连接到数据源。
-                如果您不指定连接字符串，则会显示一个对话框，您可以在其中选择一个连接。 逻辑参数指示您打开的连接是否可以共享。 
+                如果您不指定连接字符串，则会显示一个对话框，您可以在其中选择一个连接。 逻辑参数指示您打开的连接是否可以共享。
             </summary>
             <seealso cref="O:XSharp.VFP.Functions.SqlDisconnect">SqlDisconnect()</seealso>
             <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
@@ -2710,10 +2722,10 @@
         <summary>
             使用连接字符串建立与数据源的连接。
         </summary>
-        <param name="cConnectString"> 
+        <param name="cConnectString">
             这指定了 Ado.Net 连接对象所需的数据源连接字符串。<br />
-            X#将连接字符串传递给 Ado.Net DBConnect 对象。有关数据源连接字符串的更多信息， 请参阅您的 Ado.Net 文档。<br /> 
-            您还可以从选择连接或数据源对话框中选择一个数据源，当您使用空连接字符串调用 <b>SqlStringConnect( )</b> 时，或者通过传递只带有 lShared 参数的重载。 
+            X#将连接字符串传递给 Ado.Net DBConnect 对象。有关数据源连接字符串的更多信息， 请参阅您的 Ado.Net 文档。<br />
+            您还可以从选择连接或数据源对话框中选择一个数据源，当您使用空连接字符串调用 <b>SqlStringConnect( )</b> 时，或者通过传递只带有 lShared 参数的重载。
         </param>
         <param name="lShared">
             指定使用 cConnectString 指定的数据源是否具有共享连接。True (.T.) = 共享，False (.F.) = 独占，这是默认值。
@@ -2721,28 +2733,28 @@
         <param name="lShared">
             指定将要打开的数据源是否应该是共享的。True (.T.) = 共享，False (.F.) = 独占，这是默认值。
         </param>
-        <returns> 
-            数值型。<br /> 
-            如果成功连接到数据源，<b>SqlStringConnect( )</b> 返回一个正的非零数值作为语句句柄。<br />  
-            如果无法建立连接，<b>SqlStringConnect( )</b> 返回 -1。<br /> 
-            您应该将这个语句句柄存储在一个内存变量中，并在后续需要连接句柄的函数调用中使用这个变量。 
+        <returns>
+            数值型。<br />
+            如果成功连接到数据源，<b>SqlStringConnect( )</b> 返回一个正的非零数值作为语句句柄。<br />
+            如果无法建立连接，<b>SqlStringConnect( )</b> 返回 -1。<br />
+            您应该将这个语句句柄存储在一个内存变量中，并在后续需要连接句柄的函数调用中使用这个变量。
         </returns>
         <remarks>
-            <b>SqlConnect( )</b> 和 <b>SqlStringConnect( )</b> 函数返回一个数值作为语句句柄，而不是一个连接句柄。<br /> 
+            <b>SqlConnect( )</b> 和 <b>SqlStringConnect( )</b> 函数返回一个数值作为语句句柄，而不是一个连接句柄。<br />
             您不能直接获取连接句柄。您仍然可以使用 <b>SqlSetProp( )</b> 和 <b>SqlGetProp( )</b> 函数设置和获取连接属性，
-            只需将该连接的语句句柄和字符串 "Shared" 作为参数传递给这些函数。<br /> 
+            只需将该连接的语句句柄和字符串 "Shared" 作为参数传递给这些函数。<br />
             所有其他的 SQL 函数都使用语句句柄，而不是连接句柄。<br />
-            <b>SqlStringConnect( )</b> 在成功建立连接时总是创建一个新的连接。 但是，通过设置 lShared 参数，您可以确定以后是否可以共享这个连接。<br /> 
-            如果您将 lShared 设置为 True(.T.)， 您可以在以后调用 <b>SqlConnect( )</b> 并将连接句柄的数值作为第一个参数传递，从而共享这个连接。<br /> 
-            有关更多信息，请参见 SqlConnect( ) 函数。<br /> 
-            您可以使用 <b>SqlConnect( )</b> 在使用 <b>SqlStringConnect( )</b> 打开的共享连接上获取一个新的语句句柄。 
+            <b>SqlStringConnect( )</b> 在成功建立连接时总是创建一个新的连接。 但是，通过设置 lShared 参数，您可以确定以后是否可以共享这个连接。<br />
+            如果您将 lShared 设置为 True(.T.)， 您可以在以后调用 <b>SqlConnect( )</b> 并将连接句柄的数值作为第一个参数传递，从而共享这个连接。<br />
+            有关更多信息，请参见 SqlConnect( ) 函数。<br />
+            您可以使用 <b>SqlConnect( )</b> 在使用 <b>SqlStringConnect( )</b> 打开的共享连接上获取一个新的语句句柄。
         </remarks>
         <example>
-            <b>示例 1</b><br /> 
-            以下示例假设存在一个名为 MyFoxSQLNT 的 ODBC 数据源，并且该数据源可用。 <br /> 
+            <b>示例 1</b><br />
+            以下示例假设存在一个名为 MyFoxSQLNT 的 ODBC 数据源，并且该数据源可用。 <br />
             <b>SqlStringConnect( )</b> 返回一个数值，该数值存储在一个名为 <b>gnHandle</b> 的变量中。<br />
             如果成功连接到数据源，<b>SqlStringConnect( )</b> 返回一个正的数值，会显示一个对话框，然后调用 <b>SqlDisconnect( )</b> 以断开与数据源的连接。 <br />
-            如果无法连接到数据源，<b>SqlStringConnect( )</b> 返回一个负的数值，并显示一个消息。 
+            如果无法连接到数据源，<b>SqlStringConnect( )</b> 返回一个负的数值，并显示一个消息。
             <code language="X#">
                 STORE SqlStringConnect('dsn=MyFoxSQLNT;uid=myUserID;pwd=myPassword') TO gnConnHandle
 
@@ -2754,16 +2766,16 @@
                 ENDIF
             </code>
 
-            <b>示例 2</b><br /> 
-            以下示例展示了如何在没有数据源名称 (DSN) 的情况下使用 <b>SqlStringConnect( )</b> 函数。 
+            <b>示例 2</b><br />
+            以下示例展示了如何在没有数据源名称 (DSN) 的情况下使用 <b>SqlStringConnect( )</b> 函数。
             <code language="X#">
                 lcDSNLess="driver = SQL Server;server=&lt;servername&gt;;uid=&lt;userid&gt;;pwd=&lt;password&gt;"
-            </code> 
-            -或者- 
+            </code>
+            -或者-
             <code language="X#">
-                lcDSNLess="driver = {SQL Server};server=&lt;servername&gt;;uid=&lt;userid&gt;;pwd=&lt;password&gt;" 
-            </code> 
-            -或者- 
+                lcDSNLess="driver = {SQL Server};server=&lt;servername&gt;;uid=&lt;userid&gt;;pwd=&lt;password&gt;"
+            </code>
+            -或者-
             <code language="X#">
                 lcDSNLess="DRIVER = {SQL Server};" ;
                             + "SERVER=&lt;servername&gt;;" ;
@@ -2774,8 +2786,8 @@
                             + "APP=MicroX(R) Sample App"
                 lnConnHandle=SqlStringConnect(m.lcDSNLess)
             </code>
-            <b>示例 3</b><br /> 
-            以下每个示例都创建一个新的共享连接。在第一条语句中，选择连接或数据源对话框会出现，<b>SqlStringConnect( )</b> 会将生成的连接设置为共享。 
+            <b>示例 3</b><br />
+            以下每个示例都创建一个新的共享连接。在第一条语句中，选择连接或数据源对话框会出现，<b>SqlStringConnect( )</b> 会将生成的连接设置为共享。
             <code language="X#">
                 SqlStringConnect(.T.)
                 SqlStringConnect('myConnectionString', .T.)
@@ -2796,9 +2808,9 @@
         <param name="nStatementHandle">
             指定由 SqlConnect( ) 返回的数据源的语句句柄。
         </param>
-        <param name="cTableTypes"> 
-            指定一个或多个表类型。有效的表类型包括 'Table,' 'View,' 'System Table',或任何有效的数据源特定的表类型标识符。 如果您包含一个表类型列表，用逗号分隔各个表类型。<br /> 
-            如果省略 cTableTypes 或 cTableTypes 为空字符串，将选择数据源中的所有表名。<br /> 
+        <param name="cTableTypes">
+            指定一个或多个表类型。有效的表类型包括 'Table,' 'View,' 'System Table',或任何有效的数据源特定的表类型标识符。 如果您包含一个表类型列表，用逗号分隔各个表类型。<br />
+            如果省略 cTableTypes 或 cTableTypes 为空字符串，将选择数据源中的所有表名。<br />
             您指定的表类型必须用单引号括起来。以下示例演示了如何将 'View' 和 'System Table' 表类型指定为字符串字面量。<br />
             <code language="X#">
                 ? SqlTables(handle, "'View', 'System Table'", "mydbresult")
@@ -2851,16 +2863,16 @@
         <param name="cExpression">
             指定写入文件的字符字符串。cExpression 可以是一个的字符字面量字符串、一个评估为字符串的表达式，或者是一个字符类型的变量、数组元素或字段。
         </param>
-        <param name="cFileName"> 
+        <param name="cFileName">
             指定将字符字符串写入的文件名。如果文件不在当前默认目录中，需要包括文件名的路径。 如果指定的文件不存在，X# 会自动创建它。<br />
         </param>
-        <param name="lAdditive"> 
+        <param name="lAdditive">
             (用于向后兼容)<br />
             指定字符字符串是否被追加到文件的末尾。 <br />
-            如果 lAdditive 为真 (.T.)，字符字符串将被追加到文件的末尾。<br /> 
+            如果 lAdditive 为真 (.T.)，字符字符串将被追加到文件的末尾。<br />
             如果 lAdditive 为假 (.F.) (默认)，文件将被字符字符串覆盖。 <br />
             如果 Set SAFETY 设置为 ON，系统会询问是否要覆盖已有的文件。<br />
-            如果 Set SAFETY 设置为 OFF， 文件将不经提示直接被覆盖。 
+            如果 Set SAFETY 设置为 OFF， 文件将不经提示直接被覆盖。
         </param>
         <param name="nFlags">
             您可以使用 nFlag 参数代替 lAdditive，这样您也可以选择写入 UTF-8 和 Unicode 字节顺序标记。<br />
@@ -2869,10 +2881,10 @@
         <returns>
             数值型；写入文件的字节数。
         </returns>
-        <remarks> 
-            nFlags 值为 3 或 5 是无效的。您不能尝试在 nFlag 位 1，Additive，设置的情况下写入新的字节顺序标记。<br /> 
+        <remarks>
+            nFlags 值为 3 或 5 是无效的。您不能尝试在 nFlag 位 1，Additive，设置的情况下写入新的字节顺序标记。<br />
             与 FoxPro 早期版本不同，StrToFile( ) 打开文件时使用共享模式而不是独占模式。 这对于多个服务器同时尝试写入同一个文件的情况非常有用。由于这个变化， 您可能不需要检查
-            StrToFile( ) 是否返回 0 (失败打开文件)。 
+            StrToFile( ) 是否返回 0 (失败打开文件)。
             <list type="table">
                 <listheader>
                     <term>nFlags</term>
@@ -2941,11 +2953,11 @@
         <returns>
             字符
         </returns>
-        <remarks> 
-            StuffC( ) 是为包含双字节字符的表达式而设计的。 <br /> 
-            如果表达式仅包含单字节字符，StuffC( ) 等同于 Stuff( )。<br /> 
+        <remarks>
+            StuffC( ) 是为包含双字节字符的表达式而设计的。 <br />
+            如果表达式仅包含单字节字符，StuffC( ) 等同于 Stuff( )。<br />
             StuffC( ) 返回在字符表达式中替换指定数量的字符为另一个字符表达式所创建的字符字符串。 字符表达式可以由任何单字节和双字节字符的组合构成。<br />
-            这个函数对于处理如平假名和片假名等双字节字符集非常有用。 
+            这个函数对于处理如平假名和片假名等双字节字符集非常有用。
         </remarks>
     </stuffc>
 
@@ -2983,7 +2995,7 @@
         <param name="CDXFileName">
             指定要从中返回标志名称的 .cdx 文件的名称。
         </param>
-        <param name="nTagNumber"> 
+        <param name="nTagNumber">
             指定一个与复合索引文件中标识创建顺序对应的数字。例如:<br />
             如果 nTagNumber 是 1，则 <b>TAG( )</b> 返回复合索引文件中第一个创建的标志的名称。<br />
             如果 nTagNumber 是 2，则 <b>TAG( )</b> 返回第二个创建的标志的名称，以此类推。<br />
@@ -2992,7 +3004,7 @@
             如果您省略 CDXFileName，<b>TAG( )</b> 按特定顺序返回单项索引文件的名称和复合索引文件的标志名称： <br />
             根据 <b>Use</b> 或 <b>Set Index</b> 的 <b>Index</b> 子句中的顺序，返回单项索引文件的名称。 <br />
             返回结构性复合索引文件(如果存在)的标志名称。 <br />
-            根据 <b>Use</b> 或 <b>Set Index</b> 的 <b>Index</b> 子句中指定的顺序，返回其他打开的复合索引文件的标志名称。 
+            根据 <b>Use</b> 或 <b>Set Index</b> 的 <b>Index</b> 子句中指定的顺序，返回其他打开的复合索引文件的标志名称。
         </param>
         <param name="uArea">
             返回其他工作区中打开的文件的标志名称和索引文件名称。<br />
@@ -3000,9 +3012,9 @@
             默认情况下，返回当前工作区中的文件的标志名称和索引文件名称。
         </param>
         <returns> 字符。 <b>TAG( )</b> 返回一个索引标识名称作为大写字符字符串。 </returns>
-        <remarks> 
+        <remarks>
             标志是复合索引文件 (.cdx) 中的索引项，通过 <b>Index</b> 命令创建。单项索引文件 (.idx) 只包含一项；因此，<b>TAG( )</b> 返回 .idx 文件的文件名。 <br />
-            结构性复合索引文件 (.cdx) 会自动与其表一起打开。您可以使用 <b>Use</b> 命令的 <b>Index</b> 子句或 <b>Set Index</b> 命令为表打开非结构性 .cdx 文件和 .idx 索引文件。 
+            结构性复合索引文件 (.cdx) 会自动与其表一起打开。您可以使用 <b>Use</b> 命令的 <b>Index</b> 子句或 <b>Set Index</b> 命令为表打开非结构性 .cdx 文件和 .idx 索引文件。
         </remarks>
         <example>
             <code language="X#">
@@ -3039,10 +3051,10 @@
             如果当前表中不存在 CDXFileName，则必须指定 nWorkarea 或 cTableAlias，以便在其中找到它。<br />
             如果省略 CDXFileName，TAGCOUNT( ) 将返回当前选择的工作区或别名中所有.cdx复合索引文件和打开的.idx单项索引文件的标志数量。
         </param>
-        <param name="uArea"> 
+        <param name="uArea">
             指定TAGCOUNT( ) 返回.cdx复合索引文件标志数量的表的工作区。 <br />
-            或<br /> 
-            指定TAGCOUNT( ) 返回.cdx复合索引文件标志数量的表的别名。 
+            或<br />
+            指定TAGCOUNT( ) 返回.cdx复合索引文件标志数量的表的别名。
         </param>
         <returns>
             数值型
@@ -3062,10 +3074,10 @@
         <param name="CDXFileName">
             指定包含IndexName指定的标志名称的.cdx复合索引文件的名称。
         </param>
-        <param name="uArea"> 
+        <param name="uArea">
             指定TAGNO( ) 返回.cdx复合索引文件标志和.idx单项索引文件索引位置的表的工作区。 <br />
-            或<br /> 
-            指定TAGNO( ) 返回.cdx复合索引文件标志和.idx单项索引文件索引位置的表的别名。 
+            或<br />
+            指定TAGNO( ) 返回.cdx复合索引文件标志和.idx单项索引文件索引位置的表的别名。
         </param>
         <returns>
             数值型
@@ -3112,25 +3124,26 @@
         <summary>
             从日期或日期时间表达式返回一年的周数。
         </summary>
+        <param name="uExpression">指定WEEK( ) 返回一年的周数的日期。</param>
         <param name="dExpression">指定WEEK( ) 返回一年的周数的日期。</param>
         <param name="tExpression">指定WEEK( ) 返回一年的周数的日期时间表达式。</param>
-        <param name="nFirstWeek"> 
-            指定如何计算第一周。有效值为1、2和3。<br /> 
-            FoxPro选项框中设置的值0与默认值1相同。 备注部分列出了所有可能的值。 
+        <param name="nFirstWeek">
+            指定如何计算第一周。有效值为1、2和3。<br />
+            FoxPro选项框中设置的值0与默认值1相同。 备注部分列出了所有可能的值。
         </param>
-        <param name="nFirstDayOfWeek"> 
-            指定一周的第一天。有效值为1(星期天)- 7(星期六)。 <br /> 
+        <param name="nFirstDayOfWeek">
+            指定一周的第一天。有效值为1(星期天)- 7(星期六)。 <br />
             FoxPro 选项框中设置的值 0 与默认值 1 相同。<br />
-            备注列出了所有可能的值。 
+            备注列出了所有可能的值。
         </param>
         <returns> 数值型。 <b>Week()</b> 返回一年的周数。 </returns>
         <remarks>
             <p>
                 <b>Week()</b> 返回 1 到 53 之间的数，表示一年的周数。 例如，<b>Week()</b> 返回1表示一年的第一周，返回2表示一年的第二周，以此类推。
-                注意，一周可以跨年分割 —— 一年的第一周可以在当前年和前一年中。 
+                注意，一周可以跨年分割 —— 一年的第一周可以在当前年和前一年中。
             </p>
             <p>
-                <paramref name="nFirstweek" /> 的可能值为 
+                <paramref name="nFirstweek" /> 的可能值为
             </p>
             <list type="table">
                 <listheader>
@@ -3156,7 +3169,7 @@
             </list>
 
             <p>
-                <paramref name="nFirstDayOfWeek" /> 的可能值为 
+                <paramref name="nFirstDayOfWeek" /> 的可能值为
             </p>
 
             <list type="table">
@@ -3223,27 +3236,27 @@
             指定要返回其元素编号的数组的名称。
         </param>
         <param name="nRowSubscript ">
-            指定行下标。 <br /> 
-            如果数组是一维的，AELEMENT( ) 完全返回 nRowSubscript。<br /> 
+            指定行下标。 <br />
+            如果数组是一维的，AELEMENT( ) 完全返回 nRowSubscript。<br />
             如果只包括 nRowSubscript 且它大于数组中的行数，XSharp 将生成错误消息。
         </param>
         <param name="nColumnSubscript ">
             指定列下标。如果数组是二维的，需要包含 nRowSubscript 和 nColumnSubscript。
         </param>
-        <remarks> 
+        <remarks>
             可以通过两种方式引用二维数组中的元素。 <br />
             第一种方法使用两个下标本来指定数组中元素的行和列位置， 第二种方法使用单个元素编号。<br />
             AELEMENT( ) 当提供元素的行和列下标时，返回元素编号。 <br />
             函数 ADEL( ), ADIR( ), AFIELDS( ), AINS( ), ALEN( ), ASCAN( ), ASORT( ), 和 ASUBSCRIPT( ) 可以操作二维数组，
             并要求元素通过其元素编号来引用。 <br />
-            AELEMENT( ) 便于从下标到元素编号的转换，以便这些函数使用。从元素编号可以使用 ASUBSCRIPT( ) 返回相应的行和列下标。 
+            AELEMENT( ) 便于从下标到元素编号的转换，以便这些函数使用。从元素编号可以使用 ASUBSCRIPT( ) 返回相应的行和列下标。
             <code language="X#">
                 DIMENSION gaMyArray(2,3)
-            </code> 
+            </code>
             元素可以通过其下标或元素编号来引用。 命令 <c>STORE 'INVOICE' TO gaMyArray(2, 1) </c> 和 <c>STORE 'INVOICE' TO gaMyArray(4) </c> 都
             将字符字符串 INVOICE 存储到同一个数组元素中。 <br />
             在一维数组中，元素编号与其单个行下标相同。 <br />
-            不需要在一维数组中使用 AELEMENT( )。 
+            不需要在一维数组中使用 AELEMENT( )。
         </remarks>
     </aelement>
 
@@ -3398,7 +3411,7 @@
         <summary>
             返回根据 Set RELATION 的 Into 子句指定的关系的目标表的别名。
         </summary>
-        <param name="nRelationshipNumber"> 
+        <param name="nRelationshipNumber">
             指定关系的编号。包括从1到指定工作区的关系数量的编号。<br />
             直到 nRelationshipNumber 大于关系数量时，目标表的别名将被返回(无特定顺序)。 <br />
             当 nRelationshipNumber 大于关系数量时，返回空字符串。<br />

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T19:56:00.741+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-02-14T19:21:38.391+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>PROPERTY 语句</title>
   <keywords>
     <keyword>Access() Methods</keyword>
@@ -21,7 +21,7 @@
       <para styleclass="Heading1">PROPERTY 语句</para>
     </header>
     <para styleclass="Heading1">用途</para>
-    <para styleclass="Normal">声明访问非导出或虚拟实例变量的方法。</para>
+    <para styleclass="Normal">为类声明一个属性，该属性可用于读取、写入和计算类中的数据。</para>
     <para styleclass="Heading1">语法</para>
     <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">PROPERTY</text>&lt;<text styleclass="Italic">idName</text>&gt;</para>
     <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>

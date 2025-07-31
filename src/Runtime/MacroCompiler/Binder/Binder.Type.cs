@@ -28,9 +28,9 @@ namespace XSharp.MacroCompiler
                 case TokenType.CURRENCY:
                     return Compilation.Get(NativeType.Currency);
                 case TokenType.DATE:
-                    return Compilation.Get(NativeType.VODate);
+                    return Compilation.Get(NativeType.Date);
                 case TokenType.FLOAT:
-                    return Compilation.Get(NativeType.VOFloat);
+                    return Compilation.Get(NativeType.Float);
                 case TokenType.PSZ:
                     return Compilation.Get(NativeType.Psz);
                 case TokenType.SYMBOL:

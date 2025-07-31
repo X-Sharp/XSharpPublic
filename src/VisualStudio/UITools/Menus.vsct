@@ -7,7 +7,7 @@
   <Extern href="vsdebugguids.h"/>
   <Include href="KnownImageIds.vsct"/>
   <!-- The next line will only work if the Community.VisualStudio.VSCT package is added to the project-->
-  <Include href="VSGlobals.vsct"/> 
+  <Include href="VSGlobals.vsct"/>
   <!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
   <Commands package="guidUIToolsPackage">
@@ -171,7 +171,8 @@
         </Strings>
       </Button>
       <Button guid="guidUIToolsPackage" id="idWebsite" priority="0x0100" type="Button">
-        <Icon guid="guidImages" id="bmpXSharp" />
+        <Icon guid="ImageCatalogGuid" id="Web" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>
         <Strings>
           <ButtonText>XSharp Website</ButtonText>
@@ -182,7 +183,8 @@
         </Strings>
       </Button>
       <Button guid="guidUIToolsPackage" id="idHelpOffLine" priority="0x0100" type="Button">
-        <Icon guid="guidImages" id="bmpXSharp" />
+        <Icon guid="ImageCatalogGuid" id="F1Help" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>
         <Strings>
           <ButtonText>XSharp Documentation</ButtonText>
@@ -193,7 +195,8 @@
         </Strings>
       </Button>
       <Button guid="guidUIToolsPackage" id="idHelpOffLineChinese" priority="0x0100" type="Button">
-        <Icon guid="guidImages" id="bmpXSharp" />
+        <Icon guid="ImageCatalogGuid" id="F1Help" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
@@ -346,6 +349,7 @@
       </Button>
       <Button guid="guidUIToolsPackage" id="idGenerateWinForm" priority="0x0400" type="Button">
         <Icon guid="ImageCatalogGuid" id="WindowsForm" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>
         <Strings>
@@ -475,7 +479,7 @@
       <IDSymbol name="idRebuildIntellisense" value="0x010D" />
       <IDSymbol name="idViewInDisassembler" value="0x010E" />
       <IDSymbol name="idEditProjectFile" value="0x010F" />
-      <IDSymbol name="idHelpOffLineChinese" value="0x0110" />      
+      <IDSymbol name="idHelpOffLineChinese" value="0x0110" />
       <IDSymbol name="idGenerateWinForm" value="0x0120" />
       <IDSymbol name="idExporterSubMenu" value="0x01030" />
       <IDSymbol name="idExporterGroup" value="0x01040" />
@@ -498,9 +502,9 @@
       <IDSymbol name="bmpTabOrder" value="13" />
       <IDSymbol name="bmpFoxPro" value="14" />
     </GuidSymbol>
-    <!-- 
+    <!--
     Next symbols are defined by Visual Studio
-    They are defined in the file WinformsDesignerMenus.vsct  that you can find 
+    They are defined in the file WinformsDesignerMenus.vsct  that you can find
     in the VSSDK\VisualStudioIntegration\Common\Inc folder below the VS folder
     -->
     <GuidSymbol name="guidWinformsMenuGroup" value="{74D21312-2AEE-11D1-8BFB-00A0C90F26F7}">

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T19:55:53.239+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-02-14T19:13:05.016+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>OPERATOR 语句</title>
   <keywords>
     <keyword>Compile-time declaration</keyword>
@@ -14,7 +14,7 @@
       <para styleclass="Heading1">OPERATOR 语句</para>
     </header>
     <para styleclass="Heading1">用途</para>
-    <para styleclass="Normal">声明访问非导出或虚拟实例变量的方法。</para>
+    <para styleclass="Normal">为一个类声明一个运算符方法，定义 “+”、“-”、“++”等标准运算符在作为参数与类的实例一起使用时的操作方式</para>
     <para styleclass="Heading1">语法</para>
     <para styleclass="Normal"><tab />[Attributes] [Modifiers] <tab /><text style="font-weight:bold;">OPERATOR </text>&lt;<text styleclass="Italic">operatortype</text>&gt;</para>
     <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>

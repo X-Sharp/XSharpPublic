@@ -1,39 +1,5 @@
 namespace XSharp.MacroCompiler
 {
-    internal static class VulcanTypeNames
-    {
-        internal const string CodeBlockType = "Codeblock";
-        internal const string UsualType = "__Usual";
-        internal const string VOStructAttribute = "VOStructAttribute";
-        internal const string DefaultParameterAttribute = "DefaultParameterValueAttribute";
-        internal const string ActualTypeAttribute = "ActualTypeAttribute";
-        internal const string ClipperCallingConventionAttribute = "ClipperCallingConventionAttribute";
-    }
-    internal static class VulcanQualifiedTypeNames
-    {
-        internal const string Usual = "global::Vulcan.__Usual";
-        internal const string Float = "global::Vulcan.__VOFloat";
-        internal const string Date = "global::Vulcan.__VODate";
-        internal const string Array = "global::Vulcan.__Array";
-        internal const string Symbol = "global::Vulcan.__Symbol";
-        internal const string Psz = "global::Vulcan.__Psz";
-        internal const string Codeblock = "global::Vulcan.Codeblock";
-        internal const string WinBool = "global::Vulcan.__WinBool";
-        internal const string RuntimeState = "global::Vulcan.Runtime.State";
-        internal const string ClipperCallingConvention = "global::Vulcan.Internal.ClipperCallingConventionAttribute";
-        internal const string DefaultParameterAttribute = "global::Vulcan.Internal.DefaultParameterValueAttribute";
-        internal const string WrappedException = "global::Vulcan.Internal.VulcanWrappedException";
-        internal const string DefaultParameter = "global::Vulcan.Internal.DefaultParameterValueAttribute";
-        internal const string ActualType = "global::Vulcan.Internal.ActualTypeAttribute";
-        internal const string Error = "global::Vulcan.Error";
-        internal const string ClassLibrary = "global::Vulcan.Internal.VulcanClassLibraryAttribute";
-        internal const string CompilerVersion = "global::Vulcan.Internal.VulcanCompilerVersion";
-
-        internal const string VOStructAttribute = "global::Vulcan.Internal.VOStructAttribute";
-        internal const string CompilerServices = "global::Vulcan.Internal.CompilerServices";
-        internal const string ImplicitNamespaceAttribute = "global::Vulcan.VulcanImplicitNamespaceAttribute";
-        internal const string Functions = "global::VulcanRTFuncs.Functions";
-    }
     internal static class XSharpQualifiedTypeNames
     {
         internal const string Usual = "global::XSharp.__Usual";
@@ -118,6 +84,8 @@ namespace XSharp.MacroCompiler
         internal const string ToObject = "ToObject";
         internal const string IVarGet = "IVarGet";
         internal const string IVarPut = "IVarPut";
+        internal const string IVarGetSelf = "IVarGetSelf";
+        internal const string IVarPutSelf = "IVarPutSelf";
         internal const string InternalSend = "__InternalSend";
         internal const string ASend = "ASend";
         internal const string Eval = "Eval";
@@ -129,42 +97,6 @@ namespace XSharp.MacroCompiler
         // These are in the generated code
         internal const string RunInitProcs = "RunInitProcs";
     }
-    internal static class VulcanQualifiedFunctionNames
-    {
-        internal const string StringCompare = "global::VulcanRTFuncs.Functions.__StringCompare";
-        internal const string StringEquals = "global::VulcanRTFuncs.Functions.__StringEquals";
-        internal const string StringNotEquals = "global::VulcanRTFuncs.Functions.__StringNotEquals";
-        internal const string VarGet = "global::VulcanRTFuncs.Functions.VarGet";
-        internal const string VarPut = "global::VulcanRTFuncs.Functions.VarPut";
-        internal const string FieldGet = "global::VulcanRTFuncs.Functions.__FieldGet";
-        internal const string FieldGetWa = "global::VulcanRTFuncs.Functions.__FieldGetWa";
-        internal const string FieldSet = "global::VulcanRTFuncs.Functions.__FieldSet";
-        internal const string FieldSetWa = "global::VulcanRTFuncs.Functions.__FieldSetWa";
-        internal const string MemVarGet = "global::VulcanRTFuncs.Functions.__MemVarGet";
-        internal const string MemVarPut = "global::VulcanRTFuncs.Functions.__MemVarPut";
-        internal const string IVarGet = "global::VulcanRTFuncs.Functions.IVarGet";
-        internal const string IVarPut = "global::VulcanRTFuncs.Functions.IVarPut";
-        internal const string InternalSend = "global::VulcanRTFuncs.Functions.__InternalSend";
-        internal const string ASend = "global::VulcanRTFuncs.Functions.ASend";
-        internal const string NullDate = "global::Vulcan.__VODate.NullDate";
-        internal const string PszRelease = "global::Vulcan.Internal.CompilerServices.String2PszRelease";
-        internal const string String2Psz = "global::Vulcan.Internal.CompilerServices.String2Psz";
-        internal const string ArrayNew = "global::Vulcan.__Array.__ArrayNew";
-        internal const string InStr = "global::VulcanRTFuncs.Functions.Instr";
-        internal const string EnterSequence = "global::Vulcan.Internal.CompilerServices.EnterBeginSequence";
-        internal const string ExitSequence = "global::Vulcan.Internal.CompilerServices.ExitBeginSequence";
-        internal const string WrapException = "global::Vulcan.Error._WrapRawException";
-        internal const string QQout = "global::VulcanRTFuncs.Functions.QQOut";
-        internal const string Qout = "global::VulcanRTFuncs.Functions.QOut";
-        internal const string Chr = "global::VulcanRTFuncs.Functions.Chr";
-        internal const string PushWorkarea = "global::VulcanRTFuncs.Functions.__pushWorkarea";
-        internal const string PopWorkarea = "global::VulcanRTFuncs.Functions.__popWorkarea";
-        internal const string Evaluate = "global::VulcanRTFuncs.Functions.Evaluate$(System.String)";
-        //internal const string Default = "global::VulcanRTFuncs.Functions.Default";
-        //internal const string Accept = "global::VulcanRTFuncs.Functions._accept";
-        //internal const string Wait = "global::VulcanRTFuncs.Functions._wait";
-        //internal const string Quit = "global::VulcanRTFuncs.Functions._quit";
-    }
     internal static class SystemQualifiedFunctionNames
     {
         internal const string StringConcat = "global::System.String.Concat";
@@ -175,7 +107,7 @@ namespace XSharp.MacroCompiler
         internal const string Chr = "global::XSharp.Core.Functions.Chr";
         internal const string InStr = "global::XSharp.Core.Functions.Instr";
         internal const string WrapException = "global::XSharp.Error.WrapRawException";
-        // In VO assembly
+        // In RT assembly
         internal const string StringCompare = "global::XSharp.RT.Functions.__StringCompare";
         internal const string StringEquals = "global::XSharp.RT.Functions.__StringEquals";
         internal const string StringNotEquals = "global::XSharp.RT.Functions.__StringNotEquals";
@@ -189,6 +121,8 @@ namespace XSharp.MacroCompiler
         internal const string MemVarPut = "global::XSharp.RT.Functions.__MemVarPut";
         internal const string IVarGet = "global::XSharp.RT.Functions.IVarGet";
         internal const string IVarPut = "global::XSharp.RT.Functions.IVarPut";
+        internal const string IVarGetSelf = "global::XSharp.RT.Functions.IVarGetSelf";
+        internal const string IVarPutSelf = "global::XSharp.RT.Functions.IVarPutSelf";
         internal const string InternalSend = "global::XSharp.RT.Functions.__InternalSend";
         internal const string ASend = "global::XSharp.RT.Functions.ASend";
         internal const string NullDate = "global::XSharp.__VODate.NullDate";
@@ -213,15 +147,12 @@ namespace XSharp.MacroCompiler
     internal static class OurAssemblyNames
     {
         // please note that these MUST be lowercase !
-        internal const string VulcanRT = "vulcanrt";
-        internal const string VulcanRTFuncs = "vulcanrtfuncs";
         internal const string XSharpCore = "xsharp.core";
         internal const string XSharpVO = "xsharp.vo";
     }
     internal static class OurNameSpaces
     {
         internal const string System = "System";
-        internal const string Vulcan = "Vulcan";
         internal const string XSharp = "XSharp";
     }
     internal static class SystemNames
@@ -306,12 +237,6 @@ namespace XSharp.MacroCompiler
         internal const string __UsualExponent = "__Pow";
         internal const string __UsualInExactEquals = "__InexactEquals";
         internal const string __UsualInExactNotEquals = "__InexactNotEquals";
-    }
-    internal static class VulcanAssemblyNames
-    {
-        // please note that these MUST be lowercase !
-        internal const string VulcanRT = "vulcanrt";
-        internal const string VulcanRTFuncs = "vulcanrtfuncs";
     }
     internal static class XSharpAssemblyNames
     {

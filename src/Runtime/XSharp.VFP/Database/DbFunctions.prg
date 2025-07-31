@@ -521,6 +521,24 @@ FUNCTION DbSeekFox(uExpr, uOrder, cBagName, lDescend) AS LOGIC CLIPPER
     RETURN result
 
 
+/// <include file="VFPDocs.xml" path="Runtimefunctions/seek/*" />
+FUNCTION Seek(uExpression, uWorkarea, uOrder) AS LOGIC CLIPPER
+    LOCAL dwCurrentWorkarea := 0 AS DWORD
+    IF ! IsNil( uWorkarea )
+		dwCurrentWorkarea := VoDbGetSelect()
+        IF ! DbSelectArea( uWorkarea )
+        	RETURN FALSE
+        ENDIF
+    ENDIF
+
+    LOCAL lResult := DbSeekFox(uExpression, uOrder) AS LOGIC
+
+    IF dwCurrentWorkarea != 0
+    	DbSelectArea( dwCurrentWorkarea )
+    END IF
+    RETURN lResult
+
+
 FUNCTION DbCopyStructFox(cTargetFile, aFields, lCdx) AS LOGIC CLIPPER
     local acStruct as ARRAY
     IF IsArray(aFields)

@@ -230,7 +230,7 @@ namespace XSharp.MacroCompiler
                             {
                                 if (year == 0 || month == 0 || day == 0)
                                 {
-                                    return Constant.CreateDefault(Compilation.Get(NativeType.VODate));
+                                    return Constant.CreateDefault(Compilation.Get(NativeType.Date));
                                 }
                                 if (Options.VODateConstants)
                                     return Constant.CreateVODate(year, month, day);
@@ -325,7 +325,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.NULL_CODEBLOCK:
                     return Constant.CreateDefault(Compilation.Get(NativeType.Codeblock));
                 case TokenType.NULL_DATE:
-                    return Constant.CreateDefault(Compilation.Get(NativeType.VODate));
+                    return Constant.CreateDefault(Compilation.Get(NativeType.Date));
                 case TokenType.NULL_OBJECT:
                     return Constant.CreateDefault(Compilation.Get(NativeType.Object));
                 case TokenType.NULL_PSZ:

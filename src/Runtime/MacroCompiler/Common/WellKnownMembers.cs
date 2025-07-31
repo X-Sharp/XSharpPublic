@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Diagnostics;
+using System.ComponentModel;
 
 namespace XSharp.MacroCompiler
 {
@@ -37,6 +38,8 @@ namespace XSharp.MacroCompiler
         XSharp_RT_Functions___InternalSend,
         XSharp_RT_Functions_IVarGet,
         XSharp_RT_Functions_IVarPut,
+        XSharp_RT_Functions_IVarGetSelf,
+        XSharp_RT_Functions_IVarPutSelf,
         XSharp_RT_Functions___MemVarGet,
         XSharp_RT_Functions___MemVarPut,
         XSharp_RT_Functions___FieldGet,
@@ -80,36 +83,38 @@ namespace XSharp.MacroCompiler
             "System.IDisposable.Dispose",
             "System.Threading.Monitor.Enter$(System.Object,System.Boolean&)",
             "System.Threading.Monitor.Exit$(System.Object)",
-            "XSharp.__Array.@ctor(XSharp.__Usual[])|Vulcan.__Array.@ctor(XSharp.__Usual[])",
-            "XSharp.__Float.@ctor(System.Double,System.Int32,System.Int32)|Vulcan.__VOFloat.@ctor(System.Double,System.Int32,System.Int32)",
-            "XSharp.__Date.@ctor(System.Int32,System.Int32,System.Int32)|Vulcan.__VODate.@ctor(System.Int32,System.Int32,System.Int32)",
-            "XSharp.__Symbol.@ctor(System.String)|Vulcan.__Symbol.@ctor(System.String)",
+            "XSharp.__Array.@ctor(XSharp.__Usual[])",
+            "XSharp.__Float.@ctor(System.Double,System.Int32,System.Int32)",
+            "XSharp.__Date.@ctor(System.Int32,System.Int32,System.Int32)",
+            "XSharp.__Symbol.@ctor(System.String)",
             "XSharp.__Currency.@ctor(System.Decimal)",
             "XSharp.__Binary.@ctor(System.Byte[])",
             "XSharp.__Array.__ArrayNew$(System.Int32[])",
-            XSharpQualifiedTypeNames.Functions+".POW|"+VulcanQualifiedTypeNames.Functions+".POW",
-            XSharpQualifiedFunctionNames.InternalSend+"|"+VulcanQualifiedFunctionNames.InternalSend,
-            XSharpQualifiedFunctionNames.IVarGet+"|"+VulcanQualifiedFunctionNames.IVarGet,
-            XSharpQualifiedFunctionNames.IVarPut+"|"+VulcanQualifiedFunctionNames.IVarPut,
-            XSharpQualifiedFunctionNames.MemVarGet+"|"+VulcanQualifiedFunctionNames.MemVarGet,
-            XSharpQualifiedFunctionNames.MemVarPut+"|"+VulcanQualifiedFunctionNames.MemVarPut,
-            XSharpQualifiedFunctionNames.FieldGet+"|"+VulcanQualifiedFunctionNames.FieldGet,
-            XSharpQualifiedFunctionNames.FieldSet+"|"+VulcanQualifiedFunctionNames.FieldSet,
-            XSharpQualifiedFunctionNames.FieldGetWa+"|"+VulcanQualifiedFunctionNames.FieldGetWa,
-            XSharpQualifiedFunctionNames.FieldSetWa+"|"+VulcanQualifiedFunctionNames.FieldSetWa,
-            XSharpQualifiedFunctionNames.VarGet+"|"+VulcanQualifiedFunctionNames.VarGet,
-            XSharpQualifiedFunctionNames.VarPut+"|"+VulcanQualifiedFunctionNames.VarPut,
-            XSharpQualifiedFunctionNames.InStr+"|"+VulcanQualifiedFunctionNames.InStr,
-            XSharpQualifiedFunctionNames.StringCompare+"|"+VulcanQualifiedFunctionNames.StringCompare,
-            XSharpQualifiedFunctionNames.StringEquals+"|"+VulcanQualifiedFunctionNames.StringEquals,
-            XSharpQualifiedFunctionNames.StringNotEquals+"|"+VulcanQualifiedFunctionNames.StringNotEquals,
-            XSharpQualifiedFunctionNames.PushWorkarea+"|"+VulcanQualifiedFunctionNames.PushWorkarea,
-            XSharpQualifiedFunctionNames.PopWorkarea+"|"+VulcanQualifiedFunctionNames.PopWorkarea,
-            XSharpQualifiedFunctionNames.Evaluate+"|"+VulcanQualifiedFunctionNames.Evaluate,
-            XSharpQualifiedFunctionNames.Chr+"|"+VulcanQualifiedFunctionNames.Chr,
-            XSharpQualifiedFunctionNames.EnterSequence+"|"+VulcanQualifiedFunctionNames.EnterSequence,
-            XSharpQualifiedFunctionNames.ExitSequence+"|"+VulcanQualifiedFunctionNames.ExitSequence,
-            XSharpQualifiedFunctionNames.WrapException+"|"+VulcanQualifiedFunctionNames.WrapException,
+            XSharpQualifiedTypeNames.Functions+".POW",
+            XSharpQualifiedFunctionNames.InternalSend,
+            XSharpQualifiedFunctionNames.IVarGet,
+            XSharpQualifiedFunctionNames.IVarPut,
+            XSharpQualifiedFunctionNames.IVarGetSelf,
+            XSharpQualifiedFunctionNames.IVarPutSelf,
+            XSharpQualifiedFunctionNames.MemVarGet,
+            XSharpQualifiedFunctionNames.MemVarPut,
+            XSharpQualifiedFunctionNames.FieldGet,
+            XSharpQualifiedFunctionNames.FieldSet,
+            XSharpQualifiedFunctionNames.FieldGetWa,
+            XSharpQualifiedFunctionNames.FieldSetWa,
+            XSharpQualifiedFunctionNames.VarGet,
+            XSharpQualifiedFunctionNames.VarPut,
+            XSharpQualifiedFunctionNames.InStr,
+            XSharpQualifiedFunctionNames.StringCompare,
+            XSharpQualifiedFunctionNames.StringEquals,
+            XSharpQualifiedFunctionNames.StringNotEquals,
+            XSharpQualifiedFunctionNames.PushWorkarea,
+            XSharpQualifiedFunctionNames.PopWorkarea,
+            XSharpQualifiedFunctionNames.Evaluate,
+            XSharpQualifiedFunctionNames.Chr,
+            XSharpQualifiedFunctionNames.EnterSequence,
+            XSharpQualifiedFunctionNames.ExitSequence,
+            XSharpQualifiedFunctionNames.WrapException,
             XSharpQualifiedFunctionNames.MemVarGetSafe,
             XSharpQualifiedFunctionNames.VarGetSafe,
             XSharpQualifiedFunctionNames.FoxArrayAccess_1,
@@ -126,8 +131,16 @@ namespace XSharp.MacroCompiler
                 var s = Binder.LookupFullName(name.Replace("global::", "").Split('.').Select(n => n.Replace('@', '.')).ToArray());
                 if (s == null)
                     continue;
-                if (s is SymbolList)
+                if (s is SymbolList list)
                 {
+                    if (list.HasField && list.HasProperty)
+                    {
+                        // .Net 8 and .Net 9 have a System.Decimal.Zero field and property.
+                        // The property is the implementation of an interface
+                        // We want to have the field in this case
+                        var fld = (FieldSymbol) list.Symbols.Find(x => x is FieldSymbol);
+                        return fld;
+                    }
                     var isStatic = proto.Contains('$');
                     var args = proto.Replace(")", "").Split('(').Last().Split(',');
                     var argTypes = args.Select(x => Binder.LookupFullName(x) as TypeSymbol).ToArray();

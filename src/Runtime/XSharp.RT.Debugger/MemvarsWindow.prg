@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -28,7 +28,7 @@ BEGIN NAMESPACE XSharp.Debugger
          RETURN
     OVERRIDE PROTECTED METHOD LoadValues() AS VOID
         LOCAL oRT := NULL AS Assembly
-        FOREACH asm AS Assembly IN  AppDomain.CurrentDomain.GetAssemblies()
+        FOREACH asm AS Assembly IN  AppDomain.CurrentDomain:GetAssemblies()
             IF asm:GetName():Name == "XSharp.RT"
                 oRT := asm
                 EXIT

@@ -836,6 +836,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     AddWinRTMembers(result, namedType, name, arity, options, originalBinder, diagnose, ref useSiteInfo);
                 }
 
+#if !XSHARP
                 // any viable non-methods [non-indexers] found here will hide viable methods [indexers] (with the same name) in any further base classes
                 bool tmpHidesMethodOrIndexers = tmp.IsMultiViable && !IsMethodOrIndexer(tmp.Symbols[0]);
 
@@ -844,6 +845,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     break;
                 }
+#else
+                bool tmpHidesMethodOrIndexers = tmp.IsMultiViable && !IsMethodOrIndexer(tmp.Symbols[0]);
+                if (result.IsMultiViable && (tmpHidesMethodOrIndexers || !IsMethodOrIndexer(result.Symbols[0])) && result.Symbols[0].Kind != SymbolKind.Property)
+                {
+                    break;
+                }
+#endif
 
                 if (basesBeingResolved != null && basesBeingResolved.ContainsReference(type.OriginalDefinition))
                 {
@@ -1275,12 +1283,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                         }
 
+#if !XSHARP
                         if (!IsMethodOrIndexer(hidingSym) || !IsMethodOrIndexer(sym))
                         {
                             // any non-method [non-indexer] hides everything in the hiding scope
                             // any method [indexer] hides non-methods [non-indexers].
                             goto symIsHidden;
                         }
+#else
+                        if (!(hidingSym.Kind == SymbolKind.Property && sym.Kind == SymbolKind.Field) &&
+                            (!IsMethodOrIndexer(hidingSym) || !IsMethodOrIndexer(sym)))
+                        {
+                            // any non-method [non-indexer] hides everything in the hiding scope
+                            // any method [indexer] hides non-methods [non-indexers].
+                            // XSHARP: properties do not hide fields.
+                            goto symIsHidden;
+                        }
+#endif
 
                         // Note: We do not implement hiding by signature in non-interfaces here; that is handled later in overload lookup.
                     }

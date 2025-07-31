@@ -308,4 +308,4 @@ internal class SqlDbTableCommandBuilder
         return sb.ToString()
 
 end class
-end namespace // XSharp.SQLRdd.SupportClasses
+end namespace // XSharp.RDD.SqlRDD

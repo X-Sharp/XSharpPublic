@@ -29,7 +29,7 @@ FUNCTION MkDir(cPath AS STRING) AS INT
             nRet := 1
         END TRY
     END IF
-RETURN nRet
+    RETURN nRet
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/strtofile/*" />
@@ -52,58 +52,58 @@ FUNCTION StrToFile (cExpression AS STRING, cFileName AS STRING, nFlags AS INT) A
     UnicodeEncoding := System.Text.Encoding.Default
     SWITCH nFlags
     CASE S2F_FLAG_OVERWRITE
-        // Just overwrite the file.        
+        // Just overwrite the file.
         Additive := .F.
     CASE S2F_FLAG_APPEND
         // VFP behavior, append to a file with no Unicode encoding
         Additive := .T.
-            
+
     CASE S2F_FLAG_UNICODE_LE
         // VFP behavior, create a Unicode file (source buffer already prepared)
         BOM := e"\xFF\xFE"
-            
+
     CASE S2F_FLAG_UTF8
         // VFP behavior, create a UTF-8 file (source buffer already prepared)
         BOM := e"\xEF\xBB\xBF"
-            
+
     CASE S2F_FLAG_UNICODE_BE
         // extension to VFP behavior, create a Unicode Big-Endian file (source buffer already prepared)
         BOM := e"\xFE\xFF"
-            
+
     OTHERWISE
         // if not simply overwrite, the file will be treated as a Unicode text file
-                
+
         IF _AND(nFlags , S2F_FLAG_UNICODE_TEXT) != 0
-                        
+
             VFPBehavior := .F.
             Additive    := _AND(nFlags , S2F_FLAG_APPEND) != 0
-                        
+
             // set the Unicode encoding
             SWITCH _AND(nFlags,S2F_FLAG_UNICODE_FORMATS)
             CASE S2F_FLAG_UNICODE_LE
                 UnicodeEncoding := System.Text.Encoding.Unicode
-                                
+
             CASE S2F_FLAG_UTF8
                 UnicodeEncoding := System.Text.Encoding.UTF8
-                                
+
             CASE S2F_FLAG_UNICODE_BE
                 UnicodeEncoding := System.Text.Encoding.BigEndianUnicode
-                                
+
             OTHERWISE
                 // error if Unicode encoding not properly set
                 THROW ArgumentException{"Incorrect Encoding Parameter",nameof(nFlags)}
-                                
+
             END SWITCH
         ELSE
             THROW ArgumentException{"Incorrect Parameter",nameof(nFlags)}
         ENDIF
     END SWITCH
-    
+
     * append mode?
     IF Additive
-            
+
         IF VFPBehavior
-                    
+
             * open an existing file, or create if it does not exists
             FHandle := FOpen(cFileName, FO_READWRITE + FO_SHARED)
             IF FHandle != F_ERROR
@@ -115,10 +115,10 @@ FUNCTION StrToFile (cExpression AS STRING, cFileName AS STRING, nFlags AS INT) A
                 ENDIF
                 * if everything went ok, close the file handle
                 IF FError() == 0
-                        FClose(FHandle)
-                        IF FError() != 0
-                            THROW FException()
-                        ENDIF
+                    FClose(FHandle)
+                    IF FError() != 0
+                        THROW FException()
+                    ENDIF
                     * if not, before throwing the exception...
                 ELSE
                     IOError := FException()
@@ -135,18 +135,18 @@ FUNCTION StrToFile (cExpression AS STRING, cFileName AS STRING, nFlags AS INT) A
             CATCH
                 THROW
             END TRY
-                
+
             Result := (DWORD) cExpression:Length
-                
+
         ENDIF
-        
+
     ELSE
-        
-        * TO-DO: check on SET("Safety") 
-        
+
+        * TO-DO: check on SET("Safety")
+
         * create a new file
         IF VFPBehavior
-                
+
             * get an handle for a new file
             FHandle := FCreate(cFileName)
             IF FHandle != F_ERROR
@@ -173,9 +173,9 @@ FUNCTION StrToFile (cExpression AS STRING, cFileName AS STRING, nFlags AS INT) A
             ELSE
                 THROW FException()
             ENDIF
-            
+
         ELSE
-            
+
             * write the Unicode string to a text file
             TRY
                 File.WriteAllText(cFileName, cExpression, UnicodeEncoding)
@@ -184,67 +184,96 @@ FUNCTION StrToFile (cExpression AS STRING, cFileName AS STRING, nFlags AS INT) A
             END TRY
             Result := (DWORD) cExpression:Length
         ENDIF
-        
+
     ENDIF
-    
+
     * return the length of bytes / characters
     RETURN (INT) Result
-    
-    END FUNCTION
+
+END FUNCTION
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/filetostr/*" />
 FUNCTION FileToStr (cFileName AS STRING) AS STRING
     RETURN FileToStr(cFileName, 0)
-    
+
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/filetostr/*" />
-FUNCTION FileToStr (cFileName AS STRING, Flags AS INT) AS STRING 
+FUNCTION FileToStr (cFileName AS STRING, Flags AS INT) AS STRING
     LOCAL FHandle AS IntPtr
     LOCAL StrLen AS DWORD
     LOCAL Result := "" AS STRING
     LOCAL IOError AS Exception
-    
+
     IF _AND(Flags, S2F_FLAG_UNICODE_TEXT) == 0      // VFP behavior, read file as binary, even if it is a Unicode text
-            
+
         IF File(cFileName)
             cFileName := FPathName()
         ENDIF
         FHandle := FOpen(cFileName, FO_READ + FO_SHARED)
         IF FHandle != F_ERROR
-                * success opening the file, get its size...
-                StrLen := (DWORD) FSize(FHandle)
-                IF StrLen > 0
-                    * ...and allocate a buffer for it
-                    Result := Space(StrLen)
-                    IF FRead(FHandle, @Result, StrLen) != StrLen
-                        Result := ""
-                    ENDIF
-                ELSE
+            * success opening the file, get its size...
+            StrLen := (DWORD) FSize(FHandle)
+            IF StrLen > 0
+                * ...and allocate a buffer for it
+                Result := Space(StrLen)
+                IF FRead(FHandle, @Result, StrLen) != StrLen
                     Result := ""
                 ENDIF
-                * any IO error will throw an exception
-                IF FError() != 0
-                        IOError := FException()
-                        FClose(FHandle)
-                    THROW IOError
-                ELSE
-                    FClose(FHandle)
+            ELSE
+                Result := ""
+            ENDIF
+            * any IO error will throw an exception
+            IF FError() != 0
+                IOError := FException()
+                FClose(FHandle)
+                THROW IOError
+            ELSE
+                FClose(FHandle)
             ENDIF
         ELSE
             THROW FException()
         ENDIF
-        
+
     ELSE
-        
-        * for a Unicode text file, just read it into a string 
+
+        * for a Unicode text file, just read it into a string
         TRY
             Result := File.ReadAllText(cFileName)     // read a text file
         CATCH
             THROW
         END TRY
-        
+
     ENDIF
-    
+
     * return the contents of the file
     RETURN Result
-    
-    END FUNCTION
+
+END FUNCTION
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/defaultext/*" />
+FUNCTION DefaultExt( cFileName AS STRING, cDefault  AS STRING) AS STRING
+    var ext := Path.GetExtension(cFileName)
+    if ext == "" .and. ! cFileName:EndsWith(".")
+        cFileName := Path.ChangeExtension(cFileName, cDefault)
+    endif
+    return cFileName
+
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/drivetype/*" />
+FUNCTION DriveType( cDrive as string) as DWORD
+    RETURN Win32.GetDriveType(cDrive)
+
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/fullpath/*" />
+FUNCTION FullPath( cFileName1 as string, cFileName2 := "" as STRING) AS STRING
+    IF File(cFileName1)
+        RETURN FPathName()
+    ENDIF
+    cFileName1 := Path.Combine(Environment.CurrentDirectory, cFileName1)
+    // todo: when cFileName2 is not empty, then the relative path must be calculated
+    // unfortunately System.UI.Path.RelativePath() does not exist in the .Net Framework
+//     if File(cFileName2)
+//         cFileName2 := FPathName()
+//     Endif
+//     var cFilePath := Path.GetDirectoryName(cFileName2)
+//     RETURN Path.GetRelativePath(cFileName1, cFilePath)
+    RETURN cFileName1

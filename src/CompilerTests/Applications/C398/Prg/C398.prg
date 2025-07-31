@@ -3,10 +3,10 @@
 FUNCTION Start() AS VOID
 	LOCAL o AS TestClass
 	o := TestClass{}
-	o:_setfont("")
-	o:_setfont("" , 0.0)
-	o:AnotherTest(1)
-	o:AnotherTest(1,123.456)
+	xAssert( o:_setfont("")           )
+	xAssert( o:_setfont("" , 0.0)     )
+	xAssert( o:AnotherTest(1) == 1         )
+	xAssert( o:AnotherTest(2,123.456) == 2 )
 RETURN
 
 CLASS TestClass
@@ -16,10 +16,19 @@ METHOD _setfont(lfamily AS STRING,lsize := 0.0 AS REAL8) AS LOGIC
 		THROW Exception{"Incorrect result"}
 	END IF
 RETURN TRUE
-METHOD AnotherTest(n AS INT , f := 123.456 AS FLOAT) AS VOID
+METHOD AnotherTest(n AS INT , f := 123.456 AS FLOAT) AS INT
 	? f
 	IF f != 123.456
 		THROW Exception{"Incorrect result"}
 	END IF
-RETURN
+RETURN n
 END CLASS
+
+PROC xAssert(l AS LOGIC)
+	IF l
+		? "Assertion passed"
+	ELSE
+		THROW Exception{"Incorrect result"}
+	END IF
+RETURN
+

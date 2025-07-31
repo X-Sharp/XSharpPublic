@@ -21,14 +21,6 @@
     <Allowdot>false</Allowdot>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Documentation'">
-    <DocumentationFile>XSharp.Harbour.Xml</DocumentationFile>
-    <DefineConstants>DEBUG;TRACE;RUNTIME;DOCUMENTATION</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'DocChinese'">
-    <DocumentationFile>XSharp.Harbour.Xml</DocumentationFile>
-    <DefineConstants>DEBUG;TRACE;RUNTIME;DOCUMENTATION</DefineConstants>
-  </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Compile Include="..\..\Common\commonAssemblyInfo.prg">

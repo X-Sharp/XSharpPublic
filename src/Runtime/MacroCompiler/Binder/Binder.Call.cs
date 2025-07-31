@@ -9,6 +9,8 @@ namespace XSharp.MacroCompiler
 {
     using Syntax;
 
+    using System.ComponentModel;
+
     internal partial class Binder
     {
         internal MemberSymbol BindMethodCall(Expr expr, Symbol symbol, ArgList args, out Expr self, out Expr writeBack)
@@ -109,21 +111,37 @@ namespace XSharp.MacroCompiler
 
             if ((symbol as MethodSymbol)?.Method.IsStatic == isStatic || symbol is ConstructorSymbol)
             {
-                CheckArguments(symbol as MemberSymbol, ((MethodBaseSymbol)symbol).Parameters, args, ref ovRes, options);
+                var mbase = symbol as MethodBaseSymbol;
+                CheckArguments(mbase, mbase.Parameters, args, ref ovRes, options);
             }
             else if ((symbol as SymbolList)?.HasMethodBase == true)
             {
+                // All elements are either methods or constructors
                 var methods = symbol as SymbolList;
- 
+
                 for (int i = 0; i < methods.Symbols.Count; i++)
                 {
-                    var m = methods.Symbols[i];
-                    // Skip abstract methods
-                    if (m is MethodSymbol msym && msym.Method.IsAbstract)
+                    var mbase = methods.Symbols[i] as MethodBaseSymbol;
+                    if (mbase == null )
                         continue;
-                    if ((m as MethodSymbol)?.Method.IsStatic == isStatic || m is ConstructorSymbol)
+                    var meth = mbase as MethodSymbol;
+                    TypeSymbol type = null;
+                    if (expr is MemberAccessExpr mae)
                     {
-                        CheckArguments(m as MemberSymbol, ((MethodBaseSymbol)m).Parameters, args, ref ovRes, options);
+                        type = mae.Expr.Datatype;
+                    }
+
+                    // skip abstract methods, but not methods from an interface
+                    // unless the type itself is an interface
+                    if (meth != null && meth.Method.IsAbstract && type != null)
+                    {
+                        if (type.Type != meth.Method.DeclaringType)
+                            continue;
+                    }
+
+                    if (meth?.Method.IsStatic == isStatic || mbase is ConstructorSymbol)
+                    {
+                        CheckArguments(mbase, mbase.Parameters, args, ref ovRes, options);
                         if (ovRes?.Exact == true)
                             break;
                         if (ovRes != null)

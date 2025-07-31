@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T18:27:55.466+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-24T21:35:13.980+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-dialect</title>
   <keywords>
     <keyword>dbase</keyword>
@@ -16,8 +16,8 @@
       <para styleclass="Heading1">-dialect</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">编译器的 -dialect 选项选择编译器应遵循的方言。有效选项包括 Core、VO、Vulcan、dBase、FoxPro、xBase++ 和 Harbour。</para>
-    <para styleclass="Normal">注意：冒号和方言之间不能有空格。</para>
+    <para styleclass="Normal">编译器的 -dialect 选项用于选择编译器应遵循的方言。有效选项包括 Core、VO、Vulcan、dBase、FoxPro、xBase++ 和 Harbour。</para>
+    <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">注意：</text>冒号和方言之间不能有空格。</para>
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-dialect: Core | VO | Vulcan | Harbour | XbasePP | FoxPro</para>
     <para styleclass="Heading2">参数</para>

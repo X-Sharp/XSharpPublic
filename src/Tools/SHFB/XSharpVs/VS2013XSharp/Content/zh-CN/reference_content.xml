@@ -26,170 +26,178 @@
     <!-- topic titles -->
     <item id="meta_mshelp_tocTitle">{0}</item>
     <item id="meta_mshelp_rlTitle">{0} ({1})</item>
-    <item id="topicTitle_root">命名空间</item>
-    <item id="topicTitle_namespace">{0} 命名空间</item>
-    <item id="topicTitle_namespaceGroup">{0} 命名空间</item>
-    <item id="topicTitle_class">{0} 类</item>
-    <item id="topicTitle_structure">{0} 结构</item>
-    <item id="topicTitle_interface">{0} 接口</item>
-    <item id="topicTitle_derivedTypeList">{0} 派生类</item>
+  <item id="topicTitle_root">Namespaces</item>
+	<item id="topicTitle_namespace">{0} Namespace</item>
+	<item id="topicTitle_namespaceGroup">{0} Namespaces</item>
+	<item id="topicTitle_class">{0} Class</item>
+	<item id="topicTitle_structure">{0} Structure</item>
+	<item id="topicTitle_interface">{0} Interface</item>
+	<item id="topicTitle_derivedTypeList">{0} Derived Classes</item>
 
-    <item id="topicTitle_delegate">{0} 委托</item>
-    <item id="topicTitle_enumeration">{0} 枚举</item>
-    <item id="topicTitle_field">{0} 字段</item>
-    <item id="topicTitle_method">{0} 方法 {1}</item>
-    <item id="topicTitle_constructor">{0} 构造函数 {1}</item>
-    <item id="topicTitle_property">{0} 属性 {1}</item>
-    <item id="topicTitle_event">{0} 事件</item>
+	<!-- start of X# topic titles -->
+	<item id="topicTitle_functions">Functions</item>
+	<item id="topicTitle_function">Function {0}</item>
+	<item id="topicTitle_defines">Defines</item>
+	<item id="topicTitle_define">Define {0}</item>
+	<item id="topicTitle_globals">Globals</item>
+	<item id="topicTitle_global">Global {0}</item>
+	<!-- end of X# topic titles -->
+	<item id="topicTitle_delegate">{0} Delegate</item>
+	<item id="topicTitle_enumeration">{0} Enumeration</item>
+	<item id="topicTitle_field">{0} Field</item>
+	<item id="topicTitle_method">{0} Method {1}</item>
+	<item id="topicTitle_constructor">{0} Constructor {1}</item>
+	<item id="topicTitle_property">{0} Property {1}</item>
+	<item id="topicTitle_event">{0} Event</item>
 
     <!-- title for operator members -->
-    <item id="topicTitle_operator">{0} 运算符 {1}</item>
+	<item id="topicTitle_operator">{0} Operator {1}</item>
 
     <!-- title for op_explicit and op_implicit members -->
-    <item id="topicTitle_typeConversion">{0} 转换 {1}</item>
-    <!-- title for overload op_explicit and op_implicit topics -->
-    <item id="topicTitle_conversionOperator">{0} 转换运算符</item>
+  <item id="topicTitle_typeConversion">{0} Conversion {1}</item>
+  <!-- title for overload op_explicit and op_implicit topics -->
+  <item id="topicTitle_conversionOperator">{0} Conversion Operators</item>
+      
+	<item id="topicTitle_attachedProperty">{0} Attached Property</item>
+	<item id="topicTitle_attachedEvent">{0} Attached Event</item>
 
-    <item id="topicTitle_attachedProperty">{0} 附加属性</item>
-    <item id="topicTitle_attachedEvent">{0} 附加事件</item>
-
-    <item id="generic"> 泛型</item>
-    <item id="topicTitle_generic_class">{0} 泛型类</item>
-    <item id="topicTitle_generic_structure">{0} 泛型结构</item>
-    <item id="topicTitle_generic_interface">{0} 泛型接口</item>
-    <item id="topicTitle_generic_delegate">{0} 泛型委托</item>
-    <item id="topicTitle_generic_method">{0} 泛型方法 {1}</item>
-
-    <!-- list topic titles -->
-    <item id="topicTitle_fields">{0} 字段</item>
-    <item id="topicTitle_methods">{0} 方法</item>
-    <item id="topicTitle_enumMembers">成员</item>
-
-    <!-- title for operator list topic that has [operators + no type conversions] -->
-    <item id="topicTitle_operators">{0} 运算符</item>
+  <item id="generic"> generic</item>
+  <item id="topicTitle_generic_class">{0} Generic Class</item>
+  <item id="topicTitle_generic_structure">{0} Generic Structure</item>
+  <item id="topicTitle_generic_interface">{0} Generic Interface</item>
+  <item id="topicTitle_generic_delegate">{0} Generic Delegate</item>
+  <item id="topicTitle_generic_method">{0} Generic Method {1}</item>
+  
+	<!-- list topic titles -->
+	<item id="topicTitle_fields">{0} Fields</item>
+	<item id="topicTitle_methods">{0} Methods</item>
+	<item id="topicTitle_enumMembers">Members</item>
+  
+  <!-- title for operator list topic that has [operators + no type conversions] -->
+  <item id="topicTitle_operators">{0} Operators</item>
     <!-- title for operator list topic that has [operators + type conversions] -->
-    <item id="topicTitle_operatorsAndTypeConversions">{0} 运算符与类型转换</item>
-    <!-- title for operator list topic that has [no operators + type conversions] -->
-    <item id="topicTitle_typeConversions">{0} 类型转换</item>
+  <item id="topicTitle_operatorsAndTypeConversions">{0} Operators and Type Conversions</item>
+  <!-- title for operator list topic that has [no operators + type conversions] -->
+  <item id="topicTitle_typeConversions">{0} Type Conversions</item>
 
-    <item id="topicTitle_constructors">{0} 构造函数</item>
-    <item id="topicTitle_properties">{0} 属性</item>
-    <item id="topicTitle_events">{0} 事件</item>
-    <item id="topicTitle_attachedProperties">{0} 附加属性</item>
-    <item id="topicTitle_attachedEvents">{0} 附加事件</item>
-    <item id="topicTitle_members">{0} 成员</item>
+	<item id="topicTitle_constructors">{0} Constructors</item>
+	<item id="topicTitle_properties">{0} Properties</item>
+	<item id="topicTitle_events">{0} Events</item>
+	<item id="topicTitle_attachedProperties">{0} Attached Properties</item>
+ 	<item id="topicTitle_attachedEvents">{0} Attached Events</item>
+	<item id="topicTitle_members">{0} Members</item>
 
-    <!-- index entries -->
-    <item id="indexEntry_root">命名空间</item>
-    <item id="indexEntry_namespace">{0} 命名空间</item>
-    <item id="indexEntry_class">{0} 类</item>
-    <item id="indexEntry_structure">{0} 结构</item>
-    <item id="indexEntry_interface">{0} 接口</item>
-    <item id="indexEntry_delegate">{0} 委托</item>
-    <item id="indexEntry_enumeration">{0} 枚举</item>
-    <item id="indexEntry_enumerationMember">{0} 枚举成员</item>
-    <item id="indexEntry_members">{0}, 所有成员</item>
-    <item id="indexEntry_methods">{0}, 方法</item>
-    <!-- index entry for operator list topic that has [operators + no type conversions] -->
-    <item id="indexEntry_operators">{0}, 运算符</item>
-    <!-- index entry for operator list topic that has [operators + type conversions] -->
-    <item id="indexEntry_operatorsAndTypeConversions">{0}，运算符与类型转换</item>
-    <!-- index entry for operator list topic that has [no operators + type conversions] -->
-    <item id="indexEntry_typeConversions">{0}，类型转换</item>
-    <!-- index entries for op_explicit and op_implicit members -->
-    <item id="indexEntry_conversionOperator">{0} 转换</item>
-    <item id="indexEntry_properties">{0}, 属性</item>
-    <item id="indexEntry_fields">{0}, 字段</item>
-    <item id="indexEntry_events">{0}, 事件</item>
-    <item id="indexEntry_attachedProperties">{0}, 附加属性</item>
-    <item id="indexEntry_attachedEvents">{0}, 附加事件</item>
-    <item id="indexEntry_constructors">{0}, 构造函数</item>
-    <item id="indexEntry_constructor">{0}, 构造函数</item>
-    <item id="indexEntry_constructorType">{0} 构造函数</item>
-    <item id="indexEntry_method">{0} 方法</item>
-    <item id="indexEntry_property">{0} 属性</item>
-    <item id="indexEntry_event">{0} 事件</item>
-    <item id="indexEntry_field">{0} 字段</item>
-    <item id="indexEntry_operator">{0} 运算符</item>
-    <item id="indexEntry_attachedProperty">{0} 附加属性</item>
-    <item id="indexEntry_attachedEvent">{0} 附加事件</item>
-    <item id="indexEntry_methodExplicit">{0} 显式实现的方法</item>
-    <item id="indexEntry_propertyExplicit">{0} 显式实现的属性</item>
-    <item id="indexEntry_eventExplicit">{0} 显式实现的事件</item>
-    <item id="indexEntry_fieldExplicit">{0} 显式实现的字段</item>
+	<!-- index entries -->
+	<item id="indexEntry_root">namespaces</item>
+  <item id="indexEntry_namespace">{0} namespace</item>
+  <item id="indexEntry_class">{0} class</item>
+	<item id="indexEntry_structure">{0} structure</item>
+	<item id="indexEntry_interface">{0} interface</item>
+	<item id="indexEntry_delegate">{0} delegate</item>
+	<item id="indexEntry_enumeration">{0} enumeration</item>
+  <item id="indexEntry_enumerationMember">{0} enumeration member</item>
+  <item id="indexEntry_members">{0}, all members</item>
+  <item id="indexEntry_methods">{0}, methods</item>
+  <!-- index entry for operator list topic that has [operators + no type conversions] -->
+  <item id="indexEntry_operators">{0}, operators</item>
+  <!-- index entry for operator list topic that has [operators + type conversions] -->
+  <item id="indexEntry_operatorsAndTypeConversions">{0}, operators and type conversions</item>
+  <!-- index entry for operator list topic that has [no operators + type conversions] -->
+  <item id="indexEntry_typeConversions">{0}, type conversions</item>
+  <!-- index entries for op_explicit and op_implicit members -->
+  <item id="indexEntry_conversionOperator">{0} conversion</item>
+  <item id="indexEntry_properties">{0}, properties</item>
+  <item id="indexEntry_fields">{0}, fields</item>
+  <item id="indexEntry_events">{0}, events</item>
+  <item id="indexEntry_attachedProperties">{0}, attached properties</item>
+  <item id="indexEntry_attachedEvents">{0}, attached events</item>
+	<item id="indexEntry_constructors">{0}, constructors</item>
+	<item id="indexEntry_constructor">{0}, constructor</item>
+	<item id="indexEntry_constructorType">{0} constructor</item>
+  <item id="indexEntry_method">{0} method</item>
+	<item id="indexEntry_property">{0} property</item>
+	<item id="indexEntry_event">{0} event</item>
+	<item id="indexEntry_field">{0} field</item>
+	<item id="indexEntry_operator">{0} operator</item>
+	<item id="indexEntry_attachedProperty">{0} attached property</item>
+	<item id="indexEntry_attachedEvent">{0} attached event</item>
+	<item id="indexEntry_methodExplicit">{0} explicitly implemented method</item>
+	<item id="indexEntry_propertyExplicit">{0} explicitly implemented property</item>
+	<item id="indexEntry_eventExplicit">{0} explicitly implemented event</item>
+	<item id="indexEntry_fieldExplicit">{0} explicitly implemented field</item>
 
-    <!-- section titles -->
-    <item id="title_syntax">语法</item>
-    <item id="title_templates">类型参数</item>
-    <item id="title_parameters">参数</item>
-    <item id="title_value">值</item>
-    <item id="title_delegateValue">返回值</item>
-    <item id="title_methodValue">返回值</item>
-    <item id="title_propertyValue">属性值</item>
-    <item id="title_fieldValue">字段值</item>
-    <item id="title_implements">实现</item>
-    <item id="title_examples">示例</item>
-    <item id="title_threadSafety">线程安全性</item>
-    <item id="title_permissions">权限</item>
-    <item id="title_namespaces">命名空间</item>
-    <item id="title_types">类型</item>
-    <item id="title_family">继承层次</item>
-    <item id="title_versions">版本信息</item>
-    <item id="title_platforms">平台</item>
-    <item id="title_relatedTopics">参见</item>
-    <item id="title_extensionUsage">备注</item>
-    <item id="text_extensionUsage">在 Visual Basic 和 C# 中，这个方法可以当成为类型 {0} 的实例方法来调用。在采用实例方法语法调用这个方法时，请省略第一个参数。请参考 <a href="https://docs.microsoft.com/dotnet/visual-basic/programming-guide/language-features/procedures/extension-methods" target="_blank" rel="noopener noreferrer">扩展方法 (Visual Basic)</a> 或 <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/extension-methods" target="_blank" rel="noopener noreferrer">扩展方法 (C# 编程指南)</a> 获取更多信息。</item>
-    <item id="text_moreInheritance">更多...</item>
+	<!-- section titles -->
+	<item id="title_syntax">Syntax</item>
+	<item id="title_templates">Type Parameters</item>
+	<item id="title_parameters">Parameters</item>
+	<item id="title_value">Value</item>
+	<item id="title_delegateValue">Return Value</item>
+	<item id="title_methodValue">Return Value</item>
+	<item id="title_propertyValue">Property Value</item>
+	<item id="title_fieldValue">Field Value</item>
+	<item id="title_implements">Implements</item>
+	<item id="title_examples">Examples</item>
+	<item id="title_threadSafety">Thread Safety</item>
+	<item id="title_permissions">.NET Framework Security</item>
+	<item id="title_namespaces">Namespaces</item>
+	<item id="title_types">Types</item>
+	<item id="title_family">Inheritance Hierarchy</item>
+	<item id="title_versions">Version Information</item>
+	<item id="title_platforms">Platforms</item>
+	<item id="title_relatedTopics">See Also</item>
+	<item id="title_extensionUsage">Usage Note</item>
+	<item id="text_extensionUsage">In Visual Basic and C#, you can call this method as an instance method on any object of type {0}. When you use instance method syntax to call this method, omit the first parameter. For more information, see <a href="http://msdn.microsoft.com/en-us/library/bb384936.aspx" target="_blank">Extension Methods (Visual Basic)</a> or <a href="http://msdn.microsoft.com/en-us/library/bb383977.aspx" target="_blank">Extension Methods (C# Programming Guide)</a>.</item>
+	<item id="text_moreInheritance">More...</item>
 
-    <!-- table headers -->
-    <item id="header_namespaceName">命名空间</item>
-    <item id="header_namespaceDescription">说明</item>
-    <item id="header_typeIcon">图标</item>
-    <item id="header_className">类</item>
-    <item id="header_structureName">结构</item>
-    <item id="header_interfaceName">接口</item>
-    <item id="header_delegateName">委托</item>
-    <item id="header_enumerationName">枚举</item>
+	<!-- table headers -->
+	<item id="header_namespaceName">Namespace</item>
+	<item id="header_namespaceDescription">Description</item>
+	<item id="header_typeIcon">Icon</item>
+  <item id="header_className">Class</item>
+  <item id="header_structureName">Structure</item>
+  <item id="header_interfaceName">Interface</item>
+  <item id="header_delegateName">Delegate</item>
+  <item id="header_enumerationName">Enumeration</item>
 
-    <item id="header_typeName">名称</item>
-    <item id="header_typeDescription">说明</item>
-    <item id="header_memberIcon">图标</item>
-    <item id="header_memberName">成员名称</item>
-    <item id="header_memberValue">值</item>
-    <item id="header_memberDescription">说明</item>
-    <item id="header_eventType">事件类型</item>
-    <item id="header_eventReason">原因</item>
-    <item id="header_exceptionName">异常</item>
-    <item id="header_exceptionCondition">条件</item>
-    <item id="header_permissionName">权限</item>
-    <item id="header_permissionDescription">说明</item>
-    <item id="header_requiresName">前置条件</item>
-    <item id="header_ensuresName">标准后置条件</item>
-    <item id="header_ensuresOnThrowName">异常后置条件</item>
-    <item id="header_invariantsName">固定协定</item>
+	<item id="header_typeName">Name</item>
+	<item id="header_typeDescription">Description</item>
+	<item id="header_memberIcon">Icon</item>
+	<item id="header_memberName">Member name</item>
+	<item id="header_memberValue">Value</item>
+	<item id="header_memberDescription">Description</item>
+	<item id="header_eventType">Event Type</item>
+	<item id="header_eventReason">Reason</item>
+	<item id="header_exceptionName">Exception</item>
+	<item id="header_exceptionCondition">Condition</item>
+	<item id="header_permissionName">Permission</item>
+	<item id="header_permissionDescription">Description</item>
+  <item id="header_requiresName">Requires</item>
+  <item id="header_ensuresName">Ensures</item>
+  <item id="header_ensuresOnThrowName">EnsuresOnThrow</item>
+  <item id="header_invariantsName">Invariants</item>
 
-    <item id="header_revHistoryDate">日期</item>
-    <item id="header_revHistoryVersion">版本</item>
-    <item id="header_revHistoryDescription">说明</item>
+	<item id="header_revHistoryDate">Date</item>
+	<item id="header_revHistoryVersion">Version</item>
+	<item id="header_revHistoryDescription">Description</item>
 
-    <!-- member list table titles -->
-    <item id="tableTitle_namespace">命名空间</item>
-    <item id="tableTitle_class">类</item>
-    <item id="tableTitle_structure">结构</item>
-    <item id="tableTitle_interface">接口</item>
-    <item id="tableTitle_delegate">委托</item>
-    <item id="tableTitle_enumeration">枚举</item>
-    <item id="tableTitle_constructor">构造函数</item>
-    <item id="tableTitle_method">方法</item>
-    <item id="tableTitle_operator">运算符</item>
-    <item id="tableTitle_field">字段</item>
-    <item id="tableTitle_property">属性</item>
-    <item id="tableTitle_event">事件</item>
-    <item id="tableTitle_attachedEvent">附加事件</item>
-    <item id="tableTitle_attachedProperty">附加属性</item>
-    <item id="tableTitle_explicitInterfaceImplementation">显式接口实现</item>
-    <item id="tableTitle_overloadMembers">重载列表</item>
-    <item id="tableTitle_extensionMethod">扩展方法</item>
+  <!-- member list table titles -->
+  <item id="tableTitle_namespace">Namespaces</item>
+	<item id="tableTitle_class">Classes</item>
+	<item id="tableTitle_structure">Structures</item>
+	<item id="tableTitle_interface">Interfaces</item>
+	<item id="tableTitle_delegate">Delegates</item>
+	<item id="tableTitle_enumeration">Enumerations</item>
+  <item id="tableTitle_constructor">Constructors</item>
+  <item id="tableTitle_method">Methods</item>
+  <item id="tableTitle_operator">Operators</item>
+  <item id="tableTitle_field">Fields</item>
+  <item id="tableTitle_property">Properties</item>
+  <item id="tableTitle_event">Events</item>
+  <item id="tableTitle_attachedEvent">Attached Events</item>
+  <item id="tableTitle_attachedProperty">Attached Properties</item>
+  <item id="tableTitle_explicitInterfaceImplementation">Explicit&#160;Interface&#160;Implementations</item>
+	<item id="tableTitle_overloadMembers">Overload&#160;List</item>
+  <item id="tableTitle_extensionMethod">Extension&#160;Methods</item>
 
     <!-- Thread Safety -->
     <item id="text_threadSafety">线程安全</item>
@@ -234,47 +242,47 @@
     </item>
 
     <!-- Group and SubGroup text -->
-    <item id="text_classLower">类</item>
-    <item id="text_delegateLower">委托</item>
-    <item id="text_structureLower">结构</item>
-    <item id="text_interfaceLower">接口</item>
-    <item id="text_enumerationLower">枚举</item>
+	<item id="text_classLower">class</item>
+  <item id="text_delegateLower">delegate</item>
+  <item id="text_structureLower">structure</item>
+  <item id="text_interfaceLower">interface</item>
+  <item id="text_enumerationLower">enumeration</item>
 
-    <item id="text_classUpper">类</item>
-    <item id="text_structureUpper">结构</item>
-    <item id="text_interfaceUpper">接口</item>
-    <item id="text_delegateUpper">委托</item>
-    <item id="text_enumerationUpper">枚举</item>
+  <item id="text_classUpper">Class</item>
+  <item id="text_structureUpper">Structure</item>
+  <item id="text_interfaceUpper">Interface</item>
+  <item id="text_delegateUpper">Delegate</item>
+  <item id="text_enumerationUpper">Enumeration</item>
 
-    <item id="text_classTypesLower">类</item>
-    <item id="text_structureTypesLower">结构</item>
-    <item id="text_interfaceTypesLower">接口</item>
-    <item id="text_delegateTypesLower">委托</item>
-    <item id="text_enumerationTypesLower">枚举</item>
+	<item id="text_classTypesLower">classes</item>
+	<item id="text_structureTypesLower">structures</item>
+	<item id="text_interfaceTypesLower">interfaces</item>
+	<item id="text_delegateTypesLower">delegates</item>
+	<item id="text_enumerationTypesLower">enumerations</item>
+  
+	<item id="text_classTypesUpper">Classes</item>
+	<item id="text_structureTypesUpper">Structures</item>
+	<item id="text_interfaceTypesUpper">Interfaces</item>
+	<item id="text_delegateTypesUpper">Delegates</item>
+	<item id="text_enumerationTypesUpper">Enumerations</item>
 
-    <item id="text_classTypesUpper">类</item>
-    <item id="text_structureTypesUpper">结构</item>
-    <item id="text_interfaceTypesUpper">接口</item>
-    <item id="text_delegateTypesUpper">委托</item>
-    <item id="text_enumerationTypesUpper">枚举</item>
+  <item id="text_membersLower">members</item>
+  <item id="text_methodsLower">methods</item>
+  <item id="text_propertiesLower">properties</item>
+  <item id="text_eventsLower">events</item>
+  <item id="text_fieldsLower">fields</item>
+  <item id="text_operatorsLower">operators</item>
+  <item id="text_attachedPropertiesLower">attached properties</item>
+  <item id="text_attachedEventsLower">attached events</item>
 
-    <item id="text_membersLower">成员</item>
-    <item id="text_methodsLower">方法</item>
-    <item id="text_propertiesLower">属性</item>
-    <item id="text_eventsLower">事件</item>
-    <item id="text_fieldsLower">字段</item>
-    <item id="text_operatorsLower">运算符</item>
-    <item id="text_attachedPropertiesLower">附加属性</item>
-    <item id="text_attachedEventsLower">附加事件</item>
-
-    <item id="text_membersUpper">成员</item>
-    <item id="text_methodsUpper">方法</item>
-    <item id="text_propertiesUpper">属性</item>
-    <item id="text_eventsUpper">事件</item>
-    <item id="text_fieldsUpper">字段</item>
-    <item id="text_operatorsUpper">运算符</item>
-    <item id="text_attachedPropertiesUpper">附加属性</item>
-    <item id="text_attachedEventsUpper">附加事件</item>
+  <item id="text_membersUpper">Members</item>
+  <item id="text_methodsUpper">Methods</item>
+  <item id="text_propertiesUpper">Properties</item>
+  <item id="text_eventsUpper">Events</item>
+  <item id="text_fieldsUpper">Fields</item>
+  <item id="text_operatorsUpper">Operators</item>
+  <item id="text_attachedPropertiesUpper">Attached Properties</item>
+  <item id="text_attachedEventsUpper">Attached Events</item>
 
     <!-- alt text for images -->
     <item id="altText_pubClass">公共类</item>

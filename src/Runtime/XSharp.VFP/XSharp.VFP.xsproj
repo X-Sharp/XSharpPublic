@@ -22,12 +22,6 @@
     <Allowdot>True</Allowdot>
     <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>XSharp.VFP.Xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
-    <DocumentationFile>XSharp.VFP.Xml</DocumentationFile>
-  </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Reference Include="System.Management, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -72,6 +66,7 @@
     <Compile Include="PrinterFunctions.prg" />
     <Compile Include="SQL\EmbeddedSql.prg" />
     <Compile Include="SQL\SQLFunctions.prg" />
+    <Compile Include="SystemFunctions.prg" />
     <Compile Include="ToDo-TUVWX.prg" />
     <Compile Include="ToDo-S.prg" />
     <Compile Include="ToDo-QR.prg" />
@@ -106,6 +101,7 @@
     <Compile Include="UI\AutoCloseMessageBox.prg" />
     <Compile Include="UI\Dialogs.prg" />
     <Compile Include="Win32.prg" />
+    <Compile Include="WindowFunctions.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Classes" />

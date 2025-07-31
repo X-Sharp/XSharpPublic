@@ -36,8 +36,8 @@ namespace XSharp.MacroCompiler
         UIntPtr = 21,
         Ptr = 22,
         Usual = 23,
-        VOFloat = 24,
-        VODate = 25,
+        Float = 24,
+        Date = 25,
         Symbol = 26,
         Psz = 27,
         Array = 28,
@@ -85,13 +85,13 @@ namespace XSharp.MacroCompiler
             "System.IntPtr",
             "System.UIntPtr",
             "System.Void*",
-            XSharpQualifiedTypeNames.Usual + "|" + VulcanQualifiedTypeNames.Usual,
-            XSharpQualifiedTypeNames.Float + "|" + VulcanQualifiedTypeNames.Float,
-            XSharpQualifiedTypeNames.Date + "|" + VulcanQualifiedTypeNames.Date,
-            XSharpQualifiedTypeNames.Symbol + "|" + VulcanQualifiedTypeNames.Symbol,
-            XSharpQualifiedTypeNames.Psz + "|" + VulcanQualifiedTypeNames.Psz,
-            XSharpQualifiedTypeNames.Array + "|" + VulcanQualifiedTypeNames.Array,
-            XSharpQualifiedTypeNames.Codeblock + "|" + VulcanQualifiedTypeNames.Codeblock,
+            XSharpQualifiedTypeNames.Usual,
+            XSharpQualifiedTypeNames.Float,
+            XSharpQualifiedTypeNames.Date,
+            XSharpQualifiedTypeNames.Symbol,
+            XSharpQualifiedTypeNames.Psz ,
+            XSharpQualifiedTypeNames.Array,
+            XSharpQualifiedTypeNames.Codeblock,
             "XSharp.__Currency",
             "XSharp.__Binary",
         };
@@ -108,9 +108,9 @@ namespace XSharp.MacroCompiler
                 nativeTypeSymbols[(int)m] = null;
                 if (!string.IsNullOrEmpty(names))
                 {
-                    Debug.Assert(names.Substring(names.LastIndexOf('.')+1)
-                        .Replace("__","").Split('|', '(').First()
-                        .Replace("Void*","Ptr") == m.ToString());
+                    Debug.Assert(names.Substring(names.LastIndexOf('.') + 1)
+                        .Replace("__", "").Split('|', '(').First()
+                        .Replace("Void*", "Ptr") == m.ToString());
                     foreach(var name in names.Split('|'))
                     {
                         var t = Binder.LookupFullName(name) as TypeSymbol;
@@ -173,9 +173,9 @@ namespace XSharp.MacroCompiler
                     return "ptr";
                 case NativeType.Usual:
                     return "usual";
-                case NativeType.VOFloat:
+                case NativeType.Float:
                     return "float";
-                case NativeType.VODate:
+                case NativeType.Date:
                     return "date";
                 case NativeType.Symbol:
                     return "symbol";

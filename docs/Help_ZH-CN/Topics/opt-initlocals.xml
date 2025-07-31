@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T18:29:12.805+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-24T22:03:07.760+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-initlocals</title>
   <body>
     <header>
       <para styleclass="Heading1">-initlocals</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-initlocals选项指定编译器是否应自动初始化局部变量</para>
+    <para styleclass="Normal">-initlocals 选项指定编译器是否应自动初始化局部变量</para>
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-initlocals[+|-]</para>
     <para styleclass="Heading2">参数</para>

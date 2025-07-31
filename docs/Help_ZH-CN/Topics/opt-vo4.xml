@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T22:44:00.087+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-24T22:32:41.842+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-vo4</title>
   <keywords>
     <keyword>-vo4</keyword>
@@ -113,7 +113,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">每次转换时，编译器都会发出相应的警告。您可以使用 -wx 开关禁用该警告，或在源代码中插入一个显式转换来消除该警告。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"> 强烈建议不要在新代码中使用该编译器选项。由于源数据类型中的值范围无法在目标数据类型中表示，因此上表中列出的所有转换都可能丢失数据或返回不正确的值。</para>
+    <para styleclass="Normal">&#32;<text style="font-weight:bold; color:#ff0000;">强烈建议不要在新代码中使用该编译器选项</text><text style="color:#ff0000;">。由于源数据类型中的值范围无法在目标数据类型中表示，因此上表中列出的所有转换都可能丢失数据或返回不正确的值。</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">例如，包含负数的 INT 不能用 DWORD 表示。同样，大于 65535 的 INT 也不能用 SHORT 表示。如果必须混合使用有符号和无符号类型，或将较大的类型传递给较小的类型，则应始终提供明确的转换而不是使用 -vo4。这将记录转换是安全的，但如果无意中使用了不兼容的整数类型，则不会消除编译时的错误。</para>
     <para styleclass="Normal"></para>

@@ -261,7 +261,7 @@
 
 // These commands are also defined in the FoxPro header file
 
-#command COPY [TO <(file)>] [DELIMITED [WITH <*delim*>]]                ;
+#command COPY [TO <(file)>] DELIMITED [WITH <*delim*>]                  ;
          [__DBFIELDLIST__ <fields>]                                     ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
@@ -276,7 +276,7 @@
                         <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>  ;
                       )
 
-#command COPY [TO <(file)>] [SDF]                                       ;
+#command COPY [TO <(file)>] SDF                                         ;
          [__DBFIELDLIST__ <fields>]                                     ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
@@ -305,11 +305,11 @@
                                                                         ;
       => DbCopy(                                                        ;
                    <(file)>, <fields>,                                  ;
-                   <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>       ;
+                   <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>,      ;
                    <rdd>, { <(hdnlist)> }, <.noopt.>)
 
 
-#command APPEND [FROM <(file)>] [DELIMITED [WITH <*delim*>]]            ;
+#command APPEND [FROM <(file)>] DELIMITED [WITH <*delim*>]              ;
          [__DBFIELDLIST__ <fields>]                                     ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
@@ -323,7 +323,7 @@
                        <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>   ;
                      )
 
-#command APPEND [FROM <(file)>] [SDF]                                   ;
+#command APPEND [FROM <(file)>] SDF                                     ;
          [__DBFIELDLIST__ <fields>]                                     ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;

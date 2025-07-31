@@ -106,7 +106,9 @@ namespace XSharp.MacroCompiler
     {
         internal override void EmitGet(ILGenerator ilg)
         {
-            var m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions_IVarGet) as MethodSymbol;
+            var m = Dialect == XSharpDialect.FoxPro  ?
+                Compilation.Get(WellKnownMembers.XSharp_RT_Functions_IVarGetSelf) as MethodSymbol
+                : Compilation.Get(WellKnownMembers.XSharp_RT_Functions_IVarGet) as MethodSymbol;
             ilg.Emit(OpCodes.Ldstr, Name);
             ilg.Emit(OpCodes.Call, m.Method);
         }

@@ -5,7 +5,7 @@ USING System.Xml
 USING System.IO
 
 PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
-	STATIC METHOD ConvertXsfrmToPrg(cXsfrm AS STRING, cFormPrg AS STRING, cNameSpace AS STRING) AS LOGIC
+	STATIC METHOD ConvertXsfrmToPrg(cXsfrm AS STRING, cClassName as STRING, cFormPrg AS STRING, cNameSpace AS STRING) AS LOGIC
 		LOCAL oNode , oWindowNode AS XmlNode
 		LOCAL oCurrentWed AS WedDescriptor
 		LOCAL oMainWed AS WedDescriptor
@@ -77,7 +77,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 
 		LOCAL oWriter := NULL AS StreamWriter
 
-		cClassDeclCode := String.Format("PARTIAL CLASS {0} INHERIT System.Windows.Forms.Form", oMainWed:Name)
+		cClassDeclCode := String.Format("PARTIAL CLASS {0} INHERIT System.Windows.Forms.Form", cClassName)
 
 		aConstrCode:Add( String.Format(e"" ) )
 		aConstrCode:Add( String.Format(e"CONSTRUCTOR()" ) )
@@ -120,7 +120,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 
 		LOCAL oFileInfo AS FileInfo
 		oFileInfo := FileInfo{cFormPrg}
-		cFileName := oFileInfo:DirectoryName + "\" + oFileInfo:Name + ".Designer.prg"
+		cFileName := System.IO.Path.ChangeExtension(oFileInfo:DirectoryName + "\" + oFileInfo:Name ,".designer.prg")
 		oWriter := StreamWriter{cFileName , FALSE , Encoding.UTF8}
 		oWriter:WriteLine("BEGIN NAMESPACE " + cNameSpace)
 		oWriter:WriteLine("")
@@ -354,7 +354,9 @@ INTERNAL CLASS WedDescriptor
 			CASE "HEIGHT"
 				SELF:Size := Size{SELF:Size:Width , Int32.Parse(cValue)}
 			CASE "CONTROL"
-				SELF:VOType := cValue:ToUpperInvariant()
+                SELF:VOType := cValue:ToUpperInvariant()
+                // Get the part after the last Colon
+                cValue := cValue:Substring(cValue:LastIndexOf(':') + 1)
 				SWITCH cValue:ToUpperInvariant()
 					CASE "FIXEDTEXT"
 						SELF:_cType := "System.Windows.Forms.Label"

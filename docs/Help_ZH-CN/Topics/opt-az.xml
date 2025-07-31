@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T18:26:49.286+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-24T22:08:24.591+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-az</title>
   <keywords>
     <keyword>-az</keyword>
@@ -10,7 +10,7 @@
       <para styleclass="Heading1">-az</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-az选项指定数组元素以0开头，而不是以1开头(默认值)。</para>
+    <para styleclass="Normal">-az 选项指定数组元素以 0 开始，而不是以 1 开始(默认值)。</para>
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-az[+|-]</para>
     <para styleclass="Heading2">参数</para>

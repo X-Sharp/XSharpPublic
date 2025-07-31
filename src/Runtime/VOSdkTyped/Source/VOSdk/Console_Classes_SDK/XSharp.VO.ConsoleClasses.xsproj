@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <Import Project="..\VOSDK.Targets" />
-  <!-- Please note that many properties are read from VOSDK.Targets -->
+  <!-- Please note that most important settings are read from VOSDK.Targets -->
   <PropertyGroup>
     <ProjectGuid>0EE10CED-B863-4B5E-8AC2-443B2CC6EB7A</ProjectGuid>
     <AssemblyName>XSharp.VOConsoleClasses</AssemblyName>
@@ -29,21 +29,12 @@
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>XSharp.VOConsoleClasses.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'">
-    <DocumentationFile>XSharp.VOConsoleClasses.xml</DocumentationFile>
-  </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
       <Link>SDKAssemblyinfo.prg</Link>
     </Compile>
-    <Compile Include="Console.prg" />
-    <Compile Include="ConsoleCoord.prg" />
-    <Compile Include="ConsoleDefines.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg" />
+    <Compile Include="**\*.prg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
@@ -61,11 +52,7 @@
     <Folder Include="Properties" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System">
-      <Name>System</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.dll</AssemblyName>
-    </Reference>
+    <Reference Include="System" />
   </ItemGroup>
   <Import Project="..\VOSDKDocs.Targets" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">

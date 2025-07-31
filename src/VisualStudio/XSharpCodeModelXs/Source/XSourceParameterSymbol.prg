@@ -40,14 +40,7 @@ CLASS XSourceParameterSymbol INHERIT XSourceVariableSymbol IMPLEMENTS IXParamete
             result += ParamTypeDesc+" "+SELF:TypeName
         ENDIF
         RETURN result
-    METHOD Resolve() AS VOID
-        IF SELF:ResolvedType == null
-            var name := SELF:TypeName
-            SELF:ResolvedType := SELF:File:FindType(name)
-            if (SELF:ResolvedType != NULL)
-                SELF:TypeName     := SELF:ResolvedType:FullName
-            endif
-        ENDIF
+    
 END CLASS
 [DebuggerDisplay("{DebuggerDisplay(),nq}")];
 CLASS XSourceTypeParameterSymbol INHERIT XSourceParameterSymbol

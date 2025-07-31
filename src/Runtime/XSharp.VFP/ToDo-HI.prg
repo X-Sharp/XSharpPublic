@@ -5,14 +5,6 @@
 //
 #pragma options("vo15", on)
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/id/*" />
-
-FUNCTION Id( ) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
-
-
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/imestatus/*" />
@@ -28,7 +20,7 @@ FUNCTION ImeStatus( nExpression ) AS LONG
 FUNCTION InDbc( cDatabaseObjectName, cType ) AS LOGIC
     THROW NotImplementedException{}
     // RETURN FALSE
-    
+
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/indexseek/*" />
 

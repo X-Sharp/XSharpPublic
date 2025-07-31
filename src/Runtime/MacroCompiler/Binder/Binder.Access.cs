@@ -27,7 +27,7 @@ namespace XSharp.MacroCompiler
                         if (Options.Binding.HasFlag(BindOptions.AllowDynamic) && expr.Datatype.IsUsualOrObject())
                         {
                             Convert(ref expr, Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
-                            return new DynamicSymbol(MemberName.LookupName);
+                            return new DynamicSymbol(MemberName.LookupName, this.Options.Dialect);
                         }
                         else
                             throw Binder.LookupError(expr, MemberName);
@@ -37,7 +37,7 @@ namespace XSharp.MacroCompiler
                 else
                 {
                     Convert(ref expr, Compilation.Get(NativeType.Object));
-                    return new DynamicSymbol(MemberName.LookupName);
+                    return new DynamicSymbol(MemberName.LookupName, this.Options.Dialect);
                 }
             }
             else if (member is RuntimeIdExpr)

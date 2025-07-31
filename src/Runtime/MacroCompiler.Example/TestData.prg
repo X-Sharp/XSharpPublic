@@ -12,6 +12,12 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
+function TestInNotNil(u in usual) as logic
+    return u != nil
+
+function TestRefNotZero(u ref int) as logic
+    return u != 0
+
 FUNCTION FoxArrayTest(a1, a2, a3) CLIPPER
     local result := 42 as INT
     FOREACH var arg in _Args()
@@ -20,7 +26,6 @@ FUNCTION FoxArrayTest(a1, a2, a3) CLIPPER
         ENDIF
     next
     RETURN result
-
 
 FUNCTION TestI(i as int) as int
     return i
@@ -403,3 +408,27 @@ BEGIN NAMESPACE MyNS
 END NAMESPACE
 
 
+
+PUBLIC INTERFACE ITest
+
+	METHOD Testx(nArg AS INT) AS USUAL STRICT
+	METHOD Testx(cArg AS STRING) AS USUAL STRICT
+
+END INTERFACE
+
+
+PUBLIC CLASS Test IMPLEMENTS ITest
+
+	PUBLIC METHOD Testx(nArg AS INT) AS USUAL STRICT
+
+		//? i"INT overload. Argument is {nArg}"
+
+		RETURN nArg
+
+	METHOD Testx(cArg AS STRING) AS USUAL STRICT
+
+		//? i"STRING overload. Argument is {cArg}"
+
+		RETURN cArg
+
+END CLASS

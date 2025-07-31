@@ -109,7 +109,7 @@
     "Anchor": "::SetAnchor(<@_CurrentObject_@>, <@Anchor@>)",
     "Image": "VFPTools.ImageFromFile(??<@Picture@>??)",
     "Picture": "??<@Picture@>??",
-    "OLEDragPicture": "??<@OLEDragPicture@>",
+    "OLEDragPicture": "??<@OLEDragPicture@>??",
     "DragIcon": "??<@DragIcon@>??",
     "MouseIcon": "??<@MouseIcon@>??",
     "BorderColor": "",

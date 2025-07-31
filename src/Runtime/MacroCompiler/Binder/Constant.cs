@@ -64,7 +64,7 @@ namespace XSharp.MacroCompiler
         internal override decimal? Decimal { get { return unchecked(Value as decimal?); } }
         internal override string String { get { return Value as string; } }
         internal override DateTime? DateTime { get { return Value as DateTime?; } }
-        internal override byte[] Binary { get { return Value as byte[]; } } 
+        internal override byte[] Binary { get { return Value as byte[]; } }
 
         internal override string FullName { get { return Value.ToString(); } }
     }
@@ -81,7 +81,7 @@ namespace XSharp.MacroCompiler
     {
         int Length;
         int Decimals;
-        internal ConstantVOFloat(double value, int length, int decimals) : base(value, NativeType.VOFloat)
+        internal ConstantVOFloat(double value, int length, int decimals) : base(value, NativeType.Float)
         {
             Length = length;
             Decimals = decimals;
@@ -89,7 +89,7 @@ namespace XSharp.MacroCompiler
     }
     internal partial class ConstantVODate: ConstantWithValue<DateTime>
     {
-        internal ConstantVODate(int year, int month, int day) : base(new DateTime(year, month, day), NativeType.VODate) { }
+        internal ConstantVODate(int year, int month, int day) : base(new DateTime(year, month, day), NativeType.Date) { }
     }
     internal partial class ConstantDateTime : ConstantWithValue<DateTime>
     {

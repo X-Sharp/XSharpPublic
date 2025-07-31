@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace XSharp.MacroCompiler
 {
@@ -138,7 +135,7 @@ namespace XSharp.MacroCompiler
                         var o = ConsumeAndGet();
                         return new SizeOfExpr(ParseParenType(), o);
                     }
-                case TokenType.DEFAULT when La(2) == TokenType.LPAREN:
+                case TokenType.DEFAULT when La(2) == TokenType.LPAREN && La(3) != TokenType.ADDROF:
                     {
                         var o = ConsumeAndGet();
                         return new DefaultExpr(ParseParenType(), o);
@@ -1111,6 +1108,8 @@ namespace XSharp.MacroCompiler
         static readonly Oper[] Opers;
         static readonly Oper[] PrefixOpers;
         static readonly Oper AliasExpr;
+
+        internal static int OpPrecedence(TokenType tt) => Opers[(int)tt]?.level ?? 0;
 
         static Parser()
         {

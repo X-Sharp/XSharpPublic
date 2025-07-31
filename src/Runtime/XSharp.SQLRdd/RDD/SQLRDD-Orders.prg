@@ -164,6 +164,7 @@ partial class SQLRDD inherit DBFVFP
             result := CurrentOrder != null
             IF result
                 SELF:CurrentOrder:ClearCache()
+                SELF:CurrentOrder:CalculateKeyLength()
                 if SELF:_recnoColumNo > -1
                     self:GoTo(currentRecord)
                 endif
@@ -422,7 +423,7 @@ partial class SQLRDD inherit DBFVFP
    /// <summary>Perform a seek operation on the current selected index for the current Workarea.</summary>
     /// <param name="info">An object containing containing the necessary seek information.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-    /// <remarks>The result of the actial seek operation is stored in the Found property of the RDD and the EOF property.</remarks>
+    /// <remarks>The result of the actual seek operation is stored in the Found property of the RDD and the EOF property.</remarks>
     /// <remarks>
     /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
     /// </remarks>
@@ -430,6 +431,8 @@ partial class SQLRDD inherit DBFVFP
         local oKey as object
         // change behavior when all rows are read.
         // In that case we can search in the local buffer
+        SELF:_Found := FALSE
+        SELF:_SetEOF(FALSE)
         oKey := seekInfo:Value
         if oKey == null         // Seek NIL
             if seekInfo:Last
@@ -446,10 +449,12 @@ partial class SQLRDD inherit DBFVFP
             var cSeekWhere := CurrentOrder:SeekExpression(seekInfo )
             self:_OpenTable(cSeekWhere)
             if seekInfo:Last
-                return self:GoBottom()
+                self:GoBottom()
             else
-                return self:GoTop()
+                self:GoTop()
             endif
+            SELF:_Found := ! SELF:EoF
+            RETURN TRUE
         ELSE
             SELF:_ForceOpen()
             SELF:GoTop()

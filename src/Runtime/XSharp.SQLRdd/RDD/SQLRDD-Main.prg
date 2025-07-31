@@ -348,13 +348,13 @@ partial class SQLRDD inherit DBFVFP
                         if self:_deletedColumnNo > -1
                             if !wasNew
                                 // already written with _deletedColumnNo with the correct value
-                                lOk := SELF:_ExecuteUpdateStatement(row, true)
+                                lOk := SELF:_ExecuteUpdateStatement(row)
                                 if lOk
                                     row:AcceptChanges()
                                 endif
                             endif
                         else
-                            lOk := SELF:_ExecuteDeleteStatement(row, true)
+                            lOk := SELF:_ExecuteDeleteStatement(row)
                             // we do not clear the fields, but leave the row unchanged.
                             // the DBF has the deleted flag. This emulates what DBF files do
 
@@ -366,7 +366,7 @@ partial class SQLRDD inherit DBFVFP
                             lOk := SELF:_ExecuteInsertStatement(row)
                             row:AcceptChanges()
                         elseif row:RowState.HasFlag(DataRowState.Modified)
-                            lOk := SELF:_ExecuteUpdateStatement(row, true)
+                            lOk := SELF:_ExecuteUpdateStatement(row)
                             row:AcceptChanges()
                         endif
                     endif
@@ -399,7 +399,18 @@ partial class SQLRDD inherit DBFVFP
             bag:Close()
         next
         _connection:UnregisterRdd(self)
+        var indexes := List<string>{}
+        foreach var index in self:OrderBagList
+            indexes:Add(index:FullPath)
+        next
+
         lOk := super:Close()
+        foreach var indexFile in indexes
+            if File.Exists(indexFile)
+                File.Delete(indexFile)
+            endif
+        next
+
         if File.Exists(SELF:FileName)
             File.Delete(SELF:FileName)
         endif
@@ -520,9 +531,9 @@ partial class SQLRDD inherit DBFVFP
         endif
         LOCAL isOK := TRUE AS LOGIC
         //
+        SELF:GoCold()
         IF nToSkip == 0
-            // Refresh current Recno
-            SELF:GoCold()
+            NOP
         ELSE
             var newRow := SELF:RowNumber + nToSkip
             IF newRow > 0

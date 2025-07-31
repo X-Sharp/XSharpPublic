@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic modified="2025-05-30T16:12:30.611+02:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">The SqlRDD</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">The SqlRDD</text></para>
+    </header>
+    <para styleclass="Heading1 Black" style="text-align:center;"><text styleclass="Heading1 Black" translate="true">Welcome to X# SQL RDD &#160;</text><var styleclass="Heading1 Black">&lt;%TXTVERSION%&gt;</var></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal" style="text-align:center;"><image src="xsharplogo.jpg" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="VersionHistory" styleclass="Normal" translate="true">Click here for the version history</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

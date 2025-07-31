@@ -3,7 +3,7 @@ USING System.Collections.Generic
 USING System.ComponentModel
 USING System.Data
 USING System.Drawing
-
+using System.Linq
 USING System.Text
 
 USING System.Windows.Forms
@@ -38,11 +38,22 @@ BEGIN NAMESPACE XSharp.Debugger
                     VAR oItem := ListViewItem{}
                     oItem:Text := nSet:ToString()
                     IF oValue != NULL
-                        oItem:SubItems:Add(oValue:ToString())
+                        if oValue is string[] var aValue
+                            var strResult := ""
+                            foreach var strValue in aValue
+                                if strResult != ""
+                                    strResult += ";"
+                                endif
+                                strResult += strValue
+                            next
+                            oItem:SubItems:Add(strResult)
+                        else
+                            oItem:SubItems:Add(oValue:ToString())
+                        endif
                     ELSE
                         oItem:SubItems:Add("<no value>")
                     ENDIF
-                    
+
                     SELF:variablesListView:Items:Add(oItem)
                  ENDIF
             NEXT
@@ -50,6 +61,6 @@ BEGIN NAMESPACE XSharp.Debugger
             SELF:variablesListView:Sort()
             SELF:variablesListView:AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
             SELF:variablesListView:AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
-        
-    END CLASS 
+
+    END CLASS
 END NAMESPACE

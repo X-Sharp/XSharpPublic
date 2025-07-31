@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 using VSLangProj;
 
@@ -1237,9 +1238,9 @@ namespace XSharp.Project
         {
             foreach (var item in URLNodes)
             {
-                if (item.Value is FileNode file)
+                if (item.Value is XSharpFileNode file)
                 {
-                    this.ProjectModel.AddFile(item.Key);
+                    this.ProjectModel.AddFile(item.Key, file.FileType);
                 }
             }
         }
@@ -1573,9 +1574,9 @@ namespace XSharp.Project
             {
                 if (node is XSharpFileNode xNode && !xNode.IsNonMemberItem)
                 {
-                    if (File.Exists(url))
+                    if (File.Exists(url) )
                     {
-                        this.ProjectModel.AddFile(url);
+                        this.ProjectModel.AddFile(url, xNode.FileType);
                         if (IsXamlFile(url))
                         {
                             base.ObserveItem(url);
@@ -1914,7 +1915,7 @@ namespace XSharp.Project
         public XSourceTypeSymbol ResolveXType(string name, IList<string> usings)
         {
             var model = this.ProjectModel;
-            XSourceTypeSymbol result = model.Lookup(name, usings);
+            XSourceTypeSymbol result = model.Lookup(name, usings) as XSourceTypeSymbol;
             if (result != null)
                 return result;
             return result;

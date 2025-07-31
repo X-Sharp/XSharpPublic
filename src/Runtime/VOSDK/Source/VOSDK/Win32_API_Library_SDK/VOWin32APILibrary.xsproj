@@ -24,50 +24,7 @@
     <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
       <Link>SDKAssemblyinfo.prg</Link>
     </Compile>
-    <Compile Include="CA Container.prg" />
-    <Compile Include="CA Split.prg" />
-    <Compile Include="CDErr.prg" />
-    <Compile Include="COM.prg" />
-    <Compile Include="CommCtrl.prg" />
-    <Compile Include="CommDlg.prg" />
-    <Compile Include="CType.prg" />
-    <Compile Include="DDE.prg" />
-    <Compile Include="DDEML.prg" />
-    <Compile Include="Dlgs.prg" />
-    <Compile Include="HtmlHelp.prg" />
-    <Compile Include="LogFile.prg" />
-    <Compile Include="LZExpand.prg" />
-    <Compile Include="MCIWnd.prg" />
-    <Compile Include="MMSystem.prg" />
-    <Compile Include="NB32.prg" />
-    <Compile Include="OLE Automation.prg" />
-    <Compile Include="OLE Control.prg" />
-    <Compile Include="OpenGL.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg" />
-    <Compile Include="RAS.prg" />
-    <Compile Include="Richedit.prg" />
-    <Compile Include="Shell API.prg" />
-    <Compile Include="SQL.prg" />
-    <Compile Include="SQLExt.prg" />
-    <Compile Include="TAPI.prg" />
-    <Compile Include="WinBase.prg" />
-    <Compile Include="WinCon.prg" />
-    <Compile Include="WinDef.prg" />
-    <Compile Include="WinDllVersion.prg" />
-    <Compile Include="WinError.prg" />
-    <Compile Include="WinGDI.prg" />
-    <Compile Include="WININET.prg" />
-    <Compile Include="WinNetWk.prg" />
-    <Compile Include="WinNLS.prg" />
-    <Compile Include="WinNT.prg" />
-    <Compile Include="WinPerf.prg" />
-    <Compile Include="WinReg.prg" />
-    <Compile Include="WinSock.prg" />
-    <Compile Include="WinSpool.prg" />
-    <Compile Include="WINSVC.prg" />
-    <Compile Include="WinUser.prg" />
-    <Compile Include="WinVer.prg" />
-    <Compile Include="WTypes.prg" />
+    <Compile Include="**\*.prg" />    
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

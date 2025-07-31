@@ -37,6 +37,7 @@ namespace XSharp.MacroCompiler
         Special = 512,
         Logic = 1024,
         Cast = 2048,
+        ForceUsual = 4096,
 
         None = 0,
         Default = AllowDynamic | AllowInexactComparisons | AllowImplicitNarrowingConversions
@@ -313,7 +314,7 @@ namespace XSharp.MacroCompiler
             Compilation.InitializeWellKnownTypes();
             Compilation.InitializeWellKnownMembers();
 
-            foreach (var ns in new string[]{OurNameSpaces.System, OurNameSpaces.XSharp, OurNameSpaces.Vulcan})
+            foreach (var ns in new string[]{OurNameSpaces.System, OurNameSpaces.XSharp})
             {
                 var s = LookupFullName(ns) as NamespaceSymbol;
                 if (s != null && !usedSymbols.Contains(s))

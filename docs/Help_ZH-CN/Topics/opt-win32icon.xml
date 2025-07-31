@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T23:30:35.476+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-24T21:43:44.467+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-win32icon</title>
   <keywords>
     <keyword>-win32icon</keyword>
@@ -10,7 +10,7 @@
       <para styleclass="Heading1">-win32icon</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-win32icon选项会在输出文件中插入一个.ico文件，使输出文件在文件资源管理器中呈现所需的外观。</para>
+    <para styleclass="Normal">-win32icon 选项会在输出文件中插入一个 .ico 文件，使输出文件在文件资源管理器中呈现所需的外观。</para>
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-win32icon:filename &#160;</para>
     <para styleclass="Heading2">参数</para>

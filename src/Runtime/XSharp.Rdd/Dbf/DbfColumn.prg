@@ -11,6 +11,7 @@ USING System.Linq
 USING System.Runtime.CompilerServices
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
+USING System.Diagnostics
 USING STATIC XSharp.Conversions
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>Class for DBF Column reading / writing </summary>
@@ -115,13 +116,15 @@ BEGIN NAMESPACE XSharp.RDD
             endif
         RETURN result
 
-        PROTECTED METHOD _PutString(buffer AS BYTE[], strValue as STRING) AS VOID
+        PROTECTED METHOD _PutString(buffer AS BYTE[], strValue as STRING) AS LONG
             // Let the DBF layer handle the encoding
+            VAR nResult := strValue:Length
             if SELF:RDD is DBF
-                SELF:RDD:_GetBytes(strValue, buffer, SELF:Offset, SELF:Length)
+                nResult := SELF:RDD:_GetBytes(strValue, buffer, SELF:Offset, SELF:Length)
             ELSE
-                RuntimeState.WinEncoding:GetBytes(strValue, 0, SELF:Length, buffer, SELF:Offset)
+                nResult := RuntimeState.WinEncoding:GetBytes(strValue, 0, SELF:Length, buffer, SELF:Offset)
             endif
+            RETURN nResult
 
         /// <summary>Get the value from the buffer</summary>
        /// <param name="buffer">Record buffer for the current record</param>
@@ -304,22 +307,24 @@ BEGIN NAMESPACE XSharp.RDD
                     str := str:PadRight(SELF:Length,' ')
                 ENDIF
             ENDIF
+            local nLen as LONG
             IF SELF:IsBinary
-                LOCAL nLen := Math.Min(SELF:Length, str:Length) AS LONG
+                nLen := Math.Min(SELF:Length, str:Length)
                 System.Text.Encoding.Default:GetBytes(str, 0, nLen, buffer, SELF:Offset)
             ELSEIF SELF:IsUnicode
+                nLen := SELF:Length
                 System.Buffer.BlockCopy(str:ToCharArray(),0, buffer, SELF:Offset, SELF:Length)
             ELSE
-                SELF:_PutString(buffer, str)
+                nLen := SELF:_PutString(buffer, str)
             ENDIF
             IF SELF:IsVarLength
                 IF SELF:RDD:NullColumn != NULL
-                    IF str:Length >= SELF:Length
+                    IF nLen >= SELF:Length
                         // we used all the bytes, so set the varlength bit to 0
                         SELF:RDD:NullColumn:SetBit(SELF:LengthBit, FALSE)
                     ELSE
                         SELF:RDD:NullColumn:SetBit(SELF:LengthBit, TRUE)
-                        buffer[SELF:Offset + SELF:Length-1] := (BYTE) str:Length
+                        buffer[SELF:Offset + SELF:Length-1] := (BYTE) nLen
                     ENDIF
                 ELSE
                     buffer[SELF:Offset + SELF:Length-1] := (BYTE) Math.Max(str:Length, SELF:Length-1)
@@ -416,7 +421,8 @@ BEGIN NAMESPACE XSharp.RDD
                     VAR dt2 := DateTime{dValue:Year, dValue:Month, dValue:Day}
                     str := dt2:ToString( "yyyyMMdd" )
                 ENDIF
-                SELF:_PutString(buffer, str)
+                VAR nLen := SELF:_PutString(buffer, str)
+                Debug.Assert(nLen == 8, "Date column length is not 8")
                 RETURN TRUE
             ENDIF
             SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE,__ENTITY__, SELF:TypeError("Date",oValue))
@@ -588,7 +594,8 @@ BEGIN NAMESPACE XSharp.RDD
             ELSE
                 str := str:PadLeft(Length,' ')
             ENDIF
-            SELF:_PutString(buffer, str)
+            var nLen := SELF:_PutString(buffer, str)
+            Debug.Assert(nLen == SELF:Length, "Numeric column length is not correct")
             IF lDataWidthError
                 SELF:RDD:_dbfError(Subcodes.ERDD_DATAWIDTH, EG_DATAWIDTH,__ENTITY__, i"Numeric value for column '{ColumnName}' ({oValue}) is too large")
             ENDIF
@@ -665,7 +672,8 @@ BEGIN NAMESPACE XSharp.RDD
                 ELSE
                     strValue := intValue:ToString():PadLeft(10,' ')
                 ENDIF
-                SELF:_PutString(buffer, strValue)
+                var nLen := SELF:_PutString(buffer, strValue)
+                Debug.Assert(nLen == 10, "Memo column length is not 10")
             ENDIF
             RETURN TRUE
 

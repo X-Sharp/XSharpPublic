@@ -43,6 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     var arg = attr.CommonConstructorArguments[0];
                     if (arg.Value == null)
                     {
+<<<<<<< .mine
                         switch (desc)
                         {
                             case 4:
@@ -55,6 +56,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     return true;
                         diagnostics.Add(ErrorCode.ERR_ValueCantBeNull, param.GetNonNullSyntaxNode().Location, param.Type);
                         return false;
+
+=======
+                        switch (desc)
+                        {
+                            case 4:
+                                return param.Type.IsPszType();
+                            case 3:
+                                return param.Type.IsSymbolType();
+                            default:
+                                if (param.Type.SpecialType == SpecialType.System_IntPtr ||
+                                    param.Type.IsVoidPointer())
+                                    return true;
+                                diagnostics.Add(ErrorCode.ERR_ValueCantBeNull, param.GetNonNullSyntaxNode().Location, param.Type);
+                                return false;
+                        }
+>>>>>>> .theirs
                         }
                     }
                 }
@@ -108,9 +125,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             // Fixes C805
                             var value = arg.Value;
                             var valueType = CodeAnalysis.SpecialTypeExtensions.FromRuntimeTypeOfLiteralValue(value);
-                            if (arg.Type.SpecialType != valueType)
+                            var specialType = param.Type.SpecialType;
+                            if (param.Type.IsUsualType() || param.Type.IsObjectType() || specialType == SpecialType.None)
                             {
-                                switch (arg.Type.SpecialType)
+                                specialType = arg.Type.SpecialType;
+                            }
+                            if (specialType != valueType)
+                            {
+                                switch (specialType)
                                 {
                                     case SpecialType.System_Byte:
                                         value = Convert.ChangeType(value, typeof(byte));
@@ -136,10 +158,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     case SpecialType.System_UInt64:
                                         value = Convert.ChangeType(value, typeof(ulong));
                                         break;
+                                    case SpecialType.System_Decimal:
+                                        value = Convert.ChangeType(value, typeof(decimal));
+                                        break;
                                 }
                             }
-                            constant = ConstantValue.Create(value, arg.Type.SpecialType);
-                            var netType = compilation.GetSpecialType(arg.Type.SpecialType);
+                            constant = ConstantValue.Create(value, specialType);
+                            var netType = compilation.GetSpecialType(specialType);
                             return new BoundLiteral(syntax, constant, netType);
                         }
                     }

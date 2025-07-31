@@ -490,18 +490,15 @@
     </DataServer.NoIVarPut>
     <DataServer.Notify>
         <summary>
-            An event handler that responds to events that have occurred in methods of this server, or in other servers that are linked to this server in some way.  The standard implementation notifies all the server's clients of the event.
+            An event handler that responds to events that have occurred in methods of this server, or in other servers that are linked to this server in some way.  
+			The standard implementation notifies all the server's clients of the event.
             Description
             <br />Important!  This method is automatically called by the various action methods of the data server, and should normally not be called by application code.
         </summary>
-        <param name="kNotification">Identifies the event, specified as one of the following constants:</param>
-        <param name="uDescription">Used only with some notification types.</param>
         <returns>
             SELF, except if NOTIFYINTENTTOMOVE is specified for <paramref name="kNotifyName" />.  In this case, the return value is TRUE if successful; otherwise, FALSE.
         </returns>
-        <remarks>
-            <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
-        </remarks>
+		<include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
     </DataServer.Notify>
     <DataServer.PostInit>
         <summary>

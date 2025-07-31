@@ -701,7 +701,7 @@ CLASS TabControl INHERIT TextControl
 
 		oPage := SELF:__GetTabPage(symTabName)
 		IF oPage != NULL_OBJECT
-			oPage:ImageIndex := nImageIndex
+			oPage:ImageIndex := nImageIndex - 1
 		ENDIF
 
 		RETURN nImageIndex

@@ -87,6 +87,8 @@ namespace XSharp.Project
 
         #endregion
         #region Properties
+
+        internal string ItemType => this.ItemNode.ItemName;
         /// <summary>
         /// Gets an index into the default <b>ImageList</b> of the icon to show for this file.
         /// </summary>
@@ -168,6 +170,19 @@ namespace XSharp.Project
             return result;
         }
 
+        private void ResetFileType()
+        {
+            DetermineFileType();
+        }
+
+        internal void BuildActionChanged( )
+        {
+            this.ResetFileType();
+            var prjNode = this.ProjectMgr as XSharpProjectNode;
+            prjNode.ProjectModel.RemoveFile(this.Url);
+            prjNode.ProjectModel.AddFile(this.Url, this.FileType);
+        }
+
         protected override int ExcludeFromProject()
         {
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
@@ -182,7 +197,7 @@ namespace XSharp.Project
          });
         }
 
-        private static string typeNameToSubtype(string typeName)
+        private static string TypeNameToSubtype(string typeName)
         {
             switch (typeName.ToLower())
             {
@@ -200,6 +215,7 @@ namespace XSharp.Project
         {
             // Parse the contents of the file and see if we have a windows form or a windows control
             XSharpProjectNode projectNode = ProjectMgr as XSharpProjectNode;
+            this.ResetFileType();
             XSharpModel.XFile xFile = projectNode.ProjectModel.FindXFile(this.Url);
             if (xFile == null)
             {
@@ -219,7 +235,7 @@ namespace XSharp.Project
                         if (first != null)
                         {
                             var parentClass = first.BaseTypeName;
-                            SubType = typeNameToSubtype(parentClass);
+                            SubType = TypeNameToSubtype(parentClass);
                             if (string.IsNullOrEmpty(SubType))
                             {
                                 var usings = new List<string>();
@@ -235,7 +251,7 @@ namespace XSharp.Project
                                     while (type?.BaseType != null)
                                     {
                                         var btName = type.BaseTypeName;
-                                        SubType = typeNameToSubtype(btName);
+                                        SubType = TypeNameToSubtype(btName);
                                         if (!string.IsNullOrEmpty(SubType))
                                             break;
                                         type = mgr.ResolveExternalType(btName, usings);
@@ -249,7 +265,7 @@ namespace XSharp.Project
                                         while (xType != null && !string.IsNullOrEmpty(xType.ParentName))
                                         {
                                             var parent = xType.ParentName;
-                                            SubType = typeNameToSubtype(parent);
+                                            SubType = TypeNameToSubtype(parent);
                                             if (!string.IsNullOrEmpty(SubType))
                                                 break;
                                             xType = mgr.ResolveXType(parent, usings);
@@ -405,7 +421,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                Logger.Exception(e, "AddDependant failed");
+                Logger.Exception(e, "AddDependent failed");
             }
             dependent = (XSharpFileNode)ProjectMgr.CreateDependentFileNode(fileName);
 
@@ -503,7 +519,7 @@ namespace XSharp.Project
 
         }
 
-        private bool hasSubType(string value)
+        private bool HasSubType(string value)
         {
             string result = SubType;
             return !String.IsNullOrEmpty(result) && String.Equals(result, value, StringComparison.OrdinalIgnoreCase);
@@ -528,14 +544,14 @@ namespace XSharp.Project
         {
             get
             {
-                return hasSubType(ProjectFileAttributeValue.Form);
+                return HasSubType(ProjectFileAttributeValue.Form);
             }
         }
         public bool IsUserControl
         {
             get
             {
-                return hasSubType(ProjectFileAttributeValue.UserControl);
+                return HasSubType(ProjectFileAttributeValue.UserControl);
             }
         }
         public override int SortPriority
@@ -548,12 +564,27 @@ namespace XSharp.Project
             }
         }
         private XFileType _fileType = XFileType.Unknown;
+
+        private void DetermineFileType()
+        {
+            _fileType = XFileTypeHelpers.GetFileType(this.Url);
+            if (_fileType == XFileType.SourceCode)
+            {
+                if (!string.Equals(ItemType, "Compile", StringComparison.OrdinalIgnoreCase))
+                {
+                    _fileType = XFileType.Other;
+                }
+            }
+
+        }
         internal XFileType FileType
         {
             get
             {
                 if (_fileType == XFileType.Unknown)
-                    _fileType = XFileTypeHelpers.GetFileType(this.Url);
+                {
+                    DetermineFileType();
+                }
                 return _fileType;
             }
         }
@@ -806,9 +837,8 @@ namespace XSharp.Project
         }
         protected override void Dispose(bool disposing)
         {
-            if (this.ProjectMgr is XSharpProjectNode)
+            if (this.ProjectMgr is XSharpProjectNode projectNode)
             {
-                XSharpProjectNode projectNode = (XSharpProjectNode)this.ProjectMgr;
                 if (projectNode != null)
                     projectNode.RemoveURL(this);
             }
@@ -917,6 +947,7 @@ namespace XSharp.Project
             var project = (XSharpProjectNode)this.ProjectMgr;
             var name = this.GetMkDocument();
             base.Remove(removeFromStorage);
+            project.ProjectModel.RemoveFile(name);
             project.RemoveURL(name);
         }
         protected override bool RenameDocument(string oldName, string newName, out HierarchyNode newNodeOut)
@@ -925,8 +956,7 @@ namespace XSharp.Project
             var result = base.RenameDocument(oldName, newName, out newNodeOut);
             if (result)
             {
-                XSharpProjectNode project = ProjectMgr as XSharpProjectNode;
-                if (project != null)
+                if (ProjectMgr is XSharpProjectNode project)
                 {
                     project.ProjectModel.RemoveFile(oldName);
                     project.ProjectModel.AddFile(newName);

@@ -1,32 +1,32 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T12:07:29.593+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-24T22:24:48.522+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-vo10</title>
   <keywords>
     <keyword>-vo10</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo10<tab/>兼容 IIF 行为 </para>
+      <para styleclass="Heading1">-vo10<tab />兼容 IIF 行为 </para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-vo10选项使IIF运算符的运行方式与 Visual Objects (方言)对象兼容</para>
+    <para styleclass="Normal">-vo10 选项使 IIF 运算符的运行方式与 Visual Objects (方言)对象兼容</para>
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-vo10[+|-]</para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab/>指定 + 或只指定 -vo10，会使 IIF 运算符的行为与 Visual Objects 中的行为相同。 </para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />指定 + 或只指定 -vo10，会使 IIF 运算符的行为与 Visual Objects 中的行为相同。 </para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">如果 IIF 运算符中的 true 和 false 表达式不相同，或者其中一个表达式无法隐式转换为另一个表达式的类型，编译器将引发错误。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Visual Objects 允许这样做，它会将两个表达式隐式转换为 USUAL，从而使 IIF 表达式也返回 USUAL。这既不安全也不高效，但最初用 Visual Objects 编写的代码可能依赖于这种行为，如果不使用 -vo10，运行时可能会出错。</para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOGIC</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">x := TRUE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IIF</text><text style="font-weight:normal; font-style:normal; color:#000000;">( x, 1, &quot;Sunday&quot;)</text></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOGIC</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">x := TRUE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IIF</text><text style="font-weight:normal; font-style:normal; color:#000000;">( x, 1, &quot;Sunday&quot;)</text></para>
     <para styleclass="Normal">当您使用 -vo10 编译器选项时，编译器会将其转换为：</para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">? </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IIF</text><text style="font-weight:normal; font-style:normal; color:#000000;">( x, (</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USUAL</text><text style="font-weight:normal; font-style:normal; color:#000000;">)1,  (</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USUAL</text><text style="font-weight:normal; font-style:normal; color:#000000;">) &quot;Sunday&quot;)      </text><text style="font-weight:bold; font-style:italic; color:#339966;">// 针对 VO 和 Vulcan 方言</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">? </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IIF</text><text style="font-weight:normal; font-style:normal; color:#000000;">( x, (</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USUAL</text><text style="font-weight:normal; font-style:normal; color:#000000;">)1, &#160;(</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USUAL</text><text style="font-weight:normal; font-style:normal; color:#000000;">) &quot;Sunday&quot;) &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// 针对 VO 和 Vulcan 方言</text></para>
     <para styleclass="Normal">或</para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">? </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IIF</text><text style="font-weight:normal; font-style:normal; color:#000000;">( x, (</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">OBJECT</text><text style="font-weight:normal; font-style:normal; color:#000000;">)1,  (</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">OBJECT</text><text style="font-weight:normal; font-style:normal; color:#000000;">) &quot;Sunday&quot;)      </text><text style="font-weight:bold; font-style:italic; color:#339966;">// 针对 Core 方言</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">? </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IIF</text><text style="font-weight:normal; font-style:normal; color:#000000;">( x, (</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">OBJECT</text><text style="font-weight:normal; font-style:normal; color:#000000;">)1, &#160;(</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">OBJECT</text><text style="font-weight:normal; font-style:normal; color:#000000;">) &quot;Sunday&quot;) &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// 针对 Core 方言</text></para>
     <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
       <li styleclass="Normal" style="margin-left:13px;">点击 Dialect 选项卡 </li>
       <li styleclass="Normal" style="margin-left:13px;">更改值</li>

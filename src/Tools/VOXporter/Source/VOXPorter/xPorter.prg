@@ -1517,6 +1517,7 @@ CLASS ModuleDescriptor
 	PROTECT _lGenerated AS LOGIC
 	PROTECT _aVSrc AS List<STRING>
 	PROTECT _cXIDErc AS STRING
+	PROTECT _lNoChange AS LOGIC
 
 	PROTECT _aDesigners AS List<Designer>
 
@@ -1569,10 +1570,10 @@ CLASS ModuleDescriptor
 			LOCAL cLine/*, cUpper*/ AS STRING
 //			LOCAL nAt AS INT
 			cLine := aCode[n]
-			// We already handle such tags with the {VOXP:XXX} format, at theline level
+			// We already handle such tags with the {VOXP:XXX} format, at the line level
 			// So simply convert the alternative VXP-XXX ones to {VOXP:XXX}
 			IF cLine:IndexOf("VXP-") != -1
-				cLine := cLine:Replace("VXP-DEL", "{VOXP:DEL}"):Replace("VXP-COM", "{VOXP:COM}"):Replace("VXP-UNC", "{VOXP:UNC}")
+				cLine := cLine:Replace("VXP-DEL", "{VOXP:DEL}"):Replace("VXP-COM", "{VOXP:COM}"):Replace("VXP-UNC", "{VOXP:UNC}"):Replace("VXP-NOCHANGE", "{VOXP:NOCHANGE}")
 				aCode[n] := cLine
 			END IF
 /*			cUpper := cLine:ToUpperInvariant()
@@ -1651,6 +1652,9 @@ CLASS ModuleDescriptor
 		LOCAL nLine := 0 AS INT
 		FOREACH oLine AS LineObject IN SELF:_aLines
 			nLine ++
+			IF oLine:LineText:Contains("{VOXP:NOCHANGE}")
+				SELF:_lNoChange := TRUE
+			END IF
 			IF oLine:oEntity != NULL
 				IF .NOT. xPorter.AllowEntity(oLine:oEntity , SELF)
 					oCurrentEntity := NULL
@@ -1738,6 +1742,15 @@ CLASS ModuleDescriptor
 		LOCAL oClasses , oDefines , oTextblocks , oGlobals , oFuncs , oRest AS OutputCode
 
 		//STATIC oConvertFromCodePageToCodePage := NULL AS EntityDescriptor
+		
+		IF SELF:_lNoChange
+			oCode := OutputCode{}
+			FOREACH oLine AS LineObject IN SELF:_aLines
+				oCode:AddLine(oLine:LineText)
+			NEXT
+			SELF:_lGenerated := TRUE
+			RETURN oCode
+		END IF
 
 		oClasses := OutputCode{}
 		oDefines := OutputCode{}

@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-09-28T23:57:57.161+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-03-20T23:36:59.039+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>方言</title>
   <body>
     <header>
       <para styleclass="Heading1">方言</para>
     </header>
-    <para styleclass="Body Text">X# 编译器可以识别 X# 的不同方言。下表显示了这些方言之间的区别。<br/>您可以使用 /dialect 编译器选项来选择要使用的方言。</para>
+    <para styleclass="Body Text">X# 编译器可以识别 X# 的不同方言。下表显示了这些方言之间的区别。<br/>您可以使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-dialect">/dialect</link> 编译器选项来选择要使用的方言。</para>
     <para styleclass="Body Text">默认使用 Core 方言。除 Core 方言外，其他方言都需要引用 XSharp 运行时动态链接库</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="46" colcount="7" style="width:auto; border-width:1px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">

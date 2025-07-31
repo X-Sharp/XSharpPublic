@@ -1,0 +1,295 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34024.191
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{1C0880F5-74CF-4618-9856-D89B3FCB6DA3}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\Console.Xml = Docs\Console.Xml
+		Docs\CoreComments.Xml = Docs\CoreComments.Xml
+		Docs\gui.xml = Docs\gui.xml
+		Docs\Harbour.xml = Docs\Harbour.xml
+		Docs\Internet.xml = Docs\Internet.xml
+		Docs\rdd.xml = Docs\rdd.xml
+		Docs\Report.Xml = Docs\Report.Xml
+		Docs\RTComments.Xml = Docs\RTComments.Xml
+		Runtime\RuntimeFunctionsAndClasses.xlsx = Runtime\RuntimeFunctionsAndClasses.xlsx
+		Runtime\Docs\RuntimeSpecsV1.docx = Runtime\Docs\RuntimeSpecsV1.docx
+		Runtime\Docs\RuntimeSpecsV2.docx = Runtime\Docs\RuntimeSpecsV2.docx
+		Docs\Sql.Xml = Docs\Sql.Xml
+		Docs\System.Xml = Docs\System.Xml
+		VFPClasses.xml = VFPClasses.xml
+		Docs\VFPDocs.xml = Docs\VFPDocs.xml
+		Docs\VfpRuntimeDocs.xml = Docs\VfpRuntimeDocs.xml
+		Docs\VoFunctionDocs.xml = Docs\VoFunctionDocs.xml
+		Docs\VOSDK.Xml = Docs\VOSDK.Xml
+		Docs\XPPComments.Xml = Docs\XPPComments.Xml
+		Docs\XSharp.CoreDefines.xml = Docs\XSharp.CoreDefines.xml
+		Docs\XsRuntimeClasses.xml = Docs\XsRuntimeClasses.xml
+	EndProjectSection
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RDD", "Runtime\XSharp.Rdd\XSharp.RDD.xsproj", "{E83C6C8C-773F-4B01-A597-3D38398A9362}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Core", "Runtime\XSharp.Core\XSharp.Core.xsproj", "{535DFF14-EFB7-43F5-A4E1-71C1C4280040}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0E600EC1-23D2-48D5-8301-0F4BF1C1D250}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Common\BuildNumber.h = Common\BuildNumber.h
+		Common\CommonAssemblyInfo.cs = Common\CommonAssemblyInfo.cs
+		Common\commonAssemblyInfo.prg = Common\commonAssemblyInfo.prg
+		Common\Constants.cs = Common\Constants.cs
+		Common\constants.prg = Common\constants.prg
+		Common\CustomDefs.xh = Common\CustomDefs.xh
+		Common\dbcmd.xh = Common\dbcmd.xh
+		Common\FoxProCmd.xh = Common\FoxProCmd.xh
+		Common\FoxProSet.xh = Common\FoxProSet.xh
+		Common\FoxProSql.xh = Common\FoxProSql.xh
+		Common\GuidStrings.cs = Common\GuidStrings.cs
+		Common\HarbourCmd.xh = Common\HarbourCmd.xh
+		Common\memvar.xh = Common\memvar.xh
+		Common\NativeResourceDefines.xh = Common\NativeResourceDefines.xh
+		Runtime\README.md = Runtime\README.md
+		Common\README.md = Common\README.md
+		Runtime\Runtime.Common.Targets = Runtime\Runtime.Common.Targets
+		Runtime\Runtime.Sdk.Targets = Runtime\Runtime.Sdk.Targets
+		Runtime\Runtime.Targets = Runtime\Runtime.Targets
+		Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg = Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg
+		Common\set.xh = Common\set.xh
+		Common\version.Targets = Common\version.Targets
+		Common\version.xh = Common\version.xh
+		Common\VFPProperties.xh = Common\VFPProperties.xh
+		Runtime\VOSDK\Source\VOSDK\VOSDK.Targets = Runtime\VOSDK\Source\VOSDK\VOSDK.Targets
+		Common\XbasePPCmd.xh = Common\XbasePPCmd.xh
+		Common\XmlCommon.Targets = Common\XmlCommon.Targets
+		Runtime\XmlDoc.Targets = Runtime\XmlDoc.Targets
+		Common\XSharp.snk = Common\XSharp.snk
+		Common\XSharpConstants.cs = Common\XSharpConstants.cs
+		Common\XSharpDefs.xh = Common\XSharpDefs.xh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VOSDK", "VOSDK", "{FABD1B90-611A-48D5-9D69-BC148E103030}"
+	ProjectSection(SolutionItems) = preProject
+		Runtime\VOSDK\Source\VOSDK\VOSDK.Targets = Runtime\VOSDK\Source\VOSDK\VOSDK.Targets
+		Runtime\VOSDK\Source\VOSDK\VOSDKDocs.Targets = Runtime\VOSDK\Source\VOSDK\VOSDKDocs.Targets
+	EndProjectSection
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOConsoleClasses", "Runtime\VOSDK\Source\VOSDK\Console_Classes_SDK\VOConsoleClasses.xsproj", "{D0A5DA23-00B5-41FD-8564-96246B1E222F}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOWin32APILibrary", "Runtime\VOSDK\Source\VOSDK\Win32_API_Library_SDK\VOWin32APILibrary.xsproj", "{6C93866F-1894-4E82-9ACA-55927CAE914A}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOSystemClasses", "Runtime\VOSDK\Source\VOSDK\System_Classes_SDK\VOSystemClasses.xsproj", "{AC2AEBFF-69FF-405D-B7D9-6E5CB1DB914C}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VORDDClasses", "Runtime\VOSDK\Source\VOSDK\RDD_Classes_SDK\VORDDClasses.xsproj", "{D7079298-1712-4B03-AD76-4EC53BFE8356}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOSQLClasses", "Runtime\VOSDK\Source\VOSDK\SQL_Classes_SDK\VOSQLClasses.xsproj", "{86DA1B42-FBF9-432B-A2D2-67A4F357F019}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOInternetClasses", "Runtime\VOSDK\Source\VOSDK\Internet_SDK\VOInternetClasses.xsproj", "{A62EF59E-7473-4C55-BED8-63CA0D896995}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOGUIClasses", "Runtime\VOSDK\Source\VOSDK\GUI_Classes_SDK\VOGUIClasses.xsproj", "{0BCE49E2-3597-4E32-AA3C-C465130C05C8}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOReportClasses", "Runtime\VOSDK\Source\VOSDK\Report_Classes_SDK\VOReportClasses.xsproj", "{65D766D9-E113-4372-960B-01732B65D27D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XsRuntime", "XsRuntime", "{3DA9803B-3850-4448-ADA9-DE41C81522DE}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RT", "Runtime\XSharp.RT\XSharp.RT.xsproj", "{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO", "Runtime\XSharp.VO\XSharp.VO.xsproj", "{06099C3D-1697-4EB1-9F53-8A9A50B9EACD}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.XPP", "Runtime\XSharp.XPP\XSharp.XPP.xsproj", "{C5D7BE20-038E-4B42-A90A-B13BAB83D8E5}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VFP", "Runtime\XSharp.VFP\XSharp.VFP.xsproj", "{3A771F0E-9400-4A19-8663-C71567EBFA29}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Macrocompiler", "Macrocompiler", "{3A990509-B444-4341-A665-5FDA3E8748BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacroCompiler", "Runtime\MacroCompiler\MacroCompiler.csproj", "{EB3F3142-07F7-48CA-B38D-F611C45A9511}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Data", "Runtime\XSharp.Data\XSharp.Data.xsproj", "{DB9AD987-EBD9-4F0C-8604-608A9028585C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VOSDK-Typed", "VOSDK-Typed", "{D10369A3-B01A-44C7-BBFB-AA6ACA7F05FC}"
+	ProjectSection(SolutionItems) = preProject
+		Runtime\VOSdkTyped\Source\VOSdk\VOSDK.Targets = Runtime\VOSdkTyped\Source\VOSdk\VOSDK.Targets
+		Runtime\VOSdkTyped\Source\VOSdk\VOSDKDocs.Targets = Runtime\VOSdkTyped\Source\VOSdk\VOSDKDocs.Targets
+	EndProjectSection
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO.ConsoleClasses", "Runtime\VOSdkTyped\Source\VOSdk\Console_Classes_SDK\XSharp.VO.ConsoleClasses.xsproj", "{0EE10CED-B863-4B5E-8AC2-443B2CC6EB7A}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO.SystemClasses", "Runtime\VOSdkTyped\Source\VOSdk\System_Classes_SDK\XSharp.VO.SystemClasses.xsproj", "{5AC3E55D-F2BD-45EB-9CC2-DD8BD36240EA}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO.RDDClasses", "Runtime\VOSdkTyped\Source\VOSdk\RDD_Classes_SDK\XSharp.VO.RDDClasses.xsproj", "{223BE288-7390-48C2-8C3D-6742287962DC}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO.GUIClasses", "Runtime\VOSdkTyped\Source\VOSdk\GUI_Classes_SDK\XSharp.VO.GUIClasses.xsproj", "{051D166B-3886-43FB-A3C6-6C6846EA6DF1}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO.SQLClasses", "Runtime\VOSdkTyped\Source\VOSdk\SQL_Classes_SDK\XSharp.VO.SQLClasses.xsproj", "{91816960-EB2D-4E4A-AE67-4EDC5BD38940}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RT.Debugger", "Runtime\XSharp.RT.Debugger\XSharp.RT.Debugger.xsproj", "{770E6EBB-804F-415A-A9CA-E5B0383105F0}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Harbour", "Runtime\XSharp.Harbour\XSharp.Harbour.xsproj", "{EAEE04E4-D7F6-46AC-B65A-E1B416B8D635}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.SQLRDD", "Runtime\XSharp.SQLRdd\XSharp.SQLRDD.xsproj", "{E83C6C8C-773F-4B01-A597-3D38398A9373}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VFPSDK", "VFPSDK", "{CCFBFA5A-6595-4E5B-B85B-E1699CC0B3CE}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VFP.UI", "Runtime\XSharp.VFP.UI\XSharp.VFP.UI.xsproj", "{7E2CBEF6-9945-42C4-A7DF-F9B8E2E68D44}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DocChinese", "DocChinese", "{D5FE44C2-E2B1-421C-8B59-AE4BBC675909}"
+	ProjectSection(SolutionItems) = preProject
+		DocChinese\Ads.xml = DocChinese\Ads.xml
+		DocChinese\Console.Xml = DocChinese\Console.Xml
+		DocChinese\CoreComments.Xml = DocChinese\CoreComments.Xml
+		DocChinese\Gui.xml = DocChinese\Gui.xml
+		DocChinese\Harbour.xml = DocChinese\Harbour.xml
+		DocChinese\Internet.xml = DocChinese\Internet.xml
+		DocChinese\Rdd.xml = DocChinese\Rdd.xml
+		DocChinese\Report.Xml = DocChinese\Report.Xml
+		DocChinese\RTComments.Xml = DocChinese\RTComments.Xml
+		DocChinese\Sql.Xml = DocChinese\Sql.Xml
+		DocChinese\System.Xml = DocChinese\System.Xml
+		DocChinese\VFPDocs.xml = DocChinese\VFPDocs.xml
+		DocChinese\VfpNotUsedFunctions.xml = DocChinese\VfpNotUsedFunctions.xml
+		DocChinese\VfpRuntimeDocs.xml = DocChinese\VfpRuntimeDocs.xml
+		DocChinese\VoFunctionDocs.xml = DocChinese\VoFunctionDocs.xml
+		DocChinese\VOSDK.Xml = DocChinese\VOSDK.Xml
+		DocChinese\XPPComments.Xml = DocChinese\XPPComments.Xml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		DocChinese|Any CPU = DocChinese|Any CPU
+		Documentation|Any CPU = Documentation|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E83C6C8C-773F-4B01-A597-3D38398A9362}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{E83C6C8C-773F-4B01-A597-3D38398A9362}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{E83C6C8C-773F-4B01-A597-3D38398A9362}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{E83C6C8C-773F-4B01-A597-3D38398A9362}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{535DFF14-EFB7-43F5-A4E1-71C1C4280040}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{535DFF14-EFB7-43F5-A4E1-71C1C4280040}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{535DFF14-EFB7-43F5-A4E1-71C1C4280040}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{535DFF14-EFB7-43F5-A4E1-71C1C4280040}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{D0A5DA23-00B5-41FD-8564-96246B1E222F}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{D0A5DA23-00B5-41FD-8564-96246B1E222F}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{D0A5DA23-00B5-41FD-8564-96246B1E222F}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{D0A5DA23-00B5-41FD-8564-96246B1E222F}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{6C93866F-1894-4E82-9ACA-55927CAE914A}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{6C93866F-1894-4E82-9ACA-55927CAE914A}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{6C93866F-1894-4E82-9ACA-55927CAE914A}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{6C93866F-1894-4E82-9ACA-55927CAE914A}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{AC2AEBFF-69FF-405D-B7D9-6E5CB1DB914C}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{AC2AEBFF-69FF-405D-B7D9-6E5CB1DB914C}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{AC2AEBFF-69FF-405D-B7D9-6E5CB1DB914C}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{AC2AEBFF-69FF-405D-B7D9-6E5CB1DB914C}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{D7079298-1712-4B03-AD76-4EC53BFE8356}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{D7079298-1712-4B03-AD76-4EC53BFE8356}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{D7079298-1712-4B03-AD76-4EC53BFE8356}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{D7079298-1712-4B03-AD76-4EC53BFE8356}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{86DA1B42-FBF9-432B-A2D2-67A4F357F019}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{86DA1B42-FBF9-432B-A2D2-67A4F357F019}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{86DA1B42-FBF9-432B-A2D2-67A4F357F019}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{86DA1B42-FBF9-432B-A2D2-67A4F357F019}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{A62EF59E-7473-4C55-BED8-63CA0D896995}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{A62EF59E-7473-4C55-BED8-63CA0D896995}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{A62EF59E-7473-4C55-BED8-63CA0D896995}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{A62EF59E-7473-4C55-BED8-63CA0D896995}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{0BCE49E2-3597-4E32-AA3C-C465130C05C8}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{0BCE49E2-3597-4E32-AA3C-C465130C05C8}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{0BCE49E2-3597-4E32-AA3C-C465130C05C8}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{0BCE49E2-3597-4E32-AA3C-C465130C05C8}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{65D766D9-E113-4372-960B-01732B65D27D}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{65D766D9-E113-4372-960B-01732B65D27D}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{65D766D9-E113-4372-960B-01732B65D27D}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{65D766D9-E113-4372-960B-01732B65D27D}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{06099C3D-1697-4EB1-9F53-8A9A50B9EACD}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{06099C3D-1697-4EB1-9F53-8A9A50B9EACD}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{06099C3D-1697-4EB1-9F53-8A9A50B9EACD}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{06099C3D-1697-4EB1-9F53-8A9A50B9EACD}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{C5D7BE20-038E-4B42-A90A-B13BAB83D8E5}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{C5D7BE20-038E-4B42-A90A-B13BAB83D8E5}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{C5D7BE20-038E-4B42-A90A-B13BAB83D8E5}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{C5D7BE20-038E-4B42-A90A-B13BAB83D8E5}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{3A771F0E-9400-4A19-8663-C71567EBFA29}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{3A771F0E-9400-4A19-8663-C71567EBFA29}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{3A771F0E-9400-4A19-8663-C71567EBFA29}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{3A771F0E-9400-4A19-8663-C71567EBFA29}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{EB3F3142-07F7-48CA-B38D-F611C45A9511}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{EB3F3142-07F7-48CA-B38D-F611C45A9511}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{EB3F3142-07F7-48CA-B38D-F611C45A9511}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB3F3142-07F7-48CA-B38D-F611C45A9511}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{0EE10CED-B863-4B5E-8AC2-443B2CC6EB7A}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{0EE10CED-B863-4B5E-8AC2-443B2CC6EB7A}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{0EE10CED-B863-4B5E-8AC2-443B2CC6EB7A}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{0EE10CED-B863-4B5E-8AC2-443B2CC6EB7A}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{5AC3E55D-F2BD-45EB-9CC2-DD8BD36240EA}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{5AC3E55D-F2BD-45EB-9CC2-DD8BD36240EA}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{5AC3E55D-F2BD-45EB-9CC2-DD8BD36240EA}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{5AC3E55D-F2BD-45EB-9CC2-DD8BD36240EA}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{223BE288-7390-48C2-8C3D-6742287962DC}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{223BE288-7390-48C2-8C3D-6742287962DC}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{223BE288-7390-48C2-8C3D-6742287962DC}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{223BE288-7390-48C2-8C3D-6742287962DC}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{051D166B-3886-43FB-A3C6-6C6846EA6DF1}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{051D166B-3886-43FB-A3C6-6C6846EA6DF1}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{051D166B-3886-43FB-A3C6-6C6846EA6DF1}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{051D166B-3886-43FB-A3C6-6C6846EA6DF1}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{91816960-EB2D-4E4A-AE67-4EDC5BD38940}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{91816960-EB2D-4E4A-AE67-4EDC5BD38940}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{91816960-EB2D-4E4A-AE67-4EDC5BD38940}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{91816960-EB2D-4E4A-AE67-4EDC5BD38940}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{EAEE04E4-D7F6-46AC-B65A-E1B416B8D635}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{EAEE04E4-D7F6-46AC-B65A-E1B416B8D635}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{EAEE04E4-D7F6-46AC-B65A-E1B416B8D635}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{EAEE04E4-D7F6-46AC-B65A-E1B416B8D635}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{E83C6C8C-773F-4B01-A597-3D38398A9373}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{E83C6C8C-773F-4B01-A597-3D38398A9373}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{E83C6C8C-773F-4B01-A597-3D38398A9373}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{7E2CBEF6-9945-42C4-A7DF-F9B8E2E68D44}.DocChinese|Any CPU.ActiveCfg = DocChinese|Any CPU
+		{7E2CBEF6-9945-42C4-A7DF-F9B8E2E68D44}.DocChinese|Any CPU.Build.0 = DocChinese|Any CPU
+		{7E2CBEF6-9945-42C4-A7DF-F9B8E2E68D44}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{7E2CBEF6-9945-42C4-A7DF-F9B8E2E68D44}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E83C6C8C-773F-4B01-A597-3D38398A9362} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
+		{535DFF14-EFB7-43F5-A4E1-71C1C4280040} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
+		{D0A5DA23-00B5-41FD-8564-96246B1E222F} = {FABD1B90-611A-48D5-9D69-BC148E103030}
+		{6C93866F-1894-4E82-9ACA-55927CAE914A} = {FABD1B90-611A-48D5-9D69-BC148E103030}
+		{AC2AEBFF-69FF-405D-B7D9-6E5CB1DB914C} = {FABD1B90-611A-48D5-9D69-BC148E103030}
+		{D7079298-1712-4B03-AD76-4EC53BFE8356} = {FABD1B90-611A-48D5-9D69-BC148E103030}
+		{86DA1B42-FBF9-432B-A2D2-67A4F357F019} = {FABD1B90-611A-48D5-9D69-BC148E103030}
+		{A62EF59E-7473-4C55-BED8-63CA0D896995} = {FABD1B90-611A-48D5-9D69-BC148E103030}
+		{0BCE49E2-3597-4E32-AA3C-C465130C05C8} = {FABD1B90-611A-48D5-9D69-BC148E103030}
+		{65D766D9-E113-4372-960B-01732B65D27D} = {FABD1B90-611A-48D5-9D69-BC148E103030}
+		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
+		{06099C3D-1697-4EB1-9F53-8A9A50B9EACD} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
+		{C5D7BE20-038E-4B42-A90A-B13BAB83D8E5} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
+		{3A771F0E-9400-4A19-8663-C71567EBFA29} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
+		{EB3F3142-07F7-48CA-B38D-F611C45A9511} = {3A990509-B444-4341-A665-5FDA3E8748BD}
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
+		{0EE10CED-B863-4B5E-8AC2-443B2CC6EB7A} = {D10369A3-B01A-44C7-BBFB-AA6ACA7F05FC}
+		{5AC3E55D-F2BD-45EB-9CC2-DD8BD36240EA} = {D10369A3-B01A-44C7-BBFB-AA6ACA7F05FC}
+		{223BE288-7390-48C2-8C3D-6742287962DC} = {D10369A3-B01A-44C7-BBFB-AA6ACA7F05FC}
+		{051D166B-3886-43FB-A3C6-6C6846EA6DF1} = {D10369A3-B01A-44C7-BBFB-AA6ACA7F05FC}
+		{91816960-EB2D-4E4A-AE67-4EDC5BD38940} = {D10369A3-B01A-44C7-BBFB-AA6ACA7F05FC}
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
+		{EAEE04E4-D7F6-46AC-B65A-E1B416B8D635} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
+		{E83C6C8C-773F-4B01-A597-3D38398A9373} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
+		{7E2CBEF6-9945-42C4-A7DF-F9B8E2E68D44} = {CCFBFA5A-6595-4E5B-B85B-E1699CC0B3CE}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EF30CE30-FC9E-4FC7-B9F0-DCA49411ACFC}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,72 @@
+#r "System.Xml.XDocument.dll"
+
+using System
+using System.IO
+using System.Xml.Linq
+
+//
+VAR appDataRoamingPath := Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
+VAR nugetConfigPath := Path.Combine(appDataRoamingPath, "NuGet\\nuget.config")
+VAR xsharpOffLine := "XSharp Offline Packages"
+VAR sourceUrl := GetXSharpInstallationPath()
+sourceUrl := Path.Combine(sourceUrl, "NuGet")
+
+local doc as XDocument
+IF !File.Exists(nugetConfigPath)
+    doc := XDocument{XElement{"configuration"}}
+ELSE
+    doc := XDocument.Load(nugetConfigPath)
+endif
+
+VAR configElement := doc:Element("configuration")
+VAR packageSources := configElement:Element("packageSources")
+
+if packageSources == null
+    packageSources := XElement{"packageSources"}
+    configElement:Add(packageSources)
+endif
+VAR found := false
+foreach elt as XElement in packageSources:Elements("add") 
+    if elt:Attribute("key")?:Value == xsharpOffLine
+        found := true
+        exit
+    endif
+next
+if !found
+    packageSources:Add(XElement{"add", XAttribute{"key", xsharpOffLine}, XAttribute{"value", sourceUrl}})
+endif
+//
+VAR packageSourceMapping := configElement:Element("packageSourceMapping")
+if packageSourceMapping == null
+    packageSourceMapping := XElement{"packageSourceMapping"}
+    configElement:Add(packageSourceMapping)
+endif
+found := false
+foreach elt as XElement in packageSourceMapping:Elements() 
+    if elt:Attribute("key")?:Value == xsharpOffLine
+        found := true
+        exit
+    endif
+next
+if !found
+    VAR packageSource := XElement{"packageSource", XAttribute{"key", xsharpOffLine}, XElement{"package", XAttribute{"pattern", "XSharp.*"}}}
+    packageSourceMapping:Add(packageSource)
+endif
+doc:Save(nugetConfigPath)
+
+
+FUNCTION GetXSharpInstallationPath() as string
+    //
+    VAR pathVariable := Environment.GetEnvironmentVariable("PATH")
+    VAR xsharpPath := "c:\\Program Files (x86)\\XSharp"
+    if pathVariable != null
+        VAR paths := pathVariable:Split(';')
+        VAR folderFound := false
+        foreach path as string in paths
+            if (Directory.Exists(path)) .AND. (path:Contains("XSharp"))
+                xsharpPath := Path.GetDirectoryName(path)
+                exit
+            endif
+        next
+    endif
+return xsharpPath

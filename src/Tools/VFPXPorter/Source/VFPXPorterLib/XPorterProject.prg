@@ -72,6 +72,8 @@ BEGIN NAMESPACE VFPXPorterLib
             SELF:ReferenceLibFiles := List<Reference>{}
             //
 
+        METHOD ClearResultText() AS VOID
+            BufferedSink.Instance:Clear()
         PROPERTY ResultText AS STRING
             GET
                 VAR log := BufferedSink.Instance:Log

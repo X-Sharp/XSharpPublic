@@ -43,21 +43,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     var arg = attr.CommonConstructorArguments[0];
                     if (arg.Value == null)
                     {
-<<<<<<< .mine
-                        switch (desc)
-                        {
-                            case 4:
-                                return param.Type.IsPszType();
-                            case 3:
-                                return param.Type.IsSymbolType();
-                            default:
-                                if (param.Type.SpecialType == SpecialType.System_IntPtr ||
-                                    param.Type.IsVoidPointer())
-                                    return true;
-                        diagnostics.Add(ErrorCode.ERR_ValueCantBeNull, param.GetNonNullSyntaxNode().Location, param.Type);
-                        return false;
-
-=======
                         switch (desc)
                         {
                             case 4:
@@ -70,8 +55,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     return true;
                                 diagnostics.Add(ErrorCode.ERR_ValueCantBeNull, param.GetNonNullSyntaxNode().Location, param.Type);
                                 return false;
-                        }
->>>>>>> .theirs
+
                         }
                     }
                 }

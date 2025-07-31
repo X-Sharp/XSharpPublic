@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 
+<!--
 ***********************************************************************************************
 Compiler.Common.props
 Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
@@ -26,9 +26,9 @@ See License.txt in the project root for license information.
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <!-- Note: All directories in this list end with a back slash, with the exception of the ZipsDir -->
-    
+
     <!--Roslyn Source folders-->
-    
+
     <RoslynDir>$(Solutiondir)Roslyn\</RoslynDir>
     <RoslynBin>$(RoslynDir)Artifacts\Bin\</RoslynBin>
     <RoslynSrc>$(RoslynDir)Src\</RoslynSrc>
@@ -39,18 +39,18 @@ See License.txt in the project root for license information.
     <CSharpSource>$(RoslynSrc)Compilers\CSharp\Portable\</CSharpSource>
 
     <!--Our folders-->
-    
+
     <CommonDir>$(Solutiondir)Common\</CommonDir>
     <DevPublicDir>$(Solutiondir)</DevPublicDir>
     <DevRtDir>$(Solutiondir)</DevRtDir>
     <ArtifactsDir>$(Solutiondir)..\Artifacts\</ArtifactsDir>
-    
+
     <!--The following depend on Artifacts-->
-    
+
     <BinariesDir>$(ArtifactsDir)bin\</BinariesDir>
     <ZipsDir>$(ArtifactsDir)Zips\</ZipsDir>
     <VsExternalDir>$(ArtifactsDir)Shared\$(Configuration)</VsExternalDir>
-    <GeneratedCompilerPath>$(BinariesDir)csc\Release\net472\</GeneratedCompilerPath>
+    <GeneratedCompilerPath>$(BinariesDir)csc\Debug\net472\</GeneratedCompilerPath>
     <XscToolPath Condition="'$(XscToolPath)' == '' ">$(BinariesDir)xsc\$(Configuration)\net472</XscToolPath>
 
     <XSharpCompilerSrc>$(Solutiondir)Compiler\src\Compiler\</XSharpCompilerSrc>

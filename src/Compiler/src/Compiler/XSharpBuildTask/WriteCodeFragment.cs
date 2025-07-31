@@ -1,4 +1,5 @@
-﻿using Microsoft.Build.Framework;
+﻿#nullable disable
+using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using System;
 using System.Collections;
@@ -9,6 +10,7 @@ using System.IO;
 using System.Text;
 // Disable errors about public methods and properties that are not part of a declared API
 #pragma warning disable RS0016
+
 namespace XSharp.Build
 {
     public class WriteCodeFragment : Task

@@ -62,6 +62,7 @@
     <EmbeddedResource Update="CodeAnalysisResources.resx" GenerateSource="true">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <CustomToolNamespace>Microsoft.CodeAnalysis</CustomToolNamespace>
+      <LastGenOutput>CodeAnalysisResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="$(CoreSource)Resources\default.win32manifest" />
   </ItemGroup>

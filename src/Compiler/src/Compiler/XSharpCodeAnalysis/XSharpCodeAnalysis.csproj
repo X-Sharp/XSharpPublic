@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\Compiler\CompilerCommon.props" />
-  <Import Project="$(MSBuildThisFileDirectory)Antlr.props" />  
+  <Import Project="$(MSBuildThisFileDirectory)Antlr.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.CodeAnalysis.CSharp</RootNamespace>
@@ -9,15 +9,13 @@
     <RootNamespace>LanguageService.CodeAnalysis.XSharp</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TargetFrameworks>netstandard2.0;net9.0</TargetFrameworks>
-    <NoWarn>1591,1573,1701,3021,RS0016,8032,NU1603;NU1507</NoWarn> 
+    <NoWarn>1591,1573,1701,3021,RS0016,8032,NU1603;NU1507</NoWarn>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <NoStdLib>true</NoStdLib>
     <DefineConstants>$(DefineConstants);COMPILERCORE;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE;NETSTANDARD20;NETSTANDARD;COMMITHASH;XSHARP</DefineConstants>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <ApplyNgenOptimization Condition="'$(TargetFramework)' == 'netstandard2.0'">partial</ApplyNgenOptimization>
     <GeneratePerformanceSensitiveAttribute>false</GeneratePerformanceSensitiveAttribute>
-    <!--Use the C# compiler created in this solution
-    <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>-->
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <Configurations>Debug;Release;Public</Configurations>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
@@ -37,10 +35,10 @@
 
   <ItemGroup>
     <!--
-      Analyzers that will be used to analyze projects that references 
+      Analyzers that will be used to analyze projects that references
       Microsoft.CodeAnalysis project or Microsoft.CodeAnalysis.Common package.
-      
-      Note: PrivateAssets="ContentFiles" ensures that projects referencing Microsoft.CodeAnalysis.Common package 
+
+      Note: PrivateAssets="ContentFiles" ensures that projects referencing Microsoft.CodeAnalysis.Common package
       will import everything but content files from Microsoft.CodeAnalysis.Analyzers, specifically, analyzers.
     -->
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Condition="'$(DotNetBuildFromSource)' != 'true'" PrivateAssets="ContentFiles" />
@@ -52,7 +50,7 @@
     <PackageReference Include="System.Text.Encoding.CodePages" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
     <PackageReference Include="Microsoft.Win32.Registry" PrivateAssets="ContentFiles"/>
 
-  </ItemGroup>  
+  </ItemGroup>
 
 
   <!-- Core files -->
@@ -77,8 +75,8 @@
 		<Link>Core\%(RecursiveDir)\%(Filename)%(Extension)</Link>
       </Compile>
   </ItemGroup>
-  
-  
+
+
   <!-- Projects from the Core codeanalysis.dll -->
   <Import Project="$(CoreSource)..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
   <Import Project="$(RoslynSrc)Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems" Label="Shared" />
@@ -118,7 +116,7 @@
   </ItemGroup>
   <Import Project="$(CSharpSource)..\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
   <!-- End of CSharp includes-->
-  
+
   <!-- XSharp  files -->
   <ItemGroup>
     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">

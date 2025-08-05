@@ -266,8 +266,6 @@ CLASS ScrollEvent INHERIT @@Event
     PROPERTY ScrollBar AS ScrollBar AUTO
     PROPERTY Position AS LONG AUTO
     PROPERTY IsWindowScroll AS LOGIC GET SELF:ScrollBar IS WindowScrollBar
-    CONSTRUCTOR (m REF System.Windows.Forms.Message)
-        SUPER(REF m)
     CONSTRUCTOR(oC AS Scrollbar) STRICT
         SUPER()
         SELF:ScrollBar  := oC

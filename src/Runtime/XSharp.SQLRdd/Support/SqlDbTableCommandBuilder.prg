@@ -255,7 +255,7 @@ internal class SqlDbTableCommandBuilder
         return
 
 
-    method GetRecCount() AS LONG
+    method GetRecCount() AS DWORD
         var sb := StringBuilder{}
         sb:Append(SqlDbProvider.SelectClause)
         sb:Append("count(*)")
@@ -267,9 +267,9 @@ internal class SqlDbTableCommandBuilder
         endif
         var stmt := sb:ToString()
         var result := _connection:ExecuteScalar(stmt, _cTable)
-        return Convert.ToInt32(result)
+        return Convert.ToUInt32(result)
 
-    method GetMaxRecno() as LONG
+    method GetMaxRecno() as DWORD
         if ! _oTable:HasRecnoColumn
             return 0
         endif
@@ -283,10 +283,10 @@ internal class SqlDbTableCommandBuilder
         if result == DBNull.Value
             return 0
         endif
-        return Convert.ToInt32(result)
+        return Convert.ToUInt32(result)
 
-    method GetNextKey() as LONG
-        local maxVal := 0 as long
+    method GetNextKey() as DWORD
+        local maxVal := 0 as DWORD
         if _oTable:HasRecnoColumn
             maxVal := self:GetMaxRecno()
         else

@@ -48,7 +48,7 @@ partial class SQLRDD inherit DBFVFP
     /// 0 based Column Number for the column that has the record number
     /// </summary>
     private _recnoColumNo   as long
-    private _recordKeyCache as Dictionary<dword, long>
+    private _recordKeyCache as Dictionary<dword, dword>
 
     private _numHiddenColumns as long
     private _serverReccount as dword
@@ -79,7 +79,7 @@ partial class SQLRDD inherit DBFVFP
                 return
             endif
             SELF:_hasData := TRUE
-            self:_RecCount   	:= _table:Rows:Count
+            self:_RecCount   	:= (DWORD)  _table:Rows:Count
             self:_phantomRow 	:= _table:NewRow()
             var prop := _table:GetType():GetProperty("EnforceConstraints", BindingFlags.Instance+BindingFlags.NonPublic)
             if prop != null
@@ -106,13 +106,13 @@ partial class SQLRDD inherit DBFVFP
                 dbColumn:Flags := DBFFieldFlags.None
             next
             if self:_recnoColumNo > -1
-                _recordKeyCache := Dictionary<long, long>{_RecCount}
+                _recordKeyCache := Dictionary<dword, dword>{(int) _RecCount}
                 // save the record numbers
-                var rowNum := 0
+                var rowNum := 0U
                 if _table:Rows:Count > 0
                     foreach row as DataRow in _table:Rows
                         var obj     := row[self:_recnoColumNo]
-                        var recno  := Convert.ToInt32(obj)
+                        var recno  := Convert.ToUInt32(obj)
                         _recordKeyCache[recno] := rowNum
                         rowNum++
                         #ifdef TRACERDD

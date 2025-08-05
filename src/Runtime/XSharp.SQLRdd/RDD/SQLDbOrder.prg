@@ -22,7 +22,7 @@ internal class SqlDbOrder inherit SqlDbObject
 #include "..\Taginfo.xh"
 
     property DbExpression   as SqlDbExpression auto get private set
-    private _KeyCache     as IDictionary<object,Int>
+    private _KeyCache     as IDictionary<object,dword>
     property KeyCodeBlock as ICodeblock auto get private set
     property ForCodeBlock as ICodeblock auto get private set
     property OrderBag     as SqlDbOrderBag auto
@@ -47,10 +47,10 @@ internal class SqlDbOrder inherit SqlDbObject
     property Connection   as SqlDbConnection get RDD:Connection
     property FileName     as string get self:OrderBag:FileName+"_"+self:Name
 
-    property KeyCache     as IDictionary<object,Int>
+    property KeyCache     as IDictionary<object,dword>
         get
             if _KeyCache == null
-                _KeyCache := Dictionary<object,Int>{}
+                _KeyCache := Dictionary<object,dword>{}
             endif
             return _KeyCache
         end get

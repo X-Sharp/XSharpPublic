@@ -38,10 +38,10 @@ partial class SQLRDD inherit DBFVFP
     public override property FieldCount  as long => super:FieldCount - self:_numHiddenColumns
 
     /// <summary>Returns the # of rows in the local buffer (DataTable).</summary>
-    public property RowCount    as long => iif(Self:DataTable == null, 0, Self:DataTable:Rows:Count)
+    public property RowCount    as dword => iif(Self:DataTable == null, 0, (DWORD) Self:DataTable:Rows:Count)
 
     /// <summary>The current rownumber in the buffer (DataTable).</summary>
-    public property RowNumber   as long GET _RecNo INTERNAL SET _RecNo := value
+    public property RowNumber   as dword GET _RecNo INTERNAL SET _RecNo := value
 
     /// <summary>The current row in the buffer (DataTable).
     /// When the server is at EOF then the phantomrow is returned.</summary>
@@ -226,7 +226,7 @@ partial class SQLRDD inherit DBFVFP
                 endif
             next
             if self:_recnoColumNo > -1
-                self:_recordKeyCache:Add(key, SELF:RowCount-1)
+                self:_recordKeyCache:Add(key, (DWORD) SELF:RowCount-1)
             endif
             self:_serverReccount += 1
             self:GoHot()
@@ -538,7 +538,7 @@ partial class SQLRDD inherit DBFVFP
             var newRow := SELF:RowNumber + nToSkip
             IF newRow > 0
                 if newRow <= SELF:RowCount
-                    SELF:RowNumber := newRow
+                    SELF:RowNumber := (DWORD) newRow
                     SELF:_SetEOF(FALSE)
                 ELSE
                     SELF:RowNumber := 0
@@ -588,7 +588,7 @@ partial class SQLRDD inherit DBFVFP
                 nRec     := 0
             endif
         endif
-        LOCAL nCount := SELF:RowCount AS LONG
+        LOCAL nCount := SELF:RowCount AS DWORD
         // Normal positioning, VO resets FOUND to FALSE after a recprd movement
         SELF:_Found := FALSE
         SELF:_BufferValid := FALSE
@@ -625,9 +625,9 @@ partial class SQLRDD inherit DBFVFP
             self:ForceRel()
             if !SELF:_baseRecno .and. self:_recnoColumNo > -1 .and. ! SELF:EoF
                 var obj := SELF:CurrentRow[self:_recnoColumNo]
-                return Convert.ToInt32(obj)
+                return Convert.ToUInt32(obj)
             endif
-            return SELF:RowNumber
+            return (DWORD) SELF:RowNumber
         end get
     end property
 

@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <LargeAddressAware>true</LargeAddressAware>
     <AssemblyName>XSCompiler</AssemblyName>
-    <TargetFrameworks>net472</TargetFrameworks>
+    <TargetFrameworks>net472;net9.0</TargetFrameworks>
     <NoWarn>8032,1573,NU1603;NU1507</NoWarn>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ServerGarbageCollection>true</ServerGarbageCollection>

@@ -1838,9 +1838,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 IsConstructorOrField(fromMember, isStatic: propertyIsStatic) &&
                 (propertyIsStatic || receiver?.Kind == BoundKind.ThisReference);
         }
-
+#if XSHARP
+        private static bool HasSynthesizedBackingField(PropertySymbol propertySymbol, out SourcePropertySymbolBase? sourcePropertyDefinition)
+        {
+#else
         private static bool HasSynthesizedBackingField(PropertySymbol propertySymbol, [NotNullWhen(true)] out SourcePropertySymbolBase? sourcePropertyDefinition)
         {
+#endif
             if (!propertySymbol.IsDefinition && propertySymbol.ContainingType.Equals(propertySymbol.ContainingType.OriginalDefinition, TypeCompareKind.IgnoreNullableModifiersForReferenceTypes))
             {
                 propertySymbol = propertySymbol.OriginalDefinition;

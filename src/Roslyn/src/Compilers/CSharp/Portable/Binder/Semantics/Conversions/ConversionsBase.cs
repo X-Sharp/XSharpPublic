@@ -672,7 +672,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     _ => false,
                 };
             }
-
+#if !XSHARP
             static bool isStandardImplicitConversionFromExpression(ConversionKind kind)
             {
                 if (IsStandardImplicitConversionFromType(kind))
@@ -698,6 +698,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return false;
                 }
             }
+#endif
         }
 
         private Conversion ClassifyStandardImplicitConversion(TypeSymbol source, TypeSymbol destination, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)

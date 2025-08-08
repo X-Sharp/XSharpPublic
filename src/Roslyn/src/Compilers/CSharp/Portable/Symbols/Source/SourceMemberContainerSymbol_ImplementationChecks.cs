@@ -1550,12 +1550,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 return;
             }
+#if XSHARP
+            if (baseMethod.HasClipperCallingConvention != overrideMethod.HasClipperCallingConvention)
+            {
+                // This will generate an error later. We do not check the parameters here.
+                return;
+            }
+#endif
 
             var baseParameters = baseMethod.Parameters;
             var overrideParameters = overrideMethod.Parameters;
             var overrideParameterOffset = invokedAsExtensionMethod ? 1 : 0;
             Debug.Assert(baseMethod.ParameterCount == overrideMethod.ParameterCount - overrideParameterOffset);
-
             for (int i = 0; i < baseParameters.Length; i++)
             {
                 var baseParameter = baseParameters[i];

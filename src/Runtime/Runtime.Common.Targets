@@ -25,6 +25,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <ErrorReport>prompt</ErrorReport>
+	<XscToolPath>$(BinariesDir)bin\xsc\Debug\net472\</XscToolPath>
     <CommonInclude>$(CommonDir)</CommonInclude>
     <AZ>false</AZ>
     <CS>false</CS>

@@ -1353,8 +1353,8 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
         /// <include file="Gui.xml" path="doc/DataWindow.Delete/*" />
         METHOD Delete() CLIPPER
-            LOCAL nRecno AS LONGINT
-            LOCAL nLastRec AS LONGINT
+            LOCAL nRecno AS DWORD
+            LOCAL nLastRec AS DWORD
             LOCAL fSQL AS LOGIC
             LOCAL fBrowse AS LOGIC
             LOCAL fRet AS LOGIC
@@ -1683,7 +1683,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
         /// <include file="Gui.xml" path="doc/DataWindow.GoTo/*" />
-        METHOD GoTo( nRecNo AS LONG ) AS LOGIC
+        METHOD GoTo( nRecNo AS DWORD ) AS LOGIC
             LOCAL lRetCode := FALSE AS LOGIC
 
             oHLStatus:=NULL_OBJECT // assume success

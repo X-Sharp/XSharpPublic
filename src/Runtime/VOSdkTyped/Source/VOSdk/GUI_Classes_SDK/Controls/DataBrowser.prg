@@ -44,7 +44,7 @@ class DataBrowser inherit VOSDK.Control implements IDataBrowser
 	PROTECT iDeferPaintCount   AS INT
 	PROTECT iDeferNotifyCount  AS INT
 	PROTECT iRecordSize        AS INT
-	PROTECT nOldRecordNum      AS INT
+	PROTECT nOldRecordNum      AS DWORD
 
 	PROTECT dwDeferredStyle    AS DWORD
 
@@ -71,7 +71,7 @@ class DataBrowser inherit VOSDK.Control implements IDataBrowser
 	INTERNAL oScrollBarManager   AS DataBrowserScrollBarManager
 	PROTECT iScrollOffSet		AS LONG
 	PROTECT lInEvent			AS LONG
-	PROTECT oRowDict			AS System.Collections.Generic.Dictionary<INT, VODataGridViewRow>
+	PROTECT oRowDict			AS System.Collections.Generic.Dictionary<DWORD, VODataGridViewRow>
 	PROTECT oVOEditControl		AS SingleLineEdit
 
 
@@ -262,7 +262,7 @@ class DataBrowser inherit VOSDK.Control implements IDataBrowser
 			e:Handled := TRUE
 			oRow1 := (VODataGridViewRow) __DataGridView:Rows[e:RowIndex1]
 			oRow2 := (VODataGridViewRow) __DataGridView:Rows[e:RowIndex2]
-			e:SortResult := oRow1:RecNo - oRow2:RecNo
+			e:SortResult := (INT) ((INT64) oRow1:RecNo - (INT64) oRow2:RecNo)
 			e:Handled := TRUE
 		ENDIF
 		RETURN
@@ -598,7 +598,7 @@ class DataBrowser inherit VOSDK.Control implements IDataBrowser
 
 /// <exclude />
 	METHOD __BuildBuffer() AS VOID STRICT
-		LOCAL iRecNo AS INT
+		LOCAL iRecNo AS DWORD
 		LOCAL nCol    AS LONG
 		LOCAL oRow		AS VODataGridViewRow
 		IF SELF:__HasColumns .and. SELF:lInEvent == 0
@@ -654,7 +654,7 @@ class DataBrowser inherit VOSDK.Control implements IDataBrowser
 
 
 /// <exclude />
-	METHOD __BuildNewBuffer(iRecNo AS INT) AS VOID STRICT
+	METHOD __BuildNewBuffer(iRecNo AS DWORD) AS VOID STRICT
 		LOCAL oFocusRow AS VODataGridViewRow
 		LOCAL oRow AS VODataGridViewRow
 		LOCAL nCol AS INT
@@ -717,7 +717,7 @@ class DataBrowser inherit VOSDK.Control implements IDataBrowser
 	METHOD __BuildRecord(lInsertAtEnd AS LOGIC) AS VODataGridViewRow STRICT
 		LOCAL oRow AS VODataGridViewRow
 		LOCAL iRow AS INT
-		LOCAL iRecNo AS INT
+		LOCAL iRecNo AS DWORD
 		IF (oDataServer != NULL_OBJECT) .and. SELF:__IsValid
 			iRecNo := oDataServer:RecNo
 			oRow := SELF:__GetRowAtRecNo(iRecNo)
@@ -752,7 +752,7 @@ class DataBrowser inherit VOSDK.Control implements IDataBrowser
 	METHOD __BuildRowsAtTopOfBuffer() AS VOID STRICT
 		LOCAL aRows AS List<VODataGridViewRow>
 		LOCAL oRow AS VODataGridViewRow
-		LOCAL nRec	AS LONG
+		LOCAL nRec	AS DWORD
 		IF ! SELF:__IsValid
 			RETURN
 		ENDIF
@@ -851,7 +851,7 @@ METHOD __CursorWait() AS VOID STRICT
 		// Does not move the server before filling
 		LOCAL i AS INT
 		LOCAL oRow  AS VODataGridViewRow
-		LOCAL nRecord  AS LONG
+		LOCAL nRecord  AS DWORD
 		IF !SELF:__IsValid
 			RETURN
 		ENDIF
@@ -900,8 +900,8 @@ METHOD __CursorWait() AS VOID STRICT
  /// <exclude />
 	METHOD __DeltaBuildBufferUp() AS VOID STRICT
 		// Extend the view with rows at the beginning
-		LOCAL iRecno AS INT						// Record Number of row with focus
-		LOCAL iOldRec   AS INT					// Current record number in the Server
+		LOCAL iRecno AS DWORD						// Record Number of row with focus
+		LOCAL iOldRec   AS DWORD					// Current record number in the Server
 		LOCAL oRow AS VODataGridViewRow
 		IF !SELF:__IsValid
 			RETURN
@@ -1041,7 +1041,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 
  /// <exclude />
 	METHOD __FieldChange() AS VOID STRICT
-		LOCAL iRecNo AS INT
+		LOCAL iRecNo AS DWORD
 		LOCAL row AS VODataGridViewRow
 
 		IF oDataServer != NULL_OBJECT
@@ -1138,7 +1138,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 
 
  /// <exclude />
-	METHOD __GetRowAtRecNo(iRecNo AS INT) AS VODataGridViewRow STRICT
+	METHOD __GetRowAtRecNo(iRecNo AS DWORD) AS VODataGridViewRow STRICT
 		IF oRowDict:ContainsKey(iRecNo)
 			RETURN oRowDict[iRecNo]
 		ENDIF
@@ -1146,7 +1146,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 
 
  /// <exclude />
-	METHOD __GetRecordNo(nRow AS INT) AS LONGINT STRICT
+	METHOD __GetRecordNo(nRow AS INT) AS DWORD STRICT
 		IF nRow <= SELF:RowCount .and. nRow >0
 			LOCAL oRow AS VODataGridViewRow
 			oRow := (VODataGridViewRow) SELF:__DataGridView:Rows[nRow-1]
@@ -1206,7 +1206,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 
  /// <exclude />
 	METHOD __NewFocusRecord(oRow AS VODataGridViewRow) AS VOID STRICT
-		LOCAL iRecNo AS INT
+		LOCAL iRecNo AS DWORD
 		IF SELF:RowCount > 0
 			iRecNo := oRow:RecNo
 			IF iRecNo != 0
@@ -1268,7 +1268,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
  /// <exclude />
 	METHOD __RecordChange() AS VOID STRICT
 		// Move the selected row in the grid After a change in the record pointer of the DataServer
-		LOCAL iRecNo AS INT
+		LOCAL iRecNo AS DWORD
 		LOCAL row AS VODataGridViewRow
 		LOCAL nCell AS LONG
 		IF ! SELF:__IsValid
@@ -1334,8 +1334,8 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
  /// <exclude />
 	METHOD __RecordDelete() AS VOID STRICT
 		LOCAL row AS VODataGridViewRow
-		LOCAL iRecno AS INT
-		LOCAL iTopRecno AS INT
+		LOCAL iRecno AS DWORD
+		LOCAL iTopRecno AS DWORD
 		IF ! SELF:__IsValid
 			RETURN
 		ENDIF
@@ -1450,7 +1450,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
  /// <exclude />
 	METHOD __TestForBottom() AS LOGIC STRICT
 		LOCAL lRetCode AS LOGIC
-		LOCAL iRecNo AS INT
+		LOCAL iRecNo AS DWORD
 
 		IF oDataServer:EoF
 			RETURN TRUE
@@ -1468,7 +1468,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
  /// <exclude />
 	METHOD __TestForTop() AS LOGIC STRICT
 		LOCAL lRetCode AS LOGIC
-		LOCAL iRecNo AS INT
+		LOCAL iRecNo AS DWORD
 
 		IF oDataServer:BoF
 			RETURN TRUE
@@ -2017,7 +2017,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 			WCError{#Init,#DataBrowser,__WCSTypeError,oOwner,1}:Throw()
 		ENDIF
 		oWin := oOwner
-		oRowDict := System.Collections.Generic.Dictionary<int, VODataGridViewRow>{}
+		oRowDict := System.Collections.Generic.Dictionary<DWORD, VODataGridViewRow>{}
 
 		IF oOwner IS DataWindow VAR oDW
 			oBB			:= oDW:CanvasArea
@@ -3525,7 +3525,7 @@ INTERNAL CLASS DataBrowserScrollBarManager
 
 	METHOD ScrollUp(nLines AS LONG) AS VOID
 		LOCAL currentIndex	AS LONG
-		LOCAL nRecno		AS LONG
+		LOCAL nRecno		AS DWORD
 		LOCAL oRow			AS VODataGridViewRow
 		currentIndex := _oGridView:TopRowIndex
 		IF currentIndex > nLines
@@ -3544,7 +3544,7 @@ INTERNAL CLASS DataBrowserScrollBarManager
 
 	METHOD ScrollDown(nLines AS LONG) AS VOID
 		LOCAL currentIndex	AS LONG
-		LOCAL nRecno		AS LONG
+		LOCAL nRecno		AS DWORD
 		LOCAL oRow			AS VODataGridViewRow
 		currentIndex := _oGridView:TopRowIndex
 		IF currentIndex < _oGridView:Rows:Count - nLines

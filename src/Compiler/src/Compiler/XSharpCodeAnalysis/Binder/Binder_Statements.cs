@@ -378,6 +378,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (!ok)
                 {
+                    if (expression.Syntax is AssignmentExpressionSyntax aes)
+                    {
+                        if (GetBinaryAssignmentKind(aes.Kind()) == BindValueKind.CompoundAssignment
+                                && aes.Right is LiteralExpressionSyntax)
+                            ok = true;
+                    }
+                }
+                if (!ok)
+                {
                     ok = Conversions.XsIsImplicitBinaryOperator(expression, targetType, this);
                 }
                 if (!ok)

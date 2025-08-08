@@ -1864,7 +1864,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 #if DEBUG
                     Debug.Assert(IsEmptyRewritePossible(methodBody));
+#if ! XSHARP
                     Debug.Assert(WasPropertyBackingFieldAccessChecked.FindUncheckedAccess(methodBody) is null);
+#endif
 #endif
 
                     RefSafetyAnalysis.Analyze(compilation, method, methodBody, diagnostics);

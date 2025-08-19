@@ -3,7 +3,7 @@ name: ContinuousBuild-30
 #Set when this build is activated. This can be once x time period, or on push/commit of certain branches
 on:
   schedule:
-     - cron: '0 3 * * *' # every night at 2 am UTC
+     - cron: '0 3 * * *' # every night at 3 am UTC
   pull_request:
       types: [opened, assigned, synchronize, edited]
   workflow_dispatch:

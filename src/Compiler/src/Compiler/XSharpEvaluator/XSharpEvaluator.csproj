@@ -28,7 +28,6 @@
     <GenericDefines>COMPILERCORE;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE;NETSTANDARD20;NETSTANDARD;COMMITHASH;EXPRESSIONCOMPILER</GenericDefines>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Configurations>Debug;Release;Public</Configurations>
-    <TargetFrameworks>net472</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>$(Genericdefines);XSHARP;DEBUG;TRACE;</DefineConstants>

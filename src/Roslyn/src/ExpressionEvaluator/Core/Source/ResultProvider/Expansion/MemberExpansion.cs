@@ -496,7 +496,7 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
                 ? customTypeInfoMap.SubstituteCustomTypeInfo(declaringType.GetInterfaceListEntry(member.DeclaringType), customInfo: null)
                 : null;
 
-            var appDomain = memberValue.Type.AppDomain;
+            var appDomain = memberValue.Type!.AppDomain;
             string? fullName;
 
             memberNameForFullName = fullNameProvider.GetClrValidIdentifier(inspectionContext, memberNameForFullName);

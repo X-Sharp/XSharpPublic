@@ -1,4 +1,5 @@
-﻿global using Microsoft.CodeAnalysis.PooledObjects;
+﻿#nullable disable
+global using Microsoft.CodeAnalysis.PooledObjects;
 global using Microsoft.CodeAnalysis.ErrorReporting;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System;

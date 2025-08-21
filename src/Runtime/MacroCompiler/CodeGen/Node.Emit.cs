@@ -749,5 +749,11 @@ namespace XSharp.MacroCompiler.Syntax
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);
         }
+        internal override void EmitSet(ILGenerator ilg, bool preserve)
+        {
+            // We might get here via a REF arg because the symbol is an array element, but we don't want to set it
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
     }
 }

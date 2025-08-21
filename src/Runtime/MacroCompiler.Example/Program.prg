@@ -16,7 +16,6 @@ BEGIN NAMESPACE MacroCompilerTest
         ReportMemory("initial")
         VAR mc := CreateMacroCompiler()
         VAR fmc := CreateFoxMacroCompiler()
-        EvalMacro(mc,"{||IsFloat(gu)}", TRUE)
 
         //EvalMacro(mc, "{|| 0000.00.00 }" ,NULL_DATE)
         //ParseMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}")
@@ -71,6 +70,8 @@ BEGIN NAMESPACE MacroCompilerTest
         ? macro(123,456)
         wait
 #endif
+
+        EvalMacro(mc,"{||IsFloat(gu)}", TRUE)
 
         TestByRefPriv()
         ParserTestsFox(CreateFoxScriptCompiler())

@@ -199,7 +199,7 @@ FUNCTION _C2Hex(cSource AS STRING, lAddSpace as LOGIC) AS STRING
 FUNCTION C2Hex(cSource AS STRING) AS STRING
     RETURN _C2Hex(cSource, FALSE)
 
-// helper function to convert bytes to string
+    // helper function to convert bytes to string
 
 INTERNAL FUNCTION _bytes2String(byteArray AS BYTE[]) AS STRING
     LOCAL sb AS StringBuilder
@@ -291,7 +291,7 @@ FUNCTION W2Bin(wValue AS WORD) AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/val/*" />
 FUNCTION _Val(cNumber AS STRING) AS OBJECT
     IF String.IsNullOrEmpty(cNumber)
-      RETURN 0
+        RETURN 0
     ENDIF
     cNumber := cNumber:Trim():ToUpper()
     // find non numeric characters in cNumber and trim the field to that length
@@ -413,6 +413,40 @@ FUNCTION GetPartialEnumName(cName as STRING, oType as System.Type) AS STRING
         cName := ""
     ENDIF
     RETURN cName
+
+
+/// <exclude/>
+FUNCTION __Bytes2String( bytes AS byte[]) AS STRING
+    LOCAL Chars as char[]
+    LOCAL x  AS INT
+    if bytes == NULL
+        THROW ArgumentNullException{"Input byte array cannot be null."}
+    endif
+    var len := bytes:Length
+    IF len > 0
+        Chars  := char[]{ len }
+
+        FOR x := 0 UPTO len - 1
+            Chars[x] := bytes[x]
+        NEXT
+
+        RETURN String{ Chars }
+    ELSE
+        RETURN ""
+    ENDIF
+/// <exclude/>
+FUNCTION __String2Bytes( s AS STRING) AS BYTE[]
+    LOCAL resultbytes AS BYTE[]
+    if s == NULL
+        THROW ArgumentNullException{"Input string cannot be null."}
+    endif
+    var len := s:Length
+    resultbytes  := BYTE[]{len}
+    var Chars := s:ToCharArray()
+    FOR VAR i := 0 UPTO len-1
+        resultbytes[i] := (BYTE) _AND(Chars[i], 0xFF)
+    NEXT
+    RETURN resultbytes
 
 
 

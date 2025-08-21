@@ -99,7 +99,7 @@ CLASS VOControlProperties INHERIT VOProperties
 	PROPERTY oWFC AS System.Windows.Forms.Control  AUTO GET PRIVATE SET
 	PROPERTY Control AS VOSDK.Control AUTO GET PRIVATE SET
     PROPERTY Window AS VOSDK.Window AUTO GET PRIVATE SET
-    PROPERTY EnableDispatch as LOGIC AUTO
+    PROPERTY EnableDispatch as LOGIC AUTO := gEnableDispatch
 	PROTECT _lHandleDoubleClickThroughMouseUp AS LOGIC
 
     PUBLIC EVENT OnWndProc AS WndProc

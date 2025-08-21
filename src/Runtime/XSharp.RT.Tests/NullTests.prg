@@ -21,7 +21,8 @@ BEGIN NAMESPACE XSharp.RT.Tests
 
 		[Fact, Trait("Category", "Null")];
 		METHOD UsualNullTests() AS VOID
-            LOCAL u1, u2 as USUAL
+    LOCAL u1, u2 as USUAL
+            var oldDialect := RuntimeState.Dialect
             RuntimeState.Dialect := XSharpDialect.FoxPro
             u1 := DBNull.Value
             u2 := 42
@@ -108,7 +109,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
             Assert.True(UsualType(u1) == (LONG) __UsualType.Null)
 
 
-
+            RuntimeState.Dialect := oldDialect
 
 	END CLASS
 

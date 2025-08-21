@@ -39,7 +39,7 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 	#endregion
 
     #region Properties
-    PROPERTY EnableDispatch as LOGIC AUTO
+    PROPERTY EnableDispatch as LOGIC AUTO := gEnableDispatch
 	PROPERTY Window		AS Window
 		GET
 		IF oProperties != NULL_OBJECT

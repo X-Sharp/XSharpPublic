@@ -20,9 +20,11 @@ FUNCTION Start() AS VOID
 //	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.VFP.Tests.NumericTests):Assembly)
 //	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.XPP.Tests.MiscTests):Assembly)
 //	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.Harbour.Tests.GeneralTests):Assembly)
-	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.SQLRdd.Tests.SQLiteTests):Assembly)
+//	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.SQLRdd.Tests.SQLiteTests):Assembly)
 
 //	XideUnitTest.AddTestsFromAssembly(TypeOf(StringTests):Assembly)
+
+	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.VFP.Tests.DateTests):Assembly)
 
 	XideUnitTest.Run()
 //	?
@@ -31,6 +33,15 @@ FUNCTION Start() AS VOID
 RETURN
 
 PROCEDURE DoTests()
-// placeholder for quick tests
+	VAR dt := DateTime{2025, 08, 13, 14, 30, 45}
+	LOCAL lSeconds := RuntimeState.GetValue<LOGIC>(Set.Seconds) AS LOGIC
+	LOCAL nHours := RuntimeState.GetValue<LONG>(Set.Hours) AS LONG
+	
+	? "Seconds: ", IIF(lSeconds, "ON", "OFF")
+	? "Hours: ", nHours
+	? "TToC(dt, 0):", XSharp.VFP.Functions.TToC(dt, 0)
+	? "TToC(dt, 1):", XSharp.VFP.Functions.TToC(dt, 1)
+	? "TToC(dt, 2):", XSharp.VFP.Functions.TToC(dt, 2)
+	? "TToC(dt, 3):", XSharp.VFP.Functions.TToC(dt, 3)
 RETURN
 

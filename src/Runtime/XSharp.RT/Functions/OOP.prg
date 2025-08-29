@@ -1352,6 +1352,8 @@ internal static class OOPHelpers
             // when we get here then there is no operator and we will try to change the type..
             // or the call to the operator failed
             try
+                // if the type is a Nullable<T> then get the underlying type
+                toType := Nullable.GetUnderlyingType(toType) DEFAULT toType
                 if toType:IsEnum
                     oResult := System.Enum.ToObject(toType, oResult)
                 else

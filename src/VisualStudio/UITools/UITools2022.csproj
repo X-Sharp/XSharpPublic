@@ -89,9 +89,6 @@
     <Compile Include="$(CommonDir)XSharpConstants.cs">
       <Link>XSharpConstants.cs</Link>
     </Compile>
-    <Compile Include="..\ProjectBase\ProjectFileConstants.cs">
-      <Link>ProjectFileConstants.cs</Link>
-    </Compile>
     <Compile Include="Commands\CommandAddDesignerFile.cs" />
     <Compile Include="Commands\CommandGenerateWinForm.cs" />
     <Compile Include="Commands\CommandConvertXsRuntime.cs" />
@@ -110,6 +107,12 @@
     <Compile Include="Commands\CommandXsHelp.cs" />
     <Compile Include="Commands\CommandXPorter.cs" />
     <Compile Include="Commands\CommandVoXPorter.cs" />
+    <Compile Include="Commands\CreateWindowsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Commands\CreateWindowsForm.Designer.cs">
+      <DependentUpon>CreateWindowsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Commands\XSharpBaseCommand.cs" />
     <Compile Include="OptionsPages\BaseOptionsModel.cs" />
     <Compile Include="OptionsPages\BaseOptionsPage.cs">
@@ -185,6 +188,9 @@
     <Compile Include="XSharpUIToolsPackage.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Commands\CreateWindowsForm.resx">
+      <DependentUpon>CreateWindowsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <SubType>Designer</SubType>
@@ -252,6 +258,10 @@
       <Project>{960714e8-ff93-4a42-b9ba-610b0f2014db}</Project>
       <Name>Debugger.UI2022</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ProjectBase\ProjectBase2022.csproj">
+      <Project>{cacb60a9-1e76-4f92-8831-b134a658c696}</Project>
+      <Name>ProjectBase2022</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>CodeModel</Name>
@@ -263,7 +273,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.527</Version>
+      <Version>17.0.533</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>

@@ -166,12 +166,12 @@ namespace Microsoft.CodeAnalysis
             List<ImmutableArray<byte>> result;
 
 #if XSHARPPRE
-			//XSHARP Allow the DLL name to start with XSharp instead of Microsoft
-            if (! _lazyInternalsVisibleToMap.TryGetValue(simpleName, out result))
+            //XSHARP Allow the DLL name to start with XSharp instead of Microsoft
+            if (!_lazyInternalsVisibleToMap.TryGetValue(simpleName, out result))
             {
-                if (simpleName.StartsWith("XSharp."))
+                if (simpleName.ToLower().StartsWith("xsharp."))
                 {
-                    simpleName = simpleName.Replace("XSharp.", "Microsoft.");
+                    simpleName = "Microsoft" + simpleName.Substring(6);
                 }
                 _lazyInternalsVisibleToMap.TryGetValue(simpleName, out result);
             }

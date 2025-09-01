@@ -1502,7 +1502,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 kind: IsScriptCommandLineParser ? SourceCodeKind.Script : SourceCodeKind.Regular,
                 features: parsedFeatures
             );
-
+#if XSHARPPRE
+            parseOptions.OutputFileName = outputFileName;
+#endif
             // We want to report diagnostics with source suppression in the error log file.
             // However, these diagnostics won't be reported on the command line.
             var reportSuppressedDiagnostics = errorLogOptions is object;

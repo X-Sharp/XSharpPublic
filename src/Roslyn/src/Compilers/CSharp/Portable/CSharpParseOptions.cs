@@ -34,6 +34,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </summary>
         public LanguageVersion LanguageVersion { get; private set; }
 
+#if XSHARPPRE
+        public string OutputFileName { get; set; } = "";
+#endif
         /// <summary>
         /// Gets the specified language version, which is the value that was specified in
         /// the call to the constructor, or modified using the <see cref="WithLanguageVersion"/> method,

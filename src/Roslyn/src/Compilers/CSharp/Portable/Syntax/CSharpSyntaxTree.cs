@@ -499,8 +499,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 throw new ArgumentNullException(nameof(text));
             }
+            options = options ?? CSharpParseOptions.Default;
 
 #if XSHARPPRE
+            if (!options.OutputFileName.ToLower().Contains("visualstudio"))
             {
                 string s = text.ToString();
                 s = s.Replace("Microsoft.CodeAnalysis.CSharp", "LanguageService.CodeAnalysis.XSharp");
@@ -514,11 +516,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 s = s.Replace("(Resources.", "(LanguageService.CodeAnalysis.XSharp.XSharpResources.");
                 s = s.Replace("Antlr4.Runtime", "LanguageService.SyntaxTree");
                 s = s.Replace("XSHARP_RUNTIME", "true");
-                s = s.Replace("Microsoft.VisualStudio.ProjectSystem", "XSharp.VisualStudio.ProjectSystem");
                 text = SourceText.From(s, text.Encoding);
             }
 #endif
-            options = options ?? CSharpParseOptions.Default;
 
 #if XSHARP
             bool isXsharp = !path.EndsWith(".cs");

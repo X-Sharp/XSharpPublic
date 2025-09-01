@@ -2266,6 +2266,17 @@ public interface IXSharpListener : IParseTreeListener {
 	void ExitStructure_([NotNull] XSharpParser.Structure_Context context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.record_"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRecord_([NotNull] XSharpParser.Record_Context context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.record_"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRecord_([NotNull] XSharpParser.Record_Context context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="XSharpParser.delegate_"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

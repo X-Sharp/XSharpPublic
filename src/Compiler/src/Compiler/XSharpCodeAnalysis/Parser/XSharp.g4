@@ -50,6 +50,7 @@ entity              : namespace_
                     | {IsFox}? foxclass                  // FoxPro Class definition*/
                     | {IsXPP}? xppclass                  // XPP Class definition
                     | structure_
+                    | record_
                     | interface_
                     | delegate_
                     | event_
@@ -295,6 +296,18 @@ structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
                       // Do not make the next line optional. The parser will not know when a nested type starts or the next type
                       // as a result the parser will become VERY slow
                       END STRUCTURE End=EOS
+                    ;
+
+record_             : (Attributes=attributes)? (Modifiers=classModifiers)?
+                      R=RECORD (S=STRUCTURE | CLASS )? (Namespace=nameDot)? Id=identifier
+                      TypeParameters=typeparameters?
+                      (INHERIT BaseType=datatype)?
+                      (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
+                      (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
+                      (Members+=classmember)*
+                      // Do not make the next line optional. The parser will not know when a nested type starts or the next type
+                      // as a result the parser will become VERY slow
+                      END RECORD End=EOS
                     ;
 
 
@@ -1322,7 +1335,7 @@ keywordsoft         : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     | SELECT | STACKALLOC | UNCHECKED | VAR | VOLATILE | WHEN | WHERE | BINARY | CHAR | CURRENCY | DECIMAL | DATETIME | NINT | NUINT
                     // Added as XS keywords to allow them to be treated as IDs
                     // the following entity keywords will be never used 'alone' and can therefore be safely defined as identifiers
-                    | DELEGATE | ENUM | GLOBAL | INHERIT | STRUCTURE
+                    | DELEGATE | ENUM | GLOBAL | INHERIT | STRUCTURE | RECORD 
                     // The following 'old' keywords are never used 'alone' and are harmless as identifiers
                     | ALIGN | CALLBACK | CLIPPER  | DIM | DOWNTO | DLLEXPORT
                     | FASTCALL | IN | INIT1 | INIT2 | INIT3 | INSTANCE | PASCAL |  SEQUENCE

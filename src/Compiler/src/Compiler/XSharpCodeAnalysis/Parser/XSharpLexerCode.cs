@@ -2495,6 +2495,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "PARAMS", PARAMS},
                     { "PARTIAL", PARTIAL},
                     { "PROPERTY", PROPERTY},
+                    { "RECORD", RECORD},
                     { "REPEAT", REPEAT},
                     { "SCOPE", SCOPE},
                     { "SEALED", SEALED},

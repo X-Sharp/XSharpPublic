@@ -22,6 +22,7 @@ using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+    using static Microsoft.CodeAnalysis.FlowAnalysis.ControlFlowGraphBuilder;
 
     internal partial class XSharpTreeTransformationCore : XSharpBaseListener
     {
@@ -2973,45 +2974,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitInterface_([NotNull] XP.Interface_Context context)
         {
             context.SetSequencePoint(context.I, context.e.Stop);
-            var members = _pool.Allocate<MemberDeclarationSyntax>();
-            var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
             context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
-            if (generated.Members.Count > 0)
+            if (context.TypeData.Partial)
             {
-                members.AddRange(generated.Members);
+                GlobalEntities.NeedsProcessing = true;
             }
-            if (generated.VoProperties != null)
-            {
-                foreach (var vop in generated.VoProperties.Values)
-                {
-                    var prop = GenerateVoProperty(vop, context);
-                    if (prop != null)
-                        members.Add(prop);
-                }
-            }
-            // Do this after VOProps generation because GenerateVOProperty sets the members
-            // for Access & Assign to NULL
-            foreach (var mCtx in context._Members)
-            {
-                if (mCtx.CsNode != null)
-                    members.Add(mCtx.Get<MemberDeclarationSyntax>());
-            }
-            generated.Free();
-            var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
-            foreach (var pCtx in context._Parents)
-            {
-                if (baseTypes.Count > 0)
-                    baseTypes.AddSeparator(SyntaxFactory.CommaToken);
-                baseTypes.Add(_syntaxFactory.SimpleBaseType(pCtx.Get<TypeSyntax>()));
-            }
+            var members = GetMembers(context, context._Members);
+            var baseTypes = GetBaseTypes(null, context._Parents);
+
             MemberDeclarationSyntax m = _syntaxFactory.InterfaceDeclaration(
                 attributeLists: getAttributes(context.Attributes),
                 modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.InterfaceKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: getTypeParameters(context.TypeParameters),
-                parameterList: default, // TODO nvk
+                parameterList: null, // TODO nvk
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3029,10 +3007,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 m = (MemberDeclarationSyntax)CheckForConflictBetweenTypeNameAndNamespaceName(context, "INTERFACE", m);
             }
             context.Put(m);
-            if (context.TypeData.Partial)
-            {
-                GlobalEntities.NeedsProcessing = true;
-            }
         }
 
         public override void EnterClass_([NotNull] XP.Class_Context context)
@@ -3043,54 +3017,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitClass_([NotNull] XP.Class_Context context)
         {
             context.SetSequencePoint(context.C, context.e.Stop);
-            var members = _pool.Allocate<MemberDeclarationSyntax>();
-            var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
             context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
-            if (generated.Members.Count > 0)
+            if (context.TypeData.Partial)
             {
-                members.AddRange(generated.Members);
-            }
-            if (generated.VoProperties != null)
-            {
-                foreach (var vop in generated.VoProperties.Values)
-                {
-                    var prop = GenerateVoProperty(vop, context);
-                    if (prop != null)
-                        members.Add(prop);
-                }
-            }
-            // check if class has Ctor.
-            foreach (var mem in members.ToList())
-            {
-                // when an instant constructors then remember this
-                if (mem is ConstructorDeclarationSyntax cds && !cds.IsStatic())
-                {
-                    context.TypeData.HasInstanceCtor = true;
-                    break;
-                }
+                GlobalEntities.NeedsProcessing = true;
             }
 
-            // Do this after VOProps generation because GenerateVOProperty sets the members
-            // for Access & Assign to NULL
-            foreach (var mCtx in context._Members)
-            {
-                if (mCtx.CsNode != null)
-                    members.Add(mCtx.Get<MemberDeclarationSyntax>());
-            }
-            generated.Free();
-            var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
-            var baseType = context.BaseType?.Get<TypeSyntax>();
-            if (baseType != null)
-            {
-                baseTypes.Add(_syntaxFactory.SimpleBaseType(baseType));
-            }
-            foreach (var iCtx in context._Implements)
-            {
-                if (baseTypes.Count > 0)
-                    baseTypes.AddSeparator(SyntaxFactory.CommaToken);
-                baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
-            }
+            var members = GetMembers(context, context._Members);
+            var baseTypes = GetBaseTypes(context.BaseType?.Get<TypeSyntax>(), context._Implements);
 
             MemberDeclarationSyntax m = _syntaxFactory.ClassDeclaration(
                 attributeLists: getAttributes(context.Attributes),
@@ -3098,7 +3033,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: getTypeParameters(context.TypeParameters),
-                parameterList: default, // TODO nvk
+                parameterList: null, // TODO nvk
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3117,10 +3052,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 m = (MemberDeclarationSyntax)CheckForConflictBetweenTypeNameAndNamespaceName(context, "CLASS", m);
             }
             context.Put(m);
-            if (context.TypeData.Partial)
-            {
-                GlobalEntities.NeedsProcessing = true;
-            }
         }
 
         public override void EnterStructure_([NotNull] XP.Structure_Context context)
@@ -3128,13 +3059,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ClassEntities.Push(CreateClassEntities());
         }
 
-        public override void ExitStructure_([NotNull] XP.Structure_Context context)
+        private SyntaxListBuilder<MemberDeclarationSyntax> GetMembers(XSharpParserRuleContext context, IList<XP.ClassmemberContext> Members)
         {
-            context.SetSequencePoint(context.S, context.e.Stop);
             var members = _pool.Allocate<MemberDeclarationSyntax>();
-            var generated = ClassEntities.Pop();
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-            context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
+
+            SyntaxClassEntities generated = ClassEntities.Pop();
+
             if (generated.Members.Count > 0)
             {
                 members.AddRange(generated.Members);
@@ -3150,19 +3080,43 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             // Do this after VOProps generation because GenerateVOProperty sets the members
             // for Access & Assign to NULL
-            foreach (var mCtx in context._Members)
+            foreach (var mCtx in Members)
             {
                 if (mCtx.CsNode != null)
                     members.Add(mCtx.Get<MemberDeclarationSyntax>());
             }
             generated.Free();
+            return members;
+        }
+
+        private SeparatedSyntaxListBuilder<BaseTypeSyntax> GetBaseTypes(TypeSyntax baseType, IList<XP.DatatypeContext> implements)
+        {
             var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
-            foreach (var iCtx in context._Implements)
+            if (baseType != null)
+            {
+                baseTypes.Add(_syntaxFactory.SimpleBaseType(baseType));
+            }
+
+            foreach (var iCtx in implements)
             {
                 if (baseTypes.Count > 0)
                     baseTypes.AddSeparator(SyntaxFactory.CommaToken);
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
             }
+            return baseTypes;
+
+        }
+        public override void ExitStructure_([NotNull] XP.Structure_Context context)
+        {
+            context.SetSequencePoint(context.S, context.e.Stop);
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
+            if (context.TypeData.Partial)
+            {
+                GlobalEntities.NeedsProcessing = true;
+            }
+            var members = GetMembers(context, context._Members);
+            var baseTypes = GetBaseTypes(null, context._Implements);
 
             MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
                 attributeLists: getAttributes(context.Attributes),
@@ -3170,7 +3124,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: getTypeParameters(context.TypeParameters),
-                parameterList: default, // TODO nvk
+                parameterList: null, // TODO nvk
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3188,10 +3142,62 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 m = (MemberDeclarationSyntax)CheckForConflictBetweenTypeNameAndNamespaceName(context, "STRUCTURE", m);
             }
             context.Put(m);
+        }
+
+        public override void EnterRecord_([NotNull] XP.Record_Context context)
+        {
+            ClassEntities.Push(CreateClassEntities());
+        }
+        public override void ExitRecord_([NotNull] XP.Record_Context context)
+        {
+            context.SetSequencePoint(context.S, context.e.Stop);
+            SyntaxToken classOrStructKeyword;
+            SyntaxKind recordKind;
+            if (context.S?.Type == XSharpLexer.STRUCTURE)
+            {
+                classOrStructKeyword = SyntaxFactory.MakeToken(SyntaxKind.StructKeyword);
+                recordKind = SyntaxKind.RecordStructDeclaration;
+            }
+            else
+            {
+                classOrStructKeyword = SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword);
+                recordKind = SyntaxKind.RecordDeclaration;
+            }
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
             if (context.TypeData.Partial)
             {
                 GlobalEntities.NeedsProcessing = true;
             }
+            var members = GetMembers(context, context._Members);
+            var baseTypes = GetBaseTypes(context.BaseType?.Get<TypeSyntax>(), context._Implements);
+
+            MemberDeclarationSyntax m = _syntaxFactory.RecordDeclaration(
+                    recordKind,
+                    attributeLists: getAttributes(context.Attributes),
+                    modifiers: mods,
+                    keyword: SyntaxFactory.MakeToken(SyntaxKind.RecordKeyword),
+                    classOrStructKeyword: classOrStructKeyword,
+                    identifier: context.Id.Get<SyntaxToken>(),
+                    typeParameterList: getTypeParameters(context.TypeParameters),
+                    parameterList: null, // TODO nvk
+                    baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
+                    constraintClauses: getTypeConstraints(context._ConstraintsClauses),
+                    openBraceToken: SyntaxFactory.OpenBraceToken,
+                    members: members,
+                    closeBraceToken: SyntaxFactory.CloseBraceToken,
+                    semicolonToken: null);
+            _pool.Free(members);
+            _pool.Free(baseTypes);
+            if (context.Namespace != null)
+            {
+                m = AddNameSpaceToMember(context.Namespace, m);
+            }
+            else
+            {
+                m = (MemberDeclarationSyntax)CheckForConflictBetweenTypeNameAndNamespaceName(context, "RECORD", m);
+            }
+            context.Put(m);
         }
 
         public override void ExitDelegate_([NotNull] XP.Delegate_Context context)
@@ -3220,7 +3226,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                m = (MemberDeclarationSyntax)CheckForConflictBetweenTypeNameAndNamespaceName(context, "STRUCTURE", m);
+                m = (MemberDeclarationSyntax)CheckForConflictBetweenTypeNameAndNamespaceName(context, "DELEGATE", m);
             }
             context.Put(m);
         }
@@ -3990,6 +3996,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         return fox.Id.Get<SyntaxToken>();
                     case XP.XppclassContext xpp:
                         return xpp.Id.Get<SyntaxToken>();
+                    case XP.Record_Context rec:
+                        return rec.Id.Get<SyntaxToken>();
                 }
             }
             return null;
@@ -4275,7 +4283,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             ExitParameterList(context.ParamList);
                             removeAttribute(context.Attributes, "Extension");
                             attributes = getAttributes(context.Attributes);
-                        }
+                        } 
                     }
 
                     if (hasSelf && !mods.Any((int)SyntaxKind.StaticKeyword))

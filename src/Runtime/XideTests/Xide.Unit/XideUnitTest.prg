@@ -213,6 +213,9 @@ CLASS Xide.Unit.Assert
 			XideUnitTest.TestRun(FALSE , "Equal() returned: " + o1:ToString() + " , " + o2:ToString() , ProcFile(1) , ProcLine(1))
 		END IF
 	RETURN
+	STATIC METHOD Equal<T>(o1 AS T, o2 AS T) AS VOID
+//		System.Windows.Forms.MessageBox.Show(o1:ToString())
+		Xide.Unit.Assert.Equal((OBJECT)o1, (OBJECT)o2)
 	STATIC METHOD NotEqual(o1 AS OBJECT, o2 AS OBJECT) AS VOID
 		IF (o1 == NULL .and. o2 != NULL) .or. (o1 != NULL .and. .not. o1:Equals(o2))
 			Passed ++
@@ -280,7 +283,7 @@ CLASS Xide.Unit.Assert
 		END TRY
 	RETURN cFile
 	
-	STATIC METHOD ThrowsAny<t>(o AS Action) AS VOID
+	STATIC METHOD ThrowsAny<t>(o AS System.Action?) AS T WHERE T IS Exception
 		LOCAL lExcption := FALSE AS LOGIC
 		TRY
 			o:Invoke()
@@ -296,6 +299,7 @@ CLASS Xide.Unit.Assert
 			? "failed in ", __ENTITY__, GetFileName(ProcFile(1)) , ProcLine(1)
 			XideUnitTest.TestRun(FALSE , "No exception occured : ", ProcFile(1) , ProcLine(1))
 		END IF
+		RETURN Default(T)
 END CLASS
 
 

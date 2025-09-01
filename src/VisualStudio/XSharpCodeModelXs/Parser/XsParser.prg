@@ -584,7 +584,9 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
 
         */
         entUsing := NULL
-        IF SELF:La1 != XSharpLexer.USING
+        if SELF:La1 == XSharpLexer.GLOBAL .and. SELF:La2 == XSharpLexer.USING
+            NOP // Ok
+        elseIF SELF:La1 != XSharpLexer.USING
             RETURN FALSE
         ENDIF
         IF SELF:ExpectOnThisLine(XSharpLexer.VAR)             // USING VAR
@@ -593,10 +595,18 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         IF SELF:ExpectOnThisLine(XSharpLexer.IMPLIED)
             RETURN FALSE
         ENDIF
+        var isGlobal := SELF:La1 == XSharpLexer.GLOBAL
         VAR startToken := SELF:ConsumeAndGet()
+        if isGlobal
+            SELF:ConsumeAndGet() // USING
+        ENDIF
         VAR isStatic := FALSE
+        VAR isUnsafe := FALSE
         VAR alias := ""
         IF SELF:Expect(XSharpLexer.STATIC)
+            isStatic := TRUE
+        ENDIF
+        IF SELF:Expect(XSharpLexer.UNSAFE)
             isStatic := TRUE
         ENDIF
         IF SELF:IsId(SELF:La1) .AND. SELF:IsAssignOp(SELF:La2)
@@ -616,8 +626,14 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         if (isStatic)
             mods := Modifiers.Static
         endif
+        if (isGlobal)
+            mods |= Modifiers.Global
+        endif
+        if (isUnsafe)
+            mods |= Modifiers.Unsafe
+        endif
         SELF:GetSourceInfo(startToken, endToken , OUT VAR range, OUT VAR interval, OUT VAR source)
-        VAR entity := XSourceMemberSymbol{name, Kind.Using, mods, range,interval,"",_modifiers,FALSE}
+        VAR entity := XSourceMemberSymbol{name, Kind.Using, mods, range,interval,"",_modifiers, isStatic}
         entity:SourceCode := source
         entity:File := _file
         entity:SingleLine := TRUE
@@ -764,6 +780,10 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
     PRIVATE METHOD IsStartOfEntity(entityKind OUT Kind, mods AS Modifiers) AS LOGIC
         entityKind := Kind.Unknown
         SWITCH SELF:La1
+        CASE XSharpLexer.NAMESPACE
+            IF SELF:IsId(SELF:La2)
+                entityKind := Kind.Namespace
+            ENDIF
         CASE XSharpLexer.BEGIN
             // namespace ?
             IF SELF:La2 == XSharpLexer.NAMESPACE
@@ -1525,12 +1545,16 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         END NAMESPACE EOS
         ;
         */
-        IF SELF:La1 != XSharpLexer.BEGIN .AND. SELF:La2 != XSharpLexer.NAMESPACE
+        if SELF:La1 == XSharpLexer.NAMESPACE
+            NOP
+        ELSEIF SELF:La1 != XSharpLexer.BEGIN .AND. SELF:La2 != XSharpLexer.NAMESPACE
             RETURN NULL
         ENDIF
         _modifiers:Add(SELF:Lt1)
-        SELF:Consume()   // BEGIN
-        _modifiers:Add(SELF:Lt1)
+        IF SELF:La1 == XSharpLexer.BEGIN
+            SELF:Consume()   // BEGIN
+            _modifiers:Add(SELF:Lt1)
+        ENDIF
         SELF:Consume()   // NAMESPACE
         VAR id := SELF:ParseQualifiedName()
         SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)

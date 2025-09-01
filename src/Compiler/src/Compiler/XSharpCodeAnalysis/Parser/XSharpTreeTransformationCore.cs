@@ -34,6 +34,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public SyntaxListBuilder<UsingDirectiveSyntax> Usings;
             public SyntaxListBuilder<AttributeListSyntax> Attributes;
             public SyntaxListBuilder<MemberDeclarationSyntax> Members;
+            public XP.Namespace_Context FileScopedNamespace;
             public SyntaxListBuilder<MemberDeclarationSyntax> GlobalClassMembers;
             public SyntaxListBuilder<MemberDeclarationSyntax> StaticGlobalClassMembers;
             public List<MemVarFieldInfo> FileWidePublics;
@@ -59,6 +60,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 InitProcedures = new List<Tuple<int, String>>();
                 Globals = new List<FieldDeclarationSyntax>();
                 FileWidePublics = new List<MemVarFieldInfo>();
+                FileScopedNamespace = null;
                 _pool = pool;
                 HasPCall = false;
                 NeedsProcessing = false;
@@ -2785,13 +2787,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 globalKeyword: context.Global?.SyntaxKeyword(),
                 usingKeyword: SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
                 staticKeyword: context.Static?.SyntaxKeyword(),
-                unsafeKeyword: default, // TODO nvk
+                unsafeKeyword: context.Unsafe?.SyntaxKeyword(),
                 alias: context.Alias == null ? null : _syntaxFactory.NameEquals(context.Alias.Get<IdentifierNameSyntax>(), SyntaxFactory.EqualsToken),
                 namespaceOrType: context.Name.Get<NameSyntax>(),
                 semicolonToken: SyntaxFactory.SemicolonToken));
         }
 
-        protected void _exitNamespace(XSharpParserRuleContext context, string name, IList<XSharpParserRuleContext> entities)
+        protected void _exitNamespace(XP.Namespace_Context context, string name, IList<XSharpParserRuleContext> entities)
         {
             var externs = _pool.Allocate<ExternAliasDirectiveSyntax>();
             var usings = _pool.Allocate<UsingDirectiveSyntax>();
@@ -2810,7 +2812,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     externs.Add(s as ExternAliasDirectiveSyntax);
             }
 
-            MemberDeclarationSyntax ns = _syntaxFactory.NamespaceDeclaration(attributeLists: default, modifiers: default, SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
+            var ns = _syntaxFactory.NamespaceDeclaration(attributeLists: default, modifiers: default, SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
                 name: GenerateQualifiedName(name),
                 openBraceToken: SyntaxFactory.OpenBraceToken,
                 externs: externs,
@@ -2818,7 +2820,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 members: members,
                 closeBraceToken: SyntaxFactory.CloseBraceToken,
                 semicolonToken: SyntaxFactory.SemicolonToken);
-
+            if (context.IsFileScopedNamespace)
+            {
+                if (GlobalEntities.FileScopedNamespace == null)
+                {
+                    GlobalEntities.FileScopedNamespace = context;
+                }
+                else
+                {
+                    ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_MultipleFileScopedNamespace));
+                }
+            }
             _pool.Free(externs);
             _pool.Free(usings);
             _pool.Free(members);

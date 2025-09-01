@@ -1202,6 +1202,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             internal bool IsMissing => this.ChildCount == 0;
         }
+        public partial class Namespace_Context
+        {
+            internal bool IsFileScopedNamespace => this.BEGIN() == null;
+        }
         public partial class UnnamedArgumentContext
         {
             internal bool IsMissing => Expr == null;

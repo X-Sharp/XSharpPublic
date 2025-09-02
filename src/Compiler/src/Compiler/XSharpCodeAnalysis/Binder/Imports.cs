@@ -81,10 +81,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var declbinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
                     var diagnostics = BindingDiagnosticBag.GetInstance();
                     string[] defNs;
-                    if (compilation.Options.XSharpRuntime)
-                        defNs = new string[]{ OurNameSpaces.XSharp};
-                    else
-                        defNs = new string[]{ OurNameSpaces.Vulcan};
+                    defNs = new string[]{ OurNameSpaces.XSharp};
 
                     foreach (var n in defNs)
                     {

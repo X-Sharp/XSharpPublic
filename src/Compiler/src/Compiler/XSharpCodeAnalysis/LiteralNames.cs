@@ -324,7 +324,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     internal static class OurNameSpaces
     {
-        internal const string Vulcan = "Vulcan";
         internal const string XSharp = "XSharp";
     }
 

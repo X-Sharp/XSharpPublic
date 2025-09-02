@@ -521,28 +521,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             switch (strType.ToLower())
             {
                 case "xsharp.__date":
-                case "vulcan.__vodate":
                     strType = "date";
                     break;
                 case "xsharp.__float":
-                case "vulcan.__vofloat":
                     strType = "float";
                     break;
                 case "xsharp.__symbol":
-                case "vulcan.__symbol":
                     strType = "symbol";
                     break;
                 case "xsharp.__array":
                 case "xsharp.__arraybase":
-                case "vulcan.__array":
                     strType = "array";
                     break;
                 case "xsharp.__psz":
-                case "vulcan.__psz":
                     strType = "psz";
                     break;
                 case "xsharp.__usual":
-                case "vulcan.__usual":
                     strType = "usual";
                     break;
                 case "xsharp.__currency":

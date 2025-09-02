@@ -4234,6 +4234,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
             var isStatic = mods.Any((int)SyntaxKind.StaticKeyword);
             var hasNoBody = isExtern || isAbstract | context.Sig.ExpressionBody != null;
+            if (isInInterface)
+            {
+                hasNoBody = context.StmtBlk == null || context.StmtBlk._Stmts.Count == 0;
+            }
             var expressionBody = GetExpressionBody(context.Sig.ExpressionBody);
             if (_options.Dialect == XSharpDialect.FoxPro)
             {

@@ -19,12 +19,14 @@ LOGIC(p + d) := TRUE
 xAssert(a[4]) // vulcan wrong here, too. x# is ok
 ?
 */
+? sizeof(__struct)
 
 p := (LOGIC PTR) @s
 LOGIC(p + 1) := TRUE
 ? "VOSTRUCT: " ,  s:m1 , s:m2 , s:m3 , s:m4 , s:m5
-
-#error exception here
+? @ s:m1
+? @ s:m2
+//#error exception here
 xAssert(s:m2)
 d := 3
 LOGIC(p + d) := TRUE
@@ -38,8 +40,8 @@ cPic := "@! XXXXX" // uppercase
 ?
 ? "picture: " + cPic + " :"
 o := __FormattedString{}
-o:Picture := cPic 
-? o:FuncFlags:lLeftJust , o:FuncFlags:lDispCR , o:FuncFlags:lSetDate  , o:FuncFlags:lBritDate , o:FuncFlags:lInsNonTemp 
+o:Picture := cPic
+? o:FuncFlags:lLeftJust , o:FuncFlags:lDispCR , o:FuncFlags:lSetDate  , o:FuncFlags:lBritDate , o:FuncFlags:lInsNonTemp
 ? o:FuncFlags:lDispDB , o:FuncFlags:lZeroBlank  , o:FuncFlags:lNegInParen , o:FuncFlags:lConvUpper , o:FuncFlags:lAlphaOnly
 
 xAssert(o:FuncFlags:lConvUpper)
@@ -57,15 +59,14 @@ MEMBER m3 AS LOGIC
 MEMBER m4 AS LOGIC
 MEMBER m5 AS LOGIC
 
-
 CLASS __FormattedString
 	EXPORT FuncFlags IS strucPictureFuncFlags
 	PROTECT sPicture AS STRING
-ASSIGN Picture(cNewPicture AS STRING)  STRICT 
+ASSIGN Picture(cNewPicture AS STRING)  STRICT
 	LOCAL pLogic AS LOGIC PTR
 	LOCAL iSpcPos, iFuncPos, i AS DWORD
 	LOCAL sFuncChar AS STRING
-	LOCAL iAsc, iAscD, iAscM, iAscY, iAsc9 AS DWORD
+	//LOCAL iAsc, iAscD, iAscM, iAscY, iAsc9 AS DWORD
 
 	sPicture := cNewPicture
 	pLogic := (LOGIC PTR) @FuncFlags

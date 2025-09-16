@@ -108,23 +108,24 @@ begin namespace XSharp.VFP.Tests
                 Assert.Equal(Week(2013.01.05,2,1)  , 1)    // Sunday, 1st week has 4 days
                 Assert.Equal(Week(2013.01.05,3,1)  , 53)    // Sunday, 1st week has 7 days
 
-
+	// ---------------------------------------------------------------- //
+	/// TToC() - Basic Tests
+	// ---------------------------------------------------------------- //
 	[Fact, Trait("Category", "Date and Time")];
 	method TToCTests as void
 	    local dt as DateTime
-
 	    dt := DateTime{2025, 8, 13, 14, 30, 45}
 
-	    // Parámetro 0 - formato numérico (igual que parámetro 1)
+	    // 0 - numeric format (same as param 1)
 	    Assert.Equal("20250813143045", TToC(dt, 0))
 
-	    // Parámetro 1 - formato numérico
+	    // 1 - numeric format
 	    Assert.Equal("20250813143045", TToC(dt, 1))
 
-	    // Parámetro 2 - solo hora
+	    // 2 - just time
 	    Assert.Equal("02:30:45 PM", TToC(dt, 2))
 
-	    // Parámetro 3 - formato ISO
+	    // 3 - ISO format
 	    Assert.Equal("2025-08-13T14:30:45", TToC(dt, 3))
 
 	end method
@@ -134,17 +135,17 @@ begin namespace XSharp.VFP.Tests
 	  local dt as DateTime
 	  dt := DateTime{2025, 8, 13, 14, 30, 45}
 
-	  // Sin parámetro - debería usar formato por defecto (depende de SET CENTURY, etc.)
+	  // No params - should use the VFP default (depends on SET CENTURY, etc.)
 	  local result := TToC(dt) as string
 	  Assert.True(result != null)
 	  Assert.True(result:Length > 0)
 
-	  // Con SET CENTURY ON debería incluir siglo completo
+	  // with SET CENTURY ON debería incluir siglo completo
 	  local oldCentury := SetCentury(true) as logic
 	  local resultWithCentury := TToC(dt) as string
 	  SetCentury(oldCentury)
 
-	  Assert.True(resultWithCentury:Contains("2025")) // Debe contener año completo
+	  Assert.True(resultWithCentury:Contains("2025")) // must contain the whole year
 	end method
 
 	[Fact, Trait("Category", "Date and Time")];
@@ -152,31 +153,31 @@ begin namespace XSharp.VFP.Tests
 	  local dt as DateTime
 	  dt := DateTime{2025, 8, 13, 14, 30, 45} // 2:30 PM
 
-	  // Guardar configuración actual
+	  // save current configuration
 	  local oldHours := SetHours() as long
 	  local oldSeconds := SetSeconds() as logic
 
 	  try
-	      // Formato 12 horas con segundos
+	      // 12 hours format with seconds
 	      SetHours(12)
 	      SetSeconds(true)
 	      Assert.Equal("02:30:45 PM", TToC(dt, 2))
 
-	      // Formato 12 horas sin segundos
+	      // 12 hours format no seconds
 	      SetSeconds(false)
 	      Assert.Equal("02:30 PM", TToC(dt, 2))
 
-	      // Formato 24 horas con segundos
+	      // 24 hours format with seconds
 	      SetHours(24)
 	      SetSeconds(true)
 	      Assert.Equal("14:30:45", TToC(dt, 2))
 
-	      // Formato 24 horas sin segundos
+	      // 24 hours format no seconds
 	      SetSeconds(false)
 	      Assert.Equal("14:30", TToC(dt, 2))
 
 	  finally
-	      // Restaurar configuración
+	      // restore configuration
 	      SetHours(oldHours)
 	      SetSeconds(oldSeconds)
 	  end try
@@ -184,11 +185,11 @@ begin namespace XSharp.VFP.Tests
 
 	[Fact, Trait("Category", "Date and Time")];
 	method TToCEdgeCasesTests as void
-	  // Medianoche
+	  // midnight
 	  local midnight := DateTime{2025, 8, 13, 0, 0, 0} as DateTime
 	  Assert.Equal("12:00:00 AM", TToC(midnight, 2))
 
-	  // Mediodía
+	  // noon
 	  local noon := DateTime{2025, 8, 13, 12, 0, 0} as DateTime
 	  Assert.Equal("12:00:00 PM", TToC(noon, 2))
 
@@ -210,13 +211,13 @@ begin namespace XSharp.VFP.Tests
 	  local dt as DateTime
 	  dt := DateTime{2025, 8, 13, 14, 30, 45}
 
-	  // Formato numérico completo
+	  // numeric format
 	  Assert.Equal("20250813143045", TToC(dt, 1))
 
-	  // Sin segundos (si aplica)
+	  // no secs
 	  local oldSeconds := SetSeconds(false) as logic
 	  try
-	      // El formato numérico debería incluir segundos independientemente del SET SECONDS
+	      // numeric format should include seconds no matter SET SECONDS command
 	      Assert.Equal("20250813143045", TToC(dt, 1))
 	  finally
 	      SetSeconds(oldSeconds)
@@ -228,14 +229,14 @@ begin namespace XSharp.VFP.Tests
 	  local dt as DateTime
 	  dt := DateTime{2025, 8, 13, 14, 30, 45}
 
-	  // Formato ISO estándar
+	  // standard ISO format
 	  Assert.Equal("2025-08-13T14:30:45", TToC(dt, 3))
 
-	  // Verificar que no se ve afectado por configuraciones locales
+	  // check is not affected by locals configurations
 	  local oldHours := SetHours(12) as long
 	  local oldSeconds := SetSeconds(false) as logic
 	  try
-	      // ISO debe mantener formato 24h y incluir segundos siempre
+	      // ISO should keep 24 hours and always include seconds
 	      Assert.Equal("2025-08-13T14:30:45", TToC(dt, 3))
 	  finally
 	      SetHours(oldHours)
@@ -248,18 +249,18 @@ begin namespace XSharp.VFP.Tests
 	  local dt as DateTime
 	  dt := DateTime{2025, 8, 13, 14, 30, 45}
 
-	  // Parámetros inválidos - deberían usar formato por defecto o lanzar error
+	  // invalid parameters - should use default format or throw exception
 	  try
 	      local result := TToC(dt, 99) as string
-	      // Si no lanza error, debería devolver algo válido
+	      // if no exception then should return something valid
 	      Assert.True(result != null)
 	      Assert.True(result:Length > 0)
 	  catch e as Exception
-	      // Si lanza error, está bien también
+	      // if thorws exception is ok too
 	      Assert.True(e != null)
 	  end try
 
-	  // Parámetro negativo
+	  // negavite parameter
 	  try
 	      local result := TToC(dt, -1) as string
 	      Assert.True(result != null)
@@ -271,68 +272,71 @@ begin namespace XSharp.VFP.Tests
 
 	[Fact, Trait("Category", "Date and Time")];
 	method TToCDateOnlyTests as void
-	  // Probar con Date (sin hora)
+	  // try DATE no time
 	  local d := DateTime{2025, 8, 13} as DateTime
 
-	  // Formato numérico con fecha sin hora
+	  // numeric format with date and no time
 	  local numericResult := TToC(d, 1) as string
 	  Assert.True(numericResult:StartsWith("20250813"))
 
-	  // Formato solo hora con fecha sin hora
+	  // time format with date and no time
 	  local timeResult := TToC(d, 2) as string
 	  Assert.True(timeResult:Contains("12:00:00 AM")) // Debería ser medianoche
 
-	  // Formato ISO con fecha sin hora
+	  // ISO format with date and no time
 	  local isoResult := TToC(d, 3) as string
 	  Assert.True(isoResult:StartsWith("2025-08-13T00:00:00"))
 	end method
 
 	[Fact, Trait("Category", "Date and Time")];
 	method TToCConfigurationPersistenceTests as void
-	  // Verificar que los cambios de configuración persisten
+	  // check settings persists
 	  local originalHours := SetHours() as long
 	  local originalSeconds := SetSeconds() as logic
 
-	  // Cambiar configuración
+	  // change settings
 	  SetHours(12)
 	  SetSeconds(true)
 
-	  // Verificar que los cambios se mantienen
+	  // check that the changes are kept
 	  Assert.Equal(12, SetHours())
 	  Assert.Equal(true, SetSeconds())
 
-	  // Usar TToC y verificar que usa la nueva configuración
+	  // use TToC and check it uses the new setting
 	  local dt := DateTime{2025, 8, 13, 14, 30, 45} as DateTime
 	  local result := TToC(dt, 2) as string
 	  Assert.True(result:Contains("PM"))
 	  Assert.True(result:Contains(":45")) // Debe incluir segundos
 
-	  // Restaurar configuración original
+	  // restore original setting
 	  SetHours(originalHours)
 	  SetSeconds(originalSeconds)
 
-	  // Verificar que se restauró
+	  // check original settings are restored
 	  Assert.Equal(originalHours, SetHours())
 	  Assert.Equal(originalSeconds, SetSeconds())
 	end method
 
+	// ---------------------------------------------------------------- //
+	/// CToT() - Basic Tests
+	// ---------------------------------------------------------------- //
 	[Fact, Trait("Category", "Date and Time")];
 	method CToTBasicTests as void
 	    local result as DateTime
 
-	    // Formato numérico completo
+	    // completed numeric format
 	    result := CToT("20250813143045")
 	    Assert.Equal(DateTime{2025, 8, 13, 14, 30, 45}, result)
 
-	    // Formato numérico sin hora
+	    // numeric format no time
 	    result := CToT("20250813")
 	    Assert.Equal(DateTime{2025, 8, 13, 0, 0, 0}, result)
 
-	    // Formato ISO
+	    // ISO format
 	    result := CToT("2025-08-13T14:30:45")
 	    Assert.Equal(DateTime{2025, 8, 13, 14, 30, 45}, result)
 
-	    // Formato ISO sin segundos
+	    // ISO format no seconds
 	    result := CToT("2025-08-13T14:30")
 	    Assert.Equal(DateTime{2025, 8, 13, 14, 30, 0}, result)
 	end method
@@ -340,12 +344,12 @@ begin namespace XSharp.VFP.Tests
 	[Fact, Trait("Category", "Date and Time")];
 	method CToTDateFormatTests as void
 	    local result as DateTime
-	    local oldDateFormat := SetDateFormat("AMERICAN") as string
+	    local oldDateFormat := SetDateFormat("MM/DD/YYYY") as string
 	    local oldCentury := SetCentury() as logic
 
 	    try
-	        // Formato AMERICAN (MM/dd/yyyy)
-	        SetDateFormat("AMERICAN")
+	        // AMERICAN format (MM/dd/yyyy)
+	        SetDateFormat("MM/DD/YYYY")
 	        SetCentury(true)
 
 	        result := CToT("08/13/2025")
@@ -354,8 +358,8 @@ begin namespace XSharp.VFP.Tests
 	        result := CToT("08/13/2025 14:30:45")
 	        Assert.Equal(DateTime{2025, 8, 13, 14, 30, 45}, result)
 
-	        // Formato BRITISH (dd/MM/yyyy)
-	        SetDateFormat("BRITISH")
+	        // BRITISH format (dd/MM/yyyy)
+	        SetDateFormat("DD/MM/YYYY")
 
 	        result := CToT("13/08/2025")
 	        Assert.Equal(DateTime{2025, 8, 13}, result)
@@ -363,8 +367,8 @@ begin namespace XSharp.VFP.Tests
 	        result := CToT("13/08/2025 14:30:45")
 	        Assert.Equal(DateTime{2025, 8, 13, 14, 30, 45}, result)
 
-	        // Formato ANSI (yyyy.MM.dd)
-	        SetDateFormat("ANSI")
+//	        ANSI format (yyyy.MM.dd)
+	        SetDateFormat("YYYY.MM.DD")
 
 	        result := CToT("2025.08.13")
 	        Assert.Equal(DateTime{2025, 8, 13}, result)
@@ -385,7 +389,7 @@ begin namespace XSharp.VFP.Tests
 	    local oldSeconds := SetSeconds() as logic
 
 	    try
-	        // Formato 12 horas con AM/PM
+	        // 12 hours format with AM/PM
 	        SetHours(12)
 	        SetSeconds(true)
 
@@ -395,7 +399,7 @@ begin namespace XSharp.VFP.Tests
 	        result := CToT("08/13/2025 02:30:45 AM")
 	        Assert.Equal(DateTime{2025, 8, 13, 2, 30, 45}, result)
 
-	        // Formato 24 horas
+	        // 24 hours format
 	        SetHours(24)
 
 	        result := CToT("08/13/2025 14:30:45")
@@ -404,7 +408,7 @@ begin namespace XSharp.VFP.Tests
 	        result := CToT("08/13/2025 02:30:45")
 	        Assert.Equal(DateTime{2025, 8, 13, 2, 30, 45}, result)
 
-	        // Sin segundos
+	        // no seconds
 	        SetSeconds(false)
 
 	        result := CToT("08/13/2025 14:30")
@@ -420,12 +424,13 @@ begin namespace XSharp.VFP.Tests
 	method CToTCenturyTests as void
 	    local result as DateTime
 	    local oldCentury := SetCentury() as logic
-	    local oldDateFormat := SetDateFormat("AMERICAN") as string
+	    local oldDateFormat := SetDateFormat("MM/DD/YYYY") as string
 
 	    try
-	        SetDateFormat("AMERICAN")
+	    	// AMERICAN
+	        SetDateFormat("MM/DD/YYYY")
 
-	        // Con siglo completo
+	        // full century
 	        SetCentury(true)
 	        result := CToT("08/13/2025")
 	        Assert.Equal(DateTime{2025, 8, 13}, result)
@@ -433,7 +438,7 @@ begin namespace XSharp.VFP.Tests
 	        result := CToT("08/13/25")  // Debería interpretar como 2025
 	        Assert.Equal(DateTime{2025, 8, 13}, result)
 
-	        // Sin siglo (años de 2 dígitos)
+	        // no century
 	        SetCentury(false)
 	        result := CToT("08/13/25")
 	        Assert.Equal(DateTime{2025, 8, 13}, result)  // Asumiendo ventana de siglo apropiada
@@ -451,11 +456,11 @@ begin namespace XSharp.VFP.Tests
 	method CToTEdgeCasesTests as void
 	    local result as DateTime
 
-	    // Medianoche
+	    // midnight
 	    result := CToT("08/13/2025 12:00:00 AM")
 	    Assert.Equal(DateTime{2025, 8, 13, 0, 0, 0}, result)
 
-	    // Mediodía
+	    // noon
 	    result := CToT("08/13/2025 12:00:00 PM")
 	    Assert.Equal(DateTime{2025, 8, 13, 12, 0, 0}, result)
 
@@ -467,7 +472,7 @@ begin namespace XSharp.VFP.Tests
 	    result := CToT("08/13/2025 11:59:59 PM")
 	    Assert.Equal(DateTime{2025, 8, 13, 23, 59, 59}, result)
 
-	    // Solo hora (debería usar fecha mínima o actual)
+	    // time only (it should use minimal date or current)
 	    result := CToT("14:30:45")
 	    Assert.Equal(14, result:Hour)
 	    Assert.Equal(30, result:Minute)
@@ -478,28 +483,28 @@ begin namespace XSharp.VFP.Tests
 	method CToTInvalidInputTests as void
 	    local result as DateTime
 
-	    // Cadena vacía
+	    // empty string
 	    result := CToT("")
 	    Assert.Equal(DateTime.MinValue, result)
 
-	    // Cadena nula
+	    // numm string
 	    result := CToT(null)
 	    Assert.Equal(DateTime.MinValue, result)
 
-	    // Solo espacios
+	    // only spaces
 	    result := CToT("   ")
 	    Assert.Equal(DateTime.MinValue, result)
 
-	    // Formato inválido
-	    result := CToT("fecha inválida")
+	    // invalid format
+	    result := CToT("INVALID DATE")
 	    Assert.Equal(DateTime.MinValue, result)
 
-	    // Fecha inexistente
-	    result := CToT("02/30/2025")  // 30 de febrero no existe
+	    // nonexistent date
+	    result := CToT("02/30/2025")
 	    Assert.Equal(DateTime.MinValue, result)
 
-	    // Hora inválida
-	    result := CToT("08/13/2025 25:00:00")  // Hora 25 no existe
+	    // invalid hour
+	    result := CToT("08/13/2025 25:00:00")
 	    Assert.Equal(DateTime.MinValue, result)
 	end method
 
@@ -507,7 +512,7 @@ begin namespace XSharp.VFP.Tests
 	method CToTFlexibleFormatsTests as void
 	    local result as DateTime
 
-	    // Diferentes separadores de fecha
+	    // different date separator
 	    result := CToT("2025-08-13")
 	    Assert.Equal(DateTime{2025, 8, 13}, result)
 
@@ -517,14 +522,14 @@ begin namespace XSharp.VFP.Tests
 	    result := CToT("2025.08.13")
 	    Assert.Equal(DateTime{2025, 8, 13}, result)
 
-	    // Sin ceros iniciales
+	    // no starting zeros
 	    result := CToT("8/13/2025")
 	    Assert.Equal(DateTime{2025, 8, 13}, result)
 
 	    result := CToT("8/3/2025")
 	    Assert.Equal(DateTime{2025, 8, 3}, result)
 
-	    // Diferentes formatos de hora
+	    // different hours format
 	    result := CToT("08/13/2025 2:30 PM")
 	    Assert.Equal(DateTime{2025, 8, 13, 14, 30, 0}, result)
 
@@ -536,37 +541,37 @@ begin namespace XSharp.VFP.Tests
 	method CToTSpecialVFPFormatsTests as void
 	    local result as DateTime
 
-	    // Formato numérico compacto sin separadores
+	    // compact numeric format no separator
 	    result := CToT("20250813")
 	    Assert.Equal(DateTime{2025, 8, 13}, result)
 
 	    result := CToT("20250813143045")
 	    Assert.Equal(DateTime{2025, 8, 13, 14, 30, 45}, result)
 
-	    result := CToT("202508131430")  // Sin segundos
+	    result := CToT("202508131430")  // no seconds
 	    Assert.Equal(DateTime{2025, 8, 13, 14, 30, 0}, result)
 
-	    // Formato con T (ISO-like)
+	    // ISO format with T (ISO-like)
 	    result := CToT("20250813T143045")
 	    Assert.Equal(DateTime{2025, 8, 13, 14, 30, 45}, result)
 	end method
 
 	[Fact, Trait("Category", "Date and Time")];
 	method CToTRoundTripTests as void
-	    // Verificar que CToT puede parsear lo que TToC genera
+	    // check CToT can parse what TToC generates
 	    local originalDt := DateTime{2025, 8, 13, 14, 30, 45} as DateTime
 
-	    // Formato numérico
+	    // numeric format
 	    local numericStr := TToC(originalDt, 1) as string
 	    local parsedDt := CToT(numericStr) as DateTime
 	    Assert.Equal(originalDt, parsedDt)
 
-	    // Formato ISO
+	    // ISO format
 	    local isoStr := TToC(originalDt, 3) as string
 	    parsedDt := CToT(isoStr)
 	    Assert.Equal(originalDt, parsedDt)
 
-	    // Formato por defecto
+	    // default format
 	    local defaultStr := TToC(originalDt) as string
 	    parsedDt := CToT(defaultStr)
 	    Assert.Equal(originalDt:Date, parsedDt:Date)  // Al menos la fecha debe coincidir
@@ -576,37 +581,37 @@ begin namespace XSharp.VFP.Tests
 	method CToTWhitespaceHandlingTests as void
 	    local result as DateTime
 
-	    // Espacios al inicio y final
+	    // starting and ending spaces
 	    result := CToT("  20250813143045  ")
 	    Assert.Equal(DateTime{2025, 8, 13, 14, 30, 45}, result)
 
-	    // Espacios entre fecha y hora
+	    // spaces between date and time
 	    result := CToT("08/13/2025   14:30:45")
 	    Assert.Equal(DateTime{2025, 8, 13, 14, 30, 45}, result)
 
-	    // Tabs y otros espacios en blanco
-	    result := CToT("\t08/13/2025\t14:30:45\t")
+	    // tab and others whitespaces
+	    result := CToT(e"\t08/13/2025\t14:30:45\t")
 	    Assert.Equal(DateTime{2025, 8, 13, 14, 30, 45}, result)
 	end method
 
 	[Fact, Trait("Category", "Date and Time")];
 	method CToTConfigurationIndependenceTests as void
-	    // Verificar que ciertos formatos funcionan independientemente de la configuración
-	    local oldDateFormat := SetDateFormat("AMERICAN") as string
+	    // check certain format works no matter settings
+	    local oldDateFormat := SetDateFormat("MM/DD/YYYY") as string
 	    local oldCentury := SetCentury() as logic
 	    local oldHours := SetHours() as long
 
 	    try
-	        // Cambiar todas las configuraciones
-	        SetDateFormat("BRITISH")
+	        // change all settings
+	        SetDateFormat("DD/MM/YYYY")
 	        SetCentury(false)
 	        SetHours(12)
 
-	        // El formato numérico debe funcionar independientemente
+	        // numeric format should work no matter what
 	        local result := CToT("20250813143045") as DateTime
 	        Assert.Equal(DateTime{2025, 8, 13, 14, 30, 45}, result)
 
-	        // El formato ISO debe funcionar independientemente
+	        // ISO format must work no matter what
 	        result := CToT("2025-08-13T14:30:45")
 	        Assert.Equal(DateTime{2025, 8, 13, 14, 30, 45}, result)
 

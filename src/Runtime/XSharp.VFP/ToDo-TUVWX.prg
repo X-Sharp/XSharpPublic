@@ -5,44 +5,32 @@
 //
 #pragma options("vo15", on)
 
+using System.Globalization
+
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/tablerevert/*" />
 
-FUNCTION TableRevert( lAllRows , uArea) AS LONG
-    THROW NotImplementedException{}
+function TableRevert( lAllRows , uArea) as long
+    throw NotImplementedException{}
     // RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/tableupdate/*" />
-
-FUNCTION TableUpdate( nRows , lForce , uArea , cErrorArray) AS LOGIC
-    THROW NotImplementedException{}
+function TableUpdate( nRows , lForce , uArea , cErrorArray) as logic
+    throw NotImplementedException{}
     // RETURN FALSE
-
-
-
-
-
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/ttoc/*" />
-
-FUNCTION TToC( tExpression , nParam) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/txnlevel/*" />
-
-FUNCTION TxnLevel( ) AS LONG
-    THROW NotImplementedException{}
+function TxnLevel( ) as long
+    throw NotImplementedException{}
     // RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/txtwidth/*" />
 
-FUNCTION TxtWidth( cExpression , cFontName, nFontSize , cFontStyle) AS FLOAT
-    THROW NotImplementedException{}
+function TxtWidth( cExpression , cFontName, nFontSize , cFontStyle) as float
+    throw NotImplementedException{}
     // RETURN 0
 
 
@@ -50,14 +38,14 @@ FUNCTION TxtWidth( cExpression , cFontName, nFontSize , cFontStyle) AS FLOAT
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/xmltocursor/*" />
 
-FUNCTION XmlToCursor( eExpression , cCursorName , nFlags ) AS LONG
-    THROW NotImplementedException{}
+function XmlToCursor( eExpression , cCursorName , nFlags ) as long
+    throw NotImplementedException{}
     // RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/xmlupdategram/*" />
 
-FUNCTION XmlUpdatefram( cAliasList , nFlags , cSchemaLocation) AS STRING
-    THROW NotImplementedException{}
+function XmlUpdatefram( cAliasList , nFlags , cSchemaLocation) as string
+    throw NotImplementedException{}
     // RETURN ""
 

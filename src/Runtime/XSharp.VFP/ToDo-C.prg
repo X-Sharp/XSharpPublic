@@ -3,95 +3,85 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+using System.Globalization
+using System.Collections.Generic
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/candidate/*" />
 #pragma options("vo15", on)
-FUNCTION Candidate (nIndexNumber , uArea)
-    THROW NotImplementedException{}
+function Candidate (nIndexNumber , uArea)
+    throw NotImplementedException{}
     // RETURN FALSE
 
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/compobj/*" />
 
-FUNCTION CompObj (oExpression1, oExpression2)
-    THROW NotImplementedException{}
+function CompObj (oExpression1, oExpression2)
+    throw NotImplementedException{}
     // RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/cpconvert/*" />
 
-FUNCTION CpConvert ( nCurrentCodePage, nNewCodePage, cExpression)
-    THROW NotImplementedException{}
+function CpConvert ( nCurrentCodePage, nNewCodePage, cExpression)
+    throw NotImplementedException{}
     // RETURN ""
-
-
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/cpdbf/*" />
 [Obsolete( "This function will not be supported" )];
-FUNCTION CpCurrent( ) AS LONG
-    THROW NotImplementedException{}
+function CpCurrent( ) as long
+    throw NotImplementedException{}
     // RETURN 0
 
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/createbinary/*" />
 [Obsolete( "This function will not be supported" )];
-FUNCTION CREATEBINARY( ) AS STRING
-    THROW NotImplementedException{}
+function CREATEBINARY( ) as string
+    throw NotImplementedException{}
     // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/createoffline/*" />
 
-FUNCTION  CreateOffline (ViewName , cPath)
-    THROW NotImplementedException{}
+function  CreateOffline (ViewName , cPath)
+    throw NotImplementedException{}
     // RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/ctobin/*" />
-
-FUNCTION CToBin (cExpression , cFlags)
-    THROW NotImplementedException{}
+function CToBin (cExpression , cFlags)
+    throw NotImplementedException{}
     // RETURN 0
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/ctot/*" />
-
-FUNCTION CToT (cCharacterExpression)
-    THROW NotImplementedException{}
-    // RETURN 0.0.0
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/cursorgetprop/*" />
-
-FUNCTION CursorGetProp (cProperty , uArea)
-    THROW NotImplementedException{}
+function CursorGetProp (cProperty , uArea)
+    throw NotImplementedException{}
     // RETURN NIL
 
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/cursorsetprop/*" />
 
-FUNCTION CursorSetProp (cProperty , eExpression, uArea)
-    THROW NotImplementedException{}
+function CursorSetProp (cProperty , eExpression, uArea)
+    throw NotImplementedException{}
     // RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/cursortoxml/*" />
 
-FUNCTION CursorToXML (uArea, cOutput, nOutputFormat, nFlags, nRecords, cSchemaName, cSchemaLocation, cNameSpace )
-    THROW NotImplementedException{}
+function CursorToXML (uArea, cOutput, nOutputFormat, nFlags, nRecords, cSchemaName, cSchemaLocation, cNameSpace )
+    throw NotImplementedException{}
     // RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/curval/*" />
 
-FUNCTION CurVal(cExpression, uArea)
-    THROW NotImplementedException{}
+function CurVal(cExpression, uArea)
+    throw NotImplementedException{}
     // RETURN NIL
 
 

@@ -154,19 +154,19 @@ FUNCTION SetDefault(cPathSpec AS STRING) AS STRING
     SetPathArray(NULL)
     IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
         VAR cTemp := cPathSpec:Trim()
-        if !String.IsNullOrEmpty(cTemp)
+        IF !String.IsNullOrEmpty(cTemp)
             IF cTemp:EndsWith(System.IO.Path.DirectorySeparatorChar:ToString())
                 cTemp := cTemp:Substring(0, cTemp:Length-1)
             ENDIF
             IF ! System.IO.Directory.Exists(cTemp)
-                var err := Error.VOError(EG_ARG, __FUNCTION__, nameof(cPathSpec),1, <OBJECT>{cPathSpec})
+                VAR err := Error.VOError(EG_ARG, __FUNCTION__, nameof(cPathSpec),1, <OBJECT>{cPathSpec})
                 err:Description := "Directory not found: '"+cPathSpec+"'"
                 THROW err
             ENDIF
-        endif
+        ENDIF
     ELSEIF XSharp.RuntimeState.Dialect == XSharpDialect.VO .or. XSharp.RuntimeState.Dialect == XSharpDialect.Vulcan
         IF cPathSpec:Length > 0
-            var cLast := cPathSpec[cPathSpec:Length-1]
+            VAR cLast := cPathSpec[cPathSpec:Length-1]
             SWITCH cLast
             CASE c':'
             CASE c'\\'
@@ -593,3 +593,26 @@ FUNCTION SetRefresh(nNewSetting AS REAL8) AS REAL8
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setrefresh/*" />
 FUNCTION SetRefresh() AS REAL8
 	RETURN RuntimeState.Refresh
+
+/// <summary>Get/Set hours format (12 or 24 hours)</summary>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/sethours/*" />
+FUNCTION SetHours() AS LONG
+	RETURN RuntimeState.GetValue<LONG>(Set.Hours)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/sethours/*" />
+FUNCTION SetHours(tnHours AS LONG) AS LONG
+	LOCAL nOld := RuntimeState.GetValue<LONG>(Set.Hours) AS LONG
+	RuntimeState.SetValue<LONG>(Set.Hours, tnHours)
+	RETURN nOld
+
+/// <summary>Get/Set seconds display</summary>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setseconds/*" />
+FUNCTION SetSeconds() AS LOGIC
+	RETURN RuntimeState.GetValue<LOGIC>(Set.Seconds)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setseconds/*" />
+FUNCTION SetSeconds(tlNewSetting AS LOGIC) AS LOGIC
+	LOCAL lOld AS LOGIC
+	lOld := RuntimeState.GetValue<LOGIC>(Set.Seconds)
+	RuntimeState.SetValue<LOGIC>(Set.Seconds, tlNewSetting)
+	RETURN lOld

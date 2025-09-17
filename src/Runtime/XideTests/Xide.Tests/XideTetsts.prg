@@ -1,11 +1,11 @@
-USING System.Windows.Forms
-USING System.Collections.Generic
-USING System.Reflection
-USING System.Text
-USING System.Runtime.Versioning
+using System.Windows.Forms
+using System.Collections.Generic
+using System.Reflection
+using System.Text
+using System.Runtime.Versioning
 [assembly: TargetFramework(".NETFramework,Version=v4.6", FrameworkDisplayName := ".NET Framework 4.6")]
 [STAThread];
-FUNCTION Start() AS VOID
+function Start() as void
 	Application.EnableVisualStyles()
 
 	DoTests()
@@ -20,17 +20,28 @@ FUNCTION Start() AS VOID
 //	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.VFP.Tests.NumericTests):Assembly)
 //	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.XPP.Tests.MiscTests):Assembly)
 //	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.Harbour.Tests.GeneralTests):Assembly)
-	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.SQLRdd.Tests.SQLiteTests):Assembly)
+//	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.SQLRdd.Tests.SQLiteTests):Assembly)
 
 //	XideUnitTest.AddTestsFromAssembly(TypeOf(StringTests):Assembly)
+
+	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.VFP.Tests.DateTests):Assembly)
 
 	XideUnitTest.Run()
 //	?
 //	? Assert.Groups , "test groups, Passed:", Assert.Passed , ", Failed:" , Assert.Failed
 
-RETURN
+return
 
-PROCEDURE DoTests()
-// placeholder for quick tests
-RETURN
+procedure DoTests()
+	var dt := DateTime{2025, 08, 13, 14, 30, 45}
+	local lSeconds := RuntimeState.GetValue<logic>(Set.Seconds) as logic
+	local nHours := RuntimeState.GetValue<long>(Set.Hours) as long
+
+	? "Seconds: ", IIF(lSeconds, "ON", "OFF")
+	? "Hours: ", nHours
+	? "TToC(dt, 0):", XSharp.VFP.Functions.TToC(dt, 0)
+	? "TToC(dt, 1):", XSharp.VFP.Functions.TToC(dt, 1)
+	? "TToC(dt, 2):", XSharp.VFP.Functions.TToC(dt, 2)
+	? "TToC(dt, 3):", "'" + XSharp.VFP.Functions.TToC(dt, 3) + "'"
+return
 

@@ -29,6 +29,9 @@ CustomControlsGuid = 2E6221E6-9470-415B-B277-57892CA28BDA
 DefaultPropertiesGuid = E02D3177-9FE5-4634-BC3D-B9108BC76452
 
 [Recent References]
+RecentReference = Browse:F:\Desarrollo\XSharpPublic\Artifacts\Debug\System.Data.SQLite.dll
+RecentReference = Browse:F:\Desarrollo\XSharpPublic\Artifacts\Debug\XSharp.SQLRdd.dll
+RecentReference = Browse:F:\Desarrollo\XSharpPublic\src\Bin\Release\XSharp.VFP.dll
 
 [Application Groups]
 
@@ -823,7 +826,8 @@ ReferenceProject = 030660FC-7FD4-4B4C-9FF4-3221E04FB450,1,0,XSharp.RT.Tests
 ReferenceProject = 43391107-D8C0-4FC7-97B2-78CEC03E5857,1,0,XSharp.XPP.Tests
 ReferenceProject = 15CF05A4-04B2-4FF6-812A-3E8E63CF4218,1,0,XSharp.Harbour.Tests
 ReferenceProject = BBCC24CB-DDCD-43A8-AADB-AE7BC27C4592,1,0,XSharp.SQLRdd.Tests
-ReferenceBrowse = C:\xSharp\Dev\Artifacts\Debug\XSharp.SQLRdd.dll,1,1
+ReferenceBrowse = F:\Desarrollo\XSharpPublic\Artifacts\Debug\XSharp.SQLRdd.dll,1,1
+ReferenceProject = 8AF12585-EC47-448F-B2B4-0DB1F6D3C715,1,0,XSharp.VFP
 [Xide.Tests Resources]
 [Xide.Tests Native Resources]
 [Xide.Tests License files]
@@ -4665,9 +4669,9 @@ ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core
 ReferenceProject = F345BAB5-72C2-4BCF-8685-78C901E0382B,1,0,XSharp.RT
 ReferenceProject = 0D5205A3-6D8B-4632-BC88-DA84484B1FFA,1,0,Xide.Unit
-ReferenceBrowse = C:\xSharp\Dev\Artifacts\Debug\System.Data.SQLite.dll,1,1
-ReferenceBrowse = C:\xSharp\Dev\Artifacts\Debug\XSharp.SQLRdd.dll,1,1
 ReferenceGAC = CLR4,System.Data,1,0,4.0.0.0
+ReferenceBrowse = F:\Desarrollo\XSharpPublic\Artifacts\Debug\System.Data.SQLite.dll,1,1
+ReferenceBrowse = F:\Desarrollo\XSharpPublic\Artifacts\Debug\XSharp.SQLRdd.dll,1,1
 [XSharp.SQLRdd.Tests Resources]
 [XSharp.SQLRdd.Tests Native Resources]
 [XSharp.SQLRdd.Tests License files]

@@ -3,221 +3,221 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-USING XSharp
-USING XSharp.RDD.Enums
-USING System.Collections.Generic
-BEGIN NAMESPACE XSharp
+using XSharp
+using XSharp.RDD.Enums
+using System.Collections.Generic
+begin namespace XSharp
 /// <include file="XSharp.CoreDefines.xml" path="members/Set/*" />
 /// <seealso cref='RuntimeState'>RuntimeState</seealso>
 /// <seealso cref='RuntimeState.GetValue``1(XSharp.Set)'>RuntimeState.GetValue</seealso>
 /// <seealso cref='RuntimeState.SetValue``1(XSharp.Set,``0)'>RuntimeState.SetValue</seealso>
 
-ENUM Set
+enum Set
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Exact/*" />
-    MEMBER Exact       := 1			// LOGIC
+    member Exact       := 1			// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Fixed/*" />
-    MEMBER Fixed	   := 2			// LOGIC
+    member Fixed	   := 2			// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Decimals/*" />
-    MEMBER Decimals    := 3			// INT
+    member Decimals    := 3			// INT
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.DateFormat/*" />
-    MEMBER DateFormat  := 4			// STRING
+    member DateFormat  := 4			// STRING
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Epoch/*" />
-    MEMBER Epoch       := 5			// INT
+    member Epoch       := 5			// INT
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Path/*" />
-    MEMBER Path        := 6			// STRING
+    member Path        := 6			// STRING
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Default/*" />
-    MEMBER @@Default   := 7			// STRING
+    member @@Default   := 7			// STRING
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Exclusive/*" />
-    MEMBER Exclusive   := 8			// LOGIC
+    member Exclusive   := 8			// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.SoftSeek/*" />
-    MEMBER Softseek    := 9			// LOGIC
+    member Softseek    := 9			// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Unique/*" />
-    MEMBER Unique      := 10		// LOGIC
+    member Unique      := 10		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Deleted/*" />
-    MEMBER Deleted     := 11		// LOGIC
+    member Deleted     := 11		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER Cancel      := 12		// LOGIC
+    member Cancel      := 12		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER @@Debug     := 13
+    member @@Debug     := 13
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER Typeahead   := 14		// INT
+    member Typeahead   := 14		// INT
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Color/*" />
-    MEMBER Color       := 15		// STRING
+    member Color       := 15		// STRING
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Cursor/*" />
-    MEMBER Cursor      := 16		// INT
+    member Cursor      := 16		// INT
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Console/*" />
-    MEMBER Console     := 17		// LOGIC
+    member Console     := 17		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Alternate/*" />
-    MEMBER Alternate   := 18		// LOGIC
+    member Alternate   := 18		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.AltFile/*" />
-    MEMBER AltFile     := 19		// STRING
+    member AltFile     := 19		// STRING
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Device/*" />
-    MEMBER Device      := 20		// STRING
+    member Device      := 20		// STRING
     // 21 and 22 missing
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Printer/*" />
-    MEMBER Printer     := 23		// LOGIC
+    member Printer     := 23		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.PrintFile/*" />
-    MEMBER PrintFile   := 24		// STRING
+    member PrintFile   := 24		// STRING
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Margin/*" />
-    MEMBER Margin      := 25		// INT
+    member Margin      := 25		// INT
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Bell/*" />
-    MEMBER Bell        := 26		// LOGIC
+    member Bell        := 26		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Confirm/*" />
-    MEMBER Confirm     := 27		// LOGIC
+    member Confirm     := 27		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Escape/*" />
-    MEMBER Escape      := 28		// LOGIC
+    member Escape      := 28		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER Insert      := 29		// LOGIC
+    member Insert      := 29		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER Exit        := 30		// LOGIC
+    member @@Exit        := 30		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER Intensity   := 31		// LOGIC
+    member Intensity   := 31		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER Scoreboard  := 32		// LOGIC
+    member Scoreboard  := 32		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER Delimiters  := 33		// STRING
+    member Delimiters  := 33		// STRING
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER DelimChars  := 34		// STRING
+    member DelimChars  := 34		// STRING
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER Wrap        := 35		// LOGIC
+    member Wrap        := 35		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER Message     := 36		// INT
+    member Message     := 36		// INT
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER Mcenter     := 37		// LOGIC
+    member Mcenter     := 37		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER ScrollBreak := 38		// LOGIC
+    member ScrollBreak := 38		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER Errorlog    := 39		// LOGIC
+    member Errorlog    := 39		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Neterr/*" />
-    MEMBER Neterr      	:= 40	// LOGIC
+    member Neterr      	:= 40	// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Digits/*" />
-    MEMBER Digits      	:= 41	// INT
+    member Digits      	:= 41	// INT
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.AmExt/*" />
-    MEMBER AmExt		:= 42	// STRING
+    member AmExt		:= 42	// STRING
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.PmExt/*" />
-    MEMBER PmExt	    := 43	// STRING
+    member PmExt	    := 43	// STRING
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Ansi/*" />
-    MEMBER Ansi      	:= 44	// LOGIC
+    member Ansi      	:= 44	// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Yield/*" />
-    MEMBER Yield     	:= 45	// LOGIC
+    member @@Yield     	:= 45	// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Locktries/*" />
-    MEMBER Locktries   	:= 46	// INT
+    member Locktries   	:= 46	// INT
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.AmPm/*" />
-    MEMBER AmPm		    := 47	// LOGIC
+    member AmPm		    := 47	// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Century/*" />
-    MEMBER Century	    := 48	// LOGIC
+    member Century	    := 48	// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.DigitFixed/*" />
-    MEMBER DigitFixed  	:= 49	// LOGIC
+    member DigitFixed  	:= 49	// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.DecimalSep/*" />
-    MEMBER DecimalSep  	:= 50	// DWORD
+    member DecimalSep  	:= 50	// DWORD
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.ThousandSep/*" />
-    MEMBER ThousandSep 	:= 51	// DWORD
+    member ThousandSep 	:= 51	// DWORD
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Timesep/*" />
-    MEMBER Timesep     	:= 52	// DWORD
+    member Timesep     	:= 52	// DWORD
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Fieldstore/*" />
-    MEMBER Fieldstore  	:= 53   // Logic
+    member Fieldstore  	:= 53   // Logic
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Science/*" />
-    MEMBER Science     	:= 54	// LOGIC
+    member Science     	:= 54	// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER Cpu			:= 55	// INT
+    member Cpu			:= 55	// INT
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Floatdelta/*" />
-    MEMBER Floatdelta	:= 56	// System.Double
+    member Floatdelta	:= 56	// System.Double
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER Math			:= 57	// INT
+    member Math			:= 57	// INT
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.International/*" />
-    MEMBER International:= 58	// STRING
+    member International:= 58	// STRING
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.DateCountry/*" />
-    MEMBER DateCountry  := 59	// INT
+    member DateCountry  := 59	// INT
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.DefaultDir/*" />
-    MEMBER DefaultDir   := 60   // STRING location of error log file
+    member DefaultDir   := 60   // STRING location of error log file
 
     // X# helper state
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.EpochCent/*" />
-    MEMBER EpochCent     := 70		// Numeric
+    member EpochCent     := 70		// Numeric
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.EpochYear/*" />
-    MEMBER EpochYear     := 71		// Numeric
+    member EpochYear     := 71		// Numeric
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.DateFormatNet/*" />
-    MEMBER DateFormatNet := 72		// String
+    member DateFormatNet := 72		// String
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.DateFormatEmpty/*" />
-    MEMBER DateFormatEmpty := 73    // String
+    member DateFormatEmpty := 73    // String
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.SysObject/*" />
-    MEMBER SysObject := 74
+    member SysObject := 74
     // 75 unused
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NoMethod/*" />
-    MEMBER NoMethod		:= 76	// STRING
+    member NoMethod		:= 76	// STRING
     // 77 unused
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Patharray/*" />
-    MEMBER Patharray    := 78	// String[]
+    member Patharray    := 78	// String[]
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NatDLL/*" />
-    MEMBER NatDLL		:= 79   // string
+    member NatDLL		:= 79   // string
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.CollationTable/*" />
-    MEMBER CollationTable := 80  // byte[]
+    member CollationTable := 80  // byte[]
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER ErrorLevel   := 81  // DWORD
+    member ErrorLevel   := 81  // DWORD
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.ErrorBlock/*" />
-    MEMBER ErrorBlock   := 82  // Codeblock
+    member ErrorBlock   := 82  // Codeblock
     // <summary>The last error that occurred for a RDD operation.</summary>
     //MEMBER LastRddError := 84   // Exception object
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.LastScriptError/*" />
-    MEMBER LastScriptError := 85   // Exception object
+    member LastScriptError := 85   // Exception object
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.LastFound/*" />
-    MEMBER LastFound    := 86   // Last file found with File()
+    member LastFound    := 86   // Last file found with File()
     // <summary>The last File error code</summary>
     //MEMBER FileError    := 87   // Last File error code
     // <summary>The last File exception</summary>
     //MEMBER FileException:= 88   // Last File exception
 
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.DelimRDD/*" />
-    MEMBER DelimRDD         := 89
+    member DelimRDD         := 89
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.FieldDelimiter/*" />
-    MEMBER FieldDelimiter   := 90
+    member FieldDelimiter   := 90
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.RecordDelimiter/*" />
-    MEMBER RecordDelimiter  := 91
+    member RecordDelimiter  := 91
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.ErrorLogFile/*" />
-    MEMBER ErrorLogFile     := 92
+    member ErrorLogFile     := 92
     // 92 - 97 unused
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.ErrorBlock/*" />
-    MEMBER Dict        := 98	// LOGIC
+    member Dict        := 98	// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Intl/*" />
-    MEMBER Intl        := 99	// CollationMode
+    member Intl        := 99	// CollationMode
 
     // Vulcan RDDInfo Settings
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.RddInfo/*" />
-    MEMBER RddInfo		:= 100      // no value
+    member RddInfo		:= 100      // no value
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.MemoBlockSize/*" />
-    MEMBER MemoBlockSize:= 101		// INT
+    member MemoBlockSize:= 101		// INT
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.DefaultRdd/*" />
-    MEMBER DefaultRdd	:= 102		// STRING
+    member DefaultRdd	:= 102		// STRING
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.MemoExt/*" />
-    MEMBER MemoExt	    := 103		// STRING
+    member MemoExt	    := 103		// STRING
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.AutoOpen/*" />
-    MEMBER AutoOpen     := 104		// LOGIC
+    member AutoOpen     := 104		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.AutoOrder/*" />
-    MEMBER AutoOrder    := 105		// 0 or 1
+    member AutoOrder    := 105		// 0 or 1
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.HpLocking/*" />
-    MEMBER HpLocking    := 106      // LOGIC
+    member HpLocking    := 106      // LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NewIndexLock/*" />
-    MEMBER NewIndexLock := 107      // LOGIC
+    member NewIndexLock := 107      // LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Autoshare/*" />
-    MEMBER Autoshare    := 108		// 0 or 1
+    member Autoshare    := 108		// 0 or 1
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.StrictRead/*" />
-    MEMBER StrictRead   := 109		// LOGIC
+    member StrictRead   := 109		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.BlobCircref/*" />
-    MEMBER BlobCircref	:= 110		// LOGIC
+    member BlobCircref	:= 110		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Optimize/*" />
-    MEMBER Optimize     := 111		// LOGIC
+    member Optimize     := 111		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.FoxLock/*" />
-    MEMBER FoxLock      := 112		// LOGIC
+    member FoxLock      := 112		// LOGIC
 
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.RddInfoMax/*" />
-    MEMBER RddInfoMax   := 119      // no value
+    member RddInfoMax   := 119      // no value
 
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.WinCodepage/*" />
-    MEMBER WinCodepage	:= 120		// Numeric
+    member WinCodepage	:= 120		// Numeric
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.DosCodepage/*" />
-    MEMBER DosCodepage	:= 121		// Numeric
+    member DosCodepage	:= 121		// Numeric
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.CollationMode/*" />
-    MEMBER CollationMode:= 122		// CollationMode
+    member CollationMode:= 122		// CollationMode
 
     // 123 and 124 reserved
     // FoxPro settings 125 - 159, last used 145
@@ -225,9 +225,9 @@ ENUM Set
     // Others are windows regional settings, such as first day of week and currency symbol
     // these are not implemented
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Asserts/*" />
-    MEMBER Asserts          := 125 // Logic
+    member Asserts          := 125 // Logic
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.AutoIncError/*" />
-    MEMBER AutoIncError     := 126 // Logic
+    member AutoIncError     := 126 // Logic
     //MEMBER AutoSave
     //MEMBER BrowseIME
     //MEMBER Carry
@@ -236,9 +236,9 @@ ENUM Set
     //MEMBER ColorScheme
     //MEMBER ColorSet
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.CollateFox/*" />
-    MEMBER CollateFox       := 127
+    member CollateFox       := 127
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Compatible/*" />
-    MEMBER Compatible       := 128
+    member Compatible       := 128
     // MEMBER Coverage
     // MEMBER CoverageFile
     // MEMBER CpCompile
@@ -246,13 +246,13 @@ ENUM Set
     // MEMBER Currency
     // MEMBER CurrencySymbol
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Database/*" />
-    MEMBER Database         := 129 // string
+    member Database         := 129 // string
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.DataSession/*" />
-    MEMBER DataSession      := 130 // Numeric
+    member DataSession      := 130 // Numeric
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.DebugOut/*" />
-    MEMBER DebugOut         := 131 // string - filename
+    member DebugOut         := 131 // string - filename
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Directory/*" />
-    MEMBER Directory        := Set.Default         // FoxPro alias
+    member Directory        := Set.Default         // FoxPro alias
     // MEMBER Dohistory
     // MEMBER Echo
     // MEMBER EngineBehavior
@@ -263,63 +263,61 @@ ENUM Set
     // MEMBER FieldsList        => not in Set() but Db.. function
     // MEMBER Format
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.FullPath/*" />
-    MEMBER FullPath         := 132      // Logic
+    member FullPath         := 132      // Logic
     // MEMBER Function
     // MEMBER FWeek
-    MEMBER Headings         := 144
+    member Headings         := 144
     // MEMBER Help
-    // MEMBER Hours
     // MEMBER Intensity
     // MEMBER Key
     // MEMBER KeyComp
     // MEMBER Libary
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Lock/*" />
-    MEMBER Lock             := 133
+    member Lock             := 133
     // MEMBER LogErrors
     // MEMBER MacKey
     // MEMBER MarkOf
     // MEMBER MarkTo
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.MemoWidth/*" />
-    MEMBER MemoWidth        := 134
+    member MemoWidth        := 134
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.MultiLocks/*" />
-    MEMBER MultiLocks       := 135
+    member MultiLocks       := 135
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Near/*" />
-    MEMBER Near             := Set.Softseek
+    member Near             := Set.Softseek
     // MEMBER NoCpTrans        // not needed: Unicode
     // MEMBER Notify
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Null/*" />
-    MEMBER Null             := Set.NullValue
+    member @@Null             := Set.NullValue
     // MEMBER NullDisplay
     // MEMBER Odometer
     // MEMBER OleObject
     // MEMBER Palette
     // MEMBER PdSetup
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Point/*" />
-    MEMBER Point            := Set.DecimalSep
+    member Point            := Set.DecimalSep
     // MEMBER Procedure
     // MEMBER ReadBorder
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Refresh/*" />
-    MEMBER Refresh          := 136   // refresh time for local cache of shared data
+    member Refresh          := 136   // refresh time for local cache of shared data
     //MEMBER ReportBehavior
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Reprocess/*" />
-    MEMBER Reprocess        := 137
+    member Reprocess        := 137
     //MEMBER Resource
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Safety/*" />
-    MEMBER Safety           := 138  // Logic
-    // MEMBER Seconds
+    member Safety           := 138  // Logic
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Separator/*" />
-    MEMBER Separator        := Set.ThousandSep
+    member Separator        := Set.ThousandSep
     // MEMBER Skip          // SelectiveRelation
     // MEMBER SkipOf
     //
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Space/*" />
-    MEMBER Space            := 139    // Logic
+    member Space            := 139    // Logic
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.SqlBuffering/*" />
-    MEMBER SqlBuffering     := 140    // Logic
+    member SqlBuffering     := 140    // Logic
     // MEMBER StatusBar
     // MEMBER Status
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.SqlAnsi/*" />
-    MEMBER SqlAnsi          := 141
+    member SqlAnsi          := 141
     // MEMBER Step
     // MEMBER StrictDate
     // MEMBER SysFormats
@@ -329,40 +327,40 @@ ENUM Set
     // MEMBER Talk
     //
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.TextMerge/*" />
-    MEMBER TextMerge        := 142      // Logic
+    member TextMerge        := 142      // Logic
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.VarCharMapping/*" />
-    MEMBER VarCharMapping   := 143    // Logic
+    member VarCharMapping   := 143    // Logic
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.TextMergeDelimiters/*" />
-    MEMBER TextMergeDelimiters := 146 // string[]
+    member TextMergeDelimiters := 146 // string[]
     // MEMBER Topic
     // MEMBER TopicID
     // MEMBER TrBetween
     // MEMBER UdfParams
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.WithStack/*" />
-    MEMBER WithStack        := 145
+    member WithStack        := 145
 
     // Xbase++ defines
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.CharSet/*" />
-    MEMBER CharSet          := 160
+    member CharSet          := 160
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.HandleEvent/*" />
-    MEMBER HandleEvent      := 161
+    member HandleEvent      := 161
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.DevTimeOut/*" />
-    MEMBER DevTimeOut       := 162
+    member DevTimeOut       := 162
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Accelerators/*" />
-    MEMBER Accelerators     := 163
+    member Accelerators     := 163
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Colormode/*" />
-    MEMBER Colormode        := 164
+    member Colormode        := 164
     // Optimize already defined
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Rushmore/*" />
-    MEMBER Rushmore         := 165
+    member Rushmore         := 165
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.SmartFilter/*" />
-    MEMBER SmartFilter      := 166
+    member SmartFilter      := 166
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NullValue/*" />
-    MEMBER NullValue        := 167
+    member NullValue        := 167
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Collation/*" />
-    MEMBER Collation        := 168  // XPP Collation Number
+    member Collation        := 168  // XPP Collation Number
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Lexical/*" />
-    MEMBER Lexical          := 169  // Not implemented
+    member Lexical          := 169  // Not implemented
 
 
 
@@ -370,764 +368,769 @@ ENUM Set
     // 180 - 197 Harbour extensions, Most have  No defaults below yet
     // Originally these started at 100
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Language/*" />
-    MEMBER Language       :=  180               // STRING
+    member Language       :=  180               // STRING
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.IdleRepeat/*" />
-    MEMBER IdleRepeat     :=  181               // Numeric Ignored for now
+    member IdleRepeat     :=  181               // Numeric Ignored for now
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.FileCase/*" />
-    MEMBER FileCase       :=  182			    // Numeric Ignored for now
+    member FileCase       :=  182			    // Numeric Ignored for now
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.DirCase/*" />
-    MEMBER DirCase        :=  183               // Numeric Ignored for now
+    member DirCase        :=  183               // Numeric Ignored for now
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.DirSeparator/*" />
-    MEMBER DirSeparator   :=  184               // String
+    member DirSeparator   :=  184               // String
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Eof/*" />
-    MEMBER Eof            :=  185               // Logic: Is Chr(26) written to end of text files
+    member Eof            :=  185               // Logic: Is Chr(26) written to end of text files
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.HardCommit/*" />
-    MEMBER HardCommit     :=  186               // Logic: Forces Hard Commit in RDD system (whatever that me be..)
+    member HardCommit     :=  186               // Logic: Forces Hard Commit in RDD system (whatever that me be..)
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.ForceOpt/*" />
-    MEMBER ForceOpt       :=  187               // LOGIC: Force Optimization
+    member ForceOpt       :=  187               // LOGIC: Force Optimization
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.DbfLockscheme/*" />
-    MEMBER DbfLockscheme  :=  188               //
+    member DbfLockscheme  :=  188               //
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Defextensions/*" />
-    MEMBER Defextensions  :=  189               // Logic: Force Extensions for RDD and other output files. Not used yet
+    member Defextensions  :=  189               // Logic: Force Extensions for RDD and other output files. Not used yet
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Eol/*" />
-    MEMBER Eol            :=  190               // ENd of Line characters
+    member Eol            :=  190               // ENd of Line characters
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Trimfilename/*" />
-    MEMBER Trimfilename   :=  191	            // Logic: Should filenames be trimmed in the IO system
+    member Trimfilename   :=  191	            // Logic: Should filenames be trimmed in the IO system
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Hboutlog/*" />
-    MEMBER Hboutlog       :=  192               // STRING LogfileName
+    member Hboutlog       :=  192               // STRING LogfileName
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Hboutloginfo/*" />
-    MEMBER Hboutloginfo   :=  193               // String Info written to error log files
+    member Hboutloginfo   :=  193               // String Info written to error log files
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Codepage/*" />
-    MEMBER Codepage       :=  WinCodepage		// Remapped
+    member Codepage       :=  WinCodepage		// Remapped
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Oscodepage/*" />
-    MEMBER Oscodepage     :=  DosCodepage	    // Remapped
+    member Oscodepage     :=  DosCodepage	    // Remapped
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Timeformat/*" />
-    MEMBER Timeformat     :=  196
+    member Timeformat     :=  196
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Dbcodepage/*" />
-    MEMBER Dbcodepage     :=  197				// Map to Vulcan setting ?
+    member Dbcodepage     :=  197				// Map to Vulcan setting ?
 
     // Start of user values
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.User/*" />
-    MEMBER User           := 200
+    member User           := 200
     // Advantage extensions
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Axslocking/*" />
-    MEMBER Axslocking           := User+1
+    member Axslocking           := User+1
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Rightschecking/*" />
-    MEMBER Rightschecking       := User+2
+    member Rightschecking       := User+2
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Connection_handle/*" />
-    MEMBER Connection_handle    := User+3
+    member Connection_handle    := User+3
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Exactkeypos/*" />
-    MEMBER Exactkeypos          := User+4
+    member Exactkeypos          := User+4
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Sql_query/*" />
-    MEMBER Sql_query            := User+5
+    member Sql_query            := User+5
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Sql_table_passwords/*" />
-    MEMBER Sql_table_passwords  := User+6
+    member Sql_table_passwords  := User+6
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Collation_name/*" />
-    MEMBER Collation_name       := User+7
+    member Collation_name       := User+7
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Sql_timeout/*" />
-    MEMBER Sql_timeout          := User+8
+    member Sql_timeout          := User+8
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Sql_parameters/*" />
-    MEMBER Sql_parameters       := User+9
-
-END ENUM
-END NAMESPACE
+    member Sql_parameters       := User+9
+	/// <summary>Hours format setting (12 vs 24 hours)</summary>
+	/// <include file="XSharp.CoreDefines.xml" path="members/Set.Hours/*" />
+	member Hours				:= User+10
+	/// <summary>Show seconds in time display</summary>
+	/// <include file="XSharp.CoreDefines.xml" path="members/Set.Seconds/*" />
+	member Seconds				:= User+11
+end enum
+end namespace
 #region Defines
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Exact/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_EXACT       := Set.Exact
+define _SET_EXACT       := Set.Exact
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Fixed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_FIXED       := Set.Fixed
+define _SET_FIXED       := Set.Fixed
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Decimals/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DECIMALS    := Set.Decimals
+define _SET_DECIMALS    := Set.Decimals
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.DateFormat/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DATEFORMAT  := Set.DateFormat
+define _SET_DATEFORMAT  := Set.DateFormat
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Epoch/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_EPOCH       := Set.Epoch
+define _SET_EPOCH       := Set.Epoch
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Path/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_PATH        := Set.Path
+define _SET_PATH        := Set.Path
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Default/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DEFAULT     := Set.Default
+define _SET_DEFAULT     := Set.Default
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Exclusive/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_EXCLUSIVE   := Set.Exclusive
+define _SET_EXCLUSIVE   := Set.Exclusive
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Softseek/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SOFTSEEK    := Set.Softseek
+define _SET_SOFTSEEK    := Set.Softseek
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Unique/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_UNIQUE      := Set.Unique
+define _SET_UNIQUE      := Set.Unique
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Deleted/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DELETED     := Set.Deleted
+define _SET_DELETED     := Set.Deleted
 
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_Cancel      := Set.Cancel
+define _SET_Cancel      := Set.Cancel
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DEBUG       := Set.Debug
+define _SET_DEBUG       := Set.Debug
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_TYPEAHEAD   := Set.Typeahead
+define _SET_TYPEAHEAD   := Set.Typeahead
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Color/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_COLOR       := Set.Color
+define _SET_COLOR       := Set.Color
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Cursor/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_CURSOR      := Set.Cursor
+define _SET_CURSOR      := Set.Cursor
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Console/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_CONSOLE     := Set.Console
+define _SET_CONSOLE     := Set.Console
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Alternate/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_ALTERNATE   := Set.Alternate
+define _SET_ALTERNATE   := Set.Alternate
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.AltFile/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_ALTFILE     := Set.AltFile
+define _SET_ALTFILE     := Set.AltFile
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Device/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DEVICE      := Set.Device
+define _SET_DEVICE      := Set.Device
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Printer/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_PRINTER     := Set.Printer
+define _SET_PRINTER     := Set.Printer
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.PrintFile/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_PRINTFILE   := Set.PrintFile
+define _SET_PRINTFILE   := Set.PrintFile
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Margin/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_MARGIN      := Set.Margin
+define _SET_MARGIN      := Set.Margin
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Bell/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_BELL        := Set.Bell
+define _SET_BELL        := Set.Bell
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Confirm/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_CONFIRM     := Set.Confirm
+define _SET_CONFIRM     := Set.Confirm
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Escape/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_ESCAPE      := Set.Escape
+define _SET_ESCAPE      := Set.Escape
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_INSERT      := Set.Insert
+define _SET_INSERT      := Set.Insert
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_EXIT        := Set.Exit
+define _SET_EXIT        := Set.Exit
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_INTENSITY   := Set.Intensity
+define _SET_INTENSITY   := Set.Intensity
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SCOREBOARD  := Set.Scoreboard
+define _SET_SCOREBOARD  := Set.Scoreboard
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DELIMITERS  := Set.Delimiters
+define _SET_DELIMITERS  := Set.Delimiters
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DELIMCHARS  := Set.DelimChars
+define _SET_DELIMCHARS  := Set.DelimChars
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_WRAP        := Set.Wrap
+define _SET_WRAP        := Set.Wrap
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_MESSAGE     := Set.Message
+define _SET_MESSAGE     := Set.Message
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_MCENTER     := Set.Mcenter
+define _SET_MCENTER     := Set.Mcenter
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SCROLLBREAK := Set.ScrollBreak
+define _SET_SCROLLBREAK := Set.ScrollBreak
 // 48 and 49 unused
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Digits/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DIGITS      	:= Set.Digits
+define _SET_DIGITS      	:= Set.Digits
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Neterr/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_NETERR      	:= Set.Neterr
+define _SET_NETERR      	:= Set.Neterr
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Ansi/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_ANSI      		:= Set.Ansi
+define _SET_ANSI      		:= Set.Ansi
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Yield/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_YIELD     		:= Set.Yield
+define _SET_YIELD     		:= Set.Yield
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Locktries/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_LOCKTRIES   	:= Set.Locktries
+define _SET_LOCKTRIES   	:= Set.Locktries
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.AmExt/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_AMEXT			:= Set.AmExt
+define _SET_AMEXT			:= Set.AmExt
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.AmPm/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_AMPM			:= Set.AmPm
+define _SET_AMPM			:= Set.AmPm
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.PmExt/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_PMEXT	    	:= Set.PmExt
+define _SET_PMEXT	    	:= Set.PmExt
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Century/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_CENTURY	    	:= Set.Century
+define _SET_CENTURY	    	:= Set.Century
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.DigitFixed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DIGITFIXED  	:= Set.DigitFixed
+define _SET_DIGITFIXED  	:= Set.DigitFixed
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.DecimalSep/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DECIMALSEP  	:= Set.DecimalSep
+define _SET_DECIMALSEP  	:= Set.DecimalSep
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.ThousandSep/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_THOUSANDSEP 	:= Set.ThousandSep
+define _SET_THOUSANDSEP 	:= Set.ThousandSep
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Timesep/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_TIMESEP     	:= Set.Timesep
+define _SET_TIMESEP     	:= Set.Timesep
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Fieldstore/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_FIELDSTORE  	:= Set.Fieldstore
+define _SET_FIELDSTORE  	:= Set.Fieldstore
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Science/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SCIENCE     	:= Set.Science
+define _SET_SCIENCE     	:= Set.Science
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_CPU				:= Set.Cpu
+define _SET_CPU				:= Set.Cpu
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Floatdelta/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_FLOATDELTA		:= Set.Floatdelta
+define _SET_FLOATDELTA		:= Set.Floatdelta
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_MATH			:= Set.Math
+define _SET_MATH			:= Set.Math
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.International/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_INTERNATIONAL	:= Set.International
+define _SET_INTERNATIONAL	:= Set.International
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.DateCountry/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DATECOUNTRY		:= Set.DateCountry
+define _SET_DATECOUNTRY		:= Set.DateCountry
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Dict/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DICT			:= Set.Dict
+define _SET_DICT			:= Set.Dict
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Intl/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_INTL			:= Set.Intl
+define _SET_INTL			:= Set.Intl
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.DefaultDir/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DEFAULTDIR      := Set.DefaultDir
+define _SET_DEFAULTDIR      := Set.DefaultDir
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.DelimRDD/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DELIMRDD         := Set.DelimRDD
+define _SET_DELIMRDD         := Set.DelimRDD
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.FieldDelimiter/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_FIELDDELIMITER   := Set.FieldDelimiter
+define _SET_FIELDDELIMITER   := Set.FieldDelimiter
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.RecordDelimiter/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_RECORDDELIMITER  := Set.RecordDelimiter
+define _SET_RECORDDELIMITER  := Set.RecordDelimiter
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.BlobCircref/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_BLOB_CIRCULAR_ARRAY_REF := Set.BlobCircref
+define _SET_BLOB_CIRCULAR_ARRAY_REF := Set.BlobCircref
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.User/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_USER := Set.User
+define _SET_USER := Set.User
 
 
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.CollationMode/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_COLLATIONMODE	:= Set.CollationMode
+define _SET_COLLATIONMODE	:= Set.CollationMode
 
 // Vulcan RDDInfo Settings
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.RddInfo/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_RDDINFO				:= Set.RddInfo
+define _SET_RDDINFO				:= Set.RddInfo
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.MemoBlockSize/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_MEMOBLOCKSIZE		:= Set.MemoBlockSize
+define _SET_MEMOBLOCKSIZE		:= Set.MemoBlockSize
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.DefaultRdd/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DEFAULTRDD			:= Set.DefaultRdd
+define _SET_DEFAULTRDD			:= Set.DefaultRdd
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.MemoExt/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_MEMOEXT	    		:= Set.MemoExt
+define _SET_MEMOEXT	    		:= Set.MemoExt
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.AutoOpen/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_AUTOOPEN    		:= Set.AutoOpen
+define _SET_AUTOOPEN    		:= Set.AutoOpen
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.AutoOrder/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_AUTOORDER   		:= Set.AutoOrder
+define _SET_AUTOORDER   		:= Set.AutoOrder
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.HpLocking/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_HPLOCKING   		:= Set.HpLocking
+define _SET_HPLOCKING   		:= Set.HpLocking
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.HpLocking/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_HPLOCK      		:= Set.HpLocking
+define _SET_HPLOCK      		:= Set.HpLocking
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NewIndexLock/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_NEWINDEXLOCK		:= Set.NewIndexLock
+define _SET_NEWINDEXLOCK		:= Set.NewIndexLock
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Autoshare/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_AUTOSHARE   		:= Set.Autoshare
+define _SET_AUTOSHARE   		:= Set.Autoshare
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.StrictRead/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_STRICTREAD  		:= Set.StrictRead
+define _SET_STRICTREAD  		:= Set.StrictRead
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.BlobCircref/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_BLOBCIRCREF			:= Set.BlobCircref
+define _SET_BLOBCIRCREF			:= Set.BlobCircref
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Optimize/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_OPTIMIZE    		:= Set.Optimize
+define _SET_OPTIMIZE    		:= Set.Optimize
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.FoxLock/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_FOXLOCK     		:= Set.FoxLock
+define _SET_FOXLOCK     		:= Set.FoxLock
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.WinCodepage/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_WINCODEPAGE			:= Set.WinCodepage
+define _SET_WINCODEPAGE			:= Set.WinCodepage
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.DosCodepage/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DOSCODEPAGE			:= Set.DosCodepage
+define _SET_DOSCODEPAGE			:= Set.DosCodepage
 
 // Harbour extensions
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Language/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_LANGUAGE       :=  Set.Language
+define _SET_LANGUAGE       :=  Set.Language
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.IdleRepeat/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_IDLEREPEAT     :=  Set.IdleRepeat
+define _SET_IDLEREPEAT     :=  Set.IdleRepeat
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.FileCase/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_FILECASE       :=  Set.FileCase
+define _SET_FILECASE       :=  Set.FileCase
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.DirCase/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DIRCASE        :=  Set.DirCase
+define _SET_DIRCASE        :=  Set.DirCase
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.DirSeparator/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DIRSEPARATOR   :=  Set.DirSeparator
+define _SET_DIRSEPARATOR   :=  Set.DirSeparator
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Eof/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_EOF            :=  Set.Eof
+define _SET_EOF            :=  Set.Eof
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.HardCommit/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_HARDCOMMIT     :=  Set.HardCommit
+define _SET_HARDCOMMIT     :=  Set.HardCommit
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.ForceOpt/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_FORCEOPT       :=  Set.ForceOpt
+define _SET_FORCEOPT       :=  Set.ForceOpt
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.DbfLockscheme/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DBFLOCKSCHEME  :=  Set.DbfLockscheme
+define _SET_DBFLOCKSCHEME  :=  Set.DbfLockscheme
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Defextensions/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DEFEXTENSIONS  :=  Set.Defextensions
+define _SET_DEFEXTENSIONS  :=  Set.Defextensions
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Eol/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_EOL            :=  Set.Eol
+define _SET_EOL            :=  Set.Eol
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Trimfilename/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_TRIMFILENAME   :=  Set.Trimfilename
+define _SET_TRIMFILENAME   :=  Set.Trimfilename
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Hboutlog/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_HBOUTLOG       :=  Set.Hboutlog
+define _SET_HBOUTLOG       :=  Set.Hboutlog
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Hboutloginfo/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_HBOUTLOGINFO   :=  Set.Hboutloginfo
+define _SET_HBOUTLOGINFO   :=  Set.Hboutloginfo
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Codepage/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_CODEPAGE       :=  Set.Codepage
+define _SET_CODEPAGE       :=  Set.Codepage
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Oscodepage/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_OSCODEPAGE     :=  Set.Oscodepage
+define _SET_OSCODEPAGE     :=  Set.Oscodepage
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Timeformat/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_TIMEFORMAT     :=  Set.Timeformat
+define _SET_TIMEFORMAT     :=  Set.Timeformat
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Dbcodepage/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DBCODEPAGE     :=  Set.Dbcodepage
+define _SET_DBCODEPAGE     :=  Set.Dbcodepage
 
 // Advantage additions
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Axslocking/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_AXSLOCKING           := Set.Axslocking
+define _SET_AXSLOCKING           := Set.Axslocking
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Rightschecking/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_RIGHTSCHECKING       := Set.Rightschecking
+define _SET_RIGHTSCHECKING       := Set.Rightschecking
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Connection_handle/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_CONNECTION_HANDLE    := Set.Connection_handle
+define _SET_CONNECTION_HANDLE    := Set.Connection_handle
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Exactkeypos/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_EXACTKEYPOS          := Set.Exactkeypos
+define _SET_EXACTKEYPOS          := Set.Exactkeypos
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Sql_query/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SQL_QUERY            := Set.Sql_query
+define _SET_SQL_QUERY            := Set.Sql_query
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Sql_table_passwords/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SQL_TABLE_PASSWORDS  := Set.Sql_table_passwords
+define _SET_SQL_TABLE_PASSWORDS  := Set.Sql_table_passwords
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Collation_name/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_COLLATION_NAME       := Set.Collation_name
+define _SET_COLLATION_NAME       := Set.Collation_name
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Sql_parameters/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SQL_PARAMETERS       :=  Set.Sql_parameters
+define _SET_SQL_PARAMETERS       :=  Set.Sql_parameters
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Sql_timeout/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SQL_TIMEOUT          :=  Set.Sql_timeout
+define _SET_SQL_TIMEOUT          :=  Set.Sql_timeout
 
 
 // Xbase++ additions
-DEFINE  _SET_CHARSET     := Set.CharSet
+define  _SET_CHARSET     := Set.CharSet
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.HandleEvent/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE  _SET_HANDLEEVENT := Set.HandleEvent
+define  _SET_HANDLEEVENT := Set.HandleEvent
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.DevTimeOut/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE  _SET_DEVTIMEOUT  := Set.DevTimeOut
+define  _SET_DEVTIMEOUT  := Set.DevTimeOut
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Accelerators/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE  _SET_ACCELERATORS := Set.Accelerators
+define  _SET_ACCELERATORS := Set.Accelerators
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Colormode/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE  _SET_COLORMODE    := Set.Colormode
+define  _SET_COLORMODE    := Set.Colormode
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Rushmore/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE  _SET_RUSHMORE    := Set.Rushmore
+define  _SET_RUSHMORE    := Set.Rushmore
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.SmartFilter/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE  _SET_SMARTFILTER := Set.SmartFilter
+define  _SET_SMARTFILTER := Set.SmartFilter
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.NullValue/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE  _SET_NULLVALUE   := Set.NullValue
+define  _SET_NULLVALUE   := Set.NullValue
 
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Collation/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE  _SET_COLLATION   := Set.Collation
+define  _SET_COLLATION   := Set.Collation
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Lexical/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE  _SET_LEXICAL    := Set.Lexical
+define  _SET_LEXICAL    := Set.Lexical
 
 
 // FoxPro defines
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Asserts/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_ASSERTS         := Set.Asserts
+define _SET_ASSERTS         := Set.Asserts
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.AutoIncError/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_AUTOINCERROR    := Set.AutoIncError
+define _SET_AUTOINCERROR    := Set.AutoIncError
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.CollateFox/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_COLLATEFOX := Set.CollateFox
+define _SET_COLLATEFOX := Set.CollateFox
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Database/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DATABASE        := Set.Database
+define _SET_DATABASE        := Set.Database
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.DataSession/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DATASESSION     := Set.DataSession
+define _SET_DATASESSION     := Set.DataSession
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.DebugOut/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DEBUGOUT        := Set.DebugOut
+define _SET_DEBUGOUT        := Set.DebugOut
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.FullPath/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_FULLPATH        := Set.FullPath
+define _SET_FULLPATH        := Set.FullPath
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Lock/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_LOCK            := Set.Lock
+define _SET_LOCK            := Set.Lock
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.MemoWidth/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_MEMOWIDTH       := Set.MemoWidth
+define _SET_MEMOWIDTH       := Set.MemoWidth
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.MultiLocks/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_MULTILOCKS      := Set.MultiLocks
+define _SET_MULTILOCKS      := Set.MultiLocks
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Null/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_NULL             := Set.Null
+define _SET_NULL             := Set.Null
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Point/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_POINT            := Set.Point
+define _SET_POINT            := Set.Point
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Refresh/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_REFRESH          := Set.Refresh
+define _SET_REFRESH          := Set.Refresh
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Reprocess/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_REPROCESS        := Set.Reprocess
+define _SET_REPROCESS        := Set.Reprocess
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Safety/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SAFETY           := Set.Safety
+define _SET_SAFETY           := Set.Safety
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Separator/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SEPARATOR        := Set.Separator
+define _SET_SEPARATOR        := Set.Separator
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.Space/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SPACE           := Set.Space
+define _SET_SPACE           := Set.Space
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.SqlAnsi/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SQLANSI         := Set.SqlAnsi
+define _SET_SQLANSI         := Set.SqlAnsi
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.SqlBuffering/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SQLBUFFERING     := Set.SqlBuffering
+define _SET_SQLBUFFERING     := Set.SqlBuffering
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.TextMerge/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_TEXTMERGE        := Set.TextMerge
+define _SET_TEXTMERGE        := Set.TextMerge
 /// <include file="XSharp.CoreDefines.xml" path="members/Set.VarCharMapping/*" />
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_VARCHARMAPPING    := Set.VarCharMapping
+define _SET_VARCHARMAPPING    := Set.VarCharMapping
 
+/// <include file="XSharp.CoreDefines.xml" path="members/Set.Hours/*" />
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+define _SET_HOURS := Set.Hours
 
+/// <include file="XSharp.CoreDefines.xml" path="members/Set.Seconds/*" />
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+define _SET_SECONDS := Set.Seconds
 #endregion
 
 
-DEFINE _MAX_PATH := 260
-DEFINE MAX_PATH := 260
+define _MAX_PATH := 260
+define MAX_PATH := 260
 
-INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
-SWITCH nSet
-CASE Set.Exact
-CASE Set.Fixed
-CASE Set.Softseek
-CASE Set.Unique
-CASE Set.Deleted
-CASE Set.Cancel
-CASE Set.Debug
-CASE Set.Alternate
-CASE Set.Printer
-CASE Set.Confirm
-CASE Set.Escape
-CASE Set.Insert
-CASE Set.Exit
-CASE Set.Intensity
-CASE Set.Scoreboard
-CASE Set.Wrap
-CASE Set.Mcenter
-CASE Set.ScrollBreak
-CASE Set.Errorlog
-CASE Set.Yield
-CASE Set.Neterr
-CASE Set.AmPm
-CASE Set.Century
-CASE Set.DigitFixed
-CASE Set.Fieldstore
-CASE Set.Science
-CASE Set.Dict
-CASE Set.HpLocking
-CASE Set.NewIndexLock
-CASE Set.StrictRead
-CASE Set.BlobCircref
-CASE Set.FoxLock
-CASE Set.HandleEvent
-CASE Set.Rushmore
-CASE Set.SmartFilter
-CASE Set.NullValue
-CASE Set.Lexical
-// FoxPro
-CASE Set.Asserts
-CASE Set.Lock
-CASE Set.MultiLocks
-CASE Set.SqlAnsi
-CASE Set.SqlBuffering
-CASE Set.VarCharMapping
-RETURN FALSE
+internal function RuntimeStateDefaultValue(nSet as XSharp.Set) as object
+	switch nSet
+	case Set.Exact
+	case Set.Fixed
+	case Set.Softseek
+	case Set.Unique
+	case Set.Deleted
+	case Set.Cancel
+	case Set.Debug
+	case Set.Alternate
+	case Set.Printer
+	case Set.Confirm
+	case Set.Escape
+	case Set.Insert
+	case Set.Exit
+	case Set.Intensity
+	case Set.Scoreboard
+	case Set.Wrap
+	case Set.Mcenter
+	case Set.ScrollBreak
+	case Set.Errorlog
+	case Set.Yield
+	case Set.Neterr
+	case Set.AmPm
+	case Set.Century
+	case Set.DigitFixed
+	case Set.Fieldstore
+	case Set.Science
+	case Set.Dict
+	case Set.HpLocking
+	case Set.NewIndexLock
+	case Set.StrictRead
+	case Set.BlobCircref
+	case Set.FoxLock
+	case Set.HandleEvent
+	case Set.Rushmore
+	case Set.SmartFilter
+	case Set.NullValue
+	case Set.Lexical
+		// FoxPro
+	case Set.Asserts
+	case Set.Lock
+	case Set.MultiLocks
+	case Set.SqlAnsi
+	case Set.SqlBuffering
+	case Set.VarCharMapping
+		return false
 
-CASE Set.Ansi
-CASE Set.Bell
-CASE Set.Console
-CASE Set.Exclusive
-CASE Set.Optimize
-CASE Set.AutoOpen
-CASE Set.Defextensions
-CASE Set.ForceOpt
-CASE Set.Trimfilename
-// FoxPro
-CASE Set.AutoIncError
-CASE Set.FullPath
-CASE Set.Safety
-CASE Set.Space
-CASE Set.TextMerge
-CASE Set.HardCommit
-RETURN TRUE
+	case Set.Ansi
+	case Set.Bell
+	case Set.Console
+	case Set.Exclusive
+	case Set.Optimize
+	case Set.AutoOpen
+	case Set.Defextensions
+	case Set.ForceOpt
+	case Set.Trimfilename
+		// FoxPro
+	case Set.AutoIncError
+	case Set.FullPath
+	case Set.Safety
+	case Set.Space
+	case Set.TextMerge
+	case Set.HardCommit
+		return true
 
-CASE Set.TextMergeDelimiters
-return <string>{"<<",">>"}
+	case Set.TextMergeDelimiters
+		return <string>{"<<",">>"}
 
-CASE Set.DirCase
-CASE Set.FileCase
-//            //#define HB_SET_CASE_MIXED  0
-//            //#define HB_SET_CASE_LOWER  1
-//            //#define HB_SET_CASE_UPPER  2
-//            SWITCH System.PlatformID
-//            CASE PlatformID.Unix
-//            CASE PlatformID.MacOSX
-//            CASE PlatformID.Win32NT
-//            CASE PlatformID.Win32S
-//            CASE PlatformID.Win32Windows
-//            CASE PlatformID.WinCE
-//            CASE PlatformID.Xbox
-//            END SWITCH
-RETURN 0
-CASE Set.Typeahead
-CASE Set.Cursor
-CASE Set.Margin
-CASE Set.Message
-CASE Set.Cpu
-CASE Set.Math
-CASE Set.CharSet
-CASE Set.DevTimeOut
-CASE Set.Colormode
-CASE Set.Collation
-CASE Set.IdleRepeat
-RETURN 0L
+	case Set.DirCase
+	case Set.FileCase
+		//            //#define HB_SET_CASE_MIXED  0
+		//            //#define HB_SET_CASE_LOWER  1
+		//            //#define HB_SET_CASE_UPPER  2
+		//            SWITCH System.PlatformID
+		//            CASE PlatformID.Unix
+		//            CASE PlatformID.MacOSX
+		//            CASE PlatformID.Win32NT
+		//            CASE PlatformID.Win32S
+		//            CASE PlatformID.Win32Windows
+		//            CASE PlatformID.WinCE
+		//            CASE PlatformID.Xbox
+		//            END SWITCH
+		return 0
+	case Set.Typeahead
+	case Set.Cursor
+	case Set.Margin
+	case Set.Message
+	case Set.Cpu
+	case Set.Math
+	case Set.CharSet
+	case Set.DevTimeOut
+	case Set.Colormode
+	case Set.Collation
+	case Set.IdleRepeat
+		return 0L
 
-CASE Set.Compatible
-RETURN "OFF"
+	case Set.Compatible
+		return "OFF"
 
-CASE Set.AutoOrder
-RETURN 1L
+	case Set.AutoOrder
+		return 1L
 
-CASE Set.DateCountry
-RETURN DateCountry.American
+	case Set.DateCountry
+		return DateCountry.American
 
-CASE Set.Autoshare
-RETURN AutoShareMode.Auto
+	case Set.Autoshare
+		return AutoShareMode.Auto
 
-CASE Set.Color
-RETURN "W/N,N/W,N/N,N/N,N/W"
-CASE Set.DateFormat
-RETURN "MM/DD/YYYY"
+	case Set.Color
+		return "W/N,N/W,N/N,N/N,N/W"
+	case Set.DateFormat
+		return "MM/DD/YYYY"
 
-CASE Set.DefaultRdd
-RETURN "DBFNTX"
+	case Set.DefaultRdd
+		return "DBFNTX"
 
-CASE Set.Eol
-RETURN e"\r\n"
+	case Set.Eol
+		return e"\r\n"
 
-CASE Set.Hboutlog
-RETURN "hb_out.log"
+	case Set.Hboutlog
+		return "hb_out.log"
 
-CASE Set.Hboutloginfo
-CASE Set.Path
-CASE Set.AltFile
-CASE Set.Device
-CASE Set.PrintFile
-CASE Set.DelimChars
-CASE Set.AmExt
-CASE Set.PmExt
-CASE Set.International
-CASE Set.NatDLL
-CASE Set.NoMethod
-CASE Set.DateFormatNet
-CASE Set.DateFormatEmpty
-CASE Set.LastFound
-CASE Set.MemoExt
-CASE Set.Language
-CASE Set.Timeformat
-// FoxPro
-CASE Set.Database
-CASE Set.DebugOut
-RETURN String.Empty
-CASE Set.Default
-CASE Set.DefaultDir
-RETURN ""
+	case Set.Hboutloginfo
+	case Set.Path
+	case Set.AltFile
+	case Set.Device
+	case Set.PrintFile
+	case Set.DelimChars
+	case Set.AmExt
+	case Set.PmExt
+	case Set.International
+	case Set.NatDLL
+	case Set.NoMethod
+	case Set.DateFormatNet
+	case Set.DateFormatEmpty
+	case Set.LastFound
+	case Set.MemoExt
+	case Set.Language
+	case Set.Timeformat
+		// FoxPro
+	case Set.Database
+	case Set.DebugOut
+		return String.Empty
+	case Set.Default
+	case Set.DefaultDir
+		return ""
 
-CASE Set.DirSeparator
-RETURN System.IO.Path.DirectorySeparatorChar:ToString()
+	case Set.DirSeparator
+		return System.IO.Path.DirectorySeparatorChar:ToString()
 
-CASE Set.Floatdelta
-RETURN 0.0000000000001
+	case Set.Floatdelta
+		return 0.0000000000001
 
+	case Set.Patharray     // String[]
+		return (string[]) null
+	case Set.CollationTable   // byte[]
+		return (byte[] ) null
 
-CASE Set.Patharray     // String[]
-RETURN (STRING[]) NULL
-CASE Set.CollationTable   // byte[]
-RETURN (BYTE[] ) NULL
+	case Set.DecimalSep
+	case Set.ThousandSep
+	case Set.Timesep
+	case Set.EpochYear
+		//CASE Set.FileError
+	case Set.ErrorLevel     // DWORD
+		return 0U
+	case Set.Decimals
+		return 2U
 
-CASE Set.DecimalSep
-CASE Set.ThousandSep
-CASE Set.Timesep
-CASE Set.EpochYear
-//CASE Set.FileError
-CASE Set.ErrorLevel     // DWORD
-RETURN 0U
-CASE Set.Decimals
-RETURN 2U
+	case Set.Digits
+	case Set.Locktries
+		return 10U
 
-CASE Set.Digits
-CASE Set.Locktries
-RETURN 10U
+	case Set.MemoBlockSize
+		return (word) 32
 
-CASE Set.MemoBlockSize
-RETURN (WORD) 32
+	case Set.Epoch
+	case Set.EpochCent
+		return 1900U
 
-CASE Set.Epoch
-CASE Set.EpochCent
-RETURN 1900U
+	case Set.ErrorBlock     // Codeblock
+		return null
 
-CASE Set.ErrorBlock     // Codeblock
-RETURN NULL
+	case Set.LastScriptError    // Exception object
+	case Set.SysObject
+	case Set.RddInfo
+		return null
+	case Set.WithStack
+		return Stack<object>{}
+	case Set.Intl
+	case Set.CollationMode
+		return CollationMode.Windows
 
-CASE Set.LastScriptError    // Exception object
-CASE Set.SysObject
-CASE Set.RddInfo
-RETURN NULL
-CASE Set.WithStack
-RETURN Stack<OBJECT>{}
-CASE Set.Intl
-CASE Set.CollationMode
-RETURN CollationMode.Windows
+	case Set.ErrorLogFile
+		return "ERROR.LOG"
 
-CASE Set.ErrorLogFile
-RETURN "ERROR.LOG"
+	case Set.DosCodepage
+		return 437L     // US American
 
+	case Set.WinCodepage
+		return 1252L    // Latin 1 / Western Europe
 
-CASE Set.DosCodepage
-RETURN 437L     // US American
+	case Set.FieldDelimiter
+		return ","
 
-CASE Set.WinCodepage
-RETURN 1252L    // Latin 1 / Western Europe
+	case Set.Delimiters
+		return e"\""
 
-CASE Set.FieldDelimiter
-RETURN ","
+	case Set.RecordDelimiter
+		return CRLF
 
-CASE Set.Delimiters
-RETURN e"\""
+	case Set.DelimRDD
+		return "DELIM"
 
-CASE Set.RecordDelimiter
-RETURN CRLF
+		// 180 - 197 Harbour extensions, no value yet
+		//        MEMBER FILECASE       :=  182
+		//        MEMBER DIRCASE        :=  183
+		//        MEMBER DBFLOCKSCHEME  :=  188
+		//        MEMBER DBCODEPAGE     :=  197				// Map to Vulcan setting ?
+		// Advantage
+	case Set.Axslocking
+	case Set.Rightschecking
+	case Set.Exactkeypos
+		return true
 
-CASE Set.DelimRDD
-RETURN "DELIM"
+	case Set.Sql_query
+	case Set.Collation_name
+		return String.Empty
+	case Set.Connection_handle
+	case Set.Sql_table_passwords
+	case Set.Sql_parameters
+		return null
+	case Set.Sql_timeout
+		return 0
 
-// 180 - 197 Harbour extensions, no value yet
-//        MEMBER FILECASE       :=  182
-//        MEMBER DIRCASE        :=  183
-//        MEMBER DBFLOCKSCHEME  :=  188
-//        MEMBER DBCODEPAGE     :=  197				// Map to Vulcan setting ?
+		// FoxPro
+	case Set.CollateFox
+		return "MACHINE"
+	case Set.DataSession
+		return 1
+	case Set.MemoWidth
+		return 50
+	case Set.Refresh
+		return 5.0
+	case Set.Reprocess
+		return 0
+	case Set.Hours
+		return 12L
+	case Set.Seconds
+		return true
+	end switch
 
-
-// Advantage
-CASE Set.Axslocking
-CASE Set.Rightschecking
-CASE Set.Exactkeypos
-RETURN TRUE
-
-CASE Set.Sql_query
-CASE Set.Collation_name
-RETURN String.Empty
-CASE Set.Connection_handle
-CASE Set.Sql_table_passwords
-CASE Set.Sql_parameters
-RETURN NULL
-CASE Set.Sql_timeout
-RETURN 0
-
-// FoxPro
-CASE Set.CollateFox
-RETURN "MACHINE"
-CASE Set.DataSession
-RETURN 1
-CASE Set.MemoWidth
-RETURN 50
-CASE Set.Refresh
-RETURN 5.0
-CASE Set.Reprocess
-RETURN 0
-
-
-END SWITCH
-
-
-
-RETURN NULL
-
-
+return null

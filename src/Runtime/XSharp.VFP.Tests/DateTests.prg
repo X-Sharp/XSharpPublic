@@ -3,24 +3,24 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using System
-using System.Collections.Generic
-using System.Linq
-using System.Text
-using XUnit
+USING System
+USING System.Collections.Generic
+USING System.Linq
+USING System.Text
+USING XUnit
 
 
 // Array tests are not working correctly yet with the current build
-begin namespace XSharp.VFP.Tests
+BEGIN NAMESPACE XSharp.VFP.Tests
 
-	class DateTests
-	    static constructor
+	CLASS DateTests
+	    STATIC CONSTRUCTOR
             XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
 
 		[Fact, Trait("Category", "Date and Time")];
-		method ConversionTests() as void
-            local d as date
-            local dt as DateTime
+		METHOD ConversionTests() AS VOID
+            LOCAL d AS DATE
+            LOCAL dt AS DateTime
             dt := DateTime{2020,1,1,11,12,13}
 
             Assert.Equal(11, Hour(dt))
@@ -33,7 +33,7 @@ begin namespace XSharp.VFP.Tests
 
 
 		[Fact, Trait("Category", "Date and Time")];
-            method QuarterTests() as void
+            METHOD QuarterTests() AS VOID
             Assert.Equal( Quarter ( ConDate ( 2020, 1 , 1  ) ) , 1 )
             Assert.Equal( Quarter ( ConDate ( 2020, 2 , 1  ) ) , 1 )
             Assert.Equal( Quarter ( ConDate ( 2020, 3 , 1  ) ) , 1 )
@@ -88,7 +88,7 @@ begin namespace XSharp.VFP.Tests
             Assert.Equal( Quarter ( 2020.04.20 ) , 2         )
 
 		[Fact, Trait("Category", "Date and Time")];
-            method GoMonthTests() as void
+            METHOD GoMonthTests() AS VOID
 
             Assert.Equal(GoMonth ( NULL_DATE , -12 ) , NULL_DATE)
             Assert.Equal(GoMonth ( DateTime{} , -12 ) , NULL_DATE)
@@ -100,7 +100,7 @@ begin namespace XSharp.VFP.Tests
             Assert.Equal(GoMonth({^1998-12-31}, -2) , ConDate ( 1998 , 10 , 31  ) )
 
 		[Fact, Trait("Category", "Date and Time")];
-            method WeekTests() as void
+            METHOD WeekTests() AS VOID
                 Assert.Equal(Week(1998.02.16)  , 8)
                 Assert.Equal(Week(1998.02.16,1,1)  , 8)
                 Assert.Equal(Week(2010.01.03,2,4)  , 1)
@@ -113,7 +113,8 @@ begin namespace XSharp.VFP.Tests
 	// ---------------------------------------------------------------- //
 	[Fact, Trait("Category", "Date and Time")];
 	method TToCTests as void
-	    local dt as DateTime
+        local dt as DateTime
+        SetHours(12) // set 12 hours format for time tests
 	    dt := DateTime{2025, 8, 13, 14, 30, 45}
 
 	    // 0 - numeric format (same as param 1)
@@ -186,6 +187,7 @@ begin namespace XSharp.VFP.Tests
 	[Fact, Trait("Category", "Date and Time")];
 	method TToCEdgeCasesTests as void
 	  // midnight
+      SetHours(12)
 	  local midnight := DateTime{2025, 8, 13, 0, 0, 0} as DateTime
 	  Assert.Equal("12:00:00 AM", TToC(midnight, 2))
 
@@ -274,7 +276,7 @@ begin namespace XSharp.VFP.Tests
 	method TToCDateOnlyTests as void
 	  // try DATE no time
 	  local d := DateTime{2025, 8, 13} as DateTime
-
+      SetHours(12)
 	  // numeric format with date and no time
 	  local numericResult := TToC(d, 1) as string
 	  Assert.True(numericResult:StartsWith("20250813"))

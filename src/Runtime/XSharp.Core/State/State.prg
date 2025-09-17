@@ -767,11 +767,13 @@ CLASS XSharp.RuntimeState
             IF format:EndsWith("TT")
 		        SELF:_SetThreadValue(Set.AmExt, "AM")
 		        SELF:_SetThreadValue(Set.PmExt, "PM")
-		        SELF:_SetThreadValue(Set.AmPm, TRUE)
+                SELF:_SetThreadValue(Set.AmPm, TRUE)
+                SELF:_SetThreadValue(Set.Hours, 12L)
             ELSE
 		        SELF:_SetThreadValue(Set.AmExt, "")
 		        SELF:_SetThreadValue(Set.PmExt, "")
-		        SELF:_SetThreadValue(Set.AmPm, FALSE)
+                SELF:_SetThreadValue(Set.AmPm, FALSE)
+                SELF:_SetThreadValue(Set.Hours, 24L)
             ENDIF
             SELF:_SetThreadValue(Set.Timesep, Asc(SubStr3(format, 3,1)))
             SELF:_SetThreadValue(Set.Timeformat, format)
@@ -821,8 +823,10 @@ CLASS XSharp.RuntimeState
 			SELF:_SetThreadValue(Set.Timesep, (DWORD) 0)
 		ELSE
 			SELF:_SetThreadValue(Set.Timesep, (DWORD) separator[0])
-		ENDIF
-		SELF:_SetThreadValue(Set.AmPm, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
+        ENDIF
+        Var lAmPm := dtInfo:ShortDatePattern:IndexOf("tt") != -1
+        SELF:_SetThreadValue(Set.AmPm, lAmPm)
+        SELF:_SetThreadValue(Set.Hours, iif(lAmPm, 12L, 24L))
         SELF:_SetThreadValue(Set.Timeformat, dtInfo:LongTimePattern)
 
     INTERNAL METHOD _SetDateFormatSystem() AS VOID

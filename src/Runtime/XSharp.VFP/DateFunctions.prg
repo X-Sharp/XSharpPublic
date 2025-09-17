@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING System.Globalization
-using System.Collections.Generic
+USING System.Collections.Generic
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dtot/*" />
 FUNCTION DToT( dDateExpression AS DATE) AS DateTime
@@ -28,10 +28,10 @@ FUNCTION TToD( tExpression AS System.DateTime) AS DATE
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/gomonth/*" />
 FUNCTION GoMonth( dExpression AS DATE , iNumberOfMonths AS INT ) AS DATE
-    RETURN GoMonth ( (DateTime) dExpression , iNumberOfMonths )
+    RETURN GoMonth ( (System.DateTime) dExpression , iNumberOfMonths )
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/gomonth/*" />
-FUNCTION GoMonth( tExpression AS DateTime , iNumberOfMonths AS INT ) AS DATE
+FUNCTION GoMonth( tExpression AS System.DateTime , iNumberOfMonths AS INT ) AS DATE
 LOCAL dDate AS DATE
 
    	IF ((DATE) tExpression):IsEmpty
@@ -56,8 +56,8 @@ LOCAL dDate AS DATE
 
     RETURN dDate
 
-INTERNAL FUNCTION _DateTimeError( sParameter as STRING, argNum as DWORD, aArgs PARAMS OBJECT[]) AS Error
-    var err := Error.ArgumentError(ProcName(1), sParameter,__VfpStr(VFPErrors.VFP_INVALID_PARAMETER, sParameter, "'DATE' or 'DATETIME'" ), 1)
+INTERNAL FUNCTION _DateTimeError( sParameter AS STRING, argNum AS DWORD, aArgs PARAMS OBJECT[]) AS Error
+    VAR err := Error.ArgumentError(ProcName(1), sParameter,__VfpStr(VFPErrors.VFP_INVALID_PARAMETER, sParameter, "'DATE' or 'DATETIME'" ), 1)
     err:Args := aArgs
     err:ArgNum := argNum
     err:Stack := ErrorStack(1)
@@ -66,33 +66,33 @@ INTERNAL FUNCTION _DateTimeError( sParameter as STRING, argNum as DWORD, aArgs P
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/gomonth/*" />
 FUNCTION GoMonth( uExpression AS USUAL , iNumberOfMonths AS INT ) AS DATE
-    if IsDate(uExpression)
-        RETURN GoMonth ( (Date) uExpression , iNumberOfMonths )
-    elseif IsDateTime(uExpression)
-        RETURN GoMonth ( (DateTime) uExpression , iNumberOfMonths )
-    endif
-    THROW _DateTimeError(nameof(uExpression), 1, uExpression, iNumberOfMonths)
+    IF IsDate(uExpression)
+        RETURN GoMonth ( (DATE) uExpression , iNumberOfMonths )
+    ELSEIF IsDateTime(uExpression)
+        RETURN GoMonth ( (System.DateTime) uExpression , iNumberOfMonths )
+    ENDIF
+    THROW _DateTimeError(NAMEOF(uExpression), 1, uExpression, iNumberOfMonths)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/quarter/*" />
 FUNCTION Quarter( uExpression  AS USUAL , nMonth  := 1 AS INT ) AS INT
-    if IsDate(uExpression)
-        RETURN Quarter ( (Date) uExpression , nMonth )
-    elseif IsDateTime(uExpression)
-        RETURN Quarter ( (DateTime) uExpression , nMonth )
-    endif
-    THROW _DateTimeError(nameof(uExpression),1, uExpression, nMonth)
+    IF IsDate(uExpression)
+        RETURN Quarter ( (DATE) uExpression , nMonth )
+    ELSEIF IsDateTime(uExpression)
+        RETURN Quarter ( (System.DateTime) uExpression , nMonth )
+    ENDIF
+    THROW _DateTimeError(NAMEOF(uExpression),1, uExpression, nMonth)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/quarter/*" />
 FUNCTION Quarter( dExpression  AS DATE , nMonth  := 1 AS INT ) AS INT
-    RETURN Quarter ( (DateTime) dExpression  , nMonth  )
+    RETURN Quarter ( (System.DateTime) dExpression  , nMonth  )
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/quarter/*" />
-FUNCTION Quarter( tExpression  AS DateTime , nMonth  := 1 AS INT ) AS INT
+FUNCTION Quarter( tExpression  AS System.DateTime , nMonth  := 1 AS INT ) AS INT
     IF  ! (nMonth  > 0 .AND. nMonth  < 13 )
-        THROW Error.ArgumentError(__ENTITY__, nameof(nMonth), __VfpStr(VFPErrors.VFP_INVALID_RANGE, nameof(nMonth), nMonth , "1-12") ,1)
+        THROW Error.ArgumentError(__ENTITY__, NAMEOF(nMonth), __VfpStr(VFPErrors.VFP_INVALID_RANGE, NAMEOF(nMonth), nMonth , "1-12") ,1)
     ENDIF
 
    	IF ((DATE) tExpression ):IsEmpty
@@ -105,59 +105,59 @@ FUNCTION Quarter( tExpression  AS DateTime , nMonth  := 1 AS INT ) AS INT
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/week/*" />
 FUNCTION Week( uExpression AS USUAL, nFirstWeek := 1 AS LONG, nFirstDayOfWeek := 1 AS LONG) AS LONG
-    if IsDate(uExpression)
+    IF IsDate(uExpression)
         RETURN Week ( (Date) uExpression , nFirstWeek, nFirstDayOfWeek )
-    elseif IsDateTime(uExpression)
-        RETURN Week ( (DateTime) uExpression , nFirstWeek, nFirstDayOfWeek )
-    endif
-    THROW _DateTimeError(nameof(uExpression), 1, uExpression, nFirstWeek,nFirstDayOfWeek)
+    ELSEIF IsDateTime(uExpression)
+        RETURN Week ( (System.DateTime) uExpression , nFirstWeek, nFirstDayOfWeek )
+    ENDIF
+    THROW _DateTimeError(NAMEOF(uExpression), 1, uExpression, nFirstWeek,nFirstDayOfWeek)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/week/*" />
 FUNCTION Week( dExpression AS DATE, nFirstWeek := 1 AS LONG, nFirstDayOfWeek := 1 AS LONG) AS LONG
-    RETURN Week ((DateTime) dExpression, nFirstWeek, nFirstDayOfWeek)
+    RETURN Week ((System.DateTime) dExpression, nFirstWeek, nFirstDayOfWeek)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/week/*" />
-FUNCTION Week( tExpression AS DateTime, nFirstWeek := 1 AS LONG, nFirstDayOfWeek := 1 AS LONG) AS LONG
+FUNCTION Week( tExpression AS System.DateTime, nFirstWeek := 1 AS LONG, nFirstDayOfWeek := 1 AS LONG) AS LONG
     // validate parameters
 	IF  ! (nFirstWeek  >= 0 .AND. nFirstWeek  < 4 )
-		THROW ArgumentException { __VfpStr(VFPErrors.VFP_INVALID_RANGE, nameof(nFirstWeek), nFirstWeek ,"1-3"), nameof(nFirstWeek) }
+		THROW ArgumentException { __VfpStr(VFPErrors.VFP_INVALID_RANGE, NAMEOF(nFirstWeek), nFirstWeek ,"1-3"), NAMEOF(nFirstWeek) }
     ENDIF
 	IF  ! (nFirstDayOfWeek >= 0 .AND. nFirstDayOfWeek  < 8 )
-		THROW ArgumentException { __VfpStr(VFPErrors.VFP_INVALID_RANGE, nameof(nFirstDayOfWeek), nFirstDayOfWeek,"0-7"), nameof(nFirstDayOfWeek) }
+		THROW ArgumentException { __VfpStr(VFPErrors.VFP_INVALID_RANGE, NAMEOF(nFirstDayOfWeek), nFirstDayOfWeek,"0-7"), NAMEOF(nFirstDayOfWeek) }
     ENDIF
-    LOCAL week AS CalendarWeekRule
+    LOCAL Week AS CalendarWeekRule
     SWITCH nFirstWeek
     CASE 0
     CASE 1
-        week := CalendarWeekRule.FirstDay
+        Week := CalendarWeekRule.FirstDay
     CASE 2
-        week := CalendarWeekRule.FirstFourDayWeek
+        Week := CalendarWeekRule.FirstFourDayWeek
     CASE 3
     OTHERWISE
-        week := CalendarWeekRule.FirstFullWeek
+        Week := CalendarWeekRule.FirstFullWeek
     END SWITCH
     LOCAL day AS DayOfWeek
     IF nFirstDayOfWeek == 0
-       day :=  DayOfWeek.Sunday
+        day :=  DayOfWeek.Sunday
     ELSE
-       day :=  (DayOfWeek) (nFirstDayOfWeek -1)
+        day :=  (DayOfWeek) (nFirstDayOfWeek -1)
     ENDIF
     VAR calendar := System.Globalization.GregorianCalendar{}
-    RETURN calendar:GetWeekOfYear ( tExpression, week, day)
+    RETURN calendar:GetWeekOfYear ( tExpression, Week, day)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mdy/*" />
 FUNCTION MDY ( uExpression AS USUAL ) AS STRING
-    if IsDate(uExpression)
-        RETURN MDY( (Date) uExpression )
-    elseif IsDateTime(uExpression)
-        RETURN MDY ( (DateTime) uExpression  )
-    endif
-    THROW _DateTimeError(nameof(uExpression), 1, uExpression)
+    IF IsDate(uExpression)
+        RETURN MDY( (DATE) uExpression )
+    ELSEIF IsDateTime(uExpression)
+        RETURN MDY ( (System.DateTime) uExpression  )
+    ENDIF
+    THROW _DateTimeError(NAMEOF(uExpression), 1, uExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mdy/*" />
-FUNCTION MDY ( tExpression AS DateTime ) AS STRING
+FUNCTION MDY ( tExpression AS System.DateTime) AS STRING
     RETURN MDY ( (DATE) tExpression  )
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mdy/*" />
@@ -173,17 +173,17 @@ FUNCTION MDY ( dExpression AS DATE ) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
 FUNCTION DMY ( uExpression  AS USUAL ) AS STRING
-    if IsDate(uExpression)
-        RETURN DMY( (Date) uExpression )
-    elseif IsDateTime(uExpression)
-        RETURN DMY ( (DateTime) uExpression  )
-    endif
-    THROW _DateTimeError(nameof(uExpression),1, uExpression)
+    IF IsDate(uExpression)
+        RETURN DMY( (DATE) uExpression )
+    ELSEIF IsDateTime(uExpression)
+        RETURN DMY ( (System.DateTime) uExpression  )
+    ENDIF
+    THROW _DateTimeError(NAMEOF(uExpression),1, uExpression)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
-FUNCTION DMY ( tExpression  AS DateTime ) AS STRING
-RETURN DMY ( (DATE) tExpression   )
+FUNCTION DMY ( tExpression  AS System.DateTime) AS STRING
+    RETURN DMY ( (DATE) tExpression   )
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
 FUNCTION DMY ( dExpression  AS DATE ) AS STRING
@@ -196,136 +196,136 @@ FUNCTION DMY ( dExpression  AS DATE ) AS STRING
 			IIF ( SetCentury() , dExpression:ToString("yyyy") , dExpression:ToString("yy")  )
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/ctot/*" />
-function CToT(cCharacterExpression as string) as DateTime
-    if String.IsNullOrEmpty(cCharacterExpression)
-        return DateTime.MinValue
-    endif
+FUNCTION CToT(cCharacterExpression AS STRING) AS System.DateTime
+    IF String.IsNullOrEmpty(cCharacterExpression)
+        RETURN DateTime.MinValue
+    ENDIF
 
-    local lcInput := DataTimeHelper.NormalizeWhitespace(cCharacterExpression) as string
-    local ldResult as DateTime
+    LOCAL lcInput := DateTimeHelper.NormalizeWhitespace(cCharacterExpression) AS STRING
+    LOCAL ldResult AS System.DateTime
 
-    if DataTimeHelper.TryParseVfpDateTime(lcInput, out ldResult)
-        return ldResult
-    endif
+    IF DateTimeHelper.TryParseVfpDateTime(lcInput, OUT ldResult)
+        RETURN ldResult
+    ENDIF
 
-    if DateTime.TryParse(lcInput, CultureInfo.InvariantCulture, DateTimeStyles.None, out ldResult)
-        return ldResult
-    endif
+    IF DateTime.TryParse(lcInput, CultureInfo.InvariantCulture, DateTimeStyles.None, OUT ldResult)
+        RETURN ldResult
+    ENDIF
 
-    return DateTime.MinValue
-endfunc
+    RETURN DateTime.MinValue
+ENDFUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/ttoc/*" />
-function TToC(tdExpression as DateTime, nParam := 0 as long) as string
-	local lcResult as string
-	local culture := CultureInfo.InvariantCulture as CultureInfo
+FUNCTION TToC(tdExpression AS System.DateTime, nParam := 0 AS LONG) AS STRING
+	LOCAL lcResult AS STRING
+	LOCAL culture := CultureInfo.InvariantCulture AS CultureInfo
 
 	// handle empty date
-	if tdExpression == DateTime.MinValue //|| tdExpression == DateTime{}
-		switch nParam
-		case 0
-		case 1
-			return "00000000000000"
-		case 2
-			return DataTimeHelper.GetEmptyTimeFormat()
-		case 3
-			return "0000-00-00T00:00:00"
-		otherwise
-			return DataTimeHelper.GetEmptyDefaultFormat()
-		end switch
-	endif
+	IF tdExpression == DateTime.MinValue //|| tdExpression == DateTime{}
+		SWITCH nParam
+		CASE 0
+		CASE 1
+			RETURN "00000000000000"
+		CASE 2
+			RETURN DateTimeHelper.GetEmptyTimeFormat()
+		CASE 3
+			RETURN "0000-00-00T00:00:00"
+		OTHERWISE
+			RETURN DateTimeHelper.GetEmptyDefaultFormat()
+		END SWITCH
+	ENDIF
 
-	switch nParam
-	case 0
-	case 1
+	SWITCH nParam
+	CASE 0
+	CASE 1
 		lcResult := tdExpression:ToString("yyyyMMddHHmmss", culture)
-	case 2
-		lcResult := DataTimeHelper.FormatTimeOnly(tdExpression)
-	case 3
+	CASE 2
+		lcResult := DateTimeHelper.FormatTimeOnly(tdExpression)
+	CASE 3
 		lcResult := tdExpression:ToString("yyyy-MM-ddTHH:mm:ss", culture)
-	otherwise
+	OTHERWISE
 		lcResult := tdExpression:ToString("yyyyMMddHHmmss", culture)
-	end switch
+	END SWITCH
 
-	return lcResult
-endfunc
+	RETURN lcResult
+ENDFUNC
 
-internal static class DataTimeHelper
-	static method NormalizeWhitespace(tcInput as string) as string
-	    if String.IsNullOrEmpty(tcInput)
-	        return tcInput
-	    endif
+INTERNAL STATIC CLASS DateTimeHelper
+	STATIC METHOD NormalizeWhitespace(tcInput AS STRING) AS STRING
+	    IF String.IsNullOrEmpty(tcInput)
+	        RETURN tcInput
+	    ENDIF
 
-	    local lcResult := tcInput:Trim() as string
-	    local aWhitespaceChars := <char>{c' ', c'\t', c'\n', c'\r'} as char[]
-	    local lcNormalized := "" as string
-	    local lInWhitespace := false as logic
+	    LOCAL lcResult := tcInput:Trim() AS STRING
+	    LOCAL aWhitespaceChars := <CHAR>{c' ', c'\t', c'\n', c'\r'} AS CHAR[]
+	    LOCAL lcNormalized := "" AS STRING
+	    LOCAL lInWhitespace := FALSE AS LOGIC
 
-	    foreach cChar as char in lcResult
-	        if Array.IndexOf(aWhitespaceChars, cChar) >= 0
-	            if !lInWhitespace
+	    FOREACH cChar AS CHAR IN lcResult
+	        IF Array.IndexOf(aWhitespaceChars, cChar) >= 0
+	            IF !lInWhitespace
 	                lcNormalized += " "
-	                lInWhitespace := true
-	            endif
-	        else
+	                lInWhitespace := TRUE
+	            ENDIF
+	        ELSE
 	            lcNormalized += cChar:ToString()
-	            lInWhitespace := false
-	        endif
-	    next
+	            lInWhitespace := FALSE
+	        ENDIF
+	    NEXT
 
-	    return lcNormalized:Trim()
-	end method
+	    RETURN lcNormalized:Trim()
+	END METHOD
 
-	static method TryParseVfpDateTime(tcInput as string, result out DateTime) as logic
-	    local culture := CultureInfo.InvariantCulture as CultureInfo
-	    local lHours := RuntimeState.GetValue<long>(Set.Hours) as long
-	    local lSeconds := RuntimeState.GetValue<logic>(Set.Seconds) as logic
+	STATIC METHOD TryParseVfpDateTime(tcInput AS STRING, result OUT System.DateTime) AS LOGIC
+	    LOCAL culture := CultureInfo.InvariantCulture AS CultureInfo
+	    LOCAL lHours := RuntimeState.GetValue<LONG>(Set.Hours) AS LONG
+	    LOCAL lSeconds := RuntimeState.GetValue<LOGIC>(Set.Seconds) AS LOGIC
 
 	    // Generate time formats
-	    local aTimeFormats := GetTimeFormatsForParsing(lHours, lSeconds) as string[]
-	    local aAllDateFormats := GetAllFlexibleDateFormats() as string[]
+	    LOCAL aTimeFormats := GetTimeFormatsForParsing(lHours, lSeconds) AS STRING[]
+	    LOCAL aAllDateFormats := GetAllFlexibleDateFormats() AS STRING[]
 
 	    // vfp format
-	    local aSpecialFormats := GetVfpSpecialFormats() as string[]
-	    foreach format as string in aSpecialFormats
-	        if DateTime.TryParseExact(tcInput, format, culture, DateTimeStyles.None, out result)
-	            return true
-	        endif
-	    next
+	    LOCAL aSpecialFormats := GetVfpSpecialFormats() AS STRING[]
+	    FOREACH format AS STRING IN aSpecialFormats
+	        IF DateTime.TryParseExact(tcInput, format, culture, DateTimeStyles.None, OUT result)
+	            RETURN TRUE
+	        ENDIF
+	    NEXT
 
 	    // Just date first
-	    foreach dateFormat as string in aAllDateFormats
-	        if DateTime.TryParseExact(tcInput, dateFormat, culture, DateTimeStyles.None, out result)
-	            return true
-	        endif
-	    next
+	    FOREACH dateFormat AS STRING IN aAllDateFormats
+	        IF DateTime.TryParseExact(tcInput, dateFormat, culture, DateTimeStyles.None, OUT result)
+	            RETURN TRUE
+	        ENDIF
+	    NEXT
 
 	    // date + time (with space)
-	    foreach dateFormat as string in aAllDateFormats
-	        foreach timeFormat as string in aTimeFormats
-	            local combinedFormat := i"{dateFormat} {timeFormat}" as string
-	            if DateTime.TryParseExact(tcInput, combinedFormat, culture, DateTimeStyles.None, out result)
-	                return true
-	            endif
-	        next
-	    next
+	    FOREACH dateFormat AS STRING IN aAllDateFormats
+	        FOREACH timeFormat AS STRING IN aTimeFormats
+	            LOCAL combinedFormat := i"{dateFormat} {timeFormat}" AS STRING
+	            IF DateTime.TryParseExact(tcInput, combinedFormat, culture, DateTimeStyles.None, OUT result)
+	                RETURN TRUE
+	            ENDIF
+	        NEXT
+	    NEXT
 
 	    // date + time (no space)
-	    foreach dateFormat as string in aAllDateFormats
-	        foreach timeFormat as string in aTimeFormats
-	            local combinedFormat := i"{dateFormat}{timeFormat}" as string
-	            if DateTime.TryParseExact(tcInput, combinedFormat, culture, DateTimeStyles.None, out result)
-	                return true
-	            endif
-	        next
-	    next
+	    FOREACH dateFormat AS STRING IN aAllDateFormats
+	        FOREACH timeFormat AS STRING IN aTimeFormats
+	            LOCAL combinedFormat := i"{dateFormat}{timeFormat}" AS STRING
+	            IF DateTime.TryParseExact(tcInput, combinedFormat, culture, DateTimeStyles.None, OUT result)
+	                RETURN TRUE
+	            ENDIF
+	        NEXT
+	    NEXT
 
 	    result := DateTime.MinValue
-	    return false
-	end method
+	    RETURN FALSE
+	END METHOD
 
-	static method GetVfpSpecialFormats() as string[]
-	    local aFormats := List<string>{} as List<string>
+	STATIC METHOD GetVfpSpecialFormats() AS STRING[]
+	    LOCAL aFormats := List<STRING>{} AS List<STRING>
 
 	    // just date
 	    aFormats:Add("yyyyMMdd")        // "20250813"
@@ -351,16 +351,16 @@ internal static class DataTimeHelper
 	    aFormats:Add("yyyyMMddHHmmssfff")       // Con milisegundos
 	    aFormats:Add("yyyyMMddTHHmmssfff")      // Con T y milisegundos
 
-	    return aFormats:ToArray()
-	end method
+	    RETURN aFormats:ToArray()
+	END METHOD
 
-	static method GetAllFlexibleDateFormats() as string[]
-	    local aFormats := List<string>{} as List<string>
-	    local aSeparators := <string>{"/", "-", "."} as string[]
-	    local aYearFormats := <string>{"yyyy", "yy"} as string[]
+	STATIC METHOD GetAllFlexibleDateFormats() AS STRING[]
+	    LOCAL aFormats := List<STRING>{} AS List<STRING>
+	    LOCAL aSeparators := <STRING>{"/", "-", "."} AS STRING[]
+	    LOCAL aYearFormats := <STRING>{"yyyy", "yy"} AS STRING[]
 
-	    foreach separator as string in aSeparators
-	        foreach yearFormat as string in aYearFormats
+	    FOREACH separator AS STRING IN aSeparators
+	        FOREACH yearFormat AS STRING IN aYearFormats
 	            // AMERICAN (MM/dd/yyyy)
 	            aFormats:Add(i"MM{separator}dd{separator}{yearFormat}")
 	            aFormats:Add(i"M{separator}dd{separator}{yearFormat}")
@@ -378,97 +378,97 @@ internal static class DataTimeHelper
 	            aFormats:Add(i"{yearFormat}{separator}M{separator}dd")
 	            aFormats:Add(i"{yearFormat}{separator}MM{separator}d")
 	            aFormats:Add(i"{yearFormat}{separator}M{separator}d")
-	        next
-	    next
+	        NEXT
+	    NEXT
 
-	    return aFormats:ToArray()
-	end method
+	    RETURN aFormats:ToArray()
+	END METHOD
 
-	static method GetDateSeparatorForFormat(tcDateFormat as string) as string
-		switch tcDateFormat:ToUpper()
-		// ANSI, GERMAN
-		case "YY.MM.DD"
-		case "YYYY.MM.DD"
-		case "DD.MM.YY"
-		case "DD.MM.YYYY"
-			return "."
-		// ITALIAN
-		case "DD-MM-YY"
-		case "DD-MM-YYYY"
-			return "-"
-		otherwise
-			return "/"
-		end switch
-	end method
+	// STATIC METHOD GetDateSeparatorForFormat(tcDateFormat AS STRING) AS STRING
+		// SWITCH tcDateFormat:ToUpper()
+		//ANSI, GERMAN
+		// CASE "YY.MM.DD"
+		// CASE "YYYY.MM.DD"
+		// CASE "DD.MM.YY"
+		// CASE "DD.MM.YYYY"
+			// RETURN "."
+		//ITALIAN
+		// CASE "DD-MM-YY"
+		// CASE "DD-MM-YYYY"
+			// RETURN "-"
+		// OTHERWISE
+			// RETURN "/"
+		// END SWITCH
+	// END METHOD
 
-	static method GetDateFormatsForParsing(tcDateFormat as string, tcSeparator as string, tlCentury as logic) as string[]
-	    local aFormats := List<string>{} as List<string>
+	STATIC METHOD GetDateFormatsForParsing(tcDateFormat AS STRING, tcSeparator AS STRING, tlCentury AS LOGIC) AS STRING[]
+	    LOCAL aFormats := List<STRING>{} AS List<STRING>
 
 	    // Include always year formats for flexibility
-	    local aYearFormats := <string>{"yyyy", "yy"} as string[]
+	    LOCAL aYearFormats := <STRING>{"yyyy", "yy"} AS STRING[]
 
-	    switch tcDateFormat:ToUpper()
+	    SWITCH tcDateFormat:ToUpper()
 	    // AMERICAN
-		case "MM/DD/YY"
-		case "MM/DD/YYYY"
+		CASE "MM/DD/YY"
+		CASE "MM/DD/YYYY"
 		// USA, MDY
-		case "MM-DD-YY"
-		case "MM-DD-YYYY"
-	        foreach yearFormat as string in aYearFormats
+		CASE "MM-DD-YY"
+		CASE "MM-DD-YYYY"
+	        FOREACH yearFormat AS STRING IN aYearFormats
 	            aFormats:Add(i"MM{tcSeparator}dd{tcSeparator}{yearFormat}")
 	            aFormats:Add(i"M{tcSeparator}dd{tcSeparator}{yearFormat}")
 	            aFormats:Add(i"MM{tcSeparator}d{tcSeparator}{yearFormat}")
 	            aFormats:Add(i"M{tcSeparator}d{tcSeparator}{yearFormat}")
-	        next
+	        NEXT
 		// BRITISH, FRENCH, DMY
-		case "DD/MM/YY"
-		case "DD/MM/YYYY"
-	        foreach yearFormat as string in aYearFormats
+		CASE "DD/MM/YY"
+		CASE "DD/MM/YYYY"
+	        FOREACH yearFormat AS STRING IN aYearFormats
 	            aFormats:Add(i"dd{tcSeparator}MM{tcSeparator}{yearFormat}")
 	            aFormats:Add(i"d{tcSeparator}MM{tcSeparator}{yearFormat}")
 	            aFormats:Add(i"dd{tcSeparator}M{tcSeparator}{yearFormat}")
 	            aFormats:Add(i"d{tcSeparator}M{tcSeparator}{yearFormat}")
-	        next
+	        NEXT
 		// GERMAN
-		case "DD.MM.YY"
-		case "DD.MM.YYYY"
+		CASE "DD.MM.YY"
+		CASE "DD.MM.YYYY"
 		// ITALIAN
-		case "DD-MM-YY"
-		case "DD-MM-YYYY"
-	        foreach yearFormat as string in aYearFormats
+		CASE "DD-MM-YY"
+		CASE "DD-MM-YYYY"
+	        FOREACH yearFormat AS STRING IN aYearFormats
 	            aFormats:Add(i"dd{tcSeparator}MM{tcSeparator}{yearFormat}")
 	            aFormats:Add(i"d{tcSeparator}MM{tcSeparator}{yearFormat}")
 	            aFormats:Add(i"dd{tcSeparator}M{tcSeparator}{yearFormat}")
 	            aFormats:Add(i"d{tcSeparator}M{tcSeparator}{yearFormat}")
-	        next
+	        NEXT
 
 	    // ANSI
-		case "YY.MM.DD"
-		case "YYYY.MM.DD"
+		CASE "YY.MM.DD"
+		CASE "YYYY.MM.DD"
 	    // JAPAN, TAIWAN, YMD
-		case "YY/MM/DD"
-		case "YYYY/MM/DD"
-	        foreach yearFormat as string in aYearFormats
+		CASE "YY/MM/DD"
+		CASE "YYYY/MM/DD"
+	        FOREACH yearFormat AS STRING IN aYearFormats
 	            aFormats:Add(i"{yearFormat}{tcSeparator}MM{tcSeparator}dd")
 	            aFormats:Add(i"{yearFormat}{tcSeparator}M{tcSeparator}dd")
 	            aFormats:Add(i"{yearFormat}{tcSeparator}MM{tcSeparator}d")
 	            aFormats:Add(i"{yearFormat}{tcSeparator}M{tcSeparator}d")
-	        next
-	    otherwise
+	        NEXT
+	    OTHERWISE
 	        // Default to AMERICAN (MM/DD/YY[YY])
-	        foreach yearFormat as string in aYearFormats
+	        FOREACH yearFormat AS STRING IN aYearFormats
 	            aFormats:Add(i"MM{tcSeparator}dd{tcSeparator}{yearFormat}")
 	            aFormats:Add(i"M{tcSeparator}d{tcSeparator}{yearFormat}")
-	        next
-	    end switch
+	        NEXT
+	    END SWITCH
 
-	    return aFormats:ToArray()
-	end method
+	    RETURN aFormats:ToArray()
+	END METHOD
 
-	static method GetTimeFormatsForParsing(tlHours as long, tlSeconds as logic) as string[]
-		local aFormats := List<string>{} as List<string>
+	STATIC METHOD GetTimeFormatsForParsing(tlHours AS LONG, tlSeconds AS LOGIC) AS STRING[]
+		LOCAL aFormats := List<STRING>{} AS List<STRING>
 
-		if tlSeconds
+		IF tlSeconds
 	        aFormats:Add("HH:mm:ss")
 	        aFormats:Add("H:mm:ss")
 
@@ -477,7 +477,7 @@ internal static class DataTimeHelper
 	        aFormats:Add("h:mm:ss tt")
 	        aFormats:Add("hh:mm:ss t")
 	        aFormats:Add("h:mm:ss t")
-		else
+		ELSE
 	        aFormats:Add("HH:mm")
 	        aFormats:Add("H:mm")
 
@@ -486,174 +486,171 @@ internal static class DataTimeHelper
 	        aFormats:Add("h:mm tt")
 	        aFormats:Add("hh:mm t")
 	        aFormats:Add("h:mm t")
-		endif
+		ENDIF
 
-		return aFormats:ToArray()
-	end method
+		RETURN aFormats:ToArray()
+	END METHOD
 
-	static method FormatVfpDefault(tdExpression as DateTime) as string
-		local lcDatePart as string
-		local lcTimePart as string
-		local culture := CultureInfo.InvariantCulture as CultureInfo
+	STATIC METHOD FormatVfpDefault(tdExpression AS System.DateTime) AS STRING
+		LOCAL lcDatePart AS STRING
+		LOCAL lcTimePart AS STRING
+		LOCAL culture := CultureInfo.InvariantCulture AS CultureInfo
 
-		local lCentury := RuntimeState.GetValue<logic>(Set.Century) as logic
-		local lHours := RuntimeState.GetValue<long>(Set.Hours) as long
-		local lSeconds := RuntimeState.GetValue<logic>(Set.Seconds) as logic
-		local lcDateFormat := RuntimeState.GetValue<string>(Set.DateFormat) as string
+		LOCAL lCentury := RuntimeState.GetValue<LOGIC>(Set.Century) AS LOGIC
+		LOCAL lHours := RuntimeState.GetValue<LONG>(Set.Hours) AS LONG
+		LOCAL lSeconds := RuntimeState.GetValue<LOGIC>(Set.Seconds) AS LOGIC
+		LOCAL nDateCountry := SetDateCountry() AS DWORD
 
 		// TODO(irwin): consider using DTOC()
-		lcDatePart := FormatDatePart(tdExpression, lCentury, lcDateFormat)
+		lcDatePart := FormatDatePart(tdExpression, lCentury, nDateCountry)
 
-		if lSeconds
-			if lHours == 24
+		IF lSeconds
+			IF lHours == 24
 				lcTimePart := tdExpression:ToString("HH:mm:ss", culture)
-			else
+			ELSE
 				lcTimePart := tdExpression:ToString("hh:mm:ss tt", culture)
-			endif
-		else
-			if lHours == 24
+			ENDIF
+		ELSE
+			IF lHours == 24
 				lcTimePart := tdExpression:ToString("HH:mm", culture)
-			else
+			ELSE
 				lcTimePart := tdExpression:ToString("hh:mm tt", culture)
-			endif
-		endif
+			ENDIF
+		ENDIF
 
 	//	return i"{lcDatePart} {lcTimePart}"
-		return lcDatePart + " " + lcTimePart
-	end method
+		RETURN lcDatePart + " " + lcTimePart
+	END METHOD
 
-	static method GetEmptyTimeFormat as string
-		local lHours := RuntimeState.GetValue<long>(Set.Hours) as long
-		local lSeconds := RuntimeState.GetValue<logic>(Set.Seconds) as logic
+	STATIC METHOD GetEmptyTimeFormat AS STRING
+		LOCAL lHours := RuntimeState.GetValue<LONG>(Set.Hours) AS LONG
+		LOCAL lSeconds := RuntimeState.GetValue<LOGIC>(Set.Seconds) AS LOGIC
 
-		if lSeconds
-			if lHours == 24
-				return "00:00:00"
-			else
-				return "12:00:00 AM"
-			endif
-		else
-			if lHours == 24
-				return "00:00"
-			else
-				return "12:00 AM"
-			endif
-		endif
-	end method
+		IF lSeconds
+			IF lHours == 24
+				RETURN "00:00:00"
+			ELSE
+				RETURN "12:00:00 AM"
+			ENDIF
+		ELSE
+			IF lHours == 24
+				RETURN "00:00"
+			ELSE
+				RETURN "12:00 AM"
+			ENDIF
+		ENDIF
+	END METHOD
 
-	static method GetEmptyDefaultFormat as string
-		local lcDateFormat := RuntimeState.GetValue<string>(Set.DateFormat) as string
-		local lHours := RuntimeState.GetValue<long>(Set.Hours) as long
-		local lSeconds := RuntimeState.GetValue<logic>(Set.Seconds) as logic
-		local lCentury := RuntimeState.GetValue<logic>(Set.Century) as logic
+	STATIC METHOD GetEmptyDefaultFormat AS STRING
+		LOCAL lcDateFormat := RuntimeState.GetValue<STRING>(Set.DateFormat) AS STRING
+		LOCAL lHours := RuntimeState.GetValue<LONG>(Set.Hours) AS LONG
+		LOCAL lSeconds := RuntimeState.GetValue<LOGIC>(Set.Seconds) AS LOGIC
+		LOCAL lCentury := RuntimeState.GetValue<LOGIC>(Set.Century) AS LOGIC
 
-		local lcDatePart := GetEmptyDatePart(lcDateFormat, lCentury)
-		local lcTimePart := GetEmptyTimePart(lHours, lSeconds)
+		LOCAL lcDatePart := GetEmptyDatePart(lcDateFormat, lCentury) AS STRING
+		LOCAL lcTimePart := GetEmptyTimePart(lHours, lSeconds) AS STRING
 
 	//	return i"{lcDatePart} {lcTimePart}"
-		return lcDatePart + " " + lcTimePart
-	end method
+		RETURN lcDatePart + " " + lcTimePart
+	END METHOD
 
-	static method FormatTimeOnly(tdExpression as DateTime) as string
-		local culture := CultureInfo.InvariantCulture as CultureInfo
-		local lHours := RuntimeState.GetValue<long>(Set.Hours) as long
-		local lSeconds := RuntimeState.GetValue<logic>(Set.Seconds) as logic
+	STATIC METHOD FormatTimeOnly(tdExpression AS System.DateTime) AS STRING
+		LOCAL culture := CultureInfo.InvariantCulture AS CultureInfo
+		LOCAL lHours := RuntimeState.GetValue<LONG>(Set.Hours) AS LONG
+		LOCAL lSeconds := RuntimeState.GetValue<LOGIC>(Set.Seconds) AS LOGIC
 
-		if lSeconds
-			if lHours == 24
-				return tdExpression:ToString("HH:mm:ss", culture)
-			else
-				return tdExpression:ToString("hh:mm:ss tt", culture)
-			endif
-		else
-			if lHours == 24
-				return tdExpression:ToString("HH:mm", culture)
-			else
-				return tdExpression:ToString("hh:mm tt", culture)
-			endif
-		endif
-	end method
+		IF lSeconds
+			IF lHours == 24
+				RETURN tdExpression:ToString("HH:mm:ss", culture)
+			ELSE
+				RETURN tdExpression:ToString("hh:mm:ss tt", culture)
+			ENDIF
+		ELSE
+			IF lHours == 24
+				RETURN tdExpression:ToString("HH:mm", culture)
+			ELSE
+				RETURN tdExpression:ToString("hh:mm tt", culture)
+			ENDIF
+		ENDIF
+	END METHOD
 
-	static method FormatDatePart(tdExpression as DateTime, lCentury as logic, lcDateFormat as string) as string
-		local culture := CultureInfo.InvariantCulture as CultureInfo
-		local lcSeparator := "/" as string
-		local lcYearFormat as string
+	STATIC METHOD FormatDatePart(tdExpression AS System.DateTime, lCentury AS LOGIC, nDateFormat AS DWORD) AS STRING
+		LOCAL culture := CultureInfo.InvariantCulture AS CultureInfo
+		LOCAL lcSeparator := "/" AS STRING
+		LOCAL lcYearFormat AS STRING
 
-		lcYearFormat := iif(lCentury, "yyyy", "yy")
+		lcYearFormat := IIF(lCentury, "yyyy", "yy")
 
-		switch lcDateFormat:ToUpper()
-		// AMERICAN, USA
-		case "MM/DD/YY"
-		case "MM/DD/YYYY"
-			lcSeparator := "/"
-			return tdExpression:ToString(i"MM{lcSeparator}dd{lcSeparator}{lcYearFormat}", culture)
+		SWITCH (DateCountry) nDateFormat
 		// ANSI
-		case "YY.MM.DD"
-		case "YYYY.MM.DD"
+        CASE DateCountry.Ansi
 			lcSeparator := "."
-			return tdExpression:ToString(i"{lcYearFormat}{lcSeparator}MM{lcSeparator}dd", culture)
+			RETURN tdExpression:ToString(i"{lcYearFormat}{lcSeparator}MM{lcSeparator}dd", culture)
 		// BRITISH, FRENCH
-		case "DD/MM/YY"
-		case "DD/MM/YYYY"
+        CASE DateCountry.British
+        CASE DateCountry.French
+        CASE DateCountry.DMY
 			lcSeparator := "/"
-			return tdExpression:ToString(i"dd{lcSeparator}MM{lcSeparator}{lcYearFormat}", culture)
+			RETURN tdExpression:ToString(i"dd{lcSeparator}MM{lcSeparator}{lcYearFormat}", culture)
 		// GERMAN
-		case "DD.MM.YY"
-		case "DD.MM.YYYY"
+        CASE DateCountry.German
 			lcSeparator := "."
-			return tdExpression:ToString(i"dd{lcSeparator}MM{lcSeparator}{lcYearFormat}", culture)
+			RETURN tdExpression:ToString(i"dd{lcSeparator}MM{lcSeparator}{lcYearFormat}", culture)
 		// ITALIAN
-		case "DD-MM-YY"
-		case "DD-MM-YYYY"
+        CASE DateCountry.Italian //CASE DateCountry.Dutch
 			lcSeparator := "-"
-			return tdExpression:ToString(i"dd{lcSeparator}MM{lcSeparator}{lcYearFormat}", culture)
+			RETURN tdExpression:ToString(i"dd{lcSeparator}MM{lcSeparator}{lcYearFormat}", culture)
 		// JAPAN, TAIWAN
-		case "YY/MM/DD"
-		case "YYYY/MM/DD"
+        CASE DateCountry.Japanese
+        CASE DateCountry.Taiwan
 			lcSeparator := "/"
-			return tdExpression:ToString(i"{lcYearFormat}{lcSeparator}MM{lcSeparator}dd", culture)
-		otherwise
+			RETURN tdExpression:ToString(i"{lcYearFormat}{lcSeparator}MM{lcSeparator}dd", culture)
+        CASE DateCountry.American
+        CASE DateCountry.MDY
+        CASE DateCountry.USA
+        CASE DateCountry.System // CASE DateCountry.Windows
+		OTHERWISE
 			// AMERICAN by default (MM/DD/YY[YY])
 			lcSeparator := "/"
-			return tdExpression:ToString(i"MM{lcSeparator}dd{lcSeparator}{lcYearFormat}", culture)
-		end switch
-	end method
+			RETURN tdExpression:ToString(i"MM{lcSeparator}dd{lcSeparator}{lcYearFormat}", culture)
+		END SWITCH
+	END METHOD
 
-	static method GetEmptyDatePart(lcDateFormat as string, lCentury as logic) as string
-		local lcSeparator := "/" as string
-		local lcYear := iif(lCentury, "    ", "  ") as string
+	STATIC METHOD GetEmptyDatePart(lcDateFormat AS STRING, lCentury AS LOGIC) AS STRING
+		LOCAL lcSeparator := "/" AS STRING
+		LOCAL lcYear := IIF(lCentury, "    ", "  ") AS STRING
 
-		switch lcDateFormat:ToUpper()
+		SWITCH lcDateFormat:ToUpper()
 		// ANSI, GERMAN
-		case "YY.MM.DD"
-		case "YYYY.MM.DD"
-		case "DD.MM.YY"
-		case "DD.MM.YYYY"
+		CASE "YY.MM.DD"
+		CASE "YYYY.MM.DD"
+		CASE "DD.MM.YY"
+		CASE "DD.MM.YYYY"
 			lcSeparator := "."
-			return i"{lcYear}{lcSeparator}  {lcSeparator}  "
+			RETURN i"{lcYear}{lcSeparator}  {lcSeparator}  "
 		// ITALIAN
-		case "DD-MM-YY"
-		case "DD-MM-YYYY"
+		CASE "DD-MM-YY"
+		CASE "DD-MM-YYYY"
 			lcSeparator := "-"
-			return i"  {lcSeparator}  {lcSeparator}{lcYear}"
-		otherwise
-			return i"  {lcSeparator}  {lcSeparator}{lcYear}"
-		end switch
-	end method
+			RETURN i"  {lcSeparator}  {lcSeparator}{lcYear}"
+		OTHERWISE
+			RETURN i"  {lcSeparator}  {lcSeparator}{lcYear}"
+		END SWITCH
+	END METHOD
 
-	static method GetEmptyTimePart(lHours as long, lSeconds as logic) as string
-		if lSeconds
-			if lHours == 24
-				return "  :  :  "
-			else
-				return "  :  :   AM"
-			endif
-		else
-			if lHours == 24
-				return "  :  "
-			else
-				return "  :   AM"
-			endif
-		endif
-	end method
-end class
+	STATIC METHOD GetEmptyTimePart(lHours AS LONG, lSeconds AS LOGIC) AS STRING
+		IF lSeconds
+			IF lHours == 24
+				RETURN "  :  :  "
+			ELSE
+				RETURN "  :  :   AM"
+			ENDIF
+		ELSE
+			IF lHours == 24
+				RETURN "  :  "
+			ELSE
+				RETURN "  :   AM"
+			ENDIF
+		ENDIF
+	END METHOD
+END CLASS

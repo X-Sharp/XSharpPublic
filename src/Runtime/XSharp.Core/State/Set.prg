@@ -24,7 +24,12 @@ FUNCTION SetAmPm() AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setampm/*" />
 FUNCTION SetAmPm(lNewSetting AS LOGIC) AS LOGIC
-    SETSTATE LOGIC Set.AmPm lNewSetting
+    LOCAL lOld AS LOGIC
+    lOld := RuntimeState.GetValue<LOGIC>(Set.AmPm)
+    XSharp.RuntimeState.SetValue<LOGIC>(Set.AmPm, lNewSetting)
+    RuntimeState.SetValue<LONG>(Set.Hours, IIF(lNewSetting, 12, 24))
+    return lOld
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setansi/*" />
 FUNCTION SetAnsi() AS LOGIC
@@ -154,19 +159,19 @@ FUNCTION SetDefault(cPathSpec AS STRING) AS STRING
     SetPathArray(NULL)
     IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
         VAR cTemp := cPathSpec:Trim()
-        IF !String.IsNullOrEmpty(cTemp)
+        if !String.IsNullOrEmpty(cTemp)
             IF cTemp:EndsWith(System.IO.Path.DirectorySeparatorChar:ToString())
                 cTemp := cTemp:Substring(0, cTemp:Length-1)
             ENDIF
             IF ! System.IO.Directory.Exists(cTemp)
-                VAR err := Error.VOError(EG_ARG, __FUNCTION__, nameof(cPathSpec),1, <OBJECT>{cPathSpec})
+                var err := Error.VOError(EG_ARG, __FUNCTION__, nameof(cPathSpec),1, <OBJECT>{cPathSpec})
                 err:Description := "Directory not found: '"+cPathSpec+"'"
                 THROW err
             ENDIF
-        ENDIF
+        endif
     ELSEIF XSharp.RuntimeState.Dialect == XSharpDialect.VO .or. XSharp.RuntimeState.Dialect == XSharpDialect.Vulcan
         IF cPathSpec:Length > 0
-            VAR cLast := cPathSpec[cPathSpec:Length-1]
+            var cLast := cPathSpec[cPathSpec:Length-1]
             SWITCH cLast
             CASE c':'
             CASE c'\\'
@@ -601,8 +606,12 @@ FUNCTION SetHours() AS LONG
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/sethours/*" />
 FUNCTION SetHours(tnHours AS LONG) AS LONG
-	LOCAL nOld := RuntimeState.GetValue<LONG>(Set.Hours) AS LONG
-	RuntimeState.SetValue<LONG>(Set.Hours, tnHours)
+    LOCAL nOld := RuntimeState.GetValue<LONG>(Set.Hours) AS LONG
+    IF tnHours != 12 .AND. tnHours != 24
+        THROW Error.ArgumentError(__ENTITY__, NAMEOF(tnHours), "Invalid hours setting: "+tnHours:ToString())
+    ENDIF
+    RuntimeState.SetValue<LONG>(Set.Hours, tnHours)
+    RuntimeState.SetValue<LOGIC>(Set.AmPm, tnHours == 12)
 	RETURN nOld
 
 /// <summary>Get/Set seconds display</summary>

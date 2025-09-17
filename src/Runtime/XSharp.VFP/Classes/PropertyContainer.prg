@@ -201,6 +201,8 @@ class XSharp.VFP.PropertyContainer IMPLEMENTS IEnumerable<NameValuePair>
      method IEnumerable.GetEnumerator() AS IEnumerator
         var props := SELF:GetProperties()
         return props:GetEnumerator()
+    method HasProperty(cPropertyName as string) as logic
+        return _Properties:ContainsKey(cPropertyName)
 end class
 
 public class XSharp.VFP.PropertyDescriptor

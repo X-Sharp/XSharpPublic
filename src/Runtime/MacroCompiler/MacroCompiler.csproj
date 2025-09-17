@@ -36,7 +36,7 @@
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-	<NoWarn>1591</NoWarn>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">

@@ -77,7 +77,7 @@
 #command SET HOURS TO 12                  => SetHours(12)
 #command SET HOURS TO 24                  => SetHours(24)
 
-#command SET SECONDS <x:ON,OFF,&>         => SetSeconds, <(x)>)
+#command SET SECONDS <x:ON,OFF,&>         => SetSeconds(<(x)>)
 
 ///////////////////////////////////////////////////////////////////////////////
 // Unsupported (for now ?) commands

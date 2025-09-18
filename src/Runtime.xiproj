@@ -825,7 +825,7 @@ ReferenceProject = 43391107-D8C0-4FC7-97B2-78CEC03E5857,1,0,XSharp.XPP.Tests
 ReferenceProject = 15CF05A4-04B2-4FF6-812A-3E8E63CF4218,1,0,XSharp.Harbour.Tests
 ReferenceProject = BBCC24CB-DDCD-43A8-AADB-AE7BC27C4592,1,0,XSharp.SQLRdd.Tests
 ReferenceBrowse = %ProjectPath%\..\Artifacts\Debug\XSharp.SQLRdd.dll,1,1
-ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+ReferenceProject = 8AF12585-EC47-448F-B2B4-0DB1F6D3C715,1,0,XSharp.VFP
 [Xide.Tests Resources]
 [Xide.Tests Native Resources]
 [Xide.Tests License files]
@@ -4365,11 +4365,11 @@ CopyToBin = 0
 [XSharp.RT.Debugger References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
 ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Windows.Forms,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Data,1,0,4.0.0.0
+ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core
+ReferenceProject = F345BAB5-72C2-4BCF-8685-78C901E0382B,1,0,XSharp.RT
 [XSharp.RT.Debugger Resources]
 [XSharp.RT.Debugger Native Resources]
 [XSharp.RT.Debugger License files]
@@ -4509,8 +4509,8 @@ FileGUID = A29171A6-3553-49FE-B159-EAFEBA339238
 FileType = Code
 CopyToBin = 0
 [XSharp.Harbour References]
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core
+ReferenceProject = F345BAB5-72C2-4BCF-8685-78C901E0382B,1,0,XSharp.RT
 [XSharp.Harbour Resources]
 [XSharp.Harbour Native Resources]
 [XSharp.Harbour License files]
@@ -4633,10 +4633,10 @@ FileGUID = 9BE3552D-D1D6-4712-AA1C-C4A667149573
 FileType = Code
 CopyToBin = 0
 [XSharp.Harbour.Tests References]
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.Harbour,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
 ReferenceProject = 0D5205A3-6D8B-4632-BC88-DA84484B1FFA,1,0,Xide.Unit
+ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core
+ReferenceProject = B45700F4-D6B1-4DD8-AC12-611FFF16FAF8,1,0,XSharp.Harbour
+ReferenceProject = F345BAB5-72C2-4BCF-8685-78C901E0382B,1,0,XSharp.RT
 [XSharp.Harbour.Tests Resources]
 [XSharp.Harbour.Tests Native Resources]
 [XSharp.Harbour.Tests License files]

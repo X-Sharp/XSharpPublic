@@ -446,6 +446,12 @@ internal static class OOPHelpers
         var numActualParameters  := args:Length
         if numDefinedParameters == 1 .and. methodinfo:IsDefined(typeof(ClipperCallingConventionAttribute),false)
             lClipper := true
+        elseif numDefinedParameters == 1
+            local pi := aPars[0] as ParameterInfo
+            if pi:ParameterType == typeof(usual[]) .and. ;
+                pi:CustomAttributes:Any( { ca => ca:AttributeType == typeof(ParamArrayAttribute) })
+                lClipper := true
+            endif
         endif
         do case
         case lClipper

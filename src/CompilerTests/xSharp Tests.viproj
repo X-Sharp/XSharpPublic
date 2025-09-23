@@ -4,7 +4,6 @@ IDEVersion = 1.06
 OutputFolder = %ProjectPath%\Bin\
 Description = 
 GUID = 723E53EA-0D2C-4FC9-B86E-F050D29A49D2
-StartUpApp = B098889A-A74F-46CE-8771-3AAEEECA0F99
 PrgEncoding = Default
 SupportCF = 0
 NoAppFileCreate = 1
@@ -27,17 +26,6 @@ AutoExportInterval = 0
 FileStatusGuid = F65B741C-F9C6-4D4B-A7D3-3E7AAAB893C0
 CustomControlsGuid = 91D751CB-030B-4A75-98B9-05D9B82C3067
 DefaultPropertiesGuid = 25819EAF-9863-441B-90D0-A9072599943A
-
-[Recent References]
-RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll
-RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll
-RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VFP.dll
-RecentReference = GAC:XSharp.Core,v4,2.6.0.0
-RecentReference = GAC:XSharp.RT,v4,2.6.0.0
-RecentReference = Browse:E:\XSharp\Dev30\Artifacts\Debug\VOWin32APILibrary.dll
-RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\VulcanRT.dll
-RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\VulcanRTFuncs.dll
-RecentReference = GAC:XSharp.VO,v4,2.6.0.0
 
 [Application Groups]
 ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,723E53EA-0D2C-4FC9-B86E-F050D29A49D2

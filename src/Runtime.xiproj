@@ -4,7 +4,6 @@ IDEVersion = 1.06
 OutputFolder = %ProjectPath%\Bin\
 Description = 
 GUID = 3A2B95E7-CF54-4E77-B22D-FDA94582BA81
-StartUpApp = 5A6F39F8-DB5F-4C1E-AC32-0AD778E7653F
 PrgEncoding = Default
 SupportCF = 0
 NoAppFileCreate = 1
@@ -27,11 +26,6 @@ AutoExportInterval = 0
 FileStatusGuid = BA2AB4E7-DACA-442E-80D4-D22500A06B7C
 CustomControlsGuid = 2E6221E6-9470-415B-B277-57892CA28BDA
 DefaultPropertiesGuid = E02D3177-9FE5-4634-BC3D-B9108BC76452
-
-[Recent References]
-RecentReference = GAC:XSharp.VFP,v4,2.6.0.0
-RecentReference = GAC:System.Windows.Forms,v4,4.0.0.0
-RecentReference = GAC:System.Drawing,v4,4.0.0.0
 
 [Application Groups]
 

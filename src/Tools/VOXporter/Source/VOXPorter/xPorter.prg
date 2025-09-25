@@ -8,6 +8,13 @@ USING System.Drawing
 USING System.Linq
 USING VOParser
 
+
+_DLL FUNCTION AllocConsole() AS LOGIC:kernel32.AllocConsole
+_DLL FUNCTION AttachConsole( dwProcessId as int) AS LOGIC:kernel32.AttachConsole
+_DLL FUNCTION FreeConsole() AS LOGIC:kernel32.FreeConsole
+
+DEFINE ATTACH_PARENT_PROCESS := -1
+
 GLOBAL glCreateFilePerClass := FALSE AS LOGIC
 
 GLOBAL gaNewKeywordsInXSharp := <STRING>{;
@@ -21,13 +28,14 @@ GLOBAL DefaultSourceFolder := "" AS STRING
 GLOBAL SDKDefines_FileName := "" AS STRING
 GLOBAL RuntimeFolder := "" AS STRING
 GLOBAL NoWarningScreen := FALSE AS LOGIC
+GLOBAL CommandLineOnly := FALSE AS LOGIC
 
 GLOBAL Replace_VOOleContainer := NULL AS STRING
 
 DEFINE ToolName := "VO-xPorter" AS STRING
 
 [STAThread];
-FUNCTION Start(asParams AS STRING[]) AS VOID
+FUNCTION Start(asParams AS STRING[]) AS INT
 	LOCAL oOptions AS xPorterOptions
 	oOptions := xPorterOptions{}
 
@@ -60,10 +68,46 @@ FUNCTION Start(asParams AS STRING[]) AS VOID
 
 	xPorter.uiForm := xPorterUI{oOptions}
 
-	Application.EnableVisualStyles()
-	Application.Run(xPorter.uiForm)
+	IF CommandLineOnly
 
-RETURN
+		AttachConsole(ATTACH_PARENT_PROCESS)
+
+		Console.WriteLine()
+		IF String.IsNullOrWhiteSpace(DefaultSourceFolder) .or. String.IsNullOrWhiteSpace(DefaultOutputFolder)
+			Console.WriteLine("When using the NOGUI mode, you must specify an existing file or folder to import with /s and an existing output folder with /o")
+			RETURN 1
+		END IF
+		
+		Console.WriteLine("Exporting in progress...")
+		
+		IF SafeFolderExists(DefaultSourceFolder)
+			xPorter.xPort_AppsFromAefsInFolder(DefaultSourceFolder, DefaultOutputFolder, DirectoryInfo{DefaultSourceFolder}:Name)
+		ELSEIF SafeFileExists(DefaultSourceFolder)
+			LOCAL cFileName AS STRING
+			cFileName := DefaultSourceFolder
+			DO CASE
+			CASE cFileName:ToLowerInvariant():EndsWith(".aef")
+				xPorter.xPort_AppFromAef(DefaultSourceFolder, DefaultOutputFolder, GetFilenameNoExt(cFileName), GetFilenameNoExt(cFileName))
+			CASE cFileName:ToLowerInvariant():EndsWith(".mef")
+				xPorter.xPort_PrgFromMef(DefaultSourceFolder, DefaultOutputFolder)
+			CASE cFileName:ToLowerInvariant():EndsWith(".prg")
+				xPorter.xPort_PrgFromPrg(DefaultSourceFolder, DefaultOutputFolder)
+			END CASE
+		END IF
+		
+		Console.WriteLine("Finished exporting to folder " + DefaultOutputFolder:ToString())
+		Console.WriteLine()
+		
+		FreeConsole()
+
+	ELSE
+
+		Application.EnableVisualStyles()
+		Application.Run(xPorter.uiForm)
+
+	END IF
+
+RETURN 0
 
 FUNCTION ReadCommandLine(asParams AS STRING[]) AS VOID
 	FOREACH cParam AS STRING IN asParams
@@ -71,23 +115,25 @@ FUNCTION ReadCommandLine(asParams AS STRING[]) AS VOID
 		LOCAL cFileName AS STRING
 		TRY
 			DO CASE
-			CASE cUpper:StartsWith("/S:")
+			CASE cUpper:StartsWith("/S:") .or. cUpper:StartsWith("-S:")
 				cFileName := cParam:Substring(3)
 				IF SafeFileExists(cFileName) .OR. SafeFolderExists(cFileName)
 					DefaultSourceFolder := cFileName
 				END IF
-			CASE cUpper:StartsWith("/D:")
+			CASE cUpper:StartsWith("/D:") .or. cUpper:StartsWith("-D:")
 				cFileName := cParam:Substring(3)
 				IF Path.IsPathRooted(cFileName)
 					DefaultOutputFolder := cFileName
 				END IF
-			CASE cUpper:StartsWith("/R:")
+			CASE cUpper:StartsWith("/R:") .or. cUpper:StartsWith("-R:")
 				cFileName := cParam:Substring(3)
 				IF SafeFolderExists(cFileName)
 					RuntimeFolder := cFileName
 				END IF
-			CASE cUpper:StartsWith("/NOWARNING")
+			CASE cUpper:StartsWith("/NOWARNING") .or. cUpper:StartsWith("-NOWARNING")
 				NoWarningScreen := TRUE
+			CASE cUpper:StartsWith("/NOGUI") .or. cUpper:StartsWith("-NOGUI")
+				CommandLineOnly := TRUE
 			END CASE
 		CATCH
 			NOP
@@ -383,6 +429,7 @@ CLASS xPorter
 	STATIC METHOD xPort_AppFromAef(cAefFile AS STRING , cOutputFolder AS STRING , cSolutionName AS STRING , cAppName AS STRING) AS LOGIC
 		xPorter.Reset()
 		xPorter.Options:IgnoreDuplicateDefines := FALSE
+		Console.WriteLine("Exporting .aef file " + cAefFile:ToString())
 
 		LOCAL oApp AS ApplicationDescriptor
 		LOCAL oProject AS VOProjectDescriptor
@@ -411,6 +458,7 @@ CLASS xPorter
 		FOREACH cAefFile AS STRING IN aAefs
 			xPorter.uiForm:AdvanceProgressbar()
 			LOCAL oApp AS ApplicationDescriptor
+			Console.WriteLine("Exporting .aef file " + cAefFile:ToString())
 			oApp := ApplicationDescriptor.CreateFromAef(cAefFile , oProject , NULL)
 			oProject:AddApplication(oApp)
 		NEXT
@@ -421,6 +469,7 @@ CLASS xPorter
 	STATIC METHOD xPort_PrgFromMef(cMefFile AS STRING , cOutputFolder AS STRING) AS LOGIC
 		xPorter.Reset()
 		Directory.CreateDirectory(cOutputFolder)
+		Console.WriteLine("Exporting .mef file " + cMefFile:ToString())
 
 		LOCAL oMef AS Fab_VO_Entities.FabMEFFile
 		LOCAL oEntity AS Fab_VO_Entities.FabMEFEntity
@@ -470,6 +519,7 @@ CLASS xPorter
 	STATIC METHOD xPort_PrgFromPrg(cPrgFile AS STRING , cOutputFolder AS STRING) AS LOGIC
 		xPorter.Reset()
 		Directory.CreateDirectory(cOutputFolder)
+		Console.WriteLine("Exporting .prg file " + cPrgFile:ToString())
 
 		xPorter.Message("Reading file " + cPrgFile)
 
@@ -683,7 +733,7 @@ CLASS VOProjectDescriptor
 		xPorter.Message("Creating solution file for " + IIF(lXide , "XIDE" , "VS"))
 
 		IF lXide
-			cFileName := cFolder + "\" + MakePathLegal( cSolutionName ) + ".viproj"
+			cFileName := cFolder + "\" + MakePathLegal( cSolutionName ) + ".xiproj"
 
 			IF .NOT. xPorter.OverWriteProjectFiles .AND. File.Exists(cFileName)
 				xPorter.Message("XIDE solution file already exists.")

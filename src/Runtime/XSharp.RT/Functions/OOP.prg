@@ -440,17 +440,19 @@ internal static class OOPHelpers
         // args contains the list of arguments. The methodname has already been deleted when appropriated
         local oArgs as object[]
         local lClipper := false as logic
+        local lParams  := false as logic
         hasByRef := false
         var aPars := methodinfo:GetParameters()
         var numDefinedParameters := aPars:Length
         var numActualParameters  := args:Length
         if numDefinedParameters == 1 .and. methodinfo:IsDefined(typeof(ClipperCallingConventionAttribute),false)
             lClipper := true
-        elseif numDefinedParameters == 1
-            local pi := aPars[0] as ParameterInfo
+        elseif numDefinedParameters >= 1
+            local pi := aPars[aPars:Length-1] as ParameterInfo
             if pi:ParameterType == typeof(usual[]) .and. ;
                 pi:CustomAttributes:Any( { ca => ca:AttributeType == typeof(ParamArrayAttribute) })
-                lClipper := true
+                lParams := true
+                lClipper := numDefinedParameters == 1
             endif
         endif
         do case
@@ -463,9 +465,28 @@ internal static class OOPHelpers
         otherwise
             // convert args to array of objects
             oArgs := object[]{numDefinedParameters}
-            if numDefinedParameters < numActualParameters
+            if numDefinedParameters <= numActualParameters
                 // ignore extra parameters
-                numActualParameters := numDefinedParameters
+                if lParams
+                    local oParamArgs as usual[]
+                    local numFixedParameters := numDefinedParameters -1 as long
+                    oParamArgs := usual[]{numActualParameters  -numFixedParameters}
+                    local nCounter := 0 as long
+                    for var i := numFixedParameters to numActualParameters - 1
+                        oParamArgs[nCounter] := args[i]
+                        nCounter += 1
+                    next
+                    args[numDefinedParameters -1] := oParamArgs
+                    numActualParameters := numDefinedParameters
+                else
+                    numActualParameters := numDefinedParameters
+                endif
+            elseif lParams .and. numActualParameters == numDefinedParameters -1
+                oArgs[numDefinedParameters -1] := usual[]{0} // empty array for params
+            else
+                var oError :=  Error.VOError( EG_ARG, __function__, methodinfo:Name, (DWORD) numDefinedParameters, _UsualArrayToObjectArray(args))
+                oError:Description := "Not enough parameters for method "+methodinfo:Name
+                throw oError
             endif
             for var nPar := 0 to numActualParameters -1
                 local pi        := aPars[nPar] as ParameterInfo
@@ -489,6 +510,8 @@ internal static class OOPHelpers
                 if parType == typeof(usual)
                     // We need to box a usual here
                     oArgs[nPar] := __castclass(object, arg)
+                elseif parType == arg:Value:GetType()
+                    oArgs[nPar] := arg
                 elseif arg == nil
                     // This is new in X#: a NIL in the middle of the parameter list gets set to the default value now
                     oArgs[nPar] := OOPHelpers.GetDefaultValue(pi)
@@ -522,16 +545,18 @@ internal static class OOPHelpers
                 endif
             next
             // set default values for missing parameters, so we start after the last parameter
-            for var nArg := numActualParameters to numDefinedParameters -1
-                local oPar as ParameterInfo
-                oPar        := aPars[nArg]
-                var oArg    := OOPHelpers.GetDefaultValue(oPar)
-                if oArg != null
-                    oArgs[nArg] := oArg
-                else
-                    oArgs[nArg] := null
-                endif
-            next
+            if ! lParams
+                for var nArg := numActualParameters to numDefinedParameters -1
+                    local oPar as ParameterInfo
+                    oPar        := aPars[nArg]
+                    var oArg    := OOPHelpers.GetDefaultValue(oPar)
+                    if oArg != null
+                        oArgs[nArg] := oArg
+                    else
+                        oArgs[nArg] := null
+                    endif
+                next
+            ENDIF
         endcase
         return oArgs
 

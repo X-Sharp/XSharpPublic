@@ -59,7 +59,7 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock2
         if args:Length == 0
             uArgs := nullArgs
         ELSE
-            uArgs := _ObjectArrayToUsualArray(args)
+            uArgs := args:ToUsualArray()
         ENDIF
         var result := SELF:Eval(uArgs)
         SELF:ResultType := result:Type
@@ -142,7 +142,7 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
             if args:Length == 0
                 oArgs := nullArgs
             ELSE
-                oArgs := _UsualArrayToObjectArray(args)
+                oArgs := args:ToObjectArray()
             ENDIF
             oRes := SELF:_innerBlock:EvalBlock(oArgs)
             uRes := __Usual{oRes}

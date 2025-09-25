@@ -484,7 +484,7 @@ internal static class OOPHelpers
             elseif lParams .and. numActualParameters == numDefinedParameters -1
                 oArgs[numDefinedParameters -1] := usual[]{0} // empty array for params
             else
-                var oError :=  Error.VOError( EG_ARG, __function__, methodinfo:Name, (DWORD) numDefinedParameters, _UsualArrayToObjectArray(args))
+                var oError :=  Error.VOError( EG_ARG, __function__, methodinfo:Name, (DWORD) numDefinedParameters, args:ToObjectArray())
                 oError:Description := "Not enough parameters for method "+methodinfo:Name
                 throw oError
             endif

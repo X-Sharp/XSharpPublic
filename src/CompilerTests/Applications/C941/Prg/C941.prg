@@ -8,6 +8,13 @@ PUBLIC CLASS TestClass
 		xAssert(args[1] == 1)
 		xAssert(args[2] == 2)
 		xAssert(args[3] == 3)
+
+	PUBLIC METHOD TestMethod2(X AS STRING, ARGS PARAMS USUAL[]) AS VOID
+		?
+		xAssert(args:Length == 3)
+		xAssert(args[1] == 1)
+		xAssert(args[2] == 2)
+		xAssert(args[3] == 3)
 END CLASS
 
 FUNCTION Start() AS VOID STRICT
@@ -16,6 +23,9 @@ FUNCTION Start() AS VOID STRICT
 
 	test:TestMethod(1, 2, 3)
 	testUntyped:TestMethod(1, 2, 3)
+
+	test:TestMethod2("asd", 1, 2, 3)
+	testUntyped:TestMethod2("asd", 1, 2, 3)
 
 PROC xAssert(l AS LOGIC)
 	IF l

@@ -901,7 +901,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     // The IsTypeCastAllowed function prevents the following from being seen as a typecast on an expression inside a with block: (n):ToString().
                     // it checks for a DOT or COLON after the RPAREN. When it finds that then IsTypeCastAllowed() return false.
                     | {IsTypeCastAllowed() }? LPAREN Type=datatype RPAREN Expr=expression  #typeCast    // (typename) expr
-                    | Expr=expression Op=(INC | DEC)                            #postfixExpression      // expr ++/--
+                    | Expr=expression Op=(INC | DEC )                           #postfixExpression      // expr ++/--
                     | Op=AWAIT Expr=expression                                  #awaitExpression        // AWAIT expr
                     // The predicate prevents STACKALLOC(123) from being parsed as a STACKALLOC <ParenExpression>
                     | {InputStream.La(2) != LPAREN }? Op=STACKALLOC Expr=expression  #stackAllocExpression   // STACKALLOC expr
@@ -923,7 +923,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     | Left=expression Op=(LOGIC_AND |AND |FOX_AND) Right=expression #binaryExpression       // expr .and. expr (logical and) also &&
                     | Left=expression Op=(LOGIC_XOR |FOX_XOR) Right=expression  #binaryExpression       // expr .xor. expr (logical xor)
                     | Left=expression Op=(LOGIC_OR |OR|FOX_OR) Right=expression #binaryExpression       // expr .or. expr (logical or)  also ||
-                    | Left=expression Op=(DEFAULT|QQMARK) Right=expression               #binaryExpression       // expr DEFAULT expr
+                    | Left=expression Op=(DEFAULT|QQMARK) Right=expression      #binaryExpression       // expr DEFAULT expr
                     | Op=DOTDOT Right=expression?                               #binaryExpression       // .. expr?
                     | Left=expression Op=DOTDOT Right=expression?               #binaryExpression       // expr .. expr?
                     | <assoc=right> Left=expression

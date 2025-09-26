@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using Antlr4.Runtime;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -344,6 +345,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return -1;
                 return Token.Line;
             }
+        }
+    }
+    public class PragmaNullable : PragmaBase
+    {
+        public IToken SwitchToken;
+        public IToken OptionToken;
+        public SyntaxKind TargetKind;
+        public PragmaNullable(XSharpToken token, Pragmastate state, XSharpToken switchToken,
+            XSharpToken optionToken, SyntaxKind targetKind) : base(token, state)
+        {
+            SwitchToken = switchToken;
+            OptionToken = optionToken;
+            TargetKind = targetKind;
         }
     }
     public class PragmaOption : PragmaBase

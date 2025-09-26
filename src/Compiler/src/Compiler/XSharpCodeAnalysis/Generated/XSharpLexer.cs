@@ -86,10 +86,10 @@ public partial class XSharpLexer : Lexer {
 		PP_COMMAND=328, PP_DEFINE=329, PP_ELSE=330, PP_ENDIF=331, PP_ENDREGION=332, 
 		PP_ERROR=333, PP_IF=334, PP_IFDEF=335, PP_IFNDEF=336, PP_INCLUDE=337, 
 		PP_LINE=338, PP_REGION=339, PP_STDOUT=340, PP_TRANSLATE=341, PP_UNDEF=342, 
-		PP_WARNING=343, PP_PRAGMA=344, PP_TEXT=345, PP_ENDTEXT=346, PP_LAST=347, 
-		MACRO=348, UDCSEP=349, ID=350, DOC_COMMENT=351, SL_COMMENT=352, ML_COMMENT=353, 
-		LINE_CONT=354, LINE_CONT_OLD=355, SEMI=356, WS=357, NL=358, EOS=359, UNRECOGNIZED=360, 
-		LAST=361;
+		PP_WARNING=343, PP_PRAGMA=344, PP_TEXT=345, PP_ENDTEXT=346, PP_NULLABLE=347, 
+		PP_LAST=348, MACRO=349, UDCSEP=350, ID=351, DOC_COMMENT=352, SL_COMMENT=353, 
+		ML_COMMENT=354, LINE_CONT=355, LINE_CONT_OLD=356, SEMI=357, WS=358, NL=359, 
+		EOS=360, UNRECOGNIZED=361, LAST=362;
 	public const int
 		XMLDOCCHANNEL=2, DEFOUTCHANNEL=3, PREPROCESSORCHANNEL=4;
 	public static string[] modeNames = {
@@ -159,9 +159,9 @@ public partial class XSharpLexer : Lexer {
 		"PP_FIRST", "PP_COMMAND", "PP_DEFINE", "PP_ELSE", "PP_ENDIF", "PP_ENDREGION", 
 		"PP_ERROR", "PP_IF", "PP_IFDEF", "PP_IFNDEF", "PP_INCLUDE", "PP_LINE", 
 		"PP_REGION", "PP_STDOUT", "PP_TRANSLATE", "PP_UNDEF", "PP_WARNING", "PP_PRAGMA", 
-		"PP_TEXT", "PP_ENDTEXT", "PP_LAST", "MACRO", "UDCSEP", "ID", "DOC_COMMENT", 
-		"SL_COMMENT", "ML_COMMENT", "LINE_CONT", "LINE_CONT_OLD", "SEMI", "WS", 
-		"NL", "EOS", "UNRECOGNIZED", "LAST"
+		"PP_TEXT", "PP_ENDTEXT", "PP_NULLABLE", "PP_LAST", "MACRO", "UDCSEP", 
+		"ID", "DOC_COMMENT", "SL_COMMENT", "ML_COMMENT", "LINE_CONT", "LINE_CONT_OLD", 
+		"SEMI", "WS", "NL", "EOS", "UNRECOGNIZED", "LAST"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -211,8 +211,8 @@ public partial class XSharpLexer : Lexer {
 	public override string SerializedAtn { get { return _serializedATN; } }
 
 	public static readonly string _serializedATN =
-		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x2\x16B\a\b\x1\x4"+
-		"\x2\t\x2\x3\x2\x3\x2\x2\x2\x2\x3\x3\x2\x16A\x3\x2\x2\x6\x2\x3\x3\x2\x2"+
+		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x2\x16C\a\b\x1\x4"+
+		"\x2\t\x2\x3\x2\x3\x2\x2\x2\x2\x3\x3\x2\x16B\x3\x2\x2\x6\x2\x3\x3\x2\x2"+
 		"\x2\x3\x5\x3\x2\x2\x2\x5\x6\v\x2\x2\x2\x6\x4\x3\x2\x2\x2\x3\x2\x2";
 	public static readonly ATN _ATN =
 		new ATNDeserializer().Deserialize(_serializedATN.ToCharArray());

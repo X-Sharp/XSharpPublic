@@ -160,7 +160,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             catch (Exception e)
             {
-                // Exception during Lexing 
+                // Exception during Lexing
                 parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
                 // create empty token stream so we can continue the rest of the code
                 _lexerTokenStream = new BufferedTokenStream(new XSharpListTokenSource(lexer, new List<IToken>()));
@@ -171,7 +171,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 t += ts;
                 Debug.WriteLine("Lexing completed in {0}",ts);
             }
-#endif  
+#endif
             // do not pre-process when there were lexer exceptions
             if (lexer != null && parseErrors.Count == 0)
             {
@@ -408,6 +408,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     result.Globals = treeTransform.GlobalEntities.Globals;
                     result.PragmaWarnings = treeTransform.GlobalEntities.PragmaWarnings;
                     result.PragmaOptions = treeTransform.GlobalEntities.PragmaOptions;
+                    result.PragmaNullables = treeTransform.GlobalEntities.PragmaNullables;
                     if (pp != null)
                     {
                         result.IncludedFiles = pp.IncludedFiles;

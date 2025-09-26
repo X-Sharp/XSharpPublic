@@ -45,6 +45,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public List<Tuple<int, string>> InitProcedures;
             public List<FieldDeclarationSyntax> Globals;
             public List<PragmaWarningDirectiveTriviaSyntax> PragmaWarnings;
+            public List<NullableDirectiveTriviaSyntax> PragmaNullables;
             public List<PragmaOption> PragmaOptions;
 
             public bool HasPCall;
@@ -69,6 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 LastMember = null;
                 PragmaWarnings = null;
                 PragmaOptions = null;
+                PragmaNullables = null;
             }
 
             internal void Free()
@@ -237,6 +239,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected string _entryPoint;
         internal List<PragmaOption> PragmaOptions;
         protected List<PragmaWarningDirectiveTriviaSyntax> PragmaWarnings;
+        protected List<NullableDirectiveTriviaSyntax> PragmaNullable;
 
         internal SyntaxEntities GlobalEntities;
         internal SyntaxClassEntities GlobalClassEntities;
@@ -330,6 +333,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _entryPoint = !_isScript ? "Start" : null;
             PragmaOptions = new();
             PragmaWarnings = new();
+            PragmaNullable = new();
+
         }
 
         public static SyntaxTree DefaultXSharpSyntaxTree(CSharpParseOptions options)
@@ -2604,9 +2609,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         internal void SetPragmas(IList<PragmaBase> pragmas)
         {
-            var directives = new List<PragmaWarningDirectiveTriviaSyntax>();
+            var warningDirectives = new List<PragmaWarningDirectiveTriviaSyntax>();
+            var nullableDirectives = new List<NullableDirectiveTriviaSyntax>();
             List<PragmaOption> options = new List<PragmaOption>();
             List<PragmaWarning> warnings = new List<PragmaWarning>();
+            List<PragmaNullable> nullables = new List<PragmaNullable>();
             foreach (var pragma in pragmas)
             {
                 switch (pragma)
@@ -2616,6 +2623,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     case PragmaOption po:
                         options.Add(po);
+                        break;
+                    case PragmaNullable pn:
+                        nullables.Add(pn);
                         break;
                 }
             }
@@ -2661,10 +2671,49 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 };
                 pragma.XNode = context;
                 context.CsNode = pragma;
-                directives.Add(pragma);
+                warningDirectives.Add(pragma);
             }
+
+            foreach (var nullable in nullables)
+            {
+                SyntaxToken settingToken;
+                SyntaxToken targetToken = null;
+                switch (nullable.State)
+                {
+                    case Pragmastate.Off:
+                        settingToken = SyntaxFactory.MakeToken(SyntaxKind.DisableKeyword, nullable.SwitchToken.Text);
+                        break;
+                    case Pragmastate.On:
+                        settingToken = SyntaxFactory.MakeToken(SyntaxKind.EnableKeyword, nullable.SwitchToken.Text);
+                        break;
+                    default:
+                        settingToken = SyntaxFactory.MakeToken(SyntaxKind.RestoreKeyword, nullable.SwitchToken.Text);
+                        break;
+                }
+                if (nullable.TargetKind != SyntaxKind.None && nullable.OptionToken != null)
+                {
+                    targetToken = SyntaxFactory.MakeToken(nullable.TargetKind, nullable.OptionToken.Text);
+                }
+
+                var pragma = SyntaxFactory.NullableDirectiveTrivia(
+                    SyntaxFactory.MakeToken(SyntaxKind.HashToken),
+                    SyntaxFactory.MakeToken(SyntaxKind.NullableKeyword, nullable.Token.Text),
+                    settingToken,
+                    targetToken,
+                    SyntaxFactory.MakeToken(SyntaxKind.EndOfDirectiveToken),
+                    true);
+                var context = new XSharpParserRuleContext
+                {
+                    Start = nullable.Token
+                };
+                pragma.XNode = context;
+                context.CsNode = pragma;
+                nullableDirectives.Add(pragma);
+            }
+
             this.PragmaOptions = options;
-            this.PragmaWarnings = directives;
+            this.PragmaWarnings = warningDirectives;
+            this.PragmaNullable = nullableDirectives;
         }
         protected void finishCompilationUnit(SyntaxListBuilder<MemberDeclarationSyntax> globalTypes)
         {
@@ -2733,6 +2782,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (PragmaWarnings.Count > 0)
             {
                 GlobalEntities.PragmaWarnings = PragmaWarnings;
+            }
+            if (PragmaNullable.Count > 0)
+            {
+                GlobalEntities.PragmaNullables = PragmaNullable;
             }
 
             //System.Diagnostics.Debug.WriteLine("Exit Source " + _fileName);

@@ -2682,7 +2682,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"#STDOUT", PP_STDOUT },        // #stdout [Message]
                 {"#TEXT", PP_TEXT },            // #text const [, optionalfunc] or #text linefunc, endfunc
                 {"#PRAGMA", PP_PRAGMA },        // #pragma options.... or #pragma warnings
-                {"#ENDTEXT",  PP_ENDTEXT },      // endtext
+                {"#ENDTEXT",  PP_ENDTEXT },      // #endtext
+                {"#NULLABLE",  PP_NULLABLE},      // #nullable
             };
             if (Dialect == XSharpDialect.XPP)
             {

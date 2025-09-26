@@ -136,7 +136,48 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
         private static ImmutableArray<NullableContextState> GetContexts(SyntaxTree tree)
         {
             var previousContext = GetContextForFileStart();
+#if XSHARP
+            var builder = ArrayBuilder<NullableContextState>.GetInstance();
+            var root = tree.GetRoot();
+            if (root is not CompilationUnitSyntax cus)
+            {
+                return builder.ToImmutableAndFree();
+            }
+            var directives = cus.PragmaNullables;
+            if (directives == null)
+            {
+                return builder.ToImmutableAndFree();
+            }
+            foreach (var d in directives)
+            {
+                var nn = (NullableDirectiveTriviaSyntax) d.CreateRed();
+                if (nn.SettingToken.IsMissing || !nn.IsActive)
+                {
+                    continue;
+                }
 
+                var position = nn.EndPosition;
+                var setting = (nn.SettingToken.Kind()) switch
+                {
+                    SyntaxKind.EnableKeyword => NullableContextState.State.Enabled,
+                    SyntaxKind.DisableKeyword => NullableContextState.State.Disabled,
+                    SyntaxKind.RestoreKeyword => NullableContextState.State.ExplicitlyRestored,
+                    var kind => throw ExceptionUtilities.UnexpectedValue(kind),
+                };
+
+                var context = nn.TargetToken.Kind() switch
+                {
+                    SyntaxKind.None => new NullableContextState(position, setting, setting),
+                    SyntaxKind.WarningsKeyword => new NullableContextState(position, warningsState: setting, annotationsState: previousContext.AnnotationsState),
+                    SyntaxKind.AnnotationsKeyword => new NullableContextState(position, warningsState: previousContext.WarningsState, annotationsState: setting),
+                    var kind => throw ExceptionUtilities.UnexpectedValue(kind)
+                };
+
+                builder.Add(context);
+                previousContext = context;
+
+            }
+#else
             var builder = ArrayBuilder<NullableContextState>.GetInstance();
             foreach (var d in tree.GetRoot().GetDirectives())
             {
@@ -170,7 +211,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
                 builder.Add(context);
                 previousContext = context;
             }
-
+#endif
             return builder.ToImmutableAndFree();
         }
 

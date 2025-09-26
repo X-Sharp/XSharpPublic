@@ -441,6 +441,8 @@ internal static class OOPHelpers
         local oArgs as object[]
         local lClipper := false as logic
         local lParams  := false as logic
+        local paramsType  := NULL as System.Type
+        local elementType := NULL  as System.Type
         hasByRef := false
         var aPars := methodinfo:GetParameters()
         var numDefinedParameters := aPars:Length
@@ -449,10 +451,13 @@ internal static class OOPHelpers
             lClipper := true
         elseif numDefinedParameters >= 1
             local pi := aPars[aPars:Length-1] as ParameterInfo
-            if pi:ParameterType == typeof(usual[]) .and. ;
+
+            if pi:ParameterType:IsArray .and. ;
                 pi:CustomAttributes:Any( { ca => ca:AttributeType == typeof(ParamArrayAttribute) })
                 lParams := true
-                lClipper := numDefinedParameters == 1
+                lClipper := numDefinedParameters == 1 .and. pi:ParameterType == typeof(usual[])
+                paramsType  := pi:ParameterType
+                elementType := paramsType:GetElementType()
             endif
         endif
         do case
@@ -468,12 +473,12 @@ internal static class OOPHelpers
             if numDefinedParameters <= numActualParameters
                 // ignore extra parameters
                 if lParams
-                    local oParamArgs as usual[]
                     local numFixedParameters := numDefinedParameters -1 as long
-                    oParamArgs := usual[]{numActualParameters  -numFixedParameters}
+                    var oParamArgs := System.Array.CreateInstance(elementType, numActualParameters -numFixedParameters) astype System.Array
                     local nCounter := 0 as long
                     for var i := numFixedParameters to numActualParameters - 1
-                        oParamArgs[nCounter] := args[i]
+                        var element := OOPHelpers.ValueConvert(args[i], elementType)
+                        oParamArgs:SetValue(element,nCounter)
                         nCounter += 1
                     next
                     args[numDefinedParameters -1] := oParamArgs
@@ -482,7 +487,8 @@ internal static class OOPHelpers
                     numActualParameters := numDefinedParameters
                 endif
             elseif lParams .and. numActualParameters == numDefinedParameters -1
-                oArgs[numDefinedParameters -1] := usual[]{0} // empty array for params
+                var oParamArgs := System.Array.CreateInstance(elementType, 0) astype System.Array
+                oArgs[numDefinedParameters -1] := oParamArgs
             else
                 var oError :=  Error.VOError( EG_ARG, __function__, methodinfo:Name, (DWORD) numDefinedParameters, args:ToObjectArray())
                 oError:Description := "Not enough parameters for method "+methodinfo:Name
@@ -520,7 +526,6 @@ internal static class OOPHelpers
                 elseif pi:GetCustomAttributes( typeof( ParamArrayAttribute ), false ):Length > 0
                     // Parameter array of certain type
                     // -> convert remaining elements from uArgs to an array and assign that to oArgs[i]
-                    local elementType := parType:GetElementType() as System.Type
                     local aVarArgs    := System.Array.CreateInstance(elementType, args:Length - nPar +1) as System.Array
                     for var nArg := nPar to numActualParameters -1
                         try

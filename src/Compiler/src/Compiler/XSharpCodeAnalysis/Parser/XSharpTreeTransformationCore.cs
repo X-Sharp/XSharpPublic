@@ -3206,15 +3206,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var parameters = getParameters(context.ParamList);
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
             BlockSyntax body = null;
-            TypeSyntax returntype = getDataType(context.ReturnType);
+            TypeSyntax returnType = getDataType(context.ReturnType);
 
             context.SetSequencePoint(context.D, context.e);
-            ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+            ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returnType);
             MemberDeclarationSyntax m = _syntaxFactory.DelegateDeclaration(
                 attributeLists: attributes,
                 modifiers: mods,
                 delegateKeyword: SyntaxFactory.MakeToken(SyntaxKind.DelegateKeyword),
-                returnType: returntype,
+                returnType: returnType,
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: getTypeParameters(context.TypeParameters),
                 parameterList: parameters,
@@ -3236,12 +3236,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitEnum_([NotNull] XP.Enum_Context context)
         {
             context.SetSequencePoint(context.E, context.e.Stop);
-            BaseListSyntax baselist = null;
+            BaseListSyntax baseList = null;
             var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
             if (context.Type != null)
             {
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(context.Type.Get<TypeSyntax>()));
-                baselist = _syntaxFactory.BaseList(
+                baseList = _syntaxFactory.BaseList(
                     SyntaxFactory.ColonToken, baseTypes);
 
             }
@@ -3250,7 +3250,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
                 enumKeyword: SyntaxFactory.MakeToken(SyntaxKind.EnumKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
-                baseList: baselist,
+                baseList: baseList,
                 openBraceToken: SyntaxFactory.OpenBraceToken,
                 members: MakeSeparatedList<EnumMemberDeclarationSyntax>(context._Members),
                 closeBraceToken: SyntaxFactory.CloseBraceToken,
@@ -3295,10 +3295,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var type_ = getReturnType(context);
             var singleLine = context._LineAccessors != null && context._LineAccessors.Count > 0;
             var multiLine = context.Multi != null && context._Accessors.Count > 0;
-            ExplicitInterfaceSpecifierSyntax explif = null;
+            ExplicitInterfaceSpecifierSyntax explIf = null;
             if (context.ExplicitIface != null)
             {
-                explif = _syntaxFactory.ExplicitInterfaceSpecifier(
+                explIf = _syntaxFactory.ExplicitInterfaceSpecifier(
                         name: context.ExplicitIface.Get<NameSyntax>(),
                         dotToken: SyntaxFactory.DotToken);
             }
@@ -3325,29 +3325,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if (singleLine)         // Single Line Syntax
             {
-                var acclist = MakeList<AccessorDeclarationSyntax>(context._LineAccessors);
+                var accList = MakeList<AccessorDeclarationSyntax>(context._LineAccessors);
                 MemberDeclarationSyntax decl = _syntaxFactory.EventDeclaration(
                     attributeLists: attrLists,
                     modifiers: mods,
                     eventKeyword: SyntaxFactory.MakeToken(SyntaxKind.EventKeyword),
                     type: type_,
-                    explicitInterfaceSpecifier: explif,
+                    explicitInterfaceSpecifier: explIf,
                     identifier: context.Id.Get<SyntaxToken>(),
-                    accessorList: MakeAccessorList(acclist.Nodes),
+                    accessorList: MakeAccessorList(accList.Nodes),
                     semicolonToken: null);
                 context.Put(decl);
             }
             else if (multiLine)        // Multi line Syntax
             {
-                var acclist = MakeList<AccessorDeclarationSyntax>(context._Accessors);
+                var accList = MakeList<AccessorDeclarationSyntax>(context._Accessors);
                 MemberDeclarationSyntax decl = _syntaxFactory.EventDeclaration(
                     attributeLists: attrLists,
                     modifiers: mods,
                     eventKeyword: SyntaxFactory.MakeToken(SyntaxKind.EventKeyword),
                     type: type_,
-                    explicitInterfaceSpecifier: explif,
+                    explicitInterfaceSpecifier: explIf,
                     identifier: context.Id.Get<SyntaxToken>(),
-                    accessorList: MakeAccessorList(acclist.Nodes),
+                    accessorList: MakeAccessorList(accList.Nodes),
                     semicolonToken: null);
                 context.Put(decl);
             }
@@ -3391,15 +3391,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         ),
                                     expressionBody: null,
                                     semicolonToken: null);
-                    var acclist = MakeAccessorList(add_, remove_);
+                    var accList = MakeAccessorList(add_, remove_);
                     MemberDeclarationSyntax decl = _syntaxFactory.EventDeclaration(
                         attributeLists: attrLists,
                         modifiers: mods,
                         eventKeyword: SyntaxFactory.MakeToken(SyntaxKind.EventKeyword),
                         type: type_,
-                        explicitInterfaceSpecifier: explif,
+                        explicitInterfaceSpecifier: explIf,
                         identifier: context.Id.Get<SyntaxToken>(),
-                        accessorList: acclist,
+                        accessorList: accList,
                         semicolonToken: null);
                     context.Put(decl);
                 }
@@ -3651,9 +3651,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (accessor.Key.Type == XSharpLexer.SET && accessor.ExprList == null)
                     {
                         // If there is a property with just a SET Accessor then create a Get Accessor
-                        var newaccessor = new XP.PropertyLineAccessorContext(context, 0);
-                        newaccessor.CopyFrom(accessor);
-                        newaccessor.Key = new XSharpToken(XSharpLexer.GET, "GET");
+                        var newAccessor = new XP.PropertyLineAccessorContext(context, 0);
+                        newAccessor.CopyFrom(accessor);
+                        newAccessor.Key = new XSharpToken(XSharpLexer.GET, "GET");
                         var decl = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,
                             attributeLists: default,
                             modifiers: default,
@@ -3662,8 +3662,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             expressionBody: null,
                             semicolonToken: SyntaxFactory.SemicolonToken);
                         decl = decl.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_GeneratingGetAccessor));
-                        newaccessor.Put(decl);
-                        context._LineAccessors.Add(newaccessor);
+                        newAccessor.Put(decl);
+                        context._LineAccessors.Add(newAccessor);
                     }
                 }
             }
@@ -3705,7 +3705,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 list = MakeList<AccessorDeclarationSyntax>(context._Accessors);
             }
             var accessorList = MakeAccessorList(list.Nodes);
-            var explicitif = context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
+            var explicitIf = context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
                         name: context.ExplicitIface.Get<NameSyntax>(),
                         dotToken: SyntaxFactory.DotToken);
 
@@ -3745,17 +3745,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var initializer = initValue == null ? null :
                     _syntaxFactory.EqualsValueClause(SyntaxFactory.EqualsToken, initValue);
 
-                MemberDeclarationSyntax propertydecl = _syntaxFactory.PropertyDeclaration(
+                MemberDeclarationSyntax propertyDecl = _syntaxFactory.PropertyDeclaration(
                      attributeLists: atts,
                      modifiers: mods,
                      type: type,
-                     explicitInterfaceSpecifier: explicitif,
+                     explicitInterfaceSpecifier: explicitIf,
                      identifier: id,
                      accessorList: accessorList,
                      expressionBody: null,
                      initializer: initializer,
                      semicolonToken: SyntaxFactory.SemicolonToken);
-                context.Put(propertydecl);
+                context.Put(propertyDecl);
             }
             else
             {
@@ -3774,7 +3774,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     attributeLists: atts,
                     modifiers: mods,
                     type: type,
-                    explicitInterfaceSpecifier: explicitif,
+                    explicitInterfaceSpecifier: explicitIf,
                     thisKeyword: SyntaxFactory.MakeToken(SyntaxKind.ThisKeyword, thisName),
                     parameterList: context.ParamList?.Get<BracketedParameterListSyntax>(),
                     accessorList: accessorList,
@@ -3935,7 +3935,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #region Class, Interface and Structure Members
         public virtual ConstructorDeclarationSyntax GenerateDefaultCtor(SyntaxToken id, XSharpParserRuleContext classctx,
-            SyntaxListBuilder<UsingDirectiveSyntax> usingslist, List<XSharpLanguageParser.PartialPropertyElement> elements)
+            SyntaxListBuilder<UsingDirectiveSyntax> usingsList, List<XSharpLanguageParser.PartialPropertyElement> elements)
         {
             return null;
         }
@@ -3948,7 +3948,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: identifier,
                 typeParameterList: null,
-                parameterList: default, // TODO nvk
+                parameterList: null, // TODO nvk
                 baseList: null,
                 constraintClauses: default,
                 openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -3990,8 +3990,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         return cls.Id.Get<SyntaxToken>();
                     case XP.Structure_Context str:
                         return str.Id.Get<SyntaxToken>();
-                    case XP.Interface_Context interf:
-                        return interf.Id.Get<SyntaxToken>();
+                    case XP.Interface_Context @interface:
+                        return @interface.Id.Get<SyntaxToken>();
                     case XP.FoxclassContext fox:
                         return fox.Id.Get<SyntaxToken>();
                     case XP.XppclassContext xpp:
@@ -4012,8 +4012,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var nobody = context.ExpressionBody != null;
             var body = nobody ? null : processEntityBody(context);
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-            TypeSyntax returntype = null;
-            ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+            TypeSyntax returnType = null;
+            ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returnType);
             // no return statement needed  in CONSTRUCTOR
             // body = AddMissingReturnStatement(body, context.StmtBlk, null);
             bool missingParent = false;
@@ -4122,11 +4122,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var body = nobody ? null : processEntityBody(context);
             var expressionBody = GetExpressionBody(context.ExpressionBody);
             var parent = context.Parent as XP.PropertyContext;
-            var returntype = getReturnType(parent);
-            ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+            var returnType = getReturnType(parent);
+            ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returnType);
             if (body != null && context.Key.Type == XSharpLexer.GET)
             {
-                body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
+                body = AddMissingReturnStatement(body, context.StmtBlk, returnType);
             }
 
             context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
@@ -4170,9 +4170,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected void removeAttribute(XP.AttributesContext attributes, string attributeName)
         {
             bool found = false;
-            foreach (var attrblock in attributes._AttrBlk)
+            foreach (var attrBlock in attributes._AttrBlk)
             {
-                foreach (var attr in attrblock._Attributes)
+                foreach (var attr in attrBlock._Attributes)
                 {
                     var name = attr.Name.GetText();
                     var pos = name.LastIndexOf('.');
@@ -4181,12 +4181,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (XSharpString.Equals(name, attributeName) ||
                         XSharpString.Equals(name, attributeName + "Attribute"))
                     {
-                        attrblock._Attributes.Remove(attr);
+                        attrBlock._Attributes.Remove(attr);
                         found = true;
                         break;
                     }
                 }
-                ExitAttributeBlock(attrblock);
+                ExitAttributeBlock(attrBlock);
                 if (found)
                     break;
             }
@@ -4198,8 +4198,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var parent = context.Parent;
             if (parent is XP.FoxmethodContext fmc)
             {
-                var clsmember = fmc.Parent as XP.FoxclassmemberContext;
-                var cls = clsmember.Parent as XP.FoxclassContext;
+                var clsMember = fmc.Parent as XP.FoxclassmemberContext;
+                var cls = clsMember.Parent as XP.FoxclassContext;
                 return cls;
             }
             if (parent is XP.EntityContext)
@@ -4208,17 +4208,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (parent is XP.ClassmemberContext cmc)
             {
-                if (cmc.Parent is XP.Class_Context cls)
+                if (cmc.Parent is XP.IEntityContext ent)
                 {
-                    return cls;
-                }
-                if (cmc.Parent is XP.Interface_Context interf_)
-                {
-                    return interf_;
-                }
-                if (cmc.Parent is XP.Structure_Context struct_)
-                {
-                    return struct_;
+                    return ent;
                 }
             }
             return null;
@@ -4287,7 +4279,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             ExitParameterList(context.ParamList);
                             removeAttribute(context.Attributes, "Extension");
                             attributes = getAttributes(context.Attributes);
-                        } 
+                        }
                     }
 
                     if (hasSelf && !mods.Any((int)SyntaxKind.StaticKeyword))
@@ -4335,26 +4327,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             var body = hasNoBody ? null : processEntityBody(context);
-            var returntype = context.ReturnType?.Get<TypeSyntax>();
-            if (returntype == null)
+            var returnType = context.ReturnType?.Get<TypeSyntax>();
+            if (returnType == null)
             {
                 if (context.RealType == XP.ASSIGN)
                 {
-                    returntype = VoidType;
+                    returnType = VoidType;
                 }
                 else  // method and access
                 {
-                    returntype = _getMissingType();
-                    returntype.XNode = context;
+                    returnType = _getMissingType();
+                    returnType.XNode = context;
                 }
             }
             else
             {
-                returntype.XCanBeVoStruct = true;
+                returnType.XCanBeVoStruct = true;
             }
-            var oldbody = body;
-            ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
-            if (body != oldbody)
+            var oldBody = body;
+            ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returnType);
+            if (body != oldBody)
             {
                 context.StmtBlk.Put(body);
             }
@@ -4362,16 +4354,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // Assign does not need a return.
                 // So do not add missing returns
-                returntype = VoidType;
+                returnType = VoidType;
             }
             else if (context.StmtBlk != null && !hasNoBody)
             {
-                body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
+                body = AddMissingReturnStatement(body, context.StmtBlk, returnType);
             }
             MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
                 attributeLists: attributes,
                 modifiers: mods,
-                returnType: returntype,
+                returnType: returnType,
                 explicitInterfaceSpecifier: context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
                     name: context.ExplicitIface.Get<NameSyntax>(),
                     dotToken: SyntaxFactory.DotToken),
@@ -9775,6 +9767,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var closeParen = SyntaxFactory.CloseParenToken;
             var elements = MakeSeparatedList<TupleElementSyntax>(context._Elements);
             context.Put(_syntaxFactory.TupleType(openParen, elements, closeParen));
+            if (elements.Count < 2)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
+            }
         }
 
         public override void ExitTupleTypeElement([NotNull] XP.TupleTypeElementContext context)
@@ -9790,6 +9786,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var closeParen = SyntaxFactory.CloseParenToken;
             var args = MakeSeparatedList<ArgumentSyntax>(context._Args);
             context.Put(_syntaxFactory.TupleExpression(openParen, args, closeParen));
+            if (args.Count < 2)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
+            }
+
         }
 
         public override void ExitTupleExprArgument([NotNull] XP.TupleExprArgumentContext context)
@@ -10423,7 +10424,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 args.Add(MakeArgument(_syntaxFactory.DeclarationExpression(loc.Type.Get<TypeSyntax>(), locdes)));
             }
             context.Put(_syntaxFactory.TupleExpression(SyntaxFactory.OpenParenToken, args, SyntaxFactory.CloseParenToken));
+            if (args.Count < 2)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
+            }
             _pool.Free(args);
+
         }
 
         public override void ExitDesignationExpr([NotNull] XP.DesignationExprContext context)
@@ -10435,9 +10441,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     variables.AddSeparator(SyntaxFactory.CommaToken);
                 variables.Add(GetDesignation(id));
             }
-            var vardes = _syntaxFactory.ParenthesizedVariableDesignation(SyntaxFactory.OpenParenToken, variables, SyntaxFactory.CloseParenToken);
+            if (variables.Count < 2)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
+            }
+
+            var varDesign = _syntaxFactory.ParenthesizedVariableDesignation(SyntaxFactory.OpenParenToken, variables, SyntaxFactory.CloseParenToken);
             _pool.Free(variables);
-            context.Put(_syntaxFactory.DeclarationExpression(_impliedType, vardes));
+            context.Put(_syntaxFactory.DeclarationExpression(_impliedType, varDesign));
         }
         #endregion
 

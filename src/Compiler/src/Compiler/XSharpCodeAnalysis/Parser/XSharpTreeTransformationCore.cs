@@ -9820,7 +9820,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var closeParen = SyntaxFactory.CloseParenToken;
             var elements = MakeSeparatedList<TupleElementSyntax>(context._Elements);
             context.Put(_syntaxFactory.TupleType(openParen, elements, closeParen));
-            if (elements.Count < 2)
+            if (context.t != null && elements.Count < 2)
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
             }
@@ -9839,7 +9839,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var closeParen = SyntaxFactory.CloseParenToken;
             var args = MakeSeparatedList<ArgumentSyntax>(context._Args);
             context.Put(_syntaxFactory.TupleExpression(openParen, args, closeParen));
-            if (args.Count < 2)
+            if (context.t != null && args.Count < 2)
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
             }

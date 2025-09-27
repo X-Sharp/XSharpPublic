@@ -1123,15 +1123,17 @@ anonMember          : Name=identifierName Op=assignoperator Expr=expression
                     | Expr=expression
                     ;
 
-// Tuples
+// For tuples without the keyword we force 2 elements to avoid confusion with typecasts
 
-tupleType           : TUPLE? LPAREN Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)* RPAREN
+tupleType           : t=TUPLE LPAREN Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)* RPAREN
+                    | LPAREN Elements+=tupleTypeElement COMMA Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)* RPAREN
                     ;
 
 tupleTypeElement    : (identifierName AS)? datatype
                     ;
-
-tupleExpr           : TUPLE? LPAREN Args+=tupleExprArgument (COMMA Args+=tupleExprArgument)* RPAREN
+// For tuples without the Tuple keyword we force 2 elements to avoid confusion with paren expressions
+tupleExpr           : t=TUPLE LPAREN Args+=tupleExprArgument (COMMA Args+=tupleExprArgument)* RPAREN
+                    | LPAREN Args+=tupleExprArgument COMMA Args+=tupleExprArgument (COMMA Args+=tupleExprArgument)* RPAREN
                     ;
 
 tupleExprArgument   : Name=identifierName Op=assignoperator Expr=expression

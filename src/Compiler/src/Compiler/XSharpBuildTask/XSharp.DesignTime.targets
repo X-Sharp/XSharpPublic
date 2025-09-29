@@ -20,10 +20,11 @@
 
   <PropertyGroup>
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
+	<ManagedXamlResourcesDirectory>$(MSBuildThisFileDirectory)\Microsoft</ManagedXamlResourcesDirectory>
   </PropertyGroup>
 
 
-  <Import Project="Microsoft.Managed.DesignTime.targets" />
+  <Import Project="$(ManagedXamlResourcesDirectory)\Managed.DesignTime.targets" />
 
   <!-- Properties -->
   <PropertyGroup>
@@ -75,15 +76,19 @@
       <Context>Project</Context>
     </PropertyPageSchema>
 
+    <PropertyPageSchema Include="$(XSharpXamlDir)ProjectDebugger.XSharp.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+
     <PropertyPageSchema Include="$(XSharpXamlDir)VOBinary.xaml">
       <Context>File</Context>
     </PropertyPageSchema>
 
-   <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.xaml">
+    <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.xaml">
       <Context>File</Context>
     </PropertyPageSchema>
-	
-   <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.BrowseObject.xaml">
+
+    <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.BrowseObject.xaml">
       <Context>BrowseObject</Context>
     </PropertyPageSchema>
 
@@ -91,7 +96,7 @@
       <Context>BrowseObject</Context>
     </PropertyPageSchema>
 
-	<PropertyPageSchema Include="$(ManagedXamlNeutralResourcesDirectory)EditorConfigFiles.xaml">
+    <PropertyPageSchema Include="$(ManagedXamlNeutralResourcesDirectory)EditorConfigFiles.xaml">
       <Context>File</Context>
     </PropertyPageSchema>
 
@@ -99,6 +104,11 @@
       <Context>BrowseObject</Context>
     </PropertyPageSchema>
 
+
+    <PropertyPageSchema Include="$(ManagedXamlNeutralResourcesDirectory)DebuggerGeneral.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+	
   </ItemGroup>
 
   <!-- Targets -->

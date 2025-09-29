@@ -24,7 +24,6 @@
 
     <!-- Set's the JSON manifest name for GetVsixPrimaryOutputs in Directory.Build.targets -->
     <VsixManifestPackageId>$(_ManagedProjectName)</VsixManifestPackageId>
-    <CodeModel>E:\XSharp\Dev30\Artifacts\Common\Release\XSharp.CodeModel.dll</CodeModel>
     <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
     <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>

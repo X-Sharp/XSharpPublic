@@ -1,98 +1,37 @@
-﻿// 902. Macro compiler problem passing more than 2 arguments by reference (test b)
-// https://www.xsharp.eu/forum/topic?p=29165#p29165
-// https://github.com/X-Sharp/XSharpPublic/issues/1445
+﻿// 385. Various compatibility issues with conversions and casts
+FUNCTION Start() AS VOID
 
-FUNCTION Start() AS VOID STRICT
-	PRIVATE oa
-	PRIVATE ca
-	PRIVATE cb
-	PRIVATE cc
+LOCAL b1 := 0xF1 AS BYTE
+LOCAL b2 := 0x01 AS BYTE
+LOCAL b3 := 0xF3 AS BYTE
 
-	LOCAL cCmd	AS STRING
+? b1,b3 // warning killer
 
-	oa := a{}
+? INT64(b2)
+? INT64(_CAST , b2)
+xAssert(INT64(b2) == 0x01 , "INT64(b2)")
+xAssert(INT64(_CAST , b2) == 0x01 , "INT64(_CAST , b2)")
 
-	? "Direct call 2 parameters:"
-	ca	:= ""
-	cb	:= NULL_DATE
-	oa:CallByRef2(@ca,@cb,@cc)
-	? ca
-	? cb
-	?
 
-	? "Direct call 3 parameters:"
-	ca	:= ""
-	cb	:= NULL_DATE
-	cc	:= NULL_DATE
-	oa:CallByRef3(@ca,@cb,@cc)
-	? ca
-	? cb
-	? cc
-	?
+? AsHexString(UINT64(b2))
+? AsHexString(UINT64(_CAST , b2))
+xAssert(AsHexString(UINT64(b2)) == "0000000000000001" , "UINT64(b2)")
+xAssert(AsHexString(UINT64(_CAST , b2)) == "0000000000000001" , "UINT64(_CAST , b2)")
 
-	? "Indirect call 2 parameters:"
-	ca	:= "" 
-	cb	:= NULL_DATE
-	cCmd := "oa:CallByRef2(@ca,@cb)"
-	Eval(&("{||"+cCmd+"}"))
-	? ca
-	? cb
-	?
 
-	? "Indirect call 3 parameters, third by value:"
-	ca	:= ""
-	cb	:= NULL_DATE
-	cc	:= NULL_DATE
-	cCmd := "oa:CallByRef3a(@ca,@cb,cc)"
-	Eval(&("{||"+cCmd+"}"))
-	? ca
-	? cb
-	? cc
-	?
+? AsHexString(INT64(b2))
+? AsHexString(INT64(_CAST , b2))
+xAssert(AsHexString(INT64(b2)) == "0000000000000001" , "INT64(b2)")
+xAssert(AsHexString(INT64(_CAST , b2)) == "0000000000000001" , "INT64(_CAST , b2)")
 
-	? "Indirect call 3 parameters, third by ref:"
-	ca	:= ""
-	cb	:= NULL_DATE
-	cc	:= NULL_DATE
-	cCmd := "oa:CallByRef3(@ca,@cb,@cc)"
-	Eval(&("{||"+cCmd+"}"))
-	? ca
-	? cb
-	? cc
-	?
+LOCAL d := ConDate(1975,7,5) AS DATE // or SYMBOL, PSZ etc
+? DWORD(_CAST , d)
+? DWORD(_CAST , d + 1)
+xAssert(DWORD(_CAST , d) == 2442599 , "DWORD(_CAST , d)")
+xAssert(DWORD(_CAST , d + 1) == 2442600 , "DWORD(_CAST , d + 1)")
+xAssert(DWORD(_CAST , d - 1) == 2442598 , "DWORD(_CAST , d - 1)")
 wait
-
-RETURN
-
-CLASS a
-
-METHOD CallByRef2(a REF STRING,b REF DATE) AS LOGIC
-LOCAL lOk	AS LOGIC
-
-a := "OK"
-b	:= Today()
-lOk := TRUE
-
-RETURN lOk
-
-METHOD CallByRef3(a REF STRING,b REF DATE,c REF DATE) AS LOGIC
-LOCAL lOk	AS LOGIC
-
-a := "OK"
-b	:= Today()
-c := Today()+1
-lOk := TRUE
-
-RETURN lOk
-
-METHOD CallByRef3a(a REF STRING,b REF DATE,c AS DATE) AS LOGIC
-LOCAL lOk	AS LOGIC
-
-a := "OK"
-b	:= Today()
-c := Today()+1
-lOk := TRUE
-
-RETURN lOk
-
-END CLASS
+PROC xAssert(l AS LOGIC , cExpression AS STRING)
+IF .not. l
+	THROW Exception{"Failed result: " + cExpression}
+END IF

@@ -2,16 +2,6 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
   <file datatype="xml" source-language="en" target-language="pt-BR" original="../VSPackage.resx">
     <body>
-      <trans-unit id="28">
-        <source>X#</source>
-        <target state="new">X#</target>
-        <note />
-      </trans-unit>
-      <trans-unit id="29">
-        <source>X# Project Files (*.xsproj);*.xsproj</source>
-        <target state="new">X# Project Files (*.xsproj);*.xsproj</target>
-        <note />
-      </trans-unit>
       <trans-unit id="3">
         <source>Console App (.NET Core)</source>
         <target state="translated">Aplicativo do Console (.NET Core)</target>
@@ -90,11 +80,6 @@
       <trans-unit id="26">
         <source>C# Project Files (*.csproj);*.csproj</source>
         <target state="translated">Arquivos de Projeto C# (*.csproj);*.csproj</target>
-        <note />
-      </trans-unit>
-      <trans-unit id="27">
-        <source>.NET Core 2015 Project Files (*.xproj);*.xproj</source>
-        <target state="translated">Arquivos de Projeto do .NET Core 2015 (*.xproj);*.xproj</target>
         <note />
       </trans-unit>
       <trans-unit id="Setting_FastUpToDateCheck_Enabled_Title">

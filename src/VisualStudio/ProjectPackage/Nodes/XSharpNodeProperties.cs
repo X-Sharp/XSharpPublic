@@ -158,7 +158,7 @@ namespace XSharp.Project
                 if (value != base.BuildAction)
                 {
                     base.BuildAction = value;
-                    XNode.BuildActionChanged(value)
+                    XNode.BuildActionChanged();
 
                 }
             }

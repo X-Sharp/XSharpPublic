@@ -4,28 +4,19 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.ProjectSystem.VS;
-using Microsoft.VisualStudio.ProjectSystem.VS.Xproj;
 using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Packaging;
 
-[Guid(PackageGuid)]
-[PackageRegistration(AllowsBackgroundLoading = true, RegisterUsing = RegistrationMethod.Assembly, UseManagedResourcesOnly = true)]
-[ProvideProjectFactory(typeof(XprojProjectFactory), null, "#27", "xproj", "xproj", null)]
-[ProvideAutoLoad(ActivationContextGuid, PackageAutoLoadFlags.BackgroundLoad)]
-[ProvideUIContextRule(
-    contextGuid: ActivationContextGuid,
-    name: "Load Managed Project Package",
-    expression: "dotnetcore",
-    termNames: ["dotnetcore"],
-    termValues: ["SolutionHasProjectCapability:.NET & CPS"])]
-[ProvideMenuResource("Menus.ctmenu", 5)]
-    internal sealed class XSharpManagedProjectSystemPackage : AsyncPackage
+#if XSHARP
+internal sealed class XSharpManagedProjectSystemPackage : AsyncPackage
 {
     public const string ActivationContextGuid = "E7DF1626-44DD-4E8C-A8A0-92EAB6DDC16E";
-#if XSHARP		
     public const string PackageGuid = "93bc6a0e-d5ad-455e-a9b9-01d09153707d";
-#else		
+#else
+internal sealed class ManagedProjectSystemPackage : AsyncPackage
+{
+    public const string ActivationContextGuid = "E7DF1626-44DD-4E8C-A8A0-92EAB6DDC16E";
     public const string PackageGuid = "860A27C0-B665-47F3-BC12-637E16A1050A";
 #endif
     protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)

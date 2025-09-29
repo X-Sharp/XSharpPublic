@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information. -->
+<Rule Name="ProjectDebugPropertyPage"
+      Description="Properties associated with launching and debugging the project output."
+      DisplayName="Project"
+      PageTemplate="commandNameBasedDebugger"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+  <Rule.Metadata>
+    <sys:String x:Key="CommandName">Project</sys:String>
+
+    <!-- KnownImageIds.ImageCatalogGuid -->
+    <sys:Guid x:Key="ImageMonikerGuid">AE27A6B0-E345-4288-96DF-5EAF394EE369</sys:Guid>
+
+    <!-- KnownImageIds.Application -->
+    <sys:Int32 x:Key="ImageMonikerId">165</sys:Int32>
+  </Rule.Metadata>
+
+  <Rule.DataSource>
+    <DataSource Persistence="LaunchProfile"
+                HasConfigurationCondition="False"
+                ItemType="LaunchProfile" />
+  </Rule.DataSource>
+
+  <StringProperty Name="CommandLineArguments"
+                  DisplayName="Command line arguments"
+                  Description="Command line arguments to pass to the executable. You may break arguments into multiple lines.">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="MultiLineString">
+        <ValueEditor.Metadata>
+          <NameValuePair Name="UseMonospaceFont" Value="True" />
+          <NameValuePair Name="TextWrapping" Value="Wrap" />
+        </ValueEditor.Metadata>
+      </ValueEditor>
+    </StringProperty.ValueEditors>
+  </StringProperty>
+
+  <StringProperty Name="StartArguments" Visible="False" ReadOnly="True">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile"
+                  SourceOfDefaultValue="AfterContext"
+                  HasConfigurationCondition="False" />
+    </StringProperty.DataSource>
+  </StringProperty>
+
+  <StringProperty Name="CommandLineArgumentsOverriddenWarning"
+                  DisplayName="Ignored"
+                  Description="⚠️ WARNING! This project defines the StartArguments MSBuild property, which overrides any command line arguments specified here. If you wish to define arguments here, you must remove that property from your MSBuild project. Note that it may be defined in a .user file.">
+    <StringProperty.DataSource>
+      <DataSource PersistedName="CommandLineArgumentsOverriddenWarning"
+                  Persistence="ProjectFileWithInterception"
+                  HasConfigurationCondition="False" />
+    </StringProperty.DataSource>
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="Description" />
+    </StringProperty.ValueEditors>
+    <StringProperty.Metadata>
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(ne (unevaluated "Project" "StartArguments") "")</NameValuePair.Value>
+      </NameValuePair>
+    </StringProperty.Metadata>
+  </StringProperty>
+
+  <StringProperty Name="WorkingDirectory"
+                  DisplayName="Working directory"
+                  Description="Path to the working directory where the process will be started."
+                  Subtype="folder" />
+
+  <BoolProperty Name="RemoteDebugEnabled"
+                DisplayName="Use remote machine"
+                Description="Indicates that the debugger should attach to a process on a remote machine." />
+
+  <StringProperty Name="RemoteDebugMachine"
+                  DisplayName="Remote machine name"
+                  Description="The name and port number of the remote machine in 'name:port' format.">
+    <StringProperty.Metadata>
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(has-evaluated-value "Project" "RemoteDebugEnabled" true)</NameValuePair.Value>
+      </NameValuePair>
+      <NameValuePair Name="DependsOn" Value="Project::RemoteDebugMachine" />
+    </StringProperty.Metadata>
+  </StringProperty>
+
+  <DynamicEnumProperty Name="AuthenticationMode"
+                       DisplayName="Authentication mode"
+                       Description="The authentication scheme to use when connecting to the remote machine."
+                       EnumProvider="AuthenticationModeEnumProvider">
+    <DynamicEnumProperty.Metadata>
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(has-evaluated-value "Project" "RemoteDebugEnabled" true)</NameValuePair.Value>
+      </NameValuePair>
+      <NameValuePair Name="DependsOn" Value="Project::RemoteDebugMachine" />
+    </DynamicEnumProperty.Metadata>
+  </DynamicEnumProperty>
+
+  <StringProperty Name="EnvironmentVariables"
+                  DisplayName="Environment variables"
+                  Description="The environment variables to set prior to running the process.">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="NameValueList" />
+    </StringProperty.ValueEditors>
+  </StringProperty>
+
+  <BoolProperty Name="HotReloadEnabled"
+                DisplayName="Enable Hot Reload"
+                Description="Apply code changes to the running application.">
+    <BoolProperty.Metadata>
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>
+          (and
+            (has-project-capability "SupportsHotReload")
+            (not (has-evaluated-value "Project" "RemoteDebugEnabled" true)))</NameValuePair.Value>
+      </NameValuePair>
+    </BoolProperty.Metadata>
+  </BoolProperty>
+
+  <BoolProperty Name="NativeDebugging"
+                DisplayName="Enable native code debugging"
+                Description="Enable debugging for managed and native code together, also known as mixed-mode debugging." />
+
+  <BoolProperty Name="SqlDebugging"
+                DisplayName="Enable SQL Server debugging"
+                Description="Enable debugging of SQL scripts and stored procedures." />
+
+  <BoolProperty Name="WebView2Debugging"
+                DisplayName="Enable WebView2 debugging"
+                Description="Enable JavaScript debugger for Microsoft Edge (Chromium) based WebView2. Requires the JavaScript Diagnostics component." />
+</Rule>

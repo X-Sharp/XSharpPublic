@@ -335,7 +335,7 @@ function DescendA(uValue ref usual) as usual
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ntrim/*" />
-function NTrim(nNum as usual) as string
+function NTrim(nNum IN usual) as string
     local ret as string
     switch nNum:_usualType
     case __UsualType.Int64

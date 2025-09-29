@@ -39,10 +39,17 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+    <Folder Include="runtimes\" />
+    <Folder Include="runtimes\win-arm\" />
+    <Folder Include="runtimes\win-arm\native\" />
+    <Folder Include="runtimes\win-x64\" />
+    <Folder Include="runtimes\win-x64\native\" />
+    <Folder Include="runtimes\win-x86\" />
+    <Folder Include="runtimes\win-x86\native\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite">
-      <Version>9.0.0</Version>
+      <Version>9.0.6</Version>
     </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">

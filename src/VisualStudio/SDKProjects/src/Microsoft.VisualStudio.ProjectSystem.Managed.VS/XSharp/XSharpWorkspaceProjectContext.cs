@@ -65,7 +65,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.LanguageServices
             _rootNamespace = evaluationData.GetPropertyValue(XSharpProjectFileConstants.RootNamespace);
             _version = evaluationData.GetPropertyValue(XSharpProjectFileConstants.TargetFramework);
             XsDisplayName = $"{_name} ({_version})";
-            DisplayName = _name;
+            DisplayName = XsDisplayName;
             LastDesignTimeBuildSucceeded = true;
             IsPrimary = true;
             Id = ProjectId.CreateNewId(DisplayName);

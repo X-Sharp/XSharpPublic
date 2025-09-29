@@ -8,6 +8,7 @@
   <!-- Local properties -->
   <PropertyGroup>
     <_ManagedProjectName>Microsoft.VisualStudio.ProjectSystem.Managed</_ManagedProjectName>
+    <EnableSourceLink>false</EnableSourceLink>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -18,40 +19,27 @@
 
     <!-- VSIX -->
     <ExtensionInstallationRoot>Extensions</ExtensionInstallationRoot>
-    <ExtensionInstallationFolder>XSharp\ManagedProjectSystem</ExtensionInstallationFolder>
+    <ExtensionInstallationFolder>Microsoft\ManagedProjectSystem</ExtensionInstallationFolder>
     <TargetVsixContainerName>$(AssemblyName).vsix</TargetVsixContainerName>
     <TargetVsixContainer>$(VisualStudioSetupInsertionPath)$(TargetVsixContainerName)</TargetVsixContainer>
 
     <!-- Set's the JSON manifest name for GetVsixPrimaryOutputs in Directory.Build.targets -->
     <VsixManifestPackageId>$(_ManagedProjectName)</VsixManifestPackageId>
-    <CodeModel>E:\XSharp\Dev30\Artifacts\Common\Release\XSharp.CodeModel.dll</CodeModel>
-    <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
-    <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
-    <EnableNETAnalyzers>False</EnableNETAnalyzers>
-    <NoWarn>$(NoWarn);1701;1702;1705;1591</NoWarn>
 
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="AssemblyRedirects.cs" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="csharp.extension.vsixmanifest" />
-    <None Remove="XSharp.VisualStudio.ProjectSystem.Managed.VS.pkgdef" />
-    <None Remove="ProjectSelectors.pkgdef" />
-  </ItemGroup>
 
-  <ItemGroup>
     <Content Include="UnifiedSettings\ManagedProjectSystem.registration.json">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     
-    <ProjectReference Include="..\..\src\Microsoft.VisualStudio.ProjectSystem.Managed.VS\XSharp.VisualStudio.ProjectSystem.Managed.VS.csproj">
+    <ProjectReference Include="..\..\src\Microsoft.VisualStudio.ProjectSystem.Managed.VS\Microsoft.VisualStudio.ProjectSystem.Managed.VS.csproj">
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup;GetCopyToOutputDirectoryItems;SatelliteDllsProjectOutputGroup;PkgdefProjectOutputGroup</IncludeOutputGroupsInVSIX>
     </ProjectReference>
     
-    <ProjectReference Include="..\..\src\Microsoft.VisualStudio.ProjectSystem.Managed\XSharp.VisualStudio.ProjectSystem.Managed.csproj">
+    <ProjectReference Include="..\..\src\$(_ManagedProjectName)\$(_ManagedProjectName).csproj">
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup;GetCopyToOutputDirectoryItems;SatelliteDllsProjectOutputGroup</IncludeOutputGroupsInVSIX>
     </ProjectReference>
     <ProjectReference Update="@(ProjectReference)">
@@ -63,11 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="XSharpProjectSelectors.pkgdef">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Microsoft.VisualStudio.ProjectSystem.Managed.VS.pkgdef">
+    <Content Include="ProjectSelectors.pkgdef">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -77,12 +61,6 @@
   </ItemGroup>
 
 
-  <ItemGroup> 
-    <Reference Include="$(CodeModel)" />
-  </ItemGroup>
-  <ItemGroup>
-    <VSIXSourceItem Include="$(CodeModel)" />
-  </ItemGroup>
   <!-- Excludes the localized .xaml files from the VSIX which are added from the GetCopyToOutputDirectoryItems output group. Only the localized .dlls are needed in the VSIX. -->
   <!-- For additional info, see: https://github.com/dotnet/project-system/issues/6612 -->
   <Target Name="ExcludeLocalizedXamlFilesFromVSIX" AfterTargets="GetVsixSourceItems">

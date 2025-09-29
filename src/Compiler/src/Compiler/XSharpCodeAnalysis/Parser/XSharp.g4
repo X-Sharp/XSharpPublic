@@ -1133,7 +1133,7 @@ tupleTypeElement    : (identifierName AS)? datatype
                     ;
 // For tuples without the Tuple keyword we force 2 elements to avoid confusion with paren expressions
 tupleExpr           : t=TUPLE l=(LPAREN|LCURLY) Args+=tupleExprArgument (COMMA Args+=tupleExprArgument)* r=(RPAREN|RCURLY)
-                    | LPAREN Args+=tupleExprArgument COMMA Args+=tupleExprArgument (COMMA Args+=tupleExprArgument)* RPAREN
+                    | l=LPAREN Args+=tupleExprArgument COMMA Args+=tupleExprArgument (COMMA Args+=tupleExprArgument)* r=RPAREN
                     ;
 
 tupleExprArgument   : Name=identifierName Op=assignoperator Expr=expression

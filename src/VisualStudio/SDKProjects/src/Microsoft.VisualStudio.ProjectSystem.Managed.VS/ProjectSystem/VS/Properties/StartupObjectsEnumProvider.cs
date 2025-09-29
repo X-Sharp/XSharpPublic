@@ -74,18 +74,18 @@ internal class StartupObjectsEnumGenerator : IDynamicEnumValuesGenerator
         Project? project = _workspace.CurrentSolution.Projects.FirstOrDefault(p => PathHelper.IsSamePath(p.FilePath!, _unconfiguredProject.FullPath));
         if (project is null)
         {
-            return Array.Empty<IEnumValue>();
+                return [];
         }
 
         Compilation? compilation = await project.GetCompilationAsync();
         if (compilation is null)
         {
             // Project does not support compilations
-            return Array.Empty<IEnumValue>();
+                return [];
         }
 
-        List<IEnumValue> enumValues = new();
-        if (_includeEmptyValue)
+            List<IEnumValue> enumValues = [];
+            if (includeEmptyValue)
         {
             enumValues.Add(new PageEnumValue(new EnumValue { Name = string.Empty, DisplayName = VSResources.StartupObjectNotSet }));
         }

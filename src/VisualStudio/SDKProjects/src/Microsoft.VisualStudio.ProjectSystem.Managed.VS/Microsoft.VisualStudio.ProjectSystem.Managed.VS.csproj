@@ -1,28 +1,25 @@
 ﻿<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information. -->
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$(Solutiondir)eng\imports\VisualStudio.props" />
+  <Import Project="..\..\eng\imports\VisualStudio.props" />
 
   <PropertyGroup>
-    <EnableXlfLocalization>true</EnableXlfLocalization>
     <RootNamespace>Microsoft.VisualStudio</RootNamespace>
     <IsManagedProjectSystemProject>true</IsManagedProjectSystemProject>
     <TargetFramework>net472</TargetFramework>
+    <EnableSourceLink>false</EnableSourceLink>
 
     <!-- VSIX -->
-    <GeneratePkgDefFile>false</GeneratePkgDefFile>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <CreateVsixContainer>false</CreateVsixContainer>
     <UseCodebase>false</UseCodebase>
 
     <!-- Nuget -->
     <IsPackable>true</IsPackable>
-    <Description>XSharp VisualStudio ProjectSystem for SDK Projects.</Description>
-    <Summary>XSharp VisualStudio Managed Project System </Summary>
-    <PackageTags>XSharp Roslyn Managed Project System VisualStudio</PackageTags>
-    <NoWarn>$(NoWarn);NU5125</NoWarn>
-    <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
-    <Commondir>e:\XSharp\Dev30\src\Common\</Commondir>
-    <CodeModel>E:\XSharp\Dev30\Artifacts\Common\Release\XSharp.CodeModel.dll</CodeModel>
+    <Description>Microsoft VisualStudio ProjectSystem for Managed Languages Project hosts that interact with VisualStudio interfaces.</Description>
+    <Summary>Microsoft VisualStudio Managed Project System VS Components</Summary>
+    <PackageTags>Roslyn Managed Project System VisualStudio</PackageTags>
+    <NoWarn>$(NoWarn);NU5125;CS8032</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -83,7 +80,10 @@
 
   <ItemGroup>
     <None Include="**\*.xlf" />
-    <Compile Remove="XSharp\IgnoresAccessChecksToAttribute.cs" />
+    <Compile Remove="XSharp\**" />
+    <EmbeddedResource Remove="XSharp\**" />
+    <None Remove="XSharp\**" />
+    <None Remove="XsMenus.vsct" />
     <EmbeddedResource Update="ProjectSystem\VS\PropertyPages\PropertyPageResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>PropertyPageResources.Designer.cs</LastGenOutput>
@@ -105,22 +105,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="$(Commondir)Constants.cs" Link="Constants.cs" />
-    <Compile Include="$(Commondir)XSharpConstants.cs" Link="XSharpConstants.cs" />
-    <Compile Include="$(Commondir)XProjectFileConstants.cs" Link="XProjectFileConstants.cs" />
+    <AdditionalFiles Include="PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="WPF" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="$(CodeModel)">
-      <Private>True</Private>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVsix>true</IncludeInVsix>
-    </Reference>
-  </ItemGroup>
   <ItemGroup>
     <XamlPropertyRule Include="ProjectSystem\VS\Rules\BuildAccelerationIncompatiblePackage.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -230,7 +222,6 @@
     <Compile Include="**\CSharpImplicitUsingsControl*.cs" />
   </ItemGroup>-->
   <PropertyGroup>
-    <PreBuildEvent>copy $(CodeModel) $(OutDir)</PreBuildEvent>
     <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
     <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>

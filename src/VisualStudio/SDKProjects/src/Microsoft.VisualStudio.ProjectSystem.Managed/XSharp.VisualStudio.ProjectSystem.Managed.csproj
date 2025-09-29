@@ -25,7 +25,7 @@
 
   </PropertyGroup>
 
-    <PropertyGroup Condition="'$(TargetFramework)' == '$(NetCoreTargetFramework)'">
+  <PropertyGroup Condition="'$(TargetFramework)' == '$(NetCoreTargetFramework)'">
     <!-- Sets the DependsOn for NPM packaging. We use the designated target to select the files to pack. -->
     <!-- See: https://dev.azure.com/devdiv/DevDiv/_git/vs-green?path=/components&anchor=packaging-components -->
     <StageForNpmPackDependsOn>$(StageForNpmPackDependsOn);AddFilesForNpmPackage</StageForNpmPackDependsOn>
@@ -245,6 +245,7 @@
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\ReferencesPage.XSharp.xaml" />
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\ReferencesPage.VisualBasic.xaml" />
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\BuildPropertyPage.FSharp.xaml" />
+
   </ItemGroup>
 
   <!-- Items -->
@@ -284,20 +285,7 @@
       <DataAccess>None</DataAccess>
       <RuleInjection>None</RuleInjection>
     </XamlPropertyRule>
-    <XamlPropertyRule Include="ProjectSystem\Rules\Items\NativeResource.xaml">
-      <XlfInput>false</XlfInput>
-      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
-      <SubType>Designer</SubType>
-      <DataAccess>None</DataAccess>
-      <RuleInjection>None</RuleInjection>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="ProjectSystem\Rules\Items\VOBinary.xaml">
-      <XlfInput>false</XlfInput>
-      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
-      <SubType>Designer</SubType>
-      <DataAccess>None</DataAccess>
-      <RuleInjection>None</RuleInjection>
-    </XamlPropertyRule>
+
 
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\Items\Content.FSharp.xaml">
       <XlfInput>false</XlfInput>
@@ -345,6 +333,7 @@
     <Compile Update="ProjectSystem\Rules\Items\NativeResource.cs">
       <DependentUpon>NativeResource.xaml</DependentUpon>
     </Compile>
+
     <XamlPropertyRule Include="ProjectSystem\Rules\Items\Folder.xaml">
       <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
       <SubType>Designer</SubType>
@@ -550,7 +539,7 @@
       <DataAccess>None</DataAccess>
       <RuleInjection>None</RuleInjection>
     </XamlPropertyRule>
-    
+
     <XamlPropertyRule Include="ProjectSystem\Rules\SuggestedVisualStudioComponentId.xaml">
       <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
       <SubType>Designer</SubType>
@@ -700,44 +689,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="ProjectSystem\Imaging\CSharp\**" />
-    <Compile Remove="ProjectSystem\Imaging\FSharp\**" />
-    <Compile Remove="ProjectSystem\Imaging\VisualBasic\**" />
-    <Compile Remove="ProjectSystem\LanguageServices\CSharp\**" />
-    <Compile Remove="ProjectSystem\LanguageServices\FSharp\**" />
-    <Compile Remove="ProjectSystem\LanguageServices\VisualBasic\**" />
-    <Compile Remove="ProjectSystem\SpecialFileProviders\CSharp\**" />
-    <Compile Remove="ProjectSystem\SpecialFileProviders\VisualBasic\**" />
-    <EmbeddedResource Remove="ProjectSystem\Imaging\CSharp\**" />
-    <EmbeddedResource Remove="ProjectSystem\Imaging\FSharp\**" />
-    <EmbeddedResource Remove="ProjectSystem\Imaging\VisualBasic\**" />
-    <EmbeddedResource Remove="ProjectSystem\LanguageServices\CSharp\**" />
-    <EmbeddedResource Remove="ProjectSystem\LanguageServices\FSharp\**" />
-    <EmbeddedResource Remove="ProjectSystem\LanguageServices\VisualBasic\**" />
-    <EmbeddedResource Remove="ProjectSystem\SpecialFileProviders\CSharp\**" />
-    <EmbeddedResource Remove="ProjectSystem\SpecialFileProviders\VisualBasic\**" />
-    <None Remove="ProjectSystem\Imaging\CSharp\**" />
-    <None Remove="ProjectSystem\Imaging\FSharp\**" />
-    <None Remove="ProjectSystem\Imaging\VisualBasic\**" />
-    <None Remove="ProjectSystem\LanguageServices\CSharp\**" />
-    <None Remove="ProjectSystem\LanguageServices\FSharp\**" />
-    <None Remove="ProjectSystem\LanguageServices\VisualBasic\**" />
-    <None Remove="ProjectSystem\SpecialFileProviders\CSharp\**" />
-    <None Remove="ProjectSystem\SpecialFileProviders\VisualBasic\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="ProjectSystem\DesignTimeTargets\Microsoft.CSharp.DesignTime.targets" />
-    <None Remove="ProjectSystem\DesignTimeTargets\Microsoft.FSharp.DesignTime.targets" />
-    <None Remove="ProjectSystem\DesignTimeTargets\Microsoft.VisualBasic.DesignTime.targets" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="ProjectSystem\Rules\Items\Resource.FSharp.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
-  
+
   <ItemGroup>
     <Resource Include="XSharp\Images\XSharpProject.png">
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -752,11 +708,26 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+  <XamlPropertyRule Include="XSharp\Rules\NativeResource.xaml"> 
+    <SubType>Designer</SubType>
+    <XlfInput>false</XlfInput>
+    <DataAccess>None</DataAccess>
+    <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+    <RuleInjection>None</RuleInjection>
+  </XamlPropertyRule>
+  <XamlPropertyRule Include="XSharp\Rules\VoBinary.xaml">
+    <SubType>Designer</SubType>
+    <XlfInput>false</XlfInput>
+    <DataAccess>None</DataAccess>
+    <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+    <RuleInjection>None</RuleInjection>
+  </XamlPropertyRule>
+  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
   </ItemGroup>
-
   <Target Name="AddFilesForNpmPackage" DependsOnTargets="Build;SatelliteDllsProjectOutputGroup" Condition="'$(TargetFramework)' == '$(NetCoreTargetFramework)'">
     <ItemGroup>
       <NpmContent Include="exports.json" />
@@ -796,19 +767,38 @@
     </ItemGroup>
   </Target>
   <!-- XSharp Remove CSharp, FSHarp and Visual basic files -->
-  
-  <!--<ItemGroup>
-    <Compile Remove="**\**VisualBasic*.*" />
-    <Compile Remove="**\**CSharp*.*" />
-    <Compile Remove="**\**FSharp*.*" />
-    <XamlPropertyRule Remove="**\**VisualBasic*.*" />
-    <XamlPropertyRule Remove="**\**CSharp*.*" />
-    <XamlPropertyRule Remove="**\**FSharp*.*" />
-    <XamlPropertyRuleNoCodeBehind Remove="**\**VisualBasic*.*" />
-    <XamlPropertyRuleNoCodeBehind Remove="**\**CSharp*.*" />
-    <XamlPropertyRuleNoCodeBehind Remove="**\**FSharp*.*" />
-    <None Remove="**\**VisualBasic*.*" />
-    <None Remove="**\**CSharp*.*" />
-    <None Remove="**\**FSharp*.*" />
-  </ItemGroup>-->
-  </Project>
+
+  <ItemGroup>
+    <Compile Remove="ProjectSystem\Imaging\CSharp\**" />
+    <Compile Remove="ProjectSystem\Imaging\FSharp\**" />
+    <Compile Remove="ProjectSystem\Imaging\VisualBasic\**" />
+    <Compile Remove="ProjectSystem\LanguageServices\CSharp\**" />
+    <Compile Remove="ProjectSystem\LanguageServices\FSharp\**" />
+    <Compile Remove="ProjectSystem\LanguageServices\VisualBasic\**" />
+    <Compile Remove="ProjectSystem\SpecialFileProviders\CSharp\**" />
+    <Compile Remove="ProjectSystem\SpecialFileProviders\VisualBasic\**" />
+    <EmbeddedResource Remove="ProjectSystem\Imaging\CSharp\**" />
+    <EmbeddedResource Remove="ProjectSystem\Imaging\FSharp\**" />
+    <EmbeddedResource Remove="ProjectSystem\Imaging\VisualBasic\**" />
+    <EmbeddedResource Remove="ProjectSystem\LanguageServices\CSharp\**" />
+    <EmbeddedResource Remove="ProjectSystem\LanguageServices\FSharp\**" />
+    <EmbeddedResource Remove="ProjectSystem\LanguageServices\VisualBasic\**" />
+    <EmbeddedResource Remove="ProjectSystem\SpecialFileProviders\CSharp\**" />
+    <EmbeddedResource Remove="ProjectSystem\SpecialFileProviders\VisualBasic\**" />
+    <None Remove="ProjectSystem\Imaging\CSharp\**" />
+    <None Remove="ProjectSystem\Imaging\FSharp\**" />
+    <None Remove="ProjectSystem\Imaging\VisualBasic\**" />
+    <None Remove="ProjectSystem\LanguageServices\CSharp\**" />
+    <None Remove="ProjectSystem\LanguageServices\FSharp\**" />
+    <None Remove="ProjectSystem\LanguageServices\VisualBasic\**" />
+    <None Remove="ProjectSystem\SpecialFileProviders\CSharp\**" />
+    <None Remove="ProjectSystem\SpecialFileProviders\VisualBasic\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ProjectSystem\DesignTimeTargets\Microsoft.CSharp.DesignTime.targets" />
+    <None Remove="ProjectSystem\DesignTimeTargets\Microsoft.FSharp.DesignTime.targets" />
+    <None Remove="ProjectSystem\DesignTimeTargets\Microsoft.VisualBasic.DesignTime.targets" />
+  </ItemGroup>
+
+</Project>

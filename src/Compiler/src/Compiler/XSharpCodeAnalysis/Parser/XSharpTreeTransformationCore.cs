@@ -10482,16 +10482,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (args.Count > 0)
                     args.AddSeparator(SyntaxFactory.CommaToken);
-                VariableDesignationSyntax locdes = GetDesignation(loc.Id);
-                args.Add(MakeArgument(_syntaxFactory.DeclarationExpression(loc.Type.Get<TypeSyntax>(), locdes)));
+                var expr = loc.Get<DeclarationExpressionSyntax>();
+                args.Add(MakeArgument(expr));
             }
             context.Put(_syntaxFactory.TupleExpression(SyntaxFactory.OpenParenToken, args, SyntaxFactory.CloseParenToken));
-            if (args.Count < 2)
+            _pool.Free(args);
+            if (context._Locals.Count < 2)
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
             }
-            _pool.Free(args);
 
+        }
+        public override void ExitLocalDesignation([NotNull] XP.LocalDesignationContext context)
+        {
+            VariableDesignationSyntax designation = GetDesignation(context.Id);
+            var expression = _syntaxFactory.DeclarationExpression(context.Type.Get<TypeSyntax>(), designation);
+            context.Put(expression);
         }
 
         public override void ExitDesignationExpr([NotNull] XP.DesignationExprContext context)

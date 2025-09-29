@@ -47,7 +47,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DisabledWarnings>9032%3b9043%3b165%3b649%3b9025%3b9026%3b9076%3b9020%3b9021%3b219</DisabledWarnings>
+    <NoWarn>9032%3b9043%3b165%3b649%3b9025%3b9026%3b9076%3b9020%3b9021%3b219</NoWarn>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <Prefer32Bit>False</Prefer32Bit>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
@@ -55,7 +55,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
     <DefineConstants>TRACE</DefineConstants>
-    <DisabledWarnings>9032;9043;618;162;165;649;9025</DisabledWarnings>
+    <NoWarn>9032;9043;618;162;165;649;9025</NoWarn>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>

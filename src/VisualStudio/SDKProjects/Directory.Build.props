@@ -22,7 +22,7 @@
   <PropertyGroup>
     <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
-    <NetCoreTargetFramework>net8.0</NetCoreTargetFramework>
+    <NetCoreTargetFramework>net9.0</NetCoreTargetFramework>
     <!--
       IMPORTANT: The reason we use 99.0.0 is because we need a version number that will always be above the published version of the assemblies/packages.
       This causes VS to always prefer our locally build packages for debugging (F5) purposes.
@@ -42,6 +42,12 @@
     <DebugType>portable</DebugType>
     <!-- Code Coverage doesn't currently work for portable/embedded PDBs. Force it to full inside Visual Studio builds. -->
     <DebugType Condition="'$(OfficialBuild)' != 'true' AND '$(CIBuild)' != 'true' AND '$(BuildingInsideVisualStudio)' == 'true'">full</DebugType>
+  </PropertyGroup>
+  <!-- Treat warnings as errors in release builds, so they're caught during CI. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- Skip just this one as unfortunately there's no way to suppress the warnings about use of obsolete XamlServices in generated rule file code. -->
+    <WarningsNotAsErrors>CS0618</WarningsNotAsErrors>
   </PropertyGroup>
 
   <!-- General -->

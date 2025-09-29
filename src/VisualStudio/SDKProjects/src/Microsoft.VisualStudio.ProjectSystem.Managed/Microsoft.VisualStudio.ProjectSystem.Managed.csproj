@@ -8,19 +8,15 @@
     <!-- The value of RuleInjectionClassName of XamlPropertyRule items defined by this project -->
     <XamlPropertyRuleInjectionClassName>ProjectProperties</XamlPropertyRuleInjectionClassName>
     <IsManagedProjectSystemProject>true</IsManagedProjectSystemProject>
-    <TargetFrameworks>net472</TargetFrameworks>
+    <TargetFrameworks>net472;$(NetCoreTargetFramework)</TargetFrameworks>
+    <EnableSourceLink>false</EnableSourceLink>
 
     <!-- Nuget -->
     <IsPackable>true</IsPackable>
-    <Description>XSharp VisualStudio ProjectSystem for SDK Projects</Description>
-    <Summary>XSharp VisualStudio Managed Project System</Summary>
-    <PackageTags>XSharp Roslyn Managed Project System VisualStudio</PackageTags>
+    <Description>Microsoft VisualStudio ProjectSystem for Managed languages Projects</Description>
+    <Summary>Microsoft VisualStudio Managed Project System</Summary>
+    <PackageTags>Roslyn Managed Project System VisualStudio</PackageTags>
     <NoWarn>$(NoWarn);NU5125</NoWarn>
-    <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
-    <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
-    <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
-    <EnableNETAnalyzers>False</EnableNETAnalyzers>
-    <CodeModel>E:\XSharp\Dev30\Artifacts\Common\Release\XSharp.CodeModel.dll</CodeModel>
 
   </PropertyGroup>
 
@@ -34,7 +30,7 @@
   <!-- TODO: Re-enable nullability and clean up warnings. -->
   <PropertyGroup Condition="'$(TargetFramework)' == '$(NetCoreTargetFramework)'">
     <Nullable>annotations</Nullable>
-    <NoWarn>$(NoWarn);RS0037;IDE0270</NoWarn>
+    <NoWarn>$(NoWarn);RS0037</NoWarn>
   </PropertyGroup>
 
   <!-- TODO: Remove this once ILaunchSettingsUIProvider has been removed. -->
@@ -52,13 +48,6 @@
     <InternalsVisibleTo Include="Microsoft.VisualStudio.ProjectSystem.Managed.VSCode.UnitTests" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" Key="$(MoqPublicKey)" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="$(CodeModel)">
-      <Private>True</Private>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVsix>true</IncludeInVsix>
-    </Reference>
-  </ItemGroup>
 
   <ItemGroup>
     <!-- Needed to break assembly conflict on StreamJsonRpc between microsoft.visualstudio.projectsystem.query and microsoft.visualstudio.languageservices -->
@@ -67,6 +56,8 @@
     <!-- The path is needed so we can copy the runtime assembly into the NPM package. -->
     <PackageReference Include="Microsoft.CodeAnalysis.Common" GeneratePathProperty="true" />
     <PackageReference Include="System.Formats.Asn1" />
+    <PackageReference Include="Microsoft.VisualStudio.Debugger.Contracts" />
+    <PackageReference Include="Microsoft.VisualStudio.HotReload.Components" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == '$(NetCoreTargetFramework)'">
@@ -231,11 +222,9 @@
     <!-- Property Pages -->
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\ApplicationPropertyPage.xaml" />
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\ApplicationPropertyPage.CSharp.xaml" />
-    <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\ApplicationPropertyPage.XSharp.xaml" />
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\ApplicationPropertyPage.VisualBasic.xaml" />
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\BuildPropertyPage.xaml" />
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\BuildPropertyPage.CSharp.xaml" />
-    <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\BuildPropertyPage.XSharp.xaml" />
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\BuildPropertyPage.VisualBasic.xaml" />
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\CodeAnalysisPropertyPage.xaml" />
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\ConfigurationGeneralPage.xaml">
@@ -248,7 +237,6 @@
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\PackagePropertyPage.xaml" />
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\ProjectDebugPropertyPage.xaml" />
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\ReferencesPage.CSharp.xaml" />
-    <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\ReferencesPage.XSharp.xaml" />
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\ReferencesPage.VisualBasic.xaml" />
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\PropertyPages\BuildPropertyPage.FSharp.xaml" />
   </ItemGroup>
@@ -291,20 +279,7 @@
       <DataAccess>None</DataAccess>
       <RuleInjection>None</RuleInjection>
     </XamlPropertyRule>
-    <XamlPropertyRule Include="ProjectSystem\Rules\Items\NativeResource.xaml">
-      <XlfInput>false</XlfInput>
-      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
-      <SubType>Designer</SubType>
-      <DataAccess>None</DataAccess>
-      <RuleInjection>None</RuleInjection>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="ProjectSystem\Rules\Items\VOBinary.xaml">
-      <XlfInput>false</XlfInput>
-      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
-      <SubType>Designer</SubType>
-      <DataAccess>None</DataAccess>
-      <RuleInjection>None</RuleInjection>
-    </XamlPropertyRule>
+
 
     <XamlPropertyRuleNoCodeBehind Include="ProjectSystem\Rules\Items\Content.FSharp.xaml">
       <XlfInput>false</XlfInput>
@@ -344,12 +319,6 @@
 
     <Compile Update="ProjectSystem\Rules\Items\Folder.cs">
       <DependentUpon>Folder.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="ProjectSystem\Rules\Items\VOBinary.cs">
-      <DependentUpon>VOBinary.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="ProjectSystem\Rules\Items\NativeResource.cs">
-      <DependentUpon>NativeResource.xaml</DependentUpon>
     </Compile>
     <XamlPropertyRule Include="ProjectSystem\Rules\Items\Folder.xaml">
       <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
@@ -669,7 +638,6 @@
   <ItemGroup>
     <XamlPropertyProjectItemsSchema Include="ProjectSystem\Rules\Items\ProjectItemsSchema.xaml" />
     <XamlPropertyProjectItemsSchema Include="ProjectSystem\Rules\Items\ProjectItemsSchema.CSharp.xaml" />
-    <XamlPropertyProjectItemsSchema Include="ProjectSystem\Rules\Items\ProjectItemsSchema.XSharp.xaml" />
     <XamlPropertyProjectItemsSchema Include="ProjectSystem\Rules\Items\ProjectItemsSchema.VisualBasic.xaml" />
     <XamlPropertyProjectItemsSchema Include="ProjectSystem\Rules\Items\ProjectItemsSchema.FSharp.xaml" />
   </ItemGroup>
@@ -706,29 +674,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="XSharp\**" />
+    <EmbeddedResource Remove="XSharp\**" />
+    <None Remove="XSharp\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ProjectSystem\DesignTimeTargets\XSharp.DesignTime.targets" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="ProjectSystem\Rules\Items\Resource.FSharp.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
-  
-  <ItemGroup>
-    <Resource Include="XSharp\Images\XSharpProject.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Resource>
-    <Resource Include="XSharp\Images\XSharpDocument.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Resource>
-  </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="XSharp\Images\XSharpImages.imagemanifest">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
-  </ItemGroup>
   <Target Name="AddFilesForNpmPackage" DependsOnTargets="Build;SatelliteDllsProjectOutputGroup" Condition="'$(TargetFramework)' == '$(NetCoreTargetFramework)'">
     <ItemGroup>
       <NpmContent Include="exports.json" />
@@ -767,20 +727,4 @@
       </Content>
     </ItemGroup>
   </Target>
-  <!-- XSharp Remove CSharp, FSHarp and Visual basic files -->
-  
-  <!--<ItemGroup>
-    <Compile Remove="**\**VisualBasic*.*" />
-    <Compile Remove="**\**CSharp*.*" />
-    <Compile Remove="**\**FSharp*.*" />
-    <XamlPropertyRule Remove="**\**VisualBasic*.*" />
-    <XamlPropertyRule Remove="**\**CSharp*.*" />
-    <XamlPropertyRule Remove="**\**FSharp*.*" />
-    <XamlPropertyRuleNoCodeBehind Remove="**\**VisualBasic*.*" />
-    <XamlPropertyRuleNoCodeBehind Remove="**\**CSharp*.*" />
-    <XamlPropertyRuleNoCodeBehind Remove="**\**FSharp*.*" />
-    <None Remove="**\**VisualBasic*.*" />
-    <None Remove="**\**CSharp*.*" />
-    <None Remove="**\**FSharp*.*" />
-  </ItemGroup>-->
   </Project>

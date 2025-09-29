@@ -21,13 +21,6 @@
 
   <!-- Binaries are delay or public-signed with one of these keys; later, the signing system will finish the strong-name signing. -->
   <Choose>
-    <When Condition="'$(StrongNameKeyId)' == 'XSharp'">
-      <PropertyGroup>
-        <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)XSharp.snk</AssemblyOriginatorKeyFile>
-        <PublicKey>$(XSharpPublicKey)</PublicKey>
-        <PublicKeyToken>ed555a0467764586</PublicKeyToken>
-      </PropertyGroup>
-    </When>
     <When Condition="'$(StrongNameKeyId)' == 'Microsoft'">
       <PropertyGroup>
         <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)MSFT.snk</AssemblyOriginatorKeyFile>
@@ -49,6 +42,13 @@
         <PublicKeyToken>adb9793829ddae60</PublicKeyToken>
         <!-- The MicrosoftAspNet strong name key is a full key, so set PublicSign to false. -->
         <PublicSign>false</PublicSign>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(StrongNameKeyId)' == 'XSharp'">
+      <PropertyGroup>
+        <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)XSharp.snk</AssemblyOriginatorKeyFile>
+        <PublicKey>$(XSharpPublicKey)</PublicKey>
+        <PublicKeyToken>ed555a0467764586</PublicKeyToken>
       </PropertyGroup>
     </When>
   </Choose>

@@ -4870,25 +4870,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string target = context.Token.Text.ToLower();
             switch (target)
             {
+                // numeric values in the switch are the values of the AttributeTargets enum
                 // Token=(ID | CLASS | CONSTRUCTOR | DELEGATE | ENUM | EVENT | FIELD | INTERFACE | METHOD | PROPERTY  | STRUCT )
                 case "parameter":
                     target = "param";
                     goto case "param";
-                case "assembly":
-                case "genericparameter":
-                case "module":
-                case "return":
-                case "class":
-                case "constructor":
-                case "delegate":
-                case "enum":
-                case "event":
-                case "field":
-                case "interface":
-                case "method":
-                case "param":
-                case "property":
-                case "struct":
+                case "assembly":    // 1
+                case "module":      // 2
+                case "class":       //4
+                case "struct":      // 8
+                case "enum":        // 16
+                case "constructor": // 32
+                case "method":      // 64
+                case "property":    // 128
+                case "field":       // 256
+                case "event":       // 512
+                case "interface":   // 1024
+                case "param":       // 2048
+                case "delegate":    // 4096
+                case "return":      // 8192
+                case "genericparameter":    // 16384
                     var id = SyntaxFactory.MakeIdentifier(target);
                     context.Put(_syntaxFactory.AttributeTargetSpecifier(id, SyntaxFactory.ColonToken));
                     break;
@@ -9842,6 +9843,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.t != null && args.Count < 2)
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
+            }
+            if (context.l.Type == XP.LCURLY && context.r.Type != XP.RCURLY)
+            {
+                _parseErrors.Add(new ParseErrorData(context.r, ErrorCode.ERR_RbraceExpected));
+            }
+            if (context.l.Type == XP.LPAREN && context.r.Type != XP.RPAREN)
+            {
+                _parseErrors.Add(new ParseErrorData(context.r, ErrorCode.ERR_CloseParenExpected));
             }
 
         }

@@ -6,7 +6,7 @@
     <OutputType>%apptype%</OutputType>
     <RootNamespace>%rootnamespace%</RootNamespace>
     <AssemblyName>%appname%</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>%targetframeworkversion%</TargetFrameworkVersion>
     <Name>%appname%</Name>
     <Dialect>VO</Dialect>
     <LB>true</LB>
@@ -32,7 +32,7 @@
     <VO11>false</VO11>
     <VO12>%option_intdiv%</VO12>
     <VO13>true</VO13>
-    <VO14>false</VO14>
+    <VO14>true</VO14>
     <VO15>true</VO15>
     <VO16>true</VO16>
     <MemVar>%option_undeclared%</MemVar>

@@ -25,6 +25,7 @@ GLOBAL gaNewKeywordsInXSharp := <STRING>{;
 
 GLOBAL DefaultOutputFolder := "" AS STRING
 GLOBAL DefaultSourceFolder := "" AS STRING
+GLOBAL DefaultTargetFramework := "v4.0" AS STRING
 GLOBAL SDKDefines_FileName := "" AS STRING
 GLOBAL RuntimeFolder := "" AS STRING
 GLOBAL NoWarningScreen := FALSE AS LOGIC
@@ -162,6 +163,8 @@ FUNCTION ReadIni() AS VOID
 						DefaultSourceFolder := cValue
 					CASE "VOFOLDER"
 						VOFolder.Set(cValue)
+					CASE "TARGETFRAMEWORKVERSION"
+						DefaultTargetFramework := cValue
 					CASE "SDKDEFINESDLL"
 						SDKDefines_FileName := cValue
 					CASE "NOWARNINGSCREEN"
@@ -338,6 +341,8 @@ CLASS xPorter
 
 	STATIC EXPORT ExportingSingleFile := FALSE AS LOGIC
 	STATIC EXPORT ExportWedToXml := FALSE AS LOGIC
+
+	STATIC EXPORT TargetFramework := DefaultTargetFramework AS STRING
 
 	STATIC PROPERTY OverWriteProjectFiles AS LOGIC AUTO
 	STATIC PROPERTY GenerateWinForms AS LOGIC AUTO
@@ -1497,6 +1502,7 @@ CLASS ApplicationDescriptor
 				IF cTemplate:Contains("%newguid%")
 					cTemplate := cTemplate:Replace("%newguid%" , NewGuid())
 				END IF
+				cTemplate := cTemplate:Replace("%targetframeworkversion%" , xPorter.TargetFramework)
 				oOutput:WriteLine(cTemplate)
 			ENDCASE
 		END DO

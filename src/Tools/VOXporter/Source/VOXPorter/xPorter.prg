@@ -196,6 +196,8 @@ FUNCTION ReadIni() AS VOID
 						xPorter.ExportToVS := cValue:Contains("VS") .or. .not. cValue:Contains("XIDE")
 					CASE "WEDXML"
 						xPorter.ExportWedToXml := cValue == "1"
+					CASE "CREATEFILEPERCLASS"
+						glCreateFilePerClass := cValue == "1"
 				END SWITCH
 			END IF
 		NEXT

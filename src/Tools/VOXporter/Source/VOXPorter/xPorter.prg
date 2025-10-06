@@ -61,6 +61,8 @@ FUNCTION Start(asParams AS STRING[]) AS INT
     oOptions:RemoveONLYEARLYpragmas := TRUE
 	xPorter.Options := oOptions
 
+	Application.EnableVisualStyles()
+
 	ReadIni()
 
 	ReadCommandLine(asParams)
@@ -103,7 +105,6 @@ FUNCTION Start(asParams AS STRING[]) AS INT
 
 	ELSE
 
-		Application.EnableVisualStyles()
 		Application.Run(xPorter.uiForm)
 
 	END IF
@@ -302,26 +303,71 @@ CLASS VOFolder
 	RETURN _scFolder
 END CLASS
 
+CLASS DocumentationAttribute INHERIT Attribute
+	PROPERTY Documentation AS STRING AUTO
+	CONSTRUCTOR(cDocumentation AS STRING)
+		SELF:Documentation := cDocumentation
+END CLASS
+
 STRUCTURE xPorterOptions
+	[Documentation("Removes the CLASS <classname> clause from methods and other class members in VO code")];
 	EXPORT RemoveClassClause AS LOGIC
+
+//	[Documentation("Changes the PASCAL clause in method definitions to STRICT")];
 //	EXPORT ChangePascalToStrict AS LOGIC
+
+	[Documentation("Changes Init() and Axit() methods to CONSTRUCTOR() and DESTRUCTOR()")];
 	EXPORT ChangeInitAxitToCtorDtor AS LOGIC
+
+	[Documentation("Removes DECLARE METHOD statements from class definitions")];
 	EXPORT RemoveDeclareMethod AS LOGIC
+
+	[Documentation("Removes EXPORT LOCAL statements")];
 	EXPORT RemoveExportLocalClause AS LOGIC
+
+//	[Documentation("Removes any statements found in RETURN commands of Init() and Axit() methods")];
 //	EXPORT RemoveInitAxitReturnClause AS LOGIC
+
+//	[Documentation("Removes any statements found in RETURN commands of ASSIGN methods")];
 //	EXPORT RemoveAssignReturnClause AS LOGIC
+
+	[Documentation("Adds the PARTIAL modifier to all generated classes")];
 	EXPORT AllClassesPartial AS LOGIC
+
+	[Documentation("Adds empty constructors to classes that do not contain an Init() method in VO")];
 	EXPORT AddMissingConstrutors AS LOGIC
+
+	[Documentation("Prevents generation of DEFINEs with the same name")];
 	EXPORT IgnoreDuplicateDefines AS LOGIC
+
+	[Documentation("Does not generate .prg files for VO modules containing no code")];
 	EXPORT DontGenerateEmptyFiles AS LOGIC
+
+	[Documentation("Converts code that uses WinAPI callback functions to use a DELEGATE instead")];
 	EXPORT AdjustCallbackFunctions AS LOGIC
+
+	[Documentation("Exports only the DEFINEs found in the VO code")];
 	EXPORT ExportOnlyDefines AS LOGIC
+
+	[Documentation("Sorts the generated X# classes/methods/functions etc by name")];
 	EXPORT SortEntitiesByName AS LOGIC
+
+	[Documentation("Adds project references to the X# runtime (instead of the vulcan runtime)")];
 	EXPORT UseXSharpRuntime AS LOGIC
+
+	[Documentation("Copies resources (bitmap, icon etc files) to each generated project folder")];
     EXPORT CopyResourcesToProjectFolder AS LOGIC
+
+	[Documentation("Replaces values in resources specified as DEFINES with their actual values")];
     EXPORT ReplaceResourceDefinesWithValues AS LOGIC
+
+	[Documentation("Prefixes with '_' any protected IVars (PROTECT, HIDDEN, PRIVATE) that have the same name with an ACCESS/ASSIGN")];
     EXPORT CheckForIVarAndPropertyConflicts AS LOGIC
+
+	[Documentation("Prevents any conversion on code that is included within #ifdef/#endif directives")];
     EXPORT IgnoreCodeInside_ifdef_endif AS LOGIC
+
+	[Documentation("Removes ~ONLYEARLY~ pragms found in the VO code")];
     EXPORT RemoveONLYEARLYpragmas AS LOGIC
 END STRUCTURE
 

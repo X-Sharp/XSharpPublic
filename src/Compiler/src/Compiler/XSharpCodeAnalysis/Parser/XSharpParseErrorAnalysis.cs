@@ -959,6 +959,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitClass_([NotNull] XSharpParser.Class_Context context)
         {
             checkMissingKeyword(context.End, context, "END CLASS");
+            if (context.C == null && context.C2 != null)
+            {
+                // then the end must be END RECORD
+                _parseErrors.Add(new ParseErrorData(context.C2, ErrorCode.ERR_UnexpectedToken, context.C2.Text));
+
+            }
+            if (context.C != null && context.R2 != null)
+            {
+                // then the end must be END RECORD
+                _parseErrors.Add(new ParseErrorData(context.R2, ErrorCode.ERR_UnexpectedToken, context.R2.Text));
+            }
         }
         public override void ExitInterface_([NotNull] XSharpParser.Interface_Context context)
         {

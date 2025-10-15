@@ -2626,19 +2626,6 @@ public partial class XSharpBaseListener : IXSharpListener {
 	public virtual void ExitStructure_([NotNull] XSharpParser.Structure_Context context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XSharpParser.record_"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterRecord_([NotNull] XSharpParser.Record_Context context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="XSharpParser.record_"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitRecord_([NotNull] XSharpParser.Record_Context context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="XSharpParser.delegate_"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

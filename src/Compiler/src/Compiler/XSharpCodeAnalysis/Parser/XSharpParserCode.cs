@@ -1010,21 +1010,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public string ShortName => Id.GetText();
         }
 
-        public partial class Record_Context : IPartialPropertyContext, ITypeContext
-        {
-#if !VSPARSER
-            readonly TypeData _data = new();
-            public TypeData TypeData => _data;
-            List<IMethodContext> partialProperties = null;
-            public List<IMethodContext> PartialProperties
-            {
-                get { return partialProperties; }
-                set { partialProperties = value; }
-            }
-#endif
-            public string Name => ParentName + ShortName;
-            public string ShortName => Id.GetText();
-        }
         public partial class VodllContext : IMemberContext, IGlobalEntityContext
         {
 #if !VSPARSER

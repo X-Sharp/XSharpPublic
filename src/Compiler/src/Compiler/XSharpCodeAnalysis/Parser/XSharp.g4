@@ -50,7 +50,6 @@ entity              : namespace_
                     | {IsFox}? foxclass                  // FoxPro Class definition*/
                     | {IsXPP}? xppclass                  // XPP Class definition
                     | structure_
-                    | record_
                     | interface_
                     | delegate_
                     | event_
@@ -251,7 +250,7 @@ interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?
 
 
 class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
-                      C=CLASS (Namespace=nameDot)? Id=identifier
+                      (C=CLASS | R=RECORD | R=RECORD C=CLASS) (Namespace=nameDot)? Id=identifier
                       TypeParameters=typeparameters?                                    // TypeParameters indicate Generic Class
                       (INHERIT BaseType=datatype)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
@@ -260,7 +259,7 @@ class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (Members+=classmember)*
                       // Do not make the next line optional. The parser will not know when a nested type starts or the next type
                       // as a result the parser will become VERY slow
-                      END CLASS End=EOS
+                      END (R2=RECORD|C2=CLASS) End=EOS
                     ;
 
 classModifiers      : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL | LOCAL) )+
@@ -288,7 +287,7 @@ typeparameterconstraint: Key=(CLASS|STRUCTURE)                    #classOrStruct
 // End of Extensions for Generic Classes
 
 structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
-                      S=STRUCTURE (Namespace=nameDot)? Id=identifier
+                      (R=RECORD)? S=STRUCTURE (Namespace=nameDot)? Id=identifier
                       TypeParameters=typeparameters?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
@@ -297,19 +296,6 @@ structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
                       // as a result the parser will become VERY slow
                       END STRUCTURE End=EOS
                     ;
-
-record_             : (Attributes=attributes)? (Modifiers=classModifiers)?
-                      R=RECORD (S=STRUCTURE | CLASS )? (Namespace=nameDot)? Id=identifier
-                      TypeParameters=typeparameters?
-                      (INHERIT BaseType=datatype)?
-                      (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
-                      (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
-                      (Members+=classmember)*
-                      // Do not make the next line optional. The parser will not know when a nested type starts or the next type
-                      // as a result the parser will become VERY slow
-                      END RECORD End=EOS
-                    ;
-
 
 
 delegate_           : (Attributes=attributes)? (Modifiers=classModifiers)?

@@ -801,7 +801,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 {
 #if XSHARP
                                     // No warnings for duplicate usings in XSharp VO Dialect or for generated code
-                                    if (!declarationSyntax.XGenerated && !compilation.Options.HasRuntime)
+                                    if (!declarationSyntax.XGenerated && !compilation.Options.HasRuntime && imported.Name != OurNameSpaces.XSharp)
 #endif
                                     diagnostics.Add(!globalUsingNamespacesOrTypes.IsEmpty && getOrCreateUniqueGlobalUsingsNotInTree(ref uniqueGlobalUsings, globalUsingNamespacesOrTypes, declarationSyntax.SyntaxTree).Contains(imported) ?
                                                             ErrorCode.HDN_DuplicateWithGlobalUsing :

@@ -156,7 +156,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected TypeSyntax SymbolType => GenerateQualifiedName(XSharpQualifiedTypeNames.Symbol);
         protected TypeSyntax PszType => GenerateQualifiedName(XSharpQualifiedTypeNames.Psz);
         protected TypeSyntax CodeblockType => GenerateQualifiedName(XSharpQualifiedTypeNames.Codeblock);
-        protected TypeSyntax ArrayType =>GenerateQualifiedName(XSharpQualifiedTypeNames.Array);
+        protected TypeSyntax ArrayType => GenerateQualifiedName(XSharpQualifiedTypeNames.Array);
         protected ArrayTypeSyntax ArrayOfUsual
         {
             get
@@ -2469,7 +2469,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     e = _syntaxFactory.ParenthesizedLambdaExpression(
                         attributeLists: default, // TODO nvk
                         modifiers: default,
-                        returnType: default, // TODO nvk
+                        returnType: null, // TODO nvk
                         parameterList: EmptyParameterList(),
                         arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                         block: body,
@@ -2481,7 +2481,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 e = _syntaxFactory.ParenthesizedLambdaExpression(
                     attributeLists: default, // TODO nvk
                     modifiers: default,
-                    returnType: default, // TODO nvk
+                    returnType: null, // TODO nvk
                     parameterList: EmptyParameterList(),
                     arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                     block: null,
@@ -3069,8 +3069,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitClass_([NotNull] XP.Class_Context context)
         {
-            context.SetSequencePoint(context.C, context.e.Stop);
+            if (context.R != null)
+                context.SetSequencePoint(context.R, context.e.Stop);
+            else
+                context.SetSequencePoint(context.C, context.e.Stop);
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            bool isRecord = context.R != null;
             context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
             if (context.TypeData.Partial)
             {
@@ -3080,19 +3084,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var members = GetMembers(context, context._Members);
             var baseTypes = GetBaseTypes(context.BaseType?.Get<TypeSyntax>(), context._Implements);
 
-            MemberDeclarationSyntax m = _syntaxFactory.ClassDeclaration(
-                attributeLists: getAttributes(context.Attributes),
-                modifiers: mods,
-                keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
-                identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: getTypeParameters(context.TypeParameters),
-                parameterList: null, // TODO nvk
-                baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
-                constraintClauses: getTypeConstraints(context._ConstraintsClauses),
-                openBraceToken: SyntaxFactory.OpenBraceToken,
-                members: members,
-                closeBraceToken: SyntaxFactory.CloseBraceToken,
-                semicolonToken: null);
+            MemberDeclarationSyntax m;
+            if (isRecord)
+            {
+                m = _syntaxFactory.RecordDeclaration(
+                       SyntaxKind.RecordDeclaration,
+                        attributeLists: getAttributes(context.Attributes),
+                        modifiers: mods,
+                        keyword: SyntaxFactory.MakeToken(SyntaxKind.RecordKeyword),
+                        classOrStructKeyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
+                        identifier: context.Id.Get<SyntaxToken>(),
+                        typeParameterList: getTypeParameters(context.TypeParameters),
+                        parameterList: null, // TODO nvk
+                        baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
+                        constraintClauses: getTypeConstraints(context._ConstraintsClauses),
+                        openBraceToken: SyntaxFactory.OpenBraceToken,
+                        members: members,
+                        closeBraceToken: SyntaxFactory.CloseBraceToken,
+                        semicolonToken: null);
+            }
+            else
+            {
+                m = _syntaxFactory.ClassDeclaration(
+                   attributeLists: getAttributes(context.Attributes),
+                   modifiers: mods,
+                   keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
+                   identifier: context.Id.Get<SyntaxToken>(),
+                   typeParameterList: getTypeParameters(context.TypeParameters),
+                   parameterList: null, // TODO nvk
+                   baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
+                   constraintClauses: getTypeConstraints(context._ConstraintsClauses),
+                   openBraceToken: SyntaxFactory.OpenBraceToken,
+                   members: members,
+                   closeBraceToken: SyntaxFactory.CloseBraceToken,
+                   semicolonToken: null);
+            }
             _pool.Free(members);
             _pool.Free(baseTypes);
             if (context.Namespace != null)
@@ -3163,7 +3189,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.SetSequencePoint(context.S, context.e.Stop);
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            bool isRecord = context.R != null;
             context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
+
             if (context.TypeData.Partial)
             {
                 GlobalEntities.NeedsProcessing = true;
@@ -3171,66 +3199,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var members = GetMembers(context, context._Members);
             var baseTypes = GetBaseTypes(null, context._Implements);
 
-            MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
-                attributeLists: getAttributes(context.Attributes),
-                modifiers: mods,
-                keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
-                identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: getTypeParameters(context.TypeParameters),
-                parameterList: null, // TODO nvk
-                baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
-                constraintClauses: getTypeConstraints(context._ConstraintsClauses),
-                openBraceToken: SyntaxFactory.OpenBraceToken,
-                members: members,
-                closeBraceToken: SyntaxFactory.CloseBraceToken,
-                semicolonToken: null);
-            _pool.Free(members);
-            _pool.Free(baseTypes);
-            if (context.Namespace != null)
+            MemberDeclarationSyntax m;
+            if (isRecord)
             {
-                m = AddNameSpaceToMember(context.Namespace, m);
+                m = _syntaxFactory.RecordDeclaration(
+                       SyntaxKind.RecordStructDeclaration,
+                        attributeLists: getAttributes(context.Attributes),
+                        modifiers: mods,
+                        keyword: SyntaxFactory.MakeToken(SyntaxKind.RecordKeyword),
+                        classOrStructKeyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
+                        identifier: context.Id.Get<SyntaxToken>(),
+                        typeParameterList: getTypeParameters(context.TypeParameters),
+                        parameterList: null, // TODO nvk
+                        baseList: _syntaxFactory.BaseList(SyntaxFactory.ColonToken, baseTypes),
+                        constraintClauses: getTypeConstraints(context._ConstraintsClauses),
+                        openBraceToken: SyntaxFactory.OpenBraceToken,
+                        members: members,
+                        closeBraceToken: SyntaxFactory.CloseBraceToken,
+                        semicolonToken: null);
             }
             else
             {
-                m = (MemberDeclarationSyntax)CheckForConflictBetweenTypeNameAndNamespaceName(context, "STRUCTURE", m);
-            }
-            context.Put(m);
-        }
-
-        public override void EnterRecord_([NotNull] XP.Record_Context context)
-        {
-            ClassEntities.Push(CreateClassEntities());
-        }
-        public override void ExitRecord_([NotNull] XP.Record_Context context)
-        {
-            context.SetSequencePoint(context.S, context.e.Stop);
-            SyntaxToken classOrStructKeyword;
-            SyntaxKind recordKind;
-            if (context.S?.Type == XSharpLexer.STRUCTURE)
-            {
-                classOrStructKeyword = SyntaxFactory.MakeToken(SyntaxKind.StructKeyword);
-                recordKind = SyntaxKind.RecordStructDeclaration;
-            }
-            else
-            {
-                classOrStructKeyword = SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword);
-                recordKind = SyntaxKind.RecordDeclaration;
-            }
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-            context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
-            if (context.TypeData.Partial)
-            {
-                GlobalEntities.NeedsProcessing = true;
-            }
-            var members = GetMembers(context, context._Members);
-            var baseTypes = GetBaseTypes(context.BaseType?.Get<TypeSyntax>(), context._Implements);
-
-            MemberDeclarationSyntax m = _syntaxFactory.RecordDeclaration(
-                    recordKind,
+                m = _syntaxFactory.StructDeclaration(
                     attributeLists: getAttributes(context.Attributes),
                     modifiers: mods,
-                    keyword: SyntaxFactory.MakeToken(SyntaxKind.RecordKeyword),
-                    classOrStructKeyword: classOrStructKeyword,
+                    keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                     identifier: context.Id.Get<SyntaxToken>(),
                     typeParameterList: getTypeParameters(context.TypeParameters),
                     parameterList: null, // TODO nvk
@@ -3240,6 +3233,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     members: members,
                     closeBraceToken: SyntaxFactory.CloseBraceToken,
                     semicolonToken: null);
+            }
             _pool.Free(members);
             _pool.Free(baseTypes);
             if (context.Namespace != null)
@@ -3248,7 +3242,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                m = (MemberDeclarationSyntax)CheckForConflictBetweenTypeNameAndNamespaceName(context, "RECORD", m);
+                m = (MemberDeclarationSyntax)CheckForConflictBetweenTypeNameAndNamespaceName(context, "STRUCTURE", m);
             }
             context.Put(m);
         }
@@ -4049,8 +4043,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         return fox.Id.Get<SyntaxToken>();
                     case XP.XppclassContext xpp:
                         return xpp.Id.Get<SyntaxToken>();
-                    case XP.Record_Context rec:
-                        return rec.Id.Get<SyntaxToken>();
                 }
             }
             return null;
@@ -7696,7 +7688,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var e = _syntaxFactory.ParenthesizedLambdaExpression(
                 attributeLists: default, //TODO nvk
                 modifiers: default,
-                returnType: default, // TODO nvk
+                returnType: null, // TODO nvk
                 parameterList: MakeParameterList(new List<ParameterSyntax>() { MakeParameter("__this", null) }),
                 arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                 block: null,
@@ -9728,19 +9720,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(expr);
         }
 
-        private static bool isNestedArray(XP.LiteralArrayContext context)
-        {
-            var parent = context.Parent as ParserRuleContext;
-            while (parent != null)
-            {
-                if (parent is XP.LiteralArrayContext)
-                    return true;
-                if (parent is XP.StatementContext)
-                    return false;
-                parent = parent.Parent as ParserRuleContext;
-            }
-            return false;
-        }
         public override void ExitArrayElement([NotNull] XP.ArrayElementContext context)
         {
             if (context.Expr != null)
@@ -10023,7 +10002,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var node = _syntaxFactory.ParenthesizedLambdaExpression(
                 attributeLists: default, // TODO nvk
                 modifiers: default,
-                returnType: default, // TODO nvk
+                returnType: null, // TODO nvk
                 parameterList: paramList,
                 arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                 block: body as BlockSyntax,

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1616</title>
+  <keywords>
+    <keyword>XS1616</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1616</para>
+    </header>
+    <para styleclass="Normal">Option &apos;option&apos; overrides attribute &apos;attribute&apos; given in a source file or added module</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This warning occurs if the assembly attributes AssemblyKeyFileAttribute or AssemblyKeyNameAttribute found in source conflict with the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-keyfile">/keyfile</link> or <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-keycontainer">/keycontainer</link> command line option or key file name or key container specified in the Project Properties.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">For the example below, assume you have a key file named XS1616.snk. This file could be generated with the command line:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">sn –k XS1616.snk  </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS1616:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1616.prg  <br/>// compile with: /keyfile:XS1616.snk  <br/></para>
+  </body>
+</topic>

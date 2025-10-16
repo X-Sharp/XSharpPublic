@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9054</title>
+  <keywords>
+    <keyword>XS9054</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9054</para>
+    </header>
+    <para styleclass="Normal">Possible conflict between assignment to local variable {0} and named argument syntax. <br/>The compiler will assume the named argument syntax. Surround the expression with parentheses to resolve the problem.</para>
+  </body>
+</topic>

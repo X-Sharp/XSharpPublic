@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0616</title>
+  <keywords>
+    <keyword>XS0616</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0616</para>
+    </header>
+    <para styleclass="Normal">&apos;class&apos; is not an attribute class</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">An attempt was made to use a non-attribute class in an attribute block. All the attribute types need to be inherited from System.Attribute.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0616.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0616.prg  <br/>// compile with: /target:library  <br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample shows how you might define an attribute:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// CreateAttrib.prg  <br/>// compile with: /target:library  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>APPEND FROM ARRAY Command</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">APPEND FROM ARRAY Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Body Text">Adds one record to the currently selected table for each row in an array and fills each record with data from the corresponding array row.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">APPEND FROM ARRAY <text styleclass="Normal">&lt;ArrayName&gt;</text> [FOR &lt;lCondition&gt;] &#160;<br/> [FIELDS &lt;idFieldList&gt; | FIELDS LIKE &lt;Skeleton&gt; | FIELDS EXCEPT &lt;Skeleton&gt;]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;<text styleclass="Normal">ArrayName</text>&gt;<tab />Specifies the name of the array that contains the data to be copied to the new records. New records are added to the table until all rows in the array are appended.<tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__FoxFieldList" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_TO_ARRAY">COPY TO ARRAY</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Command_GATHER">GATHER</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Command_SCATTER">SCATTER</link></para>
+  </body>
+</topic>

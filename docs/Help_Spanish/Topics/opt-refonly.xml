@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-12-12T12:49:13.522+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-refonly</title>
+  <keywords>
+    <keyword>-refonly</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">-refonly</para>
+    </header>
+    <para styleclass="Body Text">The -refonly option indicates that the primary output should be a reference assembly rather than an implementation assembly. The -refonly parameter silently disables outputting PDBs, as reference assemblies cannot be executed.</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">-refonly</text></para>
+    <para styleclass="Body Text">Metadata-only assemblies replace method bodies with a single throw null body but include all members except anonymous types. The use of throw null bodies (rather than having no bodies) ensures that PEVerify can run and pass, thereby validating the completeness of the metadata.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">Reference assemblies include an assembly-level ReferenceAssembly attribute. This attribute may be specified in source, in which case the compiler does not need to synthesize it. Due to this attribute, runtimes refuse to execute reference assemblies, though they can still be loaded in reflection-only mode. Tools reflecting on assemblies must load reference assemblies in reflection-only; otherwise, the runtime will throw a type-load error.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">Reference assemblies also remove metadata (private members) from metadata-only assemblies, with the following distinctions:</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">A reference assembly contains references only for elements required by the API surface. The real assembly might include additional references for implementation-specific purposes.</li>
+      <li styleclass="Body Text">Private function members (methods, properties, and events) are removed if their removal does not impact compilation observably. If no InternalsVisibleTo attributes are present, the same applies to internal function members.</li>
+      <li styleclass="Body Text">However, all types, including private or nested ones, are retained in reference assemblies. All attributes, including internal ones, are preserved.</li>
+      <li styleclass="Body Text">All virtual methods are kept. Explicit interface implementations are kept. Explicitly implemented properties and events are kept, as their accessors are virtual (and are therefore kept).</li>
+      <li styleclass="Body Text">All fields within a structure are retained. (This aspect may be subject to refinement in future versions post-C#-7.1).</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">The -refonly and <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/refout-compiler-option">-refout</link> options are mutually exclusive.</para>
+  </body>
+</topic>

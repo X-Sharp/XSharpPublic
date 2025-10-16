@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__includeIdClass</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__includeIdClass</para>
+    </header>
+    <para styleclass="List">&lt;idClass&gt;<tab />A valid identifier name for the class. &#160;A class is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a class and a global variable, for example, with the same name.</para>
+    <para styleclass="List"></para>
+  </body>
+</topic>

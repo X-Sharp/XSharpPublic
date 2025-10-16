@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>XS1063</title>
+<keywords>
+<keyword>XS1063</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS1063</para>
+  </header>
+  <para styleclass="Normal">The best overloaded Add method &apos;{0}&apos; for the collection initializer element is obsolete. {1}</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0445</title>
+  <keywords>
+    <keyword>XS0445</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0445</para>
+    </header>
+    <para styleclass="Normal">Cannot modify the result of an unboxing conversion</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The result of an unboxing conversion is a temporary variable. The compiler prevents you from modifying such variables because any modification would go away when the temporary variable goes away. To fix this, declare a new value-type variable to store the intermediate expression, and assign the result of the unboxing conversion to that variable.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following code generates XS0455.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0445.prg  <br/>  </para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

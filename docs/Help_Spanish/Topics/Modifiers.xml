@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-02-19T12:01:33.799+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Modifiers</title>
+  <keywords>
+    <keyword>ABSTRACT</keyword>
+    <keyword>DEFERRED</keyword>
+    <keyword>EXPORT</keyword>
+    <keyword>FINAL</keyword>
+    <keyword>FREEZE</keyword>
+    <keyword>HIDDEN</keyword>
+    <keyword>INSTANCE</keyword>
+    <keyword>INTERNAL</keyword>
+    <keyword>INTRODUCE</keyword>
+    <keyword>NEW</keyword>
+    <keyword>OVERRIDE</keyword>
+    <keyword>PARTIAL</keyword>
+    <keyword>PRIVATE</keyword>
+    <keyword>PROTECT</keyword>
+    <keyword>PROTECTED</keyword>
+    <keyword>PUBLIC</keyword>
+    <keyword>SEALED</keyword>
+    <keyword>STATIC</keyword>
+    <keyword>SYNC</keyword>
+    <keyword>VIRTUAL</keyword>
+    <keyword>Visibility Modifiers</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Modifiers</para>
+    </header>
+    <para styleclass="Normal">Modifiers are language keywords that are used to modify the visibility of a program element (function, global, class, property etc), or the way they operate within a type hierarchy.</para>
+    <para styleclass="Normal">There are several groups of modifiers that will be discussed in these subtopics.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers_Visibility">Visibility Modifiers</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal">PUBLIC, EXPORT, PROTECT, PROTECTED, PRIVATE, HIDDEN, INTERNAL</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers_ClassHierarchy">Class Hierarchy Modifiers</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal">VIRTUAL, OVERRIDE, ABSTRACT, SEALED</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers_Static">STATIC modifier</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal">STATIC</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers_Async_Await">ASYNC / AWAIT</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal">ASYNC, AWAIT</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers_Others">Other Modifiers</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal">PARTIAL, EXTERN, UNSAFE</para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

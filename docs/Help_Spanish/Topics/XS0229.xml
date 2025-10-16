@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0229</title>
+  <keywords>
+    <keyword>XS0229</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0229</para>
+    </header>
+    <para styleclass="Normal">Ambiguity between &apos;member1&apos; and &apos;member2&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Members of different interfaces have the same name. If you want to keep the same names, you must qualify the names. For more information, see Interfaces.</para>
+    <para styleclass="Heading2">Note </para>
+    <para styleclass="Normal">In some cases, this ambiguity can be resolved by providing an explicit prefix to the identifier via a using alias.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates XS0229:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0229.prg  <br/><br/>FUNCTION Start AS VOID<br/>    RETURN<br/>FUNCTION Test(x AS IListCounter)  AS VOID<br/>    x:Count := 1<br/>    // Try one of the following lines instead:<br/>    // ((IList)x):Count := 1<br/>    // or<br/>    // ((Icounter)x):Count := 1<br/>    RETURN<br/><br/>INTERFACE IList<br/>    PROPERTY Count AS LONG GET SET<br/>    METHOD Counter AS VOID<br/>END INTERFACE<br/><br/>INTERFACE ICounter<br/>    PROPERTY Count AS REAL8 GET SET<br/>END INTERFACE<br/><br/>INTERFACE IListCounter INHERIT Ilist, ICounter<br/>END INTERFACE<br/></para>
+  </body>
+</topic>

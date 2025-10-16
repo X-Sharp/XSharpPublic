@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1703</title>
+  <keywords>
+    <keyword>XS1703</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1703</para>
+    </header>
+    <para styleclass="Normal">An assembly with the same simple name &apos;name&apos; has already been imported. Try removing one of the references or sign them to enable side-by-side.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The compiler removes references that have the same path and file name, but it is possible that the same file exists in two places, or that you forgot to change the version number. This error points out that two references have the same assembly identity and thus the compiler has no way of distinguishing between them in metadata. Either remove one of the redundant references, or make the references unique somehow, such as by incrementing the assembly version number.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following code generates error XS1703.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This code creates assembly A in the .\bin1 directory.</para>
+    <para styleclass="Normal">Save this example in a file named XS1703a1.prg, and compile it with the following flags: <text styleclass="Code Example">/t:library /out:.\bin1\XS1703.dll /keyfile:key.snk</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This code creates a copy of assembly A in the .\bin2 directory.</para>
+    <para styleclass="Normal">Save this example in a file named XS1703a2.prg, and compile it with the following flags: <text styleclass="Code Example">/t:library /out:.\bin2\XS1703.dll /keyfile:key.snk</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This code references the assembly A in the two prior modules.</para>
+    <para styleclass="Normal">Save this example in a file named XS1703ref.prg, and compile it with the following flags: <text styleclass="Code Example">/t:library /r:A2=.\bin2\XS1703.dll /r:A1=.\bin1\XS1703.dll</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><br/></para>
+  </body>
+</topic>

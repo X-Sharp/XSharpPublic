@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__CommandInclude</title>
+  <body>
+    <para styleclass="List1" style="background-color:#ffffaa; border:none;"><text style="font-size:9pt; font-weight:bold; background-color:#ffffaa;">Note</text><tab /><text style="font-size:9pt; background-color:#ffffaa;">This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (</text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostddefs" style="font-size:9pt;">-nostddefs</link><text style="font-size:9pt; background-color:#ffffaa;">) files then this command will not be available. If you tell the compiler to use a different standard header file (</text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-stddefs" style="font-size:9pt; background-color:#ffffaa;">-stddef</link><text style="font-size:9pt; background-color:#ffffaa;"> ) then this command may also be not available</text></para>
+  </body>
+</topic>

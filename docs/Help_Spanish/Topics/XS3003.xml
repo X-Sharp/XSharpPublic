@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS3003</title>
+  <keywords>
+    <keyword>XS3003</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS3003</para>
+    </header>
+    <para styleclass="Normal">Type of &apos;variable&apos; is not CLS-compliant</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A public, protected, or protected internal variable must be of a type that is compliant with the Common Language Specification (CLS). For more information on CLS Compliance, see Language Independence and Language-Independent Components.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates XS3003:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS3003.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

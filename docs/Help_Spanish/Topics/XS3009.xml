@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS3009</title>
+  <keywords>
+    <keyword>XS3009</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS3009</para>
+    </header>
+    <para styleclass="Normal">&apos;type&apos;: base type &apos;type&apos; is not CLS-compliant</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A base type was marked as not having to be compliant with the Common Language Specification (CLS) in an assembly that was marked as being CLS compliant. Either remove the attribute that specifies the assembly is CLS compliant or remove the attribute that indicates the type is not CLS compliant. For more information on CLS Compliance, see Writing CLS-Compliant Code and Language Independence and Language-Independent Components.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates XS3009:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS3009.prg  <br/> </para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

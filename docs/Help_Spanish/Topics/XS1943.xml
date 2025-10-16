@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1943</title>
+  <keywords>
+    <keyword>XS1943</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1943</para>
+    </header>
+    <para styleclass="Normal">An expression of type &apos;type&apos; is not allowed in a subsequent from clause in a query expression with source type &apos;type&apos;. Type inference failed in the call to &apos;method&apos;.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">All range variables must represent queryable types.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">To correct this error</para>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Make sure that the type is a queryable type that implements IEnumerable, IEnumerable&lt;T&gt; or a derived interface, or any other type which has a query pattern defined for it.</li>
+      <li styleclass="Normal" style="margin-left:13px;">If the type is a non-generic IEnumerable, provide an explicit type on the range variable.</li>
+    </list>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following code generates XS1943:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1943.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

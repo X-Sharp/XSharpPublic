@@ -490,9 +490,10 @@ internal static class OOPHelpers
                 var oParamArgs := System.Array.CreateInstance(elementType, 0) astype System.Array
                 oArgs[numDefinedParameters -1] := oParamArgs
             else
-                var oError :=  Error.VOError( EG_ARG, __function__, methodinfo:Name, (DWORD) numDefinedParameters, args:ToObjectArray())
-                oError:Description := "Not enough parameters for method "+methodinfo:Name
-                throw oError
+                //var oError :=  Error.VOError( EG_ARG, __function__, methodinfo:Name, (DWORD) numDefinedParameters, args:ToObjectArray())
+                //oError:Description := "Not enough parameters for method "+methodinfo:Name
+                //throw oError
+                NOP
             endif
             for var nPar := 0 to numActualParameters -1
                 local pi        := aPars[nPar] as ParameterInfo
@@ -516,11 +517,11 @@ internal static class OOPHelpers
                 if parType == typeof(usual)
                     // We need to box a usual here
                     oArgs[nPar] := __castclass(object, arg)
-                elseif parType == arg:Value:GetType()
-                    oArgs[nPar] := arg
-                elseif arg == nil
+                elseif arg == nil // this is also true when arg == NULL_OBJECT
                     // This is new in X#: a NIL in the middle of the parameter list gets set to the default value now
                     oArgs[nPar] := OOPHelpers.GetDefaultValue(pi)
+                elseif parType == arg:Value:GetType()
+                    oArgs[nPar] := arg
                 elseif arg == null .or. parType:IsAssignableFrom(arg:SystemType) // Null check must appear first !
                     oArgs[nPar] := arg
                 elseif pi:GetCustomAttributes( typeof( ParamArrayAttribute ), false ):Length > 0

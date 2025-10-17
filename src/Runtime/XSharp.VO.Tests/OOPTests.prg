@@ -38,6 +38,42 @@ BEGIN NAMESPACE XSharp.VO.Tests
             oObject2 := _CreateInstance(#TestStrong, usuals:ToArray()) // too many parameters passed
             Assert.Equal(oObject, oObject2:Param)
 
+		[Fact, Trait("Category", "OOP")];
+		METHOD CreateInstanceTests2() AS VOID
+			LOCAL u AS USUAL
+			u := CreateInstance("NewTestClass1" , NewTestClass2{}, "" , "" , NULL_OBJECT)
+			Assert.Equal("",   u:Param2)
+			Assert.Equal("",   u:Param3)
+			Assert.Equal(NULL, u:Param4)
+
+			u := CreateInstance("NewTestClass1" , NULL, "" , "" , NULL)
+			Assert.Equal(NULL , u:Param1)
+			Assert.Equal(""   , u:Param2)
+			Assert.Equal(""   , u:Param3)
+			Assert.Equal(NULL , u:Param4)
+
+			u := CreateInstance("NewTestClass1" , NULL, "a" , "b" , 123)
+			Assert.Equal(NULL , u:Param1)
+			Assert.Equal("a"  , u:Param2)
+			Assert.Equal("b"  , u:Param3)
+			Assert.Equal(123  , (int)u:Param4)
+
+			u := CreateInstance("NewTestClass3" , NULL, 123)
+			Assert.Equal(NULL  , u:Param11)
+			Assert.Equal(123  , (INT)u:Param21)
+
+			u := CreateInstance("NewTestClass3" , TRUE, -1)
+			Assert.Equal(TRUE  ,(LOGIC) u:Param11)
+			Assert.Equal(-1  , (INT)u:Param21)
+
+			u := CreateInstance("NewTestClass3" , "abc", 123)
+			Assert.Equal("abc"  , u:Param12)
+			Assert.Equal(123  , (INT)u:Param22)
+
+			u := CreateInstance("NewTestClass3" , "abc", NULL)
+			Assert.Equal("abc"  , u:Param12)
+			Assert.Equal(NULL  , u:Param22)
+
 
 		[Fact, Trait("Category", "OOP")];
 		METHOD MetadataTests() AS VOID
@@ -862,4 +898,30 @@ CLASS TestClassLB
 	RETURN e:ToString() + n:ToString()
 END CLASS
 
+CLASS NewTestClass1
+	PROPERTY Param1 AS NewTestClass2 AUTO
+	PROPERTY Param2 AS STRING AUTO
+	PROPERTY Param3 AS STRING AUTO
+	PROPERTY Param4 AS OBJECT AUTO
+    CONSTRUCTOR(p1 AS NewTestClass2, p2 AS STRING, p3 AS STRING, p4 AS OBJECT)
+    	SELF:Param1 := p1
+    	SELF:Param2 := p2
+    	SELF:Param3 := p3
+    	SELF:Param4 := p4
+END CLASS
+CLASS NewTestClass2
+END CLASS
+CLASS NewTestClass3
+	PROPERTY Param11 AS OBJECT AUTO
+	PROPERTY Param21 AS INT AUTO
+	PROPERTY Param12 AS STRING AUTO
+	PROPERTY Param22 AS OBJECT AUTO
+	
+    CONSTRUCTOR(p1 AS OBJECT, p2 AS INT)
+    	SELF:Param11 := p1
+    	SELF:Param21 := p2
+    CONSTRUCTOR(p1 AS STRING, p2 AS OBJECT)
+    	SELF:Param12 := p1
+    	SELF:Param22 := p2
+   END CLASS
 

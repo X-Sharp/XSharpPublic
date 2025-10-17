@@ -1776,7 +1776,7 @@ namespace XSharp.Project
             RefreshIncludeFiles();
         }
 
-        private void RefreshReferencesFromResponseFile()
+        protected virtual List<String> RefreshReferencesFromResponseFile()
         {
             // find the resource file and read the lines with /reference
             string tempPath = System.IO.Path.GetTempPath();
@@ -1800,7 +1800,9 @@ namespace XSharp.Project
                     }
                 }
                 ProjectModel.RefreshReferences(references);
+                return references;
             }
+            return null;
         }
 
         internal void UpdateReferencesInProjectModel()
@@ -2184,6 +2186,7 @@ namespace XSharp.Project
                 xoptions.BuildCommandLine();
             }
         }
+        public virtual bool IsSdkProject => false;
         internal XParseOptions CachedOptions;
         public XParseOptions ParseOptions
         {

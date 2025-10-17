@@ -94,10 +94,7 @@ namespace XSharp.Project
         protected override bool SupportsIconMonikers => true;
         protected override ImageMoniker GetIconMoniker(bool open)
         {
-            if (open)
-                return KnownMonikers.ReferenceFolderOpened;
-            else
-                return KnownMonikers.ReferenceFolderClosed;
+            return KnownMonikers.ReferenceGroup;
     }
 #else
         // VS2019 does not have these image monikers

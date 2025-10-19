@@ -797,7 +797,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 // lhs is then an InvocationExpression
                                 var invoke = LHS as InvocationExpressionSyntax;
-                                string putMethod = XSharpQualifiedFunctionNames.IVarPut ;
+                                string putMethod = XSharpQualifiedFunctionNames.IVarPut;
                                 var obj = invoke.ArgumentList.Arguments[0];
                                 var varName = invoke.ArgumentList.Arguments[1];
                                 var args = MakeArgumentList(obj, varName, MakeArgument(RHS));
@@ -1865,7 +1865,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Q.Type == XP.QQMARK)
                 methodName = XSharpQualifiedFunctionNames.QQout;
             else
-                methodName = XSharpQualifiedFunctionNames.Qout ;
+                methodName = XSharpQualifiedFunctionNames.Qout;
             ArgumentListSyntax args;
             if (context._Exprs != null && context._Exprs.Count > 0)
             {
@@ -4086,7 +4086,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterVodll([NotNull] XP.VodllContext context)
         {
             base.EnterVodll(context);
-            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention.Cc, context.Type);
+            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Cc, context.Type);
         }
         public override void EnterDelegate_([NotNull] XP.Delegate_Context context)
         {
@@ -4396,7 +4396,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = _syntaxFactory.ParenthesizedLambdaExpression(
                         attributeLists: default, // TODO nvk
                         modifiers: default,
-                        returnType: default, // TODO nvk
+                        returnType: null, // TODO nvk
                         parameterList: EmptyParameterList(),
                         arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                         block: null,
@@ -4427,7 +4427,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _syntaxFactory.ParenthesizedLambdaExpression(
                         attributeLists: default, // TODO nvk
                         modifiers: default,
-                        returnType: default, // TODO nvk
+                        returnType: null, // TODO nvk
                         parameterList: EmptyParameterList(),
                         arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                         block: MakeBlock(MakeList<StatementSyntax>(

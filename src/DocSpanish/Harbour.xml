@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Runtimefunctions>
+    <hb_adel>
+      <summary>
+        Delete an element from an array and optionally adjust the length of the array.
+      </summary>
+      <param name="aArray">Name of array from which an element is to be removed.</param>
+      <param name="nPos">Subscript of the element to be removed. Default value: 1.</param>
+      <param name="lAutoSize">Boolean flag specifying if the array will be resized or not. Default value: .F. (no resize).</param>
+      <returns>The changed array</returns>
+      <remarks>
+        This function deletes the element value (not the element itself!) stored in position nPos and
+        shifts all the following values, one position up. <br />
+        If lAutoSize is .T., then the last element is removed and the size of the array is
+        decreased by one, otherwise the length of the array remains unchanged and a NIL value
+        will be stored in the last element, just like in ADel().
+      </remarks>
+      <seealso cref='O:XSharp.RT.Functions.ADel'>ADel</seealso>
+      <seealso cref='O:XSharp.Harbour.Functions.Hb_AIns'>Hb_AIns</seealso>
+      <example>
+        <code language="X#">
+          LOCAL aArray := {1,2,3,4}
+          hb_ADel( aArray, 2 )
+          ? Alen(aArray)  // 4
+          ? ATail(aArray) // NIL
+          hb_ADel( aArray, 2, .T. )
+          ? Alen(aArray) // 3
+          ? ATail(aArray) // 4
+        </code>
+      </example>
+    </hb_adel>
+    <hb_ains>
+      <summary>
+        Inserts a value at an array subscript position and optionally increases the length of array.
+      </summary>
+      <param name="aArray">Name of array from which an element is to be removed.</param>
+      <param name="nPos">Subscript of the element to be removed. Default value: 1.</param>
+      <param name="xValue">Value to be inserted</param>
+      <param name="lAutoSize">
+        Boolean flag specifying if the array will be resized or not.
+        Default value: .F. (no resize).
+      </param>
+      <returns>The changed array</returns>
+      <remarks>
+        This function inserts xValue in the nPos position of the array, moving all the items
+        one position down in the array list. <br/>
+        If lAutoSize is .T., a new element will be added at the end of array, making room
+        for the previous last element, which means the length of array will be increased by 1. <br/>
+        If lAutoSize is .F. (or is not passed) the function behaves like AIns(), that is, the
+        size of aArray won't change and the last item of aArray will be lost.
+
+      </remarks>
+      <seealso cref='O:XSharp.RT.Functions.AIns'>AIns</seealso>
+      <seealso cref='O:XSharp.Harbour.Functions.Hb_ADel'>Hb_ADel</seealso>
+      <example>
+        <code language="X#">
+          LOCAL aArray := {1,3,4}
+          hb_AIns( aArray, 2 ,2)
+          ? Alen(aArray)  // 3
+          ? aTail(aArray) // 3
+          aArray := {1,3,4}
+          hb_AIns( aArray, 2 , 2, .T.)
+          ? Alen(aArray) // 4
+          ? ATail(aArray) // 4
+        </code>
+      </example>
+    </hb_ains>
+</Runtimefunctions>
+

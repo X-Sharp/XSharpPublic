@@ -670,7 +670,7 @@ statement           : Decl=localdecl                            #declarationStmt
                     | (BEGIN|DO)? S=SWITCH Expr=expression end=eos
                       (SwitchBlock+=switchBlock)+
                       e=END SWITCH? eos					                          #switchStmt
-                    | BEGIN Key=USING ( Expr=expression | VarDecl=variableDeclaration ) end=eos
+                    | BEGIN Key=USING a=AWAIT? ( Expr=expression | VarDecl=variableDeclaration ) end=eos
                         StmtBlk=statementBlock
                       e=END USING? eos						                        #blockStmt
                     | BEGIN Key=FIXED ( VarDecl=variableDeclaration ) end=eos
@@ -1110,16 +1110,16 @@ anonMember          : Name=identifierName Op=assignoperator Expr=expression
                     | Expr=expression
                     ;
 
-// Tuples
+// For tuples without the keyword we force 2 elements to avoid confusion with typecasts
 
-tupleType           : TUPLE LPAREN (Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)*)? RPAREN
-                    | LPAREN Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)* RPAREN 
+tupleType           : T=TUPLE LPAREN Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)* RPAREN
+                    | LPAREN Elements+=tupleTypeElement COMMA Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)* RPAREN
                     ;
 
 tupleTypeElement    : (identifierName AS)? datatype
                     ;
 
-tupleExpr           : TUPLE LCURLY (Args+=tupleExprArgument (COMMA Args+=tupleExprArgument)*)? RCURLY
+tupleExpr           : T=TUPLE LCURLY Args+=tupleExprArgument (COMMA Args+=tupleExprArgument)* RCURLY
                     ;
 
 tupleExprArgument   : Name=identifierName Op=assignoperator Expr=expression

@@ -423,6 +423,7 @@ namespace Microsoft.VisualStudio.Project
         }
         protected void FillCombo(TypeConverter converter, System.Windows.Forms.ComboBox combo)
         {
+            combo.Items.Clear();
             foreach (var enumvalue in converter.GetStandardValues(null))
             {
                 var name = converter.ConvertTo(enumvalue, typeof(System.String));

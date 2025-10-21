@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1690</title>
+  <keywords>
+    <keyword>XS1690</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1690</para>
+    </header>
+    <para styleclass="Normal">Accessing a member on &apos;member&apos; may cause a runtime exception because it is a field of a marshal-by-reference class</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This warning occurs when you try to call a method, property, or indexer on a member of a class that derives from MarshalByRefObject, and the member is a value type. Objects that inherit from MarshalByRefObject are typically intended to be marshaled by reference across an application domain. If any code ever attempts to directly access the value-type member of such an object across an application domain, a runtime exception will occur. To resolve the warning, first copy the member into a local variable and call the method on that variable.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS1690:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1690.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -847,6 +847,7 @@ namespace Microsoft.VisualStudio.Project
             if (buildProject == null)
             {
                 bool done = false;
+                Exception ex = null;
                 for (int i = 0; i < 10 && !done; i++)
                 {
                     try
@@ -856,12 +857,14 @@ namespace Microsoft.VisualStudio.Project
                         buildProject = buildEngine.LoadProject(fullProjectPath);
                         done = true;
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        ;
+                        ex = e;
                     }
                 }
 
+                if (!done && ex != null)
+                    VS.MessageBox.ShowError("Error loading project " + ex.Message);
             }
 
             return buildProject;

@@ -440,12 +440,25 @@ internal static class OOPHelpers
         // args contains the list of arguments. The methodname has already been deleted when appropriated
         local oArgs as object[]
         local lClipper := false as logic
+        local lParams  := false as logic
+        local paramsType  := NULL as System.Type
+        local elementType := NULL  as System.Type
         hasByRef := false
         var aPars := methodinfo:GetParameters()
         var numDefinedParameters := aPars:Length
         var numActualParameters  := args:Length
         if numDefinedParameters == 1 .and. methodinfo:IsDefined(typeof(ClipperCallingConventionAttribute),false)
             lClipper := true
+        elseif numDefinedParameters >= 1
+            local pi := aPars[aPars:Length-1] as ParameterInfo
+
+            if pi:ParameterType:IsArray .and. ;
+                pi:CustomAttributes:Any( { ca => ca:AttributeType == typeof(ParamArrayAttribute) })
+                lParams := true
+                lClipper := numDefinedParameters == 1 .and. pi:ParameterType == typeof(usual[])
+                paramsType  := pi:ParameterType
+                elementType := paramsType:GetElementType()
+            endif
         endif
         do case
         case lClipper
@@ -457,9 +470,30 @@ internal static class OOPHelpers
         otherwise
             // convert args to array of objects
             oArgs := object[]{numDefinedParameters}
-            if numDefinedParameters < numActualParameters
+            if numDefinedParameters <= numActualParameters
                 // ignore extra parameters
-                numActualParameters := numDefinedParameters
+                if lParams
+                    local numFixedParameters := numDefinedParameters -1 as long
+                    var oParamArgs := System.Array.CreateInstance(elementType, numActualParameters -numFixedParameters) astype System.Array
+                    local nCounter := 0 as long
+                    for var i := numFixedParameters to numActualParameters - 1
+                        var element := OOPHelpers.ValueConvert(args[i], elementType)
+                        oParamArgs:SetValue(element,nCounter)
+                        nCounter += 1
+                    next
+                    args[numDefinedParameters -1] := oParamArgs
+                    numActualParameters := numDefinedParameters
+                else
+                    numActualParameters := numDefinedParameters
+                endif
+            elseif lParams .and. numActualParameters == numDefinedParameters -1
+                var oParamArgs := System.Array.CreateInstance(elementType, 0) astype System.Array
+                oArgs[numDefinedParameters -1] := oParamArgs
+            else
+                //var oError :=  Error.VOError( EG_ARG, __function__, methodinfo:Name, (DWORD) numDefinedParameters, args:ToObjectArray())
+                //oError:Description := "Not enough parameters for method "+methodinfo:Name
+                //throw oError
+                NOP
             endif
             for var nPar := 0 to numActualParameters -1
                 local pi        := aPars[nPar] as ParameterInfo
@@ -483,15 +517,16 @@ internal static class OOPHelpers
                 if parType == typeof(usual)
                     // We need to box a usual here
                     oArgs[nPar] := __castclass(object, arg)
-                elseif arg == nil
+                elseif arg == nil // this is also true when arg == NULL_OBJECT
                     // This is new in X#: a NIL in the middle of the parameter list gets set to the default value now
                     oArgs[nPar] := OOPHelpers.GetDefaultValue(pi)
+                elseif parType == arg:Value:GetType()
+                    oArgs[nPar] := arg
                 elseif arg == null .or. parType:IsAssignableFrom(arg:SystemType) // Null check must appear first !
                     oArgs[nPar] := arg
                 elseif pi:GetCustomAttributes( typeof( ParamArrayAttribute ), false ):Length > 0
                     // Parameter array of certain type
                     // -> convert remaining elements from uArgs to an array and assign that to oArgs[i]
-                    local elementType := parType:GetElementType() as System.Type
                     local aVarArgs    := System.Array.CreateInstance(elementType, args:Length - nPar +1) as System.Array
                     for var nArg := nPar to numActualParameters -1
                         try
@@ -516,16 +551,18 @@ internal static class OOPHelpers
                 endif
             next
             // set default values for missing parameters, so we start after the last parameter
-            for var nArg := numActualParameters to numDefinedParameters -1
-                local oPar as ParameterInfo
-                oPar        := aPars[nArg]
-                var oArg    := OOPHelpers.GetDefaultValue(oPar)
-                if oArg != null
-                    oArgs[nArg] := oArg
-                else
-                    oArgs[nArg] := null
-                endif
-            next
+            if ! lParams
+                for var nArg := numActualParameters to numDefinedParameters -1
+                    local oPar as ParameterInfo
+                    oPar        := aPars[nArg]
+                    var oArg    := OOPHelpers.GetDefaultValue(oPar)
+                    if oArg != null
+                        oArgs[nArg] := oArg
+                    else
+                        oArgs[nArg] := null
+                    endif
+                next
+            ENDIF
         endcase
         return oArgs
 

@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0834</title>
+  <keywords>
+    <keyword>XS0834</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0834</para>
+    </header>
+    <para styleclass="Normal">A lambda expression must have an expression body to be converted to an expression tree.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Lambdas that are translated to expression trees must be expression lambdas; statement lambdas and anonymous methods can only be converted to delegate types.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">To correct this error</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:'Segoe UI'; font-size:8pt; color:#000000;">
+      <li styleclass="Normal">Remove the statement from the lambda expression.</li>
+    </list>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates XS0834:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0834.prg  <br/></para>
+  </body>
+</topic>

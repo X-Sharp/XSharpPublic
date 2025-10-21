@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1919</title>
+  <keywords>
+    <keyword>XS1919</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1919</para>
+    </header>
+    <para styleclass="Normal">Unsafe type &apos;type name&apos; cannot be used in object creation.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The new operator creates objects only on the managed heap. However, you can create objects in unmanaged memory indirectly by using the interoperability capabilities of the language to call native methods that return pointers.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">To correct this error</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Use a safe type in the new object creation expression. For example, use char or int instead of char* or int*.</li>
+      <li styleclass="Normal" style="margin-left:13px;">If you must create objects in unmanaged memory, use a Win32 or COM method or else write your own function in C or C++ and call it from X#.</li>
+    </list>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates XS1919 because a pointer type is unsafe:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1919.prg  <br/>// Compile with: /unsafe  <br/></para>
+  </body>
+</topic>

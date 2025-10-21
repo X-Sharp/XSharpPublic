@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>NOP Statement</title>
+  <keywords>
+    <keyword>Closing files</keyword>
+    <keyword>Commands</keyword>
+    <keyword>Files<keyword>closing</keyword></keyword>
+    <keyword>NOP Statement</keyword>
+    <keyword>Program control</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">NOP Statement</para>
+    </header>
+        <para styleclass="Heading1"><text>Purpose</text></para>
+    <para styleclass="Body Text">The NOP statement inserts an empty statement in the code</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">NOP</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Body Text">The NOP statement is an empty statement. It can be used to indicate that a certain code section is left intentionally empty</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code with box"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start(aArgs </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">string</text><text style="font-weight:normal; font-style:normal; color:#000000;">[]) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:normal; font-style:normal; color:#000000;"> aArgs != </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NULL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> .AND. aArgs:Length &gt; 0</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; ? &quot;You passed &quot;, aArgs:Length, &quot;command line parameters&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ELSE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NOP</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// This indicates that the else branch is not forgotten but intentionally empty</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;.....</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
+  </body>
+</topic>

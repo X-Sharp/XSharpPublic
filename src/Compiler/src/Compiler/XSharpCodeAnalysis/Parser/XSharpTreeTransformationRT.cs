@@ -4051,7 +4051,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterVodll([NotNull] XP.VodllContext context)
         {
             base.EnterVodll(context);
-            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention.Cc, context.Type);
+            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Cc, context.Type);
         }
         public override void EnterDelegate_([NotNull] XP.Delegate_Context context)
         {

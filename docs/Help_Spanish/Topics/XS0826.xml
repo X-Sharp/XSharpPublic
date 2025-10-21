@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0826</title>
+  <keywords>
+    <keyword>XS0826</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0826</para>
+    </header>
+    <para styleclass="Normal">No best type found for implicitly typed array.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Array elements must all be the same type or implicitly convertible to the same type according to the type inference rules used by the compiler. The best type must be one of the types present in the array expression. Elements will not be converted to a new type such as object. For an implicitly typed array, the compiler must infer the array type based on the type of elements assigned to it.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">To correct this error</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Give the array an explicit type.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Give all array elements the same type.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Provide explicit casts on those elements that might be causing the problem.</li>
+    </list>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following code generates XS0826 because the array elements are not all the same type, and the compiler&apos;s type inference logic does not find a single best type:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0826.prg  <br/></para>
+    <para styleclass="Normal">  </para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

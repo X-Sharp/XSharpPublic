@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0731</title>
+  <keywords>
+    <keyword>XS0731</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0731</para>
+    </header>
+    <para styleclass="Normal">The type forwarder for type &apos;type&apos; in assembly &apos;assembly&apos; causes a cycle</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error can only occur with improperly formed imported metadata. It cannot occur with only X# source.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0731. The example consists of three files:</para>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Circular.IL</li>
+      <li styleclass="Normal" style="margin-left:13px;">Circular2.IL</li>
+      <li styleclass="Normal" style="margin-left:13px;">XS0731.prg</li>
+    </list>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <para styleclass="Normal">First compile the .IL files as libraries, and then compile the .prg code referencing the two files.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// Circular.il  <br/>// compile with: /DLL /out=Circular.dll  <br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// Circular2.il  <br/>// compile with: /DLL /out=Circular2.dll  <br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0731.prg  <br/>// compile with: /reference:circular.dll /reference:circular2.dll  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

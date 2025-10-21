@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-10-10T14:53:26.758+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Blocks</title>
+  <keywords>
+    <keyword>Blocks</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Blocks</para>
+    </header>
+    <para styleclass="Normal">Visual Studio makes it easy to select, cut, copy, and paste sections of your code. Rectangular blocks of code can be highlighted and selected by using Alt + Drag on the code block. The formatting within the block selection is retained when pasting the block.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Block selections can also be used to edit text on multiple lines simultaneously. A zero-width block selection allows you to place the caret in front of multiple lines at once, enabling you to type identical text across several lines:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Code blocks.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+  </body>
+</topic>

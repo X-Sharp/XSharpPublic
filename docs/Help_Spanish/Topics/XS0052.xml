@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0052</title>
+  <keywords>
+    <keyword>XS0052</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS0052</para>
+    </header>
+    <para styleclass="Normal">Inconsistent accessibility: field type &apos;type&apos; is less accessible than field &apos;field&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The type of a field cannot be less accessible than the field itself because all public constructs must return a publicly accessible object.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0052:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0052.prg  <br/></para>
+  </body>
+</topic>

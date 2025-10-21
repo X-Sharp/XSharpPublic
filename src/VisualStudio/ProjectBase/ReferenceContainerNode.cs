@@ -289,6 +289,7 @@ namespace Microsoft.VisualStudio.Project
 			BuildResult buildResult = this.ProjectMgr.Build(MsBuildTarget.ResolveAssemblyReferences);
 
             var children = new List<ReferenceNode>();
+            var project = buildResult.ProjectInstance;
 
             foreach (string referenceType in SupportedReferenceTypes)
 			{
@@ -297,7 +298,6 @@ namespace Microsoft.VisualStudio.Project
 				{
 					continue;
 				}
-
 				foreach (var item in MSBuildProject.GetItems(buildProject, referenceType))
 				{
                     ProjectElement element = new ProjectElement(this.ProjectMgr, item, false);
@@ -341,7 +341,7 @@ namespace Microsoft.VisualStudio.Project
                     node.Remove(false);
                 }
                 if (this.ProjectMgr.QueryEditProjectFile(true))
-                { 
+                {
                     buildProject.Save();
                 }
             }
@@ -580,7 +580,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 Logger.Exception(e, "CreateAssemblyReferenceNode");
             }
-            
+
 
             return node;
         }

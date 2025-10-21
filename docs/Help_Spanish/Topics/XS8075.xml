@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>XS8075</title>
+<keywords>
+<keyword>XS8075</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS8075</para>
+  </header>
+  <para styleclass="Normal">An extension Add method is not supported for a collection initializer in an expression lambda.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

@@ -73,7 +73,7 @@ namespace XSharp.Project
             FillCombo(new OutputTypeConverter(), comboOutputType);
             toolTip1.SetToolTip(lblOutputType, GeneralPropertyPagePanel.descOutputType);
             toolTip1.SetToolTip(comboOutputType, GeneralPropertyPagePanel.descOutputType);
-            FillCombo(new FrameworkNameConverter(), comboTargetFramework);
+            FillFrameworkNames(new FrameworkNameConverter());
             toolTip1.SetToolTip(lblTargetFramework, GeneralPropertyPagePanel.descFramework);
             toolTip1.SetToolTip(comboTargetFramework, GeneralPropertyPagePanel.descFramework);
 
@@ -84,12 +84,16 @@ namespace XSharp.Project
             UpdateWindowColors(this, defaultBackground, defaultForeground);
         }
 
+        public void FillFrameworkNames(FrameworkNameConverter converter)
+        {
+            FillCombo(converter, comboTargetFramework);
+        }
         void GetStartupClasses()
         {
             this.comboStartupObject.Items.Clear();
             this.comboStartupObject.Items.Add(GeneralPropertyPagePanel.DefaultValue);
-            var prjfile = ParentPropertyPage.ProjectMgr.ProjectFile;
-            var list = XDatabase.GetStartupClasses(System.IO.Path.GetFileName(prjfile));
+            var projectFile = ParentPropertyPage.ProjectMgr.ProjectFile;
+            var list = XDatabase.GetStartupClasses(System.IO.Path.GetFileName(projectFile));
             foreach (var item in list)
             {
                 this.comboStartupObject.Items.Add(item);
@@ -104,8 +108,8 @@ namespace XSharp.Project
 
         void EnableApplicationIcon()
         {
-            var prjfile = ParentPropertyPage.ProjectMgr.ProjectFile;
-            var hasRcFiles = XDatabase.HasRCFiles(prjfile);
+            var projectFile = ParentPropertyPage.ProjectMgr.ProjectFile;
+            var hasRcFiles = XDatabase.HasRCFiles(projectFile);
             this.labelIcon.Enabled = !hasRcFiles;
             this.tbAppIcon.Enabled = !hasRcFiles;
             this.btnIcon.Enabled = !hasRcFiles;

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>X# Compiler Options</title>
+  <keywords>
+    <keyword>compiler options</keyword>
+    <keyword>options</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">X# Compiler Options</para>
+    </header>
+    <para styleclass="Normal">The X# compiler is a command line tool named xsc.exe. This tool can be controlled using command line options. The following pages describe these command line options.</para>
+  </body>
+</topic>

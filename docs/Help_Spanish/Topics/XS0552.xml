@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0552</title>
+  <keywords>
+    <keyword>XS0552</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0552</para>
+    </header>
+    <para styleclass="Normal">&apos;conversion routine&apos; : user defined conversion to/from interface</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">You cannot create a user-defined conversion to or from an interface. If you need the conversion routine, resolve this error by making the interface a class or derive a class from the interface.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0552:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0552.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

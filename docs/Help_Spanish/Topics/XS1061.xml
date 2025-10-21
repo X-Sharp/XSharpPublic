@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1061</title>
+  <keywords>
+    <keyword>XS1061</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1061</para>
+    </header>
+    <para styleclass="Normal">&apos;type&apos; does not contain a definition for &apos;member&apos; and no extension method &apos;name&apos; accepting a first argument of type &apos;type&apos; could be found (are you missing a using directive or an assembly reference?).</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error occurs when you try to call a method or access a class member that does not exist.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates XS1061 because TestClass1 does not have a DisplaySomething method. It does have a method that is called WriteSomething. Perhaps that is what the author of this source code meant to write.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1061.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

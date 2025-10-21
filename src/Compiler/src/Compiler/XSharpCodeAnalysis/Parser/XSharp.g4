@@ -403,7 +403,7 @@ arraysub            : ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression
 
 property            : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       P=PROPERTY (ExplicitIface=nameDot)? (Self=SELF | Id=identifier)
-                      (ParamList=propertyParameterList)? 
+                      (ParamList=propertyParameterList)?
                       (AS Type=datatype)?
                       ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (Op=assignoperator Initializer=expression)? end=EOS	// Auto
                         | (LineAccessors+=propertyLineAccessor)+ end=EOS                     // Single Line
@@ -414,7 +414,7 @@ property            : (Attributes=attributes)? (Modifiers=memberModifiers)?
 propertyParameterList
                     : L=LBRKT  (Params+=parameter (COMMA Params+=parameter)*)? R=RBRKT
                     // Parentheses are parsed but may generate an error in the future
-                    | L=LPAREN (Params+=parameter (COMMA Params+=parameter)*)? R=RPAREN		
+                    | L=LPAREN (Params+=parameter (COMMA Params+=parameter)*)? R=RPAREN
                     ;
                     /*
                      Examples of Auto Accessors
@@ -534,7 +534,7 @@ destructorModifiers : ( Tokens+=EXTERN )+
 
 */
 overloadedOps       : Token= (PLUS | MINUS | NOT | TILDE | INC | DEC | TRUE_CONST | FALSE_CONST |
-                              MULT | DIV | MOD | AMP | PIPE | LSHIFT | RSHIFT | EEQ | NEQ | NEQ2 | 
+                              MULT | DIV | MOD | AMP | PIPE | LSHIFT | RSHIFT | EEQ | NEQ | NEQ2 |
                               GT | LT | GTE | LTE |
                               AND | OR )  // these two do not exist in C# and are mapped to & and |
                     ;
@@ -588,7 +588,7 @@ filewidevar         : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierN
                     | {IsFox  }? Token=PUBLIC FoxVars+=foxmemvar[$Token] (COMMA FoxVars+=foxmemvar[$Token])*  end=eos
                     ;
 
- 
+
 statement           : Decl=localdecl                            #declarationStmt
                     | Decl=foxlparameters                       #foxlparametersStmt    // LPARAMETERS
                     | Decl=localfuncproc                        #localFunctionStmt
@@ -613,7 +613,7 @@ statement           : Decl=localdecl                            #declarationStmt
 
                     | i=IF IfBlocks += condBlock[$i]
                       (e=ELSEIF IfBlocks += condBlock[$e])*
-                      (el=ELSE eos ElseStmtBlk=statementBlock)? 
+                      (el=ELSE eos ElseStmtBlk=statementBlock)?
                       (e=END IF? | e=ENDIF)   eos                      #ifStmt
 
                     | DO CASE end=eos
@@ -635,7 +635,7 @@ statement           : Decl=localdecl                            #declarationStmt
                       (F=FINALLY eos FinBlock=statementBlock)?
                       ((e=END (SEQUENCE)?)| e=ENDSEQUENCE) eos         #seqStmt
                     //
-                    // New in Vulcan 
+                    // New in Vulcan
                     //
                     | r=REPEAT end=eos
                       StmtBlk=statementBlock
@@ -670,7 +670,7 @@ statement           : Decl=localdecl                            #declarationStmt
                     | (BEGIN|DO)? S=SWITCH Expr=expression end=eos
                       (SwitchBlock+=switchBlock)+
                       e=END SWITCH? eos					                          #switchStmt
-                    | BEGIN Key=USING ( Expr=expression | VarDecl=variableDeclaration ) end=eos
+                    | BEGIN Key=USING a=AWAIT? ( Expr=expression | VarDecl=variableDeclaration ) end=eos
                         StmtBlk=statementBlock
                       e=END USING? eos						                        #blockStmt
                     | BEGIN Key=FIXED ( VarDecl=variableDeclaration ) end=eos
@@ -795,8 +795,8 @@ memvar[IToken T]  : (Amp=AMP)?  Id=varidentifierName (LBRKT ArraySub=arraysub RB
 // DIMENSION  may have AS Type clause and either parens or brackets (see DimensionVar)
 // The parent rule already filters out so this is not called when MEMVARS are not enabled
 
-                                        
-foxmemvardecl       :  T=( MEMVAR |PARAMETERS | PRIVATE | PUBLIC ) FoxVars+=foxmemvar[$T]  (COMMA FoxVars+=foxmemvar[$T])*  end=eos 
+
+foxmemvardecl       :  T=( MEMVAR |PARAMETERS | PRIVATE | PUBLIC ) FoxVars+=foxmemvar[$T]  (COMMA FoxVars+=foxmemvar[$T])*  end=eos
                     ;
 
                     // This includes array indices and optional type per name
@@ -819,12 +819,12 @@ foxdimvar[IToken T]  : (Amp=AMP)? Id=varidentifierName
                         ( LBRKT  Dims+=expression (COMMA Dims+=expression)* RBRKT
                         | LPAREN Dims+=expression (COMMA Dims+=expression)* RPAREN )
                         XT=foxtypedecl?
-                    | Expr=expression 
+                    | Expr=expression
                         ( LBRKT  Dims+=expression (COMMA Dims+=expression)* RBRKT
                         | LPAREN Dims+=expression (COMMA Dims+=expression)* RPAREN )
                         XT=foxtypedecl?
                     ;
-                    
+
 foxclasslib        : Of=OF ClassLib=identifierName
                    ;
 
@@ -876,11 +876,11 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     | Op=(DOT|COLON|COLONCOLON)     Name=simpleName           #accessMember            // XPP & Harbour SELF member access or inside WITH
                     | Left=expression Op=(DOT|COLON) LPAREN Right=expression RPAREN #accessMemberWith // member access with left expression.
                     // Latebound member access with a ampersand and a name or an expression that evaluates to a string
-                    | Left=expression Op=(DOT|COLON) AMP 
+                    | Left=expression Op=(DOT|COLON) AMP
                       ( Name=identifierName | LPAREN Right=expression RPAREN)  #accessMemberLate   // aa:&Name  Expr must evaluate to a string which is the ivar name
-                    | Op=(DOT|COLON|COLONCOLON) AMP 
+                    | Op=(DOT|COLON|COLONCOLON) AMP
                         ( Name=identifierName | LPAREN Right=expression RPAREN) #accessMemberLate   // .&Name  XPP & Harbour Late member access or inside WITH
-  
+
                     | Expr=expression LPAREN ArgList=argumentList RPAREN        #methodCall             // method call, params
                     | XFunc=xbaseFunc LPAREN ArgList=argumentList RPAREN        #xFunctionExpression    // Array(...) or Date(...) params
                     | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT #arrayAccess            // Array element access
@@ -891,7 +891,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     | Expr=expression Op=(INC | DEC)                            #postfixExpression      // expr ++/--
                     | Op=AWAIT Expr=expression                                  #awaitExpression        // AWAIT expr
                     // The predicate prevents STACKALLOC(123) from being parsed as a STACKALLOC <ParenExpression>
-                    | {InputStream.La(2) != LPAREN }? Op=STACKALLOC Expr=expression  #stackAllocExpression   // STACKALLOC expr 
+                    | {InputStream.La(2) != LPAREN }? Op=STACKALLOC Expr=expression  #stackAllocExpression   // STACKALLOC expr
                     | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC | EXP) Expr=expression #prefixExpression   // +/-/~/&/++/-- expr
                     | Expr=expression Op=IS Not=FOX_NOT? Null=NULL              #typeCheckExpression    // expr IS NOT? NULL
                     | Expr=expression Op=IS Not=FOX_NOT? Type=datatype (VAR Id=varidentifier)? #typeCheckExpression    // expr IS typeORid [VAR identifier]
@@ -1017,7 +1017,7 @@ initializerMember   : Init=complexInitExpr
 collectioninitializer : LCURLY Members+=initializerMember (COMMA Members+=initializerMember)* RCURLY
                       ;
 
-bracketedArgumentList : Args+=unnamedArgument (COMMA Args+=unnamedArgument)* 
+bracketedArgumentList : Args+=unnamedArgument (COMMA Args+=unnamedArgument)*
                       ;
 
                       // NOTE: Separate rule for bracketedarguments because they cannot use identifierName syntax
@@ -1110,15 +1110,16 @@ anonMember          : Name=identifierName Op=assignoperator Expr=expression
                     | Expr=expression
                     ;
 
-// Tuples
+// For tuples without the keyword we force 2 elements to avoid confusion with typecasts
 
-tupleType           : TUPLE? LPAREN (Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)*)? RPAREN
+tupleType           : T=TUPLE LPAREN Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)* RPAREN
+                    | LPAREN Elements+=tupleTypeElement COMMA Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)* RPAREN
                     ;
 
 tupleTypeElement    : (identifierName AS)? datatype
                     ;
 
-tupleExpr           : TUPLE LCURLY (Args+=tupleExprArgument (COMMA Args+=tupleExprArgument)*)? RCURLY
+tupleExpr           : T=TUPLE LCURLY Args+=tupleExprArgument (COMMA Args+=tupleExprArgument)* RCURLY
                     ;
 
 tupleExprArgument   : Name=identifierName Op=assignoperator Expr=expression
@@ -1213,8 +1214,8 @@ identifier          : ID            // No rule names, we use the Start property 
 identifierString    : ID            // No rule names, we use the Start property to access the token
                     | STRING_CONST
                     | keywordsoft
-                    | xbaseType    
-                    | nativeType   
+                    | xbaseType
+                    | nativeType
                     ;
 
 
@@ -1298,7 +1299,7 @@ parserLiteralValue  : Year=INT_CONST DOT Month=INT_CONST DOT Day=INT_CONST
                       ( Hours=INT_CONST (COLON Minutes=INT_CONST (COLON Seconds=INT_CONST)?)? )?
                       .*? RCURLY
                     ;
-                    
+
 /*
 // this rule is not used by the parser
 keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | DLL | DO
@@ -1312,7 +1313,7 @@ keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST 
                     ;
 
  */
- 
+
 keywordsoft         : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS | NEW | OUT | REF | SET |  VALUE | VIRTUAL | INTERNAL
                     // The following did not exist in Vulcan
                     | ADD | ARGLIST | ASCENDING | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM
@@ -1331,19 +1332,19 @@ keywordsoft         : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     | PARTIAL | SEALED | ABSTRACT | UNSAFE | SCOPE | NAMESPACE | LOCK | IMPLICIT | IMPLIED | INITONLY | PROPERTY | INTERFACE
                     | VOSTRUCT | UNION | DECLARE | OPERATOR
                     // Xbase++ keywords
-                    | SHARING | SHARED | ASSIGNMENT | EXPORTED | READONLY | NOSAVE 
+                    | SHARING | SHARED | ASSIGNMENT | EXPORTED | READONLY | NOSAVE
                     // context sensitive keywords. No need to include these. They are recognized in context by the lexer.
                     // ENDCLASS, ENDSEQUENCE, FREEZE, FINAL, INTRODUCE, SYNC, DEFERRED, INLINE
                     // FoxPro keywords
-                    | OLEPUBLIC | EXCLUDE | THISACCESS | HELPSTRING | NOINIT 
-                    | FOX_AND | FOX_OR | FOX_NOT | FOX_XOR | THEN | FOX_M | EACH 
+                    | OLEPUBLIC | EXCLUDE | THISACCESS | HELPSTRING | NOINIT
+                    | FOX_AND | FOX_OR | FOX_NOT | FOX_XOR | THEN | FOX_M | EACH
                     | THISFORM
                       // These tokens are already marked as 'only valid in a certain context ' in the lexer
-                      // ENDDEFINE | DIMENSION | LPARAMETERS | ENDFOR | SCAN | ENDSCAN | ENDTRY | ENDPROC | ENDFUNC | ENDWITH | ENDDEFINE                    
+                      // ENDDEFINE | DIMENSION | LPARAMETERS | ENDFOR | SCAN | ENDSCAN | ENDTRY | ENDPROC | ENDFUNC | ENDWITH | ENDDEFINE
                     )
                     ;
 
-                    
+
 
 
 xppclass           :  Attributes=attributes?                                // NEW Optional Attributes
@@ -1443,7 +1444,7 @@ xppmethod           : Attributes=attributes?                                // N
 
 xppinlineMethod     : Attributes=attributes?                                 // NEW Optional Attributes
                       I=INLINE
-                      Accessors=xppaccessors?                                // [ACCESS | ASSIGN] 
+                      Accessors=xppaccessors?                                // [ACCESS | ASSIGN]
                       Modifiers=xppmemberModifiers?                          // [CLASS]
                       METHOD Sig=signature
                       end=eos

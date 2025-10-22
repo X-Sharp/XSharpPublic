@@ -1113,6 +1113,7 @@ anonMember          : Name=identifierName Op=assignoperator Expr=expression
 // For tuples without the keyword we force 2 elements to avoid confusion with typecasts
 
 tupleType           : T=TUPLE LPAREN Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)* RPAREN
+                    | T=TUPLE LCURLY Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)* RCURLY
                     | LPAREN Elements+=tupleTypeElement COMMA Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)* RPAREN
                     ;
 
@@ -1120,6 +1121,7 @@ tupleTypeElement    : (identifierName AS)? datatype
                     ;
 
 tupleExpr           : T=TUPLE LCURLY Args+=tupleExprArgument (COMMA Args+=tupleExprArgument)* RCURLY
+                    | T=TUPLE LPAREN Args+=tupleExprArgument (COMMA Args+=tupleExprArgument)* RPAREN
                     ;
 
 tupleExprArgument   : Name=identifierName Op=assignoperator Expr=expression

@@ -243,7 +243,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 trans.TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
                                 SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                                 SyntaxFactory.MakeIdentifier(name),
-                                null,
+                                null, // typeParameterList
                                 null, // TODO nvk: parameterList
                                 null,
                                 default,

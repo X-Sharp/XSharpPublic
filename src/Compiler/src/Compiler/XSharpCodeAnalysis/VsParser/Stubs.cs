@@ -135,6 +135,13 @@ namespace Microsoft.CodeAnalysis.Emit
 namespace Microsoft.CodeAnalysis.CSharp
 {
 
+    public enum SyntaxKind : ushort
+    {
+        None = 0,
+        WarningsKeyword = 1,
+        AnnotationsKeyword = 2
+    }
+
     public enum InternalErrorCode
     {
         Void = 0,

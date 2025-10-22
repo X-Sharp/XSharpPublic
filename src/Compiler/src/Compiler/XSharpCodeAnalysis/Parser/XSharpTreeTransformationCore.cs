@@ -8118,7 +8118,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 int ranks = rankSpecifiers[0].Sizes.Count;
                 if (ranks == 1 && rankSpecifiers[0].Sizes[0] is OmittedArraySizeExpressionSyntax)
                 {
-                    if (context.ArgList.IsEmpty)
+                    if (context.ArgList.IsMissing)
                     {
                         ParseErrors.Add(new ParseErrorData(context.Type, ErrorCode.ERR_MissingArraySize));
                     }
@@ -8823,7 +8823,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //                     ;
             // namedArgument may match an empty argument.
             var args = _pool.AllocateSeparated<ArgumentSyntax>();
-            if (context.IsEmpty)
+            if (context.IsMissing)
             {
                 context.Put(EmptyArgumentList());
                 return;

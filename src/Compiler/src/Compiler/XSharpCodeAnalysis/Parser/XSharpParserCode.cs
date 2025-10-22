@@ -606,7 +606,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         partial class BracketedArgumentListContext
         {
-            public bool IsEmpty
+            public bool IsMissing
             {
                 get
                 {
@@ -616,7 +616,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         partial class ArgumentListContext
         {
-            public bool IsEmpty
+            public bool IsMissing
             {
                 get
                 {

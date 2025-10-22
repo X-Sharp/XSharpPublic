@@ -32,5 +32,10 @@ FUNCTION OClone(o AS OBJECT) AS OBJECT
     END IF
 RETURN oNewObject
 
-	
 
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_getinst/*" />
+FUNCTION _GetInst() AS IntPtr
+    LOCAL oType AS System.Type
+    oType := Typeof(Functions)
+    RETURN System.Runtime.InteropServices.Marshal.GetHINSTANCE(oType:Module)

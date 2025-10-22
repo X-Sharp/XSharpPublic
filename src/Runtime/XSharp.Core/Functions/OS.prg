@@ -75,7 +75,7 @@ FUNCTION CurDir() AS STRING
 	LOCAL index AS INT
 	cDir := System.Environment.CurrentDirectory
     index := cDir:IndexOf(Path.VolumeSeparatorChar)
-    if cDir:StartsWith("\\") 
+    if cDir:StartsWith("\\")
         return cDir
     endif
 	IF index > 0
@@ -405,11 +405,6 @@ RETURN System.Environment.CommandLine
 
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_getinst/*" />
-FUNCTION _GetInst() AS IntPtr
-    LOCAL oType AS System.Type
-    oType := Typeof(Functions)
-    RETURN System.Runtime.InteropServices.Marshal.GetHINSTANCE(oType:Module)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_getcmdshow/*" />
 [Obsolete];

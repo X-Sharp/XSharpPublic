@@ -3,8 +3,8 @@
 FUNCTION Start( ) AS VOID  
 LOCAL aRes := {} AS ARRAY
 LOCAL aValues := {} AS ARRAY
-AADD(aValues, NIL)  
-AADD(aValues, 100)                                                      
+AAdd(aValues, NIL)  
+AAdd(aValues, 100)                                                      
 AEval(aValues, {|x,y,z| AAdd(aRes, iif (IsNil(x), (y := 10, z := 32, x := y + z), x))})
 xAssert(ALen(aRes) == 2)
 xAssert(aRes[1] == 42)

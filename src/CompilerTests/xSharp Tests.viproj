@@ -136480,7 +136480,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C932 - Compiler crash with default values
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C933 - ICE when using something like i"{ex:Message})" *************
 Application = C933 - ICE when using something like i"{ex:Message})"
 IDEVersion = 1.06
@@ -137449,7 +137449,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C939 - Conflict between method name and property setter
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C940 - ICE problems *************
 Application = C940 - ICE problems
 IDEVersion = 1.06
@@ -137568,7 +137568,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C940 - ICE problems
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C941 - Late bound problem with PARAMS parameters *************
 Application = C941 - Late bound problem with PARAMS parameters
 IDEVersion = 1.06

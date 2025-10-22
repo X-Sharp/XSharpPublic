@@ -534,11 +534,11 @@ FUNCTION SetInternational(symNewSetting AS STRING) AS STRING
     SWITCH symNewSetting:ToUpper()
         CASE "CLIPPER"
         CASE "XPP"
-            RuntimeState.GetInstance()._SetInternationalClipper()
+            RuntimeState.GetInstance():_SetInternationalClipper()
         CASE "WINDOWS"
         CASE "UNICODE"
         CASE "ORDINAL"
-            RuntimeState.GetInstance()._SetInternationalWindows()
+            RuntimeState.GetInstance():_SetInternationalWindows()
         OTHERWISE
             THROW Error.ArgumentError(__ENTITY__, NAMEOF(symNewSetting), "Unsupported international mode: "+ symNewSetting)
     END SWITCH

@@ -1018,7 +1018,7 @@ BEGIN NAMESPACE XSharp.RDD
                     VAR is_CodeBlock := FALSE
                     LOCAL type := oBlock:GetType() AS System.Type
                     DO WHILE type != NULL
-                        IF type.FullName != "XSharp._Codeblock"
+                        IF type:FullName != "XSharp._Codeblock"
                             type := type:BaseType
                         ELSE
                             is_CodeBlock := TRUE

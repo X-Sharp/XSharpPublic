@@ -59,7 +59,7 @@ BEGIN NAMESPACE XSharp.IO
             var cacheItem := LRUCacheItem<K, V>{key, val}
             var node      := LinkedListNode<LRUCacheItem<K, V>>{cacheItem}
             _lruList:AddLast(node)
-            _cacheMap.Add(key, node)
+            _cacheMap:Add(key, node)
         RETURN old
 
         PRIVATE METHOD RemoveFirst() AS V

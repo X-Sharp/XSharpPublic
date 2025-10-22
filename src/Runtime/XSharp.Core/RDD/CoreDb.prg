@@ -141,7 +141,7 @@ CLASS XSharp.CoreDb
     INTERNAL STATIC METHOD TransSetInfo(oRdd AS IRdd, info AS DbTransInfo, cFunc AS STRING,nDest AS DWORD, fldNames AS _FieldNames,;
                                         uCobFor AS ICodeblock ,uCobWhile AS ICodeblock ,;
                                         nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS VOID
-        LOCAL oDest := RuntimeState.DataSession.GetRDD(nDest) AS IRdd
+        LOCAL oDest := RuntimeState.DataSession:GetRDD(nDest) AS IRdd
         IF oDest == NULL
             RddError.PostNoTableError(cFunc)
         ENDIF
@@ -1556,7 +1556,7 @@ CLASS XSharp.CoreDb
         LOCAL i AS DWORD
         var oSession := RuntimeState.DataSession
         FOR i := 1 TO DataSession.MaxWorkareas
-            VAR oRdd := oSession.GetRDD(i)
+            VAR oRdd := oSession:GetRDD(i)
             IF oRdd != NULL
                 LOCAL cName AS STRING
                 cName := oRdd:Driver
@@ -2073,7 +2073,7 @@ CLASS XSharp.CoreDb
         RETURN CoreDb.Do ({ =>
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
             LOCAL dbti := DbTransInfo{ fldNames:FieldCount} AS DbTransInfo
-            LOCAL oDest := RuntimeState.DataSession.GetRDD(nDest) AS IRdd
+            LOCAL oDest := RuntimeState.DataSession:GetRDD(nDest) AS IRdd
             IF oDest == NULL_OBJECT
                 RddError.PostNoTableError(__FUNCTION__)
             ENDIF

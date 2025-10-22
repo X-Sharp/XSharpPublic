@@ -8116,6 +8116,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     rankSpecifiers[i] = arrayType.RankSpecifiers[i];
                 }
                 int ranks = rankSpecifiers[0].Sizes.Count;
+                if (ranks == 1 && rankSpecifiers[0].Sizes[0] is OmittedArraySizeExpressionSyntax)
+                {
+                    if (context.ArgList.IsEmpty)
+                    {
+                        ParseErrors.Add(new ParseErrorData(context.Type, ErrorCode.ERR_MissingArraySize));
+                    }
+                }
                 if (ranks != context.ArgList?._Args?.Count)
                     ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_BadCtorArgCount, context.Type.GetText(), context.ArgList?._Args?.Count ?? 0));
                 var sizes = _pool.AllocateSeparated<ExpressionSyntax>();
@@ -8139,7 +8146,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(sizes);
                 context.Put(_syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                     _syntaxFactory.ArrayType(type, MakeList(rankSpecifiers)),
-                    context.Init?.Get<InitializerExpressionSyntax>()));
+                    context.Init?.Get<InitializerExpressionSyntax>() ?? null));
             }
         }
 
@@ -8816,8 +8823,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //                     ;
             // namedArgument may match an empty argument.
             var args = _pool.AllocateSeparated<ArgumentSyntax>();
-            if (context._Args == null || context._Args.Count == 0 ||
-                (context._Args.Count == 1 && context._Args[0].IsMissing))
+            if (context.IsEmpty)
             {
                 context.Put(EmptyArgumentList());
                 return;
@@ -9800,10 +9806,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var closeParen = SyntaxFactory.CloseParenToken;
             var elements = MakeSeparatedList<TupleElementSyntax>(context._Elements);
             context.Put(_syntaxFactory.TupleType(openParen, elements, closeParen));
-            if (context.t != null && elements.Count < 2)
-            {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
-            }
         }
 
         public override void ExitTupleTypeElement([NotNull] XP.TupleTypeElementContext context)
@@ -9819,19 +9821,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var closeParen = SyntaxFactory.CloseParenToken;
             var args = MakeSeparatedList<ArgumentSyntax>(context._Args);
             context.Put(_syntaxFactory.TupleExpression(openParen, args, closeParen));
-            if (context.t != null && args.Count < 2)
-            {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
-            }
-            if (context.l.Type == XP.LCURLY && context.r.Type != XP.RCURLY)
-            {
-                _parseErrors.Add(new ParseErrorData(context.r, ErrorCode.ERR_RbraceExpected));
-            }
-            if (context.l.Type == XP.LPAREN && context.r.Type != XP.RPAREN)
-            {
-                _parseErrors.Add(new ParseErrorData(context.r, ErrorCode.ERR_CloseParenExpected));
-            }
-
         }
 
         public override void ExitTupleExprArgument([NotNull] XP.TupleExprArgumentContext context)
@@ -10466,11 +10455,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Put(_syntaxFactory.TupleExpression(SyntaxFactory.OpenParenToken, args, SyntaxFactory.CloseParenToken));
             _pool.Free(args);
-            if (context._Locals.Count < 2)
-            {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
-            }
-
         }
         public override void ExitLocalDesignation([NotNull] XP.LocalDesignationContext context)
         {
@@ -10488,11 +10472,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     variables.AddSeparator(SyntaxFactory.CommaToken);
                 variables.Add(GetDesignation(id));
             }
-            if (variables.Count < 2)
-            {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
-            }
-
             var varDesign = _syntaxFactory.ParenthesizedVariableDesignation(SyntaxFactory.OpenParenToken, variables, SyntaxFactory.CloseParenToken);
             _pool.Free(variables);
             context.Put(_syntaxFactory.DeclarationExpression(_impliedType, varDesign));

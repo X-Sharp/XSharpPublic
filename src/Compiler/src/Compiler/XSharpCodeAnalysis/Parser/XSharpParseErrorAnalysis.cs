@@ -434,6 +434,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        public override void ExitTupleExpr([NotNull] XSharpParser.TupleExprContext context)
+        {
+            if (context.T != null && context._Args.Count < 2)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
+            }
+        }
+        public override void ExitTupleType([NotNull] XSharpParser.TupleTypeContext context)
+        {
+            if (context.T != null && context._Elements.Count < 2)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
+            }
+        }
+        public override void ExitDesignationTypeExpr([NotNull] XSharpParser.DesignationTypeExprContext context)
+        {
+            if (context._Locals.Count < 2)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
+            }
+        }
+        public override void ExitDesignationExpr([NotNull] XSharpParser.DesignationExprContext context)
+        {
+            if (context._Ids.Count < 2)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
+            }
+        }
         public override void ExitFielddecl(XSharpParser.FielddeclContext context)
         {
             NotInCore(context, "FIELD statement");

@@ -604,6 +604,26 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public ArgumentListContext Arguments => ArgList;
 
         }
+        partial class BracketedArgumentListContext
+        {
+            public bool IsEmpty
+            {
+                get
+                {
+                    return _Args == null || _Args.Count == 0 || (_Args.Count == 1 && _Args[0].IsMissing);
+                }
+            }
+        }
+        partial class ArgumentListContext
+        {
+            public bool IsEmpty
+            {
+                get
+                {
+                    return _Args == null || _Args.Count == 0 || (_Args.Count == 1 && _Args[0].IsMissing);
+                }
+            }
+        }
         public partial class BoundMethodCallContext : ICallContext
         {
             public bool HasRefArguments { get; set; }

@@ -2,18 +2,18 @@
 FUNCTION Start() AS VOID
 ? SizeOf(USUAL)
 ? _SizeOf(USUAL)
-xAssert(SizeOf(USUAL) == 28)
-xAssert(_SizeOf(USUAL) == 28)
+xAssert(SizeOf(USUAL) == 16)
+xAssert(_SizeOf(USUAL) == 16)
 
 ? SizeOf(DATE)
 ? _SizeOf(DATE)
-xAssert(SizeOf(DATE) == 8)
-xAssert(_SizeOf(DATE) == 8)
+xAssert(SizeOf(DATE) == 4)
+xAssert(_SizeOf(DATE) == 4)
 
 ? SizeOf(FLOAT)
 ? _SizeOf(FLOAT)
-xAssert(SizeOf(FLOAT) == 16)
-xAssert(_SizeOf(FLOAT) == 16)
+xAssert(SizeOf(FLOAT) == 12)
+xAssert(_SizeOf(FLOAT) == 12)
 
 ? SizeOf(SYMBOL)
 ? _SizeOf(SYMBOL)

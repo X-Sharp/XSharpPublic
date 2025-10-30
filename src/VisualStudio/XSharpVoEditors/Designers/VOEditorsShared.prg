@@ -151,10 +151,10 @@ PARTIAL CLASS VODBServerEditor
             cValue := __ReadNextVNDBString(aBytes , REF nPos , 128)
             oField:cName := cValue
             oField:aProperties:Add("fldname" , cValue)
-            __ReadNextVNDBString(aBytes , REF nPos , 128)
-            __ReadNextVNDBString(aBytes , REF nPos , 64)
-            __ReadNextVNDBString(aBytes , REF nPos , 255)
-            __ReadNextVNDBString(aBytes , REF nPos , 64)
+            __ReadNextVNDBString(aBytes , REF nPos , 128) // TODO: what is this for???
+            oField:aProperties:Add("caption" , __ReadNextVNDBString(aBytes , REF nPos , 64) )
+            oField:aProperties:Add("description" , __ReadNextVNDBString(aBytes , REF nPos , 255) )
+            oField:aProperties:Add("helpcontext" , __ReadNextVNDBString(aBytes , REF nPos , 64) )
             oField:aProperties:Add("included" , __ReadNextVNDBByte(aBytes , REF nPos):ToString())
             m := __ReadNextVNDBInt16(aBytes , REF nPos)
             DO WHILE aSorted:ContainsKey(m)

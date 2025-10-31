@@ -56,26 +56,12 @@
       <HintPath>Dll\SDK_Defines.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="XICOMMON, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <Name>XICOMMON</Name>
-      <AssemblyName>XICOMMON.dll</AssemblyName>
+    <Reference Include="XIDE.Base, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <Name>XIDE.Base</Name>
+      <AssemblyName>XIDE.Base.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>Dll\XICOMMON.dll</HintPath>
-    </Reference>
-    <Reference Include="XIDED, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <Name>XIDED</Name>
-      <AssemblyName>XIDED.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>Dll\XIDED.dll</HintPath>
-    </Reference>
-    <Reference Include="XIRES, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <Name>XIRES</Name>
-      <AssemblyName>XIRES.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>Dll\XIRES.dll</HintPath>
+      <HintPath>Dll\XIDE.Base.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

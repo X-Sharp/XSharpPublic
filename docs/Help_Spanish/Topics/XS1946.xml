@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1946</title>
+  <keywords>
+    <keyword>XS1946</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1946</para>
+    </header>
+    <para styleclass="Normal">An anonymous method expression cannot be converted to an expression tree.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">An anonymous method represents a set of statements but an expression tree must not contain a statement. Therefore an anonymous method cannot be represented by an expression tree.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">To correct this error</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Change the anonymous method to a lambda expression.</li>
+    </list>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates XS1946:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1946.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

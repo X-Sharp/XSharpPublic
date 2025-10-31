@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>XS7051</title>
+<keywords>
+<keyword>XS7051</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS7051</para>
+  </header>
+  <para styleclass="Normal">SecurityAction value &apos;{0}&apos; is invalid for security attributes applied to a type or a method</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

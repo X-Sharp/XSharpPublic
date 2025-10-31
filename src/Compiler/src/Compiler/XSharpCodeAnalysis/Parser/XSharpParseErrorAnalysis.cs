@@ -4,13 +4,12 @@
 // See License.txt in the project root for license information.
 //
 #nullable disable
+using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using System.Collections.Generic;
-using System.Linq;
-using static Microsoft.CodeAnalysis.FlowAnalysis.ControlFlowGraphBuilder;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -431,6 +430,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Attributes != null)
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_Unsupported, "Adding Attributes to a DECLARE - DLL declaration"));
+            }
+        }
+
+        public override void ExitTupleExpr([NotNull] XSharpParser.TupleExprContext context)
+        {
+            if (context.T != null && context._Args.Count < 2)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
+            }
+        }
+
+        public override void ExitTupleType([NotNull] XSharpParser.TupleTypeContext context)
+        {
+            if (context.T != null && context._Elements.Count < 2)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
+            }
+        }
+        public override void ExitDesignationTypeExpr([NotNull] XSharpParser.DesignationTypeExprContext context)
+        {
+            if (context._Locals.Count < 2)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
+            }
+        }
+        public override void ExitDesignationExpr([NotNull] XSharpParser.DesignationExprContext context)
+        {
+            if (context._Ids.Count < 2)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
             }
         }
 

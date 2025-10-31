@@ -1,11 +1,12 @@
-USING System.Windows.Forms
-USING System.Collections.Generic
-USING System.Reflection
-USING System.Text
-USING System.Runtime.Versioning
+using System.Windows.Forms
+using System.Collections.Generic
+using System.Reflection
+using System.Text
+using System.Runtime.Versioning
+
 [assembly: TargetFramework(".NETFramework,Version=v4.6", FrameworkDisplayName := ".NET Framework 4.6")]
 [STAThread];
-FUNCTION Start() AS VOID
+function Start() as void
 	Application.EnableVisualStyles()
 
 	DoTests()
@@ -14,13 +15,13 @@ FUNCTION Start() AS VOID
 
 	XideUnitTest.Initialize()
 //	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.Core.Tests.StringTests):Assembly)
-//	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.RT.Tests.ArrayBaseTests):Assembly)
-//	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.VO.Tests.WinDateTests):Assembly)
-//	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.RDD.Tests.TestDBF):Assembly)
-//	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.VFP.Tests.NumericTests):Assembly)
-//	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.XPP.Tests.MiscTests):Assembly)
+	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.RT.Tests.ArrayBaseTests):Assembly)
+	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.VO.Tests.WinDateTests):Assembly)
+	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.RDD.Tests.TestDBF):Assembly)
+	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.XPP.Tests.MiscTests):Assembly)
 //	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.Harbour.Tests.GeneralTests):Assembly)
-	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.SQLRdd.Tests.SQLiteTests):Assembly)
+//	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.SQLRdd.Tests.SQLiteTests):Assembly)
+//	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.VFP.Tests.NumericTests):Assembly)
 
 //	XideUnitTest.AddTestsFromAssembly(TypeOf(StringTests):Assembly)
 
@@ -28,9 +29,8 @@ FUNCTION Start() AS VOID
 //	?
 //	? Assert.Groups , "test groups, Passed:", Assert.Passed , ", Failed:" , Assert.Failed
 
-RETURN
+return
 
-PROCEDURE DoTests()
-// placeholder for quick tests
-RETURN
+procedure DoTests()
+return
 

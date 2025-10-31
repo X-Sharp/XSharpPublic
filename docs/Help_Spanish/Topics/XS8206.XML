@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS8206</title>
+<keywords>
+<keyword>XS8206</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS8206</para>
+  </header>
+  <para styleclass="Normal">Module &apos;{0}&apos; in assembly &apos;{1}&apos; is forwarding the type &apos;{2}&apos; to multiple assemblies: &apos;{3}&apos; and &apos;{4}&apos;.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

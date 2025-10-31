@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1540</title>
+  <keywords>
+    <keyword>XS1540</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1540</para>
+    </header>
+    <para styleclass="Normal">Cannot access protected member &apos;member&apos; via a qualifier of type &apos;type1&apos;; the qualifier must be of type &apos;type2&apos; (or derived from it)</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A derived class cannot access protected members of its base class through an instance of the base class. An instance of the base class declared in the derived class might, at run time, be an instance of another type that is derived from the same base but is not otherwise related to the derived class. Because protected members can be accessed only by derived types, any attempts to access protected members that might not be valid at run time are marked by the compiler as not valid.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">In the Employee class in the following example, emp2 and emp3 both have type Person at compile time, but emp2 has type Manager at run time. Because Employee is not derived from Manager, it cannot access the protected members of the base class, Person, through an instance of the Manager class. The compiler cannot determine what the run-time type of the two Person objects will be. Therefore, both the call from emp2 and the call from emp3 cause compiler error XS1540.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1540.PRG<br/></para>
+  </body>
+</topic>

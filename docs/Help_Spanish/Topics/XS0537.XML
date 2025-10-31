@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>XS0537</title>
+<keywords>
+<keyword>XS0537</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS0537</para>
+  </header>
+  <para styleclass="Normal">The class System.Object cannot have a base class or implement an interface</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

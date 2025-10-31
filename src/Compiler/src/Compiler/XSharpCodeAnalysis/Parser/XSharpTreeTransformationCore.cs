@@ -4791,21 +4791,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case "parameter":
                     target = "param";
                     goto case "param";
-                case "assembly":
-                case "genericparameter":
-                case "module":
-                case "return":
-                case "class":
-                case "constructor":
-                case "delegate":
-                case "enum":
-                case "event":
-                case "field":
-                case "interface":
-                case "method":
-                case "param":
-                case "property":
-                case "struct":
+                case "assembly":    // 1
+                case "module":      // 2
+                case "class":       //4
+                case "struct":      // 8
+                case "enum":        // 16
+                case "constructor": // 32
+                case "method":      // 64
+                case "property":    // 128
+                case "field":       // 256
+                case "event":       // 512
+                case "interface":   // 1024
+                case "param":       // 2048
+                case "delegate":    // 4096
+                case "return":      // 8192
+                case "genericparameter":    // 16384
                     var id = SyntaxFactory.MakeIdentifier(target);
                     context.Put(_syntaxFactory.AttributeTargetSpecifier(id, SyntaxFactory.ColonToken));
                     break;
@@ -7408,8 +7408,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             context.StmtBlk.Get<BlockSyntax>());
                         break;
                     case XP.USING:
-                        node = _syntaxFactory.UsingStatement(attributeLists: default, 
-                               awaitKeyword: null, 
+                        node = _syntaxFactory.UsingStatement(attributeLists: default,
+                               awaitKeyword: context.a?.SyntaxKeyword(),
 							   token.SyntaxKeyword(),
                                SyntaxFactory.OpenParenToken,
                                context.VarDecl?.Get<VariableDeclarationSyntax>(),
@@ -8019,7 +8019,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     init = context.Init.Get<InitializerExpressionSyntax>();
                 }
-                context.Put(CreateObject(type, argList, init));
+                if (type.ToString() == "_")
+                {
+                    context.Put(_syntaxFactory.ImplicitObjectCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword), argList, init));
+                }
+                else
+                {
+                    context.Put(CreateObject(type, argList, init));
+                }
             }
             else
             {
@@ -8031,6 +8038,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     rankSpecifiers[i] = arrayType.RankSpecifiers[i];
                 }
                 int ranks = rankSpecifiers[0].Sizes.Count;
+                if (ranks == 1 && rankSpecifiers[0].Sizes[0] is OmittedArraySizeExpressionSyntax)
+                {
+                    if (context.ArgList.IsMissing)
+                    {
+                        ParseErrors.Add(new ParseErrorData(context.Type, ErrorCode.ERR_MissingArraySize));
+                    }
+                }
                 if (ranks != context.ArgList?._Args?.Count)
                     ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_BadCtorArgCount, context.Type.GetText(), context.ArgList?._Args?.Count ?? 0));
                 var sizes = _pool.AllocateSeparated<ExpressionSyntax>();
@@ -8731,8 +8745,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //                     ;
             // namedArgument may match an empty argument.
             var args = _pool.AllocateSeparated<ArgumentSyntax>();
-            if (context._Args == null || context._Args.Count == 0 ||
-                (context._Args.Count == 1 && context._Args[0].IsMissing))
+            if (context.IsMissing)
             {
                 context.Put(EmptyArgumentList());
                 return;
@@ -10370,11 +10383,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (args.Count > 0)
                     args.AddSeparator(SyntaxFactory.CommaToken);
-                VariableDesignationSyntax locdes = GetDesignation(loc.Id);
-                args.Add(MakeArgument(_syntaxFactory.DeclarationExpression(loc.Type.Get<TypeSyntax>(), locdes)));
+                var expr = loc.Get<DeclarationExpressionSyntax>();
+                args.Add(MakeArgument(expr));
             }
             context.Put(_syntaxFactory.TupleExpression(SyntaxFactory.OpenParenToken, args, SyntaxFactory.CloseParenToken));
             _pool.Free(args);
+          }
+        public override void ExitLocalDesignation([NotNull] XP.LocalDesignationContext context)
+        {
+            VariableDesignationSyntax designation = GetDesignation(context.Id);
+            var expression = _syntaxFactory.DeclarationExpression(context.Type.Get<TypeSyntax>(), designation);
+            context.Put(expression);
         }
 
         public override void ExitDesignationExpr([NotNull] XP.DesignationExprContext context)

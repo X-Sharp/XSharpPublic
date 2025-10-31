@@ -14,6 +14,7 @@
     <copyright>Copyright (C) 2015 and beyond by XSharp B.V.</copyright>
     <tags>XSharp, VOSDK</tags>
     <repository type="git" url="https://github.com/X-Sharp/XSharpPublic.git" />
+	
 	<dependencies>
       <group targetFramework=".NETFramework4.6">
         <dependency id="XSharp.VO" version="$Version" />
@@ -27,18 +28,18 @@
     <file src="$SourceFolder\VORDDClasses.dll" 	    target= "lib\net46\VORDDClasses.dll" 	/>
     <file src="$SourceFolder\VOSQLClasses.dll" 	    target= "lib\net46\VOSQLClasses.dll" 	/>
     <file src="$SourceFolder\VOGUIClasses.dll" 	    target= "lib\net46\VOGUIClasses.dll" 	/>
-    <file src="$SourceFolder\CAPAINT.DLL" 			    target= "lib\net46\CAPAINT.DLL" 			/>
     <file src="$SourceFolder\VOReportClasses.dll" 	target= "lib\net46\VOReportClasses.dll" 	/>
     <file src="$SourceFolder\VOSystemClasses.dll" 	target= "lib\net46\VOSystemClasses.dll" 	/>
     <file src="$SourceFolder\VOWin32APILibrary.dll" target= "lib\net46\VOWin32APILibrary.dll"/>
-    <file src="$SourceFolder\CATO3CNT.DLL"          target= "lib\net46\CATO3CNT.DLL" />
-    <file src="$SourceFolder\CATO3DAT.DLL"          target= "lib\net46\CATO3DAT.DLL" />
-    <file src="$SourceFolder\CATO3MSK.DLL"          target= "lib\net46\CATO3MSK.DLL" />
-    <file src="$SourceFolder\CATO3NBR.DLL"          target= "lib\net46\CATO3NBR.DLL" />
-    <file src="$SourceFolder\CATO3SBR.DLL"          target= "lib\net46\CATO3SBR.DLL" />
-    <file src="$SourceFolder\CATO3TBR.DLL"          target= "lib\net46\CATO3TBR.DLL" />
-    <file src="$SourceFolder\CATO3TIM.DLL"          target= "lib\net46\CATO3TIM.DLL" />
-    <file src="$SourceFolder\CATO3SPL.DLL"          target= "lib\net46\CATO3SPL.DLL" />
-    <file src="$SourceFolder\MSVCRT.DLL"            target= "lib\net46\MSVCRT.DLL"   />
+    <file src="..\voredist\CAPAINT.DLL" 			    target= "lib\net46\CAPAINT.DLL" 			/>
+    <file src="..\voredist\CATO3CNT.DLL"          target= "lib\net46\CATO3CNT.DLL" />
+    <file src="..\voredist\CATO3DAT.DLL"          target= "lib\net46\CATO3DAT.DLL" />
+    <file src="..\voredist\CATO3MSK.DLL"          target= "lib\net46\CATO3MSK.DLL" />
+    <file src="..\voredist\CATO3NBR.DLL"          target= "lib\net46\CATO3NBR.DLL" />
+    <file src="..\voredist\CATO3SBR.DLL"          target= "lib\net46\CATO3SBR.DLL" />
+    <file src="..\voredist\CATO3TBR.DLL"          target= "lib\net46\CATO3TBR.DLL" />
+    <file src="..\voredist\CATO3TIM.DLL"          target= "lib\net46\CATO3TIM.DLL" />
+    <file src="..\voredist\CATO3SPL.DLL"          target= "lib\net46\CATO3SPL.DLL" />
+    <file src="..\voredist\MSVCRT.DLL"            target= "lib\net46\MSVCRT.DLL"   />
   </files>
 </package>

@@ -50,6 +50,8 @@
     METHOD RemoveProperty(cPropertyName AS STRING) AS LOGIC
         RETURN SELF:_RemoveProperty(cPropertyName)
 
+    METHOD HasProperty(cPropertyName AS STRING) AS LOGIC
+         RETURN _Properties:HasProperty(cPropertyName)
     #endregion
 
 

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9061</title>
+  <keywords>
+    <keyword>XS9061</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9061</para>
+    </header>
+    <para styleclass="Normal">The &quot;PTR(..) operation&quot; is not allowed for method or function calls. If the method or function returns a pointer then consider using the (&lt;Type&gt; PTR) syntax instead.</para>
+  </body>
+</topic>

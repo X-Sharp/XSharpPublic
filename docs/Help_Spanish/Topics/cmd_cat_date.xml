@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Date and Time</title>
+  <keywords>
+    <keyword>Commands<keyword>Date</keyword></keyword>
+    <keyword>Date Commands</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Date and Time</para>
+    </header>
+    <para styleclass="link"></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_CENTURY">SET CENTURY</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATE">SET DATE</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATE_FORMAT">SET DATE FORMAT</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_EPOCH">SET EPOCH</link></para>
+    <para styleclass="link"></para>
+  </body>
+</topic>

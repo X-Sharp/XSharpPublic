@@ -4,7 +4,6 @@ IDEVersion = 1.06
 OutputFolder = %ProjectPath%\Bin\
 Description = 
 GUID = 3A2B95E7-CF54-4E77-B22D-FDA94582BA81
-StartUpApp = 5A6F39F8-DB5F-4C1E-AC32-0AD778E7653F
 PrgEncoding = Default
 SupportCF = 0
 NoAppFileCreate = 1
@@ -27,8 +26,6 @@ AutoExportInterval = 0
 FileStatusGuid = BA2AB4E7-DACA-442E-80D4-D22500A06B7C
 CustomControlsGuid = 2E6221E6-9470-415B-B277-57892CA28BDA
 DefaultPropertiesGuid = E02D3177-9FE5-4634-BC3D-B9108BC76452
-
-[Recent References]
 
 [Application Groups]
 
@@ -726,7 +723,7 @@ EnforceSelf=0
 EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
-IgnoreStdDefs=0
+IgnoreStdDefs=1
 Ovf=0
 FOvf=0
 ModernSyntax=0
@@ -823,7 +820,7 @@ ReferenceProject = 030660FC-7FD4-4B4C-9FF4-3221E04FB450,1,0,XSharp.RT.Tests
 ReferenceProject = 43391107-D8C0-4FC7-97B2-78CEC03E5857,1,0,XSharp.XPP.Tests
 ReferenceProject = 15CF05A4-04B2-4FF6-812A-3E8E63CF4218,1,0,XSharp.Harbour.Tests
 ReferenceProject = BBCC24CB-DDCD-43A8-AADB-AE7BC27C4592,1,0,XSharp.SQLRdd.Tests
-ReferenceBrowse = C:\xSharp\Dev\Artifacts\Debug\XSharp.SQLRdd.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\Artifacts\Debug\XSharp.SQLRdd.dll,1,1
 [Xide.Tests Resources]
 [Xide.Tests Native Resources]
 [Xide.Tests License files]
@@ -1896,7 +1893,7 @@ ReferenceGAC = CLR4,System.Data,1,0,4.0.0.0
 [XSharp.Rdd Native Resources]
 [XSharp.Rdd License files]
 [XSharp.Rdd General Options]
-Switches=/nostddefs`/define:RUNTIME
+Switches=/define:RUNTIME
 ZeroArrays=1
 CaseSensitive=1
 ImplicitNamespace=0
@@ -1927,7 +1924,7 @@ EnforceSelf=0
 EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
-IgnoreStdDefs=0
+IgnoreStdDefs=1
 Ovf=0
 FOvf=0
 ModernSyntax=0
@@ -2465,7 +2462,7 @@ EnforceSelf=0
 EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
-IgnoreStdDefs=0
+IgnoreStdDefs=1
 Ovf=0
 FOvf=0
 ModernSyntax=0
@@ -2709,7 +2706,7 @@ EnforceSelf=0
 EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
-IgnoreStdDefs=0
+IgnoreStdDefs=1
 Ovf=0
 FOvf=0
 ModernSyntax=0
@@ -2760,7 +2757,7 @@ Platform = AnyCPU
 Language = CSharp
 Runtime = CLR4
 Dialect = None
-Folder = C:\xSharp\DevRt\Runtime\MacroCompiler\
+Folder = %ProjectPath%\Runtime\MacroCompiler\
 PrgSubFolder = 
 ResourcesSubFolder = 
 Description = 
@@ -2777,8 +2774,8 @@ IncludeInProjectExport = 1
 IncludePath = 
 StdDefsFile = 
 AppToRun = 
-SignAssembly = 0
-KeyFile = 
+SignAssembly = 1
+KeyFile = %Projectpath%\Common\XSharp.snk
 
 [ExportOptions]
 ExportResources = 0
@@ -2798,6 +2795,8 @@ FileGroup = Properties
 FileGroupGUID = 9EF88725-E577-45E5-9049-F02413A6F0B8
 FileGroup = Syntax
 FileGroupGUID = 394BA535-F034-46B3-BFCD-502E200ADB53
+FileGroup = Preprocessor
+FileGroupGUID = 2A71E87E-8CE9-42E2-B7F4-3EE7643332A7
 [MacroCompiler Files]
 File = %AppPath%\Binder\Binder.Access.cs
 FileGUID = 35324D18-55A5-4174-9C1C-3B351617F1D4
@@ -3032,6 +3031,81 @@ CopyToBin = 0
 File = %AppPath%\Syntax\SyntaxToken.cs
 FileGUID = EB678C5A-3750-40BC-A7DA-203BEB58B8CD
 FileFileGroup = 394BA535-F034-46B3-BFCD-502E200ADB53
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Binder\Node.Bound.Stmt.cs
+FileGUID = F9655AE8-D221-40EF-8034-9949593B85DD
+FileFileGroup = 467E2DB7-A2F4-454A-B7DE-E66D8BCA0A76
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Compiler\MacroCodeblock.cs
+FileGUID = 85ABCEEA-7DF1-40D3-9DF3-A60FB19AAB06
+FileFileGroup = 12D75611-6AC6-42FD-A273-B40DCF2C588A
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Syntax\Node.Syntax.Stmt.cs
+FileGUID = 132F381F-893B-497D-B941-623D92632554
+FileFileGroup = 394BA535-F034-46B3-BFCD-502E200ADB53
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Syntax\Parser.Expr.cs
+FileGUID = 09627F47-5381-42F8-91C9-0E095D4D8793
+FileFileGroup = 394BA535-F034-46B3-BFCD-502E200ADB53
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Syntax\Parser.Stmt.cs
+FileGUID = 827F20DC-4F16-46E6-90F1-AC33CC7D3F83
+FileFileGroup = 394BA535-F034-46B3-BFCD-502E200ADB53
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Syntax\Syntax.Semantic.cs
+FileGUID = 1183FEDB-7209-4ECE-BC08-5D189CDEF947
+FileFileGroup = 394BA535-F034-46B3-BFCD-502E200ADB53
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Preprocessor\XSharpPPExpressionEvaluator.cs
+FileGUID = BE520FDE-7086-4E5F-A6E6-C9DC55EC1547
+FileFileGroup = 2A71E87E-8CE9-42E2-B7F4-3EE7643332A7
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Preprocessor\XSharpPPHelpers.cs
+FileGUID = D7D11DBD-DE96-4E24-BDF7-6E64C2152DE2
+FileFileGroup = 2A71E87E-8CE9-42E2-B7F4-3EE7643332A7
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Preprocessor\XSharpPPRule.cs
+FileGUID = EE642FFF-6744-476B-AF72-EC13908ADF5F
+FileFileGroup = 2A71E87E-8CE9-42E2-B7F4-3EE7643332A7
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Preprocessor\XSharpPPRuleTokens.cs
+FileGUID = 9B709E80-29EF-42CA-9AAB-364AD2FE18F2
+FileFileGroup = 2A71E87E-8CE9-42E2-B7F4-3EE7643332A7
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Preprocessor\XSharpPPTokenExtensions.cs
+FileGUID = 996EB8DC-B335-467D-B12F-AC81EEC14B20
+FileFileGroup = 2A71E87E-8CE9-42E2-B7F4-3EE7643332A7
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Preprocessor\XSharpPreprocessor.cs
+FileGUID = 80E207B2-9B49-4312-A9D1-316D29255BFB
+FileFileGroup = 2A71E87E-8CE9-42E2-B7F4-3EE7643332A7
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\CodeGen\Node.Emit.Stmt.cs
+FileGUID = 5C521483-181C-4465-A6FF-5605B60BDCAC
+FileFileGroup = 873013B3-10A6-4354-BC36-EBFFF94EE233
+FileType = Code
+CopyToBin = 0
+File = %ProjectPath%\Common\CommonAssemblyInfo.cs
+FileGUID = 381C4308-2420-4AAB-9B7C-7A3B5D337949
+FileFileGroup = 9EF88725-E577-45E5-9049-F02413A6F0B8
+FileType = Code
+CopyToBin = 0
+File = %ProjectPath%\Common\Constants.cs
+FileGUID = C1750229-9708-48D5-AC06-2DA26EF25E05
+FileFileGroup = 9EF88725-E577-45E5-9049-F02413A6F0B8
 FileType = Code
 CopyToBin = 0
 [MacroCompiler References]
@@ -3275,9 +3349,9 @@ ReferenceProject = F345BAB5-72C2-4BCF-8685-78C901E0382B,1,0,XSharp.RT
 [XSharp.Data Native Resources]
 [XSharp.Data License files]
 [XSharp.Data General Options]
-Switches=
+Switches=/define:RUNTIME
 ZeroArrays=0
-CaseSensitive=0
+CaseSensitive=1
 ImplicitNamespace=0
 VO1=0
 VO2=1
@@ -3302,11 +3376,11 @@ XPP1=0
 LateBound=0
 Unsafe=0
 Undeclared=0
-EnforceSelf=0
-EnforceOverride=0
+EnforceSelf=1
+EnforceOverride=1
 UseNativeVersion=0
 MemVar=0
-IgnoreStdDefs=0
+IgnoreStdDefs=1
 Ovf=0
 FOvf=0
 ModernSyntax=0
@@ -3599,6 +3673,16 @@ File = %AppPath%\SystemFunctions.prg
 FileGUID = 961ACF9D-C8FE-4D73-950A-238DDD6E94CB
 FileType = Code
 CopyToBin = 0
+File = %ProjectPath%\Common\commonAssemblyInfo.prg
+FileGUID = 9B9E3110-7353-40D0-83CC-957885CBFE2F
+FileFileGroup = E69D5014-8A36-40C3-A7E5-6CA5F23D1FB7
+FileType = Code
+CopyToBin = 0
+File = %ProjectPath%\Common\constants.prg
+FileGUID = D13E7E4C-43CE-4CE2-BB0B-BF0CBE6706D6
+FileFileGroup = E69D5014-8A36-40C3-A7E5-6CA5F23D1FB7
+FileType = Code
+CopyToBin = 0
 [XSharp.VFP References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Data,1,0,4.0.0.0
@@ -3645,7 +3729,7 @@ EnforceSelf=0
 EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
-IgnoreStdDefs=0
+IgnoreStdDefs=1
 Ovf=0
 FOvf=0
 ModernSyntax=0
@@ -3977,6 +4061,10 @@ File = %ProjectPath%\Runtime\XSharp.Core.Tests\Support.prg
 FileGUID = A5672CC0-9F3C-48D1-A5E4-913AA37E2AAC
 FileType = Code
 CopyToBin = 0
+File = %AppPath%\LateBindingTests.prg
+FileGUID = 03063C44-A502-457D-9232-F5DAF3832370
+FileType = Code
+CopyToBin = 0
 [XSharp.RT.Tests References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core
@@ -4016,10 +4104,10 @@ LateBound=0
 Unsafe=1
 Undeclared=0
 EnforceSelf=0
-EnforceOverride=0
+EnforceOverride=1
 UseNativeVersion=0
 MemVar=0
-IgnoreStdDefs=0
+IgnoreStdDefs=1
 Ovf=0
 FOvf=0
 ModernSyntax=0
@@ -4272,16 +4360,16 @@ CopyToBin = 0
 [XSharp.RT.Debugger References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
 ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Windows.Forms,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Data,1,0,4.0.0.0
+ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core
+ReferenceProject = F345BAB5-72C2-4BCF-8685-78C901E0382B,1,0,XSharp.RT
 [XSharp.RT.Debugger Resources]
 [XSharp.RT.Debugger Native Resources]
 [XSharp.RT.Debugger License files]
 [XSharp.RT.Debugger General Options]
-Switches=/nostddefs`/define:RUNTIME
+Switches=/define:RUNTIME
 ZeroArrays=1
 CaseSensitive=1
 ImplicitNamespace=0
@@ -4312,7 +4400,7 @@ EnforceSelf=0
 EnforceOverride=1
 UseNativeVersion=0
 MemVar=0
-IgnoreStdDefs=0
+IgnoreStdDefs=1
 Ovf=0
 FOvf=0
 ModernSyntax=0
@@ -4416,13 +4504,13 @@ FileGUID = A29171A6-3553-49FE-B159-EAFEBA339238
 FileType = Code
 CopyToBin = 0
 [XSharp.Harbour References]
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core
+ReferenceProject = F345BAB5-72C2-4BCF-8685-78C901E0382B,1,0,XSharp.RT
 [XSharp.Harbour Resources]
 [XSharp.Harbour Native Resources]
 [XSharp.Harbour License files]
 [XSharp.Harbour General Options]
-Switches=/nostddefs`/define:RUNTIME
+Switches=/define:RUNTIME
 ZeroArrays=0
 CaseSensitive=1
 ImplicitNamespace=0
@@ -4453,7 +4541,7 @@ EnforceSelf=0
 EnforceOverride=1
 UseNativeVersion=0
 MemVar=0
-IgnoreStdDefs=0
+IgnoreStdDefs=1
 Ovf=0
 FOvf=0
 ModernSyntax=0
@@ -4540,10 +4628,10 @@ FileGUID = 9BE3552D-D1D6-4712-AA1C-C4A667149573
 FileType = Code
 CopyToBin = 0
 [XSharp.Harbour.Tests References]
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.Harbour,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
 ReferenceProject = 0D5205A3-6D8B-4632-BC88-DA84484B1FFA,1,0,Xide.Unit
+ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core
+ReferenceProject = B45700F4-D6B1-4DD8-AC12-611FFF16FAF8,1,0,XSharp.Harbour
+ReferenceProject = F345BAB5-72C2-4BCF-8685-78C901E0382B,1,0,XSharp.RT
 [XSharp.Harbour.Tests Resources]
 [XSharp.Harbour.Tests Native Resources]
 [XSharp.Harbour.Tests License files]
@@ -4665,8 +4753,8 @@ ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core
 ReferenceProject = F345BAB5-72C2-4BCF-8685-78C901E0382B,1,0,XSharp.RT
 ReferenceProject = 0D5205A3-6D8B-4632-BC88-DA84484B1FFA,1,0,Xide.Unit
-ReferenceBrowse = C:\xSharp\Dev\Artifacts\Debug\System.Data.SQLite.dll,1,1
-ReferenceBrowse = C:\xSharp\Dev\Artifacts\Debug\XSharp.SQLRdd.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\Artifacts\Debug\System.Data.SQLite.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\Artifacts\Debug\XSharp.SQLRdd.dll,1,1
 ReferenceGAC = CLR4,System.Data,1,0,4.0.0.0
 [XSharp.SQLRdd.Tests Resources]
 [XSharp.SQLRdd.Tests Native Resources]
@@ -4742,6 +4830,131 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = XSharp.SQLRdd.Tests
+
+; ************** APPLICATION Xide.Tests.VFP *************
+Application = Xide.Tests.VFP
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = FoxPro
+Folder = %ProjectPath%\Runtime\XideTests\Xide.Tests.VFP\
+PrgSubFolder = 
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = Xide.Tests.VFP
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = A57D73C7-16A2-4EB1-B0D4-B2B58F561819
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[Xide.Tests.VFP FileGroups]
+[Xide.Tests.VFP Files]
+File = %AppPath%\Prg\XideTestsVFP.prg
+FileGUID = 78F87CE4-8808-425E-ABEB-94BA135CFB76
+FileType = Code
+CopyToBin = 0
+[Xide.Tests.VFP References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceProject = 0D5205A3-6D8B-4632-BC88-DA84484B1FFA,1,0,Xide.Unit
+ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core
+ReferenceProject = F345BAB5-72C2-4BCF-8685-78C901E0382B,1,0,XSharp.RT
+ReferenceProject = 8AF12585-EC47-448F-B2B4-0DB1F6D3C715,1,0,XSharp.VFP
+ReferenceProject = B4E2BBBD-7674-489C-9B93-9854442EB79E,1,0,XSharp.VFP.Tests
+ReferenceGAC = CLR4,System.Windows.Forms,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
+[Xide.Tests.VFP Resources]
+[Xide.Tests.VFP Native Resources]
+[Xide.Tests.VFP License files]
+[Xide.Tests.VFP General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=1
+VO1=0
+VO2=1
+VO3=0
+VO4=1
+VO5=0
+VO6=0
+VO7=1
+VO8=0
+VO9=1
+VO10=0
+VO11=0
+VO12=1
+VO13=0
+VO14=1
+VO15=1
+VO16=0
+VO17=0
+FOX1=1
+FOX2=1
+XPP1=0
+LateBound=1
+Unsafe=1
+Undeclared=1
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+AllowDotOption=1
+ResponseOnly=0
+[Xide.Tests.VFP Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = Xide.Tests.VFP
 [EndApplications]
 
 [Configurations]

@@ -69,7 +69,7 @@ ENUM Set
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
     MEMBER Insert      := 29		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
-    MEMBER Exit        := 30		// LOGIC
+    MEMBER @@Exit        := 30		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
     MEMBER Intensity   := 31		// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.NotUsed/*" />
@@ -99,7 +99,7 @@ ENUM Set
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Ansi/*" />
     MEMBER Ansi      	:= 44	// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Yield/*" />
-    MEMBER Yield     	:= 45	// LOGIC
+    MEMBER @@Yield     	:= 45	// LOGIC
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Locktries/*" />
     MEMBER Locktries   	:= 46	// INT
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.AmPm/*" />
@@ -268,7 +268,6 @@ ENUM Set
     // MEMBER FWeek
     MEMBER Headings         := 144
     // MEMBER Help
-    // MEMBER Hours
     // MEMBER Intensity
     // MEMBER Key
     // MEMBER KeyComp
@@ -288,7 +287,7 @@ ENUM Set
     // MEMBER NoCpTrans        // not needed: Unicode
     // MEMBER Notify
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Null/*" />
-    MEMBER Null             := Set.NullValue
+    MEMBER @@Null             := Set.NullValue
     // MEMBER NullDisplay
     // MEMBER Odometer
     // MEMBER OleObject
@@ -306,7 +305,6 @@ ENUM Set
     //MEMBER Resource
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Safety/*" />
     MEMBER Safety           := 138  // Logic
-    // MEMBER Seconds
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Separator/*" />
     MEMBER Separator        := Set.ThousandSep
     // MEMBER Skip          // SelectiveRelation
@@ -332,14 +330,21 @@ ENUM Set
     MEMBER TextMerge        := 142      // Logic
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.VarCharMapping/*" />
     MEMBER VarCharMapping   := 143    // Logic
+    /// <include file="XSharp.CoreDefines.xml" path="members/Set.WithStack/*" />
+    MEMBER WithStack        := 145
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.TextMergeDelimiters/*" />
     MEMBER TextMergeDelimiters := 146 // string[]
     // MEMBER Topic
     // MEMBER TopicID
     // MEMBER TrBetween
     // MEMBER UdfParams
-    /// <include file="XSharp.CoreDefines.xml" path="members/Set.WithStack/*" />
-    MEMBER WithStack        := 145
+	/// <summary>Show seconds in time display</summary>
+	/// <include file="XSharp.CoreDefines.xml" path="members/Set.Hours/*" />
+	MEMBER Hours				:= 147
+
+	/// <summary>Show seconds in time display</summary>
+	/// <include file="XSharp.CoreDefines.xml" path="members/Set.Seconds/*" />
+	MEMBER Seconds				:= 148
 
     // Xbase++ defines
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.CharSet/*" />
@@ -363,9 +368,6 @@ ENUM Set
     MEMBER Collation        := 168  // XPP Collation Number
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Lexical/*" />
     MEMBER Lexical          := 169  // Not implemented
-
-
-
 
     // 180 - 197 Harbour extensions, Most have  No defaults below yet
     // Originally these started at 100
@@ -428,7 +430,6 @@ ENUM Set
     MEMBER Sql_timeout          := User+8
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.Sql_parameters/*" />
     MEMBER Sql_parameters       := User+9
-
 END ENUM
 END NAMESPACE
 #region Defines
@@ -865,7 +866,13 @@ DEFINE _SET_TEXTMERGE        := Set.TextMerge
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_VARCHARMAPPING    := Set.VarCharMapping
 
+/// <include file="XSharp.CoreDefines.xml" path="members/Set.Hours/*" />
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_HOURS := Set.Hours
 
+/// <include file="XSharp.CoreDefines.xml" path="members/Set.Seconds/*" />
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_SECONDS := Set.Seconds
 #endregion
 
 
@@ -873,261 +880,255 @@ DEFINE _MAX_PATH := 260
 DEFINE MAX_PATH := 260
 
 INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
-SWITCH nSet
-CASE Set.Exact
-CASE Set.Fixed
-CASE Set.Softseek
-CASE Set.Unique
-CASE Set.Deleted
-CASE Set.Cancel
-CASE Set.Debug
-CASE Set.Alternate
-CASE Set.Printer
-CASE Set.Confirm
-CASE Set.Escape
-CASE Set.Insert
-CASE Set.Exit
-CASE Set.Intensity
-CASE Set.Scoreboard
-CASE Set.Wrap
-CASE Set.Mcenter
-CASE Set.ScrollBreak
-CASE Set.Errorlog
-CASE Set.Yield
-CASE Set.Neterr
-CASE Set.AmPm
-CASE Set.Century
-CASE Set.DigitFixed
-CASE Set.Fieldstore
-CASE Set.Science
-CASE Set.Dict
-CASE Set.HpLocking
-CASE Set.NewIndexLock
-CASE Set.StrictRead
-CASE Set.BlobCircref
-CASE Set.FoxLock
-CASE Set.HandleEvent
-CASE Set.Rushmore
-CASE Set.SmartFilter
-CASE Set.NullValue
-CASE Set.Lexical
-// FoxPro
-CASE Set.Asserts
-CASE Set.Lock
-CASE Set.MultiLocks
-CASE Set.SqlAnsi
-CASE Set.SqlBuffering
-CASE Set.VarCharMapping
-RETURN FALSE
+	SWITCH nSet
+	CASE Set.Exact
+	CASE Set.Fixed
+	CASE Set.Softseek
+	CASE Set.Unique
+	CASE Set.Deleted
+	CASE Set.Cancel
+	CASE Set.Debug
+	CASE Set.Alternate
+	CASE Set.Printer
+	CASE Set.Confirm
+	CASE Set.Escape
+	CASE Set.Insert
+	CASE Set.Exit
+	CASE Set.Intensity
+	CASE Set.Scoreboard
+	CASE Set.Wrap
+	CASE Set.Mcenter
+	CASE Set.ScrollBreak
+	CASE Set.Errorlog
+	CASE Set.Yield
+	CASE Set.Neterr
+	CASE Set.AmPm
+	CASE Set.Century
+	CASE Set.DigitFixed
+	CASE Set.Fieldstore
+	CASE Set.Science
+	CASE Set.Dict
+	CASE Set.HpLocking
+	CASE Set.NewIndexLock
+	CASE Set.StrictRead
+	CASE Set.BlobCircref
+	CASE Set.FoxLock
+	CASE Set.HandleEvent
+	CASE Set.Rushmore
+	CASE Set.SmartFilter
+	CASE Set.NullValue
+	CASE Set.Lexical
+		// FoxPro
+	CASE Set.Asserts
+	CASE Set.Lock
+	CASE Set.MultiLocks
+	CASE Set.SqlAnsi
+	CASE Set.SqlBuffering
+	CASE Set.VarCharMapping
+		RETURN FALSE
 
-CASE Set.Ansi
-CASE Set.Bell
-CASE Set.Console
-CASE Set.Exclusive
-CASE Set.Optimize
-CASE Set.AutoOpen
-CASE Set.Defextensions
-CASE Set.ForceOpt
-CASE Set.Trimfilename
-// FoxPro
-CASE Set.AutoIncError
-CASE Set.FullPath
-CASE Set.Safety
-CASE Set.Space
-CASE Set.TextMerge
-CASE Set.HardCommit
-RETURN TRUE
+	CASE Set.Ansi
+	CASE Set.Bell
+	CASE Set.Console
+	CASE Set.Exclusive
+	CASE Set.Optimize
+	CASE Set.AutoOpen
+	CASE Set.Defextensions
+	CASE Set.ForceOpt
+	CASE Set.Trimfilename
+		// FoxPro
+	CASE Set.AutoIncError
+	CASE Set.FullPath
+	CASE Set.Safety
+	CASE Set.Space
+	CASE Set.TextMerge
+	CASE Set.HardCommit
+		RETURN TRUE
 
-CASE Set.TextMergeDelimiters
-return <string>{"<<",">>"}
+	CASE Set.TextMergeDelimiters
+		return <string>{"<<",">>"}
 
-CASE Set.DirCase
-CASE Set.FileCase
-//            //#define HB_SET_CASE_MIXED  0
-//            //#define HB_SET_CASE_LOWER  1
-//            //#define HB_SET_CASE_UPPER  2
-//            SWITCH System.PlatformID
-//            CASE PlatformID.Unix
-//            CASE PlatformID.MacOSX
-//            CASE PlatformID.Win32NT
-//            CASE PlatformID.Win32S
-//            CASE PlatformID.Win32Windows
-//            CASE PlatformID.WinCE
-//            CASE PlatformID.Xbox
-//            END SWITCH
-RETURN 0
-CASE Set.Typeahead
-CASE Set.Cursor
-CASE Set.Margin
-CASE Set.Message
-CASE Set.Cpu
-CASE Set.Math
-CASE Set.CharSet
-CASE Set.DevTimeOut
-CASE Set.Colormode
-CASE Set.Collation
-CASE Set.IdleRepeat
-RETURN 0L
+	CASE Set.DirCase
+	CASE Set.FileCase
+		//            //#define HB_SET_CASE_MIXED  0
+		//            //#define HB_SET_CASE_LOWER  1
+		//            //#define HB_SET_CASE_UPPER  2
+		//            SWITCH System.PlatformID
+		//            CASE PlatformID.Unix
+		//            CASE PlatformID.MacOSX
+		//            CASE PlatformID.Win32NT
+		//            CASE PlatformID.Win32S
+		//            CASE PlatformID.Win32Windows
+		//            CASE PlatformID.WinCE
+		//            CASE PlatformID.Xbox
+		//            END SWITCH
+		RETURN 0
+	CASE Set.Typeahead
+	CASE Set.Cursor
+	CASE Set.Margin
+	CASE Set.Message
+	CASE Set.Cpu
+	CASE Set.Math
+	CASE Set.CharSet
+	CASE Set.DevTimeOut
+	CASE Set.Colormode
+	CASE Set.Collation
+	CASE Set.IdleRepeat
+		RETURN 0L
 
-CASE Set.Compatible
-RETURN "OFF"
+	CASE Set.Compatible
+		RETURN "OFF"
 
-CASE Set.AutoOrder
-RETURN 1L
+	CASE Set.AutoOrder
+		RETURN 1L
 
-CASE Set.DateCountry
-RETURN DateCountry.American
+	CASE Set.DateCountry
+		RETURN DateCountry.American
 
-CASE Set.Autoshare
-RETURN AutoShareMode.Auto
+	CASE Set.Autoshare
+		RETURN AutoShareMode.Auto
 
-CASE Set.Color
-RETURN "W/N,N/W,N/N,N/N,N/W"
-CASE Set.DateFormat
-RETURN "MM/DD/YYYY"
+	CASE Set.Color
+		RETURN "W/N,N/W,N/N,N/N,N/W"
+	CASE Set.DateFormat
+		RETURN "MM/DD/YYYY"
 
-CASE Set.DefaultRdd
-RETURN "DBFNTX"
+	CASE Set.DefaultRdd
+		RETURN "DBFNTX"
 
-CASE Set.Eol
-RETURN e"\r\n"
+	CASE Set.Eol
+		RETURN e"\r\n"
 
-CASE Set.Hboutlog
-RETURN "hb_out.log"
+	CASE Set.Hboutlog
+		RETURN "hb_out.log"
 
-CASE Set.Hboutloginfo
-CASE Set.Path
-CASE Set.AltFile
-CASE Set.Device
-CASE Set.PrintFile
-CASE Set.DelimChars
-CASE Set.AmExt
-CASE Set.PmExt
-CASE Set.International
-CASE Set.NatDLL
-CASE Set.NoMethod
-CASE Set.DateFormatNet
-CASE Set.DateFormatEmpty
-CASE Set.LastFound
-CASE Set.MemoExt
-CASE Set.Language
-CASE Set.Timeformat
-// FoxPro
-CASE Set.Database
-CASE Set.DebugOut
-RETURN String.Empty
-CASE Set.Default
-CASE Set.DefaultDir
-RETURN ""
+	CASE Set.Hboutloginfo
+	CASE Set.Path
+	CASE Set.AltFile
+	CASE Set.Device
+	CASE Set.PrintFile
+	CASE Set.DelimChars
+	CASE Set.AmExt
+	CASE Set.PmExt
+	CASE Set.International
+	CASE Set.NatDLL
+	CASE Set.NoMethod
+	CASE Set.DateFormatNet
+	CASE Set.DateFormatEmpty
+	CASE Set.LastFound
+	CASE Set.MemoExt
+	CASE Set.Language
+	CASE Set.Timeformat
+		// FoxPro
+	CASE Set.Database
+	CASE Set.DebugOut
+		RETURN String.Empty
+	CASE Set.Default
+	CASE Set.DefaultDir
+		RETURN ""
 
-CASE Set.DirSeparator
-RETURN System.IO.Path.DirectorySeparatorChar:ToString()
+	CASE Set.DirSeparator
+		RETURN System.IO.Path.DirectorySeparatorChar:ToString()
 
-CASE Set.Floatdelta
-RETURN 0.0000000000001
+	CASE Set.Floatdelta
+		RETURN 0.0000000000001
 
+	CASE Set.Patharray     // String[]
+		RETURN (STRING[]) NULL
+	CASE Set.CollationTable   // byte[]
+		RETURN (BYTE[] ) NULL
 
-CASE Set.Patharray     // String[]
-RETURN (STRING[]) NULL
-CASE Set.CollationTable   // byte[]
-RETURN (BYTE[] ) NULL
+	CASE Set.DecimalSep
+	CASE Set.ThousandSep
+	CASE Set.Timesep
+	CASE Set.EpochYear
+		//CASE Set.FileError
+	CASE Set.ErrorLevel     // DWORD
+		RETURN 0U
+	CASE Set.Decimals
+		RETURN 2U
 
-CASE Set.DecimalSep
-CASE Set.ThousandSep
-CASE Set.Timesep
-CASE Set.EpochYear
-//CASE Set.FileError
-CASE Set.ErrorLevel     // DWORD
-RETURN 0U
-CASE Set.Decimals
-RETURN 2U
+	CASE Set.Digits
+	CASE Set.Locktries
+		RETURN 10U
 
-CASE Set.Digits
-CASE Set.Locktries
-RETURN 10U
+	CASE Set.MemoBlockSize
+		RETURN (WORD) 32
 
-CASE Set.MemoBlockSize
-RETURN (WORD) 32
+	CASE Set.Epoch
+	CASE Set.EpochCent
+		RETURN 1900U
 
-CASE Set.Epoch
-CASE Set.EpochCent
-RETURN 1900U
+	CASE Set.ErrorBlock     // Codeblock
+		RETURN NULL
 
-CASE Set.ErrorBlock     // Codeblock
-RETURN NULL
+	CASE Set.LastScriptError    // Exception object
+	CASE Set.SysObject
+	CASE Set.RddInfo
+		RETURN NULL
+	CASE Set.WithStack
+		RETURN Stack<OBJECT>{}
+	CASE Set.Intl
+	CASE Set.CollationMode
+		RETURN CollationMode.Windows
 
-CASE Set.LastScriptError    // Exception object
-CASE Set.SysObject
-CASE Set.RddInfo
-RETURN NULL
-CASE Set.WithStack
-RETURN Stack<OBJECT>{}
-CASE Set.Intl
-CASE Set.CollationMode
-RETURN CollationMode.Windows
+	CASE Set.ErrorLogFile
+		RETURN "ERROR.LOG"
 
-CASE Set.ErrorLogFile
-RETURN "ERROR.LOG"
+	CASE Set.DosCodepage
+		RETURN 437L     // US American
 
+	CASE Set.WinCodepage
+		RETURN 1252L    // Latin 1 / Western Europe
 
-CASE Set.DosCodepage
-RETURN 437L     // US American
+	CASE Set.FieldDelimiter
+		RETURN ","
 
-CASE Set.WinCodepage
-RETURN 1252L    // Latin 1 / Western Europe
+	CASE Set.Delimiters
+		RETURN e"\""
 
-CASE Set.FieldDelimiter
-RETURN ","
+	CASE Set.RecordDelimiter
+		RETURN CRLF
 
-CASE Set.Delimiters
-RETURN e"\""
+	CASE Set.DelimRDD
+		RETURN "DELIM"
 
-CASE Set.RecordDelimiter
-RETURN CRLF
+		// 180 - 197 Harbour extensions, no value yet
+		//        MEMBER FILECASE       :=  182
+		//        MEMBER DIRCASE        :=  183
+		//        MEMBER DBFLOCKSCHEME  :=  188
+		//        MEMBER DBCODEPAGE     :=  197				// Map to Vulcan setting ?
+		// Advantage
+	CASE Set.Axslocking
+	CASE Set.Rightschecking
+	CASE Set.Exactkeypos
+		RETURN TRUE
 
-CASE Set.DelimRDD
-RETURN "DELIM"
+	CASE Set.Sql_query
+	CASE Set.Collation_name
+		RETURN String.Empty
+	CASE Set.Connection_handle
+	CASE Set.Sql_table_passwords
+	CASE Set.Sql_parameters
+		RETURN NULL
+	CASE Set.Sql_timeout
+		RETURN 0
 
-// 180 - 197 Harbour extensions, no value yet
-//        MEMBER FILECASE       :=  182
-//        MEMBER DIRCASE        :=  183
-//        MEMBER DBFLOCKSCHEME  :=  188
-//        MEMBER DBCODEPAGE     :=  197				// Map to Vulcan setting ?
-
-
-// Advantage
-CASE Set.Axslocking
-CASE Set.Rightschecking
-CASE Set.Exactkeypos
-RETURN TRUE
-
-CASE Set.Sql_query
-CASE Set.Collation_name
-RETURN String.Empty
-CASE Set.Connection_handle
-CASE Set.Sql_table_passwords
-CASE Set.Sql_parameters
-RETURN NULL
-CASE Set.Sql_timeout
-RETURN 0
-
-// FoxPro
-CASE Set.CollateFox
-RETURN "MACHINE"
-CASE Set.DataSession
-RETURN 1
-CASE Set.MemoWidth
-RETURN 50
-CASE Set.Refresh
-RETURN 5.0
-CASE Set.Reprocess
-RETURN 0
-
-
-END SWITCH
-
-
+		// FoxPro
+	CASE Set.CollateFox
+		RETURN "MACHINE"
+	CASE Set.DataSession
+		RETURN 1
+	CASE Set.MemoWidth
+		RETURN 50
+	CASE Set.Refresh
+		RETURN 5.0
+	CASE Set.Reprocess
+		RETURN 0
+	CASE Set.Hours
+		RETURN 12L
+	CASE Set.Seconds
+		RETURN TRUE
+	END SWITCH
 
 RETURN NULL
-
-

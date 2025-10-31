@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -12,6 +12,7 @@ using System.Runtime.Versioning;
 using Microsoft.VisualStudio.Shell.Interop;
 using Community.VisualStudio.Toolkit;
 using XSharp.Settings;
+using System.Collections.Generic;
 namespace XSharp.Project
 {
     /// <summary>
@@ -59,19 +60,36 @@ namespace XSharp.Project
 
             if (propertyName == XSharpProjectFileConstants.OutputType)
             {
-                var outputType = (OutputType) converterOutPut.ConvertFrom(value);
+                var outputType = (OutputType)converterOutPut.ConvertFrom(value);
                 value = (string)converterOutPut.ConvertTo(outputType, typeof(string));
             }
             else if (propertyName == XSharpProjectFileConstants.Dialect)
             {
                 var dialect = (Dialect)converterDialect.ConvertFrom(value);
-                value = (string) converterDialect.ConvertTo(dialect, typeof(string));
+                value = (string)converterDialect.ConvertTo(dialect, typeof(string));
             }
             else if (propertyName == XSharpProjectFileConstants.TargetFrameworkVersion)
             {
-                if (!value.StartsWith(".NETFramework"))
-                    value = ".NETFramework,Version =" + value;
-                value = converterFramework.ConvertFrom(value).ToString();
+                if (!string.IsNullOrEmpty(this.ProjectMgr.BuildProject.Xml.Sdk))
+                {
+                    value = this.ProjectMgr.BuildProject.GetPropertyValue("TargetFramework");
+                    if (!(converterFramework is SdkFrameWorkNameConverter))
+                    {
+                        converterFramework = new SdkFrameWorkNameConverter(this.ProjectMgr.BuildProject);
+                        var p = this.PropertyPagePanel as XGeneralPropertyPagePanel;
+                        p.FillFrameworkNames(converterFramework);
+                    }
+
+                }
+                try
+                {
+                    if (!value.StartsWith(".NETFramework"))
+                        value = ".NETFramework,Version =" + value;
+                    value = converterFramework.ConvertFrom(value).ToString();
+                }
+                catch
+                {
+                }
             }
             if (propertyName == XSharpProjectFileConstants.StartupObject)
             {
@@ -169,7 +187,7 @@ namespace XSharp.Project
                         genPanel.resetFramework(oldValue);
                         return;
                     }
-                        
+
                     base.SetProperty(propertyName, value);
                     ProjectReloader.Reload(newValue, this.ProjectMgr);
                 }
@@ -214,7 +232,7 @@ namespace XSharp.Project
                 }
             });
 
-            
+
 
         }
     }

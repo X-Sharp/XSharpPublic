@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0019</title>
+  <keywords>
+    <keyword>XS0019</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0019</para>
+    </header>
+    <para styleclass="Normal">Operator &apos;operator&apos; cannot be applied to operands of type &apos;type&apos; and &apos;type&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A binary operator is applied to data types that do not support it. For example, you cannot use the || operator on strings, you cannot use + , - , &lt; , or &gt; operators on bool variables, and you cannot use the == operator with a struct type unless the type explicitly overloads that operator.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If you encounter this error with a class type, it is because the class does not overload the operator. For more information, see Overloadable Operators.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">In the following example, XS0019 is generated in two places because bool in X# is not convertible to int. XS0019 also is generated when the subtraction operator is applied to a string. The addition operator (+) can be used with string operands because that operator is overloaded by the String class to perform string concatenation.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"></para>
+    <para styleclass="Normal"> &#160;</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">In the following example, conditional logic must be specified outside the ConditionalAttribute. You can pass only one predefined symbol to the ConditionalAttribute.</para>
+    <para styleclass="Normal">The following sample generates XS0019.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"></para>
+    <para styleclass="Normal"> &#160;</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

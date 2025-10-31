@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9085</title>
+  <keywords>
+    <keyword>Delimiters</keyword>
+    <keyword>TEXT .. ENDTEXT</keyword>
+    <keyword>TEXTMERGE</keyword>
+    <keyword>XS9085</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9085</para>
+    </header>
+    <para styleclass="Normal">FoxPro dialect: Unbalanced textmerge operators &apos;&lt;&lt;&apos; and &apos;&gt;&gt;&apos;.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This warning message is produced when the number of &lt;&lt; and &gt;&gt; textmerge delimiters in a TEXT .. ENDTEXT block or a Text statement (\ or \\) does not match.</para>
+  </body>
+</topic>

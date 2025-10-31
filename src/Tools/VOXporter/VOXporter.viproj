@@ -4,7 +4,6 @@ IDEVersion = 1.06
 OutputFolder = %ProjectPath%\Bin\
 Description = 
 GUID = 62B730D7-93AB-4B38-982C-3BF0600725F2
-StartUpApp = FD056C5F-6DE1-465A-90E4-0145DEB734D2
 PrgEncoding = Default
 SupportCF = 0
 NoAppFileCreate = 1
@@ -27,8 +26,6 @@ AutoExportInterval = 0
 FileStatusGuid = DBEE3A35-4FA0-4A45-B535-89296E3FA301
 CustomControlsGuid = 52ACC108-C00C-4E87-8CA8-7F1C5B7D65A0
 DefaultPropertiesGuid = DC6FD78A-F117-431E-8C2D-F6667142861F
-
-[Recent References]
 
 [Application Groups]
 

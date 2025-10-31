@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0103</title>
+  <keywords>
+    <keyword>XS0103</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0103</para>
+    </header>
+    <para styleclass="Normal">The name &apos;identifier&apos; does not exist in the current context</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">An attempt was made to use a name that does not exist in the class, namespace, or scope. Check the spelling of the name and check your using directives and assembly references to make sure that the name that you are trying to use is available.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error frequently occurs if you declare a variable in a loop or a try or if block and then attempt to access it from an enclosing code block or a separate code block, as shown in the following example.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0103.prg</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example resolves the error.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><br/> &#160;</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

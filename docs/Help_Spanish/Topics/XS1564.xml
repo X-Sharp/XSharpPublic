@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1564</title>
+  <keywords>
+    <keyword>XS1564</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1564</para>
+    </header>
+    <para styleclass="Normal">Conflicting options specified: Win32 resource file; Win32 manifest.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If you use the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32res">/Win32res</link> compiler option, you must include the custom Win32 manifest (if it is required) in the resource file. You cannot provide a custom Win32 manifest separately from a Win32 resource file. Use the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32manifest">/win32manifest</link> option only if you are not specifying a win32 resource file.</para>
+    <para styleclass="Heading3">To correct this error</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Add the win32 manifest to the win32 resource file and remove the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32manifest">/win32manifest</link> compiler option.</li>
+    </list>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example produces XS1564 if it is compiled with the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32res">/Win32res</link> option and no manifest is included in the resource file.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1564.prg  <br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

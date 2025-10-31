@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1614</title>
+  <keywords>
+    <keyword>XS1614</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1614</para>
+    </header>
+    <para styleclass="Normal">&apos;name&apos; is ambiguous; between &apos;attribute1&apos; and &apos;attribute2&apos;. use either &apos;@attribute&apos; or &apos;attributeAttribute&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The compiler has encountered an ambiguous attribute specification.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">For convenience, the X# compiler allows you to specify ExampleAttribute as just <text styleclass="Code Example">[Example]</text>. However, ambiguity arises if an attribute class named Example exists along with ExampleAttribute, because the compiler cannot tell if <text styleclass="Code Example">[Example]</text> refers to the Example attribute or the ExampleAttribute attribute. To clarify, use <text styleclass="Code Example">[@Example]</text> for the Example attribute and <text styleclass="Code Example">[ExampleAttribute]</text> for ExampleAttribute.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS1614:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1614.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

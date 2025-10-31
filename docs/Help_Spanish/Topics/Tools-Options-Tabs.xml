@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-10-10T14:41:51.215+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Tabs</title>
+  <keywords>
+    <keyword>Options</keyword>
+    <keyword>Tabs</keyword>
+    <keyword>Tools Options</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Tabs</para>
+    </header>
+    <para styleclass="Normal">This page contains generic settings with respect to tabs.</para>
+    <para styleclass="Normal">The page may change between different versions of Visual Studio.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Tools-Options-Tabs.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+  </body>
+</topic>

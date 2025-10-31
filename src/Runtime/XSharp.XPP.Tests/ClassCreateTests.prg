@@ -1,11 +1,11 @@
-using System
-using System.Collections.Generic
-using System.Linq
-using System.Text
-using XUnit
-begin namespace XSharp.XPP.Tests
+USING System
+USING System.Collections.Generic
+USING System.Linq
+USING System.Text
+USING XUnit
+BEGIN NAMESPACE XSharp.XPP.Tests
 
-class ClassCreateTests
+CLASS ClassCreateTests
 
     [Fact, Trait("Category", "Dynamic Classes")];
     method ClassCreateTest as void
@@ -47,12 +47,12 @@ end namespace
 
 
 
-function Age(dDate as date) as dword
-    local sToday := Right(DTos(ToDay()),4) as string
-    local sDate  := Right(Dtos(dDate),4) as string
-    local nAge   as dword
+FUNCTION Age(dDate AS DATE) AS DWORD
+    LOCAL sToday := Right(DTos(ToDay()),4) AS STRING
+    LOCAL sDate  := Right(Dtos(dDate),4) AS STRING
+    LOCAL nAge   AS DWORD
     nAge  := Year(Today()) - Year(dDate)
-    if sToday <= sDate
+    IF sToday <= sDate
         nAge -= 1
-    endif
-    return nAge
+    ENDIF
+    RETURN nAge

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__asType</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__asType</para>
+    </header>
+    <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type. &#160;If omitted, then depending on the compiler options the type will be either USUAL or determined by the compiler.</para>
+    <para styleclass="List"></para>
+  </body>
+</topic>

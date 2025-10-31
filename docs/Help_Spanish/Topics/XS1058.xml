@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS1058</title>
+  <keywords>
+    <keyword>XS1058</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS1058</para>
+    </header>
+    <para styleclass="Normal">A previous catch clause already catches all exceptions. All exceptions thrown will be wrapped in a System.Runtime.CompilerServices.RuntimeWrappedException</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This attribute causes XS1058 if a catch() block has no specified exception type after a catch (System.Exception e) block. The warning advises that the catch() block will not catch any exceptions.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A catch() block after a catch (System.Exception e) block can catch non-CLS exceptions if the RuntimeCompatibilityAttribute is set to false in the AssemblyInfo.prg file: [assembly: RuntimeCompatibilityAttribute(WrapNonExceptionThrows = false)]. If this attribute is not set explicitly to false, all thrown non-CLS exceptions are wrapped as Exceptions and the catch (System.Exception e) block catches them. For more information, see How to: Catch a non-CLS Exception.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates XS1058.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1058.prg  <br/>// XS1058 expected  <br/></para>
+  </body>
+</topic>

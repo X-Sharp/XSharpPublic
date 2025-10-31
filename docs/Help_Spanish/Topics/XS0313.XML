@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>XS0313</title>
+<keywords>
+<keyword>XS0313</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS0313</para>
+  </header>
+  <para styleclass="Normal">The type &apos;{3}&apos; cannot be used as type parameter &apos;{2}&apos; in the generic type or method &apos;{0}&apos;. The nullable type &apos;{3}&apos; does not satisfy the constraint of &apos;{1}&apos;. Nullable types can not satisfy any interface constraints.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

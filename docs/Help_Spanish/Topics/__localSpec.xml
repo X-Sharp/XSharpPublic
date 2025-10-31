@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__localSpec</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__localSpec</para>
+    </header>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;idVar&gt;<tab />A valid identifier name for the local variable to declare.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;uValue&gt;<tab />The initial value to assign to the variable.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />For LOCAL, this can be any valid expression.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />For STATIC LOCAL, this value can be a literal representation of one of the data types listed below or a simple expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (including class instantiation) are not allowed.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Note: &#160;Although &lt;uValue&gt; can be a literal array, it must be one-dimensional. &#160;Multi-dimensional literal arrays are not allowed. &#160;For example, {1, 2, 3} is allowed, but {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}} is not.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Note: &#160;Although the Chr() function cannot be used in &lt;uValue&gt;, the _Chr() operator can. &#160; _Chr() is otherwise identical in functionality to Chr().</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />If &lt;uValue&gt; is not specified, the initial value of the variable depends on the data type you declare (e.g., NIL if you do not use strong typing, 0 for AS INT, etc.)</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">DIM &lt;ArraySpec&gt;<tab />The specification for a dimensioned array to declare.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;ArraySpec&gt;<tab />The specification for a dynamic array to declare.<br/>In both cases, &lt;ArraySpec&gt; is one of the following:<br/>&lt;idArray&gt;[&lt;nElements&gt;, &lt;nElements&gt;, &lt;nElements&gt;]<br/>&lt;idArray&gt;[&lt;nElements&gt;][&lt;nElements&gt;][&lt;nElements&gt;]<br/>All dimensions except the first are optional.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />&lt;idArray&gt; is a valid identifier name for the array to declare. &#160;For dynamic arrays, array elements are initialized to NIL. &#160;For dimensioned arrays, the initial value of the elements depends on the data type as explained above for &lt;uValue&gt;.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />&lt;nElements&gt; defines the number of elements in a particular dimension of an array. &#160;The number of dimensions is determined by how many &lt;nElements&gt; arguments you specify.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />&lt;nElements&gt; can be a literal numeric representation or a simple numeric expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (such as function calls) are not allowed.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">IS &lt;idType&gt;<tab />Specifies a structure data type in which the memory needed to hold the structure is allocated on the stack (&lt;idStructure&gt; is the only &lt;idType&gt; allowed with the IS keyword.) See the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_VOSTRUCT">VOSTRUCT</link> entry in this guide for more information on data structure memory allocation.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">AS ARRAY<tab />For dynamic array declarations, specifies the data type of the entire array.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;arrayName&gt;<tab />Variable name of array . The array will have the dimensions as declared with &lt;nRows&gt; and &lt;nColumns&gt;. The array may be declared with parentheses as delimiters but also with square brackets. <br/>We recommend the use of square brackets.</para>
+  </body>
+</topic>

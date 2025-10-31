@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1708</title>
+  <keywords>
+    <keyword>XS1708</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1708</para>
+    </header>
+    <para styleclass="Normal">Fixed size buffers can only be accessed through locals or fields</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A new feature in X# 2.0 is the ability to define an in-line array inside of a struct. Such arrays can only be accessed via local variables or fields, and may not be referenced as intermediate values on the left-hand side of an expression. Also, the arrays cannot be accessed by fields that are static or readonly.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">To resolve this error, define an array variable, and assign the in-line array to the variable. Or, remove the static or readonly modifier from the field representing the in-line array.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS1708.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1708.prg  <br/>// compile with: /unsafe  <br/></para>
+  </body>
+</topic>

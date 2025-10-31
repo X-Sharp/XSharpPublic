@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1579</title>
+  <keywords>
+    <keyword>XS1579</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1579</para>
+    </header>
+    <para styleclass="Normal">foreach statement cannot operate on variables of type &apos;type1&apos; because &apos;type2&apos; does not contain a public definition for &apos;identifier&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">To iterate through a collection using the foreach statement, the collection must meet the following requirements:</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">It must be an interface, class or struct.</li>
+      <li styleclass="Normal" style="margin-left:13px;">It must include a public GetEnumerator method that returns a type.</li>
+      <li styleclass="Normal" style="margin-left:13px;">The return type must contain a public property named Current, and a public method named MoveNext.</li>
+      <li styleclass="Normal" style="margin-left:13px;">For more information, see How to: Access a Collection Class with foreach.</li>
+    </list>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">In this sample, foreach is not able to iterate through the collection because there is no publicGetEnumerator method in MyCollection.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS1579.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1579.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

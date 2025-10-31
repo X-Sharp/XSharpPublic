@@ -165,9 +165,6 @@ RETURN NIL
 FUNCTION GETPAD( )
 RETURN NIL
 
-[Obsolete( "This function will not be supported" )];
-FUNCTION GETPEM( )
-RETURN NIL
 
 [Obsolete( "This function will not be supported" )];
 FUNCTION HOME( )

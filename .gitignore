@@ -220,6 +220,7 @@ Tools/Converter/PrjConvert.exe
 *.bak
 *.vicfg
 *.viapp
+*.xicfg
 *.exe
 NativeResources.RES
 Native_Resources.rc

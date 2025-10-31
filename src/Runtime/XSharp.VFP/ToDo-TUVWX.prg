@@ -24,12 +24,6 @@ FUNCTION TableUpdate( nRows , lForce , uArea , cErrorArray) AS LOGIC
 
 
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/ttoc/*" />
-
-FUNCTION TToC( tExpression , nParam) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/txnlevel/*" />

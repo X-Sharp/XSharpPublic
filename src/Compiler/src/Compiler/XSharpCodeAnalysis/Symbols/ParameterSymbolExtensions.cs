@@ -97,8 +97,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         if (arg.Type.SpecialType == SpecialType.None)
                         {
                             // Enum type? can be casted to Int32
-                            constant = ConstantValue.Create(arg.Value, SpecialType.System_Int32);
-                            var netType = compilation.GetSpecialType(SpecialType.System_Int32);
+                            var specialType = SpecialType.System_Int32;
+                            if (param.Type.IsEnumType())
+                            {
+                                var enumUnderlyingType = ((NamedTypeSymbol)param.Type).GetEnumUnderlyingType();
+                                specialType = enumUnderlyingType.SpecialType;
+                            }
+                            var netType = compilation.GetSpecialType(specialType);
+                            constant = ConstantValue.Create(arg.Value, specialType);
                             return new BoundLiteral(syntax, constant, netType);
                         }
                         else
@@ -113,6 +119,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             if (param.Type.IsUsualType() || param.Type.IsObjectType() || specialType == SpecialType.None)
                             {
                                 specialType = arg.Type.SpecialType;
+                            }
+                            if (param.Type.IsEnumType())
+                            {
+                                var enumUnderlyingType = ((NamedTypeSymbol)param.Type).GetEnumUnderlyingType();
+                                specialType = enumUnderlyingType.SpecialType;
                             }
                             if (specialType != valueType)
                             {

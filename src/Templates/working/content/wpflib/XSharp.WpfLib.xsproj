@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <Dialect>Core</Dialect>
+    <Nullable>enable</Nullable>
+    <Allowdot>True</Allowdot>
+    <NamedArgs>True</NamedArgs>
+    </PropertyGroup>
+
+</Project>

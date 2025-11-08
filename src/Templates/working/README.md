@@ -3,10 +3,21 @@
 This package contains some projects templates for .NET 8 and greater for [XSharp language](https://www.xsharp.eu).
 
 ## Available Templates in this package  
-- xsconsole    : A simple Console application, using the Core dialect.
-- xsconsoleVFP : A simple Console application, using the VFP dialect.
-- xswebmap     : A RESTful application, using the Core dialect, using WebApplication MapGet/MapPost.
-- xswebroute   : A RESTful application, using the Core dialect, using Attributes for routing.
+- xsconsole         : A simple Console application, using the Core dialect.
+- xsconsoleFox      : A simple Console application, using the VFP dialect.
+- xsconsoleHarbour  : A simple Console application, using the Harbour dialect.
+- xsconsoleVO       : A simple Console application, using the Visual Objects dialect.
+- xsconsoleXPP      : A simple Console application, using the xBase++ dialect.
+- xswebmap          : A RESTful application, using the Core dialect, using WebApplication MapGet/MapPost.
+- xswebroute        : A RESTful application, using the Core dialect, using Attributes for routing.
+- xswinforms        : A simple Windows Forms application, using the Core dialect.
+- xswinformscctrli  : A CustomControl Windows Forms item, using the Core dialect.
+- xswinformsctrli   : A UserControl Windows Forms item, using the Core dialect.
+- xswinformslib     : A Windows Forms library, using the Core dialect.
+- xswpfapp          : A WPF Application, using the Core dialect.
+- xswpfcctrllib     : A WPF CustomControl library, using the Core dialect.
+- xswpfctrl         : A WPF UserControl library, using the Core dialect.
+- xswpflib          : A WPF Library, using the Core dialect.
 
 ## Installation 
 

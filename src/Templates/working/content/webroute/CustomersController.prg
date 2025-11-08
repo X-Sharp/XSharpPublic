@@ -8,40 +8,43 @@ using System.Collections.Generic
 [ApiController];
 [Route("api/[controller]")];
 public class CustomersController inherit ControllerBase
-    private dbInfo AS DbOpenInfo
+	PUBLIC CONSTRUCTOR()
 
-	public constructor() //(context as AppDbContext )
-		//self:_context := context
-        dbInfo := DbOpenInfo{ "customer.dbf", "customer", 1, FALSE, FALSE }
-
-
-	[HttpGet];
+    [HttpGet];
 	public async method GetCustomers() as Task<IActionResult>
-        // open DBF
-        VAR oDbfCdx := DbfCdx{}
-        oDbfCdx:Open(dbInfo)
         //
-        VAR customers := List<Customer>{} 
-        DO WHILE !oDbfCdx:EOF
-            customers:Add( RecordToCustomer(oDbfCdx) )
-            oDbfCdx:Skip(1)
-        ENDDO
+		VAR message := "GetCustomers called."
+        Console.WriteLine( message )
+		//
+        VAR oneCustomer := Customer{}
+        oneCustomer:FirstName := "Fabrice"
+        oneCustomer:LastName := "FORAY"
+        oneCustomer:Zip := "07200"
+        oneCustomer:City := "Lachapelle"
         //
-        oDbfCdx:Close()
+		VAR customers := List<Customer>{}
+        customers:add(oneCustomer)
 		return Ok(customers)
 	END METHOD
 
     [HttpPost];
-    public async method PostCustomers([FromBody] cust AS Customer ) as Task<IActionResult>
-        // open DBF
-        VAR oDbfCdx := DbfCdx{}
-        oDbfCdx:Open(dbInfo)
+    public async method PostCustomers([FromBody] custs AS List<Customer> ) as Task<IActionResult>
         //
-        oDbfCdx:Append( true ) // Add a new record
-        CustomerToRecord(cust, oDbfCdx) // Convert Customer object to DBF record
+        VAR message := "PostCustomers called with values: " + Environment.NewLine
+        FOREACH VAR cust IN custs
+            message += cust:FirstName + " " + cust:LastName + Environment.NewLine
+        NEXT
+        Console.WriteLine( message )
+		return Ok( message )
+	END METHOD
+
+    [HttpPost];
+    [Route("/api/Customer")];
+    public async method SingleCustomer([FromBody] cust AS Customer ) as Task<IActionResult>
         //
-        oDbfCdx:Close()
-		return Ok("PostCustomer called with value: " + cust:FirstName + " " + cust:LastName)
+        VAR message := "Single Customer called with value: " + cust:FirstName + " " + cust:LastName
+        Console.WriteLine( message )
+		return Ok( message )
 	END METHOD
 
 end class

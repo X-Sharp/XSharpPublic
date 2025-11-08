@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+	<RootNamespace>XSharp.WinFormsLib</RootNamespace>
+    <AssemblyName>XSharp.WinFormsLib</AssemblyName>
+	
+    <ImplicitUsings>enable</ImplicitUsings>
+	<UseWindowsForms>true</UseWindowsForms>
+    <Dialect>Core</Dialect>
+    <Nullable>enable</Nullable>
+	<Allowdot>True</Allowdot>
+    <NamedArgs>True</NamedArgs>
+  </PropertyGroup>
+</Project>

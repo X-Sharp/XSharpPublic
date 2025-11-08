@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "XSharp B.V.",
+  "classifications": [
+    "Common",
+    "WPF",
+    "X#"
+  ],
+  "identity": "XSharpBV.WPFCtrlTemplate.XSharp",
+  "name": "WPF UserControl Library - Core Dialect",
+  "description": "A project for creating a WPF UserControl Library with the X# Core dialect.",
+  "sourceName": "XSharp.WpfCtrl",
+  "shortName": "xswpfctrl",
+  "tags": {
+    "language": "X#",
+    "type": "project"
+  },
+  "preferNameDirectory": true,
+  "defaultName": "WpfControlLibrary1"
+}

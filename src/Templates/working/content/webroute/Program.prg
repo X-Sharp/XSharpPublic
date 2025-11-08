@@ -3,7 +3,7 @@ USING System
 
 FUNCTION Start( args AS STRING[] ) AS VOID
     LOCAL app AS RESTful
-    //
+    // Currently needed for DBF support
     System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance)
     //
     app := RESTful{}

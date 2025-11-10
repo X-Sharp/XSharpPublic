@@ -1,7 +1,0 @@
-{
-  "profiles": {
-    "Microsoft.VisualStudio.ProjectSystem.IntegrationTests": {
-      "commandName": "Project"
-    }
-  }
-}

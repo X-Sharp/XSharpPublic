@@ -649,19 +649,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (atype.ElementType != stringtype)
                     {
                         // need to convert parameters to string[]
-                        var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>();
-                        emptysizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
-                        var emptyrank = _syntaxFactory.ArrayRankSpecifier(
-                              SyntaxFactory.OpenBracketToken,
-                              emptysizes,
-                              SyntaxFactory.CloseBracketToken);
-                        atype = _syntaxFactory.ArrayType(stringtype, emptyrank);
+                        atype = _syntaxFactory.ArrayType(stringtype, MakeEmptyRank());
                         parameter = parameter.Update(
                             default,
                             default,
                             atype, parameter.Identifier, null);
                         parList = _syntaxFactory.ParameterList(parList.OpenParenToken, MakeSeparatedList(parameter), parList.CloseParenToken);
-                        _pool.Free(emptysizes);
                     }
                 }
                 else
@@ -3380,22 +3373,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Entities and Clipper CC and PSZ support
         public AttributeListSyntax MakeClipperCallingConventionAttribute(List<ExpressionSyntax> names)
         {
-            return MakeAttributeList(
-                                    target: null,
-                                    attributes: MakeSeparatedList(_syntaxFactory.Attribute(
-                                        name: GenerateQualifiedName(_clipperCallingConvention),
-                                        argumentList: MakeAttributeArgumentList(
+            var argumentList = MakeAttributeArgumentList(
                                             MakeSeparatedList(
                                                 _syntaxFactory.AttributeArgument(null, null,
                                                     _syntaxFactory.ArrayCreationExpression(
                                                         SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                                                         ArrayOfString,
-                                                        _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
-                                                            SyntaxFactory.OpenBraceToken,
-                                                            MakeSeparatedList<ExpressionSyntax>(names.ToArray()),
-                                                            SyntaxFactory.CloseBraceToken))))
-                                            ))
-                                    ));
+                                                        CreateArrayInitializer(names.ToArray())))));
+            return MakeAttributeList(target: null,
+                                    attributes: MakeSeparatedList(_syntaxFactory.Attribute(
+                                        name: GenerateQualifiedName(_clipperCallingConvention),
+                                        argumentList: argumentList)));
         }
 
         protected ParameterListSyntax GetClipperParameters()
@@ -3617,17 +3605,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             parameterTypes.Add(UsualType);
                         }
                     }
-                    // create PCount variable
+                    // Make sure Xs$Args is never NULL
+                    // We use an IF statetement and not a conditional assignment
+                    // because that saves an extra assignment.
                     var clipperArgs = GenerateSimpleName(XSharpSpecialNames.ClipperArgs);
-                    var argLen = MakeSimpleMemberAccess(clipperArgs, GenerateSimpleName("Length"));
-                    var notnull = _syntaxFactory.BinaryExpression(
-                                       SyntaxKind.NotEqualsExpression,
-                                       clipperArgs,
-                                       SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken),
-                                       GenerateLiteralNull());
-                    var len = MakeConditional(notnull, argLen, GenerateLiteral(0));
+                    var condition = _syntaxFactory.BinaryExpression(SyntaxKind.EqualsExpression, clipperArgs,
+                            SyntaxFactory.MakeToken(SyntaxKind.EqualsEqualsToken), GenerateLiteralNull());
 
-                    var decl = GenerateLocalDecl(XSharpSpecialNames.ClipperPCount, IntType, len);
+                    var args = MakeSeparatedList<ExpressionSyntax>();
+                    var initializer = CreateArrayInitializer();
+
+                    var expr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword), ArrayOfUsual, initializer);
+                    var assignmentExpression = MakeSimpleAssignment(clipperArgs, expr);
+
+                    var ifStatement = GenerateIfStatement(condition, GenerateExpressionStatement(assignmentExpression, (XSharpParserRuleContext)context, true));
+                    stmts.Add(ifStatement);
+                    // create PCount variable
+                    var argLen = MakeSimpleMemberAccess(clipperArgs, GenerateSimpleName("Length"));
+                    var decl = GenerateLocalDecl(XSharpSpecialNames.ClipperPCount, IntType,argLen);
                     decl.XGenerated = true;
                     stmts.Add(decl);
                     // Now Change argument to X$Args PARAMS USUAL[]
@@ -4077,13 +4072,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return initializer;
         }
 
-        internal InitializerExpressionSyntax MakeArrayInitializer(SeparatedSyntaxList<ExpressionSyntax> exprs)
-        {
-            return _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
-                                              SyntaxFactory.OpenBraceToken,
-                                              exprs,
-                                              SyntaxFactory.CloseBraceToken);
-        }
 
         public override void ExitLiteralArray([NotNull] XP.LiteralArrayContext context)
         {
@@ -4120,7 +4108,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 exprs = default(SeparatedSyntaxList<ExpressionSyntax>);
             }
-            var initializer = MakeArrayInitializer(exprs);
+            var initializer = CreateArrayInitializer(exprs);
             expr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                 _syntaxFactory.ArrayType(type,
                 MakeList(_syntaxFactory.ArrayRankSpecifier(

@@ -179,32 +179,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _options.XSharpRuntime
             ? GenerateQualifiedName(XSharpQualifiedTypeNames.Array)
             : GenerateQualifiedName(VulcanQualifiedTypeNames.Array);
+
+        protected ArrayRankSpecifierSyntax MakeEmptyRank()
+        {
+            var emptySizes = _pool.AllocateSeparated<ExpressionSyntax>();
+            emptySizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
+            var emptyRank = _syntaxFactory.ArrayRankSpecifier(
+                            SyntaxFactory.OpenBracketToken,
+                            emptySizes,
+                            SyntaxFactory.CloseBracketToken);
+            _pool.Free(emptySizes);
+            return emptyRank;
+        }
         protected ArrayTypeSyntax ArrayOfUsual
         {
             get
             {
-                var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>();
-                emptysizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
-                var emptyrank = _syntaxFactory.ArrayRankSpecifier(
-                                SyntaxFactory.OpenBracketToken,
-                                emptysizes,
-                                SyntaxFactory.CloseBracketToken);
-                _pool.Free(emptysizes);
-                return _syntaxFactory.ArrayType(UsualType, emptyrank);
+                return _syntaxFactory.ArrayType(UsualType, MakeEmptyRank());
             }
         }
         protected ArrayTypeSyntax ArrayOfString
         {
             get
             {
-                var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>();
-                emptysizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
-                var emptyrank = _syntaxFactory.ArrayRankSpecifier(
-                                SyntaxFactory.OpenBracketToken,
-                                emptysizes,
-                                SyntaxFactory.CloseBracketToken);
-                _pool.Free(emptysizes);
-                return _syntaxFactory.ArrayType(StringType, emptyrank);
+                return _syntaxFactory.ArrayType(StringType, MakeEmptyRank());
             }
         }
 
@@ -233,14 +231,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             get
             {
-                var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>();
-                emptysizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
-                var emptyrank = _syntaxFactory.ArrayRankSpecifier(
-                                 SyntaxFactory.OpenBracketToken,
-                                 emptysizes,
-                                 SyntaxFactory.CloseBracketToken);
-                _pool.Free(emptysizes);
-                return _syntaxFactory.ArrayType(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ByteKeyword)), emptyrank);
+                return _syntaxFactory.ArrayType(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ByteKeyword)), MakeEmptyRank());
             }
         }
 
@@ -1397,6 +1388,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             attributeLists.Add(MakeAttributeList(null, attributes));
             _pool.Free(attributes);
+        }
+
+
+        protected InitializerExpressionSyntax CreateArrayInitializer(SeparatedSyntaxList<ExpressionSyntax> expressions)
+        {
+            var initializer = _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
+                SyntaxFactory.OpenBraceToken,
+                expressions,
+                SyntaxFactory.CloseBraceToken);
+            return initializer;
+
+        }
+
+        protected InitializerExpressionSyntax CreateArrayInitializer(params ExpressionSyntax[] expressions)
+        {
+            return CreateArrayInitializer(MakeSeparatedList(expressions));
         }
 
         protected ExpressionSyntax CreateObject(TypeSyntax type, ArgumentListSyntax args, InitializerExpressionSyntax init = null)
@@ -7410,7 +7417,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.USING:
                         node = _syntaxFactory.UsingStatement(attributeLists: default,
                                awaitKeyword: context.a?.SyntaxKeyword(),
-							   token.SyntaxKeyword(),
+                               token.SyntaxKeyword(),
                                SyntaxFactory.OpenParenToken,
                                context.VarDecl?.Get<VariableDeclarationSyntax>(),
                                context.Expr?.Get<ExpressionSyntax>(),
@@ -9405,10 +9412,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var bin = _syntaxFactory.ArrayCreationExpression(
                         SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                             ByteArrayType,
-                            _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
-                                SyntaxFactory.OpenBraceToken,
-                                MakeSeparatedList<ExpressionSyntax>(values.ToArray()),
-                                SyntaxFactory.CloseBraceToken));
+                            CreateArrayInitializer(values.ToArray()));
                     if (error)
                     {
                         var msg = "length of literal must be an even number of characters";
@@ -9618,10 +9622,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 exprs = default;
             }
             ExpressionSyntax expr;
-            var initializer = _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
-                SyntaxFactory.OpenBraceToken,
-                exprs,
-                SyntaxFactory.CloseBraceToken);
+            var initializer = CreateArrayInitializer(exprs);
             if (type != null)
             {
                 expr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
@@ -10316,12 +10317,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitCollectioninitializer([NotNull] XP.CollectioninitializerContext context)
         {
-            var collinit = _syntaxFactory.InitializerExpression(
-                inArrayCtorCall(context) ? SyntaxKind.ArrayInitializerExpression : SyntaxKind.CollectionInitializerExpression,
-                SyntaxFactory.OpenBraceToken,
-                MakeSeparatedList<ExpressionSyntax>(context._Members),
-                SyntaxFactory.CloseBraceToken);
-            context.Put(collinit);
+            ExpressionSyntax expr;
+            var elements = MakeSeparatedList<ExpressionSyntax>(context._Members);
+            if (inArrayCtorCall(context))
+            {
+                expr = CreateArrayInitializer(elements);
+            }
+            else
+            {
+                expr = _syntaxFactory.InitializerExpression(
+                    SyntaxKind.CollectionInitializerExpression,
+                    SyntaxFactory.OpenBraceToken,
+                    elements,
+                    SyntaxFactory.CloseBraceToken);
+            }
+            context.Put(expr);
         }
         public override void ExitMemberinitializer([NotNull] XP.MemberinitializerContext context)
         {
@@ -10348,12 +10358,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitComplexInitExpr([NotNull] XP.ComplexInitExprContext context)
         {
-            var collinit = _syntaxFactory.InitializerExpression(
-                inArrayCtorCall(context) ? SyntaxKind.ArrayInitializerExpression : SyntaxKind.ComplexElementInitializerExpression,
-                SyntaxFactory.OpenBraceToken,
-                MakeSeparatedList<ExpressionSyntax>(context._Members),
-                SyntaxFactory.CloseBraceToken);
-            context.Put(collinit);
+            var members = MakeSeparatedList<ExpressionSyntax>(context._Members);
+            ExpressionSyntax expr;
+            if (inArrayCtorCall(context))
+            {
+                expr = CreateArrayInitializer(members);
+            }
+            else
+            {
+                expr = _syntaxFactory.InitializerExpression(
+                     SyntaxKind.ComplexElementInitializerExpression,
+                    SyntaxFactory.OpenBraceToken,
+                    members,
+                    SyntaxFactory.CloseBraceToken);
+            }
+            context.Put(expr);
         }
         public override void ExitInitializerMember([NotNull] XP.InitializerMemberContext context)
         {
@@ -10388,7 +10407,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Put(_syntaxFactory.TupleExpression(SyntaxFactory.OpenParenToken, args, SyntaxFactory.CloseParenToken));
             _pool.Free(args);
-          }
+        }
         public override void ExitLocalDesignation([NotNull] XP.LocalDesignationContext context)
         {
             VariableDesignationSyntax designation = GetDesignation(context.Id);

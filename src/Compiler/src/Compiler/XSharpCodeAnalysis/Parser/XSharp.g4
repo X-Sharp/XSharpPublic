@@ -298,6 +298,7 @@ structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
                     ;
 
 
+
 delegate_           : (Attributes=attributes)? (Modifiers=classModifiers)?
                       D=DELEGATE (Namespace=nameDot)? Id=identifier
                       TypeParameters=typeparameters?
@@ -753,8 +754,10 @@ localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars
                    | LOCAL Static=STATIC? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*   end=eos #varLocalDecl
                    | Using=USING Static=STATIC? VAR ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)* end=eos #varLocalDecl
                    | Using=USING Static=STATIC? LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
-                   | ( VAR | LOCAL? IMPLIED ) Designation=designationExpr Op=assignoperator Expression=expression end=eos        #varLocalDesignation // VAR ( ID[, ID, ...] ) := EXPR
-                   | LOCAL DesignationType=designationTypeExpr Op=assignoperator Expression=expression end=eos                   #typeLocalDesignation // LOCAL ( ID AS TYPE[,ID AS TYPE,...] ) := EXPR
+                   | ( VAR | LOCAL? IMPLIED ) Designation=designationExpr
+                      Op=assignoperator Expression=expression end=eos                                                #varLocalDesignation // VAR ( ID[, ID, ...] ) := EXPR
+                   | LOCAL DesignationType=designationTypeExpr
+                      Op=assignoperator Expression=expression end=eos                                                #typeLocalDesignation // LOCAL ( ID AS TYPE[,ID AS TYPE,...] ) := EXPR
                    ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=varidentifier (LBRKT ArraySub=arraysub RBRKT)?

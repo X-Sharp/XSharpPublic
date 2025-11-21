@@ -46,33 +46,10 @@ Copyright (c) XSharp B.V.  All Rights Reserved
     <GenerateFullPaths Condition="'$(BuildingInsideVisualStudio)'=='true'">true</GenerateFullPaths>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(DefineXSharpItemSchemas)' != 'false' ">
-    <PropertyPageSchema Include="$(XSharpXamlDir)ProjectItemsSchema.XSharp.xaml;"/>
-    <PropertyPageSchema Include="$(XSharpXamlDir)XSharp.xaml;">
-      <Context>File</Context>
-    </PropertyPageSchema>
-    <PropertyPageSchema Include="$(XSharpXamlDir)XSharp.BrowseObject.xaml;">
-      <Context>BrowseObject</Context>
-    </PropertyPageSchema>
-    <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.xaml;">
-      <Context>File</Context>
-    </PropertyPageSchema>
-    <PropertyPageSchema Include="$(XSharpXamlDir)NativeResource.BrowseObject.xaml;">
-      <Context>BrowseObject</Context>
-    </PropertyPageSchema>
-    <PropertyPageSchema Include="$(XSharpXamlDir)VOBinary.xaml;">
-      <Context>File</Context>
-    </PropertyPageSchema>
-    <PropertyPageSchema Include="$(XSharpXamlDir)VOBinary.BrowseObject.xaml;">
-      <Context>BrowseObject</Context>
-    </PropertyPageSchema>
-
-    <ProjectCapability Include="XSharp;Managed;SingleTargetBuildForStartupProjects"/>
+  <ItemGroup>
+    <ProjectCapability Include="XSharp;Managed;SingleTargetBuildForStartupProjects;ReferencesFolder;LanguageService"/>
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(DefineCommonCapabilities)' == 'true' ">
-    <ProjectCapability Include="ReferencesFolder;LanguageService" />
-  </ItemGroup>
 
   <!--
     The CreateManifestResourceNames target create the manifest resource names from the .RESX

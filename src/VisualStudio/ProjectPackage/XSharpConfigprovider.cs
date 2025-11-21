@@ -217,10 +217,12 @@ namespace XSharp.Project
                 {
                     info.clsidCustom = VSConstants.DebugEnginesGuids.ManagedOnly_guid;      // {449EC4CC-30D2-4032-9256-EE18EB41B62B}
                 }
-                if (!string.IsNullOrEmpty(this.ProjectMgr.BuildProject.Xml.Sdk))
+                if (this.ProjectMgr is XSharpSdkProjectNode sdk)
                 {
-                    // Sdk style project
+                    if (sdk.IsNetCoreApp)
+                    {
                     info.clsidCustom = VSConstants.DebugEnginesGuids.CoreSystemClr_guid;
+                    }
                 }
 
                 info.grfLaunch = grfLaunch;

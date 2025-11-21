@@ -20,7 +20,7 @@ namespace XSharp.Project
     public abstract class VOEditorFactoryBase : IVsEditorFactory, IDisposable
     {
         private ServiceProvider vsServiceProvider;
-        protected XSharpUIToolsPackage editorPackage;
+        protected XSharpProjectPackage editorPackage;
 
         internal VOEditorFactoryBase()
         {
@@ -227,7 +227,7 @@ namespace XSharp.Project
     [ProvideView(LogicalView.Designer,"")]
     public sealed class VOFormEditorFactory : VOEditorFactoryBase
     {
-        public VOFormEditorFactory(XSharpUIToolsPackage package)
+        public VOFormEditorFactory(XSharpProjectPackage package)
            : base()
         {
             this.editorPackage = package;
@@ -278,7 +278,7 @@ namespace XSharp.Project
     [ProvideView(LogicalView.Designer, "")]
     public sealed class VOMenuEditorFactory : VOEditorFactoryBase
     {
-        public VOMenuEditorFactory(XSharpUIToolsPackage package)
+        public VOMenuEditorFactory(XSharpProjectPackage package)
            : base()
         {
 
@@ -336,7 +336,7 @@ namespace XSharp.Project
     public sealed class VOFieldSpecEditorFactory : VOEditorFactoryBase
     {
 
-        public VOFieldSpecEditorFactory(XSharpUIToolsPackage package)
+        public VOFieldSpecEditorFactory(XSharpProjectPackage package)
             : base()
         {
 
@@ -391,7 +391,7 @@ namespace XSharp.Project
     public sealed class VODBServerEditorFactory : VOEditorFactoryBase
     {
 
-        public VODBServerEditorFactory(XSharpUIToolsPackage package)
+        public VODBServerEditorFactory(XSharpProjectPackage package)
             : base()
         {
 

@@ -9,16 +9,18 @@
  *
  * ***************************************************************************/
 
+using Microsoft.Build.Tasks;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using MSBuild = Microsoft.Build.Evaluation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.Versioning;
-using Microsoft.VisualStudio.Shell.Interop;
 using System.Runtime.InteropServices;
-using Microsoft.VisualStudio.Shell;
+using System.Runtime.Versioning;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -292,6 +294,31 @@ namespace Microsoft.VisualStudio.Project
         }
     }
 
+    public class SdkFrameWorkNameConverter :FrameworkNameConverter
+    {
+        List<string> _names = new List<string>();
+        public SdkFrameWorkNameConverter(MSBuild.Project project) : base()
+        {
+            _names.Clear();
+            foreach (var item in project.AllEvaluatedItems)
+            {
+                if (item.ItemType == "SupportedTargetFramework")
+                {
+                    var md = item.Metadata;
+                    var dispName = md.FirstOrDefault(x => x.Name == "DisplayName")?.EvaluatedValue ?? "";
+                    var alias = md.FirstOrDefault(x => x.Name == "Alias")?.EvaluatedValue ?? "";
+                    if (!string.IsNullOrEmpty(dispName) &&!string.IsNullOrEmpty(alias))
+                    {
+                        _names.Add($"{dispName},Version={alias}");
+                    }
+                }
+            }
+        }
+        public override TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
+        {
+            return new StandardValuesCollection(_names.Select(x => new FrameworkName(x)).ToArray());
+        }
+    }
     public class FrameworkNameConverter : TypeConverter
     {
         public FrameworkNameConverter()

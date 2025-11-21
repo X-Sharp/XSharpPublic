@@ -22,6 +22,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -1776,7 +1777,7 @@ namespace XSharp.Project
             RefreshIncludeFiles();
         }
 
-        private void RefreshReferencesFromResponseFile()
+        protected virtual List<String> RefreshReferencesFromResponseFile()
         {
             // find the resource file and read the lines with /reference
             string tempPath = System.IO.Path.GetTempPath();
@@ -1800,7 +1801,9 @@ namespace XSharp.Project
                     }
                 }
                 ProjectModel.RefreshReferences(references);
+                return references;
             }
+            return null;
         }
 
         internal void UpdateReferencesInProjectModel()
@@ -2184,6 +2187,7 @@ namespace XSharp.Project
                 xoptions.BuildCommandLine();
             }
         }
+        public virtual bool IsSdkProject => false;
         internal XParseOptions CachedOptions;
         public XParseOptions ParseOptions
         {
@@ -2908,6 +2912,7 @@ namespace XSharp.Project
             return false;
         }
 
+
         public const string AssemblyReferences = nameof(AssemblyReferences);
         public const string CSharp = nameof(CSharp);
         public const string DeclaredSourceItems = nameof(DeclaredSourceItems);
@@ -2945,7 +2950,7 @@ namespace XSharp.Project
         public const string WindowsXAMLEnableOverview = nameof(WindowsXAMLEnableOverview);
         public const string MicrosoftVisualStudioConnectedServicesVirtualNode = "Microsoft.VisualStudio.ConnectedServices.VirtualNode";
 
-
+        List<string> _checked = new List<string>();
         public bool IsSymbolPresent(string symbol)
         {
             switch (symbol)
@@ -2962,16 +2967,15 @@ namespace XSharp.Project
                 case WindowsXaml:
                 case WPF:
                 case XSharp:
-                    return true;
+                // Do we support these?
                 case PackageReferences:
-                    // If we return true then sometimes builds with solutionwide restores will start very slowly
-                    return false;
+                case DependenciesTree:
+                case DependencyPackageManagement:
+                    return true;
                 case AspNetCore:
                 case BuildAndroidTarget:
                 case BuildiOSProject:
                 case CPS:
-                case DependenciesTree:
-                case DependencyPackageManagement:
                 case DNX:
                 case DotNetCoreWeb:
                 case DynamicFileNesting:
@@ -2988,6 +2992,11 @@ namespace XSharp.Project
                 case WebsiteProject:
                 case WindowsXAMLAppxPackage:
                 case WindowsXAMLEnableOverview:
+                    if (!_checked.Contains(symbol))
+                    {
+                        _checked.Add(symbol);
+                        System.Diagnostics.Debug.WriteLine("Unsupported capability requested: " + symbol);
+                    }
                     return false;
             }
             // intentionally no default so we can set a breakpoint and see what other capabilities

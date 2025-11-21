@@ -107,6 +107,7 @@ namespace Microsoft.VisualStudio.Project
 
         #region abstract methods
         protected abstract ProjectNode CreateProject();
+        protected abstract ProjectNode CreateSdkProject();
         #endregion
 
         #region overriden methods
@@ -161,7 +162,16 @@ namespace Microsoft.VisualStudio.Project
             // Please be very carefull what is initialized here on the ProjectNode. Normally this should only instantiate and return a project node.
             // The reason why one should very carefully add state to the project node here is that at this point the aggregation has not yet been created and anything that would cause a CCW for the project to be created would cause the aggregation to fail
             // Our reasoning is that there is no other place where state on the project node can be set that is known by the Factory and has to execute before the Load method.
-            ProjectNode node = this.CreateProject();
+            bool IsSdkProject = !String.IsNullOrEmpty(this.buildProject.Xml.Sdk);
+            ProjectNode node;
+            if (IsSdkProject)
+            {
+                node = this.CreateSdkProject();
+            }
+            else
+            {
+                node = this.CreateProject();
+            }
             Utilities.CheckNotNull(node, "The project failed to be created");
             node.BuildEngine = this.buildEngine;
             node.BuildProject = this.buildProject;

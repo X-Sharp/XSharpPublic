@@ -18,7 +18,6 @@ using XSharp.VOEditors;
 using XSharpModel;
 
 using Task = System.Threading.Tasks.Task;
-using Microsoft.VisualStudio.Project;
 namespace XSharp.Project
 {
     [Command(PackageIds.idGenerateWinForm)]
@@ -87,14 +86,14 @@ namespace XSharp.Project
                     }
                     var newdesignerform = Path.ChangeExtension(newform, ".designer.prg");
                     var x = await project.AddExistingFilesAsync(new[] { newform, newdesignerform });
-                    var prjNode = (ProjectNode) xproject.ProjectNode;
+                    var prjNode = (XSharpProjectNode) xproject.ProjectNode;
                     var file = prjNode.FindChild(newform);
-                    if (file is FileNode fileNode && fileNode.IsLink)
+                    if (file is XSharpFileNode fileNode && fileNode.IsLink)
                     {
                         file.ItemNode.SetMetadata("Link", null);
                     }
                     file = prjNode.FindChild(newdesignerform);
-                    if (file is FileNode designerfileNode && designerfileNode.IsLink)
+                    if (file is XSharpFileNode designerfileNode && designerfileNode.IsLink)
                     {
                         file.ItemNode.SetMetadata("Link", null);
                     }

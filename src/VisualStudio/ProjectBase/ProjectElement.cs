@@ -174,8 +174,11 @@ namespace Microsoft.VisualStudio.Project
             if(!deleted && item != null)
             {
                 deleted = true;
+                if (!item.IsImported)
+                {
                 itemProject.BuildProject.RemoveItem(item);
                 this.itemProject.SetProjectFileDirty(true);
+                }
             }
             itemProject = null;
             item = null;

@@ -2140,6 +2140,7 @@ CLASS DBEDesignDBServer INHERIT DesignItem
             SELF:AddProperty(oProp)
             SELF:AddProperty(VODesignProperty{"caption","Caption","",PropertyType.Text , PropertyStyles.NoAuto})
             SELF:AddProperty(VODesignProperty{"description","Description","",PropertyType.Text , PropertyStyles.NoAuto})
+            SELF:AddProperty(VODesignProperty{"helpcontext","Help Context","",PropertyType.Text , PropertyStyles.NoAuto})
 
             SELF:AddProperty(VODesignProperty{"classname" , "FieldSpec" , "" , PropertyType.Type , PropertyStyles.NoAuto + PropertyStyles.NoNULL})
             SELF:AddProperty(VODesignProperty{"superclass" , "Inherit from" , "" , PropertyType.Text , PropertyStyles.NoAuto})

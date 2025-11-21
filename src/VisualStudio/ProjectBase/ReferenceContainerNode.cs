@@ -297,7 +297,6 @@ namespace Microsoft.VisualStudio.Project
 				{
 					continue;
 				}
-
 				foreach (var item in MSBuildProject.GetItems(buildProject, referenceType))
 				{
                     ProjectElement element = new ProjectElement(this.ProjectMgr, item, false);

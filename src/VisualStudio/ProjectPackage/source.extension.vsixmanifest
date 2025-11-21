@@ -39,11 +39,12 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="CodeGenerator" Path="|CodeGenerator|" AssemblyName="|CodeGenerator;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="CodeModel" Path="|CodeModel|" AssemblyName="|CodeModel;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="CodeDomProvider" Path="|CodeDomProvider|" AssemblyName="|CodeDomProvider;AssemblyName|" />
-        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="UITools2022" Path="|UITools2022|" AssemblyName="|UITools2022;AssemblyName|" />
-        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="UITools2022" Path="|UITools2022|" />
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="UITools2022" Path="|UITools2022;PkgdefProjectOutputGroup|" />
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharp.Designers2022.pkgdef" />
     </Assets>
+    <Content>
+        <ProjectTemplate>ProjectTemplates</ProjectTemplate>
+        <ItemTemplate>ItemTemplates</ItemTemplate>
+    </Content>
     <Prerequisites>
         <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,18.0)" DisplayName="Visual Studio core editor" />
         <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[17.0,18.0)" DisplayName="C# and Visual Basic" />

@@ -153,7 +153,18 @@ namespace Microsoft.CodeAnalysis.CSharp
         CSharp7_3 = 703,
         CSharp9 = 900,
         CSharp12 = 1200,
-        Default=CSharp12,
+        CSharp13 = 1300,
+        Default = CSharp13,
+        /// <summary>
+        /// The latest major supported version.
+        /// </summary>
+        LatestMajor = int.MaxValue - 2,
+
+        /// <summary>
+        /// Preview of the next language version.
+        /// </summary>
+        Preview = int.MaxValue - 1,
+
         /// <summary>
         /// The latest supported version of the language.
         /// </summary>

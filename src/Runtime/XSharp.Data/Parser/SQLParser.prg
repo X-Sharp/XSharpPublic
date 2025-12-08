@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp.Parsers
 /// <summary>
 /// The SQLParser class.
 /// </summary>
-CLASS SQLParser
+PARTIAL CLASS SQLParser
     PRIVATE _list as XTokenList
     PRIVATE _Error as STRING
     PROPERTY Error as STRING GET _Error

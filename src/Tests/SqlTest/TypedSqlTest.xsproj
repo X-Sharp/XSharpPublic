@@ -43,7 +43,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings />
+    <NoWarn />
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />

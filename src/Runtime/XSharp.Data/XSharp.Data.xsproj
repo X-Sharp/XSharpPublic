@@ -28,7 +28,9 @@
     <Compile Include="FoxPro\SQLReflection.prg" />
     <Compile Include="FoxPro\SQLStatement.prg" />
     <Compile Include="FoxPro\SQLSupport.prg" />
+    <Compile Include="Parser\Context.Expression.prg" />
     <Compile Include="Parser\Context.prg" />
+    <Compile Include="Parser\SQLParser.Expression.prg" />
     <Compile Include="Parser\SQLParser.prg" />
     <Compile Include="Parser\Token.prg" />
     <Compile Include="Parser\TokenType.prg" />
@@ -81,6 +83,9 @@
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
   </ItemGroup>
   <Import Project="..\XmlDoc.Targets" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">

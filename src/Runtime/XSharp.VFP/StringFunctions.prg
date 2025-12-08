@@ -491,7 +491,6 @@ END FUNCTION
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/difference/*" />
 FUNCTION Difference( cExpression1 as string, cExpression2 as string) as int
-    // Si alguna es nula o vacía, la diferencia es 0 (no es parecen)
     if String.IsNullOrEmpty(cExpression1) || String.IsNullOrEmpty(cExpression2)
         return 0
     endif

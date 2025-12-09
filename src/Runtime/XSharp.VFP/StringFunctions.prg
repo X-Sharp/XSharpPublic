@@ -413,3 +413,99 @@ FUNCTION Str(nNumber ,nLength ,nDecimals ) AS STRING CLIPPER
     Default(REF nLength, 10)
     Default(REF nDecimals, 0)
 RETURN XSharp.RT.Functions.Str(nNumber, nLength, nDecimals)
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/strextract/*" />
+FUNCTION StrExtract(cSearchExpression as string, cBeginDelim as string, cEndDelim := "" as string, nOccurrence := 1 as int, nFlag := 0 as int) AS STRING
+    if String.IsNullOrEmpty(cSearchExpression) || String.IsNullOrEmpty(cBeginDelim)
+        return ""
+    endif
+
+    // Flag breakdown:
+    // Bit 0 (1): Case insensitive search
+    // Bit 1 (2): End delimiter not required (if not found, return rest of string)
+    // Bit 2 (4): Include delimiters in result
+
+    local lCaseInsensitive as logic
+    local lNoEndDelim as logic
+    local lIncludeDelims as logic
+
+    lCaseInsensitive := (logic)((nFlag & 1) != 0)
+    lNoEndDelim := (logic)((nFlag & 2) != 0)
+    lIncludeDelims := (logic)((nFlag & 4) != 0)
+
+    local compareType as StringComparison
+    if lCaseInsensitive
+        compareType := StringComparison.OrdinalIgnoreCase
+    else
+        compareType := StringComparison.Ordinal
+    endif
+
+    local nStart := 0 as int
+    local i as int
+
+    for i := 1 to nOccurrence
+        var nAt := cSearchExpression:IndexOf(cBeginDelim, nStart, compareType)
+
+        if nAt == -1
+            return ""
+        endif
+
+        if lIncludeDelims and (i == nOccurrence)
+            nStart := nAt
+        else
+            nStart := nAt + cBeginDelim:Length
+        endif
+    next
+
+    local nSearchEndFrom as int
+    if lIncludeDelims
+        nSearchEndFrom := nStart + cBeginDelim:Length
+    else
+        nSearchEndFrom := nStart
+    endif
+
+    if String.IsNullOrEmpty(cEndDelim)
+        return cSearchExpression:Substring(nStart)
+    else
+        var nAtEnd := cSearchExpression:IndexOf(cEndDelim, nSearchEndFrom, compareType)
+
+        if nAtEnd == -1
+            if lNoEndDelim
+                return cSearchExpression:Substring(nStart)
+            else
+                return ""
+            endif
+        else
+            local nLen as int
+            nLen := nAtEnd - nStart
+
+            if lIncludeDelims
+                nLen += cEndDelim:Length
+            endif
+
+            return cSearchExpression:Substring(nStart, nLen)
+        endif
+    endif
+    return ""
+END FUNCTION
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/difference/*" />
+FUNCTION Difference( cExpression1 as string, cExpression2 as string) as int
+    if String.IsNullOrEmpty(cExpression1) || String.IsNullOrEmpty(cExpression2)
+        return 0
+    endif
+
+    local cS1 := SoundEx(cExpression1) as string
+    local cS2 := SoundEx(cExpression2) as string
+
+    local nDiff := 0 as int
+
+    // We use a 0-3 loop because strings are 0-based in .NET
+    for var i := 0 to 3
+        if cS1[i] == cS2[i]
+            nDiff += 1
+        endif
+    next
+
+    return nDiff
+END FUNCTION

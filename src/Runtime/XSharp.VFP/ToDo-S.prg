@@ -40,10 +40,3 @@ FUNCTION StrConv( cExpression, nConversionSetting , nRegionalIdentifier , nRegio
     THROW NotImplementedException{}
     // RETURN ""
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/strextract/*" />
-
-FUNCTION StrExtract( cSearchExpression, cBeginDelim , cEndDelim , nOccurrence, nFlag) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
-

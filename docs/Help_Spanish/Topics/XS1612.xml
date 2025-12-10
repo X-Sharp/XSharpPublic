@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1612</title>
+  <keywords>
+    <keyword>XS1612</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1612</para>
+    </header>
+    <para styleclass="Normal">Cannot modify the return value of &apos;expression&apos; because it is not a variable</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">An attempt was made to modify a value type that is produced as the result of an intermediate expression but is not stored in a variable. This error can occur when you attempt to directly modify a struct in a generic collection, as shown in the following example:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">To modify the struct, first assign it to a local variable, modify the variable, then assign the variable back to the item in the collection.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error occurs because value types are copied on assignment. When you retrieve a value type from a property or indexer, you are getting a copy of the object, not a reference to the object itself. The copy that is returned is not stored by the property or indexer because they are actually methods, not storage locations (variables). You must store the copy into a variable that you declare before you can modify it.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The error does not occur with reference types because a property or indexer in that case returns a reference to an existing object, which is a storage location.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If you are defining the class or struct, you can resolve this error by modifying your property declaration to provide access to the members of a struct. If you are writing client code, you can resolve the error by creating your own instance of the struct, modifying its fields, and then assigning the entire struct back to the property. As a third alternative, you can change your struct to a class.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">XS1612 also occurs when you attempt to access the member of a struct through a property on an enclosing class that is returning the entire struct, as shown in the following example:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1612.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

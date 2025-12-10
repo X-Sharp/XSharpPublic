@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0571</title>
+  <keywords>
+    <keyword>XS0571</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS0571</para>
+    </header>
+    <para styleclass="Normal">&apos;function&apos; : cannot explicitly call operator or accessor</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Certain operators have internal names. For example, op_Increment is the internal name of the ++ operator. You should not use or explicitly call such method names.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0571:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0571.prg  <br/> </para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

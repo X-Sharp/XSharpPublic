@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0071</title>
+  <keywords>
+    <keyword>XS0071</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0071</para>
+    </header>
+    <para styleclass="Normal">An explicit interface implementation of an event must use event accessor syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When explicitly implementing an event that was declared in an interface, you must use manually provide the add and remove event accessors that are typically provided by the compiler. The accessor code can connect the interface event to another event in your class (shown later in this topic), or to its own delegate type. For more information, see How to: Implement Interface Events.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0071.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0071.prg &#160;<br/><br/>} &#160;</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

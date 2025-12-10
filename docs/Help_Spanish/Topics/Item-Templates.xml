@@ -1,0 +1,491 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Item Templates</title>
+  <keywords>
+    <keyword>item templates</keyword>
+    <keyword>templates</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Item Templates</para>
+    </header>
+    <para styleclass="Normal">The X# Visual Studio integration comes with the following item templates:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="36" colcount="4">
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Template</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Required Framework</text><br/><text style="font-weight:bold;">version</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Category: Code</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="Class.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Class</para>
+        </td>
+        <td>
+          <para styleclass="Normal">An empty class definition</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="Code.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">CodeFile</para>
+        </td>
+        <td>
+          <para styleclass="Normal">An empty Code File</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="Include.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Header</para>
+        </td>
+        <td>
+          <para styleclass="Normal">An empty Header File</para>
+        </td>
+        <td>
+          <para styleclass="Normal">n/a</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="TextFile.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">TextFile</para>
+        </td>
+        <td>
+          <para styleclass="Normal">An empty text file</para>
+        </td>
+        <td>
+          <para styleclass="Normal">n/a</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Category: Forms</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="Form.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Windows Forms Form</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A Windows form with separate designer.prg</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="Form.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Windows Forms Simple Form</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A simple Windows Forms Form without designer.prg</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="UserControl.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Windows Forms User Control</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Windows Forms User Control</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Category: Internal</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">AppConfigInternal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A hidden app.config</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">AppManifestInternal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A hidden app.manifest</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">AssemblyInfoInternal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A hidden assemblyinfo prg</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">Managed Resource Internal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A hidden resource file</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">Settings Internal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A hidden settings file</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Category: Resources</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="Rc.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Native Resource File (.rc)</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A file in which native resources can be defined</para>
+        </td>
+        <td>
+          <para styleclass="Normal">n/a</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="Bitmap.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Bitmap</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A Bitmap file</para>
+        </td>
+        <td>
+          <para styleclass="Normal">n/a</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="Cursor.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Cursor</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A Cursor file</para>
+        </td>
+        <td>
+          <para styleclass="Normal">n/a</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="Icon.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Icon</para>
+        </td>
+        <td>
+          <para styleclass="Normal">An Icon file</para>
+        </td>
+        <td>
+          <para styleclass="Normal">n/a</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="Resource.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Managed resource file (.resx)</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A file to store managed resources</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Category: VO</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">VODBServer</para>
+        </td>
+        <td>
+          <para styleclass="Normal">An empty DBServer</para>
+        </td>
+        <td>
+          <para styleclass="Normal">n/a</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">VOFieldSpec</para>
+        </td>
+        <td>
+          <para styleclass="Normal">An empty FieldSpec container file</para>
+        </td>
+        <td>
+          <para styleclass="Normal">n/a</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">VOMenu</para>
+        </td>
+        <td>
+          <para styleclass="Normal">An empty VO Menu</para>
+        </td>
+        <td>
+          <para styleclass="Normal">n/a</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">VOWindow</para>
+        </td>
+        <td>
+          <para styleclass="Normal">An empty VO Window</para>
+        </td>
+        <td>
+          <para styleclass="Normal">n/a</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Category: WCF</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="WCF.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">WCF Service</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A WCF Service</para>
+        </td>
+        <td>
+          <para styleclass="Normal">3.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Category: WPF</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="WPFFlowDocument.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">WPF Flow Document</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Dynamically formatted XAML document</para>
+        </td>
+        <td>
+          <para styleclass="Normal">3.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="WPFPage.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">WPF Page</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Windows Presentation Foundation page</para>
+        </td>
+        <td>
+          <para styleclass="Normal">3.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="WPFPageFunction.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">WPF Page Function</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Windows Presentation Foundation page function</para>
+        </td>
+        <td>
+          <para styleclass="Normal">3.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="WPFResourceDictionary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">WPF Resource Dictionary</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XAML Resource Dictionary</para>
+        </td>
+        <td>
+          <para styleclass="Normal">3.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="WPFUserControl.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">WPF UserControl</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Windows Presentation Foundation user control</para>
+        </td>
+        <td>
+          <para styleclass="Normal">3.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="WPFWindow.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">WPF Window</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Windows Presentation Foundation window</para>
+        </td>
+        <td>
+          <para styleclass="Normal">3.0</para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

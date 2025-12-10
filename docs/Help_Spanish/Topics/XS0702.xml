@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0702</title>
+  <keywords>
+    <keyword>XS0702</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0702</para>
+    </header>
+    <para styleclass="Normal">Constraint cannot be special class &apos;identifier&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following types may not be used as constraints: System.Object,``System.Array, System.Delegate, System.Enum, or System.ValueType.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0702:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0702.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

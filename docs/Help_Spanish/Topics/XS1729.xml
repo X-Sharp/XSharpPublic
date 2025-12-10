@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1729</title>
+  <keywords>
+    <keyword>XS1729</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1729</para>
+    </header>
+    <para styleclass="Normal">&apos;type&apos; does not contain a constructor that takes &apos;number&apos; arguments.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error occurs when you either directly or indirectly invoke the constructor of a class but the compiler cannot find any constructors with the same number of parameters. In the following example, the test class has no constructors that take any arguments. It therefore has only a default constructor that takes zero arguments. Because in the second line in which the error is generated, the derived class declares no constructors of its own, the compiler provides a default constructor. That constructor invokes a parameterless constructor in the base class. Because the base class has no such constructor, XS1729 is generated.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">To correct this error</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Adjust the number of parameters in the call to the constructor.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Modify the class to provide a constructor with the parameters you must call.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Provide a parameterless constructor in the base class.</li>
+    </list>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates XS1729:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1729.prg  <br/></para>
+  </body>
+</topic>

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0446</title>
+  <keywords>
+    <keyword>XS0446</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0446</para>
+    </header>
+    <para styleclass="Normal">Foreach cannot operate on a &apos;Method or Delegate&apos;. Did you intend to invoke the &apos;Method or Delegate&apos;?</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error is caused by specifying a method without parentheses or an anonymous method without parentheses in the part of the foreach statement where you would normally put a collection class. Note that it is valid, though unusual, to put a method call in that location, if the method returns a collection class.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following code will generate XS0446.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0446.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

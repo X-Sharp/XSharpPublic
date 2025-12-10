@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1546</title>
+  <keywords>
+    <keyword>XS1546</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1546</para>
+    </header>
+    <para styleclass="Normal">Property, indexer, or event &apos;property&apos; is not supported by the language; try directly calling accessor method &apos;accessor&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Your code is consuming an object that has a default indexed property and tried to use the indexed syntax. To resolve this error, call the property&apos;s accessor method. For more information on indexers and properties, see Indexers.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS1546.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This code sample consists of a .cpp file, which compiles to a .dll, and a .prg file, which uses that .dll. The following code is for the .dll file, and defines a property to be accessed by the code in the .prg file.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// CPP1546.cpp  <br/>// compile with: /clr /LD  <br/>using namespace System;  <br/>public ref class MCPP  <br/>{  <br/>public:  <br/>    property int Prop [int,int]  <br/>    {  <br/>        int get( int i, int b )  <br/>        {  <br/>            return i;  <br/>        }  <br/>    }  <br/>};  </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This is the X# file.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1546.prg  <br/>// compile with: /r:CPP1546.dll   <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

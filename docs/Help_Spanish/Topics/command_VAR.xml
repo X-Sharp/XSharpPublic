@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-07T17:45:16.398+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>VAR Statement</title>
+  <keywords>
+    <keyword>Arrays<keyword>creating</keyword><keyword>declaring</keyword></keyword>
+    <keyword>Compiledeclaration</keyword>
+    <keyword>Creating<keyword>arrays</keyword><keyword>variables</keyword></keyword>
+    <keyword>Declaration statements</keyword>
+    <keyword>Statements</keyword>
+    <keyword>VAR</keyword>
+    <keyword>VAR statement</keyword>
+    <keyword>Variable declaration</keyword>
+    <keyword>Variables<keyword>creating</keyword><keyword>declaring</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">VAR Statement</para>
+    </header>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

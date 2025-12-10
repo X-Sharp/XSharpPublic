@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1704</title>
+  <keywords>
+    <keyword>XS1704</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1704</para>
+    </header>
+    <para styleclass="Normal">An assembly with the same simple name &apos;Assembly Name&apos; has already been imported. Try removing one of the references or sign them to enable side-by-side.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error points out that two references have the same assembly identity because the assemblies in question lack strong names, they were not signed, and thus the compiler has no way of distinguishing between them in metadata. Thus, the run time ignores the version and culture assembly name properties. The user should remove the redundant reference, rename one of the references, or provide a strong name for them.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This sample creates an assembly and saves it to the root directory.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1704_a.prg  <br/>// compile with: /target:library /out:c:\\XS1704.dll  <br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This sample creates an assembly with the same name as the previous sample, but saves it to a different location.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1704_b.prg  <br/>// compile with: /target:library /out:XS1704.dll  <br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This sample attempts to reference both assemblies. The following sample generates XS1704.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1704_c.prg  <br/>// compile with: /target:library /r:A2=XS1704.dll /r:A1=c:\\XS1704.dll  <br/>// XS1704 expected  <br/></para>
+  </body>
+</topic>

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0050</title>
+  <keywords>
+    <keyword>XS0050</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS0050</para>
+    </header>
+    <para styleclass="Normal">Inconsistent accessibility: return type &apos;type&apos; is less accessible than method &apos;method&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The return type and each of the types referenced in the formal parameter list of a method must be at least as accessible as the method itself. For more information, see Access Modifiers.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0050 because no accessiblity modifier is supplied for MyClass and its accessibility therefore defaults to private.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0050.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

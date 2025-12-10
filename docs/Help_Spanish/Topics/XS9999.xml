@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9999</title>
+  <keywords>
+    <keyword>XS9999</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9999</para>
+    </header>
+    <para styleclass="Normal">When an internal error occurs in the X# compiler then you may see error XS9999.</para>
+    <para styleclass="Normal">If you happen to see this error, then please send the error message to <link displaytype="text" defaultstyle="true" type="weblink" href="mailto:&lt;%LINK_CAPTION%&gt;">support@xsharp.eu</link>.</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

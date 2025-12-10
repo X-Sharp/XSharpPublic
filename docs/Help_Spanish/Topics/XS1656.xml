@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS1656</title>
+  <keywords>
+    <keyword>XS1656</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS1656</para>
+    </header>
+    <para styleclass="Normal">Cannot assign to &apos;variable&apos; because it is a &apos;read-only variable type&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error occurs when an assignment to variable occurs in a read-only context. Read-only contexts include foreach iteration variables, using variables, and fixed variables. To resolve this error, avoid assignments to a statement variable in using blocks, foreach statements, and fixed statements.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates error XS1656 because it tries to replace complete elements of a collection inside a foreach loop. One way to work around the error is to change the foreach loop to a for loop. Another way, not shown here, is to modify the members of the existing element; this is possible with classes, but not with structs.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample demonstrates how XS1656 can be generated in other contexts besides a foreach loop:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1656.prg  <br/>// compile with: /unsafe  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

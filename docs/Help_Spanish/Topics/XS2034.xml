@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>XS2034</title>
+<keywords>
+<keyword>XS2034</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS2034</para>
+  </header>
+  <para styleclass="Normal">A /reference option that declares an extern alias can only have one filename. To specify multiple aliases or filenames, use multiple /reference options.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

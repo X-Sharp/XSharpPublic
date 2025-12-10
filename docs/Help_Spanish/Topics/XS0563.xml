@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0563</title>
+  <keywords>
+    <keyword>XS0563</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0563</para>
+    </header>
+    <para styleclass="Normal">One of the parameters of a binary operator must be the containing type</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The method declaration for an operator overload must follow certain guidelines.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0563:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0563.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

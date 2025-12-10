@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0266</title>
+  <keywords>
+    <keyword>XS0266</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0266</para>
+    </header>
+    <para styleclass="Normal">Cannot implicitly convert type &apos;type1&apos; to &apos;type2&apos;. An explicit conversion exists (are you missing a cast?)</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error occurs when your code tries to convert between two types that cannot be implicitly converted, but where an explicit conversion is available. For more information, see Casting and Type Conversions.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following code shows an examples that generates XS0266 and how to avoid the error</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Start()</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> r8 := 1.234 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">REAL8</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> i &#160;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">INT</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">i := R8 &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// this will produce error XS0266</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">i := (</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">INT</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">) r8 &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// this prevents the error because there is an explicit cast</text><br/><br/></para>
+    <para styleclass="Normal">You can suppress this error for numeric conversions with the compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo11">/vo11</link> (for assignments from larger types to smaller types or for assignments from fractional types to integral types).<br/>For assignments between signed and unsigned numbers the error can be suppressed with <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo4">/vo4</link></para>
+  </body>
+</topic>

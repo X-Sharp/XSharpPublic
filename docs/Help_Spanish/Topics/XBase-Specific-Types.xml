@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>xBase Specific Types</title>
+  <keywords>
+    <keyword>SYMBOL</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">xBase Specific Types</para>
+    </header>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="10" colcount="2">
+      <thead style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Type</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="ARRAY">ARRAY</link></para>
+        </td>
+        <td style="vertical-align:top;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="BINARY">BINARY</link></para>
+        </td>
+        <td style="vertical-align:top;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="CODEBLOCK">CODEBLOCK</link></para>
+        </td>
+        <td style="vertical-align:top;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="CURRENCY">CURRENCY</link></para>
+        </td>
+        <td style="vertical-align:top;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="DATE">DATE</link></para>
+        </td>
+        <td style="vertical-align:top;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="FLOAT">FLOAT</link></para>
+        </td>
+        <td style="vertical-align:top;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PSZ">PSZ</link></para>
+        </td>
+        <td style="vertical-align:top;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="SYMBOL">SYMBOL</link></para>
+        </td>
+        <td style="vertical-align:top;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="USUAL">USUAL</link></para>
+        </td>
+        <td style="vertical-align:top;">
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

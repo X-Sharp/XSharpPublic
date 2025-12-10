@@ -146,14 +146,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			ENDIF
 
 		METHOD Sync() AS VOID
-			LOCAL posRdd AS INT
+			LOCAL posRdd AS DWORD
 			//LOCAL posSrc AS INT
 			//
 			IF SELF:_oRDD != NULL
 				posRdd := SELF:_oRDD:RecNo
 				//posSrc := SELF:BindingSource:Position
 				// BindingSource Position is zero-Based
-				SELF:BindingSource:Position := posRdd - 1
+				SELF:BindingSource:Position := (INT) (posRdd - 1)
 			ENDIF
 
 			//		METHOD Notify(osender AS XSharp.RDD.IRdd, e AS XSharp.DbNotifyEventArgs) AS VOID

@@ -49,7 +49,12 @@ begin namespace XSharp.VFP
 
         #region Nested Items
 
-        method AddObject(cName as string , oObject as object) as logic
+        method AddObject(cName as string , cClassName as string, cOleClass := "" as string, aInitParams PARAMS USUAL[]) as logic
+            local oObject as Object
+            oObject := CreateInstance(cClassName, aInitParams)
+            if ! SELF:Properties:HasProperty(cName)
+                self:_AddProperty(cName, oObject, PropertyVisibility.Public, "")
+            endif
             self:NoIvarPut(cName, oObject)
             self:_Controls:Add(oObject, cName)
             return true

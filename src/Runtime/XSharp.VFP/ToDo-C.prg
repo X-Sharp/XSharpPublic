@@ -59,13 +59,6 @@ FUNCTION CToBin (cExpression , cFlags)
     // RETURN 0
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/ctot/*" />
-
-FUNCTION CToT (cCharacterExpression)
-    THROW NotImplementedException{}
-    // RETURN 0.0.0
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/cursorgetprop/*" />
 
 FUNCTION CursorGetProp (cProperty , uArea)

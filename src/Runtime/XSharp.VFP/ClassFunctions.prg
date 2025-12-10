@@ -23,3 +23,11 @@ function RemoveProperty( oObjectName as object, cPropertyName as string) as logi
     ENDIF
     RETURN TRUE
 
+
+/// <include file="VFPRuntimeDocs.xml" path="Runtimefunctions/getpem/*" />
+FUNCTION GETPEM( uObject as USUAL, cProperty as STRING) as USUAL
+    if uObject is string var strObject
+        return NIL
+    endif
+    return IVarGet(uObject, cProperty)
+

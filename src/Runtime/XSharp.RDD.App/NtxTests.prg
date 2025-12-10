@@ -40,7 +40,7 @@ CLASS NtxTests
 			ntxInfo:Order := "XMenTest"
 			myDBF:OrderListAdd( ntxInfo )
 			// FilePath NullOrEmpty => Will get the FilePath of the DBF
-			LOCAL oData1, oData2 AS OBJECT
+			//LOCAL oData1, oData2 AS OBJECT
 			//
 			myDBF:GoTop()
 			myDBF:Skip( 1 )

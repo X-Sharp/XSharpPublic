@@ -332,14 +332,20 @@ ENUM Set
     MEMBER TextMerge        := 142      // Logic
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.VarCharMapping/*" />
     MEMBER VarCharMapping   := 143    // Logic
+    MEMBER WithStack        := 145
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.TextMergeDelimiters/*" />
     MEMBER TextMergeDelimiters := 146 // string[]
     // MEMBER Topic
     // MEMBER TopicID
     // MEMBER TrBetween
     // MEMBER UdfParams
-    /// <include file="XSharp.CoreDefines.xml" path="members/Set.WithStack/*" />
-    MEMBER WithStack        := 145
+	/// <summary>Show seconds in time display</summary>
+	/// <include file="XSharp.CoreDefines.xml" path="members/Set.Hours/*" />
+	MEMBER Hours				:= 147
+
+	/// <summary>Show seconds in time display</summary>
+	/// <include file="XSharp.CoreDefines.xml" path="members/Set.Seconds/*" />
+	MEMBER Seconds				:= 148
 
     // Xbase++ defines
     /// <include file="XSharp.CoreDefines.xml" path="members/Set.CharSet/*" />
@@ -865,7 +871,13 @@ DEFINE _SET_TEXTMERGE        := Set.TextMerge
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_VARCHARMAPPING    := Set.VarCharMapping
 
+/// <include file="XSharp.CoreDefines.xml" path="members/Set.Hours/*" />
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_HOURS := Set.Hours
 
+/// <include file="XSharp.CoreDefines.xml" path="members/Set.Seconds/*" />
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_SECONDS := Set.Seconds
 #endregion
 
 
@@ -1122,8 +1134,10 @@ CASE Set.Refresh
 RETURN 5.0
 CASE Set.Reprocess
 RETURN 0
-
-
+	CASE Set.Hours
+		RETURN 12L
+	CASE Set.Seconds
+		RETURN TRUE
 END SWITCH
 
 

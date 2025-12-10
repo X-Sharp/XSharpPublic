@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Comments>
+  <ClassDescribe>
+    <summary>Reflects the class definition</summary>
+
+    <param name="uInfo">
+      A constant from must be used for this parameter.
+      It defaults to CLASS_DESCR_ALL and defines the type of information included in the return value.
+    </param>
+    <returns>
+      If &lt;uInfo&gt; is omitted or set to CLASS_DESCR_ALL, an array with four elements is returned.
+      They contain the information resulting from passing one of the following constants to this method:
+      <code language="X#">
+        obj:classDescribe()  -->   { CLASS_DESCR_CLASSNAME   , ;
+        CLASS_DESCR_SUPERCLASSES, ;
+        CLASS_DESCR_MEMBERS     , ;
+        CLASS_DESCR_METHODS       }
+      </code>
+      The elements of this array reflect the parameter profile of the function ClassCreate().
+      See the remarks section for detailed information about the returned array
+    </returns>
+    <remarks>
+      The constants for ClassDescribe are included in XSharp.XPP.DLL and you do not need to include Class.CH anymore. <br/>
+      Allowed constants are: <br/>
+      <list type="table">
+        <listheader>
+          <term>Constant</term>
+          <description>Return value</description>
+        </listheader>
+        <item>
+          <term>CLASS_DESCR_ALL *)</term>
+          <description>All available information in one array. </description>
+        </item>
+        <item>
+          <term>CLASS_DESCR_CLASSNAME</term>
+          <description>Class name as character string </description>
+        </item>
+        <item>
+          <term>CLASS_DESCR_SUPERCLASSES</term>
+          <description>One-dimensional array holding the class objects of all superclasses</description>
+        </item>
+        <item>
+          <term>CLASS_DESCR_MEMBERS</term>
+          <description>
+            Two dimensional array with 3-columns holding information about member variables. <br/>
+            <list>
+              <item>
+                <term>CLASS_MEMBER_NAME</term>
+                <description>Character string representing the name of a single member variable</description>
+              </item>
+              <item>
+                <term>CLASS_MEMBER_ATTR</term>
+                <description>Member variable attributes as numeric</description>
+              </item>
+              <item>
+                <term>CLASS_MEMBER_TYPE</term>
+                <description>Reserved</description>
+              </item>
+            </list>
+          </description>
+        </item>
+        <item>
+          <term>CLASS_DESCR_METHODS</term>
+          <description>
+            Two dimensional array with 3-columns array holding information about methods.
+            <list>
+              <item>
+                <term>CLASS_METHOD_NAME</term>
+                <description>Character string with the name of the method</description>
+              </item>
+              <item>
+                <term>CLASS_METHOD_ATTR</term>
+                <description>Method attributes as numeric</description>
+              </item>
+              <item>
+                <term>CLASS_METHOD_BLOCK</term>
+                <description>Method code block, if the method was dynamically created with ClassCreate()</description>
+              </item>
+              <item>
+                <term>CLASS_METHOD_VARNAME</term>
+                <description>The name of the redirected variable if it isan ACCESS|ASSIGN method</description>
+              </item>
+              <item>
+                <term>CLASS_METHOD_TYPE</term>
+                <description>Reserved</description>
+              </item>
+            </list>
+
+          </description>
+        </item>
+        <item>
+          <term>CLASS_DESCR_SUPERDETAILS</term>
+          <description>Not suppored by X# </description>
+        </item>
+      </list>
+    </remarks>
+  </ClassDescribe>
+  <NoIvarGet>
+    <summary>Handles assignment operations to and adds undefined instance variables.</summary>
+    <param name="cName">The field name that gets accessed.</param>
+    <remarks>
+      Returns NIL for an undefined instance variable.
+      This method is executed whenever an undefined instance is accessed. By definition, DataObjects return NIL
+      in such cases. This allows to check for the presence of a value in a dynamic instance variable simply by
+      comparing against the value NIL. <br/>
+      The function IsMemberVar() and the method classDescribe() can be used to determine if a specific member is
+      defined in a DataObject. This works irrespective of whether the member was added dynamically, or was defined
+      statically in a class derived from DataObject.
+    </remarks>
+
+  </NoIvarGet>
+  <NoIvarPut>
+    <summary>Handles assignment operations to and adds undefined instance variables.</summary>
+    <param name="cName">The field name that gets assigned.</param>
+    <param name="uValue">The value of an assignment.</param>
+    <remarks>
+      If a message is sent to an instance of this class for which no corresponding instance variable exists,
+      then NoIvarPut() is executed. The method receives the name of the instance variable in the &lt;cName&gt; parameter,
+      and the value to be assigned in the &lt;uValue&gt; parameter. NoIvarPut() first creates the instance variable and then assigns
+      the value passed. Because it now exists, future access to the instance variable no longer causes NoIvarPut() to be executed.
+      Instead, the operation is handled in the same way as for a static instance variable. The function IsMemberVar() can be used to
+      test for the existence of an instance variable added via NoIvarPut(). In addition, the method :classDescribe() also reflects
+      dynamic instance variables.
+    </remarks>
+  </NoIvarPut>
+  <NoMethod>
+    <summary>Defines a dynamic method.</summary>
+    <returns>Execution of an undefined method always returns NIL. </returns>
+    <param name="uParams">This is a dummy parameter. 
+    The method will receive an arbitrary number of parameters and will pass these parameters along to the method that is called.</param>
+    <remarks>
+      The method noMethod() is executed whenever an undefined method is called.
+      The implementation of noMethod() in the DataObject class checks to see if a method has been defined with defineMethod.
+      Once a method is defined using defineMethod() then the method is called by NoMethod() and the parameters are passed along.<br/>
+      If a method is not defined then no runtime error is generated but simply a NIL value is returned.
+    </remarks>
+
+  </NoMethod>
+</Comments>

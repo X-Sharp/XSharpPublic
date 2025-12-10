@@ -82,7 +82,7 @@
       <HintPath>$(VsExternalDir)XSharp.CodeAnalysis.dll</HintPath>
       <Aliases>codeanalysis</Aliases>
     </Reference>
-    <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+    <Reference Include="XSharp.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Artifacts\Debug\XSharp.Core.dll</HintPath>
     </Reference>

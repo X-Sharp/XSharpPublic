@@ -9,7 +9,8 @@
 //    wp a,b,c
 //    wp /sf /m a,b,c
 //    return
-
+#pragma warnings( 9201, off)
+#pragma warnings( 0108, off)
 PROCEDURE Main()
     LOCAL o
 
@@ -58,5 +59,5 @@ PROC xAssert(l AS LOGIC)  AS VOID
 	ELSE
 		? "Assertion failed"
 		THROW Exception{"Incorrect result"}
-	END IF   
+	END IF
 RETURN

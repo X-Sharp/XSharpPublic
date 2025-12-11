@@ -3,7 +3,7 @@ PROJECT = xSharp 3 Tests
 IDEVersion = 1.06
 OutputFolder = %ProjectPath%\Bin\
 Description = 
-GUID = 4C0321AA-30EF-4AE1-A0E0-ADF576B643B4
+GUID = 8C5D8509-A7EC-4483-A96D-17A46E4BB7B3
 PrgEncoding = Default
 SupportCF = 0
 NoAppFileCreate = 1
@@ -28,10 +28,10 @@ CustomControlsGuid = 91D751CB-030B-4A75-98B9-05D9B82C3067
 DefaultPropertiesGuid = 25819EAF-9863-441B-90D0-A9072599943A
 
 [Application Groups]
-ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,4C0321AA-30EF-4AE1-A0E0-ADF576B643B4
+ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,8C5D8509-A7EC-4483-A96D-17A46E4BB7B3
 ApplicationGroup = Runtime issues,D2167BBF-156A-4E64-861D-753C3894EE87,E440B545-3C18-4457-A54F-4F3256349ABE
-ApplicationGroup = MUST REPORT ERROR,A95A4D23-3574-40FD-B873-22D28ACCA212,4C0321AA-30EF-4AE1-A0E0-ADF576B643B4
-ApplicationGroup = FIXED,715D7617-320E-41FF-B82F-E314D950CD23,4C0321AA-30EF-4AE1-A0E0-ADF576B643B4
+ApplicationGroup = MUST REPORT ERROR,A95A4D23-3574-40FD-B873-22D28ACCA212,8C5D8509-A7EC-4483-A96D-17A46E4BB7B3
+ApplicationGroup = FIXED,715D7617-320E-41FF-B82F-E314D950CD23,8C5D8509-A7EC-4483-A96D-17A46E4BB7B3
 ApplicationGroup = C250-C299,F5307DDC-4DCD-4576-89C9-1B07F6C6D655,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C350-C399,CB2E170B-0122-4D3B-8692-FF0130BAE231,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C400-C449,C8A205F1-7289-4E5A-A714-71E5A29AFFCE,715D7617-320E-41FF-B82F-E314D950CD23
@@ -57,9 +57,9 @@ ApplicationGroup = C850-C899,B3CDE601-F52E-476A-9FD5-35CEE1E8C029,715D7617-320E-
 ApplicationGroup = R900-R949,1BBEE766-1BC4-4BAE-9C98-BAEB270E8A0F,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C900-C949,3AF1ABF5-A5F7-479A-BB57-D226C13AA002,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = R850-R899,4913BA1E-7338-4E92-9D0A-7C3EABF0B562,715D7617-320E-41FF-B82F-E314D950CD23
-ApplicationGroup = NEW,B9CFE839-D401-428D-94E9-E9D21E9F772D,4C0321AA-30EF-4AE1-A0E0-ADF576B643B4
-ApplicationGroup = Known Incompatibilities with VO,40E29AF9-85EE-4D50-BADC-953EE318D423,4C0321AA-30EF-4AE1-A0E0-ADF576B643B4
-ApplicationGroup = Broken,B7F6C4E3-31FD-40FC-B820-C57110817A58,4C0321AA-30EF-4AE1-A0E0-ADF576B643B4
+ApplicationGroup = NEW,B9CFE839-D401-428D-94E9-E9D21E9F772D,8C5D8509-A7EC-4483-A96D-17A46E4BB7B3
+ApplicationGroup = Known Incompatibilities with VO,40E29AF9-85EE-4D50-BADC-953EE318D423,8C5D8509-A7EC-4483-A96D-17A46E4BB7B3
+ApplicationGroup = Broken,B7F6C4E3-31FD-40FC-B820-C57110817A58,8C5D8509-A7EC-4483-A96D-17A46E4BB7B3
 
 [Applications]
 
@@ -3579,7 +3579,9 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,3.0.0.0
 ReferenceGAC = XSharp.RT,1,0,3.0.0.0
 ReferenceGAC = CLR4,System.Windows.Forms,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev30\Artifacts\Debug\XSharp.VO.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VO.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
 [C248 - Problem with function in codeblock Resources]
 [C248 - Problem with function in codeblock Native Resources]
 [C248 - Problem with function in codeblock License files]
@@ -46153,8 +46155,8 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Windows.Forms,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
 [RuntimeTests Resources]
 [RuntimeTests Native Resources]
 [RuntimeTests License files]
@@ -46273,8 +46275,8 @@ FileType = Code
 CopyToBin = 0
 [C385 - Various compatibility issues with conversions and casts References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
 [C385 - Various compatibility issues with conversions and casts Resources]
 [C385 - Various compatibility issues with conversions and casts Native Resources]
 [C385 - Various compatibility issues with conversions and casts License files]
@@ -46399,7 +46401,7 @@ ReferenceGAC = VOSystemClasses,1,0,3.0.0.0
 ReferenceGAC = VOGUIClasses,1,0,3.0.0.0
 ReferenceGAC = VORDDClasses,1,0,3.0.0.0
 ReferenceGAC = VOWin32APILibrary,1,0,3.0.0.0
-ReferenceGAC = XSharp.VO,1,0,
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VO.dll,1,1
 [C386 - Probem embedding native resource files Resources]
 [C386 - Probem embedding native resource files Native Resources]
 NativeResourceFile = %AppPath%\Prg\C386.rc
@@ -51096,8 +51098,8 @@ FileType = Code
 CopyToBin = 0
 [C422 - Runtime problem converting (INT in) USUAL to PTR References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
 [C422 - Runtime problem converting (INT in) USUAL to PTR Resources]
 [C422 - Runtime problem converting (INT in) USUAL to PTR Native Resources]
 [C422 - Runtime problem converting (INT in) USUAL to PTR License files]
@@ -55314,7 +55316,7 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,3.0.0.0
 ReferenceGAC = XSharp.RT,1,0,3.0.0.0
 ReferenceGAC = VOGUIClasses,1,0,3.0.0.0
-ReferenceGAC = XSharp.VO,1,0,
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VO.dll,1,1
 [C458 - Name conflict between DEFINE and METHOD Resources]
 [C458 - Name conflict between DEFINE and METHOD Native Resources]
 [C458 - Name conflict between DEFINE and METHOD License files]
@@ -55562,8 +55564,8 @@ CopyToBin = 0
 [C460 - Preprocessor problem with complex #xcommand References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceProject = 3FD20812-F1F2-477B-9734-FE2697DED8D6,1,0,C460_helper
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
 [C460 - Preprocessor problem with complex #xcommand Resources]
 [C460 - Preprocessor problem with complex #xcommand Native Resources]
 [C460 - Preprocessor problem with complex #xcommand License files]
@@ -59790,13 +59792,13 @@ FileType = Code
 CopyToBin = 0
 [C493 - VO compatibility isssues with VOSTRUCTs References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,3.0.0.0
-ReferenceGAC = XSharp.RT,1,0,3.0.0.0
 ReferenceGAC = VOSystemClasses,1,0,3.0.0.0
 ReferenceGAC = VOGUIClasses,1,0,3.0.0.0
 ReferenceGAC = VORDDClasses,1,0,3.0.0.0
 ReferenceGAC = VOWin32APILibrary,1,0,3.0.0.0
-ReferenceGAC = XSharp.VO,1,0,
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VO.dll,1,1
 [C493 - VO compatibility isssues with VOSTRUCTs Resources]
 [C493 - VO compatibility isssues with VOSTRUCTs Native Resources]
 NativeResourceFile = %AppPath%\Resources\C493.rc
@@ -60757,10 +60759,10 @@ FileType = Code
 CopyToBin = 0
 [C501 - Error about ambiguous function (used to be a warning) References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\VOInternetClasses.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\VOSystemClasses.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\VOInternetClasses.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\VOSystemClasses.dll,1,1
 [C501 - Error about ambiguous function (used to be a warning) Resources]
 [C501 - Error about ambiguous function (used to be a warning) Native Resources]
 [C501 - Error about ambiguous function (used to be a warning) License files]
@@ -65697,13 +65699,13 @@ FileType = Code
 CopyToBin = 0
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,3.0.0.0
-ReferenceGAC = XSharp.RT,1,0,3.0.0.0
-ReferenceGAC = VOGUIClasses,1,0,3.0.0.0
-ReferenceGAC = VORDDClasses,1,0,3.0.0.0
-ReferenceGAC = VOSystemClasses,1,0,3.0.0.0
-ReferenceGAC = VOWin32APILibrary,1,0,3.0.0.0
-ReferenceGAC = XSharp.VO,1,0,
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VO.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\VOGUIClasses.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\VORDDClasses.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\VOSystemClasses.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\VOWin32APILibrary.dll,1,1
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Resources]
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Native Resources]
 NativeResourceFile = %AppPath%\Resources\C541.rc
@@ -94273,7 +94275,7 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
 ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
 ReferenceBrowse = %ProjectPath%\Runtime\XSharp.VFP.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.Data.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Data.dll,1,1
 [R742 - FoxPro with parenthesized Arrays Resources]
 [R742 - FoxPro with parenthesized Arrays Native Resources]
 [R742 - FoxPro with parenthesized Arrays License files]
@@ -126669,7 +126671,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R895 - Preprocessor Repeat marker with non repeated element
 
-ApplicationGroup = 1BBEE766-1BC4-4BAE-9C98-BAEB270E8A0F
+ApplicationGroup = 4913BA1E-7338-4E92-9D0A-7C3EABF0B562
 ; ************** APPLICATION R896 - Property to access super class properties and methods *************
 Application = R896 - Property to access super class properties and methods
 IDEVersion = 1.06
@@ -129133,6 +129135,10 @@ File = %AppPath%\Prg\R913.prg
 FileGUID = 2497F7DF-D332-495C-A886-4490CC4AEE9F
 FileType = Code
 CopyToBin = 0
+File = %AppPath%\Prg\R913.ppo
+FileGUID = 1BEF44A1-71CB-4D64-813D-73827DF03445
+FileType = Text
+CopyToBin = 0
 [R913 - Recursive translates References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
@@ -130356,8 +130362,8 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
 ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
 ReferenceBrowse = %ProjectPath%\Runtime\XSharp.VFP.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.MacroCompiler.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.Rdd.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.MacroCompiler.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Rdd.dll,1,1
 [C896 - Various FoxPro commands Resources]
 [C896 - Various FoxPro commands Native Resources]
 [C896 - Various FoxPro commands License files]
@@ -131320,9 +131326,9 @@ CopyToBin = 0
 [C902b - Macro compiler problem passing more than 2 arguments by reference (test b) References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev30\Artifacts\Debug\XSharp.VO.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\Artifacts\Debug\XSharp.VO.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
 [C902b - Macro compiler problem passing more than 2 arguments by reference (test b) Resources]
 [C902b - Macro compiler problem passing more than 2 arguments by reference (test b) Native Resources]
 [C902b - Macro compiler problem passing more than 2 arguments by reference (test b) License files]
@@ -136888,8 +136894,8 @@ CopyToBin = 0
 [C936 - Exception with default parameters from type float References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev30\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
 [C936 - Exception with default parameters from type float Resources]
 [C936 - Exception with default parameters from type float Native Resources]
 [C936 - Exception with default parameters from type float License files]

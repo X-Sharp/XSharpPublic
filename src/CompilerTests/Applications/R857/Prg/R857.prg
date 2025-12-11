@@ -61,7 +61,7 @@
 //    ? i
 //    return i
 
-
+#pragma warning( 9020, off)
 #pragma options("vo11", on)
 #pragma options("vo4", on)
 function Start() as void

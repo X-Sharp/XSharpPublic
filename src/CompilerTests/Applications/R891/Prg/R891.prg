@@ -1,4 +1,5 @@
 // See http://github.com/X-Sharp/XSharpPublic/issues/1231
+#pragma warnings( 9117, off)
 FUNCTION Start( ) AS VOID
     local u as usual
     u := #abc
@@ -24,5 +25,5 @@ FUNCTION Test2 (s := NIL as Symbol) AS String
     RETURN Symbol2String(s)
 
 function IsSymbolNil(sym := nil as Symbol) as logic
-    return isNil(sym)
+    return IsNil(sym)
 

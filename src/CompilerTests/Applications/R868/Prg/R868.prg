@@ -1,5 +1,5 @@
 USING System
-
+#pragma warning( 9230, off)
 FUNCTION Start() AS VOID STRICT
 ? "Hello World! Today is ",Date()
 local cName as string

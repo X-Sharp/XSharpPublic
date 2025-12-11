@@ -113,6 +113,43 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 
 		[Fact, Trait("Category", "OOP")];
+		METHOD CreateInstanceTests2() AS VOID
+			LOCAL u AS USUAL
+			u := CreateInstance("NewTestClass1" , NewTestClass2{}, "" , "" , NULL_OBJECT)
+			Assert.Equal("",   u:Param2)
+			Assert.Equal("",   u:Param3)
+			Assert.Equal(NULL, u:Param4)
+
+			u := CreateInstance("NewTestClass1" , NULL, "" , "" , NULL)
+			Assert.Equal(NULL , u:Param1)
+			Assert.Equal(""   , u:Param2)
+			Assert.Equal(""   , u:Param3)
+			Assert.Equal(NULL , u:Param4)
+
+			u := CreateInstance("NewTestClass1" , NULL, "a" , "b" , 123)
+			Assert.Equal(NULL , u:Param1)
+			Assert.Equal("a"  , u:Param2)
+			Assert.Equal("b"  , u:Param3)
+			Assert.Equal(123  , (int)u:Param4)
+
+			u := CreateInstance("NewTestClass3" , NULL, 123)
+			Assert.Equal(NULL  , u:Param11)
+			Assert.Equal(123  , (INT)u:Param21)
+
+			u := CreateInstance("NewTestClass3" , TRUE, -1)
+			Assert.Equal(TRUE  ,(LOGIC) u:Param11)
+			Assert.Equal(-1  , (INT)u:Param21)
+
+			u := CreateInstance("NewTestClass3" , "abc", 123)
+			Assert.Equal("abc"  , u:Param12)
+			Assert.Equal(123  , (INT)u:Param22)
+
+			u := CreateInstance("NewTestClass3" , "abc", NULL)
+			Assert.Equal("abc"  , u:Param12)
+			Assert.Equal(NULL  , u:Param22)
+
+
+		[Fact, Trait("Category", "OOP")];
 		METHOD MetadataTests() AS VOID
 			LOCAL oObject AS OBJECT
 			LOCAL uValue AS USUAL

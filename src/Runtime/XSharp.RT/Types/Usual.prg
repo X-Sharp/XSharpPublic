@@ -1845,7 +1845,17 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         SWITCH lhs:_usualType
         CASE __UsualType.Long
             SWITCH rhs:_usualType
-            CASE __UsualType.Long		; RETURN (INT)   (lhs:_intValue * rhs:_intValue)
+            CASE __UsualType.Long
+                local i1, i2 as Int64
+                i1 := lhs:_intValue
+                i2 := rhs:_intValue
+                i1 := i1 * i2
+                if i1 >= Int32.MinValue .and. i1 <= Int32.MaxValue
+                    RETURN (INT) i1
+                else
+                    RETURN  i1
+                endif
+                RETURN (INT)   (i1 * i2 )
             CASE __UsualType.Int64		; RETURN (INT64) (lhs:_intValue * rhs:_i64Value)
             CASE __UsualType.Float		; RETURN FLOAT{lhs:_intValue * rhs:_r8Value, rhs:_width, rhs:_decimals}
             CASE __UsualType.Currency	; RETURN (CURRENCY) (Convert.ToDecimal(lhs:_intValue) * rhs:_currencyValue)

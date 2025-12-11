@@ -103,7 +103,8 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			SetDefault("c:\")
          Assert.Equal("c:\", GetDefault())
          // FoxPro throws exceptions for incorrect folder names
-         RuntimeState.Dialect := XSharpDialect.FoxPro
+            RuntimeState.Dialect := XSharpDialect.FoxPro
+            System.IO.Directory.CreateDirectory("C:\test" )
 			SetDefault("C:\test\")
          Assert.Equal("C:\test\", GetDefault())
          Assert.Throws<Error>({ => SetDefault("c:\notexist\")})

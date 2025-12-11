@@ -40,7 +40,7 @@ CLASS NtxTests
 			ntxInfo:Order := "XMenTest"
 			myDBF:OrderListAdd( ntxInfo )
 			// FilePath NullOrEmpty => Will get the FilePath of the DBF
-			//LOCAL oData1, oData2 AS OBJECT
+			LOCAL oData1, oData2 AS OBJECT
 			//
 			myDBF:GoTop()
 			myDBF:Skip( 1 )
@@ -49,7 +49,7 @@ CLASS NtxTests
 			myDBF:Skip( 0 )
 			oData2 := myDBF:GetValue( 1 )
 			//
-			//Assert.Equal( oData1, oData2 )
+            ? oData1 == oData2
 			//
 			RuntimeState.Workareas:CloseArea( area )
 

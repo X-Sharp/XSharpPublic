@@ -1,9 +1,9 @@
 #See https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow for help 
-name: ContinuousBuild-30
+name: ContinuousBuild
 #Set when this build is activated. This can be once x time period, or on push/commit of certain branches
 on:
   schedule:
-     - cron: '0 3 * * *' # every night at 3 am UTC
+     - cron: '0 2 * * *' # every night at 2 am UTC
   pull_request:
       types: [opened, assigned, synchronize, edited]
   workflow_dispatch:
@@ -14,7 +14,7 @@ env:
 jobs:
   job1:
     name: BuildXSharpCompiler
-    runs-on: windows-2025 #Specify the OS to execute on
+    runs-on: windows-latest #Specify the OS to execute on
     
     steps:
       - uses: actions/checkout@v4

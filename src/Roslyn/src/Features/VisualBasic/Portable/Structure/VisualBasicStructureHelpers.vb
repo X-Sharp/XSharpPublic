@@ -4,6 +4,7 @@
 
 Imports System.Collections.Immutable
 Imports System.Runtime.InteropServices
+Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.[Shared].Collections
 Imports Microsoft.CodeAnalysis.Structure
 Imports Microsoft.CodeAnalysis.Text
@@ -37,17 +38,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Structure
 
         ' For testing purposes
         Friend Function CreateCommentsRegions(triviaList As SyntaxTriviaList) As ImmutableArray(Of BlockSpan)
-            Dim spans = TemporaryArray(Of BlockSpan).Empty
-            Try
-                CollectCommentsRegions(triviaList, spans)
-                Return spans.ToImmutableAndClear()
-            Finally
-                spans.Dispose()
-            End Try
+            Dim spans = ArrayBuilder(Of BlockSpan).GetInstance()
+            CollectCommentsRegions(triviaList, spans)
+            Return spans.ToImmutableAndFree()
         End Function
 
         Friend Sub CollectCommentsRegions(triviaList As SyntaxTriviaList,
-                                          ByRef spans As TemporaryArray(Of BlockSpan))
+                                          spans As ArrayBuilder(Of BlockSpan))
             If triviaList.Count > 0 Then
                 Dim startComment As SyntaxTrivia? = Nothing
                 Dim endComment As SyntaxTrivia? = Nothing
@@ -77,14 +74,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Structure
         End Sub
 
         Friend Sub CollectCommentsRegions(node As SyntaxNode,
-                                          ByRef spans As TemporaryArray(Of BlockSpan),
-                                          optionProvider As BlockStructureOptionProvider)
+                                          spans As ArrayBuilder(Of BlockSpan),
+                                          options As BlockStructureOptions)
             If node Is Nothing Then
                 Throw New ArgumentNullException(NameOf(node))
             End If
 
             Dim span As BlockSpan = Nothing
-            If optionProvider.IsMetadataAsSource AndAlso TryGetLeadingCollapsibleSpan(node, span) Then
+            If options.IsMetadataAsSource AndAlso TryGetLeadingCollapsibleSpan(node, span) Then
                 spans.Add(span)
             Else
                 Dim triviaList = node.GetLeadingTrivia()

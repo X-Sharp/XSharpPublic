@@ -9,8 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.Editor.Implementation.Highlighting;
-using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
+using Microsoft.CodeAnalysis.Highlighting;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.CodeAnalysis.Text;
 using Xunit;
@@ -29,7 +28,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.KeywordHighlighting
         internal abstract Type GetHighlighterType();
 
         protected abstract IEnumerable<ParseOptions> GetOptions();
-        protected abstract TestWorkspace CreateWorkspaceFromFile(string code, ParseOptions options);
+        protected abstract EditorTestWorkspace CreateWorkspaceFromFile(string code, ParseOptions options);
 
         protected async Task TestAsync(string code)
         {

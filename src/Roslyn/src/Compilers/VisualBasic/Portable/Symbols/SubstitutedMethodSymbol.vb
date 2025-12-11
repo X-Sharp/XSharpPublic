@@ -21,9 +21,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
 
         Private _propertyOrEventSymbolOpt As Symbol
 
-        ' The overridden or hidden methods.
-        Private ReadOnly _lazyOverriddenMethods As OverriddenMembersResult(Of MethodSymbol)
-
         Protected Sub New()
         End Sub
 
@@ -219,6 +216,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             End Get
         End Property
 
+        Public Overrides Function GetOverloadResolutionPriority() As Integer
+            Return OriginalDefinition.GetOverloadResolutionPriority()
+        End Function
+
         Public Overrides ReadOnly Property IsOverridable As Boolean
             Get
                 Return OriginalDefinition.IsOverridable
@@ -406,6 +407,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         Public Overrides Function GetDocumentationCommentXml(Optional preferredCulture As CultureInfo = Nothing, Optional expandIncludes As Boolean = False, Optional cancellationToken As CancellationToken = Nothing) As String
             Return OriginalDefinition.GetDocumentationCommentXml(preferredCulture, expandIncludes, cancellationToken)
         End Function
+
+        Friend NotOverridable Overrides ReadOnly Property HasSetsRequiredMembers As Boolean
+            Get
+                Return OriginalDefinition.HasSetsRequiredMembers
+            End Get
+        End Property
 
         ''' <summary>
         ''' Base class for symbols representing non-generic or open generic methods contained within constructed generic type.

@@ -34,7 +34,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Private Function IReferenceGetAttributes(context As EmitContext) As IEnumerable(Of Cci.ICustomAttribute) Implements Cci.IReference.GetAttributes
-            Return AdaptedSymbol.GetCustomAttributesToEmit(DirectCast(context.Module, PEModuleBuilder).CompilationState)
+            Return AdaptedSymbol.GetCustomAttributesToEmit(DirectCast(context.Module, PEModuleBuilder))
         End Function
     End Class
 
@@ -72,15 +72,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return Me.IsDefinition OrElse Not Me.Equals(Me.OriginalDefinition)
         End Function
 
-        Friend Overridable Function GetCustomAttributesToEmit(compilationState As ModuleCompilationState) As IEnumerable(Of VisualBasicAttributeData)
-            Return GetCustomAttributesToEmit(compilationState, emittingAssemblyAttributesInNetModule:=False)
+        Friend Overridable Function GetCustomAttributesToEmit(moduleBuilder As PEModuleBuilder) As IEnumerable(Of VisualBasicAttributeData)
+            Return GetCustomAttributesToEmit(moduleBuilder, emittingAssemblyAttributesInNetModule:=False)
         End Function
 
-        Friend Function GetCustomAttributesToEmit(compilationState As ModuleCompilationState, emittingAssemblyAttributesInNetModule As Boolean) As IEnumerable(Of VisualBasicAttributeData)
+        Friend Function GetCustomAttributesToEmit(moduleBuilder As PEModuleBuilder, emittingAssemblyAttributesInNetModule As Boolean) As IEnumerable(Of VisualBasicAttributeData)
             Debug.Assert(Me.Kind <> SymbolKind.Assembly)
 
-            Dim synthesized As ArrayBuilder(Of SynthesizedAttributeData) = Nothing
-            AddSynthesizedAttributes(compilationState, synthesized)
+            Dim synthesized As ArrayBuilder(Of VisualBasicAttributeData) = Nothing
+            AddSynthesizedAttributes(moduleBuilder, synthesized)
             Return GetCustomAttributesToEmit(Me.GetAttributes(), synthesized, isReturnType:=False, emittingAssemblyAttributesInNetModule:=emittingAssemblyAttributesInNetModule)
         End Function
 
@@ -88,7 +88,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Returns a list of attributes to emit to CustomAttribute table.
         ''' </summary>
         Friend Function GetCustomAttributesToEmit(userDefined As ImmutableArray(Of VisualBasicAttributeData),
-                                                  synthesized As ArrayBuilder(Of SynthesizedAttributeData),
+                                                  synthesized As ArrayBuilder(Of VisualBasicAttributeData),
                                                   isReturnType As Boolean,
                                                   emittingAssemblyAttributesInNetModule As Boolean) As IEnumerable(Of VisualBasicAttributeData)
 
@@ -101,7 +101,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Private Iterator Function GetCustomAttributesToEmitIterator(userDefined As ImmutableArray(Of VisualBasicAttributeData),
-                                                  synthesized As ArrayBuilder(Of SynthesizedAttributeData),
+                                                  synthesized As ArrayBuilder(Of VisualBasicAttributeData),
                                                   isReturnType As Boolean,
                                                   emittingAssemblyAttributesInNetModule As Boolean) As IEnumerable(Of VisualBasicAttributeData)
 

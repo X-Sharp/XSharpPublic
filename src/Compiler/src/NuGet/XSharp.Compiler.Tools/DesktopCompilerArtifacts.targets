@@ -24,8 +24,8 @@
     <ItemGroup>
       
       <!-- The Roslyn built binaries must be taken from these locations because this is the location where signing occurs -->
-      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)XSharpCodeAnalysis\$(Configuration)\net472\XSharp.CodeAnalysis.dll" NgenArchitecture="all" NgenApplication="XSCompiler.exe" NgenPriority="1"/>
-      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)XSharpScripting\$(Configuration)\net472\XSharp.Scripting.dll" NgenArchitecture="all" NgenApplication="xsi.exe"/>
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)XSharpCodeAnalysis\$(Configuration)\netstandard2.0\XSharp.CodeAnalysis.dll" NgenArchitecture="all" NgenApplication="XSCompiler.exe" NgenPriority="1"/>
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)XSharpScripting\$(Configuration)\netstandard2.0\XSharp.Scripting.dll" NgenArchitecture="all" NgenApplication="xsi.exe"/>
 	  
       <DesktopCompilerArtifact Include="$(ArtifactsBinDir)xsc\$(Configuration)\net472\Microsoft.DiaSymReader.Native.amd64.dll"/>
       <DesktopCompilerArtifact Include="$(ArtifactsBinDir)xsc\$(Configuration)\net472\Microsoft.DiaSymReader.Native.x86.dll"/>

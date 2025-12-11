@@ -4,6 +4,7 @@
 
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -15,6 +16,10 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         // Types identified by the algorithm in the spec (8.8.4).
         public readonly TypeSymbol CollectionType;
+
+        public readonly WellKnownType InlineArraySpanType;
+        public readonly bool InlineArrayUsedAsValue;
+
         // public readonly TypeSymbol EnumeratorType; // redundant - return type of GetEnumeratorMethod
         public readonly TypeWithAnnotations ElementTypeWithAnnotations;
         public TypeSymbol ElementType => ElementTypeWithAnnotations.Type;
@@ -38,15 +43,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         public readonly MethodArgumentInfo? PatternDisposeInfo;
 
         // Conversions that will be required when the foreach is lowered.
-        public readonly Conversion CollectionConversion; //collection expression to collection type
-        public readonly Conversion CurrentConversion; // current to element type
-        // public readonly Conversion ElementConversion; // element type to iteration var type - also required for arrays, so stored elsewhere
-        public readonly Conversion EnumeratorConversion; // enumerator to object
+        public readonly BoundValuePlaceholder? CurrentPlaceholder;
+        public readonly BoundExpression? CurrentConversion; // current to element type
 
         public readonly BinderFlags Location;
 
         private ForEachEnumeratorInfo(
             TypeSymbol collectionType,
+            WellKnownType inlineArraySpanType,
+            bool inlineArrayUsedAsValue,
             TypeWithAnnotations elementType,
             MethodArgumentInfo getEnumeratorInfo,
             MethodSymbol currentPropertyGetter,
@@ -55,19 +60,24 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool needsDisposal,
             BoundAwaitableInfo? disposeAwaitableInfo,
             MethodArgumentInfo? patternDisposeInfo,
-            Conversion collectionConversion,
-            Conversion currentConversion,
-            Conversion enumeratorConversion,
+            BoundValuePlaceholder? currentPlaceholder,
+            BoundExpression? currentConversion,
             BinderFlags location)
         {
-            Debug.Assert((object)collectionType != null, $"Field '{nameof(collectionType)}' cannot be null");
-            Debug.Assert(elementType.HasType, $"Field '{nameof(elementType)}' cannot be null");
-            Debug.Assert((object)getEnumeratorInfo != null, $"Field '{nameof(getEnumeratorInfo)}' cannot be null");
-            Debug.Assert((object)currentPropertyGetter != null, $"Field '{nameof(currentPropertyGetter)}' cannot be null");
-            Debug.Assert((object)moveNextInfo != null, $"Field '{nameof(moveNextInfo)}' cannot be null");
+            RoslynDebug.Assert((object)collectionType != null, $"Field '{nameof(collectionType)}' cannot be null");
+            RoslynDebug.Assert(elementType.HasType, $"Field '{nameof(elementType)}' cannot be null");
+            RoslynDebug.Assert((object)getEnumeratorInfo != null, $"Field '{nameof(getEnumeratorInfo)}' cannot be null");
+            RoslynDebug.Assert((object)currentPropertyGetter != null, $"Field '{nameof(currentPropertyGetter)}' cannot be null");
+            RoslynDebug.Assert((object)moveNextInfo != null, $"Field '{nameof(moveNextInfo)}' cannot be null");
             Debug.Assert(patternDisposeInfo == null || needsDisposal);
+            Debug.Assert(inlineArraySpanType is WellKnownType.Unknown or WellKnownType.System_Span_T or WellKnownType.System_ReadOnlySpan_T);
+            Debug.Assert(inlineArraySpanType == WellKnownType.Unknown ||
+                         (collectionType.HasInlineArrayAttribute(out _) && collectionType.TryGetInlineArrayElementField() is FieldSymbol elementField && elementType.Equals(elementField.TypeWithAnnotations, TypeCompareKind.ConsiderEverything)));
+            Debug.Assert(!inlineArrayUsedAsValue || inlineArraySpanType != WellKnownType.Unknown);
 
             this.CollectionType = collectionType;
+            this.InlineArraySpanType = inlineArraySpanType;
+            this.InlineArrayUsedAsValue = inlineArrayUsedAsValue;
             this.ElementTypeWithAnnotations = elementType;
             this.GetEnumeratorInfo = getEnumeratorInfo;
             this.CurrentPropertyGetter = currentPropertyGetter;
@@ -76,9 +86,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             this.NeedsDisposal = needsDisposal;
             this.DisposeAwaitableInfo = disposeAwaitableInfo;
             this.PatternDisposeInfo = patternDisposeInfo;
-            this.CollectionConversion = collectionConversion;
+            this.CurrentPlaceholder = currentPlaceholder;
             this.CurrentConversion = currentConversion;
-            this.EnumeratorConversion = enumeratorConversion;
             this.Location = location;
         }
 
@@ -86,6 +95,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal struct Builder
         {
             public TypeSymbol CollectionType;
+            public bool ViaExtensionMethod;
+            public WellKnownType InlineArraySpanType;
+            public bool InlineArrayUsedAsValue;
             public TypeWithAnnotations ElementTypeWithAnnotations;
             public TypeSymbol ElementType => ElementTypeWithAnnotations.Type;
 
@@ -98,9 +110,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             public BoundAwaitableInfo? DisposeAwaitableInfo;
             public MethodArgumentInfo? PatternDisposeInfo;
 
-            public Conversion CollectionConversion;
-            public Conversion CurrentConversion;
-            public Conversion EnumeratorConversion;
+            public BoundValuePlaceholder? CurrentPlaceholder;
+            public BoundExpression? CurrentConversion;
 
             public ForEachEnumeratorInfo Build(BinderFlags location)
             {
@@ -113,6 +124,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 return new ForEachEnumeratorInfo(
                     CollectionType,
+                    InlineArraySpanType,
+                    InlineArrayUsedAsValue,
                     ElementTypeWithAnnotations,
                     GetEnumeratorInfo,
                     CurrentPropertyGetter,
@@ -121,9 +134,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     NeedsDisposal,
                     DisposeAwaitableInfo,
                     PatternDisposeInfo,
-                    CollectionConversion,
+                    CurrentPlaceholder,
                     CurrentConversion,
-                    EnumeratorConversion,
                     location);
             }
 

@@ -68,7 +68,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
                 // and is moved to the main thread for example
                 _AllRDDs[oRDD] := oWA
             ELSE
-                _AllRDDs.TryAdd(oRDD, oWA)
+                _AllRDDs:TryAdd(oRDD, oWA)
             ENDIF
         END LOCK
         RETURN

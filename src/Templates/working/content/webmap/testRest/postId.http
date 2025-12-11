@@ -1,0 +1,8 @@
+POST http://localhost:5185/id
+content-type: application/json
+
+{
+    "Id": "123456",
+    "Date": "20250520",
+    "Time": "120000"
+}

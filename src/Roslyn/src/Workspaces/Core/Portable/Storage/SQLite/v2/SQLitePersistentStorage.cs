@@ -4,279 +4,236 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Host;
-using Microsoft.CodeAnalysis.PersistentStorage;
+using Microsoft.CodeAnalysis.Internal.Log;
+using Microsoft.CodeAnalysis.Shared.TestHooks;
+using Microsoft.CodeAnalysis.Shared.Utilities;
+using Microsoft.CodeAnalysis.SQLite.Interop;
 using Microsoft.CodeAnalysis.SQLite.v2.Interop;
 using Microsoft.CodeAnalysis.Storage;
 using Roslyn.Utilities;
 
-namespace Microsoft.CodeAnalysis.SQLite.v2
+namespace Microsoft.CodeAnalysis.SQLite.v2;
+
+using static SQLitePersistentStorageConstants;
+
+/// <summary>
+/// Implementation of an <see cref="IPersistentStorage"/> backed by SQLite.
+/// </summary>
+internal sealed partial class SQLitePersistentStorage : AbstractPersistentStorage
 {
+    private const string LockFile = "db.lock";
+
+    private readonly CancellationTokenSource _shutdownTokenSource = new();
+
+    private readonly string _solutionDirectory;
+
+    // We pool connections to the DB so that we don't have to take the hit of 
+    // reconnecting.  The connections also cache the prepared statements used
+    // to get/set data from the db.  A connection is safe to use by one thread
+    // at a time, but is not safe for simultaneous use by multiple threads.
+    private readonly object _connectionGate = new();
+    private readonly Stack<SqlConnection> _connectionsPool = new();
+    private readonly Action _flushInMemoryDataToDisk;
+
     /// <summary>
-    /// Implementation of an <see cref="IPersistentStorage"/> backed by SQLite.
+    /// Lock file that ensures only one database is made per process per solution.
     /// </summary>
-    internal partial class SQLitePersistentStorage : AbstractPersistentStorage
+    public readonly IDisposable DatabaseOwnership;
+
+    /// <summary>
+    /// For testing purposes.  Allows us to test what happens when we fail to acquire the db lock file.
+    /// </summary>
+    private readonly IPersistentStorageFaultInjector? _faultInjector;
+
+    // Accessors that allow us to retrieve/store data into specific DB tables.  The
+    // core Accessor type has logic that we to share across all reading/writing, while
+    // the derived types contain only enough logic to specify how to read/write from
+    // their respective tables.
+
+    private readonly SolutionAccessor _solutionAccessor;
+    private readonly ProjectAccessor _projectAccessor;
+    private readonly DocumentAccessor _documentAccessor;
+
+    // cached query strings
+
+    private readonly string _insert_into_string_table_values_0 = $"insert into {StringInfoTableName}({DataColumnName}) values (?)";
+    private readonly string _select_star_from_string_table_where_0_limit_one = $"select * from {StringInfoTableName} where ({DataColumnName} = ?) limit 1";
+    private readonly string _select_star_from_string_table = $"select * from {StringInfoTableName}";
+
+    /// <summary>
+    /// Use a <see cref="ConcurrentExclusiveSchedulerPair"/> to simulate a reader-writer lock.
+    /// Read operations are performed on the <see cref="ConcurrentExclusiveSchedulerPair.ConcurrentScheduler"/>
+    /// and writes are performed on the <see cref="ConcurrentExclusiveSchedulerPair.ExclusiveScheduler"/>.
+    ///
+    /// We use this as a condition of using the in-memory shared-cache sqlite DB.  This DB
+    /// doesn't busy-wait when attempts are made to lock the tables in it, which can lead to
+    /// deadlocks.  Specifically, consider two threads doing the following:
+    ///
+    /// Thread A starts a transaction that starts as a reader, and later attempts to perform a
+    /// write. Thread B is a writer (either started that way, or started as a reader and
+    /// promoted to a writer first). B holds a RESERVED lock, waiting for readers to clear so it
+    /// can start writing. A holds a SHARED lock (it's a reader) and tries to acquire RESERVED
+    /// lock (so it can start writing).  The only way to make progress in this situation is for
+    /// one of the transactions to roll back. No amount of waiting will help, so when SQLite
+    /// detects this situation, it doesn't honor the busy timeout.
+    ///
+    /// To prevent this scenario, we control our access to the db explicitly with operations that
+    /// can concurrently read, and operations that exclusively write.
+    ///
+    /// All code that reads or writes from the db should go through this.
+    /// </summary>
+    private ConcurrentExclusiveSchedulerPair Scheduler { get; } = new();
+
+    private SQLitePersistentStorage(
+        SolutionKey solutionKey,
+        string workingFolderPath,
+        string databaseFile,
+        IAsynchronousOperationListener asyncListener,
+        IPersistentStorageFaultInjector? faultInjector,
+        IDisposable databaseOwnership)
+        : base(solutionKey, workingFolderPath, databaseFile)
     {
-        // Version history.
-        // 1. Initial use of sqlite as the persistence layer.  Simple key->value storage tables.
-        // 2. Updated to store checksums.  Tables now key->(checksum,value).  Allows for reading
-        //    and validating checksums without the overhead of reading the full 'value' into
-        //    memory.
-        // 3. Use an in-memory DB to cache writes before flushing to disk.
-        private const string Version = "3";
+        Contract.ThrowIfNull(solutionKey.FilePath);
+        _solutionDirectory = PathUtilities.GetDirectoryName(solutionKey.FilePath);
 
-        /// <summary>
-        /// Inside the DB we have a table dedicated to storing strings that also provides a unique
-        /// integral ID per string.  This allows us to store data keyed in a much more efficient
-        /// manner as we can use those IDs instead of duplicating strings all over the place.  For
-        /// example, there may be many pieces of data associated with a file.  We don't want to
-        /// key off the file path in all these places as that would cause a large amount of bloat.
-        ///
-        /// Because the string table can map from arbitrary strings to unique IDs, it can also be
-        /// used to create IDs for compound objects.  For example, given the IDs for the FilePath
-        /// and Name of a Project, we can get an ID that represents the project itself by just
-        /// creating a compound key of those two IDs.  This ID can then be used in other compound
-        /// situations.  For example, a Document's ID is creating by compounding its Project's
-        /// ID, along with the IDs for the Document's FilePath and Name.
-        ///
-        /// The format of the table is:
-        ///
-        ///  StringInfo
-        ///  --------------------------------------------------------------
-        ///  | Id (integer, primary key, auto increment) | Data (varchar) |
-        ///  --------------------------------------------------------------
-        /// </summary>
-        private const string StringInfoTableName = "StringInfo" + Version;
+        _solutionAccessor = new SolutionAccessor(this);
+        _projectAccessor = new ProjectAccessor(this);
+        _documentAccessor = new DocumentAccessor(this);
 
-        /// <summary>
-        /// Inside the DB we have a table for data corresponding to the <see cref="Solution"/>.  The
-        /// data is just a blob that is keyed by a string Id.  Data with this ID can be retrieved
-        /// or overwritten.
-        ///
-        /// The format of the table is:
-        ///
-        ///  SolutionData
-        ///  -------------------------------------------------------------------
-        ///  | DataId (primary key, varchar) | | Checksum (blob) | Data (blob) |
-        ///  -------------------------------------------------------------------
-        /// </summary>
-        private const string SolutionDataTableName = "SolutionData" + Version;
+        _faultInjector = faultInjector;
+        DatabaseOwnership = databaseOwnership;
 
-        /// <summary>
-        /// Inside the DB we have a table for data that we want associated with a <see cref="Project"/>.
-        /// The data is keyed off of an integral value produced by combining the ID of the Project and
-        /// the ID of the name of the data (see <see cref="SQLitePersistentStorage.ReadStreamAsync(ProjectKey, Project?, string, Checksum?, CancellationToken)"/>.
-        ///
-        /// This gives a very efficient integral key, and means that the we only have to store a
-        /// single mapping from stream name to ID in the string table.
-        ///
-        /// The format of the table is:
-        ///
-        ///  ProjectData
-        ///  -------------------------------------------------------------------
-        ///  | DataId (primary key, integer) | | Checksum (blob) | Data (blob) |
-        ///  -------------------------------------------------------------------
-        /// </summary>
-        private const string ProjectDataTableName = "ProjectData" + Version;
+        // Create a delay to batch up requests to flush.  We'll won't flush more than every FlushAllDelayMS.
+        _flushInMemoryDataToDisk = FlushInMemoryDataToDisk;
+        _flushQueue = new AsyncBatchingWorkQueue(
+            TimeSpan.FromMilliseconds(FlushAllDelayMS),
+            FlushInMemoryDataToDiskIfNotShutdownAsync,
+            asyncListener,
+            _shutdownTokenSource.Token);
+    }
 
-        /// <summary>
-        /// Inside the DB we have a table for data that we want associated with a <see cref="Document"/>.
-        /// The data is keyed off of an integral value produced by combining the ID of the Document and
-        /// the ID of the name of the data (see <see cref="SQLitePersistentStorage.ReadStreamAsync(DocumentKey, Document?, string, Checksum?, CancellationToken)"/>.
-        ///
-        /// This gives a very efficient integral key, and means that the we only have to store a
-        /// single mapping from stream name to ID in the string table.
-        ///
-        /// The format of the table is:
-        ///
-        ///  DocumentData
-        ///  -------------------------------------------------------------------
-        ///  | DataId (primary key, integer) | | Checksum (blob) | Data (blob) |
-        ///  -------------------------------------------------------------------
-        /// </summary>
-        private const string DocumentDataTableName = "DocumentData" + Version;
+    public static SQLitePersistentStorage? TryCreate(
+        SolutionKey solutionKey,
+        string workingFolderPath,
+        string databaseFile,
+        IAsynchronousOperationListener asyncListener,
+        IPersistentStorageFaultInjector? faultInjector)
+    {
+        var databaseOwnership = TryGetDatabaseOwnership(databaseFile);
+        if (databaseOwnership is null)
+            return null;
 
-        private const string DataIdColumnName = "DataId";
-        private const string ChecksumColumnName = "Checksum";
-        private const string DataColumnName = "Data";
+        var storage = new SQLitePersistentStorage(
+            solutionKey, workingFolderPath, databaseFile, asyncListener, faultInjector, databaseOwnership);
+        storage.Initialize();
+        return storage;
+    }
 
-        private readonly CancellationTokenSource _shutdownTokenSource = new();
-
-        private readonly SQLiteConnectionPoolService _connectionPoolService;
-        private readonly ReferenceCountedDisposable<SQLiteConnectionPool> _connectionPool;
-
-        // Accessors that allow us to retrieve/store data into specific DB tables.  The
-        // core Accessor type has logic that we to share across all reading/writing, while
-        // the derived types contain only enough logic to specify how to read/write from
-        // their respective tables.
-
-        private readonly SolutionAccessor _solutionAccessor;
-        private readonly ProjectAccessor _projectAccessor;
-        private readonly DocumentAccessor _documentAccessor;
-
-        // cached query strings
-
-        private readonly string _select_star_from_string_table = $@"select * from {StringInfoTableName}";
-        private readonly string _insert_into_string_table_values_0 = $@"insert into {StringInfoTableName}(""{DataColumnName}"") values (?)";
-        private readonly string _select_star_from_string_table_where_0_limit_one = $@"select * from {StringInfoTableName} where (""{DataColumnName}"" = ?) limit 1";
-
-        private SQLitePersistentStorage(
-            SQLiteConnectionPoolService connectionPoolService,
-            Solution? bulkLoadSnapshot,
-            string workingFolderPath,
-            string solutionFilePath,
-            string databaseFile,
-            IPersistentStorageFaultInjector? faultInjector)
-            : base(workingFolderPath, solutionFilePath, databaseFile)
+    /// <summary>
+    /// Returns null in the case where an IO exception prevented us from being able to acquire
+    /// the db lock file.
+    /// </summary>
+    private static IDisposable? TryGetDatabaseOwnership(string databaseFilePath)
+    {
+        return IOUtilities.PerformIO<IDisposable?>(() =>
         {
-            _connectionPoolService = connectionPoolService;
+            // make sure directory exist first.
+            EnsureDirectory(databaseFilePath);
 
-            _solutionAccessor = new SolutionAccessor(this);
-            _projectAccessor = new ProjectAccessor(this);
-            _documentAccessor = new DocumentAccessor(this);
+            var directoryName = Path.GetDirectoryName(databaseFilePath);
+            Contract.ThrowIfNull(directoryName);
 
-            // This assignment violates the declared non-nullability of _connectionPool, but the caller ensures that
-            // the constructed object is only used if the nullability post-conditions are met.
-            _connectionPool = connectionPoolService.TryOpenDatabase(
-                bulkLoadSnapshot,
-                databaseFile,
-                faultInjector,
-                (bulkLoadSnapshot, connection, cancellationToken) => Initialize(bulkLoadSnapshot, connection, cancellationToken),
-                CancellationToken.None)!;
+            return File.Open(
+                Path.Combine(directoryName, LockFile),
+                FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+        }, defaultValue: null);
 
-            // Create a delay to batch up requests to flush.  We'll won't flush more than every FlushAllDelayMS.
-            _flushQueue = new AsyncBatchingDelay(
-                TimeSpan.FromMilliseconds(FlushAllDelayMS),
-                FlushInMemoryDataToDiskIfNotShutdownAsync,
-                asyncListener: null,
-                _shutdownTokenSource.Token);
+        static void EnsureDirectory(string databaseFilePath)
+        {
+            var directory = Path.GetDirectoryName(databaseFilePath);
+            Contract.ThrowIfNull(directory);
+
+            if (Directory.Exists(directory))
+            {
+                return;
+            }
+
+            Directory.CreateDirectory(directory);
         }
+    }
 
-        public static SQLitePersistentStorage? TryCreate(
-            SQLiteConnectionPoolService connectionPoolService,
-            Solution? bulkLoadSnapshot,
-            string workingFolderPath,
-            string solutionFilePath,
-            string databaseFile,
-            IPersistentStorageFaultInjector? faultInjector)
+    private void DisableStorage(SqlException exception)
+    {
+        Logger.Log(FunctionId.SQLite_StorageDisabled, GetLogMessage(exception));
+        base.DisableStorage();
+    }
+
+    public static KeyValueLogMessage GetLogMessage(SqlException exception)
+        => KeyValueLogMessage.Create(d =>
         {
-            var sqlStorage = new SQLitePersistentStorage(connectionPoolService, bulkLoadSnapshot, workingFolderPath, solutionFilePath, databaseFile, faultInjector);
-            if (sqlStorage._connectionPool is null)
-            {
-                // The connection pool failed to initialize
-                return null;
-            }
+            d["Result"] = exception.Result.ToString();
+            d["Message"] = exception.Message;
+        });
 
-            return sqlStorage;
-        }
+    private void Initialize()
+    {
+        // This is our startup path.  No other code can be running.  So it's safe for us to access a connection that can
+        // talk to the db without having to be on the reader/writer scheduler queue.
+        using var _ = GetPooledConnection(checkScheduler: false, out var connection);
 
-        public override void Dispose()
-        {
-            try
-            {
-                // Flush all pending writes so that all data our features wanted written are definitely
-                // persisted to the DB.
-                try
-                {
-                    FlushWritesOnClose();
-                }
-                catch (Exception e)
-                {
-                    // Flushing may fail.  We still have to close all our connections.
-                    StorageDatabaseLogger.LogException(e);
-                }
-            }
-            finally
-            {
-                _connectionPool.Dispose();
-            }
-        }
+        // Ensure the database has tables for the types we care about.
 
-        private void Initialize(Solution? bulkLoadSnapshot, SqlConnection connection, CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                // Someone tried to get a connection *after* a call to Dispose the storage system
-                // happened.  That should never happen.  We only Dispose when the last ref to the
-                // storage system goes away.  Once that happens, it's an error for there to be any
-                // future or existing consumers of the storage service.  So nothing should be doing
-                // anything that wants to get an connection.
-                throw new InvalidOperationException();
-            }
+        // Enable write-ahead logging to increase write performance by reducing amount of disk writes,
+        // by combining writes at checkpoint, salong with using sequential-only writes to populate the log.
+        // Also, WAL allows for relaxed ("normal") "synchronous" mode, see below.
+        connection.ExecuteCommand("pragma journal_mode=wal", throwOnError: false);
 
-            // Ensure the database has tables for the types we care about.
+        // Set "synchronous" mode to "normal" instead of default "full" to reduce the amount of buffer flushing syscalls,
+        // significantly reducing both the blocked time and the amount of context switches.
+        // When coupled with WAL, this (according to https://sqlite.org/pragma.html#pragma_synchronous and
+        // https://www.sqlite.org/wal.html#performance_considerations) is unlikely to significantly affect durability,
+        // while significantly increasing performance, because buffer flushing is done for each checkpoint, instead of each
+        // transaction. While some writes can be lost, they are never reordered, and higher layers will recover from that.
+        connection.ExecuteCommand("pragma synchronous=normal", throwOnError: false);
 
-            // Enable write-ahead logging to increase write performance by reducing amount of disk writes,
-            // by combining writes at checkpoint, salong with using sequential-only writes to populate the log.
-            // Also, WAL allows for relaxed ("normal") "synchronous" mode, see below.
-            connection.ExecuteCommand("pragma journal_mode=wal", throwOnError: false);
-
-            // Set "synchronous" mode to "normal" instead of default "full" to reduce the amount of buffer flushing syscalls,
-            // significantly reducing both the blocked time and the amount of context switches.
-            // When coupled with WAL, this (according to https://sqlite.org/pragma.html#pragma_synchronous and
-            // https://www.sqlite.org/wal.html#performance_considerations) is unlikely to significantly affect durability,
-            // while significantly increasing performance, because buffer flushing is done for each checkpoint, instead of each
-            // transaction. While some writes can be lost, they are never reordered, and higher layers will recover from that.
-            connection.ExecuteCommand("pragma synchronous=normal", throwOnError: false);
-
-            // First, create all string tables in the main on-disk db.  These tables
-            // don't need to be in the write-cache as all string looks go to/from the
-            // main db.  This isn't a perf problem as we write the strings in bulk,
-            // so there's no need for a write caching layer.  This also keeps consistency
-            // totally clear as there's only one source of truth.
-            connection.ExecuteCommand(
+        // First, create all string tables in the main on-disk db.  These tables
+        // don't need to be in the write-cache as all string looks go to/from the
+        // main db.  This isn't a perf problem as we write the strings in bulk,
+        // so there's no need for a write caching layer.  This also keeps consistency
+        // totally clear as there's only one source of truth.
+        connection.ExecuteCommand(
 $@"create table if not exists {StringInfoTableName}(
-""{DataIdColumnName}"" integer primary key autoincrement not null,
+""{StringDataIdColumnName}"" integer primary key autoincrement not null,
 ""{DataColumnName}"" varchar)");
 
-            // Ensure that the string-info table's 'Value' column is defined to be 'unique'.
-            // We don't allow duplicate strings in this table.
-            connection.ExecuteCommand(
+        // Ensure that the string-info table's 'Value' column is defined to be 'unique'.
+        // We don't allow duplicate strings in this table.
+        connection.ExecuteCommand(
 $@"create unique index if not exists ""{StringInfoTableName}_{DataColumnName}"" on {StringInfoTableName}(""{DataColumnName}"")");
 
-            // Now make sure we have the individual tables for the solution/project/document info.
-            // We put this in both our persistent table and our in-memory table so that they have
-            // the same shape.
-            EnsureTables(connection, Database.Main);
-            EnsureTables(connection, Database.WriteCache);
+        // Now make sure we have the individual tables for the solution/project/document info.
+        // We put this in both our persistent table and our in-memory table so that they have
+        // the same shape.
+        EnsureTables(connection, Database.Main);
+        EnsureTables(connection, Database.WriteCache);
 
-            // Also get the known set of string-to-id mappings we already have in the DB.
-            // Do this in one batch if possible.
-            var fetched = TryFetchStringTable(connection);
+        // Bulk load all the existing string/id pairs in the DB at once.  In a solution like roslyn, there are
+        // roughly 20k of these strings.  Doing it as 20k individual reads adds more than a second of work time
+        // reading in all the data.  This allows for a single query that can efficiently have the DB just stream the
+        // pages from disk and bulk read those in the cursor the query uses.
+        LoadExistingStringIds(connection);
 
-            // If we weren't able to retrieve the entire string table in one batch,
-            // attempt to retrieve it for each
-            var fetchStringTable = !fetched;
+        return;
 
-            // Try to bulk populate all the IDs we'll need for strings/projects/documents.
-            // Bulk population is much faster than trying to do everything individually.
-            BulkPopulateIds(connection, bulkLoadSnapshot, fetchStringTable);
-
-            return;
-
-            static void EnsureTables(SqlConnection connection, Database database)
-            {
-                var dbName = database.GetName();
-                connection.ExecuteCommand(
-$@"create table if not exists {dbName}.{SolutionDataTableName}(
-    ""{DataIdColumnName}"" varchar primary key not null,
-    ""{ChecksumColumnName}"" blob,
-    ""{DataColumnName}"" blob)");
-
-                connection.ExecuteCommand(
-$@"create table if not exists {dbName}.{ProjectDataTableName}(
-    ""{DataIdColumnName}"" integer primary key not null,
-    ""{ChecksumColumnName}"" blob,
-    ""{DataColumnName}"" blob)");
-
-                connection.ExecuteCommand(
-$@"create table if not exists {dbName}.{DocumentDataTableName}(
-    ""{DataIdColumnName}"" integer primary key not null,
-    ""{ChecksumColumnName}"" blob,
-    ""{DataColumnName}"" blob)");
-            }
+        void EnsureTables(SqlConnection connection, Database database)
+        {
+            _solutionAccessor.CreateTable(connection, database);
+            _projectAccessor.CreateTable(connection, database);
+            _documentAccessor.CreateTable(connection, database);
         }
     }
 }

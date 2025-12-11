@@ -13,7 +13,7 @@ using Xunit;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
-    public partial class IOperationTests : SemanticModelTestBase
+    public class IOperationTests_ICoalesceOperation : SemanticModelTestBase
     {
         [CompilerTrait(CompilerFeature.IOperation, CompilerFeature.Dataflow)]
         [Fact]
@@ -587,7 +587,7 @@ Block[B6] - Exit
         }
 
         [CompilerTrait(CompilerFeature.IOperation, CompilerFeature.Dataflow)]
-        [Fact]
+        [Fact, WorkItem(60059, "https://github.com/dotnet/roslyn/issues/60059")]
         public void CoalesceOperation_06()
         {
             var source = @"
@@ -1524,7 +1524,7 @@ class P
     }/*</bind>*/
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source);
+            var compilation = CreateCompilationWithMscorlib461(source);
             compilation.MakeMemberMissing(SpecialMember.System_Nullable_T_GetValueOrDefault);
 
             string expectedGraph = @"

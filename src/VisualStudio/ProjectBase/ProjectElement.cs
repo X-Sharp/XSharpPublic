@@ -3,12 +3,11 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
-
 
 using System;
 using System.Collections.Generic;
@@ -76,7 +75,7 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                if (this.HasItemBeenDeleted())
+                if(this.HasItemBeenDeleted())
                 {
                     return String.Empty;
                 }
@@ -91,7 +90,7 @@ namespace Microsoft.VisualStudio.Project
                 if (!this.HasItemBeenDeleted())
                 {
                     // Check out the project file.
-                    if (!this.itemProject.QueryEditProjectFile(false))
+                    if(!this.itemProject.QueryEditProjectFile(false))
                     {
                         throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
                     }
@@ -151,7 +150,7 @@ namespace Microsoft.VisualStudio.Project
         public ProjectElement(ProjectNode project, MSBuild.ProjectItem existingItem, bool virtualFolder)
         {
             Utilities.ArgumentNotNull("project", project);
-            if (!virtualFolder && existingItem == null)
+            if(!virtualFolder && existingItem == null)
                 throw new ArgumentNullException("existingItem");
 
             // Keep a reference to project and item
@@ -159,7 +158,7 @@ namespace Microsoft.VisualStudio.Project
             this.item = existingItem;
             this.isVirtual = virtualFolder;
 
-            if (this.isVirtual)
+            if(this.isVirtual)
                 this.virtualProperties = new Dictionary<string, string>();
         }
         #endregion
@@ -172,13 +171,13 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public void RemoveFromProjectFile()
         {
-            if (!deleted && item != null)
+            if(!deleted && item != null)
             {
                 deleted = true;
                 if (!item.IsImported)
                 {
-                    itemProject.BuildProject.RemoveItem(item);
-                    this.itemProject.SetProjectFileDirty(true);
+                itemProject.BuildProject.RemoveItem(item);
+                this.itemProject.SetProjectFileDirty(true);
                 }
             }
             itemProject = null;
@@ -194,10 +193,10 @@ namespace Microsoft.VisualStudio.Project
         {
             Debug.Assert(String.Compare(attributeName, ProjectFileConstants.Include, StringComparison.OrdinalIgnoreCase) != 0, "Use rename as this won't work");
 
-            if (this.IsVirtual)
+            if(this.IsVirtual)
             {
                 // For virtual node, use our virtual property collection
-                if (virtualProperties.ContainsKey(attributeName))
+                if(virtualProperties.ContainsKey(attributeName))
                     virtualProperties.Remove(attributeName);
                 virtualProperties.Add(attributeName, attributeValue);
                 return;
@@ -219,26 +218,26 @@ namespace Microsoft.VisualStudio.Project
                 changed = String.Compare(currentValue, attributeValue) != 0;
             if (changed && item != null)
             {
-                // Check out the project file.
-                if (this.itemProject != null && !this.itemProject.QueryEditProjectFile(false))
-                {
-                    throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
-                }
+	            // Check out the project file.
+	            if(this.itemProject != null && !this.itemProject.QueryEditProjectFile(false))
+	            {
+	                throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
+	            }
 
-                if (attributeValue == null)
-                    item.RemoveMetadata(attributeName);
-                else
-                    item.SetMetadataValue(attributeName, attributeValue);
-                itemProject.SetProjectFileDirty(true);
+	            if(attributeValue == null)
+	                item.RemoveMetadata(attributeName);
+	            else
+	                item.SetMetadataValue(attributeName, attributeValue);
+	            itemProject.SetProjectFileDirty(true);
             }
         }
 
         public string GetEvaluatedMetadata(string attributeName)
         {
-            if (this.IsVirtual)
+            if(this.IsVirtual)
             {
                 // For virtual items, use our virtual property collection
-                if (!virtualProperties.ContainsKey(attributeName))
+                if(!virtualProperties.ContainsKey(attributeName))
                 {
                     return String.Empty;
                 }
@@ -267,24 +266,24 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>Value of the attribute</returns>
         public string GetMetadata(string attributeName)
         {
-            if (this.IsVirtual)
+            if(this.IsVirtual)
             {
                 // For virtual items, use our virtual property collection
-                if (!virtualProperties.ContainsKey(attributeName))
+                if(!virtualProperties.ContainsKey(attributeName))
                     return String.Empty;
                 return virtualProperties[attributeName];
             }
             if (this.item != null)
             {
-                // cannot ask MSBuild for Include, so intercept it and return the corresponding property
-                if (String.Compare(attributeName, ProjectFileConstants.Include, StringComparison.OrdinalIgnoreCase) == 0)
-                    return item.EvaluatedInclude;
+	            // cannot ask MSBuild for Include, so intercept it and return the corresponding property
+	            if (String.Compare(attributeName, ProjectFileConstants.Include, StringComparison.OrdinalIgnoreCase) == 0)
+	                return item.EvaluatedInclude;
 
-                // Build Action is the type, not a property, so intercept this one as well
-                if (String.Compare(attributeName, ProjectFileConstants.BuildAction, StringComparison.OrdinalIgnoreCase) == 0)
-                    return item.ItemType;
+	            // Build Action is the type, not a property, so intercept this one as well
+	            if (String.Compare(attributeName, ProjectFileConstants.BuildAction, StringComparison.OrdinalIgnoreCase) == 0)
+	                return item.ItemType;
 
-                return item.GetMetadataValue(attributeName);
+	            return item.GetMetadataValue(attributeName);
             }
             return null;
         }
@@ -301,9 +300,9 @@ namespace Microsoft.VisualStudio.Project
             Debug.Assert(!String.IsNullOrEmpty(attributeName), "Cannot retrieve an attribute for a null or empty attribute name");
             string attribute = GetMetadata(attributeName);
 
-            if (String.IsNullOrEmpty(attributeName) && exception != null)
+            if(String.IsNullOrEmpty(attributeName) && exception != null)
             {
-                if (String.IsNullOrEmpty(exception.Message))
+                if(String.IsNullOrEmpty(exception.Message))
                 {
                     Debug.Assert(!String.IsNullOrEmpty(this.itemProject.BaseURI.AbsoluteUrl), "Cannot retrieve an attribute for a project that does not have a name");
                     string message = String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.AttributeLoad, CultureInfo.CurrentUICulture), attributeName, this.itemProject.BaseURI.AbsoluteUrl);
@@ -319,7 +318,7 @@ namespace Microsoft.VisualStudio.Project
         public void Rename(string newPath)
         {
             string escapedPath = Microsoft.Build.Evaluation.ProjectCollection.Escape(newPath);
-            if (this.IsVirtual)
+            if(this.IsVirtual)
             {
                 virtualProperties[ProjectFileConstants.Include] = escapedPath;
                 return;
@@ -339,7 +338,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public void RefreshProperties()
         {
-            if (this.IsVirtual)
+            if(this.IsVirtual)
                 return;
 
             itemProject.BuildProject.ReevaluateIfNecessary();
@@ -347,7 +346,7 @@ namespace Microsoft.VisualStudio.Project
             IEnumerable<ProjectItem> items = itemProject.BuildProject.GetItems(item.ItemType);
             foreach (ProjectItem projectItem in items)
             {
-                if (projectItem != null && projectItem.UnevaluatedInclude.Equals(item.UnevaluatedInclude))
+                if(projectItem!= null && projectItem.UnevaluatedInclude.Equals(item.UnevaluatedInclude))
                 {
                     item = projectItem;
                     return;
@@ -368,7 +367,7 @@ namespace Microsoft.VisualStudio.Project
         public string GetFullPathForElement()
         {
             string path = this.GetMetadata(ProjectFileConstants.Include);
-            if (!Path.IsPathRooted(path))
+            if(!Path.IsPathRooted(path))
                 path = Path.Combine(this.itemProject.ProjectFolder, path);
 
             // If any part of the path used relative paths, resolve this now
@@ -392,11 +391,11 @@ namespace Microsoft.VisualStudio.Project
         public static bool operator ==(ProjectElement element1, ProjectElement element2)
         {
             // Do they reference the same element?
-            if (Object.ReferenceEquals(element1, element2))
+            if(Object.ReferenceEquals(element1, element2))
                 return true;
 
             // Verify that they are not null (cast to object first to avoid stack overflow)
-            if (element1 as object == null || element2 as object == null)
+            if(element1 as object == null || element2 as object == null)
             {
                 return false;
             }
@@ -404,13 +403,13 @@ namespace Microsoft.VisualStudio.Project
             Debug.Assert(!element1.IsVirtual || !element2.IsVirtual, "Cannot compare virtual nodes");
 
             // Cannot compare vitual items.
-            if (element1.IsVirtual || element2.IsVirtual)
+            if(element1.IsVirtual || element2.IsVirtual)
             {
                 return false;
             }
 
             // Do they reference the same project?
-            if (!element1.itemProject.Equals(element2.itemProject))
+            if(!element1.itemProject.Equals(element2.itemProject))
                 return false;
 
             // Do they have the same include?
@@ -419,7 +418,7 @@ namespace Microsoft.VisualStudio.Project
 
             // Unfortunately the checking for nulls have to be done again, since neither String.Equals nor String.Compare can handle nulls.
             // Virtual folders should not be handled here.
-            if (include1 == null || include2 == null)
+            if(include1 == null || include2 == null)
             {
                 return false;
             }
@@ -437,7 +436,7 @@ namespace Microsoft.VisualStudio.Project
         public override bool Equals(object obj)
         {
             ProjectElement element2 = obj as ProjectElement;
-            if (element2 == null)
+            if(element2 == null)
                 return false;
 
             return this == element2;

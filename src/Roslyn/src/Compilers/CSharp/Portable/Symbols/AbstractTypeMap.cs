@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 
@@ -47,9 +48,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             if (previous.IsAnonymousType)
             {
-                ImmutableArray<TypeWithAnnotations> oldFieldTypes = AnonymousTypeManager.GetAnonymousTypePropertyTypesWithAnnotations(previous);
-                ImmutableArray<TypeWithAnnotations> newFieldTypes = SubstituteTypes(oldFieldTypes);
-                return (oldFieldTypes == newFieldTypes) ? previous : AnonymousTypeManager.ConstructAnonymousTypeSymbol(previous, newFieldTypes);
+                return ((AnonymousTypeManager.AnonymousTypeOrDelegatePublicSymbol)previous).SubstituteTypes(this);
             }
 
             // TODO: we could construct the result's ConstructedFrom lazily by using a "deep"
@@ -208,7 +207,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
                 else if (interfaces.Length != 0)
                 {
-                    throw ExceptionUtilities.Unreachable;
+                    throw ExceptionUtilities.Unreachable();
                 }
 
                 return ArrayTypeSymbol.CreateSZArray(
@@ -315,7 +314,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
             }
 
-            return result != null ? result.AsImmutableOrNull() : original;
+            return result != null ? ImmutableCollectionsMarshal.AsImmutableArray(result) : original;
         }
 
         internal ImmutableArray<TypeWithAnnotations> SubstituteTypes(ImmutableArray<TypeWithAnnotations> original)
@@ -432,7 +431,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
             }
 
-            return result != null ? result.AsImmutableOrNull() : original;
+            return result != null ? ImmutableCollectionsMarshal.AsImmutableArray(result) : original;
         }
     }
 }

@@ -278,7 +278,7 @@ PARTIAL CLASS DbServer
 
 
     /// <include file="Rdd.xml" path="doc/DbServer.LastRec/*" />
-    PROPERTY LastRec AS LONG
+    PROPERTY LastRec AS DWORD
         GET
             IF ! SELF:Used
                 RETURN 0
@@ -547,12 +547,12 @@ PARTIAL CLASS DbServer
 
 
     /// <include file="Rdd.xml" path="doc/DbServer.RecCount/*" />
-    PROPERTY RecCount  AS LONG
+    PROPERTY RecCount  AS DWORD
         GET
             LOCAL nCurrentRecord            AS DWORD
             LOCAL dwCurrentWorkArea         as DWORD
             LOCAL siCurrentSelectionStatus  AS SHORTINT
-            LOCAL iRetVal                   AS INT
+            LOCAL iRetVal                   AS DWORD
             LOCAL oError                    AS USUAL
             IF ! SELF:Used
                 RETURN 0
@@ -592,7 +592,7 @@ PARTIAL CLASS DbServer
 
 
     /// <include file="Rdd.xml" path="doc/DbServer.RecNo/*" />
-    ACCESS RecNo AS LONG
+    ACCESS RecNo AS DWORD
 
         IF ! SELF:Used
             RETURN 0
@@ -601,7 +601,7 @@ PARTIAL CLASS DbServer
         RETURN oRDD:RecNo
 
     /// <include file="Rdd.xml" path="doc/DbServer.RecNo/*" />
-    ASSIGN RecNo( nRecordNumber AS LONG)
+    ASSIGN RecNo( nRecordNumber AS DWORD)
         LOCAL oError        AS USUAL
 
         lErrorFlag := FALSE

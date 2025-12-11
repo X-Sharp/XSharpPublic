@@ -4,57 +4,49 @@
     <UseXSharpKey>true</UseXSharpKey>
   </PropertyGroup>
   <Import Project="..\CompilerCommon.props" />
-  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <!-- <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" /> -->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <AssemblyName>XSCompiler</AssemblyName>
     <LargeAddressAware>true</LargeAddressAware>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants)NET46;NET472</DefineConstants>
-    <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
+    <AssemblyName>XSCompiler</AssemblyName>
+    <TargetFrameworks>net472;net9.0</TargetFrameworks>
+    <NoWarn>8032,1573,NU1603;NU1507</NoWarn>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ServerGarbageCollection>true</ServerGarbageCollection>
+    <UseAppHost>false</UseAppHost>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants)NET46;NET472</DefineConstants>
+    <DefineConstants Condition="'$(TargetFramework)' != 'net472'">$(DefineConstants)NETCOREAPP</DefineConstants>
+    <DefineConstants>$(DefineConstants);XSHARP;COMMITHASH</DefineConstants>
     <!--Use the C# compiler created in this solution-->
     <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
-    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-
+    <UseAppHost>true</UseAppHost>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DefineConstants>$(DefineConstants);TRACE;DEBUG;XSHARP;COMMITHASH;NETCOREAPP</DefineConstants>
+    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'">
-    <DefineConstants>$(DefineConstants);TRACE;XSHARP;COMMITHASH;</DefineConstants>
+    <DefineConstants>$(DefineConstants);TRACE;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DefineConstants>$(DefineConstants);XSHARP;COMMITHASH;</DefineConstants>
+    <DefineConstants>$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.Configuration" Condition="'$(TargetFramework)' != 'netcoreapp3.1'" />
-    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+    <Reference Include="System.Configuration" Condition="'$(TargetFramework)' != 'net9.0'" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="$(SharedSource)RuntimeHostInfo.cs" />
-    <Compile Include="$(SharedSource)NamedPipeUtil.cs" />
-    <Compile Include="$(SharedSource)BuildClient.cs" />
-    <Compile Include="$(SharedSource)BuildServerConnection.cs" />
-    <Compile Include="$(SharedSource)ExitingTraceListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-  <Compile Include="$(ServerSource)VBCSCompiler\**\*.cs">
-    <Link>Server\%(RecursiveDir)\%(Filename).%(Extension)</Link>
-  </Compile>
-  </ItemGroup>
-  <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
-  <Import Project="$(RepositoryEngineeringDir)targets\DiaSymReaderNative.targets" />
+  <Import Project="VBCSCompilerCommandLine.projitems" Label="Shared" />
   <PropertyGroup>
     <PreBuildEvent>taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe" &gt; NUL</PreBuildEvent>
 </PropertyGroup>

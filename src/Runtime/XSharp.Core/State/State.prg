@@ -767,12 +767,12 @@ CLASS XSharp.RuntimeState
             IF format:EndsWith("TT")
 		        SELF:_SetThreadValue(Set.AmExt, "AM")
 		        SELF:_SetThreadValue(Set.PmExt, "PM")
-                SELF:_SetThreadValue(Set.AmPm, TRUE)
+		        SELF:_SetThreadValue(Set.AmPm, TRUE)
                 SELF:_SetThreadValue(Set.Hours, 12L)
             ELSE
 		        SELF:_SetThreadValue(Set.AmExt, "")
 		        SELF:_SetThreadValue(Set.PmExt, "")
-                SELF:_SetThreadValue(Set.AmPm, FALSE)
+		        SELF:_SetThreadValue(Set.AmPm, FALSE)
                 SELF:_SetThreadValue(Set.Hours, 24L)
             ENDIF
             SELF:_SetThreadValue(Set.Timesep, Asc(SubStr3(format, 3,1)))
@@ -823,7 +823,7 @@ CLASS XSharp.RuntimeState
 			SELF:_SetThreadValue(Set.Timesep, (DWORD) 0)
 		ELSE
 			SELF:_SetThreadValue(Set.Timesep, (DWORD) separator[0])
-        ENDIF
+		ENDIF
         Var lAmPm := dtInfo:ShortDatePattern:IndexOf("tt") != -1
         SELF:_SetThreadValue(Set.AmPm, lAmPm)
         SELF:_SetThreadValue(Set.Hours, iif(lAmPm, 12L, 24L))
@@ -834,10 +834,10 @@ CLASS XSharp.RuntimeState
         VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
         format  := dtInfo:ShortDatePattern:ToLower()
 		// reduce to single m and d
-		DO WHILE (format.IndexOf("mm") != -1)
+		DO WHILE (format:IndexOf("mm") != -1)
         	format		:= format:Replace("mm", "m")
         ENDDO
-	    DO WHILE format.IndexOf("dd") != -1
+	    DO WHILE format:IndexOf("dd") != -1
 			format		:= format:Replace("dd", "d")
 		ENDDO
 		// make sure we have a double mm to get double digit dates

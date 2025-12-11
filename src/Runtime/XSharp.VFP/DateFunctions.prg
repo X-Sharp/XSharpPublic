@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -126,25 +126,25 @@ FUNCTION Week( tExpression AS System.DateTime, nFirstWeek := 1 AS LONG, nFirstDa
 	IF  ! (nFirstDayOfWeek >= 0 .AND. nFirstDayOfWeek  < 8 )
 		THROW ArgumentException { __VfpStr(VFPErrors.VFP_INVALID_RANGE, NAMEOF(nFirstDayOfWeek), nFirstDayOfWeek,"0-7"), NAMEOF(nFirstDayOfWeek) }
     ENDIF
-    LOCAL Week AS CalendarWeekRule
+    LOCAL weekRule AS CalendarWeekRule
     SWITCH nFirstWeek
     CASE 0
     CASE 1
-        Week := CalendarWeekRule.FirstDay
+        weekRule := CalendarWeekRule.FirstDay
     CASE 2
-        Week := CalendarWeekRule.FirstFourDayWeek
+        weekRule := CalendarWeekRule.FirstFourDayWeek
     CASE 3
     OTHERWISE
-        Week := CalendarWeekRule.FirstFullWeek
+        weekRule := CalendarWeekRule.FirstFullWeek
     END SWITCH
     LOCAL day AS DayOfWeek
     IF nFirstDayOfWeek == 0
-        day :=  DayOfWeek.Sunday
+       day :=  DayOfWeek.Sunday
     ELSE
-        day :=  (DayOfWeek) (nFirstDayOfWeek -1)
+       day :=  (DayOfWeek) (nFirstDayOfWeek -1)
     ENDIF
     VAR calendar := System.Globalization.GregorianCalendar{}
-    RETURN calendar:GetWeekOfYear ( tExpression, Week, day)
+    RETURN calendar:GetWeekOfYear ( tExpression, weekRule, day)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mdy/*" />
@@ -183,7 +183,7 @@ FUNCTION DMY ( uExpression  AS USUAL ) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
 FUNCTION DMY ( tExpression  AS System.DateTime) AS STRING
-    RETURN DMY ( (DATE) tExpression   )
+RETURN DMY ( (DATE) tExpression   )
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
 FUNCTION DMY ( dExpression  AS DATE ) AS STRING
@@ -194,7 +194,6 @@ FUNCTION DMY ( dExpression  AS DATE ) AS STRING
 
 	RETURN PadL(Day(dExpression), 2 , "0" ) + " " + CMonth(dExpression) + " " + ;
 			IIF ( SetCentury() , dExpression:ToString("yyyy") , dExpression:ToString("yy")  )
-
 /// <include file="VFPDocs.xml" path="Runtimefunctions/ctot/*" />
 FUNCTION CToT(cCharacterExpression AS STRING) AS System.DateTime
     IF String.IsNullOrEmpty(cCharacterExpression)

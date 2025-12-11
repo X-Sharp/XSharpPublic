@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2025-02-13T11:31:08.975+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2025-09-29T20:15:53.953+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>STRUCTURE Statement</title>
   <keywords>
     <keyword>END STRUCTURE</keyword>
@@ -13,11 +13,13 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Declare a structure name to the compiler.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">STRUCTURE </text>&lt;<text styleclass="Italic">idStructure</text>&gt; <br/><tab />[IMPLEMENTS &lt;idInterface&gt;[, &lt;IdInterface2&gt;,..]</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] [<text style="font-weight:bold;">RECORD</text>] <text style="font-weight:bold;">STRUCTURE </text>&lt;<text styleclass="Italic">idStructure</text>&gt; <br/><tab />[IMPLEMENTS &lt;idInterface&gt;[, &lt;IdInterface2&gt;,..]</para>
     <para styleclass="Normal"><tab />[StructureMembers]</para>
     <para styleclass="Normal"><tab />END STRUCTURE</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
+    <para styleclass="List">RECORD<tab />The record modifier declares a special structure that has value equality. See the topic about records </para>
+    <para styleclass="List"></para>
     <para styleclass="List">&lt;<text styleclass="Italic">idStructure</text>&gt;<tab />A valid identifier name for the class. A class is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a class and a global variable, for example, with the same name.</para>
     <para styleclass="List"></para>
     <para styleclass="List">IMPLEMENTS <text styleclass="Normal">&lt;idInterface&gt;</text><tab /><text styleclass="Normal">The name(s) of the interface(s) that this class implements.</text></para>

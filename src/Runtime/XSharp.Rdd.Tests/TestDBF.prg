@@ -150,7 +150,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL myDBF := DBF{} AS DBF
 			IF myDBF:Open( dbInfo )
 				//
-				LOCAL nbrBefore := myDBF:RecCount AS LONG
+				LOCAL nbrBefore := myDBF:RecCount AS DWORD
 				//
 				myDBF:Append( FALSE )
 				//
@@ -167,7 +167,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL myDBF := DBF{} AS DBF
 			IF myDBF:Open( dbInfo )
 				//
-				LOCAL nbrBefore := myDBF:RecCount AS LONG
+				LOCAL nbrBefore := myDBF:RecCount AS DWORD
 				//
 				myDBF:Append( FALSE )
 				//
@@ -190,16 +190,16 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			VAR myDBF := DBF{}
 			IF myDBF:Open( dbInfo )
 				// Start Pos
-				Assert.Equal( 1, myDBF:RecNo )
+				Assert.Equal( 1U, myDBF:RecNo )
 				Assert.Equal( FALSE, myDBF:Bof )
 				Assert.Equal( FALSE, myDBF:Eof )
 				// Move Backward
 				myDBF:Skip(-1)
-				Assert.Equal( 1, myDBF:RecNo )
+				Assert.Equal( 1U, myDBF:RecNo )
 				Assert.Equal( TRUE, myDBF:Bof )
 				// Move to Top
 				myDBF:GoTop()
-				Assert.Equal( 1, myDBF:RecNo )
+				Assert.Equal( 1U, myDBF:RecNo )
 				Assert.Equal( FALSE, myDBF:Bof )
 				// Move to Bottom
 				myDBF:GoBottom()
@@ -230,7 +230,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				// Now, move and Come Back
 				// Move to Top
 				myDBF:GoTop()
-				Assert.Equal( 1, myDBF:RecNo )
+				Assert.Equal( 1U, myDBF:RecNo )
 				Assert.Equal( FALSE, myDBF:Bof )
 				// Move to Bottom
 				myDBF:GoBottom()
@@ -244,7 +244,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				// And again...
 				// Move to Top
 				myDBF:GoTop()
-				Assert.Equal( 1, myDBF:RecNo )
+				Assert.Equal( 1U, myDBF:RecNo )
 				Assert.Equal( FALSE, myDBF:Bof )
 				// Move to Bottom
 				myDBF:GoBottom()
@@ -478,7 +478,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				//
 				myDBF:Zap( )
 				//
-				Assert.Equal(  0, myDBF:RecCount )
+				Assert.Equal(  0U, myDBF:RecCount )
 				//
 				myDBF:Close()
 			ENDIF
@@ -499,11 +499,11 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				//
 				myDBF:Zap( )
 				//
-				Assert.Equal(  0, myDBF:RecCount )
+				Assert.Equal(  0U, myDBF:RecCount )
 				//
 				myDBF:Append( FALSE )
 				//
-				Assert.Equal(  1, myDBF:RecCount )
+				Assert.Equal(  1U, myDBF:RecCount )
 				// Now, Add some Data
 				// "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0"
 				myDBF:PutValue( 1, 5 )
@@ -532,7 +532,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				myDbf:GoBottom()
 				myDbf:Delete()
 				//
-				LOCAL nbrBefore := myDBF:RecCount AS LONG
+				LOCAL nbrBefore := myDBF:RecCount AS DWORD
 				//
 				myDBF:Pack( )
 				//

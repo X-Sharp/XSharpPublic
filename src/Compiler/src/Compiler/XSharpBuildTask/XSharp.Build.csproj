@@ -4,7 +4,6 @@
     <UseXSharpKey>true</UseXSharpKey>
   </PropertyGroup>  
   <Import Project="..\CompilerCommon.props" />
-  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
@@ -13,15 +12,15 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.Build</RootNamespace>
     <AssemblyName>XSharp.Build</AssemblyName>
-    <TargetFrameworks>net472</TargetFrameworks>
+    <TargetFrameworks>net9.0;net472</TargetFrameworks>
     <DefaultLanguage>en-US</DefaultLanguage>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <ApplicationIcon>$(CommonDir)XSharpProject.ico</ApplicationIcon>
-    <NoWarn>$(NoWarn);1573;1591;1701;RS0016</NoWarn>
+    <NoWarn>$(NoWarn);1573;1591;1701;RS0016;NU1603</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(GenericDefines);TRACE;DEBUG</DefineConstants>
@@ -98,75 +97,11 @@
     <Content Include="XSharpProject.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Rules\xsharp.browseobject.xaml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Rules\xsharp.xaml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Rules\NativeResource.xaml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Rules\VoBinary.xaml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="Runtime" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" ExcludeAssets="Runtime" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <PackageReference Include="System.Runtime" Version="4.3.1" />
-    <PackageReference Include="Microsoft.Build.Framework" Version="$(MicrosoftBuildFrameworkVersion)" ExcludeAssets="Runtime" />
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(MicrosoftBuildTasksCoreVersion)" ExcludeAssets="Runtime" />
-    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
-     <PackageReference Include="Microsoft.Win32.Registry" Version="4.3.0" />
-    <PackageReference Include="System.Security.AccessControl" Version="$(SystemSecurityAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Rules\ApplicationPropertyPage.XSharp.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Rules\BuildPropertyPage.XSharp.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Rules\Compile.BrowseObject.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Rules\Compile.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Rules\DialectPage.XSharp.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Rules\LanguagePage.XSharp.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Rules\NativeResource.BrowseObject.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Rules\ProjectItemsSchema.XSharp.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Rules\ReferencesPage.XSharp.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Rules\VOBinary.BrowseObject.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Folder Include="Rules\" />
   </ItemGroup>
   <Target Name="DeleteMsFiles" AfterTargets="Build">
     <ItemGroup>

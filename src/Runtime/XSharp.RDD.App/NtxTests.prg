@@ -49,7 +49,7 @@ CLASS NtxTests
 			myDBF:Skip( 0 )
 			oData2 := myDBF:GetValue( 1 )
 			//
-			//Assert.Equal( oData1, oData2 )
+            ? oData1 == oData2
 			//
 			RuntimeState.Workareas:CloseArea( area )
 

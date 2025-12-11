@@ -108,8 +108,8 @@ FUNCTION ProcName(wActivation AS INT, lShowSignature AS LOGIC) AS STRING
                     first := FALSE
                 ENDIF
                 VAR str := "<UnknownType>"
-                IF param.ParameterType != NULL
-                    str := param.ParameterType.Name
+                IF param:ParameterType != NULL
+                    str := param:ParameterType:Name
                 ENDIF
                 VAR dir := " as "
                 IF param:IsIn
@@ -121,7 +121,7 @@ FUNCTION ProcName(wActivation AS INT, lShowSignature AS LOGIC) AS STRING
                 ELSEIF param:IsOut
                     dir := " out "
                 ENDIF
-                stringBuilder.Append(param.Name+dir+str)
+                stringBuilder:Append(param:Name+dir+str)
             NEXT
             stringBuilder:Append(")")
 

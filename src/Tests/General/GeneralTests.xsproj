@@ -23,8 +23,8 @@
     <VO3>false</VO3>
     <VO4>false</VO4>
     <VO5>false</VO5>
-    <VO6>false</VO6>
-    <VO7>False</VO7>
+    <VO6>False</VO6>
+    <VO7>True</VO7>
     <VO8>false</VO8>
     <VO9>False</VO9>
     <VO10>false</VO10>
@@ -45,7 +45,7 @@
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths />
     <StandardDefs />
-    <MemVar>False</MemVar>
+    <MemVar>True</MemVar>
     <Undeclared>False</Undeclared>
     <InitLocals>false</InitLocals>
     <AllowOldStyleAssignments>true</AllowOldStyleAssignments>

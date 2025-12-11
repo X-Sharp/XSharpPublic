@@ -38,10 +38,10 @@ partial class SQLRDD inherit DBFVFP
     public override property FieldCount  as long => super:FieldCount - self:_numHiddenColumns
 
     /// <summary>Returns the # of rows in the local buffer (DataTable).</summary>
-    public property RowCount    as long => iif(Self:DataTable == null, 0, Self:DataTable:Rows:Count)
+    public property RowCount    as dword => iif(Self:DataTable == null, 0, (DWORD) Self:DataTable:Rows:Count)
 
     /// <summary>The current rownumber in the buffer (DataTable).</summary>
-    public property RowNumber   as long GET _RecNo INTERNAL SET _RecNo := value
+    public property RowNumber   as dword GET _RecNo INTERNAL SET _RecNo := value
 
     /// <summary>The current row in the buffer (DataTable).
     /// When the server is at EOF then the phantomrow is returned.</summary>
@@ -50,7 +50,7 @@ partial class SQLRDD inherit DBFVFP
             if self:RowNumber == 0 .or. self:RowNumber > self:RowCount
                 return self:_phantomRow
             endif
-            return self:DataTable:Rows[self:RowNumber -1]
+            return self:DataTable:Rows[(int) self:RowNumber -1]
         end get
     end property
 #endregion
@@ -210,7 +210,7 @@ partial class SQLRDD inherit DBFVFP
         var lResult := super:Append(lReleaseLock)
         self:_baseRecno  := old
         if lResult
-            var key := self:_builder:GetNextKey()
+            var key := (dword) self:_builder:GetNextKey()
             var row := self:DataTable:NewRow()
             self:DataTable:Rows:Add(row)
             _updatedRows:Add(row)
@@ -226,7 +226,7 @@ partial class SQLRDD inherit DBFVFP
                 endif
             next
             if self:_recnoColumNo > -1
-                self:_recordKeyCache:Add(key, SELF:RowCount-1)
+                self:_recordKeyCache:Add(key, (DWORD) SELF:RowCount-1)
             endif
             self:_serverReccount += 1
             self:GoHot()
@@ -436,7 +436,7 @@ partial class SQLRDD inherit DBFVFP
         // Must position the DBF on the right row for the deletion
         var old := self:_baseRecno
         self:_baseRecno  := true
-        super:GoTo(SELF:RowNumber)
+        super:GoTo((DWORD) SELF:RowNumber)
         self:_baseRecno  := old
         return super:Delete()
     end method
@@ -459,7 +459,7 @@ partial class SQLRDD inherit DBFVFP
         // Must position the DBF on the right row for the recall
         var old := self:_baseRecno
         self:_baseRecno  := true
-        super:GoTo(SELF:RowNumber)
+        super:GoTo((DWORD) SELF:RowNumber)
         self:_baseRecno  := old
         return super:Recall()
     end method
@@ -538,7 +538,7 @@ partial class SQLRDD inherit DBFVFP
             var newRow := SELF:RowNumber + nToSkip
             IF newRow > 0
                 if newRow <= SELF:RowCount
-                    SELF:RowNumber := newRow
+                    SELF:RowNumber := (DWORD) newRow
                     SELF:_SetEOF(FALSE)
                 ELSE
                     SELF:RowNumber := 0
@@ -559,8 +559,8 @@ partial class SQLRDD inherit DBFVFP
     OVERRIDE METHOD GoToId(oRec AS OBJECT) AS LOGIC
 	    LOCAL result AS LOGIC
 		TRY
-			VAR nRec := Convert.ToInt32( oRec )
-			result := SELF:GoTo( nRec )
+			VAR nRec := Convert.ToUInt32( oRec )
+			result := SELF:GoTo( (DWORD) nRec )
 		CATCH ex AS Exception
 			SELF:_dbfError(ex, Subcodes.EDB_GOTO,Gencode.EG_DATATYPE,  "SQLRDD.GoToId",FALSE)
 			result := FALSE
@@ -573,7 +573,7 @@ partial class SQLRDD inherit DBFVFP
     /// When a RecnoColumn is defined, then the cursor will be positioned on the row with the specified Recno, when it exists.
     /// If the recno does not exist, or when no RecnoColumn is defined, then the cursor will be positioned on the phantom row at the end of the table.
     /// </remarks>
-    override method GoTo(nRec as long) as logic
+    override method GoTo(nRec as DWORD) as logic
         local lSuccess := TRUE as logic
         if !self:_ForceOpen()
             return false
@@ -588,7 +588,7 @@ partial class SQLRDD inherit DBFVFP
                 nRec     := 0
             endif
         endif
-        LOCAL nCount := SELF:RowCount AS LONG
+        LOCAL nCount := SELF:RowCount AS DWORD
         // Normal positioning, VO resets FOUND to FALSE after a recprd movement
         SELF:_Found := FALSE
         SELF:_BufferValid := FALSE
@@ -620,19 +620,19 @@ partial class SQLRDD inherit DBFVFP
     /// When a RecnoColumn is defined, then this will return the value of that column.
     /// Otherwise the relative position inside the cursor will be returned.
     /// </remarks>
-    override property RecNo		as int
+    override property RecNo		as DWORD
         get
             self:ForceRel()
             if !SELF:_baseRecno .and. self:_recnoColumNo > -1 .and. ! SELF:EoF
                 var obj := SELF:CurrentRow[self:_recnoColumNo]
-                return Convert.ToInt32(obj)
+                return Convert.ToUInt32(obj)
             endif
-            return SELF:RowNumber
+            return (DWORD) SELF:RowNumber
         end get
     end property
 
     /// <inheritdoc />
-    override property RecCount as int
+    override property RecCount as dword
         get
             return Self:_serverReccount
         end get

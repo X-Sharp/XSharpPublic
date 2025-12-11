@@ -11,6 +11,10 @@ USING System.Collections.Generic
 USING System.IO
 USING System.Diagnostics
 
+DEFINE MISSING_PAGE  := 0xFFFFFFFF AS DWORD
+DEFINE MISSING_RECNO := 0xFFFFFFFF AS DWORD
+
+
 //#define TESTCDX
 
 #ifdef TESTCDX
@@ -195,7 +199,7 @@ BEGIN NAMESPACE XSharp.RDD
                 END LOCK
 
             OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DbOrderInfo ) AS OBJECT
-                LOCAL result AS LONG
+                LOCAL result AS DWORD
                 LOCAL isOk := FALSE AS LOGIC
                 LOCAL oBag := NULL AS CdxOrderBag
                 LOCAL hasBagName := FALSE AS LOGIC
@@ -594,15 +598,15 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
 	        SELF:ForceRel()
         RETURN SUPER:SetFilter(info)
-        
+
         OVERRIDE METHOD ClearFilter() AS LOGIC
             IF SELF:CurrentOrder != null
                 SELF:CurrentOrder:ResetFilter()
             ENDIF
 	        SELF:ForceRel()
         RETURN SUPER:ClearFilter()
-        
-        
+
+
         OVERRIDE METHOD Seek(seekInfo AS DbSeekInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
 
@@ -654,11 +658,11 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN result
             END LOCK
 
-        METHOD __Goto(nRec AS LONG) AS LOGIC
+        METHOD __Goto(nRec AS DWORD) AS LOGIC
             // Skip without reset of stack
             RETURN SUPER:GoTo(nRec)
 
-        OVERRIDE METHOD GoTo(nRec AS LONG) AS LOGIC
+        OVERRIDE METHOD GoTo(nRec AS DWORD) AS LOGIC
             LOCAL result AS LOGIC
             SELF:GoCold()
             IF SELF:CurrentOrder != NULL
@@ -732,7 +736,7 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL CLASS CdxState
             PROPERTY EoF AS LOGIC AUTO
             PROPERTY BoF AS LOGIC AUTO
-            PROPERTY RecNo AS LONG AUTO
+            PROPERTY RecNo AS DWORD AUTO
         END CLASS
     END CLASS
 

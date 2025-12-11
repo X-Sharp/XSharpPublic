@@ -1,0 +1,9 @@
+POST http://localhost:5185/api/customer
+content-type: application/json
+
+{
+    "FirstName": "Fabrice",
+    "LastName": "Foray",
+    "Zip": "07200",
+    "City": "Lachapelle"
+}

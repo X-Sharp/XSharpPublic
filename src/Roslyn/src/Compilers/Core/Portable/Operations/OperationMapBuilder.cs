@@ -1,4 +1,4 @@
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis.Operations;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -53,6 +54,49 @@ namespace Microsoft.CodeAnalysis
                 return null;
             }
 
+            public override object? VisitConditional(IConditionalOperation operation, Dictionary<SyntaxNode, IOperation> argument)
+            {
+                while (true)
+                {
+                    RecordOperation(operation, argument);
+                    Visit(operation.Condition, argument);
+                    Visit(operation.WhenTrue, argument);
+                    if (operation.WhenFalse is IConditionalOperation nested)
+                    {
+                        operation = nested;
+                    }
+                    else
+                    {
+                        Visit(operation.WhenFalse, argument);
+                        break;
+                    }
+                }
+
+                return null;
+            }
+
+            public override object? VisitBinaryPattern(IBinaryPatternOperation operation, Dictionary<SyntaxNode, IOperation> argument)
+            {
+                // In order to handle very large nested patterns, we implement manual iteration here. Our operations are not order sensitive,
+                // so we don't need to maintain a stack, just iterate through every level.
+                while (true)
+                {
+                    RecordOperation(operation, argument);
+                    Visit(operation.RightPattern, argument);
+                    if (operation.LeftPattern is IBinaryPatternOperation nested)
+                    {
+                        operation = nested;
+                    }
+                    else
+                    {
+                        Visit(operation.LeftPattern, argument);
+                        break;
+                    }
+                }
+
+                return null;
+            }
+
             internal override object? VisitNoneOperation(IOperation operation, Dictionary<SyntaxNode, IOperation> argument)
             {
                 // OperationWalker skips these nodes by default, to avoid having public consumers deal with NoneOperation.
@@ -65,6 +109,9 @@ namespace Microsoft.CodeAnalysis
                 if (!operation.IsImplicit)
                 {
                     // IOperation invariant is that all there is at most 1 non-implicit node per syntax node.
+                    RoslynDebug.Assert(
+                        !argument.ContainsKey(operation.Syntax),
+                        $"Duplicate operation node for {operation.Syntax}. Existing node is {(argument.TryGetValue(operation.Syntax, out var original) ? (OperationKind?)original.Kind : null)}, new node is {operation.Kind}.");
                     argument.Add(operation.Syntax, operation);
                 }
             }

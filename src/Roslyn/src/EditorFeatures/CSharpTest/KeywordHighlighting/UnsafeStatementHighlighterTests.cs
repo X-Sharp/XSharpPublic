@@ -6,35 +6,36 @@
 
 using System;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.Editor.CSharp.KeywordHighlighting.KeywordHighlighters;
+using Microsoft.CodeAnalysis.CSharp.KeywordHighlighting.KeywordHighlighters;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Xunit;
 
-namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.KeywordHighlighting
-{
-    public class UnsafeStatementHighlighterTests : AbstractCSharpKeywordHighlighterTests
-    {
-        internal override Type GetHighlighterType()
-            => typeof(UnsafeStatementHighlighter);
+namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.KeywordHighlighting;
 
-        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public async Task TestExample1_1()
-        {
-            await TestAsync(
-@"class C
+public class UnsafeStatementHighlighterTests : AbstractCSharpKeywordHighlighterTests
 {
-    void M()
+    internal override Type GetHighlighterType()
+        => typeof(UnsafeStatementHighlighter);
+
+    [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+    public async Task TestExample1_1()
     {
-        int var1 = 5;
-        {|Cursor:[|unsafe|]|}
-        {
-            int* ptr1, ptr2;
-            ptr1 = &var1;
-            ptr2 = ptr1;
-            *ptr2 = 20;
-        }
-    }
-}");
-        }
+        await TestAsync(
+            """
+            class C
+            {
+                void M()
+                {
+                    int var1 = 5;
+                    {|Cursor:[|unsafe|]|}
+                    {
+                        int* ptr1, ptr2;
+                        ptr1 = &var1;
+                        ptr2 = ptr1;
+                        *ptr2 = 20;
+                    }
+                }
+            }
+            """);
     }
 }

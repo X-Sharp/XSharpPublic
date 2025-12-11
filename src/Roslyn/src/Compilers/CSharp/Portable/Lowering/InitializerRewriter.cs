@@ -65,7 +65,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Debug.Assert(!submissionResultType.IsVoidType());
 
                 // Note: The trailing expression was already converted to the submission result type in Binder.BindGlobalStatement.
-                boundStatements.Add(new BoundReturnStatement(lastStatement.Syntax, RefKind.None, trailingExpression));
+                boundStatements.Add(new BoundReturnStatement(lastStatement.Syntax, RefKind.None, trailingExpression, @checked: false));
                 hasTrailingExpression = true;
             }
             else
@@ -88,10 +88,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private static BoundStatement RewriteFieldInitializer(BoundFieldEqualsValue fieldInit)
         {
+            var field = fieldInit.Field;
             SyntaxNode syntax = fieldInit.Syntax;
             syntax = (syntax as EqualsValueClauseSyntax)?.Value ?? syntax; //we want the attached sequence point to indicate the value node
-            var boundReceiver = fieldInit.Field.IsStatic ? null :
-                                        new BoundThisReference(syntax, fieldInit.Field.ContainingType);
+            var boundReceiver = field.IsStatic ? null :
+                                        new BoundThisReference(syntax, field.ContainingType);
 
 #if XSHARP
             var initValue = fieldInit.Value;
@@ -118,9 +119,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 { WasCompilerGenerated = true };
                 initValue = new BoundNullCoalescingOperator(syntax: syntax,
                                                     leftOperand: fldaccess,
+                                                    leftPlaceholder: null, // TODO nvk
                                                     rightOperand: initValue,
-                                                    leftConversion: Conversion.Identity,
+                                                    leftConversion: null, // TODO nvk (was Conversion.Identity)
                                                     operatorResultKind: BoundNullCoalescingOperatorResultKind.LeftType,
+                                                    @checked: false,
                                                     type: fieldInit.Field.Type)
                 { WasCompilerGenerated = true };
             }
@@ -142,10 +145,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     new BoundAssignmentOperator(syntax,
                         new BoundFieldAccess(syntax,
                             boundReceiver,
-                            fieldInit.Field,
+                            field,
                             constantValueOpt: null),
                         fieldInit.Value,
-                        fieldInit.Field.Type)
+                        field.Type,
+                        isRef: field.RefKind != RefKind.None)
                     { WasCompilerGenerated = true })
                 { WasCompilerGenerated = !fieldInit.Locals.IsEmpty || fieldInit.WasCompilerGenerated };
 #endif

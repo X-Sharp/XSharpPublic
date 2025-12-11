@@ -2,12 +2,14 @@
 ' The .NET Foundation licenses this file to you under the MIT license.
 ' See the LICENSE file in the project root for more information.
 
-Imports Microsoft.CodeAnalysis.Editor.Shared.Options
+Imports Microsoft.CodeAnalysis.Editor.[Shared].Utilities
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Extensions
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Utilities
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces
 Imports Microsoft.CodeAnalysis.Editor.VisualBasic.ImplementInterface
+Imports Microsoft.CodeAnalysis.Options
 Imports Microsoft.CodeAnalysis.Text
+Imports Microsoft.CodeAnalysis.VisualBasic.AutomaticInsertionOfAbstractOrInterfaceMembers
 Imports Microsoft.VisualStudio.Commanding
 Imports Microsoft.VisualStudio.Text
 Imports Microsoft.VisualStudio.Text.Editor
@@ -16,9 +18,10 @@ Imports Microsoft.VisualStudio.Text.Operations
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.ImplementInterface
     <[UseExportProvider]>
+    <Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
     Public Class ImplementInterfaceCommandHandlerTests
 
-        Private Shared Sub Test(code As XElement, expectedText As XElement, nextHandler As Action(Of IWpfTextView, TestWorkspace), assertion As Action(Of String, String, IWpfTextView))
+        Private Shared Sub Test(code As XElement, expectedText As XElement, nextHandler As Action(Of IWpfTextView, EditorTestWorkspace), assertion As Action(Of String, String, IWpfTextView))
             Using workspace = GetWorkspace(code.NormalizedValue)
                 Dim commandHandler = MoveCaretAndCreateCommandHandler(workspace)
                 Dim view = workspace.Documents.Single().GetTextView()
@@ -31,17 +34,20 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.ImplementInterface
             End Using
         End Sub
 
-        Private Shared Function MoveCaretAndCreateCommandHandler(workspace As TestWorkspace) As ICommandHandler(Of ReturnKeyCommandArgs)
+        Private Shared Function MoveCaretAndCreateCommandHandler(workspace As EditorTestWorkspace) As ICommandHandler(Of ReturnKeyCommandArgs)
             Dim document = workspace.Documents.Single()
             Dim view = document.GetTextView()
             Dim cursorPosition = document.CursorPosition.Value
 
             view.Caret.MoveTo(New SnapshotPoint(view.TextBuffer.CurrentSnapshot, cursorPosition))
-            Return New ImplementInterfaceCommandHandler(workspace.GetService(Of IEditorOperationsFactoryService))
+            Return New ImplementInterfaceCommandHandler(
+                workspace.GetService(Of IThreadingContext),
+                workspace.GetService(Of IEditorOperationsFactoryService),
+                workspace.GetService(Of IGlobalOptionService))
         End Function
 
-        Private Shared Function GetWorkspace(code As String) As TestWorkspace
-            Return TestWorkspace.Create(
+        Private Shared Function GetWorkspace(code As String) As EditorTestWorkspace
+            Return EditorTestWorkspace.Create(
 <Workspace>
     <Project Language="Visual Basic" AssemblyName="Assembly" CommonReferences="true">
         <Document>
@@ -51,7 +57,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.ImplementInterface
 </Workspace>)
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
+        <WpfFact>
         Public Sub FeatureDoesNothingIfDisabled()
             Using workspace = GetWorkspace("
 Imports System
@@ -62,10 +68,10 @@ End Class
 Interface IGoo
     Sub TestSub()
 End Interface")
+                Dim globalOptions = workspace.GetService(Of IGlobalOptionService)
 
                 Dim commandHandler = MoveCaretAndCreateCommandHandler(workspace)
-                workspace.TryApplyChanges(workspace.CurrentSolution.WithOptions(workspace.Options _
-                    .WithChangedOption(FeatureOnOffOptions.AutomaticInsertionOfAbstractOrInterfaceMembers, LanguageNames.VisualBasic, False)))
+                globalOptions.SetGlobalOption(AutomaticInsertionOfAbstractOrInterfaceMembersOptionsStorage.AutomaticInsertionOfAbstractOrInterfaceMembers, LanguageNames.VisualBasic, False)
 
                 Dim nextHandlerCalled = False
                 Dim view = workspace.Documents.Single().GetTextView()
@@ -74,7 +80,7 @@ End Interface")
             End Using
         End Sub
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
+        <WpfFact>
         Public Sub TestInterfaceWithSingleSub()
             Dim code = <text>
 Imports System
@@ -97,8 +103,7 @@ End Interface</text>
              Sub(expected, actual, view) AssertEx.AssertContainsToleratingWhitespaceDifferences(expected, actual))
         End Sub
 
-        <WorkItem(544161, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544161")>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
+        <WpfFact, WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544161")>
         Public Sub TestInterfacesWithDuplicateMember()
             Dim code = <text>
 Interface IGoo
@@ -117,7 +122,7 @@ End Class</text>
     End Sub
 
     Private Sub IBar_Goo() Implements IBar.Goo
-        Throw New NotImplementedException()
+        Goo()
     End Sub</text>
 
             Test(code,
@@ -126,7 +131,7 @@ End Class</text>
              Sub(expected, actual, view) AssertEx.AssertContainsToleratingWhitespaceDifferences(expected, actual))
         End Sub
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
+        <WpfFact>
         Public Sub TestInterfaceWithManyMembers()
             Dim code = <text>
 Imports System
@@ -165,7 +170,7 @@ End Interface</text>
              Sub(expected, actual, view) AssertEx.AssertContainsToleratingWhitespaceDifferences(expected, actual))
         End Sub
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
+        <WpfFact>
         Public Sub TestMultipleInterfaces()
             Dim code = <text>
 Imports System
@@ -195,7 +200,7 @@ End Interface</text>
                  Sub(expected, actual, view) AssertEx.AssertContainsToleratingWhitespaceDifferences(expected, actual))
         End Sub
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
+        <WpfFact>
         Public Sub TestWrongCursorPlacement()
             Dim code = <text>
 Imports System
@@ -226,9 +231,8 @@ End Class</text>
                  Sub(expected, actual, view) AssertEx.AssertContainsToleratingWhitespaceDifferences(expected, actual))
         End Sub
 
-        <WorkItem(530553, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530553")>
-        <WorkItem(544087, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544087")>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
+        <WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530553")>
+        <WpfFact, WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544087")>
         Public Sub TestInvocationAfterWhitespaceTrivia()
             Dim code = <text>
 Imports System
@@ -252,8 +256,7 @@ End Interface</text>
 
         End Sub
 
-        <WorkItem(544089, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544089")>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
+        <WpfFact, WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544089")>
         Public Sub TestInvocationAfterCommentTrivia()
             Dim code = <text>
 Imports System
@@ -276,7 +279,7 @@ End Interface</text>
                  Sub(expected, actual, view) AssertEx.AssertContainsToleratingWhitespaceDifferences(expected, actual))
         End Sub
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
+        <WpfFact>
         Public Sub TestNoMembersToImplement()
             Dim code = <text>
 Class Goo
@@ -303,8 +306,7 @@ End Interface</text>
                  Sub(expected, actual, view) Assert.Equal(expected.Trim(), actual.Trim()))
         End Sub
 
-        <WorkItem(544211, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544211")>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
+        <WpfFact, WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544211")>
         Public Sub TestWithEndBlockMissing()
             Dim code = <text>
 Imports System
@@ -329,8 +331,7 @@ End Class</text>
                  Sub(expected, actual, view) AssertEx.AssertEqualToleratingWhitespaceDifferences(expected, actual))
         End Sub
 
-        <WorkItem(529302, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529302")>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
+        <WpfFact, WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529302")>
         Public Sub TestWithEndBlockMissing2()
             Dim code = <text>
 Imports System
@@ -359,10 +360,9 @@ End Class</text>
                  Sub(expected, actual, view) AssertEx.AssertEqualToleratingWhitespaceDifferences(expected, actual))
         End Sub
 
-        <WorkItem(530553, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530553")>
-        <WorkItem(529337, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529337")>
-        <WorkItem(674621, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/674621")>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
+        <WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530553")>
+        <WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529337")>
+        <WpfFact, WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/674621")>
         Public Sub TestWithStatementSeparator()
             Dim code = <text>
 Imports System
@@ -395,8 +395,7 @@ End Class
                  Sub(expected, actual, view) AssertEx.AssertEqualToleratingWhitespaceDifferences(expected, actual))
         End Sub
 
-        <WorkItem(529360, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529360")>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
+        <WpfFact, WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529360")>
         Public Sub TestCursorNotOnSameLine()
             Dim code = <text>
 Imports System
@@ -430,8 +429,7 @@ End Class
                  Sub(expected, actual, view) AssertEx.AssertEqualToleratingWhitespaceDifferences(expected, actual))
         End Sub
 
-        <WorkItem(529722, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529722")>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
+        <WpfFact, WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529722")>
         Public Sub TestCursorPlacedOnBlankLineAfter()
             Dim code = <text>
 Imports System
@@ -460,13 +458,12 @@ End Class
                  End Sub,
                  Sub(expected, actual, view)
                      AssertEx.AssertEqualToleratingWhitespaceDifferences(expected, actual)
-                     Assert.Equal(4, view.Caret.Position.BufferPosition.GetContainingLine().LineNumber)
+                     Assert.Equal(4, view.Caret.Position.BufferPosition.GetContainingLineNumber())
                      Assert.Equal(4, view.Caret.Position.VirtualSpaces)
                  End Sub)
         End Sub
 
-        <WorkItem(545867, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545867")>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
+        <WpfFact, WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545867")>
         Public Sub TestMultipleImplementationWithCaseDifference()
             Dim code = <text>
 Interface IA
@@ -491,7 +488,7 @@ Class C
     End Sub
 
     Private Sub IB_Goo() Implements IB.Goo
-        Throw New NotImplementedException()
+        goo()
     End Sub
 End Class</text>
 
@@ -501,8 +498,7 @@ End Class</text>
              Sub(expected, actual, view) AssertEx.AssertContainsToleratingWhitespaceDifferences(expected, actual))
         End Sub
 
-        <WorkItem(927478, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/927478")>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsImplementInterface)>
+        <WpfFact, WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/927478")>
         Public Sub TestFullyQualifiedName()
             Dim code = <text>
 Namespace N

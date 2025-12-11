@@ -25,7 +25,7 @@ Console.WriteLine(o.ToString());
             var tree = SyntaxFactory.ParseSyntaxTree(test, options: TestOptions.Script);
 
             CompileAndVerify(
-                CreateCompilationWithMscorlib45(
+                CreateCompilationWithMscorlib461(
                     new[] { tree },
                     options: TestOptions.ReleaseExe.WithScriptClassName("Script"),
                     references: new[] { SystemCoreRef }),
@@ -44,7 +44,7 @@ Console.WriteLine(o.ToString());
             var tree = SyntaxFactory.ParseSyntaxTree(test, options: TestOptions.Script);
 
             CompileAndVerify(
-                CreateCompilationWithMscorlib45(
+                CreateCompilationWithMscorlib461(
                     new[] { tree },
                     options: TestOptions.ReleaseExe.WithScriptClassName("Script"),
                     references: new[] { SystemCoreRef }),
@@ -62,7 +62,7 @@ Console.WriteLine(new { a = 1 }.ToString());
             var tree = SyntaxFactory.ParseSyntaxTree(test, options: TestOptions.Script);
 
             CompileAndVerify(
-                CreateCompilationWithMscorlib45(
+                CreateCompilationWithMscorlib461(
                     new[] { tree },
                     options: TestOptions.ReleaseExe.WithScriptClassName("Script"),
                     references: new[] { SystemCoreRef }),
@@ -88,7 +88,7 @@ new CLS().M();
             var tree = SyntaxFactory.ParseSyntaxTree(test, options: TestOptions.Script);
 
             CompileAndVerify(
-                CreateCompilationWithMscorlib45(
+                CreateCompilationWithMscorlib461(
                     new[] { tree },
                     options: TestOptions.ReleaseExe.WithScriptClassName("Script"),
                     references: new[] { SystemCoreRef }),
@@ -112,7 +112,7 @@ new CLS().M();
 ";
             var tree = SyntaxFactory.ParseSyntaxTree(test, options: TestOptions.Script);
 
-            var compilation = CreateCompilationWithMscorlib45(
+            var compilation = CreateCompilationWithMscorlib461(
                 new[] { tree },
                 options: TestOptions.ReleaseExe.WithScriptClassName("Script"));
 
@@ -137,7 +137,7 @@ M();
 ";
             var tree = SyntaxFactory.ParseSyntaxTree(test, options: TestOptions.Script);
 
-            var compilation = CreateCompilationWithMscorlib45(
+            var compilation = CreateCompilationWithMscorlib461(
                 new[] { tree },
                 options: TestOptions.ReleaseExe.WithScriptClassName("Script"));
 
@@ -168,7 +168,7 @@ M();
 ";
             var tree = SyntaxFactory.ParseSyntaxTree(test, options: TestOptions.Script);
 
-            var compilation = CreateCompilationWithMscorlib45(
+            var compilation = CreateCompilationWithMscorlib461(
                 new[] { tree },
                 options: TestOptions.ReleaseExe.WithScriptClassName("Script"));
 
@@ -196,7 +196,7 @@ class CLS
 ";
             var tree = SyntaxFactory.ParseSyntaxTree(test, options: TestOptions.Script);
 
-            var compilation = CreateCompilationWithMscorlib45(
+            var compilation = CreateCompilationWithMscorlib461(
                 new[] { tree },
                 options: TestOptions.ReleaseExe.WithScriptClassName("Script"));
 
@@ -493,7 +493,7 @@ public abstract class C
     await System.Threading.Tasks.Task.Delay(100);
     System.Console.Write(""complete"");
 }";
-            var compilation = CreateCompilationWithMscorlib45(source, parseOptions: TestOptions.Script, options: TestOptions.DebugExe);
+            var compilation = CreateCompilationWithMscorlib461(source, parseOptions: TestOptions.Script, options: TestOptions.DebugExe);
             var verifier = CompileAndVerify(compilation, expectedOutput: @"complete");
             var methodData = verifier.TestData.GetMethodData("<Initialize>");
             Assert.Equal("System.Threading.Tasks.Task<object>", ((MethodSymbol)methodData.Method).ReturnType.ToDisplayString());
@@ -554,7 +554,7 @@ public abstract class C
                 "s0.dll",
                 SyntaxFactory.ParseSyntaxTree(source0, options: TestOptions.Script),
                 references);
-            var verifier = CompileAndVerify(s0, verify: Verification.Fails);
+            var verifier = CompileAndVerify(s0, verify: Verification.FailsPEVerify);
             var methodData = verifier.TestData.GetMethodData("<Initialize>");
             Assert.Equal("System.Threading.Tasks.Task<object>", ((MethodSymbol)methodData.Method).ReturnType.ToDisplayString());
             methodData.VerifyIL(
@@ -635,7 +635,7 @@ void I1.M() {}
 ";
             var tree = SyntaxFactory.ParseSyntaxTree(test, options: TestOptions.Script);
 
-            var compilation = CreateCompilationWithMscorlib45(
+            var compilation = CreateCompilationWithMscorlib461(
                 new[] { tree },
                 options: TestOptions.ReleaseExe.WithScriptClassName("Script"));
 

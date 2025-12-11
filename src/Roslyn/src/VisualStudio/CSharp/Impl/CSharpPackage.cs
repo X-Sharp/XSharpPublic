@@ -11,13 +11,12 @@ using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.ErrorReporting;
 using Microsoft.CodeAnalysis.Host;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.VisualStudio.LanguageServices.CSharp.ObjectBrowser;
 using Microsoft.VisualStudio.LanguageServices.CSharp.ProjectSystemShim;
 using Microsoft.VisualStudio.LanguageServices.CSharp.ProjectSystemShim.Interop;
-using Microsoft.VisualStudio.LanguageServices.Implementation;
 using Microsoft.VisualStudio.LanguageServices.Implementation.LanguageService;
 using Microsoft.VisualStudio.LanguageServices.Implementation.ProjectSystem;
-using Microsoft.VisualStudio.LanguageServices.Utilities;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
@@ -54,6 +53,7 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.LanguageService
     [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingSpacingPage), "CSharp", @"Code Style\Formatting", "Spacing", pageNameResourceId: "#112", keywordListResourceId: 310)]
     [ProvideLanguageEditorOptionPage(typeof(Options.NamingStylesOptionPage), "CSharp", @"Code Style", "Naming", pageNameResourceId: "#115", keywordListResourceId: 314)]
     [ProvideLanguageEditorOptionPage(typeof(Options.IntelliSenseOptionPage), "CSharp", null, "IntelliSense", pageNameResourceId: "#103", keywordListResourceId: 312)]
+    [ProvideSettingsManifest(PackageRelativeManifestFile = @"UnifiedSettings\csharpSettings.registration.json")]
     [Guid(Guids.CSharpPackageIdString)]
     internal sealed class CSharpPackage : AbstractPackage<CSharpPackage, CSharpLanguageService>, IVsUserSettingsQuery
     {
@@ -65,30 +65,29 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.LanguageService
             try
             {
                 await base.InitializeAsync(cancellationToken, progress).ConfigureAwait(true);
-
                 await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
                 this.RegisterService<ICSharpTempPECompilerService>(async ct =>
                 {
+                    var workspace = this.ComponentModel.GetService<VisualStudioWorkspace>();
                     await JoinableTaskFactory.SwitchToMainThreadAsync(ct);
-                    return new TempPECompilerService(this.Workspace.Services.GetService<IMetadataService>());
+                    return new TempPECompilerService(workspace.Services.GetService<IMetadataService>());
                 });
             }
-            catch (Exception e) when (FatalError.ReportAndPropagateUnlessCanceled(e))
+            catch (Exception e) when (FatalError.ReportAndPropagateUnlessCanceled(e, ErrorSeverity.General))
             {
             }
         }
 
-        protected override VisualStudioWorkspaceImpl CreateWorkspace()
-            => this.ComponentModel.GetService<VisualStudioWorkspaceImpl>();
-
         protected override async Task RegisterObjectBrowserLibraryManagerAsync(CancellationToken cancellationToken)
         {
+            var workspace = this.ComponentModel.GetService<VisualStudioWorkspace>();
+
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
             if (await GetServiceAsync(typeof(SVsObjectManager)).ConfigureAwait(true) is IVsObjectManager2 objectManager)
             {
-                _libraryManager = new ObjectBrowserLibraryManager(this, ComponentModel, Workspace);
+                _libraryManager = new ObjectBrowserLibraryManager(this, ComponentModel, workspace);
 
                 if (ErrorHandler.Failed(objectManager.RegisterSimpleLibrary(_libraryManager, out _libraryManagerCookie)))
                 {
@@ -126,8 +125,7 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.LanguageService
         {
             if (name == "CSharp-Specific")
             {
-                var workspace = this.ComponentModel.GetService<VisualStudioWorkspace>();
-                return new Options.AutomationObject(workspace);
+                return new Options.AutomationObject(ComponentModel.GetService<ILegacyGlobalOptionService>());
             }
 
             return base.GetAutomationObject(name);

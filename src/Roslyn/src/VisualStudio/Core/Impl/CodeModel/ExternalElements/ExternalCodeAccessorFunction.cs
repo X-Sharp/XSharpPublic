@@ -5,7 +5,6 @@
 #nullable disable
 
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.LanguageServices.Implementation.Interop;
@@ -28,11 +27,11 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel.Exter
         private ExternalCodeAccessorFunction(CodeModelState state, ProjectId projectId, IMethodSymbol symbol, AbstractExternalCodeMember parent)
             : base(state, projectId, symbol)
         {
-            Debug.Assert(symbol.MethodKind == MethodKind.EventAdd ||
-                         symbol.MethodKind == MethodKind.EventRaise ||
-                         symbol.MethodKind == MethodKind.EventRemove ||
-                         symbol.MethodKind == MethodKind.PropertyGet ||
-                         symbol.MethodKind == MethodKind.PropertySet);
+            Debug.Assert(symbol.MethodKind is MethodKind.EventAdd or
+                         MethodKind.EventRaise or
+                         MethodKind.EventRemove or
+                         MethodKind.PropertyGet or
+                         MethodKind.PropertySet);
 
             _parentHandle = new ParentHandle<AbstractExternalCodeMember>(parent);
         }
@@ -45,8 +44,8 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel.Exter
         private bool IsPropertyAccessor()
         {
             var methodKind = MethodSymbol.MethodKind;
-            return methodKind == MethodKind.PropertyGet
-                || methodKind == MethodKind.PropertySet;
+            return methodKind is MethodKind.PropertyGet
+                or MethodKind.PropertySet;
         }
 
         protected override EnvDTE.vsCMAccess GetAccess()

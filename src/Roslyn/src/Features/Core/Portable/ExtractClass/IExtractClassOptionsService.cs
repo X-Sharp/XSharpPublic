@@ -2,13 +2,19 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Threading.Tasks;
+using System.Collections.Immutable;
+using System.Threading;
+using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Host;
 
-namespace Microsoft.CodeAnalysis.ExtractClass
+namespace Microsoft.CodeAnalysis.ExtractClass;
+
+internal interface IExtractClassOptionsService : IWorkspaceService
 {
-    internal interface IExtractClassOptionsService : IWorkspaceService
-    {
-        Task<ExtractClassOptions?> GetExtractClassOptionsAsync(Document document, INamedTypeSymbol originalType, ISymbol? selectedMember);
-    }
+    ExtractClassOptions? GetExtractClassOptions(
+        Document document,
+        INamedTypeSymbol originalType,
+        ImmutableArray<ISymbol> selectedMembers,
+        SyntaxFormattingOptions formattingOptions,
+        CancellationToken cancellationToken);
 }

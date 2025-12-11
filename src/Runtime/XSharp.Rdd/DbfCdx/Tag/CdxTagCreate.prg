@@ -178,7 +178,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN result
 
         PRIVATE METHOD _HeaderCreate() AS LOGIC
-            SELF:_Header            := CdxTagHeader{_bag, -1 ,_orderName, SELF}
+            SELF:_Header            := CdxTagHeader{_bag, MISSING_PAGE ,_orderName, SELF}
             SELF:_Header:Descending := SELF:_Descending
             SELF:_Header:Signature  := 1
             SELF:_Header:RootPage   := 0
@@ -233,12 +233,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL lUseOrder     := FALSE AS LOGIC
             LOCAL hasWhile      := FALSE AS LOGIC
             LOCAL hasEvalBlock  := FALSE AS LOGIC
-            LOCAL record        := 1 AS LONG
-            LOCAL count         := 1 AS LONG
-            LOCAL toDo          := 0 AS LONG
+            LOCAL record        := 1 AS DWORD
+            LOCAL count         := 1 AS DWORD
+            LOCAL toDo          := 0 AS DWORD
             LOCAL done          := 0 AS LONG
-            LOCAL nextRecord    := 0 AS LONG
-            LOCAL start         := 0 AS LONG
+            LOCAL nextRecord    := 0 AS DWORD
+            LOCAL start         := 0 AS DWORD
             LOCAL result        := FALSE AS LOGIC
             LOCAL includeRecord := TRUE AS LOGIC
 
@@ -289,7 +289,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
             IF hasWhile .OR. hasEvalBlock .OR. toDo != 0 .OR. lUseOrder .OR. ! SELF:_Conditional
-                LOCAL cbSkip AS @@Func<LONG>
+                LOCAL cbSkip AS @@Func<DWORD>
                 IF lUseOrder
                     cbSkip := { => leadingOrder:_getNextKey(SkipDirection.Forward)}
                 ELSE
@@ -369,7 +369,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN isOk
 
-        INTERNAL METHOD _InitSort(lRecCount AS LONG) AS LOGIC
+        INTERNAL METHOD _InitSort(lRecCount AS DWORD) AS LOGIC
             LOCAL fType  := 0 AS DbFieldType
             LOCAL sortInfo AS DbSortInfo
             sortInfo := DbSortInfo{0,1}     // 0 trans items, 1 sort item
@@ -403,7 +403,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD _CreateNormalIndex() AS LOGIC
             LOCAL evalCount AS LONG
-            LOCAL lRecCount AS LONG
+            LOCAL lRecCount AS DWORD
             LOCAL result    AS LOGIC
             LOCAL hasBlock  AS LOGIC
 
@@ -441,7 +441,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN _sorter:AddRecord(record:Recno, record:Data, record:Duplicate)
 
         INTERNAL METHOD _CreateUnique(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
-            LOCAL lRecCount AS LONG
+            LOCAL lRecCount AS DWORD
             lRecCount := SELF:_oRdd:RecCount
             // create sorthelper
             SELF:_InitSort(lRecCount)
@@ -452,7 +452,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_oRdd:GoTo(1)
             IF SELF:_oRdd:_isValid
                 IF ! _ordCondInfo:Custom
-                    local nRecno := 0 as long
+                    local nRecno := 0 as DWORD
                     REPEAT
                         nRecno += 1
                         SELF:_oRdd:GoTo(nRecno)
@@ -481,11 +481,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         //PRIVATE written                  AS LONG
         PRIVATE _tag                     AS CdxTag
 
-        INTERNAL CONSTRUCTOR( rdd AS DBF, sortInfo   AS DbSortInfo , len AS LONG, tag AS CdxTag )
+        INTERNAL CONSTRUCTOR( rdd AS DBF, sortInfo   AS DbSortInfo , len AS DWORD, tag AS CdxTag )
             SUPER(rdd, sortInfo, len)
             _tag := tag
 
-        INTERNAL METHOD AddRecord(nRecno AS LONG, data AS BYTE[], duplicate AS LOGIC) AS LOGIC
+        INTERNAL METHOD AddRecord(nRecno AS DWORD, data AS BYTE[], duplicate AS LOGIC) AS LOGIC
             // place item on current leaf node.
             // the code inside Doaction takes care of adding extra leaf pages etc.
             IF SELF:Unique .AND. duplicate

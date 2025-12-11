@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -58,7 +57,13 @@ namespace Microsoft.CodeAnalysis
         /// </summary>
         string MetadataName { get; }
 
+        /// <summary>
+        /// Gets the metadata token associated with this symbol, or 0 if the symbol is not loaded from metadata.
+        /// </summary>
+        int MetadataToken { get; }
+
 #nullable disable // Skipped for now https://github.com/dotnet/roslyn/issues/39166
+#pragma warning disable RS0041 // uses oblivious reference types
         /// <summary>
         /// Gets the <see cref="ISymbol"/> for the immediately containing symbol.
         /// </summary>
@@ -88,6 +93,7 @@ namespace Microsoft.CodeAnalysis
         /// </summary>
         INamespaceSymbol ContainingNamespace { get; }
 #nullable enable
+#pragma warning restore RS0041 // uses oblivious reference types
 
         /// <summary>
         /// Gets a value indicating whether the symbol is the original definition. Returns false
@@ -184,7 +190,7 @@ namespace Microsoft.CodeAnalysis
         ImmutableArray<SyntaxReference> DeclaringSyntaxReferences { get; }
 
         /// <summary>
-        /// Gets the attributes for the symbol. Returns an empty <see cref="IEnumerable{ISymbolAttribute}"/>
+        /// Gets the attributes for the symbol. Returns an empty <see cref="ImmutableArray{AttributeData}"/>
         /// if there are no attributes.
         /// </summary>
         ImmutableArray<AttributeData> GetAttributes();
@@ -204,6 +210,7 @@ namespace Microsoft.CodeAnalysis
 
         void Accept(SymbolVisitor visitor);
         TResult? Accept<TResult>(SymbolVisitor<TResult> visitor);
+        TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument);
 
         /// <summary>
         /// Returns the Documentation Comment ID for the symbol, or null if the symbol doesn't

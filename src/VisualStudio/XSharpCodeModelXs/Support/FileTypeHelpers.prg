@@ -49,6 +49,7 @@ STATIC CLASS XFileTypeHelpers
         VAR ext := System.IO.Path.GetExtension(filename):ToLower()
         SWITCH ext
         CASE ".prg"
+        CASE ".prgx"
         CASE ".xs"
             RETURN XFileType.SourceCode
         CASE ".ppo"

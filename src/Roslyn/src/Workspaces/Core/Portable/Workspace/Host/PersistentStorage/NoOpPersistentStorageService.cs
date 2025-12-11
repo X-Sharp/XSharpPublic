@@ -2,36 +2,26 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Storage;
 
-using Microsoft.CodeAnalysis.PersistentStorage;
+namespace Microsoft.CodeAnalysis.Host;
 
-namespace Microsoft.CodeAnalysis.Host
+internal sealed class NoOpPersistentStorageService : IChecksummedPersistentStorageService
 {
-    internal class NoOpPersistentStorageService : IChecksummedPersistentStorageService
+    private static readonly IChecksummedPersistentStorageService Instance = new NoOpPersistentStorageService();
+
+    private NoOpPersistentStorageService()
     {
-        public static readonly IPersistentStorageService Instance = new NoOpPersistentStorageService();
-
-        private NoOpPersistentStorageService()
-        {
-        }
-
-        public IPersistentStorage GetStorage(Solution solution)
-            => NoOpPersistentStorage.Instance;
-
-        public IPersistentStorage GetStorage(Solution solution, bool checkBranchId)
-            => NoOpPersistentStorage.Instance;
-
-        public IPersistentStorage GetStorage(Workspace workspace, SolutionKey solutionKey, bool checkBranchId)
-            => NoOpPersistentStorage.Instance;
-
-        IChecksummedPersistentStorage IChecksummedPersistentStorageService.GetStorage(Solution solution)
-            => NoOpPersistentStorage.Instance;
-
-        IChecksummedPersistentStorage IChecksummedPersistentStorageService.GetStorage(Solution solution, bool checkBranchId)
-            => NoOpPersistentStorage.Instance;
-
-        IChecksummedPersistentStorage IChecksummedPersistentStorageService.GetStorage(Workspace workspace, SolutionKey solutionKey, bool checkBranchId)
-            => NoOpPersistentStorage.Instance;
     }
+
+    public static IChecksummedPersistentStorageService GetOrThrow(IPersistentStorageConfiguration configuration)
+        => configuration.ThrowOnFailure
+            ? throw new InvalidOperationException("Database was not supported")
+            : Instance;
+
+    public ValueTask<IChecksummedPersistentStorage> GetStorageAsync(SolutionKey solutionKey, CancellationToken cancellationToken)
+        => new(NoOpPersistentStorage.GetOrThrow(solutionKey, throwOnFailure: false));
 }

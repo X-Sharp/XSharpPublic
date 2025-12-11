@@ -2,154 +2,215 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CodeStyle;
 using Microsoft.CodeAnalysis.CSharp.CodeStyle;
 using Microsoft.CodeAnalysis.CSharp.UseExpressionBody;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Diagnostics;
 using Microsoft.CodeAnalysis.Editor.UnitTests.CodeActions;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Xunit;
-using Xunit.Abstractions;
 
-namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.UseExpressionBody
+namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.UseExpressionBody;
+
+using VerifyCS = CSharpCodeFixVerifier<
+    UseExpressionBodyDiagnosticAnalyzer,
+    UseExpressionBodyCodeFixProvider>;
+
+[Trait(Traits.Feature, Traits.Features.CodeActionsUseExpressionBody)]
+public class UseExpressionBodyForConversionOperatorsAnalyzerTests
 {
-    public class UseExpressionBodyForConversionOperatorsAnalyzerTests : AbstractCSharpDiagnosticProviderBasedUserDiagnosticTest
+    private static async Task TestWithUseExpressionBody(string code, string fixedCode)
     {
-        public UseExpressionBodyForConversionOperatorsAnalyzerTests(ITestOutputHelper logger)
-          : base(logger)
+        await new VerifyCS.Test
         {
-        }
-
-        internal override (DiagnosticAnalyzer, CodeFixProvider) CreateDiagnosticProviderAndFixer(Workspace workspace)
-            => (new UseExpressionBodyDiagnosticAnalyzer(), new UseExpressionBodyCodeFixProvider());
-
-        private OptionsCollection UseExpressionBody =>
-            Option(CSharpCodeStyleOptions.PreferExpressionBodiedOperators, CSharpCodeStyleOptions.WhenPossibleWithSilentEnforcement);
-
-        private OptionsCollection UseBlockBody =>
-            Option(CSharpCodeStyleOptions.PreferExpressionBodiedOperators, CSharpCodeStyleOptions.NeverWithSilentEnforcement);
-
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExpressionBody)]
-        public async Task TestUseExpressionBody1()
-        {
-            await TestInRegularAndScriptAsync(
-@"class C
-{
-    public static implicit operator C(int i)
-    {
-        [|Bar|]();
+            TestCode = code,
+            FixedCode = fixedCode,
+            Options = { { CSharpCodeStyleOptions.PreferExpressionBodiedOperators, ExpressionBodyPreference.WhenPossible } }
+        }.RunAsync();
     }
-}",
-@"class C
-{
-    public static implicit operator C(int i) => Bar();
-}", options: UseExpressionBody);
-        }
 
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExpressionBody)]
-        public async Task TestUseExpressionBody2()
-        {
-            await TestInRegularAndScriptAsync(
-@"class C
-{
-    public static implicit operator C(int i)
+    private static async Task TestWithUseBlockBody(string code, string fixedCode)
     {
-        return [|Bar|]();
+        await new VerifyCS.Test
+        {
+            TestCode = code,
+            FixedCode = fixedCode,
+            Options = { { CSharpCodeStyleOptions.PreferExpressionBodiedOperators, ExpressionBodyPreference.Never } }
+        }.RunAsync();
     }
-}",
-@"class C
-{
-    public static implicit operator C(int i) => Bar();
-}", options: UseExpressionBody);
-        }
 
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExpressionBody)]
-        public async Task TestUseExpressionBody3()
-        {
-            await TestInRegularAndScriptAsync(
-@"class C
-{
-    public static implicit operator C(int i)
+    [Fact]
+    public async Task TestUseExpressionBody1()
     {
-        [|throw|] new NotImplementedException();
-    }
-}",
-@"class C
-{
-    public static implicit operator C(int i) => throw new NotImplementedException();
-}", options: UseExpressionBody);
-        }
+        var code = """
+            class C
+            {
+                static int Bar() { return 0; }
 
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExpressionBody)]
-        public async Task TestUseExpressionBody4()
-        {
-            await TestInRegularAndScriptAsync(
-@"class C
-{
-    public static implicit operator C(int i)
-    {
-        [|throw|] new NotImplementedException(); // comment
-    }
-}",
-@"class C
-{
-    public static implicit operator C(int i) => throw new NotImplementedException(); // comment
-}", options: UseExpressionBody);
-        }
+                {|IDE0023:public static implicit operator {|CS0161:C|}(int i)
+                {
+                    Bar();
+                }|}
+            }
+            """;
+        var fixedCode = """
+            class C
+            {
+                static int Bar() { return 0; }
 
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExpressionBody)]
-        public async Task TestUseBlockBody1()
-        {
-            await TestInRegularAndScriptAsync(
-@"class C
-{
-    public static implicit operator C(int i) [|=>|] Bar();
-}",
-@"class C
-{
-    public static implicit operator C(int i)
-    {
-        return Bar();
+                public static implicit operator C(int i) => Bar();
+            }
+            """;
+        await TestWithUseExpressionBody(code, fixedCode);
     }
-}", options: UseBlockBody);
-        }
 
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExpressionBody)]
-        public async Task TestUseBlockBody3()
-        {
-            await TestInRegularAndScriptAsync(
-@"class C
-{
-    public static implicit operator C(int i) [|=>|] throw new NotImplementedException();
-}",
-@"class C
-{
-    public static implicit operator C(int i)
+    [Fact]
+    public async Task TestUseExpressionBody2()
     {
-        throw new NotImplementedException();
-    }
-}", options: UseBlockBody);
-        }
+        var code = """
+            class C
+            {
+                static int Bar() { return 0; }
 
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsUseExpressionBody)]
-        public async Task TestUseBlockBody4()
-        {
-            await TestInRegularAndScriptAsync(
-@"class C
-{
-    public static implicit operator C(int i) [|=>|] throw new NotImplementedException(); // comment
-}",
-@"class C
-{
-    public static implicit operator C(int i)
-    {
-        throw new NotImplementedException(); // comment
+                {|IDE0023:public static implicit operator C(int i)
+                {
+                    return Bar();
+                }|}
+            }
+            """;
+        var fixedCode = """
+            class C
+            {
+                static int Bar() { return 0; }
+
+                public static implicit operator C(int i) => Bar();
+            }
+            """;
+        await TestWithUseExpressionBody(code, fixedCode);
     }
-}", options: UseBlockBody);
-        }
+
+    [Fact]
+    public async Task TestUseExpressionBody3()
+    {
+        var code = """
+            using System;
+
+            class C
+            {
+                {|IDE0023:public static implicit operator C(int i)
+                {
+                    throw new NotImplementedException();
+                }|}
+            }
+            """;
+        var fixedCode = """
+            using System;
+
+            class C
+            {
+                public static implicit operator C(int i) => throw new NotImplementedException();
+            }
+            """;
+        await TestWithUseExpressionBody(code, fixedCode);
+    }
+
+    [Fact]
+    public async Task TestUseExpressionBody4()
+    {
+        var code = """
+            using System;
+
+            class C
+            {
+                {|IDE0023:public static implicit operator C(int i)
+                {
+                    throw new NotImplementedException(); // comment
+                }|}
+            }
+            """;
+        var fixedCode = """
+            using System;
+
+            class C
+            {
+                public static implicit operator C(int i) => throw new NotImplementedException(); // comment
+            }
+            """;
+        await TestWithUseExpressionBody(code, fixedCode);
+    }
+
+    [Fact]
+    public async Task TestUseBlockBody1()
+    {
+        var code = """
+            class C
+            {
+                static int Bar() { return 0; }
+
+                {|IDE0023:public static implicit operator C(int i) => Bar();|}
+            }
+            """;
+        var fixedCode = """
+            class C
+            {
+                static int Bar() { return 0; }
+
+                public static implicit operator C(int i)
+                {
+                    return Bar();
+                }
+            }
+            """;
+        await TestWithUseBlockBody(code, fixedCode);
+    }
+
+    [Fact]
+    public async Task TestUseBlockBody3()
+    {
+        var code = """
+            using System;
+
+            class C
+            {
+                {|IDE0023:public static implicit operator C(int i) => throw new NotImplementedException();|}
+            }
+            """;
+        var fixedCode = """
+            using System;
+
+            class C
+            {
+                public static implicit operator C(int i)
+                {
+                    throw new NotImplementedException();
+                }
+            }
+            """;
+        await TestWithUseBlockBody(code, fixedCode);
+    }
+
+    [Fact]
+    public async Task TestUseBlockBody4()
+    {
+        var code = """
+            using System;
+
+            class C
+            {
+                {|IDE0023:public static implicit operator C(int i) => throw new NotImplementedException();|} // comment
+            }
+            """;
+        var fixedCode = """
+            using System;
+
+            class C
+            {
+                public static implicit operator C(int i)
+                {
+                    throw new NotImplementedException(); // comment
+                }
+            }
+            """;
+        await TestWithUseBlockBody(code, fixedCode);
     }
 }

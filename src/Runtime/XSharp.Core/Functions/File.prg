@@ -339,7 +339,7 @@ BEGIN NAMESPACE XSharp.IO
             LOCAL iCount := 0 AS INT64
             VAR oStream := XSharp.IO.File.findStream(pFile)
             IF oStream IS FileStream
-                    oStream:SafeRead(pBuffer, dwCount, OUT VAR iRead)
+                oStream:SafeRead(pBuffer, dwCount, OUT VAR iRead)
                 iCount := iRead
             ELSEIF oStream != NULL_OBJECT
                 TRY
@@ -502,7 +502,7 @@ BEGIN NAMESPACE XSharp.IO
                 END TRY
             ENDIF
         RETURN lOk
-        INTERNAL STATIC METHOD ChSize(pFile AS IntPtr,nValue AS DWORD) AS LOGIC
+        INTERNAL STATIC METHOD ChSize(pFile AS IntPtr,nValue AS INT64) AS LOGIC
             LOCAL oStream := XSharp.IO.File.findStream(pFile) AS Stream
             LOCAL lOk := FALSE AS LOGIC
             IF oStream != NULL_OBJECT
@@ -577,7 +577,7 @@ FUNCTION FException() AS Exception
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fchsize/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FChSize(ptrHandle AS IntPtr,dwOffset AS DWORD) AS LOGIC
+FUNCTION FChSize(ptrHandle AS IntPtr,dwOffset AS INT64) AS LOGIC
     RETURN XSharp.IO.File.ChSize(ptrHandle, dwOffset)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fclose/*" />
@@ -598,7 +598,7 @@ FUNCTION FEof(ptrHandle AS IntPtr) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fflock/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FFLock(ptrHandle AS IntPtr,offset AS DWORD,length AS DWORD) AS LOGIC
+FUNCTION FFLock(ptrHandle AS IntPtr,offset AS INT64,length AS DWORD) AS LOGIC
     VAR lResult := XSharp.IO.File.Lock(ptrHandle, (INT64) offset, (INT64) length, TRUE)
     //    IF ! lResult
     //        ? "DWLock", dwOffset, dwLength, lResult
@@ -740,6 +740,10 @@ FUNCTION FRewind(ptrHandle AS IntPtr) AS LOGIC
 FUNCTION FSeek3(ptrHandle AS IntPtr,liOffset AS LONG, dwOrigin AS DWORD) AS LONG
     RETURN (LONG) XSharp.IO.File.Seek(ptrHandle, (INT64) liOffset, dwOrigin)
 
+/// <inheritdoc cref="FSeek3" />
+FUNCTION FSeek64(ptrHandle AS IntPtr,liOffset AS INT64, dwOrigin AS DWORD) AS INT64
+    RETURN XSharp.IO.File.Seek(ptrHandle, liOffset, dwOrigin)
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ftell/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FTell(ptrHandle AS IntPtr) AS DWORD
@@ -877,12 +881,6 @@ FUNCTION FOpen2(cFileName AS STRING,kMode AS DWORD) AS IntPtr
     LOCAL oFileMode AS VOFileMode
     oFileMode := VOFileMode{kMode, 0}
     RETURN XSharp.IO.File.CreateFile(cFileName, oFileMode)
-
-FUNCTION FConvertToMemoryStream(pFile AS IntPtr) AS IntPtr
-    RETURN pFile
-
-FUNCTION FConvertToFileStream(pFile AS IntPtr) AS IntPtr
-    RETURN pFile
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getfattr/*" />
 FUNCTION GetFAttr(uAttributes AS STRING) AS DWORD

@@ -2,14 +2,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-namespace Microsoft.CodeAnalysis.PooledObjects
+using System.Collections.Generic;
+
+namespace Microsoft.CodeAnalysis.PooledObjects;
+
+internal sealed partial class PooledHashSet<T> : IPooled, IReadOnlySet<T>
 {
-    internal partial class PooledHashSet<T> : IPooled
+    public static PooledDisposer<PooledHashSet<T>> GetInstance(out PooledHashSet<T> instance)
     {
-        public static PooledDisposer<PooledHashSet<T>> GetInstance(out PooledHashSet<T> instance)
-        {
-            instance = GetInstance();
-            return new PooledDisposer<PooledHashSet<T>>(instance);
-        }
+        instance = GetInstance();
+        return new PooledDisposer<PooledHashSet<T>>(instance);
     }
 }

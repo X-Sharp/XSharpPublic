@@ -1,0 +1,7 @@
+POST http://localhost:5185/users/1
+content-type: application/json
+
+{
+    "Id": 0,
+    "Name": "XSharp"
+}

@@ -56,12 +56,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 context.IsWithinIteratorContext = Me.ParsedInIterator
         End Function
 
-#Region "Serialization"
-        Friend Sub New(reader As ObjectReader)
-            MyBase.New(reader)
-        End Sub
-#End Region
-
         ' The rest of this class is just a convenient place to put some helper functions that are shared by the 
         ' various subclasses.
 
@@ -87,20 +81,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Get
                 Return Me.Kind = SyntaxKind.DocumentationCommentTrivia
             End Get
-        End Property
-
-        Protected Overrides Function GetSlotCount() As Integer
-            Throw ExceptionUtilities.Unreachable
-        End Function
-
-        Protected Property _slotCount As Integer
-            Get
-                Return Me.SlotCount
-            End Get
-
-            Set(value As Integer)
-                Me.SlotCount = value
-            End Set
         End Property
 
         Friend Function GetFirstToken() As SyntaxToken
@@ -223,7 +203,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         ' Use conditional weak table so we always return same identity for structured trivia
-        Private Shared ReadOnly s_structuresTable As New ConditionalWeakTable(Of SyntaxNode, Dictionary(Of Microsoft.CodeAnalysis.SyntaxTrivia, SyntaxNode))
+        Private Shared ReadOnly s_structuresTable As New ConditionalWeakTable(Of SyntaxNode, Dictionary(Of Microsoft.CodeAnalysis.SyntaxTrivia, WeakReference(Of SyntaxNode)))
 
         Public Overrides Function GetStructure(trivia As Microsoft.CodeAnalysis.SyntaxTrivia) As SyntaxNode
             If Not trivia.HasStructure Then
@@ -239,16 +219,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim structsInParent = s_structuresTable.GetOrCreateValue(parent)
 
             SyncLock structsInParent
-                If Not structsInParent.TryGetValue(trivia, [structure]) Then
+                Dim weakStructure As WeakReference(Of SyntaxNode) = Nothing
+                If Not structsInParent.TryGetValue(trivia, weakStructure) Then
                     [structure] = VisualBasic.Syntax.StructuredTriviaSyntax.Create(trivia)
-                    structsInParent.Add(trivia, [structure])
+                    structsInParent.Add(trivia, New WeakReference(Of SyntaxNode)([structure]))
+                ElseIf Not weakStructure.TryGetTarget([structure]) Then
+                    [structure] = VisualBasic.Syntax.StructuredTriviaSyntax.Create(trivia)
+                    weakStructure.SetTarget([structure])
                 End If
             End SyncLock
 
             Return [structure]
         End Function
 
-        Public Overrides Function CreateSeparator(Of TNode As SyntaxNode)(element As SyntaxNode) As CodeAnalysis.SyntaxToken
+        Public Overrides Function CreateSeparator(element As SyntaxNode) As CodeAnalysis.SyntaxToken
             Dim separatorKind As SyntaxKind = SyntaxKind.CommaToken
             If element.Kind = SyntaxKind.JoinCondition Then
                 separatorKind = SyntaxKind.AndKeyword

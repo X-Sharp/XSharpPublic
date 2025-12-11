@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Threading;
@@ -33,6 +32,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.ProjectSystem.C
             {
                 throw new ArgumentException(nameof(filesToInclude), "Must specify some files to compile.");
             }
+
             if (outputFileName == null)
             {
                 throw new ArgumentException(nameof(outputFileName), "Must specify an output file name.");

@@ -4,29 +4,10 @@
 
 #nullable disable
 
+using System;
+
 namespace TestResources
 {
-    public static class AnalyzerTests
-    {
-        private static byte[] s_faultyAnalyzer;
-        public static byte[] FaultyAnalyzer => ResourceLoader.GetOrCreateResource(ref s_faultyAnalyzer, "Analyzers.FaultyAnalyzer.dll");
-    }
-
-    public static class AssemblyLoadTests
-    {
-        private static byte[] s_alpha;
-        public static byte[] Alpha => ResourceLoader.GetOrCreateResource(ref s_alpha, "AssemblyLoadTests.Alpha.dll");
-
-        private static byte[] s_beta;
-        public static byte[] Beta => ResourceLoader.GetOrCreateResource(ref s_beta, "AssemblyLoadTests.Beta.dll");
-
-        private static byte[] s_delta;
-        public static byte[] Delta => ResourceLoader.GetOrCreateResource(ref s_delta, "AssemblyLoadTests.Delta.dll");
-
-        private static byte[] s_gamma;
-        public static byte[] Gamma => ResourceLoader.GetOrCreateResource(ref s_gamma, "AssemblyLoadTests.Gamma.dll");
-    }
-
     public static class DiagnosticTests
     {
         private static byte[] s_badresfile;
@@ -191,11 +172,32 @@ namespace TestResources.NetFX
         private static byte[] s_mincorlib;
         public static byte[] mincorlib => ResourceLoader.GetOrCreateResource(ref s_mincorlib, "NetFX.Minimal.mincorlib.dll");
 
+        private static string s_mincorlib_cs;
+        public static string mincorlib_cs => ResourceLoader.GetOrCreateResource(ref s_mincorlib_cs, "NetFX.Minimal.mincorlib.cs");
+
         private static byte[] s_minasync;
         public static byte[] minasync => ResourceLoader.GetOrCreateResource(ref s_minasync, "NetFX.Minimal.minasync.dll");
 
         private static byte[] s_minasynccorlib;
         public static byte[] minasynccorlib => ResourceLoader.GetOrCreateResource(ref s_minasynccorlib, "NetFX.Minimal.minasynccorlib.dll");
+    }
+
+    public static class PortableProfile7
+    {
+        private static byte[] s_mscorlib;
+        public static byte[] Mscorlib => ResourceLoader.GetOrCreateResource(ref s_mscorlib, "NetFX.PortableProfile7.mscorlib.dll");
+
+        private static byte[] s_systemRuntime;
+        public static byte[] SystemRuntime => ResourceLoader.GetOrCreateResource(ref s_systemRuntime, "NetFX.PortableProfile7.System.Runtime.dll");
+    }
+
+    public static class WinRt
+    {
+        public static byte[] s_systemRuntimeWindowsRuntime;
+        public static byte[] SystemRuntimeWindowsRuntime => ResourceLoader.GetOrCreateResource(ref s_systemRuntimeWindowsRuntime, "NetFX.WinRt.System.Runtime.WindowsRuntime.dll");
+
+        public static byte[] s_systemRuntimeWindowsRuntimeUIXaml;
+        public static byte[] SystemRuntimeWindowsRuntimeUIXaml => ResourceLoader.GetOrCreateResource(ref s_systemRuntimeWindowsRuntimeUIXaml, "NetFX.WinRt.System.Runtime.WindowsRuntime.UI.Xaml.dll");
     }
 
     public static class ValueTuple
@@ -262,6 +264,12 @@ namespace TestResources
 
         private static byte[] s_inheritIComparable;
         public static byte[] InheritIComparable => ResourceLoader.GetOrCreateResource(ref s_inheritIComparable, "SymbolsTests.InheritIComparable.dll");
+
+        private static byte[] s_MVID1;
+        public static byte[] MVID1 => ResourceLoader.GetOrCreateResource(ref s_MVID1, "SymbolsTests.RefAssembly.MVID1.dll");
+
+        private static byte[] s_MVID2;
+        public static byte[] MVID2 => ResourceLoader.GetOrCreateResource(ref s_MVID2, "SymbolsTests.RefAssembly.MVID2.dll");
 
         private static byte[] s_MDTestLib1;
         public static byte[] MDTestLib1 => ResourceLoader.GetOrCreateResource(ref s_MDTestLib1, "SymbolsTests.MDTestLib1.dll");
@@ -503,6 +511,9 @@ namespace TestResources.SymbolsTests
 
         private static byte[] s_invalidPublicKey;
         public static byte[] InvalidPublicKey => ResourceLoader.GetOrCreateResource(ref s_invalidPublicKey, "SymbolsTests.Metadata.InvalidPublicKey.dll");
+
+        private static byte[] s_badDefaultParameterValue;
+        public static byte[] BadDefaultParameterValue => ResourceLoader.GetOrCreateResource(ref s_badDefaultParameterValue, "SymbolsTests.Metadata.BadDefaultParameterValue.dll");
 
         private static byte[] s_MDTestAttributeApplicationLib;
         public static byte[] MDTestAttributeApplicationLib => ResourceLoader.GetOrCreateResource(ref s_MDTestAttributeApplicationLib, "SymbolsTests.Metadata.MDTestAttributeApplicationLib.dll");

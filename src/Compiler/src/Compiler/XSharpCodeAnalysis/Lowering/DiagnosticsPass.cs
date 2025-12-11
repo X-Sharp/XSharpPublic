@@ -169,13 +169,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return;
         }
-        private void XsVisitIndexerAccess(BoundIndexerAccess node)
+        private BoundIndexerAccess XsVisitIndexerAccess(BoundIndexerAccess node)
         {
             if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
                 XsCheckMemberAccess(node, node.ReceiverOpt, amc, node.Type, node.Indexer);
             }
-            return;
+            return node;
         }
         private void XsVisitCall(BoundCall node)
         {

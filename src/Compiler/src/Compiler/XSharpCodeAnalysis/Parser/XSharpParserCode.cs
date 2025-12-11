@@ -166,6 +166,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             this.Interpreter.PredictionMode = PredictionMode.Ll;
         }
 
+
         private static bool CanFollowCast(int c)
         {
             // This code is derived from the Roslyn code for CanFollowCast() In LanguageParser.Cs
@@ -1028,6 +1029,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public string Name => ParentName + ShortName;
             public string ShortName => Id.GetText();
         }
+
         public partial class VodllContext : IMemberContext, IGlobalEntityContext
         {
 #if !VSPARSER
@@ -1220,6 +1222,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public partial class NamedArgumentContext
         {
             internal bool IsMissing => this.ChildCount == 0;
+        }
+        public partial class Namespace_Context
+        {
+            internal bool IsFileScopedNamespace => this.BEGIN() == null;
         }
         public partial class UnnamedArgumentContext
         {

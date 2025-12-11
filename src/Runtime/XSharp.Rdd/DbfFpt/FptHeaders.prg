@@ -41,8 +41,7 @@ INTERNAL ABSTRACT CLASS FptHeader
         local lOk := FALSE AS LOGIC
         IF SELF:Stream != NULL
             DO WHILE ! lOk
-                SELF:Stream:SafeSetPos(SELF:OffSet)
-                lOk := SELF:Stream:SafeRead(Buffer, SELF:Length)
+                lOk := SELF:Stream:SafeReadAt(SELF:OffSet, Buffer, SELF:Length)
                 IF ! lOk
                     if SELF:Stream:Length < SELF:OffSet+SELF:Length
                         EXIT
@@ -56,8 +55,7 @@ INTERNAL ABSTRACT CLASS FptHeader
         local lOk := FALSE AS LOGIC
         IF SELF:Stream != NULL
             DO WHILE ! lOk
-                SELF:Stream:SafeSetPos(SELF:OffSet)
-                lOk := SELF:Stream:SafeWrite(Buffer)
+                lOk := SELF:Stream:SafeWriteAt(SELF:OffSet, Buffer, Buffer:Length)
                 IF ! lOk
                     if SELF:Stream:Length < SELF:OffSet + SELF:Length
                         EXIT

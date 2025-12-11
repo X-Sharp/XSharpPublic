@@ -30,7 +30,6 @@ FUNCTION SetAmPm(lNewSetting AS LOGIC) AS LOGIC
     RuntimeState.SetValue<LONG>(Set.Hours, IIF(lNewSetting, 12, 24))
     return lOld
 
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setansi/*" />
 FUNCTION SetAnsi() AS LOGIC
     RETURN RuntimeState.Ansi
@@ -539,11 +538,11 @@ FUNCTION SetInternational(symNewSetting AS STRING) AS STRING
     SWITCH symNewSetting:ToUpper()
         CASE "CLIPPER"
         CASE "XPP"
-            RuntimeState.GetInstance()._SetInternationalClipper()
+            RuntimeState.GetInstance():_SetInternationalClipper()
         CASE "WINDOWS"
         CASE "UNICODE"
         CASE "ORDINAL"
-            RuntimeState.GetInstance()._SetInternationalWindows()
+            RuntimeState.GetInstance():_SetInternationalWindows()
         OTHERWISE
             THROW Error.ArgumentError(__ENTITY__, NAMEOF(symNewSetting), "Unsupported international mode: "+ symNewSetting)
     END SWITCH
@@ -598,7 +597,6 @@ FUNCTION SetRefresh(nNewSetting AS REAL8) AS REAL8
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setrefresh/*" />
 FUNCTION SetRefresh() AS REAL8
 	RETURN RuntimeState.Refresh
-
 /// <summary>Get/Set hours format (12 or 24 hours)</summary>
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/sethours/*" />
 FUNCTION SetHours() AS LONG

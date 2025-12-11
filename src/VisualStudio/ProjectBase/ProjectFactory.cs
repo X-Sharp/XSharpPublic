@@ -154,7 +154,7 @@ namespace Microsoft.VisualStudio.Project
         /// Delegate to CreateProject implemented by the derived class.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
-            Justification = "The global property handles is instantiated here and used in the project node that will Dispose it")]
+            Justification="The global property handles is instantiated here and used in the project node that will Dispose it")]
         protected override object PreCreateForOuter(IntPtr outerProjectIUnknown)
         {
             Utilities.CheckNotNull(this.buildProject, "The build project should have been initialized before calling PreCreateForOuter.");
@@ -166,7 +166,6 @@ namespace Microsoft.VisualStudio.Project
             ProjectNode node;
             if (IsSdkProject)
             {
-
                 node = this.CreateSdkProject();
             }
             else

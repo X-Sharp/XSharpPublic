@@ -404,7 +404,7 @@ METHOD Execute( uParam ) AS LOGIC CLIPPER
 		CASE SQL_FETCH_RELATIVE
 			lResult := SELF:Skip(nRow)
 		CASE SQL_FETCH_ABSOLUTE
-			lResult := SELF:GoTo(nRow)
+			lResult := SELF:GoTo((DWORD) nRow)
 		OTHERWISE
 			lResult := FALSE
 		END SWITCH

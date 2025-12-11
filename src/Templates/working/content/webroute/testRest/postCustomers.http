@@ -1,0 +1,17 @@
+POST http://localhost:5185/api/customers
+content-type: application/json
+
+[
+{
+    "FirstName": "Fabrice",
+    "LastName": "Foray",
+    "Zip": "07200",
+    "City": "Lachapelle"
+},
+{
+    "FirstName": "John",
+    "LastName": "Doe",
+    "Zip": "12345",
+    "City": "Anytown"
+}
+]

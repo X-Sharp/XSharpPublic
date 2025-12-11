@@ -1016,10 +1016,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             // be computed, then it is important for us to pass ignoreInterfaceImplementationChanges: true
             // (see MethodSymbol.IsMetadataVirtual for details).
             // Since we are only concerned with overrides (of class methods), interface implementations can be ignored.
-            const bool ignoreInterfaceImplementationChanges = true;
+            const MethodSymbol.IsMetadataVirtualOption ignoreInterfaceImplementationChanges = MethodSymbol.IsMetadataVirtualOption.IgnoreInterfaceImplementationChanges;
 
             wasAmbiguous = false;
-            if (!method.IsMetadataVirtual(ignoreInterfaceImplementationChanges))
+            if (!method.IsMetadataVirtual(ignoreInterfaceImplementationChanges) || method.IsStatic)
             {
                 return null;
             }
@@ -1069,8 +1069,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// </remarks>
         private static bool IsOverriddenSymbolAccessible(Symbol overridden, NamedTypeSymbol overridingContainingType)
         {
-            HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-            return AccessCheck.IsSymbolAccessible(overridden.OriginalDefinition, overridingContainingType.OriginalDefinition, ref useSiteDiagnostics);
+            var discardedUseSiteInfo = CompoundUseSiteInfo<AssemblySymbol>.Discarded;
+            return AccessCheck.IsSymbolAccessible(overridden.OriginalDefinition, overridingContainingType.OriginalDefinition, ref discardedUseSiteInfo);
         }
     }
 }

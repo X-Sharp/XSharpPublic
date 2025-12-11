@@ -9,7 +9,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Threading;
-
+#nullable disable
 namespace Microsoft.Build.Shared
 {
 

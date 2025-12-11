@@ -60,7 +60,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 if (xNode is XP.VodefineContext)
                 {
                     var vodef = xNode as XP.VodefineContext;
-                    DiagnosticBag diagnostics = DiagnosticBag.GetInstance();
+                    BindingDiagnosticBag diagnostics = BindingDiagnosticBag.GetInstance();
                     // detect recursion: define depends on itself, like in DEFINE FOO := FOO + 1
                     if (XSharpString.Equals(vodef.Id.GetText(), currentDefine))
                     {
@@ -75,7 +75,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     var initializerBinder = new ImplicitlyTypedFieldBinder(binder, fieldsBeingBound);
                     var initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, RefKind.None, declarator.Initializer, declarator);
                     var repeat = 0;
-                    while (initializerOpt is { } && initializerOpt.ConstantValue == null && repeat < 5)
+                    while (initializerOpt is { } && initializerOpt.ConstantValueOpt == null && repeat < 5)
                     {
                         repeat += 1;
                         diagnostics.Clear();
@@ -98,7 +98,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             {
                                 type = this.Type;
                             }
-                            if (!type.IsVoidPointer() && initializerOpt.ConstantValue != null
+                            if (!type.IsVoidPointer() && initializerOpt.ConstantValueOpt != null
                                 && !this.IsConst && type.CanBeConst() && !type.IsObjectType())
                             {
                                 this._modifiers |= DeclarationModifiers.Const;

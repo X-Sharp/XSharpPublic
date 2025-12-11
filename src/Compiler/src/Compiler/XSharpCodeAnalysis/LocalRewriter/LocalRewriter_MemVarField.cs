@@ -32,7 +32,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var arg1 = MakeConversionNode(_factory.Literal(property.Alias), getMethod.Parameters[0].Type, false);
                 var arg2 = MakeConversionNode(_factory.Literal(property.Name), getMethod.Parameters[1].Type, false);
-                var call = BoundCall.Synthesized(syntax, null, getMethod, arg1, arg2);
+                var call = BoundCall.Synthesized(syntax, null, ThreeState.False, getMethod, arg1, arg2);
                 // Keep track of the original PropertyAccess in case they are passing the variable by reference
                 call.PropertyAccess = bpa;
                 return call;
@@ -40,7 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             else
             {
                 var arg1 = MakeConversionNode(_factory.Literal(property.Name), getMethod.Parameters[0].Type, false);
-                var call = BoundCall.Synthesized(syntax, null, getMethod, arg1);
+                var call = BoundCall.Synthesized(syntax, null, ThreeState.False, getMethod, arg1);
                 call.PropertyAccess = bpa;
                 return call;
             }
@@ -56,14 +56,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var arg1 = MakeConversionNode(_factory.Literal(property.Alias), setMethod.Parameters[0].Type, false);
                 var arg2 = MakeConversionNode(_factory.Literal(property.Name), setMethod.Parameters[1].Type, false);
                 var arg3 = MakeConversionNode(rewrittenRight, setMethod.Parameters[2].Type, false);
-                return BoundCall.Synthesized(syntax, null, setMethod, ImmutableArray.Create(arg1, arg2,arg3));
+                return BoundCall.Synthesized(syntax, null, ThreeState.False, setMethod, ImmutableArray.Create(arg1, arg2,arg3));
 
             }
             else
             {
                 var arg1 = _factory.Literal(property.Name);
                 var arg2 = MakeConversionNode(rewrittenRight, _compilation.UsualType(), false);
-                return BoundCall.Synthesized(syntax, null, setMethod, arg1, arg2);
+                return BoundCall.Synthesized(syntax, null, ThreeState.False, setMethod, arg1, arg2);
 
             }
 

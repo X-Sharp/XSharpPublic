@@ -135,6 +135,13 @@ namespace Microsoft.CodeAnalysis.Emit
 namespace Microsoft.CodeAnalysis.CSharp
 {
 
+    public enum SyntaxKind : ushort
+    {
+        None = 0,
+        WarningsKeyword = 1,
+        AnnotationsKeyword = 2
+    }
+
     public enum InternalErrorCode
     {
         Void = 0,
@@ -143,8 +150,25 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     public enum LanguageVersion
     {
-        CSharp7_3,
-        CSharp9
+        CSharp7_3 = 703,
+        CSharp9 = 900,
+        CSharp12 = 1200,
+        CSharp13 = 1300,
+        Default = CSharp13,
+        /// <summary>
+        /// The latest major supported version.
+        /// </summary>
+        LatestMajor = int.MaxValue - 2,
+
+        /// <summary>
+        /// Preview of the next language version.
+        /// </summary>
+        Preview = int.MaxValue - 1,
+
+        /// <summary>
+        /// The latest supported version of the language.
+        /// </summary>
+        Latest = int.MaxValue,
     }
     internal static partial class ErrorFacts
     {

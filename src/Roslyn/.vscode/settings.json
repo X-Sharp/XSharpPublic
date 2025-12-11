@@ -1,0 +1,9 @@
+    "dotnet.testWindow.disableAutoDiscovery": true,
+    "dotnet.testWindow.disableBuildOnRefresh": true,
+    "cSpell.words": [
+        "Nerdbank",
+        "NETCOREAPP",
+        "Unregistration",
+        "Unregistrations",
+        "Xunit"
+    ]

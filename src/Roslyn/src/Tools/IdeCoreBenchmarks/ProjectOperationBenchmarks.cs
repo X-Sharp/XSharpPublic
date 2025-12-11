@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Linq;
 using System.Text;
 using BenchmarkDotNet.Attributes;
 using Microsoft.CodeAnalysis;
@@ -11,8 +12,10 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace IdeCoreBenchmarks
 {
-    public class ProjectOperationBenchmarks
+    public static class ProjectOperationBenchmarks
     {
+        private static readonly SourceText s_newText = SourceText.From("text");
+
         [MemoryDiagnoser]
         public class IterateDocuments
         {
@@ -96,6 +99,17 @@ namespace IdeCoreBenchmarks
                 }
 
                 return count;
+            }
+
+            [Benchmark(Description = "Solution.WithDocumentText")]
+            public void WithDocumentText()
+            {
+                var solution = Project.Solution;
+                var documentId = Project.DocumentIds.FirstOrDefault();
+                if (documentId != null)
+                {
+                    var _ = solution.WithDocumentText(documentId, s_newText);
+                }
             }
         }
     }

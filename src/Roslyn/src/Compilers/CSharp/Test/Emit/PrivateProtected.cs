@@ -420,7 +420,7 @@ struct Struct
                 .VerifyDiagnostics(
                 // (3,27): error CS8503: The modifier 'private protected' is not valid for this item in C# 7.2. Please use language version '8.0' or greater.
                 //     private protected int M();
-                Diagnostic(ErrorCode.ERR_DefaultInterfaceImplementationModifier, "M").WithArguments("private protected", "7.2", "8.0").WithLocation(3, 27),
+                Diagnostic(ErrorCode.ERR_InvalidModifierForLanguageVersion, "M").WithArguments("private protected", "7.2", "8.0").WithLocation(3, 27),
                 // (3,27): error CS8707: Target runtime doesn't support 'protected', 'protected internal', or 'private protected' accessibility for a member of an interface.
                 //     private protected int M();
                 Diagnostic(ErrorCode.ERR_RuntimeDoesNotSupportProtectedAccessForInterfaceMember, "M").WithLocation(3, 27)
@@ -523,10 +523,7 @@ public class Container
                 Diagnostic(ErrorCode.ERR_BadMemberProtection, "V").WithLocation(10, 40),
                 // (12,24): error CS0107: More than one protection modifier
                 //     private public int this[int index] => 1;            // 9
-                Diagnostic(ErrorCode.ERR_BadMemberProtection, "this").WithLocation(12, 24),
-                // (12,43): error CS0107: More than one protection modifier
-                //     private public int this[int index] => 1;            // 9
-                Diagnostic(ErrorCode.ERR_BadMemberProtection, "1").WithLocation(12, 43)
+                Diagnostic(ErrorCode.ERR_BadMemberProtection, "this").WithLocation(12, 24)
                 );
         }
 
@@ -786,7 +783,7 @@ class Client
     }
 }
 ";
-            CreateCompilationWithMscorlib45(source, parseOptions: TestOptions.Regular7_2)
+            CreateCompilationWithMscorlib461(source, parseOptions: TestOptions.Regular7_2)
             .VerifyDiagnostics(
                 // (4,35): error CS1057: 'Extensions.SomeExtension(string)': static classes cannot contain protected members
                 //     static private protected void SomeExtension(this string s) { } // error: no pp in static class

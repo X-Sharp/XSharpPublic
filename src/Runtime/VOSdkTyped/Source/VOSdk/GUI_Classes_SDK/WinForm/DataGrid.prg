@@ -168,7 +168,7 @@ CLASS VODataGridView INHERIT SWF.DataGridView IMPLEMENTS IVOControlProperties
 
 		METHOD ReverseSortOrder() AS VOID
 			LOCAL aRows AS List<VODataGridViewRow>
-			LOCAL aSelected AS LIST<LONG>
+			LOCAL aSelected AS LIST<DWORD>
 			LOCAL nCurrentCol AS LONG
 			IF SELF:CurrentCell != NULL_OBJECT
 				nCurrentCol := SELF:CurrentCell:ColumnIndex
@@ -176,7 +176,7 @@ CLASS VODataGridView INHERIT SWF.DataGridView IMPLEMENTS IVOControlProperties
 				nCurrentCol := 0
 			ENDIF
 			SELF:SuspendLayout()
-			aSelected := List<LONG>{}
+			aSelected := List<DWORD>{}
 			FOREACH oRow AS VODataGridViewRow IN SELF:SelectedRows
 				aSelected:Add(oRow:Recno)
 			NEXT
@@ -226,8 +226,8 @@ END CLASS
 
 
 CLASS VODataGridViewRow INHERIT SWF.DataGridViewRow
-	INTERNAL RecNo AS LONG
+	INTERNAL RecNo AS DWORD
 
-	PUBLIC METHOD GetRecNo() AS LONG
+	PUBLIC METHOD GetRecNo() AS DWORD
 	RETURN RecNo
 END CLASS

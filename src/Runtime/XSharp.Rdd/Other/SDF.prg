@@ -78,14 +78,14 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_WriteString(oSb:ToString())
             RETURN TRUE
 
-        PROTECTED OVERRIDE METHOD _getLastRec AS LONG
-            LOCAL dwPos AS DWORD
-            LOCAL dwLen AS LONG
-            LOCAL nCount AS LONG
-            dwPos := FTell(SELF:_hFile)
-            dwLen := FSeek3(SELF:_hFile, 0, FS_END)
-            nCount := dwLen / (SELF:_RecordLength+SELF:_RecordSeparator:Length)
-            FSeek3(SELF:_hFile, (LONG) dwPos, FS_SET)
+        PROTECTED OVERRIDE METHOD _getLastRec AS DWORD
+            LOCAL dwPos AS INT64
+            LOCAL dwLen AS INT64
+            LOCAL nCount AS DWORD
+            dwPos := FTell64(SELF:_hFile)
+            dwLen := FSeek64(SELF:_hFile, 0, FS_END)
+            nCount := (DWORD) (dwLen / (SELF:_RecordLength+SELF:_RecordSeparator:Length))
+            FSeek64(SELF:_hFile, dwPos, FS_SET)
             RETURN nCount
 
         /// <inheritdoc />

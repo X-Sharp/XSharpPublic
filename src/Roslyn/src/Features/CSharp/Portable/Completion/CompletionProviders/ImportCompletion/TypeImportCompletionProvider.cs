@@ -12,67 +12,57 @@ using Microsoft.CodeAnalysis.Completion.Providers;
 using Microsoft.CodeAnalysis.CSharp.Extensions.ContextQuery;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Host.Mef;
-using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Shared.Extensions;
-using Microsoft.CodeAnalysis.Shared.Extensions.ContextQuery;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
+namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers;
+
+[ExportCompletionProvider(nameof(TypeImportCompletionProvider), LanguageNames.CSharp)]
+[ExtensionOrder(After = nameof(PropertySubpatternCompletionProvider))]
+[Shared]
+internal sealed class TypeImportCompletionProvider : AbstractTypeImportCompletionProvider<UsingDirectiveSyntax>
 {
-    [ExportCompletionProvider(nameof(TypeImportCompletionProvider), LanguageNames.CSharp)]
-    [ExtensionOrder(After = nameof(PropertySubpatternCompletionProvider))]
-    [Shared]
-    internal sealed class TypeImportCompletionProvider : AbstractTypeImportCompletionProvider
+    [ImportingConstructor]
+    [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
+    public TypeImportCompletionProvider()
     {
-        [ImportingConstructor]
-        [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
-        public TypeImportCompletionProvider()
-        {
-        }
+    }
 
-        public override bool IsInsertionTrigger(SourceText text, int characterPosition, OptionSet options)
-            => CompletionUtilities.IsTriggerCharacter(text, characterPosition, options);
+    internal override string Language => LanguageNames.CSharp;
 
-        public override ImmutableHashSet<char> TriggerCharacters { get; } = CompletionUtilities.CommonTriggerCharacters;
+    public override bool IsInsertionTrigger(SourceText text, int characterPosition, CompletionOptions options)
+        => CompletionUtilities.IsTriggerCharacter(text, characterPosition, options);
 
-        protected override ImmutableArray<string> GetImportedNamespaces(
-            SyntaxNode location,
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken)
-            => ImportCompletionProviderHelper.GetImportedNamespaces(location, semanticModel);
+    public override ImmutableHashSet<char> TriggerCharacters { get; } = CompletionUtilities.CommonTriggerCharacters;
 
-        protected override Task<SyntaxContext> CreateContextAsync(Document document, int position, CancellationToken cancellationToken)
-            => ImportCompletionProviderHelper.CreateContextAsync(document, position, cancellationToken);
-
-        protected override bool IsFinalSemicolonOfUsingOrExtern(SyntaxNode directive, SyntaxToken token)
-        {
-            if (token.IsKind(SyntaxKind.None) || token.IsMissing)
-                return false;
-
-            return directive switch
-            {
-                UsingDirectiveSyntax usingDirective => usingDirective.SemicolonToken == token,
-                ExternAliasDirectiveSyntax externAliasDirective => externAliasDirective.SemicolonToken == token,
-                _ => false,
-            };
-        }
-
-        protected override async Task<bool> ShouldProvideParenthesisCompletionAsync(
-            Document document,
-            CompletionItem item,
-            char? commitKey,
-            CancellationToken cancellationToken)
-        {
-            if (commitKey == ';')
-            {
-                // Only consider add '()' if the type is used under object creation context
-                var position = item.Span.Start;
-                var syntaxTree = await document.GetRequiredSyntaxTreeAsync(cancellationToken).ConfigureAwait(false);
-                var leftToken = syntaxTree.FindTokenOnLeftOfPosition(position, cancellationToken);
-                return syntaxTree.IsObjectCreationTypeContext(position, leftToken, cancellationToken);
-            }
-
+    protected override bool IsFinalSemicolonOfUsingOrExtern(SyntaxNode directive, SyntaxToken token)
+    {
+        if (token.IsKind(SyntaxKind.None) || token.IsMissing)
             return false;
+
+        return directive switch
+        {
+            UsingDirectiveSyntax usingDirective => usingDirective.SemicolonToken == token,
+            ExternAliasDirectiveSyntax externAliasDirective => externAliasDirective.SemicolonToken == token,
+            _ => false,
+        };
+    }
+
+    protected override async Task<bool> ShouldProvideParenthesisCompletionAsync(
+        Document document,
+        CompletionItem item,
+        char? commitKey,
+        CancellationToken cancellationToken)
+    {
+        if (commitKey is ';' or '.')
+        {
+            // Only consider add '()' if the type is used under object creation context
+            var position = item.Span.Start;
+            var syntaxTree = await document.GetRequiredSyntaxTreeAsync(cancellationToken).ConfigureAwait(false);
+            var leftToken = syntaxTree.FindTokenOnLeftOfPosition(position, cancellationToken);
+            return syntaxTree.IsObjectCreationTypeContext(position, leftToken, cancellationToken);
         }
+
+        return false;
     }
 }

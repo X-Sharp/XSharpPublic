@@ -78,7 +78,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public override ImmutableArray<Location> Locations => throw new System.NotImplementedException();
 
-        public override ImmutableArray<SyntaxReference> DeclaringSyntaxReferences => throw new System.NotImplementedException();
+        public override ImmutableArray<SyntaxReference> DeclaringSyntaxReferences => _getMethod.DeclaringSyntaxReferences;
 
         public override Accessibility DeclaredAccessibility => Accessibility.Public;
 
@@ -101,6 +101,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal override bool MustCallMethodsDirectly => true;
 
         internal override ObsoleteAttributeData ObsoleteAttributeData => throw new System.NotImplementedException();
+
+        internal override bool IsRequired => false;
+
+        internal override bool HasUnscopedRefAttribute => false;
+
+        internal override int TryGetOverloadResolutionPriority() => 0;
+
         internal new string GetDebuggerDisplay()
         {
             if (string.IsNullOrEmpty(Alias))

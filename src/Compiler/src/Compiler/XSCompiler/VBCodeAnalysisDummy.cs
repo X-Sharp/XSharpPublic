@@ -15,15 +15,10 @@ namespace Microsoft.CodeAnalysis.VisualBasic
     }
     internal abstract class VisualBasicCompiler : CSharp.CSharpCompiler
     {
-        internal VisualBasicCompiler(
-            CSharp.CSharpCommandLineParser clp,
-            string? rspFile,
-            string[] args,
-            BuildPaths buildPaths,
-            string? libDirectory,
-            IAnalyzerAssemblyLoader analyzerLoader)
-            : base(clp, rspFile, args, buildPaths, "", analyzerLoader)
+        internal VisualBasicCompiler(CSharp.CSharpCommandLineParser parser, string? responseFile, string[] args, BuildPaths buildPaths, string? additionalReferenceDirectories, IAnalyzerAssemblyLoader assemblyLoader, GeneratorDriverCache? driverCache = null, ICommonCompilerFileSystem? fileSystem = null)
+            : base(parser, responseFile, args, buildPaths, additionalReferenceDirectories, assemblyLoader, driverCache, fileSystem)
         {
         }
+
     }
 }

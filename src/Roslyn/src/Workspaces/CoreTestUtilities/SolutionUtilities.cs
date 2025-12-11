@@ -4,13 +4,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis.Shared.Extensions;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.UnitTests
 {
-    public class SolutionUtilities
+    public static class SolutionUtilities
     {
         public static ProjectChanges GetSingleChangedProjectChanges(Solution oldSolution, Solution newSolution)
         {
@@ -98,6 +100,22 @@ namespace Microsoft.CodeAnalysis.UnitTests
         {
             var projectChanges = GetSingleChangedProjectChanges(oldSolution, newSolution);
             return Tuple.Create(projectChanges.NewProject, projectChanges.GetAddedProjectReferences().Single());
+        }
+
+        public static Project AddEmptyProject(Solution solution, string languageName = LanguageNames.CSharp, string name = "TestProject")
+        {
+            var id = ProjectId.CreateNewId();
+            return solution.AddProject(
+                ProjectInfo.Create(
+                    id,
+                    VersionStamp.Default,
+                    name: name,
+                    assemblyName: name,
+                    language: languageName)
+                    .WithCompilationOutputInfo(new CompilationOutputInfo(
+                        assemblyPath: Path.Combine(TempRoot.Root, name),
+                        generatedFilesOutputDirectory: null)))
+                .GetRequiredProject(id);
         }
     }
 }

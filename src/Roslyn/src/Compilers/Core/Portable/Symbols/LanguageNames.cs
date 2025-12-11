@@ -7,13 +7,21 @@ namespace Microsoft.CodeAnalysis
     /// <summary>
     /// A class that provides constants for common language names.
     /// </summary>
-    public static class LanguageNames
+#if COMPILERCORE
+    public
+#else
+    internal
+#endif
+    static class LanguageNames
     {
         /// <summary>
         /// The common name used for the C# language.
         /// </summary>
+#if XSHARP
+        public const string CSharp = "X#";
+#else
         public const string CSharp = "C#";
-
+#endif
         /// <summary>
         /// The common name used for the Visual Basic language.
         /// </summary>

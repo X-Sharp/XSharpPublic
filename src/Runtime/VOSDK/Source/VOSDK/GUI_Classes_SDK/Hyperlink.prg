@@ -32,12 +32,12 @@ METHOD Dispatch(oEvent)
 	DO CASE
 	CASE nMsg == WM_SETCURSOR .AND. LoWord(DWORD(_CAST,oEvt:lParam)) == HTClient
 		SetCursor(_oPointer:Handle())
-		SELF:EventReturnValue := 1l
-		RETURN 1l
+		SELF:EventReturnValue := 1L
+		RETURN 1L
 	CASE nMsg == WM_LBUTTONDOWN .OR. (nMsg == WM_KEYDOWN .AND. (oEvt:wParam == 32 .OR. oEvt:wParam == VK_RETURN))
 		SELF:OpenLink()
-		SELF:EventReturnValue := 0l
-		RETURN 1l
+		SELF:EventReturnValue := 0L
+		RETURN 1L
 	CASE nMsg == WM_PAINT
 		IF SELF:lUseDrawText
 			SUPER:Dispatch(oEvt)
@@ -56,8 +56,8 @@ METHOD Dispatch(oEvent)
 			ENDIF
 			ReleaseDC(hwnd, hdc)
 		ENDIF
-		SELF:EventReturnValue := 0l
-		RETURN 1l
+		SELF:EventReturnValue := 0L
+		RETURN 1L
 	CASE nMsg == WM_KILLFOCUS  .OR. nMsg == WM_SETFOCUS
 		InvalidateRect(hWnd, NULL_PTR, FALSE)
 	CASE nMsg == WM_GETDLGCODE
@@ -66,7 +66,7 @@ METHOD Dispatch(oEvent)
 		ELSE
 			SELF:EventReturnValue := IIF(hWnd == GetFocus(), DLGC_DEFPUSHBUTTON, DLGC_UNDEFPUSHBUTTON)
 		ENDIF
-		RETURN 1l
+		RETURN 1L
 	ENDCASE
 
 

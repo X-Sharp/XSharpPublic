@@ -666,7 +666,7 @@ public class C<T> where T : int
             var compilation = CreateCompilation(code).VerifyDiagnostics();
             var sourceAssembly = (SourceAssemblySymbol)compilation.Assembly;
 
-            SourceTypeParameterSymbol sourceTypeParameter = (SourceTypeParameterSymbol)sourceAssembly.GlobalNamespace.GetTypeMember("Test").TypeParameters.Single();
+            SourceTypeTypeParameterSymbol sourceTypeParameter = (SourceTypeTypeParameterSymbol)sourceAssembly.GlobalNamespace.GetTypeMember("Test").TypeParameters.Single();
             Assert.Equal(isUnmanaged, sourceTypeParameter.HasUnmanagedTypeConstraint);
 
             var retargetingAssembly = new RetargetingAssemblySymbol(sourceAssembly, isLinked: false);
@@ -674,15 +674,6 @@ public class C<T> where T : int
 
             RetargetingTypeParameterSymbol retargetingTypeParameter = (RetargetingTypeParameterSymbol)retargetingAssembly.GlobalNamespace.GetTypeMember("Test").TypeParameters.Single();
             Assert.Equal(isUnmanaged, retargetingTypeParameter.HasUnmanagedTypeConstraint);
-        }
-
-        private void CheckTypes(ImmutableArray<TypeSymbol> source, ImmutableArray<TypeSymbol> retargeting)
-        {
-            Assert.Equal(source.Length, retargeting.Length);
-            for (int i = 0; i < source.Length; i++)
-            {
-                CheckTypes(source[i], retargeting[i]);
-            }
         }
 
         private void CheckTypes(Symbol source, Symbol retargeting)

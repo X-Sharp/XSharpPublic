@@ -13,21 +13,21 @@ BEGIN NAMESPACE XSharp.RDD
 
 
     INTERNAL CLASS DBFSortCompare IMPLEMENTS IComparer<SortRecord>
-        
+
         PRIVATE _sortInfo AS DbSortInfo
         PRIVATE _tempX AS BYTE[]
         PRIVATE _tempY AS BYTE[]
-        
+
         INTERNAL CONSTRUCTOR( rdd AS DBF, info AS DbSortInfo )
             SELF:_sortInfo  := info
             LOCAL max       := 0 AS INT
             FOREACH VAR item IN info:Items
                 max := Math.Max(max, item:Length)
             NEXT
-            SELF:_tempX := BYTE[]{ max}     
+            SELF:_tempX := BYTE[]{ max}
             SELF:_tempY := BYTE[]{ max}
-        
-        
+
+
         PUBLIC METHOD Compare(recordX AS SortRecord , recordY AS SortRecord ) AS LONG
             LOCAL recordBufferX AS BYTE[]
             LOCAL recordBufferY AS BYTE[]
@@ -59,7 +59,7 @@ BEGIN NAMESPACE XSharp.RDD
                             Array.Copy(recordBufferX, start, _tempX, 0, iLen)
                             Array.Copy(recordBufferY, start, _tempY, 0, iLen)
                             diff := XSharp.RuntimeState.StringCompare(_tempX, _tempY, iLen)
-                      ENDIF      
+                      ENDIF
                         //
                     ELSE
                         FOR VAR i := 0 TO iLen - 1
@@ -78,11 +78,11 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             NEXT
             IF diff == 0
-                diff := recordX:Recno - recordY:Recno
+                diff := (LONG) ((INT64) recordX:Recno - (INT64)recordY:Recno)
             ENDIF
             RETURN diff
-            
-            
+
+
         END CLASS
-        
+
 END NAMESPACE

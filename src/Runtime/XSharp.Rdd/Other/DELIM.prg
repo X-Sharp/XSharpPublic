@@ -130,9 +130,9 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_WriteString(_oSb:ToString())
             RETURN TRUE
 
-        PROTECTED OVERRIDE METHOD _getLastRec AS LONG
+        PROTECTED OVERRIDE METHOD _getLastRec AS DWORD
             LOCAL dwPos     AS DWORD
-            LOCAL nCount := 0 AS LONG
+            LOCAL nCount := 0 AS DWORD
             LOCAL buffer    AS BYTE[]
             dwPos := FTell(SELF:_hFile)
             FSeek3(SELF:_hFile, 0, FS_SET)

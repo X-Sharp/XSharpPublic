@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <BinariesDir>$([System.IO.Path]::GetFullPath('$(Solutiondir)..\Artifacts\'))</BinariesDir>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
     <BaseOutputPath>$(BinariesDir)</BaseOutputPath>
@@ -25,6 +26,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <ErrorReport>prompt</ErrorReport>
+	  <XscToolPath>$(BinariesDir)bin\xsc\$(Configuration)\net472\</XscToolPath>
     <CommonInclude>$(CommonDir)</CommonInclude>
     <AZ>false</AZ>
     <CS>false</CS>

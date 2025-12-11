@@ -1844,7 +1844,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case NAMESPACE:
                 case SCOPE:
                 case LOCK:
-                    if (lastToken != BEGIN && lastToken != END)
+                    if (lastToken != BEGIN && lastToken != END && !StartOfLine(lastToken))
                     {
                         return ID;
                     }
@@ -1926,12 +1926,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
 
                 case LOCAL:
-                    if (keyword == FUNCTION || keyword == PROCEDURE || keyword == ARRAY)    // local function and procedure statement and local array
+                    if (keyword == FUNCTION || keyword == PROCEDURE || keyword == ARRAY || keyword == CLASS)    // local function and procedure statement and local array
                         return keyword;
                     return ID;
 
                 case GLOBAL:
-                    if (keyword == CONST)    // GLOBAL CONST Id
+                    if (keyword == CONST || keyword == USING)    // GLOBAL CONST Id
                         return keyword;
                     return ID;
 
@@ -1962,7 +1962,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     return ID;
                 case USING:
                     // BEGIN USING can/will be followed by a Variable Declaration
-                    if (keyword != LOCAL && keyword != VAR)
+                    if (keyword != LOCAL && keyword != VAR && keyword != AWAIT)
                         return ID;
                     break;
                 case MEMVAR:            // VO & XPP: followed by list of names
@@ -2495,6 +2495,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "PARAMS", PARAMS},
                     { "PARTIAL", PARTIAL},
                     { "PROPERTY", PROPERTY},
+                    { "RECORD", RECORD},
                     { "REPEAT", REPEAT},
                     { "SCOPE", SCOPE},
                     { "SEALED", SEALED},
@@ -2681,7 +2682,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"#STDOUT", PP_STDOUT },        // #stdout [Message]
                 {"#TEXT", PP_TEXT },            // #text const [, optionalfunc] or #text linefunc, endfunc
                 {"#PRAGMA", PP_PRAGMA },        // #pragma options.... or #pragma warnings
-                {"#ENDTEXT",  PP_ENDTEXT },      // endtext
+                {"#ENDTEXT",  PP_ENDTEXT },      // #endtext
+                {"#NULLABLE",  PP_NULLABLE},      // #nullable
             };
             if (Dialect == XSharpDialect.XPP)
             {

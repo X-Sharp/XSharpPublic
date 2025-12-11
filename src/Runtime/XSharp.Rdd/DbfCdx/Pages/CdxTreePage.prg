@@ -18,23 +18,22 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	/// </summary>
     [DebuggerDisplay(e"{DebuggerDisplay,nq}")];
 	INTERNAL ABSTRACT CLASS CdxTreePage INHERIT CdxPage
-
         INTERNAL CONST CDXPAGE_TYPE	:= 0	AS WORD // WORD
 		INTERNAL CONST CDXPAGE_OFFSET_NUMKEYS		:= 2	AS WORD // 2 WORD
 		INTERNAL CONST CDXPAGE_OFFSET_LEFTPTR		:= 4	AS WORD // 4 LONGINT
 		INTERNAL CONST CDXPAGE_OFFSET_RIGHTPTR 	    := 8	AS WORD // 4 LONGINT
 
         PROTECTED _numKeys        AS WORD
-        PROTECTED _leftPtr        AS LONG
-        PROTECTED _rightPtr       AS LONG
+        PROTECTED _leftPtr        AS DWORD
+        PROTECTED _rightPtr       AS DWORD
 
         PROTECTED VIRTUAL METHOD _clear() AS VOID
             SELF:_numKeys        := 0
-            SELF:_leftPtr        := -1
-            SELF:_rightPtr       := -1
+            SELF:_leftPtr        := MISSING_PAGE
+            SELF:_rightPtr       := MISSING_PAGE
 
 
-        INTERNAL CONSTRUCTOR( oBag AS CdxOrderBag, nPage AS Int32, buffer AS BYTE[] )
+        INTERNAL CONSTRUCTOR( oBag AS CdxOrderBag, nPage AS DWORD, buffer AS BYTE[] )
             SUPER(oBag, nPage, buffer)
             SELF:_getValues()
             RETURN
@@ -45,19 +44,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _getValues() AS VOID
             _pageType := (CdxPageType) SELF:_GetWord(CDXPAGE_TYPE)
             _numKeys        := SELF:_GetWord(CDXPAGE_OFFSET_NUMKEYS)
-            _leftPtr        := SELF:_GetLong(CDXPAGE_OFFSET_LEFTPTR)
-            _rightPtr       := SELF:_GetLong(CDXPAGE_OFFSET_RIGHTPTR)
+            _leftPtr        := SELF:_GetDWord(CDXPAGE_OFFSET_LEFTPTR)
+            _rightPtr       := SELF:_GetDWord(CDXPAGE_OFFSET_RIGHTPTR)
             IF SELF:_leftPtr == 0
-                SELF:_leftPtr        := -1
+                SELF:_leftPtr  := MISSING_PAGE
             ENDIF
             IF SELF:_rightPtr == 0
-            SELF:_rightPtr       := -1
+            SELF:_rightPtr   := MISSING_PAGE
             ENDIF
 
         #region Properties
         // FoxPro stores empty pointers as -1, FoxBASE as 0
-        INTERNAL PROPERTY HasLeft    AS LOGIC GET LeftPtr    > 0
-        INTERNAL PROPERTY HasRight   AS LOGIC GET RightPtr   > 0
+        INTERNAL PROPERTY HasLeft    AS LOGIC GET PageIsValid(LeftPtr)
+        INTERNAL PROPERTY HasRight   AS LOGIC GET PageIsValid(RightPtr)
 
         INTERNAL OVERRIDE PROPERTY PageType AS CdxPageType ;
           GET _pageType ;
@@ -74,11 +73,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		INTERNAL PROPERTY NumKeys  AS WORD	GET _numKeys;
 			SET SELF:_SetWord(CDXPAGE_OFFSET_NUMKEYS, VALUE), _numKeys := VALUE
 
-		INTERNAL PROPERTY LeftPtr AS Int32  GET _leftPtr;
-			SET SELF:_SetLong(CDXPAGE_OFFSET_LEFTPTR, VALUE), _leftPtr:= VALUE
+		INTERNAL PROPERTY LeftPtr AS DWORD  GET _leftPtr;
+			SET SELF:_SetDWord(CDXPAGE_OFFSET_LEFTPTR, VALUE), _leftPtr:= VALUE
 
-		INTERNAL PROPERTY RightPtr AS Int32	GET _rightPtr;
-			SET SELF:_SetLong(CDXPAGE_OFFSET_RIGHTPTR, VALUE), _rightPtr := VALUE
+		INTERNAL PROPERTY RightPtr AS DWORD	GET _rightPtr;
+			SET SELF:_SetDWord(CDXPAGE_OFFSET_RIGHTPTR, VALUE), _rightPtr := VALUE
 
         ABSTRACT INTERNAL PROPERTY LastNode     AS CdxPageNode GET
         // For debugging
@@ -99,7 +98,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         GET
             VAR oList := List<CdxTreePage>{}
             VAR oPage := SELF:FirstPageOnLevel
-            VAR aPages := List<INT>{}
+            VAR aPages := List<DWORD>{}
             oList:Add(oPage)
             DO WHILE oPage:HasRight
                 VAR nRight := oPage:RightPtr
@@ -146,10 +145,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         #endregion
 
         ABSTRACT INTERNAL METHOD InitBlank(oTag AS CdxTag) AS VOID
-        ABSTRACT INTERNAL METHOD GetRecno(nPos AS Int32) AS Int32
-        ABSTRACT INTERNAL METHOD GetChildPage(nPos AS Int32) AS Int32
+        ABSTRACT INTERNAL METHOD GetRecno(nPos AS Int32) AS DWORD
+        ABSTRACT INTERNAL METHOD GetChildPage(nPos AS Int32) AS DWORD
         ABSTRACT INTERNAL METHOD GetKey(nPos AS Int32) AS BYTE[]
-        ABSTRACT INTERNAL METHOD GetChildren as IList<LONG>
+        ABSTRACT INTERNAL METHOD GetChildren as IList<DWORD>
 
          INTERNAL OVERRIDE METHOD Read() AS LOGIC
             LOCAL lOk AS LOGIC
@@ -160,7 +159,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN lOk
 
         INTERNAL OVERRIDE METHOD Write() AS LOGIC
-            IF SELF:PageNo > 0
+            IF PageIsValid(SELF:PageNo)
                 System.Diagnostics.Debug.Assert(SELF:PageNo != SELF:RightPtr)
                 System.Diagnostics.Debug.Assert(SELF:PageNo != SELF:LeftPtr)
             ENDIF
@@ -177,8 +176,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endif
         INTERNAL METHOD SetRoot() AS VOID
             SELF:PageType |= CdxPageType.Root
-            SELF:LeftPtr := -1
-            SELF:RightPtr := -1
+            SELF:LeftPtr  := MISSING_PAGE
+            SELF:RightPtr := MISSING_PAGE
             RETURN
 
         INTERNAL METHOD ClearRoot() AS VOID
@@ -212,7 +211,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 NOP
             ENDIF
             RETURN
-        INTERNAL ABSTRACT METHOD FindKey(key AS BYTE[], recno AS LONG, length AS LONG) AS WORD
+        INTERNAL ABSTRACT METHOD FindKey(key AS BYTE[], recno AS DWORD, length AS LONG) AS WORD
         METHOD Debug(o PARAMS  OBJECT[] ) AS VOID
            LOCAL count := o:Length AS INT
            LOCAL x                 AS INT

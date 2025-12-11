@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 using System.Security.Cryptography;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
@@ -44,20 +45,74 @@ namespace Microsoft.CodeAnalysis.CSharp
             return expr;
         }
 
+        private int numArgs(ImmutableArray<BoundExpression> arguments, bool expanded)
+        {
+            if (expanded && arguments[arguments.Length - 1] is BoundArrayCreation ba)
+            {
+                return arguments.Length - 1 + ba.InitializerOpt.Initializers.Length;
+            }
+            else return arguments.Length;
+        }
+
+        private BoundExpression getArg(ImmutableArray<BoundExpression> arguments, int i, bool expanded)
+        {
+            if (expanded && i >= arguments.Length - 1 && arguments[arguments.Length - 1] is BoundArrayCreation ba)
+            {
+                return ba.InitializerOpt.Initializers[i - (arguments.Length - 1)];
+            }
+            return arguments[i];
+        }
+
+        private ImmutableArray<BoundExpression> flattenArguments(ImmutableArray<BoundExpression> arguments, bool expanded)
+        {
+            if (!expanded)
+                return arguments;
+            BoundExpression[] e = new BoundExpression[numArgs(arguments, expanded)];
+            for (var i = 0; i < e.Length; i++)
+            {
+                e[i] = getArg(arguments, i, expanded);
+            }
+            return e.ToImmutableArray();
+        }
+
+        private ImmutableArray<BoundExpression> collapseArguments(ImmutableArray<BoundExpression> flattenedArguments, ImmutableArray<BoundExpression> originalArguments, bool expanded)
+        {
+            if (!expanded)
+                return flattenedArguments;
+            int numParams = originalArguments.Length;
+            BoundExpression[] e = new BoundExpression[numParams];
+            for (var i = 0; i < numParams - 1; i++)
+            {
+                e[i] = flattenedArguments[i];
+            }
+            if (originalArguments[numParams - 1] is BoundArrayCreation ba)
+            {
+                BoundExpression[] ee = new BoundExpression[flattenedArguments.Length - (numParams - 1)];
+                for (var i = numParams - 1; i < flattenedArguments.Length; i++)
+                {
+                    ee[i - (numParams - 1)] = flattenedArguments[i];
+                }
+                var bai = new BoundArrayInitialization(ba.Syntax, false, ee.ToImmutableArray()) { WasCompilerGenerated = true };
+                e[numParams - 1] = new BoundArrayCreation(ba.Syntax, ba.Bounds, bai, ba.Type) { WasCompilerGenerated = true };
+            }
+            return e.ToImmutableArray();
+        }
+
         private void checkRefKinds(ImmutableArray<BoundExpression> arguments, RefKind[] refKinds,
                                    ImmutableArray<BoundExpression>.Builder exprs,
                                    ImmutableArray<BoundExpression>.Builder rewrittenArgs,
                                    ImmutableArray<LocalSymbol>.Builder temps,
                                    BoundLocal[] argBoundTemps,
                                    BoundExpression[] boundProperties,
+                                   bool expanded,
                                    out bool hasRef)
         {
             exprs.Clear();
             hasRef = false;
-            for (int i = 0; i < arguments.Length; i++)
+            for (int i = 0; i < numArgs(arguments, expanded); i++)
             {
                 // Check for @var when ImplicitCastsAndConversions is enabled (/vo7) and dialect allows AddressOf
-                var a = arguments[i];
+                var a = getArg(arguments, i, expanded);
                 // no need to check for Dialect.AddressOfIsAlwaysByRef() because that is already done in the TreeTransformation phase
                 if (a.Kind == BoundKind.AddressOfOperator)
                 {
@@ -104,7 +159,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         // no need for conversion here because everything is a USUAL
                         boundProperties[i] = bp;
-                        var newarg = VisitExpression(arguments[i]);
+                        var newarg = VisitExpression(getArg(arguments, i, expanded));
                         rewrittenArgs.Add(MakeRefUsual(newarg));
                         normalArg = false;
                     }
@@ -118,7 +173,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var varSym = new XsFoxMemberAccessSymbol(amc.AreaName, amc.FieldName, (MethodSymbol)get[0], (MethodSymbol)set[0], usual);
                         if (get.Length > 0 && set.Length > 0)
                         {
-                            boundProperties[i] = new BoundPropertyAccess(a.Syntax, null, varSym, LookupResultKind.Viable, varSym.Type);
+                            boundProperties[i] = new BoundPropertyAccess(a.Syntax, null, ThreeState.False, varSym, AccessorKind.Both, LookupResultKind.Viable, varSym.Type);
                         }
                     }
                     else if (a is BoundCall bc && bc.PropertyAccess != null)
@@ -142,10 +197,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                             LocalSymbol la = _factory.SynthesizedLocal(arg.Type);
                             temps.Add(la);
                             var bla = blas[ai] = _factory.Local(la);
-                            var lasgn = _factory.AssignmentExpression(bla, arg);
+                            var lasgn = _factory.AssignmentExpression(bla, arg) as BoundAssignmentOperator;
                             exprs.Add(VisitAssignmentOperator(lasgn, true));
                         }
-                        bi = bi.Update(bi.ReceiverOpt, bi.Indexer, blas.ToImmutableArrayOrEmpty(), bi.ArgumentNamesOpt, bi.ArgumentRefKindsOpt, bi.Expanded, bi.ArgsToParamsOpt, bi.DefaultArguments, bi.Type);
+                        bi = bi.Update(bi.ReceiverOpt, ThreeState.False, bi.Indexer, blas.ToImmutableArrayOrEmpty(),
+                            bi.ArgumentNamesOpt, bi.ArgumentRefKindsOpt, bi.Expanded, bi.AccessorKind, bi.ArgsToParamsOpt, bi.DefaultArguments, bi.Type);
                         boundProperties[i] = bi;
                         var newarg = VisitExpression(bi);
                         newarg = MakeConversionNode(newarg, _compilation.UsualType(), @checked: false);
@@ -164,7 +220,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         LocalSymbol la = _factory.SynthesizedLocal(a.Type, refKind: rkind);
                         temps.Add(la);
                         BoundLocal bla = _factory.Local(la);
-                        var lasgn = _factory.AssignmentExpression(bla, a, isRef: true);
+                        var lasgn = _factory.AssignmentExpression(bla, a, isRef: true) as BoundAssignmentOperator;
                         exprs.Add(VisitAssignmentOperator(lasgn, true));
                         var newarg = MakeConversionNode(a, _compilation.UsualType(), @checked: false);
                         rewrittenArgs.Add(MakeRefUsual(newarg));
@@ -173,17 +229,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else
                 {
-                    rewrittenArgs.Add(VisitExpression(arguments[i]));
+                    rewrittenArgs.Add(VisitExpression(getArg(arguments, i, expanded)));
                 }
             }
         }
 
         private void writeRefBack(ImmutableArray<BoundExpression> arguments, RefKind[] refKinds,
             BoundExpression boundPars, BoundLocal[] argBoundTemps, BoundExpression[] boundProperties,
-            ImmutableArray<BoundExpression>.Builder exprs, int offSet)
+            ImmutableArray<BoundExpression>.Builder exprs, int offSet, bool expanded)
         {
             exprs.Clear();
-            for (int i = 0; i < arguments.Length; i++)
+            for (int i = 0; i < numArgs(arguments, expanded); i++)
             {
                 if (refKinds[i].IsWritableReference()) // Ref and Out
                 {
@@ -197,7 +253,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             var method = foxAccess.SetMethod;
                             var alias = _factory.Literal(foxAccess.Alias);
                             var field = _factory.Literal(foxAccess.Name);
-                            var undecl = _factory.Literal(_compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, arguments[0].Syntax));
+                            var undecl = _factory.Literal(_compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, getArg(arguments, i, expanded).Syntax));
                             var call = _factory.StaticCall(null, method, alias, field, elem, undecl);
                             exprs.Add(call);
                         }
@@ -264,13 +320,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 // we can't use the code for early bound code because we our param array is already processed.
 
+                bool expanded = false;
                 var temps = ImmutableArray.CreateBuilder<LocalSymbol>();
                 var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
-                var rewrittenArgs = ImmutableArray.CreateBuilder<BoundExpression>(arguments.Length);
-                var argBoundTemps = new BoundLocal[arguments.Length];
-                var refKinds = new RefKind[arguments.Length];
-                var properties = new BoundExpression[arguments.Length];      // for xsVariableSymbols
+                var rewrittenArgs = ImmutableArray.CreateBuilder<BoundExpression>(numArgs(arguments, expanded));
+                var argBoundTemps = new BoundLocal[numArgs(arguments, expanded)];
+                var refKinds = new RefKind[numArgs(arguments, expanded)];
+                var properties = new BoundExpression[numArgs(arguments, expanded)];      // for xsVariableSymbols
                 var argumentRefKindsOpt = node.ArgumentRefKindsOpt;
+
                 for (int i = 0; i < arguments.Length; i++)
                 {
                     var r = (!argumentRefKindsOpt.IsDefaultOrEmpty && i < argumentRefKindsOpt.Length) ? argumentRefKindsOpt[i] : RefKind.None;
@@ -278,7 +336,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
                 // keep track of the locals that need to be assigned back
-                checkRefKinds(arguments, refKinds, exprs, rewrittenArgs, temps, argBoundTemps, properties, out var hasRef);
+                checkRefKinds(arguments, refKinds, exprs, rewrittenArgs, temps, argBoundTemps, properties, expanded, out var hasRef);
                 var preExprs = exprs.ToImmutable();
                 exprs.Clear();
 
@@ -321,7 +379,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 sendArgs.Add(actualargs[0]);
                 sendArgs.Add(actualargs[1]);
                 sendArgs.Add(parsAssignment);
-                bc = bc.Update(bc.ReceiverOpt, bc.Method, sendArgs.ToImmutableArray());
+                bc = bc.Update(bc.ReceiverOpt, ThreeState.False, bc.Method, sendArgs.ToImmutableArray());
 
                 // result = __InternalSend(oObject, methodName, params)
                 LocalSymbol callTemp = _factory.SynthesizedLocal(bc.Type);
@@ -330,7 +388,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 BoundExpression callAssignment = _factory.AssignmentExpression(boundCallTemp, bc);
 
                 // generate statements that assign param array elements back to the locals
-                writeRefBack(arguments, refKinds, boundPars, argBoundTemps, properties, exprs, 0);
+                writeRefBack(arguments, refKinds, boundPars, argBoundTemps, properties, exprs, 0, expanded);
                 var postExprs = exprs.ToImmutable();
                 exprs.Clear();
 
@@ -373,7 +431,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             LocalSymbol objTemp = _factory.SynthesizedLocal(node.Type);
             BoundLocal boundObjTemp = _factory.Local(objTemp);
-            BoundExpression rewrittenObjectCreation = node.UpdateArgumentsAndInitializer(rewrittenArguments, argumentRefKindsOpt, newInitializerExpression: null, changeTypeOpt: node.Constructor.ContainingType);
+            BoundExpression rewrittenObjectCreation = node.Update(node.Constructor, rewrittenArguments, argumentRefKindsOpt, newInitializerExpression: null, changeTypeOpt: node.Constructor.ContainingType);
             if (node.Type.IsInterfaceType())
             {
                 Debug.Assert(TypeSymbol.Equals(rewrittenObjectCreation.Type, ((NamedTypeSymbol)node.Type).ComImportCoClass));
@@ -493,7 +551,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             LocalSymbol callTemp = _factory.SynthesizedLocal(nodeType);
             BoundLocal boundCallTemp = _factory.Local(callTemp);
-            var call = MakeCall(node, node.Syntax, rewrittenReceiver, node.Method, rewrittenArguments, argumentRefKindsOpt, node.InvokedAsExtensionMethod, node.ResultKind, node.Type);
+            var call = MakeCall(node, node.Syntax, rewrittenReceiver, node.Method, rewrittenArguments, argumentRefKindsOpt, /*node.InvokedAsExtensionMethod,*/ node.ResultKind, ImmutableArray<LocalSymbol>.Empty);
             if (mustassign)
             {
                 BoundExpression callAssignment = _factory.AssignmentExpression(boundCallTemp, call);
@@ -512,23 +570,27 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var argTemps = ImmutableArray.CreateBuilder<LocalSymbol>();
             var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
-            var rewrittenArgs = ImmutableArray.CreateBuilder<BoundExpression>(arguments.Length);
-            var argBoundTemps = new BoundLocal[arguments.Length];
-            var refKinds = new RefKind[arguments.Length];
-            var properties = new BoundExpression[arguments.Length];      // for xsVariableSymbols
+            var rewrittenArgs = ImmutableArray.CreateBuilder<BoundExpression>(numArgs(arguments, expanded));
+            var argBoundTemps = new BoundLocal[numArgs(arguments, expanded)];
+            var refKinds = new RefKind[numArgs(arguments, expanded)];
+            var properties = new BoundExpression[numArgs(arguments, expanded)];      // for xsVariableSymbols
 
-            for (int i = 0; i < arguments.Length; i++)
+            var origArgs = arguments;
+            arguments = flattenArguments(arguments, expanded);
+
+            for (int i = 0; i < numArgs(arguments, expanded); i++)
             {
                 var r = (!argumentRefKindsOpt.IsDefaultOrEmpty && i < argumentRefKindsOpt.Length) ? argumentRefKindsOpt[i] : RefKind.None;
                 refKinds[i] = r;
             }
 
-            checkRefKinds(arguments, refKinds, exprs, rewrittenArgs, argTemps, argBoundTemps, properties, out var hasRef);
+            checkRefKinds(arguments, refKinds, exprs, rewrittenArgs, argTemps, argBoundTemps, properties, expanded, out var hasRef);
 
-            var rewrittenArgumentRefKindsOpt = argumentRefKindsOpt;
+            var rewrittenArgumentRefKindsOpt = argumentRefKindsOpt.IsDefault ? argumentRefKindsOpt : argumentRefKindsOpt.Where((r,i) => i < origArgs.Length - 1).ToImmutableArray();
             var rewrittenArguments = rewrittenArgs.ToImmutable();
-            ImmutableArray<LocalSymbol> aTemps;
-            rewrittenArguments = MakeArguments(syntax, rewrittenArguments, method, expanded, argsToParamsOpt, ref rewrittenArgumentRefKindsOpt, out aTemps, invokeAsExtensionMethod);
+            var aTemps = ArrayBuilder<LocalSymbol>.GetInstance();
+            rewrittenArguments = collapseArguments(rewrittenArguments, origArgs, expanded);
+            rewrittenArguments = MakeArguments(rewrittenArguments, method, expanded, argsToParamsOpt, ref rewrittenArgumentRefKindsOpt, ref aTemps, invokeAsExtensionMethod);
             argTemps.AddRange(aTemps);
 
             var argsNode = rewrittenArguments[rewrittenArguments.Length - 1];
@@ -539,7 +601,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             argTemps.Add(parsTemp);
 
             preExprs = exprs.ToImmutable();
-            writeRefBack(arguments, refKinds, boundPars, argBoundTemps, properties, exprs, method.ParameterCount - 1);
+            writeRefBack(arguments, refKinds, boundPars, argBoundTemps, properties, exprs, method.ParameterCount - 1, expanded);
 
             argumentRefKindsOpt = rewrittenArgumentRefKindsOpt;
             temps = argTemps.ToImmutable();
@@ -579,7 +641,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             // keep track of the locals that need to be assigned back
-            checkRefKinds(arguments, refKinds, preExprs, rewrittenArgs, temps, argBoundTemps, properties, out var hasRef);
+            checkRefKinds(arguments, refKinds, preExprs, rewrittenArgs, temps, argBoundTemps, properties, node.Expanded, out var hasRef);
             LocalSymbol callTemp = _factory.SynthesizedLocal(node.Type);
             temps.Add(callTemp);
             BoundLocal boundCallTemp = _factory.Local(callTemp);

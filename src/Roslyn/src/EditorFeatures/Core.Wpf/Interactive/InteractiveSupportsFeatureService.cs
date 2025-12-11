@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
 using System.Composition;
 using Microsoft.CodeAnalysis.Editor.Shared;
 using Microsoft.CodeAnalysis.Host.Mef;
@@ -12,11 +10,11 @@ using Microsoft.VisualStudio.InteractiveWindow;
 using Microsoft.CodeAnalysis.Shared;
 using System;
 
-namespace Microsoft.CodeAnalysis.Editor.Implementation.Interactive
+namespace Microsoft.CodeAnalysis.Interactive
 {
     internal sealed class InteractiveSupportsFeatureService
     {
-        [ExportWorkspaceService(typeof(ITextBufferSupportsFeatureService), WorkspaceKind.Interactive), Shared]
+        [ExportWorkspaceService(typeof(ITextBufferSupportsFeatureService), [WorkspaceKind.Interactive]), Shared]
         internal class InteractiveTextBufferSupportsFeatureService : ITextBufferSupportsFeatureService
         {
             [ImportingConstructor]
@@ -25,24 +23,24 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.Interactive
             {
             }
 
-            public bool SupportsCodeFixes(ITextBuffer textBuffer)
+            private static bool IsActiveLanguageBuffer(ITextBuffer textBuffer)
             {
-                if (textBuffer != null)
+                var evaluator = (IInteractiveEvaluator)textBuffer.Properties[typeof(IInteractiveEvaluator)];
+                var window = evaluator?.CurrentWindow;
+                if (window?.CurrentLanguageBuffer == textBuffer)
                 {
-                    var evaluator = (IInteractiveEvaluator)textBuffer.Properties[typeof(IInteractiveEvaluator)];
-                    var window = evaluator?.CurrentWindow;
-                    if (window?.CurrentLanguageBuffer == textBuffer)
-                    {
-                        // These are only correct if we're on the UI thread.
-                        // Otherwise, they're guesses and they might change immediately even if they're correct.
-                        // If we return true and the buffer later becomes readonly, it appears that the 
-                        // the code fix simply has no effect.
-                        return !window.IsResetting && !window.IsRunning;
-                    }
+                    // These are only correct if we're on the UI thread.
+                    // Otherwise, they're guesses and they might change immediately even if they're correct.
+                    // If we return true and the buffer later becomes readonly, it appears that the 
+                    // the code fix simply has no effect.
+                    return !window.IsResetting && !window.IsRunning;
                 }
 
                 return false;
             }
+
+            public bool SupportsCodeFixes(ITextBuffer textBuffer)
+                => IsActiveLanguageBuffer(textBuffer);
 
             public bool SupportsRefactorings(ITextBuffer textBuffer)
                 => false;
@@ -54,7 +52,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.Interactive
                 => true;
         }
 
-        [ExportWorkspaceService(typeof(IDocumentSupportsFeatureService), WorkspaceKind.Interactive), Shared]
+        [ExportWorkspaceService(typeof(IDocumentSupportsFeatureService), [WorkspaceKind.Interactive]), Shared]
         internal class InteractiveDocumentSupportsFeatureService : IDocumentSupportsFeatureService
         {
             [ImportingConstructor]
@@ -77,6 +75,9 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.Interactive
 
             public bool SupportsNavigationToAnyPosition(Document document)
                 => true;
+
+            public bool SupportsSemanticSnippets(Document document)
+                => false;
         }
     }
 }

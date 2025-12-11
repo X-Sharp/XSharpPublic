@@ -42,7 +42,7 @@ End Namespace
             Assert.False(implicitClass.IsSubmissionClass)
             Assert.False(implicitClass.IsScriptClass)
 
-            Dim c2 = CreateCompilationWithMscorlib45(source:=Nothing, {c.ToMetadataReference()})
+            Dim c2 = CreateCompilationWithMscorlib461(source:=Nothing, {c.ToMetadataReference()})
 
             n = DirectCast(c2.GlobalNamespace.GetMembers("N").Single(), NamespaceSymbol)
             implicitClass = DirectCast(n.GetMembers().Single(), NamedTypeSymbol)
@@ -51,7 +51,8 @@ End Namespace
             Assert.Equal(c2.ObjectType, implicitClass.BaseType)
         End Sub
 
-        <Fact>
+        <ConditionalFact(GetType(NoUsedAssembliesValidation))> ' https://github.com/dotnet/roslyn/issues/40682: The test hook is blocked by this issue.
+        <WorkItem(40682, "https://github.com/dotnet/roslyn/issues/40682")>
         Public Sub ScriptClassSymbol()
             Dim c = CompilationUtils.CreateCompilationWithMscorlib40(
 <compilation name="C">

@@ -48,8 +48,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return s_defaultOptions
         End Function
 
-        Public Function CreateGeneratorDriver(parseOptions As ParseOptions, generators As ImmutableArray(Of ISourceGenerator), optionsProvider As AnalyzerConfigOptionsProvider, additionalTexts As ImmutableArray(Of AdditionalText)) As GeneratorDriver Implements ICompilationFactoryService.CreateGeneratorDriver
-            Return VisualBasicGeneratorDriver.Create(generators, additionalTexts, DirectCast(parseOptions, VisualBasicParseOptions), optionsProvider)
+        Public Function TryParsePdbCompilationOptions(metadata As IReadOnlyDictionary(Of String, String)) As CompilationOptions Implements ICompilationFactoryService.TryParsePdbCompilationOptions
+            Dim outputKindString As String = Nothing
+            Dim outputKind As OutputKind
+
+            If Not metadata.TryGetValue("output-kind", outputKindString) OrElse
+               Not [Enum].TryParse(outputKindString, outputKind) Then
+                Return Nothing
+            End If
+
+            Return New VisualBasicCompilationOptions(outputKind)
+        End Function
+
+        Public Function CreateGeneratorDriver(
+                parseOptions As ParseOptions,
+                generators As ImmutableArray(Of ISourceGenerator),
+                optionsProvider As AnalyzerConfigOptionsProvider,
+                additionalTexts As ImmutableArray(Of AdditionalText),
+                generatedFilesBaseDirectory As String) As GeneratorDriver Implements ICompilationFactoryService.CreateGeneratorDriver
+            Return VisualBasicGeneratorDriver.Create(generators, additionalTexts, DirectCast(parseOptions, VisualBasicParseOptions), optionsProvider, New GeneratorDriverOptions(baseDirectory:=generatedFilesBaseDirectory))
         End Function
     End Class
 End Namespace

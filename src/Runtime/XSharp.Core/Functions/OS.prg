@@ -75,7 +75,7 @@ FUNCTION CurDir() AS STRING
 	LOCAL index AS INT
 	cDir := System.Environment.CurrentDirectory
     index := cDir:IndexOf(Path.VolumeSeparatorChar)
-    if cDir:StartsWith("\\") 
+    if cDir:StartsWith("\\")
         return cDir
     endif
 	IF index > 0
@@ -350,10 +350,10 @@ FUNCTION ReadOsVersionFromRegistry(lExtended AS LOGIC) AS STRING
     VAR registryKey := Microsoft.Win32.Registry.LocalMachine:OpenSubKey("Software\\Microsoft\\Windows NT\\CurrentVersion")
 	VAR cOS := (STRING)registryKey:GetValue("productName")
     IF lExtended
-        VAR os := Environment.OSVersion
+        VAR vOs := Environment.OSVersion
 	    VAR pa := Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")
 	    VAR isx86 := pa:ToLower():Contains("x86")
-	    cOS += " (" + IIF(isx86, "x86","x64") + i") ( Version {os.Version.Major}.{os.Version.Minor}, Build {os.Version.Build} )"
+	    cOS += " (" + IIF(isx86, "x86","x64") + i") ( Version {vOs.Version.Major}.{vOs.Version.Minor}, Build {vOs.Version.Build} )"
     ENDIF
     RETURN cOS
 
@@ -405,11 +405,6 @@ RETURN System.Environment.CommandLine
 
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_getinst/*" />
-FUNCTION _GetInst() AS IntPtr
-    LOCAL oType AS System.Type
-    oType := Typeof(Functions)
-    RETURN System.Runtime.InteropServices.Marshal.GetHINSTANCE(oType:Module)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_getcmdshow/*" />
 [Obsolete];

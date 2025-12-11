@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+
 using System;
 using System.Text;
 using Microsoft.Build.Tasks;
@@ -24,6 +25,7 @@ namespace XSharp.Build
             //System.Diagnostics.Debugger.Launch();
             useCRLF = !string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpDev));
             errorCount = 0;
+            RootNameSpace = "";
         }
 
 
@@ -626,13 +628,13 @@ namespace XSharp.Build
             if (string.IsNullOrEmpty(CompilerPath))
             {
                 // If used after MSI Installer, value should be in the Registry
-                string InstallPath = Utilities.XSharpBinPath();
+                string InstallPath = Utilities.XSharpBinDir();
                 CompilerPath = InstallPath;
                 // Allow to override the path when developing.
                 // Please note that this must be a complete path, for example "d:\Xsharp\Dev\XSharp\Binaries\Debug"
 
-                string DevPath = System.Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpDev);
-                if (!string.IsNullOrEmpty(DevPath) )
+                string? DevPath = System.Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpDev);
+                if (!string.IsNullOrEmpty(DevPath))
                 {
                     DevPath = DevPath.Trim();
                     string testPath = Path.Combine(DevPath, toolName);
@@ -767,7 +769,7 @@ namespace XSharp.Build
         /// other words, a constant is either defined or not defined ... it can't have
         /// an actual value.
         /// </summary>
-        internal static string GetDefineConstantsSwitch(string originalDefineConstants, TaskLoggingHelper log)
+        internal static string? GetDefineConstantsSwitch(string? originalDefineConstants, TaskLoggingHelper log)
         {
             if (originalDefineConstants == null)
             {

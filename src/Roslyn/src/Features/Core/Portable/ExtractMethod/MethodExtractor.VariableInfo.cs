@@ -5,31 +5,29 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis.PooledObjects;
+using Microsoft.CodeAnalysis.Shared.Extensions;
 using Roslyn.Utilities;
 
-namespace Microsoft.CodeAnalysis.ExtractMethod
+namespace Microsoft.CodeAnalysis.ExtractMethod;
+
+internal abstract partial class AbstractExtractMethodService<
+    TStatementSyntax,
+    TExecutableStatementSyntax,
+    TExpressionSyntax>
 {
     internal abstract partial class MethodExtractor
     {
-        protected class VariableInfo
+        protected sealed class VariableInfo(
+            VariableSymbol variableSymbol,
+            VariableStyle variableStyle,
+            bool useAsReturnValue) : IComparable<VariableInfo>
         {
-            private readonly VariableSymbol _variableSymbol;
-            private readonly VariableStyle _variableStyle;
-            private readonly bool _useAsReturnValue;
-
-            public VariableInfo(
-                VariableSymbol variableSymbol,
-                VariableStyle variableStyle,
-                bool useAsReturnValue = false)
-            {
-                _variableSymbol = variableSymbol;
-                _variableStyle = variableStyle;
-                _useAsReturnValue = useAsReturnValue;
-            }
+            private readonly VariableSymbol _variableSymbol = variableSymbol;
+            private readonly VariableStyle _variableStyle = variableStyle;
+            private readonly bool _useAsReturnValue = useAsReturnValue;
 
             public bool UseAsReturnValue
             {
@@ -65,20 +63,10 @@ namespace Microsoft.CodeAnalysis.ExtractMethod
                 }
             }
 
-            public DeclarationBehavior GetDeclarationBehavior(CancellationToken cancellationToken)
-            {
-                if (_useAsReturnValue)
-                {
-                    return _variableStyle.ReturnStyle.DeclarationBehavior;
-                }
-
-                if (_variableSymbol.GetUseSaferDeclarationBehavior(cancellationToken))
-                {
-                    return _variableStyle.ParameterStyle.SaferDeclarationBehavior;
-                }
-
-                return _variableStyle.ParameterStyle.DeclarationBehavior;
-            }
+            public DeclarationBehavior GetDeclarationBehavior()
+                => _useAsReturnValue
+                    ? _variableStyle.ReturnStyle.DeclarationBehavior
+                    : _variableStyle.ParameterStyle.DeclarationBehavior;
 
             public ReturnBehavior ReturnBehavior
             {
@@ -97,25 +85,29 @@ namespace Microsoft.CodeAnalysis.ExtractMethod
             {
                 Contract.ThrowIfNull(variable);
                 Contract.ThrowIfFalse(variable.CanBeUsedAsReturnValue);
-                Contract.ThrowIfFalse(variable.ParameterModifier == ParameterBehavior.Out || variable.ParameterModifier == ParameterBehavior.Ref);
+                Contract.ThrowIfFalse(variable.ParameterModifier is ParameterBehavior.Out or ParameterBehavior.Ref);
 
                 return new VariableInfo(variable._variableSymbol, variable._variableStyle, useAsReturnValue: true);
             }
 
             public void AddIdentifierTokenAnnotationPair(
-                List<Tuple<SyntaxToken, SyntaxAnnotation>> annotations, CancellationToken cancellationToken)
+                MultiDictionary<SyntaxToken, SyntaxAnnotation> annotations, CancellationToken cancellationToken)
             {
                 _variableSymbol.AddIdentifierTokenAnnotationPair(annotations, cancellationToken);
             }
 
             public string Name => _variableSymbol.Name;
 
-            public bool OriginalTypeHadAnonymousTypeOrDelegate => _variableSymbol.OriginalTypeHadAnonymousTypeOrDelegate;
+            /// <summary>
+            /// Returns true, if the variable could be either passed as a parameter
+            /// to the new local function or the local function can capture the variable.
+            /// </summary>
+            public bool CanBeCapturedByLocalFunction
+                => _variableSymbol.CanBeCapturedByLocalFunction;
 
-            public ITypeSymbol OriginalType => _variableSymbol.OriginalType;
+            public bool OriginalTypeHadAnonymousTypeOrDelegate => _variableSymbol.SymbolType.ContainsAnonymousType();
 
-            public ITypeSymbol GetVariableType(SemanticDocument document)
-                => document.SemanticModel.ResolveType(_variableSymbol.OriginalType);
+            public ITypeSymbol SymbolType => _variableSymbol.SymbolType;
 
             public SyntaxToken GetIdentifierTokenAtDeclaration(SemanticDocument document)
                 => document.GetTokenWithAnnotation(_variableSymbol.IdentifierTokenAnnotation);
@@ -123,14 +115,10 @@ namespace Microsoft.CodeAnalysis.ExtractMethod
             public SyntaxToken GetIdentifierTokenAtDeclaration(SyntaxNode node)
                 => node.GetAnnotatedTokens(_variableSymbol.IdentifierTokenAnnotation).SingleOrDefault();
 
-            public static void SortVariables(Compilation compilation, ArrayBuilder<VariableInfo> variables)
-            {
-                var cancellationTokenType = compilation.GetTypeByMetadataName(typeof(CancellationToken).FullName);
-                variables.Sort((v1, v2) => Compare(v1, v2, cancellationTokenType));
-            }
+            public SyntaxToken GetOriginalIdentifierToken(CancellationToken cancellationToken) => _variableSymbol.GetOriginalIdentifierToken(cancellationToken);
 
-            private static int Compare(VariableInfo left, VariableInfo right, INamedTypeSymbol cancellationTokenType)
-                => VariableSymbol.Compare(left._variableSymbol, right._variableSymbol, cancellationTokenType);
+            public int CompareTo(VariableInfo other)
+                => this._variableSymbol.CompareTo(other._variableSymbol);
         }
     }
 }

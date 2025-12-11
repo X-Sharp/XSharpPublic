@@ -5,7 +5,7 @@
 #nullable disable
 
 // We only include this file in the command line version for now which is the netcoreapp target
-#if NETCOREAPP
+#if NET
 
 using System;
 using System.IO;
@@ -21,7 +21,7 @@ namespace CSharpSyntaxGenerator
     {
         public static int Main(string[] args)
         {
-            if (args.Length < 2 || args.Length > 3)
+            if (args.Length is < 2 or > 3)
             {
                 return WriteUsage();
             }

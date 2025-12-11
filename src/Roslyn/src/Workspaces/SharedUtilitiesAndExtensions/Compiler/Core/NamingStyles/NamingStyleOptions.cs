@@ -2,30 +2,39 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
 using Microsoft.CodeAnalysis.Diagnostics.Analyzers.NamingStyles;
 using Microsoft.CodeAnalysis.Options;
+using System.Collections.Immutable;
 
-namespace Microsoft.CodeAnalysis.Simplification
+#if !CODE_STYLE
+using Microsoft.CodeAnalysis.Host;
+#endif
+
+namespace Microsoft.CodeAnalysis.CodeStyle;
+
+internal static class NamingStyleOptions
 {
-    internal static class NamingStyleOptions
-    {
-        // Use 'SimplificationOptions' for back compat as the below option 'NamingPreferences' was defined with feature name 'SimplificationOptions'.
-        private const string FeatureName = "SimplificationOptions";
+    public const string NamingPreferencesOptionName = "dotnet_naming_preferences";
 
-        /// <summary>
-        /// This option describes the naming rules that should be applied to specified categories of symbols, 
-        /// and the level to which those rules should be enforced.
-        /// </summary>
-        internal static PerLanguageOption2<NamingStylePreferences> NamingPreferences { get; } = new PerLanguageOption2<NamingStylePreferences>(FeatureName, nameof(NamingPreferences), defaultValue: NamingStylePreferences.Default,
-            storageLocations: new OptionStorageLocation2[] {
-                new NamingStylePreferenceEditorConfigStorageLocation(),
-                new RoamingProfileStorageLocation("TextEditor.%LANGUAGE%.Specific.NamingPreferences5"),
-                new RoamingProfileStorageLocation("TextEditor.%LANGUAGE%.Specific.NamingPreferences")
-            });
+    /// <summary>
+    /// This option describes the naming rules that should be applied to specified categories of symbols, 
+    /// and the level to which those rules should be enforced.
+    /// </summary>
+    internal static PerLanguageOption2<NamingStylePreferences> NamingPreferences { get; } = new(
+        NamingPreferencesOptionName,
+        defaultValue: NamingStylePreferences.Default,
+        isEditorConfigOption: true,
+        serializer: EditorConfigValueSerializer<NamingStylePreferences>.Unsupported);
 
-        public static OptionKey2 GetNamingPreferencesOptionKey(string language)
-            => new(NamingPreferences, language);
-    }
+    /// <summary>
+    /// Options that we expect the user to set in editorconfig.
+    /// </summary>
+    internal static readonly ImmutableArray<IOption2> EditorConfigOptions = [NamingPreferences];
+}
+
+internal interface NamingStylePreferencesProvider
+#if !CODE_STYLE
+    : OptionsProvider<NamingStylePreferences>
+#endif
+{
 }

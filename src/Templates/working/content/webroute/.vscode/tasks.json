@@ -1,0 +1,25 @@
+{
+"version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/${workspaceFolderBasename}.xsproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": {
+                "kind": "build",
+                "isDefault": true // Optionnal but useful to execute "build" with Ctrl+Shift+B
+            },
+            "presentation": {
+                "reveal": "always", // Always show Terminal for the task
+                "panel": "new"     // Always open in a new panel
+            }
+        }
+    ]
+}

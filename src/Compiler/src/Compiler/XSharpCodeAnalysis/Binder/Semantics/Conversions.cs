@@ -53,9 +53,9 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     internal sealed partial class Conversions
     {
-        public override bool HasBoxingConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        public override bool HasBoxingConversion(TypeSymbol source, TypeSymbol destination, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
         {
-            bool result = base.HasBoxingConversion(source, destination, ref useSiteDiagnostics);
+            bool result = base.HasBoxingConversion(source, destination, ref useSiteInfo);
 
             if (!result && _binder.Compilation.Options.HasRuntime && destination is { } && source is NamedTypeSymbol)
             {
@@ -70,7 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             && !destFrom.IsArrayType()
                             && !destFrom.IsCodeblockType()
                             && !destination.IsIFormatProvider()
-                            && destFrom.IsDerivedFrom(_binder.Compilation.CodeBlockType(), TypeCompareKind.IgnoreDynamicAndTupleNames, ref useSiteDiagnostics) != true
+                            && destFrom.IsDerivedFrom(_binder.Compilation.CodeBlockType(), TypeCompareKind.IgnoreDynamicAndTupleNames, ref useSiteInfo) != true
                             && !IsClipperArgsType(destination);
                     }
                     else if (destination.IsPointerType())
@@ -113,15 +113,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (destination.IsUsualType())
                 {
                     var usualType = _binder.Compilation.UsualType();
-                    var op = usualType.GetOperators(WellKnownMemberNames.ImplicitConversionName)
-                        .WhereAsArray(o => o.ParameterCount == 1
-                        && o.Parameters[0].Type.IsObjectType()
-                        && o.ReturnType.IsUsualType())
+                    var op = (MethodSymbol)  usualType.GetMembers(WellKnownMemberNames.ImplicitConversionName)
+                        .WhereAsArray(o => o.GetParameterCount() == 1
+                        && o.GetParameters()[0].Type.IsObjectType()
+                        && o.GetTypeOrReturnType().Type.IsUsualType())
                         .First();
                     if (op != null)
                     {
                         var sourceType = _binder.Compilation.GetSpecialType(SpecialType.System_Object);
-                        UserDefinedConversionAnalysis uca = UserDefinedConversionAnalysis.Normal(op, Conversion.ImplicitReference, Conversion.Identity, sourceType, destination);
+                        UserDefinedConversionAnalysis uca = UserDefinedConversionAnalysis.Normal(null, op, Conversion.ImplicitReference, Conversion.Identity, sourceType, destination);
                         UserDefinedConversionResult cr = UserDefinedConversionResult.Valid(new[] { uca }.AsImmutable(), 0);
                         conv = new Conversion(cr, isImplicit: true);
                         return ConversionKind.ImplicitUserDefined;
@@ -132,9 +132,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return ConversionKind.NoConversion;
         }
 
-        public override LambdaConversionResult IsAnonymousFunctionCompatibleWithType(UnboundLambda anonymousFunction, TypeSymbol type)
+        public override LambdaConversionResult IsAnonymousFunctionCompatibleWithType(UnboundLambda anonymousFunction, TypeSymbol type, CSharpCompilation compilation)
         {
-            var res = base.IsAnonymousFunctionCompatibleWithType(anonymousFunction, type);
+            var res = base.IsAnonymousFunctionCompatibleWithType(anonymousFunction, type, compilation);
 
             if (res == LambdaConversionResult.BadTargetType && _binder.Compilation.Options.HasRuntime)
             {
@@ -150,7 +150,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // with a special flag set. This will trigger code in the local rewriter
         // to convert things 'our way', applying knowledge about our types
         // and about our compiler options, such as /vo11
-        protected override Conversion ClassifyCoreImplicitConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        protected override Conversion ClassifyCoreImplicitConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
         {
             // Parameters checks have been done in the calling code
             // The following conversion Rules are for all dialects 
@@ -283,7 +283,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        protected override Conversion ClassifyVOImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        protected override Conversion ClassifyVOImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
         {
             // Parameters checks have been done in the calling code
             var srcType = source.SpecialType;
@@ -411,10 +411,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
             // when nothing else, then use the Core rules
-            return ClassifyCoreImplicitConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
+            return ClassifyCoreImplicitConversionFromExpression(sourceExpression, source, destination, ref useSiteInfo);
         }
 
-        protected override Conversion ClassifyNullConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        protected override Conversion ClassifyNullConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
         {
             if (sourceExpression.Kind == BoundKind.Literal && sourceExpression.IsLiteralNull())
             {
@@ -426,16 +426,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return Conversion.NoConversion;
         }
-        protected override Conversion ClassifyXSImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        protected override Conversion ClassifyXSImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
         {
             if (source is null || destination is null)
             {
-                return ClassifyNullConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
+                return ClassifyNullConversionFromExpression(sourceExpression, source, destination, ref useSiteInfo);
             }
             if (Compilation.Options.HasRuntime)
-                return ClassifyVOImplicitBuiltInConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
+                return ClassifyVOImplicitBuiltInConversionFromExpression(sourceExpression, source, destination, ref useSiteInfo);
             else
-                return ClassifyCoreImplicitConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
+                return ClassifyCoreImplicitConversionFromExpression(sourceExpression, source, destination, ref useSiteInfo);
         }
 
         protected override bool IsClipperArgsType(TypeSymbol args)
@@ -451,7 +451,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return result;
         }
 
-        protected override Conversion ClassifyXSExplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, bool forCast, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        protected override Conversion ClassifyXSExplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, bool forCast, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
         {
             var syntax = sourceExpression.Syntax;
             var vo4 = Compilation.Options.HasOption(CompilerOption.VOSignedUnsignedConversion, syntax);
@@ -613,25 +613,25 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        protected virtual Conversion ClassifyCoreImplicitConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        protected virtual Conversion ClassifyCoreImplicitConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
         {
             return Conversion.NoConversion;
         }
-        protected virtual Conversion ClassifyVOImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        protected virtual Conversion ClassifyVOImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
         {
             return Conversion.NoConversion;
         }
-        protected virtual Conversion ClassifyNullConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
-        {
-            return Conversion.NoConversion;
-        }
-
-        protected virtual Conversion ClassifyXSImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        protected virtual Conversion ClassifyNullConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
         {
             return Conversion.NoConversion;
         }
 
-        protected virtual Conversion ClassifyXSExplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, bool forCast, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        protected virtual Conversion ClassifyXSImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
+        {
+            return Conversion.NoConversion;
+        }
+
+        protected virtual Conversion ClassifyXSExplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, bool forCast, ref CompoundUseSiteInfo<AssemblySymbol> useSiteInfo)
         {
             return Conversion.NoConversion;
         }

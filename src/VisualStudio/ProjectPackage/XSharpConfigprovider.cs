@@ -221,7 +221,7 @@ namespace XSharp.Project
                 {
                     if (sdk.IsNetCoreApp)
                     {
-                        info.clsidCustom = VSConstants.DebugEnginesGuids.CoreSystemClr_guid;
+                    info.clsidCustom = VSConstants.DebugEnginesGuids.CoreSystemClr_guid;
                     }
                 }
 

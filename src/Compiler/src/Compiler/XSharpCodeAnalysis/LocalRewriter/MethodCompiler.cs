@@ -32,7 +32,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundStatement body,
             int methodOrdinal,
             TypeCompilationState compilationState,
-            DiagnosticBag diagnostics)
+            BindingDiagnosticBag diagnostics)
         {
             var methodNode = method.GetNonNullSyntaxNode();
             if (!methodNode.XGenerated)
@@ -85,7 +85,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (xnode is XSharpParser.IMemberContext iec)
             {
-                body = LocalRewriter.RemoveUnusedVars(iec.Data, body, diagnostics);
+                 body = LocalRewriter.RemoveUnusedVars(iec.Data, body, diagnostics);
             }
 
             return body;

@@ -4,6 +4,8 @@
 
 Imports System.Collections.Immutable
 Imports System.Reflection
+Imports System.Threading
+Imports System.Runtime.InteropServices
 Imports Microsoft.CodeAnalysis.Emit
 Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.Symbols
@@ -59,7 +61,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Emit
             End Get
         End Property
 
-        Public Overrides Function GetAdditionalTopLevelTypes(diagnostics As DiagnosticBag) As ImmutableArray(Of NamedTypeSymbol)
+        Public Overrides Function GetAdditionalTopLevelTypes() As ImmutableArray(Of NamedTypeSymbol)
             Return _additionalTypes
         End Function
 
@@ -109,11 +111,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Emit
             Return lazyFiles
         End Function
 
-        Private Shared Function Free(builder As ArrayBuilder(Of Cci.IFileReference)) As Boolean
-            builder.Free()
-            Return False
-        End Function
-
         Protected Overrides Sub AddEmbeddedResourcesFromAddedModules(builder As ArrayBuilder(Of Cci.ManagedResource), diagnostics As DiagnosticBag)
             Dim modules = m_SourceAssembly.Modules
 
@@ -152,6 +149,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Emit
                 Return m_SourceAssembly.AssemblyVersionPattern
             End Get
         End Property
+
+        Protected Function GetOrSynthesizeNamespace(namespaceFullName As String) As NamespaceSymbol
+            Dim result = SourceModule.GlobalNamespace
+
+            For Each partName In namespaceFullName.Split("."c)
+                Dim subnamespace = DirectCast(result.GetMembers(partName).FirstOrDefault(Function(m) m.Kind = SymbolKind.Namespace), NamespaceSymbol)
+                If subnamespace Is Nothing Then
+                    subnamespace = New SynthesizedNamespaceSymbol(result, partName)
+                    AddSynthesizedDefinition(result, subnamespace)
+                End If
+
+                result = subnamespace
+            Next
+
+            Return result
+        End Function
     End Class
 
     Friend NotInheritable Class PEAssemblyBuilder
@@ -173,10 +186,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Emit
             End Get
         End Property
 
-        Public Overrides ReadOnly Property CurrentGenerationOrdinal As Integer
+        Public Overrides ReadOnly Property EncSymbolChanges As SymbolChanges
             Get
-                Return 0
+                Return Nothing
             End Get
         End Property
+
+        Public Overrides ReadOnly Property PreviousGeneration As EmitBaseline
+            Get
+                Return Nothing
+            End Get
+        End Property
+
+        Public Overrides Function TryGetOrCreateSynthesizedHotReloadExceptionType() As INamedTypeSymbolInternal
+            Return Nothing
+        End Function
+
+        Public Overrides Function GetOrCreateHotReloadExceptionConstructorDefinition() As IMethodSymbolInternal
+            ' Should only be called when compiling EnC delta
+            Throw ExceptionUtilities.Unreachable
+        End Function
+
+        Public Overrides Function GetUsedSynthesizedHotReloadExceptionType() As INamedTypeSymbolInternal
+            Return Nothing
+        End Function
     End Class
 End Namespace

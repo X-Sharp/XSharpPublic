@@ -180,6 +180,8 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Instance          := 1 << 16
       MEMBER @@Volatile          := 1 << 17
       MEMBER @@Async             := 1 << 18
+      MEMBER @@Global            := 1 << 19
+
       //XPP Modifiers below
       MEMBER @@Deferred          := 1 << 20            // Mapped to ABSTRACT
       MEMBER @@Final             := 1 << 21            // Mapped to SEALED

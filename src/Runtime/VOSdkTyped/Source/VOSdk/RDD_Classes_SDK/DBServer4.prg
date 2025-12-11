@@ -1493,7 +1493,7 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope) AS 
 	//
 	LOCAL uValue                AS USUAL
 	LOCAL cbKey                 AS USUAL // AS CODEBLOCK
-	LOCAL nNextCount            AS LONGINT
+	LOCAL nNextCount            AS LONG
 	LOCAL lRestOfFile           AS LOGIC
 	LOCAL cTarget               AS STRING
 	LOCAL w                     AS DWORD
@@ -1579,7 +1579,7 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope) AS 
 				ENDIF
 
 
-				nNextCount:=nStoredNextCount
+				nNextCount:= (LONG) nStoredNextCount
 				IF IsNil(nNextCount)
 					nNextCount:=-1
 				ELSE

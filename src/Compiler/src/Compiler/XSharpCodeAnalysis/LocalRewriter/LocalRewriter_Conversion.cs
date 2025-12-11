@@ -376,7 +376,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             else
             {
-                rewrittenOperand = _factory.StaticCall(usualType, ReservedNames.ToObject, rewrittenOperand);
+                rewrittenOperand = _factory.StaticCall((NamedTypeSymbol) usualType, ReservedNames.ToObject, rewrittenOperand);
                 if (rewrittenType.IsObjectType())
                 {
                     conversionKind = ConversionKind.Identity;

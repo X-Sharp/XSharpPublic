@@ -1,42 +1,37 @@
-﻿public class TestClass
-	public method TestMethod(args params usual[]) as void
-		Console.WriteLine("TestMethod called with {0} arguments.", args:Length)
-		return
-	public method TestMethod2(arg as usual, args params usual[]) as void
-		Console.WriteLine("TestMethod2 called with {0} arguments.", args:Length+1)
-        return
-	public method TestMethod3(arg as usual, arg2 as usual, args params usual[]) as void
-		Console.WriteLine("TestMethod3 called with {0} arguments.", args:Length+2)
-		return
-    public method TestMethod4(arg as usual, arg2 as usual, arg3 as usual, args params usual[]) as void
-        if args != null
-            Console.WriteLine("TestMethod4 called with {0} arguments.", args:Length +3)
-        else
-            Console.WriteLine("TestMethod4 called with {0} arguments.", 3)
-        endif
-		return
-end class
+﻿// 385. Various compatibility issues with conversions and casts
+FUNCTION Start() AS VOID
+
+LOCAL b1 := 0xF1 AS BYTE
+LOCAL b2 := 0x01 AS BYTE
+LOCAL b3 := 0xF3 AS BYTE
+
+? b1,b3 // warning killer
+
+? INT64(b2)
+? INT64(_CAST , b2)
+xAssert(INT64(b2) == 0x01 , "INT64(b2)")
+xAssert(INT64(_CAST , b2) == 0x01 , "INT64(_CAST , b2)")
 
 
+? AsHexString(UINT64(b2))
+? AsHexString(UINT64(_CAST , b2))
+xAssert(AsHexString(UINT64(b2)) == "0000000000000001" , "UINT64(b2)")
+xAssert(AsHexString(UINT64(_CAST , b2)) == "0000000000000001" , "UINT64(_CAST , b2)")
 
-function Start() as void strict
-	var test := TestClass{}
-    try
-	var testUntyped := (usual)TestClass{}
 
-	test:TestMethod(1, 2, 3)
-	test:TestMethod2(1, 2, 3)
-	test:TestMethod3(1, 2, 3)
-	test:TestMethod4(1, 2, 3,4,5,6)
-	test:TestMethod4(1,2,3)
-	test:TestMethod4(1,2,3)
-	testUntyped:TestMethod(1, 2, 3)
-	testUntyped:TestMethod2(1, 2, 3)
-	testUntyped:TestMethod3(1, 2, 3)
-	testUntyped:TestMethod4(1, 2, 3,4,5,6)
-	testUntyped:TestMethod4(1,2,3)
-    catch e as exception
-        Console.WriteLine("Error: "+e:ToString())
-        end try
-	Console.ReadLine()
-	return
+? AsHexString(INT64(b2))
+? AsHexString(INT64(_CAST , b2))
+xAssert(AsHexString(INT64(b2)) == "0000000000000001" , "INT64(b2)")
+xAssert(AsHexString(INT64(_CAST , b2)) == "0000000000000001" , "INT64(_CAST , b2)")
+
+LOCAL d := ConDate(1975,7,5) AS DATE // or SYMBOL, PSZ etc
+? DWORD(_CAST , d)
+? DWORD(_CAST , d + 1)
+xAssert(DWORD(_CAST , d) == 2442599 , "DWORD(_CAST , d)")
+xAssert(DWORD(_CAST , d + 1) == 2442600 , "DWORD(_CAST , d + 1)")
+xAssert(DWORD(_CAST , d - 1) == 2442598 , "DWORD(_CAST , d - 1)")
+wait
+PROC xAssert(l AS LOGIC , cExpression AS STRING)
+IF .not. l
+	THROW Exception{"Failed result: " + cExpression}
+END IF

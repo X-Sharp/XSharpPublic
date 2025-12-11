@@ -9,7 +9,6 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using Microsoft.CodeAnalysis.CSharp.Emit;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -18,6 +17,7 @@ using Roslyn.Utilities;
 #if XSHARP
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 #endif
+
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
 #if XSHARP
@@ -26,20 +26,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     internal abstract class SourcePropertySymbolBase : PropertySymbol, IAttributeTargetSymbol
 #endif	
     {
+        protected const string DefaultIndexerName = "Item";
+
         /// <summary>
         /// Condensed flags storing useful information about the <see cref="SourcePropertySymbolBase"/>
         /// so that we do not have to go back to source to compute this data.
         /// </summary>
         [Flags]
-        private enum Flags : byte
+        private enum Flags : ushort
         {
             IsExpressionBodied = 1 << 0,
-            IsAutoProperty = 1 << 1,
-            IsExplicitInterfaceImplementation = 1 << 2,
-            HasGetAccessor = 1 << 3,
-            HasSetAccessor = 1 << 4,
-            HasInitializer = 1 << 5,
-            IsAutoPropertyWithGetAccessor = IsAutoProperty | HasGetAccessor,
+            HasAutoPropertyGet = 1 << 1,
+            HasAutoPropertySet = 1 << 2,
+            GetterUsesFieldKeyword = 1 << 3,
+            SetterUsesFieldKeyword = 1 << 4,
+            IsExplicitInterfaceImplementation = 1 << 5,
+            HasInitializer = 1 << 6,
+            AccessorsHaveImplementation = 1 << 7,
+            HasExplicitAccessModifier = 1 << 8,
+            RequiresBackingField = 1 << 9,
         }
 
         // TODO (tomat): consider splitting into multiple subclasses/rare data.
@@ -58,9 +63,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #endif
         private ImmutableArray<CustomModifier> _lazyRefCustomModifiers;
 #nullable enable
-        private SourcePropertyAccessorSymbol? _lazyGetMethod;
-        private SourcePropertyAccessorSymbol? _lazySetMethod;
-        private DiagnosticBag? _lazyDiagnosticBag;
+        private readonly SourcePropertyAccessorSymbol? _getMethod;
+        private readonly SourcePropertyAccessorSymbol? _setMethod;
 #nullable disable
         private readonly TypeSymbol _explicitInterfaceType;
         private ImmutableArray<PropertySymbol> _lazyExplicitInterfaceImplementations;
@@ -71,10 +75,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private ImmutableArray<ParameterSymbol> _lazyParameters;
         private TypeWithAnnotations.Boxed _lazyType;
 
-        /// <summary>
-        /// Set in constructor, might be changed while decoding <see cref="IndexerNameAttribute"/>.
-        /// </summary>
-        protected readonly string _sourceName;
+        private string _lazySourceName;
 
         private string _lazyDocComment;
         private string _lazyExpandedDocComment;
@@ -87,6 +88,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         public Location Location { get; }
 
 #nullable enable
+        private SynthesizedBackingFieldSymbol? _lazyDeclaredBackingField;
+        private SynthesizedBackingFieldSymbol? _lazyMergedBackingField;
+
         protected SourcePropertySymbolBase(
             SourceMemberContainerTypeSymbol containingType,
             CSharpSyntaxNode syntax,
@@ -97,16 +101,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             string? aliasQualifierOpt,
             DeclarationModifiers modifiers,
             bool hasInitializer,
-            bool isAutoProperty,
+            bool hasExplicitAccessMod,
+            bool hasAutoPropertyGet,
+            bool hasAutoPropertySet,
             bool isExpressionBodied,
-            bool isInitOnly,
+            bool accessorsHaveImplementation,
+            bool getterUsesFieldKeyword,
+            bool setterUsesFieldKeyword,
             RefKind refKind,
             string memberName,
             SyntaxList<AttributeListSyntax> indexerNameAttributeLists,
-            Location location)
+            Location location,
+            BindingDiagnosticBag diagnostics)
         {
-            Debug.Assert(!isExpressionBodied || !isAutoProperty);
+            Debug.Assert(!isExpressionBodied || !(hasAutoPropertyGet || hasAutoPropertySet));
             Debug.Assert(!isExpressionBodied || !hasInitializer);
+            Debug.Assert(!isExpressionBodied || accessorsHaveImplementation);
+            Debug.Assert((modifiers & DeclarationModifiers.Required) == 0 || this is SourcePropertySymbol);
 
             _syntaxRef = syntax.GetReference();
             Location = location;
@@ -131,22 +142,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 _lazyExplicitInterfaceImplementations = ImmutableArray<PropertySymbol>.Empty;
             }
 
-            bool isIndexer = IsIndexer;
-            isAutoProperty = isAutoProperty && !(containingType.IsInterface && !IsStatic) && !IsAbstract && !IsExtern && !isIndexer;
-
-            if (isAutoProperty)
+            if (hasExplicitAccessMod)
             {
-                _propertyFlags |= Flags.IsAutoProperty;
+                _propertyFlags |= Flags.HasExplicitAccessModifier;
             }
 
-            if (hasGetAccessor)
+            if (hasAutoPropertyGet)
             {
-                _propertyFlags |= Flags.HasGetAccessor;
+                _propertyFlags |= Flags.HasAutoPropertyGet;
             }
 
-            if (hasSetAccessor)
+            if (hasAutoPropertySet)
             {
-                _propertyFlags |= Flags.HasSetAccessor;
+                _propertyFlags |= Flags.HasAutoPropertySet;
+            }
+
+            if (getterUsesFieldKeyword)
+            {
+                _propertyFlags |= Flags.GetterUsesFieldKeyword;
+            }
+
+            if (setterUsesFieldKeyword)
+            {
+                _propertyFlags |= Flags.SetterUsesFieldKeyword;
             }
 
             if (hasInitializer)
@@ -159,61 +177,67 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 _propertyFlags |= Flags.IsExpressionBodied;
             }
 
-            if (isIndexer && indexerNameAttributeLists.Count != 0 && !isExplicitInterfaceImplementation)
+            if (accessorsHaveImplementation)
             {
-                // Evaluate the attributes immediately in case the IndexerNameAttribute has been applied.
-                // NOTE: we want IsExplicitInterfaceImplementation, IsOverride, Locations, and the syntax reference
-                // to be initialized before we pass this symbol to LoadCustomAttributes.
-
-                // CONSIDER: none of the information from this early binding pass is cached.  Everything will
-                // be re-bound when someone calls GetAttributes.  If this gets to be a problem, we could
-                // always use the real attribute bag of this symbol and modify LoadAndValidateAttributes to
-                // handle partially filled bags.
-                CustomAttributesBag<CSharpAttributeData>? temp = null;
-                LoadAndValidateAttributes(OneOrMany.Create(indexerNameAttributeLists), ref temp, earlyDecodingOnly: true);
-                if (temp != null)
-                {
-                    Debug.Assert(temp.IsEarlyDecodedWellKnownAttributeDataComputed);
-                    var propertyData = (PropertyEarlyWellKnownAttributeData)temp.EarlyDecodedWellKnownAttributeData;
-                    if (propertyData != null)
-                    {
-                        _sourceName = propertyData.IndexerName;
-                    }
-                }
+                _propertyFlags |= Flags.AccessorsHaveImplementation;
             }
 
+            if (IsIndexer)
+            {
+                if (indexerNameAttributeLists.Count == 0 || isExplicitInterfaceImplementation)
+                {
+                    _lazySourceName = memberName;
+                }
+                else
+                {
+                    Debug.Assert(memberName == DefaultIndexerName);
+                }
+
+                _name = ExplicitInterfaceHelpers.GetMemberName(WellKnownMemberNames.Indexer, _explicitInterfaceType, aliasQualifierOpt);
+            }
+            else
+            {
+                _name = _lazySourceName = memberName;
+            }
 #if XSHARP
-            _sourceName = memberName;
+            _lazySourceName = memberName;
             // For indexed properties the name is in the ThisKeyword
             // For SELF properties the ThisKeyword has an empty name
             if (syntax is IndexerDeclarationSyntax ids && IsIndexedProperty)
             {
-                _sourceName = ids.ThisKeyword.ValueText;
+                _lazySourceName = ids.ThisKeyword.ValueText;
             }
             if (_isIndexedProperty)
             {
                 // Check to see if we have an explicit interface
-                _name = ExplicitInterfaceHelpers.GetMemberName(_sourceName, _explicitInterfaceType, aliasQualifierOpt);
+                _name = ExplicitInterfaceHelpers.GetMemberName(_lazySourceName, _explicitInterfaceType, aliasQualifierOpt);
             }
             else
             {
-                _name = isIndexer ? ExplicitInterfaceHelpers.GetMemberName(WellKnownMemberNames.Indexer, _explicitInterfaceType, aliasQualifierOpt) : _sourceName;
+                _name = IsIndexer ? ExplicitInterfaceHelpers.GetMemberName(WellKnownMemberNames.Indexer, _explicitInterfaceType, aliasQualifierOpt) : _lazySourceName;
             }
-#else
-            _sourceName = _sourceName ?? memberName; // _sourceName may have been set while loading attributes
-            _name = isIndexer ? ExplicitInterfaceHelpers.GetMemberName(WellKnownMemberNames.Indexer, _explicitInterfaceType, aliasQualifierOpt) : _sourceName;
 #endif
 
-            if ((isAutoProperty && hasGetAccessor) || hasInitializer)
+            if (getterUsesFieldKeyword || setterUsesFieldKeyword || hasAutoPropertyGet || hasAutoPropertySet || hasInitializer)
             {
-                string fieldName = GeneratedNames.MakeBackingFieldName(_sourceName);
-                BackingField = new SynthesizedBackingFieldSymbol(this,
-                                                                      fieldName,
-                                                                      isReadOnly: (hasGetAccessor && !hasSetAccessor) || isInitOnly,
-                                                                      this.IsStatic,
-                                                                      hasInitializer);
+                Debug.Assert(!IsIndexer);
+                _propertyFlags |= Flags.RequiresBackingField;
             }
+
+            if (hasGetAccessor)
+            {
+                _getMethod = CreateGetAccessorSymbol(hasAutoPropertyGet, diagnostics);
+            }
+
+            if (hasSetAccessor)
+            {
+                _setMethod = CreateSetAccessorSymbol(hasAutoPropertySet, diagnostics);
+            }
+
+            // We shouldn't calculate the backing field before the accessors above are created.
+            Debug.Assert(_lazyDeclaredBackingField is null);
         }
+
 #if XSHARP
         internal virtual void validateProperty(PropertySymbol overriddenProperty, DiagnosticBag diagnostics)
         {
@@ -221,7 +245,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
 #endif
 
-        private void EnsureSignatureGuarded(DiagnosticBag diagnostics)
+        private void EnsureSignatureGuarded(BindingDiagnosticBag diagnostics)
         {
             PropertySymbol? explicitlyImplementedProperty = null;
             _lazyRefCustomModifiers = ImmutableArray<CustomModifier>.Empty;
@@ -265,7 +289,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     string interfacePropertyName;
                     if (_isIndexedProperty)
                     {
-                        interfacePropertyName = _sourceName;
+                        interfacePropertyName = _lazySourceName;
                     }
                     else if (IsIndexer)
                     {
@@ -278,7 +302,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #else
                     string interfacePropertyName = IsIndexer ? WellKnownMemberNames.Indexer : ((PropertyDeclarationSyntax)syntax).Identifier.ValueText;
 #endif
-                explicitlyImplementedProperty = this.FindExplicitlyImplementedProperty(_explicitInterfaceType, interfacePropertyName, GetExplicitInterfaceSpecifier(syntax), diagnostics);
+                    explicitlyImplementedProperty = this.FindExplicitlyImplementedProperty(_explicitInterfaceType, interfacePropertyName, GetExplicitInterfaceSpecifier(), diagnostics);
                     this.FindExplicitlyImplementedMemberVerification(explicitlyImplementedProperty, diagnostics);
                     overriddenOrImplementedProperty = explicitlyImplementedProperty;
                 }
@@ -340,22 +364,64 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal bool IsExpressionBodied
             => (_propertyFlags & Flags.IsExpressionBodied) != 0;
 
-        private void CheckInitializer(
-            bool isAutoProperty,
-            bool isInterface,
-            bool isStatic,
-            Location location,
-            DiagnosticBag diagnostics)
+        protected void CheckInitializerIfNeeded(BindingDiagnosticBag diagnostics)
         {
-            if (isInterface && !isStatic)
+            if ((_propertyFlags & Flags.HasInitializer) == 0)
             {
-                diagnostics.Add(ErrorCode.ERR_InstancePropertyInitializerInInterface, location, this);
+                return;
             }
-            else if (!isAutoProperty)
+
+            if (ContainingType.IsInterface && !IsStatic)
             {
-                diagnostics.Add(ErrorCode.ERR_InitializerOnNonAutoProperty, location, this);
+                diagnostics.Add(ErrorCode.ERR_InstancePropertyInitializerInInterface, Location);
+            }
+            else if (!IsAutoPropertyOrUsesFieldKeyword)
+            {
+                diagnostics.Add(ErrorCode.ERR_InitializerOnNonAutoProperty, Location);
             }
         }
+
+#nullable enable
+        private static void CheckFieldKeywordUsage(SourcePropertySymbolBase property, BindingDiagnosticBag diagnostics)
+        {
+            Debug.Assert(property.PartialImplementationPart is null);
+            if (!property.DeclaringCompilation.IsFeatureEnabled(MessageID.IDS_FeatureFieldKeyword))
+            {
+                return;
+            }
+
+            SourcePropertyAccessorSymbol? accessorToBlame = null;
+            var propertyFlags = property._propertyFlags;
+            var getterUsesFieldKeyword = (propertyFlags & Flags.GetterUsesFieldKeyword) != 0;
+            var setterUsesFieldKeyword = (propertyFlags & Flags.SetterUsesFieldKeyword) != 0;
+            if (property._setMethod is { IsAutoPropertyAccessor: false } setMethod
+                && !setterUsesFieldKeyword
+                && !property.IsSetOnEitherPart(Flags.HasInitializer)
+                && (property.HasAutoPropertyGet || getterUsesFieldKeyword))
+            {
+                accessorToBlame = setMethod;
+            }
+            else if (property._getMethod is { IsAutoPropertyAccessor: false } getMethod
+                && !getterUsesFieldKeyword
+                && (property.HasAutoPropertySet || setterUsesFieldKeyword))
+            {
+                accessorToBlame = getMethod;
+            }
+
+            if (accessorToBlame is not null)
+            {
+                var accessorName = accessorToBlame switch
+                {
+                    { MethodKind: MethodKind.PropertyGet, IsInitOnly: false } => SyntaxFacts.GetText(SyntaxKind.GetKeyword),
+                    { MethodKind: MethodKind.PropertySet, IsInitOnly: false } => SyntaxFacts.GetText(SyntaxKind.SetKeyword),
+                    { MethodKind: MethodKind.PropertySet, IsInitOnly: true } => SyntaxFacts.GetText(SyntaxKind.InitKeyword),
+                    _ => throw ExceptionUtilities.UnexpectedValue(accessorToBlame)
+                };
+
+                diagnostics.Add(ErrorCode.WRN_AccessorDoesNotUseBackingField, accessorToBlame.GetFirstLocation(), accessorName, property);
+            }
+        }
+#nullable disable
 
         public sealed override RefKind RefKind
         {
@@ -374,7 +440,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-#nullable enable
+#nullable enable 
 
         private void EnsureSignature()
         {
@@ -390,11 +456,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         // By setting StartPropertyEnsureSignature, we've committed to doing the work and setting
                         // FinishPropertyEnsureSignature.  So there is no cancellation supported between one and the other.
-                        var diagnostics = DiagnosticBag.GetInstance();
+                        var diagnostics = BindingDiagnosticBag.GetInstance();
                         try
                         {
                             EnsureSignatureGuarded(diagnostics);
-                            AddDiagnostics(diagnostics);
+                            this.AddDeclarationDiagnostics(diagnostics);
                         }
                         finally
                         {
@@ -427,40 +493,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        private void AddDiagnostics(DiagnosticBag diagnostics)
-        {
-            if (!diagnostics.IsEmptyWithoutResolution)
-            {
-                DiagnosticBag? destination = _lazyDiagnosticBag;
-                if (destination is null)
-                {
-                    var newBag = new DiagnosticBag();
-                    destination = Interlocked.CompareExchange(ref _lazyDiagnosticBag, newBag, null!) ?? newBag;
-                }
-
-                destination.AddRange(diagnostics);
-            }
-        }
-
 #nullable disable
 
         internal bool HasPointerType
         {
             get
             {
-                if (_lazyType != null)
-                {
-
-                    var hasPointerType = _lazyType.Value.DefaultType.IsPointerOrFunctionPointer();
-                    Debug.Assert(hasPointerType == HasPointerTypeSyntactically);
-                    return hasPointerType;
-                }
-
-                return HasPointerTypeSyntactically;
+                return TypeWithAnnotations.DefaultType.IsPointerOrFunctionPointer();
             }
         }
-
-        protected abstract bool HasPointerTypeSyntactically { get; }
 
         /// <remarks>
         /// To facilitate lookup, all indexer symbols have the same name.
@@ -475,13 +516,56 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
+#nullable enable
+        internal string SourceName
+        {
+            get
+            {
+                if (_lazySourceName is null)
+                {
+                    Debug.Assert(IsIndexer);
+
+                    var indexerNameAttributeLists = ((IndexerDeclarationSyntax)CSharpSyntaxNode).AttributeLists;
+                    Debug.Assert(indexerNameAttributeLists.Count != 0);
+                    Debug.Assert(!IsExplicitInterfaceImplementation);
+
+                    string? sourceName = null;
+
+                    // Evaluate the attributes immediately in case the IndexerNameAttribute has been applied.
+
+                    // CONSIDER: none of the information from this early binding pass is cached.  Everything will
+                    // be re-bound when someone calls GetAttributes.  If this gets to be a problem, we could
+                    // always use the real attribute bag of this symbol and modify LoadAndValidateAttributes to
+                    // handle partially filled bags.
+                    CustomAttributesBag<CSharpAttributeData>? temp = null;
+                    LoadAndValidateAttributes(OneOrMany.Create(indexerNameAttributeLists), ref temp, earlyDecodingOnly: true);
+                    if (temp != null)
+                    {
+                        Debug.Assert(temp.IsEarlyDecodedWellKnownAttributeDataComputed);
+                        var propertyData = (PropertyEarlyWellKnownAttributeData)temp.EarlyDecodedWellKnownAttributeData;
+                        if (propertyData != null)
+                        {
+                            sourceName = propertyData.IndexerName;
+                        }
+                    }
+
+                    sourceName = sourceName ?? DefaultIndexerName;
+
+                    InterlockedOperations.Initialize(ref _lazySourceName, sourceName);
+                }
+
+                return _lazySourceName;
+            }
+        }
+#nullable disable
+
         public override string MetadataName
         {
             get
             {
                 // Explicit implementation names may have spaces if the interface
                 // is generic (between the type arguments).
-                return _sourceName.Replace(" ", "");
+                return SourceName.Replace(" ", "");
             }
         }
 
@@ -506,6 +590,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return new LexicalSortKey(Location, this.DeclaringCompilation);
         }
 
+        public sealed override Location TryGetFirstLocation() => Location;
+
         public override ImmutableArray<Location> Locations
         {
             get
@@ -527,19 +613,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return (_modifiers & DeclarationModifiers.Abstract) != 0; }
         }
 
+        protected bool HasExternModifier
+        {
+            get
+            {
+                return (_modifiers & DeclarationModifiers.Extern) != 0;
+            }
+        }
+
         public override bool IsExtern
         {
-            get { return (_modifiers & DeclarationModifiers.Extern) != 0; }
+            get
+            {
+                return HasExternModifier;
+            }
         }
 
         public override bool IsStatic
         {
             get { return (_modifiers & DeclarationModifiers.Static) != 0; }
-        }
-
-        internal bool IsFixed
-        {
-            get { return false; }
         }
 
         /// <remarks>
@@ -569,6 +661,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return (_modifiers & DeclarationModifiers.Virtual) != 0; }
         }
 
+        internal sealed override bool IsRequired => (_modifiers & DeclarationModifiers.Required) != 0;
+
         internal bool IsNew
         {
             get { return (_modifiers & DeclarationModifiers.New) != 0; }
@@ -577,39 +671,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal bool HasReadOnlyModifier => (_modifiers & DeclarationModifiers.ReadOnly) != 0;
 
 #nullable enable
+        /// <summary>
+        /// The method is called at the end of <see cref="SourcePropertySymbolBase"/> constructor.
+        /// The implementation may depend only on information available from the <see cref="SourcePropertySymbolBase"/> type.
+        /// </summary>
         protected abstract SourcePropertyAccessorSymbol CreateGetAccessorSymbol(
             bool isAutoPropertyAccessor,
-            bool isExplicitInterfaceImplementation,
-            PropertySymbol? explicitlyImplementedPropertyOpt,
-            DiagnosticBag diagnostics);
+            BindingDiagnosticBag diagnostics);
 
+        /// <summary>
+        /// The method is called at the end of <see cref="SourcePropertySymbolBase"/> constructor.
+        /// The implementation may depend only on information available from the <see cref="SourcePropertySymbolBase"/> type.
+        /// </summary>
         protected abstract SourcePropertyAccessorSymbol CreateSetAccessorSymbol(
             bool isAutoPropertyAccessor,
-            bool isExplicitInterfaceImplementation,
-            PropertySymbol? explicitlyImplementedPropertyOpt,
-            DiagnosticBag diagnostics);
+            BindingDiagnosticBag diagnostics);
 
         public sealed override MethodSymbol? GetMethod
         {
             get
             {
-                if (_lazyGetMethod is null && (_propertyFlags & Flags.HasGetAccessor) != 0)
-                {
-                    var diagnostics = DiagnosticBag.GetInstance();
-                    bool isExplicitInterfaceImplementation = IsExplicitInterfaceImplementation;
-                    var result = CreateGetAccessorSymbol(isAutoPropertyAccessor: IsAutoProperty, isExplicitInterfaceImplementation,
-                                                         explicitlyImplementedPropertyOpt: isExplicitInterfaceImplementation ? ExplicitInterfaceImplementations.FirstOrDefault() : null,
-                                                         diagnostics);
-                    if (Interlocked.CompareExchange(ref _lazyGetMethod, result, null) == null)
-                    {
-                        AddDiagnostics(diagnostics);
-                    }
-
-                    diagnostics.Free();
-                }
-
-                Debug.Assert((_lazyGetMethod is object) == ((_propertyFlags & Flags.HasGetAccessor) != 0));
-                return _lazyGetMethod;
+                return _getMethod;
             }
         }
 
@@ -617,23 +699,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             get
             {
-                if (_lazySetMethod is null && (_propertyFlags & Flags.HasSetAccessor) != 0)
-                {
-                    var diagnostics = DiagnosticBag.GetInstance();
-                    bool isExplicitInterfaceImplementation = IsExplicitInterfaceImplementation;
-                    var result = CreateSetAccessorSymbol(isAutoPropertyAccessor: IsAutoProperty, isExplicitInterfaceImplementation,
-                                                         explicitlyImplementedPropertyOpt: isExplicitInterfaceImplementation ? ExplicitInterfaceImplementations.FirstOrDefault() : null,
-                                                         diagnostics);
-                    if (Interlocked.CompareExchange(ref _lazySetMethod, result, null) == null)
-                    {
-                        AddDiagnostics(diagnostics);
-                    }
-
-                    diagnostics.Free();
-                }
-
-                Debug.Assert((_lazySetMethod is object) == ((_propertyFlags & Flags.HasSetAccessor) != 0));
-                return _lazySetMethod;
+                return _setMethod;
             }
         }
 
@@ -703,17 +769,132 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal bool IsAutoPropertyWithGetAccessor
-            => (_propertyFlags & Flags.IsAutoPropertyWithGetAccessor) == Flags.IsAutoPropertyWithGetAccessor;
+        internal bool IsAutoPropertyOrUsesFieldKeyword
+            => IsSetOnEitherPart(Flags.HasAutoPropertyGet | Flags.HasAutoPropertySet | Flags.GetterUsesFieldKeyword | Flags.SetterUsesFieldKeyword);
 
-        protected bool IsAutoProperty
-            => (_propertyFlags & Flags.IsAutoProperty) != 0;
+        internal bool UsesFieldKeyword
+            => IsSetOnEitherPart(Flags.GetterUsesFieldKeyword | Flags.SetterUsesFieldKeyword);
+
+        protected bool HasExplicitAccessModifier
+            => (_propertyFlags & Flags.HasExplicitAccessModifier) != 0;
+
+        internal bool IsAutoProperty
+            => IsSetOnEitherPart(Flags.HasAutoPropertyGet | Flags.HasAutoPropertySet);
+
+        internal bool HasAutoPropertyGet
+            => IsSetOnEitherPart(Flags.HasAutoPropertyGet);
+
+        internal bool HasAutoPropertySet
+            => IsSetOnEitherPart(Flags.HasAutoPropertySet);
 
         /// <summary>
-        /// Backing field for automatically implemented property, or
-        /// for a property with an initializer.
+        /// True if the property has a synthesized backing field, and
+        /// either no accessor or the accessor is auto-implemented.
         /// </summary>
-        internal SynthesizedBackingFieldSymbol BackingField { get; }
+        internal bool CanUseBackingFieldDirectlyInConstructor(bool useAsLvalue)
+        {
+            if (BackingField is null)
+            {
+                return false;
+            }
+            if (useAsLvalue)
+            {
+                return SetMethod is null || HasAutoPropertySet;
+            }
+            else
+            {
+                return GetMethod is null || HasAutoPropertyGet;
+            }
+        }
+
+        private bool IsSetOnEitherPart(Flags flags)
+        {
+            return (_propertyFlags & flags) != 0 ||
+                (this is SourcePropertySymbol { OtherPartOfPartial: { } otherPart } && (otherPart._propertyFlags & flags) != 0);
+        }
+
+        protected bool AccessorsHaveImplementation
+            => (_propertyFlags & Flags.AccessorsHaveImplementation) != 0;
+
+        /// <summary>
+        /// Backing field for an automatically implemented property, or
+        /// a property with an accessor using the 'field' keyword, or
+        /// a property with an initializer.
+        /// </summary>
+        internal SynthesizedBackingFieldSymbol BackingField
+#nullable enable
+        {
+            get
+            {
+                if (_lazyMergedBackingField is null)
+                {
+                    var backingField = DeclaredBackingField;
+                    // The property should only be used after members in the containing
+                    // type are complete, and partial members have been merged.
+                    if (!_containingType.AreMembersComplete)
+                    {
+                        // When calling through the SemanticModel, partial members are not
+                        // necessarily merged when the containing type includes a primary
+                        // constructor - see https://github.com/dotnet/roslyn/issues/75002.
+                        Debug.Assert(_containingType.PrimaryConstructor is { });
+                        return backingField;
+                    }
+                    Interlocked.CompareExchange(ref _lazyMergedBackingField, backingField, null);
+                }
+                return _lazyMergedBackingField;
+            }
+        }
+
+        internal SynthesizedBackingFieldSymbol? DeclaredBackingField
+        {
+            get
+            {
+                if (_lazyDeclaredBackingField is null &&
+                    (_propertyFlags & Flags.RequiresBackingField) != 0)
+                {
+                    Interlocked.CompareExchange(ref _lazyDeclaredBackingField, CreateBackingField(), null);
+                }
+                return _lazyDeclaredBackingField;
+            }
+        }
+
+        internal void SetMergedBackingField(SynthesizedBackingFieldSymbol? backingField)
+        {
+            Interlocked.CompareExchange(ref _lazyMergedBackingField, backingField, null);
+            Debug.Assert((object?)_lazyMergedBackingField == backingField);
+        }
+
+        private SynthesizedBackingFieldSymbol CreateBackingField()
+        {
+            string fieldName = GeneratedNames.MakeBackingFieldName(_name);
+
+            // The backing field is readonly if any of the following holds:
+            // - The containing type is declared readonly and the property is an instance property.
+            bool isReadOnly;
+            if (!IsStatic && ContainingType.IsReadOnly)
+            {
+                isReadOnly = true;
+            }
+            // - The property is declared readonly.
+            else if (HasReadOnlyModifier)
+            {
+                isReadOnly = true;
+            }
+            // - The property has no set accessor or is initonly or is declared readonly, and
+            // the get accessor, if any, is automatically implemented, or declared readonly.
+            else if ((_setMethod is null || _setMethod.IsInitOnly || _setMethod.IsDeclaredReadOnly) &&
+                (_getMethod is null || (_propertyFlags & Flags.HasAutoPropertyGet) != 0 || _getMethod.IsDeclaredReadOnly))
+            {
+                isReadOnly = true;
+            }
+            else
+            {
+                isReadOnly = false;
+            }
+
+            return new SynthesizedBackingFieldSymbol(this, fieldName, isReadOnly: isReadOnly, isStatic: this.IsStatic, hasInitializer: (_propertyFlags & Flags.HasInitializer) != 0);
+        }
+#nullable disable
 
         internal override bool MustCallMethodsDirectly
         {
@@ -744,24 +925,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal override void AfterAddingTypeMembersChecks(ConversionsBase conversions, DiagnosticBag diagnostics)
+        internal override void AfterAddingTypeMembersChecks(ConversionsBase conversions, BindingDiagnosticBag diagnostics)
         {
 #nullable enable
             bool isExplicitInterfaceImplementation = IsExplicitInterfaceImplementation;
             this.CheckAccessibility(Location, diagnostics, isExplicitInterfaceImplementation);
             this.CheckModifiers(isExplicitInterfaceImplementation, Location, IsIndexer, diagnostics);
 
-            bool hasInitializer = (_propertyFlags & Flags.HasInitializer) != 0;
-            if (hasInitializer)
+            CheckInitializerIfNeeded(diagnostics);
+            CheckFieldKeywordUsage((SourcePropertySymbolBase?)PartialImplementationPart ?? this, diagnostics);
+
+            if (RefKind != RefKind.None && IsRequired)
             {
-                CheckInitializer(IsAutoProperty, ContainingType.IsInterface, IsStatic, Location, diagnostics);
+                // Ref returning properties cannot be required.
+                diagnostics.Add(ErrorCode.ERR_RefReturningPropertiesCannotBeRequired, Location);
             }
 
-            if (IsAutoPropertyWithGetAccessor)
+            if (IsAutoPropertyOrUsesFieldKeyword)
             {
-                Debug.Assert(GetMethod is object);
-
-                if (!IsStatic && SetMethod is { IsInitOnly: false })
+                if (!IsStatic && ((_propertyFlags & Flags.HasAutoPropertySet) != 0) && SetMethod is { IsInitOnly: false })
                 {
                     if (ContainingType.IsReadOnly)
                     {
@@ -779,14 +961,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 if (this.RefKind != RefKind.None)
                 {
-                    diagnostics.Add(ErrorCode.ERR_AutoPropertyCannotBeRefReturning, Location, this);
+                    diagnostics.Add(ErrorCode.ERR_AutoPropertyCannotBeRefReturning, Location);
                 }
 
-                // get-only auto property should not override settable properties
-                if (SetMethod is null && !this.IsReadOnly)
+                // Auto property should override both accessors.
+                if (this.IsOverride)
                 {
-                    diagnostics.Add(ErrorCode.ERR_AutoPropertyMustOverrideSet, Location, this);
+                    var overriddenProperty = (PropertySymbol)this.GetLeastOverriddenMember(this.ContainingType);
+                    if ((overriddenProperty.GetMethod is { } && GetMethod is null) ||
+                        (overriddenProperty.SetMethod is { } && SetMethod is null))
+                    {
+                        diagnostics.Add(ErrorCode.ERR_AutoPropertyMustOverrideSet, Location);
+                    }
                 }
+            }
+
+            if (!IsStatic &&
+                ContainingType.IsInterface &&
+                IsSetOnEitherPart(Flags.RequiresBackingField) &&
+                // Should probably ignore initializer (and report ERR_InterfacesCantContainFields) if the
+                // property uses 'field' or has an auto-implemented accessor.
+                !IsSetOnEitherPart(Flags.HasInitializer))
+            {
+                diagnostics.Add(ErrorCode.ERR_InterfacesCantContainFields, Location);
             }
 
             if (!IsExpressionBodied)
@@ -796,28 +993,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 if (hasGetAccessor && hasSetAccessor)
                 {
-                    Debug.Assert(_lazyGetMethod is object);
-                    Debug.Assert(_lazySetMethod is object);
+                    Debug.Assert(_getMethod is object);
+                    Debug.Assert(_setMethod is object);
 
                     if (_refKind != RefKind.None)
                     {
-                        diagnostics.Add(ErrorCode.ERR_RefPropertyCannotHaveSetAccessor, _lazySetMethod.Locations[0], _lazySetMethod);
+                        diagnostics.Add(ErrorCode.ERR_RefPropertyCannotHaveSetAccessor, _setMethod.GetFirstLocation());
                     }
-                    else if ((_lazyGetMethod.LocalAccessibility != Accessibility.NotApplicable) &&
-                        (_lazySetMethod.LocalAccessibility != Accessibility.NotApplicable))
+                    else if ((_getMethod.LocalAccessibility != Accessibility.NotApplicable) &&
+                        (_setMethod.LocalAccessibility != Accessibility.NotApplicable))
                     {
                         // Check accessibility is set on at most one accessor.
                         diagnostics.Add(ErrorCode.ERR_DuplicatePropertyAccessMods, Location, this);
                     }
-                    else if (_lazyGetMethod.LocalDeclaredReadOnly && _lazySetMethod.LocalDeclaredReadOnly)
+                    else if (_getMethod.LocalDeclaredReadOnly && _setMethod.LocalDeclaredReadOnly)
                     {
                         diagnostics.Add(ErrorCode.ERR_DuplicatePropertyReadOnlyMods, Location, this);
                     }
                     else if (this.IsAbstract)
                     {
                         // Check abstract property accessors are not private.
-                        CheckAbstractPropertyAccessorNotPrivate(_lazyGetMethod, diagnostics);
-                        CheckAbstractPropertyAccessorNotPrivate(_lazySetMethod, diagnostics);
+                        CheckAbstractPropertyAccessorNotPrivate(_getMethod, diagnostics);
+                        CheckAbstractPropertyAccessorNotPrivate(_setMethod, diagnostics);
                     }
                 }
                 else
@@ -830,17 +1027,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         if (!hasGetAccessor)
                         {
-                            diagnostics.Add(ErrorCode.ERR_RefPropertyMustHaveGetAccessor, Location, this);
+                            diagnostics.Add(ErrorCode.ERR_RefPropertyMustHaveGetAccessor, Location);
                         }
                     }
-                    else if (!hasGetAccessor && IsAutoProperty)
+                    else if (!hasGetAccessor && HasAutoPropertySet)
                     {
-                        diagnostics.Add(ErrorCode.ERR_AutoPropertyMustHaveGetAccessor, _lazySetMethod!.Locations[0], _lazySetMethod);
+                        // The only forms of auto-property that are disallowed are { set; } and { init; }.
+                        // Other forms of auto- or manually-implemented accessors are allowed
+                        // including equivalent field cases such as { set { field = value; } }.
+                        diagnostics.Add(ErrorCode.ERR_AutoPropertyMustHaveGetAccessor, _setMethod!.GetFirstLocation());
                     }
 
                     if (!this.IsOverride)
                     {
-                        var accessor = _lazyGetMethod ?? _lazySetMethod;
+                        var accessor = _getMethod ?? _setMethod;
                         if (accessor is object)
                         {
                             // Check accessibility is not set on the one accessor.
@@ -859,8 +1059,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
 
                 // Check accessor accessibility is more restrictive than property accessibility.
-                CheckAccessibilityMoreRestrictive(_lazyGetMethod, diagnostics);
-                CheckAccessibilityMoreRestrictive(_lazySetMethod, diagnostics);
+                CheckAccessibilityMoreRestrictive(_getMethod, diagnostics);
+                CheckAccessibilityMoreRestrictive(_setMethod, diagnostics);
             }
 
             PropertySymbol? explicitlyImplementedProperty = ExplicitInterfaceImplementations.FirstOrDefault();
@@ -884,14 +1084,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             if ((object)_explicitInterfaceType != null)
             {
-                var explicitInterfaceSpecifier = GetExplicitInterfaceSpecifier(this.CSharpSyntaxNode);
+                var explicitInterfaceSpecifier = GetExplicitInterfaceSpecifier();
                 Debug.Assert(explicitInterfaceSpecifier != null);
                 _explicitInterfaceType.CheckAllConstraints(compilation, conversions, new SourceLocation(explicitInterfaceSpecifier.Name), diagnostics);
 
                 // Note: we delayed nullable-related checks that could pull on NonNullTypes
                 if (explicitlyImplementedProperty is object)
                 {
-                    TypeSymbol.CheckNullableReferenceTypeMismatchOnImplementingMember(this.ContainingType, this, explicitlyImplementedProperty, isExplicit: true, diagnostics);
+                    TypeSymbol.CheckModifierMismatchOnImplementingMember(this.ContainingType, this, explicitlyImplementedProperty, isExplicit: true, diagnostics);
                 }
             }
 
@@ -900,14 +1100,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 compilation.EnsureIsReadOnlyAttributeExists(diagnostics, location, modifyCompilation: true);
             }
 
-            ParameterHelpers.EnsureIsReadOnlyAttributeExists(compilation, Parameters, diagnostics, modifyCompilation: true);
+            ParameterHelpers.EnsureRefKindAttributesExist(compilation, Parameters, diagnostics, modifyCompilation: true);
+            ParameterHelpers.EnsureParamCollectionAttributeExistsAndModifyCompilation(compilation, Parameters, diagnostics);
 
-            if (Type.ContainsNativeInteger())
+            if (compilation.ShouldEmitNativeIntegerAttributes(Type))
             {
                 compilation.EnsureNativeIntegerAttributeExists(diagnostics, location, modifyCompilation: true);
             }
 
             ParameterHelpers.EnsureNativeIntegerAttributeExists(compilation, Parameters, diagnostics, modifyCompilation: true);
+
+            ParameterHelpers.EnsureScopedRefAttributeExists(compilation, Parameters, diagnostics, modifyCompilation: true);
 
             if (compilation.ShouldEmitNullableAttributes(this) &&
                 this.TypeWithAnnotations.NeedsNullableAttribute())
@@ -918,27 +1121,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             ParameterHelpers.EnsureNullableAttributeExists(compilation, this, Parameters, diagnostics, modifyCompilation: true);
         }
 
-        private void CheckAccessibility(Location location, DiagnosticBag diagnostics, bool isExplicitInterfaceImplementation)
+        private void CheckAccessibility(Location location, BindingDiagnosticBag diagnostics, bool isExplicitInterfaceImplementation)
         {
-            var info = ModifierUtils.CheckAccessibility(_modifiers, this, isExplicitInterfaceImplementation);
-            if (info != null)
-            {
-                diagnostics.Add(new CSDiagnostic(info, location));
-            }
+            ModifierUtils.CheckAccessibility(_modifiers, this, isExplicitInterfaceImplementation, diagnostics, location);
         }
 
-        private void CheckModifiers(bool isExplicitInterfaceImplementation, Location location, bool isIndexer, DiagnosticBag diagnostics)
+        private void CheckModifiers(bool isExplicitInterfaceImplementation, Location location, bool isIndexer, BindingDiagnosticBag diagnostics)
         {
+            Debug.Assert(!IsStatic || !IsOverride); // Otherwise should have been reported and cleared earlier.
+            Debug.Assert(!IsStatic || ContainingType.IsInterface || (!IsAbstract && !IsVirtual)); // Otherwise should have been reported and cleared earlier.
+
             bool isExplicitInterfaceImplementationInInterface = isExplicitInterfaceImplementation && ContainingType.IsInterface;
 
             if (this.DeclaredAccessibility == Accessibility.Private && (IsVirtual || (IsAbstract && !isExplicitInterfaceImplementationInInterface) || IsOverride))
             {
                 diagnostics.Add(ErrorCode.ERR_VirtualPrivate, location, this);
-            }
-            else if (IsStatic && (IsOverride || IsVirtual || IsAbstract))
-            {
-                // A static member '{0}' cannot be marked as override, virtual, or abstract
-                diagnostics.Add(ErrorCode.ERR_StaticNotVirtual, location, this);
             }
             else if (IsStatic && HasReadOnlyModifier)
             {
@@ -961,6 +1158,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 diagnostics.Add(ErrorCode.ERR_SealedNonOverride, location, this);
             }
 #endif
+            else if (IsPartial && !ContainingType.IsPartial())
+            {
+                diagnostics.Add(ErrorCode.ERR_PartialMemberOnlyInPartialClass, location);
+            }
+            else if (IsPartial && isExplicitInterfaceImplementation)
+            {
+                diagnostics.Add(ErrorCode.ERR_PartialMemberNotExplicit, location);
+            }
+            else if (IsPartial && IsAbstract)
+            {
+                diagnostics.Add(ErrorCode.ERR_PartialMemberCannotBeAbstract, location);
+            }
             else if (IsAbstract && ContainingType.TypeKind == TypeKind.Struct)
             {
                 // The modifier '{0}' is not valid for this item
@@ -994,12 +1203,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        private void CheckAccessibilityMoreRestrictive(SourcePropertyAccessorSymbol accessor, DiagnosticBag diagnostics)
+        private void CheckAccessibilityMoreRestrictive(SourcePropertyAccessorSymbol accessor, BindingDiagnosticBag diagnostics)
         {
             if (((object)accessor != null) &&
                 !IsAccessibilityMoreRestrictive(this.DeclaredAccessibility, accessor.LocalAccessibility))
             {
-                diagnostics.Add(ErrorCode.ERR_InvalidPropertyAccessMod, accessor.Locations[0], accessor, this);
+                diagnostics.Add(ErrorCode.ERR_InvalidPropertyAccessMod, accessor.GetFirstLocation(), accessor, this);
             }
         }
 
@@ -1017,11 +1226,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 ((accessor != Accessibility.Protected) || (property != Accessibility.Internal));
         }
 
-        private static void CheckAbstractPropertyAccessorNotPrivate(SourcePropertyAccessorSymbol accessor, DiagnosticBag diagnostics)
+        private static void CheckAbstractPropertyAccessorNotPrivate(SourcePropertyAccessorSymbol accessor, BindingDiagnosticBag diagnostics)
         {
             if (accessor.LocalAccessibility == Accessibility.Private)
             {
-                diagnostics.Add(ErrorCode.ERR_PrivateAbstractAccessor, accessor.Locations[0], accessor);
+                diagnostics.Add(ErrorCode.ERR_PrivateAbstractAccessor, accessor.GetFirstLocation(), accessor);
             }
         }
 
@@ -1033,7 +1242,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         // Separate these checks out of FindExplicitlyImplementedProperty because they depend on the accessor symbols,
         // which depend on the explicitly implemented property
-        private void CheckExplicitImplementationAccessor(MethodSymbol thisAccessor, MethodSymbol otherAccessor, PropertySymbol explicitlyImplementedProperty, DiagnosticBag diagnostics)
+        private void CheckExplicitImplementationAccessor(MethodSymbol thisAccessor, MethodSymbol otherAccessor, PropertySymbol explicitlyImplementedProperty, BindingDiagnosticBag diagnostics)
         {
             var thisHasAccessor = (object)thisAccessor != null;
             var otherHasAccessor = otherAccessor.IsImplementable();
@@ -1044,12 +1253,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             else if (!otherHasAccessor && thisHasAccessor)
             {
-                diagnostics.Add(ErrorCode.ERR_ExplicitPropertyAddingAccessor, thisAccessor.Locations[0], thisAccessor, explicitlyImplementedProperty);
+                diagnostics.Add(ErrorCode.ERR_ExplicitPropertyAddingAccessor, thisAccessor.GetFirstLocation(), thisAccessor, explicitlyImplementedProperty);
             }
             else if (TypeSymbol.HaveInitOnlyMismatch(thisAccessor, otherAccessor))
             {
                 Debug.Assert(thisAccessor.MethodKind == MethodKind.PropertySet);
-                diagnostics.Add(ErrorCode.ERR_ExplicitPropertyMismatchInitOnly, thisAccessor.Locations[0], thisAccessor, otherAccessor);
+                diagnostics.Add(ErrorCode.ERR_ExplicitPropertyMismatchInitOnly, thisAccessor.GetFirstLocation(), thisAccessor, otherAccessor);
             }
         }
 
@@ -1121,7 +1330,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         #region Attributes
 
-        public abstract SyntaxList<AttributeListSyntax> AttributeDeclarationSyntaxList { get; }
+        public abstract OneOrMany<SyntaxList<AttributeListSyntax>> GetAttributeDeclarations();
+
+        /// <summary>
+        /// Symbol to copy bound attributes from, or null if the attributes are not shared among multiple source property symbols.
+        /// Analogous to <see cref="SourceMethodSymbol.BoundAttributesSource"/>.
+        /// </summary>
+        protected abstract SourcePropertySymbolBase BoundAttributesSource { get; }
 
         public abstract IAttributeTargetSymbol AttributesOwner { get; }
 
@@ -1130,7 +1345,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         AttributeLocation IAttributeTargetSymbol.DefaultAttributeLocation => AttributeLocation.Property;
 
         AttributeLocation IAttributeTargetSymbol.AllowedAttributeLocations
-            => IsAutoPropertyWithGetAccessor
+            => IsAutoPropertyOrUsesFieldKeyword
                 ? AttributeLocation.Property | AttributeLocation.Field
                 : AttributeLocation.Property;
 
@@ -1148,10 +1363,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return bag;
             }
 
+            var copyFrom = this.BoundAttributesSource;
+
+            // prevent infinite recursion:
+            Debug.Assert(!ReferenceEquals(copyFrom, this));
+
             // The property is responsible for completion of the backing field
             _ = BackingField?.GetAttributes();
 
-            if (LoadAndValidateAttributes(OneOrMany.Create(AttributeDeclarationSyntaxList), ref _lazyCustomAttributesBag))
+            bool bagCreatedOnThisThread;
+            if (copyFrom is not null)
+            {
+                var attributesBag = copyFrom.GetAttributesBag();
+                bagCreatedOnThisThread = Interlocked.CompareExchange(ref _lazyCustomAttributesBag, attributesBag, null) == null;
+            }
+            else
+            {
+                bagCreatedOnThisThread = LoadAndValidateAttributes(GetAttributeDeclarations(), ref _lazyCustomAttributesBag);
+            }
+
+            if (bagCreatedOnThisThread)
             {
                 var completed = _state.NotePartComplete(CompletionPart.Attributes);
                 Debug.Assert(completed);
@@ -1208,7 +1439,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return (PropertyEarlyWellKnownAttributeData)attributesBag.EarlyDecodedWellKnownAttributeData;
         }
 
-        internal override void AddSynthesizedAttributes(PEModuleBuilder moduleBuilder, ref ArrayBuilder<SynthesizedAttributeData> attributes)
+        internal override void AddSynthesizedAttributes(PEModuleBuilder moduleBuilder, ref ArrayBuilder<CSharpAttributeData> attributes)
         {
             base.AddSynthesizedAttributes(moduleBuilder, ref attributes);
 
@@ -1221,7 +1452,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     compilation.SynthesizeDynamicAttribute(type.Type, type.CustomModifiers.Length + RefCustomModifiers.Length, _refKind));
             }
 
-            if (type.Type.ContainsNativeInteger())
+            if (compilation.ShouldEmitNativeIntegerAttributes(type.Type))
             {
                 AddSynthesizedAttribute(ref attributes, moduleBuilder.SynthesizeNativeIntegerAttribute(this, type.Type));
             }
@@ -1241,6 +1472,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 AddSynthesizedAttribute(ref attributes, moduleBuilder.SynthesizeIsReadOnlyAttribute(this));
             }
+
+            if (IsRequired)
+            {
+                AddSynthesizedAttribute(
+                    ref attributes,
+                    compilation.TrySynthesizeAttribute(WellKnownMember.System_Runtime_CompilerServices_RequiredMemberAttribute__ctor));
+            }
         }
 
         internal sealed override bool IsDirectlyExcludedFromCodeCoverage =>
@@ -1255,28 +1493,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal override CSharpAttributeData EarlyDecodeWellKnownAttribute(ref EarlyDecodeWellKnownAttributeArguments<EarlyWellKnownAttributeBinder, NamedTypeSymbol, AttributeSyntax, AttributeLocation> arguments)
+#nullable enable
+        internal override (CSharpAttributeData?, BoundAttribute?) EarlyDecodeWellKnownAttribute(ref EarlyDecodeWellKnownAttributeArguments<EarlyWellKnownAttributeBinder, NamedTypeSymbol, AttributeSyntax, AttributeLocation> arguments)
         {
-            CSharpAttributeData boundAttribute;
-            ObsoleteAttributeData obsoleteData;
+            CSharpAttributeData? attributeData;
+            BoundAttribute? boundAttribute;
+            ObsoleteAttributeData? obsoleteData;
 
-            if (EarlyDecodeDeprecatedOrExperimentalOrObsoleteAttribute(ref arguments, out boundAttribute, out obsoleteData))
+            if (EarlyDecodeDeprecatedOrExperimentalOrObsoleteAttribute(ref arguments, out attributeData, out boundAttribute, out obsoleteData))
             {
                 if (obsoleteData != null)
                 {
                     arguments.GetOrCreateData<PropertyEarlyWellKnownAttributeData>().ObsoleteAttributeData = obsoleteData;
                 }
 
-                return boundAttribute;
+                return (attributeData, boundAttribute);
             }
 
             if (CSharpAttributeData.IsTargetEarlyAttribute(arguments.AttributeType, arguments.AttributeSyntax, AttributeDescription.IndexerNameAttribute))
             {
                 bool hasAnyDiagnostics;
-                boundAttribute = arguments.Binder.GetAttribute(arguments.AttributeSyntax, arguments.AttributeType, out hasAnyDiagnostics);
-                if (!boundAttribute.HasErrors)
+                (attributeData, boundAttribute) = arguments.Binder.GetAttribute(arguments.AttributeSyntax, arguments.AttributeType, beforeAttributePartBound: null, afterAttributePartBound: null, out hasAnyDiagnostics);
+                if (!attributeData.HasErrors)
                 {
-                    string indexerName = boundAttribute.CommonConstructorArguments[0].DecodeValue<string>(SpecialType.System_String);
+                    string? indexerName = attributeData.CommonConstructorArguments[0].DecodeValue<string>(SpecialType.System_String);
                     if (indexerName != null)
                     {
                         arguments.GetOrCreateData<PropertyEarlyWellKnownAttributeData>().IndexerName = indexerName;
@@ -1284,15 +1524,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                     if (!hasAnyDiagnostics)
                     {
-                        return boundAttribute;
+                        return (attributeData, boundAttribute);
                     }
                 }
 
-                return null;
+                return (null, null);
+            }
+            else if (IsIndexer && CSharpAttributeData.IsTargetEarlyAttribute(arguments.AttributeType, arguments.AttributeSyntax, AttributeDescription.OverloadResolutionPriorityAttribute))
+            {
+                (attributeData, boundAttribute) = arguments.Binder.GetAttribute(arguments.AttributeSyntax, arguments.AttributeType, beforeAttributePartBound: null, afterAttributePartBound: null, out var hasAnyDiagnostics);
+
+                if (attributeData.CommonConstructorArguments is [{ ValueInternal: int priority }])
+                {
+                    arguments.GetOrCreateData<PropertyEarlyWellKnownAttributeData>().OverloadResolutionPriority = priority;
+
+                    if (!hasAnyDiagnostics)
+                    {
+                        return (attributeData, boundAttribute);
+                    }
+                }
+
+                return (null, null);
             }
 
             return base.EarlyDecodeWellKnownAttribute(ref arguments);
         }
+#nullable disable
 
         /// <summary>
         /// Returns data decoded from Obsolete attribute or null if there is no Obsolete attribute.
@@ -1317,67 +1574,126 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal override void DecodeWellKnownAttribute(ref DecodeWellKnownAttributeArguments<AttributeSyntax, CSharpAttributeData, AttributeLocation> arguments)
+        protected override void DecodeWellKnownAttributeImpl(ref DecodeWellKnownAttributeArguments<AttributeSyntax, CSharpAttributeData, AttributeLocation> arguments)
         {
             Debug.Assert(arguments.AttributeSyntaxOpt != null);
+
+            var diagnostics = (BindingDiagnosticBag)arguments.Diagnostics;
+            Debug.Assert(diagnostics.DiagnosticBag is object);
 
             var attribute = arguments.Attribute;
             Debug.Assert(!attribute.HasErrors);
             Debug.Assert(arguments.SymbolPart == AttributeLocation.None);
 
-            if (attribute.IsTargetAttribute(this, AttributeDescription.IndexerNameAttribute))
+            if (attribute.IsTargetAttribute(AttributeDescription.IndexerNameAttribute))
             {
                 //NOTE: decoding was done by EarlyDecodeWellKnownAttribute.
-                ValidateIndexerNameAttribute(attribute, arguments.AttributeSyntaxOpt, arguments.Diagnostics);
+                ValidateIndexerNameAttribute(attribute, arguments.AttributeSyntaxOpt, diagnostics);
             }
-            else if (attribute.IsTargetAttribute(this, AttributeDescription.SpecialNameAttribute))
+            else if (attribute.IsTargetAttribute(AttributeDescription.SpecialNameAttribute))
             {
                 arguments.GetOrCreateData<PropertyWellKnownAttributeData>().HasSpecialNameAttribute = true;
             }
-            else if (attribute.IsTargetAttribute(this, AttributeDescription.ExcludeFromCodeCoverageAttribute))
+            else if (attribute.IsTargetAttribute(AttributeDescription.ExcludeFromCodeCoverageAttribute))
             {
                 arguments.GetOrCreateData<PropertyWellKnownAttributeData>().HasExcludeFromCodeCoverageAttribute = true;
             }
-            else if (attribute.IsTargetAttribute(this, AttributeDescription.SkipLocalsInitAttribute))
+            else if (attribute.IsTargetAttribute(AttributeDescription.SkipLocalsInitAttribute))
             {
                 CSharpAttributeData.DecodeSkipLocalsInitAttribute<PropertyWellKnownAttributeData>(DeclaringCompilation, ref arguments);
             }
-            else if (attribute.IsTargetAttribute(this, AttributeDescription.DynamicAttribute))
+            else if (attribute.IsTargetAttribute(AttributeDescription.DynamicAttribute))
             {
                 // DynamicAttribute should not be set explicitly.
-                arguments.Diagnostics.Add(ErrorCode.ERR_ExplicitDynamicAttr, arguments.AttributeSyntaxOpt.Location);
+                diagnostics.Add(ErrorCode.ERR_ExplicitDynamicAttr, arguments.AttributeSyntaxOpt.Location);
             }
             else if (ReportExplicitUseOfReservedAttributes(in arguments,
-                ReservedAttributes.DynamicAttribute | ReservedAttributes.IsReadOnlyAttribute | ReservedAttributes.IsUnmanagedAttribute | ReservedAttributes.IsByRefLikeAttribute | ReservedAttributes.TupleElementNamesAttribute | ReservedAttributes.NullableAttribute | ReservedAttributes.NativeIntegerAttribute))
+                ReservedAttributes.DynamicAttribute
+                | ReservedAttributes.IsReadOnlyAttribute
+                | ReservedAttributes.RequiresLocationAttribute
+                | ReservedAttributes.IsUnmanagedAttribute
+                | ReservedAttributes.IsByRefLikeAttribute
+                | ReservedAttributes.TupleElementNamesAttribute
+                | ReservedAttributes.NullableAttribute
+                | ReservedAttributes.NativeIntegerAttribute
+                | ReservedAttributes.RequiredMemberAttribute))
             {
             }
-            else if (attribute.IsTargetAttribute(this, AttributeDescription.DisallowNullAttribute))
+            else if (attribute.IsTargetAttribute(AttributeDescription.DisallowNullAttribute))
             {
                 arguments.GetOrCreateData<PropertyWellKnownAttributeData>().HasDisallowNullAttribute = true;
             }
-            else if (attribute.IsTargetAttribute(this, AttributeDescription.AllowNullAttribute))
+            else if (attribute.IsTargetAttribute(AttributeDescription.AllowNullAttribute))
             {
                 arguments.GetOrCreateData<PropertyWellKnownAttributeData>().HasAllowNullAttribute = true;
             }
-            else if (attribute.IsTargetAttribute(this, AttributeDescription.MaybeNullAttribute))
+            else if (attribute.IsTargetAttribute(AttributeDescription.MaybeNullAttribute))
             {
                 arguments.GetOrCreateData<PropertyWellKnownAttributeData>().HasMaybeNullAttribute = true;
             }
-            else if (attribute.IsTargetAttribute(this, AttributeDescription.NotNullAttribute))
+            else if (attribute.IsTargetAttribute(AttributeDescription.NotNullAttribute))
             {
                 arguments.GetOrCreateData<PropertyWellKnownAttributeData>().HasNotNullAttribute = true;
             }
-            else if (attribute.IsTargetAttribute(this, AttributeDescription.MemberNotNullAttribute))
+            else if (attribute.IsTargetAttribute(AttributeDescription.MemberNotNullAttribute))
             {
-                MessageID.IDS_FeatureMemberNotNull.CheckFeatureAvailability(arguments.Diagnostics, arguments.AttributeSyntaxOpt);
+                MessageID.IDS_FeatureMemberNotNull.CheckFeatureAvailability(diagnostics, arguments.AttributeSyntaxOpt);
                 CSharpAttributeData.DecodeMemberNotNullAttribute<PropertyWellKnownAttributeData>(ContainingType, ref arguments);
             }
-            else if (attribute.IsTargetAttribute(this, AttributeDescription.MemberNotNullWhenAttribute))
+            else if (attribute.IsTargetAttribute(AttributeDescription.MemberNotNullWhenAttribute))
             {
-                MessageID.IDS_FeatureMemberNotNull.CheckFeatureAvailability(arguments.Diagnostics, arguments.AttributeSyntaxOpt);
+                MessageID.IDS_FeatureMemberNotNull.CheckFeatureAvailability(diagnostics, arguments.AttributeSyntaxOpt);
                 CSharpAttributeData.DecodeMemberNotNullWhenAttribute<PropertyWellKnownAttributeData>(ContainingType, ref arguments);
             }
+            else if (attribute.IsTargetAttribute(AttributeDescription.UnscopedRefAttribute))
+            {
+                if (!this.ContainingModule.UseUpdatedEscapeRules)
+                {
+                    diagnostics.Add(ErrorCode.WRN_UnscopedRefAttributeOldRules, arguments.AttributeSyntaxOpt.Location);
+                }
+
+                if (this.IsValidUnscopedRefAttributeTarget())
+                {
+                    arguments.GetOrCreateData<PropertyWellKnownAttributeData>().HasUnscopedRefAttribute = true;
+
+                    if (ContainingType.IsInterface || IsExplicitInterfaceImplementation)
+                    {
+                        MessageID.IDS_FeatureRefStructInterfaces.CheckFeatureAvailability(diagnostics, arguments.AttributeSyntaxOpt);
+                    }
+                }
+                else
+                {
+                    diagnostics.Add(ErrorCode.ERR_UnscopedRefAttributeUnsupportedMemberTarget, arguments.AttributeSyntaxOpt.Location);
+                }
+            }
+            else if (attribute.IsTargetAttribute(AttributeDescription.OverloadResolutionPriorityAttribute))
+            {
+                MessageID.IDS_FeatureOverloadResolutionPriority.CheckFeatureAvailability(diagnostics, arguments.AttributeSyntaxOpt);
+
+                if (!CanHaveOverloadResolutionPriority)
+                {
+                    diagnostics.Add(IsOverride
+                            // Cannot use 'OverloadResolutionPriorityAttribute' on an overriding member.
+                            ? ErrorCode.ERR_CannotApplyOverloadResolutionPriorityToOverride
+                            // Cannot use 'OverloadResolutionPriorityAttribute' on this member.
+                            : ErrorCode.ERR_CannotApplyOverloadResolutionPriorityToMember,
+                        arguments.AttributeSyntaxOpt);
+                }
+            }
         }
+
+#nullable enable
+        private bool IsValidUnscopedRefAttributeTarget()
+        {
+            return isNullOrValidAccessor(_getMethod) &&
+                isNullOrValidAccessor(_setMethod);
+
+            static bool isNullOrValidAccessor(MethodSymbol? accessor)
+            {
+                return accessor is null || accessor.IsValidUnscopedRefAttributeTarget();
+            }
+        }
+#nullable disable
 
         internal bool HasDisallowNull
         {
@@ -1433,13 +1749,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal ImmutableArray<SourceAttributeData> MemberNotNullWhenAttributeIfExists
             => FindAttributes(AttributeDescription.MemberNotNullWhenAttribute);
 
+        internal sealed override bool HasUnscopedRefAttribute => GetDecodedWellKnownAttributeData()?.HasUnscopedRefAttribute == true;
+
         private SourceAttributeData FindAttribute(AttributeDescription attributeDescription)
-            => (SourceAttributeData)GetAttributes().First(a => a.IsTargetAttribute(this, attributeDescription));
+            => (SourceAttributeData)GetAttributes().First(a => a.IsTargetAttribute(attributeDescription));
 
         private ImmutableArray<SourceAttributeData> FindAttributes(AttributeDescription attributeDescription)
-            => GetAttributes().Where(a => a.IsTargetAttribute(this, attributeDescription)).Cast<SourceAttributeData>().ToImmutableArray();
+            => GetAttributes().Where(a => a.IsTargetAttribute(attributeDescription)).Cast<SourceAttributeData>().ToImmutableArray();
 
-        internal override void PostDecodeWellKnownAttributes(ImmutableArray<CSharpAttributeData> boundAttributes, ImmutableArray<AttributeSyntax> allAttributeSyntaxNodes, DiagnosticBag diagnostics, AttributeLocation symbolPart, WellKnownAttributeData decodedData)
+        internal override void PostDecodeWellKnownAttributes(ImmutableArray<CSharpAttributeData> boundAttributes, ImmutableArray<AttributeSyntax> allAttributeSyntaxNodes, BindingDiagnosticBag diagnostics, AttributeLocation symbolPart, WellKnownAttributeData decodedData)
         {
             Debug.Assert(!boundAttributes.IsDefault);
             Debug.Assert(!allAttributeSyntaxNodes.IsDefault);
@@ -1451,7 +1769,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             base.PostDecodeWellKnownAttributes(boundAttributes, allAttributeSyntaxNodes, diagnostics, symbolPart, decodedData);
         }
 
-        private void ValidateIndexerNameAttribute(CSharpAttributeData attribute, AttributeSyntax node, DiagnosticBag diagnostics)
+        private void ValidateIndexerNameAttribute(CSharpAttributeData attribute, AttributeSyntax node, BindingDiagnosticBag diagnostics)
         {
             if (!this.IsIndexer || this.IsExplicitInterfaceImplementation)
             {
@@ -1467,6 +1785,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
+        internal sealed override int TryGetOverloadResolutionPriority()
+        {
+            Debug.Assert(this.IsIndexer);
+            return GetEarlyDecodedWellKnownAttributeData()?.OverloadResolutionPriority ?? 0;
+        }
+
         #endregion
 
         #region Completion
@@ -1476,13 +1800,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return true; }
         }
 
+        internal bool IsPartial => (_modifiers & DeclarationModifiers.Partial) != 0;
+
         internal sealed override bool HasComplete(CompletionPart part)
         {
             return _state.HasComplete(part);
         }
 
-        internal override void ForceComplete(SourceLocation locationOpt, CancellationToken cancellationToken)
+#nullable enable
+        internal override void ForceComplete(SourceLocation? locationOpt, Predicate<Symbol>? filter, CancellationToken cancellationToken)
         {
+            if (filter?.Invoke(this) == false)
+            {
+                return;
+            }
+
             while (true)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -1507,12 +1839,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 var parameters = this.Parameters;
                                 if (parameters.Length > 0)
                                 {
-                                    var diagnostics = DiagnosticBag.GetInstance();
-                                    var conversions = new TypeConversions(this.ContainingAssembly.CorLibrary);
+                                    var diagnostics = BindingDiagnosticBag.GetInstance();
+                                    var conversions = this.ContainingAssembly.CorLibrary.TypeConversions;
                                     foreach (var parameter in this.Parameters)
                                     {
-                                        parameter.ForceComplete(locationOpt, cancellationToken);
-                                        parameter.Type.CheckAllConstraints(DeclaringCompilation, conversions, parameter.Locations[0], diagnostics);
+                                        // We can't filter out deeper than member level
+                                        parameter.ForceComplete(locationOpt, filter: null, cancellationToken);
+                                        parameter.Type.CheckAllConstraints(DeclaringCompilation, conversions, parameter.GetFirstLocation(), diagnostics);
                                     }
 
                                     this.AddDeclarationDiagnostics(diagnostics);
@@ -1520,6 +1853,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 }
 
                                 DeclaringCompilation.SymbolDeclaredEvent(this);
+                                if (this.IsPartialDefinition())
+                                {
+                                    if (_getMethod is not null)
+                                        DeclaringCompilation.SymbolDeclaredEvent(_getMethod);
+
+                                    if (_setMethod is not null)
+                                        DeclaringCompilation.SymbolDeclaredEvent(_setMethod);
+                                }
+
                                 var completedOnThisThread = _state.NotePartComplete(CompletionPart.FinishPropertyParameters);
                                 Debug.Assert(completedOnThisThread);
                             }
@@ -1536,8 +1878,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         {
                             if (_state.NotePartComplete(CompletionPart.StartPropertyType))
                             {
-                                var diagnostics = DiagnosticBag.GetInstance();
-                                var conversions = new TypeConversions(this.ContainingAssembly.CorLibrary);
+                                var diagnostics = BindingDiagnosticBag.GetInstance();
+                                var conversions = this.ContainingAssembly.CorLibrary.TypeConversions;
                                 this.Type.CheckAllConstraints(DeclaringCompilation, conversions, Location, diagnostics);
 
                                 ValidatePropertyType(diagnostics);
@@ -1555,30 +1897,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         }
                         break;
 
-                    case CompletionPart.StartPropertyFinalCompletion:
-                    case CompletionPart.FinishPropertyFinalCompletion:
-                        {
-                            if (_state.NotePartComplete(CompletionPart.StartPropertyFinalCompletion))
-                            {
-                                DiagnosticBag diagnostic = _lazyDiagnosticBag;
-                                if (diagnostic is object)
-                                {
-                                    Debug.Assert(!diagnostic.IsEmptyWithoutResolution);
-                                    this.AddDeclarationDiagnostics(diagnostic);
-                                    _lazyDiagnosticBag = null;
-                                }
-
-                                var completedOnThisThread = _state.NotePartComplete(CompletionPart.FinishPropertyFinalCompletion);
-                                Debug.Assert(completedOnThisThread);
-                            }
-                            else
-                            {
-                                // StartPropertyFinalCompletion was completed by another thread. Wait for it to finish the work.
-                                _state.SpinWaitComplete(CompletionPart.FinishPropertyFinalCompletion, cancellationToken);
-                            }
-                        }
-                        break;
-
                     case CompletionPart.None:
                         return;
 
@@ -1591,17 +1909,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 _state.SpinWaitComplete(incompletePart, cancellationToken);
             }
         }
+#nullable disable
 
-        protected virtual void ValidatePropertyType(DiagnosticBag diagnostics)
+        protected virtual void ValidatePropertyType(BindingDiagnosticBag diagnostics)
         {
             var type = this.Type;
             if (type.IsRestrictedType(ignoreSpanLikeTypes: true))
             {
                 diagnostics.Add(ErrorCode.ERR_FieldCantBeRefAny, TypeLocation, type);
             }
-            else if (this.IsAutoPropertyWithGetAccessor && type.IsRefLikeType && (this.IsStatic || !this.ContainingType.IsRefLikeType))
+            else if (this.IsAutoPropertyOrUsesFieldKeyword && type.IsRefLikeOrAllowsRefLikeType() && (this.IsStatic || !this.ContainingType.IsRefLikeType))
             {
                 diagnostics.Add(ErrorCode.ERR_FieldAutoPropCantBeByRefLike, TypeLocation, type);
+            }
+
+            if (type.IsStatic)
+            {
+                if (GetMethod is not null)
+                {
+                    // '{0}': static types cannot be used as return types
+                    diagnostics.Add(ErrorFacts.GetStaticClassReturnCode(ContainingType.IsInterfaceType()), TypeLocation, type);
+                }
+                else if (SetMethod is not null)
+                {
+                    // '{0}': static types cannot be used as parameters
+                    diagnostics.Add(ErrorFacts.GetStaticClassParameterCode(ContainingType.IsInterfaceType()), TypeLocation, type);
+                }
             }
         }
 
@@ -1609,10 +1942,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
 #nullable enable
 
-        protected abstract (TypeWithAnnotations Type, ImmutableArray<ParameterSymbol> Parameters) MakeParametersAndBindType(DiagnosticBag diagnostics);
+        protected abstract (TypeWithAnnotations Type, ImmutableArray<ParameterSymbol> Parameters) MakeParametersAndBindType(BindingDiagnosticBag diagnostics);
 
         protected static ExplicitInterfaceSpecifierSyntax? GetExplicitInterfaceSpecifier(SyntaxNode syntax)
             => (syntax as BasePropertyDeclarationSyntax)?.ExplicitInterfaceSpecifier;
-#nullable disable
+
+        internal ExplicitInterfaceSpecifierSyntax? GetExplicitInterfaceSpecifier()
+            => GetExplicitInterfaceSpecifier(CSharpSyntaxNode);
     }
 }

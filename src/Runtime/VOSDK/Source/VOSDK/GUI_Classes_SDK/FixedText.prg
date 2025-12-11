@@ -97,7 +97,7 @@ METHOD Dispatch(oEvent)
 			SetBkMode(hDc, TRANSPARENT )
 
 
-			IF (hFont := SendMessage(hwnd, WM_GETFONT, 0l, 0l)) != NULL_PTR
+			IF (hFont := SendMessage(hwnd, WM_GETFONT, 0L, 0L)) != NULL_PTR
 				SelectObject(hdc, hFont)
 			ENDIF
 
@@ -128,11 +128,11 @@ METHOD Dispatch(oEvent)
 			IF uMsg == WM_PAINT
 				EndPaint(hWnd, @struPS)
 			ENDIF
-			SELF:EventReturnValue := 0l
-			RETURN 1l
+			SELF:EventReturnValue := 0L
+			RETURN 1L
 		CASE WM_ERASEBKGND
-			SELF:EventReturnValue := 0l
-			RETURN 1l
+			SELF:EventReturnValue := 0L
+			RETURN 1L
 			//PP-040418 Issue 12676
 		CASE WM_ENABLE
         CASE WM_SETTEXT

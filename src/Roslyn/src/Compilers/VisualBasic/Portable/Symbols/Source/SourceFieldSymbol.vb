@@ -9,6 +9,7 @@ Imports System.Runtime.InteropServices
 Imports System.Threading
 Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.Text
+Imports Microsoft.CodeAnalysis.VisualBasic.Emit
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
@@ -31,8 +32,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         Private _lazyExpandedDocComment As String
         Private _lazyCustomAttributesBag As CustomAttributesBag(Of VisualBasicAttributeData)
 
-        ' Set to 1 when the compilation event has been produced
-        Private _eventProduced As Integer
+        ''' <summary>
+        ''' See <see cref="StateFlags"/>
+        ''' </summary>
+        Protected _lazyState As Integer
+
+        <Flags>
+        Protected Enum StateFlags As Integer
+            TypeConstraintsChecked = &H1
+
+            EventProduced = &H2
+        End Enum
 
         Protected Sub New(container As SourceMemberContainerTypeSymbol,
                           syntaxRef As SyntaxReference,
@@ -50,15 +60,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             m_memberFlags = memberFlags
         End Sub
 
-        Friend Overrides Sub GenerateDeclarationErrors(cancellationToken As CancellationToken)
+        Protected Overridable Sub GenerateDeclarationErrorsImpl(cancellationToken As CancellationToken)
             MyBase.GenerateDeclarationErrors(cancellationToken)
 
             Dim unusedType = Me.Type
             GetConstantValue(ConstantFieldsInProgress.Empty)
+        End Sub
+
+        Friend NotOverridable Overrides Sub GenerateDeclarationErrors(cancellationToken As CancellationToken)
+            GenerateDeclarationErrorsImpl(cancellationToken)
 
             ' We want declaration events to be last, after all compilation analysis is done, so we produce them here
             Dim sourceModule = DirectCast(Me.ContainingModule, SourceModuleSymbol)
-            If Interlocked.CompareExchange(_eventProduced, 1, 0) = 0 AndAlso Not Me.IsImplicitlyDeclared Then
+            If ThreadSafeFlagOperations.Set(_lazyState, StateFlags.EventProduced) AndAlso Not Me.IsImplicitlyDeclared Then
                 sourceModule.DeclaringCompilation.SymbolDeclaredEvent(Me)
             End If
         End Sub
@@ -140,6 +154,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             End Get
         End Property
 
+        Public NotOverridable Overrides ReadOnly Property IsRequired As Boolean
+            Get
+                Return False
+            End Get
+        End Property
+
         Public Overrides ReadOnly Property AssociatedSymbol As Symbol
             Get
                 Return Nothing
@@ -178,8 +198,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         ''' Derived types utilizing this helper should provide storage for the lazily calculated
         ''' <see cref="EvaluatedConstant"/> value and should implement the following APIs:
         ''' <see cref="GetLazyConstantTuple()"/>,
-        ''' <see cref="SetLazyConstantTuple(EvaluatedConstant, DiagnosticBag)"/>,
-        ''' <see cref="MakeConstantTuple(ConstantFieldsInProgress.Dependencies, DiagnosticBag)"/>.
+        ''' <see cref="SetLazyConstantTuple(EvaluatedConstant, BindingDiagnosticBag)"/>,
+        ''' <see cref="MakeConstantTuple(ConstantFieldsInProgress.Dependencies, BindingDiagnosticBag)"/>.
         ''' </summary>
         Protected Function GetConstantValueImpl(inProgress As ConstantFieldsInProgress) As ConstantValue
             Dim constantTuple As EvaluatedConstant = GetLazyConstantTuple()
@@ -217,7 +237,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             If GetLazyConstantTuple() Is Nothing Then
                 Dim builder = PooledHashSet(Of SourceFieldSymbol).GetInstance()
                 Dim dependencies As New ConstantFieldsInProgress.Dependencies(builder)
-                Dim diagnostics = DiagnosticBag.GetInstance()
+                Dim diagnostics = BindingDiagnosticBag.GetInstance()
                 Dim constantTuple As EvaluatedConstant = MakeConstantTuple(dependencies, diagnostics)
                 dependencies.Freeze()
 
@@ -346,7 +366,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
 
             Dim builder = PooledHashSet(Of SourceFieldSymbol).GetInstance()
             Dim dependencies As New ConstantFieldsInProgress.Dependencies(builder)
-            Dim diagnostics = DiagnosticBag.GetInstance()
+            Dim diagnostics = BindingDiagnosticBag.GetInstance()
             valueTuple = MakeConstantTuple(dependencies, diagnostics)
             dependencies.Freeze()
 
@@ -561,14 +581,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         ''' <summary>
         ''' Should be overridden by types utilizing <see cref="GetConstantValueImpl(ConstantFieldsInProgress)"/> helper.
         ''' </summary>
-        Protected Overridable Sub SetLazyConstantTuple(constantTuple As EvaluatedConstant, diagnostics As DiagnosticBag)
+        Protected Overridable Sub SetLazyConstantTuple(constantTuple As EvaluatedConstant, diagnostics As BindingDiagnosticBag)
             Throw ExceptionUtilities.Unreachable
         End Sub
 
         ''' <summary>
         ''' Should be overridden by types utilizing <see cref="GetConstantValueImpl(ConstantFieldsInProgress)"/> helper.
         ''' </summary>
-        Protected Overridable Function MakeConstantTuple(dependencies As ConstantFieldsInProgress.Dependencies, diagnostics As DiagnosticBag) As EvaluatedConstant
+        Protected Overridable Function MakeConstantTuple(dependencies As ConstantFieldsInProgress.Dependencies, diagnostics As BindingDiagnosticBag) As EvaluatedConstant
             Throw ExceptionUtilities.Unreachable
         End Function
 
@@ -652,8 +672,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             _lazyCustomAttributesBag = attributeData
         End Sub
 
-        Friend Overrides Sub AddSynthesizedAttributes(compilationState as ModuleCompilationState, ByRef attributes As ArrayBuilder(Of SynthesizedAttributeData))
-            MyBase.AddSynthesizedAttributes(compilationState, attributes)
+        Friend Overrides Sub AddSynthesizedAttributes(moduleBuilder As PEModuleBuilder, ByRef attributes As ArrayBuilder(Of VisualBasicAttributeData))
+            MyBase.AddSynthesizedAttributes(moduleBuilder, attributes)
 
             If Me.IsConst Then
                 If Me.GetConstantValue(ConstantFieldsInProgress.Empty) IsNot Nothing Then
@@ -664,7 +684,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
 
                             Dim specialTypeInt64 = Me.ContainingAssembly.GetSpecialType(SpecialType.System_Int64)
                             ' NOTE: used from emit, so shouldn't have gotten here if there were errors
-                            Debug.Assert(specialTypeInt64.GetUseSiteErrorInfo() Is Nothing)
+                            Debug.Assert(specialTypeInt64.GetUseSiteInfo().DiagnosticInfo Is Nothing)
 
                             Dim compilation = Me.DeclaringCompilation
 
@@ -711,35 +731,36 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
 
             Dim attrData = arguments.Attribute
             Debug.Assert(arguments.SymbolPart = AttributeLocation.None)
+            Dim diagnostics = DirectCast(arguments.Diagnostics, BindingDiagnosticBag)
 
-            If attrData.IsTargetAttribute(Me, AttributeDescription.TupleElementNamesAttribute) Then
-                arguments.Diagnostics.Add(ERRID.ERR_ExplicitTupleElementNamesAttribute, arguments.AttributeSyntaxOpt.Location)
+            If attrData.IsTargetAttribute(AttributeDescription.TupleElementNamesAttribute) Then
+                diagnostics.Add(ERRID.ERR_ExplicitTupleElementNamesAttribute, arguments.AttributeSyntaxOpt.Location)
             End If
 
-            If attrData.IsTargetAttribute(Me, AttributeDescription.SpecialNameAttribute) Then
+            If attrData.IsTargetAttribute(AttributeDescription.SpecialNameAttribute) Then
                 arguments.GetOrCreateData(Of CommonFieldWellKnownAttributeData)().HasSpecialNameAttribute = True
-            ElseIf attrData.IsTargetAttribute(Me, AttributeDescription.NonSerializedAttribute) Then
+            ElseIf attrData.IsTargetAttribute(AttributeDescription.NonSerializedAttribute) Then
 
                 If Me.ContainingType.IsSerializable Then
                     arguments.GetOrCreateData(Of CommonFieldWellKnownAttributeData)().HasNonSerializedAttribute = True
                 Else
-                    arguments.Diagnostics.Add(ERRID.ERR_InvalidNonSerializedUsage, arguments.AttributeSyntaxOpt.GetLocation())
+                    diagnostics.Add(ERRID.ERR_InvalidNonSerializedUsage, arguments.AttributeSyntaxOpt.GetLocation())
                 End If
 
-            ElseIf attrData.IsTargetAttribute(Me, AttributeDescription.FieldOffsetAttribute) Then
+            ElseIf attrData.IsTargetAttribute(AttributeDescription.FieldOffsetAttribute) Then
                 Dim offset = attrData.CommonConstructorArguments(0).DecodeValue(Of Integer)(SpecialType.System_Int32)
                 If offset < 0 Then
-                    arguments.Diagnostics.Add(ERRID.ERR_BadAttribute1, arguments.AttributeSyntaxOpt.ArgumentList.Arguments(0).GetLocation(), attrData.AttributeClass)
+                    diagnostics.Add(ERRID.ERR_BadAttribute1, VisualBasicAttributeData.GetFirstArgumentLocation(arguments.AttributeSyntaxOpt), attrData.AttributeClass)
                     offset = 0
                 End If
 
                 arguments.GetOrCreateData(Of CommonFieldWellKnownAttributeData)().SetFieldOffset(offset)
 
-            ElseIf attrData.IsTargetAttribute(Me, AttributeDescription.MarshalAsAttribute) Then
+            ElseIf attrData.IsTargetAttribute(AttributeDescription.MarshalAsAttribute) Then
                 MarshalAsAttributeDecoder(Of CommonFieldWellKnownAttributeData, AttributeSyntax, VisualBasicAttributeData, AttributeLocation).Decode(arguments, AttributeTargets.Field, MessageProvider.Instance)
-            ElseIf attrData.IsTargetAttribute(Me, AttributeDescription.DateTimeConstantAttribute) Then
+            ElseIf attrData.IsTargetAttribute(AttributeDescription.DateTimeConstantAttribute) Then
                 VerifyConstantValueMatches(attrData.DecodeDateTimeConstantValue(), arguments)
-            ElseIf attrData.IsTargetAttribute(Me, AttributeDescription.DecimalConstantAttribute) Then
+            ElseIf attrData.IsTargetAttribute(AttributeDescription.DecimalConstantAttribute) Then
                 VerifyConstantValueMatches(attrData.DecodeDecimalConstantValue(), arguments)
             Else
                 MyBase.DecodeWellKnownAttribute(arguments)
@@ -754,16 +775,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         Private Sub VerifyConstantValueMatches(attrValue As ConstantValue, ByRef arguments As DecodeWellKnownAttributeArguments(Of AttributeSyntax, VisualBasicAttributeData, AttributeLocation))
             Dim data = arguments.GetOrCreateData(Of CommonFieldWellKnownAttributeData)()
             Dim constValue As ConstantValue
+            Dim diagnostics = DirectCast(arguments.Diagnostics, BindingDiagnosticBag)
 
             If Me.IsConst Then
                 If Me.Type.IsDecimalType() OrElse Me.Type.IsDateTimeType() Then
                     constValue = Me.GetConstantValue(ConstantFieldsInProgress.Empty)
 
                     If constValue IsNot Nothing AndAlso Not constValue.IsBad AndAlso constValue <> attrValue Then
-                        arguments.Diagnostics.Add(ERRID.ERR_FieldHasMultipleDistinctConstantValues, arguments.AttributeSyntaxOpt.GetLocation())
+                        diagnostics.Add(ERRID.ERR_FieldHasMultipleDistinctConstantValues, arguments.AttributeSyntaxOpt.GetLocation())
                     End If
                 Else
-                    arguments.Diagnostics.Add(ERRID.ERR_FieldHasMultipleDistinctConstantValues, arguments.AttributeSyntaxOpt.GetLocation())
+                    diagnostics.Add(ERRID.ERR_FieldHasMultipleDistinctConstantValues, arguments.AttributeSyntaxOpt.GetLocation())
                 End If
 
                 If data.ConstValue = CodeAnalysis.ConstantValue.Unset Then
@@ -774,7 +796,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
 
                 If constValue <> CodeAnalysis.ConstantValue.Unset Then
                     If constValue <> attrValue Then
-                        arguments.Diagnostics.Add(ERRID.ERR_FieldHasMultipleDistinctConstantValues, arguments.AttributeSyntaxOpt.GetLocation())
+                        diagnostics.Add(ERRID.ERR_FieldHasMultipleDistinctConstantValues, arguments.AttributeSyntaxOpt.GetLocation())
                     End If
                 Else
                     data.ConstValue = attrValue

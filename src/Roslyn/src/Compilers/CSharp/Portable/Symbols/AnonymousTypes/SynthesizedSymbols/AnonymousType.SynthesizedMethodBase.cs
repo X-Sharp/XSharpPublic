@@ -165,7 +165,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return false;
             }
 
-            internal override void AddSynthesizedAttributes(PEModuleBuilder moduleBuilder, ref ArrayBuilder<SynthesizedAttributeData> attributes)
+            internal override void AddSynthesizedAttributes(PEModuleBuilder moduleBuilder, ref ArrayBuilder<CSharpAttributeData> attributes)
             {
                 base.AddSynthesizedAttributes(moduleBuilder, ref attributes);
 
@@ -204,7 +204,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             internal sealed override IEnumerable<Cci.SecurityAttribute> GetSecurityInformation()
             {
-                throw ExceptionUtilities.Unreachable;
+                throw ExceptionUtilities.Unreachable();
             }
 
             internal sealed override ImmutableArray<string> GetAppliedConditionalSymbols()
@@ -220,7 +220,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
             }
 
-            protected SyntheticBoundNodeFactory CreateBoundNodeFactory(TypeCompilationState compilationState, DiagnosticBag diagnostics)
+            protected SyntheticBoundNodeFactory CreateBoundNodeFactory(TypeCompilationState compilationState, BindingDiagnosticBag diagnostics)
             {
                 var F = new SyntheticBoundNodeFactory(this, this.GetNonNullSyntaxNode(), compilationState, diagnostics);
                 F.CurrentFunction = this;
@@ -229,8 +229,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             internal sealed override int CalculateLocalSyntaxOffset(int localPosition, SyntaxTree localTree)
             {
-                throw ExceptionUtilities.Unreachable;
+                throw ExceptionUtilities.Unreachable();
             }
+
+            protected override bool HasSetsRequiredMembersImpl => throw ExceptionUtilities.Unreachable();
         }
     }
 }

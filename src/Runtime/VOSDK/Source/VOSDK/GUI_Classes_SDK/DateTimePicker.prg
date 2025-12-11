@@ -220,7 +220,7 @@ METHOD ParentNotify(nCode, lParam)
    ENDIF
 
 
-   RETURN 0l
+   RETURN 0L
 
 
 

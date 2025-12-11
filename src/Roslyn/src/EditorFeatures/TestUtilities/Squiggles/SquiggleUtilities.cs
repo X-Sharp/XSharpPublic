@@ -10,9 +10,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Editor.Implementation.Diagnostics;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics;
-using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.CodeAnalysis.Text.Shared.Extensions;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -26,23 +24,27 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Squiggles
         internal static TestComposition CompositionWithSolutionCrawler = EditorTestCompositions.EditorFeatures
             .RemoveParts(typeof(MockWorkspaceEventListenerProvider));
 
-        internal static async Task<(ImmutableArray<DiagnosticData>, ImmutableArray<ITagSpan<IErrorTag>>)> GetDiagnosticsAndErrorSpansAsync<TProvider>(
-            TestWorkspace workspace,
-            IReadOnlyDictionary<string, ImmutableArray<DiagnosticAnalyzer>> analyzerMap = null)
-            where TProvider : AbstractDiagnosticsAdornmentTaggerProvider<IErrorTag>
-        {
-            using var wrapper = new DiagnosticTaggerWrapper<TProvider, IErrorTag>(workspace, analyzerMap);
-            var tagger = wrapper.TaggerProvider.CreateTagger<IErrorTag>(workspace.Documents.First().GetTextBuffer());
+        internal static TestComposition WpfCompositionWithSolutionCrawler = EditorTestCompositions.EditorFeaturesWpf
+            .RemoveParts(typeof(MockWorkspaceEventListenerProvider));
 
-            using var disposable = tagger as IDisposable;
+        internal static async Task<ImmutableArray<TagSpan<TTag>>> GetTagSpansAsync<TProvider, TTag>(
+            EditorTestWorkspace workspace,
+            IReadOnlyDictionary<string, ImmutableArray<DiagnosticAnalyzer>> analyzerMap = null)
+            where TProvider : AbstractDiagnosticsTaggerProvider<TTag>
+            where TTag : class, ITag
+        {
+            var wrapper = new DiagnosticTaggerWrapper<TProvider, TTag>(workspace, analyzerMap);
+
+            var firstDocument = workspace.Documents.First();
+            var textBuffer = firstDocument.GetTextBuffer();
+            using var tagger = wrapper.TaggerProvider.CreateTagger<TTag>(textBuffer);
+
             await wrapper.WaitForTags();
 
-            var analyzerDiagnostics = await wrapper.AnalyzerService.GetDiagnosticsAsync(workspace.CurrentSolution);
-
-            var snapshot = workspace.Documents.First().GetTextBuffer().CurrentSnapshot;
+            var snapshot = textBuffer.CurrentSnapshot;
             var spans = tagger.GetTags(snapshot.GetSnapshotSpanCollection()).ToImmutableArray();
 
-            return (analyzerDiagnostics, spans);
+            return spans;
         }
     }
 }

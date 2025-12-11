@@ -1534,7 +1534,7 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
 
 
 
-        return 0l
+        return 0L
 
     /// <include file="Gui.xml" path="doc/Window.DeActivate/*" />
     method DeActivate(oEvent as Event)  as usual

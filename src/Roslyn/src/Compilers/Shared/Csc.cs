@@ -5,9 +5,11 @@
 #nullable disable
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis.CommandLine;
+using Microsoft.CodeAnalysis.ErrorReporting;
 
 namespace Microsoft.CodeAnalysis.CSharp.CommandLine
 {
@@ -20,7 +22,10 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
 
         internal static int Run(string[] args, BuildPaths buildPaths, TextWriter textWriter, IAnalyzerAssemblyLoader analyzerLoader)
         {
-            FatalError.Handler = FailFast.OnFatalException;
+#if ( DEBUG || DUMP_TRACE ) && XSHARP
+            Trace.Listeners.Add(new ConsoleTraceListener());
+#endif
+            FatalError.SetHandlers(FailFast.Handler, nonFatalHandler: null);
 
             var responseFile = Path.Combine(buildPaths.ClientDirectory, CSharpCompiler.ResponseFileName);
             var compiler = new Csc(responseFile, buildPaths, args, analyzerLoader);

@@ -19,8 +19,8 @@ namespace Microsoft.CodeAnalysis.CSharp
     public enum RuntimeAssemblies : int
     {
         None = 0,
-        VulcanRT = 0x01,
-        VulcanRTFuncs = 0x02,
+        //VulcanRT = 0x01,
+        //VulcanRTFuncs = 0x02,
         XSharpCore = 0x04,
         XSharpData = 0x08,
         XSharpRT = 0x10,
@@ -61,8 +61,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         Harbour,
         // The following are strictly not a target but
         // we use this in the OverloadResolution
-        VulcanRT,
-        VulcanRTFuncs,
         // All Dlls before VOWin32API will use "spoecial" function class names
         // XSharp SDK DLLs
         VOWin32Api,
@@ -74,15 +72,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         VOConsoleClasses,
         RTDebugger,
         VOReportClasses,
-        // Vulcan SDK DLLs
-        VulcanVOWin32Api,
-        VulcanVOSystemClasses,
-        VulcanVORDDClasses,
-        VulcanVOSQLClasses,
-        VulcanVOGuiClasses,
-        VulcanVOInternetClasses,
-        VulcanVOConsoleClasses,
-        VulcanVOReportClasses,
     }
 
     public sealed partial class CSharpParseOptions
@@ -91,7 +80,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // Options that can be set from the outside
         // Some options are also handled by the parser
         // Other options have flags, for the preprocessor macros, such as __VO1__
-        const LanguageVersion defaultLanguageVersion = LanguageVersion.CSharp9;
+        const LanguageVersion defaultLanguageVersion = LanguageVersion.CSharp13;
         #region private fields (need to be access with HasOption)
         //private bool FoxInheritUnknown = false;
         private bool InitLocals = false;
@@ -154,8 +143,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 #else
         public IList<string> IncludePaths { get; private set; } = new List<string>();
 #endif
-        public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);
-        public bool VulcanRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRT);
         public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT) |
             RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         public bool VOUntypedAllowed { get; private set; } = true;
@@ -206,12 +193,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 //FoxInheritUnknown = opt.Fox1;
                 FoxArraySupport = opt.Fox2;
                 ImplicitNamespace = opt.ImplicitNameSpace;
+#if !VSPARSER
+                IncludePaths = opt.IncludePaths?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray() ?? ImmutableArray<string>.Empty;
+#else
                 var paths = opt.IncludePaths;
                 if (paths == null)
                     paths = "";
-#if !VSPARSER
-                IncludePaths = paths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
-#else
                 IncludePaths = paths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 #endif
                 InitLocals = opt.InitLocals;

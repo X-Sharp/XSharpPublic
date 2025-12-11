@@ -15,7 +15,7 @@
 
 
 FUNCTION Start() AS VOID
-LOCAL {a, b, c} := _GetTuple()
+LOCAL (a, b, c) := _GetTuple()
 ? a,b,c
 xAssert(a == 1)
 xAssert(b == 2)

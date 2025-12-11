@@ -19,7 +19,7 @@ FUNCTION ErrString(dwNewReturnCode AS DWORD) AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/doserrstring/*" />
 FUNCTION DosErrString(dwError AS DWORD) AS STRING
-    RETURN System.ComponentModel.Win32Exception{ (INT) dwError }.Message
+    RETURN System.ComponentModel.Win32Exception{ (INT) dwError }:Message
 
 
 

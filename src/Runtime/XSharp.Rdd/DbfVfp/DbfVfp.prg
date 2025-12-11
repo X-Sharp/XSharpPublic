@@ -221,7 +221,7 @@ CLASS DBFVFP INHERIT DBFCDX
         LOCAL buffer AS BYTE[]
         buffer := BYTE[]{VFP_BACKLINKSIZE}
         SELF:DbcName := ""
-        IF _oStream:SafeReadAt(nPos, buffer)
+        IF _oStream:SafeReadAt(nPos, buffer, buffer:Length)
             VAR cName := System.Text.Encoding.Default:GetString(buffer):Replace(e"\0","")
             IF ! String.IsNullOrEmpty(cName)
                 SELF:DbcName := Path.Combine(Path.GetDirectoryName(SELF:_FileName), cName)

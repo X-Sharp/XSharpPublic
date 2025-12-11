@@ -461,7 +461,7 @@ FUNCTION DbScope(uScope) AS USUAL CLIPPER
     /// <seealso cref='DbClearScope' />
     /// <seealso cref='DbScope' />
 
-FUNCTION DbSetScope(nScope AS LONG, uValue AS USUAL) AS LOGIC
+FUNCTION DbSetScope(nScope AS LONG, uValue IN USUAL) AS LOGIC
     LOCAL lResult := TRUE AS LOGIC
     TRY
         SWITCH nScope

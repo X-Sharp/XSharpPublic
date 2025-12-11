@@ -486,7 +486,7 @@ FUNCTION StrExtract(cSearchExpression as string, cBeginDelim as string, cEndDeli
             return cSearchExpression:Substring(nStart, nLen)
         endif
     endif
-    return ""
+
 END FUNCTION
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/difference/*" />

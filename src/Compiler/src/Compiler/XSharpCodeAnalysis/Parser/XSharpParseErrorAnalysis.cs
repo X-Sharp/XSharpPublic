@@ -4,12 +4,13 @@
 // See License.txt in the project root for license information.
 //
 #nullable disable
-using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using System.Collections.Generic;
+using System.Linq;
+using static Microsoft.CodeAnalysis.FlowAnalysis.ControlFlowGraphBuilder;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -173,10 +174,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _parseErrors.Add(new ParseErrorData(param.Stop, ErrorCode.ERR_TypeExpected));
 
                     }
-                    if (param.Attributes != null)
-                    {
-                        _parseErrors.Add(new ParseErrorData(param.Stop, ErrorCode.ERR_AttributesInLocalFuncDecl));
-                    }
+                    //if (param.Attributes != null)
+                    //{
+                    //    _parseErrors.Add(new ParseErrorData(param.Stop, ErrorCode.ERR_AttributesInLocalFuncDecl));
+                    //}
                 }
             }
         }
@@ -440,7 +441,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
             }
         }
-
         public override void ExitTupleType([NotNull] XSharpParser.TupleTypeContext context)
         {
             if (context.T != null && context._Elements.Count < 2)
@@ -462,7 +462,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_TupleTooFewElements));
             }
         }
-
         public override void ExitFielddecl(XSharpParser.FielddeclContext context)
         {
             NotInCore(context, "FIELD statement");
@@ -988,6 +987,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitClass_([NotNull] XSharpParser.Class_Context context)
         {
             checkMissingKeyword(context.End, context, "END CLASS");
+            if (context.C == null && context.C2 != null)
+            {
+                // then the end must be END RECORD
+                _parseErrors.Add(new ParseErrorData(context.C2, ErrorCode.ERR_UnexpectedToken, context.C2.Text));
+
+            }
+            if (context.C != null && context.R2 != null)
+            {
+                // then the end must be END RECORD
+                _parseErrors.Add(new ParseErrorData(context.R2, ErrorCode.ERR_UnexpectedToken, context.R2.Text));
+            }
         }
         public override void ExitInterface_([NotNull] XSharpParser.Interface_Context context)
         {
@@ -1004,7 +1014,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitNamespace_([NotNull] XSharpParser.Namespace_Context context)
         {
-            checkMissingKeyword(context.End, context, "END NAMESPACE");
+            if (context.BEGIN() != null)
+                checkMissingKeyword(context.End, context, "END NAMESPACE");
         }
 
         public override void ExitClassvar([NotNull] XSharpParser.ClassvarContext context)

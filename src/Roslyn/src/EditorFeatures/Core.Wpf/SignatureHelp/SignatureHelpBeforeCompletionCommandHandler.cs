@@ -5,14 +5,13 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.SignatureHelp;
+using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
 using Microsoft.CodeAnalysis.Editor.Shared.Utilities;
 using Microsoft.CodeAnalysis.Host.Mef;
-using Microsoft.CodeAnalysis.Shared.TestHooks;
-using Microsoft.CodeAnalysis.SignatureHelp;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.VisualStudio.Commanding;
-using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
 using Microsoft.VisualStudio.Text.Editor.Commanding;
 using Microsoft.VisualStudio.Text.Editor.Commanding.Commands;
@@ -21,19 +20,11 @@ using Microsoft.VisualStudio.Utilities;
 namespace Microsoft.CodeAnalysis.Editor.CommandHandlers
 {
     /// <summary>
-    /// There are two forms of intellisense that may be active at the same time. Completion and
-    /// SigHelp. Completion precedes SigHelp in the command handler because it wants to make sure
-    /// it's operating on a buffer *after* Completion has changed it. i.e. if "WriteL(" is typed,
-    /// sig help wants to allow completion to complete that to "WriteLine(" before it tried to
-    /// proffer sig help. If we were to reverse things, then we'd get a bogus situation where sig
-    /// help would see "WriteL(" would have nothing to offer and would return.
-    /// 
-    /// However, despite wanting sighelp to receive typechar first and then defer it to completion,
-    /// we want completion to receive other events first (like escape, and navigation keys). We
-    /// consider completion to have higher priority for those commands. In order to accomplish that,
-    /// we introduced <see cref="SignatureHelpAfterCompletionCommandHandler"/>
-    /// This command handler then delegates escape, up and down to those command handlers. 
-    /// It is called before <see cref="PredefinedCompletionNames.CompletionCommandHandler"/>.
+    /// There are two forms of intellisense that may be active at the same time. Completion and SigHelp. Completion
+    /// precedes SigHelp in the command handler because it wants to make sure it's operating on a buffer *after*
+    /// Completion has changed it. i.e. if "WriteL(" is typed, sig help wants to allow completion to complete that to
+    /// "WriteLine(" before it tried to proffer sig help. If we were to reverse things, then we'd get a bogus situation
+    /// where sig help would see "WriteL(" would have nothing to offer and would return.
     /// </summary>
     [Export]
     [Export(typeof(ICommandHandler))]
@@ -54,18 +45,16 @@ namespace Microsoft.CodeAnalysis.Editor.CommandHandlers
         [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
         public SignatureHelpBeforeCompletionCommandHandler(
             IThreadingContext threadingContext,
-            [ImportMany] IEnumerable<Lazy<ISignatureHelpProvider, OrderableLanguageMetadata>> signatureHelpProviders,
-            [ImportMany] IEnumerable<Lazy<IIntelliSensePresenter<ISignatureHelpPresenterSession, ISignatureHelpSession>, OrderableMetadata>> signatureHelpPresenters,
-            IAsyncCompletionBroker completionBroker,
-            IAsynchronousOperationListenerProvider listenerProvider)
-            : base(threadingContext, signatureHelpProviders, signatureHelpPresenters, completionBroker, listenerProvider)
+            SignatureHelpControllerProvider controllerProvider,
+            IGlobalOptionService globalOptions)
+            : base(threadingContext, controllerProvider, globalOptions)
         {
         }
 
         private bool TryGetControllerCommandHandler<TCommandArgs>(TCommandArgs args, out ICommandHandler commandHandler)
             where TCommandArgs : EditorCommandArgs
         {
-            AssertIsForeground();
+            this.ThreadingContext.ThrowIfNotOnUIThread();
             if (!TryGetController(args, out var controller))
             {
                 commandHandler = null;
@@ -81,7 +70,7 @@ namespace Microsoft.CodeAnalysis.Editor.CommandHandlers
             Func<CommandState> nextHandler)
             where TCommandArgs : EditorCommandArgs
         {
-            AssertIsForeground();
+            this.ThreadingContext.ThrowIfNotOnUIThread();
             return TryGetControllerCommandHandler(args, out var commandHandler)
                 ? commandHandler.GetCommandState(args, nextHandler)
                 : nextHandler();
@@ -93,7 +82,7 @@ namespace Microsoft.CodeAnalysis.Editor.CommandHandlers
             CommandExecutionContext context)
             where TCommandArgs : EditorCommandArgs
         {
-            AssertIsForeground();
+            this.ThreadingContext.ThrowIfNotOnUIThread();
             if (!TryGetControllerCommandHandler(args, out var commandHandler))
             {
                 nextHandler();
@@ -106,25 +95,25 @@ namespace Microsoft.CodeAnalysis.Editor.CommandHandlers
 
         CommandState IChainedCommandHandler<TypeCharCommandArgs>.GetCommandState(TypeCharCommandArgs args, Func<CommandState> nextHandler)
         {
-            AssertIsForeground();
+            this.ThreadingContext.ThrowIfNotOnUIThread();
             return GetCommandStateWorker(args, nextHandler);
         }
 
         void IChainedCommandHandler<TypeCharCommandArgs>.ExecuteCommand(TypeCharCommandArgs args, Action nextHandler, CommandExecutionContext context)
         {
-            AssertIsForeground();
+            this.ThreadingContext.ThrowIfNotOnUIThread();
             ExecuteCommandWorker(args, nextHandler, context);
         }
 
         CommandState IChainedCommandHandler<InvokeSignatureHelpCommandArgs>.GetCommandState(InvokeSignatureHelpCommandArgs args, Func<CommandState> nextHandler)
         {
-            AssertIsForeground();
+            this.ThreadingContext.ThrowIfNotOnUIThread();
             return CommandState.Available;
         }
 
         void IChainedCommandHandler<InvokeSignatureHelpCommandArgs>.ExecuteCommand(InvokeSignatureHelpCommandArgs args, Action nextHandler, CommandExecutionContext context)
         {
-            AssertIsForeground();
+            this.ThreadingContext.ThrowIfNotOnUIThread();
             ExecuteCommandWorker(args, nextHandler, context);
         }
     }

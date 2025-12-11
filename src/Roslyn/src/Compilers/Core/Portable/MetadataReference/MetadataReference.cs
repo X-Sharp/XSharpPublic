@@ -122,7 +122,12 @@ namespace Microsoft.CodeAnalysis
             DocumentationProvider? documentation = null,
             string? filePath = null)
         {
-            var metadata = AssemblyMetadata.CreateFromImage(peImage);
+            Metadata metadata = properties.Kind switch
+            {
+                MetadataImageKind.Module => ModuleMetadata.CreateFromImage(peImage),
+                _ => AssemblyMetadata.CreateFromImage(peImage),
+            };
+
             return new MetadataImageReference(metadata, properties, documentation, filePath, display: null);
         }
 
@@ -146,7 +151,6 @@ namespace Microsoft.CodeAnalysis
         /// deterministically use <see cref="AssemblyMetadata.CreateFromStream(Stream, PEStreamOptions)"/> 
         /// to create an <see cref="IDisposable"/> metadata object and 
         /// <see cref="AssemblyMetadata.GetReference(DocumentationProvider, ImmutableArray{string}, bool, string, string)"/> to get a reference to it.
-        /// to get a reference to it.
         /// </para>
         /// </remarks>
         /// <exception cref="ArgumentNullException"><paramref name="peImage"/> is null.</exception>
@@ -156,7 +160,12 @@ namespace Microsoft.CodeAnalysis
             DocumentationProvider? documentation = null,
             string? filePath = null)
         {
-            var metadata = AssemblyMetadata.CreateFromImage(peImage);
+            Metadata metadata = properties.Kind switch
+            {
+                MetadataImageKind.Module => ModuleMetadata.CreateFromImage(peImage),
+                _ => AssemblyMetadata.CreateFromImage(peImage),
+            };
+
             return new MetadataImageReference(metadata, properties, documentation, filePath, display: null);
         }
 
@@ -194,7 +203,11 @@ namespace Microsoft.CodeAnalysis
             string? filePath = null)
         {
             // Prefetch data and close the stream. 
-            var metadata = AssemblyMetadata.CreateFromStream(peStream, PEStreamOptions.PrefetchEntireImage);
+            Metadata metadata = properties.Kind switch
+            {
+                MetadataImageKind.Module => ModuleMetadata.CreateFromStream(peStream, PEStreamOptions.PrefetchEntireImage),
+                _ => AssemblyMetadata.CreateFromStream(peStream, PEStreamOptions.PrefetchEntireImage),
+            };
 
             return new MetadataImageReference(metadata, properties, documentation, filePath, display: null);
         }
@@ -228,12 +241,35 @@ namespace Microsoft.CodeAnalysis
         public static PortableExecutableReference CreateFromFile(
             string path,
             MetadataReferenceProperties properties = default,
+            DocumentationProvider? documentation = null) =>
+            CreateFromFile(
+                StandardFileSystem.Instance.OpenFileWithNormalizedException(path, FileMode.Open, FileAccess.Read, FileShare.Read),
+                path,
+                PEStreamOptions.PrefetchEntireImage,
+                properties,
+                documentation);
+
+        internal static MetadataImageReference CreateFromFile(
+            string path,
+            PEStreamOptions options,
+            MetadataReferenceProperties properties,
+            DocumentationProvider? documentation = null) =>
+            CreateFromFile(
+                StandardFileSystem.Instance.OpenFileWithNormalizedException(path, FileMode.Open, FileAccess.Read, FileShare.Read),
+                path,
+                options,
+                properties,
+                documentation);
+
+        internal static MetadataImageReference CreateFromFile(
+            Stream peStream,
+            string path,
+            PEStreamOptions options,
+            MetadataReferenceProperties properties,
             DocumentationProvider? documentation = null)
         {
-            var peStream = FileUtilities.OpenFileStream(path);
-
             // prefetch image, close stream to avoid locking it:
-            var module = ModuleMetadata.CreateFromStream(peStream, PEStreamOptions.PrefetchEntireImage);
+            var module = ModuleMetadata.CreateFromStream(peStream, options);
 
             if (properties.Kind == MetadataImageKind.Module)
             {
@@ -265,7 +301,7 @@ namespace Microsoft.CodeAnalysis
             return CreateFromAssemblyInternal(assembly);
         }
 
-        internal static MetadataReference CreateFromAssemblyInternal(Assembly assembly)
+        internal static MetadataImageReference CreateFromAssemblyInternal(Assembly assembly)
         {
             return CreateFromAssemblyInternal(assembly, default(MetadataReferenceProperties));
         }
@@ -296,14 +332,10 @@ namespace Microsoft.CodeAnalysis
             return CreateFromAssemblyInternal(assembly, properties, documentation);
         }
 
-        internal static PortableExecutableReference CreateFromAssemblyInternal(
+        internal static string GetAssemblyFilePath(
             Assembly assembly,
-            MetadataReferenceProperties properties,
-            DocumentationProvider? documentation = null)
+            MetadataReferenceProperties properties)
         {
-            // Note: returns MetadataReference and not PortableExecutableReference so that we can in future support assemblies that
-            // which are not backed by PE image.
-
             if (assembly == null)
             {
                 throw new ArgumentNullException(nameof(assembly));
@@ -325,13 +357,20 @@ namespace Microsoft.CodeAnalysis
                 throw new NotSupportedException(CodeAnalysisResources.CantCreateReferenceToAssemblyWithoutLocation);
             }
 
-            Stream peStream = FileUtilities.OpenFileStream(location);
+            return location;
+        }
+
+        internal static MetadataImageReference CreateFromAssemblyInternal(
+            Assembly assembly,
+            MetadataReferenceProperties properties,
+            DocumentationProvider? documentation = null)
+        {
+            var filePath = GetAssemblyFilePath(assembly, properties);
+            var peStream = StandardFileSystem.Instance.OpenFileWithNormalizedException(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
             // The file is locked by the CLR assembly loader, so we can create a lazily read metadata, 
             // which might also lock the file until the reference is GC'd.
-            var metadata = AssemblyMetadata.CreateFromStream(peStream);
-
-            return new MetadataImageReference(metadata, properties, documentation, location, display: null);
+            return CreateFromFile(peStream, filePath, PEStreamOptions.Default, properties, documentation);
         }
 
         internal static bool HasMetadata(Assembly assembly)

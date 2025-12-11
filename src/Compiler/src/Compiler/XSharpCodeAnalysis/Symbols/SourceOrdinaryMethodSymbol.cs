@@ -19,7 +19,7 @@ using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
-    internal abstract partial class SourceOrdinaryMethodSymbolBase 
+    internal abstract partial class SourceOrdinaryMethodOrUserDefinedOperatorSymbol
     {
 
         protected XP.IMemberContext GetEntity()
@@ -60,7 +60,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal MethodSymbol validateMethod(MethodSymbol overriddenMethod, DiagnosticBag diagnostics, Location location)
+        protected virtual void UpdateNameAfterCheck(string name) { }
+
+        internal MethodSymbol validateMethod(MethodSymbol overriddenMethod, BindingDiagnosticBag diagnostics, Location location)
         {
             if (overriddenMethod is { })
             {
@@ -151,7 +153,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {
                     if (this.Name != overriddenMethod.Name)
                     {
-                        this._name = overriddenMethod.Name;
+                        UpdateNameAfterCheck(overriddenMethod.Name);
                     }
                     // remove generated Virtual Modifiers
                     var ent = GetEntity();
@@ -165,8 +167,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             }
                         }
                     }
-
-                    flags = new Flags(flags.MethodKind, mods, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual(true));
+                    flags.SetDeclarationModifiers(this.IsExplicitInterfaceImplementation, mods);
                 }
                 else
                 {
@@ -190,7 +191,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         // warn that the modifier was not needed.
                         diagnostics.Add(ErrorCode.ERR_OverrideNotExpected, location, this.Name);
                     }
-                    flags = new Flags(flags.MethodKind, mods, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual(true));
+                    flags.SetDeclarationModifiers(this.IsExplicitInterfaceImplementation, mods);
                 }
                 this.DeclarationModifiers = mods;
             }

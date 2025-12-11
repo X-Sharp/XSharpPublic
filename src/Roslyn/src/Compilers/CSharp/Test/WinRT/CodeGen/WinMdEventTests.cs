@@ -5,6 +5,7 @@
 #nullable disable
 
 using System.Linq;
+using Basic.Reference.Assemblies;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.Test.Utilities;
@@ -277,7 +278,7 @@ class D
     }
 }
 ";
-            var verifier = CompileAndVerifyWithWinRt(source, options: TestOptions.ReleaseWinMD);
+            var verifier = CompileAndVerifyWithWinRt(source, parseOptions: TestOptions.Regular10, options: TestOptions.ReleaseWinMD);
 
             verifier.VerifyIL("D.InstanceAdd", @"
 {
@@ -370,7 +371,7 @@ class C
     }
 }
 ";
-            var verifier = CompileAndVerifyWithWinRt(source, options: TestOptions.ReleaseWinMD);
+            var verifier = CompileAndVerifyWithWinRt(source, parseOptions: TestOptions.Regular10, options: TestOptions.ReleaseWinMD);
 
             verifier.VerifyIL("C.InstanceAssign", @"
 {
@@ -621,7 +622,7 @@ namespace EventDeserialization
 
             var comp1 = CreateEmptyCompilation(source1, WinRtRefs, TestOptions.ReleaseWinMD, TestOptions.Regular, "Lib");
 
-            var serializationRef = TestMetadata.Net451.SystemRuntimeSerialization;
+            var serializationRef = Net461.References.SystemRuntimeSerialization;
 
             var comp2 = CreateEmptyCompilation(source2, WinRtRefs.Concat(new MetadataReference[] { new CSharpCompilationReference(comp1), serializationRef, SystemXmlRef }), TestOptions.ReleaseExe);
             CompileAndVerify(comp2, expectedOutput: @"A

@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- This file is inspired by "..\MSBuild\Current\Bin\Roslyn\Microsoft.CSharp.Core.targets" . -->
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(RoslynTargetsPath)\Microsoft.Managed.Core.targets"/>
+  <Import Project="$(RoslynTargetsPath)\Microsoft.Managed.Core.targets" Condition="Exists('$(RoslynTargetsPath)\Microsoft.Managed.Core.targets')"/>
+  <Import Project="$(RoslynTargetsPath)\..\Microsoft.Managed.Core.targets" Condition="Exists('$(RoslynTargetsPath)\..\Microsoft.Managed.Core.targets')"/>
 
   <PropertyGroup>
     <!-- .NETCoreApp < 3.0, .NETStandard < 2.1, or any other target framework -->

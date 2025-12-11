@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Dialect>Core</Dialect>
+    <Nullable>enable</Nullable>
+    <NamedArgs>True</NamedArgs>
+    <LB>false</LB>
+    <CS>false</CS>
+    <AZ>false</AZ>
+    <EnforceSelf>false</EnforceSelf>
+    <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
+  </PropertyGroup>
+</Project>

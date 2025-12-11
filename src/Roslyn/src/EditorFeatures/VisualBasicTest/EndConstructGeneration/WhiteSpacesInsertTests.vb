@@ -4,10 +4,11 @@
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.EndConstructGeneration
     <[UseExportProvider]>
+    <Trait(Traits.Feature, Traits.Features.EndConstructGeneration)>
     Public Class WhiteSpacesInsertTests
-        <WpfFact, Trait(Traits.Feature, Traits.Features.EndConstructGeneration)>
-        Public Sub VerifyInsertWhiteSpace()
-            VerifyStatementEndConstructApplied(
+        <WpfFact>
+        Public Async Function VerifyInsertWhiteSpace() As Task
+            Await VerifyStatementEndConstructAppliedAsync(
                 before:="Class X
   Sub y()
 End Class",
@@ -18,11 +19,11 @@ End Class",
   End Sub
 End Class",
                 afterCaret:={2, -1})
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.EndConstructGeneration)>
-        Public Sub VerifyInsertTabSpace()
-            VerifyStatementEndConstructApplied(
+        <WpfFact>
+        Public Async Function VerifyInsertTabSpace() As Task
+            Await VerifyStatementEndConstructAppliedAsync(
                 before:="Class X
 		Sub y()
 End Class",
@@ -33,11 +34,11 @@ End Class",
 		End Sub
 End Class",
                 afterCaret:={2, -1})
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.EndConstructGeneration)>
-        Public Sub VerifyInsertDoubleWideWhiteSpace()
-            VerifyStatementEndConstructApplied(
+        <WpfFact>
+        Public Async Function VerifyInsertDoubleWideWhiteSpace() As Task
+            Await VerifyStatementEndConstructAppliedAsync(
                 before:="Class X
  Sub y()
 End Class",
@@ -49,6 +50,6 @@ End Class",
 End Class",
                 afterCaret:={2, -1})
 
-        End Sub
+        End Function
     End Class
 End Namespace

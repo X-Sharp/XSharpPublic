@@ -34,11 +34,24 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
             AddMemberOptions(SymbolDisplayMemberOptions.IncludeParameters).
             WithParameterOptions(SymbolDisplayParameterOptions.IncludeType);
 
+        private static readonly SymbolDisplayFormat s_indexerCompactNameFormat = CompactNameFormat.
+            WithMemberOptions(SymbolDisplayMemberOptions.IncludeParameters).
+            WithParameterOptions(SymbolDisplayParameterOptions.None);
+
+        internal override string GetCompactName(MethodSymbol method)
+        {
+            var symbol = method.AssociatedSymbol ?? method;
+            var format = symbol is PropertySymbol { IsIndexer: true } ?
+                s_indexerCompactNameFormat :
+                CompactNameFormat;
+            return symbol.ToDisplayString(format);
+        }
+
         internal override void AppendFullName(StringBuilder builder, MethodSymbol method)
         {
-            var displayFormat = (method.MethodKind == MethodKind.PropertyGet || method.MethodKind == MethodKind.PropertySet) ?
-                s_propertyDisplayFormat :
-                DisplayFormat;
+            var displayFormat = method.MethodKind is MethodKind.PropertyGet or MethodKind.PropertySet
+                ? s_propertyDisplayFormat
+                : DisplayFormat;
 
             var parts = method.ToDisplayParts(displayFormat);
             var numParts = parts.Length;
@@ -50,7 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
                 switch (part.Kind)
                 {
                     case SymbolDisplayPartKind.ClassName:
-                        if (GeneratedNames.GetKind(displayString) != GeneratedNameKind.LambdaDisplayClass)
+                        if (GeneratedNameParser.GetKind(displayString) != GeneratedNameKind.LambdaDisplayClass)
                         {
                             builder.Append(displayString);
                         }
@@ -69,7 +82,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
                     case SymbolDisplayPartKind.MethodName:
                         GeneratedNameKind kind;
                         int openBracketOffset, closeBracketOffset;
-                        if (GeneratedNames.TryParseGeneratedName(displayString, out kind, out openBracketOffset, out closeBracketOffset) &&
+                        if (GeneratedNameParser.TryParseGeneratedName(displayString, out kind, out openBracketOffset, out closeBracketOffset) &&
                             (kind == GeneratedNameKind.LambdaMethod || kind == GeneratedNameKind.LocalFunction))
                         {
                             builder.Append(displayString, openBracketOffset + 1, closeBracketOffset - openBracketOffset - 1); // source method name

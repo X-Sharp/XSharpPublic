@@ -4,19 +4,19 @@
 
 using System;
 using System.Threading;
-using Microsoft.CodeAnalysis.Shared.Collections;
+using Microsoft.CodeAnalysis.PooledObjects;
 
-namespace Microsoft.CodeAnalysis.Structure
+namespace Microsoft.CodeAnalysis.Structure;
+
+internal abstract class AbstractSyntaxTriviaStructureProvider : AbstractSyntaxStructureProvider
 {
-    internal abstract class AbstractSyntaxTriviaStructureProvider : AbstractSyntaxStructureProvider
+    public sealed override void CollectBlockSpans(
+        SyntaxToken previousToken,
+        SyntaxNode node,
+        ArrayBuilder<BlockSpan> spans,
+        BlockStructureOptions options,
+        CancellationToken cancellationToken)
     {
-        public sealed override void CollectBlockSpans(
-            SyntaxNode node,
-            ref TemporaryArray<BlockSpan> spans,
-            BlockStructureOptionProvider optionProvider,
-            CancellationToken cancellationToken)
-        {
-            throw new NotSupportedException();
-        }
+        throw new NotSupportedException();
     }
 }

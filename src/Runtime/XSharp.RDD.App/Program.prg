@@ -246,7 +246,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 			LOCAL myDBF := DBF{} AS DBF
 			IF myDBF:Open( dbInfo )
 				//
-				LOCAL nbrBefore := myDBF:RecCount AS LONG
+				LOCAL nbrBefore := myDBF:RecCount AS DWORD
 				//
 				myDBF:Append( FALSE )
 				//
@@ -262,7 +262,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 			LOCAL myDBF := DBF{} AS DBF
 			IF myDBF:Open( dbInfo )
 				//
-				LOCAL nbrBefore := myDBF:RecCount AS LONG
+				LOCAL nbrBefore := myDBF:RecCount AS DWORD
 				//
 				myDBF:Append( FALSE )
 				//

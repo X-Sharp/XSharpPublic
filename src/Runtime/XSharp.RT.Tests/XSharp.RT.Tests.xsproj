@@ -41,6 +41,11 @@
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+      <AssemblyName>System.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="XSharp.MacroCompiler, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.MacroCompiler</Name>
       <AssemblyName>XSharp.MacroCompiler.dll</AssemblyName>
@@ -58,6 +63,7 @@
     <Compile Include="CodeBlockTest.prg" />
     <Compile Include="ClipperCallingTests.prg" />
     <Compile Include="ArrayBaseTests.prg" />
+    <Compile Include="LateBindingTests.prg" />
     <Compile Include="TerminalTests.prg" />
     <Compile Include="DbfNtxTests.prg" />
     <Compile Include="DbfBlobTests.prg" />

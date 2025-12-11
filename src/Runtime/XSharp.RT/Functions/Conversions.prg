@@ -13,6 +13,17 @@ using System.Collections.Concurrent
 #define MAXDIGITS               30
 #define MAXDECIMALS             15
 
+static class ArrayExtensions
+    static Method ToObjectArray(SELF a as array) as object[]
+        return _ArrayToObjectArray(a)
+    static Method ToObjectArray(SELF a as usual[]) as object[]
+        return _UsualArrayToObjectArray(a)
+    static Method ToUsualArray(self a as array) as usual[]
+        return _ArrayToUsualArray(a)
+    static Method ToUsualArray(self a as object[]) as usual[]
+        return _ObjectArrayToUsualArray(a)
+end class
+
 internal static class XSharp.ConversionHelpers
     static internal usCulture as CultureInfo
     static private formatStrings as ConcurrentDictionary<int, string>

@@ -111,6 +111,9 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
             IF IsString(newValue) .OR. IsSymbol(newValue)
                 RETURN SetInternational(newValue)
             ENDIF
+        CASE Set.Hours
+            SetHours(newValue)
+            return SetHours()
 
         END SWITCH
     ENDIF

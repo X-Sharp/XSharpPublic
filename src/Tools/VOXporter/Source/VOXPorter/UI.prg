@@ -4,12 +4,15 @@ USING System.Windows.Forms
 
 CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 
+	PROTECT oVOXporter_ToolTip AS System.Windows.Forms.ToolTip
 	PROTECT oExitButton AS System.Windows.Forms.Button
 	PROTECT oGroupBox3 AS System.Windows.Forms.GroupBox
 	PROTECT oLabelProgress AS System.Windows.Forms.Label
 	PROTECT oProgressBar AS System.Windows.Forms.ProgressBar
 	PROTECT oxPortButton AS System.Windows.Forms.Button
 	PROTECT oGroupBox2 AS System.Windows.Forms.GroupBox
+	PROTECT oTargetFrameworkComboBox AS System.Windows.Forms.ComboBox
+	PROTECT oTargetFrameworkSource AS System.Windows.Forms.Label
 	PROTECT oRadioFromClipboard AS System.Windows.Forms.RadioButton
 	PROTECT oRadioFromPrg AS System.Windows.Forms.RadioButton
 	PROTECT oRadioFromMef AS System.Windows.Forms.RadioButton
@@ -73,22 +76,41 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		ELSE
 			SELF:oExportToVS:Checked := TRUE
 		END IF
+		
+		SELF:oTargetFrameworkComboBox:Items:Add("v4.0")
+		SELF:oTargetFrameworkComboBox:Items:Add("v4.5")
+		SELF:oTargetFrameworkComboBox:Items:Add("v4.5.1")
+		SELF:oTargetFrameworkComboBox:Items:Add("v4.5.2")
+		SELF:oTargetFrameworkComboBox:Items:Add("v4.6")
+		SELF:oTargetFrameworkComboBox:Items:Add("v4.6.1")
+		SELF:oTargetFrameworkComboBox:Items:Add("v4.6.2")
+		SELF:oTargetFrameworkComboBox:Items:Add("v4.7")
+		SELF:oTargetFrameworkComboBox:Items:Add("v4.7.1")
+		SELF:oTargetFrameworkComboBox:Items:Add("v4.7.2")
+		SELF:oTargetFrameworkComboBox:Items:Add("v4.8")
+		SELF:oTargetFrameworkComboBox:Items:Add("v4.8.1")
+
+		SELF:oTargetFrameworkComboBox:SelectedIndex := 0
+		SELF:oTargetFrameworkComboBox:SelectedItem := DefaultTargetFramework
 
 	RETURN
 	PROTECTED METHOD InitializeForm() AS VOID
-
+	
 	// IDE generated code (please DO NOT modify)
-
+	
 		LOCAL oResourceManager AS System.Resources.ResourceManager
 
 		oResourceManager := System.Resources.ResourceManager{ "Designers" , System.Reflection.Assembly.GetExecutingAssembly() }
 
+		SELF:oVOXporter_ToolTip := System.Windows.Forms.ToolTip{}
 		SELF:oExitButton := System.Windows.Forms.Button{}
 		SELF:oGroupBox3 := System.Windows.Forms.GroupBox{}
 		SELF:oLabelProgress := System.Windows.Forms.Label{}
 		SELF:oProgressBar := System.Windows.Forms.ProgressBar{}
 		SELF:oxPortButton := System.Windows.Forms.Button{}
 		SELF:oGroupBox2 := System.Windows.Forms.GroupBox{}
+		SELF:oTargetFrameworkComboBox := System.Windows.Forms.ComboBox{}
+		SELF:oTargetFrameworkSource := System.Windows.Forms.Label{}
 		SELF:oRadioFromClipboard := System.Windows.Forms.RadioButton{}
 		SELF:oRadioFromPrg := System.Windows.Forms.RadioButton{}
 		SELF:oRadioFromMef := System.Windows.Forms.RadioButton{}
@@ -113,9 +135,10 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oExportToVS := System.Windows.Forms.RadioButton{}
 		SELF:oOptionsList := System.Windows.Forms.CheckedListBox{}
 
+
 		SELF:SuspendLayout()
 
-		SELF:ClientSize := System.Drawing.Size{656 , 446}
+		SELF:ClientSize := System.Drawing.Size{656 , 490}
 		SELF:FormBorderStyle := System.Windows.Forms.FormBorderStyle.Sizable
 		SELF:Icon := (System.Drawing.Icon)oResourceManager:GetObject( "XSharpSm.ico" )
 		SELF:Location := System.Drawing.Point{100 , 100}
@@ -127,22 +150,22 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:CancelButton := SELF:oExitButton
 		SELF:oExitButton:Anchor := System.Windows.Forms.AnchorStyles.Right + System.Windows.Forms.AnchorStyles.Bottom
 		SELF:oExitButton:Click += SELF:ExitButtonClick
-		SELF:oExitButton:Location := System.Drawing.Point{528 , 415}
+		SELF:oExitButton:Location := System.Drawing.Point{528 , 456}
 		SELF:oExitButton:Name := "ExitButton"
 		SELF:oExitButton:Size := System.Drawing.Size{119 , 23}
 		SELF:oExitButton:TabIndex := 4
 		SELF:oExitButton:Text := "Exit"
 		SELF:Controls:Add(SELF:oExitButton)
-
+		
 		SELF:oGroupBox3:SuspendLayout()
 		SELF:oGroupBox3:Anchor := System.Windows.Forms.AnchorStyles.Top + System.Windows.Forms.AnchorStyles.Left + System.Windows.Forms.AnchorStyles.Right + System.Windows.Forms.AnchorStyles.Bottom
-		SELF:oGroupBox3:Location := System.Drawing.Point{11 , 327}
+		SELF:oGroupBox3:Location := System.Drawing.Point{11 , 368}
 		SELF:oGroupBox3:Name := "GroupBox3"
 		SELF:oGroupBox3:Size := System.Drawing.Size{636 , 79}
 		SELF:oGroupBox3:TabIndex := 3
 		SELF:oGroupBox3:Text := "Progress"
 		SELF:Controls:Add(SELF:oGroupBox3)
-
+		
 
 		SELF:oLabelProgress:AutoSize := TRUE
 		SELF:oLabelProgress:Location := System.Drawing.Point{18 , 17}
@@ -152,161 +175,185 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oLabelProgress:Text := "xPorting progress..."
 		SELF:oLabelProgress:TextAlign := System.Drawing.ContentAlignment.BottomLeft
 		SELF:oGroupBox3:Controls:Add(SELF:oLabelProgress)
-
+		
 		SELF:oProgressBar:Anchor := System.Windows.Forms.AnchorStyles.Top + System.Windows.Forms.AnchorStyles.Left + System.Windows.Forms.AnchorStyles.Right + System.Windows.Forms.AnchorStyles.Bottom
 		SELF:oProgressBar:Location := System.Drawing.Point{18 , 37}
 		SELF:oProgressBar:Name := "ProgressBar"
 		SELF:oProgressBar:Size := System.Drawing.Size{600 , 26}
 		SELF:oProgressBar:TabIndex := 0
 		SELF:oGroupBox3:Controls:Add(SELF:oProgressBar)
-
+		
 		SELF:oxPortButton:Anchor := System.Windows.Forms.AnchorStyles.Right + System.Windows.Forms.AnchorStyles.Bottom
 		SELF:oxPortButton:Click += SELF:xPortButton_Click
-		SELF:oxPortButton:Location := System.Drawing.Point{392 , 415}
+		SELF:oxPortButton:Location := System.Drawing.Point{392 , 456}
 		SELF:oxPortButton:Name := "xPortButton"
 		SELF:oxPortButton:Size := System.Drawing.Size{119 , 23}
 		SELF:oxPortButton:TabIndex := 2
 		SELF:oxPortButton:Text := "xPort!"
 		SELF:Controls:Add(SELF:oxPortButton)
-
+		
 		SELF:oGroupBox2:SuspendLayout()
 		SELF:oGroupBox2:Anchor := System.Windows.Forms.AnchorStyles.Top + System.Windows.Forms.AnchorStyles.Left + System.Windows.Forms.AnchorStyles.Right + System.Windows.Forms.AnchorStyles.Bottom
 		SELF:oGroupBox2:Location := System.Drawing.Point{11 , 7}
 		SELF:oGroupBox2:Name := "GroupBox2"
-		SELF:oGroupBox2:Size := System.Drawing.Size{370 , 314}
+		SELF:oGroupBox2:Size := System.Drawing.Size{370 , 355}
 		SELF:oGroupBox2:TabIndex := 0
 		SELF:oGroupBox2:Text := "xPort"
 		SELF:Controls:Add(SELF:oGroupBox2)
+		
 
-
+		SELF:oTargetFrameworkComboBox:Location := System.Drawing.Point{18 , 273}
+		SELF:oTargetFrameworkComboBox:Name := "TargetFrameworkComboBox"
+		SELF:oTargetFrameworkComboBox:Size := System.Drawing.Size{154 , 21}
+		SELF:oTargetFrameworkComboBox:TabIndex := 17
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oTargetFrameworkComboBox ,"Specify the framework version for the VS projects generated by VOXporter")
+		SELF:oGroupBox2:Controls:Add(SELF:oTargetFrameworkComboBox)
+		
+		SELF:oTargetFrameworkSource:AutoSize := TRUE
+		SELF:oTargetFrameworkSource:Location := System.Drawing.Point{18 , 254}
+		SELF:oTargetFrameworkSource:Name := "TargetFrameworkSource"
+		SELF:oTargetFrameworkSource:Size := System.Drawing.Size{141 , 17}
+		SELF:oTargetFrameworkSource:TabIndex := 16
+		SELF:oTargetFrameworkSource:Text := "Target Framework Version:"
+		SELF:oGroupBox2:Controls:Add(SELF:oTargetFrameworkSource)
+		
 		SELF:oRadioFromClipboard:AutoSize := TRUE
 		SELF:oRadioFromClipboard:Checked := FALSE
 		SELF:oRadioFromClipboard:Click += SELF:Radio_Click
 		SELF:oRadioFromClipboard:Location := System.Drawing.Point{209 , 78}
 		SELF:oRadioFromClipboard:Name := "RadioFromClipboard"
 		SELF:oRadioFromClipboard:Size := System.Drawing.Size{124 , 18}
-		SELF:oRadioFromClipboard:TabIndex := 17
+		SELF:oRadioFromClipboard:TabIndex := 5
 		SELF:oRadioFromClipboard:Text := "Code from clipboard"
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oRadioFromClipboard ,"Generates a single X# .prg from a VO code found in the Windows Clipboard")
 		SELF:oGroupBox2:Controls:Add(SELF:oRadioFromClipboard)
-
+		
 		SELF:oRadioFromPrg:AutoSize := TRUE
 		SELF:oRadioFromPrg:Checked := FALSE
 		SELF:oRadioFromPrg:Click += SELF:Radio_Click
 		SELF:oRadioFromPrg:Location := System.Drawing.Point{209 , 52}
 		SELF:oRadioFromPrg:Name := "RadioFromPrg"
 		SELF:oRadioFromPrg:Size := System.Drawing.Size{85 , 18}
-		SELF:oRadioFromPrg:TabIndex := 16
+		SELF:oRadioFromPrg:TabIndex := 4
 		SELF:oRadioFromPrg:Text := "Prg from prg"
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oRadioFromPrg ,"Generates a single X# .prg from a .prg containing VO code")
 		SELF:oGroupBox2:Controls:Add(SELF:oRadioFromPrg)
-
+		
 		SELF:oRadioFromMef:AutoSize := TRUE
 		SELF:oRadioFromMef:Checked := FALSE
 		SELF:oRadioFromMef:Click += SELF:Radio_Click
 		SELF:oRadioFromMef:Location := System.Drawing.Point{209 , 26}
 		SELF:oRadioFromMef:Name := "RadioFromMef"
 		SELF:oRadioFromMef:Size := System.Drawing.Size{92 , 18}
-		SELF:oRadioFromMef:TabIndex := 15
+		SELF:oRadioFromMef:TabIndex := 3
 		SELF:oRadioFromMef:Text := "Prg from MEF"
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oRadioFromMef ,"Generates a single X# .prg from a VO .mef file")
 		SELF:oGroupBox2:Controls:Add(SELF:oRadioFromMef)
-
+		
 		SELF:oGenerateWindowsForms:AutoSize := TRUE
-		SELF:oGenerateWindowsForms:Location := System.Drawing.Point{18 , 284}
+		SELF:oGenerateWindowsForms:Location := System.Drawing.Point{18 , 326}
 		SELF:oGenerateWindowsForms:Name := "GenerateWindowsForms"
 		SELF:oGenerateWindowsForms:Size := System.Drawing.Size{289 , 18}
-		SELF:oGenerateWindowsForms:TabIndex := 14
+		SELF:oGenerateWindowsForms:TabIndex := 19
 		SELF:oGenerateWindowsForms:Text := "Generate Windows.Forms forms out of WED binaries"
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oGenerateWindowsForms ,"Generates additional project containing equivalent Windows.Forms forms for every VO window found in the source .aef")
 		SELF:oGroupBox2:Controls:Add(SELF:oGenerateWindowsForms)
-
+		
 		SELF:oCheckNotOverwriteProjectFiles:AutoSize := TRUE
-		SELF:oCheckNotOverwriteProjectFiles:Location := System.Drawing.Point{18 , 261}
+		SELF:oCheckNotOverwriteProjectFiles:Location := System.Drawing.Point{18 , 303}
 		SELF:oCheckNotOverwriteProjectFiles:Name := "CheckNotOverwriteProjectFiles"
 		SELF:oCheckNotOverwriteProjectFiles:Size := System.Drawing.Size{266 , 18}
-		SELF:oCheckNotOverwriteProjectFiles:TabIndex := 13
+		SELF:oCheckNotOverwriteProjectFiles:TabIndex := 18
 		SELF:oCheckNotOverwriteProjectFiles:Text := "Do not overwrite project files if they already exist"
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oCheckNotOverwriteProjectFiles ,"Prevents already existing project files (generated from a previous export) from being overwritten")
 		SELF:oGroupBox2:Controls:Add(SELF:oCheckNotOverwriteProjectFiles)
-
+		
 		SELF:oTextAppName:Anchor := System.Windows.Forms.AnchorStyles.Top + System.Windows.Forms.AnchorStyles.Left + System.Windows.Forms.AnchorStyles.Right
 		SELF:oTextAppName:Location := System.Drawing.Point{203 , 225}
 		SELF:oTextAppName:Name := "TextAppName"
 		SELF:oTextAppName:Size := System.Drawing.Size{154 , 20}
-		SELF:oTextAppName:TabIndex := 12
+		SELF:oTextAppName:TabIndex := 15
 		SELF:oTextAppName:TextChanged += SELF:Other_TextChanged
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oTextAppName ,"The name of the application or prg file that will be created by VOXPorter")
 		SELF:oGroupBox2:Controls:Add(SELF:oTextAppName)
-
+		
 		SELF:oLabelSource2:Anchor := System.Windows.Forms.AnchorStyles.Top + System.Windows.Forms.AnchorStyles.Left + System.Windows.Forms.AnchorStyles.Right
 		SELF:oLabelSource2:AutoSize := TRUE
 		SELF:oLabelSource2:Location := System.Drawing.Point{203 , 207}
 		SELF:oLabelSource2:Name := "LabelSource2"
 		SELF:oLabelSource2:Size := System.Drawing.Size{99 , 17}
-		SELF:oLabelSource2:TabIndex := 11
+		SELF:oLabelSource2:TabIndex := 14
 		SELF:oLabelSource2:Text := "App / library name:"
 		SELF:oGroupBox2:Controls:Add(SELF:oLabelSource2)
-
+		
 		SELF:oTextSolutionName:Location := System.Drawing.Point{18 , 225}
 		SELF:oTextSolutionName:Name := "TextSolutionName"
 		SELF:oTextSolutionName:Size := System.Drawing.Size{154 , 20}
-		SELF:oTextSolutionName:TabIndex := 10
+		SELF:oTextSolutionName:TabIndex := 13
 		SELF:oTextSolutionName:TextChanged += SELF:Other_TextChanged
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oTextSolutionName ,"The container Project/Solution name for all apps generated by VOXporter")
 		SELF:oGroupBox2:Controls:Add(SELF:oTextSolutionName)
-
+		
 		SELF:oLabelSource1:AutoSize := TRUE
 		SELF:oLabelSource1:Location := System.Drawing.Point{18 , 207}
 		SELF:oLabelSource1:Name := "LabelSource1"
 		SELF:oLabelSource1:Size := System.Drawing.Size{80 , 17}
-		SELF:oLabelSource1:TabIndex := 9
+		SELF:oLabelSource1:TabIndex := 12
 		SELF:oLabelSource1:Text := "Solution name:"
 		SELF:oGroupBox2:Controls:Add(SELF:oLabelSource1)
-
+		
 		SELF:oButtonOutput:Anchor := System.Windows.Forms.AnchorStyles.Top + System.Windows.Forms.AnchorStyles.Right
 		SELF:oButtonOutput:Click += SELF:ButtonOutput_Click
 		SELF:oButtonOutput:Location := System.Drawing.Point{328 , 179}
 		SELF:oButtonOutput:Name := "ButtonOutput"
 		SELF:oButtonOutput:Size := System.Drawing.Size{27 , 20}
-		SELF:oButtonOutput:TabIndex := 8
+		SELF:oButtonOutput:TabIndex := 11
 		SELF:oButtonOutput:Text := "..."
 		SELF:oGroupBox2:Controls:Add(SELF:oButtonOutput)
-
+		
 		SELF:oButtonSource:Anchor := System.Windows.Forms.AnchorStyles.Top + System.Windows.Forms.AnchorStyles.Right
 		SELF:oButtonSource:Click += SELF:ButtonSource_Click
 		SELF:oButtonSource:Location := System.Drawing.Point{328 , 134}
 		SELF:oButtonSource:Name := "ButtonSource"
 		SELF:oButtonSource:Size := System.Drawing.Size{27 , 20}
-		SELF:oButtonSource:TabIndex := 5
+		SELF:oButtonSource:TabIndex := 8
 		SELF:oButtonSource:Text := "..."
 		SELF:oGroupBox2:Controls:Add(SELF:oButtonSource)
-
+		
 		SELF:oTextOutput:Anchor := System.Windows.Forms.AnchorStyles.Top + System.Windows.Forms.AnchorStyles.Left + System.Windows.Forms.AnchorStyles.Right
 		SELF:oTextOutput:Location := System.Drawing.Point{18 , 179}
 		SELF:oTextOutput:Name := "TextOutput"
 		SELF:oTextOutput:Size := System.Drawing.Size{303 , 20}
-		SELF:oTextOutput:TabIndex := 7
+		SELF:oTextOutput:TabIndex := 10
 		SELF:oTextOutput:TextChanged += SELF:Other_TextChanged
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oTextOutput ,"Specify the output folder where VOXporter will create the X# project/application/files")
 		SELF:oGroupBox2:Controls:Add(SELF:oTextOutput)
-
+		
 		SELF:oLabel2:AutoSize := TRUE
 		SELF:oLabel2:Location := System.Drawing.Point{18 , 161}
 		SELF:oLabel2:Name := "Label2"
 		SELF:oLabel2:Size := System.Drawing.Size{73 , 17}
-		SELF:oLabel2:TabIndex := 6
+		SELF:oLabel2:TabIndex := 9
 		SELF:oLabel2:Text := "Output folder:"
 		SELF:oGroupBox2:Controls:Add(SELF:oLabel2)
-
+		
 		SELF:oLabelSource:AutoSize := TRUE
 		SELF:oLabelSource:Location := System.Drawing.Point{18 , 116}
 		SELF:oLabelSource:Name := "LabelSource"
 		SELF:oLabelSource:Size := System.Drawing.Size{75 , 17}
-		SELF:oLabelSource:TabIndex := 3
+		SELF:oLabelSource:TabIndex := 6
 		SELF:oLabelSource:Text := "Source folder:"
 		SELF:oGroupBox2:Controls:Add(SELF:oLabelSource)
-
+		
 		SELF:oTextSource:Anchor := System.Windows.Forms.AnchorStyles.Top + System.Windows.Forms.AnchorStyles.Left + System.Windows.Forms.AnchorStyles.Right
 		SELF:oTextSource:Location := System.Drawing.Point{18 , 134}
 		SELF:oTextSource:Name := "TextSource"
 		SELF:oTextSource:Size := System.Drawing.Size{303 , 20}
-		SELF:oTextSource:TabIndex := 4
+		SELF:oTextSource:TabIndex := 7
 		SELF:oTextSource:TextChanged += SELF:TextSource_TextChanged
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oTextSource ,"Specify the source folder, aef, mef or prg file")
 		SELF:oGroupBox2:Controls:Add(SELF:oTextSource)
-
+		
 		SELF:oRadioFromFolder:AutoSize := TRUE
 		SELF:oRadioFromFolder:Checked := FALSE
 		SELF:oRadioFromFolder:Click += SELF:Radio_Click
@@ -315,8 +362,9 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oRadioFromFolder:Size := System.Drawing.Size{170 , 18}
 		SELF:oRadioFromFolder:TabIndex := 2
 		SELF:oRadioFromFolder:Text := "Application from files in folder"
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oRadioFromFolder ,"Generates an application by importing all .prg files found in the source folder")
 		SELF:oGroupBox2:Controls:Add(SELF:oRadioFromFolder)
-
+		
 		SELF:oRadioFromAefsInFolder:AutoSize := TRUE
 		SELF:oRadioFromAefsInFolder:Click += SELF:Radio_Click
 		SELF:oRadioFromAefsInFolder:Location := System.Drawing.Point{18 , 52}
@@ -324,8 +372,9 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oRadioFromAefsInFolder:Size := System.Drawing.Size{183 , 18}
 		SELF:oRadioFromAefsInFolder:TabIndex := 1
 		SELF:oRadioFromAefsInFolder:Text := "Applications from AEFs in folder"
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oRadioFromAefsInFolder ,"Exports multiple VO applications from all .aef files found in the source folder")
 		SELF:oGroupBox2:Controls:Add(SELF:oRadioFromAefsInFolder)
-
+		
 		SELF:oRadioFromAef:AutoSize := TRUE
 		SELF:oRadioFromAef:Checked := TRUE
 		SELF:oRadioFromAef:Click += SELF:Radio_Click
@@ -335,17 +384,18 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oRadioFromAef:Size := System.Drawing.Size{146 , 18}
 		SELF:oRadioFromAef:TabIndex := 0
 		SELF:oRadioFromAef:Text := "Application from AEF file"
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oRadioFromAef ,"Exports a single VO application from an .aef file")
 		SELF:oGroupBox2:Controls:Add(SELF:oRadioFromAef)
-
+		
 		SELF:oGroupBox1:SuspendLayout()
 		SELF:oGroupBox1:Anchor := System.Windows.Forms.AnchorStyles.Top + System.Windows.Forms.AnchorStyles.Right
 		SELF:oGroupBox1:Location := System.Drawing.Point{392 , 7}
 		SELF:oGroupBox1:Name := "GroupBox1"
-		SELF:oGroupBox1:Size := System.Drawing.Size{255 , 314}
+		SELF:oGroupBox1:Size := System.Drawing.Size{255 , 355}
 		SELF:oGroupBox1:TabIndex := 1
 		SELF:oGroupBox1:Text := "xPort options"
 		SELF:Controls:Add(SELF:oGroupBox1)
-
+		
 
 		SELF:oExportToBoth:AutoSize := TRUE
 		SELF:oExportToBoth:Checked := TRUE
@@ -354,16 +404,18 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oExportToBoth:Size := System.Drawing.Size{45 , 18}
 		SELF:oExportToBoth:TabIndex := 3
 		SELF:oExportToBoth:Text := "Both"
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oExportToBoth ,"Export to both Visual Studio and XIDE formats")
 		SELF:oGroupBox1:Controls:Add(SELF:oExportToBoth)
-
+		
 		SELF:oExportToXIDE:AutoSize := TRUE
 		SELF:oExportToXIDE:Location := System.Drawing.Point{117 , 15}
 		SELF:oExportToXIDE:Name := "ExportToXIDE"
 		SELF:oExportToXIDE:Size := System.Drawing.Size{49 , 18}
 		SELF:oExportToXIDE:TabIndex := 2
 		SELF:oExportToXIDE:Text := "XIDE"
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oExportToXIDE ,"Export only to XIDE format")
 		SELF:oGroupBox1:Controls:Add(SELF:oExportToXIDE)
-
+		
 		SELF:oExportToVS:AutoSize := TRUE
 		SELF:oExportToVS:Location := System.Drawing.Point{15 , 15}
 		SELF:oExportToVS:Name := "ExportToVS"
@@ -371,21 +423,24 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oExportToVS:TabIndex := 1
 		SELF:oExportToVS:TabStop := TRUE
 		SELF:oExportToVS:Text := "Export to VS"
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oExportToVS ,"Export only to Visual Studio format")
 		SELF:oGroupBox1:Controls:Add(SELF:oExportToVS)
-
+		
 		SELF:oOptionsList:IntegralHeight := FALSE
 		SELF:oOptionsList:Location := System.Drawing.Point{15 , 36}
+		SELF:oOptionsList:MouseMove += SELF:OptionsList_MouseMove
 		SELF:oOptionsList:Name := "OptionsList"
-		SELF:oOptionsList:Size := System.Drawing.Size{222 , 266}
+		SELF:oOptionsList:Size := System.Drawing.Size{222 , 297}
 		SELF:oOptionsList:TabIndex := 4
+		SELF:oVOXporter_ToolTip:SetToolTip(SELF:oOptionsList ,"Various options on how VOXporter adjusts VO code")
 		SELF:oGroupBox1:Controls:Add(SELF:oOptionsList)
-
+		
 		SELF:oGroupBox1:ResumeLayout()
 		SELF:oGroupBox2:ResumeLayout()
 		SELF:oGroupBox3:ResumeLayout()
 		SELF:ResumeLayout()
 
-	RETURN
+	END METHOD
 
 	PROTECTED METHOD EnableDisableControls() AS VOID
 		LOCAL cSolutionName := "", cAppName := "" AS STRING
@@ -530,6 +585,33 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		END IF
 	RETURN
 
+	PROTECTED METHOD OptionsList_MouseMove(sender AS System.Object , e AS System.Windows.Forms.MouseEventArgs) AS VOID
+		STATIC LOCAL oOptionsType := TypeOf(xPorterOptions) AS Type
+
+		LOCAL cTooltip AS STRING
+		cTooltip := "Various options on how VOXporter adjusts VO code"
+		
+		LOCAL nIndex AS INT
+		nIndex := SELF:oOptionsList:IndexFromPoint(e:Location)
+		IF nIndex >= 0
+//			cTooltip := SELF:oOptionsList:Items[nIndex]:ToString()
+			LOCAL cOption AS STRING
+			cOption := SELF:oOptionsList:Items[nIndex]:ToString()
+			LOCAL oField AS FieldInfo
+			oField := oOptionsType:GetField(cOption)
+			IF oField != NULL
+				LOCAL oAttribute AS DocumentationAttribute
+				oAttribute := oField:GetCustomAttribute(TypeOf(DocumentationAttribute)) ASTYPE DocumentationAttribute
+				IF oAttribute != NULL
+					cTooltip := oAttribute:Documentation
+				END IF
+			END IF
+		END IF
+		IF SELF:oVOXporter_ToolTip:GetToolTip(SELF:oOptionsList) != cTooltip
+			SELF:oVOXporter_ToolTip:SetToolTip(SELF:oOptionsList , cTooltip)
+		END IF
+	RETURN
+
 	METHOD SetProgressBarRange(nValue AS INT) AS VOID
 		SELF:oProgressBar:Value := 0
 		SELF:oProgressBar:Minimum := 0
@@ -574,6 +656,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		cAppName      := SELF:oTextAppName:Text:Trim()
 
 		xPorter.ExportingSingleFile := SELF:oRadioFromMef:Checked .or. SELF:oRadioFromPrg:Checked .or. SELF:oRadioFromClipboard:Checked
+		xPorter.TargetFramework := SELF:oTargetFrameworkComboBox:Text
 
 		IF SELF:oRadioFromAef:Checked .or. SELF:oRadioFromMef:Checked .or. SELF:oRadioFromPrg:Checked
 			IF .not. File.Exists(cSourceFolder)

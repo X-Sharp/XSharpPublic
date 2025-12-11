@@ -430,14 +430,14 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 	    LOCAL oCurrentDesigner AS Designer
 	    WHILE( SELF:oRecHeader:uiType != FabVODefinitions.REC_END )
 		    //
-		    ?  SELF:oRecHeader:uiType:ToString("X") , SELF:oRecHeader:ulLength
+//		    ?  SELF:oRecHeader:uiType:ToString("X") , SELF:oRecHeader:ulLength
 		    DO CASE
 			    CASE SELF:oRecHeader:uiType == 0x44 // AEF_REC_ENTTYPE
 			        SELF:oMS:Position := PosData+0
 				    br := BinaryReader{ SELF:oMS }
 				    nCurrentType := br:ReadInt16()
 				    oInfoTemp:Type := nCurrentType
-				    ? nCurrentType
+//				    ? nCurrentType
 				    IF nCurrentType == BINARY_MED .OR. nCurrentType == BINARY_WED .OR. ;
 				    	 nCurrentType == BINARY_DED .OR. nCurrentType == BINARY_FED .OR. ;
                    nCurrentType == BINARY_FLD .OR. nCurrentType == BINARY_IND .OR. ;
@@ -458,7 +458,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 				    IF oCurrentDesigner != NULL
 					    oCurrentDesigner:Name := cCurrentName
 				    END IF
-				    ? cCurrentName
+//				    ? cCurrentName
 
 			    CASE SELF:oRecHeader:uiType == 0x085 // AEF_REC_DT_STATIC
 				    IF nCurrentType == 16 .AND. oCurrentDesigner != NULL
@@ -510,8 +510,8 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 				    // Add the module name, and store the pointer where it starts
 			        SELF:oMS:Position := PosData
 				    oInfoTemp:Name := FabTools.ReadPSZString( SELF:oMS, (LONG)SELF:oRecHeader:ulLength )
-				    ? "---------------"
-				    ? oInfoTemp:Name
+//				    ? "---------------"
+//				    ? oInfoTemp:Name
 				    cCurrentName := oInfoTemp:Name
 				    oCurrentDesigner := NULL
 			    CASE SELF:oRecHeader:uiType == FabVODefinitions.ENTSOURCE

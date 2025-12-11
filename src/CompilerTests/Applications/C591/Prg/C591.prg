@@ -41,7 +41,9 @@ xAssert(TestNum(u)==123)
 
 u := NULL_OBJECT
 TestNum(u)
-xAssert(TestNum(u)==123)
+// With the vulcan runtime, following returned 123. With the X# runtime, it returns NULL_OBJECT, which is the correct (VO-compatible) behavior
+//xAssert(TestNum(u)==123)
+xAssert(TestNum(u)==NULL_OBJECT)
 
 u := "asd"
 TestNum(u)

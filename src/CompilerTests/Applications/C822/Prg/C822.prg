@@ -18,8 +18,8 @@ LOCAL d AS test_delegate
 LOCAL d2 AS test_delegate_clippercall
 d := test                            
 d2 := test
-d(1,"a", today())
-d2(1,"a", today())
+d(1,"a", Today())
+d2(1,"a", Today())
 
 DELEGATE test_delegate(a,b,c,d) 
 // this now generates an error because the delegate has a clipper calling convention.

@@ -244,15 +244,47 @@ CLASS XSharp.RuntimeState
     /// <value>The default value for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionFox2 AS LOGIC AUTO
 
+	/// <summary>The current compiler setting for the AllowOldStyleAssignments compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default vale for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionAllowOldStyleAssignments AS LOGIC AUTO
+	/// <summary>The current compiler setting for the AZ compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default vale for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionAZ AS LOGIC AUTO
+	/// <summary>The current compiler setting for the VO4 compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default vale for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionVO4 AS LOGIC AUTO
+	/// <summary>The current compiler setting for the VO6 compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default vale for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionVO6 AS LOGIC AUTO
+	/// <summary>The current compiler setting for the VO7 compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default vale for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionVO7 AS LOGIC AUTO
+	/// <summary>The current compiler setting for the VO10 compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default vale for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionVO10 AS LOGIC AUTO
 	/// <summary>The current compiler setting for the VO11 compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionVO11 AS LOGIC AUTO
 
+	/// <summary>The current compiler setting for the VO12 compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default vale for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionVO12 AS LOGIC AUTO
 	/// <summary>The current compiler setting for the VO13 compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default value for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionVO13 AS LOGIC AUTO
+	/// <summary>The current compiler setting for the VO12 compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default vale for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionVO14 AS LOGIC AUTO
 	/// <summary>Gets / Sets the current Workarea number.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY CurrentWorkarea AS DWORD ;

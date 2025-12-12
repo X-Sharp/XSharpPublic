@@ -157,8 +157,16 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string VODllFunctionsClass = ".Functions";
         internal const string ModuleName = "<Module>";
         internal const string RTDialect = "Dialect";
+        internal const string RTCompilerOptionAllowOldStyleAssignments = "CompilerOptionAllowOldStyleAssignments";
+        internal const string RTCompilerOptionAZ = "CompilerOptionAZ";
+        internal const string RTCompilerOptionVO4 = "CompilerOptionVO4";
+        internal const string RTCompilerOptionVO6 = "CompilerOptionVO6";
+        internal const string RTCompilerOptionVO7 = "CompilerOptionVO7";
+        internal const string RTCompilerOptionVO10 = "CompilerOptionVO10";
         internal const string RTCompilerOptionVO11 = "CompilerOptionVO11";
+        internal const string RTCompilerOptionVO12 = "CompilerOptionVO12";
         internal const string RTCompilerOptionVO13 = "CompilerOptionVO13";
+        internal const string RTCompilerOptionVO14 = "CompilerOptionVO14";
         internal const string RTCompilerOptionFOvf = "CompilerOptionFOvf";
         internal const string RTCompilerOptionFox2 = "CompilerOptionFox2";
         internal const string RTCompilerOptionOvf = "CompilerOptionOvf";

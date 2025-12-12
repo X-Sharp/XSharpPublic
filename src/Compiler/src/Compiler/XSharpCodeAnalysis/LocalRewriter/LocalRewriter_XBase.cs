@@ -241,16 +241,34 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var type = xsrt.GetTypeByMetadataName("XSharp.RuntimeState");
                 if (type is { })
                 {
-                    string[] names = { XSharpSpecialNames.RTCompilerOptionOvf,
+                    string[] names = {
+                                    XSharpSpecialNames.RTCompilerOptionAllowOldStyleAssignments,
+                                    XSharpSpecialNames.RTCompilerOptionAZ,
+                                    XSharpSpecialNames.RTCompilerOptionOvf,
+                                    XSharpSpecialNames.RTCompilerOptionVO4,
+                                    XSharpSpecialNames.RTCompilerOptionVO6,
+                                    XSharpSpecialNames.RTCompilerOptionVO7,
+                                    XSharpSpecialNames.RTCompilerOptionVO10,
                                     XSharpSpecialNames.RTCompilerOptionVO11,
+                                    XSharpSpecialNames.RTCompilerOptionVO12,
                                     XSharpSpecialNames.RTCompilerOptionVO13,
+                                    XSharpSpecialNames.RTCompilerOptionVO14,
                                     XSharpSpecialNames.RTCompilerOptionFox2,
                                     XSharpSpecialNames.RTDialect,
                     };
-                    object[] values = { comp.Options.CheckOverflow ,
-                                        comp.Options.VOArithmeticConversions,
-                                        comp.Options.VOStringComparisons,
-                                        comp.Options.FoxArraySupport,
+                    object[] values = {
+                                        comp.Options.HasOption(CompilerOption.AllowOldStyleAssignments,null),
+                                        comp.Options.HasOption(CompilerOption.ArrayZero,null),
+                                        comp.Options.HasOption(CompilerOption.Overflow,null),
+                                        comp.Options.HasOption(CompilerOption.Vo4,null),
+                                        comp.Options.HasOption(CompilerOption.Vo6,null),
+                                        comp.Options.HasOption(CompilerOption.Vo7,null),
+                                        comp.Options.HasOption(CompilerOption.Vo10,null),
+                                        comp.Options.HasOption(CompilerOption.Vo11,null),
+                                        comp.Options.HasOption(CompilerOption.Vo12,null),
+                                        comp.Options.HasOption(CompilerOption.Vo13,null),
+                                        comp.Options.HasOption(CompilerOption.Vo14,null),
+                                        comp.Options.HasOption(CompilerOption.Fox2,null),
                                         comp.Options.Dialect};
                     for (int n = 0; n < names.Length; n++)
                     {

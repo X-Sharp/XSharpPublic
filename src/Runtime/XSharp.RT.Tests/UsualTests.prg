@@ -932,7 +932,27 @@ CLASS UsualTests
         Default(REF u , "test")
         Assert.True(IsNil(u))
         Assert.True ( u == NULL_OBJECT )
+    [Fact, Trait("Category", "Usual")];
+        METHOD UsualLargeInt() AS VOID
+          local u1, u2,u3 as usual
+            local i1, i2,i3 as int64
+            u1 := Int32.MaxValue
+            u2 := Int32.MaxValue
+            u3 := u1 * u2
 
+            i1 := Int32.MaxValue
+            i2 := Int32.MaxValue
+            i3 := i1 * i2
+            Assert.True(u3 == i3)
+            u1 := Int32.MinValue
+            u2 := Int32.MaxValue
+            u3 := u1 * u2
+
+            i1 := Int32.MinValue
+            i2 := Int32.MaxValue
+            i3 := i1 * i2
+            Assert.True(u3 == i3)
+        RETURN
 
     #pragma options("lb",on)
     [Fact, Trait("Category", "Usual")];
@@ -959,24 +979,24 @@ CLASS UsualTests
     METHOD Usual_Indexed() AS VOID
         LOCAL u AS USUAL
         XSharp.RuntimeState.Dialect := XSharpDialect.VO
-        
+
         u := System.Collections.ArrayList{}
         u:Add(123)
         u:Add(456)
         Assert.Equal(123, (INT)u[0])
-        
+
         u := System.Collections.Generic.Dictionary<STRING,INT>{}
         u:Add("abc",123)
         u:Add("def",456)
         u:Add("ghi",789)
         Assert.Equal(456, (INT)u["def"])
-        
+
         u := System.Collections.Generic.Dictionary<INT,STRING>{}
         u:Add(123,"abc")
         u:Add(456,"def")
         u:Add(789,"ghi")
         Assert.Equal("def", (STRING)u[456])
-        
+
 
     #pragma options("lb",restore)
 

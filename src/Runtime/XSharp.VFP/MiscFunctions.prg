@@ -190,3 +190,36 @@ FUNCTION __FoxCast(expr AS USUAL, targetType AS STRING, nLen AS LONG, nDec AS LO
     ENDIF
     RETURN result
 
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/isblank/*" />
+    FUNCTION IsBlank(eExpression AS USUAL) AS LOGIC
+        IF eExpression == NIL .OR. eExpression == System.DBNull.Value
+            RETURN FALSE
+        ENDIF
+
+        LOCAL dwType := UsualType(eExpression) AS DWORD
+
+        SWITCH dwType
+        CASE __UsualType.String
+            RETURN String.IsNullOrWhiteSpace((STRING)eExpression)
+        CASE __UsualType.Date
+            RETURN (DATE)eExpression == NULL_DATE
+        CASE __UsualType.Long
+        CASE __UsualType.Float
+        CASE __UsualType.Int64
+        CASE __UsualType.Decimal
+        CASE __UsualType.Currency
+        CASE __UsualType.Logic
+            RETURN FALSE
+        END SWITCH
+
+        RETURN FALSE
+    ENDFUNC
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/isnull/*" />
+FUNCTION IsNull(eExpression AS USUAL) AS LOGIC
+    IF eExpression == NIL
+        RETURN TRUE
+    ENDIF
+
+    RETURN System.Convert.IsDBNull(eExpression)
+ENDFUNC

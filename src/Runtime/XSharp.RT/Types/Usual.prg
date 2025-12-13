@@ -1855,7 +1855,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
                 else
                     RETURN  i1
                 endif
-                RETURN (INT)   (i1 * i2 )
+
             CASE __UsualType.Int64		; RETURN (INT64) (lhs:_intValue * rhs:_i64Value)
             CASE __UsualType.Float		; RETURN FLOAT{lhs:_intValue * rhs:_r8Value, rhs:_width, rhs:_decimals}
             CASE __UsualType.Currency	; RETURN (CURRENCY) (Convert.ToDecimal(lhs:_intValue) * rhs:_currencyValue)

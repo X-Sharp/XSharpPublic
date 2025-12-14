@@ -32,11 +32,3 @@ FUNCTION SetFldState( uField, nFieldState , uArea) AS LOGIC
 FUNCTION SetResultSet( uArea ) AS LONG
     THROW NotImplementedException{}
     // RETURN 0
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/strconv/*" />
-
-FUNCTION StrConv( cExpression, nConversionSetting , nRegionalIdentifier , nRegionalIDType) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
-

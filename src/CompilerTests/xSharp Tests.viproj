@@ -41585,8 +41585,8 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = VOSystemClasses,1,0,2.6.0.0
-ReferenceGAC = VORDDClasses,1,0,2.6.0.0
+ReferenceGAC = CLR4,VOSystemClasses,1,0,2.6.0.0
+ReferenceGAC = CLR4,VORDDClasses,1,0,2.6.0.0
 [C348 - Incorrect error about mixing STRICT/CLIPPER Resources]
 [C348 - Incorrect error about mixing STRICT/CLIPPER Native Resources]
 [C348 - Incorrect error about mixing STRICT/CLIPPER License files]
@@ -45670,8 +45670,8 @@ CopyToBin = 0
 [C381 - Helpdisplay References]
 ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = VOWin32APILibrary,1,0,2.6.0.0
 ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = CLR4,VOWin32APILibrary,1,0,2.6.0.0
 [C381 - Helpdisplay Resources]
 [C381 - Helpdisplay Native Resources]
 [C381 - Helpdisplay License files]
@@ -46397,11 +46397,11 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
 ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = VOSystemClasses,1,0,2.6.0.0
-ReferenceGAC = VOGUIClasses,1,0,2.6.0.0
-ReferenceGAC = VORDDClasses,1,0,2.6.0.0
-ReferenceGAC = VOWin32APILibrary,1,0,2.6.0.0
 ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = CLR4,VOGUIClasses,1,0,2.6.0.0
+ReferenceGAC = CLR4,VORDDClasses,1,0,2.6.0.0
+ReferenceGAC = CLR4,VOSystemClasses,1,0,2.6.0.0
+ReferenceGAC = CLR4,VOWin32APILibrary,1,0,2.6.0.0
 [C386 - Probem embedding native resource files Resources]
 [C386 - Probem embedding native resource files Native Resources]
 NativeResourceFile = %AppPath%\Prg\C386.rc
@@ -55314,8 +55314,8 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = VOGUIClasses,1,0,2.6.0.0
 ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = CLR4,VOGUIClasses,1,0,2.6.0.0
 [C458 - Name conflict between DEFINE and METHOD Resources]
 [C458 - Name conflict between DEFINE and METHOD Native Resources]
 [C458 - Name conflict between DEFINE and METHOD License files]
@@ -59793,11 +59793,11 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = VOSystemClasses,1,0,2.6.0.0
-ReferenceGAC = VOGUIClasses,1,0,2.6.0.0
-ReferenceGAC = VORDDClasses,1,0,2.6.0.0
-ReferenceGAC = VOWin32APILibrary,1,0,2.6.0.0
 ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = CLR4,VOGUIClasses,1,0,2.6.0.0
+ReferenceGAC = CLR4,VORDDClasses,1,0,2.6.0.0
+ReferenceGAC = CLR4,VOSystemClasses,1,0,2.6.0.0
+ReferenceGAC = CLR4,VOWin32APILibrary,1,0,2.6.0.0
 [C493 - VO compatibility isssues with VOSTRUCTs Resources]
 [C493 - VO compatibility isssues with VOSTRUCTs Native Resources]
 NativeResourceFile = %AppPath%\Resources\C493.rc
@@ -65700,11 +65700,11 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = VOGUIClasses,1,0,2.6.0.0
-ReferenceGAC = VORDDClasses,1,0,2.6.0.0
-ReferenceGAC = VOSystemClasses,1,0,2.6.0.0
-ReferenceGAC = VOWin32APILibrary,1,0,2.6.0.0
 ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = CLR4,VOGUIClasses,1,0,2.6.0.0
+ReferenceGAC = CLR4,VORDDClasses,1,0,2.6.0.0
+ReferenceGAC = CLR4,VOSystemClasses,1,0,2.6.0.0
+ReferenceGAC = CLR4,VOWin32APILibrary,1,0,2.6.0.0
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Resources]
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Native Resources]
 NativeResourceFile = %AppPath%\Resources\C541.rc
@@ -133991,9 +133991,9 @@ CopyToBin = 0
 [R927 - VFP Error line number References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VFP.dll,1,1
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
 [R927 - VFP Error line number Resources]
 [R927 - VFP Error line number Native Resources]
 [R927 - VFP Error line number License files]
@@ -135919,9 +135919,9 @@ CopyToBin = 0
 [C928 - Problem defining properties when class inherits from system type References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VFP.dll,1,1
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
 [C928 - Problem defining properties when class inherits from system type Resources]
 [C928 - Problem defining properties when class inherits from system type Native Resources]
 [C928 - Problem defining properties when class inherits from system type License files]

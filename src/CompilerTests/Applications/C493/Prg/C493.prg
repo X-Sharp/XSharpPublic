@@ -85,9 +85,9 @@ METHOD PostInit(oWindow,iCtlID,oServer,uExtra)
 		SELF:oDCListBox1:AddItem(Replicate(AsString(n) , 20))
 	NEXT
 	
-	#warning calls to EnableItemDrag() cause a runtime crash
-//	SELF:oDCListBox1:EnableItemDrag()
-//	SELF:oDCListBox2:EnableItemDrag()
+	// warning calls to EnableItemDrag() (used to?) cause a runtime crash
+	SELF:oDCListBox1:EnableItemDrag()
+	SELF:oDCListBox2:EnableItemDrag()
 	
 	RETURN NIL
 

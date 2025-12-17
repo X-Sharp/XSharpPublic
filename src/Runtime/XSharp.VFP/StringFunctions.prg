@@ -314,7 +314,7 @@ FUNCTION AtCC(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccu
 /// <inheritdoc cref="M:XSharp.Core.Functions.AllTrim(System.String)" />
 /// <param name="Expression">Specifies an expression to remove leading and trailing spaces or 0 bytes from</param>
 /// <param name="Flags">Specifies if trimming is case-sensitive when one or more parse characters
-/// (cParseChar, cParseChar2, … are included. Trimming is case-sensitive if nFlags is zero or is omitted.
+/// (cParseChar, cParseChar2, Â… are included. Trimming is case-sensitive if nFlags is zero or is omitted.
 /// Trimming is case-insensitive if nFlags = 1.</param>
 /// <param name="TrimChars">Specifies one or more character strings that are trimmed from the beginning of cExpression.
 /// If cParseChar isn't included, then leading spaces or 0 bytes are removed from Expression. </param>
@@ -338,7 +338,7 @@ FUNCTION RTrim(Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS
 /// <inheritdoc cref="M:XSharp.Core.Functions.Trim(System.String)" />
 /// <param name="Expression">Specifies an expression to remove trailing spaces or 0 bytes from</param>
 /// <param name="Flags">Specifies if trimming is case-sensitive when one or more parse characters
-/// (cParseChar, cParseChar2, … are included. Trimming is case-sensitive if nFlags is zero or is omitted.
+/// (cParseChar, cParseChar2, Â… are included. Trimming is case-sensitive if nFlags is zero or is omitted.
 /// Trimming is case-insensitive if nFlags = 1.</param>
 /// <param name="TrimChars">Specifies one or more character strings that are trimmed from the beginning of cExpression.
 /// If cParseChar isn't included, then leading spaces or 0 bytes are removed from Expression. </param>
@@ -649,7 +649,7 @@ FUNCTION StrConv(cExpression AS USUAL, nConversionSetting AS INT, nRegionalIdent
     return uResult
 END FUNCTION
 
-// Internal class for not contamining the global namespace
+// Internal class for not contaminating the global namespace
 INTERNAL STATIC CLASS StrConvHelpers
     STATIC METHOD GetCulture(nLCID AS INT) AS CultureInfo
         if nLCID != 0

@@ -1145,12 +1145,12 @@ partial class DbServer
 
 
     /// <include file="Rdd.xml" path="doc/DbServer.OrderDescend/*" />
-    method OrderDescend( uOrder as usual, oFSIndex as FileSpec, lNew := nil as usual) as long
+    method OrderDescend( uOrder as usual, oFSIndex as FileSpec, lNew := nil as usual) as logic
         return self:OrderDescend(uOrder, oFSIndex:FullPath, lNew)
 
 
     /// <include file="Rdd.xml" path="doc/DbServer.OrderDescend/*" />
-    method OrderDescend( uOrder as usual, cIndex := "" as string, lNew := nil as usual) as long
+    method OrderDescend( uOrder as usual, cIndex := "" as string, lNew := nil as usual) as logic
         local dwCurrentWorkArea := 0 as dword
         local oError as usual
 

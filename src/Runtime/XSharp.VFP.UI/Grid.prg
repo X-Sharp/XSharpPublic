@@ -315,7 +315,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
             TRY
                 ds := SELF:DataSource
                 IF SELF:_currentSource != NULL
-                    ds:Position := SELF:_currentSource:RecNo
+                    ds:Position := (INT) SELF:_currentSource:RecNo
                 ENDIF
             CATCH
                 NOP

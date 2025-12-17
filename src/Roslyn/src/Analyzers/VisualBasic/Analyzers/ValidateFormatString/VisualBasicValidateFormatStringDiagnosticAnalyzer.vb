@@ -3,9 +3,9 @@
 ' See the LICENSE file in the project root for more information.
 
 Imports Microsoft.CodeAnalysis.Diagnostics
-Imports Microsoft.CodeAnalysis.LanguageServices
+Imports Microsoft.CodeAnalysis.LanguageService
 Imports Microsoft.CodeAnalysis.ValidateFormatString
-Imports Microsoft.CodeAnalysis.VisualBasic.LanguageServices
+Imports Microsoft.CodeAnalysis.VisualBasic.LanguageService
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.ValidateFormatString
@@ -24,7 +24,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ValidateFormatString
 
             For Each argument In arguments
                 Dim simpleArgumentSyntax = TryCast(argument, SimpleArgumentSyntax)
-                If Not simpleArgumentSyntax Is Nothing AndAlso simpleArgumentSyntax.NameColonEquals?.Name.Identifier.ValueText.Equals(searchArgumentName) Then
+                If simpleArgumentSyntax IsNot Nothing AndAlso simpleArgumentSyntax.NameColonEquals?.Name.Identifier.ValueText.Equals(searchArgumentName) Then
                     Return argument
                 End If
             Next

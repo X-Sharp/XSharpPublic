@@ -396,7 +396,7 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 #if XSHARP
 			using (var stream = assembly.GetManifestResourceStream("LanguageService.CodeAnalysis.ExpressionEvaluator.WindowsProxy.winmd"))
 #else
-			using (var stream = assembly.GetManifestResourceStream("Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.WindowsProxy.winmd"))
+            using (var stream = assembly.GetManifestResourceStream("Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.WindowsProxy.winmd"))
 #endif
             {
                 var bytes = new byte[stream.Length];

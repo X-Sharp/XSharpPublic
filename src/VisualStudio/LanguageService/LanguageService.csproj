@@ -19,8 +19,7 @@
     <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
     <Ngen>false</Ngen>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -244,8 +243,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.533</Version>
+    <PackageReference Include="Community.VisualStudio.Toolkit.16">
+      <Version>16.0.533</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.15.0</Version>
@@ -254,13 +253,10 @@
       <Version>15.8.525</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Text.UI.Wpf">
-      <Version>15.8.525</Version>
+      <Version>16.0.428</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop.12.0">
       <Version>12.0.30112</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>8.0.3</Version>
     </PackageReference>
     <PackageReference Include="Serilog.Sinks.Debug">
       <Version>2.0.0</Version>

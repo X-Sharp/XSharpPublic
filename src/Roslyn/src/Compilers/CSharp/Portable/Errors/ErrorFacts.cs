@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -47,7 +48,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             nullableWarnings.Add(GetId(ErrorCode.WRN_ConvertingNullableToNonNullable));
             nullableWarnings.Add(GetId(ErrorCode.WRN_DisallowNullAttributeForbidsMaybeNullAssignment));
             nullableWarnings.Add(GetId(ErrorCode.WRN_ParameterConditionallyDisallowsNull));
-            nullableWarnings.Add(GetId(ErrorCode.WRN_ShouldNotReturn));
 
             nullableWarnings.Add(GetId(ErrorCode.WRN_NullabilityMismatchInTypeOnOverride));
             nullableWarnings.Add(GetId(ErrorCode.WRN_NullabilityMismatchInReturnTypeOnOverride));
@@ -80,6 +80,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             nullableWarnings.Add(GetId(ErrorCode.WRN_ParameterDisallowsNull));
             nullableWarnings.Add(GetId(ErrorCode.WRN_ParameterNotNullIfNotNull));
             nullableWarnings.Add(GetId(ErrorCode.WRN_ReturnNotNullIfNotNull));
+            nullableWarnings.Add(GetId(ErrorCode.WRN_NullabilityMismatchInReturnTypeOnInterceptor));
+            nullableWarnings.Add(GetId(ErrorCode.WRN_NullabilityMismatchInParameterTypeOnInterceptor));
+
+            nullableWarnings.Add(GetId(ErrorCode.WRN_UninitializedNonNullableBackingField));
 
             NullableWarnings = nullableWarnings.ToImmutable();
         }
@@ -131,7 +135,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public static string GetMessage(MessageID code, CultureInfo culture)
         {
             string message = ResourceManager.GetString(code.ToString(), culture);
-            Debug.Assert(!string.IsNullOrEmpty(message), code.ToString());
+            RoslynDebug.Assert(!string.IsNullOrEmpty(message), $"{code}");
             return message;
         }
 
@@ -139,7 +143,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public static string GetMessage(ErrorCode code, CultureInfo culture)
         {
             string message = ResourceManager.GetString(code.ToString(), culture);
-            Debug.Assert(!string.IsNullOrEmpty(message), code.ToString());
+            RoslynDebug.Assert(!string.IsNullOrEmpty(message), $"{code}");
             return message;
         }
 
@@ -202,17 +206,42 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return Diagnostic.InfoAndHiddenWarningLevel;
             }
 
+            // Warning wave warnings (warning level > 4) should be documented in
+            // docs/compilers/CSharp/Warnversion Warning Waves.md
             switch (code)
             {
+                case ErrorCode.WRN_UnassignedInternalRefField:
+                    // Warning level 10 is exclusively for warnings introduced in the compiler
+                    // shipped with dotnet 10 (C# 14) and that can be reported for pre-existing code.
+                    return 10;
+                case ErrorCode.WRN_InterceptsLocationAttributeUnsupportedSignature:
+                    // Warning level 9 is exclusively for warnings introduced in the compiler
+                    // shipped with dotnet 9 (C# 13) and that can be reported for pre-existing code.
+                    return 9;
+                case ErrorCode.WRN_AddressOfInAsync:
+                case ErrorCode.WRN_ByValArraySizeConstRequired:
+                    // Warning level 8 is exclusively for warnings introduced in the compiler
+                    // shipped with dotnet 8 (C# 12) and that can be reported for pre-existing code.
+                    return 8;
+                case ErrorCode.WRN_LowerCaseTypeName:
+                    // Warning level 7 is exclusively for warnings introduced in the compiler
+                    // shipped with dotnet 7 (C# 11) and that can be reported for pre-existing code.
+                    return 7;
+                case ErrorCode.WRN_PartialMethodTypeDifference:
+                    // Warning level 6 is exclusively for warnings introduced in the compiler
+                    // shipped with dotnet 6 (C# 10) and that can be reported for pre-existing code.
+                    return 6;
                 case ErrorCode.WRN_NubExprIsConstBool2:
                 case ErrorCode.WRN_StaticInAsOrIs:
                 case ErrorCode.WRN_PrecedenceInversion:
-                case ErrorCode.WRN_UnassignedThisAutoProperty:
-                case ErrorCode.WRN_UnassignedThis:
+                case ErrorCode.WRN_UseDefViolationPropertyUnsupportedVersion:
+                case ErrorCode.WRN_UseDefViolationFieldUnsupportedVersion:
+                case ErrorCode.WRN_UnassignedThisAutoPropertyUnsupportedVersion:
+                case ErrorCode.WRN_UnassignedThisUnsupportedVersion:
                 case ErrorCode.WRN_ParamUnassigned:
                 case ErrorCode.WRN_UseDefViolationProperty:
                 case ErrorCode.WRN_UseDefViolationField:
-                case ErrorCode.WRN_UseDefViolationThis:
+                case ErrorCode.WRN_UseDefViolationThisUnsupportedVersion:
                 case ErrorCode.WRN_UseDefViolationOut:
                 case ErrorCode.WRN_UseDefViolation:
                 case ErrorCode.WRN_SyncAndAsyncEntryPoints:
@@ -394,7 +423,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case ErrorCode.WRN_AlignmentMagnitude:
                 case ErrorCode.WRN_AttributeIgnoredWhenPublicSigning:
                 case ErrorCode.WRN_TupleLiteralNameMismatch:
-                case ErrorCode.WRN_Experimental:
+                case ErrorCode.WRN_WindowsExperimental:
                 case ErrorCode.WRN_AttributesOnBackingFieldsNotAvailable:
                 case ErrorCode.WRN_TupleBinopLiteralNameMismatch:
                 case ErrorCode.WRN_TypeParameterSameAsOuterMethodTypeParameter:
@@ -472,11 +501,148 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case ErrorCode.WRN_AnalyzerReferencesFramework:
                 case ErrorCode.WRN_UnreadRecordParameter:
                 case ErrorCode.WRN_DoNotCompareFunctionPointers:
+                case ErrorCode.WRN_CallerArgumentExpressionParamForUnconsumedLocation:
+                case ErrorCode.WRN_CallerLineNumberPreferredOverCallerArgumentExpression:
+                case ErrorCode.WRN_CallerFilePathPreferredOverCallerArgumentExpression:
+                case ErrorCode.WRN_CallerMemberNamePreferredOverCallerArgumentExpression:
+                case ErrorCode.WRN_CallerArgumentExpressionAttributeHasInvalidParameterName:
+                case ErrorCode.WRN_CallerArgumentExpressionAttributeSelfReferential:
+                case ErrorCode.WRN_ParameterOccursAfterInterpolatedStringHandlerParameter:
+                case ErrorCode.WRN_InterpolatedStringHandlerArgumentAttributeIgnoredOnLambdaParameters:
+                case ErrorCode.WRN_CompileTimeCheckedOverflow:
+                case ErrorCode.WRN_MethGrpToNonDel:
+                case ErrorCode.WRN_UseDefViolationPropertySupportedVersion:
+                case ErrorCode.WRN_UseDefViolationFieldSupportedVersion:
+                case ErrorCode.WRN_UseDefViolationThisSupportedVersion:
+                case ErrorCode.WRN_UnassignedThisAutoPropertySupportedVersion:
+                case ErrorCode.WRN_UnassignedThisSupportedVersion:
+                case ErrorCode.WRN_ObsoleteMembersShouldNotBeRequired:
+                case ErrorCode.WRN_AnalyzerReferencesNewerCompiler:
+                case ErrorCode.WRN_DuplicateAnalyzerReference:
+                case ErrorCode.WRN_ScopedMismatchInParameterOfTarget:
+                case ErrorCode.WRN_ScopedMismatchInParameterOfOverrideOrImplementation:
+                case ErrorCode.WRN_ManagedAddr:
+                case ErrorCode.WRN_EscapeVariable:
+                case ErrorCode.WRN_EscapeStackAlloc:
+                case ErrorCode.WRN_RefReturnNonreturnableLocal:
+                case ErrorCode.WRN_RefReturnNonreturnableLocal2:
+                case ErrorCode.WRN_RefReturnStructThis:
+                case ErrorCode.WRN_RefAssignNarrower:
+                case ErrorCode.WRN_MismatchedRefEscapeInTernary:
+                case ErrorCode.WRN_RefReturnParameter:
+                case ErrorCode.WRN_RefReturnScopedParameter:
+                case ErrorCode.WRN_RefReturnParameter2:
+                case ErrorCode.WRN_RefReturnScopedParameter2:
+                case ErrorCode.WRN_RefReturnLocal:
+                case ErrorCode.WRN_RefReturnLocal2:
+                case ErrorCode.WRN_RefAssignReturnOnly:
+                case ErrorCode.WRN_RefReturnOnlyParameter:
+                case ErrorCode.WRN_RefReturnOnlyParameter2:
+                case ErrorCode.WRN_RefAssignValEscapeWider:
+                case ErrorCode.WRN_OptionalParamValueMismatch:
+                case ErrorCode.WRN_ParamsArrayInLambdaOnly:
+                case ErrorCode.WRN_CapturedPrimaryConstructorParameterPassedToBase:
+                case ErrorCode.WRN_UnreadPrimaryConstructorParameter:
+                case ErrorCode.WRN_InterceptorSignatureMismatch:
+                case ErrorCode.WRN_NullabilityMismatchInReturnTypeOnInterceptor:
+                case ErrorCode.WRN_NullabilityMismatchInParameterTypeOnInterceptor:
+                case ErrorCode.WRN_CapturedPrimaryConstructorParameterInFieldInitializer:
+                case ErrorCode.WRN_PrimaryConstructorParameterIsShadowedAndNotPassedToBase:
+                case ErrorCode.WRN_InlineArrayIndexerNotUsed:
+                case ErrorCode.WRN_InlineArraySliceNotUsed:
+                case ErrorCode.WRN_InlineArrayConversionOperatorNotUsed:
+                case ErrorCode.WRN_InlineArrayNotSupportedByLanguage:
+                case ErrorCode.WRN_BadArgRef:
+                case ErrorCode.WRN_ArgExpectedRefOrIn:
+                case ErrorCode.WRN_RefReadonlyNotVariable:
+                case ErrorCode.WRN_ArgExpectedIn:
+                case ErrorCode.WRN_OverridingDifferentRefness:
+                case ErrorCode.WRN_HidingDifferentRefness:
+                case ErrorCode.WRN_TargetDifferentRefness:
+                case ErrorCode.WRN_RefReadonlyParameterDefaultValue:
+                case ErrorCode.WRN_UseDefViolationRefField:
+                case ErrorCode.WRN_Experimental:
+                case ErrorCode.WRN_ExperimentalWithMessage:
+                case ErrorCode.WRN_CollectionExpressionRefStructMayAllocate:
+                case ErrorCode.WRN_CollectionExpressionRefStructSpreadMayAllocate:
+                case ErrorCode.WRN_ConvertingLock:
+                case ErrorCode.WRN_PartialPropertySignatureDifference:
+                case ErrorCode.WRN_FieldIsAmbiguous:
+                case ErrorCode.WRN_UninitializedNonNullableBackingField:
+                case ErrorCode.WRN_AccessorDoesNotUseBackingField:
+                case ErrorCode.WRN_UnscopedRefAttributeOldRules:
                     return 1;
                 default:
                     return 0;
             }
             // Note: when adding a warning here, consider whether it should be registered as a nullability warning too
+        }
+
+        /// <summary>
+        /// Returns true if this is a build-only diagnostic that is never reported from
+        /// <see cref="SemanticModel.GetDiagnostics(Text.TextSpan?, System.Threading.CancellationToken)"/> API.
+        /// Diagnostics generated during compilation phases such as lowering, emit, etc.
+        /// are example of build-only diagnostics.
+        /// </summary>
+        internal static bool IsBuildOnlyDiagnostic(ErrorCode code)
+        {
+            switch (code)
+            {
+                case ErrorCode.WRN_ALinkWarn:
+                case ErrorCode.WRN_UnreferencedField:
+                case ErrorCode.WRN_UnreferencedFieldAssg:
+                case ErrorCode.WRN_UnreferencedEvent:
+                case ErrorCode.WRN_UnassignedInternalField:
+                case ErrorCode.ERR_MissingPredefinedMember:
+                case ErrorCode.ERR_PredefinedTypeNotFound:
+                case ErrorCode.ERR_NoEntryPoint:
+                case ErrorCode.WRN_InvalidMainSig:
+                case ErrorCode.ERR_MultipleEntryPoints:
+                case ErrorCode.WRN_MainIgnored:
+                case ErrorCode.ERR_MainClassNotClass:
+                case ErrorCode.WRN_MainCantBeGeneric:
+                case ErrorCode.ERR_NoMainInClass:
+                case ErrorCode.ERR_MainClassNotFound:
+                case ErrorCode.WRN_SyncAndAsyncEntryPoints:
+                case ErrorCode.ERR_BadDelegateConstructor:
+                case ErrorCode.ERR_InsufficientStack:
+                case ErrorCode.ERR_ModuleEmitFailure:
+                case ErrorCode.ERR_TooManyLocals:
+                case ErrorCode.ERR_BindToBogus:
+                case ErrorCode.ERR_ExportedTypeConflictsWithDeclaration:
+                case ErrorCode.ERR_ForwardedTypeConflictsWithDeclaration:
+                case ErrorCode.ERR_ExportedTypesConflict:
+                case ErrorCode.ERR_ForwardedTypeConflictsWithExportedType:
+                case ErrorCode.ERR_ByRefTypeAndAwait:
+                case ErrorCode.ERR_RefReturningCallAndAwait:
+                case ErrorCode.ERR_SpecialByRefInLambda:
+                case ErrorCode.ERR_DynamicRequiredTypesMissing:
+                case ErrorCode.ERR_CannotBeConvertedToUtf8:
+                case ErrorCode.ERR_FileTypeNonUniquePath:
+                case ErrorCode.ERR_InterceptorSignatureMismatch:
+                case ErrorCode.ERR_InterceptorMustHaveMatchingThisParameter:
+                case ErrorCode.ERR_InterceptorMustNotHaveThisParameter:
+                case ErrorCode.ERR_DuplicateInterceptor:
+                case ErrorCode.WRN_InterceptorSignatureMismatch:
+                case ErrorCode.ERR_InterceptorNotAccessible:
+                case ErrorCode.ERR_InterceptorScopedMismatch:
+                case ErrorCode.WRN_NullabilityMismatchInReturnTypeOnInterceptor:
+                case ErrorCode.WRN_NullabilityMismatchInParameterTypeOnInterceptor:
+                case ErrorCode.ERR_InterceptorCannotInterceptNameof:
+                case ErrorCode.ERR_SymbolDefinedInAssembly:
+                case ErrorCode.ERR_InterceptorArityNotCompatible:
+                case ErrorCode.ERR_InterceptorCannotBeGeneric:
+                case ErrorCode.ERR_InterceptableMethodMustBeOrdinary:
+                case ErrorCode.ERR_PossibleAsyncIteratorWithoutYield:
+                case ErrorCode.ERR_PossibleAsyncIteratorWithoutYieldOrAwait:
+                case ErrorCode.ERR_RefLocalAcrossAwait:
+                    // Update src\EditorFeatures\CSharp\LanguageServer\CSharpLspBuildOnlyDiagnostics.cs
+                    // whenever new values are added here.
+                    return true;
+                default:
+                    return false;
+            }
+#pragma warning restore CS8524 // The switch expression does not handle some values of its input type (it is not exhaustive) involving an unnamed enum value.
         }
 
         /// <summary>
@@ -495,7 +661,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return false;
             }
 
-            if (IsWarning(code))
+            if (IsWarning(code) || IsInfo(code) || IsHidden(code))
             {
                 return false;
             }
@@ -510,6 +676,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case ErrorCode.ERR_QueryRangeVariableSameAsTypeParam:
                 case ErrorCode.ERR_DeprecatedCollectionInitAddStr:
                 case ErrorCode.ERR_DeprecatedSymbolStr:
+                case ErrorCode.ERR_MissingPredefinedMember:
+                case ErrorCode.ERR_DefaultValueUsedWithAttributes:
+                case ErrorCode.ERR_ExplicitParamArrayOrCollection:
                     return false;
                 default:
                     return true;

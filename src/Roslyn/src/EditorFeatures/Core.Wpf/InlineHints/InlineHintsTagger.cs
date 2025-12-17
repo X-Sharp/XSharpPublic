@@ -3,37 +3,34 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections.Generic;
-using System.Composition;
-using Microsoft.CodeAnalysis.Editor.Shared.Utilities;
-using Microsoft.CodeAnalysis.InlineHints;
+using Microsoft.CodeAnalysis.Collections;
+using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
+using Microsoft.CodeAnalysis.Editor.Tagging;
+using Microsoft.CodeAnalysis.ErrorReporting;
+using Microsoft.CodeAnalysis.Options;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.Text.Shared.Extensions;
+using Microsoft.CodeAnalysis.Utilities;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Formatting;
 using Microsoft.VisualStudio.Text.Tagging;
+using Roslyn.Utilities;
 
-namespace Microsoft.CodeAnalysis.Editor.InlineHints
+namespace Microsoft.CodeAnalysis.Editor.InlineHints;
+
+internal partial class InlineHintsTaggerProvider
 {
     /// <summary>
-    /// The purpose of this tagger is to convert the <see cref="InlineHintDataTag"/> to the <see
+    /// The purpose of this tagger is to convert the <see cref="InlineHintDataTag{TAdditionalInformation}"/> to the <see
     /// cref="InlineHintsTag"/>, which actually creates the UIElement. It reacts to tags changing and updates the
     /// adornments accordingly.
     /// </summary>
-    internal sealed class InlineHintsTagger : ITagger<IntraTextAdornmentTag>, IDisposable
+    private sealed class InlineHintsTagger : EfficientTagger<IntraTextAdornmentTag>
     {
-        private readonly ITagAggregator<InlineHintDataTag> _tagAggregator;
-
-        /// <summary>
-        /// stores the parameter hint tags in a global location 
-        /// </summary>
-        private readonly List<ITagSpan<IntraTextAdornmentTag>> _cache;
-
-        /// <summary>
-        /// Stores the snapshot associated with the cached tags in <see cref="_cache" /> 
-        /// </summary>
-        private ITextSnapshot? _cacheSnapshot;
+        private readonly EfficientTagger<InlineHintDataTag<CachedAdornmentTagSpan>> _underlyingTagger;
 
         private readonly IClassificationFormatMap _formatMap;
 
@@ -43,120 +40,125 @@ namespace Microsoft.CodeAnalysis.Editor.InlineHints
         private TextFormattingRunProperties? _format;
         private readonly IClassificationType _hintClassification;
 
-        private readonly ForegroundThreadAffinitizedObject _threadAffinitizedObject;
         private readonly InlineHintsTaggerProvider _taggerProvider;
 
-        private readonly ITextBuffer _buffer;
         private readonly IWpfTextView _textView;
-
-        public event EventHandler<SnapshotSpanEventArgs>? TagsChanged;
+        private readonly ITextBuffer _subjectBuffer;
 
         public InlineHintsTagger(
             InlineHintsTaggerProvider taggerProvider,
             IWpfTextView textView,
-            ITextBuffer buffer,
-            ITagAggregator<InlineHintDataTag> tagAggregator)
+            ITextBuffer subjectBuffer,
+            EfficientTagger<InlineHintDataTag<CachedAdornmentTagSpan>> tagger)
         {
-            _cache = new List<ITagSpan<IntraTextAdornmentTag>>();
-
-            _threadAffinitizedObject = new ForegroundThreadAffinitizedObject(taggerProvider.ThreadingContext);
             _taggerProvider = taggerProvider;
 
             _textView = textView;
-            _buffer = buffer;
+            _subjectBuffer = subjectBuffer;
 
-            _tagAggregator = tagAggregator;
+            // When the underlying tagger produced new data tags, inform any clients of us that we have new adornment tags.
+            _underlyingTagger = tagger;
+            _underlyingTagger.TagsChanged += OnTagsChanged;
+
             _formatMap = taggerProvider.ClassificationFormatMapService.GetClassificationFormatMap(textView);
             _hintClassification = taggerProvider.ClassificationTypeRegistryService.GetClassificationType(InlineHintsTag.TagId);
+
             _formatMap.ClassificationFormatMappingChanged += this.OnClassificationFormatMappingChanged;
-            _tagAggregator.TagsChanged += OnTagAggregatorTagsChanged;
+            _taggerProvider.GlobalOptionService.AddOptionChangedHandler(this, OnGlobalOptionChanged);
+        }
+
+        public override void Dispose()
+        {
+            _formatMap.ClassificationFormatMappingChanged -= OnClassificationFormatMappingChanged;
+            _taggerProvider.GlobalOptionService.RemoveOptionChangedHandler(this, OnGlobalOptionChanged);
+            _underlyingTagger.TagsChanged -= OnTagsChanged;
+            _underlyingTagger.Dispose();
         }
 
         private void OnClassificationFormatMappingChanged(object sender, EventArgs e)
         {
-            _threadAffinitizedObject.AssertIsForeground();
+            _taggerProvider.ThreadingContext.ThrowIfNotOnUIThread();
+
+            // When classifications change we need to rebuild the inline tags with updated Font and Color information.
+
             if (_format != null)
             {
                 _format = null;
-                _cache.Clear();
+                OnTagsChanged(this, new SnapshotSpanEventArgs(_subjectBuffer.CurrentSnapshot.GetFullSpan()));
             }
         }
 
-        private void OnTagAggregatorTagsChanged(object sender, TagsChangedEventArgs e)
+        private void OnGlobalOptionChanged(object sender, object target, OptionChangedEventArgs e)
         {
-            _cache.Clear();
-            var spans = e.Span.GetSpans(_buffer);
-            foreach (var span in spans)
-            {
-                TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(span));
-            }
+            // Reclassify everything.
+            if (e.HasOption(option => option.Equals(InlineHintsViewOptionsStorage.ColorHints)))
+                OnTagsChanged(this, new SnapshotSpanEventArgs(_subjectBuffer.CurrentSnapshot.GetFullSpan()));
         }
 
         private TextFormattingRunProperties Format
         {
             get
             {
-                _threadAffinitizedObject.AssertIsForeground();
+                _taggerProvider.ThreadingContext.ThrowIfNotOnUIThread();
                 _format ??= _formatMap.GetTextProperties(_hintClassification);
                 return _format;
             }
         }
 
-        public IEnumerable<ITagSpan<IntraTextAdornmentTag>> GetTags(NormalizedSnapshotSpanCollection spans)
+        public override void AddTags(
+            NormalizedSnapshotSpanCollection spans,
+            SegmentedList<TagSpan<IntraTextAdornmentTag>> adornmentTagSpans)
         {
-            if (spans.Count == 0)
+            try
             {
-                return Array.Empty<ITagSpan<IntraTextAdornmentTag>>();
-            }
+                if (spans.Count == 0)
+                    return;
 
-            var snapshot = spans[0].Snapshot;
-            if (_cache.Count == 0 || snapshot != _cacheSnapshot)
-            {
-                // Calculate UI elements
-                _cache.Clear();
-                _cacheSnapshot = snapshot;
+                // If the snapshot has changed, we can't use any of the cached data, as it is associated with the
+                // original snapshot they were created against.
+                var snapshot = spans[0].Snapshot;
 
                 var document = snapshot.GetOpenDocumentInCurrentContextWithChanges();
-                var classify = document?.Project.Solution.Workspace.Options.GetOption(InlineHintsOptions.ColorHints, document?.Project.Language) ?? false;
+                if (document is null)
+                    return;
 
-                // Calling into the InlineParameterNameHintsDataTaggerProvider which only responds with the current
-                // active view and disregards and requests for tags not in that view
-                var fullSpan = new SnapshotSpan(snapshot, 0, snapshot.Length);
-                var tags = _tagAggregator.GetTags(new NormalizedSnapshotSpanCollection(fullSpan));
-                foreach (var tag in tags)
+                var colorHints = _taggerProvider.EditorOptionsService.GlobalOptions.GetOption(InlineHintsViewOptionsStorage.ColorHints, document.Project.Language);
+
+                using var _1 = SegmentedListPool.GetPooledList<TagSpan<InlineHintDataTag<CachedAdornmentTagSpan>>>(out var dataTagSpans);
+                _underlyingTagger.AddTags(spans, dataTagSpans);
+
+                // Presize so we can add the elements below without continually resizing.
+                adornmentTagSpans.Capacity += dataTagSpans.Count;
+
+                using var _2 = PooledHashSet<int>.GetInstance(out var seenPositions);
+
+                var format = this.Format;
+                foreach (var dataTagSpan in dataTagSpans)
                 {
-                    // Gets the associated span from the snapshot span and creates the IntraTextAdornmentTag from the data
-                    // tags. Only dealing with the dataTagSpans if the count is 1 because we do not see a multi-buffer case
-                    // occuring 
-                    var dataTagSpans = tag.Span.GetSpans(snapshot);
-                    if (dataTagSpans.Count == 1)
-                    {
-                        var dataTagSpan = dataTagSpans[0];
-                        var parameterHintUITag = InlineHintsTag.Create(
-                            tag.Tag.Hint, Format, _textView, dataTagSpan, _taggerProvider, _formatMap, classify);
-
-                        _cache.Add(new TagSpan<IntraTextAdornmentTag>(dataTagSpan, parameterHintUITag));
-                    }
+                    if (seenPositions.Add(dataTagSpan.Span.Start))
+                        adornmentTagSpans.Add(GetOrCreateAdornmentTagsSpan(dataTagSpan, colorHints, format));
                 }
             }
-
-            var selectedSpans = new List<ITagSpan<IntraTextAdornmentTag>>();
-            foreach (var tagSpan in _cache)
+            catch (Exception e) when (FatalError.ReportAndPropagateUnlessCanceled(e, ErrorSeverity.General))
             {
-                if (spans.IntersectsWith(tagSpan.Span))
-                {
-                    selectedSpans.Add(tagSpan);
-                }
+                throw ExceptionUtilities.Unreachable();
             }
-
-            return selectedSpans;
         }
 
-        public void Dispose()
+        private TagSpan<IntraTextAdornmentTag> GetOrCreateAdornmentTagsSpan(
+            TagSpan<InlineHintDataTag<CachedAdornmentTagSpan>> dataTagSpan, bool classify, TextFormattingRunProperties format)
         {
-            _tagAggregator.TagsChanged -= OnTagAggregatorTagsChanged;
-            _tagAggregator.Dispose();
-            _formatMap.ClassificationFormatMappingChanged -= OnClassificationFormatMappingChanged;
+            // If we've never computed the adornment info, or options have changed, then compute and cache the new information.
+            var cachedTagInformation = dataTagSpan.Tag.AdditionalData;
+            if (cachedTagInformation is null || cachedTagInformation.Classified != classify || cachedTagInformation.Format != format)
+            {
+                var adornmentSpan = dataTagSpan.Span;
+                cachedTagInformation = new(classify, format, new TagSpan<IntraTextAdornmentTag>(adornmentSpan, InlineHintsTag.Create(
+                    dataTagSpan.Tag.Hint, format, _textView, adornmentSpan, _taggerProvider, _formatMap, classify)));
+                dataTagSpan.Tag.AdditionalData = cachedTagInformation;
+            }
+
+            return cachedTagInformation.AdornmentTagSpan;
         }
     }
 }

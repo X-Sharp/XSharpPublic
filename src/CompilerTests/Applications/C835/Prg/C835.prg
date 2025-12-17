@@ -14,6 +14,9 @@ I think in older builds, warnings were being reported for such conversions, when
 // Must report errors
 #pragma options("vo4", on)      // signed - unsigned same size
 #pragma options("vo11", on)     // conversions between different sizes and from fractional to integral
+#pragma warnings(9020, off)
+#pragma warnings(9021, off)
+
 FUNCTION Start() AS VOID
 LOCAL n AS INT
 LOCAL d AS DWORD

@@ -5,7 +5,6 @@
 #nullable disable
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Language.NavigateTo.Interfaces;
@@ -17,7 +16,7 @@ namespace Roslyn.Test.EditorUtilities.NavigateTo
     {
         private sealed class Callback : INavigateToCallback
         {
-            private readonly ConcurrentBag<NavigateToItem> _itemsReceived;
+            private readonly List<NavigateToItem> _itemsReceived = [];
 
             private readonly TaskCompletionSource<IEnumerable<NavigateToItem>> _taskCompletionSource =
                 new TaskCompletionSource<IEnumerable<NavigateToItem>>();
@@ -27,11 +26,13 @@ namespace Roslyn.Test.EditorUtilities.NavigateTo
                 Contract.ThrowIfNull(options);
 
                 Options = options;
-                _itemsReceived = new ConcurrentBag<NavigateToItem>();
             }
 
             public void AddItem(NavigateToItem item)
-                => _itemsReceived.Add(item);
+            {
+                lock (_itemsReceived)
+                    _itemsReceived.Add(item);
+            }
 
             public void Done()
                 => _taskCompletionSource.SetResult(_itemsReceived);

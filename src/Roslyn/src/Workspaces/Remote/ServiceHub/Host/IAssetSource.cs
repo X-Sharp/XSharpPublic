@@ -2,22 +2,25 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Collections.Generic;
-using System.Collections.Immutable;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Serialization;
 
-namespace Microsoft.CodeAnalysis.Remote
-{
-    /// <summary>
-    /// Provides assets given their checksums.
-    /// </summary>
-    internal interface IAssetSource
-    {
-        ValueTask<ImmutableArray<(Checksum, object)>> GetAssetsAsync(int scopeId, ISet<Checksum> checksums, ISerializerService serializerService, CancellationToken cancellationToken);
+namespace Microsoft.CodeAnalysis.Remote;
 
-        // TODO: remove (https://github.com/dotnet/roslyn/issues/43477)
-        ValueTask<bool> IsExperimentEnabledAsync(string experimentName, CancellationToken cancellationToken);
-    }
+/// <summary>
+/// Provides assets given their checksums.
+/// </summary>
+internal interface IAssetSource
+{
+    /// <param name="callback">Will be called back once per checksum in <paramref name="checksums"/> in the exact order of that array.</param>
+    ValueTask GetAssetsAsync<T, TArg>(
+        Checksum solutionChecksum,
+        AssetPath assetPath,
+        ReadOnlyMemory<Checksum> checksums,
+        ISerializerService serializerService,
+        Action<Checksum, T, TArg> callback,
+        TArg arg,
+        CancellationToken cancellationToken);
 }

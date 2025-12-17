@@ -122,6 +122,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                             ifdecl.Keyword,
                                             ifdecl.Identifier,
                                             ifdecl.TypeParameterList,
+                                            null, // TODO nvk: parameterList
                                             ifdecl.BaseList,
                                             ifdecl.ConstraintClauses,
                                             ifdecl.OpenBraceToken,
@@ -151,6 +152,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                 strucdecl.Keyword,
                                                 strucdecl.Identifier,
                                                 strucdecl.TypeParameterList,
+                                                null, // TODO nvk: parameterList
                                                 strucdecl.BaseList,
                                                 strucdecl.ConstraintClauses,
                                                 strucdecl.OpenBraceToken,
@@ -192,6 +194,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                             classdecl.Keyword,
                                                             classdecl.Identifier,
                                                             classdecl.TypeParameterList,
+                                                            null, // TODO nvk: parameterList
                                                             classdecl.BaseList,
                                                             classdecl.ConstraintClauses,
                                                             classdecl.OpenBraceToken,
@@ -240,7 +243,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 trans.TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
                                 SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                                 SyntaxFactory.MakeIdentifier(name),
-                                null,
+                                null, // typeParameterList
+                                null, // TODO nvk: parameterList
                                 null,
                                 default,
                                 SyntaxFactory.OpenBraceToken,
@@ -311,7 +315,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var u in tmpUsings)
             {
                 var green = u.Green as UsingDirectiveSyntax;
-                trans.AddUsingWhenMissing(usingslist, green.Name, green.StaticKeyword != null, green.Alias);
+                trans.AddUsingWhenMissing(usingslist, green);
             }
 
             // For each unique name add a property

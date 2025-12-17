@@ -32,7 +32,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             TRY
                 LOCAL buffer AS BYTE[]
                 buffer := _bag:AllocBuffer()
-                oLeaf  := CdxLeafPage{_bag, -1, buffer, SELF:KeyLength}
+                oLeaf  := CdxLeafPage{_bag, MISSING_PAGE, buffer, SELF:KeyLength}
                 oLeaf:InitBlank(SELF)
                 oLeaf:aClear := SELF:aClear
                 oLeaf:Write() // will give it a pagenumber
@@ -56,7 +56,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 LOCAL buffer AS BYTE[]
                 // Allocate new Branch Page
                 buffer  := _bag:AllocBuffer()
-                oBranch := CdxBranchPage{_bag, -1, buffer, SELF:KeyLength}
+                oBranch := CdxBranchPage{_bag, MISSING_PAGE, buffer, SELF:KeyLength}
                 oBranch:InitBlank(SELF)
                 oBranch:Tag    := SELF
                 IF SELF:_inBatch
@@ -181,7 +181,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR pagenoR := oPage:RightPtr
             VAR result := CdxAction.DeleteFromParent(oPage,-1)
             SELF:OrderBag:AddFreePage(oPage)
-            IF pagenoL > 0
+            IF CdxPage.PageIsValid(pagenoL)
                 VAR pageL := SELF:GetPage(pagenoL)
                 IF pageL != NULL
                     pageL:RightPtr := pagenoR
@@ -190,7 +190,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 // if oPageL has no LeftPtr .and. also no RightPtr then the level may be removed ?
                 //Debug.Assert(pageL:HasLeft .OR. pageL:HasRight)
             ENDIF
-            IF pagenoR > 0
+            IF CdxPage.PageIsValid(pagenoR)
                 VAR pageR := SELF:GetPage(pagenoR)
                 pageR:LeftPtr := pagenoL
                 pageR:Write()
@@ -458,8 +458,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // now swap the pages for oNewRoot and oLeft
             SELF:_bag:_PageList:Delete(oNewRoot:PageNo)
             SELF:_bag:_PageList:Delete(oOldRoot:PageNo)
-            LOCAL nNew      AS LONG
-            LOCAL nOldRoot  AS LONG
+            LOCAL nNew      AS DWORD
+            LOCAL nOldRoot  AS DWORD
             nNew      := oNewRoot:PageNo
             nOldRoot  := oOldRoot:PageNo
 
@@ -754,7 +754,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN result
 
 
-        INTERNAL METHOD AddKey(recordNo AS LONG) AS LOGIC
+        INTERNAL METHOD AddKey(recordNo AS DWORD) AS LOGIC
             IF ! SELF:_Custom
                 RETURN FALSE
             ENDIF
@@ -771,7 +771,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Custom := TRUE
             RETURN lOld
 
-        INTERNAL METHOD DeleteKey(recordNo AS LONG) AS LOGIC
+        INTERNAL METHOD DeleteKey(recordNo AS DWORD) AS LOGIC
             IF ! SELF:_Custom
                 RETURN FALSE
             ENDIF
@@ -785,7 +785,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN FALSE
 
-        PRIVATE METHOD _keyUpdate(recordNo AS LONG , lNewRecord AS LOGIC ) AS LOGIC
+        PRIVATE METHOD _keyUpdate(recordNo AS DWORD , lNewRecord AS LOGIC ) AS LOGIC
             TRY
                 IF SELF:Shared
                     SELF:Xlock()

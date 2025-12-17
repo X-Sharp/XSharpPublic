@@ -522,7 +522,7 @@ class DerivedClass : BaseClass
     public override ref int this[int i] { get { return ref field; } }
 }
 ";
-            var comp = CreateCompilationWithMscorlib45(text);
+            var comp = CreateCompilationWithMscorlib461(text);
             var global = comp.GlobalNamespace;
 
             var baseClass = (NamedTypeSymbol)global.GetMembers("BaseClass").Single();
@@ -802,7 +802,7 @@ class Base2<A, B> : Base<A, B>
 {
     A field = default(A);
     public override A Property { set { } }
-    public override ref A RefProperty { get { return ref field; } }
+    public override ref A RefProperty { get { return ref @field; } }
 }
 
 abstract class Base3<T, U> : Base2<T, U>
@@ -815,7 +815,7 @@ class Base4<U, V> : Base3<U, V>
 {
     public override U Property { set { } }
 }";
-            CreateCompilationWithMscorlib45(text).VerifyDiagnostics(
+            CreateCompilationWithMscorlib461(text).VerifyDiagnostics(
                 Diagnostic(ErrorCode.ERR_UnimplementedAbstractMethod, "Base2").WithArguments("Base2<A, B>", "Base<A, B>.Property.get"),
                 Diagnostic(ErrorCode.ERR_UnimplementedAbstractMethod, "Base4").WithArguments("Base4<U, V>", "Base3<U, V>.Method(U, V)"));
         }
@@ -1819,7 +1819,6 @@ public class MainClass
             CreateCompilation(text).VerifyDiagnostics();
         }
 
-
         [WorkItem(539623, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539623")]
         [Fact]
         public void GenericTypeWithDiffTypeParamNotHideBase()
@@ -2025,7 +2024,7 @@ class B2 : B1, I1
 ";
             var comp = CreateCompilation(text);
             comp.VerifyDiagnostics(
-                // (10,16): error CS0736: 'B2' does not implement interface member 'I1.Goo'. 'B2.Goo' cannot implement an interface member because it is static.
+                // (10,16): error CS0736: 'B2' does not implement instance interface member 'I1.Goo'. 'B2.Goo' cannot implement the interface member because it is static.
                 // class B2 : B1, I1
                 Diagnostic(ErrorCode.ERR_CloseUnimplementedInterfaceMemberStatic, "I1").WithArguments("B2", "I1.Goo", "B2.Goo").WithLocation(10, 16));
 
@@ -2064,10 +2063,10 @@ class B3 : I
     public static void M<T>() { }
 }";
             CreateCompilationWithILAndMscorlib40(csharpSource, ilSource).VerifyDiagnostics(
-                // (5,15): error CS0736: 'B2' does not implement interface member 'I.M<T>()'. 'A.M<T>()' cannot implement an interface member because it is static.
+                // (5,15): error CS0736: 'B2' does not implement instance interface member 'I.M<T>()'. 'A.M<T>()' cannot implement the interface member because it is static.
                 // class B2 : A, I
                 Diagnostic(ErrorCode.ERR_CloseUnimplementedInterfaceMemberStatic, "I").WithArguments("B2", "I.M<T>()", "A.M<T>()").WithLocation(5, 15),
-                // (8,12): error CS0736: 'B3' does not implement interface member 'I.M<T>()'. 'B3.M<T>()' cannot implement an interface member because it is static.
+                // (8,12): error CS0736: 'B3' does not implement instance interface member 'I.M<T>()'. 'B3.M<T>()' cannot implement the interface member because it is static.
                 // class B3 : I
                 Diagnostic(ErrorCode.ERR_CloseUnimplementedInterfaceMemberStatic, "I").WithArguments("B3", "I.M<T>()", "B3.M<T>()").WithLocation(8, 12));
         }
@@ -4363,14 +4362,14 @@ class BaseClass
 {
     protected int field;
     public virtual ref readonly int Method1(in BaseClass a) { return ref field; }
-    public virtual ref readonly int Property1 { get { return ref field; } }
+    public virtual ref readonly int Property1 { get { return ref @field; } }
     public virtual ref readonly int this[int a] { get { return ref field; } }
 }
 
 class DerivedClass : BaseClass
 {
     public override ref readonly int Method1(in BaseClass a) { return ref field; }
-    public override ref readonly int Property1 { get { return ref field; } }
+    public override ref readonly int Property1 { get { return ref @field; } }
     public override ref readonly int this[int a] { get { return ref field; } }
 }";
 

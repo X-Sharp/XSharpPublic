@@ -4,16 +4,17 @@
 
 #nullable disable
 
-using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.Shell;
 
-namespace Microsoft.VisualStudio.LanguageServices
+namespace Microsoft.VisualStudio.LanguageServices;
+
+/// <summary>
+/// An interface to be implemented in the SolutionExplorerShim project to register the stuff needed there.
+/// </summary>
+internal interface IAnalyzerNodeSetup
 {
-    /// <summary>
-    /// An interface to be implemented in the SolutionExplorerShim project to register the stuff needed there.
-    /// </summary>
-    internal interface IAnalyzerNodeSetup
-    {
-        void Initialize(IServiceProvider serviceProvider);
-        void Unregister();
-    }
+    Task InitializeAsync(IAsyncServiceProvider serviceProvider, CancellationToken cancellationToken);
+    void Unregister();
 }

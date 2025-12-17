@@ -525,13 +525,13 @@ CLASS RichEdit INHERIT MultiLineEdit
         liRet := GuiWin32.SendMessage(oCtrl:Handle, EM_FINDTEXTEXW, dwFlags, LONGINT(_CAST, @strucFindTextEx))
 
         IF lReturnRange
-            IF liRet >= 0l
+            IF liRet >= 0L
                 RETURN Range{strucFindTextEx:chrgText_Min + 1, strucFindTextEx:chrgText_Max + 1}
             ENDIF
             RETURN Range{0,0}
         ENDIF
 
-        RETURN liRet + 1l
+        RETURN liRet + 1L
 
     /// <include file="Gui.xml" path="doc/RichEdit.SelectedText/*" />
     PROPERTY SelectedText as string GET __RichEdit:SelectedText

@@ -167,6 +167,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
             return IsBetweenTokens(position, namespaceDecl.NamespaceKeyword, namespaceDecl.CloseBraceToken);
         }
 
+        internal static bool IsInNamespaceDeclaration(int position, FileScopedNamespaceDeclarationSyntax namespaceDecl)
+        {
+            Debug.Assert(namespaceDecl != null);
+
+            return position >= namespaceDecl.SpanStart;
+        }
+
         internal static bool IsInConstructorParameterScope(int position, ConstructorDeclarationSyntax constructorDecl)
         {
             Debug.Assert(constructorDecl != null);
@@ -195,7 +202,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
 
             if (methodDecl.TypeParameterList == null)
             {
-                // no type parameters => nothing can be in their scope
+                // no type parameters => they are not in scope
                 return false;
             }
 
@@ -213,11 +220,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
 
             var explicitInterfaceSpecifier = methodDecl.ExplicitInterfaceSpecifier;
             var firstNameToken = explicitInterfaceSpecifier == null ? methodDecl.Identifier : explicitInterfaceSpecifier.GetFirstToken();
-
-            var typeParams = methodDecl.TypeParameterList;
-            var firstPostNameToken = typeParams == null ? methodDecl.ParameterList.OpenParenToken : typeParams.LessThanToken;
+            var firstPostNameToken = methodDecl.TypeParameterList.LessThanToken;
 
             // Scope does not include method name.
+            return !IsBetweenTokens(position, firstNameToken, firstPostNameToken);
+        }
+
+        internal static bool IsInLocalFunctionTypeParameterScope(int position, LocalFunctionStatementSyntax localFunction)
+        {
+            Debug.Assert(localFunction != null);
+
+            if (localFunction.TypeParameterList == null)
+            {
+                // no type parameters => they are not in scope
+                return false;
+            }
+
+            // optimization for a common case - when position is in the ReturnType, we can see type parameters
+            if (localFunction.ReturnType.FullSpan.Contains(position))
+            {
+                return true;
+            }
+
+            // Must be in the local function, but not in an attribute on the method.
+            if (IsInAttributeSpecification(position, localFunction.AttributeLists))
+            {
+                return false;
+            }
+
+            var firstNameToken = localFunction.Identifier;
+            var firstPostNameToken = localFunction.TypeParameterList.LessThanToken;
+
+            // Scope does not include local function name.
             return !IsBetweenTokens(position, firstNameToken, firstPostNameToken);
         }
 
@@ -369,9 +403,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
                 case SyntaxKind.GotoStatement:
                     return ((GotoStatementSyntax)statement).SemicolonToken;
                 case SyntaxKind.IfStatement:
-                    IfStatementSyntax ifStmt = (IfStatementSyntax)statement;
-                    ElseClauseSyntax? elseOpt = ifStmt.Else;
-                    return GetFirstExcludedToken(elseOpt == null ? ifStmt.Statement : elseOpt.Statement);
+                    return GetFirstExcludedIfStatementToken((IfStatementSyntax)statement);
                 case SyntaxKind.LabeledStatement:
                     return GetFirstExcludedToken(((LabeledStatementSyntax)statement).Statement);
                 case SyntaxKind.LockStatement:
@@ -415,6 +447,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
                     return localFunctionStmt.ParameterList.GetLastToken();
                 default:
                     throw ExceptionUtilities.UnexpectedValue(statement.Kind());
+            }
+        }
+
+        private static SyntaxToken GetFirstExcludedIfStatementToken(IfStatementSyntax ifStmt)
+        {
+            while (true)
+            {
+                ElseClauseSyntax? elseOpt = ifStmt.Else;
+                if (elseOpt is null)
+                {
+                    return GetFirstExcludedToken(ifStmt.Statement);
+                }
+                if (elseOpt.Statement is IfStatementSyntax nestedIf)
+                {
+                    ifStmt = nestedIf;
+                }
+                else
+                {
+                    return GetFirstExcludedToken(elseOpt.Statement);
+                }
             }
         }
 

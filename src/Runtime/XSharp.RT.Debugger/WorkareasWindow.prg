@@ -212,8 +212,7 @@ CLASS WorkareasWindow INHERIT System.Windows.Forms.Form
 		oRdd := ((ListViewItem_workarea)SELF:oWorkareasListView:SelectedItems[0]):Rdd
 		SWITCH eMove
 		CASE MovementType.GoTo
-			LOCAL nRecNo AS INT
-			Int32.TryParse(SELF:oRecNoText:Text , OUT nRecNo)
+			UInt32.TryParse(SELF:oRecNoText:Text , OUT VAR nRecNo)
 			oRdd:GoTo(nRecNo)
 		CASE MovementType.GoTop
 			oRdd:GoTop()

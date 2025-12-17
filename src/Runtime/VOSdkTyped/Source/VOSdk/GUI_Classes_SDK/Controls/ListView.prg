@@ -986,7 +986,7 @@ CLASS ListView INHERIT TextControl
             lEnable := TRUE
         ENDIF
 
-        GuiWin32.SendMessage(SELF:Handle(), LVM_SETEXTENDEDLISTVIEWSTYLE, kExStyle, (LONG) IIF(lEnable, kExStyle, 0l))
+        GuiWin32.SendMessage(SELF:Handle(), LVM_SETEXTENDEDLISTVIEWSTYLE, kExStyle, (LONG) IIF(lEnable, kExStyle, 0L))
 
         RETURN SELF
 

@@ -16,14 +16,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     class XSharpTreeTransformationVO : XSharpTreeTransformationRT
     {
         #region Properties
-        protected TypeSyntax WinBoolType =>
-                _options.XSharpRuntime
-                ? GenerateQualifiedName(XSharpQualifiedTypeNames.WinBool)
-                : GenerateQualifiedName(VulcanQualifiedTypeNames.WinBool);
-        protected TypeSyntax WinDateType =>
-             _options.XSharpRuntime
-             ? GenerateQualifiedName(XSharpQualifiedTypeNames.WinDate)
-             : GenerateQualifiedName(VulcanQualifiedTypeNames.WinDate);
+        protected TypeSyntax WinBoolType => GenerateQualifiedName(XSharpQualifiedTypeNames.WinBool);
+        protected TypeSyntax WinDateType => GenerateQualifiedName(XSharpQualifiedTypeNames.WinDate);
         #endregion
         private bool voStructHasDim;
         protected override XSharpTreeTransformationCore CreateWalker(XSharpParser parser)
@@ -73,6 +67,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: null,
+                parameterList: null, //TODO nvk
                 baseList: null,
                 constraintClauses: null,
                 openBraceToken: SyntaxFactory.OpenBraceToken,
@@ -181,6 +176,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: null,
+                parameterList: null, //TODO nvk
                 baseList: null,
                 constraintClauses: null,
                 openBraceToken: SyntaxFactory.OpenBraceToken,

@@ -6,6 +6,7 @@
     <Copyright>XSharp BV. All rights reserved.</Copyright>
     <CopyrightMicrosoft>$(CopyRight)</CopyrightMicrosoft>
     <UseXSharpKey>true</UseXSharpKey>
+    <TargetFrameworks>net472;net9.0</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <DevelopmentDependency>false</DevelopmentDependency>
   </PropertyGroup>
@@ -15,7 +16,7 @@
     <!-- Many of the properties below are used by the microsoft.dotnet.arcade.sdk  to build the nuget package -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
-    <TargetFrameworks Condition=" '$(Configuration)' == 'Release' ">netcoreapp3.1;net472</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(Configuration)' == 'Release' ">net9.0;net472</TargetFrameworks>
     <PackageTags>XSharp;Compiler;Build</PackageTags>
     <IsPackable>true</IsPackable>
     <NuspecPackageId>XSharp.Compiler.Tools</NuspecPackageId>
@@ -37,7 +38,7 @@
     <NoWarn>$(NoWarn);NU5100;NU5128;NU5118</NoWarn>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <_DependsOn Condition="'$(TargetFramework)' == 'net472'">InitializeDesktopCompilerArtifacts</_DependsOn>
-    <_DependsOn Condition="'$(TargetFramework)' == 'netcoreapp3.1'">InitializeCoreClrCompilerArtifacts</_DependsOn>
+    <_DependsOn Condition="'$(TargetFramework)' == 'net9.0'">InitializeCoreClrCompilerArtifacts</_DependsOn>
     <Authors>XSharp</Authors>
     <Company>XSharp BV</Company>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -52,7 +53,7 @@
 
   <ItemGroup>
 
-    <ProjectReference Update="@(ProjectReference)" Targets="Publish" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" SetTargetFramework="TargetFramework=netcoreapp3.1" />
+    <ProjectReference Update="@(ProjectReference)" Targets="Publish" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" Condition="'$(TargetFramework)' == 'net9.0'" SetTargetFramework="TargetFramework=net9.0" />
   </ItemGroup>
 
   <!--This defines the contents of the package
@@ -61,10 +62,10 @@
   <Target Name="_GetFilesToPackage" DependsOnTargets="$(_DependsOn)">
     <ItemGroup>
       <_File Include="@(DesktopCompilerArtifact)" TargetDir="tasks/net472" />
-      <_File Include="@(CoreClrCompilerBuildArtifact)" TargetDir="tasks/netcoreapp3.1" />
-      <_File Include="@(CoreClrCompilerToolsArtifact)" TargetDir="tasks/netcoreapp3.1" />
-      <_File Include="@(CoreClrCompilerBinArtifact)" TargetDir="tasks/netcoreapp3.1/bincore" />
-      <_File Include="@(CoreClrCompilerBinRuntimesArtifact)" TargetDir="tasks/netcoreapp3.1/bincore/runtimes" />
+      <_File Include="@(CoreClrCompilerBuildArtifact)" TargetDir="tasks/net9.0" />
+      <_File Include="@(CoreClrCompilerToolsArtifact)" TargetDir="tasks/net9.0" />
+      <_File Include="@(CoreClrCompilerBinArtifact)" TargetDir="tasks/net9.0/bincore" />
+      <_File Include="@(CoreClrCompilerBinRuntimesArtifact)" TargetDir="tasks/net9.0/bincore/runtimes" />
      
       <_File Include="$(MSBuildProjectDirectory)\build\**\*.*" Condition="'$(TargetFramework)' == 'net472'" TargetDir="build" />
      
@@ -73,7 +74,7 @@
   </Target>
 
   <Import Project="DesktopCompilerArtifacts.targets" Condition="'$(TargetFramework)' == 'net472'" />
-  <Import Project="CoreClrCompilerArtifacts.targets" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+  <Import Project="CoreClrCompilerArtifacts.targets" Condition="'$(TargetFramework)' == 'net9.0'" />
   <ItemGroup>
     <None Include="$(Solutiondir)license.txt">
       <Pack>True</Pack>
@@ -82,6 +83,8 @@
     <None Include="build\XSharp.Compiler.Tools.props" />
     <Compile Remove="**/*assemblyinfo.cs" />
     <None Include="build\XSharp.Compiler.Tools.targets" />
+    <None Include="CoreClrCompilerArtifacts.targets" />
+    <None Include="DesktopCompilerArtifacts.targets" />
     <None Include="readme.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>

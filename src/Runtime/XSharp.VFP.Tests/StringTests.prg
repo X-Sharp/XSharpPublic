@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -14,7 +14,7 @@ USING XUnit
 BEGIN NAMESPACE XSharp.VFP.Tests
 
 	CLASS StringTests
-	
+
 		[Fact, Trait("Category", "String")];
 		METHOD JustFunctionTests() AS VOID
             Assert.Equal("C:", JustDrive("C:\Folder\test.txt") )
@@ -44,12 +44,12 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         Assert.Equal( RAt( "gg" , "eegggege" , 1 ) , 4U)
         Assert.Equal( RAt( "gg" , "eegggege" ,1) , 4U)
         Assert.Equal( RAt( "eeee" , "eeee",1 ) , 1U)
-        Assert.Equal( RAt( "ee" , "eeee" , 1) , 3U) 
-        Assert.Equal( RAt( "ee" , "eeee" , 2) , 2U)  
+        Assert.Equal( RAt( "ee" , "eeee" , 1) , 3U)
+        Assert.Equal( RAt( "ee" , "eeee" , 2) , 2U)
         Assert.Equal( RAt( "ee" , "eeee" , 3) , 1U)
         Assert.Equal( RAt( "ee" , "eeee" , 4) , 0U)
         Assert.Equal( RAt( "ee" , "eeee",1) , 3U)
-        Assert.Equal( RAt( "ee" , "eeaeeaa" ,1) , 4U) 
+        Assert.Equal( RAt( "ee" , "eeaeeaa" ,1) , 4U)
         Assert.Equal( RAt( "ee" , "eeaeeaa" , 2 ) , 1U)
         Assert.Equal( RAt( "e" , "eeee" , 1) , 4U)
         Assert.Equal( RAt( "e" , "eeee" , 2) , 3U)
@@ -63,8 +63,8 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         Assert.Equal( RAt("bb", "abbcabbcbba" , 3  ) , 2U)
         Assert.Equal( RAt("bb", "abbcabbcbba" , 4  ) , 0U)
         Assert.Equal( RAt("bb", "abbcabbcbba" ,1) , 9U )
-        Assert.Equal( RAt("e", "abbcabbcbba"  ,1)  , 0U)  
-        Assert.Equal( RAt("b", "abbcabbcbba" , 5 ) , 3U) 
+        Assert.Equal( RAt("e", "abbcabbcbba"  ,1)  , 0U)
+        Assert.Equal( RAt("b", "abbcabbcbba" , 5 ) , 3U)
         Assert.Equal( RAt("a","abracadabra",1)  ,  11U)
         Assert.Equal( RAt("a","abracadabra",3)  ,  6U)
         Assert.Equal( RAt("a","abracadabra",43)  ,  0U)
@@ -79,7 +79,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 		[Fact, Trait("Category", "String")];
         METHOD ChrTranFunctionTests() AS VOID
         VAR cAllowedCharacters := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-        VAR cExpressionSearched := "123!EB5466677eggtz123%&Y" 
+        VAR cExpressionSearched := "123!EB5466677eggtz123%&Y"
 
         Assert.Equal(ChrTran( cExpressionSearched, ChrTran(cExpressionSearched, cAllowedCharacters, ""), "") , "EBeggtzY")
 
@@ -98,10 +98,10 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         Assert.Equal(ChrTran("","" , "" ) , "" )
         Assert.Equal(ChrTran(NULL,NULL , "" ) , "")
 
-        VAR x := Replicate ( "A", 200000 ) 
+        VAR x := Replicate ( "A", 200000 )
         VAR y := Replicate ( "I", 200000 )
- 
-        VAR g := ChrTran( x ,"A" , "IE" ) 
+
+        VAR g := ChrTran( x ,"A" , "IE" )
 
 		[Fact, Trait("Category", "String")];
 		METHOD AtFuctionTests() AS VOID
@@ -109,12 +109,12 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal(6u , At("bu", "abucabucbba", 2 ) )
             Assert.Equal(2u , At("bu", "abucabucbba", 1 ) )
             Assert.Equal(0u , At("bu", "abucabucbba", 12 ))
-            
+
             Assert.Equal(9u , AtC("B", "abucabucbba", 3 )  )
             Assert.Equal(6u , AtC("Bu", "abucabucbba", 2 ) )
             Assert.Equal(2u , AtC("Bu", "abucabucbba", 1 ) )
             Assert.Equal(0u , AtC("Bu", "abucabucbba", 12 ))
-            
+
             Assert.Equal(0u , At("B", "abucabucbba", 2 ) )
             Assert.Equal(0u , At("Bu", "abucabucbba", 2 ) )
             Assert.Equal(0u , At("Bu", "abucabucbba", 1 ) )
@@ -163,7 +163,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal(14u, At("hj" , "eeagfeehjkhjkhje" ,3 )  )
             Assert.Equal(16u, At("e" , "eeagfeehjkhjkhje" , 5 ) )
             Assert.Equal(8u, At("ee" , "eeeeagfeehjkhjkhje" , 4 ) )
-            
+
             Assert.Equal(1u, AtC ("a" , "AaaA" ) )
             Assert.Equal(2u, AtC ("aa" , "AaaA" , 2 ) )
             Assert.Equal(2u, AtC ("aA" , "AaaA", 2 ) )
@@ -188,6 +188,60 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal("cdefgh",	AllTrim("abcdefghab", 1, "AB", "B"))
             Assert.Equal("cdefgha",	AllTrim("abcdefghab", 1, "B", "AB"))
             Assert.Equal("ef",		AllTrim("abABabCdef", 1, "ab", "CD"))
+
+          [Fact, Trait("Category", "String")];
+          METHOD StrExtractTests() AS VOID
+            // Basic tests
+            Assert.Equal("World", StrExtract("Hello [World]", "[", "]"))
+            Assert.Equal("X#", StrExtract("Hello [World] of X#", "of "))
+            Assert.Equal("", StrExtract("Hello World", "<", ">"))
+
+            // Occurrence tests
+            var cText := "A-B-C-D-E"
+            Assert.Equal("B", StrExtract(cText, "-", "-", 1))
+            Assert.Equal("C", StrExtract(cText, "-", "-", 2))
+            Assert.Equal("D", StrExtract(cText, "-", "-", 3))
+            Assert.Equal("", StrExtract(cText, "-", "-", 4))
+
+            // Case Insensitive (Flag 1 / Bit 0)
+            Assert.Equal("", StrExtract("HELLO WORLD", "hello", "", 1, 0)) // Case Sensitive -> Fail
+            Assert.Equal("WORLD", StrExtract("HELLO WORLD", "hello ", "", 1, 1)) // Case Insensitive -> Success
+
+            // Missing End Delimiter behavior (Flag 2 / Bit 1)
+            // Default: returns empty if end missing
+            Assert.Equal("", StrExtract("Start... but no end", "Start", "End", 1, 0))
+
+            // Flag 2: Returns rest of string
+            Assert.Equal("... but no end", StrExtract("Start... but no end", "Start", "End", 1, 2))
+
+            // Include Delimiters (Flag 4 / Bit 2)
+            Assert.Equal("[World]", StrExtract("Hello [World]", "[", "]", 1, 4))
+
+            // Mixed Flags (Flag 1 + 4 = 5) -> Case Insensitive + Include Delimiters
+            Assert.Equal("<tag>", StrExtract("xml <tag> body", "<TAG", ">", 1, 5))
+
+        END METHOD
+
+        [Fact, Trait("Category", "String")];
+        method DifferenceTests() as void
+            // Exact match (4)
+            Assert.Equal(4, Difference("Smith", "Smith"))
+
+            // Similar (SoundEx collision) -> Smith vs Smyth (3)
+            Assert.Equal(4, Difference("Smith", "Smyth"))
+
+            // Very different
+            Assert.Equal(2, Difference("Apple", "Zebra"))
+
+            // Partial match logic (VFP behavior check)
+            // Robert vs Rupert
+            // R163 vs R163 -> 4
+            Assert.Equal(4, Difference("Robert", "Rupert"))
+
+            // Null/Empty checks
+            Assert.Equal(0, Difference(NULL, "abc"))
+            Assert.Equal(0, Difference("", "abc"))
+        end method
 
 	END CLASS
 

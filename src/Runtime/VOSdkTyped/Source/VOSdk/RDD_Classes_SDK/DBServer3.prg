@@ -375,7 +375,7 @@ partial class DbServer
 
 
     /// <include file="Rdd.xml" path="doc/DbServer.GoTo/*" />
-    method GoTo( nRecordNumber as long) as logic
+    method GoTo( nRecordNumber as DWORD) as logic
         local nCurrentRecord as dword
         local lRetCode := false as logic
         local dwCurrentWorkArea := 0 as dword
@@ -670,7 +670,7 @@ partial class DbServer
     method Locate( cbForBlock, cbWhileBlock, uScope )  as logic clipper
         local uValue as usual
         local cbKey as usual
-        local nNextCount as longint
+        local nNextCount as DWORD
         local lRestOfFile as logic
         local lRetCode := false as logic
         local oError as usual

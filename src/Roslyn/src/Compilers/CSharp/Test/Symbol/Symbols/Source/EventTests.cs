@@ -234,7 +234,6 @@ class C
             CreateCompilation(text).VerifyDiagnostics();
         }
 
-
         [ClrOnlyFact]
         public void EventInvocation()
         {
@@ -852,7 +851,8 @@ class C
         #endregion
 
         #region Error cases
-        [Fact]
+        [ConditionalFact(typeof(NoUsedAssembliesValidation))] // The test hook is blocked by https://github.com/dotnet/roslyn/issues/39979
+        [WorkItem(39979, "https://github.com/dotnet/roslyn/issues/39979")]
         public void VoidEvent()
         {
             var text =
@@ -1332,7 +1332,7 @@ struct S
 
     S(int unused1, int unused2)
     {
-        // CS0171: E not initialized
+        // CS0171: E not initialized before C# 11
         // No error for F
     }
 
@@ -1345,13 +1345,18 @@ struct S
     }
 }
 ";
-            CreateCompilation(text).VerifyDiagnostics(
-                // (11,5): error CS0171: Field 'S.E' must be fully assigned before control is returned to the caller
+            CreateCompilation(text, parseOptions: TestOptions.Regular10).VerifyDiagnostics(
+                // (11,5): error CS0171: Field 'S.E' must be fully assigned before control is returned to the caller. Consider updating to language version '11.0' to auto-default the field.
                 //     S(int unused1, int unused2)
-                Diagnostic(ErrorCode.ERR_UnassignedThis, "S").WithArguments("S.E"),
-                // (21,9): error CS1612: Cannot modify the return value of 'S.This' because it is not a variable
+                Diagnostic(ErrorCode.ERR_UnassignedThisUnsupportedVersion, "S").WithArguments("S.E", "11.0").WithLocation(11, 5),
+                // (22,9): error CS1612: Cannot modify the return value of 'S.This' because it is not a variable
                 //         This.E = null; //CS1612: receiver is not a variable
-                Diagnostic(ErrorCode.ERR_ReturnNotLValue, "This").WithArguments("S.This"));
+                Diagnostic(ErrorCode.ERR_ReturnNotLValue, "This").WithArguments("S.This").WithLocation(22, 9));
+
+            CreateCompilation(text, parseOptions: TestOptions.Regular11).VerifyDiagnostics(
+                // (22,9): error CS1612: Cannot modify the return value of 'S.This' because it is not a variable
+                //         This.E = null; //CS1612: receiver is not a variable
+                Diagnostic(ErrorCode.ERR_ReturnNotLValue, "This").WithArguments("S.This").WithLocation(22, 9));
         }
 
         [WorkItem(546356, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546356")]
@@ -1444,10 +1449,15 @@ class C
     }
 }
 ";
-            CreateCompilation(text).VerifyDiagnostics(
+            var expected = new[] {
                 // (4,25): error CS0065: 'C.E': event property must have both add and remove accessors
                 //     event System.Action E { remove { } }
-                Diagnostic(ErrorCode.ERR_EventNeedsBothAccessors, "E").WithArguments("C.E"));
+                Diagnostic(ErrorCode.ERR_EventNeedsBothAccessors, "E").WithArguments("C.E")
+                };
+
+            CreateCompilation(text).VerifyDiagnostics(expected).VerifyEmitDiagnostics(expected);
+
+            CreateCompilation(text).VerifyEmitDiagnostics(expected);
         }
 
         [WorkItem(542570, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542570")]
@@ -2477,5 +2487,283 @@ class Test
         }
 
         #endregion
+
+        [Fact]
+        public void CompilerLoweringPreserveAttribute_01()
+        {
+            string source1 = @"
+using System;
+using System.Runtime.CompilerServices;
+
+[CompilerLoweringPreserve]
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Event)]
+public class Preserve1Attribute : Attribute { }
+";
+
+            string source2 = @"
+public class Test1
+{
+#pragma warning disable CS0067 // The event 'Test1.E1' is never used
+    [Preserve1]
+    public event System.Action E1;
+}
+";
+            var comp1 = CreateCompilation(
+                [source1, source2, CompilerLoweringPreserveAttributeDefinition],
+                options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All));
+            var verifier = CompileAndVerify(comp1).VerifyDiagnostics();
+
+            verifier.VerifyTypeIL("Test1", @"
+.class public auto ansi beforefieldinit Test1
+    extends [netstandard]System.Object
+{
+    // Fields
+    .field private class [netstandard]System.Action E1
+    .custom instance void [netstandard]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() = (
+        01 00 00 00
+    )
+    .custom instance void [netstandard]System.Diagnostics.DebuggerBrowsableAttribute::.ctor(valuetype [netstandard]System.Diagnostics.DebuggerBrowsableState) = (
+        01 00 00 00 00 00 00 00
+    )
+    // Methods
+    .method public hidebysig specialname 
+        instance void add_E1 (
+            class [netstandard]System.Action 'value'
+        ) cil managed 
+    {
+        .custom instance void [netstandard]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() = (
+            01 00 00 00
+        )
+        // Method begins at RVA 0x206c
+        // Code size 41 (0x29)
+        .maxstack 3
+        .locals init (
+            [0] class [netstandard]System.Action,
+            [1] class [netstandard]System.Action,
+            [2] class [netstandard]System.Action
+        )
+        IL_0000: ldarg.0
+        IL_0001: ldfld class [netstandard]System.Action Test1::E1
+        IL_0006: stloc.0
+        // loop start (head: IL_0007)
+            IL_0007: ldloc.0
+            IL_0008: stloc.1
+            IL_0009: ldloc.1
+            IL_000a: ldarg.1
+            IL_000b: call class [netstandard]System.Delegate [netstandard]System.Delegate::Combine(class [netstandard]System.Delegate, class [netstandard]System.Delegate)
+            IL_0010: castclass [netstandard]System.Action
+            IL_0015: stloc.2
+            IL_0016: ldarg.0
+            IL_0017: ldflda class [netstandard]System.Action Test1::E1
+            IL_001c: ldloc.2
+            IL_001d: ldloc.1
+            IL_001e: call !!0 [netstandard]System.Threading.Interlocked::CompareExchange<class [netstandard]System.Action>(!!0&, !!0, !!0)
+            IL_0023: stloc.0
+            IL_0024: ldloc.0
+            IL_0025: ldloc.1
+            IL_0026: bne.un.s IL_0007
+        // end loop
+        IL_0028: ret
+    } // end of method Test1::add_E1
+    .method public hidebysig specialname 
+        instance void remove_E1 (
+            class [netstandard]System.Action 'value'
+        ) cil managed 
+    {
+        .custom instance void [netstandard]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() = (
+            01 00 00 00
+        )
+        // Method begins at RVA 0x20a4
+        // Code size 41 (0x29)
+        .maxstack 3
+        .locals init (
+            [0] class [netstandard]System.Action,
+            [1] class [netstandard]System.Action,
+            [2] class [netstandard]System.Action
+        )
+        IL_0000: ldarg.0
+        IL_0001: ldfld class [netstandard]System.Action Test1::E1
+        IL_0006: stloc.0
+        // loop start (head: IL_0007)
+            IL_0007: ldloc.0
+            IL_0008: stloc.1
+            IL_0009: ldloc.1
+            IL_000a: ldarg.1
+            IL_000b: call class [netstandard]System.Delegate [netstandard]System.Delegate::Remove(class [netstandard]System.Delegate, class [netstandard]System.Delegate)
+            IL_0010: castclass [netstandard]System.Action
+            IL_0015: stloc.2
+            IL_0016: ldarg.0
+            IL_0017: ldflda class [netstandard]System.Action Test1::E1
+            IL_001c: ldloc.2
+            IL_001d: ldloc.1
+            IL_001e: call !!0 [netstandard]System.Threading.Interlocked::CompareExchange<class [netstandard]System.Action>(!!0&, !!0, !!0)
+            IL_0023: stloc.0
+            IL_0024: ldloc.0
+            IL_0025: ldloc.1
+            IL_0026: bne.un.s IL_0007
+        // end loop
+        IL_0028: ret
+    } // end of method Test1::remove_E1
+    .method public hidebysig specialname rtspecialname 
+        instance void .ctor () cil managed 
+    {
+        // Method begins at RVA 0x20d9
+        // Code size 8 (0x8)
+        .maxstack 8
+        IL_0000: ldarg.0
+        IL_0001: call instance void [netstandard]System.Object::.ctor()
+        IL_0006: nop
+        IL_0007: ret
+    } // end of method Test1::.ctor
+    // Events
+    .event [netstandard]System.Action E1
+    {
+        .custom instance void Preserve1Attribute::.ctor() = (
+            01 00 00 00
+        )
+        .addon instance void Test1::add_E1(class [netstandard]System.Action)
+        .removeon instance void Test1::remove_E1(class [netstandard]System.Action)
+    }
+} // end of class Test1
+".Replace("[netstandard]", ExecutionConditionUtil.IsDesktop ? "[mscorlib]" : "[netstandard]"));
+        }
+
+        [Fact]
+        public void CompilerLoweringPreserveAttribute_02()
+        {
+            string source1 = @"
+using System;
+
+[AttributeUsage(AttributeTargets.Field)]
+public class Preserve1Attribute : Attribute { }
+";
+
+            string source2 = @"
+public class Test1
+{
+#pragma warning disable CS0067 // The event 'Test1.E1' is never used
+    [field: Preserve1]
+    public event System.Action E1;
+}
+";
+            var comp1 = CreateCompilation(
+                [source1, source2],
+                options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All));
+            var verifier = CompileAndVerify(comp1).VerifyDiagnostics();
+
+            verifier.VerifyTypeIL("Test1", @"
+.class public auto ansi beforefieldinit Test1
+    extends [netstandard]System.Object
+{
+    // Fields
+    .field private class [netstandard]System.Action E1
+    .custom instance void [netstandard]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() = (
+        01 00 00 00
+    )
+    .custom instance void [netstandard]System.Diagnostics.DebuggerBrowsableAttribute::.ctor(valuetype [netstandard]System.Diagnostics.DebuggerBrowsableState) = (
+        01 00 00 00 00 00 00 00
+    )
+    .custom instance void Preserve1Attribute::.ctor() = (
+        01 00 00 00
+    )
+    // Methods
+    .method public hidebysig specialname 
+        instance void add_E1 (
+            class [netstandard]System.Action 'value'
+        ) cil managed 
+    {
+        .custom instance void [netstandard]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() = (
+            01 00 00 00
+        )
+        // Method begins at RVA 0x206c
+        // Code size 41 (0x29)
+        .maxstack 3
+        .locals init (
+            [0] class [netstandard]System.Action,
+            [1] class [netstandard]System.Action,
+            [2] class [netstandard]System.Action
+        )
+        IL_0000: ldarg.0
+        IL_0001: ldfld class [netstandard]System.Action Test1::E1
+        IL_0006: stloc.0
+        // loop start (head: IL_0007)
+            IL_0007: ldloc.0
+            IL_0008: stloc.1
+            IL_0009: ldloc.1
+            IL_000a: ldarg.1
+            IL_000b: call class [netstandard]System.Delegate [netstandard]System.Delegate::Combine(class [netstandard]System.Delegate, class [netstandard]System.Delegate)
+            IL_0010: castclass [netstandard]System.Action
+            IL_0015: stloc.2
+            IL_0016: ldarg.0
+            IL_0017: ldflda class [netstandard]System.Action Test1::E1
+            IL_001c: ldloc.2
+            IL_001d: ldloc.1
+            IL_001e: call !!0 [netstandard]System.Threading.Interlocked::CompareExchange<class [netstandard]System.Action>(!!0&, !!0, !!0)
+            IL_0023: stloc.0
+            IL_0024: ldloc.0
+            IL_0025: ldloc.1
+            IL_0026: bne.un.s IL_0007
+        // end loop
+        IL_0028: ret
+    } // end of method Test1::add_E1
+    .method public hidebysig specialname 
+        instance void remove_E1 (
+            class [netstandard]System.Action 'value'
+        ) cil managed 
+    {
+        .custom instance void [netstandard]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() = (
+            01 00 00 00
+        )
+        // Method begins at RVA 0x20a4
+        // Code size 41 (0x29)
+        .maxstack 3
+        .locals init (
+            [0] class [netstandard]System.Action,
+            [1] class [netstandard]System.Action,
+            [2] class [netstandard]System.Action
+        )
+        IL_0000: ldarg.0
+        IL_0001: ldfld class [netstandard]System.Action Test1::E1
+        IL_0006: stloc.0
+        // loop start (head: IL_0007)
+            IL_0007: ldloc.0
+            IL_0008: stloc.1
+            IL_0009: ldloc.1
+            IL_000a: ldarg.1
+            IL_000b: call class [netstandard]System.Delegate [netstandard]System.Delegate::Remove(class [netstandard]System.Delegate, class [netstandard]System.Delegate)
+            IL_0010: castclass [netstandard]System.Action
+            IL_0015: stloc.2
+            IL_0016: ldarg.0
+            IL_0017: ldflda class [netstandard]System.Action Test1::E1
+            IL_001c: ldloc.2
+            IL_001d: ldloc.1
+            IL_001e: call !!0 [netstandard]System.Threading.Interlocked::CompareExchange<class [netstandard]System.Action>(!!0&, !!0, !!0)
+            IL_0023: stloc.0
+            IL_0024: ldloc.0
+            IL_0025: ldloc.1
+            IL_0026: bne.un.s IL_0007
+        // end loop
+        IL_0028: ret
+    } // end of method Test1::remove_E1
+    .method public hidebysig specialname rtspecialname 
+        instance void .ctor () cil managed 
+    {
+        // Method begins at RVA 0x20d9
+        // Code size 8 (0x8)
+        .maxstack 8
+        IL_0000: ldarg.0
+        IL_0001: call instance void [netstandard]System.Object::.ctor()
+        IL_0006: nop
+        IL_0007: ret
+    } // end of method Test1::.ctor
+    // Events
+    .event [netstandard]System.Action E1
+    {
+        .addon instance void Test1::add_E1(class [netstandard]System.Action)
+        .removeon instance void Test1::remove_E1(class [netstandard]System.Action)
+    }
+} // end of class Test1
+".Replace("[netstandard]", ExecutionConditionUtil.IsDesktop ? "[mscorlib]" : "[netstandard]"));
+        }
     }
 }

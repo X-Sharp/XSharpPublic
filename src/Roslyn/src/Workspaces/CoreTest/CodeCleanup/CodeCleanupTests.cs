@@ -25,174 +25,243 @@ namespace Microsoft.CodeAnalysis.UnitTests.CodeCleanup
     [UseExportProvider]
     public class CodeCleanupTests
     {
-#if false
+        #region CSharp Code CodeCleaner Tests
         [Fact]
         public void DefaultCSharpCodeCleanups()
         {
-            var codeCleanups = CodeCleaner.GetDefaultProviders(LanguageNames.CSharp);
-            Assert.NotNull(codeCleanups);
+            var document = CreateDocument("class C { }", LanguageNames.CSharp);
+            var codeCleanups = CodeCleaner.GetDefaultProviders(document);
             Assert.NotEmpty(codeCleanups);
         }
+
+        [Fact]
+        public async Task CodeCleanersCSharp_NoSpans()
+        {
+            var document = CreateDocument("class C { }", LanguageNames.CSharp);
+            var cleanDocument = await CodeCleaner.CleanupAsync(document, [], await document.GetCodeCleanupOptionsAsync(CancellationToken.None));
+
+            Assert.Equal(document, cleanDocument);
+        }
+
+        [Fact]
+        public async Task CodeCleanersCSharp_Document()
+        {
+            var document = CreateDocument("class C { }", LanguageNames.CSharp);
+            var cleanDocument = await CodeCleaner.CleanupAsync(document, await document.GetCodeCleanupOptionsAsync(CancellationToken.None));
+
+            Assert.Equal(document, cleanDocument);
+        }
+
+        [Fact]
+        public async Task CodeCleanersCSharp_Span()
+        {
+            var document = CreateDocument("class C { }", LanguageNames.CSharp);
+            var root = await document.GetSyntaxRootAsync();
+            var cleanDocument = await CodeCleaner.CleanupAsync(document, root.FullSpan, await document.GetCodeCleanupOptionsAsync(CancellationToken.None));
+
+            Assert.Equal(document, cleanDocument);
+        }
+
+        [Fact]
+        public async Task CodeCleanersCSharp_Spans()
+        {
+            var document = CreateDocument("class C { }", LanguageNames.CSharp);
+            var root = await document.GetSyntaxRootAsync();
+            var cleanDocument = await CodeCleaner.CleanupAsync(document, [root.FullSpan], await document.GetCodeCleanupOptionsAsync(CancellationToken.None));
+
+            Assert.Equal(document, cleanDocument);
+        }
+
+        #endregion
+
+        #region Visual Basic Code CodeCleaner Tests
 
         [Fact]
         public void DefaultVisualBasicCodeCleanups()
         {
-            var codeCleanups = CodeCleaner.GetDefaultProviders(LanguageNames.VisualBasic);
-            Assert.NotNull(codeCleanups);
+            var document = CreateDocument(@"Class C
+End Class", LanguageNames.VisualBasic);
+            var codeCleanups = CodeCleaner.GetDefaultProviders(document);
             Assert.NotEmpty(codeCleanups);
         }
-#endif
 
         [Fact]
-        public async Task CodeCleaners_NoSpans()
+        public async Task CodeCleanersVisualBasic_NoSpans()
         {
-            var document = CreateDocument("class C { }", LanguageNames.CSharp);
-            var cleanDocument = await CodeCleaner.CleanupAsync(document, ImmutableArray<TextSpan>.Empty);
+            var document = CreateDocument(@"Class C
+End Class", LanguageNames.VisualBasic);
+            var cleanDocument = await CodeCleaner.CleanupAsync(document, [], await document.GetCodeCleanupOptionsAsync(CancellationToken.None));
 
             Assert.Equal(document, cleanDocument);
         }
 
         [Fact]
-        public async Task CodeCleaners_Document()
+        public async Task CodeCleanersVisualBasic_Document()
         {
-            var document = CreateDocument("class C { }", LanguageNames.CSharp);
-            var cleanDocument = await CodeCleaner.CleanupAsync(document);
+            var document = CreateDocument(@"Class C
+End Class", LanguageNames.VisualBasic);
+            var cleanDocument = await CodeCleaner.CleanupAsync(document, await document.GetCodeCleanupOptionsAsync(CancellationToken.None));
 
             Assert.Equal(document, cleanDocument);
         }
 
         [Fact]
-        public async Task CodeCleaners_Span()
+        public async Task CodeCleanersVisualBasic_Span()
         {
-            var document = CreateDocument("class C { }", LanguageNames.CSharp);
-            var cleanDocument = await CodeCleaner.CleanupAsync(document, (await document.GetSyntaxRootAsync()).FullSpan);
+            var document = CreateDocument(@"Class C
+End Class", LanguageNames.VisualBasic);
+            var root = await document.GetSyntaxRootAsync();
+            var cleanDocument = await CodeCleaner.CleanupAsync(document, root.FullSpan, await document.GetCodeCleanupOptionsAsync(CancellationToken.None));
 
             Assert.Equal(document, cleanDocument);
         }
 
         [Fact]
-        public async Task CodeCleaners_Spans()
+        public async Task CodeCleanersVisualBasic_Spans()
         {
-            var document = CreateDocument("class C { }", LanguageNames.CSharp);
-            var cleanDocument = await CodeCleaner.CleanupAsync(document, ImmutableArray.Create(
-                (await document.GetSyntaxRootAsync()).FullSpan));
+            var document = CreateDocument(@"Class C
+End Class", LanguageNames.VisualBasic);
+            var root = await document.GetSyntaxRootAsync();
+            var cleanDocument = await CodeCleaner.CleanupAsync(document, [root.FullSpan], await document.GetCodeCleanupOptionsAsync(CancellationToken.None));
 
             Assert.Equal(document, cleanDocument);
         }
 
         [Fact]
-        public async Task CodeCleaners_Annotation()
+        public async Task CodeCleanersCSharp_Annotation()
         {
             var document = CreateDocument("class C { }", LanguageNames.CSharp);
             var annotation = new SyntaxAnnotation();
             document = document.WithSyntaxRoot((await document.GetSyntaxRootAsync()).WithAdditionalAnnotations(annotation));
 
-            var cleanDocument = await CodeCleaner.CleanupAsync(document, annotation);
+            var cleanDocument = await CodeCleaner.CleanupAsync(document, annotation, await document.GetCodeCleanupOptionsAsync(CancellationToken.None));
 
             Assert.Equal(document, cleanDocument);
         }
 
         [Fact]
-        public void EntireRange()
+        public async Task CodeCleanersVisualBasic_Annotation()
+        {
+            var document = CreateDocument(@"Class C
+End Class", LanguageNames.VisualBasic);
+            var annotation = new SyntaxAnnotation();
+            document = document.WithSyntaxRoot((await document.GetSyntaxRootAsync()).WithAdditionalAnnotations(annotation));
+
+            var cleanDocument = await CodeCleaner.CleanupAsync(document, annotation, await document.GetCodeCleanupOptionsAsync(CancellationToken.None));
+
+            Assert.Equal(document, cleanDocument);
+        }
+
+        #endregion
+
+        [Fact]
+        public Task EntireRange()
             => VerifyRange("{|b:{|r:class C {}|}|}");
 
         [Fact]
-        public void EntireRange_Merge()
+        public Task EntireRange_Merge()
             => VerifyRange("{|r:class {|b:C { }|} class {|b: B { } |}|}");
 
         [Fact]
-        public void EntireRange_EndOfFile()
+        public Task EntireRange_EndOfFile()
             => VerifyRange("{|r:class {|b:C { }|} class {|b: B { } |} |}");
 
         [Fact]
-        public void EntireRangeWithTransformation_RemoveClass()
+        public async Task EntireRangeWithTransformation_RemoveClass()
         {
-            var expectedResult = (IEnumerable<TextSpan>)null;
-            var transformer = new SimpleCodeCleanupProvider("TransformerCleanup", async (doc, spans, cancellationToken) =>
+            var transformer = new MockCodeCleanupProvider()
             {
-                var root = await doc.GetSyntaxRootAsync().ConfigureAwait(false);
-                root = root.RemoveCSharpMember(0);
+                CleanupDocumentAsyncImpl = async (provider, document, spans, options, cancellationToken) =>
+                {
+                    var root = await document.GetSyntaxRootAsync(cancellationToken);
+                    root = root.RemoveCSharpMember(0);
 
-                expectedResult = SpecializedCollections.SingletonEnumerable(root.FullSpan);
+                    provider.ExpectedResult = [root.FullSpan];
 
-                return doc.WithSyntaxRoot(root);
-            });
+                    return document.WithSyntaxRoot(root);
+                }
+            };
 
-            VerifyRange("{|b:class C {}|}", transformer, ref expectedResult);
+            await VerifyRange("{|b:class C {}|}", transformer);
         }
 
         [Fact]
-        public void EntireRangeWithTransformation_AddMember()
+        public async Task EntireRangeWithTransformation_AddMember()
         {
-            var expectedResult = (IEnumerable<TextSpan>)null;
-            var transformer = new SimpleCodeCleanupProvider("TransformerCleanup", async (doc, spans, cancellationToken) =>
+            var transformer = new MockCodeCleanupProvider()
             {
-                var root = await doc.GetSyntaxRootAsync().ConfigureAwait(false);
-                var @class = root.GetMember(0);
-                var classWithMember = @class.AddCSharpMember(CreateCSharpMethod(), 0);
-                root = root.ReplaceNode(@class, classWithMember);
+                CleanupDocumentAsyncImpl = async (provider, document, spans, options, cancellationToken) =>
+                {
+                    var root = await document.GetSyntaxRootAsync(cancellationToken);
+                    var @class = root.GetMember(0);
+                    var classWithMember = @class.AddCSharpMember(CreateCSharpMethod(), 0);
+                    root = root.ReplaceNode(@class, classWithMember);
 
-                expectedResult = SpecializedCollections.SingletonEnumerable(root.FullSpan);
+                    provider.ExpectedResult = [root.FullSpan];
 
-                return doc.WithSyntaxRoot(root);
-            });
+                    return document.WithSyntaxRoot(root);
+                }
+            };
 
-            VerifyRange("{|b:class C {}|}", transformer, ref expectedResult);
+            await VerifyRange("{|b:class C {}|}", transformer);
         }
 
         [Fact]
-        public void RangeWithTransformation_AddMember()
+        public async Task RangeWithTransformation_AddMember()
         {
-            var expectedResult = (IEnumerable<TextSpan>)null;
-            var transformer = new SimpleCodeCleanupProvider("TransformerCleanup", async (doc, spans, cancellationToken) =>
+            var transformer = new MockCodeCleanupProvider()
             {
-                var root = await doc.GetSyntaxRootAsync().ConfigureAwait(false);
-                var @class = root.GetMember(0).GetMember(0);
-                var classWithMember = @class.AddCSharpMember(CreateCSharpMethod(), 0);
-                root = root.ReplaceNode(@class, classWithMember);
+                CleanupDocumentAsyncImpl = async (provider, document, spans, options, cancellationToken) =>
+                {
+                    var root = await document.GetSyntaxRootAsync(cancellationToken);
+                    var @class = root.GetMember(0).GetMember(0);
+                    var classWithMember = @class.AddCSharpMember(CreateCSharpMethod(), 0);
+                    root = root.ReplaceNode(@class, classWithMember);
 
-                expectedResult = SpecializedCollections.SingletonEnumerable(root.GetMember(0).GetMember(0).GetCodeCleanupSpan());
+                    provider.ExpectedResult = [root.GetMember(0).GetMember(0).GetCodeCleanupSpan()];
 
-                return doc.WithSyntaxRoot(root);
-            });
+                    return document.WithSyntaxRoot(root);
+                }
+            };
 
-            VerifyRange("namespace N { {|b:class C {}|} }", transformer, ref expectedResult);
+            await VerifyRange("namespace N { {|b:class C {}|} }", transformer);
         }
 
         [Fact]
-        public void RangeWithTransformation_RemoveMember()
+        public async Task RangeWithTransformation_RemoveMember()
         {
-            var expectedResult = (IEnumerable<TextSpan>)null;
-            var transformer = new SimpleCodeCleanupProvider("TransformerCleanup", async (doc, spans, cancellationToken) =>
+            var transformer = new MockCodeCleanupProvider()
             {
-                var root = await doc.GetSyntaxRootAsync().ConfigureAwait(false);
-                var @class = root.GetMember(0).GetMember(0);
-                var classWithMember = @class.RemoveCSharpMember(0);
-                root = root.ReplaceNode(@class, classWithMember);
+                CleanupDocumentAsyncImpl = async (provider, document, spans, options, cancellationToken) =>
+                {
+                    var root = await document.GetSyntaxRootAsync(cancellationToken);
+                    var @class = root.GetMember(0).GetMember(0);
+                    var classWithMember = @class.RemoveCSharpMember(0);
+                    root = root.ReplaceNode(@class, classWithMember);
 
-                expectedResult = SpecializedCollections.SingletonEnumerable(root.GetMember(0).GetMember(0).GetCodeCleanupSpan());
+                    provider.ExpectedResult = [root.GetMember(0).GetMember(0).GetCodeCleanupSpan()];
 
-                return doc.WithSyntaxRoot(root);
-            });
+                    return document.WithSyntaxRoot(root);
+                }
+            };
 
-            VerifyRange("namespace N { {|b:class C { void Method() { } }|} }", transformer, ref expectedResult);
+            await VerifyRange("namespace N { {|b:class C { void Method() { } }|} }", transformer);
         }
 
         [Fact]
-        public void MultipleRange_Overlapped()
+        public Task MultipleRange_Overlapped()
             => VerifyRange("namespace N {|r:{ {|b:class C { {|b:void Method() { }|} }|} }|}");
 
         [Fact]
-        public void MultipleRange_Adjacent()
+        public Task MultipleRange_Adjacent()
             => VerifyRange("namespace N {|r:{ {|b:class C { |}{|b:void Method() { } }|} }|}");
 
         [Fact]
-        public void MultipleRanges()
+        public Task MultipleRanges()
             => VerifyRange("namespace N { class C {|r:{ {|b:void Method() { }|} }|} class C2 {|r:{ {|b:void Method() { }|} }|} }");
 
-        [Fact]
-        [WorkItem(12848, "DevDiv_Projects/Roslyn")]
-        public void DontCrash_VB()
+        [Fact, WorkItem(12848, "DevDiv_Projects/Roslyn")]
+        public async Task DoNotCrash_VB()
         {
             var code = @"#If DEBUG OrElse TRACE Then
 Imports System.Diagnostics
@@ -208,12 +277,11 @@ Imports System.Diagnostics
 #End Region 
 #End Region";
 
-            VerifyRange(code, LanguageNames.VisualBasic);
+            await VerifyRange(code, LanguageNames.VisualBasic);
         }
 
-        [Fact]
-        [WorkItem(774295, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/774295")]
-        public async Task DontCrash_VB_2()
+        [Fact, WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/774295")]
+        public async Task DoNotCrash_VB_2()
         {
             var code = @"
 Public Class Class1
@@ -246,13 +314,12 @@ End Class
             Assert.NotNull(newSemanticModel);
             Assert.True(newSemanticModel.IsSpeculativeSemanticModel);
 
-            var cleanDocument = await CodeCleaner.CleanupAsync(document);
+            var cleanDocument = await CodeCleaner.CleanupAsync(document, await document.GetCodeCleanupOptionsAsync(CancellationToken.None));
             Assert.Equal(document, cleanDocument);
         }
 
-        [Fact]
-        [WorkItem(547075, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/547075")]
-        public void TestCodeCleanupWithinNonStructuredTrivia()
+        [Fact, WorkItem("http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/547075")]
+        public async Task TestCodeCleanupWithinNonStructuredTrivia()
         {
             var code = @"
 #Const ccConst = 0
@@ -268,67 +335,75 @@ Module Program
     End Sub
 End Module";
 
-            VerifyRange(code, LanguageNames.VisualBasic);
+            await VerifyRange(code, LanguageNames.VisualBasic);
         }
 
         [Fact]
-        public void RangeWithTransformation_OutsideOfRange()
+        public async Task RangeWithTransformation_OutsideOfRange()
         {
-            var expectedResult = (IEnumerable<TextSpan>)null;
-            var transformer = new SimpleCodeCleanupProvider("TransformerCleanup", async (doc, spans, cancellationToken) =>
+            var transformer = new MockCodeCleanupProvider()
             {
-                var root = await doc.GetSyntaxRootAsync().ConfigureAwait(false);
-                var member = root.GetMember(0).GetMember(0).GetMember(0);
-                var previousToken = member.GetFirstToken().GetPreviousToken().GetPreviousToken();
-                var nextToken = member.GetLastToken().GetNextToken().GetNextToken();
+                CleanupDocumentAsyncImpl = async (provider, document, spans, options, cancellationToken) =>
+                {
+                    var root = await document.GetSyntaxRootAsync(cancellationToken);
+                    var member = root.GetMember(0).GetMember(0).GetMember(0);
+                    var previousToken = member.GetFirstToken().GetPreviousToken().GetPreviousToken();
+                    var nextToken = member.GetLastToken().GetNextToken().GetNextToken();
 
-                root = root.ReplaceToken(previousToken, CSharp.SyntaxFactory.Identifier(previousToken.LeadingTrivia, previousToken.ValueText, previousToken.TrailingTrivia));
-                root = root.ReplaceToken(nextToken, CSharp.SyntaxFactory.Token(nextToken.LeadingTrivia, CSharp.CSharpExtensions.Kind(nextToken), nextToken.TrailingTrivia));
+                    root = root.ReplaceToken(previousToken, CSharp.SyntaxFactory.Identifier(previousToken.LeadingTrivia, previousToken.ValueText, previousToken.TrailingTrivia));
+                    root = root.ReplaceToken(nextToken, CSharp.SyntaxFactory.Token(nextToken.LeadingTrivia, CSharp.CSharpExtensions.Kind(nextToken), nextToken.TrailingTrivia));
 
-                expectedResult = SpecializedCollections.EmptyEnumerable<TextSpan>();
+                    provider.ExpectedResult = [];
 
-                return doc.WithSyntaxRoot(root);
-            });
+                    return document.WithSyntaxRoot(root);
+                }
+            };
 
-            VerifyRange("namespace N { class C { {|b:void Method() { }|} } }", transformer, ref expectedResult);
+            await VerifyRange("namespace N { class C { {|b:void Method() { }|} } }", transformer);
         }
 
         public static CSharp.Syntax.MethodDeclarationSyntax CreateCSharpMethod(string returnType = "void", string methodName = "Method")
             => CSharp.SyntaxFactory.MethodDeclaration(CSharp.SyntaxFactory.ParseTypeName(returnType), CSharp.SyntaxFactory.Identifier(methodName));
 
-        private static void VerifyRange(string codeWithMarker, string language = LanguageNames.CSharp)
+        private static async Task VerifyRange(string codeWithMarker, string language = LanguageNames.CSharp)
         {
             MarkupTestFile.GetSpans(codeWithMarker,
                 out var codeWithoutMarker, out IDictionary<string, ImmutableArray<TextSpan>> namedSpans);
 
-            var expectedResult = namedSpans.ContainsKey("r") ? namedSpans["r"] as IEnumerable<TextSpan> : SpecializedCollections.EmptyEnumerable<TextSpan>();
+            var expectedResult = namedSpans.TryGetValue("r", out var spans) ? spans : SpecializedCollections.EmptyEnumerable<TextSpan>();
 
-            VerifyRange(codeWithoutMarker, ImmutableArray<ICodeCleanupProvider>.Empty, namedSpans["b"], ref expectedResult, language);
+            var transformer = new MockCodeCleanupProvider { ExpectedResult = expectedResult };
+
+            await VerifyRange(codeWithoutMarker, [], namedSpans["b"], transformer, language);
         }
 
-        private static void VerifyRange(string codeWithMarker, ICodeCleanupProvider transformer, ref IEnumerable<TextSpan> expectedResult, string language = LanguageNames.CSharp)
+        private static async Task VerifyRange(string codeWithMarker, MockCodeCleanupProvider transformer, string language = LanguageNames.CSharp)
         {
             MarkupTestFile.GetSpans(codeWithMarker,
                 out var codeWithoutMarker, out IDictionary<string, ImmutableArray<TextSpan>> namedSpans);
 
-            VerifyRange(codeWithoutMarker, ImmutableArray.Create(transformer), namedSpans["b"], ref expectedResult, language);
+            await VerifyRange(codeWithoutMarker, [transformer], namedSpans["b"], transformer, language);
         }
 
-        private static void VerifyRange(string code, ImmutableArray<ICodeCleanupProvider> codeCleanups, ImmutableArray<TextSpan> spans, ref IEnumerable<TextSpan> expectedResult, string language)
+        private static async Task VerifyRange(string code, ImmutableArray<ICodeCleanupProvider> codeCleanups, ImmutableArray<TextSpan> spans, MockCodeCleanupProvider transformer, string language)
         {
-            var result = (IEnumerable<TextSpan>)null;
-            var spanCodeCleanup = new SimpleCodeCleanupProvider("TestCodeCleanup", (d, s, c) =>
+            var spanCodeCleanup = new MockCodeCleanupProvider()
             {
-                result = s;
-                return Task.FromResult(d);
-            });
+                CleanupDocumentAsyncImpl = (provider, document, spans, options, cancellationToken) =>
+                {
+                    provider.ExpectedResult = spans;
+                    return Task.FromResult(document);
+                }
+            };
 
             var document = CreateDocument(code, language);
 
-            CodeCleaner.CleanupAsync(document, spans, codeCleanups.Concat(spanCodeCleanup)).Wait();
+            await CodeCleaner.CleanupAsync(document, spans,
+                await document.GetCodeCleanupOptionsAsync(CancellationToken.None),
+                codeCleanups.Concat(spanCodeCleanup));
 
-            var sortedSpans = result.ToList();
-            var expectedSpans = expectedResult.ToList();
+            var sortedSpans = spanCodeCleanup.ExpectedResult.ToList();
+            var expectedSpans = transformer.ExpectedResult.ToList();
 
             sortedSpans.Sort();
             expectedSpans.Sort();

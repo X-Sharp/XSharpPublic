@@ -74,7 +74,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("abc"  , u:Param12)
 			Assert.Equal(NULL  , u:Param22)
 
-
 		[Fact, Trait("Category", "OOP")];
 		METHOD MetadataTests() AS VOID
 			LOCAL oObject AS OBJECT
@@ -916,7 +915,7 @@ CLASS NewTestClass3
 	PROPERTY Param21 AS INT AUTO
 	PROPERTY Param12 AS STRING AUTO
 	PROPERTY Param22 AS OBJECT AUTO
-	
+
     CONSTRUCTOR(p1 AS OBJECT, p2 AS INT)
     	SELF:Param11 := p1
     	SELF:Param21 := p2

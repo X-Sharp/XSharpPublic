@@ -12,7 +12,7 @@ Imports Microsoft.CodeAnalysis.Editing
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.RemoveSharedFromModuleMembers
-    <ExportCodeFixProvider(LanguageNames.VisualBasic, Name:=NameOf(VisualBasicRemoveSharedFromModuleMembersCodeFixProvider)), [Shared]>
+    <ExportCodeFixProvider(LanguageNames.VisualBasic, Name:=PredefinedCodeFixProviderNames.RemoveSharedFromModuleMembers), [Shared]>
     Friend NotInheritable Class VisualBasicRemoveSharedFromModuleMembersCodeFixProvider
         Inherits SyntaxEditorBasedCodeFixProvider
 
@@ -36,8 +36,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.RemoveSharedFromModuleMembers
         Public Overrides ReadOnly Property FixableDiagnosticIds As ImmutableArray(Of String) = ImmutableArray.Create(
             BC30433, BC30434, BC30503, BC30593)
 
-        Friend Overrides ReadOnly Property CodeFixCategory As CodeFixCategory = CodeFixCategory.Compile
-
         Public Overrides Function RegisterCodeFixesAsync(context As CodeFixContext) As Task
             For Each diagnostic In context.Diagnostics
                 Dim tokenToRemove = diagnostic.Location.FindToken(context.CancellationToken)
@@ -51,7 +49,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.RemoveSharedFromModuleMembers
                 End If
 
                 context.RegisterCodeFix(
-                    New MyCodeAction(Function(ct) FixAsync(context.Document, diagnostic, context.CancellationToken)),
+                    CodeAction.Create(
+                        VBFeaturesResources.Remove_shared_keyword_from_module_member,
+                        GetDocumentUpdater(context, diagnostic),
+                        NameOf(VBFeaturesResources.Remove_shared_keyword_from_module_member)),
                     diagnostic)
             Next
 
@@ -64,6 +65,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.RemoveSharedFromModuleMembers
                 Dim newNode = GetReplacement(document, node)
                 editor.ReplaceNode(node, newNode)
             Next
+
             Return Task.CompletedTask
         End Function
 
@@ -71,13 +73,5 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.RemoveSharedFromModuleMembers
             Dim generator = SyntaxGenerator.GetGenerator(document)
             Return generator.WithModifiers(node, generator.GetModifiers(node).WithIsStatic(False))
         End Function
-
-        Private Class MyCodeAction
-            Inherits CodeAction.DocumentChangeAction
-
-            Public Sub New(createChangedDocument As Func(Of CancellationToken, Task(Of Document)))
-                MyBase.New(VBFeaturesResources.Remove_shared_keyword_from_module_member, createChangedDocument, VBFeaturesResources.Remove_shared_keyword_from_module_member)
-            End Sub
-        End Class
     End Class
 End Namespace

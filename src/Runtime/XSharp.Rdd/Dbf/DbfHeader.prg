@@ -80,8 +80,8 @@ PROPERTY Day		AS BYTE			;
     SET isHot |= Day != VALUE, Buffer[OFFSET_DAY] := VALUE
 
 /// <summary>Number of records in the table. (Least significant byte first.)</summary>
-PROPERTY RecCount	AS LONG			;
-    GET BitConverter.ToInt32(Buffer, OFFSET_RECCOUNT) ;
+PROPERTY RecCount	AS DWORD			;
+    GET BitConverter.ToUInt32(Buffer, OFFSET_RECCOUNT) ;
     SET isHot |= RecCount != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECCOUNT, SIZEOF(LONG))
 
 /// <summary>Number of bytes in the header. (Least significant byte first.)</summary>

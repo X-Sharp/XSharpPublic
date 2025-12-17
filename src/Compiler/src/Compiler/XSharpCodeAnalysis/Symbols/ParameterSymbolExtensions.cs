@@ -30,7 +30,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             return GetDefaultParamAttribute(param) != null;
         }
-        public static bool ValidateDefaultParameter(this ParameterSymbol param, DiagnosticBag diagnostics)
+        public static bool ValidateDefaultParameter(this ParameterSymbol param, BindingDiagnosticBag diagnostics)
         {
             // this will generate an error for parameters declared as
             // xx := NULL AS FLOAT
@@ -62,7 +62,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return true;
         }
-        public static BoundExpression GetVODefaultParameter(this ParameterSymbol param, SyntaxNode syntax, CSharpCompilation compilation, DiagnosticBag diagnostics)
+        public static BoundExpression GetVODefaultParameter(this ParameterSymbol param, SyntaxNode syntax, CSharpCompilation compilation, BindingDiagnosticBag diagnostics)
         {
             if (!param.ValidateDefaultParameter(diagnostics))
             {
@@ -97,8 +97,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         if (arg.Type.SpecialType == SpecialType.None)
                         {
                             // Enum type? can be casted to Int32
-                            constant = ConstantValue.Create(arg.Value, SpecialType.System_Int32);
-                            var netType = compilation.GetSpecialType(SpecialType.System_Int32);
+                            var specialType = SpecialType.System_Int32;
+                            if (param.Type.IsEnumType())
+                            {
+                                var enumUnderlyingType = ((NamedTypeSymbol)param.Type).GetEnumUnderlyingType();
+                                specialType = enumUnderlyingType.SpecialType;
+                            }
+                            var netType = compilation.GetSpecialType(specialType);
+                            constant = ConstantValue.Create(arg.Value, specialType);
                             return new BoundLiteral(syntax, constant, netType);
                         }
                         else
@@ -113,6 +119,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             if (param.Type.IsUsualType() || param.Type.IsObjectType() || specialType == SpecialType.None)
                             {
                                 specialType = arg.Type.SpecialType;
+                            }
+                            if (param.Type.IsEnumType())
+                            {
+                                var enumUnderlyingType = ((NamedTypeSymbol)param.Type).GetEnumUnderlyingType();
+                                specialType = enumUnderlyingType.SpecialType;
                             }
                             if (specialType != valueType)
                             {

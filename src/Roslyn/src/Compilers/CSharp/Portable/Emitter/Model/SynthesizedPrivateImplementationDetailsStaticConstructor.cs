@@ -15,8 +15,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal sealed class SynthesizedPrivateImplementationDetailsStaticConstructor : SynthesizedGlobalMethodSymbol
     {
-        internal SynthesizedPrivateImplementationDetailsStaticConstructor(SourceModuleSymbol containingModule, PrivateImplementationDetails privateImplementationType, NamedTypeSymbol voidType)
-            : base(containingModule, privateImplementationType, voidType, WellKnownMemberNames.StaticConstructorName)
+        internal SynthesizedPrivateImplementationDetailsStaticConstructor(SynthesizedPrivateImplementationDetailsType privateImplementationType, NamedTypeSymbol voidType)
+            : base(privateImplementationType, voidType, WellKnownMemberNames.StaticConstructorName)
         {
             this.SetParameters(ImmutableArray<ParameterSymbol>.Empty);
         }
@@ -25,7 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal override bool HasSpecialName => true;
 
-        internal override void GenerateMethodBody(TypeCompilationState compilationState, DiagnosticBag diagnostics)
+        internal override void GenerateMethodBody(TypeCompilationState compilationState, BindingDiagnosticBag diagnostics)
         {
             CSharpSyntaxNode syntax = this.GetNonNullSyntaxNode();
             SyntheticBoundNodeFactory factory = new SyntheticBoundNodeFactory(this, syntax, compilationState, diagnostics);

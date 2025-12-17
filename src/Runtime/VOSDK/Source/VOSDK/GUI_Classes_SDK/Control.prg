@@ -647,7 +647,7 @@ METHOD Deactivate(oEvent)
 METHOD DEFAULT(oEvent)
 	LOCAL oEvt := oEvent AS @@event
 	SELF:EventReturnValue := CallWindowProc(SELF:__lpfnDefaultProc, hWnd, oEvt:umsg, oEvt:wParam, oEvt:lParam)
-	RETURN 1l
+	RETURN 1L
 
 
 
@@ -761,7 +761,7 @@ METHOD Dispatch(oEvent)
 		IF IsMethod(SELF, #PaintBackground)
 			IF Send(SELF, #PaintBackground, PTR(_CAST, oEvt:wParam))
 				SELF:EventReturnValue := 1L
-				RETURN 1l
+				RETURN 1L
 			ENDIF
 		ENDIF
 
@@ -979,7 +979,7 @@ METHOD Dispatch(oEvent)
 
 	IF IsLong(uRet)
 		SELF:EventReturnValue := uRet
-		RETURN 1l
+		RETURN 1L
 	ENDIF
 
 

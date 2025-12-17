@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE file in the project root for more information. -->
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>d8ef0777-9d65-4849-a7d6-ac81e58e2317</SharedGUID>
+    <LargeAddressAware>true</LargeAddressAware>
+    <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>CommandLine</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Shared items -->
+    <Compile Include="$(CoreSource)..\CommandLine\BuildProtocol.cs" />
+    <Compile Include="$(CoreSource)..\CommandLine\ConsoleUtil.cs" />
+    <Compile Include="$(CoreSource)..\CommandLine\NativeMethods.cs" />
+    <Compile Include="$(CoreSource)..\CommandLine\CompilerServerLogger.cs" />
+    <Compile Include="$(SharedSource)RuntimeHostInfo.cs" />
+    <Compile Include="$(SharedSource)NamedPipeUtil.cs" />
+    <Compile Include="$(SharedSource)BuildClient.cs" />
+    <Compile Include="$(SharedSource)BuildServerConnection.cs" />
+    <Compile Include="$(SharedSource)ExitingTraceListener.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\AnalyzerConsistencyChecker.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\Assembly.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\BuildProtocolUtil.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\BuildServerController.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\ClientConnectionHandler.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\CompilerRequestHandler.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\CompletionData.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\CSharpCompilerServer.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\DiagnosticListener.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\IClientConnection.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\ICompilerServerHost.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\MemoryHelper.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\MetadataCache.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\NamedPipeClientConnection.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\NamedPipeClientConnectionHost.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\ServerDispatcher.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\VBCSCompiler.cs" />
+    <Compile Include="$(ServerSource)VBCSCompiler\VisualBasicCompilerServer.cs" />
+    <None Include="$(ServerSource)App.config" Condition="'$(TargetFramework)' == 'net472'" />
+    <InternalsVisibleTo Include="Microsoft.CodeAnalysis.CSharp.CommandLine.UnitTests" />
+    <InternalsVisibleTo Include="Microsoft.CodeAnalysis.VisualBasic.CommandLine.UnitTests" />
+    <InternalsVisibleTo Include="VBCSCompiler.UnitTests" />
+    <Reference Include="System.Configuration" Condition="'$(TargetFramework)' == 'net472'" />
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'net6.0'" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(DefaultLanguageSourceExtension)' != '' AND '$(BuildingInsideVisualStudio)' != 'true'">
+    <ExpectedCompile Include="$(ServerSource)**\*$(DefaultLanguageSourceExtension)" />
+  </ItemGroup>
+  <Import Project="$(RepositoryEngineeringDir)targets\DiaSymReaderNative.targets" />
+</Project>

@@ -19,7 +19,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	INTERNAL SEALED CLASS CdxTagList INHERIT CdxLeafPage
         PRIVATE _tags AS List<CdxTag>
 
-        INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS WORD)
+        INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS DWORD , buffer AS BYTE[], nKeyLen AS WORD)
             SUPER(bag, nPage, buffer, nKeyLen)
 
 	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , page AS CdxPage, keyLen AS WORD)
@@ -30,7 +30,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             System.Diagnostics.Debug.Assert (SELF:PageType:HasFlag(CdxPageType.Leaf) .AND. SELF:PageType:HasFlag(CdxPageType.Root))
             local oError := NULL_OBJECT as Exception
             FOR VAR nI := 0 TO SELF:NumKeys-1
-                LOCAL nRecno    := SELF:GetRecno(nI) AS Int32
+                LOCAL nRecno    := SELF:GetRecno(nI) AS DWORD
                 LOCAL bName     := SELF:GetKey(nI)  AS BYTE[]
                 LOCAL cName     := SELF:RDD:_GetString( bName, 0, bName:Length) AS STRING
                 cName           := cName:TrimEnd(<CHAR>{'\0'})
@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             // default sort for tags in an orderbag is on pageno.
-            _tags:Sort( { tagX, tagY => tagX:Page - tagY:Page} )
+            _tags:Sort( { tagX, tagY => (INT) tagX:Page - (INT) tagY:Page} )
             if oError != NULL
                 RuntimeState.LastRddError := oError
             ENDIF
@@ -99,9 +99,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF action:Type == CdxActionType.ExpandRecnos
                     VAR leaves := SELF:GetKeys()
                     LOCAL stream    AS Stream
-                    LOCAL fileSize  AS LONG
+                    LOCAL fileSize  AS DWORD
                     stream   := FGetStream(_bag:_hFile)
-                    fileSize := (LONG) stream:Length
+                    fileSize := (DWORD) stream:Length
                     SELF:SetRecordBits(fileSize)
                     SELF:SetKeys(leaves, 0, leaves:Count)
                     action := SELF:Add(tag:Header:PageNo, bytes)
@@ -112,7 +112,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Write()
             _tags:Clear()
             // sort by pageno.
-            System.Array.Sort(aTags,  { x,y => x:Page - y:Page})
+            System.Array.Sort(aTags,  { x,y => (INT) x:Page - (INT) y:Page})
             _tags:AddRange(aTags)
             RETURN TRUE
 

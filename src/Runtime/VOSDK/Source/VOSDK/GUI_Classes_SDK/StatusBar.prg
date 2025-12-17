@@ -142,7 +142,7 @@ METHOD __BuildItems() AS StatusBar STRICT
             oItem := aItems[dwCount]
 		    oIcon := oItem:Icon
 	        IF oIcon = NULL_OBJECT
-	       	    SendMessage(hwnd, SB_SETICON, dwCount-1u, 0l)
+	       	    SendMessage(hwnd, SB_SETICON, dwCount-1u, 0L)
 	        ELSE
 				 SendMessage(hwnd, SB_SETICON, dwCount-1u, LONG(_CAST, oIcon:Handle()))
 			ENDIF
@@ -1226,7 +1226,7 @@ METHOD SetIcon(oIcon, symItemName)
 			SendMessage(hwnd, SB_SETICON, dwIndex-1u, LONGINT(_CAST, oIcon:Handle()))
 		ELSE
 			oStatusBarItem:__Icon := NULL_OBJECT
-			SendMessage(hwnd, SB_SETICON, dwIndex-1u, 0l)
+			SendMessage(hwnd, SB_SETICON, dwIndex-1u, 0L)
 		ENDIF
 	ENDIF
 
@@ -1405,7 +1405,7 @@ METHOD SetValue(uValue, symItemName)
 	IF (dwIndex != 0) .AND. SELF:ValidateControl()
 		oStatusBarItem       := aItems[dwIndex]
 		oStatusBarItem:Value := uValue
-		SendMessage(hwnd, SB_SETTEXT, _OR((dwIndex - 1), DWORD(oStatusBarItem:Style), SBT_OWNERDRAW), 0l)
+		SendMessage(hwnd, SB_SETTEXT, _OR((dwIndex - 1), DWORD(oStatusBarItem:Style), SBT_OWNERDRAW), 0L)
 	ENDIF
 
 
@@ -1759,7 +1759,7 @@ METHOD ODDrawItem(oEvent, oStatusBar)
 
 
 	// Draw the text
-	IF (hFont := SendMessage(strucDrawItem:hwndItem, WM_GETFONT, 0l, 0l)) != NULL_PTR
+	IF (hFont := SendMessage(strucDrawItem:hwndItem, WM_GETFONT, 0L, 0L)) != NULL_PTR
 		SelectObject(strucDrawItem:hDC, hFont)
 	ENDIF
 

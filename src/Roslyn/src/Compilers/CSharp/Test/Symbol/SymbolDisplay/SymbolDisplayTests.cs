@@ -15,7 +15,7 @@ using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
-using static Roslyn.Test.Utilities.TestMetadata;
+using Basic.Reference.Assemblies;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -1094,6 +1094,113 @@ class @true {
         }
 
         [Fact]
+        public void TestEscapeRecordKeywordIdentifiers_EscapesTypeNames()
+        {
+            var text = @"
+class @record {
+    @record @struct(@record @true, string name, bool @bool = true) { return @record; } }
+";
+
+            Func<NamespaceSymbol, Symbol> findSymbol = global =>
+                global.GetTypeMembers("record", 0).Single().
+                GetMembers("struct").Single();
+
+            var format = new SymbolDisplayFormat(
+                memberOptions: SymbolDisplayMemberOptions.IncludeType | SymbolDisplayMemberOptions.IncludeParameters,
+                parameterOptions: SymbolDisplayParameterOptions.IncludeType | SymbolDisplayParameterOptions.IncludeName | SymbolDisplayParameterOptions.IncludeDefaultValue,
+                miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers | SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
+
+            TestSymbolDescription(
+                text,
+                findSymbol,
+                format,
+                "@record @struct(@record @true, string name, bool @bool = true)",
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.MethodName, //@struct
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName, //@record
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName, //string
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName, //@bool
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation);
+        }
+
+        [Fact]
+        public void TestEscapeRecordKeywordIdentifiers_DoesNotEscapesMethodNames()
+        {
+            var text = @"
+class C {
+    C record() { return default; } }
+";
+
+            Func<NamespaceSymbol, Symbol> findSymbol = global =>
+                global.GetTypeMembers("C", 0).Single().
+                GetMembers("record").Single();
+
+            var format = new SymbolDisplayFormat(
+                memberOptions: SymbolDisplayMemberOptions.IncludeType | SymbolDisplayMemberOptions.IncludeParameters,
+                parameterOptions: SymbolDisplayParameterOptions.IncludeType | SymbolDisplayParameterOptions.IncludeName | SymbolDisplayParameterOptions.IncludeDefaultValue,
+                miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers | SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
+
+            TestSymbolDescription(
+                text,
+                findSymbol,
+                format,
+                "C record()",
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.MethodName, //record
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Punctuation);
+        }
+
+        [Fact, WorkItem("https://github.com/dotnet/roslyn/issues/74117")]
+        public void TestRecordStructName()
+        {
+            var text = @"
+public record struct @decimal {
+    void M(@decimal p1) { return; } }
+";
+
+            Func<NamespaceSymbol, Symbol> findSymbol = global =>
+                global.GetTypeMembers("decimal", 0).Single().
+                GetMembers("M").Single();
+
+            var format = new SymbolDisplayFormat(
+                memberOptions: SymbolDisplayMemberOptions.IncludeType | SymbolDisplayMemberOptions.IncludeParameters,
+                parameterOptions: SymbolDisplayParameterOptions.IncludeType | SymbolDisplayParameterOptions.IncludeName | SymbolDisplayParameterOptions.IncludeDefaultValue,
+                miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers | SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
+
+            TestSymbolDescription(
+                text,
+                findSymbol,
+                format,
+                "void M(@decimal p1)",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.MethodName, //M
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.RecordStructName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName, //p1
+                SymbolDisplayPartKind.Punctuation);
+        }
+
+        [Fact]
         public void TestNoEscapeKeywordIdentifiers()
         {
             var text = @"
@@ -1341,7 +1448,7 @@ class C {
 
             var format = new SymbolDisplayFormat(
                 memberOptions: SymbolDisplayMemberOptions.IncludeType,
-                compilerInternalOptions: SymbolDisplayCompilerInternalOptions.UseMetadataMethodNames);
+                compilerInternalOptions: SymbolDisplayCompilerInternalOptions.UseMetadataMemberNames);
 
             TestSymbolDescription(
                 text,
@@ -1370,6 +1477,118 @@ class C<T, U, V> { }
                 findSymbol,
                 format,
                 "C`3",
+                SymbolDisplayPartKind.ClassName,
+                InternalSymbolDisplayPartKind.Arity);
+        }
+
+        [Fact]
+        public void TestNestedType1()
+        {
+            var text = @"
+class C
+{
+    class D
+    {
+    }
+}
+";
+
+            var format = new SymbolDisplayFormat(
+                memberOptions: SymbolDisplayMemberOptions.IncludeType,
+                typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes,
+                compilerInternalOptions: SymbolDisplayCompilerInternalOptions.UseArityForGenericTypes | SymbolDisplayCompilerInternalOptions.UsePlusForNestedTypes);
+
+            TestSymbolDescription(
+                text,
+                global => global.GetTypeMembers("C").Single().GetTypeMember("D"),
+                format,
+                "C+D",
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.ClassName);
+        }
+
+        [Fact]
+        public void TestNestedType2()
+        {
+            var text = @"
+class C
+{
+    class D<T>
+    {
+    }
+}
+";
+
+            var format = new SymbolDisplayFormat(
+                memberOptions: SymbolDisplayMemberOptions.IncludeType,
+                typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes,
+                compilerInternalOptions: SymbolDisplayCompilerInternalOptions.UseArityForGenericTypes | SymbolDisplayCompilerInternalOptions.UsePlusForNestedTypes);
+
+            TestSymbolDescription(
+                text,
+                global => global.GetTypeMembers("C").Single().GetTypeMember("D"),
+                format,
+                "C+D`1",
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.ClassName,
+                InternalSymbolDisplayPartKind.Arity);
+        }
+
+        [Fact]
+        public void TestNestedType3()
+        {
+            var text = @"
+class C<T>
+{
+    class D
+    {
+    }
+}
+";
+
+            var format = new SymbolDisplayFormat(
+                memberOptions: SymbolDisplayMemberOptions.IncludeType,
+                typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes,
+                compilerInternalOptions: SymbolDisplayCompilerInternalOptions.UseArityForGenericTypes | SymbolDisplayCompilerInternalOptions.UsePlusForNestedTypes);
+
+            TestSymbolDescription(
+                text,
+                global => global.GetTypeMembers("C").Single().GetTypeMember("D"),
+                format,
+                "C`1+D",
+                SymbolDisplayPartKind.ClassName,
+                InternalSymbolDisplayPartKind.Arity,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.ClassName);
+        }
+
+        [Fact]
+        public void TestNestedType4()
+        {
+            var text = @"
+class C<T>
+{
+    class D<U, V>
+    {
+    }
+}
+";
+
+            var format = new SymbolDisplayFormat(
+                memberOptions: SymbolDisplayMemberOptions.IncludeType,
+                typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes,
+                compilerInternalOptions: SymbolDisplayCompilerInternalOptions.UseArityForGenericTypes | SymbolDisplayCompilerInternalOptions.UsePlusForNestedTypes);
+
+            TestSymbolDescription(
+                text,
+                global => global.GetTypeMembers("C").Single().GetTypeMember("D"),
+                format,
+                "C`1+D`2",
+                SymbolDisplayPartKind.ClassName,
+                InternalSymbolDisplayPartKind.Arity,
+                SymbolDisplayPartKind.Punctuation,
                 SymbolDisplayPartKind.ClassName,
                 InternalSymbolDisplayPartKind.Arity);
         }
@@ -1830,8 +2049,10 @@ class C
                 SymbolDisplayPartKind.Punctuation);
         }
 
-        [Fact]
-        public void TestPropertyGetAccessor()
+        [Theory]
+        [InlineData(SymbolDisplayCompilerInternalOptions.None)]
+        [InlineData(SymbolDisplayCompilerInternalOptions.UseMetadataMemberNames)]
+        internal void TestPropertyGetAccessor(SymbolDisplayCompilerInternalOptions internalOptions)
         {
             var text = @"
 class C {
@@ -1843,6 +2064,7 @@ class C {
                 GetMembers("get_P").Single();
 
             var format = new SymbolDisplayFormat(
+                internalOptions,
                 memberOptions:
                     SymbolDisplayMemberOptions.IncludeAccessibility |
                     SymbolDisplayMemberOptions.IncludeContainingType |
@@ -1902,6 +2124,175 @@ class C {
                 SymbolDisplayPartKind.PropertyName,
                 SymbolDisplayPartKind.Punctuation,
                 SymbolDisplayPartKind.Keyword);
+        }
+
+        [Fact]
+        public void TestPropertyBackingField()
+        {
+            var text = @"
+#nullable enable
+class C {
+    string P { get; set; } }
+";
+
+            Func<NamespaceSymbol, Symbol> findSymbol = global =>
+                global.GetTypeMembers("C", 0).Single().
+                GetMembers("<P>k__BackingField").Single();
+
+            var format = new SymbolDisplayFormat(
+                memberOptions:
+                    SymbolDisplayMemberOptions.IncludeAccessibility |
+                    SymbolDisplayMemberOptions.IncludeContainingType |
+                    SymbolDisplayMemberOptions.IncludeExplicitInterface |
+                    SymbolDisplayMemberOptions.IncludeModifiers |
+                    SymbolDisplayMemberOptions.IncludeParameters |
+                    SymbolDisplayMemberOptions.IncludeType);
+
+            TestSymbolDescription(
+                text,
+                findSymbol,
+                format,
+                "private String C.P.field",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.PropertyName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword);
+        }
+
+        [Fact]
+        public void TestPropertyBackingFieldFromCompilationReference()
+        {
+            var text = @"
+#nullable enable
+class C {
+    string P { get; set; } }
+";
+
+            var format = new SymbolDisplayFormat(
+                memberOptions: SymbolDisplayMemberOptions.IncludeParameters | SymbolDisplayMemberOptions.IncludeModifiers | SymbolDisplayMemberOptions.IncludeAccessibility | SymbolDisplayMemberOptions.IncludeType,
+                parameterOptions: SymbolDisplayParameterOptions.IncludeType | SymbolDisplayParameterOptions.IncludeName | SymbolDisplayParameterOptions.IncludeDefaultValue,
+                miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
+
+            var comp1 = CreateCompilation(text);
+            var comp2 = CreateCompilation("", references: [comp1.ToMetadataReference()], options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All));
+
+            var prop = comp2.GetMember<FieldSymbol>("C.<P>k__BackingField").GetPublicSymbol();
+            var parts = SymbolDisplay.ToDisplayParts(prop, format);
+
+            Verify(
+                parts,
+                "private string P.field",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.PropertyName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword);
+        }
+
+        [Fact]
+        public void TestPropertyBackingField_UseMetadataMethodNames()
+        {
+            var text = @"
+#nullable enable
+class C {
+    string P { get; set; } }
+";
+
+            Func<NamespaceSymbol, Symbol> findSymbol = global =>
+                global.GetTypeMembers("C", 0).Single().
+                GetMembers("<P>k__BackingField").Single();
+
+            var format = new SymbolDisplayFormat(
+                compilerInternalOptions: SymbolDisplayCompilerInternalOptions.UseMetadataMemberNames,
+                memberOptions:
+                    SymbolDisplayMemberOptions.IncludeAccessibility |
+                    SymbolDisplayMemberOptions.IncludeContainingType |
+                    SymbolDisplayMemberOptions.IncludeExplicitInterface |
+                    SymbolDisplayMemberOptions.IncludeModifiers |
+                    SymbolDisplayMemberOptions.IncludeParameters |
+                    SymbolDisplayMemberOptions.IncludeType);
+
+            TestSymbolDescription(
+                text,
+                findSymbol,
+                format,
+                "private String C.<P>k__BackingField",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.FieldName);
+        }
+
+        [Theory]
+        [InlineData(SymbolDisplayCompilerInternalOptions.None)]
+        [InlineData(SymbolDisplayCompilerInternalOptions.UseMetadataMemberNames)]
+        internal void TestPropertyBackingFieldFromMetadata(SymbolDisplayCompilerInternalOptions internalOptions)
+        {
+            // Metadata symbols do not associate the backing field with the property, so the metadata name is always displayed.
+            var text = @"
+#nullable enable
+class C {
+    string P { get; set; } }
+";
+
+            var format = new SymbolDisplayFormat(
+                compilerInternalOptions: internalOptions,
+                memberOptions: SymbolDisplayMemberOptions.IncludeParameters | SymbolDisplayMemberOptions.IncludeModifiers | SymbolDisplayMemberOptions.IncludeAccessibility | SymbolDisplayMemberOptions.IncludeType,
+                parameterOptions: SymbolDisplayParameterOptions.IncludeType | SymbolDisplayParameterOptions.IncludeName | SymbolDisplayParameterOptions.IncludeDefaultValue,
+                miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
+
+            var comp1 = CreateCompilation(text);
+            var comp2 = CreateCompilation("", references: [comp1.EmitToImageReference()], options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All));
+
+            var prop = comp2.GetMember<FieldSymbol>("C.<P>k__BackingField").GetPublicSymbol();
+            var parts = SymbolDisplay.ToDisplayParts(prop, format);
+
+            Verify(
+                parts,
+                "private string <P>k__BackingField",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.FieldName);
+        }
+
+        [Fact]
+        public void TestPropertyBackingFieldVB()
+        {
+            var text = @"
+Class A
+   Public Property Prop As String
+End Class";
+
+            var format = new SymbolDisplayFormat(
+                memberOptions: SymbolDisplayMemberOptions.IncludeParameters | SymbolDisplayMemberOptions.IncludeModifiers | SymbolDisplayMemberOptions.IncludeAccessibility | SymbolDisplayMemberOptions.IncludeType,
+                parameterOptions: SymbolDisplayParameterOptions.IncludeType | SymbolDisplayParameterOptions.IncludeName | SymbolDisplayParameterOptions.IncludeDefaultValue,
+                miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
+
+            var comp = CreateVisualBasicCompilation("c", text);
+            var a = (ITypeSymbol)comp.GlobalNamespace.GetMembers("A").Single();
+            var goo = a.GetMembers("_Prop").Single();
+            var parts = SymbolDisplay.ToDisplayParts(goo, format);
+
+            Verify(
+                parts,
+                "private string _Prop",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.FieldName);
         }
 
         [Fact]
@@ -2445,7 +2836,7 @@ namespace N1 {
                 GetTypeMembers("C2").Single();
 
             var format = new SymbolDisplayFormat(
-                typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
+                typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces, miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers);
 
             TestSymbolDescription(
                 text,
@@ -2457,6 +2848,35 @@ namespace N1 {
                 SymbolDisplayPartKind.AliasName,
                 SymbolDisplayPartKind.Punctuation,
                 SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.ClassName);
+        }
+
+        [Fact]
+        public void TestAliases_AliasesNamedRecordAreEscaped()
+        {
+            var text = @"
+using @record = N1;
+
+namespace N1 {
+    class C1 {} }
+";
+
+            Func<NamespaceSymbol, Symbol> findSymbol = global =>
+                global.GetNestedNamespace("N1").
+                GetTypeMembers("C1").Single();
+
+            var format = new SymbolDisplayFormat(
+                typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces, miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers);
+
+            TestSymbolDescription(
+                text,
+                findSymbol,
+                format,
+                "@record.C1",
+                text.IndexOf("namespace", StringComparison.Ordinal),
+                true,
+                SymbolDisplayPartKind.AliasName,
                 SymbolDisplayPartKind.Punctuation,
                 SymbolDisplayPartKind.ClassName);
         }
@@ -2495,16 +2915,16 @@ namespace N1 {
                 SymbolDisplayPartKind.ClassName);
         }
 
-        [Fact]
-        public void TestAlias3()
+        [Theory, MemberData(nameof(FileScopedOrBracedNamespace))]
+        public void TestAlias3(string ob, string cb)
         {
             var text = @"
 using Goo = N1.C1;
 
-namespace N1 {
+namespace N1 " + ob + @"
     class Goo { }
     class C1 { }
-}
+" + cb + @"
 ";
 
             Func<NamespaceSymbol, Symbol> findSymbol = global =>
@@ -2744,6 +3164,7 @@ namespace N1 {
                 globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Omitted,
                 genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters | SymbolDisplayGenericsOptions.IncludeTypeConstraints,
                 memberOptions:
+                    SymbolDisplayMemberOptions.IncludeModifiers |
                     SymbolDisplayMemberOptions.IncludeRef |
                     SymbolDisplayMemberOptions.IncludeType |
                     SymbolDisplayMemberOptions.IncludeParameters |
@@ -2808,7 +3229,6 @@ class classAttribute : System.Attribute { }
                 new SymbolDisplayFormat(),
                 "classAttribute",
                 SymbolDisplayPartKind.ClassName);
-
 
             TestSymbolDescription(text, findSymbol,
                 new SymbolDisplayFormat(miscellaneousOptions: SymbolDisplayMiscellaneousOptions.RemoveAttributeSuffix),
@@ -2875,7 +3295,7 @@ class C1 {
             var assemblies = MetadataTestHelpers.GetSymbolsForReferences(new[]
                 {
                     TestReferences.SymbolsTests.CustomModifiers.Modifiers.dll,
-                    Net40.mscorlib
+                    Net40.References.mscorlib
                 });
 
             var globalNamespace = assemblies[0].GlobalNamespace;
@@ -3004,7 +3424,7 @@ class C1 {
             var assemblies = MetadataTestHelpers.GetSymbolsForReferences(new[]
             {
                 TestReferences.SymbolsTests.CustomModifiers.Modifiers.dll,
-                Net40.mscorlib
+                Net40.References.mscorlib
             });
 
             var globalNamespace = assemblies[0].GlobalNamespace;
@@ -3065,7 +3485,7 @@ class C1 {
             var assemblies = MetadataTestHelpers.GetSymbolsForReferences(new[]
             {
                 TestReferences.SymbolsTests.CustomModifiers.Modifiers.dll,
-                Net40.mscorlib
+                Net40.References.mscorlib
             });
 
             var globalNamespace = assemblies[0].GlobalNamespace;
@@ -3126,7 +3546,7 @@ class C1 {
             var assemblies = MetadataTestHelpers.GetSymbolsForReferences(new[]
             {
                 TestReferences.SymbolsTests.CustomModifiers.Modifiers.dll,
-                Net40.mscorlib
+                Net40.References.mscorlib
             });
 
             var globalNamespace = assemblies[0].GlobalNamespace;
@@ -3206,7 +3626,7 @@ class C1 {
 
         private static void Verify(ImmutableArray<SymbolDisplayPart> actualParts, string expectedText, params SymbolDisplayPartKind[] expectedKinds)
         {
-            Assert.Equal(expectedText, actualParts.ToDisplayString());
+            AssertEx.Equal(expectedText, actualParts.ToDisplayString());
             if (expectedKinds.Length > 0)
             {
                 AssertEx.Equal(expectedKinds, actualParts.Select(p => p.Kind), itemInspector: p => $"                SymbolDisplayPartKind.{p}");
@@ -3886,6 +4306,124 @@ struct S
         }
 
         [Fact]
+        public void DefaultParameterValues_NullableEnum()
+        {
+            var text = @"
+[System.FlagsAttribute]
+enum E : sbyte
+{
+    A = -2,
+    A1 = -2,
+    B = 1,
+    B1 = 1,
+    C = 0,
+    C1 = 0,
+}
+
+struct S
+{
+    void P(E? e = null, E? f = E.A, E? g = E.A | E.B, E?h = 0, E? i = (E)(-3))
+    {
+    }
+}";
+
+            Func<NamespaceSymbol, Symbol> findSymbol = global =>
+                global.GetMember<NamedTypeSymbol>("S").GetMember<MethodSymbol>("P");
+
+            var format =
+             new SymbolDisplayFormat(
+                 globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
+                 genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
+                 memberOptions:
+                     SymbolDisplayMemberOptions.IncludeParameters |
+                     SymbolDisplayMemberOptions.IncludeType |
+                     SymbolDisplayMemberOptions.IncludeContainingType,
+                 parameterOptions:
+                     SymbolDisplayParameterOptions.IncludeName |
+                     SymbolDisplayParameterOptions.IncludeType |
+                     SymbolDisplayParameterOptions.IncludeParamsRefOut |
+                     SymbolDisplayParameterOptions.IncludeDefaultValue,
+                 localOptions: SymbolDisplayLocalOptions.IncludeType,
+                 miscellaneousOptions:
+                     SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers |
+                     SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
+
+            TestSymbolDescription(text, findSymbol,
+                format,
+                @"void S.P(E? e = null, E? f = E.A, E? g = E.A | E.B, E? h = E.C, E? i = (E)-3)",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Punctuation, //.
+                SymbolDisplayPartKind.MethodName,
+                SymbolDisplayPartKind.Punctuation, //(
+                SymbolDisplayPartKind.EnumName,
+                SymbolDisplayPartKind.Punctuation, //?
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation, //=
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation, //,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.EnumName,
+                SymbolDisplayPartKind.Punctuation, //?
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation, //=
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.EnumName,
+                SymbolDisplayPartKind.Punctuation, //.
+                SymbolDisplayPartKind.EnumMemberName,
+                SymbolDisplayPartKind.Punctuation, //,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.EnumName,
+                SymbolDisplayPartKind.Punctuation, //?
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation, //=
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.EnumName,
+                SymbolDisplayPartKind.Punctuation, //.
+                SymbolDisplayPartKind.EnumMemberName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation, //|
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.EnumName,
+                SymbolDisplayPartKind.Punctuation, //.
+                SymbolDisplayPartKind.EnumMemberName,
+                SymbolDisplayPartKind.Punctuation, //,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.EnumName,
+                SymbolDisplayPartKind.Punctuation, //?
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation, //=
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.EnumName,
+                SymbolDisplayPartKind.Punctuation, //.
+                SymbolDisplayPartKind.EnumMemberName,
+                SymbolDisplayPartKind.Punctuation, //,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.EnumName,
+                SymbolDisplayPartKind.Punctuation, //?
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation, // =
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation, // (
+                SymbolDisplayPartKind.EnumName,
+                SymbolDisplayPartKind.Punctuation, // )
+                SymbolDisplayPartKind.NumericLiteral,
+                SymbolDisplayPartKind.Punctuation); //)
+        }
+
+        [Fact]
         public void TestConstantFieldValue()
         {
             var text =
@@ -4374,17 +4912,18 @@ class C
         }
 
         [WorkItem(791756, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/791756")]
-        [Fact]
-        public void KindOptions()
+        [Theory]
+        [MemberData(nameof(FileScopedOrBracedNamespace))]
+        public void KindOptions(string ob, string cb)
         {
             var source = @"
 namespace N
-{
+" + ob + @"
     class C
     {
         event System.Action E;
     }
-}
+" + cb + @"
 ";
             var memberFormat = new SymbolDisplayFormat(
                 typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
@@ -4820,6 +5359,35 @@ public class C
                 SymbolDisplayPartKind.Punctuation,
                 SymbolDisplayPartKind.Space,
                 SymbolDisplayPartKind.FieldName);
+        }
+
+        [Fact, CompilerTrait(CompilerFeature.Tuples)]
+        public void TupleCollapseTupleTypes()
+        {
+            var text = @"
+public class C
+{
+    public (int, string) f;
+}
+";
+            Func<NamespaceSymbol, Symbol> findSymbol = global =>
+                global.
+                GetTypeMembers("C").Single().
+                GetMembers("f").Single();
+
+            var format = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeType, miscellaneousOptions: SymbolDisplayMiscellaneousOptions.CollapseTupleTypes);
+
+            var comp = CreateCompilation(text, parseOptions: TestOptions.Regular);
+            var global = comp.GlobalNamespace;
+            var symbol = findSymbol(global);
+            var description = symbol.ToDisplayParts(format);
+
+            var firstPart = description[0];
+            Assert.True(((ITypeSymbol)firstPart.Symbol).IsTupleType);
+            Assert.Equal(SymbolDisplayPartKind.StructName, firstPart.Kind);
+
+            Assert.Equal(SymbolDisplayPartKind.Space, description[1].Kind);
+            Assert.Equal(SymbolDisplayPartKind.FieldName, description[2].Kind);
         }
 
         [WorkItem(18311, "https://github.com/dotnet/roslyn/issues/18311")]
@@ -5522,7 +6090,7 @@ class B
     static object?[] F2(object[]? o) => null;
     static A<object>? F3(A<object?> o) => null;
 }";
-            var comp = (Compilation)CreateCompilation(new[] { source }, parseOptions: TestOptions.Regular8, options: WithNonNullTypesTrue());
+            var comp = (Compilation)CreateCompilation(new[] { source }, parseOptions: TestOptions.Regular8, options: WithNullableEnable());
             var formatWithoutNonNullableModifier = new SymbolDisplayFormat(
                 memberOptions: SymbolDisplayMemberOptions.IncludeParameters | SymbolDisplayMemberOptions.IncludeType | SymbolDisplayMemberOptions.IncludeModifiers,
                 parameterOptions: SymbolDisplayParameterOptions.IncludeType | SymbolDisplayParameterOptions.IncludeName | SymbolDisplayParameterOptions.IncludeParamsRefOut,
@@ -5951,8 +6519,8 @@ class B
                 genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
                 miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
 
-            var formatWithLongHandValueTuple = formatWithoutLongHandValueTuple.WithCompilerInternalOptions(
-                SymbolDisplayCompilerInternalOptions.UseValueTuple);
+            var formatWithLongHandValueTuple = formatWithoutLongHandValueTuple.AddMiscellaneousOptions(
+                SymbolDisplayMiscellaneousOptions.ExpandValueTuple);
 
             var method = comp.GetMember<IMethodSymbol>("B.F1");
 
@@ -6112,7 +6680,7 @@ class C
     }
 }");
             var root = srcTree.GetRoot();
-            var comp = CreateCompilationWithMscorlib45(new[] { srcTree });
+            var comp = CreateCompilationWithMscorlib461(new[] { srcTree });
 
             var semanticModel = comp.GetSemanticModel(comp.SyntaxTrees.Single());
             var local = root.DescendantNodes()
@@ -6207,7 +6775,7 @@ class C
     }
 }");
             var root = srcTree.GetRoot();
-            var comp = CreateCompilationWithMscorlib45(new[] { srcTree });
+            var comp = CreateCompilationWithMscorlib461(new[] { srcTree });
 
             var semanticModel = comp.GetSemanticModel(comp.SyntaxTrees.Single());
             var local = root.DescendantNodes()
@@ -6453,7 +7021,6 @@ enum E : long
                 SymbolDisplayPartKind.Space,
                 SymbolDisplayPartKind.NumericLiteral);
         }
-
 
         [Fact]
         public void TestRefStructs()
@@ -7071,23 +7638,23 @@ readonly struct X
                 SymbolDisplayPartKind.Keyword);
         }
 
-        [Fact]
-        public void TestReadOnlyStruct_Nested()
+        [Theory, MemberData(nameof(FileScopedOrBracedNamespace))]
+        public void TestReadOnlyStruct_Nested(string ob, string cb)
         {
             var source = @"
 namespace Nested
-{
+" + ob + @"
     struct X
     {
         readonly void M() { }
     }
-}
+" + cb + @"
 ";
             var format = SymbolDisplayFormat.TestFormat
                 .AddMemberOptions(SymbolDisplayMemberOptions.IncludeModifiers)
                 .AddMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
 
-            var comp = CreateCompilation(source).VerifyDiagnostics();
+            var comp = CreateCompilation(source, parseOptions: TestOptions.RegularWithFileScopedNamespaces).VerifyDiagnostics();
             var semanticModel = comp.GetSemanticModel(comp.SyntaxTrees.Single());
 
             var declaration = (BaseTypeDeclarationSyntax)semanticModel.SyntaxTree.GetRoot().DescendantNodes().Single(n => n.Kind() == SyntaxKind.StructDeclaration);
@@ -7445,7 +8012,6 @@ class C
                 SymbolDisplayPartKind.ClassName);
         }
 
-
         [Fact]
         public void StructConstructorDeclaration()
         {
@@ -7651,6 +8217,829 @@ record Person(string First, string Last);
                 SymbolDisplayPartKind.Keyword,
                 SymbolDisplayPartKind.Space,
                 SymbolDisplayPartKind.RecordClassName);
+        }
+
+        [Fact]
+        public void RecordClassDeclaration()
+        {
+            var text = @"
+record class Person(string First, string Last);
+";
+            Func<NamespaceSymbol, Symbol> findSymbol = global => global.GetTypeMembers("Person").Single();
+
+            var format = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeType, kindOptions: SymbolDisplayKindOptions.IncludeTypeKeyword);
+
+            TestSymbolDescription(
+                text,
+                findSymbol,
+                format,
+                TestOptions.Regular.WithLanguageVersion(LanguageVersion.CSharp9),
+                "record Person",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.RecordClassName);
+        }
+
+        [Fact]
+        public void RecordStructDeclaration()
+        {
+            var text = @"
+record struct Person(string First, string Last);
+";
+            Func<NamespaceSymbol, Symbol> findSymbol = global => global.GetTypeMembers("Person").Single();
+
+            var format = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeType, kindOptions: SymbolDisplayKindOptions.IncludeTypeKeyword);
+
+            TestSymbolDescription(
+                text,
+                findSymbol,
+                format,
+                TestOptions.Regular10,
+                "record struct Person",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.RecordStructName);
+        }
+
+        [Fact]
+        public void ReadOnlyRecordStructDeclaration()
+        {
+            var text = @"
+readonly record struct Person(string First, string Last);
+";
+            Func<NamespaceSymbol, Symbol> findSymbol = global => global.GetTypeMembers("Person").Single();
+
+            var format = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeType, kindOptions: SymbolDisplayKindOptions.IncludeTypeKeyword);
+
+            TestSymbolDescription(
+                text,
+                findSymbol,
+                format,
+                TestOptions.Regular10,
+                "readonly record struct Person",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.RecordStructName);
+        }
+
+        [Fact, WorkItem(51222, "https://github.com/dotnet/roslyn/issues/51222")]
+        public void TestFunctionPointerWithoutIncludeTypesInParameterOptions()
+        {
+            var text = @"
+class A {
+    delegate*<int, string> f;
+}";
+
+            Func<NamespaceSymbol, Symbol> findSymbol = global =>
+                ((FieldSymbol)global.GetTypeMembers("A", 0).Single()
+                .GetMembers("f").Single()).Type;
+
+            var format = new SymbolDisplayFormat();
+
+            TestSymbolDescription(
+                text,
+                findSymbol,
+                format,
+                "delegate*<Int32, String>");
+        }
+
+        [Fact, WorkItem(51222, "https://github.com/dotnet/roslyn/issues/51222")]
+        public void TestFunctionPointerWithTupleParameter()
+        {
+            var text = @"
+class A {
+    delegate*<(int, string), void> f;
+}";
+
+            Func<NamespaceSymbol, Symbol> findSymbol = global =>
+                ((FieldSymbol)global.GetTypeMembers("A", 0).Single()
+                .GetMembers("f").Single()).Type;
+
+            var format = new SymbolDisplayFormat();
+
+            TestSymbolDescription(
+                text,
+                findSymbol,
+                format,
+                "delegate*<(Int32, String), Void>");
+        }
+
+        [Fact, WorkItem(51222, "https://github.com/dotnet/roslyn/issues/51222")]
+        public void TestFunctionPointerWithTupleParameterWithNames()
+        {
+            var text = @"
+class A {
+    delegate*<(int i, string s), (int i, string s)> f;
+}";
+
+            Func<NamespaceSymbol, Symbol> findSymbol = global =>
+                ((FieldSymbol)global.GetTypeMembers("A", 0).Single()
+                .GetMembers("f").Single()).Type;
+
+            var format = new SymbolDisplayFormat();
+
+            TestSymbolDescription(
+                text,
+                findSymbol,
+                format,
+                "delegate*<(Int32 i, String s), (Int32 i, String s)>");
+        }
+
+        [Fact, WorkItem(51222, "https://github.com/dotnet/roslyn/issues/51222")]
+        public void TestFunctionPointerWithRefParameters()
+        {
+            var text = @"
+class A {
+    delegate*<in int, ref readonly string> f;
+}";
+
+            Func<NamespaceSymbol, Symbol> findSymbol = global =>
+                ((FieldSymbol)global.GetTypeMembers("A", 0).Single()
+                .GetMembers("f").Single()).Type;
+
+            var format = new SymbolDisplayFormat();
+
+            TestSymbolDescription(
+                text,
+                findSymbol,
+                format,
+                "delegate*<in Int32, ref readonly String>");
+        }
+
+        private static readonly SymbolDisplayFormat s_fullDelegateFormat = new SymbolDisplayFormat(
+            typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+            delegateStyle: SymbolDisplayDelegateStyle.NameAndSignature,
+            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters | SymbolDisplayGenericsOptions.IncludeVariance | SymbolDisplayGenericsOptions.IncludeTypeConstraints,
+            parameterOptions: SymbolDisplayParameterOptions.IncludeType | SymbolDisplayParameterOptions.IncludeName | SymbolDisplayParameterOptions.IncludeParamsRefOut,
+            miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers | SymbolDisplayMiscellaneousOptions.UseSpecialTypes,
+            kindOptions: SymbolDisplayKindOptions.IncludeNamespaceKeyword | SymbolDisplayKindOptions.IncludeTypeKeyword);
+
+        [Fact]
+        public void TestInferredDelegateType()
+        {
+            var source = @"
+class C
+{
+    void M()
+    {
+        var v = (int i) => i.ToString();
+    }
+}
+";
+
+            var comp = CreateCompilation(source);
+            var semanticModel = comp.GetSemanticModel(comp.SyntaxTrees.Single());
+            var syntaxTree = semanticModel.SyntaxTree;
+            var declaration = (LocalDeclarationStatementSyntax)semanticModel.SyntaxTree.GetRoot().DescendantNodes().Single(n => n.Kind() == SyntaxKind.LocalDeclarationStatement);
+            var type = semanticModel.GetTypeInfo(declaration.Declaration.Type).Type;
+
+            Verify(type.ToDisplayParts(), "System.Func<int, string>",
+                SymbolDisplayPartKind.NamespaceName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.DelegateName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation);
+
+            Verify(type.ToDisplayParts(s_fullDelegateFormat), "delegate string System.Func<int, string>(int arg)",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.NamespaceName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.DelegateName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation);
+        }
+
+        [Fact]
+        public void TestSynthesizedAnonymousDelegateType1()
+        {
+            var source = @"
+class C
+{
+    void M()
+    {
+        var v = (ref int i) => i.ToString();
+    }
+}
+";
+
+            var comp = CreateCompilation(source);
+            var semanticModel = comp.GetSemanticModel(comp.SyntaxTrees.Single());
+            var syntaxTree = semanticModel.SyntaxTree;
+            var declaration = (LocalDeclarationStatementSyntax)semanticModel.SyntaxTree.GetRoot().DescendantNodes().Single(n => n.Kind() == SyntaxKind.LocalDeclarationStatement);
+            var type = semanticModel.GetTypeInfo(declaration.Declaration.Type).Type;
+
+            Verify(type.ToDisplayParts(), "<anonymous delegate>",
+                SymbolDisplayPartKind.DelegateName);
+
+            Verify(type.ToDisplayParts(s_fullDelegateFormat), "delegate string <anonymous delegate>(ref int arg)",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.DelegateName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation);
+        }
+
+        [Fact]
+        public void TestSynthesizedAnonymousDelegateType2()
+        {
+            var source =
+@"Class Program
+    Shared Sub Main
+        Dim f = Function(ByRef i As Integer) i.ToString()
+    End Sub
+End Class";
+
+            var comp = CreateVisualBasicCompilation(source);
+            var tree = comp.SyntaxTrees.Single();
+            var model = comp.GetSemanticModel(tree);
+            var name = tree.GetRoot().DescendantNodes().OfType<VisualBasic.Syntax.VariableDeclaratorSyntax>().Single();
+            var type = ((ILocalSymbol)model.GetDeclaredSymbol(name.Names[0])).Type;
+
+            Verify(SymbolDisplay.ToDisplayParts(type), "<anonymous delegate>",
+                SymbolDisplayPartKind.DelegateName);
+
+            Verify(SymbolDisplay.ToDisplayParts(type, s_fullDelegateFormat), "delegate string <anonymous delegate>(ref int i)",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.DelegateName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation);
+        }
+
+        [Fact]
+        public void TestNullCheckedParameter()
+        {
+            var source = @"
+class C
+{
+    void M(string s!!)
+    {
+    }
+}
+";
+
+            var comp = CreateCompilation(source);
+            var methodSymbol = comp.GetMember<MethodSymbol>("C.M").GetPublicSymbol();
+
+            Verify(methodSymbol.ToDisplayParts(s_memberSignatureDisplayFormat), "void C.M(string s)",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.MethodName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation);
+        }
+
+        [Fact, WorkItem("https://github.com/dotnet/roslyn/issues/67464")]
+        public void Parameter_Standalone()
+        {
+            var source = """
+                class C
+                {
+                    void M(ref int p) { }
+                }
+                """;
+            var comp = CreateCompilation(source);
+            var methodSymbol = comp.GetMember<MethodSymbol>("C.M").GetPublicSymbol();
+            var parameterSymbol = methodSymbol.Parameters.Single();
+
+            var format = s_memberSignatureDisplayFormat.RemoveParameterOptions(SymbolDisplayParameterOptions.IncludeName);
+
+            Verify(methodSymbol.ToDisplayParts(format), "void C.M(ref int)",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.MethodName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation);
+
+            Verify(methodSymbol.ToDisplayParts(SymbolDisplayFormat.CSharpErrorMessageFormat), "C.M(ref int)",
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.MethodName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation);
+
+            Verify(methodSymbol.ToDisplayParts(SymbolDisplayFormat.CSharpErrorMessageNoParameterNamesFormat), "C.M(ref int)",
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.MethodName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation);
+
+            Verify(parameterSymbol.ToDisplayParts(format), "ref int p",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName);
+
+            Verify(parameterSymbol.ToDisplayParts(SymbolDisplayFormat.CSharpErrorMessageFormat), "ref int p",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName);
+
+            Verify(parameterSymbol.ToDisplayParts(SymbolDisplayFormat.CSharpErrorMessageNoParameterNamesFormat), "ref int",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword);
+        }
+
+        [Fact]
+        public void TestRequiredProperty()
+        {
+            var source = @"
+class C
+{
+    required int Prop { get; set; }
+}
+";
+
+            var comp = CreateCompilation(source);
+            var propertySymbol = comp.GetMember<PropertySymbol>("C.Prop").GetPublicSymbol();
+
+            Verify(propertySymbol.ToDisplayParts(s_memberSignatureDisplayFormat), "required int C.Prop { get; set; }",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.PropertyName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation);
+
+        }
+
+        [Fact]
+        public void RefFields()
+        {
+            var source =
+@"#pragma warning disable 169
+ref struct S<T>
+{
+    ref T F1;
+    ref readonly T F2;
+}";
+
+            var comp = CreateCompilation(source);
+            comp.VerifyDiagnostics(
+                // (4,11): error CS9064: Target runtime doesn't support ref fields.
+                //     ref T F1;
+                Diagnostic(ErrorCode.ERR_RuntimeDoesNotSupportRefFields, "F1").WithLocation(4, 11),
+                // (5,20): error CS9064: Target runtime doesn't support ref fields.
+                //     ref readonly T F2;
+                Diagnostic(ErrorCode.ERR_RuntimeDoesNotSupportRefFields, "F2").WithLocation(5, 20)
+                );
+
+            Verify(comp.GetMember<FieldSymbol>("S.F1").ToDisplayParts(SymbolDisplayFormat.TestFormat),
+                "ref T S<T>.F1",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.TypeParameterName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.TypeParameterName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.FieldName);
+
+            Verify(comp.GetMember<FieldSymbol>("S.F2").ToDisplayParts(SymbolDisplayFormat.TestFormat),
+                "ref readonly T S<T>.F2",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.TypeParameterName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.TypeParameterName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.FieldName);
+        }
+
+        [Fact]
+        public void ScopedParameter_01()
+        {
+            var source =
+@"ref struct R { }
+class Program
+{
+    static void F(scoped R r1, scoped ref R r2, scoped in R r3, scoped out R r4) { }
+}";
+
+            var comp = CreateCompilation(source);
+            comp.VerifyDiagnostics();
+            var method = comp.GetMember<MethodSymbol>("Program.F");
+
+            var formatTypeOnly = SymbolDisplayFormat.TestFormat.WithParameterOptions(SymbolDisplayParameterOptions.IncludeType | SymbolDisplayParameterOptions.IncludeName);
+            var formatTypeRefAndScoped = formatTypeOnly.AddParameterOptions(SymbolDisplayParameterOptions.IncludeParamsRefOut);
+
+            Verify(method.ToDisplayParts(formatTypeOnly),
+                "void Program.F(R r1, R r2, R r3, R r4)",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.MethodName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation);
+
+            Verify(method.ToDisplayParts(formatTypeRefAndScoped),
+                "void Program.F(scoped R r1, scoped ref R r2, scoped in R r3, out R r4)",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.MethodName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation);
+        }
+
+        [Fact]
+        public void ScopedParameter_02()
+        {
+            var source =
+@"ref struct R { }
+delegate void D(scoped R r1, scoped ref R r2, scoped in R r3, scoped out R r4);
+";
+
+            var comp = CreateCompilation(source);
+            comp.VerifyDiagnostics();
+            var delegateType = comp.GetMember<NamedTypeSymbol>("D");
+
+            var formatTypeOnly = s_fullDelegateFormat.WithParameterOptions(SymbolDisplayParameterOptions.IncludeType | SymbolDisplayParameterOptions.IncludeName);
+            var formatTypeRefAndScoped = formatTypeOnly.AddParameterOptions(SymbolDisplayParameterOptions.IncludeParamsRefOut);
+
+            Verify(delegateType.ToDisplayParts(formatTypeOnly),
+                "delegate void D(R r1, R r2, R r3, R r4)");
+
+            Verify(delegateType.ToDisplayParts(formatTypeRefAndScoped),
+                "delegate void D(scoped R r1, scoped ref R r2, scoped in R r3, out R r4)");
+        }
+
+        [Fact]
+        public void ScopedParameter_03()
+        {
+            var source =
+@"#pragma warning disable 169
+ref struct R { }
+unsafe class Program
+{
+    delegate*<scoped R, scoped in R, scoped ref R, scoped out R, void> D;
+}
+";
+
+            var comp = CreateCompilation(source, options: TestOptions.UnsafeReleaseDll);
+            comp.VerifyDiagnostics(
+                // (5,15): error CS8755: 'scoped' cannot be used as a modifier on a function pointer parameter.
+                //     delegate*<scoped R, scoped in R, scoped ref R, scoped out R, void> D;
+                Diagnostic(ErrorCode.ERR_BadFuncPointerParamModifier, "scoped").WithArguments("scoped").WithLocation(5, 15),
+                // (5,25): error CS8755: 'scoped' cannot be used as a modifier on a function pointer parameter.
+                //     delegate*<scoped R, scoped in R, scoped ref R, scoped out R, void> D;
+                Diagnostic(ErrorCode.ERR_BadFuncPointerParamModifier, "scoped").WithArguments("scoped").WithLocation(5, 25),
+                // (5,38): error CS8755: 'scoped' cannot be used as a modifier on a function pointer parameter.
+                //     delegate*<scoped R, scoped in R, scoped ref R, scoped out R, void> D;
+                Diagnostic(ErrorCode.ERR_BadFuncPointerParamModifier, "scoped").WithArguments("scoped").WithLocation(5, 38),
+                // (5,52): error CS8755: 'scoped' cannot be used as a modifier on a function pointer parameter.
+                //     delegate*<scoped R, scoped in R, scoped ref R, scoped out R, void> D;
+                Diagnostic(ErrorCode.ERR_BadFuncPointerParamModifier, "scoped").WithArguments("scoped").WithLocation(5, 52));
+
+            var type = comp.GetMember<FieldSymbol>("Program.D").Type;
+
+            var formatMinimal = new SymbolDisplayFormat();
+            var formatTypeRefAndScoped = s_fullDelegateFormat.
+                WithParameterOptions(SymbolDisplayParameterOptions.IncludeType | SymbolDisplayParameterOptions.IncludeName | SymbolDisplayParameterOptions.IncludeParamsRefOut);
+
+            Verify(type.ToDisplayParts(formatMinimal),
+                "delegate*<R, in R, ref R, out R, Void>");
+
+            Verify(type.ToDisplayParts(formatTypeRefAndScoped),
+                "delegate*<R, in R, ref R, out R, void>");
+        }
+
+        [Fact]
+        public void ScopedParameter_04()
+        {
+            var source =
+@"using System.Diagnostics.CodeAnalysis;
+ref struct R { }
+class Program
+{
+    static void F1(out int i1, [UnscopedRef] out int i2) => throw null;
+    static void F2(ref R r1, ref R r2) => throw null;
+}";
+
+            var comp = CreateCompilation(new[] { source, UnscopedRefAttributeDefinition });
+            comp.VerifyDiagnostics();
+
+            var format = SymbolDisplayFormat.TestFormat.
+                WithParameterOptions(SymbolDisplayParameterOptions.IncludeType | SymbolDisplayParameterOptions.IncludeName | SymbolDisplayParameterOptions.IncludeParamsRefOut);
+
+            Verify(comp.GetMember<MethodSymbol>("Program.F1").ToDisplayParts(format),
+                "void Program.F1(out System.Int32 i1, out System.Int32 i2)");
+
+            Verify(comp.GetMember<MethodSymbol>("Program.F2").ToDisplayParts(format),
+                "void Program.F2(ref R r1, ref R r2)");
+        }
+
+        [Fact]
+        public void ScopedLocal()
+        {
+            var source =
+@"ref struct R { }
+class Program
+{
+    static void M(R r0)
+    {
+        scoped R r1 = r0;
+        scoped ref readonly R r3 = ref r0;
+    }
+}";
+
+            var comp = CreateCompilation(source);
+            comp.VerifyDiagnostics();
+            var tree = comp.SyntaxTrees[0];
+            var model = comp.GetSemanticModel(tree);
+            var decls = tree.GetRoot().DescendantNodes().OfType<VariableDeclaratorSyntax>().ToArray();
+            var locals = decls.Select(d => model.GetDeclaredSymbol(d)).ToArray();
+
+            var formatTypeOnly = SymbolDisplayFormat.TestFormat.WithLocalOptions(SymbolDisplayLocalOptions.IncludeType);
+            var formatTypeRefAndScoped = formatTypeOnly.AddLocalOptions(SymbolDisplayLocalOptions.IncludeRef);
+
+            Verify(locals[0].ToDisplayParts(formatTypeOnly),
+                "R r1",
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.LocalName);
+
+            Verify(locals[0].ToDisplayParts(formatTypeRefAndScoped),
+                "scoped R r1",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.LocalName);
+
+            Verify(locals[1].ToDisplayParts(formatTypeOnly),
+                "R r3",
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.LocalName);
+
+            Verify(locals[1].ToDisplayParts(formatTypeRefAndScoped),
+                "scoped ref readonly R r3",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.LocalName);
+        }
+
+        [Fact, WorkItem(38783, "https://github.com/dotnet/roslyn/issues/38783")]
+        public void Operator1()
+        {
+            var source = """
+                class Program
+                {
+                    void M()
+                    {
+                        _ = 1 == 1;
+                    }
+                }
+                """;
+
+            var comp = CreateCompilation(source);
+            comp.VerifyDiagnostics();
+            var tree = comp.SyntaxTrees[0];
+            var model = comp.GetSemanticModel(tree);
+            var binaryExpression = tree.GetRoot().DescendantNodes().OfType<BinaryExpressionSyntax>().Single();
+            var op = model.GetSymbolInfo(binaryExpression).Symbol;
+
+            // When asking for metadata names, this should show up as a method-name.
+            Verify(op.ToDisplayParts(SymbolDisplayFormat.TestFormat),
+                "System.Boolean System.Int32.op_Equality(System.Int32 left, System.Int32 right)",
+                SymbolDisplayPartKind.NamespaceName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.NamespaceName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.MethodName, // Should be MethodName because of 'op_Equality'
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.NamespaceName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.NamespaceName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation);
+
+            var ideFormat = new SymbolDisplayFormat(
+                globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Omitted,
+                genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters | SymbolDisplayGenericsOptions.IncludeTypeConstraints,
+                memberOptions:
+                    SymbolDisplayMemberOptions.IncludeRef |
+                    SymbolDisplayMemberOptions.IncludeType |
+                    SymbolDisplayMemberOptions.IncludeParameters |
+                    SymbolDisplayMemberOptions.IncludeContainingType,
+                kindOptions:
+                    SymbolDisplayKindOptions.IncludeMemberKeyword,
+                propertyStyle:
+                    SymbolDisplayPropertyStyle.ShowReadWriteDescriptor,
+                parameterOptions:
+                    SymbolDisplayParameterOptions.IncludeName |
+                    SymbolDisplayParameterOptions.IncludeType |
+                    SymbolDisplayParameterOptions.IncludeParamsRefOut |
+                    SymbolDisplayParameterOptions.IncludeExtensionThis |
+                    SymbolDisplayParameterOptions.IncludeDefaultValue |
+                    SymbolDisplayParameterOptions.IncludeOptionalBrackets,
+                localOptions:
+                    SymbolDisplayLocalOptions.IncludeRef |
+                    SymbolDisplayLocalOptions.IncludeType,
+                miscellaneousOptions:
+                    SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers |
+                    SymbolDisplayMiscellaneousOptions.UseSpecialTypes |
+                    SymbolDisplayMiscellaneousOptions.UseErrorTypeSymbolName |
+                    SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier |
+                    SymbolDisplayMiscellaneousOptions.AllowDefaultLiteral |
+                    SymbolDisplayMiscellaneousOptions.CollapseTupleTypes);
+
+            // When not asking for metadata names, this should show up as an operator.
+            Verify(op.ToDisplayParts(ideFormat),
+                "bool int.operator ==(int left, int right)",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Operator, // Should be MethodName because of '=='
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation);
+        }
+
+        [Fact, WorkItem(66009, "https://github.com/dotnet/roslyn/issues/66009")]
+        public void PreprocessingSymbol()
+        {
+            var source = """
+                #if NET5_0_OR_GREATER
+                #endif
+                """;
+
+            var comp = CreateCompilation(source);
+            var tree = comp.SyntaxTrees.First();
+            var model = comp.GetSemanticModel(tree);
+            var preprocessingNameSyntax = tree.GetRoot().DescendantNodes(descendIntoTrivia: true)
+                .OfType<IdentifierNameSyntax>().First();
+            var preprocessingSymbolInfo = model.GetPreprocessingSymbolInfo(preprocessingNameSyntax);
+            var preprocessingSymbol = preprocessingSymbolInfo.Symbol;
+
+            var format = new SymbolDisplayFormat(
+                 memberOptions: SymbolDisplayMemberOptions.IncludeParameters,
+                 parameterOptions: SymbolDisplayParameterOptions.IncludeType |
+                                   SymbolDisplayParameterOptions.IncludeName |
+                                   SymbolDisplayParameterOptions.IncludeDefaultValue);
+
+            Assert.Equal("NET5_0_OR_GREATER", preprocessingSymbol.ToDisplayString(format));
+
+            var displayParts = preprocessingSymbol.ToDisplayParts(format);
+            AssertEx.Equal(
+                expected: [
+                    new SymbolDisplayPart(SymbolDisplayPartKind.Text, preprocessingSymbol, "NET5_0_OR_GREATER")
+                ],
+                actual: displayParts);
         }
     }
 }

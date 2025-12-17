@@ -32,6 +32,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return _property.TypeWithAnnotations;
             }
 
+            public override RefKind RefKind => RefKind.None;
+
+            public override ImmutableArray<CustomModifier> RefCustomModifiers => ImmutableArray<CustomModifier>.Empty;
+
             public override string Name
             {
                 get { return GeneratedNames.MakeAnonymousTypeBackingFieldName(_property.Name); }
@@ -139,7 +143,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 get { return true; }
             }
 
-            internal override void AddSynthesizedAttributes(PEModuleBuilder moduleBuilder, ref ArrayBuilder<SynthesizedAttributeData> attributes)
+            internal override void AddSynthesizedAttributes(PEModuleBuilder moduleBuilder, ref ArrayBuilder<CSharpAttributeData> attributes)
             {
                 base.AddSynthesizedAttributes(moduleBuilder, ref attributes);
 
@@ -150,6 +154,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     ImmutableArray.Create(
                         new TypedConstant(manager.System_Diagnostics_DebuggerBrowsableState, TypedConstantKind.Enum, DebuggerBrowsableState.Never))));
             }
+
+            internal override bool IsRequired => false;
         }
     }
 }

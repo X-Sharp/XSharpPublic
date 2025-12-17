@@ -174,7 +174,7 @@ funcprocModifiers   : ( Tokens+=(STATIC | INTERNAL | PUBLIC | EXPORT | UNSAFE | 
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 
-using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoperator)? Name=name EOS
+using_              : (Global=GLOBAL)? USING (Static=STATIC)? (Unsafe=UNSAFE)? (Alias=identifierName Op=assignoperator)? Name=name EOS
                     ;
 
 
@@ -232,6 +232,8 @@ votypeModifiers     : ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE | STATIC ) 
 namespace_          : BEGIN NAMESPACE Name=name e=eos
                       (Entities+=entity)*
                       (END NAMESPACE End=EOS)?
+                    | NAMESPACE Name=name e=eos
+                      (Entities+=entity)*
                     ;
 
 interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?
@@ -248,7 +250,7 @@ interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?
 
 
 class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
-                      C=CLASS (Namespace=nameDot)? Id=identifier
+                      (C=CLASS | R=RECORD | R=RECORD C=CLASS) (Namespace=nameDot)? Id=identifier
                       TypeParameters=typeparameters?                                    // TypeParameters indicate Generic Class
                       (INHERIT BaseType=datatype)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
@@ -257,10 +259,10 @@ class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (Members+=classmember)*
                       // Do not make the next line optional. The parser will not know when a nested type starts or the next type
                       // as a result the parser will become VERY slow
-                      END CLASS End=EOS
+                      END (R2=RECORD|C2=CLASS) End=EOS
                     ;
 
-classModifiers      : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
+classModifiers      : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL | LOCAL) )+
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 
@@ -285,7 +287,7 @@ typeparameterconstraint: Key=(CLASS|STRUCTURE)                    #classOrStruct
 // End of Extensions for Generic Classes
 
 structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
-                      S=STRUCTURE (Namespace=nameDot)? Id=identifier
+                      (R=RECORD)? S=STRUCTURE (Namespace=nameDot)? Id=identifier
                       TypeParameters=typeparameters?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
@@ -888,7 +890,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     // The IsTypeCastAllowed function prevents the following from being seen as a typecast on an expression inside a with block: (n):ToString().
                     // it checks for a DOT or COLON after the RPAREN. When it finds that then IsTypeCastAllowed() return false.
                     | {IsTypeCastAllowed() }? LPAREN Type=datatype RPAREN Expr=expression  #typeCast    // (typename) expr
-                    | Expr=expression Op=(INC | DEC)                            #postfixExpression      // expr ++/--
+                    | Expr=expression Op=(INC | DEC )                           #postfixExpression      // expr ++/--
                     | Op=AWAIT Expr=expression                                  #awaitExpression        // AWAIT expr
                     // The predicate prevents STACKALLOC(123) from being parsed as a STACKALLOC <ParenExpression>
                     | {InputStream.La(2) != LPAREN }? Op=STACKALLOC Expr=expression  #stackAllocExpression   // STACKALLOC expr
@@ -910,7 +912,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     | Left=expression Op=(LOGIC_AND |AND |FOX_AND) Right=expression #binaryExpression       // expr .and. expr (logical and) also &&
                     | Left=expression Op=(LOGIC_XOR |FOX_XOR) Right=expression  #binaryExpression       // expr .xor. expr (logical xor)
                     | Left=expression Op=(LOGIC_OR |OR|FOX_OR) Right=expression #binaryExpression       // expr .or. expr (logical or)  also ||
-                    | Left=expression Op=(DEFAULT|QQMARK) Right=expression               #binaryExpression       // expr DEFAULT expr
+                    | Left=expression Op=(DEFAULT|QQMARK) Right=expression      #binaryExpression       // expr DEFAULT expr
                     | Op=DOTDOT Right=expression?                               #binaryExpression       // .. expr?
                     | Left=expression Op=DOTDOT Right=expression?               #binaryExpression       // expr .. expr?
                     | <assoc=right> Left=expression
@@ -1323,7 +1325,7 @@ keywordsoft         : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     | SELECT | STACKALLOC | UNCHECKED | VAR | VOLATILE | WHEN | WHERE | BINARY | CHAR | CURRENCY | DECIMAL | DATETIME | NINT | NUINT
                     // Added as XS keywords to allow them to be treated as IDs
                     // the following entity keywords will be never used 'alone' and can therefore be safely defined as identifiers
-                    | DELEGATE | ENUM | GLOBAL | INHERIT | STRUCTURE
+                    | DELEGATE | ENUM | GLOBAL | INHERIT | STRUCTURE | RECORD
                     // The following 'old' keywords are never used 'alone' and are harmless as identifiers
                     | ALIGN | CALLBACK | CLIPPER  | DIM | DOWNTO | DLLEXPORT
                     | FASTCALL | IN | INIT1 | INIT2 | INIT3 | INSTANCE | PASCAL |  SEQUENCE

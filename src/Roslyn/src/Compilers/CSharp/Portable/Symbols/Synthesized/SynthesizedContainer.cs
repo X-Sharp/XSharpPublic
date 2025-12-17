@@ -16,21 +16,12 @@ using Roslyn.Utilities;
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     /// <summary>
-    /// A container synthesized for a lambda, iterator method, async method, or dynamic-sites.
+    /// A container synthesized for a lambda, iterator method, or async method.
     /// </summary>
     internal abstract class SynthesizedContainer : NamedTypeSymbol
     {
         private readonly ImmutableArray<TypeParameterSymbol> _typeParameters;
         private readonly ImmutableArray<TypeParameterSymbol> _constructedFromTypeParameters;
-
-        protected SynthesizedContainer(string name, int parameterCount, bool returnsVoid)
-        {
-            Debug.Assert(name != null);
-            Name = name;
-            TypeMap = TypeMap.Empty;
-            _typeParameters = CreateTypeParameters(parameterCount, returnsVoid);
-            _constructedFromTypeParameters = default(ImmutableArray<TypeParameterSymbol>);
-        }
 
         protected SynthesizedContainer(string name, MethodSymbol containingMethod)
         {
@@ -47,31 +38,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        protected SynthesizedContainer(string name, ImmutableArray<TypeParameterSymbol> typeParameters, TypeMap typeMap)
+        protected SynthesizedContainer(string name)
         {
             Debug.Assert(name != null);
-            Debug.Assert(!typeParameters.IsDefault);
-            Debug.Assert(typeMap != null);
 
             Name = name;
-            _typeParameters = typeParameters;
-            TypeMap = typeMap;
-        }
-
-        private ImmutableArray<TypeParameterSymbol> CreateTypeParameters(int parameterCount, bool returnsVoid)
-        {
-            var typeParameters = ArrayBuilder<TypeParameterSymbol>.GetInstance(parameterCount + (returnsVoid ? 0 : 1));
-            for (int i = 0; i < parameterCount; i++)
-            {
-                typeParameters.Add(new AnonymousTypeManager.AnonymousTypeParameterSymbol(this, i, "T" + (i + 1)));
-            }
-
-            if (!returnsVoid)
-            {
-                typeParameters.Add(new AnonymousTypeManager.AnonymousTypeParameterSymbol(this, parameterCount, "TResult"));
-            }
-
-            return typeParameters.ToImmutableAndFree();
+            _typeParameters = ImmutableArray<TypeParameterSymbol>.Empty;
+            TypeMap = TypeMap.Empty;
         }
 
         internal TypeMap TypeMap { get; }
@@ -80,11 +53,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal sealed override bool IsInterface => this.TypeKind == TypeKind.Interface;
 
-        internal override void AddSynthesizedAttributes(PEModuleBuilder moduleBuilder, ref ArrayBuilder<SynthesizedAttributeData> attributes)
+        internal override void AddSynthesizedAttributes(PEModuleBuilder moduleBuilder, ref ArrayBuilder<CSharpAttributeData> attributes)
         {
             base.AddSynthesizedAttributes(moduleBuilder, ref attributes);
 
-            if (ContainingSymbol.Kind == SymbolKind.NamedType && (ContainingSymbol.IsImplicitlyDeclared || ContainingSymbol is SimpleProgramNamedTypeSymbol))
+            if (ContainingSymbol.Kind == SymbolKind.NamedType && ContainingSymbol.IsImplicitlyDeclared)
             {
                 return;
             }
@@ -100,11 +73,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
 
         protected override NamedTypeSymbol WithTupleDataCore(TupleExtraData newData)
-            => throw ExceptionUtilities.Unreachable;
+            => throw ExceptionUtilities.Unreachable();
 
-        /// <summary>
-        /// Note: Can be default if this SynthesizedContainer was constructed with <see cref="SynthesizedContainer(string, int, bool)"/>
-        /// </summary>
         internal ImmutableArray<TypeParameterSymbol> ConstructedFromTypeParameters => _constructedFromTypeParameters;
 
         public sealed override ImmutableArray<TypeParameterSymbol> TypeParameters => _typeParameters;
@@ -129,6 +99,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
 
         internal override bool HasCodeAnalysisEmbeddedAttribute => false;
+
+        internal override bool HasCompilerLoweringPreserveAttribute => false;
+
+        internal sealed override bool IsInterpolatedStringHandlerType => false;
+
+        internal sealed override bool HasDeclaredRequiredMembers => false;
+
+        internal override bool GetGuidString(out string guidString)
+        {
+            guidString = null;
+            return false;
+        }
 
         public override ImmutableArray<Symbol> GetMembers()
         {
@@ -165,9 +147,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public override ImmutableArray<NamedTypeSymbol> GetTypeMembers() => ImmutableArray<NamedTypeSymbol>.Empty;
 
-        public override ImmutableArray<NamedTypeSymbol> GetTypeMembers(string name) => ImmutableArray<NamedTypeSymbol>.Empty;
+        public override ImmutableArray<NamedTypeSymbol> GetTypeMembers(ReadOnlyMemory<char> name) => ImmutableArray<NamedTypeSymbol>.Empty;
 
-        public override ImmutableArray<NamedTypeSymbol> GetTypeMembers(string name, int arity) => ImmutableArray<NamedTypeSymbol>.Empty;
+        public override ImmutableArray<NamedTypeSymbol> GetTypeMembers(ReadOnlyMemory<char> name, int arity) => ImmutableArray<NamedTypeSymbol>.Empty;
 
         public override Accessibility DeclaredAccessibility => Accessibility.Private;
 
@@ -193,6 +175,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal override bool MangleName => Arity > 0;
 
+#nullable enable
+        internal sealed override bool IsFileLocal => false;
+        internal sealed override FileIdentifier? AssociatedFileIdentifier => null;
+#nullable disable
+
         public override bool IsImplicitlyDeclared => true;
 
         internal override bool ShouldAddWinRTMembers => false;
@@ -213,7 +200,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal override IEnumerable<Cci.SecurityAttribute> GetSecurityInformation()
         {
-            throw ExceptionUtilities.Unreachable;
+            throw ExceptionUtilities.Unreachable();
         }
 
         internal override AttributeUsageInfo GetAttributeUsageInfo() => default(AttributeUsageInfo);
@@ -222,8 +209,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal override bool HasSpecialName => false;
 
-        internal sealed override NamedTypeSymbol AsNativeInteger() => throw ExceptionUtilities.Unreachable;
+        internal sealed override NamedTypeSymbol AsNativeInteger() => throw ExceptionUtilities.Unreachable();
 
         internal sealed override NamedTypeSymbol NativeIntegerUnderlyingType => null;
+
+        internal sealed override IEnumerable<(MethodSymbol Body, MethodSymbol Implemented)> SynthesizedInterfaceMethodImpls()
+        {
+            return SpecializedCollections.EmptyEnumerable<(MethodSymbol Body, MethodSymbol Implemented)>();
+        }
+
+        internal sealed override bool HasInlineArrayAttribute(out int length)
+        {
+            length = 0;
+            return false;
+        }
+
+#nullable enable
+        internal sealed override bool HasCollectionBuilderAttribute(out TypeSymbol? builderType, out string? methodName)
+        {
+            builderType = null;
+            methodName = null;
+            return false;
+        }
+
+        internal sealed override bool HasAsyncMethodBuilderAttribute(out TypeSymbol? builderArgument)
+        {
+            builderArgument = null;
+            return false;
+        }
     }
 }

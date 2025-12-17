@@ -13,13 +13,17 @@ namespace Microsoft.CodeAnalysis.CompilerServer
     {
         public static int Main(string[] args)
         {
-            using var logger = new CompilerServerLogger();
+#if XSHARP
+            using var logger = new CompilerServerLogger("XSCompiler");
+#else
+            using var logger = new CompilerServerLogger("VBCSCompiler");
+#endif
 
             NameValueCollection appSettings;
             try
             {
 #if BOOTSTRAP
-                ExitingTraceListener.Install();
+                ExitingTraceListener.Install(logger);
 #endif
 
 #if NET472

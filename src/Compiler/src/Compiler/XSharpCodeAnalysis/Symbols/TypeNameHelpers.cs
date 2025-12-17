@@ -26,16 +26,6 @@ namespace Microsoft.CodeAnalysis
                 result = result.Replace("XSharp.__Psz", "psz");
                 result = result.Replace("XSharp.Codeblock", "codeblock");
             }
-            if (result.IndexOf("Vulcan.") >= 0)
-            {
-                result = result.Replace("Vulcan.__Usual", "usual");
-                result = result.Replace("Vulcan.__VODate", "date");
-                result = result.Replace("Vulcan.__VOFloat", "float");
-                result = result.Replace("Vulcan.__Array", "array");
-                result = result.Replace("Vulcan.__Symbol", "symbol");
-                result = result.Replace("Vulcan.__Psz", "psz");
-                result = result.Replace("Vulcan.Codeblock", "codeblock");
-            }
             return result;
         }
 

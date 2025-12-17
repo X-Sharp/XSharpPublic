@@ -154,7 +154,7 @@ BEGIN NAMESPACE XSharp
 
     /// <summary>Create an Error Object with the Innner Exception</summary>
     CONSTRUCTOR (ex AS Exception)
-    SUPER(ex.Message,ex)
+    SUPER(ex:Message,ex)
     SELF:setDefaultValues()
     IF ex IS Error
         // Clone Error properties from Inner Exception
@@ -210,7 +210,7 @@ BEGIN NAMESPACE XSharp
 
     /// <summary>Create an Error Object with the Innner Exception and other parameters</summary>
     CONSTRUCTOR (ex AS Exception, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[])
-    SUPER(ex.Message,ex)
+    SUPER(ex:Message,ex)
     SELF:setDefaultValues()
     SELF:GetGenCodeFromException(ex)
     SELF:FuncSym     := cFuncName

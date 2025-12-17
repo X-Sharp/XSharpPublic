@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -16,11 +16,11 @@ USING System.Collections.Generic
 /// data you will have to write that back to the workarea yourself.
 /// </remarks>
 CLASS XSharp.DbDataTable INHERIT DataTable
-PROTECT _nAdding AS LONG
+PROTECT _nAdding AS DWORD
 PROTECT _nArea   AS LONG
 
-        
-        
+
+
         CONSTRUCTOR()
             SUPER()
         /// <summary>Create a datatable from an IRdd object</summary>
@@ -35,8 +35,8 @@ PROTECT _nArea   AS LONG
             SELF:BuildColumns(oRDD)
             SELF:AddData(oRDD)
             SELF:AcceptChanges()
-        
-        
+
+
         PRIVATE METHOD BuildColumns(oRDD AS IRdd) AS VOID
             LOCAL nI AS LONG
             LOCAL aColumns AS DbColumnInfo[]
@@ -72,8 +72,8 @@ PROTECT _nArea   AS LONG
                 SELF:Columns:Add(DbDataColumn{oDbCol})
             NEXT
         RETURN
-        
-        
+
+
         PRIVATE METHOD AddData(oRDD AS IRdd) AS VOID
             VAR nOld := oRDD:RecNo
             oRDD:GoTop()
@@ -91,19 +91,19 @@ PROTECT _nArea   AS LONG
                 oRDD:Skip(1)
             ENDDO
             oRDD:GoTo(nOld)
-        
-        
+
+
         OVERRIDE PROTECTED METHOD NewRowFromBuilder(builder AS DataRowBuilder ) AS DataRow
             local row as DbDataRow
             IF SELF:_nAdding == 0
                 row := DbDataRow{builder}
-                row:RecNo := SELF:Rows:Count+1
+                row:RecNo := (DWORD) SELF:Rows:Count+1
             ELSE
                 row := DbDataRow{builder, SELF:_nAdding}
             ENDIF
             RETURN row
-        
-        PRIVATE METHOD _AddRow(oData AS OBJECT[], nRecord AS LONG) AS VOID
+
+        PRIVATE METHOD _AddRow(oData AS OBJECT[], nRecord AS DWORD) AS VOID
             SELF:_nAdding := nRecord
             SELF:Rows:Add(oData)
         RETURN
@@ -135,7 +135,7 @@ PROTECT _nArea   AS LONG
                             IF ! oRDD:UnLock(row:RecNo)
                                 THROW Error.VOError(EG_LOCK, "DbDataTable.Save","RecNo", 1, <OBJECT>{row:RecNo})
                             ENDIF
-                                
+
                         CASE DataRowState.Added
                             IF ! oRDD:Append(TRUE)
                                 THROW Error.VOError(EG_WRITE, "DbDataTable.Save","RecNo", 1, <OBJECT>{row:RecNo})
@@ -188,14 +188,14 @@ PROTECT _nArea   AS LONG
                             THROW Error.VOError(EG_LOCK, "DbDataTable.Save","RecNo", 1, <OBJECT>{row:RecNo})
                         ENDIF
                     ENDIF
-                        
+
             NEXT
         CATCH AS Exception
-            THROW 
-        END TRY 
+            THROW
+        END TRY
         RETURN TRUE
 END CLASS
-        
-        
-        
-        
+
+
+
+

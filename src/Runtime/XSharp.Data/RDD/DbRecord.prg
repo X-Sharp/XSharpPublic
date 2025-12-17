@@ -29,7 +29,7 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
     /// <summary>Initializes a new instance of the DbRecord class</summary>
     /// <param name="position">Ordinal position in the datasource</param>
     /// <param name="source">Data source to which this object belongs</param>
-    CONSTRUCTOR( position AS INT, source AS DbDataSource)
+    CONSTRUCTOR( position AS DWORD, source AS DbDataSource)
     SELF:RecNo := position
     SELF:Datasource := source
     /// The server implements an event which will be triggered if a column value is changed.
@@ -38,7 +38,7 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
     RETURN
     #endregion
 
-    PRIVATE _previous AS LONG
+    PRIVATE _previous AS DWORD
     // Make sure the workarea is on the right row before updating
     PRIVATE METHOD SetPos() AS LOGIC
         LOCAL changed  :=FALSE AS LOGIC
@@ -58,7 +58,7 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
 
     /// <summary>Record number in the workarea. Does not have to match the logical position in the list.</summary>
     [ReadOnly(TRUE)];
-    PROPERTY  RecNo AS INT AUTO
+    PROPERTY  RecNo AS DWORD AUTO
     /// <summary>Is the current record deleted ?</summary>
     [ReadOnly(TRUE)];
     PROPERTY  Deleted      AS LOGIC
@@ -146,7 +146,7 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
     /// This method will be called if somebody changes a column value inside the dbf server.
     /// If the record number is the same as the one we're representing, the we raise the
     /// property changed event as one of our properties has changed.
-    PRIVATE METHOD FieldChange( recno AS INT , colno AS INT ) AS VOID
+    PRIVATE METHOD FieldChange( recno AS DWORD , colno AS INT ) AS VOID
         IF recno == SELF:RecNo
             SELF:OnPropertyChanged(colno)
         ENDIF

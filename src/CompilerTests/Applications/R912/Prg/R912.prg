@@ -1,4 +1,6 @@
 // https://github.com/X-Sharp/XSharpPublic/issues/1357
+#pragma warnings( 9201, off)
+#pragma warnings( 9032, off)
 procedure Main()
     local o := SomeClass():new()
 

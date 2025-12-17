@@ -6,15 +6,15 @@
 // Also there's a runtime crash when calling ListBox:EnableItemDrag()
 // but that's probably due to a similar issue in the already compiled in vulcan GUI classes
 #ifdef __XSHARP__
-	STATIC DEFINE DATAWIN_LISTBOX1 := 100 
-	STATIC DEFINE DATAWIN_TEST := 101 
-	STATIC DEFINE DATAWIN_LISTBOX2 := 102 
-	STATIC DEFINE DATAWIN_TEST2 := 103 
-#else 
-	#DEFINE DATAWIN_LISTBOX1  100 
-	#DEFINE DATAWIN_TEST  101 
-	#DEFINE DATAWIN_LISTBOX2  102 
-	#DEFINE DATAWIN_TEST2  103 
+	STATIC DEFINE DATAWIN_LISTBOX1 := 100
+	STATIC DEFINE DATAWIN_TEST := 101
+	STATIC DEFINE DATAWIN_LISTBOX2 := 102
+	STATIC DEFINE DATAWIN_TEST2 := 103
+#else
+	#DEFINE DATAWIN_LISTBOX1  100
+	#DEFINE DATAWIN_TEST  101
+	#DEFINE DATAWIN_LISTBOX2  102
+	#DEFINE DATAWIN_TEST2  103
 
 #endif
 #undef VO
@@ -26,20 +26,20 @@ oApp:Start()
 RETURN 0
 
 CLASS xApp INHERIT App
-METHOD Start() 
+METHOD Start()
 	LOCAL oMainWindow AS ShellWindow
 	LOCAL oDataWin AS datawin
 	oMainWindow := ShellWindow{SELF}
 	oMainWindow:Show(1)
-	
+
 	oDataWin := datawin{oMainWindow}
 	oDataWin:Show(1)
-	
+
 	SELF:Exec()
 RETURN NIL
 
 END CLASS
-CLASS datawin INHERIT DATAWINDOW 
+CLASS datawin INHERIT DATAWINDOW
 
 	PROTECT oDCListBox1 AS LISTBOX
 	PROTECT oCCTest AS PUSHBUTTON
@@ -48,7 +48,7 @@ CLASS datawin INHERIT DATAWINDOW
 
   //{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)
 
-CONSTRUCTOR(oWindow,iCtlID,oServer,uExtra)  
+CONSTRUCTOR(oWindow,iCtlID,oServer,uExtra)
 
 SELF:PreInit(oWindow,iCtlID,oServer,uExtra)
 
@@ -78,31 +78,31 @@ SELF:PostInit(oWindow,iCtlID,oServer,uExtra)
 RETURN
 
 
-METHOD PostInit(oWindow,iCtlID,oServer,uExtra) 
+METHOD PostInit(oWindow,iCtlID,oServer,uExtra)
 	//Put your PostInit additions here
 	LOCAL n AS INT
 	FOR n := 1 UPTO 100
 		SELF:oDCListBox1:AddItem(Replicate(AsString(n) , 20))
 	NEXT
-	
-	#warning calls to EnableItemDrag() cause a runtime crash
-//	SELF:oDCListBox1:EnableItemDrag()
-//	SELF:oDCListBox2:EnableItemDrag()
-	
+
+	//warning calls to EnableItemDrag() (used to?) cause a runtime crash
+	SELF:oDCListBox1:EnableItemDrag()
+	SELF:oDCListBox2:EnableItemDrag()
+
 	RETURN NIL
 
 
-METHOD Test( ) 
+METHOD Test( )
 LOCAL h AS PTR
 LOCAL ptIS IS _winPoint
 LOCAL ptAS AS _winPoint
 LOCAL nRes AS INT
 h := SELF:oDCListBox1:Handle()
-ptAS := MemAlloc(100) 
+ptAS := MemAlloc(100)
 ptAS:x := 200
-ptAS:y := 200 
+ptAS:y := 200
 ptIS:x := 200
-ptIS:y := 200 
+ptIS:y := 200
 
 // Next 2 statements compile in VO and return correct results:
 // IS local, AS param
@@ -111,7 +111,7 @@ ptIS:y := 200
 	SELF:oDCListBox2:AddItem("LOCAL IS, FUNC AS: " + AsString(nRes))
 	? nRes
 	xAssert(nRes > 0)
-	
+
 //	 IS local, IS param
 	nRes := LBItemFromPt_IS(h , ptIS , FALSE)
 	SELF:oDCListBox2:AddItem("LOCAL IS, FUNC IS: " + AsString(nRes))
@@ -125,7 +125,7 @@ nRes := LBItemFromPt_AS(h , ptAS , FALSE)
 SELF:oDCListBox2:AddItem("LOCAL AS, FUNC AS: " + AsString(nRes))
 ? nRes
 
-// AS local, IS param 
+// AS local, IS param
 #ifdef VO
 	nRes := LBItemFromPt_IS(h , ptAS , FALSE)
 	SELF:oDCListBox2:AddItem("LOCAL AS, FUNC IS: " + AsString(nRes))
@@ -145,7 +145,7 @@ MemFree(ptAS)
 
 RETURN NIL
 
-METHOD Test2( )  
+METHOD Test2( )
 
 LOCAL h AS PTR
 LOCAL ptAS AS _winTest
@@ -154,11 +154,11 @@ LOCAL nRes AS INT
 
 ptAS := MemAlloc(20)
 
-h := SELF:oDCListBox1:Handle() 
+h := SELF:oDCListBox1:Handle()
 ptAS:ptCursor:x := 200
-ptAS:ptCursor:y := 200 
+ptAS:ptCursor:y := 200
 ptIS:ptCursor:x := 200
-ptIS:ptCursor:y := 200 
+ptIS:ptCursor:y := 200
 
 // this compiles in VO and finds the item (AS local, AS param):
 #ifdef VO

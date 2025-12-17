@@ -208,7 +208,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Simplification
                     Dim memberAccess = DirectCast(node.Expression, MemberAccessExpressionSyntax)
                     Dim targetSymbol = SimplificationHelpers.GetOriginalSymbolInfo(_semanticModel, memberAccess.Name)
 
-                    If Not targetSymbol Is Nothing And targetSymbol.IsReducedExtension() AndAlso memberAccess.Expression IsNot Nothing Then
+                    If targetSymbol IsNot Nothing And targetSymbol.IsReducedExtension() AndAlso memberAccess.Expression IsNot Nothing Then
                         newInvocationExpression = RewriteExtensionMethodInvocation(node, newInvocationExpression, memberAccess.Expression, DirectCast(newInvocationExpression.Expression, MemberAccessExpressionSyntax).Expression, DirectCast(targetSymbol, IMethodSymbol))
                     End If
                 End If
@@ -235,7 +235,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Simplification
 
                 Dim binding = _semanticModel.GetSpeculativeSymbolInfo(originalNode.SpanStart, expression, SpeculativeBindingOption.BindAsExpression)
 
-                If (Not binding.Symbol Is Nothing) Then
+                If (binding.Symbol IsNot Nothing) Then
                     Return expression
                 End If
 
@@ -365,6 +365,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Simplification
                             ' No duplicate names allowed
                             Return False
                         End If
+
                         found = True
                     End If
                 Next
@@ -561,7 +562,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Simplification
                     End If
                 End If
 
-                Dim symbol = _semanticModel.GetSymbolInfo(originalSimpleName.Identifier).Symbol
+                Dim symbol = _semanticModel.GetSymbolInfo(originalSimpleName.Identifier, _cancellationToken).Symbol
                 If symbol Is Nothing Then
                     Return newNode
                 End If
@@ -587,7 +588,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Simplification
 
                             ' if the user already used the Attribute suffix in the attribute, we'll maintain it.
                             If identifier.ValueText = name Then
-                                identifier = identifier.WithAdditionalAnnotations(SimplificationHelpers.DontSimplifyAnnotation)
+                                identifier = identifier.WithAdditionalAnnotations(SimplificationHelpers.DoNotSimplifyAnnotation)
                             End If
                         End If
                     End If
@@ -612,7 +613,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Simplification
 
                 ' do not complexify further for location where only simple names are allowed
                 If (TypeOf (parent) Is FieldInitializerSyntax) OrElse
-                    ((TypeOf (parent) Is DeclarationStatementSyntax) AndAlso Not TypeOf (parent) Is InheritsOrImplementsStatementSyntax) OrElse
+                    ((TypeOf (parent) Is DeclarationStatementSyntax) AndAlso TypeOf (parent) IsNot InheritsOrImplementsStatementSyntax) OrElse
                     (TypeOf (parent) Is MemberAccessExpressionSyntax AndAlso parent.Kind <> SyntaxKind.SimpleMemberAccessExpression) OrElse
                     (parent.Kind = SyntaxKind.SimpleMemberAccessExpression AndAlso originalSimpleName.IsRightSideOfDot()) OrElse
                     (parent.Kind = SyntaxKind.QualifiedName AndAlso originalSimpleName.IsRightSideOfQualifiedName()) Then
@@ -688,7 +689,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Simplification
                         Dim genericName = SyntaxFactory.GenericName(
                                         DirectCast(newNode, IdentifierNameSyntax).Identifier,
                                         SyntaxFactory.TypeArgumentList(
-                                            SyntaxFactory.SeparatedList(typeArguments.Select(Function(p) SyntaxFactory.ParseTypeName(p.ToDisplayParts(typeNameFormatWithGenerics).ToDisplayString()))))) _
+                                            SyntaxFactory.SeparatedList(typeArguments.Select(Function(p) SyntaxFactory.ParseTypeName(p.ToDisplayString(typeNameFormatWithGenerics)))))) _
                             .WithLeadingTrivia(newNode.GetLeadingTrivia()) _
                             .WithTrailingTrivia(newNode.GetTrailingTrivia()) _
                             .WithAdditionalAnnotations(Simplifier.Annotation)

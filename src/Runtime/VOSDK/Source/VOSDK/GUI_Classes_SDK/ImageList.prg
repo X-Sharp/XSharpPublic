@@ -220,7 +220,7 @@ CONSTRUCTOR(nImages, oDimension, oImage, wColor, nGrow)
 
 
 		IF ! IsNumeric(nGrow)
-			nGrow := 1l
+			nGrow := 1L
 		ENDIF
 		//PP-031115 Allow imagelist without a mask if appropriate wColor specified
 		hImageList := ImageList_Create(oDimension:Width, oDimension:Height, dwCol, nImages, nGrow)

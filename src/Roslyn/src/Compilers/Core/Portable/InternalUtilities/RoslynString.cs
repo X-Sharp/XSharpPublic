@@ -1,7 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-#nullable enable
+
 using System.Diagnostics.CodeAnalysis;
 
 namespace Roslyn.Utilities
@@ -12,10 +12,8 @@ namespace Roslyn.Utilities
         public static bool IsNullOrEmpty([NotNullWhen(returnValue: false)] string? value)
             => string.IsNullOrEmpty(value);
 
-#if !NET20
         /// <inheritdoc cref="string.IsNullOrWhiteSpace(string)"/>
         public static bool IsNullOrWhiteSpace([NotNullWhen(returnValue: false)] string? value)
             => string.IsNullOrWhiteSpace(value);
-#endif
     }
 }

@@ -110,6 +110,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.Help
                 If Not node.IntoKeyword.IsMissing Then
                     result = HelpKeywords.QueryAggregateInto
                 End If
+
                 result = HelpKeywords.QueryAggregate
             End Sub
 
@@ -416,6 +417,10 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.Help
                 End If
             End Sub
 
+            Public Overrides Sub VisitNameOfExpression(node As NameOfExpressionSyntax)
+                result = Keyword(SyntaxKind.NameOfKeyword)
+            End Sub
+
             Public Overrides Sub VisitIdentifierName(node As IdentifierNameSyntax)
                 Select Case node.Identifier.Kind()
                     Case SyntaxKind.MyBaseKeyword
@@ -426,7 +431,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.Help
                 End Select
 
                 If _isNotMetadata Then
-                    If Not TypeOf node.Parent Is InheritsOrImplementsStatementSyntax Then
+                    If TypeOf node.Parent IsNot InheritsOrImplementsStatementSyntax Then
                         If TypeOf node.Parent Is DeclarationStatementSyntax OrElse TypeOf node.Parent Is FieldDeclarationSyntax Then
                             Return
                         End If

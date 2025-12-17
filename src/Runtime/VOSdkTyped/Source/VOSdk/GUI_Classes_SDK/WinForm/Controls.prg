@@ -386,7 +386,7 @@ class VOHScrollBar inherit SWF.HScrollBar  implements  IVOControlProperties
 		//Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
 		SUPER:OnValueChanged(e)
 		IF oProperties != NULL_OBJECT
-			oEvent := ScrollEvent{SELF:Scrollbar}
+			oEvent := ScrollEvent{SELF:ScrollBar}
 			IF oProperties:Window != NULL_OBJECT
                 oProperties:Window:HorizontalScroll(oEvent)
     		ENDIF
@@ -434,7 +434,7 @@ class VOVScrollBar inherit SWF.VScrollBar  implements  IVOControlProperties
 		//Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
 		SUPER:OnValueChanged(e)
 		IF oProperties != NULL_OBJECT
-			oEvent := ScrollEvent{SELF:Scrollbar}
+			oEvent := ScrollEvent{SELF:ScrollBar}
 			IF oProperties:Window != NULL_OBJECT
                 oProperties:Window:VerticalScroll(oEvent)
     		ENDIF

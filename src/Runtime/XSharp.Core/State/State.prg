@@ -244,15 +244,47 @@ CLASS XSharp.RuntimeState
     /// <value>The default value for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionFox2 AS LOGIC AUTO
 
+	/// <summary>The current compiler setting for the AllowOldStyleAssignments compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default value for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionAllowOldStyleAssignments AS LOGIC AUTO
+	/// <summary>The current compiler setting for the AZ compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default value for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionAZ AS LOGIC AUTO
+	/// <summary>The current compiler setting for the VO4 compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default value for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionVO4 AS LOGIC AUTO
+	/// <summary>The current compiler setting for the VO6 compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default value for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionVO6 AS LOGIC AUTO
+	/// <summary>The current compiler setting for the VO7 compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default value for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionVO7 AS LOGIC AUTO
+	/// <summary>The current compiler setting for the VO10 compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default value for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionVO10 AS LOGIC AUTO
 	/// <summary>The current compiler setting for the VO11 compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default vale for this option is 'False'.</value>
+    /// <value>The default value for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionVO11 AS LOGIC AUTO
 
+	/// <summary>The current compiler setting for the VO12 compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default value for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionVO12 AS LOGIC AUTO
 	/// <summary>The current compiler setting for the VO13 compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default value for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionVO13 AS LOGIC AUTO
+	/// <summary>The current compiler setting for the VO12 compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default value for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionVO14 AS LOGIC AUTO
 	/// <summary>Gets / Sets the current Workarea number.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY CurrentWorkarea AS DWORD ;
@@ -261,12 +293,12 @@ CLASS XSharp.RuntimeState
 
     /// <summary>The current compiler setting for the OVF compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default vale for this option is 'False'.</value>
+    /// <value>The default value for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionOVF AS LOGIC AUTO
 
     /// <summary>The current compiler setting for the X# Dialect.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default vale for the Dialect is 'Core'.</value>
+    /// <value>The default value for the Dialect is 'Core'.</value>
     /// <remarks>When the dialect changes then registered DialectChanged Event Handlers will be called </remarks>
     /// <seealso cref="DialectChanged" />
     STATIC PRIVATE _dialect := XSharpDialect.Core AS XSharpDialect
@@ -285,7 +317,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The current compiler setting for the FOVF compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default vale for this option is 'False'.</value>
+    /// <value>The default value for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionFOVF AS LOGIC AUTO
 
 	/// <summary>The System.Reflection.Module for the main application.</summary>
@@ -767,12 +799,12 @@ CLASS XSharp.RuntimeState
             IF format:EndsWith("TT")
 		        SELF:_SetThreadValue(Set.AmExt, "AM")
 		        SELF:_SetThreadValue(Set.PmExt, "PM")
-                SELF:_SetThreadValue(Set.AmPm, TRUE)
+		        SELF:_SetThreadValue(Set.AmPm, TRUE)
                 SELF:_SetThreadValue(Set.Hours, 12L)
             ELSE
 		        SELF:_SetThreadValue(Set.AmExt, "")
 		        SELF:_SetThreadValue(Set.PmExt, "")
-                SELF:_SetThreadValue(Set.AmPm, FALSE)
+		        SELF:_SetThreadValue(Set.AmPm, FALSE)
                 SELF:_SetThreadValue(Set.Hours, 24L)
             ENDIF
             SELF:_SetThreadValue(Set.Timesep, Asc(SubStr3(format, 3,1)))
@@ -823,7 +855,7 @@ CLASS XSharp.RuntimeState
 			SELF:_SetThreadValue(Set.Timesep, (DWORD) 0)
 		ELSE
 			SELF:_SetThreadValue(Set.Timesep, (DWORD) separator[0])
-        ENDIF
+		ENDIF
         Var lAmPm := dtInfo:ShortDatePattern:IndexOf("tt") != -1
         SELF:_SetThreadValue(Set.AmPm, lAmPm)
         SELF:_SetThreadValue(Set.Hours, iif(lAmPm, 12L, 24L))
@@ -834,10 +866,10 @@ CLASS XSharp.RuntimeState
         VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
         format  := dtInfo:ShortDatePattern:ToLower()
 		// reduce to single m and d
-		DO WHILE (format.IndexOf("mm") != -1)
+		DO WHILE (format:IndexOf("mm") != -1)
         	format		:= format:Replace("mm", "m")
         ENDDO
-	    DO WHILE format.IndexOf("dd") != -1
+	    DO WHILE format:IndexOf("dd") != -1
 			format		:= format:Replace("dd", "d")
 		ENDDO
 		// make sure we have a double mm to get double digit dates

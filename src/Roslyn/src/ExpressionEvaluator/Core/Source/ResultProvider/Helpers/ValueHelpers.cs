@@ -41,14 +41,14 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 #if XSHARP			
             return string.Format(XResources.ExceptionThrown, fullNameWithoutFormatSpecifiers, typeName);
 #else
-			return string.Format(Resources.ExceptionThrown, fullNameWithoutFormatSpecifiers, typeName);
+            return string.Format(Resources.ExceptionThrown, fullNameWithoutFormatSpecifiers, typeName);
 #endif	
         }
 
         internal static DkmClrValue GetMemberValue(this DkmClrValue value, MemberAndDeclarationInfo member, DkmInspectionContext inspectionContext)
         {
             // Note: GetMemberValue() may return special value when func-eval of properties is disabled.
-            return value.GetMemberValue(member.Name, (int)member.MemberType, member.DeclaringType.FullName, inspectionContext);
+            return value.GetMemberValue(member.MetadataName, (int)member.MemberType, member.DeclaringType.FullName, inspectionContext);
         }
 
         internal static string Parenthesize(this string expr)

@@ -67,14 +67,14 @@ USING STATIC XSharp.Conversions
 BEGIN NAMESPACE XSharp.RDD.CDX
     [DebuggerDisplay("{DebugString,nq}")];
     INTERNAL SEALED CLASS CdxLeaf
-        INTERNAL Recno  AS LONG
+        INTERNAL Recno  AS DWORD
         INTERNAL Key    AS BYTE[]
         INTERNAL Trail  AS BYTE
         INTERNAL Dup    AS BYTE
         INTERNAL KeyBinary AS LOGIC
         INTERNAL PROPERTY KeyText AS STRING GET SELF:Key:ToAscii(KeyBinary)
         INTERNAL PROPERTY DebugString AS STRING => SELF:KeyText:Trim() +" # "+SELF:Recno:ToString()
-        CONSTRUCTOR (nRecno AS LONG, bKey AS BYTE[], nDup AS BYTE, nTrail AS BYTE, @@binary AS LOGIC)
+        CONSTRUCTOR (nRecno AS DWORD, bKey AS BYTE[], nDup AS BYTE, nTrail AS BYTE, @@binary AS LOGIC)
             SELF:Recno := nRecno
             SELF:Key   := (BYTE[]) bKey:Clone()
             SELF:Dup   := nDup
@@ -131,7 +131,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag, page AS CdxPage)
             SELF(bag, page:PageNo, page:Buffer, (WORD) IIF(page:Tag != NULL, page:Tag:KeyLength,0))
 
-	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS WORD)
+	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS DWORD , buffer AS BYTE[], nKeyLen AS WORD)
             SUPER(bag, nPage, buffer)
             KeyLength   := nKeyLen
             _leaves     := NULL
@@ -238,27 +238,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY ValidKeys AS LOGIC GET _leaves != NULL .AND. _leaves:Count == SELF:NumKeys
 #region ICdxKeyValue
 
-        INTERNAL OVERRIDE METHOD GetRecno(nPos AS Int32) AS Int32
+        INTERNAL OVERRIDE METHOD GetRecno(nPos AS Int32) AS DWORD
             IF SELF:ValidKeys
                 RETURN _leaves[nPos]:Recno
             ENDIF
             LOCAL nOffSet   AS Int32
-            LOCAL nRecno    AS Int32
+            LOCAL nRecno    AS DWORD
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nOffSet     := CDXLEAF_HEADERLEN + nPos * SELF:DataBytes
             IF SELF:RecordBits <= 16
                 nRecno      := SELF:_GetWord(nOffSet)
             ELSE
-                nRecno      := SELF:_GetLong(nOffSet)
+                nRecno      := SELF:_GetDWord(nOffSet)
             ENDIF
             nRecno      := _AND( nRecno , SELF:RecnoMask)
             RETURN nRecno
 
-        INTERNAL OVERRIDE METHOD GetChildPage(nPos AS Int32) AS Int32
+        INTERNAL OVERRIDE METHOD GetChildPage(nPos AS Int32) AS DWORD
             RETURN 0
 
-        INTERNAL OVERRIDE METHOD GetChildren as IList<LONG>
-            RETURN List<LONG>{}
+        INTERNAL OVERRIDE METHOD GetChildren as IList<DWORD>
+            RETURN List<DWORD>{}
 
         INTERNAL OVERRIDE METHOD GetKey(nPos AS Int32) AS BYTE[]
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
@@ -277,7 +277,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             LOCAL nOffSet   AS Int32
             LOCAL aBytes := BYTE[]{KeyLength} AS BYTE[]
-            LOCAL nRecno    AS Int32
+            LOCAL nRecno    AS DWORD
             LOCAL nDup, nTrail AS BYTE
             LOCAL nCopy     AS Int32
             LOCAL nStart    AS Int32
@@ -299,7 +299,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF SELF:RecordBits <= 16
                         nRecno  := SELF:_GetWord(nOffSet)
                     ELSE
-                        nRecno  := SELF:_GetLong(nOffSet)
+                        nRecno  := SELF:_GetDWord(nOffSet)
                     ENDIF
                     nRecno  := _AND( nRecno , SELF:RecnoMask)
                     iTemp   := SELF:_GetWord(nOffSet + SELF:DataBytes - 2)
@@ -395,7 +395,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END GET
         END PROPERTY
 #endregion
-        INTERNAL METHOD SetRecordBits(numRecs AS LONG) AS VOID
+        INTERNAL METHOD SetRecordBits(numRecs AS DWORD) AS VOID
             VAR bits    := CdxHelpers.GetBits(SELF:KeyLength)
             VAR totbits := bits * 2
 
@@ -444,7 +444,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         // This method assumes keys are added in the right order.
-        INTERNAL METHOD Add(recno AS LONG, key AS BYTE[]) AS CdxAction
+        INTERNAL METHOD Add(recno AS DWORD, key AS BYTE[]) AS CdxAction
             LOCAL nTrailCount AS BYTE
             LOCAL nDupCount   AS BYTE
             //System.Diagnostics.Trace.WriteLine(i"CdxLeafPage:Add({recno})")
@@ -496,7 +496,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Write()
             RETURN action
 
-        INTERNAL METHOD Insert(nPos AS LONG, recno AS LONG, key AS BYTE[]) AS CdxAction
+        INTERNAL METHOD Insert(nPos AS LONG, recno AS DWORD, key AS BYTE[]) AS CdxAction
 
             // A quick calculation if we have enough room, ignoring the duplicate count
             LOCAL nTrailCount AS BYTE
@@ -803,7 +803,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 LOCAL nBytesToCopy := SELF:KeyLength - nDup - nTrail AS WORD
                 IF SELF:Freespace < (SELF:DataBytes + nBytesToCopy)
-                    VAR action := CdxAction.SplitLeaf(SELF, -1, NULL, 0)
+                    VAR action := CdxAction.SplitLeaf(SELF, MISSING_RECNO, NULL, 0)
                     SELF:_leaves := list
                     RETURN SELF:Tag:DoAction(action)
                 ENDIF
@@ -866,13 +866,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             dupCount   := (BYTE) (wValue:b1 >> shift)
             RETURN
 
-       PRIVATE METHOD _placeRecno(nIndex AS INT, recno AS LONG, dupLen AS WORD) AS VOID
+       PRIVATE METHOD _placeRecno(nIndex AS INT, recno AS DWORD, dupLen AS WORD) AS VOID
             BEGIN UNCHECKED
                 LOCAL nOffset AS LONG
                 LOCAL liValue AS __LongStruct
                 nOffset           := CDXLEAF_HEADERLEN + nIndex * SELF:DataBytes
-                liValue:longValue := recno
-	            _buffer[nOffset]   :=  liValue:b1
+                liValue:dwordValue := recno
+                _buffer[nOffset]   :=  liValue:b1
                 _buffer[nOffset+1] :=  liValue:b2
                 IF SELF:DataBytes > 2
                     _buffer[nOffset+2] :=  liValue:b3
@@ -888,7 +888,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN
 
        #pragma warnings (170, DEFAULT)
-       INTERNAL OVERRIDE METHOD FindKey(key AS BYTE[], recno AS LONG, nSearchLen AS LONG) AS WORD
+       INTERNAL OVERRIDE METHOD FindKey(key AS BYTE[], recno AS DWORD, nSearchLen AS LONG) AS WORD
             SELF:_ExpandKeys(FALSE)
             IF SELF:NumKeys > 0
                 LOCAL nI AS WORD

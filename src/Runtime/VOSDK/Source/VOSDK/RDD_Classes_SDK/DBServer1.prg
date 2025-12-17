@@ -1511,7 +1511,7 @@ METHOD Continue( )
 					siSelectionStatus := DBSELECTIONFOUND
 				ELSE
 					siSelectionStatus := DBSELECTIONEOF
-					wLastSelectionRec := (LONG) nValue
+					wLastSelectionRec := nValue
 					IF ! VODBGoBottom( )
 						BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 					ENDIF

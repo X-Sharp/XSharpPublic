@@ -1,6 +1,7 @@
 using System.Reflection
 // https://github.com/X-Sharp/XSharpPublic/issues/1108
 #pragma warnings( 9073, off)      // Variable 'oTest' has not been declared. Assuming this is a FIELD or a MEMVAR.
+#pragma warnings( 9230, off)
 FUNCTION Start( ) AS VOID
 	private oTest as TestClass
 	otest := TestClass{}

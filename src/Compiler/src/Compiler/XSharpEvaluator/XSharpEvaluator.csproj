@@ -9,9 +9,10 @@
     <CSharpEvalSource>$(RoslynSrc)\ExpressionEvaluator\CSharp\Source\</CSharpEvalSource>
     <OutputType>Library</OutputType>
     <AssemblyName>XSharp.Evaluator</AssemblyName>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>LanguageService.CodeAnalysis.ExpressionEvaluator</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NoWarn>1591,1573,1701,3021,RS0016</NoWarn>
+    <NoWarn>1591,1573,1701,3021,RS0016;NU1507;8032</NoWarn> 
     <!--<CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>-->
     <NoStdLib>true</NoStdLib>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
@@ -27,7 +28,6 @@
     <GenericDefines>COMPILERCORE;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE;NETSTANDARD20;NETSTANDARD;COMMITHASH;EXPRESSIONCOMPILER</GenericDefines>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Configurations>Debug;Release;Public</Configurations>
-    <TargetFrameworks>net472</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>$(Genericdefines);XSHARP;DEBUG;TRACE;</DefineConstants>
@@ -57,13 +57,15 @@
     <Compile Remove="$(CSharpEvalSource)ResultProvider\NetFX20\AssemblyInfo.cs" />
   </ItemGroup>
    <ItemGroup>
-    <PackageReference Include="Microsoft.DiaSymReader" Version="1.4.0" />
-    <PackageReference Include="Microsoft.DiaSymReader.Native" Version="1.7.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine" Version="17.0.2012801" />
-    <PackageReference Include="Microsoft.VisualStudio.Debugger.Metadata" Version="17.0.2012801" />
-    <PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
-    <PackageReference Include="System.Reflection.Metadata" Version="7.0.1" />
-  </ItemGroup>
+     <PackageReference Include="Microsoft.DiaSymReader"  />
+     <PackageReference Include="Microsoft.DiaSymReader.Native"  />
+     <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine" />
+     <PackageReference Include="Microsoft.VisualStudio.Debugger.Metadata"  />
+     <PackageReference Include="System.Collections.Immutable"  />
+     <PackageReference Include="System.Reflection.Metadata"  />
+    <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine-implementation" />
+
+   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj" />
   </ItemGroup>

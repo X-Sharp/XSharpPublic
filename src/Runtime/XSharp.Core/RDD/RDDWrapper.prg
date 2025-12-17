@@ -94,7 +94,7 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL METHOD GoBottom()						AS LOGIC
             RETURN oRdd:GoBottom()
         /// <inheritdoc />
-        VIRTUAL METHOD GoTo(nRec AS LONG)				AS LOGIC
+        VIRTUAL METHOD GoTo(nRec AS DWORD)				AS LOGIC
             RETURN oRdd:GoTo(nRec)
 
         /// <inheritdoc />
@@ -470,11 +470,11 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc />
         VIRTUAL PROPERTY Found		AS LOGIC	GET oRdd:Found SET oRdd:Found := value
         /// <inheritdoc />
-        VIRTUAL PROPERTY RecCount	AS LONG		GET oRdd:RecCount
+        VIRTUAL PROPERTY RecCount	AS DWORD	GET oRdd:RecCount
         /// <inheritdoc />
         VIRTUAL PROPERTY RecId		AS OBJECT	GET	oRdd:RecId
         /// <inheritdoc />
-        VIRTUAL PROPERTY RecNo		AS LONG		GET oRdd:RecNo
+        VIRTUAL PROPERTY RecNo		AS DWORD	GET oRdd:RecNo
         /// <inheritdoc />
         VIRTUAL PROPERTY Shared		AS LOGIC	GET oRdd:Shared
 

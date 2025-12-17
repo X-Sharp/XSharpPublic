@@ -207,12 +207,12 @@ namespace XSharp.Build
         (
             string switchName,
             ITaskItem[] parameters,
-            string[] metadataNames,
-            bool[] treatAsFlags       // May be null. In this case no metadata are treated as flags.
+            string[]? metadataNames,
+            bool[]? treatAsFlags       // May be null. In this case no metadata are treated as flags.
             )
         {
             Debug.Assert(treatAsFlags == null
-                         || (metadataNames.Length == treatAsFlags.Length),
+                         || (metadataNames?.Length == treatAsFlags?.Length),
                          "metadataNames and treatAsFlags should have the same length.");
 
             if (parameters != null)

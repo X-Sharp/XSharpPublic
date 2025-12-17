@@ -4,492 +4,298 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Composition;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.DecompiledSource;
 using Microsoft.CodeAnalysis.ErrorReporting;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.Shared.Extensions;
+using Microsoft.CodeAnalysis.Shared.Utilities;
+using Microsoft.CodeAnalysis.Structure;
 using Microsoft.CodeAnalysis.SymbolMapping;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 
-namespace Microsoft.CodeAnalysis.MetadataAsSource
+namespace Microsoft.CodeAnalysis.MetadataAsSource;
+
+[Export(typeof(IMetadataAsSourceFileService)), Shared]
+internal sealed class MetadataAsSourceFileService : IMetadataAsSourceFileService
 {
-    [Export(typeof(IMetadataAsSourceFileService)), Shared]
-    internal class MetadataAsSourceFileService : IMetadataAsSourceFileService
+    private const string MetadataAsSource = nameof(MetadataAsSource);
+
+    /// <summary>
+    /// Set of providers that can be used to generate source for a symbol (for example, by decompiling, or by
+    /// extracting it from a pdb).
+    /// </summary>
+    private readonly Lazy<ImmutableArray<Lazy<IMetadataAsSourceFileProvider, MetadataAsSourceFileProviderMetadata>>> _providers;
+
+    /// <summary>
+    /// Workspace created the first time we generate any metadata for any symbol.
+    /// </summary>
+    private MetadataAsSourceWorkspace? _workspace;
+
+    /// <summary>
+    /// A lock to ensure we initialize <see cref="_workspace"/> and cleanup stale data only once.
+    /// </summary>
+    private readonly SemaphoreSlim _gate = new(initialCount: 1);
+
+    /// <summary>
+    /// We create a mutex so other processes can see if our directory is still alive.  As long as we own the mutex, no
+    /// other VS instance will try to delete our _rootTemporaryPathWithGuid folder.
+    /// </summary>
+    private readonly Mutex _mutex;
+    private readonly string _rootTemporaryPathWithGuid;
+    private readonly string _rootTemporaryPath = Path.Combine(Path.GetTempPath(), MetadataAsSource);
+
+    [ImportingConstructor]
+    [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
+    public MetadataAsSourceFileService(
+        [ImportMany] IEnumerable<Lazy<IMetadataAsSourceFileProvider, MetadataAsSourceFileProviderMetadata>> providers)
     {
-        /// <summary>
-        /// A lock to guard parallel accesses to this type. In practice, we presume that it's not 
-        /// an important scenario that we can be generating multiple documents in parallel, and so 
-        /// we simply take this lock around all public entrypoints to enforce sequential access.
-        /// </summary>
-        private readonly SemaphoreSlim _gate = new(initialCount: 1);
+        _providers = new(() => [.. ExtensionOrderer.Order(providers)]);
 
-        /// <summary>
-        /// For a description of the key, see GetKeyAsync.
-        /// </summary>
-        private readonly Dictionary<UniqueDocumentKey, MetadataAsSourceGeneratedFileInfo> _keyToInformation = new();
+        var guidString = Guid.NewGuid().ToString("N");
+        _rootTemporaryPathWithGuid = Path.Combine(_rootTemporaryPath, guidString);
+        _mutex = new Mutex(initiallyOwned: true, name: CreateMutexName(guidString));
+    }
 
-        private readonly Dictionary<string, MetadataAsSourceGeneratedFileInfo> _generatedFilenameToInformation = new(StringComparer.OrdinalIgnoreCase);
-        private IBidirectionalMap<MetadataAsSourceGeneratedFileInfo, DocumentId> _openedDocumentIds = BidirectionalMap<MetadataAsSourceGeneratedFileInfo, DocumentId>.Empty;
+    private static string CreateMutexName(string directoryName)
+        => $"{MetadataAsSource}-{directoryName}";
 
-        private MetadataAsSourceWorkspace? _workspace;
+    public async Task<MetadataAsSourceFile> GetGeneratedFileAsync(
+        Workspace sourceWorkspace,
+        Project sourceProject,
+        ISymbol symbol,
+        bool signaturesOnly,
+        MetadataAsSourceOptions options,
+        CancellationToken cancellationToken)
+    {
+        if (sourceProject == null)
+            throw new ArgumentNullException(nameof(sourceProject));
 
-        /// <summary>
-        /// We create a mutex so other processes can see if our directory is still alive. We destroy the mutex when
-        /// we purge our generated files.
-        /// </summary>
-        private Mutex? _mutex;
-        private string? _rootTemporaryPathWithGuid;
-        private readonly string _rootTemporaryPath;
+        if (symbol == null)
+            throw new ArgumentNullException(nameof(symbol));
 
-        [ImportingConstructor]
-        [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
-        public MetadataAsSourceFileService()
-            => _rootTemporaryPath = Path.Combine(Path.GetTempPath(), "MetadataAsSource");
+        if (symbol.Kind == SymbolKind.Namespace)
+            throw new ArgumentException(FeaturesResources.symbol_cannot_be_a_namespace, nameof(symbol));
 
-        private static string CreateMutexName(string directoryName)
-            => "MetadataAsSource-" + directoryName;
+        symbol = symbol.GetOriginalUnreducedDefinition();
 
-        private string GetRootPathWithGuid_NoLock()
+        using (await _gate.DisposableWaitAsync(cancellationToken).ConfigureAwait(false))
         {
-            if (_rootTemporaryPathWithGuid == null)
+            if (_workspace is null)
             {
-                var guidString = Guid.NewGuid().ToString("N");
-                _rootTemporaryPathWithGuid = Path.Combine(_rootTemporaryPath, guidString);
-                _mutex = new Mutex(initiallyOwned: true, name: CreateMutexName(guidString));
+                _workspace = new MetadataAsSourceWorkspace(this, sourceWorkspace.Services.HostServices);
+
+                // We're being initialized the first time.  Use this time to clean up any stale metadata-as-source files
+                // from previous VS sessions.
+                CleanupGeneratedFiles(_rootTemporaryPath);
             }
 
-            return _rootTemporaryPathWithGuid;
-        }
-
-        public async Task<MetadataAsSourceFile> GetGeneratedFileAsync(Project project, ISymbol symbol, bool allowDecompilation, CancellationToken cancellationToken = default)
-        {
-            if (project == null)
-            {
-                throw new ArgumentNullException(nameof(project));
-            }
-
-            if (symbol == null)
-            {
-                throw new ArgumentNullException(nameof(symbol));
-            }
-
-            if (symbol.Kind == SymbolKind.Namespace)
-            {
-                throw new ArgumentException(FeaturesResources.symbol_cannot_be_a_namespace, nameof(symbol));
-            }
-
-            symbol = symbol.GetOriginalUnreducedDefinition();
-
-            MetadataAsSourceGeneratedFileInfo fileInfo;
-            Location? navigateLocation = null;
-            var topLevelNamedType = MetadataAsSourceHelpers.GetTopLevelContainingNamedType(symbol);
-            var symbolId = SymbolKey.Create(symbol, cancellationToken);
-            var compilation = await project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
-
-            using (await _gate.DisposableWaitAsync(cancellationToken).ConfigureAwait(false))
-            {
-                InitializeWorkspace(project);
-                Contract.ThrowIfNull(_workspace);
-
-                var infoKey = await GetUniqueDocumentKeyAsync(project, topLevelNamedType, allowDecompilation, cancellationToken).ConfigureAwait(false);
-                fileInfo = _keyToInformation.GetOrAdd(infoKey, _ => new MetadataAsSourceGeneratedFileInfo(GetRootPathWithGuid_NoLock(), project, topLevelNamedType, allowDecompilation));
-
-                _generatedFilenameToInformation[fileInfo.TemporaryFilePath] = fileInfo;
-
-                if (!File.Exists(fileInfo.TemporaryFilePath))
-                {
-                    // We need to generate this. First, we'll need a temporary project to do the generation into. We
-                    // avoid loading the actual file from disk since it doesn't exist yet.
-                    var temporaryProjectInfoAndDocumentId = fileInfo.GetProjectInfoAndDocumentId(_workspace, loadFileFromDisk: false);
-                    var temporaryDocument = _workspace.CurrentSolution.AddProject(temporaryProjectInfoAndDocumentId.Item1)
-                                                                     .GetDocument(temporaryProjectInfoAndDocumentId.Item2);
-
-                    Contract.ThrowIfNull(temporaryDocument, "The temporary ProjectInfo didn't contain the document it said it would.");
-
-                    var useDecompiler = allowDecompilation;
-                    if (useDecompiler)
-                    {
-                        useDecompiler = !symbol.ContainingAssembly.GetAttributes().Any(attribute => attribute.AttributeClass?.Name == nameof(SuppressIldasmAttribute)
-                            && attribute.AttributeClass.ToNameDisplayString() == typeof(SuppressIldasmAttribute).FullName);
-                    }
-
-                    if (useDecompiler)
-                    {
-                        try
-                        {
-                            var decompiledSourceService = temporaryDocument.GetLanguageService<IDecompiledSourceService>();
-                            if (decompiledSourceService != null)
-                            {
-                                temporaryDocument = await decompiledSourceService.AddSourceToAsync(temporaryDocument, compilation, symbol, cancellationToken).ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                useDecompiler = false;
-                            }
-                        }
-                        catch (Exception e) when (FatalError.ReportAndCatchUnlessCanceled(e))
-                        {
-                            useDecompiler = false;
-                        }
-                    }
-
-                    if (!useDecompiler)
-                    {
-                        var sourceFromMetadataService = temporaryDocument.Project.LanguageServices.GetRequiredService<IMetadataAsSourceService>();
-                        temporaryDocument = await sourceFromMetadataService.AddSourceToAsync(temporaryDocument, compilation, symbol, cancellationToken).ConfigureAwait(false);
-                    }
-
-                    // We have the content, so write it out to disk
-                    var text = await temporaryDocument.GetTextAsync(cancellationToken).ConfigureAwait(false);
-
-                    // Create the directory. It's possible a parallel deletion is happening in another process, so we may have
-                    // to retry this a few times.
-                    var directoryToCreate = Path.GetDirectoryName(fileInfo.TemporaryFilePath);
-                    while (!Directory.Exists(directoryToCreate))
-                    {
-                        try
-                        {
-                            Directory.CreateDirectory(directoryToCreate);
-                        }
-                        catch (DirectoryNotFoundException)
-                        {
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                        }
-                    }
-
-                    using (var textWriter = new StreamWriter(fileInfo.TemporaryFilePath, append: false, encoding: MetadataAsSourceGeneratedFileInfo.Encoding))
-                    {
-                        text.Write(textWriter, cancellationToken);
-                    }
-
-                    // Mark read-only
-                    new FileInfo(fileInfo.TemporaryFilePath).IsReadOnly = true;
-
-                    // Locate the target in the thing we just created
-                    navigateLocation = await MetadataAsSourceHelpers.GetLocationInGeneratedSourceAsync(symbolId, temporaryDocument, cancellationToken).ConfigureAwait(false);
-                }
-
-                // If we don't have a location yet, then that means we're re-using an existing file. In this case, we'll want to relocate the symbol.
-                if (navigateLocation == null)
-                {
-                    navigateLocation = await RelocateSymbol_NoLockAsync(fileInfo, symbolId, cancellationToken).ConfigureAwait(false);
-                }
-            }
-
-            var documentName = string.Format(
-                "{0} [{1}]",
-                topLevelNamedType.Name,
-                FeaturesResources.from_metadata);
-
-            var documentTooltip = topLevelNamedType.ToDisplayString(new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces));
-
-            return new MetadataAsSourceFile(fileInfo.TemporaryFilePath, navigateLocation, documentName, documentTooltip);
-        }
-
-        private async Task<Location> RelocateSymbol_NoLockAsync(MetadataAsSourceGeneratedFileInfo fileInfo, SymbolKey symbolId, CancellationToken cancellationToken)
-        {
             Contract.ThrowIfNull(_workspace);
 
-            // We need to relocate the symbol in the already existing file. If the file is open, we can just
-            // reuse that workspace. Otherwise, we have to go spin up a temporary project to do the binding.
-            if (_openedDocumentIds.TryGetValue(fileInfo, out var openDocumentId))
+            // We don't want to track telemetry for signatures only requests, only where we try to show source
+            using var telemetryMessage = signaturesOnly ? null : new TelemetryMessage(cancellationToken);
+
+            foreach (var lazyProvider in _providers.Value)
             {
-                // Awesome, it's already open. Let's try to grab a document for it
-                var document = _workspace.CurrentSolution.GetDocument(openDocumentId);
-
-                return await MetadataAsSourceHelpers.GetLocationInGeneratedSourceAsync(symbolId, document, cancellationToken).ConfigureAwait(false);
-            }
-
-            // Annoying case: the file is still on disk. Only real option here is to spin up a fake project to go and bind in.
-            var temporaryProjectInfoAndDocumentId = fileInfo.GetProjectInfoAndDocumentId(_workspace, loadFileFromDisk: true);
-            var temporaryDocument = _workspace.CurrentSolution.AddProject(temporaryProjectInfoAndDocumentId.Item1)
-                                                             .GetDocument(temporaryProjectInfoAndDocumentId.Item2);
-
-            return await MetadataAsSourceHelpers.GetLocationInGeneratedSourceAsync(symbolId, temporaryDocument, cancellationToken).ConfigureAwait(false);
-        }
-
-        public bool TryAddDocumentToWorkspace(string filePath, SourceTextContainer sourceTextContainer)
-        {
-            using (_gate.DisposableWait())
-            {
-                if (_generatedFilenameToInformation.TryGetValue(filePath, out var fileInfo))
-                {
-                    Contract.ThrowIfNull(_workspace);
-                    Contract.ThrowIfTrue(_openedDocumentIds.ContainsKey(fileInfo));
-
-                    // We do own the file, so let's open it up in our workspace
-                    var newProjectInfoAndDocumentId = fileInfo.GetProjectInfoAndDocumentId(_workspace, loadFileFromDisk: true);
-
-                    _workspace.OnProjectAdded(newProjectInfoAndDocumentId.Item1);
-                    _workspace.OnDocumentOpened(newProjectInfoAndDocumentId.Item2, sourceTextContainer);
-
-                    _openedDocumentIds = _openedDocumentIds.Add(fileInfo, newProjectInfoAndDocumentId.Item2);
-
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public bool TryRemoveDocumentFromWorkspace(string filePath)
-        {
-            using (_gate.DisposableWait())
-            {
-                if (_generatedFilenameToInformation.TryGetValue(filePath, out var fileInfo))
-                {
-                    if (_openedDocumentIds.ContainsKey(fileInfo))
-                    {
-                        RemoveDocumentFromWorkspace_NoLock(fileInfo);
-
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        private void RemoveDocumentFromWorkspace_NoLock(MetadataAsSourceGeneratedFileInfo fileInfo)
-        {
-            var documentId = _openedDocumentIds.GetValueOrDefault(fileInfo);
-            Contract.ThrowIfNull(documentId);
-            Contract.ThrowIfNull(_workspace);
-
-            _workspace.OnDocumentClosed(documentId, new FileTextLoader(fileInfo.TemporaryFilePath, MetadataAsSourceGeneratedFileInfo.Encoding));
-            _workspace.OnProjectRemoved(documentId.ProjectId);
-
-            _openedDocumentIds = _openedDocumentIds.RemoveKey(fileInfo);
-        }
-
-        private static async Task<UniqueDocumentKey> GetUniqueDocumentKeyAsync(Project project, INamedTypeSymbol topLevelNamedType, bool allowDecompilation, CancellationToken cancellationToken)
-        {
-            var compilation = await project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
-            Contract.ThrowIfNull(compilation, "We are trying to produce a key for a language that doesn't support compilations.");
-
-            var peMetadataReference = compilation.GetMetadataReference(topLevelNamedType.ContainingAssembly) as PortableExecutableReference;
-
-            if (peMetadataReference?.FilePath != null)
-            {
-                return new UniqueDocumentKey(peMetadataReference.FilePath, peMetadataReference.GetMetadataId(), project.Language, SymbolKey.Create(topLevelNamedType, cancellationToken), allowDecompilation);
-            }
-            else
-            {
-                var containingAssembly = topLevelNamedType.ContainingAssembly;
-                return new UniqueDocumentKey(containingAssembly.Identity, containingAssembly.GetMetadata()?.Id, project.Language, SymbolKey.Create(topLevelNamedType, cancellationToken), allowDecompilation);
+                var provider = lazyProvider.Value;
+                var providerTempPath = Path.Combine(_rootTemporaryPathWithGuid, provider.GetType().Name);
+                var result = await provider.GetGeneratedFileAsync(_workspace, sourceWorkspace, sourceProject, symbol, signaturesOnly, options, providerTempPath, telemetryMessage, cancellationToken).ConfigureAwait(false);
+                if (result is not null)
+                    return result;
             }
         }
 
-        private void InitializeWorkspace(Project project)
-        {
-            if (_workspace == null)
-            {
-                _workspace = new MetadataAsSourceWorkspace(this, project.Solution.Workspace.Services.HostServices);
-            }
-        }
+        // The decompilation provider can always return something
+        throw ExceptionUtilities.Unreachable();
 
-        internal async Task<SymbolMappingResult?> MapSymbolAsync(Document document, SymbolKey symbolId, CancellationToken cancellationToken)
-        {
-            MetadataAsSourceGeneratedFileInfo? fileInfo;
-
-            using (await _gate.DisposableWaitAsync(cancellationToken).ConfigureAwait(false))
-            {
-                if (!_openedDocumentIds.TryGetKey(document.Id, out fileInfo))
-                {
-                    return null;
-                }
-            }
-
-            // WARANING: do not touch any state fields outside the lock.
-            var solution = fileInfo.Workspace.CurrentSolution;
-            var project = solution.GetProject(fileInfo.SourceProjectId);
-            if (project == null)
-            {
-                return null;
-            }
-
-            var compilation = await project.GetRequiredCompilationAsync(cancellationToken).ConfigureAwait(false);
-            var resolutionResult = symbolId.Resolve(compilation, ignoreAssemblyKey: true, cancellationToken: cancellationToken);
-            if (resolutionResult.Symbol == null)
-            {
-                return null;
-            }
-
-            return new SymbolMappingResult(project, resolutionResult.Symbol);
-        }
-
-        public void CleanupGeneratedFiles()
-        {
-            using (_gate.DisposableWait())
-            {
-                // Release our mutex to indicate we're no longer using our directory and reset state
-                if (_mutex != null)
-                {
-                    _mutex.Dispose();
-                    _mutex = null;
-                    _rootTemporaryPathWithGuid = null;
-                }
-
-                // Clone the list so we don't break our own enumeration
-                var generatedFileInfoList = _generatedFilenameToInformation.Values.ToList();
-
-                foreach (var generatedFileInfo in generatedFileInfoList)
-                {
-                    if (_openedDocumentIds.ContainsKey(generatedFileInfo))
-                    {
-                        RemoveDocumentFromWorkspace_NoLock(generatedFileInfo);
-                    }
-                }
-
-                _generatedFilenameToInformation.Clear();
-                _keyToInformation.Clear();
-                Contract.ThrowIfFalse(_openedDocumentIds.IsEmpty);
-
-                try
-                {
-                    if (Directory.Exists(_rootTemporaryPath))
-                    {
-                        var deletedEverything = true;
-
-                        // Let's look through directories to delete.
-                        foreach (var directoryInfo in new DirectoryInfo(_rootTemporaryPath).EnumerateDirectories())
-                        {
-
-                            // Is there a mutex for this one?
-                            if (Mutex.TryOpenExisting(CreateMutexName(directoryInfo.Name), out var acquiredMutex))
-                            {
-                                acquiredMutex.Dispose();
-                                deletedEverything = false;
-                                continue;
-                            }
-
-                            TryDeleteFolderWhichContainsReadOnlyFiles(directoryInfo.FullName);
-                        }
-
-                        if (deletedEverything)
-                        {
-                            Directory.Delete(_rootTemporaryPath);
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-                }
-            }
-        }
-
-        private static void TryDeleteFolderWhichContainsReadOnlyFiles(string directoryPath)
+        static void CleanupGeneratedFiles(string rootDirectory)
         {
             try
             {
-                foreach (var fileInfo in new DirectoryInfo(directoryPath).EnumerateFiles("*", SearchOption.AllDirectories))
+                if (Directory.Exists(rootDirectory))
                 {
-                    fileInfo.IsReadOnly = false;
+                    // Let's look through directories to delete.
+                    foreach (var directoryInfo in new DirectoryInfo(rootDirectory).EnumerateDirectories())
+                    {
+                        // Is there a mutex for this one?  If so, that means it's a folder open in another VS instance.
+                        // We should leave it alone.  If not, then it's a folder from a previous VS run.  Delete that
+                        // now.
+                        if (Mutex.TryOpenExisting(CreateMutexName(directoryInfo.Name), out var acquiredMutex))
+                        {
+                            acquiredMutex.Dispose();
+                        }
+                        else
+                        {
+                            TryDeleteFolderWhichContainsReadOnlyFiles(directoryInfo.FullName);
+                        }
+                    }
                 }
-
-                Directory.Delete(directoryPath, recursive: true);
             }
             catch (Exception)
             {
             }
         }
 
-        public bool IsNavigableMetadataSymbol(ISymbol symbol)
+        static void TryDeleteFolderWhichContainsReadOnlyFiles(string directoryPath)
         {
-            switch (symbol.Kind)
+            try
             {
-                case SymbolKind.Event:
-                case SymbolKind.Field:
-                case SymbolKind.Method:
-                case SymbolKind.NamedType:
-                case SymbolKind.Property:
-                case SymbolKind.Parameter:
+                foreach (var fileInfo in new DirectoryInfo(directoryPath).EnumerateFiles("*", SearchOption.AllDirectories))
+                    IOUtilities.PerformIO(() => fileInfo.IsReadOnly = false);
+
+                IOUtilities.PerformIO(() => Directory.Delete(directoryPath, recursive: true));
+            }
+            catch (Exception)
+            {
+            }
+        }
+    }
+
+    private static void AssertIsMainThread(MetadataAsSourceWorkspace workspace)
+    {
+        var threadingService = workspace.Services.GetRequiredService<IWorkspaceThreadingServiceProvider>().Service;
+        Contract.ThrowIfFalse(threadingService.IsOnMainThread);
+    }
+
+    public bool TryAddDocumentToWorkspace(string filePath, SourceTextContainer sourceTextContainer, [NotNullWhen(true)] out DocumentId? documentId)
+    {
+        // If we haven't even created a MetadataAsSource workspace yet, then this file definitely cannot be added to
+        // it. This happens when the MiscWorkspace calls in to just see if it can attach this document to the
+        // MetadataAsSource instead of itself.
+        var workspace = _workspace;
+        if (workspace != null)
+        {
+            foreach (var provider in _providers.Value)
+            {
+                if (!provider.IsValueCreated)
+                    continue;
+
+                if (provider.Value.TryAddDocumentToWorkspace(workspace, filePath, sourceTextContainer, out documentId))
+                {
                     return true;
+                }
+            }
+        }
+
+        documentId = null;
+        return false;
+    }
+
+    public bool TryRemoveDocumentFromWorkspace(string filePath)
+    {
+        // If we haven't even created a MetadataAsSource workspace yet, then this file definitely cannot be removed
+        // from it. This happens when the MiscWorkspace is hearing about a doc closing, and calls into the
+        // MetadataAsSource system to see if it owns the file and should handle that event.
+        var workspace = _workspace;
+        if (workspace != null)
+        {
+            foreach (var provider in _providers.Value)
+            {
+                if (!provider.IsValueCreated)
+                    continue;
+
+                if (provider.Value.TryRemoveDocumentFromWorkspace(workspace, filePath))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool ShouldCollapseOnOpen(string? filePath, BlockStructureOptions blockStructureOptions)
+    {
+        if (filePath is null)
+            return false;
+
+        var workspace = _workspace;
+
+        if (workspace == null)
+        {
+            try
+            {
+                throw new InvalidOperationException(
+                    $"'{nameof(ShouldCollapseOnOpen)}' should only be called once outlining has already confirmed that '{filePath}' is from the {nameof(MetadataAsSourceWorkspace)}");
+            }
+            catch (Exception ex) when (FatalError.ReportAndCatch(ex))
+            {
             }
 
             return false;
         }
 
-        public Workspace? TryGetWorkspace() => _workspace;
+        AssertIsMainThread(workspace);
 
-        private class UniqueDocumentKey : IEquatable<UniqueDocumentKey>
+        foreach (var provider in _providers.Value)
         {
-            private static readonly IEqualityComparer<SymbolKey> s_symbolIdComparer = SymbolKey.GetComparer(ignoreCase: false, ignoreAssemblyKeys: true);
+            if (!provider.IsValueCreated)
+                continue;
 
-            /// <summary>
-            /// The path to the assembly. Null in the case of in-memory assemblies, where we then use assembly identity.
-            /// </summary>
-            private readonly string? _filePath;
+            if (provider.Value.ShouldCollapseOnOpen(workspace, filePath, blockStructureOptions))
+                return true;
+        }
 
-            /// <summary>
-            /// Assembly identity. Only non-null if <see cref="_filePath"/> is null, where it's an in-memory assembly.
-            /// </summary>
-            private readonly AssemblyIdentity? _assemblyIdentity;
+        return false;
+    }
 
-            private readonly MetadataId? _metadataId;
-            private readonly string _language;
-            private readonly SymbolKey _symbolId;
-            private readonly bool _allowDecompilation;
+    internal async Task<SymbolMappingResult?> MapSymbolAsync(Document document, SymbolKey symbolId, CancellationToken cancellationToken)
+    {
+        Contract.ThrowIfNull(document.FilePath);
 
-            public UniqueDocumentKey(string filePath, MetadataId? metadataId, string language, SymbolKey symbolId, bool allowDecompilation)
+        Project? project = null;
+        using (await _gate.DisposableWaitAsync(cancellationToken).ConfigureAwait(false))
+        {
+            foreach (var provider in _providers.Value)
             {
-                Contract.ThrowIfNull(filePath);
+                if (!provider.IsValueCreated)
+                    continue;
 
-                _filePath = filePath;
-                _metadataId = metadataId;
-                _language = language;
-                _symbolId = symbolId;
-                _allowDecompilation = allowDecompilation;
-            }
+                Contract.ThrowIfNull(_workspace);
 
-            public UniqueDocumentKey(AssemblyIdentity assemblyIdentity, MetadataId? metadataId, string language, SymbolKey symbolId, bool allowDecompilation)
-            {
-                Contract.ThrowIfNull(assemblyIdentity);
-
-                _assemblyIdentity = assemblyIdentity;
-                _metadataId = metadataId;
-                _language = language;
-                _symbolId = symbolId;
-                _allowDecompilation = allowDecompilation;
-            }
-
-            public bool Equals(UniqueDocumentKey? other)
-            {
-                if (other == null)
-                {
-                    return false;
-                }
-
-                return StringComparer.OrdinalIgnoreCase.Equals(_filePath, other._filePath) &&
-                    object.Equals(_assemblyIdentity, other._assemblyIdentity) &&
-                    object.Equals(_metadataId, other._metadataId) &&
-                    _language == other._language &&
-                    s_symbolIdComparer.Equals(_symbolId, other._symbolId) &&
-                    _allowDecompilation == other._allowDecompilation;
-            }
-
-            public override bool Equals(object? obj)
-                => Equals(obj as UniqueDocumentKey);
-
-            public override int GetHashCode()
-            {
-                return
-                    Hash.Combine(StringComparer.OrdinalIgnoreCase.GetHashCode(_filePath ?? string.Empty),
-                        Hash.Combine(_assemblyIdentity?.GetHashCode() ?? 0,
-                            Hash.Combine(_metadataId?.GetHashCode() ?? 0,
-                                Hash.Combine(_language.GetHashCode(),
-                                    Hash.Combine(s_symbolIdComparer.GetHashCode(_symbolId),
-                                        _allowDecompilation.GetHashCode())))));
+                project = provider.Value.MapDocument(document);
+                if (project is not null)
+                    break;
             }
         }
+
+        if (project is null)
+            return null;
+
+        var compilation = await project.GetRequiredCompilationAsync(cancellationToken).ConfigureAwait(false);
+        var resolutionResult = symbolId.Resolve(compilation, ignoreAssemblyKey: true, cancellationToken: cancellationToken);
+        if (resolutionResult.Symbol == null)
+            return null;
+
+        return new SymbolMappingResult(project, resolutionResult.Symbol);
     }
+
+    public bool IsNavigableMetadataSymbol(ISymbol symbol)
+    {
+        symbol = symbol.OriginalDefinition;
+
+        if (!symbol.Locations.Any(static l => l.IsInMetadata))
+        {
+            return false;
+        }
+
+        switch (symbol.Kind)
+        {
+            case SymbolKind.Event:
+            case SymbolKind.Field:
+            case SymbolKind.Method:
+            case SymbolKind.NamedType:
+            case SymbolKind.Property:
+            case SymbolKind.Parameter:
+                return true;
+        }
+
+        return false;
+    }
+
+    public Workspace? TryGetWorkspace() => _workspace;
 }

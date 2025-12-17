@@ -161,12 +161,13 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.EndConstructGeneration
             Dim bufferOptions = _editorOptionsFactoryService.GetOptions(subjectBuffer)
 
             Return New EndConstructState(
-                caretPosition.Value, New Lazy(Of SemanticModel)(Function() document.GetSemanticModelAsync(cancellationToken).WaitAndGetResult(cancellationToken)), tree, tokenToLeft, bufferOptions.GetNewLineCharacter())
+                caretPosition.Value, AsyncLazy.Create(Function(c) document.GetSemanticModelAsync(c)), tree, tokenToLeft, bufferOptions.GetNewLineCharacter())
         End Function
 
-        Friend Overridable Function TryDoEndConstructForEnterKey(textView As ITextView,
-                                                                 subjectBuffer As ITextBuffer,
-                                                                 cancellationToken As CancellationToken) As Boolean
+        Friend Overridable Async Function TryDoEndConstructForEnterKeyAsync(
+                textView As ITextView,
+                subjectBuffer As ITextBuffer,
+                cancellationToken As CancellationToken) As Task(Of Boolean)
             Using Logger.LogBlock(FunctionId.EndConstruct_DoStatement, cancellationToken)
                 Using transaction = New CaretPreservingEditTransaction(VBEditorResources.End_Construct, textView, _undoHistoryRegistry, _editorOperationsFactoryService)
                     transaction.MergePolicy = AutomaticCodeChangeMergePolicy.Instance
@@ -285,7 +286,10 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.EndConstructGeneration
                         Return False
                     End If
 
-                    Dim visitor = New EndConstructStatementVisitor(textView, subjectBuffer, state, cancellationToken)
+                    Dim semanticModel = If(EndConstructStatementVisitor.NeedsSemanticModel(statement),
+                        Await state.GetSemanticModelAsync(cancellationToken).ConfigureAwait(True),
+                        Nothing)
+                    Dim visitor = New EndConstructStatementVisitor(textView, subjectBuffer, state, semanticModel, cancellationToken)
                     Dim result = visitor.Visit(statement)
 
                     If result Is Nothing Then
@@ -323,22 +327,20 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.EndConstructGeneration
 
         Private Shared Function InsertEndTextAndUpdateCaretPosition(
             view As ITextView,
+            subjectBuffer As ITextBuffer,
             insertPosition As Integer,
             caretPosition As Integer,
-            endText As String,
-            cancellationToken As CancellationToken
+            endText As String
         ) As Boolean
 
-            Dim document = view.TextSnapshot.GetOpenDocumentInCurrentContextWithChanges()
+            Dim document = subjectBuffer.CurrentSnapshot.GetOpenDocumentInCurrentContextWithChanges()
             If document Is Nothing Then
                 Return False
             End If
 
-            document.Project.Solution.Workspace.ApplyTextChanges(
-                document.Id, SpecializedCollections.SingletonEnumerable(
-                    New TextChange(New TextSpan(insertPosition, 0), endText)), cancellationToken)
+            subjectBuffer.ApplyChange(New TextChange(New TextSpan(insertPosition, 0), endText))
 
-            Dim caretPosAfterEdit = New SnapshotPoint(view.TextSnapshot, caretPosition)
+            Dim caretPosAfterEdit = New SnapshotPoint(subjectBuffer.CurrentSnapshot, caretPosition)
 
             view.TryMoveCaretToAndEnsureVisible(caretPosAfterEdit)
 
@@ -363,12 +365,13 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.EndConstructGeneration
                 If errors.Count <> 1 Then
                     Return False
                 End If
+
                 If Not IsExpectedXmlEndCDataError(errors(0).Id) Then
                     Return False
                 End If
 
                 Dim endText = "]]>"
-                Return InsertEndTextAndUpdateCaretPosition(textView, state.CaretPosition, state.TokenToLeft.Span.End, endText, cancellationToken)
+                Return InsertEndTextAndUpdateCaretPosition(textView, subjectBuffer, state.CaretPosition, state.TokenToLeft.Span.End, endText)
             End Using
         End Function
 
@@ -390,12 +393,13 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.EndConstructGeneration
                 If errors.Count <> 1 Then
                     Return False
                 End If
+
                 If Not IsExpectedXmlEndCommentError(errors(0).Id) Then
                     Return False
                 End If
 
                 Dim endText = "-->"
-                Return InsertEndTextAndUpdateCaretPosition(textView, state.CaretPosition, state.TokenToLeft.Span.End, endText, cancellationToken)
+                Return InsertEndTextAndUpdateCaretPosition(textView, subjectBuffer, state.CaretPosition, state.TokenToLeft.Span.End, endText)
             End Using
         End Function
 
@@ -417,12 +421,13 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.EndConstructGeneration
                 If errors.Count <> 1 Then
                     Return False
                 End If
+
                 If Not IsMissingXmlEndTagError(errors(0).Id) Then
                     Return False
                 End If
 
                 Dim endTagText = "</" & xmlStartElement.Name.ToString & ">"
-                Return InsertEndTextAndUpdateCaretPosition(textView, state.CaretPosition, state.TokenToLeft.Span.End, endTagText, cancellationToken)
+                Return InsertEndTextAndUpdateCaretPosition(textView, subjectBuffer, state.CaretPosition, state.TokenToLeft.Span.End, endTagText)
             End Using
         End Function
 
@@ -446,7 +451,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.EndConstructGeneration
                 End If
 
                 Dim endText = "  %>" ' NOTE: two spaces are inserted. The caret will be moved between them
-                Return InsertEndTextAndUpdateCaretPosition(textView, state.CaretPosition, state.TokenToLeft.Span.End + 1, endText, cancellationToken)
+                Return InsertEndTextAndUpdateCaretPosition(textView, subjectBuffer, state.CaretPosition, state.TokenToLeft.Span.End + 1, endText)
             End Using
         End Function
 
@@ -468,20 +473,21 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.EndConstructGeneration
                 If errors.Count <> 2 Then
                     Return False
                 End If
+
                 If Not (errors.Any(Function(e) IsExpectedXmlNameError(e.Id)) AndAlso
                         errors.Any(Function(e) IsExpectedXmlEndPIError(e.Id))) Then
                     Return False
                 End If
 
                 Dim endText = "?>"
-                Return InsertEndTextAndUpdateCaretPosition(textView, state.CaretPosition, state.TokenToLeft.Span.End, endText, cancellationToken)
+                Return InsertEndTextAndUpdateCaretPosition(textView, subjectBuffer, state.CaretPosition, state.TokenToLeft.Span.End, endText)
             End Using
         End Function
 
-        Public Function TryDo(textView As ITextView, subjectBuffer As ITextBuffer, typedChar As Char, cancellationToken As CancellationToken) As Boolean Implements IEndConstructGenerationService.TryDo
+        Public Async Function TryDoAsync(textView As ITextView, subjectBuffer As ITextBuffer, typedChar As Char, cancellationToken As CancellationToken) As Task(Of Boolean) Implements IEndConstructGenerationService.TryDoAsync
             Select Case typedChar
                 Case vbLf(0)
-                    Return Me.TryDoEndConstructForEnterKey(textView, subjectBuffer, cancellationToken)
+                    Return Await Me.TryDoEndConstructForEnterKeyAsync(textView, subjectBuffer, cancellationToken).ConfigureAwait(True)
                 Case ">"c
                     Return Me.TryDoXmlElementEndConstruct(textView, subjectBuffer, cancellationToken)
                 Case "-"c

@@ -35,14 +35,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             foreach (var p in parameters)
             {
                 var type = TypeWithAnnotations.Create(p.Type);
-                newparameters.Add(new SynthesizedAccessorValueParameterSymbol(this, type, newparameters.Count));
+                newparameters.Add(new SynthesizedPropertyAccessorValueParameterSymbol(this, newparameters.Count));
 
             }
             _changedParameters = newparameters.ToImmutableAndFree();
             _signatureChanged = true;
             this.DeclarationModifiers |= DeclarationModifiers.Override;
-            this.flags = new Flags(flags.MethodKind, this.DeclarationModifiers, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual());
-
+            this.flags.SetDeclarationModifiers(IsExplicitInterfaceImplementation, DeclarationModifiers);
         }
         internal bool RemoveModifier(DeclarationModifiers mod)
         {

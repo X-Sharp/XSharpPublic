@@ -121,7 +121,10 @@ namespace XSharp.MacroCompiler
             ilg.Emit(OpCodes.Stloc, lv.LocalIndex);
             ilg.Emit(OpCodes.Ldloc, lo.LocalIndex);
             ilg.Emit(OpCodes.Ldstr, Name);
-            ilg.Emit(OpCodes.Ldloc, lv.LocalIndex);
+            if (m.Parameters.Parameters[2].ParameterType.IsByRef)
+                ilg.Emit(OpCodes.Ldloca, lv.LocalIndex);
+            else
+                ilg.Emit(OpCodes.Ldloc, lv.LocalIndex);
             ilg.Emit(OpCodes.Call, m.Method);
             ilg.Emit(OpCodes.Pop);
         }
@@ -143,7 +146,10 @@ namespace XSharp.MacroCompiler
             ilg.Emit(OpCodes.Stloc, lv.LocalIndex);
             ilg.Emit(OpCodes.Ldloc, lo.LocalIndex);
             Name.Emit(ilg);
-            ilg.Emit(OpCodes.Ldloc, lv.LocalIndex);
+            if (m.Parameters.Parameters[2].ParameterType.IsByRef)
+                ilg.Emit(OpCodes.Ldloca, lv.LocalIndex);
+            else
+                ilg.Emit(OpCodes.Ldloc, lv.LocalIndex);
             ilg.Emit(OpCodes.Call, m.Method);
             ilg.Emit(OpCodes.Pop);
         }

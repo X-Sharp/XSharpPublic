@@ -112,7 +112,7 @@ ACCESS NewSelection AS LONGINT STRICT
 
 
 	sNMCBEENDEDIT := PTR(_CAST, SELF:lParam)
-	RETURN sNMCBEENDEDIT:iNewSelection + 1l
+	RETURN sNMCBEENDEDIT:iNewSelection + 1L
 
 
 /// <include file="Gui.xml" path="doc/ComboBoxExEndEditEvent.TextValue/*" />

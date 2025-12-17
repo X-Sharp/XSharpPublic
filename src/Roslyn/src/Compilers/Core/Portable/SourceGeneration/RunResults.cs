@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis.Text;
@@ -19,15 +20,21 @@ namespace Microsoft.CodeAnalysis
 
         private ImmutableArray<SyntaxTree> _lazyGeneratedTrees;
 
-        internal GeneratorDriverRunResult(ImmutableArray<GeneratorRunResult> results)
+        internal GeneratorDriverRunResult(ImmutableArray<GeneratorRunResult> results, TimeSpan elapsedTime)
         {
             this.Results = results;
+            ElapsedTime = elapsedTime;
         }
 
         /// <summary>
         /// The individual result of each <see cref="ISourceGenerator"/> that was run in this generator pass, one per generator.
         /// </summary>
         public ImmutableArray<GeneratorRunResult> Results { get; }
+
+        /// <summary>
+        /// The wall clock time that this generator pass took to execute.
+        /// </summary>
+        internal TimeSpan ElapsedTime { get; }
 
         /// <summary>
         /// The <see cref="Diagnostic"/>s produced by all generators run during this generation pass.
@@ -41,7 +48,7 @@ namespace Microsoft.CodeAnalysis
             {
                 if (_lazyDiagnostics.IsDefault)
                 {
-                    ImmutableInterlocked.InterlockedInitialize(ref _lazyDiagnostics, Results.SelectMany(r => r.Diagnostics).ToImmutableArray());
+                    ImmutableInterlocked.InterlockedInitialize(ref _lazyDiagnostics, Results.Where(r => !r.Diagnostics.IsDefaultOrEmpty).SelectMany(r => r.Diagnostics).ToImmutableArray());
                 }
                 return _lazyDiagnostics;
             }
@@ -59,7 +66,7 @@ namespace Microsoft.CodeAnalysis
             {
                 if (_lazyGeneratedTrees.IsDefault)
                 {
-                    ImmutableInterlocked.InterlockedInitialize(ref _lazyGeneratedTrees, Results.SelectMany(r => r.GeneratedSources.Select(g => g.SyntaxTree)).ToImmutableArray());
+                    ImmutableInterlocked.InterlockedInitialize(ref _lazyGeneratedTrees, Results.Where(r => !r.GeneratedSources.IsDefaultOrEmpty).SelectMany(r => r.GeneratedSources.Select(g => g.SyntaxTree)).ToImmutableArray());
                 }
                 return _lazyGeneratedTrees;
             }
@@ -71,14 +78,28 @@ namespace Microsoft.CodeAnalysis
     /// </summary>
     public readonly struct GeneratorRunResult
     {
-        internal GeneratorRunResult(ISourceGenerator generator, ImmutableArray<GeneratedSourceResult> generatedSources, ImmutableArray<Diagnostic> diagnostics, Exception? exception)
+        internal GeneratorRunResult(
+            ISourceGenerator generator,
+            ImmutableArray<GeneratedSourceResult> generatedSources,
+            ImmutableArray<Diagnostic> diagnostics,
+            ImmutableDictionary<string, ImmutableArray<IncrementalGeneratorRunStep>> namedSteps,
+            ImmutableDictionary<string, ImmutableArray<IncrementalGeneratorRunStep>> outputSteps,
+            ImmutableDictionary<string, object> hostOutputs,
+            Exception? exception,
+            TimeSpan elapsedTime)
         {
             Debug.Assert(exception is null || (generatedSources.IsEmpty && diagnostics.Length == 1));
 
             this.Generator = generator;
             this.GeneratedSources = generatedSources;
             this.Diagnostics = diagnostics;
+            this.TrackedSteps = namedSteps;
+            this.TrackedOutputSteps = outputSteps;
+#pragma warning disable RSEXPERIMENTAL004 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+            this.HostOutputs = hostOutputs;
+#pragma warning restore RSEXPERIMENTAL004 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
             this.Exception = exception;
+            this.ElapsedTime = elapsedTime;
         }
 
         /// <summary>
@@ -101,6 +122,12 @@ namespace Microsoft.CodeAnalysis
         public ImmutableArray<Diagnostic> Diagnostics { get; }
 
         /// <summary>
+        /// A collection of items added via <see cref="HostOutputProductionContext.AddOutput(string, object)"/>.
+        /// </summary>
+        [Experimental(RoslynExperiments.GeneratorHostOutputs, UrlFormat = RoslynExperiments.GeneratorHostOutputs_Url)]
+        public ImmutableDictionary<string, object> HostOutputs { get; }
+
+        /// <summary>
         /// An <see cref="System.Exception"/> instance that was thrown by the generator, or <c>null</c> if the generator completed without error.
         /// </summary>
         /// <remarks>
@@ -108,6 +135,28 @@ namespace Microsoft.CodeAnalysis
         /// collection will contain a single diagnostic indicating that the generator failed.
         /// </remarks>
         public Exception? Exception { get; }
+
+        /// <summary>
+        /// The wall clock time that elapsed while this generator was running.
+        /// </summary>
+        internal TimeSpan ElapsedTime { get; }
+
+        /// <summary>
+        /// A collection of the named incremental steps (both intermediate and final output ones)
+        /// executed during the generator pass this result represents.
+        /// </summary>
+        /// <remarks>
+        /// Steps can be named by extension method WithTrackingName.
+        /// </remarks>
+        public ImmutableDictionary<string, ImmutableArray<IncrementalGeneratorRunStep>> TrackedSteps { get; }
+
+        /// <summary>
+        /// A collection of the named output steps executed during the generator pass this result represents.
+        /// </summary>
+        /// <remarks>
+        /// Steps can be named by extension method WithTrackingName.
+        /// </remarks>
+        public ImmutableDictionary<string, ImmutableArray<IncrementalGeneratorRunStep>> TrackedOutputSteps { get; }
     }
 
     /// <summary>
@@ -139,5 +188,52 @@ namespace Microsoft.CodeAnalysis
         /// An identifier provided by the generator that identifies the added <see cref="SourceText"/>.
         /// </summary>
         public string HintName { get; }
+    }
+
+    /// <summary>
+    /// Contains timing information for a full generation pass.
+    /// </summary>
+    public readonly struct GeneratorDriverTimingInfo
+    {
+        internal GeneratorDriverTimingInfo(TimeSpan elapsedTime, ImmutableArray<GeneratorTimingInfo> generatorTimes)
+        {
+            ElapsedTime = elapsedTime;
+            GeneratorTimes = generatorTimes;
+        }
+
+        /// <summary>
+        /// The wall clock time that the entire generation pass took.
+        /// </summary>
+        /// <remarks>
+        /// This can be more than the sum of times in <see cref="GeneratorTimes"/> as it includes other costs such as setup.
+        /// </remarks>
+        public TimeSpan ElapsedTime { get; }
+
+        /// <summary>
+        /// Individual timings per generator.
+        /// </summary>
+        public ImmutableArray<GeneratorTimingInfo> GeneratorTimes { get; }
+    }
+
+    /// <summary>
+    /// Contains timing information for a single generator.
+    /// </summary>
+    public readonly struct GeneratorTimingInfo
+    {
+        internal GeneratorTimingInfo(ISourceGenerator generator, TimeSpan elapsedTime)
+        {
+            Generator = generator;
+            ElapsedTime = elapsedTime;
+        }
+
+        /// <summary>
+        /// The <see cref="ISourceGenerator"/> that was running during the recorded time.
+        /// </summary>
+        public ISourceGenerator Generator { get; }
+
+        /// <summary>
+        /// The wall clock time the generator spent running.
+        /// </summary>
+        public TimeSpan ElapsedTime { get; }
     }
 }

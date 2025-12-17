@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -13,87 +12,77 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.Internal.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
-using Microsoft.VisualStudio.LanguageServices.Implementation.Utilities;
+using Roslyn.Utilities;
 
-namespace Microsoft.VisualStudio.LanguageServices.Implementation.SolutionExplorer
+namespace Microsoft.VisualStudio.LanguageServices.Implementation.SolutionExplorer;
+
+internal sealed partial class DiagnosticItem(
+    ProjectId projectId,
+    AnalyzerReference analyzerReference,
+    DiagnosticDescriptor descriptor,
+    ReportDiagnostic effectiveSeverity,
+    IAnalyzersCommandHandler commandHandler)
+    : BaseItem(descriptor.Id + ": " + descriptor.Title), IEquatable<DiagnosticItem>
 {
-    internal partial class DiagnosticItem : BaseItem
+    private readonly AnalyzerReference _analyzerReference = analyzerReference;
+    private readonly IAnalyzersCommandHandler _commandHandler = commandHandler;
+
+    public ProjectId ProjectId { get; } = projectId;
+    public DiagnosticDescriptor Descriptor { get; } = descriptor;
+    private readonly ReportDiagnostic _effectiveSeverity = effectiveSeverity;
+
+    public override ImageMoniker IconMoniker
+        => MapEffectiveSeverityToIconMoniker(_effectiveSeverity);
+
+    public override IContextMenuController ContextMenuController => _commandHandler.DiagnosticContextMenuController;
+
+    public override object GetBrowseObject()
+        => new BrowseObject(this);
+
+    private static ImageMoniker MapEffectiveSeverityToIconMoniker(ReportDiagnostic effectiveSeverity)
+        => effectiveSeverity switch
+        {
+            ReportDiagnostic.Error => KnownMonikers.CodeErrorRule,
+            ReportDiagnostic.Warn => KnownMonikers.CodeWarningRule,
+            ReportDiagnostic.Info => KnownMonikers.CodeInformationRule,
+            ReportDiagnostic.Hidden => KnownMonikers.CodeHiddenRule,
+            ReportDiagnostic.Suppress => KnownMonikers.CodeSuppressedRule,
+            _ => default,
+        };
+
+    internal void SetRuleSetSeverity(ReportDiagnostic value, string pathToRuleSet)
     {
-        private readonly AnalyzerReference _analyzerReference;
-        private readonly IAnalyzersCommandHandler _commandHandler;
-        private readonly string _language;
+        var ruleSetDocument = XDocument.Load(pathToRuleSet);
 
-        public ProjectId ProjectId { get; }
-        public DiagnosticDescriptor Descriptor { get; }
-        public ReportDiagnostic EffectiveSeverity { get; private set; }
+        ruleSetDocument.SetSeverity(_analyzerReference.Display, Descriptor.Id, value);
 
-        public override event PropertyChangedEventHandler? PropertyChanged;
+        ruleSetDocument.Save(pathToRuleSet);
+    }
 
-        public DiagnosticItem(ProjectId projectId, AnalyzerReference analyzerReference, DiagnosticDescriptor descriptor, ReportDiagnostic effectiveSeverity, string language, IAnalyzersCommandHandler commandHandler)
-            : base(descriptor.Id + ": " + descriptor.Title)
-        {
-            ProjectId = projectId;
-            _analyzerReference = analyzerReference;
-            Descriptor = descriptor;
-            EffectiveSeverity = effectiveSeverity;
-            _language = language;
-            _commandHandler = commandHandler;
-        }
+    internal Task<Solution> GetSolutionWithUpdatedAnalyzerConfigSeverityAsync(ReportDiagnostic value, Project project, CancellationToken cancellationToken)
+    {
+        var effectiveSeverity = value.ToDiagnosticSeverity() ?? Descriptor.DefaultSeverity;
+        var diagnostic = Diagnostic.Create(Descriptor, Location.None, effectiveSeverity, additionalLocations: null, properties: null);
+        return ConfigurationUpdater.ConfigureSeverityAsync(value, diagnostic, project, cancellationToken);
+    }
 
-        public override ImageMoniker IconMoniker
-            => MapEffectiveSeverityToIconMoniker(EffectiveSeverity);
+    public override int GetHashCode()
+        => Hash.Combine(this.Name,
+            Hash.Combine(this.ProjectId,
+            Hash.Combine(this.Descriptor.GetHashCode(), (int)_effectiveSeverity)));
 
-        public override IContextMenuController ContextMenuController => _commandHandler.DiagnosticContextMenuController;
+    public override bool Equals(object obj)
+        => Equals(obj as DiagnosticItem);
 
-        public override object GetBrowseObject()
-        {
-            return new BrowseObject(this);
-        }
+    public bool Equals(DiagnosticItem? other)
+    {
+        if (this == other)
+            return true;
 
-        public Uri? GetHelpLink()
-            => BrowserHelper.GetHelpLink(Descriptor, _language);
-
-        internal void UpdateEffectiveSeverity(ReportDiagnostic newEffectiveSeverity)
-        {
-            if (EffectiveSeverity != newEffectiveSeverity)
-            {
-                EffectiveSeverity = newEffectiveSeverity;
-
-                NotifyPropertyChanged(nameof(EffectiveSeverity));
-                NotifyPropertyChanged(nameof(IconMoniker));
-            }
-        }
-
-        private ImageMoniker MapEffectiveSeverityToIconMoniker(ReportDiagnostic effectiveSeverity)
-            => effectiveSeverity switch
-            {
-                ReportDiagnostic.Error => KnownMonikers.CodeErrorRule,
-                ReportDiagnostic.Warn => KnownMonikers.CodeWarningRule,
-                ReportDiagnostic.Info => KnownMonikers.CodeInformationRule,
-                ReportDiagnostic.Hidden => KnownMonikers.CodeHiddenRule,
-                ReportDiagnostic.Suppress => KnownMonikers.CodeSuppressedRule,
-                _ => default,
-            };
-
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        internal void SetRuleSetSeverity(ReportDiagnostic value, string pathToRuleSet)
-        {
-            var ruleSetDocument = XDocument.Load(pathToRuleSet);
-
-            ruleSetDocument.SetSeverity(_analyzerReference.Display, Descriptor.Id, value);
-
-            ruleSetDocument.Save(pathToRuleSet);
-        }
-
-        internal Task<Solution> GetSolutionWithUpdatedAnalyzerConfigSeverityAsync(ReportDiagnostic value, Project project, CancellationToken cancellationToken)
-        {
-            var effectiveSeverity = value.ToDiagnosticSeverity() ?? Descriptor.DefaultSeverity;
-            var diagnostic = Diagnostic.Create(Descriptor, Location.None, effectiveSeverity, additionalLocations: null, properties: null);
-            return ConfigurationUpdater.ConfigureSeverityAsync(value, diagnostic, project, cancellationToken);
-        }
+        return other != null &&
+            this.Name == other.Name &&
+            this.ProjectId == other.ProjectId &&
+            this.Descriptor.Equals(other.Descriptor) &&
+            _effectiveSeverity == other._effectiveSeverity;
     }
 }

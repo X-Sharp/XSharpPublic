@@ -1,6 +1,6 @@
 #define WS_CHILD 0x40000000L
 #define WS_EX_CLIENTEDGE 0x00000200L
-
+                                             
 Data_WinresID DIALOGEX 0, 0, 279, 196
 STYLE WS_CHILD
 FONT 8, "MS Shell Dlg"

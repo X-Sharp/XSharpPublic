@@ -83,7 +83,7 @@ BEGIN NAMESPACE XSharp.RDD
                 nFldPos -= 1
                 LOCAL result as OBJECT
                 IF !SELF:EoF
-                    var row := _table:Rows[SELF:_RecNo -1]
+                    var row := _table:Rows[(INT) SELF:_RecNo -1]
                     result  := row[nFldPos]
                 ELSE
                     result := _phantomRow[nFldPos]
@@ -102,7 +102,7 @@ BEGIN NAMESPACE XSharp.RDD
             // nFldPos is 1 based, the RDD compiles with /az+
             var result := FALSE
             IF nFldPos > 0 .AND. nFldPos <= SELF:FieldCount
-                var row := _table:Rows[SELF:_RecNo -1]
+                var row := _table:Rows[(INT) SELF:_RecNo -1]
                 row[nFldPos-1] := oValue
                 result := TRUE
             ENDIF
@@ -121,7 +121,7 @@ BEGIN NAMESPACE XSharp.RDD
                 //
                 _table := value
                 SELF:_RecNo := 1
-                SELF:_RecCount   := _table:Rows:Count
+                SELF:_RecCount   := (DWORD) _table:Rows:Count
                 SELF:_phantomRow := _table:NewRow()
                 var prop := _table:GetType():GetProperty("EnforceConstraints", BindingFlags.Instance+BindingFlags.NonPublic)
                 IF prop != null

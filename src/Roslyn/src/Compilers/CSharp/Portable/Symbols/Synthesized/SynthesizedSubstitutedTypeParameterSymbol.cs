@@ -5,6 +5,7 @@
 #nullable disable
 
 using System.Collections.Immutable;
+using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Emit;
 using Microsoft.CodeAnalysis.PooledObjects;
 
@@ -18,6 +19,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         public SynthesizedSubstitutedTypeParameterSymbol(Symbol owner, TypeMap map, TypeParameterSymbol substitutedFrom, int ordinal)
             : base(owner, map, substitutedFrom, ordinal)
         {
+            Debug.Assert(this.TypeParameterKind == (ContainingSymbol is MethodSymbol ? TypeParameterKind.Method :
+                                                   (ContainingSymbol is NamedTypeSymbol ? TypeParameterKind.Type :
+                                                   TypeParameterKind.Cref)),
+                         $"Container is {ContainingSymbol?.Kind}, TypeParameterKind is {this.TypeParameterKind}");
         }
 
         public override bool IsImplicitlyDeclared
@@ -25,8 +30,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return true; }
         }
 
-        internal override void AddSynthesizedAttributes(PEModuleBuilder moduleBuilder, ref ArrayBuilder<SynthesizedAttributeData> attributes)
+        public override TypeParameterKind TypeParameterKind => ContainingSymbol is MethodSymbol ? TypeParameterKind.Method : TypeParameterKind.Type;
+
+        internal override void AddSynthesizedAttributes(PEModuleBuilder moduleBuilder, ref ArrayBuilder<CSharpAttributeData> attributes)
         {
+            if (ContainingSymbol.Kind == SymbolKind.NamedType &&
+                _underlyingTypeParameter.OriginalDefinition is SourceMethodTypeParameterSymbol definition &&
+                ContainingSymbol.ContainingModule == definition.ContainingModule)
+            {
+                foreach (CSharpAttributeData attr in definition.GetAttributes())
+                {
+                    if (attr.AttributeClass is { HasCompilerLoweringPreserveAttribute: true })
+                    {
+                        AddSynthesizedAttribute(ref attributes, attr);
+                    }
+                }
+            }
+
             base.AddSynthesizedAttributes(moduleBuilder, ref attributes);
 
             if (this.HasUnmanagedTypeConstraint)

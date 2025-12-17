@@ -35,15 +35,6 @@ FUNCTION InputBox( cInputPrompt , cDialogCaption , cDefaultValue , nTimeout ,cTi
     THROW NotImplementedException{}
     // RETURN ""
 
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/isblank/*" />
-
-FUNCTION IsBlank( eExpression) AS LOGIC
-    THROW NotImplementedException{}
-    // RETURN FALSE
-
-
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/isexclusive/*" />
 
@@ -57,14 +48,6 @@ FUNCTION IsExclusive( uArea, nType) AS LOGIC
 /// <include file="VFPDocs.xml" path="Runtimefunctions/ismemofetched/*" />
 
 FUNCTION IsMemoFetched( uField , uArea) AS LOGIC
-    THROW NotImplementedException{}
-    // RETURN FALSE
-
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/isnull/*" />
-
-FUNCTION IsNull( eExpression ) AS LOGIC
     THROW NotImplementedException{}
     // RETURN FALSE
 

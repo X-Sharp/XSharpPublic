@@ -20,6 +20,7 @@ using Antlr4.Runtime;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.CSharp;
 using Roslyn.Utilities;
 #if !VSPARSER
 using static Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.XSharpLanguageParser;
@@ -741,6 +742,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpLexer.PP_PRAGMA:
                     doPragmaDirective(line, write2ppo);
+                    line = null;
+                    break;
+                case XSharpLexer.PP_NULLABLE:
+                    doNullableDirective(line, write2ppo);
                     line = null;
                     break;
                 default:
@@ -2044,7 +2049,64 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             checkForUnexpectedPPInput(line, 1);
         }
+        private void doNullableDirective(IList<XSharpToken> originalTokens, bool isIfDef)
+        {
+            Debug.Assert(originalTokens.Count > 0);
+            var tokens = stripWs(originalTokens);
+            XSharpToken errortoken = originalTokens[0];
+            var nullableText = "";
+            foreach (var token in originalTokens)
+            {
+                nullableText += token.text;
+            }
+            if (tokens.Count != 2 && tokens.Count != 3)
+            {
+                Error(errortoken, ErrorCode.ERR_NullableDirectiveQualifierExpected);
+                return;
+            }
+            // #nullable <qualifier>
+            Pragmastate state;
+            switch (tokens[1].Text.ToLower())
+            {
+                case "enable":
+                    state = Pragmastate.On;
+                    break;
+                case "restore":
+                    state = Pragmastate.Default;
+                    break;
 
+                case "disable":
+                    state = Pragmastate.Off;
+                    break;
+                default:
+                    Error(tokens[1], ErrorCode.ERR_NullableDirectiveQualifierExpected);
+                    return;
+            }
+            XSharpToken optionToken = null;
+            SyntaxKind kind = SyntaxKind.None;
+            if (tokens.Count == 3)
+            {
+                optionToken = tokens[2];
+                switch (optionToken.Text.ToLower())
+                {
+                    case "warnings":
+                        kind = SyntaxKind.WarningsKeyword;
+                        break;
+                    case "annotations":
+                        kind = SyntaxKind.AnnotationsKeyword;
+                        break;
+                    default:
+                        Error(optionToken, ErrorCode.ERR_NullableDirectiveTargetExpected);
+                        return;
+                }
+            }
+
+            var pragma = new PragmaNullable(tokens[0], state, tokens[1], optionToken, kind);
+            if (pragma != null)
+                Pragmas.Add(pragma);
+            return;
+
+        }
         private void doPragmaDirective(IList<XSharpToken> originalTokens, bool isIfDef)
         {
             Debug.Assert(originalTokens.Count > 0);
@@ -2315,19 +2377,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (line.Count > 2)
                     {
                         ln = line[2];
-                    }
-                    if (ln.Type == XSharpLexer.STRING_CONST)
-                    {
-                        inputs.SourceFileName = ln.Text.Substring(1, ln.Text.Length - 2);
-                    }
-                    else
-                    {
-                        Error(ln, ErrorCode.ERR_PreProcessorError, "String literal expected");
+                        if (ln.Type == XSharpLexer.STRING_CONST)
+                        {
+                            inputs.SourceFileName = ln.Text.Substring(1, ln.Text.Length - 2);
+                        }
+                        else
+                        {
+                            Error(ln, ErrorCode.ERR_ExpectedPPFile);
+                        }
                     }
                 }
                 else
                 {
-                    Error(ln, ErrorCode.ERR_PreProcessorError, "Integer literal expected");
+                    Error(ln, ErrorCode.ERR_LineSpanDirectiveInvalidValue);
                 }
             }
             else

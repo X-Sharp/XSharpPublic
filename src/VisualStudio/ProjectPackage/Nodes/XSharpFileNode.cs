@@ -12,12 +12,14 @@ using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using XSharpModel;
+
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;

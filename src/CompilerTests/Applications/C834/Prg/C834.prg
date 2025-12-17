@@ -2,6 +2,8 @@
 // /vo11+
 #pragma options("vo11", on)     // conversions between different sizes and from fractional to integral
 #pragma options("vo4", on)     // conversions between different sizes and from fractional to integral
+#pragma warnings(9020, off)
+#pragma warnings(9021, off)
 
 FUNCTION Start( ) AS VOID
 	LOCAL n := 1 AS INT

@@ -2,13 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
 using System;
 using System.Diagnostics;
-using Microsoft.CodeAnalysis.CSharp.Symbols;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
@@ -154,7 +149,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 (byte)QuickScanState.FollowingCR,         // CR
                 (byte)QuickScanState.DoneAfterNext,       // LF
                 (byte)QuickScanState.Done,                // Letter
-                (byte)QuickScanState.Number,              // Digit
+                (byte)QuickScanState.Bad,                 // Dot followed by number.  Could be a fp `.0` or could be a range + num `..0`.  Can't tell here.
                 (byte)QuickScanState.Done,                // Punct
                 (byte)QuickScanState.Bad,                 // Dot (DotDot range token, exit so that we handle it in subsequent scanning code)
                 (byte)QuickScanState.Done,                // Compound
@@ -194,7 +189,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             },
         };
 
-        private SyntaxToken QuickScanSyntaxToken()
+        private SyntaxToken? QuickScanSyntaxToken()
         {
             this.Start();
             var state = QuickScanState.Initial;
@@ -206,14 +201,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             //localize frequently accessed fields
             var charWindow = TextWindow.CharacterWindow;
-            var charPropLength = s_charProperties.Length;
+            var charPropLength = CharProperties.Length;
 
             for (; i < n; i++)
             {
                 char c = charWindow[i];
                 int uc = unchecked((int)c);
 
-                var flags = uc < charPropLength ? (CharFlags)s_charProperties[uc] : CharFlags.Complex;
+                var flags = uc < charPropLength ? (CharFlags)CharProperties[uc] : CharFlags.Complex;
 
                 state = (QuickScanState)s_stateTransitions[(int)state, (int)flags];
                 // NOTE: that Bad > Done and it is the only state like that
@@ -244,7 +239,8 @@ exitWhile:
                     TextWindow.LexemeRelativeStart,
                     i - TextWindow.LexemeRelativeStart,
                     hashCode,
-                    _createQuickTokenFunction);
+                    CreateQuickToken,
+                    this);
                 return token;
             }
             else
@@ -254,15 +250,13 @@ exitWhile:
             }
         }
 
-        private readonly Func<SyntaxToken> _createQuickTokenFunction;
-
-        private SyntaxToken CreateQuickToken()
+        private static SyntaxToken CreateQuickToken(Lexer lexer)
         {
 #if DEBUG
-            var quickWidth = TextWindow.Width;
+            var quickWidth = lexer.TextWindow.Width;
 #endif
-            TextWindow.Reset(TextWindow.LexemeStartPosition);
-            var token = this.LexSyntaxToken();
+            lexer.TextWindow.Reset(lexer.TextWindow.LexemeStartPosition);
+            var token = lexer.LexSyntaxToken();
 #if DEBUG
             Debug.Assert(quickWidth == token.FullWidth);
 #endif
@@ -273,7 +267,7 @@ exitWhile:
         // # is marked complex as it may start directives.
         // PERF: Use byte instead of CharFlags so the compiler can use array literal initialization.
         //       The most natural type choice, Enum arrays, are not blittable due to a CLR limitation.
-        private static readonly byte[] s_charProperties = new[]
+        private static ReadOnlySpan<byte> CharProperties => new[]
         {
             // 0 .. 31
             (byte)CharFlags.Complex, (byte)CharFlags.Complex, (byte)CharFlags.Complex, (byte)CharFlags.Complex, (byte)CharFlags.Complex, (byte)CharFlags.Complex, (byte)CharFlags.Complex, (byte)CharFlags.Complex,

@@ -144,7 +144,7 @@ BEGIN NAMESPACE MacroCompilerTest
 
         TestMacro(mc, e"{|a,b| asdgfafd := a, asdgfafd(2) }", Args(M->Foo, 1), 42, typeof(INT))
         TestMacro(mc, e"{|aq| aq(1)}", Args(M->Foo, 1), 42, typeof(int))
-        TestMacro(mc, e"{|a| a(3) += a(2) + a(1), a(3)}", Args(M->Foo), 126, typeof(int))
+        TestMacro(mc, e"{|a| a(3) += a(2) + a(1), a(3)}", Args(M->Foo, 1), 126, typeof(int))
         M->FoxArrayTest := __FoxArray{2,3}
         M->FoxArrayTest[1,1] := 10
         M->FoxArrayTest[1,2] := 20

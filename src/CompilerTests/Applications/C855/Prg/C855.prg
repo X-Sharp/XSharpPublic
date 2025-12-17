@@ -14,6 +14,8 @@ error XS9999: An internal compiler error has occurred: 'Operation is not valid d
 
 #pragma options ( "vo7", ON )
 #pragma options ( "vo4", ON )
+#pragma warning( 9020, off)
+
 FUNCTION Start() AS VOID
 
 	LOCAL i:=1 AS INT

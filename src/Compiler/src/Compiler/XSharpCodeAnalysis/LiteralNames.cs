@@ -37,28 +37,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string NeedAccessToLocals = "NeedsAccessToLocalsAttribute";
         internal const string TypesChanged = "TypesChangedAttribute";
         internal const string IsInstance = "IsInstanceAttribute";
-        internal const string IsVoInstance = "IsVOInstanceAttribute";
-    }
-    internal static class VulcanQualifiedTypeNames
-    {
-        internal const string Usual = "global::Vulcan.__Usual";
-        internal const string Float = "global::Vulcan.__VOFloat";
-        internal const string Date = "global::Vulcan.__VODate";
-        internal const string Array = "global::Vulcan.__Array";
-        internal const string Symbol = "global::Vulcan.__Symbol";
-        internal const string Psz = "global::Vulcan.__Psz";
-        internal const string Codeblock = "global::Vulcan.Codeblock";
-        internal const string WinBool = "global::Vulcan.__WinBool";
-        internal const string WinDate = "global::System.UInt32";
-        internal const string RuntimeState = "global::Vulcan.Runtime.State";
-        internal const string ClipperCallingConvention = "global::Vulcan.Internal.ClipperCallingConventionAttribute";
-        internal const string WrappedException = "global::Vulcan.Internal.VulcanWrappedException";
-        internal const string DefaultParameter = "global::Vulcan.Internal.DefaultParameterValueAttribute";
-        internal const string ActualType = "global::Vulcan.Internal.ActualTypeAttribute";
-        internal const string Error = "global::Vulcan.Error";
-        internal const string ClassLibrary = "global::Vulcan.Internal.VulcanClassLibraryAttribute";
-        internal const string CompilerVersion = "global::Vulcan.Internal.VulcanCompilerVersion";
-        internal const string IsInstance = "global::Vulcan.Internal.IsVOInstanceAttribute";
     }
 
     internal static class XSharpQualifiedTypeNames
@@ -179,8 +157,16 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string VODllFunctionsClass = ".Functions";
         internal const string ModuleName = "<Module>";
         internal const string RTDialect = "Dialect";
+        internal const string RTCompilerOptionAllowOldStyleAssignments = "CompilerOptionAllowOldStyleAssignments";
+        internal const string RTCompilerOptionAZ = "CompilerOptionAZ";
+        internal const string RTCompilerOptionVO4 = "CompilerOptionVO4";
+        internal const string RTCompilerOptionVO6 = "CompilerOptionVO6";
+        internal const string RTCompilerOptionVO7 = "CompilerOptionVO7";
+        internal const string RTCompilerOptionVO10 = "CompilerOptionVO10";
         internal const string RTCompilerOptionVO11 = "CompilerOptionVO11";
+        internal const string RTCompilerOptionVO12 = "CompilerOptionVO12";
         internal const string RTCompilerOptionVO13 = "CompilerOptionVO13";
+        internal const string RTCompilerOptionVO14 = "CompilerOptionVO14";
         internal const string RTCompilerOptionFOvf = "CompilerOptionFOvf";
         internal const string RTCompilerOptionFox2 = "CompilerOptionFox2";
         internal const string RTCompilerOptionOvf = "CompilerOptionOvf";
@@ -274,34 +260,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string GetXppClassObject = "__GetXppClassObject";
         internal const string GetXppWrappedParentObject = "__GetXppWrappedParentObject";
     }
-    internal static class VulcanQualifiedFunctionNames
-    {
-        internal const string VulcanRTFuncs = "global::VulcanRTFuncs.Functions.";
-        internal const string CompilerServices = "global::Vulcan.Internal.CompilerServices.";
-        internal const string FieldGet = VulcanRTFuncs + ReservedNames.FieldGet;
-        internal const string FieldGetWa = VulcanRTFuncs + ReservedNames.FieldGetWa;
-        internal const string FieldSet = VulcanRTFuncs + ReservedNames.FieldSet;
-        internal const string FieldSetWa = VulcanRTFuncs + ReservedNames.FieldSetWa;
-        internal const string NullDate = VulcanQualifiedTypeNames.Date + ReservedNames.NullDate;
-        internal const string UsualNIL = VulcanQualifiedTypeNames.Usual + "."+ReservedNames.NIL;
-        internal const string PszRelease = CompilerServices + ReservedNames.String2PszRelease;
-        internal const string String2Psz = CompilerServices + ReservedNames.String2Psz;
-        internal const string StringArrayInit = CompilerServices + ReservedNames.StringArrayInit;
-        internal const string ArrayNew = VulcanQualifiedTypeNames.Array + ReservedNames.ArrayNew;
-        internal const string InStr = VulcanRTFuncs + ReservedNames.Instr;
-        internal const string EnterSequence = CompilerServices + ReservedNames.BeginSequenceEnter;
-        internal const string ExitSequence = CompilerServices + ReservedNames.BeginSequenceExit;
-        internal const string WrapException = VulcanQualifiedTypeNames.Error + ReservedNames.WrapRawExceptionVn;
-        internal const string QQout = VulcanRTFuncs + ReservedNames.QQout;
-        internal const string Qout = VulcanRTFuncs + ReservedNames.Qout;
-        internal const string Chr = VulcanRTFuncs + ReservedNames.Chr;
-        internal const string StringAlloc = VulcanRTFuncs + ReservedNames.StringAlloc;
-        internal const string PushWorkarea = VulcanRTFuncs + ReservedNames.PushWorkarea;
-        internal const string PopWorkarea = VulcanRTFuncs + ReservedNames.PopWorkarea;
-        internal const string Evaluate = VulcanRTFuncs + ReservedNames.Evaluate;
-        internal const string IVarGet = VulcanRTFuncs + ReservedNames.IVarGet;
-        internal const string IVarPut = VulcanRTFuncs + ReservedNames.IVarPut;
-    }
 
     internal static class XSharpQualifiedFunctionNames
     {
@@ -349,20 +307,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string TextOut = GlobalVFP + ReservedNames.TextOut;
     }
 
-    internal static class VulcanAssemblyNames
-    {
-        // please note that these MUST be lowercase !
-        internal const string VulcanRT = "vulcanrt";
-        internal const string VulcanRTFuncs = "vulcanrtfuncs";
-        internal const string VulcanVoGui = "vulcanvoguiclasses";
-        internal const string VulcanVoSystem = "vulcanvosystemclasses";
-        internal const string VulcanVoRdd = "vulcanvorddclasses";
-        internal const string VulcanVoSql = "vulcanvosqlclasses";
-        internal const string VulcanVoConsole = "vulcanvoconsoleclasses";
-        internal const string VulcanVoWin32 = "vulcanvowin32apilibrary";
-        internal const string VulcanVoInet = "vulcanvointernetclasses";
-        internal const string VulcanVoReport = "vulcanvoreportclasses";
-    }
     internal static class XSharpAssemblyNames
     {
         // please note that these MUST be lowercase !
@@ -388,7 +332,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     internal static class OurNameSpaces
     {
-        internal const string Vulcan = "Vulcan";
         internal const string XSharp = "XSharp";
     }
 

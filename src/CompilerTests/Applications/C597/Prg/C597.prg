@@ -6,7 +6,7 @@ FUNCTION Start( ) AS VOID
 	? TypeOf(Child):GetConstructors()[1]:GetCustomAttribute(TypeOf(XSharp.Internal.ClipperCallingConventionAttribute))
 	// ClipperCallingConvention not applied:
 	? TypeOf(ChildDll):GetConstructors()[1]:GetCustomAttribute(TypeOf(XSharp.Internal.ClipperCallingConventionAttribute))
-	
+
 	? CreateInstance("Parent")
 	? CreateInstance("Parent" , 1, 2 ,3)
 

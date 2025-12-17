@@ -11,7 +11,6 @@
     <CheckNewtonsoftJsonVersion>false</CheckNewtonsoftJsonVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Ngen>false</Ngen>
-    <RuntimeIdentifiers>win-x86</RuntimeIdentifiers>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -55,7 +54,6 @@
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <NoWarn>VSTHRD010;VSSDK006;1762;NU1605;NU1903</NoWarn>
     <DeployExtension>True</DeployExtension>
-    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -85,7 +83,7 @@
       <HintPath>$(VsExternalDir)XSharp.CodeAnalysis.dll</HintPath>
       <Aliases>codeanalysis</Aliases>
     </Reference>
-    <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" />
+    <Reference Include="XSharp.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" />
     <Reference Include="XSharp.Evaluator">
       <HintPath>$(VsExternalDir)XSharp.Evaluator.dll</HintPath>
     </Reference>
@@ -757,8 +755,8 @@
     </ZipItem>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.533</Version>
+    <PackageReference Include="Community.VisualStudio.Toolkit.16">
+      <Version>16.0.527</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>
@@ -766,14 +764,8 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.DiaSymReader">
-      <Version>2.0.0</Version>
+      <Version>1.4.0</Version>
       <IncludeAssets>all</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Text.UI.Wpf">
-      <Version>15.8.525</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Threading">
-      <Version>15.3.20</Version>
     </PackageReference>
     <Content Include="$(VSExternalDir)XSharp.MonoCecil.dll">
       <Link>XSharp.MonoCecil.dll</Link>
@@ -781,20 +773,14 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>8.0.3</Version>
+      <Version>9.0.1</Version>
     </PackageReference>
-    <PackageReference Include="Serilog.Sinks.Debug">
-      <Version>2.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="Serilog.Sinks.File">
-      <Version>5.0.0</Version>
+    <PackageReference Include="StreamJsonRpc">
+      <Version>1.3.23</Version>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
       <IncludeAssets>all</IncludeAssets>
       <Version>1.0.119</Version>
-    </PackageReference>
-    <PackageReference Include="VSLangProj2">
-      <Version>7.0.5001</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
@@ -808,7 +794,7 @@
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <!-- This import the files which makes up the project base classes -->
   <PropertyGroup>

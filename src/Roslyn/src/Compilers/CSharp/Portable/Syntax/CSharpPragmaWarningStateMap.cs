@@ -78,7 +78,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
                 }
             }
 #else
-
             foreach (var d in syntaxTree.GetRoot().GetDirectives())
             {
                 if (!d.IsActive || d.Kind() != SyntaxKind.PragmaWarningDirectiveTrivia)

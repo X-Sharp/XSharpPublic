@@ -22,11 +22,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     INTERNAL PARTIAL SEALED CLASS NtxOrder
 
         INTERNAL METHOD WritePage(page AS NtxPage) AS LOGIC
-            RETURN _oStream:SafeWriteAt(page:PageOffset, page:Bytes)
+            RETURN _oStream:SafeWriteAt(page:PageOffset, page:Bytes, page:Bytes:Length)
 
 
         INTERNAL METHOD ReadPage(page AS NtxPage) AS LOGIC
-            RETURN _oStream:SafeReadAt(page:PageOffset, page:Bytes)
+            RETURN _oStream:SafeReadAt(page:PageOffset, page:Bytes, page:Bytes:Length)
 
     END CLASS
 

@@ -155,7 +155,7 @@ ACCESS PageSize
 	ENDIF
 
 
-	RETURN 0l
+	RETURN 0L
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.PageSize/*" />
@@ -259,7 +259,7 @@ METHOD SetInfo(oScrollRange, nThumbPosition, nPageSize, lDisableNoScroll)
    ENDIF
 
 
-	RETURN 0l
+	RETURN 0L
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.SetThumbPosition/*" />
@@ -345,7 +345,7 @@ ACCESS ThumbPosition
 	ENDIF
 
 
-	RETURN 0l
+	RETURN 0L
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.ThumbPosition/*" />

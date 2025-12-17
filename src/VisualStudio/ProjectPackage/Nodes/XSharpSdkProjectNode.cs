@@ -108,7 +108,7 @@ namespace XSharp.Project
         protected override bool SupportsIconMonikers => true;
         protected override ImageMoniker GetIconMoniker(bool open)
         {
-            return KnownMonikers.Reference;
+            return KnownMonikers.ReferencePrivate;
         }
         override public Guid ItemTypeGuid
         {
@@ -136,10 +136,28 @@ namespace XSharp.Project
     //        }
     //    }
     //}
+
+    class XSharpFrameworkReferenceNode : XSharpFolderNode
+    {
+        public XSharpFrameworkReferenceNode(XSharpProjectNode root, string frameworkName) :
+            base(root, frameworkName, null, true)
+        {
+        }
+        protected override ImageMoniker GetIconMoniker(bool open)
+        {
+            return KnownMonikers.Framework;
+        }
+        protected override bool SupportsIconMonikers => true;
+
+
+    }
     class XSharpSDKReferenceContainerNode : XSharpReferenceContainerNode
     {
+        private XSharpFolderNode frameworkNode = null;
+
         public XSharpSDKReferenceContainerNode(XSharpProjectNode root) : base(root)
         {
+            CreateFrameworkReferenceNode();
         }
         public override string Caption
         {
@@ -148,6 +166,44 @@ namespace XSharp.Project
                 return "Dependencies";
             }
         }
+
+
+        private void CreateFrameworkReferenceNode()
+        {
+
+            var items = this.ProjectMgr.BuildProject.GetItems("FrameworkReference");
+            if (items.Count() == 0)
+                return;
+
+            frameworkNode = new XSharpFrameworkReferenceNode((XSharpProjectNode) this.ProjectMgr, items.First().EvaluatedInclude);
+            base.AddChild(frameworkNode);
+
+        }
+        public override void AddChild(HierarchyNode node)
+        {
+            if (this.frameworkNode != null && node is XSharpDependencyNode)
+            {
+                this.frameworkNode.AddChild(node);
+            }
+            else
+            {
+                base.AddChild(node);
+            }
+        }
+
+        public override void RemoveChild(HierarchyNode node)
+        {
+            if (this.frameworkNode != null && node is XSharpDependencyNode)
+            {
+                this.frameworkNode.RemoveChild(node);
+            }
+            else
+            {
+                base.RemoveChild(node);
+            }
+
+        }
+
         public void DeleteDependencies()
         {
             var nodes = new List< XSharpDependencyNode >();

@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -13,8 +13,6 @@ using Microsoft.Build.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using MSBuild = Microsoft.Build.Evaluation;
-
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -315,7 +313,6 @@ namespace Microsoft.VisualStudio.Project
                     }
                 }
             }
-
         }
         public override TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
@@ -388,7 +385,7 @@ namespace Microsoft.VisualStudio.Project
                 }
 
             }
-             return new StandardValuesCollection(result.Select(x => new FrameworkName(x)).ToArray());
+            return new StandardValuesCollection(result.Select(x => new FrameworkName(x)).ToArray());
         }
     }
 }

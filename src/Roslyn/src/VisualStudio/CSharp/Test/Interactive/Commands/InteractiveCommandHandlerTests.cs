@@ -7,13 +7,13 @@
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.VisualStudio.Commanding;
-using Microsoft.VisualStudio.Composition;
 using Roslyn.Test.Utilities;
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Interactive.Commands
 {
     [UseExportProvider]
+    [Trait(Traits.Feature, Traits.Features.Interactive)]
     public class InteractiveCommandHandlerTests
     {
         private const string Caret = "$$";
@@ -35,15 +35,14 @@ Task.Run(() => { return 1; });";
             ""LLL"");";
 
         [WpfFact]
-        [Trait(Traits.Feature, Traits.Features.Interactive)]
         public void TestExecuteInInteractiveWithoutSelection()
         {
-            AssertExecuteInInteractive(Caret, new string[0]);
+            AssertExecuteInInteractive(Caret, []);
 
             AssertExecuteInInteractive(
 @"var x = 1;
 $$
-var y = 2;", new string[0]);
+var y = 2;", []);
 
             AssertExecuteInInteractive(ExampleCode1 + Caret, ExampleCode1);
             AssertExecuteInInteractive(ExampleCode1.Insert(3, Caret), ExampleCode1);
@@ -52,12 +51,11 @@ var y = 2;", new string[0]);
         }
 
         [WpfFact]
-        [Trait(Traits.Feature, Traits.Features.Interactive)]
         public void TestExecuteInInteractiveWithEmptyBuffer()
         {
             AssertExecuteInInteractive(
 @"{|Selection:|}var x = 1;
-{|Selection:$$|}var y = 2;", new string[0]);
+{|Selection:$$|}var y = 2;", []);
 
             AssertExecuteInInteractive($@"{{|Selection:{ExampleCode1}$$|}}", ExampleCode1);
 
@@ -72,7 +70,6 @@ Console.WriteLine(x);", ExampleCode2);
         }
 
         [WpfFact]
-        [Trait(Traits.Feature, Traits.Features.Interactive)]
         public void TestExecuteInInteractiveWithBoxSelection()
         {
             var expectedBoxSubmissionResult = @"int x;
@@ -95,7 +92,6 @@ text some {{|Selection:int y;$$|}} here also", expectedBoxSubmissionResult);
         }
 
         [WpfFact]
-        [Trait(Traits.Feature, Traits.Features.Interactive)]
         public void TestExecuteInInteractiveWithNonEmptyBuffer()
         {
             // Execute in interactive clears the existing current buffer before execution.
@@ -130,7 +126,6 @@ $@"#define DEF
         }
 
         [WpfFact]
-        [Trait(Traits.Feature, Traits.Features.Interactive)]
         public void TestCopyToInteractiveWithoutSelection()
         {
             AssertCopyToInteractive(Caret, "");
@@ -149,14 +144,12 @@ $@"#define DEF
         }
 
         [WpfFact]
-        [Trait(Traits.Feature, Traits.Features.Interactive)]
         public void TestCopyToInteractive()
         {
             AssertCopyToInteractive($"{{|Selection:{ExampleCode2}$$|}}", ExampleCode2);
         }
 
         [WpfFact]
-        [Trait(Traits.Feature, Traits.Features.Interactive)]
         public void TestCopyToInteractiveWithNonEmptyBuffer()
         {
             // Copy to interactive does not clear the existing buffer.
@@ -177,7 +170,7 @@ $@"#define DEF
 
         private static void AssertExecuteInInteractive(string code, string expectedSubmission, string submissionBuffer = null)
         {
-            AssertExecuteInInteractive(code, new string[] { expectedSubmission }, submissionBuffer);
+            AssertExecuteInInteractive(code, [expectedSubmission], submissionBuffer);
         }
 
         private static void AssertExecuteInInteractive(string code, string[] expectedSubmissions, string submissionBuffer = null)

@@ -4,73 +4,45 @@
 
 #nullable disable
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.ExtractMethod;
-using Microsoft.CodeAnalysis.Options;
 using Roslyn.Utilities;
 
-namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
+namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod;
+
+internal sealed partial class CSharpExtractMethodService
 {
-    internal partial class CSharpMethodExtractor
+    internal sealed partial class CSharpMethodExtractor
     {
-        private partial class CSharpCodeGenerator
+        private abstract partial class CSharpCodeGenerator
         {
-            public class SingleStatementCodeGenerator : CSharpCodeGenerator
+            public sealed class SingleStatementCodeGenerator(
+                SelectionResult selectionResult,
+                AnalyzerResult analyzerResult,
+                ExtractMethodGenerationOptions options,
+                bool localFunction) : CSharpCodeGenerator(selectionResult, analyzerResult, options, localFunction)
             {
-                public SingleStatementCodeGenerator(
-                    InsertionPoint insertionPoint,
-                    SelectionResult selectionResult,
-                    AnalyzerResult analyzerResult,
-                    OptionSet options,
-                    bool localFunction)
-                    : base(insertionPoint, selectionResult, analyzerResult, options, localFunction)
-                {
-                }
-
-                public static bool IsExtractMethodOnSingleStatement(SelectionResult code)
-                {
-                    var result = (CSharpSelectionResult)code;
-                    var firstStatement = result.GetFirstStatement();
-                    var lastStatement = result.GetLastStatement();
-
-                    return firstStatement == lastStatement || firstStatement.Span.Contains(lastStatement.Span);
-                }
-
-                protected override SyntaxToken CreateMethodName() => GenerateMethodNameForStatementGenerators();
+                protected override SyntaxToken CreateMethodName()
+                    => GenerateMethodNameForStatementGenerators();
 
                 protected override ImmutableArray<StatementSyntax> GetInitialStatementsForMethodDefinitions()
                 {
-                    Contract.ThrowIfFalse(IsExtractMethodOnSingleStatement(CSharpSelectionResult));
+                    Contract.ThrowIfFalse(this.SelectionResult.IsExtractMethodOnSingleStatement);
 
-                    return ImmutableArray.Create(CSharpSelectionResult.GetFirstStatement());
-                }
-
-                protected override SyntaxNode GetOutermostCallSiteContainerToProcess(CancellationToken cancellationToken)
-                {
-                    var callSiteContainer = GetCallSiteContainerFromOutermostMoveInVariable(cancellationToken);
-                    if (callSiteContainer != null)
-                    {
-                        return callSiteContainer;
-                    }
-                    else
-                    {
-                        var firstStatement = CSharpSelectionResult.GetFirstStatement();
-                        return firstStatement.Parent;
-                    }
+                    return [this.SelectionResult.GetFirstStatement()];
                 }
 
                 protected override SyntaxNode GetFirstStatementOrInitializerSelectedAtCallSite()
-                    => CSharpSelectionResult.GetFirstStatement();
+                    => this.SelectionResult.GetFirstStatement();
 
                 protected override SyntaxNode GetLastStatementOrInitializerSelectedAtCallSite()
                 {
                     // it is a single statement case. either first statement is same as last statement or
                     // last statement belongs (embedded statement) to the first statement.
-                    return CSharpSelectionResult.GetFirstStatement();
+                    return this.SelectionResult.GetFirstStatement();
                 }
 
                 protected override Task<SyntaxNode> GetStatementOrInitializerContainingInvocationToExtractedMethodAsync(CancellationToken cancellationToken)

@@ -2,23 +2,24 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
 using System.Collections.Generic;
-using Microsoft.CodeAnalysis.ExtractMethod;
 using Microsoft.CodeAnalysis.Formatting.Rules;
 
-namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
+namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod;
+
+internal sealed partial class CSharpExtractMethodService
 {
-    internal partial class CSharpMethodExtractor : MethodExtractor
+    internal sealed partial class CSharpMethodExtractor
     {
-        private class FormattingRule : AbstractFormattingRule
+        private sealed class FormattingRule : AbstractFormattingRule
         {
-            public FormattingRule()
+            public static readonly FormattingRule Instance = new();
+
+            private FormattingRule()
             {
             }
 
-            public override AdjustNewLinesOperation GetAdjustNewLinesOperation(in SyntaxToken previousToken, in SyntaxToken currentToken, in NextGetAdjustNewLinesOperation nextOperation)
+            public override AdjustNewLinesOperation? GetAdjustNewLinesOperation(in SyntaxToken previousToken, in SyntaxToken currentToken, in NextGetAdjustNewLinesOperation nextOperation)
             {
                 // for extract method case, for a hybrid case, don't force rule, but preserve user style
                 var operation = base.GetAdjustNewLinesOperation(in previousToken, in currentToken, in nextOperation);
@@ -58,7 +59,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
 
             public override void AddAnchorIndentationOperations(List<AnchorIndentationOperation> list, SyntaxNode node, in NextAnchorIndentationOperationAction nextOperation)
             {
-                if (node.IsKind(SyntaxKind.SimpleLambdaExpression) || node.IsKind(SyntaxKind.ParenthesizedLambdaExpression) || node.IsKind(SyntaxKind.AnonymousMethodExpression))
+                if (node.Kind() is SyntaxKind.SimpleLambdaExpression or SyntaxKind.ParenthesizedLambdaExpression or SyntaxKind.AnonymousMethodExpression)
                 {
                     return;
                 }

@@ -43,7 +43,7 @@ function xlangext_AssignTuple(src) as usual
     // src contains the array
     // the other parameters are passed by reference in the Xs$Args array from
     // position 2 on
-    len := min(len(src), pCount() - 1)
+    len := Min(Len(src), pCount() - 1)
     for i := 1 to len
         _ARGS()[i+1] := src[i]
     next

@@ -10,7 +10,7 @@ USING XSharp.RDD
 USING XSharp.RDD.Support
 USING System.ComponentModel
 
-INTERNAL DELEGATE XSharp.DbNotifyFieldChange( recordNumer AS INT , column AS INT) AS VOID
+INTERNAL DELEGATE XSharp.DbNotifyFieldChange( recordNumer AS DWORD , column AS INT) AS VOID
 
 /// <summary>This class implements an IBindingList on a workarea</summary>
 /// <remarks>
@@ -180,7 +180,7 @@ METHOD RemoveSort () AS VOID STRICT
 
 
 /// <summary>Recordnumber in underlying workarea</summary>
-PROPERTY RecNo AS LONG GET _oRDD:RecNo
+PROPERTY RecNo AS DWORD GET _oRDD:RecNo
 /// <summary>Is underlying workarea at EOF</summary>
 PROPERTY EoF   AS LOGIC GET _oRDD:EoF
 /// <summary>Alias of underlying workarea</summary>
@@ -220,7 +220,7 @@ RETURN FALSE
 
 /// <inheritdoc />
 VIRTUAL METHOD IndexOf( oValue AS OBJECT ) AS INT
-RETURN  ((DbRecord) oValue):RecNo
+RETURN  (INT)  ((DbRecord) oValue):RecNo
 
 /// <summary>This required method has not been implemented.</summary>
 VIRTUAL METHOD Insert(index AS INT,value AS OBJECT) AS VOID
@@ -328,7 +328,7 @@ VIRTUAL METHOD CopyTo( list AS System.Array , index AS INT ) AS VOID
 
 
 /// <summary>Returns the # of records in the RDD</summary>
-VIRTUAL PROPERTY Count          AS INT GET _oRDD:RecCount
+VIRTUAL PROPERTY Count          AS INT GET (INT) _oRDD:RecCount
 /// <exclude/>
 VIRTUAL PROPERTY IsSynchronized AS LOGIC GET TRUE
 /// <exclude/>
@@ -350,17 +350,17 @@ RETURN SELF:_oRDD:FieldIndex(fieldName)
 INTERNAL METHOD FieldName(fieldNo AS LONG) AS STRING
 RETURN SELF:_oRDD:FieldName(fieldNo)
 
-INTERNAL METHOD GoTo(nRec AS LONG) AS LOGIC
+INTERNAL METHOD GoTo(nRec AS DWORD) AS LOGIC
     SELF:_index := -1
 RETURN SELF:_oRDD:GoTo(nRec)
 
-INTERNAL METHOD OnFieldChange(recno AS INT, fieldNo AS INT) AS VOID
+INTERNAL METHOD OnFieldChange(recno AS DWORD, fieldNo AS INT) AS VOID
     IF SELF:FieldChanged != NULL
         SELF:FieldChanged( recno,fieldNo )
     ENDIF
 RETURN
 
-INTERNAL METHOD OnFieldChange(recno AS INT, fieldName AS STRING) AS VOID
+INTERNAL METHOD OnFieldChange(recno AS DWORD, fieldName AS STRING) AS VOID
     IF SELF:FieldChanged != NULL
         VAR fieldNo := SELF:FieldIndex(fieldName)
         SELF:FieldChanged( recno,fieldNo )

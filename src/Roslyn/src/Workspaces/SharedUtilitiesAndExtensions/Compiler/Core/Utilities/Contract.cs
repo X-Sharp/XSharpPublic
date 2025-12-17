@@ -5,100 +5,155 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace Roslyn.Utilities
+namespace Roslyn.Utilities;
+
+internal static partial class Contract
 {
-    internal static class Contract
+    // Guidance on inlining:
+    // ThrowXxx methods are used heavily across the code base. 
+    // Inline their implementation of condition checking but don't inline the code that is only executed on failure.
+    // This approach makes the common path efficient (both execution time and code size) 
+    // while keeping the rarely executed code in a separate method.
+
+    /// <summary>
+    /// Throws a non-accessible exception if the provided value is null.  This method executes in
+    /// all builds
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfNull<T>([NotNull] T value, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string? filePath = null) where T : class?
     {
-        // Guidance on inlining:
-        // ThrowXxx methods are used heavily across the code base. 
-        // Inline their implementation of condition checking but don't inline the code that is only executed on failure.
-        // This approach makes the common path efficient (both execution time and code size) 
-        // while keeping the rarely executed code in a separate method.
-
-        /// <summary>
-        /// Throws a non-accessible exception if the provided value is null.  This method executes in
-        /// all builds
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowIfNull<T>([NotNull] T value)
+        if (value is null)
         {
-            if (value is null)
-            {
-                Fail("Unexpected null");
-            }
+            Fail("Unexpected null", lineNumber, filePath);
         }
+    }
 
-        /// <summary>
-        /// Throws a non-accessible exception if the provided value is null.  This method executes in
-        /// all builds
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowIfNull<T>([NotNull] T value, string message)
+    /// <summary>
+    /// Throws a non-accessible exception if the provided value is null.  This method executes in
+    /// all builds
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfNull<T>([NotNull] T? value, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string? filePath = null) where T : struct
+    {
+        if (value is null)
         {
-            if (value is null)
-            {
-                Fail(message);
-            }
+            Fail("Unexpected null", lineNumber, filePath);
         }
+    }
 
-        /// <summary>
-        /// Throws a non-accessible exception if the provided value is false.  This method executes
-        /// in all builds
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowIfFalse([DoesNotReturnIf(parameterValue: false)] bool condition)
+    /// <summary>
+    /// Throws a non-accessible exception if the provided value is null.  This method executes in
+    /// all builds
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfNull<T>([NotNull] T value, string message, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string? filePath = null)
+    {
+        if (value is null)
         {
-            if (!condition)
-            {
-                Fail("Unexpected false");
-            }
+            Fail(message, lineNumber, filePath);
         }
+    }
 
-        /// <summary>
-        /// Throws a non-accessible exception if the provided value is false.  This method executes
-        /// in all builds
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowIfFalse([DoesNotReturnIf(parameterValue: false)] bool condition, string message)
+    /// <summary>
+    /// Throws a non-accessible exception if the provided value is null.  This method executes in
+    /// all builds
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfNull<T>([NotNull] T value, [InterpolatedStringHandlerArgument("value")] ThrowIfNullInterpolatedStringHandler<T> message, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string? filePath = null)
+    {
+        if (value is null)
         {
-            if (!condition)
-            {
-                Fail(message);
-            }
+            Fail(message.GetFormattedText(), lineNumber, filePath);
         }
+    }
 
-        /// <summary>
-        /// Throws a non-accessible exception if the provided value is true. This method executes in
-        /// all builds.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowIfTrue([DoesNotReturnIf(parameterValue: true)] bool condition)
+    /// <summary>
+    /// Throws a non-accessible exception if the provided value is false.  This method executes
+    /// in all builds
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfFalse([DoesNotReturnIf(parameterValue: false)] bool condition, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string? filePath = null)
+    {
+        if (!condition)
         {
-            if (condition)
-            {
-                Fail("Unexpected true");
-            }
+            Fail("Unexpected false", lineNumber, filePath);
         }
+    }
 
-        /// <summary>
-        /// Throws a non-accessible exception if the provided value is true. This method executes in
-        /// all builds.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowIfTrue([DoesNotReturnIf(parameterValue: true)] bool condition, string message)
+    /// <summary>
+    /// Throws a non-accessible exception if the provided value is false.  This method executes
+    /// in all builds
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfFalse([DoesNotReturnIf(parameterValue: false)] bool condition, string message, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string? filePath = null)
+    {
+        if (!condition)
         {
-            if (condition)
-            {
-                Fail(message);
-            }
+            Fail(message, lineNumber, filePath);
         }
+    }
 
-        [DebuggerHidden]
-        [DoesNotReturn]
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void Fail(string message = "Unexpected")
-            => throw new InvalidOperationException(message);
+    /// <summary>
+    /// Throws a non-accessible exception if the provided value is false.  This method executes
+    /// in all builds
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfFalse([DoesNotReturnIf(parameterValue: false)] bool condition, [InterpolatedStringHandlerArgument("condition")] ThrowIfFalseInterpolatedStringHandler message, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string? filePath = null)
+    {
+        if (!condition)
+        {
+            Fail(message.GetFormattedText(), lineNumber, filePath);
+        }
+    }
+
+    /// <summary>
+    /// Throws a non-accessible exception if the provided value is true. This method executes in
+    /// all builds.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfTrue([DoesNotReturnIf(parameterValue: true)] bool condition, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string? filePath = null)
+    {
+        if (condition)
+        {
+            Fail("Unexpected true", lineNumber, filePath);
+        }
+    }
+
+    /// <summary>
+    /// Throws a non-accessible exception if the provided value is true. This method executes in
+    /// all builds.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfTrue([DoesNotReturnIf(parameterValue: true)] bool condition, string message, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string? filePath = null)
+    {
+        if (condition)
+        {
+            Fail(message, lineNumber, filePath);
+        }
+    }
+
+    /// <summary>
+    /// Throws a non-accessible exception if the provided value is true. This method executes in
+    /// all builds.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfTrue([DoesNotReturnIf(parameterValue: true)] bool condition, [InterpolatedStringHandlerArgument("condition")] ThrowIfTrueInterpolatedStringHandler message, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string? filePath = null)
+    {
+        if (condition)
+        {
+            Fail(message.GetFormattedText(), lineNumber, filePath);
+        }
+    }
+
+    [DebuggerHidden]
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void Fail(string message = "Unexpected", [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string? filePath = null)
+    {
+        var fileName = filePath is null ? null : Path.GetFileName(filePath);
+        throw new InvalidOperationException($"{message} - file {fileName} line {lineNumber}");
     }
 }

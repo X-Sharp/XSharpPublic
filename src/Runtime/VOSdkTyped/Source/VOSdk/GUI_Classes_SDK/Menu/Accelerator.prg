@@ -54,7 +54,7 @@ class Accelerator inherit VObject
         local pMem    as _winAccel
         if hTable != null_ptr
 
-            dwCount := GuiWin32.CopyAcceleratorTable(hTable, null_ptr, 0l)
+            dwCount := GuiWin32.CopyAcceleratorTable(hTable, null_ptr, 0L)
             if dwCount >0
                 if (pMem := MemAlloc(_sizeof(_winAccel)*dwCount)) != null_ptr
                     GuiWin32.CopyAcceleratorTable(hTable, pMem, dwCount)

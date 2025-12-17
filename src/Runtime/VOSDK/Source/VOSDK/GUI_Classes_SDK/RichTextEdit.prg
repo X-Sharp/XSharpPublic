@@ -950,14 +950,14 @@ METHOD Seek(cText, oRange, lMatchCase, lWholeWord, lReturnRange, lSearchUp)
 
 
 	IF lReturnRange
-		IF liRet >= 0l
+		IF liRet >= 0L
 			RETURN Range{strucFindTextEx:chrgText:cpMin + 1, strucFindTextEx:chrgText:cpMax + 1}
 		ENDIF
 	   RETURN Range{0,0}
 	ENDIF
 
 
-   RETURN liRet + 1l
+   RETURN liRet + 1L
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.SelectedText/*" />

@@ -4,10 +4,11 @@
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.EndConstructGeneration
     <[UseExportProvider]>
+    <Trait(Traits.Feature, Traits.Features.EndConstructGeneration)>
     Public Class TryBlockTests
-        <WpfFact, Trait(Traits.Feature, Traits.Features.EndConstructGeneration)>
-        Public Sub ApplyAfterTryStatement()
-            VerifyStatementEndConstructApplied(
+        <WpfFact>
+        Public Async Function ApplyAfterTryStatement() As Task
+            Await VerifyStatementEndConstructAppliedAsync(
                 before:="Class c1
 Sub goo()
 Try
@@ -24,11 +25,11 @@ End Try
 End Sub
 End Class",
                 afterCaret:={3, -1})
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.EndConstructGeneration)>
-        Public Sub DontApplyForMatchedTryWithCatch()
-            VerifyStatementEndConstructNotApplied(
+        <WpfFact>
+        Public Async Function DoNotApplyForMatchedTryWithCatch() As Task
+            Await VerifyStatementEndConstructNotAppliedAsync(
                 text:="Class c1
 Sub goo()
 Try
@@ -37,11 +38,11 @@ End Try
 End Sub
 End Class",
                 caret:={2, -1})
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.EndConstructGeneration)>
-        Public Sub DontApplyForMatchedTryWithoutCatch()
-            VerifyStatementEndConstructNotApplied(
+        <WpfFact>
+        Public Async Function DoNotApplyForMatchedTryWithoutCatch() As Task
+            Await VerifyStatementEndConstructNotAppliedAsync(
                 text:="Class c1
 Sub goo()
 Try
@@ -49,11 +50,11 @@ End Try
 End Sub
 End Class",
                 caret:={2, -1})
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.EndConstructGeneration)>
-        Public Sub VerifyNestedTryBlock()
-            VerifyStatementEndConstructApplied(
+        <WpfFact>
+        Public Async Function VerifyNestedTryBlock() As Task
+            Await VerifyStatementEndConstructAppliedAsync(
                 before:="Class C
     Sub S
         Try
@@ -78,11 +79,11 @@ End Class",
     End Sub
 End Class",
                 afterCaret:={6, -1})
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.EndConstructGeneration)>
-        Public Sub VerifyNestedTryBlockWithCode()
-            VerifyStatementEndConstructApplied(
+        <WpfFact>
+        Public Async Function VerifyNestedTryBlockWithCode() As Task
+            Await VerifyStatementEndConstructAppliedAsync(
                 before:="Class C
     Sub S
         Try
@@ -103,11 +104,11 @@ End Class",
     End Sub
 End Class",
                 afterCaret:={3, -1})
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.EndConstructGeneration)>
-        Public Sub VerifyMissingCatchInTryBlock()
-            VerifyStatementEndConstructNotApplied(
+        <WpfFact>
+        Public Async Function VerifyMissingCatchInTryBlock() As Task
+            Await VerifyStatementEndConstructNotAppliedAsync(
                 text:="Class C
     Sub S
         dim x = function(x)
@@ -118,27 +119,26 @@ End Class",
     End Sub
 End Class",
                 caret:={3, -1})
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.EndConstructGeneration)>
-        Public Sub VerifyInvalidSyntax()
-            VerifyStatementEndConstructNotApplied(
+        <WpfFact>
+        Public Async Function VerifyInvalidSyntax() As Task
+            Await VerifyStatementEndConstructNotAppliedAsync(
                 text:="Class EC
     Sub S
         Dim x = try
     End Sub
 End Class",
                 caret:={2, -1})
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.EndConstructGeneration)>
-        Public Sub VerifyInvalidLocation()
-            VerifyStatementEndConstructNotApplied(
+        <WpfFact>
+        Public Async Function VerifyInvalidLocation() As Task
+            Await VerifyStatementEndConstructNotAppliedAsync(
                 text:="Class EC
     Sub Try
 End Class",
                 caret:={1, -1})
-        End Sub
-
+        End Function
     End Class
 End Namespace

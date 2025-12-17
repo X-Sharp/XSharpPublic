@@ -13,14 +13,14 @@ using Microsoft.Build.Framework;
 using System.IO;
 using Microsoft.Win32;
 using System.Security;
-
+#nullable disable
 namespace XSharp.Build
 {
 
     class Utilities
     {
 
-        internal static string XSharpPath()
+        internal static string XSharpDir()
         {
             // If used after MSI Installer, value should be in the Registry
             string XSharpPath = Environment.GetEnvironmentVariable(Constants.EnvironmentXSharp);
@@ -49,44 +49,22 @@ namespace XSharp.Build
             return XSharpPath;
         }
 
-        internal static string XSharpBinPath()
+        internal static string XSharpBinDir()
         {
             // If used after MSI Installer, value should be in the Registry
             string BinPath = Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpBin);
             if (String.IsNullOrEmpty(BinPath))
             {
-                BinPath = Path.Combine(XSharpPath(), "bin");
+                BinPath = Path.Combine(XSharpDir(), "bin");
             }
             return BinPath;
         }
         internal static string XSharpIncludeDir()
         {
-            return Path.Combine(XSharpPath(),"include");
+            return Path.Combine(XSharpDir(), "include");
         }
 
-        internal static string VulcanIncludeDir()
-        {
-            string vulcanIncludeDir;
-            try
-            {
-                string key;
-                if (Environment.Is64BitProcess)
-                    key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Grafx\Vulcan.NET";
-                else
-                    key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Grafx\Vulcan.NET";
-                vulcanIncludeDir = (string)Registry.GetValue(key, "InstallPath", "");
-                if (! string.IsNullOrEmpty(vulcanIncludeDir))
-                    vulcanIncludeDir = Path.Combine(vulcanIncludeDir, "Include");
-                else
-                    vulcanIncludeDir = "";
-            }
-            catch (Exception)
-            {
-                vulcanIncludeDir = "";
-            }
-            return vulcanIncludeDir;
-        }
-        internal static bool CopyFileSafe(string source, string target)
+       internal static bool CopyFileSafe(string source, string target)
         {
             try
             {

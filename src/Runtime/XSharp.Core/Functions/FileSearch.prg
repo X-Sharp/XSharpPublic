@@ -119,7 +119,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
             ELSEIF (currentItem IS FileInfo)
                 size := (INT)((FileInfo)currentItem):Length
             ELSEIF currentItem IS DirectoryInfo
-                size := (INT)((DirectoryInfo) currentItem):GetFileSystemInfos().LongLength
+                size := (INT)((DirectoryInfo) currentItem):GetFileSystemInfos():LongLength
             ENDIF
         ENDIF
         RETURN (DWORD) size
@@ -128,9 +128,9 @@ INTERNAL STATIC CLASS XSharp.FileSearch
         LOCAL time := "00:00:00" AS STRING
         IF !isAtEnd
             IF (currentItem IS FileInfo)
-                time := ((FileInfo)currentItem):LastWriteTime.ToString(timeFormat)
+                time := ((FileInfo)currentItem):LastWriteTime:ToString(timeFormat)
             ELSEIF currentItem IS DirectoryInfo
-                time := ((DirectoryInfo) currentItem):LastWriteTime.ToString(timeFormat)
+                time := ((DirectoryInfo) currentItem):LastWriteTime:ToString(timeFormat)
             ENDIF
         ENDIF
         RETURN  time

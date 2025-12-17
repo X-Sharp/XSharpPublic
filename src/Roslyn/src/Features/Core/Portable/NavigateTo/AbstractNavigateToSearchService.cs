@@ -2,86 +2,82 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.Remote;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 
-namespace Microsoft.CodeAnalysis.NavigateTo
+namespace Microsoft.CodeAnalysis.NavigateTo;
+
+internal abstract partial class AbstractNavigateToSearchService : IAdvancedNavigateToSearchService
 {
-    internal abstract partial class AbstractNavigateToSearchService : INavigateToSearchService
+    public static readonly IImmutableSet<string> AllKinds = [
+        NavigateToItemKind.Class,
+        NavigateToItemKind.Constant,
+        NavigateToItemKind.Delegate,
+        NavigateToItemKind.Enum,
+        NavigateToItemKind.EnumItem,
+        NavigateToItemKind.Event,
+        NavigateToItemKind.Field,
+        NavigateToItemKind.Interface,
+        NavigateToItemKind.Method,
+        NavigateToItemKind.Module,
+        NavigateToItemKind.Property,
+        NavigateToItemKind.Structure];
+
+    public IImmutableSet<string> KindsProvided { get; } = AllKinds;
+
+    public bool CanFilter => true;
+
+    private static Func<ImmutableArray<RoslynNavigateToItem>, VoidResult, CancellationToken, Task> GetOnItemsFoundCallback(
+        Solution solution, Document? activeDocument, Func<ImmutableArray<INavigateToSearchResult>, Task> onResultsFound)
     {
-        public IImmutableSet<string> KindsProvided { get; } = ImmutableHashSet.Create(
-            NavigateToItemKind.Class,
-            NavigateToItemKind.Record,
-            NavigateToItemKind.Constant,
-            NavigateToItemKind.Delegate,
-            NavigateToItemKind.Enum,
-            NavigateToItemKind.EnumItem,
-            NavigateToItemKind.Event,
-            NavigateToItemKind.Field,
-            NavigateToItemKind.Interface,
-            NavigateToItemKind.Method,
-            NavigateToItemKind.Module,
-            NavigateToItemKind.Property,
-            NavigateToItemKind.Structure);
-
-        public bool CanFilter => true;
-
-        public async Task<ImmutableArray<INavigateToSearchResult>> SearchDocumentAsync(
-            Document document, string searchPattern, IImmutableSet<string> kinds, CancellationToken cancellationToken)
+        return async (items, _, cancellationToken) =>
         {
-            var client = await RemoteHostClient.TryGetClientAsync(document.Project, cancellationToken).ConfigureAwait(false);
-            if (client != null)
+            using var _1 = ArrayBuilder<INavigateToSearchResult>.GetInstance(items.Length, out var results);
+
+            foreach (var item in items)
             {
-                var solution = document.Project.Solution;
-
-                var result = await client.TryInvokeAsync<IRemoteNavigateToSearchService, ImmutableArray<SerializableNavigateToSearchResult>>(
-                    solution,
-                    (service, solutionInfo, cancellationToken) => service.SearchDocumentAsync(solutionInfo, document.Id, searchPattern, kinds.ToImmutableArray(), cancellationToken),
-                    cancellationToken).ConfigureAwait(false);
-
-                return await RehydrateAsync(result, solution, cancellationToken).ConfigureAwait(false);
+                var result = await item.TryCreateSearchResultAsync(solution, activeDocument, cancellationToken).ConfigureAwait(false);
+                if (result != null)
+                    results.Add(result);
             }
 
-            return await SearchDocumentInCurrentProcessAsync(
-                document, searchPattern, kinds, cancellationToken).ConfigureAwait(false);
-        }
+            if (results.Count > 0)
+                await onResultsFound(results.ToImmutableAndClear()).ConfigureAwait(false);
+        };
+    }
 
-        public async Task<ImmutableArray<INavigateToSearchResult>> SearchProjectAsync(
-            Project project, ImmutableArray<Document> priorityDocuments, string searchPattern, IImmutableSet<string> kinds, CancellationToken cancellationToken)
+    private static PooledDisposer<PooledHashSet<T>> GetPooledHashSet<T>(IEnumerable<T> items, out PooledHashSet<T> instance)
+    {
+        var disposer = PooledHashSet<T>.GetInstance(out instance);
+        instance.AddRange(items);
+        return disposer;
+    }
+
+    private static PooledDisposer<PooledHashSet<T>> GetPooledHashSet<T>(ImmutableArray<T> items, out PooledHashSet<T> instance)
+    {
+        var disposer = PooledHashSet<T>.GetInstance(out instance);
+        instance.AddRange(items);
+        return disposer;
+    }
+
+    private static IEnumerable<T> Prioritize<T>(IEnumerable<T> items, Func<T, bool> isPriority)
+    {
+        using var _ = ArrayBuilder<T>.GetInstance(out var normalItems);
+
+        foreach (var item in items)
         {
-            var client = await RemoteHostClient.TryGetClientAsync(project, cancellationToken).ConfigureAwait(false);
-            if (client != null)
-            {
-                var solution = project.Solution;
-                var priorityDocumentIds = priorityDocuments.SelectAsArray(d => d.Id);
-                var result = await client.TryInvokeAsync<IRemoteNavigateToSearchService, ImmutableArray<SerializableNavigateToSearchResult>>(
-                    solution,
-                    (service, solutionInfo, cancellationToken) => service.SearchProjectAsync(solutionInfo, project.Id, priorityDocumentIds, searchPattern, kinds.ToImmutableArray(), cancellationToken),
-                    cancellationToken).ConfigureAwait(false);
-
-                return await RehydrateAsync(result, solution, cancellationToken).ConfigureAwait(false);
-            }
-
-            return await SearchProjectInCurrentProcessAsync(
-                project, priorityDocuments, searchPattern, kinds, cancellationToken).ConfigureAwait(false);
-        }
-
-        private static ValueTask<ImmutableArray<INavigateToSearchResult>> RehydrateAsync(
-            Optional<ImmutableArray<SerializableNavigateToSearchResult>> result,
-            Solution solution,
-            CancellationToken cancellationToken)
-        {
-            if (result.HasValue)
-            {
-                return result.Value.SelectAsArrayAsync(r => r.RehydrateAsync(solution, cancellationToken));
-            }
+            if (isPriority(item))
+                yield return item;
             else
-            {
-                return ValueTaskFactory.FromResult(ImmutableArray<INavigateToSearchResult>.Empty);
-            }
+                normalItems.Add(item);
         }
+
+        foreach (var item in normalItems)
+            yield return item;
     }
 }

@@ -13,30 +13,18 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.ExtractMethod;
 using Roslyn.Utilities;
 
-namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
+namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod;
+
+internal sealed partial class CSharpExtractMethodService
 {
-    internal partial class CSharpMethodExtractor
+    internal sealed partial class CSharpMethodExtractor
     {
-        private class CSharpTriviaResult : TriviaResult
+        private sealed class CSharpTriviaResult(SemanticDocument document, ITriviaSavedResult result)
+            : TriviaResult(document, result, (int)SyntaxKind.EndOfLineTrivia, (int)SyntaxKind.WhitespaceTrivia)
         {
-            public static async Task<CSharpTriviaResult> ProcessAsync(SelectionResult selectionResult, CancellationToken cancellationToken)
-            {
-                var preservationService = selectionResult.SemanticDocument.Document.Project.LanguageServices.GetService<ISyntaxTriviaService>();
-                var root = selectionResult.SemanticDocument.Root;
-                var result = preservationService.SaveTriviaAroundSelection(root, selectionResult.FinalSpan);
-                return new CSharpTriviaResult(
-                    await selectionResult.SemanticDocument.WithSyntaxRootAsync(result.Root, cancellationToken).ConfigureAwait(false),
-                    result);
-            }
-
-            private CSharpTriviaResult(SemanticDocument document, ITriviaSavedResult result)
-                : base(document, result, (int)SyntaxKind.EndOfLineTrivia, (int)SyntaxKind.WhitespaceTrivia)
-            {
-            }
-
             protected override AnnotationResolver GetAnnotationResolver(SyntaxNode callsite, SyntaxNode method)
             {
-                var isMethodOrLocalFunction = method is MethodDeclarationSyntax || method is LocalFunctionStatementSyntax;
+                var isMethodOrLocalFunction = method is MethodDeclarationSyntax or LocalFunctionStatementSyntax;
                 if (callsite == null || !isMethodOrLocalFunction)
                 {
                     return null;
@@ -47,7 +35,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
 
             protected override TriviaResolver GetTriviaResolver(SyntaxNode method)
             {
-                var isMethodOrLocalFunction = method is MethodDeclarationSyntax || method is LocalFunctionStatementSyntax;
+                var isMethodOrLocalFunction = method is MethodDeclarationSyntax or LocalFunctionStatementSyntax;
                 if (!isMethodOrLocalFunction)
                 {
                     return null;
@@ -102,9 +90,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
                     if (tokenPair.PreviousToken == body.OpenBraceToken &&
                         tokenPair.NextToken == body.CloseBraceToken)
                     {
-                        return (location == TriviaLocation.AfterBeginningOfSpan)
-                            ? SpecializedCollections.SingletonEnumerable(SyntaxFactory.ElasticMarker)
-                            : SpecializedCollections.EmptyEnumerable<SyntaxTrivia>();
+                        return location == TriviaLocation.AfterBeginningOfSpan ? [SyntaxFactory.ElasticMarker] : [];
                     }
                 }
                 else
@@ -112,17 +98,15 @@ namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
                     if (tokenPair.PreviousToken == expressionBody.ArrowToken &&
                         tokenPair.NextToken.GetPreviousToken() == semicolonToken)
                     {
-                        return (location == TriviaLocation.AfterBeginningOfSpan)
-                            ? SpecializedCollections.SingletonEnumerable(SyntaxFactory.ElasticMarker)
-                            : SpecializedCollections.EmptyEnumerable<SyntaxTrivia>();
+                        return location == TriviaLocation.AfterBeginningOfSpan ? [SyntaxFactory.ElasticMarker] : [];
                     }
                 }
 
-                var previousTriviaPair = triviaMap.ContainsKey(tokenPair.PreviousToken) ? triviaMap[tokenPair.PreviousToken] : default;
-                var nextTriviaPair = triviaMap.ContainsKey(tokenPair.NextToken) ? triviaMap[tokenPair.NextToken] : default;
+                triviaMap.TryGetValue(tokenPair.PreviousToken, out var previousTriviaPair);
+                var trailingTrivia = previousTriviaPair.TrailingTrivia ?? [];
 
-                var trailingTrivia = previousTriviaPair.TrailingTrivia ?? SpecializedCollections.EmptyEnumerable<SyntaxTrivia>();
-                var leadingTrivia = nextTriviaPair.LeadingTrivia ?? SpecializedCollections.EmptyEnumerable<SyntaxTrivia>();
+                triviaMap.TryGetValue(tokenPair.NextToken, out var nextTriviaPair);
+                var leadingTrivia = nextTriviaPair.LeadingTrivia ?? [];
 
                 var list = trailingTrivia.Concat(leadingTrivia);
 
@@ -160,24 +144,24 @@ namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
 
             private static IEnumerable<SyntaxTrivia> AppendLeadingTrivia(PreviousNextTokenPair tokenPair)
             {
-                if (tokenPair.PreviousToken.RawKind == (int)SyntaxKind.OpenBraceToken ||
-                    tokenPair.PreviousToken.RawKind == (int)SyntaxKind.SemicolonToken)
+                if (tokenPair.PreviousToken.RawKind is ((int)SyntaxKind.OpenBraceToken) or
+                    ((int)SyntaxKind.SemicolonToken))
                 {
                     return tokenPair.NextToken.LeadingTrivia;
                 }
 
-                return SpecializedCollections.EmptyEnumerable<SyntaxTrivia>();
+                return [];
             }
 
             private static IEnumerable<SyntaxTrivia> AppendTrailingTrivia(PreviousNextTokenPair tokenPair)
             {
-                if (tokenPair.PreviousToken.RawKind == (int)SyntaxKind.OpenBraceToken ||
-                    tokenPair.PreviousToken.RawKind == (int)SyntaxKind.SemicolonToken)
+                if (tokenPair.PreviousToken.RawKind is ((int)SyntaxKind.OpenBraceToken) or
+                    ((int)SyntaxKind.SemicolonToken))
                 {
                     return tokenPair.PreviousToken.TrailingTrivia;
                 }
 
-                return SpecializedCollections.EmptyEnumerable<SyntaxTrivia>();
+                return [];
             }
         }
     }

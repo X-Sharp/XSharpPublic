@@ -51,7 +51,7 @@ namespace Roslyn.Test.Utilities
             // The EE should never be calling ISymUnmanagedReader.GetSymAttribute.  
             // In order to account for EnC updates, it should always be calling 
             // ISymUnmanagedReader3.GetSymAttributeByVersion instead.
-            throw ExceptionUtilities.Unreachable;
+            throw ExceptionUtilities.Unreachable();
         }
 
         public int GetSymAttributeByVersion(int methodToken, int version, string name, int bufferLength, out int count, byte[] customDebugInformation)
@@ -244,7 +244,7 @@ namespace Roslyn.Test.Utilities
         {
             _children = children;
             _namespaces = namespaces;
-            _constants = constants ?? new ISymUnmanagedConstant[0];
+            _constants = constants ?? [];
             _startOffset = startOffset;
             _endOffset = endOffset;
         }
@@ -320,10 +320,7 @@ namespace Roslyn.Test.Utilities
         {
             if (name != null)
             {
-                var builder = ArrayBuilder<char>.GetInstance();
-                builder.AddRange(name);
-                builder.AddRange('\0');
-                _nameChars = builder.ToImmutableAndFree();
+                _nameChars = [.. name, '\0'];
             }
         }
 

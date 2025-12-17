@@ -3786,7 +3786,6 @@ End Class
             </file>
 </compilation>)
 
-
             Dim controlResults1 = results1.Item1
             Dim dataResults1 = results1.Item2
             Dim controlResults2 = results2.Item1
@@ -3887,7 +3886,6 @@ Class Class1(Of T)
 End Class
             </file>
 </compilation>)
-
 
             Dim controlResults1 = results1.Item1
             Dim dataResults1 = results1.Item2
@@ -6998,7 +6996,6 @@ End Module
     </file>
 </compilation>)
 
-
             Assert.True(dataFlowResults.Succeeded)
             Assert.Equal("x", GetSymbolNamesJoined(dataFlowResults.VariablesDeclared))
             Assert.Empty(dataFlowResults.AlwaysAssigned)
@@ -7600,7 +7597,6 @@ End Module
             Assert.Equal("X", GetSymbolNamesJoined(dataFlowResults.ReadOutside))
             Assert.Equal("X", GetSymbolNamesJoined(dataFlowResults.WrittenOutside))
         End Sub
-
 
 #Region "Anonymous Type, Lambda"
 
@@ -8825,7 +8821,8 @@ End Class
             Assert.Equal("Me, x, s", GetSymbolNamesJoined(dataFlowResults.WrittenOutside))
         End Sub
 
-        <Fact()>
+        <ConditionalFact(GetType(NoUsedAssembliesValidation))> ' https://github.com/dotnet/roslyn/issues/40684: The test hook is blocked by this issue.
+        <WorkItem(40684, "https://github.com/dotnet/roslyn/issues/40684")>
         Public Sub WithStatement_Expression_LValue_4d()
             Dim dataFlowResults = CompileAndAnalyzeDataFlow(
 <compilation>
@@ -8881,7 +8878,8 @@ End Class
             Assert.Equal("Me, x, s", GetSymbolNamesJoined(dataFlowResults.WrittenOutside))
         End Sub
 
-        <Fact()>
+        <ConditionalFact(GetType(NoUsedAssembliesValidation))> ' https://github.com/dotnet/roslyn/issues/40684: The test hook is blocked by this issue.
+        <WorkItem(40684, "https://github.com/dotnet/roslyn/issues/40684")>
         Public Sub WithStatement_Expression_LValue_4e()
             Dim dataFlowResults = CompileAndAnalyzeDataFlow(
 <compilation>
@@ -9994,6 +9992,38 @@ End Module
                                    writtenOutside,
                                    capturedInside,
                                    capturedOutside)
+        End Sub
+
+        <WorkItem("https://github.com/dotnet/roslyn/issues/38087")>
+        <Fact()>
+        Public Sub NestedBinaryOperator()
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntime(
+   <compilation>
+       <file name="a.vb">
+Module Program
+    Sub M(i As Integer, j As Integer, k As Integer, l As Integer)
+        Dim x = i + j + k + l
+    End Sub
+End Module
+      </file>
+   </compilation>)
+
+            Dim tree = compilation.SyntaxTrees.First()
+            Dim model = compilation.GetSemanticModel(tree)
+            Dim nodes = tree.GetRoot().DescendantNodes().OfType(Of BinaryExpressionSyntax)().ToArray()
+            Assert.Equal(3, nodes.Length)
+
+            Assert.Equal("i + j + k + l", nodes(0).ToString())
+            Dim dataFlowResults = model.AnalyzeDataFlow(nodes(0))
+            Assert.Equal("i, j, k, l", GetSymbolNamesJoined(dataFlowResults.ReadInside))
+
+            Assert.Equal("i + j + k", nodes(1).ToString())
+            dataFlowResults = model.AnalyzeDataFlow(nodes(1))
+            Assert.Equal("i, j, k", GetSymbolNamesJoined(dataFlowResults.ReadInside))
+
+            Assert.Equal("i + j", nodes(2).ToString())
+            dataFlowResults = model.AnalyzeDataFlow(nodes(2))
+            Assert.Equal("i, j", GetSymbolNamesJoined(dataFlowResults.ReadInside))
         End Sub
 
 #End Region

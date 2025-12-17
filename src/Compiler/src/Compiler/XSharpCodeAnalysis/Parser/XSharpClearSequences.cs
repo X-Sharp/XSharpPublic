@@ -6,10 +6,7 @@
 
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -19,7 +16,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context is XSharpParserRuleContext xpr)
             {
-                xpr.ClearSequencePoint(); 
+                xpr.ClearSequencePoint();
             }
         }
     }

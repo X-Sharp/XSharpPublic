@@ -8,9 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
-using System.Threading;
 
 namespace Microsoft.CodeAnalysis.CommandLine
 {
@@ -18,7 +16,7 @@ namespace Microsoft.CodeAnalysis.CommandLine
     /// Used to log information from within the compiler server
     /// </summary>
     /// <remarks>
-    /// Implementations of this interface must assume they are used on multilpe threads without any form
+    /// Implementations of this interface must assume they are used on multiple threads without any form
     /// of synchronization.
     /// </remarks>
     internal interface ICompilerServerLogger
@@ -103,32 +101,36 @@ namespace Microsoft.CodeAnalysis.CommandLine
         internal const string LoggingPrefix = "---";
 
         private Stream? _loggingStream;
-        private readonly int _processId;
+        private readonly string _identifier;
 
         public bool IsLogging => _loggingStream is object;
 
         /// <summary>
         /// Static class initializer that initializes logging.
         /// </summary>
-        public CompilerServerLogger()
+        public CompilerServerLogger(string identifier, string? loggingFilePath = null)
         {
-            _processId = Process.GetCurrentProcess().Id;
+            _identifier = identifier;
 
             try
             {
-                // Check if the environment
-                if (Environment.GetEnvironmentVariable(EnvironmentVariableName) is string loggingFileName)
+                if (loggingFilePath is null)
                 {
+                    loggingFilePath = Environment.GetEnvironmentVariable(EnvironmentVariableName);
                     // If the environment variable contains the path of a currently existing directory,
                     // then use a process-specific name for the log file and put it in that directory.
                     // Otherwise, assume that the environment variable specifies the name of the log file.
-                    if (Directory.Exists(loggingFileName))
+                    if (Directory.Exists(loggingFilePath))
                     {
-                        loggingFileName = Path.Combine(loggingFileName, $"server.{_processId}.log");
+                        var processId = Process.GetCurrentProcess().Id;
+                        loggingFilePath = Path.Combine(loggingFilePath, $"server.{processId}.log");
                     }
+                }
 
+                if (loggingFilePath is not null)
+                {
                     // Open allowing sharing. We allow multiple processes to log to the same file, so we use share mode to allow that.
-                    _loggingStream = new FileStream(loggingFileName, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
+                    _loggingStream = new FileStream(loggingFilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
                 }
             }
             catch (Exception e)
@@ -147,8 +149,8 @@ namespace Microsoft.CodeAnalysis.CommandLine
         {
             if (_loggingStream is object)
             {
-                var threadId = Thread.CurrentThread.ManagedThreadId;
-                var prefix = $"PID={_processId} TID={threadId} Ticks={Environment.TickCount} ";
+                var threadId = Environment.CurrentManagedThreadId;
+                var prefix = $"ID={_identifier} TID={threadId}: ";
                 string output = prefix + message + Environment.NewLine;
                 byte[] bytes = Encoding.UTF8.GetBytes(output);
 

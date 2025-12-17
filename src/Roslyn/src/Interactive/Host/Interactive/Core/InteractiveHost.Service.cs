@@ -13,10 +13,8 @@ using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.ErrorReporting;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CodeAnalysis.Scripting.Hosting;
 using Roslyn.Utilities;
@@ -108,11 +106,13 @@ namespace Microsoft.CodeAnalysis.Interactive
                 }
             }
 
-            private static readonly ImmutableArray<string> s_systemNoShadowCopyDirectories = ImmutableArray.Create(
+            private static readonly ImmutableArray<string> s_systemNoShadowCopyDirectories =
+            [
                 FileUtilities.NormalizeDirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.Windows)),
                 FileUtilities.NormalizeDirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)),
                 FileUtilities.NormalizeDirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)),
-                FileUtilities.NormalizeDirectoryPath(RuntimeEnvironment.GetRuntimeDirectory()));
+                FileUtilities.NormalizeDirectoryPath(RuntimeEnvironment.GetRuntimeDirectory()),
+            ];
 
             #region Setup
 
@@ -124,7 +124,7 @@ namespace Microsoft.CodeAnalysis.Interactive
                 var workingDirectory = Directory.GetCurrentDirectory();
 
                 var referenceResolver = new RuntimeMetadataReferenceResolver(
-                    searchPaths: ImmutableArray<string>.Empty,
+                    searchPaths: [],
                     baseDirectory: workingDirectory,
                     packageResolver: null,
                     gacFileResolver: s_currentPlatformInfo.HasGlobalAssemblyCache ? new GacFileResolver(preferredCulture: CultureInfo.CurrentCulture) : null,
@@ -134,7 +134,7 @@ namespace Microsoft.CodeAnalysis.Interactive
                 var initialState = new EvaluationState(
                     scriptState: null,
                     scriptOptions: ScriptOptions.Default.WithMetadataResolver(new ScriptMetadataResolver(referenceResolver)),
-                    ImmutableArray<string>.Empty,
+                    [],
                     workingDirectory);
 
                 _lastTask = Task.FromResult(initialState);
@@ -160,13 +160,13 @@ namespace Microsoft.CodeAnalysis.Interactive
                 _serviceState = null;
             }
 
-            public Task<InteractiveHostPlatformInfo.Data> InitializeAsync(string replServiceProviderTypeName, string cultureName)
+            public Task<InteractiveHostPlatformInfo.Data> InitializeAsync(string replServiceProviderTypeName)
             {
                 // TODO (tomat): we should share the copied files with the host
                 var metadataFileProvider = new MetadataShadowCopyProvider(
                     Path.Combine(Path.GetTempPath(), "InteractiveHostShadow"),
                     noShadowCopyDirectories: s_systemNoShadowCopyDirectories,
-                    documentationCommentsCulture: new CultureInfo(cultureName));
+                    documentationCommentsCulture: CultureInfo.CurrentUICulture);
 
                 var assemblyLoader = new InteractiveAssemblyLoader(metadataFileProvider);
                 var replServiceProviderType = Type.GetType(replServiceProviderTypeName);
@@ -213,16 +213,10 @@ namespace Microsoft.CodeAnalysis.Interactive
                 s_clientExited.Set();
             }
 
-            internal static Task RunServerAsync(string[] args, Func<Func<object>, object> invokeOnMainThread)
-            {
-                Contract.ThrowIfFalse(args.Length == 2, "Expecting arguments: <pipe name> <client process id>");
-                return RunServerAsync(args[0], int.Parse(args[1], CultureInfo.InvariantCulture), invokeOnMainThread);
-            }
-
             /// <summary>
             /// Implements remote server.
             /// </summary>
-            private static async Task RunServerAsync(string pipeName, int clientProcessId, Func<Func<object>, object> invokeOnMainThread)
+            public static async Task RunServerAsync(string pipeName, int clientProcessId, Func<Func<object>, object> invokeOnMainThread)
             {
                 if (!AttachToClientProcess(clientProcessId))
                 {
@@ -538,7 +532,7 @@ namespace Microsoft.CodeAnalysis.Interactive
                         foreach (var error in args.Errors)
                         {
                             var writer = (error.Severity == DiagnosticSeverity.Error) ? Console.Error : Console.Out;
-                            writer.WriteLine(error.GetMessage(CultureInfo.CurrentCulture));
+                            writer.WriteLine(error.GetMessage(CultureInfo.CurrentUICulture));
                         }
 
                         if (args.Errors.Length == 0)
@@ -672,7 +666,7 @@ namespace Microsoft.CodeAnalysis.Interactive
                 }
 
                 var diagnostics = script.Compile();
-                if (diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error))
+                if (diagnostics.Any(static d => d.Severity == DiagnosticSeverity.Error))
                 {
                     DisplayInteractiveErrors(diagnostics, Console.Error);
                     return null;
@@ -739,9 +733,9 @@ namespace Microsoft.CodeAnalysis.Interactive
                 var directories = attemptedFilePaths.Select(path => Path.GetDirectoryName(path)).ToArray();
                 var uniqueDirectories = new HashSet<string>(directories);
 
-                writer.WriteLine(uniqueDirectories.Count == 1 ?
-                    InteractiveHostResources.Searched_in_directory_colon :
-                    InteractiveHostResources.Searched_in_directories_colon);
+                writer.WriteLine(uniqueDirectories.Count == 1
+                    ? InteractiveHostResources.Searched_in_directory_colon
+                    : InteractiveHostResources.Searched_in_directories_colon);
 
                 foreach (string directory in directories)
                 {
@@ -759,9 +753,9 @@ namespace Microsoft.CodeAnalysis.Interactive
                 {
                     var serviceState = GetServiceState();
 
-                    var task = (state == null) ?
-                        script.RunAsync(serviceState.Globals, catchException: e => true, cancellationToken: CancellationToken.None) :
-                        script.RunFromAsync(state, catchException: e => true, cancellationToken: CancellationToken.None);
+                    var task = (state == null)
+                        ? script.RunAsync(serviceState.Globals, catchException: e => true, cancellationToken: CancellationToken.None)
+                        : script.RunFromAsync(state, catchException: e => true, cancellationToken: CancellationToken.None);
 
                     var newState = await task.ConfigureAwait(false);
 

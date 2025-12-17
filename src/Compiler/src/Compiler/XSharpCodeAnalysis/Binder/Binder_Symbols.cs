@@ -128,7 +128,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        internal Symbol XSharpResolveEqualSymbols(Symbol first, Symbol second, ImmutableArray<Symbol> originalSymbols, CSharpSyntaxNode where, DiagnosticBag diagnostics)
+        internal Symbol XSharpResolveEqualSymbols(Symbol first, Symbol second, ImmutableArray<Symbol> originalSymbols, CSharpSyntaxNode where, BindingDiagnosticBag diagnostics)
         {
             CSDiagnosticInfo info;
             bool warning = true;
@@ -191,7 +191,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             }
         }
-        internal NamespaceOrTypeOrAliasSymbolWithAnnotations XsBindVoStructSymbol(ExpressionSyntax syntax, NamespaceOrTypeOrAliasSymbolWithAnnotations symbol, DiagnosticBag diagnostics)
+        internal NamespaceOrTypeOrAliasSymbolWithAnnotations XsBindVoStructSymbol(ExpressionSyntax syntax, NamespaceOrTypeOrAliasSymbolWithAnnotations symbol, BindingDiagnosticBag diagnostics)
         {
             if ((symbol.TypeWithAnnotations.Type)?.IsVoStructOrUnion() == true)
             {
@@ -208,7 +208,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return symbol;
         }
-        internal NamespaceOrTypeOrAliasSymbolWithAnnotations XsBindNamespaceOrTypeOrAliasSymbol(ExpressionSyntax syntax, DiagnosticBag diagnostics, ConsList<TypeSymbol> basesBeingResolved, bool suppressUseSiteDiagnostics, bool includeNameSpace = true)
+        internal NamespaceOrTypeOrAliasSymbolWithAnnotations XsBindNamespaceOrTypeOrAliasSymbol(ExpressionSyntax syntax, BindingDiagnosticBag diagnostics, ConsList<TypeSymbol> basesBeingResolved, bool suppressUseSiteDiagnostics, bool includeNameSpace = true)
         {
             switch (syntax.Kind())
             {

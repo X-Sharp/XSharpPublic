@@ -2,17 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
 using System.Threading;
 using Microsoft.CodeAnalysis.Editing;
 
-namespace Microsoft.CodeAnalysis.ConvertLinq.ConvertForEachToLinqQuery
-{
-    internal interface IConverter<TForEachStatement, TStatement>
-    {
-        ForEachInfo<TForEachStatement, TStatement> ForEachInfo { get; }
+namespace Microsoft.CodeAnalysis.ConvertLinq.ConvertForEachToLinqQuery;
 
-        void Convert(SyntaxEditor editor, bool convertToQuery, CancellationToken cancellationToken);
-    }
+internal interface IConverter<TForEachStatement, TStatement>
+{
+    ForEachInfo<TForEachStatement, TStatement> ForEachInfo { get; }
+
+    void Convert(SyntaxEditor editor, bool convertToQuery, CancellationToken cancellationToken);
 }

@@ -10,7 +10,7 @@ Imports Microsoft.CodeAnalysis.CodeActions
 Imports Microsoft.CodeAnalysis.CodeFixes
 Imports Microsoft.CodeAnalysis.CodeGeneration
 Imports Microsoft.CodeAnalysis.FindSymbols
-Imports Microsoft.CodeAnalysis.LanguageServices
+Imports Microsoft.CodeAnalysis.LanguageService
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.CodeFixes.GenerateEvent
@@ -105,7 +105,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeFixes.GenerateEvent
             End If
 
             ' Target type may be in other project so we need to find its source definition
-            Dim sourceDefinition = Await SymbolFinder.FindSourceDefinitionAsync(targetType, document.Project.Solution, cancellationToken).ConfigureAwait(False)
+            Dim sourceDefinition = SymbolFinder.FindSourceDefinition(targetType, document.Project.Solution, cancellationToken)
 
             targetType = TryCast(sourceDefinition, INamedTypeSymbol)
 
@@ -116,9 +116,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeFixes.GenerateEvent
             Return Await GenerateCodeActionAsync(document, semanticModel, delegateSymbol, actualEventName, targetType, cancellationToken).ConfigureAwait(False)
         End Function
 
-        Private Shared Async Function GenerateCodeActionAsync(document As Document, semanticModel As SemanticModel, delegateSymbol As IMethodSymbol, actualEventName As String, targetType As INamedTypeSymbol, cancellationToken As CancellationToken) As Task(Of CodeAction)
-            Dim codeGenService = document.Project.Solution.Workspace.Services.GetLanguageServices(targetType.Language).GetService(Of ICodeGenerationService)
-            Dim syntaxFactService = document.Project.Solution.Workspace.Services.GetLanguageServices(targetType.Language).GetService(Of ISyntaxFactsService)
+        Private Shared Async Function GenerateCodeActionAsync(
+                document As Document,
+                semanticModel As SemanticModel,
+                delegateSymbol As IMethodSymbol,
+                actualEventName As String,
+                targetType As INamedTypeSymbol,
+                cancellationToken As CancellationToken) As Task(Of CodeAction)
+
+            Dim codeGenService = document.Project.Solution.Services.GetLanguageServices(targetType.Language).GetService(Of ICodeGenerationService)
+            Dim syntaxFactService = document.Project.Solution.Services.GetLanguageServices(targetType.Language).GetService(Of ISyntaxFactsService)
 
             Dim eventHandlerName As String = actualEventName + "Handler"
             Dim existingSymbols = Await DeclarationFinder.FindSourceDeclarationsWithNormalQueryAsync(
@@ -147,9 +154,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeFixes.GenerateEvent
             ' instead of an 'As' clause.
             delegateType.AssociatedSymbol = generatedEvent
 
-            Return New GenerateEventCodeAction(
-                document.Project.Solution, targetType, generatedEvent,
-                codeGenService, CodeGenerationOptions.Default)
+            Return New GenerateEventCodeAction(document.Project.Solution, targetType, generatedEvent, codeGenService)
         End Function
 
         Private Shared Function GetHandlerExpression(handlerStatement As AddRemoveHandlerStatementSyntax) As ExpressionSyntax
@@ -245,13 +250,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeFixes.GenerateEvent
 
             ' Does this name already bind?
             Dim semanticModel = Await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(False)
-            Dim nameToGenerate = semanticModel.GetSymbolInfo(node).Symbol
+            Dim nameToGenerate = semanticModel.GetSymbolInfo(node, cancellationToken).Symbol
 
             If nameToGenerate IsNot Nothing Then
                 Return Nothing
             End If
 
-            Dim targetType = TryCast(Await SymbolFinder.FindSourceDefinitionAsync(semanticModel.GetSymbolInfo(node.Left).Symbol, document.Project.Solution, cancellationToken).ConfigureAwait(False), INamedTypeSymbol)
+            Dim targetType = TryCast(SymbolFinder.FindSourceDefinition(semanticModel.GetSymbolInfo(node.Left, cancellationToken).Symbol, document.Project.Solution, cancellationToken), INamedTypeSymbol)
             If targetType Is Nothing OrElse (targetType.TypeKind <> TypeKind.Interface AndAlso targetType.TypeKind <> TypeKind.Class) Then
                 Return Nothing
             End If
@@ -261,7 +266,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeFixes.GenerateEvent
                 Return Nothing
             End If
 
-            Dim codeGenService = document.Project.Solution.Workspace.Services.GetLanguageServices(targetType.Language).GetService(Of ICodeGenerationService)
+            Dim codeGenService = document.Project.Solution.Services.GetLanguageServices(targetType.Language).GetService(Of ICodeGenerationService)
 
             Dim actualEventName = node.Right.Identifier.ValueText
 
@@ -298,14 +303,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeFixes.GenerateEvent
                 ' instead of an 'As' clause.
                 eventHandlerType.AssociatedSymbol = generatedEvent
 
-                Return New GenerateEventCodeAction(
-                        document.Project.Solution, targetType, generatedEvent,
-                        codeGenService, New CodeGenerationOptions())
+                Return New GenerateEventCodeAction(document.Project.Solution, targetType, generatedEvent, codeGenService)
             Else
                 ' Event with no parameters.
                 Dim generatedMember = CodeGenerationSymbolFactory.CreateEventSymbol(boundEvent, name:=actualEventName)
-                Return New GenerateEventCodeAction(
-                    document.Project.Solution, targetType, generatedMember, codeGenService, New CodeGenerationOptions())
+                Return New GenerateEventCodeAction(document.Project.Solution, targetType, generatedMember, codeGenService)
             End If
         End Function
 
@@ -345,11 +347,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeFixes.GenerateEvent
                     Return Nothing
                 End If
 
-                targetType = TryCast(Await SymbolFinder.FindSourceDefinitionAsync(withEventsProperty.Type, document.Project.Solution, cancellationToken).ConfigureAwait(False), INamedTypeSymbol)
+                targetType = TryCast(SymbolFinder.FindSourceDefinition(withEventsProperty.Type, document.Project.Solution, cancellationToken), INamedTypeSymbol)
 
             End If
 
-            targetType = TryCast(Await SymbolFinder.FindSourceDefinitionAsync(targetType, document.Project.Solution, cancellationToken).ConfigureAwait(False), INamedTypeSymbol)
+            targetType = TryCast(SymbolFinder.FindSourceDefinition(targetType, document.Project.Solution, cancellationToken), INamedTypeSymbol)
             If targetType Is Nothing OrElse
                 Not (targetType.TypeKind = TypeKind.Class OrElse targetType.TypeKind = TypeKind.Interface) OrElse
                 targetType.IsAnonymousType Then
@@ -358,7 +360,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeFixes.GenerateEvent
 
             ' Our target type may be from a CSharp file, in which case we should resolve it to our VB compilation.
             Dim originalTargetType = targetType
-            targetType = DirectCast(targetType.GetSymbolKey().Resolve(semanticModel.Compilation).Symbol, INamedTypeSymbol)
+            targetType = DirectCast(targetType.GetSymbolKey(cancellationToken).Resolve(semanticModel.Compilation, cancellationToken:=cancellationToken).Symbol, INamedTypeSymbol)
 
             If targetType Is Nothing Then
                 Return Nothing
@@ -374,7 +376,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeFixes.GenerateEvent
                 Return Nothing
             End If
 
-            Dim codeGenService = document.Project.Solution.Workspace.Services.GetLanguageServices(originalTargetType.Language).GetService(Of ICodeGenerationService)
+            Dim codeGenService = document.Project.Solution.Services.GetLanguageServices(originalTargetType.Language).GetService(Of ICodeGenerationService)
 
             ' Let's bind the method declaration so we can get its parameters.
             Dim boundMethod = semanticModel.GetDeclaredSymbol(handlesClauseItem.GetAncestor(Of MethodStatementSyntax)(), cancellationToken)
@@ -401,8 +403,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeFixes.GenerateEvent
             delegateType.AssociatedSymbol = generatedEvent
 
             Return New GenerateEventCodeAction(
-                document.Project.Solution, originalTargetType, generatedEvent,
-                codeGenService, New CodeGenerationOptions())
+                document.Project.Solution, originalTargetType, generatedEvent, codeGenService)
         End Function
     End Class
 End Namespace

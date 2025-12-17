@@ -45,16 +45,35 @@ namespace Microsoft.CodeAnalysis.Collections.Internal
     internal static class ThrowHelper
     {
         [DoesNotReturn]
+        internal static void ThrowIndexOutOfRangeException()
+        {
+            throw new IndexOutOfRangeException();
+        }
+
+        [DoesNotReturn]
         internal static void ThrowArgumentOutOfRangeException()
         {
             throw new ArgumentOutOfRangeException();
         }
 
         [DoesNotReturn]
-        internal static void ThrowArgumentOutOfRange_IndexException()
+        internal static void ThrowArgumentOutOfRange_IndexMustBeLessException()
         {
             throw GetArgumentOutOfRangeException(ExceptionArgument.index,
-                                                    ExceptionResource.ArgumentOutOfRange_Index);
+                                                    ExceptionResource.ArgumentOutOfRange_IndexMustBeLess);
+        }
+
+        [DoesNotReturn]
+        internal static void ThrowArgumentOutOfRange_IndexMustBeLessOrEqualException()
+        {
+            throw GetArgumentOutOfRangeException(ExceptionArgument.index,
+                                                    ExceptionResource.ArgumentOutOfRange_IndexMustBeLessOrEqual);
+        }
+
+        [DoesNotReturn]
+        internal static void ThrowArgumentException_BadComparer(object? comparer)
+        {
+            throw new ArgumentException(string.Format(SR.Arg_BogusIComparer, comparer));
         }
 
         [DoesNotReturn]
@@ -72,10 +91,17 @@ namespace Microsoft.CodeAnalysis.Collections.Internal
         }
 
         [DoesNotReturn]
-        internal static void ThrowStartIndexArgumentOutOfRange_ArgumentOutOfRange_Index()
+        internal static void ThrowStartIndexArgumentOutOfRange_ArgumentOutOfRange_IndexMustBeLessOrEqual()
         {
             throw GetArgumentOutOfRangeException(ExceptionArgument.startIndex,
-                                                    ExceptionResource.ArgumentOutOfRange_Index);
+                                                    ExceptionResource.ArgumentOutOfRange_IndexMustBeLessOrEqual);
+        }
+
+        [DoesNotReturn]
+        internal static void ThrowStartIndexArgumentOutOfRange_ArgumentOutOfRange_IndexMustBeLess()
+        {
+            throw GetArgumentOutOfRangeException(ExceptionArgument.startIndex,
+                                                    ExceptionResource.ArgumentOutOfRange_IndexMustBeLess);
         }
 
         [DoesNotReturn]
@@ -89,14 +115,14 @@ namespace Microsoft.CodeAnalysis.Collections.Internal
         internal static void ThrowWrongKeyTypeArgumentException<T>(T key, Type targetType)
         {
             // Generic key to move the boxing to the right hand side of throw
-            throw GetWrongKeyTypeArgumentException((object?)key, targetType);
+            throw GetWrongKeyTypeArgumentException(key, targetType);
         }
 
         [DoesNotReturn]
         internal static void ThrowWrongValueTypeArgumentException<T>(T value, Type targetType)
         {
             // Generic key to move the boxing to the right hand side of throw
-            throw GetWrongValueTypeArgumentException((object?)value, targetType);
+            throw GetWrongValueTypeArgumentException(value, targetType);
         }
 
         private static ArgumentException GetAddingDuplicateWithKeyArgumentException(object? key)
@@ -108,14 +134,14 @@ namespace Microsoft.CodeAnalysis.Collections.Internal
         internal static void ThrowAddingDuplicateWithKeyArgumentException<T>(T key)
         {
             // Generic key to move the boxing to the right hand side of throw
-            throw GetAddingDuplicateWithKeyArgumentException((object?)key);
+            throw GetAddingDuplicateWithKeyArgumentException(key);
         }
 
         [DoesNotReturn]
         internal static void ThrowKeyNotFoundException<T>(T key)
         {
             // Generic key to move the boxing to the right hand side of throw
-            throw GetKeyNotFoundException((object?)key);
+            throw GetKeyNotFoundException(key);
         }
 
         [DoesNotReturn]
@@ -160,9 +186,9 @@ namespace Microsoft.CodeAnalysis.Collections.Internal
         }
 
         [DoesNotReturn]
-        internal static void ThrowArgumentException_Argument_InvalidArrayType()
+        internal static void ThrowArgumentException_Argument_IncompatibleArrayType()
         {
-            throw new ArgumentException(SR.Argument_InvalidArrayType);
+            throw new ArgumentException(SR.Argument_IncompatibleArrayType);
         }
 
         [DoesNotReturn]
@@ -227,6 +253,8 @@ namespace Microsoft.CodeAnalysis.Collections.Internal
                     return "dictionary";
                 case ExceptionArgument.array:
                     return "array";
+                case ExceptionArgument.info:
+                    return "info";
                 case ExceptionArgument.key:
                     return "key";
                 case ExceptionArgument.value:
@@ -251,10 +279,14 @@ namespace Microsoft.CodeAnalysis.Collections.Internal
                     return "action";
                 case ExceptionArgument.comparison:
                     return "comparison";
+                case ExceptionArgument.source:
+                    return "source";
                 case ExceptionArgument.length:
                     return "length";
                 case ExceptionArgument.destinationArray:
                     return "destinationArray";
+                case ExceptionArgument.other:
+                    return "other";
                 default:
                     Debug.Fail("The enum value is not defined, please check the ExceptionArgument Enum.");
                     return "";
@@ -265,8 +297,10 @@ namespace Microsoft.CodeAnalysis.Collections.Internal
         {
             switch (resource)
             {
-                case ExceptionResource.ArgumentOutOfRange_Index:
-                    return SR.ArgumentOutOfRange_Index;
+                case ExceptionResource.ArgumentOutOfRange_IndexMustBeLessOrEqual:
+                    return SR.ArgumentOutOfRange_IndexMustBeLessOrEqual;
+                case ExceptionResource.ArgumentOutOfRange_IndexMustBeLess:
+                    return SR.ArgumentOutOfRange_IndexMustBeLess;
                 case ExceptionResource.ArgumentOutOfRange_Count:
                     return SR.ArgumentOutOfRange_Count;
                 case ExceptionResource.Arg_ArrayPlusOffTooSmall:
@@ -305,6 +339,7 @@ namespace Microsoft.CodeAnalysis.Collections.Internal
     {
         dictionary,
         array,
+        info,
         key,
         value,
         startIndex,
@@ -317,8 +352,10 @@ namespace Microsoft.CodeAnalysis.Collections.Internal
         count,
         action,
         comparison,
+        source,
         length,
         destinationArray,
+        other,
     }
 
     //
@@ -326,7 +363,8 @@ namespace Microsoft.CodeAnalysis.Collections.Internal
     //
     internal enum ExceptionResource
     {
-        ArgumentOutOfRange_Index,
+        ArgumentOutOfRange_IndexMustBeLessOrEqual,
+        ArgumentOutOfRange_IndexMustBeLess,
         ArgumentOutOfRange_Count,
         Arg_ArrayPlusOffTooSmall,
         Arg_RankMultiDimNotSupported,

@@ -807,7 +807,7 @@ CLASS ToolBar INHERIT Control
 			SELF:SetStyle(TBSTYLE_FLAT, lFlat)
 
 			IF SELF:__hasUpdates  //only if MED menu exists
-				IF nImageCount = -1l //Undefined mode
+				IF nImageCount = -1L //Undefined mode
 					//Setting of bitmap mode and assigning the default bitmap
 					oBitmap := Bitmap{ResourceID{"IDB_DEFTOOLBAR", _GetInst()}, BMP_3DTRANSPARENT}
 					oBandImageList := ImageList{132,oButtonSize}
@@ -1201,7 +1201,7 @@ CLASS ToolBar INHERIT Control
 			RETURN 0 // oButton
 		ENDIF
 
-		RETURN -1l
+		RETURN -1L
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.GetTipText/*" />

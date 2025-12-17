@@ -13,12 +13,9 @@ namespace XSharp.CodeDom
     internal class XSharpFieldsDiscover : XSharpBaseDiscover
     {
 
-        
-
         internal XSharpFieldsDiscover(XProject projectNode, CodeTypeDeclaration typeInOtherFile) : base(projectNode, typeInOtherFile)
         {
         }
-
  
         //classvarModifiers   : (Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC
         //                      | EXPORT | INTERNAL | VOLATILE | UNSAFE | FIXED) )+

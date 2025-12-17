@@ -3,6 +3,7 @@
 ' See the LICENSE file in the project root for more information.
 
 Imports System.Threading
+Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.[Shared].Collections
 Imports Microsoft.CodeAnalysis.Structure
 Imports Microsoft.CodeAnalysis.Text
@@ -12,11 +13,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Structure
     Friend Class CompilationUnitStructureProvider
         Inherits AbstractSyntaxNodeStructureProvider(Of CompilationUnitSyntax)
 
-        Protected Overrides Sub CollectBlockSpans(compilationUnit As CompilationUnitSyntax,
-                                                  ByRef spans As TemporaryArray(Of BlockSpan),
-                                                  optionProvider As BlockStructureOptionProvider,
+        Protected Overrides Sub CollectBlockSpans(previousToken As SyntaxToken,
+                                                  compilationUnit As CompilationUnitSyntax,
+                                                  spans As ArrayBuilder(Of BlockSpan),
+                                                  options As BlockStructureOptions,
                                                   cancellationToken As CancellationToken)
-            CollectCommentsRegions(compilationUnit, spans, optionProvider)
+            CollectCommentsRegions(compilationUnit, spans, options)
 
             If Not compilationUnit.Imports.IsEmpty Then
                 Dim startPos = compilationUnit.Imports.First().SpanStart
@@ -26,7 +28,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Structure
                 spans.AddIfNotNull(CreateBlockSpan(
                     span, span, bannerText:="Imports" & SpaceEllipsis,
                     autoCollapse:=True, type:=BlockTypes.Imports, isCollapsible:=True,
-                    isDefaultCollapsed:=False))
+                    isDefaultCollapsed:=options.CollapseImportsWhenFirstOpened))
             End If
 
             CollectCommentsRegions(compilationUnit.EndOfFileToken.LeadingTrivia, spans)

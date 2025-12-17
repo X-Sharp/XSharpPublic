@@ -12,6 +12,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Microsoft.CodeAnalysis.VisualBasic.UnitTests.Emit
 Imports Roslyn.Test.Utilities
+Imports Basic.Reference.Assemblies
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Semantics
 
@@ -2339,7 +2340,7 @@ End Class
     ]]></file>
 </compilation>
 
-            Dim comp = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {TestMetadata.Net40.SystemCore}, TestOptions.DebugExe)
+            Dim comp = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {Net40.References.SystemCore}, TestOptions.DebugExe)
 
             CompileAndVerify(comp, expectedOutput:=
             <![CDATA[
@@ -2416,7 +2417,7 @@ End Class
     ]]></file>
 </compilation>
 
-            Dim comp = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {TestMetadata.Net40.SystemCore}, TestOptions.DebugExe)
+            Dim comp = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {Net40.References.SystemCore}, TestOptions.DebugExe)
 
             AssertTheseDiagnostics(comp,
 <expected>
@@ -2667,12 +2668,7 @@ End Class
 
             Dim comp = CreateCompilationWithMscorlib40AndVBRuntime(compilationDef, TestOptions.DebugExe)
 
-            AssertTheseDiagnostics(comp,
-<expected>
-BC42025: Access of shared member, constant member, enum member or nested type through an instance; qualifying expression will not be evaluated.
-        System.Console.WriteLine(NameOf(x.E1))
-                                        ~~~~
-</expected>)
+            AssertNoDiagnostics(comp)
 
             CompileAndVerify(comp, expectedOutput:=
             <![CDATA[
@@ -2690,6 +2686,7 @@ Module Module1
         Dim x As New C2()
         System.Console.WriteLine(NameOf(x.T1))
         System.Console.WriteLine(NameOf(x.P1.T2))
+        System.Console.WriteLine(NameOf(x.P1))
     End Sub
 End Module
 
@@ -2726,6 +2723,7 @@ BC42025: Access of shared member, constant member, enum member or nested type th
             <![CDATA[
 T1
 T2
+P1
 ]]>)
         End Sub
 
@@ -3227,7 +3225,7 @@ End Class
     ]]></file>
 </compilation>
 
-            Dim comp = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {TestMetadata.Net40.SystemCore}, TestOptions.DebugExe)
+            Dim comp = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {Net40.References.SystemCore}, TestOptions.DebugExe)
 
             CompileAndVerify(comp, expectedOutput:=
             <![CDATA[

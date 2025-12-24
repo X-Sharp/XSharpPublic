@@ -5,6 +5,9 @@
 //
 
 USING XSharp.Internal
+USING System.Text.RegularExpressions
+USING System.Collections.Generic
+USING System.Text
 
 
 INTERNAL FUNCTION FoxALen(a as ARRAY) AS DWORD
@@ -233,4 +236,84 @@ RETURN
 
 END FUNCTION
 
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alines/*" />
+FUNCTION ALines (ArrayName AS ARRAY, cExpression AS STRING, nFlags := 0 AS INT, cParseChars PARAMS STRING[]) AS DWORD
+    IF cExpression == null
+        cExpression := ""
+    ENDIF
 
+    VAR separators := List<STRING>{}
+
+    IF cParseChars == NULL OR cParseChars:Length == 0
+        separators:Add(e"\r\n")
+        separators:Add(e"\r")
+        separators:Add(e"\n")
+    ELSE
+        separators:AddRange(cParseChars)
+    ENDIF
+
+    LOCAL lTrim := (nFlags & ALINES_TRIM) != 0 AS LOGIC // 1
+    LOCAL lIncludeLast := (nFlags & ALINES_INCLUDE_LAST) != 0 AS LOGIC // 2
+    LOCAL lNoEmpty := (nFlags & ALINES_NO_EMPTY) != 0 AS LOGIC // 4
+    LOCAL lIgnoreCase := (nFlags & ALINES_CASE_IGNORE) != 0 AS LOGIC // 8
+    LOCAL lIncludeSep := (nFlags & ALINES_INCLUDE_SEP) != 0 AS LOGIC // 16
+
+    var sbPattern := StringBuilder{}
+    FOREACH VAR sep IN separators
+        IF sbPattern:Length > 0
+            sbPattern:Append("|")
+        ENDIF
+
+        VAR safeSep := Regex.Escape(sep)
+        IF lIncludeSep
+            sbPattern:Append("(" + safeSep + ")")
+        ELSE
+            sbPattern:Append("(?:" + safeSep + ")")
+        ENDIF
+    NEXT
+
+    VAR regexOptions := RegexOptions.None
+    IF lIgnoreCase
+        regexOptions := RegexOptions.IgnoreCase
+    ENDIF
+
+    VAR aRawParts := Regex.Split(cExpression, sbPattern:ToString(), regexOptions)
+
+    VAR finalLines := List<STRING>{}
+
+    FOREACH VAR sLine IN aRawParts
+        VAR sTemp := sLine
+
+        IF lTrim
+            sTemp := sTemp:Trim()
+        ENDIF
+
+        IF lNoEmpty AND String.IsNullOrEmpty(sTemp)
+            LOOP
+        ENDIF
+
+        finalLines:Add(sTemp)
+    NEXT
+
+    IF !lIncludeLast AND !lNoEmpty AND finalLines:Count > 0
+        VAR nLastIdx := finalLines:Count - 1
+        IF String.IsNullOrEmpty(finalLines[nLastIdx])
+            finalLines:RemoveAt(nLastIdx)
+        ENDIF
+    ENDIF
+
+    LOCAL nRows := (DWORD) finalLines:Count AS DWORD
+
+    IF nRows == 0 AND !lNoEmpty
+        nRows := 1
+        finalLines:Add("")
+    ENDIF
+
+    ASize(ArrayName, nRows)
+
+    FOR VAR i := 0 TO (INT)nRows - 1
+        ArrayName[i + 1] := finalLines[i]
+    NEXT
+
+    RETURN nRows
+END FUNCTION

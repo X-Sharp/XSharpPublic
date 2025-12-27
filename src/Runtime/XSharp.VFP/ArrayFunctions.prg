@@ -280,19 +280,27 @@ FUNCTION ALines (ArrayName AS ARRAY, cExpression AS STRING, nFlags := 0 AS INT, 
     VAR aRawParts := Regex.Split(cExpression, sbPattern:ToString(), regexOptions)
 
     VAR finalLines := List<STRING>{}
+    VAR nIndex := 0
 
     FOREACH VAR sLine IN aRawParts
         VAR sTemp := sLine
 
-        IF lTrim
+        VAR lIsSeparator := FALSE
+        IF lIncludeSep
+            lIsSeparator := (nIndex % 2) == 1
+        ENDIF
+
+        IF lTrim AND !lIsSeparator
             sTemp := sTemp:Trim()
         ENDIF
 
-        IF lNoEmpty AND String.IsNullOrEmpty(sTemp)
+        IF lNoEmpty AND String.IsNullOrEmpty(sTemp) AND !lIsSeparator
+            nIndex++
             LOOP
         ENDIF
 
         finalLines:Add(sTemp)
+        nIndex++
     NEXT
 
     IF !lIncludeLast AND !lNoEmpty AND finalLines:Count > 0
@@ -302,7 +310,7 @@ FUNCTION ALines (ArrayName AS ARRAY, cExpression AS STRING, nFlags := 0 AS INT, 
         ENDIF
     ENDIF
 
-    LOCAL nRows := (DWORD) finalLines:Count AS DWORD
+    VAR nRows := (DWORD)finalLines:Count
 
     IF nRows == 0 AND !lNoEmpty
         nRows := 1

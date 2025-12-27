@@ -442,5 +442,23 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal(",", aTest[2])
             Assert.Equal("B", aTest[3])
         END METHOD
+
+        [Fact, Trait("Category", "ALines")];
+        METHOD FlagIncludeLastTest() AS VOID
+            DIMENSION aTest[1]
+            VAR cText := "A,B,"
+
+            && Case 1: without flag (default) -> "A", "B" (ignore last empty)
+            VAR nCount1 := aLines(aTest, cText, 0, ",")
+            Assert.Equal(2, (INT)nCount1)
+            Assert.Equal("B", aTest[2])
+
+            && Case 2: with flag -> "A", "B", "" (include last empty)
+            VAR nCount2 := aLines(aTest, cText, 2, ",")
+            Assert.Equal(3, (INT)nCount2)
+            Assert.Equal("", aTest[3])
+
+        END METHOD
+
     END CLASS
 END NAMESPACE

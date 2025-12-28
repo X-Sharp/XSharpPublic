@@ -11,6 +11,12 @@ USING System.Text
 
 BEGIN NAMESPACE VFPXPorterLib
 
+ENUM ProjectType
+    MEMBER WindowsExe := 0
+    MEMBER ClassLibrary := 1
+    MEMBER Console := 2
+END ENUM
+
 /// <summary>
 /// The XPorterSettings class.
 /// </summary>
@@ -73,7 +79,12 @@ CLASS XPorterSettings
 	PUBLIC STATIC PROPERTY SingleNoContainerFormEndTypeFile			AS STRING GET XPorterSettings.SingleFolder + "\\endtypeNotContainer.prg"
 	PUBLIC STATIC PROPERTY SingleNoContainerFormInitTypeFile		AS STRING GET XPorterSettings.SingleFolder + "\\inittypeNotContainer.prg"
 
-#endregion
+    #endregion
+
+    PROPERTY OutputType AS ProjectType AUTO
+    PROPERTY AppendToSolution AS LOGIC AUTO
+    PROPERTY PlaceSolutionInSameDirectory AS LOGIC AUTO
+    PROPERTY SolutionName AS STRING AUTO
 
 	CONSTRUCTOR()
 
@@ -96,7 +107,11 @@ CLASS XPorterSettings
 		SELF:StoreInFolders := FALSE
 		SELF:EmptyFolder := TRUE
 		SELF:PrefixEvent := FALSE
-		SELF:KeepFoxProEventName := TRUE
+        SELF:KeepFoxProEventName := TRUE
+        SELF:OutputType := ProjectType.WindowsExe // Exe by default
+        SELF:AppendToSolution := FALSE // New Solution by default
+        SELF:PlaceSolutionInSameDirectory := FALSE // New Solution folder by default
+        SELF:SolutionName := ""
 		RETURN
 
 	/// <summary>

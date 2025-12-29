@@ -315,15 +315,15 @@ STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>, ISerializable
 
         // INT -> PSZ
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG] [INLINE];
-    OPERATOR IMPLICIT( i AS INT ) AS PSZ
-        RETURN PSZ{ IntPtr{ i } }
+    // [NODEBUG] [INLINE];
+    // OPERATOR IMPLICIT( i AS INT ) AS PSZ
+        // RETURN PSZ{ IntPtr{ i } }
 
-        // DWORD -> PSZ
-    /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG] [INLINE];
-    OPERATOR IMPLICIT( d AS DWORD ) AS PSZ
-        RETURN PSZ{ IntPtr{ (INT64) d} }
+        // // DWORD -> PSZ
+    // /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    // [NODEBUG] [INLINE];
+    // OPERATOR IMPLICIT( d AS DWORD ) AS PSZ
+        // RETURN PSZ{ IntPtr{ (INT64) d} }
 
     ///////////////////////////////////////////////////////////////////////////
     // Conversion Operators - From PSZ...
@@ -364,21 +364,21 @@ STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>, ISerializable
 
         // PSZ -> INT
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG] [INLINE];
-    OPERATOR IMPLICIT( p AS PSZ ) AS INT
-        RETURN (INT) p:_value
+    // [NODEBUG] [INLINE];
+    // OPERATOR IMPLICIT( p AS PSZ ) AS INT
+        // RETURN (INT) p:_value
 
         // PSZ -> INT64
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG] [INLINE];
-    OPERATOR IMPLICIT( p AS PSZ ) AS INT64
-        RETURN (INT64) p:_value
+    // [NODEBUG] [INLINE];
+    // OPERATOR IMPLICIT( p AS PSZ ) AS INT64
+        // RETURN (INT64) p:_value
 
         // PSZ -> DWORD
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG] [INLINE];
-    OPERATOR IMPLICIT( p AS PSZ ) AS DWORD
-        RETURN (DWORD) p:_value
+    // [NODEBUG] [INLINE];
+    // OPERATOR IMPLICIT( p AS PSZ ) AS DWORD
+        // RETURN (DWORD) p:_value
 #endregion
 
 #region ISerializable

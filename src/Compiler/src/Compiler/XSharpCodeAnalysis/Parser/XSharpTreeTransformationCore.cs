@@ -6169,7 +6169,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string initName = null;
             string lockName = null;
             TypeSyntax varType;
-            if (context.DataType is null && context.Expression is XP.TypeCheckExpressionContext tcec)
+            if (context.DataType is null && context.Expression is XP.TypeCheckExpressionContext tcec
+                && tcec.Op.Type == XSharpLexer.IS)
             {
                 // expression was incorrectly parsed. Fix it here
                 // local x := 512 IS DWORD

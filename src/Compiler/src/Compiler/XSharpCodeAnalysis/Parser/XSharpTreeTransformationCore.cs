@@ -157,7 +157,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected TypeSyntax PszType => GenerateQualifiedName(XSharpQualifiedTypeNames.Psz);
         protected TypeSyntax CodeblockType => GenerateQualifiedName(XSharpQualifiedTypeNames.Codeblock);
         protected TypeSyntax ArrayType => GenerateQualifiedName(XSharpQualifiedTypeNames.Array);
-		
+
 		protected ArrayRankSpecifierSyntax MakeEmptyRank()
         {
             var emptySizes = _pool.AllocateSeparated<ExpressionSyntax>();
@@ -169,7 +169,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(emptySizes);
             return emptyRank;
         }
-		
+
         protected ArrayTypeSyntax ArrayOfUsual
         {
             get
@@ -8518,7 +8518,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (context.Id != null)
                 {
                     var designation = GetDesignation(context.Id);
-                    var pattern = _syntaxFactory.DeclarationPattern(context.Type.Get<TypeSyntax>(), designation);
+                    PatternSyntax pattern = _syntaxFactory.DeclarationPattern(context.Type.Get<TypeSyntax>(), designation);
+                    if (context.Not != null)
+                        pattern = _syntaxFactory.UnaryPattern(context.Not.SyntaxKeyword(), pattern);
                     context.Put(_syntaxFactory.IsPatternExpression(
                         context.Expr.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),

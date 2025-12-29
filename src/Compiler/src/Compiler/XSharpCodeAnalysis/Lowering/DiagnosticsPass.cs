@@ -198,7 +198,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (refkinds[i] == RefKind.Out && args._Args.Count > i)
                         {
                             var arg = args._Args[i];
-                            if (arg.RefOut?.Type != XSharpLexer.OUT)
+                            if (arg.RefOut?.Type != XSharpLexer.OUT && node.Arguments.Length > i)
                             {
                                 var argnode = node.Arguments[i];
                                 Error(ErrorCode.WRN_AutomaticRefGeneration, argnode, i + 1, refkinds[i]);

@@ -158,7 +158,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected TypeSyntax CodeblockType => GenerateQualifiedName(XSharpQualifiedTypeNames.Codeblock);
         protected TypeSyntax ArrayType => GenerateQualifiedName(XSharpQualifiedTypeNames.Array);
 
-		protected ArrayRankSpecifierSyntax MakeEmptyRank()
+        protected ArrayRankSpecifierSyntax MakeEmptyRank()
         {
             var emptySizes = _pool.AllocateSeparated<ExpressionSyntax>();
             emptySizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));

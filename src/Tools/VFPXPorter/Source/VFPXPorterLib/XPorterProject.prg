@@ -658,14 +658,21 @@ BEGIN NAMESPACE VFPXPorterLib
             // Now the Solution
             VAR xsSolution := VSSolution{}
 
+            LOCAL solutionBasePath AS STRING
+            IF String.IsNullOrWhiteSpace(SELF:SolutionPath)
+                solutionBasePath := String.Empty
+            ELSE
+                solutionBasePath := SELF:SolutionPath:TrimEnd(Path.DirectorySeparatorChar)
+            ENDIF
+
             LOCAL solutionName AS STRING
             IF !String.IsNullOrWhiteSpace(SELF:Settings:SolutionName)
                 solutionName := SELF:Settings:SolutionName
             ELSE
-                solutionName := Path.GetFileName(SELF:SolutionPath:TrimEnd(Path.DirectorySeparatorChar))
+                solutionName := Path.GetFileName(solutionBasePath)
             ENDIF
 
-            VAR solutionFile := Path.Combine(SELF:SolutionPath, solutionName + ".sln")
+            VAR solutionFile := Path.Combine(solutionBasePath, solutionName + ".sln")
 
             // If user checked to Append to existing Solution, load it
             IF SELF:Settings:AppendToSolution .AND. File.Exists( solutionFile )

@@ -41,8 +41,26 @@ CLASS VSProject
         END SET
     END PROPERTY
 
+    /// <summary>
+    /// Gets or sets the type of Visual Studio project to generate.
+    /// </summary>
+    /// <remarks>
+    /// This value controls how the project is emitted in the generated
+    /// solution and project files. Typical values include
+    /// <see cref="ProjectType.ClassLibrary" /> and
+    /// <see cref="ProjectType.WindowsExe" />.
+    /// </remarks>
     PROPERTY ProjectType AS ProjectType AUTO
+
     PROPERTY GUID AS STRING AUTO
+
+    /// <summary>
+    /// Gets or sets the path to the project file relative to the solution directory.
+    /// </summary>
+    /// <remarks>
+    /// This value is used when generating the solution so that project entries
+    /// reference the project file using a stable relative path.
+    /// </remarks>
     PROPERTY RelativePath AS STRING AUTO
 
     PROPERTY FrameworkVersion AS STRING AUTO

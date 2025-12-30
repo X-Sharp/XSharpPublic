@@ -15,8 +15,6 @@ namespace XSharp.Project
 {
     public class XSharpPackageReferenceNode : HierarchyNode
     {
-        protected OAVSProjectItem vsProjectItem;
-
 
         private static string CaptionFormat = "{0} ({1})";
 
@@ -36,7 +34,7 @@ namespace XSharp.Project
         {
             get
             {
-                
+
                 return GetCaption();
             }
         }
@@ -50,7 +48,7 @@ namespace XSharp.Project
                     string version = "0";
                     if (string.Compare("Microsoft.NETCore.App", base.ItemNode.Item.UnevaluatedInclude, ignoreCase: true) == 0)
                     {
-                        version = string.Concat(base.ProjectMgr.GetProjectProperty("TargetFramework").ToArray().Reverse()
+                        version = string.Concat(base.ProjectMgr.GetProjectProperty(XSharpProjectFileConstants.TargetFramework).ToArray().Reverse()
                             .TakeWhile((char ch) => char.IsNumber(ch) || ch == '.')
                             .Reverse());
                     }
@@ -118,7 +116,7 @@ namespace XSharp.Project
 
         protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
         {
-       
+
             if (cmdGroup == Microsoft.VisualStudio.Project.VsMenus.guidStandardCommandSet97)
             {
                 if (cmd == (uint)VSConstants.VSStd97CmdID.Remove ||
@@ -131,6 +129,6 @@ namespace XSharp.Project
             }
             return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
         }
-       
+
     }
 }

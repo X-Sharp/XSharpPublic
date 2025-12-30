@@ -46,7 +46,6 @@
     <Compile Include="$(CommonDir)XSharpConstants.cs">
       <Link>XSharpConstants.cs</Link>
     </Compile>
-    <Compile Include="IXsProjectDesigner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyPages\Enums.cs" />
     <Compile Include="PropertyPages\XBuildPropertyPagePanel.cs">

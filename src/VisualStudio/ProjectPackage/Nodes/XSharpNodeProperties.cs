@@ -568,6 +568,18 @@ namespace XSharp.Project
         }
 
         [SRCategoryAttribute(SR.Misc)]
+        [LocDisplayName(SR.Identity)]
+        [SRDescriptionAttribute(SR.IdentityDescription)]
+        public virtual string PackageName
+        {
+            get
+            {
+                var o = Node as XSharpPackageReferenceNode;
+                return o.Name;
+            }
+        }
+
+        [SRCategoryAttribute(SR.Misc)]
         [LocDisplayName(SR.FileType)]
         [SRDescriptionAttribute(SR.FileTypeDescription)]
         public virtual string FileType

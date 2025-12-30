@@ -40,6 +40,7 @@ namespace XSharp.Project
             this.comboDialect.Tag = XSharpProjectFileConstants.Dialect;
             this.comboOutputType.Tag = XSharpProjectFileConstants.OutputType;
             this.comboTargetFramework.Tag = XSharpProjectFileConstants.TargetFrameworkVersion;
+            this.tbTargetFrameworks.Tag = XSharpProjectFileConstants.XTargetFrameworks;
 
             lblDefaultNamespace.Text = GeneralPropertyPagePanel.captNamespace;
             toolTip1.SetToolTip(lblDefaultNamespace, GeneralPropertyPagePanel.descNamespace);

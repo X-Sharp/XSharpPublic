@@ -24,6 +24,12 @@ namespace XSharp.Project
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
             var project = await VS.Solutions.GetActiveProjectAsync();
+            var projectNode = XSharpProjectNode.FindProject(project.FullPath);
+            if (projectNode != null)
+            {
+                projectNode.Unload();
+            }
+
             try
             {
                 await VS.Documents.OpenAsync(project.FullPath);

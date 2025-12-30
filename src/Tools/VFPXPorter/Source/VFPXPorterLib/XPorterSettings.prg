@@ -96,9 +96,24 @@ CLASS XPorterSettings
 
     #endregion
 
+    /// <summary>
+    /// Gets or sets the type of .NET project to be generated (for example Windows executable, class library, or console application).
+    /// </summary>
     PROPERTY OutputType AS ProjectType AUTO
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the generated project should be appended to an existing solution instead of creating a new one.
+    /// </summary>
     PROPERTY AppendToSolution AS LOGIC AUTO
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the solution file should be placed in the same directory as the generated project.
+    /// </summary>
     PROPERTY PlaceSolutionInSameDirectory AS LOGIC AUTO
+
+    /// <summary>
+    /// Gets or sets the name of the generated solution when creating or updating a solution.
+    /// </summary>
     PROPERTY SolutionName AS STRING AUTO
 
 	CONSTRUCTOR()

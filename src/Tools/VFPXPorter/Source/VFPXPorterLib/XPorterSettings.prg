@@ -11,9 +11,24 @@ USING System.Text
 
 BEGIN NAMESPACE VFPXPorterLib
 
+/// <summary>
+/// Specifies the type of project to generate for the exported code.
+/// Use <see cref="ProjectType.WindowsExe" /> for a Windows GUI executable,
+/// <see cref="ProjectType.ClassLibrary" /> for a reusable class library (DLL),
+/// or <see cref="ProjectType.Console" /> for a console application.
+/// </summary>
 ENUM ProjectType
+    /// <summary>
+    /// Windows GUI executable project (Win32/desktop application without a console window).
+    /// </summary>
     MEMBER WindowsExe := 0
+    /// <summary>
+    /// Class library project that produces a reusable DLL.
+    /// </summary>
     MEMBER ClassLibrary := 1
+    /// <summary>
+    /// Console application project that runs in a command-line window.
+    /// </summary>
     MEMBER Console := 2
 END ENUM
 

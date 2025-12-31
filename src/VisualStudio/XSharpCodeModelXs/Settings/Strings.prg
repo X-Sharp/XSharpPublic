@@ -10,6 +10,13 @@ USING System.Collections.Generic
 USING System.Text
 
 BEGIN NAMESPACE XSharp.Settings
+
+class GlobalUsingsPropertyPagePanel
+    const captImplicitUsings := "Implicit Global Usings" as string
+    const captEnableImplicitUsings := "Enable implicit global usings to be declared by the project SDK." as string
+
+
+end class
 class DebugPropertyPagePanel
     const catGeneral := "General" as string
     const catSpecial := "Special" as string

@@ -43,7 +43,7 @@ namespace XSharp.Project
             this.lblDefaultNamespace = new System.Windows.Forms.Label();
             this.lblApplicationName = new System.Windows.Forms.Label();
             this.lblTargetFramework = new System.Windows.Forms.Label();
-            this.comboTargetFramework = new System.Windows.Forms.ComboBox();
+            //this.comboTargetFramework = new System.Windows.Forms.ComboBox();
             this.tbTargetFrameworks = new System.Windows.Forms.TextBox();
             this.lblOutputType = new System.Windows.Forms.Label();
             this.tbAssemblyName = new System.Windows.Forms.TextBox();
@@ -73,7 +73,7 @@ namespace XSharp.Project
             this.tableLayoutPanel1.Controls.Add(this.lblDefaultNamespace, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblApplicationName, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblTargetFramework, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.comboTargetFramework, 0, 3);
+            //this.tableLayoutPanel1.Controls.Add(this.comboTargetFramework, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.tbTargetFrameworks, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.lblOutputType, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.tbAssemblyName, 0, 1);
@@ -197,17 +197,17 @@ namespace XSharp.Project
             // 
             // comboTargetFramework
             // 
-            this.comboTargetFramework.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.comboTargetFramework.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboTargetFramework.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboTargetFramework.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.comboTargetFramework.FormattingEnabled = true;
-            this.comboTargetFramework.Location = new System.Drawing.Point(321, 58);
-            this.comboTargetFramework.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
-            this.comboTargetFramework.Name = "comboTargetFramework";
-            this.comboTargetFramework.Size = new System.Drawing.Size(309, 21);
-            this.comboTargetFramework.TabIndex = 5;
-            this.comboTargetFramework.Visible = false;
+            //this.comboTargetFramework.BackColor = System.Drawing.Color.WhiteSmoke;
+            //this.comboTargetFramework.Dock = System.Windows.Forms.DockStyle.Fill;
+            //this.comboTargetFramework.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            //this.comboTargetFramework.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            //this.comboTargetFramework.FormattingEnabled = true;
+            //this.comboTargetFramework.Location = new System.Drawing.Point(321, 58);
+            //this.comboTargetFramework.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
+            //this.comboTargetFramework.Name = "comboTargetFramework";
+            //this.comboTargetFramework.Size = new System.Drawing.Size(309, 21);
+            //this.comboTargetFramework.TabIndex = 5;
+            //this.comboTargetFramework.Visible = false;
             // 
             // tbTargetFrameworks
             // 
@@ -381,7 +381,7 @@ namespace XSharp.Project
         private System.Windows.Forms.TextBox tbDefaultNamespace;
         private System.Windows.Forms.TextBox tbAssemblyName;
         private System.Windows.Forms.ComboBox comboOutputType;
-        private System.Windows.Forms.ComboBox comboTargetFramework;
+        //private System.Windows.Forms.ComboBox comboTargetFramework;
         private System.Windows.Forms.TextBox tbTargetFrameworks;
         private System.Windows.Forms.CheckBox chkAutoGenerateBindingRedirects;
         private System.Windows.Forms.Label labelStartupObject;

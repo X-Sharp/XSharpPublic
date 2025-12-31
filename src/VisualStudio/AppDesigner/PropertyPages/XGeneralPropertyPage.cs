@@ -77,7 +77,7 @@ namespace XSharp.Project
                     {
                         converterFramework = new SdkFrameWorkNameConverter(this.ProjectMgr.BuildProject);
                         var p = this.PropertyPagePanel as XGeneralPropertyPagePanel;
-                        p.FillFrameworkNames(converterFramework);
+                        //p.FillFrameworkNames(converterFramework);
                     }
 
                 }
@@ -184,7 +184,7 @@ namespace XSharp.Project
                     if (!VS.MessageBox.ShowConfirm(message))
                     {
                         var genPanel = PropertyPagePanel as XGeneralPropertyPagePanel;
-                        genPanel.resetFramework(oldValue);
+                        //genPanel.resetFramework(oldValue);
                         return;
                     }
 

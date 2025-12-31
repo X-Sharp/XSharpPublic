@@ -203,6 +203,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                             (isPredefinedOperator ? ConversionForAssignmentFlags.PredefinedOperator : ConversionForAssignmentFlags.None));
 
 #if XSHARP
+            if (Equals(left.Type, right.Type) && SyntaxFacts.IsAssignmentExpression(node.Kind()))
+            {
+                // clear 9020 errors for assigment expressions where left and right are of the same type
+                // but only for this location
+                var errorsWithOut9020 = diagnostics.DiagnosticBag.AsEnumerable().Where(
+                    d => d.Code != (int)ErrorCode.WRN_ConversionMayLeadToLossOfData || d.Location != node.Location);
+                diagnostics.DiagnosticBag.Clear();
+                diagnostics.DiagnosticBag.AddRange(errorsWithOut9020);
+            }
             if (!finalConversion.HasErrors)
             {
                 if (!isPredefinedOperator && leftType.SpecialType.IsNumericType())
@@ -247,7 +256,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
                 else
-#endif                
+#endif
                 if (!rightToLeftConversion.IsImplicit || !rightToLeftConversion.IsValid)
                 {
                     hasError = true;
@@ -392,7 +401,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Allow codeblocks as parameter to latebound method calls
             if (operand.Kind == BoundKind.UnboundLambda)
                 return true;
-#endif        
+#endif
             if ((object)type == null)
             {
                 return operand.IsLiteralNull();
@@ -2207,7 +2216,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BinaryOperatorKind.LongRightShift:
                     return valueLeft.Int64Value >> valueRight.Int32Value;
                 case BinaryOperatorKind.LongUnsignedRightShift:
-                    return (long)(((ulong)valueLeft.Int64Value) >> valueRight.Int32Value); // Switch to `valueLeft.Int64Value >>> valueRight.Int32Value` once >>> becomes available 
+                    return (long)(((ulong)valueLeft.Int64Value) >> valueRight.Int32Value); // Switch to `valueLeft.Int64Value >>> valueRight.Int32Value` once >>> becomes available
                 case BinaryOperatorKind.UIntRightShift:
                 case BinaryOperatorKind.NUIntRightShift:
                 case BinaryOperatorKind.UIntUnsignedRightShift:
@@ -2858,7 +2867,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 // See 'case BoundKind.FieldAccess' above. Receiver in our case is 'this' parameter.
                                 // If we are in a class, its type is reference type.
                                 // If we are in a struct, 'this' RefKind is not None.
-                                // Therefore, movable in either case. 
+                                // Therefore, movable in either case.
                                 return true;
                             }
 
@@ -3632,7 +3641,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ///  - <see cref="ConstantValue.False"/>
         ///  - <see cref="ConstantValue.True"/>
         ///  - <see cref="ConstantValue.Bad"/> - compiler doesn't support the type check, i.e. cannot perform it, even at runtime
-        ///  - 'null' value - result is not known at compile time    
+        ///  - 'null' value - result is not known at compile time
         /// </summary>
         internal static ConstantValue GetIsOperatorConstantResult(
             TypeSymbol operandType,
@@ -4196,7 +4205,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// Possible return values:
         ///  - <see cref="ConstantValue.Null"/>
         ///  - <see cref="ConstantValue.Bad"/> - compiler doesn't support the type check, i.e. cannot perform it, even at runtime
-        ///  - 'null' value - result is not known at compile time    
+        ///  - 'null' value - result is not known at compile time
         /// </summary>
         internal static ConstantValue GetAsOperatorConstantResult(TypeSymbol operandType, TypeSymbol targetType, ConversionKind conversionKind, ConstantValue operandConstantValue)
         {

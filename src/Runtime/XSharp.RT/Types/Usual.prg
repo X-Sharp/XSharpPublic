@@ -135,8 +135,13 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     [NODEBUG] [INLINE];
     PRIVATE CONSTRUCTOR(@@Value  AS INT64)
-        SELF(__UsualType.Int64)
-        SELF:_valueData:i64		:= @@Value
+        IF @@Value >= Int32.MinValue .AND. @@Value <= Int32.MaxValue
+            SELF(__UsualType.Long)
+            SELF:_valueData:i		:= (INT)(@@Value)
+        ELSE
+            SELF(__UsualType.Int64)
+            SELF:_valueData:i64		:= @@Value
+        ENDIF
         RETURN
 
     [NODEBUG] [INLINE];

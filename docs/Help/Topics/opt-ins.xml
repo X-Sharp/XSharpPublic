@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-12-11T17:57:36.521+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-01-05T14:21:19.357+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-ins</title>
   <keywords>
     <keyword>-ins</keyword>
@@ -13,12 +13,12 @@
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Code with box">-ins[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just -ins, directs the compiler to automatically include namespaces from assemblies marked with the VulcanImplicitNameSpaceAttribute. </para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just -ins, directs the compiler to automatically include namespaces from assemblies marked with the ImplicitNameSpaceAttribute. </para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal">Class Libraries can be compiled with a special attribute:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">[assembly: VulcanImplicitNamespaceAttribute( &quot;SomeNameSpace )]</para>
+    <para styleclass="Code with box">[assembly: ImplicitNamespaceAttribute( &quot;SomeNameSpace )]</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This attribute tells the compiler that classes that are placed inside that namespace should be automatically included when searching for classes, as if there was a #using SomeNameSpace statement in the source code.</para>
     <para styleclass="Normal"></para>

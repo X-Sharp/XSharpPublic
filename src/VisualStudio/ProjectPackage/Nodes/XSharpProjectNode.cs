@@ -22,9 +22,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 using VSLangProj;
 
@@ -616,6 +614,7 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                 typeof(XSharpDialectPropertyPage).GUID,
+                typeof(XSharpGlobalUsingsPropertiesPage).GUID,
                 typeof(XSharpBuildPropertyPage).GUID,
                 typeof(XSharpBuildEventsPropertyPage).GUID,
                 typeof(XSharpDebugPropertyPage).GUID
@@ -634,6 +633,7 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                  typeof(XSharpDialectPropertyPage).GUID,
+                 typeof(XSharpGlobalUsingsPropertiesPage).GUID,
                 };
             return result;
         }
@@ -1584,7 +1584,7 @@ namespace XSharp.Project
             {
                 if (node is XSharpFileNode xNode && !xNode.IsNonMemberItem)
                 {
-                    if (File.Exists(url) )
+                    if (File.Exists(url))
                     {
                         this.ProjectModel.AddFile(url, xNode.FileType);
                         if (IsXamlFile(url))

@@ -93,6 +93,7 @@ namespace XSharp.Project
                 SetProjectProperty(XSharpProjectFileConstants.TargetFrameworks, frameworks);
                 RemoveProjectProperty(XSharpProjectFileConstants.TargetFramework);
                 RemoveProjectProperty(XSharpProjectFileConstants.XTargetFrameworks);
+                this.BuildProject.Save();
             }
         }
         private void SetSingleTargetFramework()
@@ -109,6 +110,7 @@ namespace XSharp.Project
                 RemoveProjectProperty(XSharpProjectFileConstants.TargetFrameworks);
                 SetProjectProperty(XSharpProjectFileConstants.TargetFramework, _targetFrameworks[0]);
             }
+            this.BuildProject.Save();
         }
 
         protected override int UnloadProject()

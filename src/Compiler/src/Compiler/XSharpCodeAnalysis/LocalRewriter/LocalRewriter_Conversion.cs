@@ -7,6 +7,8 @@
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using System.Diagnostics;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using Roslyn.Utilities;
+using System.Linq;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal partial class LocalRewriter
@@ -55,7 +57,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return conversionKind;
             }
 
-            // test C323 
+            // test C323
             if ((rewrittenOperand.Type.IsPointerType() || rewrittenOperand.Type.IsPszType()))
             {
                 rewrittenOperand = new BoundConversion(rewrittenOperand.Syntax, rewrittenOperand,
@@ -237,7 +239,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
             var vo11 = _compilation.Options.HasOption(CompilerOption.VOArithmeticConversions, rewrittenOperand.Syntax);
-            // should we work differently with explicit cast 
+            // should we work differently with explicit cast
             if (vo11) //  && ! explicitcastincode)
             {
                 var type = rewrittenOperand.Type;
@@ -329,6 +331,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 rewrittenOperand.WasCompilerGenerated = true;
                 return ConversionKind.Identity;
             }
+            if (rewrittenType.IsNullableType())
+            {
+                var underlyingType = rewrittenType.GetNullableUnderlyingType();
+                m = getImplicitOperatorByReturnType(usualType, underlyingType);
+                if (m != null)
+                {
+                    rewrittenOperand = _factory.StaticCall(underlyingType, m, rewrittenOperand);
+                    rewrittenOperand.WasCompilerGenerated = true;
+                    return ConversionKind.Boxing;
+                }
+            }
             if (rewrittenType.SpecialType == SpecialType.System_Decimal)
             {
                 // X# runtime should not get here. There is an implicit operator
@@ -365,6 +378,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
+
             // special case for __CastClass
             var xnode = rewrittenOperand.Syntax.Parent?.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParserRuleContext;
             if (xnode != null && xnode.IsCastClass())
@@ -376,7 +390,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             else
             {
-                rewrittenOperand = _factory.StaticCall((NamedTypeSymbol) usualType, ReservedNames.ToObject, rewrittenOperand);
+                rewrittenOperand = _factory.StaticCall((NamedTypeSymbol)usualType, ReservedNames.ToObject, rewrittenOperand);
                 if (rewrittenType.IsObjectType())
                 {
                     conversionKind = ConversionKind.Identity;
@@ -396,7 +410,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ConversionKind XsRewriteOurNumericType(NamedTypeSymbol ourtype, ref BoundExpression rewrittenOperand, TypeSymbol rewrittenType, bool explicitCastInCode)
         {
             Debug.Assert(ourtype.IsFloatType() || ourtype.IsCurrencyType());
-            // should we work differently with explicit cast 
+            // should we work differently with explicit cast
             if (!explicitCastInCode)
             {
                 var error = DetermineConversionError(rewrittenOperand.Type, rewrittenType);
@@ -414,7 +428,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 rewrittenOperand = MakeConversionNode(rewrittenOperand, _compilation.GetSpecialType(SpecialType.System_Decimal), false, false); ;
 
             }
-            if ( Equals(rewrittenOperand.Type, rewrittenType))
+            if (Equals(rewrittenOperand.Type, rewrittenType))
             {
                 return ConversionKind.Identity;
             }

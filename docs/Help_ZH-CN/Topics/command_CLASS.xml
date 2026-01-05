@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-10T21:26:09.415+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-01-06T07:42:54.616+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>CLASS 语句(所有方言))</title>
   <keywords>
     <keyword>Binding of instance variables</keyword>
@@ -39,12 +39,12 @@
     <para styleclass="Heading1">用途</para>
     <para styleclass="Normal">向编译器声明一个类名。</para>
     <para styleclass="Heading1">语法</para>
-    <para styleclass="Normal"><tab />[Attributes] [Modifiers] &#160;<text style="font-weight:bold;">CLASS</text> &lt;<text styleclass="Italic">idClass</text>&gt; [<text style="font-weight:bold;">INHERIT</text> &lt;<text styleclass="Italic">idClass</text>&gt;] <br/><tab />[<text style="font-weight:bold;">IMPLEMENTS</text> &lt;idInterface&gt;[, &lt;IdInterface2&gt;,..]</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] [<text style="font-weight:bold;">RECORD</text>] <text style="font-weight:bold;">CLASS</text> &lt;<text styleclass="Italic">idClass</text>&gt; [<text style="font-weight:bold;">INHERIT</text> &lt;<text styleclass="Italic">idClass</text>&gt;] <br/><tab />[<text style="font-weight:bold;">IMPLEMENTS</text> &lt;idInterface&gt;[, &lt;IdInterface2&gt;,..]</para>
     <para styleclass="Normal"><tab />[ClassMembers]</para>
     <para styleclass="Normal"><tab /><text style="font-weight:bold;">END CLASS</text></para>
     <para styleclass="Heading1">参数</para>
     <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
-    <para styleclass="List"></para>
+    <para styleclass="List">RECORG<tab />Record修饰符定义了一种具有值相等性的特殊结构。相关说明请参见关于记录类型的专题文档。</para>
     <para styleclass="List"><snippet src="__includeIdClass" inline="false"/></para>
     <para styleclass="List">INHERIT &lt;idClass&gt;<tab />现有类(称为超类)的名称，新类从该类继承方法和实例变量(HIDDEN 例外)。</para>
     <para styleclass="List"></para>

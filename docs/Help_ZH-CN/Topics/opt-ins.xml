@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2025-03-24T22:15:33.983+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-01-06T07:36:43.695+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-ins</title>
   <keywords>
     <keyword>-ins</keyword>
@@ -14,11 +14,11 @@
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-ins[+|-]</para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />指定 + 或 -ins，可指示编译器自动包含标有 VulcanImplicitNameSpaceAttribute 的程序集的命名空间。</para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />指定 + 或 -ins，可指示编译器自动包含标有 ImplicitNameSpaceAttribute 的程序集的命名空间。</para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">类库可通过特殊属性进行编译：</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">[assembly: VulcanImplicitNamespaceAttribute( &quot;SomeNameSpace )]</para>
+    <para styleclass="Code with box">[assembly: ImplicitNamespaceAttribute( &quot;SomeNameSpace )]</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">该属性告诉编译器，在搜索类时，位于该命名空间内的类应自动包含在内，就像在源代码中使用 #using SomeNameSpace 语句一样。</para>
     <para styleclass="Normal"></para>

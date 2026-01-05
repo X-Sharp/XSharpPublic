@@ -74,6 +74,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 return new BoundDefaultExpression(syntax, param.Type);
             }
+            if (attr.AttributeClass.IsErrorType())
+            {
+                diagnostics.Add(ErrorCode.ERR_DefaultParameterValueRequiresXSharpXCore, syntax.GetLocation(), param.Name);
+                return new BoundDefaultExpression(syntax, param.Type);
+            }
             var arg = attr.CommonConstructorArguments[0];
             int desc = attr.CommonConstructorArguments[1].DecodeValue<int>(SpecialType.System_Int32);
             if (arg.Value == null && desc == 0)

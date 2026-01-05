@@ -72,12 +72,12 @@ namespace XSharp.Project
             {
                 if (!string.IsNullOrEmpty(this.ProjectMgr.BuildProject.Xml.Sdk))
                 {
-                    value = this.ProjectMgr.BuildProject.GetPropertyValue("TargetFramework");
+                    value = this.ProjectMgr.BuildProject.GetPropertyValue(XSharpProjectFileConstants.TargetFramework);
                     if (!(converterFramework is SdkFrameWorkNameConverter))
                     {
                         converterFramework = new SdkFrameWorkNameConverter(this.ProjectMgr.BuildProject);
                         var p = this.PropertyPagePanel as XGeneralPropertyPagePanel;
-                        p.FillFrameworkNames(converterFramework);
+                        //p.FillFrameworkNames(converterFramework);
                     }
 
                 }
@@ -184,7 +184,7 @@ namespace XSharp.Project
                     if (!VS.MessageBox.ShowConfirm(message))
                     {
                         var genPanel = PropertyPagePanel as XGeneralPropertyPagePanel;
-                        genPanel.resetFramework(oldValue);
+                        //genPanel.resetFramework(oldValue);
                         return;
                     }
 
@@ -212,25 +212,25 @@ namespace XSharp.Project
         internal static void Reload(string newValue, XProjectNode project)
         {
 
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                await VS.Commands.ExecuteAsync(KnownCommands.File_SaveAll);
-                var newName = new FrameworkName(newValue);
-                var retargetingService = await VS.GetRequiredServiceAsync<SVsTrackProjectRetargeting, IVsTrackProjectRetargeting2>();
-                if (retargetingService != null)
-                {
-                    // We surround our batch retargeting request with begin/end because in individual project load
-                    // scenarios the solution load context hasn't done it for us.
+            //ThreadHelper.JoinableTaskFactory.Run(async delegate
+            //{
+            //    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            //    await VS.Commands.ExecuteAsync(KnownCommands.File_SaveAll);
+            //    var newName = new FrameworkName(newValue);
+            //    var retargetingService = await VS.GetRequiredServiceAsync<SVsTrackProjectRetargeting, IVsTrackProjectRetargeting2>();
+            //    if (retargetingService != null)
+            //    {
+            //        // We surround our batch retargeting request with begin/end because in individual project load
+            //        // scenarios the solution load context hasn't done it for us.
 
-                    var res = retargetingService.CheckForProjectRetarget(0, project);
-                    Marshal.ThrowExceptionForHR(retargetingService.BeginRetargetingBatch());
-                    Marshal.ThrowExceptionForHR(retargetingService.BatchRetargetProject(project, newName.FullName, true));
-                    Marshal.ThrowExceptionForHR(retargetingService.EndRetargetingBatch());
-                    var buildCfg = new BuildableProjectConfig(project.CurrentConfig);
-                    buildCfg.RefreshReferences();
-                }
-            });
+            //        var res = retargetingService.CheckForProjectRetarget(0, project);
+            //        Marshal.ThrowExceptionForHR(retargetingService.BeginRetargetingBatch());
+            //        Marshal.ThrowExceptionForHR(retargetingService.BatchRetargetProject(project, newName.FullName, true));
+            //        Marshal.ThrowExceptionForHR(retargetingService.EndRetargetingBatch());
+            //        var buildCfg = new BuildableProjectConfig(project.CurrentConfig);
+            //        buildCfg.RefreshReferences();
+            //    }
+            //});
 
 
 

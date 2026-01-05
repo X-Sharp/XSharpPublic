@@ -41,6 +41,7 @@ inspired by Microsoft.CSharp.targets
 
   <Import Condition="exists('$(XsMsBeforeTargets)')" Project="$(XsMsBeforeTargets)" />
 
+  <Import Project="XSharp.GenerateGlobalUsings.targets" />
   <Import Project="$(XSharpTargetsPath)" />
 
   <Import Condition="exists('$(XsMsAfterTargets)')" Project="$(XsMsAfterTargets)" />

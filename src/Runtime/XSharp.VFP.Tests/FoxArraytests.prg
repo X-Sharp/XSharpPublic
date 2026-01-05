@@ -348,4 +348,117 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal(100U, ALen(arr,1))
             Assert.Equal(0U,   ALen(arr,2))
     END CLASS
+
+    CLASS ALinesTests
+        [Fact, Trait("Category", "ALines")];
+        METHOD BasicParsingTest() AS VOID
+            DIMENSION aTest[1]
+            LOCAL cText := e"Line1\r\nLine2\r\nLine3\r\nLine4" AS STRING
+
+            VAR nCount := aLines(aTest, cText)
+
+            Assert.Equal(4, (INT)nCount)
+            Assert.Equal(4, (INT)ALen(aTest))
+            Assert.Equal("Line1", aTest[1])
+            Assert.Equal("Line2", aTest[2])
+            Assert.Equal("Line3", aTest[3])
+            Assert.Equal("Line4", aTest[4])
+        END METHOD
+
+        [Fact, Trait("Category", "ALines")];
+        METHOD CustomSeparatorTest() AS VOID
+            DIMENSION aTest[1]
+            VAR nCount := aLines(aTest, "A,B,C", 0, ",")
+
+            Assert.Equal(3, (INT)nCount)
+            Assert.Equal("B", aTest[2])
+        END METHOD
+
+        [Fact, Trait("Category", "ALines")];
+        METHOD MultiSeparatorTest() AS VOID
+            DIMENSION aTest[1]
+            VAR nCount := aLines(aTest, "One.Two,Three;Four", 0, ".", ",", ";")
+
+            Assert.Equal(4, (INT)nCount)
+            Assert.Equal("Two", aTest[2])
+            Assert.Equal("Three", aTest[3])
+        END METHOD
+
+
+        [Fact, Trait("Category", "ALines")];
+        METHOD FlagTrimTest() AS VOID
+            DIMENSION aTest[1]
+            VAR cText := "  Item1  ,  Item2  "
+
+            && Without Trim
+            aLines(aTest, cText, 0, ",")
+            Assert.Equal("  Item1  ", aTest[1])
+
+            && With Trim
+            aLines(aTest, cText, 1, ",")
+            Assert.Equal("Item1", aTest[1])
+            Assert.Equal("Item2", aTest[2])
+        END METHOD
+
+        [Fact, Trait("Category", "ALines")];
+        METHOD FlagNoEmptyTest() AS VOID
+            DIMENSION aTest[1]
+            VAR cText := "A,,B,,,C"
+
+            && Without flag (must include empty lines)
+            VAR nAll := aLines(aTest, cText, 0, ",")
+            Assert.Equal(6, (INT)nAll)
+
+            && With flag (just content)
+            VAR nNoEmpty := aLines(aTest, cText, 4, ",")
+            Assert.Equal(3, (INT)nNoEmpty)
+            Assert.Equal("B", aTest[2])
+            Assert.Equal("C", aTest[3])
+        END METHOD
+
+        [Fact, Trait("Category", "ALines")];
+        METHOD FlagCaseInsensitiveTest() AS VOID
+            DIMENSION aTest[1]
+            VAR cText := "User<br>Name<BR>Age"
+
+            && No flag (case sensitive) -> do not cut <BR>
+            VAR nSensitive := aLines(aTest, cText, 0, "<br>")
+            Assert.Equal(2, (INT)nSensitive)
+
+            && With flag (case insensitive) -> cut <BR>
+            VAR nInsensitive := aLines(aTest, cText, 8, "<br>")
+            Assert.Equal(3, (INT)nInsensitive)
+            Assert.Equal("Age", aTest[3])
+        END METHOD
+
+        [Fact, Trait("Category", "ALines")];
+        METHOD FlagIncludeSeparatorTest() AS VOID
+            DIMENSION aTest[1]
+            VAR cText := "A,B"
+
+            VAR nCount := aLines(aTest, cText, 16, ",")
+            Assert.Equal(3, (INT)nCount)
+            Assert.Equal("A", aTest[1])
+            Assert.Equal(",", aTest[2])
+            Assert.Equal("B", aTest[3])
+        END METHOD
+
+        [Fact, Trait("Category", "ALines")];
+        METHOD FlagIncludeLastTest() AS VOID
+            DIMENSION aTest[1]
+            VAR cText := "A,B,"
+
+            && Case 1: without flag (default) -> "A", "B" (ignore last empty)
+            VAR nCount1 := aLines(aTest, cText, 0, ",")
+            Assert.Equal(2, (INT)nCount1)
+            Assert.Equal("B", aTest[2])
+
+            && Case 2: with flag -> "A", "B", "" (include last empty)
+            VAR nCount2 := aLines(aTest, cText, 2, ",")
+            Assert.Equal(3, (INT)nCount2)
+            Assert.Equal("", aTest[3])
+
+        END METHOD
+
+    END CLASS
 END NAMESPACE

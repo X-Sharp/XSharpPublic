@@ -81,7 +81,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return stmt;
         }
 
-        private static bool ClearGlobals(CSharpCompilation compilation, SyntaxNode node, TypeSymbol functionClass, List<BoundStatement> statements )
+        private static bool ClearGlobals(CSharpCompilation compilation, SyntaxNode node, TypeSymbol functionClass, List<BoundStatement> statements)
         {
             var members = functionClass.GetMembers();
             bool added = false;
@@ -204,10 +204,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private static BoundExpressionStatement xsharpruntimeStateAssign(SyntaxNode syntax, PropertySymbol prop, object value)
         {
-            var bpa = new BoundPropertyAccess(syntax, null, ThreeState.False, prop, AccessorKind.Both, LookupResultKind.Viable,prop.Type) { WasCompilerGenerated = true };
+            var bpa = new BoundPropertyAccess(syntax, null, ThreeState.False, prop, AccessorKind.Both, LookupResultKind.Viable, prop.Type) { WasCompilerGenerated = true };
             BoundLiteral lit;
             if (value is bool)
-                lit = new BoundLiteral(syntax, ConstantValue.Create(( bool) value), prop.Type) { WasCompilerGenerated = true };
+                lit = new BoundLiteral(syntax, ConstantValue.Create((bool)value), prop.Type) { WasCompilerGenerated = true };
             else
                 lit = new BoundLiteral(syntax, ConstantValue.Create((int)value), prop.Type) { WasCompilerGenerated = true };
 
@@ -222,7 +222,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             BindingDiagnosticBag diagnostics)
 
         {
-            if (method.Name != XSharpSpecialNames.AppInit )
+            if (method.Name != XSharpSpecialNames.AppInit)
                 return statement;
             var newstatements = new List<BoundStatement>();
             var oldbody = statement as BoundBlock;
@@ -281,7 +281,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            var initstmts = GetInitStatements(method.DeclaringCompilation, statement,false);
+            var initstmts = GetInitStatements(method.DeclaringCompilation, statement, false);
             newstatements.AddRange(initstmts);
             tryblock = tryblock.Update(tryblock.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, tryblock.HasUnsafeModifier, tryblock.Instrumentation, newstatements.ToImmutableArray<BoundStatement>());
             tryblock.WasCompilerGenerated = true;
@@ -313,10 +313,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 foreach (var rkv in refMan.GetReferencedAssemblies())
                 {
-                    var r = (AssemblySymbol) rkv.Value;
+                    var r = (AssemblySymbol)rkv.Value;
                     foreach (var attr in r.GetAttributes())
                     {
-                        if ( TypeSymbol.Equals(attr.AttributeClass.ConstructedFrom,vcla))
+                        if (TypeSymbol.Equals(attr.AttributeClass.ConstructedFrom, vcla))
                         {
                             var attargs = attr.CommonConstructorArguments;
                             if (attargs.Length == 2)
@@ -375,13 +375,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             BindingDiagnosticBag diagnostics)
 
         {
-            if ( method.Name != ReservedNames.RunInitProcs)
+            if (method.Name != ReservedNames.RunInitProcs)
                 return statement;
             var oldbody = statement as BoundBlock;
             var newstatements = new List<BoundStatement>();
-            var initstmts = GetInitStatements(method.DeclaringCompilation, statement,true);
+            var initstmts = GetInitStatements(method.DeclaringCompilation, statement, true);
             newstatements.AddRange(initstmts);
-            newstatements.Add(new BoundReturnStatement(statement.Syntax, RefKind.None, null, false) { WasCompilerGenerated = true } );
+            newstatements.Add(new BoundReturnStatement(statement.Syntax, RefKind.None, null, false) { WasCompilerGenerated = true });
             oldbody = oldbody.Update(oldbody.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, oldbody.HasUnsafeModifier, oldbody.Instrumentation, newstatements.ToImmutableArray<BoundStatement>());
             oldbody.WasCompilerGenerated = true;
             return oldbody;
@@ -520,7 +520,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 }
                                 newfinStatements.Add(finstmt);
                             }
-                            if (newfinStatements.Count > 0  || tryStmt.CatchBlocks.Length > 0)
+                            if (newfinStatements.Count > 0 || tryStmt.CatchBlocks.Length > 0)
                             {
                                 finBlock = finBlock.Update(finBlock.Locals, finBlock.LocalFunctions, finBlock.HasUnsafeModifier, finBlock.Instrumentation, newfinStatements.ToImmutableArray());
                                 tryStmt = tryStmt.Update(tryStmt.TryBlock, tryStmt.CatchBlocks, finBlock, tryStmt.FinallyLabelOpt, tryStmt.PreferFaultHandler);

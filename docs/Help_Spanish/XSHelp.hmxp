@@ -14,7 +14,7 @@
               <task-config-value name="make0status">*</task-config-value>
             </task-config-group>
           </export-task>
-           <export-task name="Publish as PDF" format="PDF">
+          <export-task name="Publish as PDF" format="PDF">
             <task-config-group name="settings">
               <task-config-value name="outputfile">..\..\artifacts\Doc\XSharp_ES.pdf</task-config-value>
               <task-config-value name="template">..\Help\Standard_manual_A4.mnl</task-config-value>
@@ -35,7 +35,7 @@
               <task-config-value name="table_of_contents">Table of Contents</task-config-value>
             </task-config-group>
           </export-task>
-         <export-task name="Publish as HTM" format="HTM">
+          <export-task name="Publish as HTM" format="HTM">
             <task-config-group name="settings">
               <task-config-value name="outputfile">..\..\artifacts\DocSpanish\HTML\index.html</task-config-value>
               <task-config-value name="skin">XSharp_WebHelp.hmskin</task-config-value>

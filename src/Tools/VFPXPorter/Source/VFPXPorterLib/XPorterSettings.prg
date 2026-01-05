@@ -12,6 +12,27 @@ USING System.Text
 BEGIN NAMESPACE VFPXPorterLib
 
 /// <summary>
+/// Specifies the type of project to generate for the exported code.
+/// Use <see cref="ProjectType.WindowsExe" /> for a Windows GUI executable,
+/// <see cref="ProjectType.ClassLibrary" /> for a reusable class library (DLL),
+/// or <see cref="ProjectType.Console" /> for a console application.
+/// </summary>
+ENUM ProjectType
+    /// <summary>
+    /// Windows GUI executable project (Win32/desktop application without a console window).
+    /// </summary>
+    MEMBER WindowsExe := 0
+    /// <summary>
+    /// Class library project that produces a reusable DLL.
+    /// </summary>
+    MEMBER ClassLibrary := 1
+    /// <summary>
+    /// Console application project that runs in a command-line window.
+    /// </summary>
+    MEMBER Console := 2
+END ENUM
+
+/// <summary>
 /// The XPorterSettings class.
 /// </summary>
 CLASS XPorterSettings
@@ -73,7 +94,27 @@ CLASS XPorterSettings
 	PUBLIC STATIC PROPERTY SingleNoContainerFormEndTypeFile			AS STRING GET XPorterSettings.SingleFolder + "\\endtypeNotContainer.prg"
 	PUBLIC STATIC PROPERTY SingleNoContainerFormInitTypeFile		AS STRING GET XPorterSettings.SingleFolder + "\\inittypeNotContainer.prg"
 
-#endregion
+    #endregion
+
+    /// <summary>
+    /// Gets or sets the type of .NET project to be generated (for example Windows executable, class library, or console application).
+    /// </summary>
+    PROPERTY OutputType AS ProjectType AUTO
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the generated project should be appended to an existing solution instead of creating a new one.
+    /// </summary>
+    PROPERTY AppendToSolution AS LOGIC AUTO
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the solution file should be placed in the same directory as the generated project.
+    /// </summary>
+    PROPERTY PlaceSolutionInSameDirectory AS LOGIC AUTO
+
+    /// <summary>
+    /// Gets or sets the name of the generated solution when creating or updating a solution.
+    /// </summary>
+    PROPERTY SolutionName AS STRING AUTO
 
 	CONSTRUCTOR()
 
@@ -96,7 +137,11 @@ CLASS XPorterSettings
 		SELF:StoreInFolders := FALSE
 		SELF:EmptyFolder := TRUE
 		SELF:PrefixEvent := FALSE
-		SELF:KeepFoxProEventName := TRUE
+        SELF:KeepFoxProEventName := TRUE
+        SELF:OutputType := ProjectType.WindowsExe // Exe by default
+        SELF:AppendToSolution := FALSE // New Solution by default
+        SELF:PlaceSolutionInSameDirectory := FALSE // New Solution folder by default
+        SELF:SolutionName := ""
 		RETURN
 
 	/// <summary>

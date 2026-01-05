@@ -22,9 +22,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 using VSLangProj;
 
@@ -44,10 +42,19 @@ namespace XSharp.Project
     /// </summary>
     [DebuggerDisplay("{Caption}")]
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
-    public partial class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject,
-        /*IVsDesignTimeAssemblyResolution, */IVsProject5, IXsProjectDesigner
+    public partial class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject, IVsProject5
     {
         static List<XSharpProjectNode> nodes = new List<XSharpProjectNode>();
+
+        internal static XSharpProjectNode FindProject(string url)
+        {
+            foreach (var proj in nodes)
+            {
+                if (string.Compare(proj.ProjectFolder, Path.GetDirectoryName(url), true) == 0)
+                    return proj;
+            }
+            return null;
+        }
 
         static IDictionary<string, string> dependencies;
         static IDictionary<string, string> _changedProjectFiles;
@@ -607,6 +614,7 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                 typeof(XSharpDialectPropertyPage).GUID,
+                typeof(XSharpGlobalUsingsPropertiesPage).GUID,
                 typeof(XSharpBuildPropertyPage).GUID,
                 typeof(XSharpBuildEventsPropertyPage).GUID,
                 typeof(XSharpDebugPropertyPage).GUID
@@ -625,6 +633,7 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                  typeof(XSharpDialectPropertyPage).GUID,
+                 typeof(XSharpGlobalUsingsPropertiesPage).GUID,
                 };
             return result;
         }
@@ -1575,7 +1584,7 @@ namespace XSharp.Project
             {
                 if (node is XSharpFileNode xNode && !xNode.IsNonMemberItem)
                 {
-                    if (File.Exists(url) )
+                    if (File.Exists(url))
                     {
                         this.ProjectModel.AddFile(url, xNode.FileType);
                         if (IsXamlFile(url))
@@ -1762,7 +1771,10 @@ namespace XSharp.Project
 
         #endregion
 
-
+        internal void Unload()
+        {
+            this.UnloadProject();
+        }
         protected override void Reload()
         {
             this.isLoading = true; // gets reset in OnAfterProjectOpen
@@ -1993,7 +2005,6 @@ namespace XSharp.Project
 
         #region IVsDesignTimeAssemblyResolution
 
-        //private DesignTimeAssemblyResolution designTimeAssemblyResolution;
         private ConfigCanonicalName _config = new ConfigCanonicalName("Debug", XSharpProjectFileConstants.AnyCPU);
 
         public override void SetConfiguration(ConfigCanonicalName config)
@@ -2010,45 +2021,10 @@ namespace XSharp.Project
             {
                 InvalidateOptions();
             }
-            //if (this.designTimeAssemblyResolution == null)
-            //{
-            //    this.designTimeAssemblyResolution = new DesignTimeAssemblyResolution();
-            //}
-            //this.designTimeAssemblyResolution.Initialize(this);
-
         }
-        public int GetTargetFramework(out string ppTargetFramework)
-        {
-            ppTargetFramework = this.TargetFrameworkMoniker.FullName;
-            return VSConstants.S_OK;
-        }
-
-        //public int ResolveAssemblyPathInTargetFx(string[] prgAssemblySpecs, uint cAssembliesToResolve, VsResolvedAssemblyPath[] prgResolvedAssemblyPaths, out uint pcResolvedAssemblyPaths)
-        //{
-        //    if (prgAssemblySpecs == null || cAssembliesToResolve == 0 || prgResolvedAssemblyPaths == null)
-        //    {
-        //        throw new ArgumentException("One or more of the arguments are invalid.");
-        //    }
-
-        //    pcResolvedAssemblyPaths = 0;
-
-        //    try
-        //    {
-        //        var results = designTimeAssemblyResolution.Resolve(prgAssemblySpecs.Take((int)cAssembliesToResolve));
-        //        results.CopyTo(prgResolvedAssemblyPaths, 0);
-        //        pcResolvedAssemblyPaths = (uint)results.Length;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Marshal.GetHRForException(ex);
-        //    }
-
-        //    return VSConstants.S_OK;
-        //}
 
         #endregion
         #region TableManager
-        //internal ITableManagerProvider tableManagerProvider { get; private set; }
         ErrorListManager _errorListManager = null;
         TaskListManager _taskListManager = null;
 

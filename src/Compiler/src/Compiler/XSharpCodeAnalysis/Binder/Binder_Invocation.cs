@@ -182,6 +182,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                     result = BindInvocationExpression(node, node.Expression, name, boundExpression, analyzedArguments, diagnostics);
                     if (result is BoundCall bc)
                     {
+                        // Remove errors about passing property by reference for Clipper Calling Convention
+                        if (bc.Method.HasClipperCallingConvention())
+                        {
+                            if (diagnostics.DiagnosticBag.HasAnyErrors())
+                            {
+                                var errors = diagnostics.DiagnosticBag.AsEnumerable().Where(d => d.Code != (int)ErrorCode.ERR_RefProperty);
+                                diagnostics.Clear();
+                                diagnostics.DiagnosticBag.AddRange(errors);
+                            }
+                        }
+
 
                         // check if MethodSymbol has the NeedAccessToLocals attribute combined with /memvars and the FoxPro Dialect
                         if (Compilation.Options.Dialect == XSharpDialect.FoxPro &&

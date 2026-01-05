@@ -67,6 +67,7 @@ ENUM XSharpModel.XTokenType AS SHORT
     MEMBER @@Procedure:= XSharpLexer.PROCEDURE
     MEMBER @@Protected:= XSharpLexer.PROTECTED
     MEMBER @@Public:= XSharpLexer.PUBLIC
+    MEMBER @@Record := XSharpLexer.RECORD
     MEMBER @@Recover:= XSharpLexer.RECOVER
     MEMBER @@Return:= XSharpLexer.RETURN
     MEMBER @@Self:= XSharpLexer.SELF
@@ -345,6 +346,7 @@ ENUM XSharpModel.XTokenType AS SHORT
     MEMBER @@PP_ifndef:= XSharpLexer.PP_IFNDEF
     MEMBER @@PP_include:= XSharpLexer.PP_INCLUDE
     MEMBER @@PP_line:= XSharpLexer.PP_LINE
+    MEMBER @@PP_nullable:= XSharpLexer.PP_NULLABLE
     MEMBER @@PP_region:= XSharpLexer.PP_REGION
     MEMBER @@PP_stdout:= XSharpLexer.PP_STDOUT
     MEMBER @@PP_translate:= XSharpLexer.PP_TRANSLATE

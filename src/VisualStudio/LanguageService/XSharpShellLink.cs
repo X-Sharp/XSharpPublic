@@ -80,10 +80,6 @@ namespace XSharp.LanguageService
             if (!IsXSharpProject(project.FullPath))
                 return;
             var framework = "";
-            //ThreadHelper.JoinableTaskFactory.Run(async delegate
-            //{
-            //    framework = await project.GetAttributeAsync("TargetFramework");
-            //});
             IXSharpLibraryManager libraryManager = VS.GetRequiredService<IXSharpLibraryManager, IXSharpLibraryManager>();
             if (libraryManager != null)
             {
@@ -98,7 +94,7 @@ namespace XSharp.LanguageService
 
         }
 #endif
-            #region DesignerWindows
+        #region DesignerWindows
         private CommandProgression CloseDesignerWindows()
         {
             ThreadHelper.ThrowIfNotOnUIThread();

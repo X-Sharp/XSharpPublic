@@ -781,6 +781,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         entityKind := Kind.Unknown
         SWITCH SELF:La1
         CASE XSharpLexer.NAMESPACE
+            // Filewide namespace ?
             IF SELF:IsId(SELF:La2)
                 entityKind := Kind.Namespace
             ENDIF
@@ -803,6 +804,14 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             ENDIF
         CASE XSharpLexer.STRUCTURE
             IF SELF:IsId(SELF:La2)
+                entityKind := Kind.Structure
+            ENDIF
+        CASE XSharpLexer.RECORD
+            IF SELF:La2 == XSharpLexer.CLASS .and. SELF:IsId(SELF:La3)
+                entityKind := Kind.Class
+            ELSEIF SELF:IsId(SELF:La2)
+                entityKind := Kind.Class
+            ELSEIF SELF:La2 == XSharpLexer.STRUCTURE .and. SELF:IsId(SELF:La3)
                 entityKind := Kind.Structure
             ENDIF
         CASE XSharpLexer.DELEGATE
@@ -1159,6 +1168,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 EntityKind := Kind.Namespace
                 RETURN TRUE
             CASE XSharpLexer.CLASS
+            CASE XSharpLexer.RECORD
             CASE XSharpLexer.DEFINE // FoxPro
                 EntityKind := Kind.Class
                 RETURN TRUE
@@ -1601,6 +1611,19 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         */
         LOCAL kind AS Kind
         SWITCH SELF:La1
+        CASE XSharpLexer.RECORD
+            switch SELF:La2
+            case XSharpLexer.STRUCTURE
+                kind := Kind.Structure
+                SELF:Consume()
+            case XSharpLexer.CLASS
+                kind := Kind.Class
+                SELF:Consume()
+            case XSharpLexer.ID
+                kind := Kind.Class
+            otherwise
+                RETURN NULL
+            end switch
         CASE XSharpLexer.CLASS
             kind := Kind.Class
         CASE XSharpLexer.INTERFACE

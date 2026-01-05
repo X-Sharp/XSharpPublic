@@ -39,7 +39,8 @@ namespace XSharp.Project
             this.chkAutoGenerateBindingRedirects.Tag = XSharpProjectFileConstants.AutoGenerateBindingRedirects;
             this.comboDialect.Tag = XSharpProjectFileConstants.Dialect;
             this.comboOutputType.Tag = XSharpProjectFileConstants.OutputType;
-            this.comboTargetFramework.Tag = XSharpProjectFileConstants.TargetFrameworkVersion;
+            //this.comboTargetFramework.Tag = XSharpProjectFileConstants.TargetFrameworkVersion;
+            this.tbTargetFrameworks.Tag = XSharpProjectFileConstants.XTargetFrameworks;
 
             lblDefaultNamespace.Text = GeneralPropertyPagePanel.captNamespace;
             toolTip1.SetToolTip(lblDefaultNamespace, GeneralPropertyPagePanel.descNamespace);
@@ -73,9 +74,9 @@ namespace XSharp.Project
             FillCombo(new OutputTypeConverter(), comboOutputType);
             toolTip1.SetToolTip(lblOutputType, GeneralPropertyPagePanel.descOutputType);
             toolTip1.SetToolTip(comboOutputType, GeneralPropertyPagePanel.descOutputType);
-            FillFrameworkNames(new FrameworkNameConverter());
+            //FillFrameworkNames(new FrameworkNameConverter());
             toolTip1.SetToolTip(lblTargetFramework, GeneralPropertyPagePanel.descFramework);
-            toolTip1.SetToolTip(comboTargetFramework, GeneralPropertyPagePanel.descFramework);
+            //toolTip1.SetToolTip(comboTargetFramework, GeneralPropertyPagePanel.descFramework);
 
 
             // hook up the form to both editors
@@ -86,7 +87,7 @@ namespace XSharp.Project
 
         public void FillFrameworkNames(FrameworkNameConverter converter)
         {
-            FillCombo(converter, comboTargetFramework);
+            //FillCombo(converter, comboTargetFramework);
         }
         void GetStartupClasses()
         {
@@ -158,21 +159,21 @@ namespace XSharp.Project
             });
         }
 
-        internal void resetFramework(string value)
-        {
-            int index = 0;
-            resetting = true;
-            foreach (string item in comboTargetFramework.Items)
-            {
-                if (String.Compare(item, value, true) == 0)
-                {
-                    comboTargetFramework.SelectedIndex = index;
-                    break;
-                }
-                index++;
-            }
-            resetting = false;
-        }
+        //internal void resetFramework(string value)
+        //{
+        //    int index = 0;
+        //    resetting = true;
+        //    foreach (string item in comboTargetFramework.Items)
+        //    {
+        //        if (String.Compare(item, value, true) == 0)
+        //        {
+        //            comboTargetFramework.SelectedIndex = index;
+        //            break;
+        //        }
+        //        index++;
+        //    }
+        //    resetting = false;
+        //}
         private void btnIcon_Click(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();

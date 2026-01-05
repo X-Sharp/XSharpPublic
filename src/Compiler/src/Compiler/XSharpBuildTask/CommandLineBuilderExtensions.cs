@@ -174,7 +174,7 @@ namespace XSharp.Build
         }
 #if NOTUSED
         /// <summary>
-        /// Returns true if the parameter is empty in spirits, 
+        /// Returns true if the parameter is empty in spirits,
         /// even if it contains the separators and white space only
         /// Split on the characters provided.
         /// </summary>
@@ -199,7 +199,7 @@ namespace XSharp.Build
         ///
         ///      /embed[resource]:&lt;filename>[,&lt;name>[,Private]]
         ///      /link[resource]:&lt;filename>[,&lt;name>[,Private]]
-        /// 
+        ///
         /// Where the last flag--Private--is either present or not present
         /// depending on whether the ITaskItem has a Private="True" attribute.
         /// </summary>
@@ -241,7 +241,7 @@ namespace XSharp.Build
                                     // A boolean flag.
                                     bool flagSet = false;
 
-                                    flagSet = Utilities.TryConvertItemMetadataToBool(parameter, metadataNames[i]);
+                                    flagSet = parameter.GetBool(metadataNames[i]);
 
                                     if (flagSet)
                                     {

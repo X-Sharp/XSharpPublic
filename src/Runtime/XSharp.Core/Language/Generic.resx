@@ -2572,6 +2572,9 @@
   <data name="ERROR_CALLEDFROM" xml:space="preserve">
     <value>Called from</value>
   </data>
+  <data name="INDEX_EXPRESSION_ZEROLENGTH" xml:space="preserve">
+    <value>Index expression '{0}' results in a string with length 0 - cannot use AllTrim(), LTrim(), RTrim() and similar functions resulting to variable string length</value>
+  </data>
   <data name="INVALIDARGTYPE" xml:space="preserve">
     <value>Invalid argument type</value>
   </data>
@@ -2791,9 +2794,6 @@
   </data>
   <data name="VFP_INVALID_FIELDNAME" xml:space="preserve">
     <value>Field '{0}' does not exist</value>
-  </data>
-  <data name="VFP_INDEX_EXPRESSION_ZEROLENGTH" xml:space="preserve">
-    <value>Index expression '{0}' results in a string with length 0 - cannot use AllTrim(), LTrim(), RTrim() and similar functions resulting to variable string length</value>
   </data>
   <data name="VFP_COLLECTION_INVALIDKEYSORT" xml:space="preserve">
     <value>Invalid value for KeySort property</value>

@@ -46,9 +46,15 @@
     <Compile Include="$(CommonDir)XSharpConstants.cs">
       <Link>XSharpConstants.cs</Link>
     </Compile>
-    <Compile Include="IXsProjectDesigner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyPages\Enums.cs" />
+    <Compile Include="PropertyPages\XGlobalUsingsPropertyPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XGlobalUsingsPropertyPagePanel.Designer.cs">
+      <DependentUpon>XGlobalUsingsPropertyPagePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XGlobalUsingsPropertyPage.cs" />
     <Compile Include="PropertyPages\XBuildPropertyPagePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -155,6 +161,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="PropertyPages\XGlobalUsingsPropertyPagePanel.resx">
+      <DependentUpon>XGlobalUsingsPropertyPagePanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PropertyPages\XDebugPropertyPagePanel.resx">
       <DependentUpon>XDebugPropertyPagePanel.cs</DependentUpon>
     </EmbeddedResource>

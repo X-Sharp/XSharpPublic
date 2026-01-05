@@ -16,7 +16,17 @@ namespace XSharp.MacroCompiler.ObjectMacro
 
         public virtual object EvalBlock(params object[] args)
         {
-            return _eval(args);
+            var result = _eval(args);
+            if (result is long lng)
+            {
+                // All operations using 2 Int32 values now return an Int64
+                // We want to convert back to Int32 if possible
+                if (lng >= int.MinValue && lng <= int.MaxValue)
+                {
+                    result = (int)lng;
+                }
+            }
+            return result;
         }
         public int PCount() => _pcount;
     }
@@ -55,8 +65,21 @@ namespace XSharp.MacroCompiler.UsualMacro
     internal class MacroCodeblock : _Codeblock
     {
         MacroCodeblockDelegate _eval;
-        public override __Usual Eval(params __Usual[] args) => _eval(args);
-        internal MacroCodeblock(MacroCodeblockDelegate evalMethod, int pCount, string source, bool isBlock) : 
+        public override __Usual Eval(params __Usual[] args)
+        {
+            var result = _eval(args);
+            if (result.Value is long lng)
+            {
+                // All operations using 2 Int32 values now return an Int64
+                // We want to convert back to Int32 if possible
+                if (lng >= int.MinValue && lng <= int.MaxValue)
+                {
+                    result = new __Usual((int)lng);
+                }
+            }
+            return result;
+        }
+        internal MacroCodeblock(MacroCodeblockDelegate evalMethod, int pCount, string source, bool isBlock) :
             base(new NestedCodeblock(pCount), source, isBlock, false)
         {
             _eval = evalMethod;

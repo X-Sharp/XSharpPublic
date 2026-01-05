@@ -88,7 +88,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (expr is BoundIndexerAccess bia && bia.AccessorKind == AccessorKind.Unknown)
             {
-               expr = bia.Update(AccessorKind.Get); 
+                expr = bia.Update(AccessorKind.Get);
             }
             return expr;
         }
@@ -186,7 +186,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 MethodSymbol symbolOpt = GetWellKnownTypeMember(WellKnownMember.System_Index__ctor, diagnostics, syntax: syntax) as MethodSymbol;
                 whenFalse = new BoundFromEndIndexExpression(syntax, whenFalse, symbolOpt, index.Type) { WasCompilerGenerated = true };
             }
-            else {
+            else
+            {
                 whenFalse = CreateConversion(whenFalse, index.Type, diagnostics);
                 whenFalse.WasCompilerGenerated = true;
             }
@@ -828,7 +829,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
 
                     // PTR(_Cast, SomeString) or PTR(SomeString)
-                    // Convert to 
+                    // Convert to
                     // PTR(_Cast, PSZ(_Cast, SomeString))
                     var pszType = Compilation.PszType();
                     var useSiteInfo = new CompoundUseSiteInfo<AssemblySymbol>(diagnostics, Compilation.Assembly);

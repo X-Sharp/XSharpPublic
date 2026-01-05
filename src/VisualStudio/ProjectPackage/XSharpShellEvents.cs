@@ -33,13 +33,29 @@ namespace XSharp.Project
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
+                VS.Events.SolutionEvents.OnBeforeCloseProject += SolutionEvents_OnBeforeCloseProject;
             });
 
         }
- 
+
 
         #region Project Events
-    
+
+        private void SolutionEvents_OnBeforeCloseProject(Community.VisualStudio.Toolkit.Project project)
+        {
+            var node = XSharpProjectNode.FindProject(project.FullPath);
+            if (node != null)
+            {
+                var prop = node.GetProjectProperty(XSharpProjectFileConstants.XTargetFrameworks);
+                if (! String.IsNullOrEmpty(prop))
+                {
+                    node.RemoveProjectProperty(XSharpProjectFileConstants.XTargetFrameworks);
+                    node.RemoveProjectProperty(XSharpProjectFileConstants.TargetFramework);
+                    node.SetProjectProperty(XSharpProjectFileConstants.TargetFrameworks, prop);
+                    node.BuildProject.Save();
+                }
+            }
+        }
         private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
             if (IsXSharpProject(projectFileName))

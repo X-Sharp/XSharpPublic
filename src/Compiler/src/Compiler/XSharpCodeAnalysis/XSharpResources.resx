@@ -775,7 +775,7 @@
   <data name="InternalsVisibleToHeaderSummary" xml:space="preserve">
     <value>Printing 'InternalsVisibleToAttribute' information for the current compilation and all referenced assemblies.</value>
   </data>
-  <data name="InternalsVisibleToCurrentAssembly" xml:space="preserve"> 
+  <data name="InternalsVisibleToCurrentAssembly" xml:space="preserve">
     <value>Current assembly: '{0}'</value>
   </data>
   <data name="InternalsVisibleToReferencedAssembly" xml:space="preserve">
@@ -783,7 +783,7 @@
   Grants IVT to current assembly: {1}
   Grants IVTs to:</value>
   </data>
-  <data name="InternalsVisibleToReferencedAssemblyDetails" xml:space="preserve"> 
+  <data name="InternalsVisibleToReferencedAssemblyDetails" xml:space="preserve">
     <value>    Assembly name: '{0}'
     Public Keys:</value>
   </data>
@@ -2170,7 +2170,7 @@
     <value>Type parameter '{1}' has the 'struct' constraint so '{1}' cannot be used as a constraint for '{0}'</value>
   </data>
   <data name="ERR_AmbigUDConv" xml:space="preserve">
-    <value>Ambiguous user defined conversions '{0}' and '{1}' when converting from '{2}' to '{3}'</value>
+    <value>Can't convert from '{2}' to '{3}'. The possible conversions found are '{0}' and '{1}'. You should try an explicit conversion.</value>
   </data>
   <data name="WRN_AlwaysNull" xml:space="preserve">
     <value>The result of the expression is always 'null' of type '{0}'</value>
@@ -9242,5 +9242,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 <data name="ERR_FoxDefineClassMustInheritFromCustom" xml:space="preserve">
 <value>Classes declared with DEFINE CLASS must inherit from the VFP Custom class.</value>
 </data>
- 
+<data name="ERR_DefaultParameterValueRequiresXSharpXCore" xml:space="preserve">
+<value>The parameter '{0}' has a default value that requires a reference to XSharp.Core.DLL.</value>
+</data>
+
+
 </root>

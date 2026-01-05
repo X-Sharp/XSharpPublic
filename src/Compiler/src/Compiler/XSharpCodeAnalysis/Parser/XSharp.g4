@@ -1019,7 +1019,9 @@ initializerMember   : Init=complexInitExpr
 collectioninitializer : LCURLY Members+=initializerMember (COMMA Members+=initializerMember)* RCURLY
                       ;
 
-bracketedArgumentList : Args+=unnamedArgument (COMMA Args+=unnamedArgument)*
+                      // In FoxPro dialect we combine arr[1][2] into arr[1,2]
+bracketedArgumentList : {IsFox}? Args+=unnamedArgument RBRKT LBRKT Args+=unnamedArgument
+                      | Args+=unnamedArgument (COMMA Args+=unnamedArgument)*
                       ;
 
                       // NOTE: Separate rule for bracketedarguments because they cannot use identifierName syntax

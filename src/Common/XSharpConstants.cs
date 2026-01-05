@@ -63,6 +63,7 @@ namespace XSharp
         internal const string DialectPropertiesPage = "2652FCA6-1C45-4D25-942D-4C5D5EDE9539";
         internal const string LanguagePropertiesPage = "0DFC7EF7-3F1A-4ACB-AFD8-DF56AEF9467A";
         internal const string BuildEventsPropertiesPage = "49306259-9119-466E-8780-486CFBE2597D";
+        internal const string GlobalUsingsPropertiesPage = "5BF73771-1E08-40D9-8A48-EC06552C138B";
         internal const string DebuggerWorkareasPane = "B5B41BAB-62F9-48E0-80D8-947F2F14D1C5";
         internal const string DebuggerSettingsPane = "F7ED7826-137A-462D-8757-37A02BEF4DCF";
         internal const string DebuggerGlobalsPane = "53B7968B-251B-44E0-BDF5-A225BF0DBC77";
@@ -128,6 +129,7 @@ namespace XSharp
         internal const string Fox1 = nameof(Fox1);
         internal const string Fox2 = nameof(Fox2);
         internal const string GetTargetPath = nameof(GetTargetPath);
+        internal const string ImplicitUsings = nameof(ImplicitUsings);
         internal const string IncludePaths = nameof(IncludePaths);
         internal const string IncludeSearchPaths = nameof(IncludeSearchPaths);
         internal const string InitLocals = nameof(InitLocals);
@@ -214,5 +216,7 @@ namespace XSharp
         internal const string DebuggerWorkingDirectory = nameof(DebuggerWorkingDirectory);
         internal const string EnableUnmanagedDebugging = nameof(EnableUnmanagedDebugging);
         internal const string TargetFramework = nameof(TargetFramework);
+        internal const string TargetFrameworks = nameof(TargetFrameworks);
+        internal const string XTargetFrameworks = nameof(XTargetFrameworks);
     }
 }

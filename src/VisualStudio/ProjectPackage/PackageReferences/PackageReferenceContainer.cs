@@ -15,13 +15,11 @@ namespace XSharp.Project
 {
     public class XSharpPackageReferenceContainerNode : HierarchyNode
     {
-        protected OAVSProjectItem vsProjectItem;
-
         private OAVSPackageReferences _vsPackageReferences;
 
         public const string PackageReferencesNodeVirtualName = "NuGet Packages";
 
-        public List<XSharpPackageReferenceNode> PackageReferenceNodes 
+        public List<XSharpPackageReferenceNode> PackageReferenceNodes
         {
             get;
             set;
@@ -212,6 +210,6 @@ namespace XSharp.Project
         {
             return Path.Combine(base.ProjectMgr.ProjectFolder, Caption);
         }
-        
+
     }
 }

@@ -157,8 +157,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected TypeSyntax PszType => GenerateQualifiedName(XSharpQualifiedTypeNames.Psz);
         protected TypeSyntax CodeblockType => GenerateQualifiedName(XSharpQualifiedTypeNames.Codeblock);
         protected TypeSyntax ArrayType => GenerateQualifiedName(XSharpQualifiedTypeNames.Array);
-		
-		protected ArrayRankSpecifierSyntax MakeEmptyRank()
+
+        protected ArrayRankSpecifierSyntax MakeEmptyRank()
         {
             var emptySizes = _pool.AllocateSeparated<ExpressionSyntax>();
             emptySizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
@@ -169,7 +169,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(emptySizes);
             return emptyRank;
         }
-		
+
         protected ArrayTypeSyntax ArrayOfUsual
         {
             get
@@ -6169,7 +6169,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string initName = null;
             string lockName = null;
             TypeSyntax varType;
-            if (context.DataType is null && context.Expression is XP.TypeCheckExpressionContext tcec)
+            if (context.DataType is null && context.Expression is XP.TypeCheckExpressionContext tcec
+                && tcec.Op.Type == XSharpLexer.IS)
             {
                 // expression was incorrectly parsed. Fix it here
                 // local x := 512 IS DWORD
@@ -8518,7 +8519,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (context.Id != null)
                 {
                     var designation = GetDesignation(context.Id);
-                    var pattern = _syntaxFactory.DeclarationPattern(context.Type.Get<TypeSyntax>(), designation);
+                    PatternSyntax pattern = _syntaxFactory.DeclarationPattern(context.Type.Get<TypeSyntax>(), designation);
+                    if (context.Not != null)
+                        pattern = _syntaxFactory.UnaryPattern(context.Not.SyntaxKeyword(), pattern);
                     context.Put(_syntaxFactory.IsPatternExpression(
                         context.Expr.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),

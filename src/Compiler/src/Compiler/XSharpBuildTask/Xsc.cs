@@ -693,8 +693,8 @@ namespace XSharp.Build
                 string switchName = "/reference:";
                 if (!isInteractive)
                 {
-                    bool embed = Utilities.TryConvertItemMetadataToBool(reference,
-                                                                        "EmbedInteropTypes");
+
+                    bool embed = reference.GetBool("EmbedInteropTypes");
 
                     if (embed)
                     {

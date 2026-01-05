@@ -54,7 +54,7 @@ namespace XSharp.Project
         protected override ProjectNode CreateSdkProject()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            XSharpProjectNode project = new XSharpSdkProjectNode(this.package);
+            var project = new XSharpSdkProjectNode(this.package);
             IOleServiceProvider provider = null;
             var serviceProvider = this.package as IServiceProvider;
             // ProjectPackage already switches to UI thread inside GetService

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using XSharp;
@@ -15,7 +15,7 @@ namespace Microsoft.VisualStudio.Project
     using Microsoft.Build.Execution;
     using Microsoft.Build.Construction;
     using Microsoft.VisualStudio.Package;
-    
+
     /// <summary>
     /// Describes attributes of project properties and allows getting/setting in context of those attributes.
     /// </summary>
@@ -35,7 +35,7 @@ namespace Microsoft.VisualStudio.Project
             //XSharpProjectFileConstants.DebuggerWorkingDirectory,
             //XSharpProjectFileConstants.DebuggerCommand,
             //XSharpProjectFileConstants.DebuggerCommandArguments,
-            //XSharpProjectFileConstants.EnableUnmanagedDebugging, 
+            //XSharpProjectFileConstants.EnableUnmanagedDebugging,
         };
 
 
@@ -52,6 +52,8 @@ namespace Microsoft.VisualStudio.Project
             XSharpProjectFileConstants.AssemblyOriginatorKeyFile,
             XSharpProjectFileConstants.DebuggerWorkingDirectory,
             XSharpProjectFileConstants.DebuggerCommand,
+            XSharpProjectFileConstants.TargetFrameworks,
+            XSharpProjectFileConstants.XTargetFrameworks,
             XSharpProjectFileConstants.DebuggerWorkingDirectory
 
         };
@@ -61,6 +63,8 @@ namespace Microsoft.VisualStudio.Project
             XSharpProjectFileConstants.Cultures,
             XSharpProjectFileConstants.DefineConstants,
             XSharpProjectFileConstants.IncludeSearchPaths,
+            XSharpProjectFileConstants.TargetFrameworks,
+            XSharpProjectFileConstants.XTargetFrameworks,
             XSharpProjectFileConstants.ReferencePaths
         };
 
@@ -289,7 +293,7 @@ namespace Microsoft.VisualStudio.Project
                         {
                             // a property should only occur once in a group
                             // when there is more than one property with the same name then delete all but the first
-                            // we filter on condition, because there could be 2 
+                            // we filter on condition, because there could be 2
                             // same named properties with different conditions
                             var children = propGroup.Children.Where((prop) =>
                                 prop.ElementName == this.propertyName && string.IsNullOrEmpty(prop.Condition));

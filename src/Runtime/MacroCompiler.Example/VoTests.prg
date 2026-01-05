@@ -687,7 +687,7 @@ BEGIN NAMESPACE MacroCompilerTest
         Testmacro(mc, e"{|str, x| PadL(str, x)}",Args("abc",2),"ab",typeof(STRING))
         TestMacro(mc, e"{|o|o:Checked}", Args(CheckBox{}), FALSE, typeof(LOGIC))
         TestMacro(mc, e"{|a,b|AltD(), a+b}", Args(1,2), 3, typeof(LONG))
-        var tempGetInst := System.Runtime.InteropServices.Marshal.GetHINSTANCE(typeof(XSharp.Core.Functions):Module)
+        var tempGetInst := System.Runtime.InteropServices.Marshal.GetHINSTANCE(typeof(XSharp.VO.Functions):Module)
         TestMacro(mc, e"{||_GetInst()}", Args(), tempGetInst, typeof(IntPtr))
 
         // Dynamic assembly load test (note: XSharp.VO needs to be compiled before this for it to work! This is ensured by the solution build order)

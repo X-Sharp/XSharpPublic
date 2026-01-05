@@ -50,7 +50,17 @@ namespace XSharp.MacroCompiler
                 Convert(ref left, Compilation.Get(NativeType.Usual), options);
                 Convert(ref right, Compilation.Get(NativeType.Usual), options);
             }
-            var sym = BinaryOperatorEasyOut.ClassifyOperation(kind, left.Datatype, right.Datatype);
+            var lt = left.Datatype;
+            var rt = right.Datatype;
+            if (options.HasFlag(BindOptions.EnumAdd))
+            {
+                // The binary operation of two Int32 values now returns an Int64.
+                // This breaks the enum addition since we cannot convert back to the enum type.
+                // Force one of the types to be not Int32 to make sure that we do not get the Int64 result
+                rt = Compilation.Get(NativeType.Int16);
+            }
+
+            var sym = BinaryOperatorEasyOut.ClassifyOperation(kind, lt, rt);
 
             if (options.HasFlag(BindOptions.AllowInexactComparisons) && sym != null)
             {
@@ -327,6 +337,8 @@ namespace XSharp.MacroCompiler
             else
                 return null;
 
+            if (kind == BinaryOperatorKind.Addition && dt.EnumUnderlyingType.NativeType == NativeType.Int32)
+                options |= BindOptions.EnumAdd;
             Convert(ref l, dt.EnumUnderlyingType, options);
             Convert(ref r, dt.EnumUnderlyingType, options);
 

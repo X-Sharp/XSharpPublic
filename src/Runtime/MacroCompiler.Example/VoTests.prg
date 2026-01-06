@@ -717,7 +717,10 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc,"{||GetTest():TestMethod1(1, 2)}", Args(), 1, typeof(INT))
         TestMacro(mc,"{||GetTest():TestMethod2(1, 2)}", Args(), 2, typeof(INT))
         // Test to call strongly typed method that is declared in an interface but implemented in a base class
-
+        TestMacro(mc,"{||Int32.MaxValue + 1}", Args(), Int32.MaxValue + 1, typeof(INT64))
+        TestMacro(mc,"{||Int32.MaxValue - 1}", Args(), Int32.MaxValue - 1, typeof(INT))
+        TestMacro(mc,"{||Int32.MinValue + 1}", Args(), Int32.MinValue + 1, typeof(INT))
+        TestMacro(mc,"{||Int32.MinValue - 1}", Args(), (INT64)(Int32.MinValue) - 1, typeof(INT64))
 
 
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)

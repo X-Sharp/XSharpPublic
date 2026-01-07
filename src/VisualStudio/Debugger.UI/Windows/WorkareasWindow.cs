@@ -23,11 +23,6 @@ namespace XSharp.Debugger.UI
 
         public override async Task<FrameworkElement> CreateAsync(int toolWindowId, CancellationToken cancellationToken)
         {
-            if (XSettings.IsVs15)
-            {
-                return null;
-            }
-
             Support.RegisterWindow(this);
             Version _ = await VS.Shell.GetVsVersionAsync();
             Control = new WorkareasControl { DataContext = new WorkareasView() };

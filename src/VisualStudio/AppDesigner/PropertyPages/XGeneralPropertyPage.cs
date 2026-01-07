@@ -4,15 +4,22 @@
 // See License.txt in the project root for license information.
 //
 
-using System;
-using System.Runtime.InteropServices;
+using Community.VisualStudio.Toolkit;
+
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
-using System.Runtime.Versioning;
 using Microsoft.VisualStudio.Shell.Interop;
-using Community.VisualStudio.Toolkit;
+
+using VsMenus = Microsoft.VisualStudio.Project.VsMenus;
+
+using System;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
+
 using XSharp.Settings;
-using System.Collections.Generic;
+
+using XSharpModel;
 namespace XSharp.Project
 {
     /// <summary>
@@ -24,6 +31,9 @@ namespace XSharp.Project
     [ProvideObject(typeof(XSharpGeneralPropertyPage))]
     public class XSharpGeneralPropertyPage : XPropertyPage
     {
+        private bool IsSdkProject => !string.IsNullOrEmpty(ProjectMgr?.BuildProject.Xml.Sdk);
+
+
         // =========================================================================================
         // Constructors
         // =========================================================================================
@@ -33,13 +43,11 @@ namespace XSharp.Project
         /// </summary>
         OutputTypeConverter converterOutPut;
         DialectConverter converterDialect;
-        FrameworkNameConverter converterFramework;
         public XSharpGeneralPropertyPage()
         {
             this.PageName = "Application";
             this.PerConfig = false;
             converterDialect = new DialectConverter();
-            converterFramework = new FrameworkNameConverter();
             converterOutPut = new OutputTypeConverter();
         }
 
@@ -68,35 +76,50 @@ namespace XSharp.Project
                 var dialect = (Dialect)converterDialect.ConvertFrom(value);
                 value = (string)converterDialect.ConvertTo(dialect, typeof(string));
             }
-            else if (propertyName == XSharpProjectFileConstants.TargetFrameworkVersion)
+            else if (propertyName == XSharpProjectFileConstants.TargetFramework && IsSdkProject)
             {
-                if (!string.IsNullOrEmpty(this.ProjectMgr.BuildProject.Xml.Sdk))
-                {
-                    value = this.ProjectMgr.BuildProject.GetPropertyValue(XSharpProjectFileConstants.TargetFramework);
-                    if (!(converterFramework is SdkFrameWorkNameConverter))
-                    {
-                        converterFramework = new SdkFrameWorkNameConverter(this.ProjectMgr.BuildProject);
-                        var p = this.PropertyPagePanel as XGeneralPropertyPagePanel;
-                        //p.FillFrameworkNames(converterFramework);
-                    }
-
-                }
-                try
-                {
-                    if (!value.StartsWith(".NETFramework"))
-                        value = ".NETFramework,Version =" + value;
-                    value = converterFramework.ConvertFrom(value).ToString();
-                }
-                catch
-                {
-                }
+                value = ConvertFrameworkName(value);
             }
-            if (propertyName == XSharpProjectFileConstants.StartupObject)
+            else if (propertyName == XSharpProjectFileConstants.TargetFrameworkVersion && !IsSdkProject)
+            {
+                value = ConvertFrameworkName(value);
+            }
+            else if (propertyName == XSharpProjectFileConstants.StartupObject)
             {
                 if (string.IsNullOrEmpty(value))
                     value = GeneralPropertyPagePanel.DefaultValue;
             }
 
+            return value;
+        }
+        string ConvertFrameworkName(string value)
+        {
+            try
+            {
+                if (IsSdkProject)
+                {
+                    var converterSdkFramework = new SdkFrameworkNameConverter(ProjectMgr.BuildProject);
+                    var sdkframework = (SdkFrameworkName)converterSdkFramework.ConvertFrom(value);
+                    if (sdkframework != null)
+                    {
+                        if (value == sdkframework.Value)
+                            value = sdkframework.DisplayName;
+                        else
+                            value = sdkframework.Value;
+                    }
+                }
+                else
+                {
+                    var converterFramework = new FrameworkNameConverter();
+                    if (!value.StartsWith(".NETFramework"))
+                        value = ".NETFramework,Version =" + value;
+                    value = converterFramework.ConvertFrom(value).ToString();
+                }
+            }
+            catch
+            {
+                ;
+            }
             return value;
         }
 
@@ -150,7 +173,11 @@ namespace XSharp.Project
                     }
                 }
             }
-            else if (propertyName == XSharpProjectFileConstants.TargetFrameworkVersion)
+            else if (propertyName == XSharpProjectFileConstants.TargetFramework)
+            {
+                oldValue = base.GetProperty(XSharpProjectFileConstants.TargetFramework);
+            }
+			else if (propertyName == XSharpProjectFileConstants.TargetFrameworkVersion)
             {
                 oldValue = base.GetProperty(XSharpProjectFileConstants.TargetFrameworkVersion);
                 value = value.ToLower();
@@ -171,11 +198,14 @@ namespace XSharp.Project
 
             ThreadHelper.ThrowIfNotOnUIThread();
             var oldvalueFromFile = base.GetProperty(propertyName);
+			if (IsSdkProject)
+	            value = ConvertFrameworkName(value);
             bool changed = value != oldvalueFromFile;
 
             if (changed)
             {
-                if (propertyName == XSharpProjectFileConstants.TargetFrameworkVersion)
+                if (propertyName == XSharpProjectFileConstants.TargetFramework ||
+				    propertyName == XSharpProjectFileConstants.TargetFrameworkVersion)
                 {
                     string message = "Changing the target framework requires that the current project be closed and then reopened.\n"
                      + "Any unsaved changes within the project will be automatically saved.\n\n"
@@ -184,12 +214,12 @@ namespace XSharp.Project
                     if (!VS.MessageBox.ShowConfirm(message))
                     {
                         var genPanel = PropertyPagePanel as XGeneralPropertyPagePanel;
-                        //genPanel.resetFramework(oldValue);
+                        genPanel.resetFramework(oldValue);
                         return;
                     }
 
                     base.SetProperty(propertyName, value);
-                    ProjectReloader.Reload(newValue, this.ProjectMgr);
+                    ProjectReloader.Reload(newValue, this.ProjectMgr, IsSdkProject);
                 }
                 else
                 {
@@ -209,28 +239,52 @@ namespace XSharp.Project
     }
     internal static class ProjectReloader
     {
-        internal static void Reload(string newValue, XProjectNode project)
+        internal static void Reload(string newValue, XProjectNode project, bool isSdk)
         {
 
-            //ThreadHelper.JoinableTaskFactory.Run(async delegate
-            //{
-            //    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            //    await VS.Commands.ExecuteAsync(KnownCommands.File_SaveAll);
-            //    var newName = new FrameworkName(newValue);
-            //    var retargetingService = await VS.GetRequiredServiceAsync<SVsTrackProjectRetargeting, IVsTrackProjectRetargeting2>();
-            //    if (retargetingService != null)
-            //    {
-            //        // We surround our batch retargeting request with begin/end because in individual project load
-            //        // scenarios the solution load context hasn't done it for us.
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                await VS.Commands.ExecuteAsync(KnownCommands.File_SaveAll);
 
-            //        var res = retargetingService.CheckForProjectRetarget(0, project);
-            //        Marshal.ThrowExceptionForHR(retargetingService.BeginRetargetingBatch());
-            //        Marshal.ThrowExceptionForHR(retargetingService.BatchRetargetProject(project, newName.FullName, true));
-            //        Marshal.ThrowExceptionForHR(retargetingService.EndRetargetingBatch());
-            //        var buildCfg = new BuildableProjectConfig(project.CurrentConfig);
-            //        buildCfg.RefreshReferences();
-            //    }
-            //});
+                var retargetingService = await VS.GetRequiredServiceAsync<SVsTrackProjectRetargeting, IVsTrackProjectRetargeting2>();
+                if (retargetingService != null)
+                {
+                    // We surround our batch retargeting request with begin/end because in individual project load
+                    // scenarios the solution load context hasn't done it for us.
+
+                    var res = retargetingService.CheckForProjectRetarget(0, project);
+                    Marshal.ThrowExceptionForHR(retargetingService.BeginRetargetingBatch());
+					if (! isSdk)
+					{
+					   var newName = new FrameworkName(newValue);
+                       Marshal.ThrowExceptionForHR(retargetingService.BatchRetargetProject(project, newName.FullName, true));
+					}
+                    else
+                    {
+                        var file = project.GetProjectProperty("ProjectAssetsFile");
+                        if (System.IO.File.Exists(file))
+                        {
+                            try
+                            {
+                                System.IO.File.Delete(file);
+                            }
+                            catch
+                            {
+                                // Ignore any error
+                            }
+                        }
+                        project.Reload();
+
+                    }
+                    Marshal.ThrowExceptionForHR(retargetingService.EndRetargetingBatch());
+					if (! isSdk)
+					{
+                		var buildCfg = new BuildableProjectConfig(project.CurrentConfig);
+                		buildCfg.RefreshReferences();
+					}
+                }
+            });
 
 
 

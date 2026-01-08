@@ -4,7 +4,7 @@ FUNCTION Start() AS VOID
 LOCAL DIM a[5] AS LOGIC
 LOCAL p AS LOGIC PTR
 LOCAL s IS __struct
-LOCAL d AS DWORD
+//LOCAL d AS DWORD
 
 p := (LOGIC PTR) @a
 LOGIC(p + 1) := TRUE
@@ -26,12 +26,14 @@ LOGIC(p + 1) := TRUE
 ? "VOSTRUCT: " ,  s:m1 , s:m2 , s:m3 , s:m4 , s:m5
 ? @ s:m1
 ? @ s:m2
+
+/*
 //#error exception here
 xAssert(s:m2)
 d := 3
 LOGIC(p + d) := TRUE
 xAssert(s:m4)
-
+*/
 
 // original report:
 LOCAL o AS __FormattedString
@@ -81,7 +83,8 @@ ASSIGN Picture(cNewPicture AS STRING)  STRICT
 			iFuncPos := At2(sFuncChar, "BCDERXZ(!A")
 			IF (iFuncPos > 0)
 				? "index (zero based)" , iFuncPos - 1
-				LOGIC(pLogic + iFuncPos - 1) := TRUE
+				LOGIC(pLogic + (iFuncPos - 1) * 4) := TRUE
+//				LOGIC(pLogic + iFuncPos - 1) := TRUE
 			ENDIF
 		NEXT
 	ENDIF

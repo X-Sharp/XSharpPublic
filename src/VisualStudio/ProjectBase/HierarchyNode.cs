@@ -264,6 +264,8 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region properties
+        public bool IsImported => this.ItemNode.Item.IsImported;
+
 
         public OleServiceProvider OleServiceProvider
         {
@@ -2413,7 +2415,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         protected internal virtual bool AllowPasteCommand()
         {
-            return false; 
+            return false;
         }
 
         /// <summary>
@@ -2429,7 +2431,7 @@ namespace Microsoft.VisualStudio.Project
 
 #region public methods
 
-        public virtual void OnItemAdded(HierarchyNode parent, HierarchyNode child) 
+        public virtual void OnItemAdded(HierarchyNode parent, HierarchyNode child)
         {
             Utilities.ArgumentNotNull("parent", parent);
             Utilities.ArgumentNotNull("child", child);

@@ -274,7 +274,12 @@ namespace XSharp.Project
                                 // Ignore any error
                             }
                         }
-                        project.Reload();
+                        if (! String.IsNullOrEmpty(project.BuildProject.Xml.Sdk))
+                        {
+                            dynamic sdkProject = project;
+                            sdkProject.DoReload();
+                        }
+
 
                     }
                     Marshal.ThrowExceptionForHR(retargetingService.EndRetargetingBatch());

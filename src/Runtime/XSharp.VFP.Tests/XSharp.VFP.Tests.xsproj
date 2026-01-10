@@ -91,6 +91,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AMembersTests.prg" />
     <Compile Include="CopyToTests.prg" />
     <Compile Include="FinancialTests.prg" />
     <Compile Include="SQLStatementTests.prg" />
@@ -106,11 +107,7 @@
     <Compile Include="StringTests.prg" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System">
-      <Name>System</Name>
-      <AssemblyName>System.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
+    <Reference Include="System" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />

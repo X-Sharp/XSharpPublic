@@ -1139,6 +1139,9 @@
           <topicref type="topic" id="384615026623733" build="ALL" modified="2024-06-27T20:10:27.164Z" icon="0" href="command_PROCEDURE">
             <caption translate="true">PROCEDURE 语句</caption>
           </topicref>
+          <topicref type="topic" id="460285035215405" build="ALL" modified="2026-01-06T07:29:30.353Z" icon="0" href="RECORD-statement">
+            <caption translate="true">RECORD修饰符</caption>
+          </topicref>
           <topicref type="topic" id="436997490436234" build="ALL" modified="2024-06-27T20:10:37.602Z" icon="0" href="command_STRUCTURE">
             <caption translate="true">STRUCTURE 语句</caption>
           </topicref>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T20:10:39.701+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-01-06T07:24:01.445+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>STRUCTURE 语句</title>
   <keywords>
     <keyword>END STRUCTURE</keyword>
@@ -13,11 +13,12 @@
     <para styleclass="Heading1">用途</para>
     <para styleclass="Normal">向编译器声明一个结构名。</para>
     <para styleclass="Heading1">语法</para>
-    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">STRUCTURE </text>&lt;<text styleclass="Italic">idStructure</text>&gt; <br/><tab />[IMPLEMENTS &lt;idInterface&gt;[, &lt;IdInterface2&gt;,..]</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] [<text style="font-weight:bold;">RECORD</text>] <text style="font-weight:bold;">STRUCTURE </text>&lt;<text styleclass="Italic">idStructure</text>&gt; <br/><tab />[IMPLEMENTS &lt;idInterface&gt;[, &lt;IdInterface2&gt;,..]</para>
     <para styleclass="Normal"><tab />[StructureMembers]</para>
     <para styleclass="Normal"><tab />END STRUCTURE</para>
     <para styleclass="Heading1">参数</para>
     <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
+    <para styleclass="List">RECORD<tab />Record修饰符定义了一种具有值相等性的特殊结构。相关说明请参见关于记录类型的专题文档。</para>
     <para styleclass="List">&lt;<text styleclass="Italic">idStructure</text>&gt;<tab />结构的有效标识符名称。 结构是一个实体，因此与其他实体共享相同的名称空间。 这就意味着不可能出现结构和全局变量同名的情况。</para>
     <para styleclass="List"></para>
     <para styleclass="List">IMPLEMENTS <text styleclass="Normal">&lt;idInterface&gt;</text><tab /><text styleclass="Normal">该结构实现的接口名称</text></para>

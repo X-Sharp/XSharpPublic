@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.WPF.UserControl",
+  "Name": "UserControl (WPF)",
+  "Description": "Windows Presentation Foundation user control",
+  "SourceName": "UserControl1",
+  "ShortName": "xsusercontroli",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "WPFUserControl.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "UserControl1.xaml",
+  "symbols": {
+    "name": {
+      "type": "parameter",
+      "description": "The name of the code file and class.",
+      "datatype": "string",
+      "replaces": "UserControl1",
+      "fileRename": "UserControl1",
+      "defaultValue": "UserControl1"
+    }
+  }
+}

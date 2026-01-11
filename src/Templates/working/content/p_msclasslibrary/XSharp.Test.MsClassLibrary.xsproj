@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <Name>MsUnitTestClassLibrary</Name>
+    <ProjectTypeGuids>{AA6C8D78-22FF-423A-9C7C-5F2393824E04}</ProjectTypeGuids>
+    <VisualStudioVersion>10.0</VisualStudioVersion>
+    <VSToolsPath>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <Dialect>Core</Dialect>
+    <Allowdot>True</Allowdot>
+    <NamedArgs>True</NamedArgs>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+</Project>

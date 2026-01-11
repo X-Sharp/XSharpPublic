@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.T4",
+  "Name": "Text Template",
+  "Description": "A template for the T4 text template transformation system",
+  "SourceName": "TextTemplate1",
+  "ShortName": "xst4i",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "TextTemplate.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "TextTemplate1.tt"
+}

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <Name>ConsoleApplication</Name>
+    <Dialect>VO</Dialect>
+    <Ins>True</Ins>
+    <vo15>True</vo15>
+    <NamedArgs>False</NamedArgs>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>  
+  
+  <ItemGroup>
+    <PackageReference Include="xsharp.vo" Version="*"/>
+  </ItemGroup>
+  
+</Project>

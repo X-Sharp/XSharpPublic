@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.Resource",
+  "Name": "Managed resource file (.resx)",
+  "Description": "A file to store managed resources",
+  "SourceName": "Resource1",
+  "ShortName": "xsresourcei",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "Resource.PNG",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "Resource1.resx"
+}

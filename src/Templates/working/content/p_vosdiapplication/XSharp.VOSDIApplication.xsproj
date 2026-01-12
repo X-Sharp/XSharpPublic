@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <Name>VOSDIApp</Name>
+    <Dialect>VO</Dialect>
+    <LB>true</LB>
+    <OutputName>VOSDIApp</OutputName>
+    <Prefer32Bit>True</Prefer32Bit>
+    <Unsafe>true</Unsafe>
+    <INS>true</INS>
+    <VO1>true</VO1>
+    <VO2>true</VO2>
+    <VO3>true</VO3>
+    <VO4>true</VO4>
+    <VO5>true</VO5>
+    <VO6>true</VO6>
+    <VO7>true</VO7>
+    <VO8>true</VO8>
+    <VO9>true</VO9>
+    <VO10>true</VO10>
+    <VO11>false</VO11>
+    <VO12>false</VO12>
+    <VO13>true</VO13>
+    <VO14>false</VO14>
+    <VO15>true</VO15>
+    <VO16>true</VO16>
+    <NoWin32Manifest>False</NoWin32Manifest>
+    <NamedArgs>False</NamedArgs>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+    
+  <ItemGroup>
+    <PackageReference Include="xsharp.vosdk" Version="*"/>
+  </ItemGroup>
+  
+</Project>

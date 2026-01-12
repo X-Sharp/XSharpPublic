@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.NativeResource",
+  "Name": "Native Resource File (.rc)",
+  "Description": "A file in which native resources can be defined",
+  "SourceName": "NativeResources1",
+  "ShortName": "xsnativeresourcei",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "Rc.PNG",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "NativeResources1.rc"
+}

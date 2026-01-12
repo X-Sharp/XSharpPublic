@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [
+    "Windows",
+    "Library",
+    "Vulcan"
+  ],
+  "Identity": "XSharp.ClassLibraryVulcan",
+  "Name": "Class Library Vulcan Dialect",
+  "Description": "A project for creating a X# class library (.dll) for the Vulcan Dialect",
+  "SourceName": "XSharp.ClassLibraryVulcan",
+  "ShortName": "xsclasslibraryvulcan",
+  "Tags": {
+    "language": "X#",
+    "type": "project",
+    "icon": "VulcanClassLibrary.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "ClassLibrary",
+  "Symbols": {
+    "TargetNetFramework": {
+      "Type": "parameter",
+      "Description": "Target .NET version",
+      "Datatype": "choice",
+      "Choices": [
+        {
+          "Choice": "net8.0",
+          "Description": "Target .NET 8"
+        },
+        {
+          "Choice": "net9.0",
+          "Description": "Target .NET 9"
+        },
+        {
+          "Choice": "net10.0",
+          "Description": "Target .NET 10"
+        }
+      ],
+      "Replaces": "net8.0",
+      "DefaultValue": "net8.0"
+    },
+    "DefaultNamespace": {
+      "Type": "parameter",
+      "Datatype": "string",
+      "Replaces": "Company.Namespace1",
+      "DefaultValue": "Company.Namespace1"
+    }
+  }
+}

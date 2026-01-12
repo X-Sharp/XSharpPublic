@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.WcfItem",
+  "Name": "WCF Service",
+  "Description": "A WCF Service",
+  "SourceName": "WCFService1",
+  "ShortName": "xswcfitemi",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "WCF.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "WCFService1.prg",
+  "symbols": {
+    "name": {
+      "type": "parameter",
+      "description": "The name of the code file and class.",
+      "datatype": "string",
+      "replaces": "WCFService1",
+      "fileRename": "WCFService1",
+      "defaultValue": "WCFService1"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.Structure",
+  "Name": "Structure",
+  "Description": "An empty structure definition",
+  "SourceName": "Structure1",
+  "ShortName": "xsstructurei",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "Structure.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "Structure1.prg",
+  "symbols": {
+    "name": {
+      "type": "parameter",
+      "description": "The name of the code file and structure.",
+      "datatype": "string",
+      "replaces": "Structure1",
+      "fileRename": "Structure1",
+      "defaultValue": "Structure1"
+    }
+  }
+}

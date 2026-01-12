@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.Bitmap",
+  "Name": "Bitmap",
+  "Description": "A Bitmap file",
+  "SourceName": "Bitmap",
+  "ShortName": "xsbitmapi",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "Bitmap.PNG",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "Bitmap.bmp"
+}

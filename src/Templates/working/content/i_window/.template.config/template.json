@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.WPF.Window",
+  "Name": "Window (WPF)",
+  "Description": "Windows Presentation Foundation window",
+  "SourceName": "WPFWindow1",
+  "ShortName": "xswindowi",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "WPFWindow.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "WPFWindow1.xaml",
+  "symbols": {
+    "name": {
+      "type": "parameter",
+      "description": "The name of the code file and class.",
+      "datatype": "string",
+      "replaces": "WPFWindow1",
+      "fileRename": "WPFWindow1",
+      "defaultValue": "WPFWindow1"
+    }
+  }
+}

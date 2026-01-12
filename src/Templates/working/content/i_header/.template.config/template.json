@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.Header",
+  "Name": "Header",
+  "Description": "An empty Header File",
+  "SourceName": "Header1",
+  "ShortName": "xsheaderi",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "Header.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "Header1.xh"
+}

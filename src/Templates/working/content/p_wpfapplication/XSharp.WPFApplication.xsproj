@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Configuration>Debug</Configuration>
+    <Platform>AnyCPU</Platform>
+    <ProjectTypeGuids>{5ADB76EC-7017-476A-A8E0-25D4202FFCF0};{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{AA6C8D78-22FF-423A-9C7C-5F2393824E04}</ProjectTypeGuids>
+    <OutputType>WinExe</OutputType>
+    <Name>WpfApplication</Name>
+    <Dialect>Core</Dialect>
+    <Allowdot>True</Allowdot>
+    <NamedArgs>True</NamedArgs>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+</Project>

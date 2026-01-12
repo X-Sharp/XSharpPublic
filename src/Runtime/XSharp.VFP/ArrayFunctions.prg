@@ -10,6 +10,8 @@ USING System.Collections.Generic
 USING System.Text
 USING System.Reflection
 USING System.Linq
+USING System.Diagnostics
+USING System.IO
 
 
 INTERNAL FUNCTION FoxALen(a as ARRAY) AS DWORD
@@ -421,4 +423,45 @@ FUNCTION AMembers (ArrayName AS ARRAY, oObjectOrClass AS USUAL, nArrayContentsID
     ENDIF
 
     RETURN nRows
+END FUNCTION
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/agetfileversion/*" />
+FUNCTION AGetFileVersion (ArrayName AS ARRAY, cFileName AS STRING) AS DWORD
+    IF String.IsNullOrEmpty(cFileName) .OR. !File.Exists(cFileName)
+        RETURN 0
+    ENDIF
+
+    LOCAL oInfo AS FileVersionInfo
+    TRY
+        oInfo := FileVersionInfo.GetVersionInfo(cFileName)
+    CATCH
+        RETURN 0
+    END TRY
+
+    IF String.IsNullOrEmpty(oInfo:FileVersion)
+        RETURN 0
+    ENDIF
+
+    ASize(ArrayName, 15)
+
+    ArrayName[1] := oInfo:Comments ?? "" // 1. Comments
+    ArrayName[2] := oInfo:CompanyName ?? "" // 2. Company Name
+    ArrayName[3] := oInfo:FileDescription ?? "" // 3. File Description
+    ArrayName[4] := oInfo:FileVersion ?? "" // 4. File Version
+    ArrayName[5] := oInfo:InternalName ?? "" // 5. Internal Name
+    ArrayName[6] := oInfo:LegalCopyright ?? "" // 6. Legal Copyright
+    ArrayName[7] := oInfo:LegalTrademarks ?? "" // 7. Legal Trademarks
+    ArrayName[8] := oInfo:OriginalFilename ?? "" // 8. Original File Name
+    ArrayName[9] := oInfo:PrivateBuild ?? "" // 9. Private Build
+    ArrayName[10] := oInfo:ProductName ?? "" // 10. Product Name
+    ArrayName[11] := oInfo:ProductVersion ?? "" // 11. Product Version
+    ArrayName[12] := oInfo:SpecialBuild ?? "" // 12. Special Build
+    ArrayName[13] := "" // 13. OLE Self Registration (Not available in FileVersionInfo)
+    ArrayName[14] := oInfo:Language ?? "" // 14. Language
+    ArrayName[15] := "" // 15. Translation Code (this is complex and requires Win32 API)
+
+    // TODO(irwin): Elements 13, 15 require low-level Win32 VerQueryValue API logic
+    // which FileVersionInfo wraps but does not expose fully.
+
+    RETURN 15
 END FUNCTION

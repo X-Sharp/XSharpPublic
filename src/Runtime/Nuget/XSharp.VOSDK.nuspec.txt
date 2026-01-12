@@ -31,15 +31,15 @@
     <file src="$SourceFolder\VOReportClasses.dll" 	target= "lib\net46\VOReportClasses.dll" 	/>
     <file src="$SourceFolder\VOSystemClasses.dll" 	target= "lib\net46\VOSystemClasses.dll" 	/>
     <file src="$SourceFolder\VOWin32APILibrary.dll" target= "lib\net46\VOWin32APILibrary.dll"/>
-    <file src="..\voredist\CAPAINT.DLL" 			    target= "lib\net46\CAPAINT.DLL" 			/>
-    <file src="..\voredist\CATO3CNT.DLL"          target= "lib\net46\CATO3CNT.DLL" />
-    <file src="..\voredist\CATO3DAT.DLL"          target= "lib\net46\CATO3DAT.DLL" />
-    <file src="..\voredist\CATO3MSK.DLL"          target= "lib\net46\CATO3MSK.DLL" />
-    <file src="..\voredist\CATO3NBR.DLL"          target= "lib\net46\CATO3NBR.DLL" />
-    <file src="..\voredist\CATO3SBR.DLL"          target= "lib\net46\CATO3SBR.DLL" />
-    <file src="..\voredist\CATO3TBR.DLL"          target= "lib\net46\CATO3TBR.DLL" />
-    <file src="..\voredist\CATO3TIM.DLL"          target= "lib\net46\CATO3TIM.DLL" />
-    <file src="..\voredist\CATO3SPL.DLL"          target= "lib\net46\CATO3SPL.DLL" />
-    <file src="..\voredist\MSVCRT.DLL"            target= "lib\net46\MSVCRT.DLL"   />
+    <file src="..\voredist\CAPAINT.DLL" 		  target= "content" />
+    <file src="..\voredist\CATO3CNT.DLL"          target= "content" />
+    <file src="..\voredist\CATO3DAT.DLL"          target= "content" />
+    <file src="..\voredist\CATO3MSK.DLL"          target= "content" />
+    <file src="..\voredist\CATO3NBR.DLL"          target= "content" />
+    <file src="..\voredist\CATO3SBR.DLL"          target= "content" />
+    <file src="..\voredist\CATO3TBR.DLL"          target= "content" />
+    <file src="..\voredist\CATO3TIM.DLL"          target= "content" />
+    <file src="..\voredist\CATO3SPL.DLL"          target= "content" />
+    <file src="..\voredist\MSVCRT.DLL"            target= "content" />
   </files>
 </package>

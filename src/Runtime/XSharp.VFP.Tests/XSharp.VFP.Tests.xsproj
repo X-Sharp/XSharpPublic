@@ -93,6 +93,7 @@
   <ItemGroup>
     <Compile Include="AMembersTests.prg" />
     <Compile Include="CopyToTests.prg" />
+    <Compile Include="FileVersionTests.prg" />
     <Compile Include="FinancialTests.prg" />
     <Compile Include="SQLStatementTests.prg" />
     <Compile Include="StrConvTests.prg" />

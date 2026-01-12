@@ -28,12 +28,6 @@ FUNCTION AGetFileVersion (ArrayName, cFileName)
     //RETURN 0
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/amembers/*" />
-FUNCTION AMembers (ArrayName, oObjectNameOrClassName , nArrayContentsID , cFlags)
-    THROW NotImplementedException{}
-    //RETURN 0
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/anetresources/*" />
 FUNCTION ANetResources (ArrayName, cNetworkName, nResourceType)
     THROW NotImplementedException{}

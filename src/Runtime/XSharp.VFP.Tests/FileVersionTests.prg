@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             // element 4: File version (should not be empty)
             Assert.False(String.IsNullOrEmpty((String)aVer[4]))
 
-            // element 10: Product Name (Microsoft® .NET Framework o similar)
+            // element 10: Product Name (Microsoft® .NET Framework or similar)
             Assert.False(String.IsNullOrEmpty((String)aVer[10]))
         END METHOD
 

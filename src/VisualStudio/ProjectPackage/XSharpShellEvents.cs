@@ -32,6 +32,7 @@ namespace XSharp.Project
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                VS.Events.SolutionEvents.OnAfterLoadProject += SolutionEvents_OnAfterLoadProject    ;
                 VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
                 VS.Events.SolutionEvents.OnBeforeCloseProject += SolutionEvents_OnBeforeCloseProject;
             });
@@ -41,8 +42,13 @@ namespace XSharp.Project
 
         #region Project Events
 
+        private void SolutionEvents_OnAfterLoadProject(Community.VisualStudio.Toolkit.Project project)
+        {
+            Logger.Information("XSharpShellEvents: OnAfterLoadProject " + project.FullPath);
+        }
         private void SolutionEvents_OnBeforeCloseProject(Community.VisualStudio.Toolkit.Project project)
         {
+            Logger.Information("XSharpShellEvents: OnBeforeCloseProjec " + project.FullPath);
             var node = XSharpProjectNode.FindProject(project.FullPath);
             if (node != null)
             {
@@ -58,6 +64,7 @@ namespace XSharp.Project
         }
         private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
+            Logger.Information("XSharpShellEvents: OnBeforeOpenProject " + projectFileName);
             if (IsXSharpProject(projectFileName))
             {
                 checkProjectFile(projectFileName);

@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.APIController",
+  "Name": "APIController",
+  "Description": "An empty Web API controller",
+  "SourceName": "APIController",
+  "ShortName": "xsapicontrolleri",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "Class.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "APIController.prg",
+  "symbols": {
+    "name": {
+      "type": "parameter",
+      "description": "The name of the code file and class.",
+      "datatype": "string",
+      "replaces": "APIController",
+      "fileRename": "APIController",
+      "defaultValue": "APIController"
+    }
+  }
+}

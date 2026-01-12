@@ -45,17 +45,9 @@ namespace XSharpDebugger.ExpressionCompiler
 
         public XSharpExpressionCompiler()
         {
-            if (!XSettings.IsVs15)
-            {
-                UpdateXSharpParseOptions();
-                compiler = new Eval.XSharpExpressionCompiler();
-                decoder = new Eval.XSharpFrameDecoder();
-            }
-            else
-            {
-                compiler = null;
-                decoder = new FrameDecoder.XSharpFrameDecoder();
-            }
+            UpdateXSharpParseOptions();
+            compiler = new Eval.XSharpExpressionCompiler();
+            decoder = new Eval.XSharpFrameDecoder();
         }
         static void UpdateXSharpParseOptions()
         {

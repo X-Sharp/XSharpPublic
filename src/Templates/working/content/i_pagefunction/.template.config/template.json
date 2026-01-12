@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.WPF.PageFunction",
+  "Name": "Page Function (WPF)",
+  "Description": "Windows Presentation Foundation page function",
+  "SourceName": "PageFunction1",
+  "ShortName": "xspagefunctioni",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "WPFPageFunction.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "PageFunction1.xaml"
+}

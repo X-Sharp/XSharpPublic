@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.Icon",
+  "Name": "Icon",
+  "Description": "An Icon file",
+  "SourceName": "Icon",
+  "ShortName": "xsiconi",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "Icon.PNG",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "Icon.ico"
+}

@@ -403,18 +403,27 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="child"></param>
         /// <returns></returns>
-        internal bool AddDependent(HierarchyNode child)
+        internal bool AddDependent(XSharpFileNode child)
         {
             // If the file is not a XSharpFileNode then drop it and create a new XSharpFileNode
             XSharpFileNode dependent;
-            String fileName = child.Url;
+
+            if ( child.IsImported)
+            {
+                // Todo: Link imported node with parent node
+                // Do not update the project file for imported items, we will take care of this later
+                return true;
+
+            }
+            string fileName = child.Url;
+
             try
             {
                 child.Remove(false);
             }
             catch (Exception e)
             {
-                Logger.Exception(e, "AddDependent failed");
+                Logger.Exception(e, "Removing Child inside AddDependent failed");
             }
             dependent = (XSharpFileNode)ProjectMgr.CreateDependentFileNode(fileName);
 

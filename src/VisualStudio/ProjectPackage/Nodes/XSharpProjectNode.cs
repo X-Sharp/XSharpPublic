@@ -8,6 +8,7 @@ using Community.VisualStudio.Toolkit;
 
 using EnvDTE;
 
+using Microsoft.Build.Execution;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Project.Automation;
@@ -362,6 +363,14 @@ namespace XSharp.Project
             base.options = xoptions;
             if (projectModel != null)
                 projectModel.ResetParseOptions(null);
+            var constants = (string)LastBuildResult?.GetPropertyValue("DefineConstants");
+            if (constants != null)
+            {
+                foreach (string s in constants.Replace(" \t\r\n", "").Split(';'))
+                {
+                    options.DefinedPreprocessorSymbols.Add(s);
+                }
+            }
             return options;
         }
 
@@ -406,6 +415,20 @@ namespace XSharp.Project
                         this.options = base.GetProjectOptions(configCanonicalName);
                         var xoptions = this.options as XSharpProjectOptions;
                         xoptions.ConfigCanonicalName = configCanonicalName;
+                        foreach (var cmd in _commandLineArguments)
+                        {
+                            if (cmd.StartsWith("/define:"))
+                            {
+                                xoptions.DefinedPreprocessorSymbols.Clear();
+                                var constants = cmd.Substring(8);
+
+                                foreach (string s in constants.Replace(" \t\r\n", "").Split(';'))
+                                {
+                                    options.DefinedPreprocessorSymbols.Add(s);
+                                }
+                            }
+                        }
+
                         xoptions.BuildCommandLine();
                     }
 
@@ -614,8 +637,8 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                 typeof(XSharpDialectPropertyPage).GUID,
-                typeof(XSharpGlobalUsingsPropertiesPage).GUID,
-                typeof(XSharpBuildPropertyPage).GUID,
+                /*typeof(XSharpGlobalUsingsPropertiesPage).GUID,
+                */typeof(XSharpBuildPropertyPage).GUID,
                 typeof(XSharpBuildEventsPropertyPage).GUID,
                 typeof(XSharpDebugPropertyPage).GUID
                 };
@@ -633,7 +656,7 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                  typeof(XSharpDialectPropertyPage).GUID,
-                 typeof(XSharpGlobalUsingsPropertiesPage).GUID,
+                 /*typeof(XSharpGlobalUsingsPropertiesPage).GUID,*/
                 };
             return result;
         }
@@ -1397,8 +1420,13 @@ namespace XSharp.Project
 
             return service;
         }
-
-
+        ProjectInstance LastBuildResult = null;
+        protected override Microsoft.VisualStudio.Project.BuildResult InvokeMsBuild(string target, out ProjectInstance projectInstance)
+        {
+            var result = base.InvokeMsBuild(target, out projectInstance);
+            LastBuildResult = projectInstance;
+            return result;
+        }
 
         protected override Microsoft.VisualStudio.Project.BuildResult InvokeMsBuild(string target)
         {
@@ -1704,6 +1732,82 @@ namespace XSharp.Project
             }
             return false;
         }
+
+        protected override BuildSubmission DoMSBuildSubmission(BuildKind buildKind, string target, ref ProjectInstance projectInstance, MSBuildCoda uiThreadCallback)
+        {
+            bool designTime = BuildKind.Sync == buildKind;
+            if (null == projectInstance)
+            {
+                projectInstance = BuildProject.CreateProjectInstance();
+            }
+            projectInstance.SetProperty("ProvideCommandLineArgs", "true");
+            if (designTime)
+            {
+                projectInstance.SetProperty("SkipCompilerExecution", "true");
+                projectInstance.SetProperty("DesignTimeBuild", "true");
+            }
+            var result = base.DoMSBuildSubmission(buildKind, target, ref projectInstance, uiThreadCallback);
+            DumpProjectContents(projectInstance, target);
+
+            return result;
+        }
+
+        private List<string> _commandLineArguments = new List<string>();
+        protected List<string> _sdkReferences = new List<string>();
+        protected List<string> _allReferenceAssemblies = new List<string>();
+        void DumpProjectContents(ProjectInstance projectInstance, string target)
+        {
+            Logger.Information($"Build:  Invocation Result for target '{target}'");
+            if (projectInstance != null && this is XSharpSdkProjectNode)
+            {
+                var commandLineArguments = new List<string>();
+                var sdkReferences = new List<string>();
+                var allReferenceAssemblies = new List<string>();
+                //Logger.Information($"Build:  Properties for projectInstance {projectInstance.FullPath}");
+                //foreach (var item in projectInstance.Properties)
+                //{
+                //    Logger.Information($"Prop: {item.Name} {item.EvaluatedValue}");
+                //}
+                Logger.Information($"Build:  Items for projectInstance {projectInstance.FullPath}");
+                var items = projectInstance.Items.ToArray();
+                foreach (var item in items)
+                {
+                    switch (item.ItemType.ToLower())
+                    {
+                        case "reference":
+                            allReferenceAssemblies.Add(item.EvaluatedInclude);
+                            if (item.GetMetadataValue("NugetSourceType")?.ToLower() == "package")
+                            {
+                                Logger.Information($"Item: Package{item.ItemType} {item.EvaluatedInclude}");
+                                continue;
+                            }
+                            sdkReferences.Add(item.EvaluatedInclude);
+                            break;
+                        case "xsccommandlineargs":
+                            commandLineArguments.Add(item.EvaluatedInclude);
+                            break;
+                        default:
+                            continue;
+                    }
+
+                    Logger.Information($"Item: {item.ItemType} {item.EvaluatedInclude}");
+                }
+                if (commandLineArguments.Count > 0)
+                {
+                    _commandLineArguments = commandLineArguments;
+                }
+                if (sdkReferences.Count > 0)
+                {
+                    _sdkReferences = sdkReferences;
+                }
+                if (allReferenceAssemblies.Count > 0)
+                {
+                    _allReferenceAssemblies = allReferenceAssemblies;
+                }
+
+            }
+        }
+
         internal void BuildStarted()
         {
 
@@ -1713,7 +1817,7 @@ namespace XSharp.Project
         {
             if (didCompile)
             {
-                RefreshReferencesFromResponseFile();
+                RefreshReferences();
             }
         }
 
@@ -1775,6 +1879,11 @@ namespace XSharp.Project
         {
             this.UnloadProject();
         }
+        public void DoReload()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            this.Reload();
+        }
         protected override void Reload()
         {
             this.isLoading = true; // gets reset in OnAfterProjectOpen
@@ -1782,57 +1891,38 @@ namespace XSharp.Project
             base.Reload();
             CreateListManagers();
             this.CreateIncludeFileFolder();
-            if (ResetDependencies())
+            if (ResetDependencies() && !this.IsSdkProject)
             {
                 this.BuildProject.Save();
             }
             RefreshIncludeFiles();
         }
 
-        protected virtual List<String> RefreshReferencesFromResponseFile()
+        protected virtual List<string> RefreshReferences()
         {
             // find the resource file and read the lines with /reference
-            string tempPath = System.IO.Path.GetTempPath();
-            string file = Path.Combine(tempPath, "LastXSharpResponseFile.Rsp");
-            if (File.Exists(file))
-            {
-                var response = File.ReadAllText(file);
-                response = response.Replace("\r", "");
-                response = response.Replace("\n", "");
-                var lines = response.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-                var references = new List<string>();
-                foreach (var line in lines)
-                {
-                    if (line.StartsWith("reference:"))
-                    {
-                        var reffile = line.Substring(10).Trim();
-                        if (reffile[0] == '"')
-                            reffile = reffile.Substring(1, reffile.Length - 2);
-                        references.Add(reffile);
-
-                    }
-                }
-                ProjectModel.RefreshReferences(references);
-                return references;
-            }
-            return null;
+            ProjectModel.RefreshReferences(_allReferenceAssemblies);
+            return _allReferenceAssemblies;
         }
 
         internal void UpdateReferencesInProjectModel()
         {
             // find all the assembly references
 
-            var target = "FindReferenceAssembliesForReferences";
-            var buildResult = this.Build(target);
-            if (buildResult.IsSuccessful)
+            if (this.ProjectModel != null)
             {
-                var items = buildResult.ProjectInstance.GetItems("ReferencePath");
-                var references = new List<string>();
-                foreach (var item in items)
+                var target = "FindReferenceAssembliesForReferences";
+                var buildResult = this.Build(target);
+                if (buildResult.IsSuccessful)
                 {
-                    references.Add(item.EvaluatedInclude);
+                    var items = buildResult.ProjectInstance.GetItems("ReferencePath");
+                    var references = new List<string>();
+                    foreach (var item in items)
+                    {
+                        references.Add(item.EvaluatedInclude);
+                    }
+                    ProjectModel.RefreshReferences(references);
                 }
-                ProjectModel.RefreshReferences(references);
             }
         }
 
@@ -2042,7 +2132,7 @@ namespace XSharp.Project
             return buildLogger;
         }
 
-        public override BuildResult Build(string target)
+        public override Microsoft.VisualStudio.Project.BuildResult Build(string target)
         {
             return Build(_config, target);
         }

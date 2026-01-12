@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.WPF.Page",
+  "Name": "Page (WPF)",
+  "Description": "Windows Presentation Foundation page",
+  "SourceName": "Page1",
+  "ShortName": "xspagei",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "WPFPage.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "Page1.xaml",
+  "symbols": {
+    "name": {
+      "type": "parameter",
+      "description": "The name of the code file and page.",
+      "datatype": "string",
+      "replaces": "Page1",
+      "fileRename": "Page1",
+      "defaultValue": "Page1"
+    }
+  }
+}

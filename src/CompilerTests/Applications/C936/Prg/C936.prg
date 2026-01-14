@@ -70,7 +70,7 @@ FUNCTION Start() AS VOID STRICT
 	xAssert( typed:TestNull("abc") == "abc") // OK
 	xAssert( untyped:TestNull("abc") == "abc") // did not work < 2.23
 	
-	LOCAL p AS USUAL
+	LOCAL p AS USUAL // expected warning XS0219
 	p := NULL_PSZ // OK
 	p := NULL_PTR // OK
 	
@@ -82,7 +82,7 @@ FUNCTION Start() AS VOID STRICT
 
 
 	xAssert( typed:TestNullPsz() == "") // OK
-	xAssert( typed:TestNullPsz("abc") == "abc") // OK
+	xAssert( typed:TestNullPsz("abc") == "abc") // OK // expected warning XS9068
 	xAssert( typed:TestNullSymbol() == "") // OK
 	xAssert( typed:TestNullSymbol(#abc) == "ABC") // OK
 

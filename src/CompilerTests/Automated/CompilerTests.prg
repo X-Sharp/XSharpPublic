@@ -27,6 +27,18 @@ FUNCTION Start() AS VOID
 
 
 	// options here
+//	#define LOCALTEST
+	#ifdef LOCALTEST
+	
+	gcCompilerFilename := "C:\Program Files (x86)\XSharp\Bin\xsc.exe"
+	cProjectFile       := "C:\xSharp\Dev\src\CompilerTests\xSharp Tests30.viproj"
+	gcRuntimeFolder    := "C:\xSharp\Dev\Artifacts\Release"
+	cTestTheFixedOnes  := "TRUE"
+	cConfigName        := "DEBUG"
+	cLogFilename       := "C:\xSharp\Dev\src\CompilerTests\Automated\log.txt"
+
+	#else
+	
 	gcCompilerFilename := Environment.GetEnvironmentVariable("XSCOMPILER")?:Trim()
 	cProjectFile       := Environment.GetEnvironmentVariable("XSTESTPROJECT")?:Trim()
 	gcRuntimeFolder    := Environment.GetEnvironmentVariable("XSRUNTIMEFOLDER")?:Trim()
@@ -48,6 +60,8 @@ FUNCTION Start() AS VOID
 		Console.WriteLine("XSLOGFILE      : Full path to the output files name that the tool produces")
 		RETURN
 	ENDIF
+	#endif
+	
 	lTestTheFixedOnes := cTestTheFixedOnes:ToUpper() == "TRUE"
 
 
@@ -143,12 +157,14 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 	LOCAL nCount, nFail, nSuccess, nCrash AS INT
 	LOCAL oProject AS ProjectClass
 	LOCAL aFailed AS List<AppClass>
+	LOCAL aMissingWarings AS List<STRING>
 	LOCAL oProcess AS Process
 
 	Message("Running tests, expecting them to " + iif(lTestTheFixedOnes , "succeed" , "fail"))
 	Message("")
 
 	aFailed := List<AppClass>{}
+	aMissingWarings := List<STRING>{}
 	oProject := oXide:Project
 
 	LOCAL aApps AS SortedList<STRING,AppClass>
@@ -163,11 +179,19 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 		aApps:Add(cKey ,oApp)
 	NEXT
 
+	LOCAL aExpectedWarnings AS List< TUPLE(STRING,STRING,INT,STRING) >
+	aExpectedWarnings := List< TUPLE(STRING,STRING,INT,STRING) > {}
+
 	FOREACH oPair AS KeyValuePair<STRING,AppClass> IN aApps
 		LOCAL oApp AS AppClass
 		oApp := oPair:Value
-		gaCompilerMessages := List<STRING>{}
-		oApp:aCompilerMessages := gaCompilerMessages
+
+		#ifdef LOCALTEST
+		IF .not. oApp:cName:StartsWith("C93")
+			LOOP
+		END IF
+		#endif
+
 		IF IsAppInGroups(oApp, aGroupsToBuild)
 			Message("Compiling test: " + oApp:cName)
 			IF oApp:eLanguage == ApplicationLanguage.VulcanNet
@@ -181,7 +205,30 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 //				Console.ReadLine()
 				LOOP
 			END IF
-
+			
+			gaCompilerMessages := List<STRING>{} // we need each app to have it's own list, don't just clear the list
+			oApp:aCompilerMessages := gaCompilerMessages
+			aExpectedWarnings:Clear()
+			
+			LOCAL oFile AS FileClass
+			oFile := oApp:GetFile(1)
+			LOCAL aLines AS STRING[]
+			aLines := File.ReadAllLines( oFile:FullFileName )
+			FOR LOCAL nLine := 1 AS INT UPTO aLines:Length
+				LOCAL cLine AS STRING
+				cLine := aLines[nLine]
+				LOCAL nIndex AS INT
+				nIndex := cLine:ToUpperInvariant():IndexOf("EXPECTED WARNING XS")
+				IF nIndex != -1
+					LOCAL cWarning, cFileName, cWarningMessage AS STRING
+					cWarning := cLine:Substring(nIndex + 17)
+					cFileName := FileInfo{oFile:FullFileName}:Name:ToUpperInvariant()
+					cWarningMessage := String.Format("warning {0} in line {1} of {2}", cWarning, nLine, cFileName)
+					aExpectedWarnings:Add( TUPLE(cWarning, cFileName, nLine, cWarningMessage) )
+					Message("Expecting " + cWarningMessage)
+				END IF
+			NEXT
+			
 			LOCAL oOptions AS CompileOptions
 			oOptions := oXide:GetCompileOptions(oApp, cConfigName)
 
@@ -214,7 +261,33 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 				SWITCH oProcess:ExitCode
 				CASE 0
 					nSuccess ++
-					IF .not. lTestTheFixedOnes
+					IF lTestTheFixedOnes
+						IF aExpectedWarnings:Count != 0
+							FOREACH oWarning AS TUPLE(STRING,STRING,INT,STRING) IN aExpectedWarnings
+								LOCAL lFound := FALSE AS LOGIC
+								FOREACH cMessage AS STRING IN oApp:aCompilerMessages
+									IF String.IsNullOrEmpty(cMessage)
+										LOOP
+									END IF
+									LOCAL cUpper := cMessage:ToUpperInvariant() AS STRING
+/*									Console.WriteLine(cUpper)
+									Console.WriteLine(cUpper:Contains(oWarning:Item1))
+									Console.WriteLine(cUpper:Contains(oWarning:Item2))
+									Console.WriteLine(cUpper:Contains(oWarning:Item3:ToString()))*/
+									IF cUpper:Contains(oWarning:Item1) .and. cUpper:Contains(oWarning:Item2) .and. cUpper:Contains("(" + oWarning:Item3:ToString() + ",") 
+										lFound := TRUE
+										EXIT
+									END IF
+								NEXT
+								IF lFound
+									Message("Found expected " + oWarning:Item4)
+								ELSE
+									Message("Missing expected " + oWarning:Item4)
+									aMissingWarings:Add(oWarning:Item4)
+								END IF
+							NEXT
+						END IF
+					ELSE
 						aFailed:Add(oApp)
 					END IF
 				CASE 1
@@ -246,6 +319,7 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 	Message( "Total tests: " + nCount:ToString() )
 	Message( "Success: " + nSuccess:ToString() )
 	Message( "Fail: " + nFail:ToString() )
+	Message( "Missing Warnings: " + aMissingWarings:Count:ToString() )
 	Message( "Compiler Problem: " + nCrash:ToString() )
 	IF lTestTheFixedOnes
 		Message( "===============================" )

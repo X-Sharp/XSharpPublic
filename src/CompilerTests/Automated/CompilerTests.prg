@@ -6,6 +6,9 @@ USING System.Collections
 USING System.Collections.Generic
 USING System.Diagnostics
 
+DEFINE TAG_WARNING := "$WARNING"
+DEFINE TAG_NOWARNING := "$NOWARNING"
+
 GLOBAL gcRuntimeFolder AS STRING
 GLOBAL gcCompilerFilename AS STRING
 GLOBAL gaLog := List<STRING>{} AS List<STRING>
@@ -27,6 +30,18 @@ FUNCTION Start() AS VOID
 
 
 	// options here
+//	#define LOCALTEST
+	#ifdef LOCALTEST
+	
+	gcCompilerFilename := "C:\Program Files (x86)\XSharp\Bin\xsc.exe"
+	cProjectFile       := "C:\xSharp\Dev\src\CompilerTests\xSharp Tests30.viproj"
+	gcRuntimeFolder    := "C:\xSharp\Dev\Artifacts\Release"
+	cTestTheFixedOnes  := "TRUE"
+	cConfigName        := "DEBUG"
+	cLogFilename       := "C:\xSharp\Dev\src\CompilerTests\Automated\log.txt"
+
+	#else
+	
 	gcCompilerFilename := Environment.GetEnvironmentVariable("XSCOMPILER")?:Trim()
 	cProjectFile       := Environment.GetEnvironmentVariable("XSTESTPROJECT")?:Trim()
 	gcRuntimeFolder    := Environment.GetEnvironmentVariable("XSRUNTIMEFOLDER")?:Trim()
@@ -48,6 +63,8 @@ FUNCTION Start() AS VOID
 		Console.WriteLine("XSLOGFILE      : Full path to the output files name that the tool produces")
 		RETURN
 	ENDIF
+	#endif
+	
 	lTestTheFixedOnes := cTestTheFixedOnes:ToUpper() == "TRUE"
 
 
@@ -79,6 +96,10 @@ FUNCTION DoRuntimeTests(oXide AS XideHelper, cConfigName AS STRING) AS INT
 	LOCAL oProcess AS Process
 	LOCAL oApp AS AppClass
 	LOCAL nFail AS INT
+	
+	#ifdef LOCALTEST
+	RETURN 0
+	#endif
 
 	oProject := oXide:Project
 
@@ -143,12 +164,15 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 	LOCAL nCount, nFail, nSuccess, nCrash AS INT
 	LOCAL oProject AS ProjectClass
 	LOCAL aFailed AS List<AppClass>
+	LOCAL aMissingWarnings,aUnexpectedWarnings AS List<AppClass>
 	LOCAL oProcess AS Process
 
 	Message("Running tests, expecting them to " + iif(lTestTheFixedOnes , "succeed" , "fail"))
 	Message("")
 
 	aFailed := List<AppClass>{}
+	aMissingWarnings := List<AppClass>{}
+	aUnexpectedWarnings := List<AppClass>{}
 	oProject := oXide:Project
 
 	LOCAL aApps AS SortedList<STRING,AppClass>
@@ -163,11 +187,18 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 		aApps:Add(cKey ,oApp)
 	NEXT
 
+	VAR aExpectedWarnings := List< TUPLE(Number AS STRING,FileName AS STRING,Line AS INT,Message AS STRING) > {}
+
 	FOREACH oPair AS KeyValuePair<STRING,AppClass> IN aApps
 		LOCAL oApp AS AppClass
 		oApp := oPair:Value
-		gaCompilerMessages := List<STRING>{}
-		oApp:aCompilerMessages := gaCompilerMessages
+
+		#ifdef LOCALTEST
+		IF .not. oApp:cName:StartsWith("C93")
+			LOOP
+		END IF
+		#endif
+
 		IF IsAppInGroups(oApp, aGroupsToBuild)
 			Message("Compiling test: " + oApp:cName)
 			IF oApp:eLanguage == ApplicationLanguage.VulcanNet
@@ -181,7 +212,46 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 //				Console.ReadLine()
 				LOOP
 			END IF
+			
+			gaCompilerMessages := List<STRING>{} // we need each app to have it's own list, don't just clear the list
+			oApp:aCompilerMessages := gaCompilerMessages
+			aExpectedWarnings:Clear()
 
+			LOCAL lExpectNoWarnings AS LOGIC
+			lExpectNoWarnings := FALSE
+			
+			FOR LOCAL n := 1 AS INT UPTO oApp:GetFileCount()
+				LOCAL oFile AS FileClass
+				oFile := oApp:GetFile(n)
+				IF oFile:eFileDiskType != FileDiskType.Code
+					LOOP
+				END IF
+				LOCAL aLines AS STRING[]
+				aLines := File.ReadAllLines( oFile:FullFileName )
+				FOR LOCAL nLine := 1 AS INT UPTO aLines:Length
+					LOCAL cLine AS STRING
+					cLine := aLines[nLine]
+					IF cLine:Contains(TAG_NOWARNING)
+						lExpectNoWarnings := TRUE
+						Message("Expecting no warnings in test")
+						EXIT
+					END IF
+					LOCAL nIndex AS INT
+					nIndex := cLine:ToUpperInvariant():IndexOf(TAG_WARNING)
+					IF nIndex != -1
+						LOCAL cWarnings, cFileName, cWarningMessage AS STRING
+						LOCAL aWarnings AS STRING[]
+						cFileName := FileInfo{oFile:FullFileName}:Name:ToUpperInvariant()
+						cWarnings := cLine:Substring(nIndex + TAG_WARNING:Length)
+						FOREACH cWarning AS STRING IN cWarnings:Split(<Char>{','})
+							cWarningMessage := String.Format("warning {0} in line {1} of {2}", cWarning:Trim(), nLine, cFileName)
+							aExpectedWarnings:Add( TUPLE{Number := cWarning:Trim(), Filename := cFileName, Line := nLine, Message := cWarningMessage} )
+							Message("Expecting " + cWarningMessage)
+						NEXT
+					END IF
+				NEXT
+			NEXT
+			
 			LOCAL oOptions AS CompileOptions
 			oOptions := oXide:GetCompileOptions(oApp, cConfigName)
 
@@ -214,18 +284,101 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 				SWITCH oProcess:ExitCode
 				CASE 0
 					nSuccess ++
-					IF .not. lTestTheFixedOnes
+					IF lTestTheFixedOnes
+
+						IF aExpectedWarnings:Count != 0 .or. lExpectNoWarnings
+
+							LOCAL aCompilerWarnings := List<STRING>{} AS List<STRING>
+							aCompilerWarnings:Clear()
+							FOREACH cMessage AS STRING IN oApp:aCompilerMessages
+								IF String.IsNullOrEmpty(cMessage)
+									LOOP
+								END IF
+								LOCAL nIndex := cMessage:ToUpperInvariant():IndexOf("WARNING XS") AS INT
+								IF nIndex != -1
+									aCompilerWarnings:Add(cMessage:Substring(nIndex + 8, 6))
+								END IF
+							NEXT
+
+							IF aExpectedWarnings:Count != 0
+								
+								LOCAL lWarningProblem := FALSE AS LOGIC
+	
+								FOREACH oWarning AS TUPLE(Number AS STRING,FileName AS STRING,Line AS INT,Message AS STRING) IN aExpectedWarnings
+									LOCAL lFound := FALSE AS LOGIC
+									FOREACH cMessage AS STRING IN oApp:aCompilerMessages
+										IF String.IsNullOrEmpty(cMessage)
+											LOOP
+										END IF
+										LOCAL cUpper := cMessage:ToUpperInvariant() AS STRING
+										IF cUpper:Contains(oWarning:Number) .and. cUpper:Contains(oWarning:FileName) .and. cUpper:Contains("(" + oWarning:Line:ToString() + ",") 
+											lFound := TRUE
+											EXIT
+										END IF
+									NEXT
+									IF lFound
+										IF aCompilerWarnings:Contains(oWarning:Number)
+											aCompilerWarnings:Remove(oWarning:Number)
+											Message("Found expected " + oWarning:Message)
+										ELSE
+											Message("Found unexpected or extra warning " + oWarning:Number)
+											aUnexpectedWarnings:Add(oApp)
+											lWarningProblem := TRUE
+											EXIT
+										END IF
+									ELSE
+										Message("Missing expected " + oWarning:Message)
+										aMissingWarnings:Add(oApp)
+										lWarningProblem := TRUE
+										EXIT
+									END IF
+								NEXT
+								
+								IF .not. lWarningProblem // then check if there are more expected warnings than found
+									IF aCompilerWarnings:Count != 0
+										Message("Missing more expected warnings")
+										aMissingWarnings:Add(oApp)
+									END IF
+								END IF
+	
+							ELSEIF lExpectNoWarnings
+	
+									FOREACH cMessage AS STRING IN oApp:aCompilerMessages
+										IF String.IsNullOrEmpty(cMessage)
+											LOOP
+										END IF
+										IF cMessage:ToUpperInvariant():Contains("WARNING XS")
+											Message("Found unexpected warning!")
+											aUnexpectedWarnings:Add(oApp)
+											EXIT
+										END IF
+	
+									NEXT
+	
+							END IF
+
+						END IF
+
+					ELSE
+
 						aFailed:Add(oApp)
+
 					END IF
+
 				CASE 1
+
 					nFail ++
 					IF lTestTheFixedOnes
 						aFailed:Add(oApp)
 					END IF
+
 				OTHERWISE
+
 					nCrash ++
 					aFailed:Add(oApp)
+
 				END SWITCH
+
 			END IF
 			oProcess:Dispose()
 		END IF
@@ -246,6 +399,8 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 	Message( "Total tests: " + nCount:ToString() )
 	Message( "Success: " + nSuccess:ToString() )
 	Message( "Fail: " + nFail:ToString() )
+	Message( "Missing Warnings: " + aMissingWarnings:Count:ToString() )
+	Message( "Unexpected Warnings: " + aUnexpectedWarnings:Count:ToString() )
 	Message( "Compiler Problem: " + nCrash:ToString() )
 	IF lTestTheFixedOnes
 		Message( "===============================" )
@@ -268,6 +423,20 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 			NEXT
 			Message( "" )
 			Message( "-------------" )
+		NEXT
+		Message( "===============================" )
+	END IF
+	IF aMissingWarnings:Count != 0
+		Message( "Tests with missing warnings:" )
+		FOREACH oFailed AS AppClass IN aMissingWarnings
+			Message( oFailed:cName )
+		NEXT
+		Message( "===============================" )
+	END IF
+	IF aUnexpectedWarnings:Count != 0
+		Message( "Tests with unexpected warnings:" )
+		FOREACH oFailed AS AppClass IN aUnexpectedWarnings
+			Message( oFailed:cName )
 		NEXT
 		Message( "===============================" )
 	END IF

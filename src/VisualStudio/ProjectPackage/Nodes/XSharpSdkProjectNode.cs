@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
+using XSharpModel;
 
 using MSBuild = Microsoft.Build.Evaluation;
 
@@ -39,8 +40,10 @@ namespace XSharp.Project
             public string TargetFramework { get; set; }
             public string Name => ParentProject.Caption;
             public XSharpSdkProjectNode ParentProject { get; set; } = null;
+            public XSharpTargetFrameworkReferenceNode TargetFrameworkReferenceNode { get; set; } = null;
+            public XSharpFrameworkReferenceNode FrameworkReferenceNode { get; set; } = null;
             //public ProjectInstance ProjectInstance { get; set; } = null;
-            //public XProject ProjectModel { get; set; } = null;
+            public XProject ProjectModel { get; set; } = null;
             public SdkSubProjectInfo(string targetFramework, XSharpSdkProjectNode parentProject)
             {
                 TargetFramework = targetFramework;
@@ -108,7 +111,7 @@ namespace XSharp.Project
             }
         }
 
-        public string BaseName  => base.Caption;
+        public string BaseName => base.Caption;
 
         internal bool SelectSubProject(SdkSubProjectInfo info)
         {
@@ -116,7 +119,7 @@ namespace XSharp.Project
             {
                 ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-
+                    string oldName = ActiveSubProject.Name;
                     ActiveSubProject = info;
                     SetProjectProperty(XSharpProjectFileConstants.TargetFramework, info.TargetFramework);
                     SetProjectProperty(XSharpProjectFileConstants.ActiveTargetFramework, info.TargetFramework);
@@ -125,8 +128,13 @@ namespace XSharp.Project
                     var prj = projects.FirstOrDefault(p => string.Compare(p.FullPath, fileName, true) == 0);
                     if (prj == null)
                         return false;
+
+                    var oldReferences = this.sdkReferences.ToArray();
+                    await prj.UnloadAsync();
                     await prj.LoadAsync();
                     this.OnPropertyChanged(this, (int)__VSHPROPID.VSHPROPID_Caption, 0);
+                    VS.Commands.ExecuteAsync("Project.SetAsStartupProject").FireAndForget();
+
                     return true;
                 });
             }
@@ -246,10 +254,7 @@ namespace XSharp.Project
         {
             var refs = base.RefreshReferences();
             var sdkrefs = base._sdkReferences;
-            //if (IsNetCoreApp)
-            {
-                AddPendingReferences(sdkrefs);
-            }
+            AddPendingReferences(sdkrefs, this.ActiveSubProject);
             return refs;
         }
 
@@ -299,56 +304,56 @@ namespace XSharp.Project
             return base.Save(fileToBeSaved, remember, formatIndex);
         }
 
-        private void AddPendingReferences(List<string> newReferences)
+        private void AddPendingReferences(List<string> newReferences, SdkSubProjectInfo active)
         {
-            if (! ThreadHelper.CheckAccess())
+            if (!ThreadHelper.CheckAccess())
             {
                 return;
             }
-            foreach (var frameworkNode in dependenciesNode.FrameworkNodes)
+            var frameworkNode = active.FrameworkReferenceNode;
+            if (frameworkNode == null)
             {
-                var nodes = new List<XSharpDependencyNode>();
-                var isExpanded = frameworkNode.IsExpanded;
-                frameworkNode.FindNodesOfType(nodes);
-
-                var toDelete = new List<XSharpDependencyNode>();
-                var toAdd = new List<string>();
-
-
-                foreach (var reference in sdkReferences)
-                {
-                    if (!newReferences.Contains(reference, StringComparer.OrdinalIgnoreCase))
-                    {
-                        var oldnode = nodes.Find(n => n.Url.ToLower() == reference.ToLower());
-                        toDelete.Add(oldnode);
-                    }
-                }
-                // add dependencies from the TargetFramework
-                foreach (var reference in newReferences)
-                {
-                    if (!sdkReferences.Contains(reference, StringComparer.OrdinalIgnoreCase))
-                    {
-                        toAdd.Add(reference);
-                    }
-                }
-                // delete nodes that are no longer needed
-                foreach (var node in toDelete)
-                {
-                    frameworkNode.RemoveChild(node);
-                    node.Dispose();
-                }
-                // add new nodes
-                foreach (var item in toAdd)
-                {
-                    var node = new XSharpDependencyNode(this, item);
-                    frameworkNode.AddChild(node);
-                }
-                sdkReferences.Clear();
-                sdkReferences.AddRange(newReferences);
-                frameworkNode.IsExpanded = isExpanded;
-
+                return;
             }
+            var isExpanded = frameworkNode.IsExpanded;
+            var nodes = new List<XSharpDependencyNode>();
+            frameworkNode.FindNodesOfType(nodes);
 
+            var toDelete = new List<XSharpDependencyNode>();
+            var toAdd = new List<string>();
+
+
+            foreach (var reference in sdkReferences)
+            {
+                if (!newReferences.Contains(reference, StringComparer.OrdinalIgnoreCase))
+                {
+                    var oldnode = nodes.Find(n => n.Url.ToLower() == reference.ToLower());
+                    toDelete.Add(oldnode);
+                }
+            }
+            // add dependencies from the TargetFramework
+            foreach (var reference in newReferences)
+            {
+                if (!sdkReferences.Contains(reference, StringComparer.OrdinalIgnoreCase))
+                {
+                    toAdd.Add(reference);
+                }
+            }
+            // delete nodes that are no longer needed
+            foreach (var node in toDelete)
+            {
+                frameworkNode.RemoveChild(node);
+                node.Dispose();
+            }
+            // add new nodes
+            foreach (var item in toAdd)
+            {
+                var node = new XSharpDependencyNode(this, item);
+                frameworkNode.AddChild(node);
+            }
+            sdkReferences.Clear();
+            sdkReferences.AddRange(newReferences);
+            frameworkNode.IsExpanded = isExpanded;
         }
     }
     public class XSharpFrameworkNode : XSharpDependencyNode
@@ -407,6 +412,8 @@ namespace XSharp.Project
 
 
     }
+    [DebuggerDisplay("Frameworks {Parent?.Caption,nq}")]
+
     class XSharpFrameworkReferenceNode : XSharpFolderNode
     {
         public XSharpFrameworkReferenceNode(XSharpProjectNode root) :
@@ -424,6 +431,7 @@ namespace XSharp.Project
             return VSConstants.S_FALSE;
         }
     }
+    [DebuggerDisplay("{Caption,nq}")]
     class XSharpTargetFrameworkReferenceNode : XSharpFolderNode
     {
         public XSharpTargetFrameworkReferenceNode(XSharpProjectNode root, string frameworkName) :
@@ -443,13 +451,13 @@ namespace XSharp.Project
     }
     class XSharpDependenciesContainerNode : XSharpReferenceContainerNode
     {
-        internal List<XSharpFolderNode> FrameworkNodes => frameworkNodes;
+        internal List<XSharpFrameworkReferenceNode> FrameworkNodes => frameworkNodes;
 
-        private List<XSharpFolderNode> frameworkNodes;
+        private List<XSharpFrameworkReferenceNode> frameworkNodes;
         public XSharpDependenciesContainerNode(XSharpProjectNode root) : base(root)
         {
             // Create the FrameworkReference node
-            frameworkNodes = new List<XSharpFolderNode>();
+            frameworkNodes = new List<XSharpFrameworkReferenceNode>();
             CreateFrameworkReferenceNode();
         }
         public override string Caption
@@ -465,8 +473,10 @@ namespace XSharp.Project
             var project = this.ProjectMgr as XSharpSdkProjectNode;
             if (project.SubProjects.Count == 1)
             {
+                var subProject = project.SubProjects[0];
                 var node = new XSharpFrameworkReferenceNode((XSharpProjectNode)this.ProjectMgr);
                 frameworkNodes.Add(node);
+                subProject.FrameworkReferenceNode = node;
                 this.AddChild(node);
             }
             else
@@ -475,7 +485,9 @@ namespace XSharp.Project
                 {
                     var targetNode = new XSharpTargetFrameworkReferenceNode((XSharpProjectNode)this.ProjectMgr, subProject.TargetFramework);
                     this.AddChild(targetNode);
+                    subProject.TargetFrameworkReferenceNode = targetNode;
                     var node = new XSharpFrameworkReferenceNode((XSharpProjectNode)this.ProjectMgr);
+                    subProject.FrameworkReferenceNode = node; 
                     frameworkNodes.Add(node);
                     targetNode.AddChild(node);
                 }

@@ -11,6 +11,11 @@ DEFINE TAG_NOWARNING := "$NOWARNING"
 
 GLOBAL gcRuntimeFolder AS STRING
 GLOBAL gcCompilerFilename AS STRING
+GLOBAL glNetCore := FALSE AS LOGIC
+
+GLOBAL gcNetCoreReferences := "C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.8" AS STRING
+GLOBAL gcNetWindowsReferences := "C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\8.0.8" AS STRING
+
 GLOBAL gaLog := List<STRING>{} AS List<STRING>
 GLOBAL gaCompilerMessages := List<STRING>{} AS List<STRING>
 
@@ -194,10 +199,17 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 		oApp := oPair:Value
 
 		#ifdef LOCALTEST
-		IF .not. oApp:cName:StartsWith("C93")
+/*		IF .not. oApp:cName:StartsWith("C93")
 			LOOP
-		END IF
+		END IF*/
 		#endif
+		
+		IF glNetCore
+			IF .not. oApp:eDialect == ApplicationDialect.Core
+				LOOP
+			END IF
+			AdjustAppReferencesForNetCore(oApp)
+		END IF
 
 		IF IsAppInGroups(oApp, aGroupsToBuild)
 			Message("Compiling test: " + oApp:cName)
@@ -243,7 +255,8 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 						LOCAL aWarnings AS STRING[]
 						cFileName := FileInfo{oFile:FullFileName}:Name:ToUpperInvariant()
 						cWarnings := cLine:Substring(nIndex + TAG_WARNING:Length)
-						FOREACH cWarning AS STRING IN cWarnings:Split(<Char>{','})
+						aWarnings := cWarnings:Split(<Char>{','})
+						FOREACH cWarning AS STRING IN aWarnings
 							cWarningMessage := String.Format("warning {0} in line {1} of {2}", cWarning:Trim(), nLine, cFileName)
 							aExpectedWarnings:Add( TUPLE{Number := cWarning:Trim(), Filename := cFileName, Line := nLine, Message := cWarningMessage} )
 							Message("Expecting " + cWarningMessage)
@@ -388,7 +401,7 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 	Message("End of compiling tests, now performing runtime tests")
 	Message("")
 	LOCAL nRuntimeFail AS INT
-	IF lTestTheFixedOnes
+	IF lTestTheFixedOnes .and. .not. glNetCore
 	    nRuntimeFail := DoRuntimeTests(oXide, cConfigName)
 	ENDIF
 	Message("")
@@ -441,6 +454,80 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 		Message( "===============================" )
 	END IF
 RETURN
+
+PROCEDURE AdjustAppReferencesForNetCore(oApp AS AppClass)
+	VAR aNetCoreReferences := List<STRING>{}
+	VAR aWindowsReferences := List<STRING>{}
+
+	aNetCoreReferences:Add("System.dll")
+	aNetCoreReferences:Add("System.Core.dll")
+	aNetCoreReferences:Add("System.Console.dll")
+	aNetCoreReferences:Add("System.Collections.dll")
+	aNetCoreReferences:Add("System.Collections.NonGeneric.dll")
+	aNetCoreReferences:Add("System.ComponentModel.TypeConverter.dll")
+	aNetCoreReferences:Add("System.Linq.dll")
+	aNetCoreReferences:Add("System.Private.CoreLib.dll")
+	aNetCoreReferences:Add("System.Reflection.dll")
+	aNetCoreReferences:Add("System.Runtime.dll")
+	aNetCoreReferences:Add("System.Runtime.Serialization.Primitives.dll")
+	aNetCoreReferences:Add("System.Runtime.InteropServices.dll")
+
+	LOCAL nIndex := 0 AS INT
+	DO WHILE nIndex < oApp:aReferences:Count
+		LOCAL oRef AS ReferenceObject
+		oRef := oApp:aReferences[nIndex] ASTYPE ReferenceObject
+		IF oRef:eType == ReferenceType.GAC
+			
+			DO CASE
+			CASE oRef:cName:Contains("System.Drawing")
+				aNetCoreReferences:Add("System.Drawing.Primitives.dll")
+
+				aWindowsReferences:Add("System.Drawing.Common.dll")
+
+			CASE oRef:cName:Contains("System.Windows.Forms")
+				aNetCoreReferences:Add("System.ComponentModel.dll")
+				aNetCoreReferences:Add("System.ComponentModel.Primitives.dll")
+
+				aWindowsReferences:Add("System.Windows.Forms.dll")
+				aWindowsReferences:Add("System.Windows.Forms.Primitives.dll")
+
+			CASE oRef:cName:Contains("System.Xml")
+				aNetCoreReferences:Add("System.Xml.dll")
+				aNetCoreReferences:Add("System.Xml.ReaderWriter.dll")
+				aNetCoreReferences:Add("System.Private.Xml.dll")
+
+			CASE oRef:cName:Contains("System.Data")
+				aNetCoreReferences:Add("System.Data.dll")
+				aNetCoreReferences:Add("System.Data.Common.dll")
+				aNetCoreReferences:Add("System.Data.DataSetExtensions.dll")
+
+			END CASE
+			
+			oApp:aReferences:RemoveAt(nIndex)
+		ELSE
+			nIndex ++
+		ENDIF
+	END DO
+	
+	IF .not. oApp:oOptions:cSwitches:ToUpperInvariant():Contains("/NOSTDLIB")
+		oApp:oOptions:cSwitches += " /nostdlib"
+	END IF
+	
+	oApp:ePlatform := Platform.AnyCPU
+		
+	FOREACH cRef AS STRING IN aNetCoreReferences
+		LOCAL oRef AS ReferenceObject
+		oRef := ReferenceObject{cRef, ReferenceType.Browse}
+		oRef:cFileName := gcNetCoreReferences + "\" + cRef
+		oApp:aReferences:Add( oRef )
+	NEXT
+
+	FOREACH cRef AS STRING IN aWindowsReferences
+		LOCAL oRef AS ReferenceObject
+		oRef := ReferenceObject{cRef, ReferenceType.Browse}
+		oRef:cFileName := gcNetWindowsReferences + "\" + cRef
+		oApp:aReferences:Add( oRef )
+	NEXT
 
 FUNCTION CreateProcess() AS Process
 	LOCAL oProcess AS Process

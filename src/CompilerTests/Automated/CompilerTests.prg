@@ -13,8 +13,8 @@ GLOBAL gcRuntimeFolder AS STRING
 GLOBAL gcCompilerFilename AS STRING
 GLOBAL glNetCore := FALSE AS LOGIC
 
-GLOBAL gcNetCoreReferences := "C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.8" AS STRING
-GLOBAL gcNetWindowsReferences := "C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\8.0.8" AS STRING
+GLOBAL gcNetCoreFolder := "C:\Program Files$PLATFORM1$\dotnet\shared\$PLATFORM2$\$VERSION$" AS STRING
+GLOBAL gcNetCoreVersion := "10.0.2" AS STRING
 
 GLOBAL gaLog := List<STRING>{} AS List<STRING>
 GLOBAL gaCompilerMessages := List<STRING>{} AS List<STRING>
@@ -490,6 +490,7 @@ PROCEDURE AdjustAppReferencesForNetCore(oApp AS AppClass)
 
 				aWindowsReferences:Add("System.Windows.Forms.dll")
 				aWindowsReferences:Add("System.Windows.Forms.Primitives.dll")
+				aWindowsReferences:Add("System.Private.Windows.Core.dll")
 
 			CASE oRef:cName:Contains("System.Xml")
 				aNetCoreReferences:Add("System.Xml.dll")
@@ -512,20 +513,22 @@ PROCEDURE AdjustAppReferencesForNetCore(oApp AS AppClass)
 	IF .not. oApp:oOptions:cSwitches:ToUpperInvariant():Contains("/NOSTDLIB")
 		oApp:oOptions:cSwitches += " /nostdlib"
 	END IF
-	
-	oApp:ePlatform := Platform.AnyCPU
+
+	LOCAL cNetCoreReferences, cWindowsReferences AS STRING
+	cNetCoreReferences := gcNetCoreFolder:Replace("$PLATFORM1$" , iif(oApp:ePlatform == Platform.x86, " (x86)", "")):Replace("$PLATFORM2$", "Microsoft.NETCore.App"):Replace("$VERSION$", gcNetCoreVersion)
+	cWindowsReferences := gcNetCoreFolder:Replace("$PLATFORM1$" , iif(oApp:ePlatform == Platform.x86, " (x86)", "")):Replace("$PLATFORM2$", "Microsoft.WindowsDesktop.App"):Replace("$VERSION$", gcNetCoreVersion)
 		
 	FOREACH cRef AS STRING IN aNetCoreReferences
 		LOCAL oRef AS ReferenceObject
 		oRef := ReferenceObject{cRef, ReferenceType.Browse}
-		oRef:cFileName := gcNetCoreReferences + "\" + cRef
+		oRef:cFileName := cNetCoreReferences + "\" + cRef
 		oApp:aReferences:Add( oRef )
 	NEXT
 
 	FOREACH cRef AS STRING IN aWindowsReferences
 		LOCAL oRef AS ReferenceObject
 		oRef := ReferenceObject{cRef, ReferenceType.Browse}
-		oRef:cFileName := gcNetWindowsReferences + "\" + cRef
+		oRef:cFileName := cWindowsReferences + "\" + cRef
 		oApp:aReferences:Add( oRef )
 	NEXT
 

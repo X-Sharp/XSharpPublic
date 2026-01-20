@@ -89,16 +89,16 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.16">
-      <Version>16.0.533</Version>
+      <Version>16.0.545</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.DiaSymReader">
-      <Version>2.0.0</Version>
+      <Version>2.2.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Debugger.Metadata">
       <Version>16.10.1051404</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.Debugger.VSDConfigTool">
-      <Version>16.10.1051404</Version>
+      <Version>17.14.1051801</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

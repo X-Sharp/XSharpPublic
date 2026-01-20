@@ -222,7 +222,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.16">
-      <Version>16.0.533</Version>
+      <Version>16.0.545</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build">
       <Version>15.9.30</Version>
@@ -246,6 +246,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <PropertyGroup>

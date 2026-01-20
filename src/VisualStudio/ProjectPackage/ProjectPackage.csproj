@@ -116,6 +116,7 @@
     <Compile Include="Automation\OAXSharpProject.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs" />
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
+    <Compile Include="Commands\commandDebuggerFramework.cs" />
     <Compile Include="Commands\CommandGenerateWinForm.cs" />
     <Compile Include="Commands\CommandAddDesignerFile.cs" />
     <Compile Include="Commands\CommandConvertXsRuntime.cs" />
@@ -181,6 +182,7 @@
     <Compile Include="Nodes\XSharpIncludeContainerNode.cs" />
     <Compile Include="Nodes\XSharpProjectNodeReferenceManager.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
+    <Compile Include="Nodes\XSharpSdkProjectNode.cs" />
     <Compile Include="OptionsPages\BaseOptionsModel.cs" />
     <Compile Include="OptionsPages\BaseOptionsPage.cs">
       <SubType>Component</SubType>
@@ -756,7 +758,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.16">
-      <Version>16.0.527</Version>
+      <Version>16.0.545</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>

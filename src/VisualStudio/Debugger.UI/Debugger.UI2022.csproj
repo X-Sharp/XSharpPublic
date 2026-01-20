@@ -19,7 +19,7 @@
     <RuntimeIdentifier>win</RuntimeIdentifier>
     <ProjectGuid>{960714E8-FF93-4A42-B9BA-610B0F2014DB}</ProjectGuid>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <GeneratePkgDefFile>false</GeneratePkgDefFile>
     <ExtensionInstallationFolder>XSharp\Project</ExtensionInstallationFolder>
     <CreateVsixContainer>False</CreateVsixContainer>
     <DeployExtension>False</DeployExtension>
@@ -137,7 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.533</Version>
+      <Version>17.0.545</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

@@ -19,6 +19,11 @@ namespace XSharp.Project
 {
     internal class XSharpSdkProjectNode : XSharpProjectNode
     {
+#if DEV17
+        static internal ImageMoniker icon = KnownMonikers.Framework;
+#else
+        static internal ImageMoniker icon = KnownMonikers.Reference;
+#endif
 
         class VirtualBuildProject : MSBuild.Project
         {
@@ -75,6 +80,21 @@ namespace XSharp.Project
             }
         }
 
+        protected override void ProcessReferences()
+        {
+            base.ProcessReferences();
+            var container = this.GetReferenceContainer();
+            if (container is XSharpReferenceContainerNode node)
+            {
+                var list = new List<XSharpAssemblyReferenceNode>();
+                node.FindNodesOfType(list);
+                foreach (var reference in list)
+                {
+                    node.RemoveChild(reference);
+                }
+            }
+            RefreshReferences();
+        }
         public override string Caption
         {
             get
@@ -226,7 +246,7 @@ namespace XSharp.Project
         {
             var refs = base.RefreshReferences();
             var sdkrefs = base._sdkReferences;
-            if (IsNetCoreApp)
+            //if (IsNetCoreApp)
             {
                 AddPendingReferences(sdkrefs);
             }
@@ -281,53 +301,53 @@ namespace XSharp.Project
 
         private void AddPendingReferences(List<string> newReferences)
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            if (! ThreadHelper.CheckAccess())
+            {
+                return;
+            }
+            foreach (var frameworkNode in dependenciesNode.FrameworkNodes)
+            {
+                var nodes = new List<XSharpDependencyNode>();
+                var isExpanded = frameworkNode.IsExpanded;
+                frameworkNode.FindNodesOfType(nodes);
+
+                var toDelete = new List<XSharpDependencyNode>();
+                var toAdd = new List<string>();
+
+
+                foreach (var reference in sdkReferences)
                 {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    foreach (var frameworkNode in dependenciesNode.FrameworkNodes)
+                    if (!newReferences.Contains(reference, StringComparer.OrdinalIgnoreCase))
                     {
-                        var nodes = new List<XSharpDependencyNode>();
-                        var isExpanded = frameworkNode.IsExpanded;
-                        frameworkNode.FindNodesOfType(nodes);
-
-                        var toDelete = new List<XSharpDependencyNode>();
-                        var toAdd = new List<string>();
-
-
-                        foreach (var reference in sdkReferences)
-                        {
-                            if (!newReferences.Contains(reference, StringComparer.OrdinalIgnoreCase))
-                            {
-                                var oldnode = nodes.Find(n => n.Url.ToLower() == reference.ToLower());
-                                toDelete.Add(oldnode);
-                            }
-                        }
-                        // add dependencies from the TargetFramework
-                        foreach (var reference in newReferences)
-                        {
-                            if (!sdkReferences.Contains(reference, StringComparer.OrdinalIgnoreCase))
-                            {
-                                toAdd.Add(reference);
-                            }
-                        }
-                        // delete nodes that are no longer needed
-                        foreach (var node in toDelete)
-                        {
-                            frameworkNode.RemoveChild(node);
-                            node.Dispose();
-                        }
-                        // add new nodes
-                        foreach (var item in toAdd)
-                        {
-                            var node = new XSharpDependencyNode(this, item);
-                            frameworkNode.AddChild(node);
-                        }
-                        sdkReferences.Clear();
-                        sdkReferences.AddRange(newReferences);
-                        frameworkNode.IsExpanded = isExpanded;
-
+                        var oldnode = nodes.Find(n => n.Url.ToLower() == reference.ToLower());
+                        toDelete.Add(oldnode);
                     }
-                });
+                }
+                // add dependencies from the TargetFramework
+                foreach (var reference in newReferences)
+                {
+                    if (!sdkReferences.Contains(reference, StringComparer.OrdinalIgnoreCase))
+                    {
+                        toAdd.Add(reference);
+                    }
+                }
+                // delete nodes that are no longer needed
+                foreach (var node in toDelete)
+                {
+                    frameworkNode.RemoveChild(node);
+                    node.Dispose();
+                }
+                // add new nodes
+                foreach (var item in toAdd)
+                {
+                    var node = new XSharpDependencyNode(this, item);
+                    frameworkNode.AddChild(node);
+                }
+                sdkReferences.Clear();
+                sdkReferences.AddRange(newReferences);
+                frameworkNode.IsExpanded = isExpanded;
+
+            }
 
         }
     }
@@ -340,23 +360,29 @@ namespace XSharp.Project
         }
         protected override ImageMoniker GetIconMoniker(bool open)
         {
-            return KnownMonikers.Framework;
+            return XSharpSdkProjectNode.icon; 
         }
     }
 
     public class XSharpDependencyNode : HierarchyNode
     {
         string path;
+        string caption;
         public XSharpDependencyNode(XSharpProjectNode root, string filePath) :
             base(root)
         {
-            path = filePath;
+            caption = path = filePath;
+            if (path.Contains(System.IO.Path.DirectorySeparatorChar)|| path.Contains(System.IO.Path.AltDirectorySeparatorChar))
+            {
+                caption = System.IO.Path.GetFileNameWithoutExtension(path);
+            }
+
         }
         public override string Caption
         {
             get
             {
-                return System.IO.Path.GetFileNameWithoutExtension(path);
+                return caption;
             }
         }
         override public string Url
@@ -389,7 +415,7 @@ namespace XSharp.Project
         }
         protected override ImageMoniker GetIconMoniker(bool open)
         {
-            return KnownMonikers.Framework;
+            return XSharpSdkProjectNode.icon;
         }
         protected override bool SupportsIconMonikers => true;
 
@@ -406,7 +432,7 @@ namespace XSharp.Project
         }
         protected override ImageMoniker GetIconMoniker(bool open)
         {
-            return KnownMonikers.Framework;
+            return XSharpSdkProjectNode.icon;
         }
         protected override bool SupportsIconMonikers => true;
 

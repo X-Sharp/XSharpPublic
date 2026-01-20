@@ -22,7 +22,6 @@
     <Dialect>Core</Dialect>
     <UseNativeVersion>false</UseNativeVersion>
     <SuppressRCWarnings>true</SuppressRCWarnings>
-    <VOBinaryFiles>**\*.xsfs;**\*.xsdbs;**\*.xsmnu;**\*.xsfrm;**\*.xsrep;**\*.xssql;**/*.vnfs;**/*.vndbs;**/*.vnmnu;**/*.vnfrm</VOBinaryFiles>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Nologo>true</Nologo>
@@ -49,14 +48,15 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' == 'true'">
     <!-- Make sure these items are excluded by the SDK props and targets -->
-    <DefaultItemExcludes>$(VOBinaryFiles);**/*.rc;**/*.resx;**/*.designer.prg</DefaultItemExcludes>
+    <VOBinaryFiles>**\*.xsfs;**\*.xsdbs;**\*.xsmnu;**\*.xsfrm;**\*.xsrep;**\*.xssql;**/*.vnfs;**/*.vndbs;**/*.vnmnu;**/*.vnfrm</VOBinaryFiles>
+	<DefaultItemExcludes>$(VOBinaryFiles);**/*.rc;**/*.resx;**/*.designer.prg</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup  Condition="'$(UsingMicrosoftNETSdk)' == 'true'">
     <!-- Add our own definitions for the VOBinary items with calculated dependentupon properti -->
     <VOBinary Include="$(VOBinaryFiles)"  KeepDuplicates="false">
-       <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\%(Extension)$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentName>
-       <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
+      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\%(Extension)$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentName>
+      <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
     </VOBinary>
     <NativeResource Include="**/*.rc" >
       <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\.rc$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentName>
@@ -87,5 +87,8 @@
     <Using Include="System.Threading" />
     <Using Include="System.Threading.Tasks" />
   </ItemGroup>
+  <!-- These groups are needed because otherwise the Project Context Menu does not always display Build/Rebuild/Clean -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'"/>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'"/>
 
 </Project>

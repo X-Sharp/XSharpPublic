@@ -282,7 +282,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Adds references to this container from a MSBuild project.
         /// </summary>
-        public void LoadReferencesFromBuildProject(MSBuild.Project buildProject)
+        public virtual void LoadReferencesFromBuildProject(MSBuild.Project buildProject)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             List<ReferenceNode> duplicatedNode = new List<ReferenceNode>();

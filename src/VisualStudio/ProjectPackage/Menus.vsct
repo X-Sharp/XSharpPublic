@@ -54,6 +54,7 @@
         <Parent guid="guidDebugTargetHandlerPackage" id="DebugTargetMenuControllerFooterGroup"/>
         <CommandFlag>TextChanges</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <!--<CommandFlag>DefaultInvisible</CommandFlag>-->
         <Strings>
           <ButtonText>Framework</ButtonText>
@@ -357,6 +358,7 @@
         <Parent guid="guidProjectPackage" id="DebugTargetMenuDebugFrameworkGroup"/>
         <CommandFlag>TextChanges</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Framework 1</ButtonText>
         </Strings>
@@ -365,6 +367,7 @@
         <Parent guid="guidProjectPackage" id="DebugTargetMenuDebugFrameworkGroup"/>
         <CommandFlag>TextChanges</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Framework 2</ButtonText>
         </Strings>

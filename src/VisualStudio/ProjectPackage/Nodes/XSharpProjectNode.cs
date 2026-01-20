@@ -464,7 +464,7 @@ namespace XSharp.Project
 
         public __VSPROJOUTPUTTYPE GetOutPutType()
         {
-            string outputTypeAsString = this.GetProjectProperty("OutputType", false);
+            string outputTypeAsString = this.GetProjectProperty(ProjectFileConstants.OutputType, false);
             switch (outputTypeAsString.ToLower())
             {
                 case "winexe":
@@ -1747,7 +1747,7 @@ namespace XSharp.Project
                 projectInstance.SetProperty("DesignTimeBuild", "true");
             }
             var result = base.DoMSBuildSubmission(buildKind, target, ref projectInstance, uiThreadCallback);
-            DumpProjectContents(projectInstance, target);
+            ProcessOptions(projectInstance, target);
 
             return result;
         }
@@ -1755,7 +1755,7 @@ namespace XSharp.Project
         private List<string> _commandLineArguments = new List<string>();
         protected List<string> _sdkReferences = new List<string>();
         protected List<string> _allReferenceAssemblies = new List<string>();
-        void DumpProjectContents(ProjectInstance projectInstance, string target)
+        void ProcessOptions(ProjectInstance projectInstance, string target)
         {
             Logger.Information($"Build:  Invocation Result for target '{target}'");
             if (projectInstance != null && this is XSharpSdkProjectNode)
@@ -1908,7 +1908,8 @@ namespace XSharp.Project
         internal void UpdateReferencesInProjectModel()
         {
             // find all the assembly references
-
+            if (!ThreadHelper.CheckAccess())
+                return;
             if (this.ProjectModel != null)
             {
                 var target = "FindReferenceAssembliesForReferences";

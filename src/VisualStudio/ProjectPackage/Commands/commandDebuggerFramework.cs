@@ -1,4 +1,5 @@
-﻿using Community.VisualStudio.Toolkit;
+﻿#if DEV17
+using Community.VisualStudio.Toolkit;
 
 using EnvDTE;
 
@@ -80,10 +81,11 @@ namespace XSharp.Project
                     var projectList = startupprojects as Array;
                     foreach (string prjName in projectList)
                     {
+                        var prjFileName = System.IO.Path.GetFileName(prjName);
                         foreach (var prj in projects)
                         {
                             var fileName = System.IO.Path.GetFileName(prj.FullPath);
-                            if (fileName.Equals(prjName, StringComparison.OrdinalIgnoreCase))
+                            if (fileName.Equals(prjFileName, StringComparison.OrdinalIgnoreCase))
                             {
                                 var node = XSharpProjectNode.FindProject(prj.FullPath);
                                 if (node != null)
@@ -181,3 +183,4 @@ namespace XSharp.Project
     }
 
 }
+#endif

@@ -85,6 +85,17 @@ namespace XSharp.Project
             if (fileName != null && fileName.ToLower().EndsWith("xsproj") && File.Exists(fileName))
             {
                 string xml = File.ReadAllText(fileName);
+#if !DEV17
+                // In VS 2022 and earlier we need to fix the casing of the new text
+                var SdkPos = xml.IndexOf("<Project Sdk", StringComparison.OrdinalIgnoreCase);
+                if (SdkPos != -1)
+                {
+                    VS.MessageBox.ShowError("The project file " + fileName + " is an SDK style project and cannot be loaded inside this version of Visual Studio");
+                    return;
+                }
+
+#endif
+
                 var original = Path.ChangeExtension(fileName, ".original");
                 bool changed = false;
                 if (hasEnvironmentvariable)
@@ -149,7 +160,7 @@ namespace XSharp.Project
             return true;
 
         }
-        #endregion
+#endregion
 
     }
 }

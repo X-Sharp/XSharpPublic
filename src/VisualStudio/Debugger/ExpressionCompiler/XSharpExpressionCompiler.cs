@@ -296,11 +296,13 @@ namespace XSharpDebugger.ExpressionCompiler
 
         public string GetMethodName(DkmLanguageInstructionAddress languageInstructionAddress, DkmVariableInfoFlags argumentFlags)
         {
+#if DEV17
             if (argumentFlags.HasFlag(DkmVariableInfoFlags.HideTemplateArguments))
                 argumentFlags = argumentFlags & ~DkmVariableInfoFlags.HideTemplateArguments;
 
             if (argumentFlags.HasFlag(DkmVariableInfoFlags.CompactName))
                 argumentFlags = argumentFlags & ~DkmVariableInfoFlags.CompactName;
+#endif
 
             if (compiler != null)
             {

@@ -26,20 +26,20 @@
       "Datatype": "choice",
       "Choices": [
         {
-          "Choice": "net8.0",
-          "Description": "Target .NET 8"
+          "Choice": "net48",
+          "Description": "Target .NET Framework 4.8"
         },
         {
-          "Choice": "net9.0",
-          "Description": "Target .NET 9"
+          "Choice": "net46",
+          "Description": "Target .NET Framework 4.6"
         },
         {
-          "Choice": "net10.0",
-          "Description": "Target .NET 10"
+          "Choice": "net47",
+          "Description": "Target .NET Framework 4.7"
         }
       ],
-      "Replaces": "net8.0",
-      "DefaultValue": "net8.0"
+      "Replaces": "net48",
+      "DefaultValue": "net48"
     },
     "DefaultNamespace": {
       "Type": "parameter",

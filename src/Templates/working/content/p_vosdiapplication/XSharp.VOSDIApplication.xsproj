@@ -19,15 +19,13 @@
     <VO8>true</VO8>
     <VO9>true</VO9>
     <VO10>true</VO10>
-    <VO11>false</VO11>
-    <VO12>false</VO12>
     <VO13>true</VO13>
-    <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>true</VO16>
     <NoWin32Manifest>False</NoWin32Manifest>
     <NamedArgs>False</NamedArgs>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
+	<Platform>x86</Platform>
   </PropertyGroup>
     
   <ItemGroup>

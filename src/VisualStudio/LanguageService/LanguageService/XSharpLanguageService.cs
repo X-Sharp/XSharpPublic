@@ -38,7 +38,11 @@ namespace XSharp.LanguageService
         {
             var componentModel = XSharpLanguagePackage.GetComponentModel();
             _editorAdaptersFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
-            base.SetSite(serviceContainer);
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                base.SetSite(serviceContainer);
+            });
         }
 #if DEV17
         internal object ComAggregate { get; private set; }

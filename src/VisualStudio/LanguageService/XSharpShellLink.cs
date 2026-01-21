@@ -6,11 +6,13 @@ using LanguageService.CodeAnalysis.Text;
 using LanguageService.CodeAnalysis.XSharp;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
+
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.TextManager.Interop;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,9 +22,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 using VSLangProj;
+
 using XSharp.Settings;
+
 using XSharpModel;
+
 using static XSharp.Parser.VsParser;
+
 using TM = Microsoft.VisualStudio.TextManager.Interop;
 
 namespace XSharp.LanguageService
@@ -171,9 +177,8 @@ namespace XSharp.LanguageService
                                 continue;
 
                         }
-#if !DEV17
+
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-#endif
                         if (string.IsNullOrEmpty(docName) && doc is IVsWindowFrame frame)
                         {
                             frame.GetProperty((int)__VSFPROPID.VSFPROPID_pszMkDocument, out var objdocName);
@@ -210,29 +215,38 @@ namespace XSharp.LanguageService
         }
         internal static async Task<Project> GetStartupProjectAsync()
         {
-            var dte = (EnvDTE.DTE)await VS.GetRequiredServiceAsync<EnvDTE.DTE, EnvDTE.DTE>();
-            var sol4 = dte.Solution as Solution4;
-
-            if (sol4 == null)
-                return null;
-            var build = sol4.SolutionBuild;
-            if (build != null)
+            EnvDTE.DTE dte = null;
+            Solution4 sol4 = null;
+            EnvDTE.SolutionBuild build = null;
+            object startupprojects = null;
+            await ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
             {
-                var startupprojects = build.StartupProjects;
-                if (startupprojects != null)
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                dte = await VS.GetRequiredServiceAsync<EnvDTE.DTE, EnvDTE.DTE>();
+                if (dte != null)
+                    sol4 = dte.Solution as Solution4;
+                if (sol4 != null) 
+                    build = sol4.SolutionBuild;
+                if ( build != null)
                 {
-                    var projects = await VS.Solutions.GetAllProjectsAsync();
-                    var projectList = startupprojects as Array;
-                    foreach (string prjName in projectList)
+                    startupprojects = build.StartupProjects;
+                }
+
+            });
+                
+            if (startupprojects != null)
+            {
+                var projects = await VS.Solutions.GetAllProjectsAsync();
+                var projectList = startupprojects as Array;
+                foreach (string prjName in projectList)
+                {
+                    string prjFileName = Path.GetFileName(prjName);
+                    foreach (var prj in projects)
                     {
-                        string prjFileName = Path.GetFileName(prjName);
-                        foreach (var prj in projects)
+                        var fileName = Path.GetFileName(prj.FullPath);
+                        if (fileName.Equals(prjFileName, StringComparison.OrdinalIgnoreCase))
                         {
-                            var fileName = Path.GetFileName(prj.FullPath);
-                            if (fileName.Equals(prjFileName, StringComparison.OrdinalIgnoreCase))
-                            {
-                                return prj;
-                            }
+                            return prj;
                         }
                     }
                 }
@@ -249,6 +263,7 @@ namespace XSharp.LanguageService
                 return;
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var projects = XDatabase.GetStartupProjects();
                 if (projects.Count > 0)
                 {

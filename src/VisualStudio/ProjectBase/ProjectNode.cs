@@ -13,7 +13,6 @@
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -39,8 +38,6 @@ using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using System.Reflection;
 using Community.VisualStudio.Toolkit;
 using File = System.IO.File;
-using System.Runtime.Remoting.Messaging;
-using Microsoft.VisualStudio.Debugger;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -3647,7 +3644,7 @@ namespace Microsoft.VisualStudio.Project
                 projectInstance.SetProperty("Utf8Output", "true");
                 projectInstance.SetProperty(GlobalProperty.BuildingInsideVisualStudio.ToString(), "true");
                 this.BuildProject.ProjectCollection.HostServices.SetNodeAffinity(projectInstance.FullPath, NodeAffinity.InProc);
-                BuildRequestData requestData = new BuildRequestData(projectInstance, targetsToBuild, this.BuildProject.ProjectCollection.HostServices, BuildRequestDataFlags.ReplaceExistingProjectInstance);
+                BuildRequestData requestData = new BuildRequestData(projectInstance, targetsToBuild, this.BuildProject.ProjectCollection.HostServices);
                 submission = BuildManager.DefaultBuildManager.PendBuildRequest(requestData);
                 try
                 {

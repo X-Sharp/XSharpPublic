@@ -142,6 +142,9 @@
     <PackageReference Include="MessagePack">
       <Version>2.5.192</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK">
+      <Version>17.14.40265</Version>
+    </PackageReference>
     <PackageReference Include="System.Collections.Immutable">
       <Version>10.0.2</Version>
     </PackageReference>

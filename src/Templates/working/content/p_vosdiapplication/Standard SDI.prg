@@ -3,10 +3,32 @@ define IDI_STANDARDICON := 101
 define IDI_VOICON := 102
 #endregion
 
-class StandardSDIWindow inherit DataWindow
+CLASS StandardSDIWindow inherit DataWindow
     protect oPrinter as PrintingDevice
     protect oStdMenu as Menu
 
+
+CONSTRUCTOR(oOwnerApp) 
+
+  SetDeleted(TRUE)
+
+  SUPER(oOwnerApp)
+    
+  SELF:EnableDragDropClient()
+    
+  SELF:Icon      := Icon{ResourceID{IDI_STANDARDICON, _GetInst()}}
+  SELF:Menu    := EmptySDIMenu{SELF}
+  oStdMenu     := StandardSDIMenu{SELF}
+  SELF:Caption := "VO SDI Application"
+  SELF:EnableStatusBar(TRUE)
+  SELF:StatusBar:DisplayTime(TRUE)
+  SELF:QuitOnClose := TRUE
+
+  SELF:Size := Dimension{850,650}
+
+  oPrinter  := PrintingDevice{}
+    
+  RETURN 
 
 METHOD DoOpenFile(cFileName, lReadOnly) 
     LOCAL oTB AS TextBox
@@ -78,36 +100,16 @@ METHOD FilePrinterSetup()
     
 RETURN SELF
 
-CONSTRUCTOR(oOwnerApp) 
-
-  SetDeleted(TRUE)
-
-  SUPER(oOwnerApp)
-    
-  SELF:EnableDragDropClient()
-    
-  SELF:Icon      := Icon{ResourceID{IDI_STANDARDICON, _GetInst()}}
-  SELF:Menu    := EmptySDIMenu{SELF}
-  oStdMenu     := StandardSDIMenu{SELF}
-  SELF:Caption := "VO SDI Application"
-  SELF:EnableStatusBar(TRUE)
-  SELF:StatusBar:DisplayTime(TRUE)
-  SELF:QuitOnClose := TRUE
-
-  SELF:Size := Dimension{850,650}
-
-  oPrinter  := PrintingDevice{}
-    
-  RETURN SELF
 
 
-method ViewForm() 
+
+METHOD ViewForm() 
     self:ToolBar:UnPressItem(IDM_StandardSDIMenu_View_Table_ID)
     self:ToolBar:PressItem(IDM_StandardSDIMenu_View_Form_ID)
     
     return super:ViewForm()    
 
-method ViewTable() 
+METHOD ViewTable() 
     self:ToolBar:UnPressItem(IDM_StandardSDIMenu_View_Form_ID)
     self:ToolBar:PressItem(IDM_StandardSDIMenu_View_Table_ID)
     

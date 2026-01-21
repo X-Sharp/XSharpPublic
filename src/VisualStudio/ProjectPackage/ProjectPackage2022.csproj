@@ -771,6 +771,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="MessagePack">
+      <Version>2.5.192</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.DiaSymReader">
       <Version>2.2.2</Version>
       <IncludeAssets>all</IncludeAssets>
@@ -779,6 +782,9 @@
       <Version>9.0.6</Version>
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.IO.Redist">
+      <Version>6.0.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools">
       <Version>17.14.2120</Version>
@@ -804,6 +810,9 @@
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json">
+      <Version>9.0.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

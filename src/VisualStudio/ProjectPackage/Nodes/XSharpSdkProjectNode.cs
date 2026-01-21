@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
+using XSharp.Settings;
+
 using XSharpModel;
 
 using MSBuild = Microsoft.Build.Evaluation;
@@ -71,15 +73,19 @@ namespace XSharp.Project
         {
             if (string.Compare(e.PropertyName, XSharpProjectFileConstants.TargetFramework, true) == 0)
             {
-                ;
+                CheckFrameworks();
             }
             if (string.Compare(e.PropertyName, XSharpProjectFileConstants.TargetFrameworks, true) == 0)
             {
-                ;
+                CheckFrameworks();
             }
             if (string.Compare(e.PropertyName, XSharpProjectFileConstants.XTargetFrameworks, true) == 0)
             {
-                ;
+                CheckFrameworks();
+            }
+            if (string.Compare(e.PropertyName, XSharpProjectFileConstants.ActiveTargetFramework, true) == 0)
+            {
+                CheckFrameworks();
             }
         }
 
@@ -98,48 +104,44 @@ namespace XSharp.Project
             }
             RefreshReferences();
         }
-        public override string Caption
-        {
-            get
-            {
-                var caption = base.Caption;
-                if (_targetFrameworks.Count > 1)
-                {
-                    caption = $"{caption} ({ActiveSubProject.TargetFramework})";
-                }
-                return caption;
-            }
-        }
-
+   
         public string BaseName => base.Caption;
 
         internal bool SelectSubProject(SdkSubProjectInfo info)
         {
             if (info != null)
             {
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
-                    string oldName = ActiveSubProject.Name;
-                    ActiveSubProject = info;
-                    SetProjectProperty(XSharpProjectFileConstants.TargetFramework, info.TargetFramework);
-                    SetProjectProperty(XSharpProjectFileConstants.ActiveTargetFramework, info.TargetFramework);
-                    var fileName = this.BuildProject.FullPath;
-                    var projects = await VS.Solutions.GetAllProjectsAsync();
-                    var prj = projects.FirstOrDefault(p => string.Compare(p.FullPath, fileName, true) == 0);
-                    if (prj == null)
-                        return false;
 
-                    var oldReferences = this.sdkReferences.ToArray();
-                    await prj.UnloadAsync();
-                    await prj.LoadAsync();
-                    this.OnPropertyChanged(this, (int)__VSHPROPID.VSHPROPID_Caption, 0);
-                    VS.Commands.ExecuteAsync("Project.SetAsStartupProject").FireAndForget();
+                ActiveSubProject = info;
+                SetProjectProperty(XSharpProjectFileConstants.TargetFramework, info.TargetFramework);
+                SetProjectProperty(XSharpProjectFileConstants.ActiveTargetFramework, info.TargetFramework);
 
-                    return true;
-                });
+                this.DoReload();
+                //this.OnPropertyChanged(this, (int)__VSHPROPID.VSHPROPID_Caption, 0);
+                this.OnPropertyChanged(this, (int)__VSHPROPID6.VSHPROPID_Subcaption, 0);
+                VS.Commands.ExecuteAsync("Project.SetAsStartupProject").FireAndForget();
+                return true;
+
             }
             return false;
         }
+
+
+        public override object GetProperty(int propId)
+        {
+
+            switch ((__VSHPROPID6)propId)
+            {
+                case __VSHPROPID6.VSHPROPID_Subcaption:
+                    if (this.SubProjects.Count > 1 && this.ActiveSubProject != null)
+                    {
+                        return this.ActiveSubProject.TargetFramework;
+                    }
+                    break;
+            }
+            return base.GetProperty(propId) ;
+        }
+
 
         public XSharpSdkProjectNode(XSharpProjectPackage package) : base(package)
         {
@@ -151,16 +153,20 @@ namespace XSharp.Project
         {
             MainProject = this.BuildProject;
             string framework = null;
+            string oldframework = null;
             string frameworks = null;
             bool single = false;
+            bool mustSwitch = false;
             this.CreateUserBuildProject();
             _targetFrameworks.Clear();
+            _subProjects.Clear();
             // First check for single TargetFramework
             framework = this.GetProjectProperty(XSharpProjectFileConstants.TargetFramework, false);
             if (string.IsNullOrEmpty(framework))
             {
                 framework = this.GetProjectProperty(XSharpProjectFileConstants.ActiveTargetFramework);
             }
+            oldframework = framework;
             single = !string.IsNullOrEmpty(framework);
             frameworks = this.GetProjectProperty(XSharpProjectFileConstants.TargetFrameworks, false);
             if (string.IsNullOrEmpty(frameworks))
@@ -174,6 +180,16 @@ namespace XSharp.Project
             {
                 single = true;
             }
+            else
+            {
+                if (!frameworks.ToLower().Contains(framework.ToLower()))
+                {
+                    single = false;
+                    framework = null;
+                    mustSwitch = true;
+                }
+            }
+
             if (single)
             {
                 if (string.IsNullOrEmpty(framework))
@@ -188,20 +204,37 @@ namespace XSharp.Project
             if (!string.IsNullOrEmpty(frameworks))
             {
                 var splits = frameworks.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                _targetFrameworks.AddRange(splits);
                 foreach (var fw in splits)
                 {
-                    if (string.Compare(fw, framework, true) == 0)
+                    if (_targetFrameworks.Contains(fw))
                     {
                         // this was already added
                         continue;
                     }
+                    _targetFrameworks.Add(fw);
                     var subProject = new SdkSubProjectInfo(fw, this);
                     _subProjects.Add(subProject);
                 }
                 ActiveSubProject = _subProjects.First();
             }
             _frameworks = frameworks;
+            if (mustSwitch)
+            {
+                string message = "You have removed the active targetframework from the targetframeworks property.\n"
+               + "Any unsaved changes within the project will be automatically saved.\n\n"
+               + "The project will then be reopened with the new targetframrwork.\n\n"
+               + "Are you sure you want to change the Target Framework for this project?";
+                if (!VS.MessageBox.ShowConfirm(message))
+                {
+                    _targetFrameworks.Add(oldframework);
+                    var subProject = new SdkSubProjectInfo(oldframework, this);
+                    _subProjects.Add(subProject);
+                    ActiveSubProject = subProject;
+                    return frameworks+";"+oldframework;
+                }
+                this.BuildProject.Save();
+                SelectSubProject(ActiveSubProject);
+            }
             return frameworks;
         }
 
@@ -365,7 +398,7 @@ namespace XSharp.Project
         }
         protected override ImageMoniker GetIconMoniker(bool open)
         {
-            return XSharpSdkProjectNode.icon; 
+            return XSharpSdkProjectNode.icon;
         }
     }
 
@@ -377,7 +410,7 @@ namespace XSharp.Project
             base(root)
         {
             caption = path = filePath;
-            if (path.Contains(System.IO.Path.DirectorySeparatorChar)|| path.Contains(System.IO.Path.AltDirectorySeparatorChar))
+            if (path.Contains(System.IO.Path.DirectorySeparatorChar) || path.Contains(System.IO.Path.AltDirectorySeparatorChar))
             {
                 caption = System.IO.Path.GetFileNameWithoutExtension(path);
             }
@@ -487,7 +520,7 @@ namespace XSharp.Project
                     this.AddChild(targetNode);
                     subProject.TargetFrameworkReferenceNode = targetNode;
                     var node = new XSharpFrameworkReferenceNode((XSharpProjectNode)this.ProjectMgr);
-                    subProject.FrameworkReferenceNode = node; 
+                    subProject.FrameworkReferenceNode = node;
                     frameworkNodes.Add(node);
                     targetNode.AddChild(node);
                 }
@@ -500,19 +533,19 @@ namespace XSharp.Project
 
         public override void RemoveChild(HierarchyNode node)
         {
-             base.RemoveChild(node);
+            base.RemoveChild(node);
         }
 
         public void DeleteDependencies(string targetframework)
         {
 
-        //    var nodes = new List<XSharpDependencyNode>();
-        //    frameworkNode.FindNodesOfType(nodes);
-        //    foreach (var child in nodes)
-        //    {
-        //        frameworkNode.RemoveChild(child);
-        //        child.Dispose();
-        //    }
+            //    var nodes = new List<XSharpDependencyNode>();
+            //    frameworkNode.FindNodesOfType(nodes);
+            //    foreach (var child in nodes)
+            //    {
+            //        frameworkNode.RemoveChild(child);
+            //        child.Dispose();
+            //    }
         }
     }
 }

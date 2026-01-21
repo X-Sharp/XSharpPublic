@@ -198,8 +198,6 @@ namespace XSharp.Project
 
             ThreadHelper.ThrowIfNotOnUIThread();
             var oldvalueFromFile = base.GetProperty(propertyName);
-			if (IsSdkProject)
-	            value = ConvertFrameworkName(value);
             bool changed = value != oldvalueFromFile;
 
             if (changed)

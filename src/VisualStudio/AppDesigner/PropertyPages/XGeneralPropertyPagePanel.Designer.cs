@@ -36,26 +36,26 @@ namespace XSharp.Project
         {
             this.components = new System.ComponentModel.Container();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.comboDialect = new System.Windows.Forms.ComboBox();
-            this.lblDialect = new System.Windows.Forms.Label();
-            this.comboOutputType = new System.Windows.Forms.ComboBox();
-            this.tbDefaultNamespace = new System.Windows.Forms.TextBox();
-            this.lblDefaultNamespace = new System.Windows.Forms.Label();
             this.lblApplicationName = new System.Windows.Forms.Label();
+            this.tbAssemblyName = new System.Windows.Forms.TextBox();
             this.lblTargetFramework = new System.Windows.Forms.Label();
             this.tbTargetFrameworks = new System.Windows.Forms.TextBox();
             this.comboTargetFramework = new System.Windows.Forms.ComboBox();
-            this.lblOutputType = new System.Windows.Forms.Label();
-            this.tbAssemblyName = new System.Windows.Forms.TextBox();
+            this.lblDialect = new System.Windows.Forms.Label();
+            this.comboDialect = new System.Windows.Forms.ComboBox();
             this.chkAutoGenerateBindingRedirects = new System.Windows.Forms.CheckBox();
-            this.labelStartupObject = new System.Windows.Forms.Label();
-            this.comboStartupObject = new System.Windows.Forms.ComboBox();
             this.lblResources = new System.Windows.Forms.Label();
             this.labelIcon = new System.Windows.Forms.Label();
             this.tbAppIcon = new System.Windows.Forms.TextBox();
             this.chkSuppressDefaultManifest = new System.Windows.Forms.CheckBox();
             this.chkPreferNativeVersion = new System.Windows.Forms.CheckBox();
             this.chkVulcanCompatibleResources = new System.Windows.Forms.CheckBox();
+            this.lblDefaultNamespace = new System.Windows.Forms.Label();
+            this.tbDefaultNamespace = new System.Windows.Forms.TextBox();
+            this.lblOutputType = new System.Windows.Forms.Label();
+            this.comboOutputType = new System.Windows.Forms.ComboBox();
+            this.labelStartupObject = new System.Windows.Forms.Label();
+            this.comboStartupObject = new System.Windows.Forms.ComboBox();
             this.btnIcon = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1.SuspendLayout();
@@ -66,34 +66,33 @@ namespace XSharp.Project
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.comboDialect, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.lblDialect, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.comboOutputType, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.tbDefaultNamespace, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblDefaultNamespace, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblApplicationName, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.tbAssemblyName, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblTargetFramework, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.tbTargetFrameworks, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.comboTargetFramework, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.comboTargetFramework, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.lblDialect, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.comboDialect, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.chkAutoGenerateBindingRedirects, 0, 7);
+            this.tableLayoutPanel1.Controls.Add(this.lblResources, 0, 8);
+            this.tableLayoutPanel1.Controls.Add(this.labelIcon, 0, 9);
+            this.tableLayoutPanel1.Controls.Add(this.tbAppIcon, 0, 10);
+            this.tableLayoutPanel1.Controls.Add(this.chkSuppressDefaultManifest, 0, 11);
+            this.tableLayoutPanel1.Controls.Add(this.chkPreferNativeVersion, 0, 12);
+            this.tableLayoutPanel1.Controls.Add(this.chkVulcanCompatibleResources, 0, 13);
+            this.tableLayoutPanel1.Controls.Add(this.lblDefaultNamespace, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.tbDefaultNamespace, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblOutputType, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.tbAssemblyName, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.chkAutoGenerateBindingRedirects, 0, 6);
-            this.tableLayoutPanel1.Controls.Add(this.labelStartupObject, 0, 7);
-            this.tableLayoutPanel1.Controls.Add(this.comboStartupObject, 0, 8);
-            this.tableLayoutPanel1.Controls.Add(this.lblResources, 0, 9);
-            this.tableLayoutPanel1.Controls.Add(this.labelIcon, 0, 10);
-            this.tableLayoutPanel1.Controls.Add(this.tbAppIcon, 0, 11);
-            this.tableLayoutPanel1.Controls.Add(this.chkSuppressDefaultManifest, 0, 12);
-            this.tableLayoutPanel1.Controls.Add(this.chkPreferNativeVersion, 0, 13);
-            this.tableLayoutPanel1.Controls.Add(this.chkVulcanCompatibleResources, 0, 14);
-            this.tableLayoutPanel1.Controls.Add(this.btnIcon, 1, 11);
+            this.tableLayoutPanel1.Controls.Add(this.comboOutputType, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.labelStartupObject, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.comboStartupObject, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.btnIcon, 1, 12);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.tableLayoutPanel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.tableLayoutPanel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(5);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 15;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowCount = 14;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -111,72 +110,11 @@ namespace XSharp.Project
             this.tableLayoutPanel1.Size = new System.Drawing.Size(633, 341);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // comboDialect
-            // 
-            this.comboDialect.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.comboDialect.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboDialect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboDialect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.comboDialect.FormattingEnabled = true;
-            this.comboDialect.Location = new System.Drawing.Point(5, 108);
-            this.comboDialect.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
-            this.comboDialect.Name = "comboDialect";
-            this.comboDialect.Size = new System.Drawing.Size(308, 21);
-            this.comboDialect.TabIndex = 9;
-            // 
-            // lblDialect
-            // 
-            this.lblDialect.AutoSize = true;
-            this.lblDialect.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDialect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.lblDialect.Location = new System.Drawing.Point(321, 84);
-            this.lblDialect.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
-            this.lblDialect.Name = "lblDialect";
-            this.lblDialect.Size = new System.Drawing.Size(309, 21);
-            this.lblDialect.TabIndex = 8;
-            this.lblDialect.Text = "Dialect:";
-            // 
-            // comboOutputType
-            // 
-            this.comboOutputType.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.comboOutputType.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboOutputType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboOutputType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.comboOutputType.FormattingEnabled = true;
-            this.comboOutputType.Location = new System.Drawing.Point(5, 84);
-            this.comboOutputType.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
-            this.comboOutputType.Name = "comboOutputType";
-            this.comboOutputType.Size = new System.Drawing.Size(308, 21);
-            this.comboOutputType.TabIndex = 7;
-            // 
-            // tbDefaultNamespace
-            // 
-            this.tbDefaultNamespace.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.tbDefaultNamespace.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbDefaultNamespace.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.tbDefaultNamespace.Location = new System.Drawing.Point(321, 19);
-            this.tbDefaultNamespace.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
-            this.tbDefaultNamespace.Name = "tbDefaultNamespace";
-            this.tbDefaultNamespace.Size = new System.Drawing.Size(309, 20);
-            this.tbDefaultNamespace.TabIndex = 3;
-            // 
-            // lblDefaultNamespace
-            // 
-            this.lblDefaultNamespace.AutoSize = true;
-            this.lblDefaultNamespace.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDefaultNamespace.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.lblDefaultNamespace.Location = new System.Drawing.Point(321, 3);
-            this.lblDefaultNamespace.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
-            this.lblDefaultNamespace.Name = "lblDefaultNamespace";
-            this.lblDefaultNamespace.Size = new System.Drawing.Size(309, 13);
-            this.lblDefaultNamespace.TabIndex = 2;
-            this.lblDefaultNamespace.Text = "Default Namespace:";
-            // 
             // lblApplicationName
             // 
             this.lblApplicationName.AutoSize = true;
             this.lblApplicationName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblApplicationName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.lblApplicationName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
             this.lblApplicationName.Location = new System.Drawing.Point(5, 3);
             this.lblApplicationName.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.lblApplicationName.Name = "lblApplicationName";
@@ -184,10 +122,21 @@ namespace XSharp.Project
             this.lblApplicationName.TabIndex = 0;
             this.lblApplicationName.Text = "Application Name";
             // 
+            // tbAssemblyName
+            // 
+            this.tbAssemblyName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(37)))), ((int)(((byte)(38)))));
+            this.tbAssemblyName.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbAssemblyName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.tbAssemblyName.Location = new System.Drawing.Point(5, 19);
+            this.tbAssemblyName.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
+            this.tbAssemblyName.Name = "tbAssemblyName";
+            this.tbAssemblyName.Size = new System.Drawing.Size(308, 20);
+            this.tbAssemblyName.TabIndex = 1;
+            // 
             // lblTargetFramework
             // 
             this.lblTargetFramework.AutoSize = true;
-            this.lblTargetFramework.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.lblTargetFramework.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
             this.lblTargetFramework.Location = new System.Drawing.Point(5, 42);
             this.lblTargetFramework.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.lblTargetFramework.Name = "lblTargetFramework";
@@ -197,56 +146,59 @@ namespace XSharp.Project
             // 
             // tbTargetFrameworks
             // 
-            this.tbTargetFrameworks.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tbTargetFrameworks.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(37)))), ((int)(((byte)(38)))));
             this.tbTargetFrameworks.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbTargetFrameworks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.tbTargetFrameworks.Location = new System.Drawing.Point(319, 58);
+            this.tbTargetFrameworks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.tbTargetFrameworks.Location = new System.Drawing.Point(3, 58);
             this.tbTargetFrameworks.Name = "tbTargetFrameworks";
-            this.tbTargetFrameworks.Size = new System.Drawing.Size(311, 20);
+            this.tbTargetFrameworks.Size = new System.Drawing.Size(310, 20);
             this.tbTargetFrameworks.TabIndex = 5;
             this.tbTargetFrameworks.Visible = false;
             // 
             // comboTargetFramework
             // 
-            this.comboTargetFramework.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.comboTargetFramework.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(37)))), ((int)(((byte)(38)))));
             this.comboTargetFramework.Dock = System.Windows.Forms.DockStyle.Fill;
             this.comboTargetFramework.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboTargetFramework.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.comboTargetFramework.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
             this.comboTargetFramework.FormattingEnabled = true;
-            this.comboTargetFramework.Location = new System.Drawing.Point(5, 58);
+            this.comboTargetFramework.Location = new System.Drawing.Point(5, 84);
             this.comboTargetFramework.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.comboTargetFramework.Name = "comboTargetFramework";
             this.comboTargetFramework.Size = new System.Drawing.Size(308, 21);
             this.comboTargetFramework.TabIndex = 5;
             this.comboTargetFramework.Visible = false;
             // 
-            // lblOutputType
+            // lblDialect
             // 
-            this.lblOutputType.AutoSize = true;
-            this.lblOutputType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.lblOutputType.Location = new System.Drawing.Point(321, 42);
-            this.lblOutputType.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
-            this.lblOutputType.Name = "lblOutputType";
-            this.lblOutputType.Size = new System.Drawing.Size(69, 13);
-            this.lblOutputType.TabIndex = 6;
-            this.lblOutputType.Text = "Output Type:";
+            this.lblDialect.AutoSize = true;
+            this.lblDialect.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblDialect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.lblDialect.Location = new System.Drawing.Point(5, 108);
+            this.lblDialect.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
+            this.lblDialect.Name = "lblDialect";
+            this.lblDialect.Size = new System.Drawing.Size(308, 13);
+            this.lblDialect.TabIndex = 8;
+            this.lblDialect.Text = "Dialect:";
             // 
-            // tbAssemblyName
+            // comboDialect
             // 
-            this.tbAssemblyName.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.tbAssemblyName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbAssemblyName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.tbAssemblyName.Location = new System.Drawing.Point(5, 19);
-            this.tbAssemblyName.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
-            this.tbAssemblyName.Name = "tbAssemblyName";
-            this.tbAssemblyName.Size = new System.Drawing.Size(308, 20);
-            this.tbAssemblyName.TabIndex = 1;
+            this.comboDialect.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(37)))), ((int)(((byte)(38)))));
+            this.comboDialect.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comboDialect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboDialect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.comboDialect.FormattingEnabled = true;
+            this.comboDialect.Location = new System.Drawing.Point(5, 124);
+            this.comboDialect.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
+            this.comboDialect.Name = "comboDialect";
+            this.comboDialect.Size = new System.Drawing.Size(308, 21);
+            this.comboDialect.TabIndex = 9;
             // 
             // chkAutoGenerateBindingRedirects
             // 
             this.chkAutoGenerateBindingRedirects.AutoSize = true;
-            this.chkAutoGenerateBindingRedirects.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.chkAutoGenerateBindingRedirects.Location = new System.Drawing.Point(5, 132);
+            this.chkAutoGenerateBindingRedirects.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.chkAutoGenerateBindingRedirects.Location = new System.Drawing.Point(5, 148);
             this.chkAutoGenerateBindingRedirects.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkAutoGenerateBindingRedirects.Name = "chkAutoGenerateBindingRedirects";
             this.chkAutoGenerateBindingRedirects.Size = new System.Drawing.Size(173, 17);
@@ -254,35 +206,12 @@ namespace XSharp.Project
             this.chkAutoGenerateBindingRedirects.Text = "Auto-generate binding redirects";
             this.chkAutoGenerateBindingRedirects.UseVisualStyleBackColor = true;
             // 
-            // labelStartupObject
-            // 
-            this.labelStartupObject.AutoSize = true;
-            this.labelStartupObject.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.labelStartupObject.Location = new System.Drawing.Point(5, 152);
-            this.labelStartupObject.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
-            this.labelStartupObject.Name = "labelStartupObject";
-            this.labelStartupObject.Size = new System.Drawing.Size(76, 13);
-            this.labelStartupObject.TabIndex = 11;
-            this.labelStartupObject.Text = "Startup object:";
-            // 
-            // comboStartupObject
-            // 
-            this.comboStartupObject.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.comboStartupObject.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboStartupObject.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.comboStartupObject.FormattingEnabled = true;
-            this.comboStartupObject.Location = new System.Drawing.Point(5, 168);
-            this.comboStartupObject.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
-            this.comboStartupObject.Name = "comboStartupObject";
-            this.comboStartupObject.Size = new System.Drawing.Size(308, 21);
-            this.comboStartupObject.TabIndex = 12;
-            // 
             // lblResources
             // 
             this.lblResources.AutoSize = true;
             this.lblResources.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblResources.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.lblResources.Location = new System.Drawing.Point(5, 192);
+            this.lblResources.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.lblResources.Location = new System.Drawing.Point(5, 168);
             this.lblResources.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.lblResources.Name = "lblResources";
             this.lblResources.Size = new System.Drawing.Size(71, 13);
@@ -292,8 +221,8 @@ namespace XSharp.Project
             // labelIcon
             // 
             this.labelIcon.AutoSize = true;
-            this.labelIcon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.labelIcon.Location = new System.Drawing.Point(5, 208);
+            this.labelIcon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.labelIcon.Location = new System.Drawing.Point(5, 184);
             this.labelIcon.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.labelIcon.Name = "labelIcon";
             this.labelIcon.Size = new System.Drawing.Size(31, 13);
@@ -302,10 +231,10 @@ namespace XSharp.Project
             // 
             // tbAppIcon
             // 
-            this.tbAppIcon.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tbAppIcon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(37)))), ((int)(((byte)(38)))));
             this.tbAppIcon.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbAppIcon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.tbAppIcon.Location = new System.Drawing.Point(5, 224);
+            this.tbAppIcon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.tbAppIcon.Location = new System.Drawing.Point(5, 200);
             this.tbAppIcon.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.tbAppIcon.Name = "tbAppIcon";
             this.tbAppIcon.Size = new System.Drawing.Size(308, 20);
@@ -314,8 +243,8 @@ namespace XSharp.Project
             // chkSuppressDefaultManifest
             // 
             this.chkSuppressDefaultManifest.AutoSize = true;
-            this.chkSuppressDefaultManifest.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.chkSuppressDefaultManifest.Location = new System.Drawing.Point(5, 253);
+            this.chkSuppressDefaultManifest.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.chkSuppressDefaultManifest.Location = new System.Drawing.Point(5, 223);
             this.chkSuppressDefaultManifest.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkSuppressDefaultManifest.Name = "chkSuppressDefaultManifest";
             this.chkSuppressDefaultManifest.Size = new System.Drawing.Size(178, 17);
@@ -326,8 +255,8 @@ namespace XSharp.Project
             // chkPreferNativeVersion
             // 
             this.chkPreferNativeVersion.AutoSize = true;
-            this.chkPreferNativeVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.chkPreferNativeVersion.Location = new System.Drawing.Point(5, 273);
+            this.chkPreferNativeVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.chkPreferNativeVersion.Location = new System.Drawing.Point(5, 243);
             this.chkPreferNativeVersion.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkPreferNativeVersion.Name = "chkPreferNativeVersion";
             this.chkPreferNativeVersion.Size = new System.Drawing.Size(308, 17);
@@ -338,8 +267,8 @@ namespace XSharp.Project
             // chkVulcanCompatibleResources
             // 
             this.chkVulcanCompatibleResources.AutoSize = true;
-            this.chkVulcanCompatibleResources.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.chkVulcanCompatibleResources.Location = new System.Drawing.Point(5, 293);
+            this.chkVulcanCompatibleResources.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.chkVulcanCompatibleResources.Location = new System.Drawing.Point(5, 272);
             this.chkVulcanCompatibleResources.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkVulcanCompatibleResources.Name = "chkVulcanCompatibleResources";
             this.chkVulcanCompatibleResources.Size = new System.Drawing.Size(209, 17);
@@ -347,10 +276,80 @@ namespace XSharp.Project
             this.chkVulcanCompatibleResources.Text = "Vulcan compatible managed resources";
             this.chkVulcanCompatibleResources.UseVisualStyleBackColor = true;
             // 
+            // lblDefaultNamespace
+            // 
+            this.lblDefaultNamespace.AutoSize = true;
+            this.lblDefaultNamespace.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblDefaultNamespace.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.lblDefaultNamespace.Location = new System.Drawing.Point(321, 3);
+            this.lblDefaultNamespace.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
+            this.lblDefaultNamespace.Name = "lblDefaultNamespace";
+            this.lblDefaultNamespace.Size = new System.Drawing.Size(309, 13);
+            this.lblDefaultNamespace.TabIndex = 2;
+            this.lblDefaultNamespace.Text = "Default Namespace:";
+            // 
+            // tbDefaultNamespace
+            // 
+            this.tbDefaultNamespace.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(37)))), ((int)(((byte)(38)))));
+            this.tbDefaultNamespace.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbDefaultNamespace.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.tbDefaultNamespace.Location = new System.Drawing.Point(321, 19);
+            this.tbDefaultNamespace.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
+            this.tbDefaultNamespace.Name = "tbDefaultNamespace";
+            this.tbDefaultNamespace.Size = new System.Drawing.Size(309, 20);
+            this.tbDefaultNamespace.TabIndex = 3;
+            // 
+            // lblOutputType
+            // 
+            this.lblOutputType.AutoSize = true;
+            this.lblOutputType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.lblOutputType.Location = new System.Drawing.Point(321, 42);
+            this.lblOutputType.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
+            this.lblOutputType.Name = "lblOutputType";
+            this.lblOutputType.Size = new System.Drawing.Size(69, 13);
+            this.lblOutputType.TabIndex = 6;
+            this.lblOutputType.Text = "Output Type:";
+            // 
+            // comboOutputType
+            // 
+            this.comboOutputType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(37)))), ((int)(((byte)(38)))));
+            this.comboOutputType.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comboOutputType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboOutputType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.comboOutputType.FormattingEnabled = true;
+            this.comboOutputType.Location = new System.Drawing.Point(321, 58);
+            this.comboOutputType.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
+            this.comboOutputType.Name = "comboOutputType";
+            this.comboOutputType.Size = new System.Drawing.Size(309, 21);
+            this.comboOutputType.TabIndex = 7;
+            // 
+            // labelStartupObject
+            // 
+            this.labelStartupObject.AutoSize = true;
+            this.labelStartupObject.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.labelStartupObject.Location = new System.Drawing.Point(321, 108);
+            this.labelStartupObject.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
+            this.labelStartupObject.Name = "labelStartupObject";
+            this.labelStartupObject.Size = new System.Drawing.Size(76, 13);
+            this.labelStartupObject.TabIndex = 11;
+            this.labelStartupObject.Text = "Startup object:";
+            // 
+            // comboStartupObject
+            // 
+            this.comboStartupObject.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(37)))), ((int)(((byte)(38)))));
+            this.comboStartupObject.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboStartupObject.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.comboStartupObject.FormattingEnabled = true;
+            this.comboStartupObject.Location = new System.Drawing.Point(321, 124);
+            this.comboStartupObject.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
+            this.comboStartupObject.Name = "comboStartupObject";
+            this.comboStartupObject.Size = new System.Drawing.Size(308, 21);
+            this.comboStartupObject.TabIndex = 12;
+            // 
             // btnIcon
             // 
-            this.btnIcon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.btnIcon.Location = new System.Drawing.Point(319, 224);
+            this.btnIcon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(241)))), ((int)(((byte)(241)))));
+            this.btnIcon.Location = new System.Drawing.Point(319, 243);
             this.btnIcon.Name = "btnIcon";
             this.btnIcon.Size = new System.Drawing.Size(23, 23);
             this.btnIcon.TabIndex = 16;

@@ -88,6 +88,7 @@ namespace XSharp.Project
 
             if (IsSdkProject && IsMultiTargetingProject)
             {
+                tableLayoutPanel1.SetRow(comboTargetFramework, 4);
                 lblTargetFramework.Text = GeneralPropertyPagePanel.captTargetFrameworks;
                 toolTip1.SetToolTip(lblTargetFramework, GeneralPropertyPagePanel.descFrameworks);
                 this.tbTargetFrameworks.Tag = XSharpProjectFileConstants.XTargetFrameworks;
@@ -97,6 +98,7 @@ namespace XSharp.Project
             }
             else
             {
+                tableLayoutPanel1.SetRow(comboTargetFramework, 3);
                 lblTargetFramework.Text = GeneralPropertyPagePanel.captTargetFramework;
                 toolTip1.SetToolTip(lblTargetFramework, GeneralPropertyPagePanel.descFramework);
                 if (IsSdkProject)

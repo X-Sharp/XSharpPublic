@@ -1881,8 +1881,17 @@ namespace XSharp.Project
         }
         public void DoReload()
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            this.Reload();
+            var fileName = this.BuildProject.FullPath;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var projects = await VS.Solutions.GetAllProjectsAsync();
+                var prj = projects.FirstOrDefault(p => string.Compare(p.FullPath, fileName, true) == 0);
+                if (prj == null)
+                    return;
+                await prj.UnloadAsync();
+                await prj.LoadAsync();
+
+            });
         }
         protected override void Reload()
         {

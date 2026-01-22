@@ -16,15 +16,52 @@ namespace XSharp.Debugger.UI
 
         const int STATUS = 1;
         const int FIELDS = 2;
+        const int INDEXES = 3;
+        const int STRUCTURE = 4;
+        public bool ShowIndexes
+        {
+            get => Contents == INDEXES;
+            set
+            {
+                if (value)
+                {
+                    Contents = INDEXES;
+                }
+            }
+        }
+        public bool ShowStructure
+        {
+            get => Contents == STRUCTURE;
+            set
+            {
+                if (value)
+                {
+                    Contents = STRUCTURE;
+                }
+            }
+        }
+
         public bool ShowStatus
         {
             get => Contents == STATUS;
-            set => Contents = value ? STATUS : FIELDS;
+            set
+            {
+                if (value)
+                {
+                    Contents = STATUS;
+                }
+            }
         }
         public bool ShowFields
         {
-            get => Contents != STATUS;
-            set => Contents = value ? FIELDS : STATUS;
+            get => Contents == FIELDS;
+            set
+            {
+                if (value)
+                {
+                    Contents = FIELDS;
+                }
+            }
         }
         private string _alias;
         public string Alias
@@ -94,6 +131,8 @@ namespace XSharp.Debugger.UI
 
         private IList<NameValueItem> _status;
         private IList<NameValueItem> _fields;
+        private IList<NameValueItem> _indexes;
+        private IList<NameValueItem> _structure;
 
         private IList<NameValueItem> _info;
         public IList<NameValueItem> AreaInfo
@@ -103,16 +142,25 @@ namespace XSharp.Debugger.UI
         }
         public IList<NameValueItem> Status { get => _status; set { _status = value; UpdateAreaInfo(); } }
         public IList<NameValueItem> Fields { get => _fields; set { _fields = value; UpdateAreaInfo(); } }
+        public IList<NameValueItem> Indexes { get => _indexes; set { _indexes = value; UpdateAreaInfo(); } }
+        public IList<NameValueItem> Structure { get => _structure; set { _structure= value; UpdateAreaInfo(); } }
 
         void UpdateAreaInfo()
         {
-            if (Contents == STATUS)
+            switch (Contents)
             {
-                AreaInfo = Status;
-            }
-            else
-            {
-                AreaInfo = Fields;
+                case STATUS:
+                    AreaInfo = Status;
+                    break;
+                case FIELDS:
+                    AreaInfo = Fields;
+                    break;
+                case STRUCTURE:
+                    AreaInfo = Structure;
+                    break;
+                case INDEXES:
+                    AreaInfo = Indexes;
+                    break;
             }
         }
 

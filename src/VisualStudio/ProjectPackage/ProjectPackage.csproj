@@ -259,14 +259,6 @@
     <Content Include="Editors\Todo.txt" />
     <Content Include="source.extension.2019.vsixmanifest" />
     <Content Include="source.extension.2022.vsixmanifest" />
-    <Content Include="System.Memory.dll" IncludeAssets="all">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="System.Reflection.Metadata.dll" IncludeAssets="all">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="Template.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -794,9 +786,15 @@
     </PackageReference>
     <PackageReference Include="System.Memory">
       <Version>4.5.5</Version>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <IncludeAssets>all</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Reflection.Metadata">
       <Version>8.0.0</Version>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <IncludeAssets>all</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>

@@ -20,7 +20,6 @@ using XSharp.Settings;
 using Microsoft.VisualStudio.Shell;
 #if DEV17
 using System.Threading;
-using Microsoft.VisualStudio.Shell;
 using System.Threading.Tasks;
 #endif
 

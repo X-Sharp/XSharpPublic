@@ -59,8 +59,10 @@ namespace XSharp.Debugger.UI
                 var str = await Support.GetWorkareasAsync();
                 var items = WorkareaItems.Deserialize(str);
                 View.Items = items.Items;
-                var rdds = new List<String>();
-                rdds.Add(WorkareasView.AllRDDs);
+                var rdds = new List<String>
+                {
+                    WorkareasView.AllRDDs
+                };
                 foreach (var item in items.Items)
                 {
                     if (!rdds.Contains(item.RDD))
@@ -105,7 +107,25 @@ namespace XSharp.Debugger.UI
                 return fields;
             });
         }
+        private NameValueItems GetIndexes(int area)
+        {
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var str = await Support.GetIndexesAsync((int)area);
+                var indexes = NameValueItems.Deserialize(str);
+                return indexes  ;
+            });
+        }
 
+        private NameValueItems GetStructure(int area) 
+        {
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var str = await Support.GetStructureAsync((int)area);
+                var strucure = NameValueItems.Deserialize(str);
+                return strucure;
+            });
+        }   
         private void ShowDetails()
         {
             if (XDebuggerSettings.DebuggerMode == DebuggerMode.Break)
@@ -117,6 +137,8 @@ namespace XSharp.Debugger.UI
                     View.Alias = item.Alias;
                     View.Status = GetStatus(areaNum).Items;
                     View.Fields = GetFields(areaNum).Items;
+                    View.Indexes = GetIndexes(areaNum).Items;
+                    View.Structure = GetStructure(areaNum).Items;
                 }
                 else if (this.lvAreas.Items.Count > 0)
                 {
@@ -143,6 +165,7 @@ namespace XSharp.Debugger.UI
                 }
                 View.Status = stubs.Items; ;
                 View.Fields = stubs.Items;
+                View.Indexes = stubs.Items;
             }
         }
 
@@ -151,6 +174,49 @@ namespace XSharp.Debugger.UI
         private void lvAreas_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             ShowDetails();
+        }
+
+        private void OnRadioClicked(object sender, RoutedEventArgs e)
+        {
+            lvInfo.Columns[3].Visibility = Visibility.Hidden;
+            lvInfo.Columns[2].Visibility = Visibility.Hidden;
+            if (sender == this.btnStructure)
+            {
+                lvInfo.Columns[3].Visibility = Visibility.Visible;
+                lvInfo.Columns[2].Visibility = Visibility.Visible;
+                DataGridTextColumn col = lvInfo.Columns[0] as DataGridTextColumn;
+                col.Header = "Field";
+                col = lvInfo.Columns[1] as DataGridTextColumn;
+                col.Header = "Type";
+                col.Width = new DataGridLength(1, DataGridLengthUnitType.Auto);
+            }
+            else
+            {
+                if (sender == this.btnStatus)
+                {
+                    DataGridTextColumn col = lvInfo.Columns[0] as DataGridTextColumn;
+                    col.Header = "Name";
+                    col = lvInfo.Columns[1] as DataGridTextColumn;
+                    col.Header = "Value";
+                    col.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
+                }
+                else if (sender == this.btnFields)
+                {
+                    DataGridTextColumn col = lvInfo.Columns[0] as DataGridTextColumn;
+                    col.Header = "Field";
+                    col = lvInfo.Columns[1] as DataGridTextColumn;
+                    col.Header = "Value";
+                    col.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
+                }
+                else if (sender == this.btnIndexes)
+                {
+                    DataGridTextColumn col = lvInfo.Columns[0] as DataGridTextColumn;
+                    col.Header = "Information";
+                    col = lvInfo.Columns[1] as DataGridTextColumn;
+                    col.Header = "Value";
+                    col.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
+                }
+            }
         }
     }
 }

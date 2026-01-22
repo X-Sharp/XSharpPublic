@@ -108,6 +108,17 @@ namespace XSharp.Debugger.UI
             var result = await Support.ExecExpressionAsync($"XSharp.Debugger.Support.RtLink.GetFieldValues({Area})");
             return StripResult(result);
         }
+        internal static async Task<string> GetIndexesAsync(int Area)
+        {
+            var result = await Support.ExecExpressionAsync($"XSharp.Debugger.Support.RtLink.GetIndexes({Area})");
+            return StripResult(result);
+        }
+
+        internal static async Task<string> GetStructureAsync(int Area)
+        {
+            var result = await Support.ExecExpressionAsync($"XSharp.Debugger.Support.RtLink.GetStructure({Area})");
+            return StripResult(result);
+        }
 
 
         static bool IsProcessChanged()

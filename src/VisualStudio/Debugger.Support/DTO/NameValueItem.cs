@@ -10,7 +10,9 @@ namespace XSharp.Debugger.Support
     public class NameValueItem
     {
         public string Name { get; set; }
-        public string Value { get; set; }   
+        public string Value { get; set; }
+        public string Length { get; set; }
+        public string Decimals { get; set; }
     }
     public sealed class NameValueItems
     {
@@ -55,6 +57,10 @@ namespace XSharp.Debugger.Support
                 sb.Append(item.Name);
                 sb.Append(",");
                 sb.Append(item.Value);
+                sb.Append(",");
+                sb.Append(item.Length);
+                sb.Append(",");
+                sb.Append(item.Decimals);
             }
             return sb.ToString();
         }
@@ -65,11 +71,13 @@ namespace XSharp.Debugger.Support
             foreach (var item in items)
             {
                 var fields = item.Split(',');
-                if (fields.Length >= 2)
+                if (fields.Length >= 4)
                 {
                     var nvitem = new NameValueItem();
                     nvitem.Name = fields[0];
                     nvitem.Value = fields[1];
+                    nvitem.Length = fields[2];
+                    nvitem.Decimals = fields[3];
                     result.Add(nvitem);
                 }
             }

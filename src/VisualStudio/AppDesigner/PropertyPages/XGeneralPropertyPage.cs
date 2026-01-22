@@ -176,6 +176,10 @@ namespace XSharp.Project
             else if (propertyName == XSharpProjectFileConstants.TargetFramework)
             {
                 oldValue = base.GetProperty(XSharpProjectFileConstants.TargetFramework);
+                if (value.StartsWith(" ") || value.Contains(" "))
+                {
+                    value = ConvertFrameworkName(value);
+                }
             }
 			else if (propertyName == XSharpProjectFileConstants.TargetFrameworkVersion)
             {
@@ -198,6 +202,7 @@ namespace XSharp.Project
 
             ThreadHelper.ThrowIfNotOnUIThread();
             var oldvalueFromFile = base.GetProperty(propertyName);
+            
             bool changed = value != oldvalueFromFile;
 
             if (changed)
@@ -275,7 +280,7 @@ namespace XSharp.Project
                         if (! String.IsNullOrEmpty(project.BuildProject.Xml.Sdk))
                         {
                             dynamic sdkProject = project;
-                            sdkProject.DoReload();
+                            sdkProject.DoReload(true);
                         }
 
 

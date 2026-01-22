@@ -1879,17 +1879,35 @@ namespace XSharp.Project
         {
             this.UnloadProject();
         }
-        public void DoReload()
+        public void DoReload(bool fromProperties)
         {
             var fileName = this.BuildProject.FullPath;
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 var projects = await VS.Solutions.GetAllProjectsAsync();
                 var prj = projects.FirstOrDefault(p => string.Compare(p.FullPath, fileName, true) == 0);
+                List<string> FileNames = new List<String>();
                 if (prj == null)
                     return;
+                var windows = await VS.Windows.GetAllDocumentWindowsAsync();
+                foreach (var window in windows)
+                {
+                    var docview = await window.GetDocumentViewAsync();
+                    if (docview != null)
+                    {
+                        FileNames.Add(docview.FilePath);
+                    }
+                }
                 await prj.UnloadAsync();
                 await prj.LoadAsync();
+                foreach (var file in FileNames)
+                {
+                    await VS.Documents.OpenAsync(file);
+                }
+                if (fromProperties)
+                {
+                    await VS.Commands.ExecuteAsync(KnownCommands.Project_Properties);
+                }
 
             });
         }

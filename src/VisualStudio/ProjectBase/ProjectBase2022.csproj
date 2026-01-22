@@ -197,7 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.545</Version>
+      <Version>17.0.549</Version>
     </PackageReference>
     <PackageReference Include="MessagePack">
       <Version>2.5.192</Version>

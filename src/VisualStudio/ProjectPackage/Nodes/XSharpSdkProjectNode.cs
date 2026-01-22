@@ -116,7 +116,7 @@ namespace XSharp.Project
                 SetProjectProperty(XSharpProjectFileConstants.TargetFramework, info.TargetFramework);
                 SetProjectProperty(XSharpProjectFileConstants.ActiveTargetFramework, info.TargetFramework);
 
-                this.DoReload();
+                this.DoReload(false);
                 //this.OnPropertyChanged(this, (int)__VSHPROPID.VSHPROPID_Caption, 0);
                 this.OnPropertyChanged(this, (int)__VSHPROPID6.VSHPROPID_Subcaption, 0);
                 VS.Commands.ExecuteAsync("Project.SetAsStartupProject").FireAndForget();
@@ -182,7 +182,7 @@ namespace XSharp.Project
             }
             else
             {
-                if (!frameworks.ToLower().Contains(framework.ToLower()))
+                if (frameworks != null && framework != null && !frameworks.ToLower().Contains(framework.ToLower()))
                 {
                     single = false;
                     framework = null;

@@ -17,6 +17,7 @@ using Microsoft.VisualStudio.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Diagnostics;
 using XSharp.Settings;
+using Microsoft.VisualStudio.Shell;
 #if DEV17
 using System.Threading;
 using Microsoft.VisualStudio.Shell;

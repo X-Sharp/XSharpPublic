@@ -138,7 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.16">
-      <Version>16.0.545</Version>
+      <Version>16.0.549</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine">
       <Version>16.10.1051404</Version>

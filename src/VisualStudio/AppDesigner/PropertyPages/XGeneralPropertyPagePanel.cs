@@ -6,7 +6,6 @@
 
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 
 using System;
 using System.Drawing;
@@ -15,8 +14,6 @@ using System.Windows.Forms;
 using XSharp.Settings;
 
 using XSharpModel;
-
-using static System.Resources.ResXFileRef;
 
 namespace XSharp.Project
 {

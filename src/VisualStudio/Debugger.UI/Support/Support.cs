@@ -35,7 +35,11 @@ namespace XSharp.Debugger.UI
             var vend_id = Guid.Parse(Constants.XSharpVendorString);
             var lang_id = Guid.Parse(Constants.XSharpLanguageString);
             language = DkmLanguage.Create(lang_name, new DkmCompilerId(vend_id, lang_id));
-            debugger = XSharpDebuggerUIPackage.Instance.Dte.Debugger;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                debugger = XSharpDebuggerUIPackage.Instance.Dte.Debugger;
+            });
             windows = new List<IDebuggerToolWindow>();
         }
         internal static string StripResult(string str)

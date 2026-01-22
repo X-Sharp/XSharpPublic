@@ -1,16 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Specific targets for SDK type projects-->
 <Project>
-  <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   <Import Project="Runtime.Common.Targets" />
-  <Import Project="$(CommonInclude)\Version.Targets" />
+  <Import Project="$(CommonInclude)Version.Targets" />
   <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <cs>True</cs>
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <DefineConstants>$(DefineConstants);NETNEXT;RUNTIME</DefineConstants>
-    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
-    <TargetPlatFormIdentifier>windows</TargetPlatFormIdentifier>
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>

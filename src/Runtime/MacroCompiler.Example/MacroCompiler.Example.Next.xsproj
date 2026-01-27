@@ -15,6 +15,7 @@
     <StartupObject />
     <Allowdot>false</Allowdot>
     <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
+    <NoStandardDefs>False</NoStandardDefs>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net8.0\XSharp.RT.dll" />

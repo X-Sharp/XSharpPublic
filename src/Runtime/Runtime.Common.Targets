@@ -26,7 +26,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <ErrorReport>prompt</ErrorReport>
-	  <!--<XscToolPath>$(BinariesDir)bin\xsc\$(Configuration)\net472\</XscToolPath>-->
+    <XscToolPath>$(BinariesDir)bin\xsc\$(Configuration)\net472\</XscToolPath>
     <CommonInclude>$(CommonDir)</CommonInclude>
     <AZ>false</AZ>
     <CS>false</CS>
@@ -60,10 +60,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>false</UseSharedCompilation>
+    <UseSharedCompilation>true</UseSharedCompilation>
     <EnforceOverRide>true</EnforceOverRide>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <RuntimeIdentifier>win</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="'$(UsingMicrosoftNETSdk)' != 'true'">win</RuntimeIdentifier>
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <EmitDebugInformation>true</EmitDebugInformation>

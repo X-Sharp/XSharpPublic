@@ -6,7 +6,7 @@
     <title>XSharp Visual Objects SDK Classes</title>
     <authors>XSharp B.V.</authors>
 	<owners>XSharp B.V.</owners>
-    <licenseUrl>https://github.com/X-Sharp/XSharpPublic/src/License.txt</licenseUrl>
+	<license type="expression">Apache-2.0</license>
     <icon>icon\Xsharp.png</icon>
     <readme>Readme.md</readme>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

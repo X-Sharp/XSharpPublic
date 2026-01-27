@@ -7,7 +7,7 @@
     <authors>XSharp B.V.</authors>
     <owners>XSharp B.V.</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <licenseUrl>https://github.com/X-Sharp/XSharpPublic/src/License.txt</licenseUrl>
+	<license type="expression">Apache-2.0</license>
     <icon>icon\Xsharp.png</icon>
 	  <readme>Readme.md</readme>
     <description>XSharp Visual Objects Runtime</description>

@@ -462,6 +462,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             // know how to represent the constant being matched against in the input type. For example, `1.0 is 1` will work when written inline, but
             // will fail if the input type is `INumberBase<T>`. We block this now so that we can make make it work as expected in the future without
             // being a breaking change.
+#if XSHARP
+            if (patternConversion.IsEnumeration)
+            {
+                return false;
+            }
+#endif
 
             if (patternConversion.IsIdentity || patternConversion.IsConstantExpression || patternConversion.IsNumeric)
             {

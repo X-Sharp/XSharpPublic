@@ -200,8 +200,8 @@ BEGIN NAMESPACE XSharp.RDD
             IF res .AND. _inBuffer != NULL
                 BEGIN LOCK _weakBuffer
                     IF offset < _inBufferOfs+_inBufferLen .AND. offset+size > _inBufferOfs
-                        VAR buffer_ofs := Math.Max( 0, _inBufferOfs - offset )
-                        VAR inbuffer_ofs := Math.Max( 0, offset - _inBufferOfs )
+                        VAR buffer_ofs := Math.Max( (int64) 0, _inBufferOfs - offset )
+                        VAR inbuffer_ofs := Math.Max( (int64) 0, offset - _inBufferOfs )
                         VAR buffer_size := Math.Min( size - buffer_ofs, _inBufferLen - inbuffer_ofs )
                         Array.Copy( buffer, buffer_ofs, _inBuffer, inbuffer_ofs, buffer_size )
                     ENDIF

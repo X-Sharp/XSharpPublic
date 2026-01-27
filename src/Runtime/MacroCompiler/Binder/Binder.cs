@@ -102,8 +102,10 @@ namespace XSharp.MacroCompiler
 
         internal static Binder<T> Create<T>(MacroOptions options, Type delegateType)
         {
-            //if (options?.GenerateAssembly == true)
-            //    return new AssemblyBinder<T>(options, delegateType);
+#if !NET50_OR_GREATER
+            if (options?.GenerateAssembly == true)
+                return new AssemblyBinder<T>(options, delegateType);
+#endif
             if (options?.StrictTypedSignature == true)
                 return new TypedBinder<T>(options, delegateType);
             return new Binder<T>(options, delegateType);
@@ -111,8 +113,10 @@ namespace XSharp.MacroCompiler
 
         internal static Binder<T> Create<T,R>(MacroOptions options) where R: Delegate
         {
-            //if (options?.GenerateAssembly == true)
-            //    return new AssemblyBinder<T>(options, typeof(Delegate) != typeof(R) ? typeof(R) : null);
+#if !NET50_OR_GREATER
+            if (options?.GenerateAssembly == true)
+                return new AssemblyBinder<T>(options, typeof(Delegate) != typeof(R) ? typeof(R) : null);
+#endif
             if (options?.StrictTypedSignature == true)
                 return new TypedBinder<T>(options, typeof(Delegate) != typeof(R) ? typeof(R) : null);
             return new Binder<T, R>(options);
@@ -764,7 +768,7 @@ namespace XSharp.MacroCompiler
             return new DynamicMethod(source, ResultType.Type ?? typeof(void), par.ToArray());
         }
     }
-    /*
+#if !NET50_OR_GREATER
     internal class AssemblyBinder<T> : TypedBinder<T>
     {
         internal AssemblyBinder(MacroOptions options, Type delegateType) : base(options, delegateType) { }
@@ -786,9 +790,9 @@ namespace XSharp.MacroCompiler
             AssemblyName assembly = new AssemblyName(NameOfAssembly);
             AppDomain appDomain = System.Threading.Thread.GetDomain();
             var tempName = Path.GetTempFileName();
-            Assembly = AssemblyBuilder.DefineDynamicAssembly(assembly, AssemblyBuilderAccess.Run);
+            Assembly = appDomain.DefineDynamicAssembly(assembly, AssemblyBuilderAccess.Save, Path.GetDirectoryName(tempName));
             Name = Path.GetFileName(tempName);
-            AssemblyModule = Assembly.DefineDynamicModule(assembly.Name);
+            AssemblyModule = Assembly.DefineDynamicModule(assembly.Name, Name);
 
             //create the class
             MethodType = AssemblyModule.DefineType(NameOfClass, System.Reflection.TypeAttributes.Public | System.Reflection.TypeAttributes.Class, typeof(object));
@@ -826,5 +830,5 @@ namespace XSharp.MacroCompiler
         internal override ILGenerator GetILGenerator() => Method.GetILGenerator();
 
     }
-    */
+#endif
 }

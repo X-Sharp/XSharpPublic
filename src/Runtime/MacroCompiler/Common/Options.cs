@@ -93,8 +93,9 @@ namespace XSharp.MacroCompiler
         public RuntimeAssemblies RuntimeAssemblies = RuntimeAssemblies.None;
 
         public bool StrictTypedSignature = false;
+#if !NET50_OR_GREATER
         public bool GenerateAssembly = false;
-
+#endif
         internal bool ParseEntities { get => ParseMode == ParseMode.Entities; }
         internal bool ParseStatements { get => ParseMode == ParseMode.Statements || ParseMode == ParseMode.Entities; }
 

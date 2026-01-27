@@ -11,7 +11,7 @@ using XSharp.MacroCompiler.Syntax;
 namespace XSharp.MacroCompiler
 {
     public static partial class Compilation
-    {    
+    {
         public static Compilation<T, Func<T[], T>> Create<T>(MacroOptions options = null)
         {
             if (options?.StrictTypedSignature == true)
@@ -138,6 +138,7 @@ namespace XSharp.MacroCompiler
                     binder.AddAutoLocal(l.Item1, Binder.FindType(l.Item2));
 
             // Set generated names
+#if !NET50_OR_GREATER
             if (binder is AssemblyBinder<T> b)
             {
                 if (NameOfAssembly != null)
@@ -148,7 +149,7 @@ namespace XSharp.MacroCompiler
                     b.NameOfMethod = NameOfMethod;
             }
         }
-
+#endif
         public CompilationResult<R> Compile<R>(string source) where R: Delegate
         {
             try

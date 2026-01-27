@@ -658,7 +658,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return expr;
             }
 #if XSHARP
-            ReportStringConcatError(syntax, expr);
+            //ReportStringConcatError(syntax, expr);
 #endif
             // Evaluate toString at the last possible moment, to avoid spurious diagnostics if it's missing.
             // All code paths below here use it.

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Targets" />
+  <PropertyGroup>
+    <RootNamespace>XSharp</RootNamespace>
+    <AssemblyName>XSharp.RDD</AssemblyName>
+    <Dialect>Core</Dialect>
+    <AZ>true</AZ>
+    <CS>true</CS>
+    <INS>true</INS>
+    <NamedArgs>True</NamedArgs>
+    <Nostandarddefs>true</Nostandarddefs>
+    <Unsafe>True</Unsafe>
+    <allowdot>true</allowdot>
+    <EnforceSelf>True</EnforceSelf>
+    <StartupObject />
+    <ProjectGuid>{12292164-0039-4c8c-9287-ae5e3780cab0}</ProjectGuid>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{2a23c26e-b632-4dda-ae8a-883efd067f7c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

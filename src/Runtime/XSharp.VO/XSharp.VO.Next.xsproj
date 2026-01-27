@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Targets" />
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <RootNamespace>XSharp</RootNamespace>
+    <AssemblyName>XSharp.VO</AssemblyName>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Dialect>VO</Dialect>
+    <Unsafe>True</Unsafe>
+    <NamedArgs>True</NamedArgs>
+    <StartupObject />
+    <ProjectGuid>{59fad2f5-93af-4c52-9b08-6e652c86d546}</ProjectGuid>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Functions\" />
+    <Folder Include="obj\" />
+    <Folder Include="Properties\" />
+    <Folder Include="Types\" />
+  </ItemGroup>
+  <Import Project="..\XmlDoc.Targets" />
+</Project>

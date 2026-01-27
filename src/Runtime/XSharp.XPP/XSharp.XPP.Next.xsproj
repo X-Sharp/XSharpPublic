@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Targets" />
+  <PropertyGroup>
+    <RootNamespace>XSharp.XPP</RootNamespace>
+    <AssemblyName>XSharp.XPP</AssemblyName>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Dialect>XPP</Dialect>
+    <CS>true</CS>
+    <Unsafe>True</Unsafe>
+    <NS>true</NS>
+    <vo15>true</vo15>
+    <Nostandarddefs>true</Nostandarddefs>
+    <StartupObject />
+    <EnforceSelf>True</EnforceSelf>
+    <Allowdot>false</Allowdot>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <ProjectGuid>{debbd8dc-b1ce-4742-b959-f429890ce151}</ProjectGuid>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Collations\" />
+    <Folder Include="Defines\" />
+    <Folder Include="obj\" />
+    <Folder Include="Properties\" />
+    <Folder Include="Types\" />
+  </ItemGroup>
+  <Import Project="..\XmlDoc.Targets" />
+</Project>

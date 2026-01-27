@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Targets" />
+  <PropertyGroup>
+    <RootNamespace>XSharp</RootNamespace>
+    <AssemblyName>XSharp.RT.Debugger</AssemblyName>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Dialect>Core</Dialect>
+    <AZ>true</AZ>
+    <CS>true</CS>
+    <INS>true</INS>
+    <NamedArgs>True</NamedArgs>
+    <Nostandarddefs>true</Nostandarddefs>
+    <StandardDefs />
+    <StartupObject />
+    <Allowdot>True</Allowdot>
+    <EnforceSelf>True</EnforceSelf>
+    <ProjectGuid>{987acdbf-462f-4711-b170-9c5e2e69a5b3}</ProjectGuid>
+    <TargetFramework>net8.0</TargetFramework>  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="..\XmlDoc.Targets" />
+</Project>

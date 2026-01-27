@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Targets" />
+  <PropertyGroup>
+    <RootNamespace>XSharp.Data</RootNamespace>
+    <AssemblyName>XSharp.Data</AssemblyName>
+    <Dialect>VO</Dialect>
+    <CS>true</CS>
+    <Nostandarddefs>true</Nostandarddefs>
+    <StandardDefs />
+    <StartupObject />
+    <EnforceSelf>True</EnforceSelf>
+    <Allowdot>false</Allowdot>
+    <ProjectGuid>{3ad2f9bb-18f3-468d-b335-fdbfa9789067}</ProjectGuid>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\constants.prg">
+      <Link>Properties\constants.prg</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Data.Common">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.Odbc">
+      <Version>10.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.OleDb">
+      <Version>10.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.SqlClient">
+      <Version>4.9.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="FoxPro\" />
+    <Folder Include="obj\" />
+    <Folder Include="Parser\" />
+    <Folder Include="Properties\" />
+    <Folder Include="RDD\" />
+    <Folder Include="SQL\" />
+  </ItemGroup>
+  <Import Project="..\XmlDoc.Targets" />
+</Project>

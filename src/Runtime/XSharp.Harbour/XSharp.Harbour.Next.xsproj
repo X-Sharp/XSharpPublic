@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Targets" />
+  <PropertyGroup>
+    <RootNamespace>XSharp.Harbour</RootNamespace>
+    <AssemblyName>XSharp.Harbour</AssemblyName>
+    <Dialect>VO</Dialect>
+    <CS>true</CS>
+    <Unsafe>true</Unsafe>
+    <NS>true</NS>
+    <Nostandarddefs>true</Nostandarddefs>
+    <StandardDefs />
+    <EnforceSelf>True</EnforceSelf>
+    <Allowdot>false</Allowdot>
+    <StartupObject />
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
+  </ItemGroup>
+  <Import Project="..\XmlDoc.Targets" />
+</Project>

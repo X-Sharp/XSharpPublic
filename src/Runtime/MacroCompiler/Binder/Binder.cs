@@ -102,7 +102,7 @@ namespace XSharp.MacroCompiler
 
         internal static Binder<T> Create<T>(MacroOptions options, Type delegateType)
         {
-#if !NET50_OR_GREATER
+#if !NET5_0_OR_GREATER
             if (options?.GenerateAssembly == true)
                 return new AssemblyBinder<T>(options, delegateType);
 #endif
@@ -113,7 +113,7 @@ namespace XSharp.MacroCompiler
 
         internal static Binder<T> Create<T,R>(MacroOptions options) where R: Delegate
         {
-#if !NET50_OR_GREATER
+#if !NET5_0_OR_GREATER
             if (options?.GenerateAssembly == true)
                 return new AssemblyBinder<T>(options, typeof(Delegate) != typeof(R) ? typeof(R) : null);
 #endif
@@ -768,7 +768,7 @@ namespace XSharp.MacroCompiler
             return new DynamicMethod(source, ResultType.Type ?? typeof(void), par.ToArray());
         }
     }
-#if !NET50_OR_GREATER
+#if !NET5_0_OR_GREATER
     internal class AssemblyBinder<T> : TypedBinder<T>
     {
         internal AssemblyBinder(MacroOptions options, Type delegateType) : base(options, delegateType) { }

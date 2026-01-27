@@ -138,7 +138,7 @@ namespace XSharp.MacroCompiler
                     binder.AddAutoLocal(l.Item1, Binder.FindType(l.Item2));
 
             // Set generated names
-#if !NET50_OR_GREATER
+#if !NET5_0_OR_GREATER
             if (binder is AssemblyBinder<T> b)
             {
                 if (NameOfAssembly != null)
@@ -148,8 +148,8 @@ namespace XSharp.MacroCompiler
                 if (NameOfMethod != null)
                     b.NameOfMethod = NameOfMethod;
             }
-        }
 #endif
+        }
         public CompilationResult<R> Compile<R>(string source) where R: Delegate
         {
             try

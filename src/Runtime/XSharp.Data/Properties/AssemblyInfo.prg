@@ -12,7 +12,7 @@ using XSharp
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-#ifndef NET50_OR_GREATER
+#ifndef NET5_0_OR_GREATER
 [assembly: AssemblyTitle("XSharp.Data")]
 #endif
 [assembly: AssemblyDescription("XSharp Data DLL")]

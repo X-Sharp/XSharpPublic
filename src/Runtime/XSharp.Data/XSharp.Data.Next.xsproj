@@ -26,7 +26,11 @@
       <Project>{cc7c83af-345a-4719-9490-65ee4a04f3f4}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj">
+      <Name>XSharp.RT.Next</Name>
+      <Project>{d233b3c6-e6f8-478d-9ce5-ef27a594e370}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Data.Common">

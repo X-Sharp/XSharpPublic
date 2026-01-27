@@ -14,6 +14,8 @@ using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
+using stdole;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -48,11 +50,16 @@ namespace XSharp.Project
 
         internal static XSharpProjectNode FindProject(string url)
         {
+            var file = System.IO.Path.GetFileName(url);
             foreach (var proj in nodes)
             {
-                if (string.Compare(proj.ProjectFolder, Path.GetDirectoryName(url), true) == 0)
+                if (string.Compare(proj.FileName, url, true) == 0)
+                    return proj;
+                var pFile = System.IO.Path.GetFileName(proj.FileName);
+                if (string.Compare(pFile, url, true) == 0)
                     return proj;
             }
+
             return null;
         }
 
@@ -1369,6 +1376,37 @@ namespace XSharp.Project
         {
             return new XSharpReferenceContainerNode(this);
         }
+
+        internal bool HasIncompleteReferences = false;
+
+        internal bool FixReferences()
+        {
+            var found = true;
+            var container = this.GetReferenceContainer() as XSharpReferenceContainerNode;
+            foreach (var child in container.EnumReferences())
+            {
+                if (child is XSharpProjectReferenceNode)
+                {
+                    var element = child.ItemNode;
+                    var path = element.Item.EvaluatedInclude;
+                    path = System.IO.Path.GetFileName(path);
+                    var refnode = FindProject(path);
+                    var guid = refnode.ProjectIDGuid;
+                    if (guid != Guid.Empty)
+                    {
+                        element.SetMetadata("Project", guid.ToString("B").ToUpperInvariant());
+                    }
+                    else
+                    {
+                        found = false;
+                    }
+                }
+                HasIncompleteReferences = !found;
+                this.BuildProject.Save();
+            }
+            return found;
+        }
+
 
         private object CreateServices(Type serviceType)
         {

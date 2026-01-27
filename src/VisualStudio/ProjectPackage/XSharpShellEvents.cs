@@ -34,8 +34,21 @@ namespace XSharp.Project
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
                 VS.Events.SolutionEvents.OnBeforeCloseProject += SolutionEvents_OnBeforeCloseProject;
+                VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
             });
 
+        }
+
+        private void SolutionEvents_OnAfterOpenSolution(Solution obj)
+        {
+            foreach (var project in XSharpProjectNode.AllProjects)
+            {
+                if (project.HasIncompleteReferences)
+                {
+                    project.FixReferences();
+                }
+
+            }
         }
 
 

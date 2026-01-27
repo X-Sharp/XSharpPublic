@@ -2,9 +2,12 @@
 <!-- Specific targets for Framework type projects-->
 <Project>
   <Import Project="Runtime.Common.Targets" />
+  <PropertyGroup>
+  	<OutputPath>$(OutputPath)net46\</OutputPath>
+  </PropertyGroup>  
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>
-  </PropertyGroup>  
+</PropertyGroup>  
 </Project>
 
 

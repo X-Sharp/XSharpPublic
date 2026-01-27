@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Targets" />
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MacroCompilerTest</RootNamespace>
+    <AssemblyName>MacroCompilerTest</AssemblyName>
+    <TargetFramework>net8.0</TargetFramework>
+    <Name>MacroCompiler.Example.Next</Name>
+    <Dialect>VO</Dialect>
+    <LB>true</LB>
+    <Cs>false</Cs>
+    <VO15>true</VO15>
+    <Memvar>True</Memvar>
+    <StartupObject />
+    <Allowdot>false</Allowdot>
+    <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
+    <NoStandardDefs>False</NoStandardDefs>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net8.0\XSharp.RT.dll" />
+    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net8.0\XSharp.Core.dll" />
+    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net8.0\XSharp.Macrocompiler.dll" />
+    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net8.0\XSharp.VFP.dll" />
+    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net8.0\XSharp.VO.dll" />
+  </ItemGroup>
+</Project>

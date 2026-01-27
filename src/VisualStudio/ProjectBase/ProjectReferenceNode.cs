@@ -374,7 +374,7 @@ namespace Microsoft.VisualStudio.Project
             this.ReferencedProjectName = this.ItemNode.GetMetadata(ProjectFileConstants.Name);
             if (guidString == String.Empty)
             {
-                // find guid in solution ?
+                guidString = Guid.NewGuid().ToString("B");
             }
 
             // Continue even if project settings cannot be read.

@@ -8,22 +8,31 @@
     <Dialect>VO</Dialect>
     <Unsafe>True</Unsafe>
     <NamedArgs>True</NamedArgs>
+    <Cs>true</Cs>
     <StartupObject />
-    <ProjectGuid>{59fad2f5-93af-4c52-9b08-6e652c86d546}</ProjectGuid>
+    <ProjectGuid>{583c4466-3bbe-4828-b5de-17068ea3a035}</ProjectGuid>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Functions\" />
     <Folder Include="obj\" />
     <Folder Include="Properties\" />
     <Folder Include="Types\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj">
+      <Name>XSharp.Core.Next</Name>
+      <Project>{cc7c83af-345a-4719-9490-65ee4a04f3f4}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj">
+      <Name>XSharp.RT.Next</Name>
+      <Project>{c58ddc14-8484-4e19-81ac-3d91c2b044ad}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\XmlDoc.Targets" />
 </Project>

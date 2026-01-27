@@ -13,13 +13,12 @@
     <allowdot>true</allowdot>
     <EnforceSelf>True</EnforceSelf>
     <StartupObject />
-    <ProjectGuid>{12292164-0039-4c8c-9287-ae5e3780cab0}</ProjectGuid>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{2a23c26e-b632-4dda-ae8a-883efd067f7c}</Project>
+      <Name>XSharp.Core.Next</Name>
+      <Project>{cc7c83af-345a-4719-9490-65ee4a04f3f4}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

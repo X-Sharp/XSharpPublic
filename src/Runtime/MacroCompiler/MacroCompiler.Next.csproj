@@ -4,11 +4,10 @@
     <ProjectGuid>{EB3F3142-07F7-48CA-B38D-F611C45A9511}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>XSharp.MacroCompiler</RootNamespace>
-	<AssemblyName>XSharp.MacroCompiler</AssemblyName>
+    <AssemblyName>XSharp.MacroCompiler</AssemblyName>
     <TargetFramework>net8.0</TargetFramework>
-	<LangVersion>Preview</LangVersion>
-	    <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
-
+    <LangVersion>Preview</LangVersion>
+    <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\Constants.cs">
@@ -24,6 +23,14 @@
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Name>XSharp.RT</Name>
     </ProjectReference>
+    <ProjectReference Include="..\XSharp.RT\XSharp.VFP.Next.xsproj">
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Name>XSharp.RT</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.RT\XSharp.VO.Next.xsproj">
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Name>XSharp.RT</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\..\Common\StandardHeaders.resx">
@@ -31,5 +38,5 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-   <Import Project="..\XmlDoc.Targets" />
+  <Import Project="..\XmlDoc.Targets" />
 </Project>

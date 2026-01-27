@@ -10,7 +10,7 @@
     <StartupObject />
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
-    <ProjectGuid>{3ad2f9bb-18f3-468d-b335-fdbfa9789067}</ProjectGuid>
+    <ProjectGuid>{9cea0df2-04fb-499e-9976-5c9cf7c0e689}</ProjectGuid>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -22,7 +22,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj">
+      <Name>XSharp.Core.Next</Name>
+      <Project>{cc7c83af-345a-4719-9490-65ee4a04f3f4}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
   </ItemGroup>
   <ItemGroup>

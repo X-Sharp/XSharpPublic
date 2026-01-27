@@ -14,22 +14,30 @@
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-    <ProjectGuid>{debbd8dc-b1ce-4742-b959-f429890ce151}</ProjectGuid>
+    <ProjectGuid>{7d9493b3-7244-4e58-97ef-3ef0a52b9bdf}</ProjectGuid>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Collations\" />
     <Folder Include="Defines\" />
     <Folder Include="obj\" />
     <Folder Include="Properties\" />
     <Folder Include="Types\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj">
+      <Name>XSharp.Core.Next</Name>
+      <Project>{cc7c83af-345a-4719-9490-65ee4a04f3f4}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj">
+      <Name>XSharp.RT.Next</Name>
+      <Project>{c58ddc14-8484-4e19-81ac-3d91c2b044ad}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\XmlDoc.Targets" />
 </Project>

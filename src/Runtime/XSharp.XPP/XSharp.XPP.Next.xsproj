@@ -21,13 +21,6 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Collations\" />
-    <Folder Include="Defines\" />
-    <Folder Include="obj\" />
-    <Folder Include="Properties\" />
-    <Folder Include="Types\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj">
       <Name>XSharp.Core.Next</Name>
       <Project>{cc7c83af-345a-4719-9490-65ee4a04f3f4}</Project>

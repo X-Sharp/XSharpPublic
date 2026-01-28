@@ -5,7 +5,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MacroCompilerTest</RootNamespace>
     <AssemblyName>MacroCompilerTest</AssemblyName>
-    <TargetFramework>net8.0</TargetFramework>
     <Name>MacroCompiler.Example.Next</Name>
     <Dialect>VO</Dialect>
     <LB>true</LB>
@@ -16,12 +15,49 @@
     <Allowdot>false</Allowdot>
     <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
     <NoStandardDefs>False</NoStandardDefs>
+    <ActiveTargetFramework>net9.0</ActiveTargetFramework>
+    <ProjectGuid>{2aacce68-17a3-475e-9e4f-20fc0b57b4d3}</ProjectGuid>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net8.0\XSharp.RT.dll" />
-    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net8.0\XSharp.Core.dll" />
-    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net8.0\XSharp.Macrocompiler.dll" />
-    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net8.0\XSharp.VFP.dll" />
-    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net8.0\XSharp.VO.dll" />
+    <ProjectReference Include="..\MacroCompiler\XSharp.MacroCompiler.Next.csproj">
+      <Name>XSharp.MacroCompiler.Next</Name>
+      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj">
+      <Name>XSharp.Core.Next</Name>
+      <Project>{0ad5cdfc-8ab5-4bfe-80fb-a35cb8d40f8c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Data\XSharp.Data.Next.xsproj">
+      <Name>XSharp.Data.Next</Name>
+      <Project>{4c1b86d0-6ae3-4bc5-a716-c3060cf1c064}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj">
+      <Name>XSharp.RT.Next</Name>
+      <Project>{58a3ac53-aef7-450c-9359-61bc91246deb}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.VFP\XSharp.VFP.Next.xsproj">
+      <Name>XSharp.VFP.Next</Name>
+      <Project>{2f85c288-4b7d-4419-9b91-d7673532dd1a}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.VO\XSharp.VO.Next.xsproj">
+      <Name>XSharp.VO.Next</Name>
+      <Project>{3f032dac-4a77-4695-a059-3054948cc85c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.RDD\XSharp.RDD.Next.xsproj">
+      <Name>XSharp.RDD.Next</Name>
+      <Private>True</Private>
+      <Project>{1D76A6FA-68A9-4890-BCBC-1A5DF2F85CFB}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\" />
+    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>

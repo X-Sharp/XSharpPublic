@@ -5,9 +5,9 @@
     <OutputType>Library</OutputType>
     <RootNamespace>XSharp.MacroCompiler</RootNamespace>
     <AssemblyName>XSharp.MacroCompiler</AssemblyName>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <LangVersion>Preview</LangVersion>
-    <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    <RuntimeIdentifier>win</RuntimeIdentifier>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\Constants.cs">
@@ -20,14 +20,6 @@
       <Name>XSharp.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj">
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Name>XSharp.RT</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.RT\XSharp.VFP.Next.xsproj">
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Name>XSharp.RT</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.RT\XSharp.VO.Next.xsproj">
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Name>XSharp.RT</Name>
     </ProjectReference>

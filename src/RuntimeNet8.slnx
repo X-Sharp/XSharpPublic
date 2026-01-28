@@ -1,0 +1,59 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="DocChinese" />
+    <BuildType Name="Documentation" />
+    <BuildType Name="Release" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Common/BuildNumber.h" />
+    <File Path="Common/CommonAssemblyInfo.cs" />
+    <File Path="Common/commonAssemblyInfo.prg" />
+    <File Path="Common/Constants.cs" />
+    <File Path="Common/constants.prg" />
+    <File Path="Common/CustomDefs.xh" />
+    <File Path="Common/dbcmd.xh" />
+    <File Path="Common/FoxProCmd.xh" />
+    <File Path="Common/FoxProSet.xh" />
+    <File Path="Common/FoxProSql.xh" />
+    <File Path="Common/GuidStrings.cs" />
+    <File Path="Common/HarbourCmd.xh" />
+    <File Path="Common/memvar.xh" />
+    <File Path="Common/NativeResourceDefines.xh" />
+    <File Path="Common/README.md" />
+    <File Path="Common/set.xh" />
+    <File Path="Common/version.Targets" />
+    <File Path="Common/version.xh" />
+    <File Path="Common/VFPProperties.xh" />
+    <File Path="Common/XbasePPCmd.xh" />
+    <File Path="Common/XmlCommon.Targets" />
+    <File Path="Common/XSharp.snk" />
+    <File Path="Common/XSharpConstants.cs" />
+    <File Path="Common/XSharpDefs.xh" />
+    <File Path="Runtime/README.md" />
+    <File Path="Runtime/Runtime.Common.Targets" />
+    <File Path="Runtime/Runtime.Sdk.Targets" />
+    <File Path="Runtime/Runtime.Targets" />
+    <File Path="Runtime/VOSDK/Source/SharedSource/SDKAssemblyinfo.prg" />
+    <File Path="Runtime/VOSDK/Source/VOSDK/VOSDK.Targets" />
+    <File Path="Runtime/XmlDoc.Targets" />
+  </Folder>
+  <Project Path="Runtime/MacroCompiler.Example/MacroCompiler.Example.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="e32d2ea0-87cc-493f-b471-8072efda5e58">
+    <BuildType Solution="DocChinese|*" Project="Release" />
+    <BuildType Solution="Documentation|*" Project="Release" />
+  </Project>
+  <Project Path="Runtime/MacroCompiler/XSharp.MacroCompiler.Next.csproj" Id="eb3f3142-07f7-48ca-b38d-f611c45a9511">
+    <BuildType Solution="DocChinese|*" Project="Release" />
+    <BuildType Solution="Documentation|*" Project="Release" />
+  </Project>
+  <Project Path="Runtime/XSharp.Core/XSharp.Core.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="97894e12-3b7a-4487-a60a-0bc0216df80f" />
+  <Project Path="Runtime/XSharp.Data/XSharp.Data.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="260232ea-7d35-4279-a139-0e0acd17fd5e" />
+  <Project Path="Runtime/XSharp.Harbour/XSharp.Harbour.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="44b86176-3f9d-4037-a304-d1e55c523c09" />
+  <Project Path="Runtime/XSharp.Rdd/XSharp.RDD.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="1d76a6fa-68a9-4890-bcbc-1a5df2f85cfb" />
+  <Project Path="Runtime/XSharp.RT.Debugger/XSharp.RT.Debugger.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="33d55e59-1482-4f2c-b345-dbbea9bef0d9" />
+  <Project Path="Runtime/XSharp.RT/XSharp.RT.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="83758f47-bb64-486c-b11d-83fa2a491212" />
+  <Project Path="Runtime/XSharp.VFP/XSharp.VFP.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="dd52973c-a18e-4bad-8be3-5f188de15669" />
+  <Project Path="Runtime/XSharp.VO/XSharp.VO.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="c39b829c-efb9-428f-a5ce-aa719a535cb6" />
+  <Project Path="Runtime/XSharp.XPP/XSharp.XPP.Next.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="c6f21f98-23d5-40a2-83d2-bc56a84a3a4a" />
+</Solution>

@@ -47,13 +47,5 @@
       <Version>4.9.0</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="FoxPro\" />
-    <Folder Include="obj\" />
-    <Folder Include="Parser\" />
-    <Folder Include="Properties\" />
-    <Folder Include="RDD\" />
-    <Folder Include="SQL\" />
-  </ItemGroup>
   <Import Project="..\XmlDoc.Targets" />
 </Project>

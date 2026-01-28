@@ -1,5 +1,10 @@
-<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information. -->
 <!--
+***********************************************************************************************
+XSharp.DesignTime.Targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
 
   This file contains Visual Studio and designer-related properties and items for X# projects.
   It is based on Microsoft.CSharp.DesignTime.targets
@@ -9,6 +14,11 @@
   with X# specific properties. Our pages are called <Somepage>.XSharp.Xaml.
   The order attribute in the xaml files determines the order in which pages are shown in the UI.
 
+
+Copyright (c) XSharp B.V.  All Rights Reserved
+
+inspired by Microsoft.CSharp.DesignTime.targets
+***********************************************************************************************
 -->
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">

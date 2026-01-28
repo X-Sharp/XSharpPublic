@@ -1,12 +1,14 @@
 <!--
 ***********************************************************************************************
-Microsoft.NET.GenerateGlobalUsings.targets
+XSharp.GenerateGlobalUsings.targets
 
 WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
           created a backup copy.  Incorrect changes to this file will make it
           impossible to load or build your projects from the command-line or the IDE.
 
-Copyright (c) .NET Foundation. All rights reserved.
+inspired by Microsoft.NET.GenerateGlobalUsings.targets
+
+Copyright (C) XSharp BV. All rights reserved.
 ***********************************************************************************************
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
@@ -21,6 +23,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <PropertyGroup>
     <GeneratedGlobalUsingsFile Condition="'$(GeneratedGlobalUsingsFile)' ==''">$(IntermediateOutputPath)$(MSBuildProjectName).GlobalUsings.g$(DefaultLanguageSourceExtension)</GeneratedGlobalUsingsFile>
+    <XSharpBuildAssemblyFile Condition=" '$(XSharpBuildAssemblyFile)' =='' ">$(MSBuildThisFileDirectory)XSharp.Build.dll</XSharpBuildAssemblyFile>
   </PropertyGroup>
 
   <!--

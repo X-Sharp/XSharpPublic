@@ -4,64 +4,98 @@ USING System.Linq
 USING System.Text
 USING System.Diagnostics
 
+// What XSharp package are we building ?
 VAR Tool := ""
 IF Args:Count >= 1
 	Tool := Args[0]
 ENDIF
 
+// Per default, XSharp root is three levels up ( we are in src/runtime/Nuget)
 VAR Root := "..\..\.."
+// Create the packages with the Release
 VAR Build := "Release"
+VAR TFM = "Net46+Net8.0"
+// The version file is in src\Common
 VAR VersionFile := Root + "\src\Common\BuildNumber.h"
-
+// Per default, Retrieve the version number
 VAR Version := GetBuildNumber( VersionFile )
 
+// Parameter for Build ?
 IF Args:Count >= 2
 	Build := Args[1]
 ENDIF
 
-VAR SourceFolder := Root + "\Artifacts\" + Build
+// For a Single TFM, this could work
+VAR SourceFolders := Root + "\Artifacts\" + Build
 VAR OutputFolder := Root + "\Artifacts\Packages\" + Build
 
+// Parameter for TFM ?
 IF Args:Count >= 3
-	SourceFolder := Args[2]
+	TFM := Args[2]
 ENDIF
+VAR TfmCount := TFM:Count( { c => c == '+' } )
+// Parameter for SourceFolder, OutputFolder, Version ?
 IF Args:Count >= 4
-	OutputFolder := Args[3]
+	SourceFolders := Args[3]
+ENDIF
+// If you pass some SourceFolders, check if the count match the TFM count
+VAR srcCount := SourceFolders:Count( { c => c == '+' } )
+IF srcCount > 0 .AND. srcCount != TfmCount
+	ErrorMessage( "The number of SourceFolders must match the number of TFM specified." )
+	Tool := ""
+ELSE
+	// Adjust SourceFolders if multiple TFM
+	IF TfmCount >= 1
+		SourceFolders := ""
+		VAR tfmList := TFM:Split( '+' )
+		FOREACH VAR tfmItem IN tfmList
+			IF SourceFolders != ""
+				SourceFolders += "+"
+			ENDIF
+			SourceFolders += Root + "\Artifacts\" + Build + "\" + tfmItem
+		NEXT
+	ENDIF
 ENDIF
 IF Args:Count >= 5
-	Version := Args[4]
+	OutputFolder := Args[4]
+ENDIF
+IF Args:Count >= 6
+	Version := Args[5]
 ENDIF
 
 IF String.IsNullOrEmpty( Tool )
-	Console.WriteLine( "Usage : XSPackNuget <Tool> [ <Build> [ <SourceFolder> [ <OutputFolder> [<VersionNumber>] ] ] ] " )
-    Console.WriteLine( "<Tool> should be Core, RT, VOSDK, VO, VFP, XPP")
-    Console.WriteLine( "<Build> indicate the Build version to use. Release per default.")
-	Console.WriteLine( "<SourceFolder> indicate the Path where files are stored. Artifacts\<Build> per default")
-	Console.WriteLine( "<OutputFolder> indicate the Path where the packages are generated. Artifacts\Packages\<Build> per default")
-	Console.WriteLine( "<VersionNumber> indicate the version of the package to generate. Using current version number per default.")
+	InfoMessage( "Usage : XSPackNuget <Tool> [ <Build> [ <Tfm> [ <SourceFolder> [ <OutputFolder> [<VersionNumber>] ] ] ] ] " )
+    InfoMessage( "<Tool> should be Core, RT, VOSDK, VO, VFP, XPP")
+    InfoMessage( "<Build> indicate the Build version to use. Release per default.")
+	InfoMessage( "<Tfm> indicate the Target Framework. Net46, Net80 or Net46+Net80. Net46+Net80 per default.")
+	InfoMessage( "<SourceFolder> indicate the Path where files are stored. Artifacts\<Build>\<Tfm> per default")
+	InfoMessage( "   For a single Tfm, indicate one source. For 2 Tfm, indicate two folders separated with a '+' sign. Artifacts\<Build>\<Tfm1>+Artifacts\<Build>\<Tfm2>")
+	InfoMessage( "<OutputFolder> indicate the Path where the packages are generated. Artifacts\Packages\<Build> per default")
+	InfoMessage( "<VersionNumber> indicate the version of the package to generate. Using current version number per default.")
 	RETURN
 ENDIF
 
-Console.WriteLine( "Running XSPackNuget ..." )
-Console.WriteLine( "Tool : " + Tool )
-Console.WriteLine( "Build : " + Build )
-Console.WriteLine( "Source Folder : " + SourceFolder )
-Console.WriteLine( "Output Folder : " + OutputFolder )
-Console.WriteLine( "Version : " + Version )
-//
+InfoMessage( "Running XSPackNuget ..." )
+InfoMessage( "Tool : " + Tool )
+InfoMessage( "Build : " + Build )
+InfoMessage( "Target Framework : " + TFM )
+InfoMessage( "Source Folder : " + SourceFolders )
+InfoMessage( "Output Folder : " + OutputFolder )
+InfoMessage( "Version : " + Version )
+// Check if Nuget is installed
 var result := CheckNuGet()
 IF ( ! result )
-    Console.WriteLine( "The application 'Microsoft.NuGet' is NOT installed." )
-    Console.WriteLine( "Please run : winget install Microsoft.NuGet" )
+    ErrorMessage( "The application 'Microsoft.NuGet' is NOT installed." )
+    InfoMessage( "Please run : winget install Microsoft.NuGet" )
     RETURN
 ENDIF
 
-CreateNuSpec( SourceFolder, Tool, Version )
+CreateNuSpec( TFM, SourceFolders, Tool, Version )
 
 IF !RunNuget( Tool, Version, OutputFolder )
-	Console.WriteLine( "Something went wrong...." )
+	ErrorMessage( "Something went wrong...." )
 ENDIF
-Console.WriteLine( "Done." )
+InfoMessage( "Done." )
 
 FUNCTION GetBuildNumber( versionFile AS STRING ) AS String
 	VAR version := "3.0.0"
@@ -102,15 +136,30 @@ FUNCTION CheckNuGet() AS LOGIC
 	END USING
 RETURN result
 
-PROCEDURE CreateNuSpec( sourceFolder AS STRING, tool AS String, version AS STRING )
+PROCEDURE CreateNuSpec( tfm AS STRING, sourceFolders AS STRING, tool AS String, version AS STRING )
 	VAR source := "XSharp." + tool + ".nuspec.txt"
 	VAR destination := "XSharp." + tool + "." + version +".nuspec"
 	VAR content := ""
+	VAR tfmList := tfm:Split('+')
+	VAR sourceFolder := sourceFolders:Split('+')
 	//
-	content := File.ReadAllText( source )
-	content := content:Replace( "$SourceFolder", sourceFolder )
-	content := content:Replace( "$Version", version )
-	File.WriteAllText( destination, content )
+	IF File.Exists( source )
+		VAR contentLines = File.ReadAllLines( source )
+		FOREACH VAR line IN contentLines
+			IF line:Contains( "$SourceFolder" ) // We MUST also have a $TFM tag on the same line
+				FOR VAR i := 1 TO tfmList:Length
+					VAR tfmItem := tfmList[i]
+					VAR srcFolder := sourceFolder[i]
+					content += line:Replace( "$SourceFolder", srcFolder ):Replace( "$TFM", tfmItem ) + Environment.NewLine
+				NEXT
+			ELSE
+				content += line:Replace( "$Version", version ) + Environment.NewLine
+			ENDIF
+		NEXT
+		File.WriteAllText( destination, content )
+	ELSE
+		ErrorMessage( "NuSpec template file not found : " + source )
+	ENDIF
 	//
 RETURN
 
@@ -131,8 +180,23 @@ FUNCTION RunNuget( tool AS String, version AS STRING, outputDirectory AS STRING 
 			var execResult := reader:ReadToEnd()
 			success := execResult:Contains( nupkg )
 			IF !success
-				Console.WriteLine( execResult )
+				ErrorMessage( execResult )
 			ENDIF
 		END USING
 	END USING
 RETURN success
+
+FUNCTION ErrorMessage( msg AS STRING ) AS VOID
+	VAR clr = Console.ForegroundColor
+	Console.ForegroundColor = ConsoleColor.Red
+	Console.WriteLine( msg )
+	Console.ForegroundColor = clr
+	RETURN
+
+FUNCTION InfoMessage( msg AS STRING ) AS VOID
+	VAR clr = Console.ForegroundColor
+	Console.ForegroundColor = ConsoleColor.White
+	Console.WriteLine( msg )
+	Console.ForegroundColor = clr
+	RETURN
+

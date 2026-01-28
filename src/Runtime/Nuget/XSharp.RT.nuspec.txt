@@ -7,26 +7,21 @@
     <authors>XSharp B.V.</authors>
     <owners>XSharp B.V.</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<license type="expression">Apache-2.0</license>
+    <license type="expression">Apache-2.0</license>
     <icon>icon\Xsharp.png</icon>
-	  <readme>Readme.md</readme>
+    <readme>Readme.md</readme>
     <description>XSharp Runtime</description>
     <copyright>Copyright (C) 2015 and beyond by XSharp B.V.</copyright>
     <tags>XSharp, Runtime</tags>
     <repository type="git" url="https://github.com/X-Sharp/XSharpPublic.git" />
-	<dependencies>
-      <group targetFramework=".NETFramework4.6">
-        <dependency id="XSharp.Core" version="$Version" />
-      </group>
-    </dependencies>
   </metadata>
   <files>
     <file src="icon\Xsharp.png" target="icon\Xsharp.png" />
     <file src="Readme.RT.md"  target="Readme.md" />
-    <file src="$SourceFolder\XSharp.MacroCompiler.dll" target="lib\net46\XSharp.MacroCompiler.dll" />
-    <file src="$SourceFolder\XSharp.RDD.dll" target="lib\net46\XSharp.RDD.dll" />
-    <file src="$SourceFolder\XSharp.RT.dll" target="lib\net46\XSharp.RT.dll" />
-    <file src="$SourceFolder\XSharp.Data.dll" target="lib\net46\XSharp.Data.dll" />
-    <file src="$SourceFolder\XSharp.RT.Debugger.dll" target="lib\net46\XSharp.RT.Debugger.dll" />
+    <file src="$SourceFolder\XSharp.MacroCompiler.dll" target="lib\$TFM\XSharp.MacroCompiler.dll" />
+    <file src="$SourceFolder\XSharp.RDD.dll" target="lib\$TFM\XSharp.RDD.dll" />
+    <file src="$SourceFolder\XSharp.RT.dll" target="lib\$TFM\XSharp.RT.dll" />
+    <file src="$SourceFolder\XSharp.Data.dll" target="lib\$TFM\XSharp.Data.dll" />
+    <file src="$SourceFolder\XSharp.RT.Debugger.dll" target="lib\$TFM\XSharp.RT.Debugger.dll" />
   </files>
 </package>

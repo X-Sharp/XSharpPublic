@@ -45,17 +45,9 @@ namespace XSharpDebugger.ExpressionCompiler
 
         public XSharpExpressionCompiler()
         {
-            if (!XSettings.IsVs15)
-            {
-                UpdateXSharpParseOptions();
-                compiler = new Eval.XSharpExpressionCompiler();
-                decoder = new Eval.XSharpFrameDecoder();
-            }
-            else
-            {
-                compiler = null;
-                decoder = new FrameDecoder.XSharpFrameDecoder();
-            }
+            UpdateXSharpParseOptions();
+            compiler = new Eval.XSharpExpressionCompiler();
+            decoder = new Eval.XSharpFrameDecoder();
         }
         static void UpdateXSharpParseOptions()
         {
@@ -304,11 +296,13 @@ namespace XSharpDebugger.ExpressionCompiler
 
         public string GetMethodName(DkmLanguageInstructionAddress languageInstructionAddress, DkmVariableInfoFlags argumentFlags)
         {
+#if DEV17
             if (argumentFlags.HasFlag(DkmVariableInfoFlags.HideTemplateArguments))
                 argumentFlags = argumentFlags & ~DkmVariableInfoFlags.HideTemplateArguments;
 
             if (argumentFlags.HasFlag(DkmVariableInfoFlags.CompactName))
                 argumentFlags = argumentFlags & ~DkmVariableInfoFlags.CompactName;
+#endif
 
             if (compiler != null)
             {

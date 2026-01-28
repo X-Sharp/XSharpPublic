@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.Form",
+  "Name": "Windows Forms Form",
+  "Description": "A Windows form with separate designer.prg",
+  "SourceName": "Form1",
+  "ShortName": "xsformi",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "Form.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "Form1.prg",
+  "symbols": {
+    "name": {
+      "type": "parameter",
+      "description": "The name of the code file and class.",
+      "datatype": "string",
+      "replaces": "Form1",
+      "fileRename": "Form1",
+      "defaultValue": "Form1"
+    }
+  }
+}

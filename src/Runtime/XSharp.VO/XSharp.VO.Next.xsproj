@@ -10,11 +10,18 @@
     <NamedArgs>True</NamedArgs>
     <Cs>true</Cs>
     <StartupObject />
+    <ProjectGuid>{583c4466-3bbe-4828-b5de-17068ea3a035}</ProjectGuid>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Functions\" />
+    <Folder Include="obj\" />
+    <Folder Include="Properties\" />
+    <Folder Include="Types\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj">
       <Name>XSharp.Core.Next</Name>

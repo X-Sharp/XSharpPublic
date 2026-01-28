@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.CodeFile",
+  "Name": "CodeFile",
+  "Description": "An empty Code File",
+  "SourceName": "CodeFile",
+  "ShortName": "xscodefilei",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "Code.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "CodeFile.prg"
+}

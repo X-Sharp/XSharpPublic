@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.TextFile",
+  "Name": "TextFile",
+  "Description": "An empty text file",
+  "SourceName": "TextFile1",
+  "ShortName": "xstextfilei",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "Textfile.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "TextFile1.txt"
+}

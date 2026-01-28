@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.ClassXpp",
+  "Name": "ClassXpp",
+  "Description": "An empty class definition using the Xbase\u002B\u002B class syntax",
+  "SourceName": "ClassXpp",
+  "ShortName": "xsclassxppi",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "ClassXpp.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "Class1.prg",
+  "symbols": {
+    "name": {
+      "type": "parameter",
+      "description": "The name of the code file and class.",
+      "datatype": "string",
+      "replaces": "Class1",
+      "fileRename": "Class1",
+      "defaultValue": "Class1"
+    }
+  },
+  "postActions": [
+    {
+      "description": "Adding mandatory NuGet package (only from Visual Studio)",
+      "actionId": "B1755282-45A0-4C2E-A430-D6E9419131AF",
+	  "condition": "(HostIdentifier == \"vs\")",
+      "args": {
+        "packages": [
+          {
+            "id": "xsharp.xpp"
+          }
+        ]
+      },
+      "continueOnError": true
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.VOWindow",
+  "Name": "VOWindow",
+  "Description": "An empty VO Window",
+  "SourceName": "VOWindow",
+  "ShortName": "xsvowindowi",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "VOWindow.PNG",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "VOWindow.prg",
+  "symbols": {
+    "name": {
+      "type": "parameter",
+      "description": "The name of the code file and class.",
+      "datatype": "string",
+      "replaces": "VOWindow",
+      "fileRename": "VOWindow",
+      "defaultValue": "VOWindow"
+    }
+  },
+  "postActions": [
+    {
+      "description": "Adding mandatory NuGet package (only from Visual Studio)",
+      "actionId": "B1755282-45A0-4C2E-A430-D6E9419131AF",
+	  "condition": "(HostIdentifier == \"vs\")",
+      "args": {
+        "packages": [
+          {
+            "id": "xsharp.vo"
+          }
+        ]
+      },
+      "continueOnError": true
+    }
+  ]
+}

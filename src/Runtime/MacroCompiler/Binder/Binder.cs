@@ -38,7 +38,7 @@ namespace XSharp.MacroCompiler
         Logic = 1024,
         Cast = 2048,
         ForceUsual = 4096,
-        EnumAdd = 8192,
+        Enum = 8192,
 
         None = 0,
         Default = AllowDynamic | AllowInexactComparisons | AllowImplicitNarrowingConversions
@@ -102,8 +102,10 @@ namespace XSharp.MacroCompiler
 
         internal static Binder<T> Create<T>(MacroOptions options, Type delegateType)
         {
+#if !NET5_0_OR_GREATER
             if (options?.GenerateAssembly == true)
                 return new AssemblyBinder<T>(options, delegateType);
+#endif
             if (options?.StrictTypedSignature == true)
                 return new TypedBinder<T>(options, delegateType);
             return new Binder<T>(options, delegateType);
@@ -111,8 +113,10 @@ namespace XSharp.MacroCompiler
 
         internal static Binder<T> Create<T,R>(MacroOptions options) where R: Delegate
         {
+#if !NET5_0_OR_GREATER
             if (options?.GenerateAssembly == true)
                 return new AssemblyBinder<T>(options, typeof(Delegate) != typeof(R) ? typeof(R) : null);
+#endif
             if (options?.StrictTypedSignature == true)
                 return new TypedBinder<T>(options, typeof(Delegate) != typeof(R) ? typeof(R) : null);
             return new Binder<T, R>(options);
@@ -202,7 +206,7 @@ namespace XSharp.MacroCompiler
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine("Error loading types from " + a.CodeBase + "\r" + e.Message);
+                System.Diagnostics.Debug.WriteLine("Error loading types from " + a.Location + "\r" + e.Message);
             }
         }
         static void UpdateUsings(List<ContainerSymbol> usings, List<ContainerSymbol> rtFuncs, Assembly a, HashSet<ContainerSymbol> usedSymbols = null)
@@ -764,6 +768,7 @@ namespace XSharp.MacroCompiler
             return new DynamicMethod(source, ResultType.Type ?? typeof(void), par.ToArray());
         }
     }
+#if !NET5_0_OR_GREATER
     internal class AssemblyBinder<T> : TypedBinder<T>
     {
         internal AssemblyBinder(MacroOptions options, Type delegateType) : base(options, delegateType) { }
@@ -805,6 +810,8 @@ namespace XSharp.MacroCompiler
             if (AssemblyData == null)
             {
                 MethodType.CreateType();
+                AssemblyData = null;
+
                 Assembly.Save(Name);
                 AssemblyData = File.ReadAllBytes(AssemblyModule.FullyQualifiedName);
                 File.Delete(AssemblyModule.FullyQualifiedName);
@@ -823,4 +830,5 @@ namespace XSharp.MacroCompiler
         internal override ILGenerator GetILGenerator() => Method.GetILGenerator();
 
     }
+#endif
 }

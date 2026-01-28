@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.Cursor",
+  "Name": "Cursor",
+  "Description": "A Cursor file",
+  "SourceName": "Cursor",
+  "ShortName": "xscursori",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "Cursor.PNG",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "Cursor.cur"
+}

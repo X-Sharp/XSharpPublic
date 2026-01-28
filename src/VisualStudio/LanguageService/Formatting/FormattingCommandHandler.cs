@@ -195,7 +195,14 @@ namespace XSharp.LanguageService
         }
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
         {
-            return m_nextCommandHandler.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
+            int result = 0;
+            var guid = pguidCmdGroup;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                result = m_nextCommandHandler.QueryStatus(ref guid, cCmds, prgCmds, pCmdText);
+            });
+            return result;
         }
         internal void WriteOutputMessage(string strMessage)
         {

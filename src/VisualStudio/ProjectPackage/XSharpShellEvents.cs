@@ -32,6 +32,7 @@ namespace XSharp.Project
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                VS.Events.SolutionEvents.OnAfterLoadProject += SolutionEvents_OnAfterLoadProject    ;
                 VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
                 VS.Events.SolutionEvents.OnBeforeCloseProject += SolutionEvents_OnBeforeCloseProject;
                 VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
@@ -54,8 +55,13 @@ namespace XSharp.Project
 
         #region Project Events
 
+        private void SolutionEvents_OnAfterLoadProject(Community.VisualStudio.Toolkit.Project project)
+        {
+            Logger.Information("XSharpShellEvents: OnAfterLoadProject " + project.FullPath);
+        }
         private void SolutionEvents_OnBeforeCloseProject(Community.VisualStudio.Toolkit.Project project)
         {
+            Logger.Information("XSharpShellEvents: OnBeforeCloseProjec " + project.FullPath);
             var node = XSharpProjectNode.FindProject(project.FullPath);
             if (node != null)
             {
@@ -71,6 +77,7 @@ namespace XSharp.Project
         }
         private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
+            Logger.Information("XSharpShellEvents: OnBeforeOpenProject " + projectFileName);
             if (IsXSharpProject(projectFileName))
             {
                 checkProjectFile(projectFileName);
@@ -91,6 +98,17 @@ namespace XSharp.Project
             if (fileName != null && fileName.ToLower().EndsWith("xsproj") && File.Exists(fileName))
             {
                 string xml = File.ReadAllText(fileName);
+#if !DEV17
+                // In VS 2022 and earlier we need to fix the casing of the new text
+                var SdkPos = xml.IndexOf("<Project Sdk", StringComparison.OrdinalIgnoreCase);
+                if (SdkPos != -1)
+                {
+                    VS.MessageBox.ShowError("The project file " + fileName + " is an SDK style project and cannot be loaded inside this version of Visual Studio");
+                    return;
+                }
+
+#endif
+
                 var original = Path.ChangeExtension(fileName, ".original");
                 bool changed = false;
                 if (hasEnvironmentvariable)
@@ -155,7 +173,7 @@ namespace XSharp.Project
             return true;
 
         }
-        #endregion
+#endregion
 
     }
 }

@@ -16,6 +16,7 @@
     <Allowdot>True</Allowdot>
     <EnforceSelf>True</EnforceSelf>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <ProjectGuid>{ff585fe7-5b1b-484c-afd0-b4d927930f2b}</ProjectGuid>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
@@ -25,6 +26,17 @@
     <PackageReference Include="System.Resources.Extensions">
       <Version>10.0.2</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Classes\" />
+    <Folder Include="Cursors\" />
+    <Folder Include="Database\" />
+    <Folder Include="obj\" />
+    <Folder Include="Properties\" />
+    <Folder Include="SQL\" />
+    <Folder Include="TestData\" />
+    <Folder Include="UI\" />
+    <Folder Include="VFPFileStructures\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="UI\AssertDialog.designer.prg">

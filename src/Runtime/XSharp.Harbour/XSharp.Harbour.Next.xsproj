@@ -12,6 +12,7 @@
     <Allowdot>false</Allowdot>
     <StartupObject />
     <TargetFramework>net8.0</TargetFramework>
+    <ProjectGuid>{eae30c29-634c-496a-9e6c-840878aa1901}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
@@ -27,6 +28,11 @@
       <Project>{c58ddc14-8484-4e19-81ac-3d91c2b044ad}</Project>
       <Private>True</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Functions\" />
+    <Folder Include="obj\" />
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="..\XmlDoc.Targets" />
 </Project>

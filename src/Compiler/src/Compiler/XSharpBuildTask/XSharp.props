@@ -3,7 +3,6 @@
   <Import Condition="Exists('$(MsBuildBinPath)\Microsoft.Common.props')" Project="$((MsBuildBinPath)\Microsoft.Common.props"  />
   <PropertyGroup>
     <XSharpDefaultProps>true</XSharpDefaultProps>
-    <_EnableDefaultWindowsPlatform>true</_EnableDefaultWindowsPlatform>
     <BuildInParallel Condition="'$(BuildInParallel)' == ''">true</BuildInParallel>
     <DefaultLanguageSourceExtension>.prg</DefaultLanguageSourceExtension>
     <DefaultProjectTypeGuid Condition=" '$(DefaultProjectTypeGuid)' == '' ">{AA6C8D78-22FF-423A-9C7C-5F2393824E04}</DefaultProjectTypeGuid>
@@ -17,23 +16,19 @@
     <UseOSWinMdReferences>true</UseOSWinMdReferences>
     <OutputType Condition=" '$(OutputType)' == '' ">exe</OutputType>
     <OutputPath Condition=" '$(OutputPath)' == '' ">bin\$(Configuration)\</OutputPath>
-    <DebuggerFlavor>XSharpDebugger</DebuggerFlavor>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <WinRTReferenceTabs>TAB_SDK_ALL</WinRTReferenceTabs>
-    <AssemblyReferenceTabs>TAB_ASSEMBLY_ALL</AssemblyReferenceTabs>
     <Name>$(MSBuildProjectName)</Name>
     <RootNamespace>$(Name)</RootNamespace>
     <AssemblyName>$(Name)</AssemblyName>
     <Dialect>Core</Dialect>
     <UseNativeVersion>false</UseNativeVersion>
     <SuppressRCWarnings>true</SuppressRCWarnings>
-    <!-- new in 2.15 -->
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Nologo>true</Nologo>
     <UseHostCompilerIfAvailable>false</UseHostCompilerIfAvailable>
     <UseSharedCompilation>true</UseSharedCompilation>
     <WarningLevel>4</WarningLevel>
+    <RuntimeIdentifier Condition="'$(UsingMicrosoftNETSdk)' != 'true'">win</RuntimeIdentifier>
   </PropertyGroup>
   <!-- Set defaults for Configuration, Platform, Optimize and PDB generation -->
   <PropertyGroup>
@@ -52,18 +47,36 @@
     <DebugType>pdbonly</DebugType>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
-  <ItemGroup Condition="'$(UsingMicrosoftNETSdkWeb)' == 'true'">
-    <VOBinary Include="**\*.xsdbs" />
-    <VOBinary Include="**\*.xsfs" />
-    <VOBinary Include="**\*.xsfrm" />
-    <VOBinary Include="**\*.xsmnu" />
-    <VOBinary Include="**\*.xsrep" />
-    <VOBinary Include="**\*.xssql" />
-    <VOBinary Include="**\*.vndbs" />
-    <VOBinary Include="**\*.vnfs" />
-    <VOBinary Include="**\*.vnfrm" />
-    <VOBinary Include="**\*.vnmnu" />
-    <NativeResource Include="**\*.rc" />
+  <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' == 'true'">
+    <!-- Make sure these items are excluded by the SDK props and targets -->
+    <VOBinaryFiles>**\*.xsfs;**\*.xsdbs;**\*.xsmnu;**\*.xsfrm;**\*.xsrep;**\*.xssql;**/*.vnfs;**/*.vndbs;**/*.vnmnu;**/*.vnfrm</VOBinaryFiles>
+	<DefaultItemExcludes>$(VOBinaryFiles);**/*.rc;**/*.resx;**/*.designer.prg</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <ItemGroup  Condition="'$(UsingMicrosoftNETSdk)' == 'true'">
+    <!-- Add our own definitions for the VOBinary items with calculated dependentupon properti -->
+    <VOBinary Include="$(VOBinaryFiles)"  KeepDuplicates="false">
+      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\%(Extension)$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentName>
+      <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
+    </VOBinary>
+    <NativeResource Include="**/*.rc" >
+      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\.rc$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentName>
+      <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
+    </NativeResource >
+    <Compile Include="**/*.designer.prg"  KeepDuplicates="false" >
+      <!-- Designer.prg can depend on prg, resx or settings -->
+      <ParentPrgName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentPrgName>
+      <ParentResxName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.resx', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentResxName>
+      <ParentSettingsName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.settings', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentSettingsName>
+      <DependentUpon Condition="Exists('%(ParentPrgName)')">%(ParentPrgName)</DependentUpon>
+      <DependentUpon Condition="Exists('%(ParentResxName)')">%(ParentResxName)</DependentUpon>
+      <DependentUpon Condition="Exists('%(ParentSettingsName)')">%(ParentSettingsName)</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="**/*.resx"   KeepDuplicates="false">
+      <!-- This handles form.resx that depends on form.prg -->
+      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.resx$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentName>
+      <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <!-- Implicit imports -->
   <ItemGroup Condition="'$(ImplicitUsings)' == 'true' Or '$(ImplicitUsings)' == 'enable'">
@@ -75,5 +88,8 @@
     <Using Include="System.Threading" />
     <Using Include="System.Threading.Tasks" />
   </ItemGroup>
+  <!-- These groups are needed because otherwise the Project Context Menu does not always display Build/Rebuild/Clean -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'"/>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'"/>
 
 </Project>

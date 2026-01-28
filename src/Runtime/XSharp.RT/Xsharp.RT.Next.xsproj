@@ -7,6 +7,7 @@
     <Dialect>VO</Dialect>
     <Unsafe>True</Unsafe>
     <NamedArgs>True</NamedArgs>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Types\psznew.prg" />
@@ -15,4 +16,5 @@
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
   </ItemGroup>
+  <Import Project="..\XmlDoc.Targets" />
 </Project>

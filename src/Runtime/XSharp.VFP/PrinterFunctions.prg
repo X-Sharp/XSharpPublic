@@ -41,12 +41,12 @@ LOCAL iCount AS INT
 			VAR oProperty := ManagementObject{"Win32_Printer.DeviceID='" + cPrinterName + "'"}
 
 			ArrayName [ i + __ARRAYBASE__ , __ARRAYBASE__ ]     := cPrinterName
-			ArrayName [ i + __ARRAYBASE__ , __ARRAYBASE__ + 1 ] := IIF ( oProperty["PortName"] == NULL , "" , oProperty["PortName"]   )
+			ArrayName [ i + __ARRAYBASE__ , __ARRAYBASE__ + 1 ] := IIF ( oProperty["PortName"] == NULL , "" , (string) oProperty["PortName"]   )
 
 			IF nValue > 0
-				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 2  ] := IIF ( oProperty["DriverName"] == NULL , "" , oProperty["DriverName"] )
-				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 3  ] := IIF ( oProperty["Comment"]    == NULL , "" , oProperty["Comment"] )
-				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 4  ] := IIF ( oProperty["Location"]   == NULL , "" , oProperty["Location"] )
+				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 2  ] := IIF ( oProperty["DriverName"] == NULL , "" , (string) oProperty["DriverName"] )
+				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 3  ] := IIF ( oProperty["Comment"]    == NULL , "" , (string) oProperty["Comment"] )
+				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 4  ] := IIF ( oProperty["Location"]   == NULL , "" , (string) oProperty["Location"] )
 			ENDIF
 
 		NEXT

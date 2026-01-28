@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.VOFieldSpec",
+  "Name": "VOFieldSpec",
+  "Description": "An empty FieldSpec container file",
+  "SourceName": "VOFieldSpec",
+  "ShortName": "xsvofieldspeci",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "VOFieldSpec.PNG",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "Fieldspecs.prg"
+}

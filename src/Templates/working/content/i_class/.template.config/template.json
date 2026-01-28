@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.Class",
+  "Name": "Class",
+  "Description": "An empty class definition",
+  "SourceName": "Class1",
+  "ShortName": "xsclassi",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "Class.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "Class1.prg",
+  "symbols": {
+    "name": {
+      "type": "parameter",
+      "description": "The name of the code file and class.",
+      "datatype": "string",
+      "replaces": "Class1",
+      "fileRename": "Class1",
+      "defaultValue": "Class1"
+    }
+  }
+}

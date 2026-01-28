@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [
+    "Windows",
+    "Console"
+  ],
+  "Identity": "XSharp.ConsoleApplication.NetCore",
+  "Name": "Console Application (.Net Core)",
+  "Description": "A project for creating a X# command-line application in the core dialect.",
+  "SourceName": "XSharp.ConsoleApplication.NetCore",
+  "ShortName": "xsnetcore",
+  "Tags": {
+    "language": "X#",
+    "type": "project",
+    "icon": "ConsoleApplication.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "ConsoleApplication",
+  "Symbols": {
+    "TargetNetFramework": {
+      "Type": "parameter",
+      "Description": "Target .NET version",
+      "Datatype": "choice",
+      "Choices": [
+        {
+          "Choice": "net8.0",
+          "Description": "Target .NET 8"
+        },
+        {
+          "Choice": "net9.0",
+          "Description": "Target .NET 9"
+        },
+        {
+          "Choice": "net10.0",
+          "Description": "Target .NET 10"
+        }
+      ],
+      "Replaces": "net8.0",
+      "DefaultValue": "net8.0"
+    },
+    "DefaultNamespace": {
+      "Type": "parameter",
+      "Datatype": "string",
+      "Replaces": "Company.Namespace1",
+      "DefaultValue": "Company.Namespace1"
+    }
+  }
+}

@@ -1,23 +1,34 @@
 ﻿using Community.VisualStudio.Toolkit;
+
+using EnvDTE100;
+
 using LanguageService.CodeAnalysis.Text;
 using LanguageService.CodeAnalysis.XSharp;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
+
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.TextManager.Interop;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
+
 using VSLangProj;
+
 using XSharp.Settings;
+
 using XSharpModel;
+
 using static XSharp.Parser.VsParser;
+
 using TM = Microsoft.VisualStudio.TextManager.Interop;
 
 namespace XSharp.LanguageService
@@ -105,7 +116,8 @@ namespace XSharp.LanguageService
         private void SaveDesignerWindows()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            var files = GetAllDesignerWindows(false);
+            SaveActiveStartupProject();
+            var files = GetAllDesignerWindows( false);
             XDatabase.SaveOpenDesignerFiles(files);
         }
         private void CloseAllDesignerWindows()
@@ -165,9 +177,8 @@ namespace XSharp.LanguageService
                                 continue;
 
                         }
-#if !DEV17
+
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-#endif
                         if (string.IsNullOrEmpty(docName) && doc is IVsWindowFrame frame)
                         {
                             frame.GetProperty((int)__VSFPROPID.VSFPROPID_pszMkDocument, out var objdocName);
@@ -187,6 +198,91 @@ namespace XSharp.LanguageService
             return files;
         }
 
+        private void SaveActiveStartupProject()
+        {
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var project = await GetStartupProjectAsync();
+                if (project != null)
+                {
+                    Logger.SingleLine();
+                    Logger.Information("Active Startup Project: " + project.FullPath);
+                    Logger.SingleLine();
+                    var prj = new List<string> { project.FullPath };
+                    XDatabase.SaveStartuprojects(prj);
+                }
+            });
+        }
+        internal static async Task<Project> GetStartupProjectAsync()
+        {
+            EnvDTE.DTE dte = null;
+            Solution4 sol4 = null;
+            EnvDTE.SolutionBuild build = null;
+            object startupprojects = null;
+            await ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                dte = await VS.GetRequiredServiceAsync<EnvDTE.DTE, EnvDTE.DTE>();
+                if (dte != null)
+                    sol4 = dte.Solution as Solution4;
+                if (sol4 != null) 
+                    build = sol4.SolutionBuild;
+                if ( build != null)
+                {
+                    startupprojects = build.StartupProjects;
+                }
+
+            });
+                
+            if (startupprojects != null)
+            {
+                var projects = await VS.Solutions.GetAllProjectsAsync();
+                var projectList = startupprojects as Array;
+                foreach (string prjName in projectList)
+                {
+                    string prjFileName = Path.GetFileName(prjName);
+                    foreach (var prj in projects)
+                    {
+                        var fileName = Path.GetFileName(prj.FullPath);
+                        if (fileName.Equals(prjFileName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return prj;
+                        }
+                    }
+                }
+            }
+            return null;
+
+        }
+
+
+        private void RestoreStartupProject()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (!XSolution.HasProjects)
+                return;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                var projects = XDatabase.GetStartupProjects();
+                if (projects.Count > 0)
+                {
+                    var allProjects = await VS.Solutions.GetAllProjectsAsync();
+                    foreach (var projPath in projects)
+                    {
+                        var proj = allProjects.Where(p => string.Equals(p.FullPath, projPath, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                        if (proj != null)
+                        {
+                            var dte = (EnvDTE.DTE)await VS.GetRequiredServiceAsync<EnvDTE.DTE, EnvDTE.DTE>();
+                            dte.Solution.SolutionBuild.StartupProjects = proj.FullPath;
+                            Logger.SingleLine();
+                            Logger.Information("Restored Startup Project: " + proj.FullPath);
+                            Logger.SingleLine();
+                        }
+                    }
+                }
+            });
+        }
         private void RestoreDesignerWindows()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -318,6 +414,7 @@ namespace XSharp.LanguageService
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             RestoreDesignerWindows();
+            RestoreStartupProject();
         }
 
         string solutionName = "";

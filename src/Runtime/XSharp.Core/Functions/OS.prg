@@ -353,7 +353,7 @@ FUNCTION ReadOsVersionFromRegistry(lExtended AS LOGIC) AS STRING
         VAR vOs := Environment.OSVersion
 	    VAR pa := Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")
 	    VAR isx86 := pa:ToLower():Contains("x86")
-	    cOS += " (" + IIF(isx86, "x86","x64") + i") ( Version {vOs.Version.Major}.{vOs.Version.Minor}, Build {vOs.Version.Build} )"
+	    cOS += " (" + IIF(isx86, "x86","x64") + i") ( Version {vOs:Version:Major}.{vOs:Version:Minor}, Build {vOs:Version:Build} )"
     ENDIF
     RETURN cOS
 

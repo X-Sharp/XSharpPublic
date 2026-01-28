@@ -144,7 +144,10 @@ namespace XSharp.LanguageService
             ClassifyBuffer();
             _first = false;
             // start the model builder to do build a code model and the regions asynchronously
-            var x = ThreadHelper.JoinableTaskFactory.RunAsync(LexAsync);
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var x = await ThreadHelper.JoinableTaskFactory.RunAsync(LexAsync);
+            });
 
         }
 
@@ -243,7 +246,10 @@ namespace XSharp.LanguageService
             XDocument xDocument = GetDocument();
             if (xDocument != null)
             {
-                var _= ThreadHelper.JoinableTaskFactory.RunAsync(ParseAsync);
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.RunAsync(ParseAsync);
+                });
             }
         }
 

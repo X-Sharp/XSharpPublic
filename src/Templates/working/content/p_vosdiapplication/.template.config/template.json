@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [
+    "Windows",
+    "Desktop",
+    "VO"
+  ],
+  "Identity": "XSharp.VOSDIApplication",
+  "Name": "VO SDI Application",
+  "Description": "A project for creating a VO SDI application in the VO Dialect.",
+  "SourceName": "XSharp.VOSDIApplication",
+  "ShortName": "xsvosdiapplication",
+  "Tags": {
+    "language": "X#",
+    "type": "project",
+    "icon": "VOSdiApp.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "VOSDIApp",
+  "Symbols": {
+    "TargetNetFramework": {
+      "Type": "parameter",
+      "Description": "Target .NET version",
+      "Datatype": "choice",
+      "Choices": [
+        {
+          "Choice": "net48",
+          "Description": "Target .NET Framework 4.8"
+        },
+        {
+          "Choice": "net46",
+          "Description": "Target .NET Framework 4.6"
+        },
+        {
+          "Choice": "net47",
+          "Description": "Target .NET Framework 4.7"
+        }
+      ],
+      "Replaces": "net48",
+      "DefaultValue": "net48"
+    },
+    "DefaultNamespace": {
+      "Type": "parameter",
+      "Datatype": "string",
+      "Replaces": "Company.Namespace1",
+      "DefaultValue": "Company.Namespace1"
+    }
+  }
+}

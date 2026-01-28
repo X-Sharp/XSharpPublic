@@ -38,7 +38,7 @@ namespace XSharp.Project
             {
                 REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey64;
                 InstallPath = (string)Microsoft.Win32.Registry.GetValue(REG_KEY, XSharp.Constants.RegistryValue, "");
-                
+
             }
             return System.IO.Path.Combine(InstallPath, subpath);
         }
@@ -68,8 +68,7 @@ namespace XSharp.Project
     {
         protected override void BeforeQueryStatus(EventArgs e)
         {
-            if (XSettings.IsVs15)
-                Command.Visible = false;
+            Command.Visible = XDebuggerSettings.DebuggerMode == DebuggerMode.Break;
             Command.Enabled = XDebuggerSettings.DebuggerMode == DebuggerMode.Break;
             base.BeforeQueryStatus(e);
         }

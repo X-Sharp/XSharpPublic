@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.WPF.FlowDocument",
+  "Name": "Flow Document (WPF)",
+  "Description": "Dynamically formatted XAML document",
+  "SourceName": "Flow Document (WPF)",
+  "ShortName": "xsflowdocumenti",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "WPFFlowDocument.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "FlowDocument.xaml"
+}

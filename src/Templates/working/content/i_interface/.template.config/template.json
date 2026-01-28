@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "Author": "XSharp B.V.",
+  "Classifications": [],
+  "Identity": "XSharp.Interface",
+  "Name": "Interface",
+  "Description": "An empty interface definition",
+  "SourceName": "Interface1",
+  "ShortName": "xsinterfacei",
+  "Tags": {
+    "language": "X#",
+    "type": "item",
+    "icon": "Interface.png",
+    "is-icon-path": "true"
+  },
+  "PreferNameDirectory": true,
+  "DefaultName": "Interface1.prg",
+  "symbols": {
+    "name": {
+      "type": "parameter",
+      "description": "The name of the code file and Interface.",
+      "datatype": "string",
+      "replaces": "Interface1",
+      "fileRename": "Interface1",
+      "defaultValue": "Interface1"
+    }
+  }
+}

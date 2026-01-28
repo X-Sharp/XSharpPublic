@@ -180,7 +180,7 @@ FUNCTION IsOldSpaceObject(o AS OBJECT) AS LOGIC
 FUNCTION MemCheckPtr( pMemory AS PTR, dwSize AS DWORD ) AS LOGIC
     STATIC LOCAL Is32Bits := IntPtr.Size == 4 AS LOGIC
     LOCAL i64 AS INT64
-    IF pMemory == NULL_PTR
+    IF (IntPtr) pMemory == IntPtr.Zero
         RETURN FALSE
     ENDIF
     IF RuntimeState.RunningOnWindows .AND. Win32.IsBadWritePtr(pMemory, dwSize)

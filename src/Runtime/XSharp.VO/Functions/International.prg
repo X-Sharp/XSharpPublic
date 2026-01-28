@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Globalization
@@ -15,7 +15,7 @@ FUNCTION MBAllTrim(cMBString AS STRING) AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbat/*" />
 /// <remarks><note type="tip">This function is the same as At() since .Net has unicode strings</note></remarks>
 FUNCTION MBAt(cMBSearch AS STRING,cMBTarget AS STRING) AS DWORD
-	RETURN At( cMBSearch, cMBTarget ) 
+	RETURN At( cMBSearch, cMBTarget )
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbat2/*" />
 /// <remarks><note type="tip">This function is the same as At2() since .Net has unicode strings</note></remarks>
@@ -25,36 +25,36 @@ FUNCTION MBAt2(cMBSearch AS STRING,cMBTarget AS STRING) AS DWORD
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbat3/*" />
 /// <remarks><note type="tip">This function is the same as At3() since .Net has unicode strings</note></remarks>
 FUNCTION MBAt3(cMBSearch AS STRING,cMBTarget AS STRING,wOffset AS DWORD) AS DWORD
-	RETURN At3( cMBSearch, cMBTarget, wOffset ) 
+	RETURN At3( cMBSearch, cMBTarget, wOffset )
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbatc/*" />
 /// <remarks><note type="tip">This function is the same as AtC() since .Net has unicode strings</note></remarks>
 FUNCTION MBAtC(cMBSearch AS STRING,cMBTarget AS STRING) AS DWORD
-	RETURN AtC(cMBSearch, cMBTarget)   
+	RETURN AtC(cMBSearch, cMBTarget)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbatc2/*" />
 /// <remarks><note type="tip">This function is the same as AtC2() since .Net has unicode strings</note></remarks>
 FUNCTION MBAtC2(cMBSearch AS STRING,cMBTarget AS STRING) AS DWORD
-	RETURN AtC2(cMBSearch, cMBTarget)   
+	RETURN AtC2(cMBSearch, cMBTarget)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbatline/*" />
 /// <remarks><note type="tip">This function is the same as AtLine() since .Net has unicode strings</note></remarks>
 FUNCTION MBAtLine(cMBSearch AS STRING,cMBTarget AS STRING) AS LONGINT
-	RETURN (LONG) ATLine(cMBSearch, cMBTarget)   
+	RETURN (LONG) ATLine(cMBSearch, cMBTarget)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbatline2/*" />
 /// <remarks><note type="tip">This function is the same as AtLine2() since .Net has unicode strings</note></remarks>
 FUNCTION MBAtLine2(cMBSearch AS STRING,cMBTarget AS STRING) AS DWORD
-	RETURN ATLine2(cMBSearch, cMBTarget)   
+	RETURN ATLine2(cMBSearch, cMBTarget)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbleft/*" />
 /// <remarks><note type="tip">This function is the same as Left() since .Net has unicode strings</note></remarks>
 FUNCTION MBLEFT(cMBString AS STRING,wCount AS DWORD) AS STRING
-	RETURN Left(cMBString, wCount)   
+	RETURN Left(cMBString, wCount)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mblen/*" />
 /// <remarks><note type="tip">This function is the same as SLen() since .Net has unicode strings</note></remarks>
-FUNCTION MBLen(uMBValue AS STRING) AS DWORD 
+FUNCTION MBLen(uMBValue AS STRING) AS DWORD
 	RETURN SLen(uMBValue)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbltrim/*" />
@@ -123,7 +123,7 @@ FUNCTION GetAppLocaleID() AS DWORD
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setapplocaleid/*" />
-[SecurityPermissionAttribute(SecurityAction.Demand, ControlThread := TRUE)];
+//[SecurityPermissionAttribute(SecurityAction.Demand, ControlThread := TRUE)];
 FUNCTION SetAppLocaleID(uiNewLocale AS DWORD) AS DWORD
 	VAR ci := CultureInfo{ (INT) uiNewLocale}
 	Thread.CurrentThread:CurrentCulture	  := ci
@@ -146,7 +146,7 @@ FUNCTION SetClipCompFunc(pFunc AS OBJECT) AS IntPtr
 /// </returns>
 FUNCTION SetWinCompFlags(n AS OBJECT) AS LONG
 	THROW NotImplementedException{}
-	//RETURN 0   
+	//RETURN 0
 
 /// <summary>This function is not implemented yet</summary>
 /// <summary>
@@ -161,18 +161,18 @@ FUNCTION SetWinCompFunc(pFunc AS OBJECT) AS IntPtr
 /// <exclude />
 [Obsolete];
 FUNCTION NationInit(dwInst AS DWORD) AS INT
-	RETURN 0   
+	RETURN 0
 
 /// <exclude />
 [Obsolete];
 FUNCTION NationExit() AS INT
-	RETURN 0   
+	RETURN 0
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/nversion/*" />
 FUNCTION NVersion() AS STRING
 	THROW NotImplementedException{}
-	//RETURN String.Empty 
+	//RETURN String.Empty
 
 /// <exclude />
 FUNCTION MAKELANGID( p AS WORD, s AS WORD ) AS WORD
@@ -184,13 +184,13 @@ FUNCTION MAKELCID( lgid AS WORD, srtid AS WORD ) AS DWORD
 
 /// <exclude />
 FUNCTION IsBiDi() AS LOGIC
-   RETURN System.Windows.Forms.SystemInformation.MidEastEnabled   
+   RETURN System.Windows.Forms.SystemInformation.MidEastEnabled
 
 /// <exclude />
 FUNCTION String2W( sz AS STRING ) AS IntPtr
   // The original VO Code was using SysAllocString to allocate the memory.
   // The Marshal class does that too (it uses SysAllocStringLen)
-  // and it also takes into account null strings 
+  // and it also takes into account null strings
   RETURN System.Runtime.InteropServices.Marshal.StringToBSTR(sz)
 
 /// <exclude />
@@ -213,13 +213,13 @@ FUNCTION W2String(p AS IntPtr) AS STRING
 		cRet:Append(Convert.ToChar(pChar[nIndex]))
 		nIndex ++
 	END DO
-	RETURN cRet:ToString()    
+	RETURN cRet:ToString()
 
 /// <exclude />
 FUNCTION GetNatDllHandle() AS IntPtr STRICT
   LOCAL t AS Type
    LOCAL m AS System.Reflection.Module
-   t := typeof( XSharp.Error )  
+   t := typeof( XSharp.Error )
    m := t:Module
    RETURN System.Runtime.InteropServices.Marshal.GetHINSTANCE( m )
 

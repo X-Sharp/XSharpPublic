@@ -3,16 +3,15 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
 
-using Microsoft.Build.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using MSBuild = Microsoft.Build.Evaluation;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,6 +20,8 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+
+using MSBuild = Microsoft.Build.Evaluation;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -43,13 +44,13 @@ namespace Microsoft.VisualStudio.Project
         {
             string str = value as string;
 
-            if(str != null)
+            if (str != null)
             {
-                if(String.Compare(str,SR.GetString(SR.Exe, culture), true) == 0) return OutputType.Exe;
-                if(String.Compare(str, SR.GetString(SR.Library, culture), true) == 0) return OutputType.Library;
-                if(String.Compare(str, SR.GetString(SR.WinExe, culture), true) == 0) return OutputType.WinExe;
+                if (String.Compare(str, SR.GetString(SR.Exe, culture), true) == 0) return OutputType.Exe;
+                if (String.Compare(str, SR.GetString(SR.Library, culture), true) == 0) return OutputType.Library;
+                if (String.Compare(str, SR.GetString(SR.WinExe, culture), true) == 0) return OutputType.WinExe;
                 if (String.Compare(str, SR.GetString(SR.WinMDObj, culture), true) == 0) return OutputType.WinMDObj;
-                if (String.Compare(str, SR.GetString(SR.AppContainerExe, culture),true) == 0) return OutputType.AppContainerExe;
+                if (String.Compare(str, SR.GetString(SR.AppContainerExe, culture), true) == 0) return OutputType.AppContainerExe;
             }
 
             return base.ConvertFrom(context, culture, value);
@@ -62,7 +63,7 @@ namespace Microsoft.VisualStudio.Project
                 string result = null;
                 // In some cases if multiple nodes are selected the windows form engine
                 // calls us with a null value if the selected node's property values are not equal
-                if(value != null)
+                if (value != null)
                 {
                     result = SR.GetString(((OutputType)value).ToString(), culture);
                 }
@@ -71,7 +72,7 @@ namespace Microsoft.VisualStudio.Project
                     result = SR.GetString(OutputType.Library.ToString(), culture);
                 }
 
-                if(result != null) return result;
+                if (result != null) return result;
             }
 
             return base.ConvertTo(context, culture, value, destinationType);
@@ -84,7 +85,7 @@ namespace Microsoft.VisualStudio.Project
 
         public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
-            return new StandardValuesCollection(new OutputType[] { OutputType.Exe, OutputType.Library, OutputType.WinExe, OutputType.AppContainerExe, OutputType.WinMDObj});
+            return new StandardValuesCollection(new OutputType[] { OutputType.Exe, OutputType.Library, OutputType.WinExe, OutputType.AppContainerExe, OutputType.WinMDObj });
         }
     }
 
@@ -107,13 +108,13 @@ namespace Microsoft.VisualStudio.Project
         {
             string str = value as string;
 
-            if(str != null)
+            if (str != null)
             {
-                if (String.Compare(str ,SR.GetString(SR.Program, culture),true) == 0) return DebugMode.Program;
+                if (String.Compare(str, SR.GetString(SR.Program, culture), true) == 0) return DebugMode.Program;
 
-                if(String.Compare(str, SR.GetString(SR.Project, culture), true) == 0) return DebugMode.Project;
+                if (String.Compare(str, SR.GetString(SR.Project, culture), true) == 0) return DebugMode.Project;
 
-                if(String.Compare(str, SR.GetString(SR.URL, culture), true) == 0) return DebugMode.URL;
+                if (String.Compare(str, SR.GetString(SR.URL, culture), true) == 0) return DebugMode.URL;
             }
 
             return base.ConvertFrom(context, culture, value);
@@ -126,7 +127,7 @@ namespace Microsoft.VisualStudio.Project
                 string result = null;
                 // In some cases if multiple nodes are selected the windows form engine
                 // calls us with a null value if the selected node's property values are not equal
-                if(value != null)
+                if (value != null)
                 {
                     result = SR.GetString(((DebugMode)value).ToString(), culture);
                 }
@@ -135,16 +136,18 @@ namespace Microsoft.VisualStudio.Project
                     result = SR.GetString(DebugMode.Program.ToString(), culture);
                 }
 
-                if(result != null) return result;
+                if (result != null) return result;
             }
 
             return base.ConvertTo(context, culture, value, destinationType);
         }
-        public override bool GetStandardValuesSupported(ITypeDescriptorContext context) {
+        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
+        {
             return true;
         }
 
-        public override TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context) {
+        public override TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+        {
             return new StandardValuesCollection(new DebugMode[] { DebugMode.Program, DebugMode.Project, DebugMode.URL });
         }
     }
@@ -277,7 +280,7 @@ namespace Microsoft.VisualStudio.Project
                     result = "";
                 }
 
-                if(result != null) return result;
+                if (result != null) return result;
             }
 
             return base.ConvertTo(context, culture, value, destinationType);
@@ -294,31 +297,92 @@ namespace Microsoft.VisualStudio.Project
         }
     }
 
-    public class SdkFrameWorkNameConverter :FrameworkNameConverter
+    public class SdkFrameworkNameConverter : FrameworkNameConverter
     {
-        List<string> _names = new List<string>();
-        public SdkFrameWorkNameConverter(MSBuild.Project project) : base()
+        MSBuild.Project Project = null;
+        List<SdkFrameworkName> names = new List<SdkFrameworkName>();
+        public SdkFrameworkNameConverter()
         {
-            _names.Clear();
-            foreach (var item in project.AllEvaluatedItems)
+        }
+        public SdkFrameworkNameConverter(MSBuild.Project project) : base()
+        {
+            Project = project;
+            names.Clear();
+            string itemType1 = "SupportedNETCoreAppTargetFramework";
+            string itemType2 = "SupportedNETFrameworkTargetFramework";
+            foreach (var item in Project.AllEvaluatedItems)
             {
-                if (item.ItemType == "SupportedTargetFramework")
+                if (item.ItemType == itemType1 || item.ItemType == itemType2)
                 {
                     var md = item.Metadata;
                     var dispName = md.FirstOrDefault(x => x.Name == "DisplayName")?.EvaluatedValue ?? "";
                     var alias = md.FirstOrDefault(x => x.Name == "Alias")?.EvaluatedValue ?? "";
-                    if (!string.IsNullOrEmpty(dispName) &&!string.IsNullOrEmpty(alias))
+                    if (!string.IsNullOrEmpty(dispName) && !string.IsNullOrEmpty(alias))
                     {
-                        _names.Add($"{dispName},Version={alias}");
+                        names.Add(new SdkFrameworkName(dispName, alias));
                     }
                 }
             }
         }
+        // SupportedNETFrameworkTargetFramewor
         public override TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
-            return new StandardValuesCollection(_names.Select(x => new FrameworkName(x)).ToArray());
+            return new StandardValuesCollection(names.ToArray());
+        }
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        {
+            if (destinationType == typeof(string))
+            {
+                var name = value as SdkFrameworkName;
+                if (name != null)
+                {
+                    return name.DisplayName;
+                }
+            }
+
+            return base.ConvertTo(context, culture, value, destinationType);
+        }
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        {
+            string str = value as string;
+
+            if (str != null)
+            {
+                foreach (var name in names)
+                {
+                    if (name.Value == str)
+                    {
+                        return name;
+                    }
+                    if (name.DisplayName == str)
+                    {
+                        return name;
+                    }
+                }
+            }
+
+            return base.ConvertFrom(context, culture, value);
         }
     }
+
+    public class SdkFrameworkName
+    {
+        public string DisplayName { get; set; }
+        public string Value { get; set; }
+        public SdkFrameworkName(string displayName, string value)
+        {
+            this.DisplayName = displayName;
+            this.Value = value;
+
+        }
+        public override string ToString()
+        {
+            return DisplayName;
+        }
+
+
+    }
+
     public class FrameworkNameConverter : TypeConverter
     {
         public FrameworkNameConverter()

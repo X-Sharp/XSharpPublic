@@ -5,7 +5,8 @@
     <BinariesDir>$([System.IO.Path]::GetFullPath('$(Solutiondir)..\Artifacts\'))</BinariesDir>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
     <BaseOutputPath>$(BinariesDir)</BaseOutputPath>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
+    <!-- Adjusted for X# 3: output to Net46 folder-->
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\net46\</OutputPath>
     <BaseIntermediateOutputPath>$(BinariesDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
     <OutputType>Library</OutputType>
     <CommonDir>$(Solutiondir)Common\</CommonDir>
@@ -57,7 +58,6 @@
     <StartupObject />
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>

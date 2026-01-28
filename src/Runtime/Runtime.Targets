@@ -2,6 +2,10 @@
 <!-- Specific targets for Framework type projects-->
 <Project>
   <Import Project="Runtime.Common.Targets" />
+  <PropertyGroup>
+    <!-- Adjusted for X# 3: output to Net46 folder-->
+    <OutputPath>$(OutputPath)\net46\</OutputPath>
+  </PropertyGroup>  
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>
   </PropertyGroup>  

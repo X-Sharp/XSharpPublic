@@ -19,6 +19,8 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using System.Reflection;
+using Community.VisualStudio.Toolkit;
+using System.Threading.Tasks;
 namespace Microsoft.VisualStudio.Project
 {
     [CLSCompliant(false), ComVisible(true)]
@@ -59,7 +61,7 @@ namespace Microsoft.VisualStudio.Project
         /// Possibility for solution listener to update the state on the dangling reference.
         /// It will be set in OnBeforeUnloadProject then the nopde is invalidated then it is reset to false.
         /// </summary>
-		private bool isNodeValid = false;
+		private bool isNodeValid = true;
 #endregion
 
 #region properties
@@ -539,20 +541,34 @@ namespace Microsoft.VisualStudio.Project
         /// <returns></returns>
         protected override bool CanShowDefaultIcon()
         {
-            if(this.referencedProjectGuid == Guid.Empty || this.ProjectMgr == null || this.ProjectMgr.IsClosed || this.isNodeValid)
+            if(this.referencedProjectGuid == Guid.Empty || this.ProjectMgr == null || this.ProjectMgr.IsClosed)
             {
                 return false;
             }
 
-            IVsHierarchy hierarchy = null;
-
-            hierarchy = VsShellUtilities.GetHierarchy(this.ProjectMgr.Site, this.referencedProjectGuid);
-
-            if(hierarchy == null)
+            bool result = false;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                return false;
-            }
-            ThreadHelper.ThrowIfNotOnUIThread();
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                var projects = await VS.Solutions.GetAllProjectsAsync();
+                foreach (var project in projects)
+                {
+                    if (String.Equals(project.Name, this.referencedProjectName, StringComparison.OrdinalIgnoreCase))
+                        result = true;
+                }
+
+            });
+            if (result)
+                return true;
+
+            //IVsHierarchy hierarchy = null;
+
+            //hierarchy = VsShellUtilities.GetHierarchy(this.ProjectMgr.Site, this.referencedProjectGuid);
+
+            //if(hierarchy == null)
+            //{
+            //    return false;
+            //}
 
             //If the Project is unloaded return false
             if (this.ReferencedProjectObject == null)

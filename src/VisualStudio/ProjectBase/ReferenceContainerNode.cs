@@ -9,6 +9,10 @@
  *
  * ***************************************************************************/
 
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,13 +21,13 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
+
+using static Microsoft.VisualStudio.VSConstants;
+
 using MSBuild = Microsoft.Build.Evaluation;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
-using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {

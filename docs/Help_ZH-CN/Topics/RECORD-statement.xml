@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-01-06T07:29:28.821+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>RECORD修饰符</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">RECORD修饰符</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text style="font-size:16pt; font-weight:bold; color:#0000ff;">目的</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Record修饰符(适用于类和结构体)指示编译器创建具有值相等性的特殊版本类型。这些类型通常用于表示数据模型。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">当Record类或Record结构体的所有成员都相同时，它们的两个实例将被视为相等。 &#160;</para>
+    <para styleclass="Normal">为实现此特性，编译器会为该类型生成一个特殊的Equals()运算符，用于比较类型中的全部字段。</para>
+  </body>
+</topic>

@@ -1,4 +1,4 @@
-﻿#if DEV17
+#if DEV17
 using Community.VisualStudio.Toolkit;
 
 using EnvDTE;

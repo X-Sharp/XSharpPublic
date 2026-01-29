@@ -7213,19 +7213,23 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Sets the project guid from the project file. If no guid is found a new one is created and assigne for the instance project guid.
         /// </summary>
-        private void SetProjectGuidFromProjectFile()
+        protected void SetProjectGuidFromProjectFile()
         {
-            string projectGuid = this.GetProjectProperty(ProjectFileConstants.ProjectGuid);
-            if (String.IsNullOrEmpty(projectGuid))
+            if (this.projectIdGuid == Guid.Empty)
             {
-                this.projectIdGuid = Guid.NewGuid();
-            }
-            else
-            {
-                Guid guid = new Guid(projectGuid);
-                if (guid != this.projectIdGuid)
+                string projectGuid = this.GetProjectProperty(ProjectFileConstants.ProjectGuid);
+                if (String.IsNullOrEmpty(projectGuid))
                 {
-                    this.projectIdGuid = guid;
+                    this.projectIdGuid = Guid.NewGuid();
+                    this.SetProjectProperty(ProjectFileConstants.ProjectGuid, projectIdGuid.ToString("B"));
+                }
+                else
+                {
+                    Guid guid = new Guid(projectGuid);
+                    if (guid != this.projectIdGuid)
+                    {
+                        this.projectIdGuid = guid;
+                    }
                 }
             }
         }

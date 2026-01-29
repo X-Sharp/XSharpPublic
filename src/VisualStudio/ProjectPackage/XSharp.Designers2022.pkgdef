@@ -101,6 +101,7 @@
 ".ch"=""
 ".xh"=""
 ".xs"=""
+".xsproj"=""
 [$RootKey$\Peek\SupportedContentTypes]
 ".prg"=""
 ".prgx"=""
@@ -108,5 +109,5 @@
 ".ch"=""
 ".xh"=""
 ".xs"=""
-
+".xsproj"=""
 

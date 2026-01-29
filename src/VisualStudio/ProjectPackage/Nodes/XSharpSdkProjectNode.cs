@@ -242,8 +242,8 @@ namespace XSharp.Project
         public override void SetBuildProject(Microsoft.Build.Evaluation.Project newBuildProject)
         {
             base.SetBuildProject(newBuildProject);
-            if (this.ProjectIDGuid == Guid.Empty)
-                this.ProjectIDGuid = Guid.NewGuid();
+            if (this.ProjectIDGuid == Guid.Empty) 
+                this.SetProjectGuidFromProjectFile();
             if (newBuildProject == null)
             {
                 _targetFrameworks.Clear();
@@ -255,7 +255,10 @@ namespace XSharp.Project
                 if (frameworks != null)
                     SetSingleTargetFramework();
             }
-            SetProjectFileDirty(false);
+            if (newBuildProject.IsDirty)
+            {
+                newBuildProject.Save();
+            }
         }
 
         private void SaveTargetFrameworks()
@@ -340,11 +343,11 @@ namespace XSharp.Project
 
         private void AddPendingReferences(List<string> newReferences, SdkSubProjectInfo active)
         {
-            if (!ThreadHelper.CheckAccess())
-            {
-                return;
-            }
-            var frameworkNode = active.TargetFrameworkReferenceNode;
+            HierarchyNode frameworkNode = null;
+            if (SubProjects.Count > 1)
+                frameworkNode = active.TargetFrameworkReferenceNode;
+            else
+                frameworkNode = active.FrameworksNode;
             if (frameworkNode == null)
             {
                 return;
@@ -481,7 +484,7 @@ class XSharpSdkProjectsNode : XSharpSdkFolderNode
     }
 }
 
-[DebuggerDisplay("Frameworks {Parent?.Caption,nq}")]
+        [DebuggerDisplay("Frameworks {Parent?.Caption,nq}")]
 class XSharpSdkFrameworksNode : XSharpSdkFolderNode
 {
     public XSharpSdkFrameworksNode(XSharpProjectNode root) :
@@ -516,7 +519,6 @@ class XSharpDependenciesContainerNode : XSharpReferenceContainerNode
         // Create the FrameworkReference node
         FrameworkNodes = new List<XSharpSdkFrameworksNode>();
         CreateFrameworkReferenceNode();
-        GetProjectsNode();
     }
     public override string Caption => "Dependencies";
 

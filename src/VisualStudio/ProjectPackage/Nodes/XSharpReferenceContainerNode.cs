@@ -23,25 +23,47 @@ namespace XSharp.Project
 
         protected override ProjectReferenceNode CreateProjectReferenceNode(ProjectElement element)
         {
-            // Check to see if we have the Guid in the ProjectElement
+            // Check to see if we have the Guid and Name in the ProjectElement
             var guid = element.GetMetadata("Project");
-            if (string.IsNullOrEmpty(guid))
+            var name = element.GetMetadata("Name");
+            var path = element.Item.EvaluatedInclude;
+            bool changed = false;
+            path = System.IO.Path.GetFileName(path);
+            var refnode = XSharpProjectNode.FindProject(path);
+            if (string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(name))
             {
                 // No guid, so it is probably an old style project reference
                 // In that case we need to get the guid from the project file
-                var path = element.Item.EvaluatedInclude;
-                path = System.IO.Path.GetFileName(path);
-                var refnode = XSharpProjectNode.FindProject(path);
                 if (refnode != null)
                 {
-                    guid = refnode.ProjectIDGuid.ToString("B").ToUpperInvariant();
+                    guid = refnode.ProjectIDGuid.ToString("B");
+                    name = refnode.GetProjectProperty("AssemblyName");
                     element.SetMetadata("Project", guid);
+                    element.SetMetadata("Name", name);
+                    changed = true;
                 }
                 else
                 {
                     var parent = this.ProjectMgr as XSharpProjectNode;
                     parent.HasIncompleteReferences = true;
                 }
+            }
+            if (refnode != null)
+            {
+                var refguid = refnode.ProjectIDGuid.ToString("B");
+                if (string.Compare(guid, refguid, StringComparison.OrdinalIgnoreCase) != 0)
+                {
+                    // The guid's do not match, so update the project element
+                    guid = refguid;
+                    element.SetMetadata("Project", guid);
+                    changed = true;
+                }
+
+            }
+            if (changed)
+            {
+                var parent = this.ProjectMgr as XSharpProjectNode;
+                parent.BuildProject.Save();
             }
             ProjectReferenceNode node = new XSharpProjectReferenceNode(this.ProjectMgr, element);
             ReferenceNode existing = null;

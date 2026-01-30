@@ -6,6 +6,7 @@ USING System.Diagnostics
 
 // What XSharp package are we building ?
 VAR Tool := ""
+VAR TFM = "Net46+Net8.0"
 IF Args:Count >= 1
 	Tool := Args[0]
 ENDIF
@@ -14,7 +15,6 @@ ENDIF
 VAR Root := "..\..\.."
 // Create the packages with the Release
 VAR Build := "Release"
-VAR TFM = "Net46+Net8.0"
 // The version file is in src\Common
 VAR VersionFile := Root + "\src\Common\BuildNumber.h"
 // Per default, Retrieve the version number
@@ -24,6 +24,11 @@ VAR Version := GetBuildNumber( VersionFile )
 IF Args:Count >= 2
 	Build := Args[1]
 ENDIF
+
+IF Args:Count >= 3
+	TFM := Args[2]
+ENDIF
+
 
 // For a Single TFM, this could work
 VAR SourceFolders := Root + "\Artifacts\" + Build
@@ -95,6 +100,7 @@ CreateNuSpec( TFM, SourceFolders, Tool, Version )
 IF !RunNuget( Tool, Version, OutputFolder )
 	ErrorMessage( "Something went wrong...." )
 ENDIF
+File.Copy("XSAddNugetSource.prgx", Path.Combine(OutputFolder, "XSAddNugetSource.prgx"), true)
 InfoMessage( "Done." )
 
 FUNCTION GetBuildNumber( versionFile AS STRING ) AS String

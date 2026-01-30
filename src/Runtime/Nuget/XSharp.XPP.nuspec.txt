@@ -14,6 +14,9 @@
     <copyright>Copyright (C) 2015 and beyond by XSharp B.V.</copyright>
     <tags>XSharp, XPP, Runtime</tags>
     <repository type="git" url="https://github.com/X-Sharp/XSharpPublic.git" />
+  <dependencies>
+	<dependency id="XSharp.RT" version="$Version"  include="All"/>
+  </dependencies>
   </metadata>
   <files>
     <file src="icon\Xsharp.png" target="icon\Xsharp.png" />

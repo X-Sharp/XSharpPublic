@@ -3,8 +3,8 @@
   <PropertyGroup>
     <!-- The package metadata. Fill in the properties marked as TODO below -->
     <!-- Follow the instructions on https://learn.microsoft.com/en-us/nuget/create-packages/package-authoring-best-practices -->
-    <PackageId>XSharp.NextVersion.Templates</PackageId>
-    <PackageVersion>1.1</PackageVersion>
+    <PackageId>XSharp.Templates</PackageId>
+    <PackageVersion>3.0.0</PackageVersion>
     <Title>X# projects templates</Title>
     <Authors>XSharp B.V.</Authors>
     <Description>X# projects templates for .NET 8 and greater</Description>

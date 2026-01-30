@@ -7,22 +7,17 @@
     <authors>XSharp B.V.</authors>
     <owners>XSharp B.V.</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <licenseUrl>https://github.com/X-Sharp/XSharpPublic/src/License.txt</licenseUrl>
+    <license type="expression">Apache-2.0</license>
     <icon>icon\Xsharp.png</icon>
-	  <readme>Readme.md</readme>
+    <readme>Readme.md</readme>
     <description>XSharp Visual Objects Runtime</description>
     <copyright>Copyright (C) 2015 and beyond by XSharp B.V.</copyright>
     <tags>XSharp, VO, Runtime</tags>
     <repository type="git" url="https://github.com/X-Sharp/XSharpPublic.git" />
-	<dependencies>
-      <group targetFramework=".NETFramework4.6">
-        <dependency id="XSharp.RT" version="$Version" />
-      </group>
-    </dependencies>
   </metadata>
   <files>
     <file src="icon\Xsharp.png" target="icon\Xsharp.png" />
     <file src="Readme.VO.md"  target="Readme.md" />
-    <file src="$SourceFolder\XSharp.VO.dll" target="lib\net46\XSharp.VO.dll" />
+    <file src="$SourceFolder\XSharp.VO.dll" target="lib\$TFM\XSharp.VO.dll" />
   </files>
 </package>

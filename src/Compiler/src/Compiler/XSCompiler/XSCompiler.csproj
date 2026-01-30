@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <LargeAddressAware>true</LargeAddressAware>
     <AssemblyName>XSCompiler</AssemblyName>
-    <TargetFrameworks>net472;net10.0</TargetFrameworks>
+    <TargetFrameworks>net472;net9.0</TargetFrameworks>
     <NoWarn>8032,1573,NU1603;NU1507</NoWarn>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ServerGarbageCollection>true</ServerGarbageCollection>
@@ -36,7 +36,7 @@
     <DefineConstants>$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.Configuration" Condition="'$(TargetFramework)' != 'net10.0'" />
+    <Reference Include="System.Configuration" Condition="'$(TargetFramework)' != '9.0'" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">

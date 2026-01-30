@@ -2,8 +2,8 @@
 set xsoldpath=%path%
 set xsdotnetpath=%~dp0\Artifacts\Tools\dotnet
 set path=%xsdotnetpath%;%PATH%
-SET VSVERSION=2026
-SET VSEDITION=BuildTools
+SET VSVERSION=2022
+SET VSEDITION=EnterPrise
 set VsBatch=C:\Program Files\Microsoft Visual Studio\%VSVERSION%\%VSEDITION%\Common7\Tools\VsDevCmd.bat
 if not exist "%VsBatch%" goto VsError
 if "%VSSDKINSTALL%" == "" call "%VsBatch%"

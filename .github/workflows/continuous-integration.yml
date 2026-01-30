@@ -28,8 +28,8 @@ jobs:
         run: |
           echo "RoslynDir=./src/Roslyn" >> $GITHUB_ENV
           echo "XSharpDir=./src/Compiler" >> $GITHUB_ENV
-          echo "VsVersion=2026" >> $GITHUB_ENV
-          echo "VSEDITION=BuildTools" >> $GITHUB_ENV
+          echo "VsVersion=2022" >> $GITHUB_ENV
+          echo "VSEDITION=Enterprise" >> $GITHUB_ENV
           call ContinuousIntegrationBuild.cmd
       - name: Upload Results
         uses: actions/upload-artifact@v4

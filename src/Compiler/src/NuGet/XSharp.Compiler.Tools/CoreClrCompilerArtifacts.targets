@@ -3,7 +3,7 @@
 <Project>
   <Target Name="InitializeCoreClrCompilerArtifacts">
     <PropertyGroup>
-      <NetDir>net10.0</NetDir>
+      <NetDir>net9.0</NetDir>
     </PropertyGroup>
     <ItemGroup>
       <CoreClrCompilerToolsArtifact Include="$(ArtifactsBinDir)XSharp.Build\$(Configuration)\net472\*.targets" />

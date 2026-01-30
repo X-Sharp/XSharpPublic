@@ -36,7 +36,7 @@
     <DefineConstants>$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.Configuration" Condition="'$(TargetFramework)' != '9.0'" />
+    <Reference Include="System.Configuration" Condition="'$(TargetFramework)' != 'net9.0'" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">

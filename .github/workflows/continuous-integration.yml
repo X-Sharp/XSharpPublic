@@ -23,14 +23,14 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'     
-      - name: Install Visual Studio Build Tools
-        shell: pwsh
-        run: |
-             Write-Host "Installing VS 2026 Build Tools..."
-             choco install visualstudio2026buildtools `
-             --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --includeRecommended --quiet" `
-             -y --ignore-package-exit-codes=3010
-             Write-Host "VS 2026 Build Tools installation completed" 
+#      - name: Install Visual Studio Build Tools
+#        shell: pwsh
+#        run: |
+#             Write-Host "Installing VS 2026 Build Tools..."
+#             choco install visualstudio2026buildtools `
+#             --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --includeRecommended --quiet" `
+#             -y --ignore-package-exit-codes=3010
+#             Write-Host "VS 2026 Build Tools installation completed" 
       - name: BuildCompiler
         shell: cmd
         run: |

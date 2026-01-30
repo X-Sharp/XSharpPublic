@@ -1,91 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Specific targets for Framework type projects-->
 <Project>
+  <Import Project="VOSDK.Common.Targets" />
   <PropertyGroup>
-    <BinariesDir>$(SolutionDir)..\Artifacts\</BinariesDir>
-    <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
-    <BaseOutputPath>$(BinariesDir)</BaseOutputPath>
     <!-- Adjusted for X# 3: output to Net46 folder-->
-    <OutputPath>$(BaseOutputPath)\$(Configuration)\net46\</OutputPath>
-    <BaseIntermediateOutputPath>$(BinariesDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
-    <OutputType>Library</OutputType>
-    <CommonDir>$(Solutiondir)Common\</CommonDir>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VO</RootNamespace>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <TargetFrameworkProfile />
-    <Nologo>true</Nologo>
-    <Nostandarddefs>True</Nostandarddefs>
-    <GenerateFullPaths>true</GenerateFullPaths>
-    <AssemblyOriginatorKeyFile>$(CommonDir)XSharp.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <Prefer32Bit>False</Prefer32Bit>
-    <CommandLineOption />
-    <PPO>false</PPO>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <CommonInclude>$(CommonDir)</CommonInclude>
-    <XscToolPath>$(BinariesDir)bin\xsc\Debug\net472\</XscToolPath>
-    <AZ>false</AZ>
-    <CS>true</CS>
-    <LB>false</LB>
-    <OVF>false</OVF>
-    <Unsafe>true</Unsafe>
-    <INS>true</INS>
-    <NS>true</NS>
-    <VO1>false</VO1>
-    <VO2>true</VO2>
-    <VO3>true</VO3>
-    <VO4>true</VO4>
-    <VO5>true</VO5>
-    <VO6>true</VO6>
-    <VO7>true</VO7>
-    <VO8>true</VO8>
-    <VO9>true</VO9>
-    <VO10>true</VO10>
-    <VO11>true</VO11>
-    <VO12>false</VO12>
-    <VO13>false</VO13>
-    <VO14>true</VO14>
-    <vo15>false</vo15>
-    <VO16>false</VO16>
-    <XPP1>false</XPP1>
-    <IncludePaths>$(CommonDir)</IncludePaths>
-    <MemVar>false</MemVar>
-    <Undeclared>false</Undeclared>
-    <ErrorReport>prompt</ErrorReport>
-    <Dialect>Vulcan</Dialect>
-    <StartupObject />
-    <ApplicationIcon />
-    <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>false</UseSharedCompilation>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <RuntimeIdentifier>win</RuntimeIdentifier>
-  </PropertyGroup>
-<PropertyGroup Condition="$(Configuration.Contains('Doc'))" >
-    <DocumentationFile>$(AssemblyName).Xml</DocumentationFile>
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE;DOCUMENTATION;RUNTIME</DefineConstants>
-    <DisabledWarnings>1591,9015,169,649</DisabledWarnings>
-    <CommandLineOption>/noclipcall</CommandLineOption>
-	<vo15>true</vo15>
-	<vo5>false</vo5>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'" >
-    <EmitDebugInformation>false</EmitDebugInformation>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE;RUNTIME</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" >
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE;RUNTIME</DefineConstants>
-  </PropertyGroup>
+    <OutputPath>$(OutputPath)\net46\</OutputPath>
+  </PropertyGroup>  
+  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
+    <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>
+  </PropertyGroup>  
 </Project>

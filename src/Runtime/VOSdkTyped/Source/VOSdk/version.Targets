@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <AssemblyVersion>3.0</AssemblyVersion>
+    <FileVersion>3.0.0.0</FileVersion>
+    <Company>XSharp BV</Company>
+    <Product>XSharp</Product>
+    <Copyright>Copyright © 1993-2026 Computer Associates &amp; XSharp BV, All rights reserved</Copyright>
+    <InformationalVersion>XSharp Cahors</InformationalVersion>
+  </PropertyGroup>
+</Project>
+

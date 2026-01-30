@@ -99,6 +99,15 @@ FUNCTION Start() AS VOID STRICT
             WHERE mfg_msrp.productID = products.productID;
             AND mfg_msrp.discontinued = .f.
 
+        TestSqlParser("xi = 1 AND (yi+1)+table.zed = 2")
+        wait
+
+        CREATE TABLE Customers ;
+            (CustId i PRIMARY KEY, ;
+             CustName c(20) )
+        INSERT INTO Customers(CustId,CustName) VALUES (1, "Microsoft")
+        INSERT INTO Customers(CustId,CustName) VALUES (2, "Google")
+        ? ALIAS()
 
         CREATE TABLE Orders ;
             (OrderId i PRIMARY KEY, ;
@@ -178,4 +187,36 @@ FUNCTION __SqlUpdate (sCommand as STRING)
     ? "Where", table:WhereClause
 
     RETURN
+
+FUNCTION PrintContext(ctx AS SqlExpressionContext, depth := 0 AS INT)
+    IF ctx IS SqlNameExpressionContext VAR s
+        ? STRING{c" ", depth*2} + "NAME: " + s:ToString()
+    ELSEIF ctx IS SqlSimpleExpressionContext VAR s
+        ? STRING{c" ", depth*2} + "SIMPLE: " + s:ToString()
+    ELSEIF ctx IS SqlCompsiteExpressionContext VAR c
+        ? STRING{c" ", depth*2} + "COMPOSITE: " + c:ToString() + " NAMES: " + c:Names:Count:ToString()
+    ELSEIF ctx IS SqlParenExpressionContext VAR p
+        ? STRING{c" ", depth*2} + "PAREN: "
+        PrintContext(p:Expr, depth + 1)
+    ELSEIF ctx IS SqlPrefixExpressionContext VAR pr
+        ? STRING{c" ", depth*2} + "PREFIX: " + pr:Op:Text
+        PrintContext(pr:Expr, depth + 1)
+    ELSEIF ctx IS SqlLogicExpressionContext VAR l
+        ? STRING{c" ", depth*2} + "LOGIC: " + l:Op:Text
+        PrintContext(l:Left, depth + 1)
+        PrintContext(l:Right, depth + 1)
+    ELSEIF ctx IS SqlCompareExpressionContext VAR co
+        ? STRING{c" ", depth*2} + "COMPARE: " + co:Op:Text
+        PrintContext(co:Left, depth + 1)
+        PrintContext(co:Right, depth + 1)
+    ENDIF
+
+FUNCTION TestSqlParser (sCommand as STRING)
+    VAR lexer := XSqlLexer{sCommand}
+    VAR tokens := lexer:AllTokens()
+    var parser := SqlParser{XTokenList{tokens}}
+    ? sCommand
+    VAR ctx := parser.ParseExpressionContext()
+    ? ctx:ToString()
+    PrintContext(ctx)
 

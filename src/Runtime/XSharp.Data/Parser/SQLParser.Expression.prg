@@ -121,29 +121,69 @@ PARTIAL CLASS SQLParser
         RETURN e
 
     PRIVATE METHOD ParseExpressionTerm() AS SqlExpressionContext
-        LOCAL done := FALSE AS LOGIC
-        LOCAL term := NULL AS SqlExpressionContext
+        VAR done := FALSE
+        VAR hasComplexTerms := FALSE
+        VAR terms := List<SqlExpressionContext>{}
+        VAR names := List<SqlNameExpressionContext>{}
         VAR parens := Stack<XTokenType>{}
         VAR tokens := List<XToken>{}
 
-        IF SELF:La1 == XTokenType.LPAREN
-            parens:Push(SELF:MatchingParen())
-            VAR o := SELF:ConsumeAndGet()
-            VAR e := SELF:ParseExpressionContext()
-            IF parens:Pop() != SELF:La1
-                THROW ArgumentException{i"Unmatched closing parenthesis: {SELF:La1}","SQLParser"}
+        LOCAL FUNCTION AddPartialTerm() AS VOID
+            IF tokens:Count > 0
+                terms:Add( SqlSimpleExpressionContext{} { Tokens := tokens } )
+                tokens := List<XToken>{}
             ENDIF
-            VAR c := SELF:ConsumeAndGet()
-            term := SqlParenExpressionContext{} { Open := o, Expr := e, Close := c }
-        ENDIF
+        END FUNCTION
+
+        LOCAL FUNCTION AddNameTerm( idTokens AS List<XToken> ) AS VOID
+            IF idTokens:Count == 3
+                AddPartialTerm()
+                VAR name := SqlNameExpressionContext{} { Tokens := idTokens, Table := idTokens[0]:Text, Name := idTokens[2]:Text }
+                terms:Add(name)
+                names:Add(name)
+            ELSEIF idTokens:Count == 1
+                AddPartialTerm()
+                VAR name := SqlNameExpressionContext{} { Tokens := idTokens, Table := NULL, Name := idTokens[0]:Text }
+                terms:Add(name)
+                names:Add(name)
+            ELSE
+                tokens:AddRange( idTokens )
+            ENDIF
+        END FUNCTION
 
         DO WHILE ! SELF:Eos() .AND. ! done
             SWITCH SELF:La1
             CASE XTokenType.LPAREN
+                AddPartialTerm()
+                parens:Push(SELF:MatchingParen())
+                VAR o := SELF:ConsumeAndGet()
+                VAR e := SELF:ParseExpressionContext()
+                IF parens:Pop() != SELF:La1
+                    THROW ArgumentException{i"Unmatched closing parenthesis: {SELF:La1}","SQLParser"}
+                ENDIF
+                VAR c := SELF:ConsumeAndGet()
+                IF e IS NOT SqlSimpleExpressionContext .AND. e IS NOT SqlCompsiteExpressionContext
+                    hasComplexTerms := TRUE
+                ENDIF
+                IF e IS SqlCompsiteExpressionContext VAR ce
+                    names:AddRange(ce:Names)
+                ENDIF
+                terms:Add( SqlParenExpressionContext{} { Open := o, Expr := e, Close := c } )
+                LOOP
+            CASE XTokenType.RPAREN
+                done := TRUE
+            CASE XTokenType.ID
+                VAR idTokens := List<XToken>{}
+                DO WHILE SELF:La2 == XTokenType.DOT .AND. SELF:La3 == XTokenType.ID
+                    idTokens:Add(SELF:ConsumeAndGet())
+                    idTokens:Add(SELF:ConsumeAndGet())
+                ENDDO
+                idTokens:Add(SELF:ConsumeAndGet())
+                AddNameTerm(idTokens)
+                LOOP
             CASE XTokenType.LBRKT
             CASE XTokenType.LCURLY
                 parens:Push(SELF:MatchingParen())
-            CASE XTokenType.RPAREN
             CASE XTokenType.RBRKT
             CASE XTokenType.RCURLY
                 IF parens:Count == 0
@@ -152,7 +192,7 @@ PARTIAL CLASS SQLParser
                     THROW ArgumentException{i"Unmatched closing parenthesis: {SELF:La1}","SQLParser"}
                 ENDIF
             OTHERWISE
-                IF SELF:CompareOp() .OR. SELF:CombineOp() .OR. SELF:Eoe()
+                IF SELF:CompareOp() .OR. SELF:CombineOp() .OR. SELF:PrefixOp() .OR. SELF:Eoe()
                     IF parens:Count() == 0
                         done := TRUE
                     ENDIF
@@ -162,14 +202,17 @@ PARTIAL CLASS SQLParser
                 tokens:Add(SELF:ConsumeAndGet())
             ENDIF
         ENDDO
-        IF term IS NOT NULL
-            IF tokens:Count > 0
-                VAR suffixExpr := SqlSimpleExpressionContext{} { Tokens := tokens }
-                RETURN SqlCompsiteExpressionContext{} { Exprs := { term, suffixExpr } }
+        AddPartialTerm()
+        IF terms:Count > 1
+            IF hasComplexTerms
+                THROW ArgumentException{i"Unsupported combine or compare operator within expression term","SQLParser"}
             ENDIF
-            RETURN term
+            RETURN SqlCompsiteExpressionContext{} { Exprs := terms, Names := names }
+        ELSEIF terms:Count == 1
+            RETURN terms[0]
+        ELSE // Empty term
+            RETURN SqlSimpleExpressionContext{} { Tokens := tokens }
         ENDIF
-        RETURN SqlSimpleExpressionContext{} { Tokens := tokens }
 
 END CLASS
 END NAMESPACE

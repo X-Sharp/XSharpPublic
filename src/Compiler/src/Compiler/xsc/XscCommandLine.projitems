@@ -31,7 +31,6 @@
     <Compile Include="$(CscSource)Program.cs" />
     <None Include="$(CscSource)App.config" Condition="'$(TargetFramework)' == 'net472'" />
     <InternalsVisibleTo Include="Microsoft.CodeAnalysis.CSharp.CommandLine.UnitTests" />
-    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'net6.0'" />
   </ItemGroup>
   <ItemGroup Condition="'$(DefaultLanguageSourceExtension)' != '' AND '$(BuildingInsideVisualStudio)' != 'true'">
     <ExpectedCompile Include="$(CscSource)**\*$(DefaultLanguageSourceExtension)" />

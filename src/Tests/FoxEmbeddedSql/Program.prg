@@ -103,7 +103,7 @@ FUNCTION Start() AS VOID STRICT
             WHERE mfg_msrp.productID = products.productID;
             AND mfg_msrp.discontinued = .f.
 */
-        TestSqlParser("x = 1 AND y = 2")
+        TestSqlParser("xi = 1 AND (yi+1)+table.zed = 2")
         wait
 
         CREATE TABLE Customers ;
@@ -235,10 +235,12 @@ FUNCTION __SqlUpdate (sCommand as STRING)
     RETURN
 
 FUNCTION PrintContext(ctx AS SqlExpressionContext, depth := 0 AS INT)
-    IF ctx IS SqlSimpleExpressionContext VAR s
+    IF ctx IS SqlNameExpressionContext VAR s
+        ? STRING{c" ", depth*2} + "NAME: " + s:ToString()
+    ELSEIF ctx IS SqlSimpleExpressionContext VAR s
         ? STRING{c" ", depth*2} + "SIMPLE: " + s:ToString()
     ELSEIF ctx IS SqlCompsiteExpressionContext VAR c
-        ? STRING{c" ", depth*2} + "COMPOSITE: " + c:ToString()
+        ? STRING{c" ", depth*2} + "COMPOSITE: " + c:ToString() + " NAMES: " + c:Names:Count:ToString()
     ELSEIF ctx IS SqlParenExpressionContext VAR p
         ? STRING{c" ", depth*2} + "PAREN: "
         PrintContext(p:Expr, depth + 1)

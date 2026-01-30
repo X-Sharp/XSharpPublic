@@ -33,8 +33,16 @@ CLASS SqlSimpleExpressionContext INHERIT SqlExpressionContext
         NEXT
 END CLASS
 
+CLASS SqlNameExpressionContext INHERIT SqlSimpleExpressionContext
+    PROPERTY Table AS STRING AUTO
+    PROPERTY Name AS STRING AUTO
+    CONSTRUCTOR()
+        RETURN
+END CLASS
+
 CLASS SqlCompsiteExpressionContext INHERIT SqlExpressionContext
     PROPERTY Exprs AS IList<SqlExpressionContext> AUTO
+    PROPERTY Names AS IList<SqlNameExpressionContext> AUTO
     CONSTRUCTOR()
         RETURN
     OVERRIDE METHOD BuildString(sb AS StringBuilder) AS VOID

@@ -16,7 +16,7 @@ Copyright (C) XSharp BV. All rights reserved.
     ============================================================
                                      GenerateGlobalUsings
 
-    Generates implicit namespace imports source to intermediate directory for C# projects
+    Generates implicit namespace imports source to intermediate directory for X# projects
     ============================================================
     -->
   <UsingTask TaskName="GenerateGlobalUsings" AssemblyFile="$(XSharpBuildAssemblyFile)" />
@@ -53,7 +53,8 @@ Copyright (C) XSharp BV. All rights reserved.
 
     <ItemGroup>
       <Compile Include="$(GeneratedGlobalUsingsFile)" />
-      <!-- Performing a clean and waiting without a build results in build warnings in VS due to all the missing namespaces, so we'll avoid recording it in FileWrites -->
+      <!-- Performing a clean and waiting without a build results in build warnings in VS due to all the missing namespaces,
+        so we'll avoid recording it in FileWrites -->
     </ItemGroup>
   </Target>
 

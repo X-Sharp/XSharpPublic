@@ -83,7 +83,10 @@
       <HintPath>$(VsExternalDir)XSharp.CodeAnalysis.dll</HintPath>
       <Aliases>codeanalysis</Aliases>
     </Reference>
-    <Reference Include="XSharp.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" />
+    <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Artifacts\$(Configuration)\net46\XSharp.Core.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.Evaluator">
       <HintPath>$(VsExternalDir)XSharp.Evaluator.dll</HintPath>
     </Reference>
@@ -220,7 +223,6 @@
     <ZipItem Include="Templates\ProjectItems\VO\VOFieldspec\VOFieldSpec.png" />
     <ZipItem Include="Templates\ProjectItems\VO\VOMenu\VoMenu.png" />
     <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.png" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\Program.prg" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavoded.tpl" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavofed.tpl" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavowed.tpl" />
@@ -399,9 +401,6 @@
       <SubType>Designer</SubType>
     </ZipProject>
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVulcan\VulcanClassLibrary.xsproj" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\ConsoleApplication.png" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\ConsoleApplication.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\ConsoleApplication.xsproj" />
     <ZipItem Include="Templates\ProjectItems\Code\TextTemplate\TextTemplate.tt">
       <LastGenOutput>TextTemplate.cs</LastGenOutput>
     </ZipItem>
@@ -422,6 +421,10 @@
     <ZipItem Include="Templates\ProjectItems\Code\ClassFox\ClassFox.png" />
     <ZipItem Include="Templates\ProjectItems\Code\ClassFox\Class.prg" />
     <ZipItem Include="Templates\ProjectItems\Code\ClassFox\ClassFox.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreSDK\ConsoleApplication.png" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreSDK\ConsoleApplication.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreSDK\ConsoleApplication.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreSDK\Program.prg" />
     <Content Include="XSharp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

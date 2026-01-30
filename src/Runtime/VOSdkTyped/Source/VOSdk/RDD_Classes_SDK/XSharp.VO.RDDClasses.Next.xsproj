@@ -2,6 +2,7 @@
   <Import Project="..\VOSDK.SDK.Targets" />
   <!-- Please note that most important settings are read from VOSDK.Targets -->
   <PropertyGroup>
+    <Description>XSharp Typed VO RDD Classes</Description>
     <AssemblyName>XSharp.VORDDClasses</AssemblyName>
     <Name>XSharp.VO.VORDDClasses</Name>
     <Includepaths>$(Solutiondir)Common</Includepaths>
@@ -20,6 +21,7 @@
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
     <TargetFramework>net8.0</TargetFramework>
+    <ProjectGuid>{8d5c6c73-56a1-4115-b739-4e068654bd6c}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
@@ -37,6 +39,12 @@
       <Private>True</Private>
       <Project>{7650872d-77f3-45df-9942-595b2d75fe1c}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Properties\AssemblyInfo.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\" />
   </ItemGroup>
   <Import Project="..\VOSDKDocs.Targets" />
 </Project>

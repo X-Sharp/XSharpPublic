@@ -1,7 +1,5 @@
-
-
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 
+<Project>
+  <!--
 ***********************************************************************************************
 XSharp.BeforeCommon.Props
 
@@ -9,9 +7,9 @@ WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and
           created a backup copy.  Incorrect changes to this file will make it
           impossible to load or build your projects from the command-line or the IDE.
 
-   This file goes to the "%LOCALAPPDATA%\Microsoft\MSBuild\Current\Imports\Microsoft.Common.props\ImportBefore" folder 
-   MSBuild automatically includes all files from that folder before building 
-   It assumes there is an environment variable or property defined in the xsproj file with the name 
+   This file goes to the "%LOCALAPPDATA%\Microsoft\MSBuild\Current\Imports\Microsoft.Common.props\ImportBefore" folder
+   MSBuild automatically includes all files from that folder before building
+   It assumes there is an environment variable or property defined in the xsproj file with the name
    "XSharpMsBuildDir" that points to the folder with the XSharp MsBuild support files
    By copying it there it will be automatically included in every build.
    The \Program Files (x86)\XSharp\Tools folder contains a program DeployMsBuildSupport.exe  that takes care of copying the file.
@@ -20,18 +18,15 @@ WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and
 
 Copyright (C) XSharp BV. All rights reserved.
 ***********************************************************************************************
-
 -->
-<Project>
-
-<PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.xsproj'">
+  <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.xsproj'">
     <XSharpMsBuildDir Condition="'$(_XSharpTasksDirectory)' != ''">$(_XSharpTasksDirectory)</XSharpMsBuildDir>
     <XSharpMsBuildDir Condition="'$(XSharpMsBuildDir)' == '' and '$(MSBuildExtensionsPath64)'=='' " >$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\XSharpBV\XSharp@XSharpPath)\MsBuild</XSharpMsBuildDir>
     <XSharpMsBuildDir Condition="'$(XSharpMsBuildDir)' == '' and '$(MSBuildExtensionsPath64)'!='' " >$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\XSharpBV\XSharp@XSharpPath)\MsBuild</XSharpMsBuildDir>
     <XSharpMsBuildDir Condition="'$(XSharpMsBuildDir)' == ''" >$(MSBuildProgramFiles32)\XSharp\MsBuild</XSharpMsBuildDir>
-    <LanguageTargets Condition="'$(LanguageTargets )' == ''" >$(XSharpMsBuildDir)\XSharp.Common.targets</LanguageTargets>  
+    <LanguageTargets Condition="'$(LanguageTargets )' == ''" >$(XSharpMsBuildDir)\XSharp.Common.targets</LanguageTargets>
     <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
     <XsMSBuildManagedFolder>$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed</XsMSBuildManagedFolder>
-</PropertyGroup>
-<Import Condition="'$(MSBuildProjectExtension)' == '.xsproj' and '$(XSharpDefaultProps)' == '' " Project="$(XSharpMsBuildDir)\XSharp.Props" />
+  </PropertyGroup>
+  <Import Condition="'$(MSBuildProjectExtension)' == '.xsproj' and '$(XSharpDefaultProps)' == '' " Project="$(XSharpMsBuildDir)\XSharp.Props" />
 </Project>

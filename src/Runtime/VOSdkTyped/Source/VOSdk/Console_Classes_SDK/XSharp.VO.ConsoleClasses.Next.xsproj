@@ -2,6 +2,7 @@
   <Import Project="..\VOSDK.SDK.Targets" />
   <!-- Please note that most important settings are read from VOSDK.Targets -->
   <PropertyGroup>
+    <Description>XSharp Typed VO Console Classes</Description>
     <AssemblyName>XSharp.VOConsoleClasses</AssemblyName>
     <Name>XSharp.VO.ConsoleClasses</Name>
     <Includepaths>$(Solutiondir)Common</Includepaths>
@@ -12,19 +13,25 @@
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
     <TargetFramework>net8.0</TargetFramework>
-    <ProjectGuid>{5c861511-fbdb-42b3-883e-a01faebe1872}</ProjectGuid>
+    <ProjectGuid>{1a2614d4-e82b-4351-b3a0-f265f59b6ff0}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
+    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.Next.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj">
+    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.Next.xsproj">
       <Name>XSharp.RT</Name>
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Private>True</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Properties\AssemblyInfo.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\" />
   </ItemGroup>
   <Import Project="..\VOSDKDocs.Targets" />
 </Project>

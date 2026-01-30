@@ -3,6 +3,7 @@
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <BinariesDir>$([System.IO.Path]::GetFullPath('$(Solutiondir)..\Artifacts\'))</BinariesDir>
+	<SharedDir>$(BinariesDir)Shared\$(Configuration)\</SharedDir>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
     <BaseOutputPath>$(BinariesDir)</BaseOutputPath>
     <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>

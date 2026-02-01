@@ -66,7 +66,9 @@ See License.txt in the project root for license information.
     <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
   </PropertyGroup>
   <Target Name="SignWithXSharpKey" AfterTargets="PostBuildEvent" Condition="'$(UseXSharpKey)' == 'true'">
+    <Message Importance="high" Text="Signing output assembly $(TargetPath)" />
     <Exec Command="&quot;$(SDK40ToolsPath)sn.exe&quot;  -q -R $(TargetPath) $(AssemblyOriginatorKeyFile)" />
+	
   </Target>
 
 </Project>

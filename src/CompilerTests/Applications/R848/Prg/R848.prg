@@ -8,6 +8,8 @@ FUNCTION Start( ) AS VOID
     XAssert(testMe(IntPtr.Zero) == 1)
     XAssert(testMe(null_obj) == 1)
     XAssert(testMe(null) == 1)
+    XAssert(testMe(null,null) == 2)
+    XAssert(testMe(null,null,null) == 3)
     XAssert(testMe() == 0)
 
 FUNCTION TestMe (args) AS LONG CLIPPER        

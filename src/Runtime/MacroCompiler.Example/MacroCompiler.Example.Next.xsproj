@@ -16,7 +16,7 @@
     <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
     <NoStandardDefs>False</NoStandardDefs>
     <ActiveTargetFramework>net9.0</ActiveTargetFramework>
-    <ProjectGuid>{2aacce68-17a3-475e-9e4f-20fc0b57b4d3}</ProjectGuid>
+    <ProjectGuid>{b8c5f140-3ffe-43b6-b596-e005fdf96d39}</ProjectGuid>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>

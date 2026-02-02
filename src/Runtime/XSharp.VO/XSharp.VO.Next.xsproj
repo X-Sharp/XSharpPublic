@@ -4,7 +4,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>XSharp</RootNamespace>
     <AssemblyName>XSharp.VO</AssemblyName>
-    <UseWindowsForms>true</UseWindowsForms>
     <Dialect>VO</Dialect>
     <Unsafe>True</Unsafe>
     <NamedArgs>True</NamedArgs>

@@ -3,7 +3,6 @@
   <PropertyGroup>
     <RootNamespace>XSharp.XPP</RootNamespace>
     <AssemblyName>XSharp.XPP</AssemblyName>
-    <UseWindowsForms>true</UseWindowsForms>
     <Dialect>XPP</Dialect>
     <CS>true</CS>
     <Unsafe>True</Unsafe>

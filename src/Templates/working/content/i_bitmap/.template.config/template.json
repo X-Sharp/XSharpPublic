@@ -10,8 +10,9 @@
   "Tags": {
     "language": "X#",
     "type": "item",
-    "icon": "Bitmap.PNG",
+    "icon": "template.png",
     "is-icon-path": "true"
+    
   },
   "PreferNameDirectory": true,
   "DefaultName": "Bitmap.bmp"

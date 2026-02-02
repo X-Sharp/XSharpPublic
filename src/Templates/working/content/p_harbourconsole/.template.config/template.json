@@ -14,7 +14,7 @@
   "Tags": {
     "language": "X#",
     "type": "project",
-    "icon": "HarbourConsole.png",
+    "icon": "template.png",
     "is-icon-path": "true"
   },
   "PreferNameDirectory": true,

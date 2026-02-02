@@ -2,6 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Name>WindowsFormsApplication</Name>
+    <UseWindowsForms>true</UseWindowsForms>
     <OutputType>WinExe</OutputType>
     <Dialect>Core</Dialect>
     <Allowdot>True</Allowdot>

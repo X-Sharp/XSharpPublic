@@ -21,20 +21,19 @@
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
     <TargetFramework>net8.0</TargetFramework>
-    <ProjectGuid>{10d8dc1b-a50c-41fc-92d9-22a54051c7e2}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
+    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.Next.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj">
+    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.Next.xsproj">
       <Name>XSharp.RT</Name>
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.Data\XSharp.Data.xsproj">
+    <ProjectReference Include="..\..\..\..\XSharp.Data\XSharp.Data.Next.xsproj">
       <Name>XSharp.Data</Name>
       <Private>True</Private>
     </ProjectReference>
@@ -46,9 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Properties\AssemblyInfo.prg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="obj\" />
   </ItemGroup>
   <Import Project="..\VOSDKDocs.Targets" />
 </Project>

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp B.V.",
+  "Author": "XSharp",
   "Classifications": [
     "Windows",
     "Console",
@@ -8,13 +8,13 @@
   ],
   "Identity": "XSharp.VulcanConsole",
   "Name": "Vulcan Application",
-  "Description": "A project for creating a X# command-line application in the Vulcan dialect with Vulcan Runtime Assemblies (BYOR = Bring Your Own Runtime).",
+  "Description": "A project for creating a X# command-line application in the Vulcan dialect.",
   "SourceName": "XSharp.VulcanConsole",
   "ShortName": "xsvulcanconsole",
   "Tags": {
     "language": "X#",
     "type": "project",
-    "icon": "VulcanConsole.png",
+    "icon": ".\VulcanConsole.png",
     "is-icon-path": "true"
   },
   "PreferNameDirectory": true,

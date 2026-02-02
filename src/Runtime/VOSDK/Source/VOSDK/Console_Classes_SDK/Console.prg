@@ -103,10 +103,10 @@ CLASS Console
     
     /// <include file="Console.xml" path="doc/Console.Wait/*" />
     METHOD Wait AS STRING
-        local Info     as System.ConsoleKeyInfo
+        local info     as System.ConsoleKeyInfo
         LOCAL cResult   AS STRING
         info := System.Console.ReadKey(TRUE)
-        cResult := Info:KeyChar:ToString()
+        cResult := info:KeyChar:ToString()
         SELF:Write(cResult)
         return cResult
         

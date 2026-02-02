@@ -290,7 +290,6 @@
     <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\WPFApplication.png" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.png" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\Readme.txt" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFFlowDocument\WPFFlowDocument.png" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.png" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\WPFPage.png" />
@@ -416,10 +415,6 @@
     <ZipItem Include="Templates\ProjectItems\Code\ClassFox\ClassFox.png" />
     <ZipItem Include="Templates\ProjectItems\Code\ClassFox\Class.prg" />
     <ZipItem Include="Templates\ProjectItems\Code\ClassFox\ClassFox.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreSDK\ConsoleApplication.png" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreSDK\ConsoleApplication.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreSDK\ConsoleApplication.xsproj" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreSDK\Program.prg" />
     <Content Include="XSharp.Designers2022.pkgdef">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

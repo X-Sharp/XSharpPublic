@@ -2,7 +2,7 @@
 <VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
     <Name>Vulcan Application</Name>
-    <Description>A project for creating a X# command-line application in the Vulcan dialect with Vulcan Runtime Assemblies (BYOR = Bring Your Own Runtime).</Description>
+    <Description>A project for creating a X# command-line application in the Vulcan dialect.</Description>
     <Icon>VulcanConsole.png</Icon>
     <PreviewImage>VulcanConsole.png</PreviewImage>
     <TemplateID>XSharp.VulcanConsole</TemplateID>

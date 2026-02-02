@@ -28,6 +28,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <ErrorReport>prompt</ErrorReport>
     <XscToolPath>$(BinariesDir)bin\xsc\$(Configuration)\net472\</XscToolPath>
+    <XscToolPath Condition="$(Configuration.Contains('Doc'))">$(BinariesDir)bin\xsc\Debug\net472\</XscToolPath>
     <CommonInclude>$(CommonDir)</CommonInclude>
     <AZ>false</AZ>
     <CS>false</CS>
@@ -52,8 +53,6 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
-    <XPP1>false</XPP1>
-    <FOX1>false</FOX1>
     <InitLocals>false</InitLocals>
     <NamedArgs>false</NamedArgs>
     <MemVar>false</MemVar>

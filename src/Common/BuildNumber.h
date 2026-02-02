@@ -1,4 +1,4 @@
-// BuildNumber.h
+﻿// BuildNumber.h
 #ifndef BUILDNUMBER_H
     #define BUILDNUMBER_H
     #define PRODUCT_NAME     "XSharp Gaia"
@@ -20,7 +20,7 @@
     #define VERSION_NUMBER     FILEVERSION_NUMBER
 #endif
 
-    #define INFORMATIONAL_NUMBER  "3.0 Beta"
+    #define INFORMATIONAL_NUMBER  e"XSharp Gaia  (\u0393\u03B1\u1FD6\u03B1) 3.0 Beta"
 
     #ifdef __DEBUG__
         #define ASSEMBLY_CONFIGURATION "Debug"

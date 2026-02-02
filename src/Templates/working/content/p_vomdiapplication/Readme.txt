@@ -7,3 +7,5 @@ We have made some small changes that were needed because the VO SDK Libraries di
 - The Application Icon and bitmap on the Help About screen have been updated
 - The SysLink control on the HelpAbout screen now goes to the X# website
 - We have included the templates for the VO Editor in the Properties subfolder in the project
+
+The VO SDK libraries are resolved with a reference to the nuget package XSharp.VOSDK

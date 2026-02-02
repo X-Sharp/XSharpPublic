@@ -40,4 +40,13 @@
     <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
+<Target Name="CopyFiles" AfterTargets="BeforeBuild" >
+    <ItemGroup>
+      <OurFiles Include="*.cmd" />
+    </ItemGroup> 
+    <Message Importance="high" Text="Copy cmd files" />
+    <Copy SourceFiles="@(OurFiles)" DestinationFolder="bin\Release" />
+  </Target>
+
+
 </Project>

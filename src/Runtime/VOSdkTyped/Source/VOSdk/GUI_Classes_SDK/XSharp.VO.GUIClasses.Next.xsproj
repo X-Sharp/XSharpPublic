@@ -3,9 +3,9 @@
   <!-- Please note that most important settings are read from VOSDK.Targets -->
   <PropertyGroup>
     <Dialect>Vulcan</Dialect>
+    <UseWindowsForms>true</UseWindowsForms>
     <AssemblyName>XSharp.VORDDClasses</AssemblyName>
     <Name>XSharp.VO.VORDDClasses</Name>
-    <UseWindowsForms>true</UseWindowsForms>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <LB>False</LB>

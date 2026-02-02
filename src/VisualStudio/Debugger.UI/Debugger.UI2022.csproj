@@ -19,7 +19,7 @@
     <RuntimeIdentifier>win</RuntimeIdentifier>
     <ProjectGuid>{960714E8-FF93-4A42-B9BA-610B0F2014DB}</ProjectGuid>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <GeneratePkgDefFile>false</GeneratePkgDefFile>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <ExtensionInstallationFolder>XSharp\Project</ExtensionInstallationFolder>
     <CreateVsixContainer>False</CreateVsixContainer>
     <DeployExtension>False</DeployExtension>

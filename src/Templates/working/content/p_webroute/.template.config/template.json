@@ -1,6 +1,6 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "author": "XSharp B.V.",
+  "Author": "XSharp",
   "classifications": [ "Web","WebAPI","Web API","API","Service", "X#" ],
   "identity": "XSharpBV.WebRoute.XSharp",
   "name": "WebApp Application - RESTful with Attributes",

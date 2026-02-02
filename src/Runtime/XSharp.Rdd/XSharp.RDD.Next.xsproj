@@ -5,14 +5,11 @@
     <AssemblyName>XSharp.RDD</AssemblyName>
     <Dialect>Core</Dialect>
     <AZ>true</AZ>
-    <CS>true</CS>
     <INS>true</INS>
     <NamedArgs>True</NamedArgs>
-    <Nostandarddefs>true</Nostandarddefs>
     <Unsafe>True</Unsafe>
     <allowdot>true</allowdot>
     <EnforceSelf>True</EnforceSelf>
-    <StartupObject />
     <TargetFramework>net8.0</TargetFramework>
     <ProjectGuid>{dd846bca-ba01-425c-b329-62acbb948723}</ProjectGuid>
   </PropertyGroup>

@@ -24,12 +24,12 @@
     <ProjectGuid>{8d5c6c73-56a1-4115-b739-4e068654bd6c}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
+    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.Next.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj">
+    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.Next.xsproj">
       <Name>XSharp.RT</Name>
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Private>True</Private>

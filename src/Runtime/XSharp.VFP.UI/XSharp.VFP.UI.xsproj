@@ -41,8 +41,8 @@
     <WarningsAsErrors />
     <PlatformTarget>AnyCPU</PlatformTarget>
     <NoWarn>$(DisabledWarnings);108,114</NoWarn>
-	<TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
-	<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <ResolveNuGetPackages>false</ResolveNuGetPackages>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -213,12 +213,6 @@
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
-<ItemGroup>
-    <PackageReference Include="System.Resources.Extensions">
-      <Version>10.0.2</Version>
-    </PackageReference>
-  </ItemGroup>
-  
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>

@@ -14,7 +14,7 @@
   "Tags": {
     "language": "X#",
     "type": "project",
-    "icon": "VOMDIApp.png",
+    "icon": "template.png",
     "is-icon-path": "true"
   },
   "PreferNameDirectory": true,
@@ -26,20 +26,20 @@
       "Datatype": "choice",
       "Choices": [
         {
-          "Choice": "net48",
-          "Description": "Target .NET Framework 4.8"
+          "Choice": "net8.0",
+          "Description": "Target .NET 8"
         },
         {
-          "Choice": "net46",
-          "Description": "Target .NET Framework 4.6"
+          "Choice": "net9.0",
+          "Description": "Target .NET 9"
         },
         {
-          "Choice": "net47",
-          "Description": "Target .NET Framework 4.7"
+          "Choice": "net10.0",
+          "Description": "Target .NET 10"
         }
       ],
-      "Replaces": "net48",
-      "DefaultValue": "net48"
+      "Replaces": "net8.0",
+      "DefaultValue": "net8.0"
     },
     "DefaultNamespace": {
       "Type": "parameter",

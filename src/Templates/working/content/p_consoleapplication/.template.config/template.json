@@ -12,9 +12,7 @@
   "ShortName": "xsconsoleapplication",
   "Tags": {
     "language": "X#",
-    "type": "project",
-    "icon": "ConsoleApplication.png",
-    "is-icon-path": "true"
+    "type": "project"
   },
   "PreferNameDirectory": true,
   "DefaultName": "ConsoleApplication",

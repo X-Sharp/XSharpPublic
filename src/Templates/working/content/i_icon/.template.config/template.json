@@ -10,7 +10,7 @@
   "Tags": {
     "language": "X#",
     "type": "item",
-    "icon": "Icon.PNG",
+    "icon": "template.png",
     "is-icon-path": "true"
   },
   "PreferNameDirectory": true,

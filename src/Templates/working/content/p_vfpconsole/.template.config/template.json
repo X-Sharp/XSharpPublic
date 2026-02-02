@@ -14,7 +14,7 @@
   "Tags": {
     "language": "X#",
     "type": "project",
-    "icon": "VFPConsole.png",
+    "icon": "template.png",
     "is-icon-path": "true"
   },
   "PreferNameDirectory": true,

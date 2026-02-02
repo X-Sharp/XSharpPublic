@@ -13,7 +13,7 @@
   "Tags": {
     "language": "X#",
     "type": "project",
-    "icon": "WinFormApp.png",
+    "icon": "template.png",
     "is-icon-path": "true"
   },
   "PreferNameDirectory": true,

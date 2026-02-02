@@ -14,7 +14,7 @@
   "Tags": {
     "language": "X#",
     "type": "project",
-    "icon": "VulcanClassLibrary.png",
+    "icon": "template.png",
     "is-icon-path": "true"
   },
   "PreferNameDirectory": true,

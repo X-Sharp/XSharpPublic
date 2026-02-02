@@ -13,29 +13,6 @@ CLASS StandardShellWindow INHERIT ShellWindow
 	PROTECT oPrinter      AS PrintingDevice
 	
 
-CONSTRUCTOR( oOwnerApp ) 
-	local oSB as StatusBar
-	
-	SUPER( oOwnerApp )
-	
-	SetDeleted(true)
-
-	self:EnableDragDropClient()
-
-	oSB := self:EnableStatusBar()
-	oSB:DisplayTime()
-
-	self:Menu := EmptyShellMenu{self}
-
-	self:Icon 	:= Icon{ResourceID{IDI_STANDARDICON, _GetInst()}}
-	self:IconSm := Icon{ResourceID{IDI_STANDARDICON, _GetInst()}}
-	
-	SELF:Caption := "Company.Namespace1"
-	
-	oPrinter := PrintingDevice{}
-	
-	return 
-
 METHOD DoOpenFile(cFileName, lReadOnly) 
 	LOCAL oTB AS TextBox
 	LOCAL oNewChild AS StdDataWindow
@@ -88,7 +65,28 @@ METHOD FilePrinterSetup()
 	
 RETURN SELF	
 
+CONSTRUCTOR( oOwnerApp ) 
+	local oSB as StatusBar
+	
+	SUPER( oOwnerApp )
+	
+	SetDeleted(true)
 
+	self:EnableDragDropClient()
+
+	oSB := self:EnableStatusBar()
+	oSB:DisplayTime()
+
+	self:Menu := EmptyShellMenu{self}
+
+	self:Icon 	:= Icon{ResourceID{IDI_STANDARDICON, _GetInst()}}
+	self:IconSm := Icon{ResourceID{IDI_STANDARDICON, _GetInst()}}
+	
+	SELF:Caption := "Company.Namespace1"
+	
+	oPrinter := PrintingDevice{}
+	
+	return self
 
 
 ACCESS Printer 
@@ -116,6 +114,21 @@ RETURN SELF
 
 END CLASS
 CLASS StdDataWindow INHERIT DataWindow
+	
+
+METHOD FileClose() 
+
+	SELF:Server:Close()
+
+ 	SELF:EndWindow()
+
+RETURN SELF
+
+METHOD FilePrint() 
+
+	SELF:Print(SELF:Owner:Printer)
+
+RETURN SELF	
 
 CONSTRUCTOR(oParentWindow, sFileName, lReadOnly, oServer) 
 	LOCAL sCaption AS STRING
@@ -134,25 +147,9 @@ CONSTRUCTOR(oParentWindow, sFileName, lReadOnly, oServer)
 		SELF:Caption := sCaption + sFileName
 	ENDIF	
 
-RETURN 	
-
-METHOD FileClose() 
-
-	SELF:Server:Close()
-
- 	SELF:EndWindow()
-
 RETURN SELF
 
-METHOD FilePrint() 
-
-	SELF:Print(SELF:Owner:Printer)
-
-RETURN SELF	
-
-
-
-METHOD ViewForm() 
+method ViewForm() 
 	self:ToolBar:UnPressItem(IDM_StandardShellMenu_View_Table_ID)
 	self:ToolBar:PressItem(IDM_StandardShellMenu_View_Form_ID)
 	
@@ -161,7 +158,7 @@ METHOD ViewForm()
 
 
 
-METHOD ViewTable() 
+method ViewTable() 
 	self:ToolBar:UnPressItem(IDM_StandardShellMenu_View_Form_ID)
 	self:ToolBar:PressItem(IDM_StandardShellMenu_View_Table_ID)
 	

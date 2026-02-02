@@ -14,7 +14,7 @@
   "Tags": {
     "language": "X#",
     "type": "project",
-    "icon": "VOClassLibrary.png",
+    "icon": "template.png",
     "is-icon-path": "true"
   },
   "PreferNameDirectory": true,

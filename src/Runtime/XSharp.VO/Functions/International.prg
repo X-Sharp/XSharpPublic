@@ -183,9 +183,10 @@ FUNCTION MAKELCID( lgid AS WORD, srtid AS WORD ) AS DWORD
 	RETURN (DWORD) ( ( ( (DWORD)(srtid) ) << 16) | ( (INT)(DWORD) lgid ) )
 
 /// <exclude />
+#ifndef NET5_0_OR_GREATER
 FUNCTION IsBiDi() AS LOGIC
    RETURN System.Windows.Forms.SystemInformation.MidEastEnabled
-
+#endif
 /// <exclude />
 FUNCTION String2W( sz AS STRING ) AS IntPtr
   // The original VO Code was using SysAllocString to allocate the memory.

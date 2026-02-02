@@ -5,8 +5,8 @@
 //
 USING System.Management
 USING System.Drawing.Printing
+#ifndef NET5_0_OR_GREATER
 USING System.Windows.Forms
-
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/aprinters/*" />
 FUNCTION APrinters ( ArrayName , nValue ) AS INT CLIPPER
@@ -54,3 +54,4 @@ LOCAL iCount AS INT
 	ENDIF
 
 	RETURN iCount
+#endif

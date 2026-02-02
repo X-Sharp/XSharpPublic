@@ -82,4 +82,8 @@
       <BuildType Solution="Documentation|*" Project="Release" />
     </Project>
   </Folder>
+  <Project Path="ConsoleApplication1/ConsoleApplication1.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="26aae1c9-dd0b-499a-ba02-db0f810b3fe3">
+    <BuildType Solution="DocChinese|*" Project="Release" />
+    <BuildType Solution="Documentation|*" Project="Release" />
+  </Project>
 </Solution>

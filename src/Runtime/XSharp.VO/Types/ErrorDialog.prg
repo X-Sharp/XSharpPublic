@@ -1,15 +1,38 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
-USING System.Windows.Forms
-USING System.Drawing
+#ifdef NET5_0_OR_GREATER
 
 PROCEDURE InitializeErrorDialogHandler() _INIT1
    ShowErrorDialog_Handler := ErrorDialog
 
+FUNCTION ErrorDialog( e AS Error ) AS INT
+RETURN ErrorDialog( e:ToString() )
+FUNCTION ErrorDialog( txt AS STRING ) AS INT
+   LOCAL nResult AS INT
+   var eResult := MessageBoxShow( txt, "Application Error",;
+       (DWORD) ((INT) MessageBoxButtons.AbortRetryIgnore + (INT) MessageBoxIcon.Error + (INT) MessageBoxOptions.SystemModal) )
+   SWITCH eResult
+   CASE MessageBoxResult.Ignore
+       nResult := IDIGNORE
+   CASE MessageBoxResult.Retry
+       nResult := IDRETRY
+   OTHERWISE
+       nResult := IDABORT
+   END SWITCH
+   RETURN nResult
+
+
+
+#else
+
+USING System.Windows.Forms
+USING System.Drawing
+PROCEDURE InitializeErrorDialogHandler() _INIT1
+   ShowErrorDialog_Handler := ErrorDialog
 INTERNAL DEFINE IDABORT         := 3
 INTERNAL DEFINE IDRETRY         := 4
 INTERNAL DEFINE IDIGNORE        := 5
@@ -26,6 +49,7 @@ FUNCTION ErrorDialog( e AS Error ) AS INT
        nResult := IDABORT
    END SWITCH
    RETURN nResult
+
 
 FUNCTION ErrorDialog( e AS Exception ) AS INT
    RETURN (INT) XSharp.ErrorDialog{ e }:ShowDialog()
@@ -44,7 +68,7 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
 
     PRIVATE lAbortRetryIgnoreMode := FALSE AS LOGIC
 
-    CONSTRUCTOR( e AS Exception) 
+    CONSTRUCTOR( e AS Exception)
         SELF( e:ToString() )
         IF e IS Error VAR oError
             SELF:CloseButton:Hide()
@@ -52,7 +76,7 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
             SELF:RetryButton:Show()
             SELF:IgnoreButton:Show()
             SELF:RetryButton:Enabled := oError:CanRetry
-        
+
             SELF:ControlBox := FALSE
             SELF:lAbortRetryIgnoreMode := TRUE
             SELF:Text := IIF(oError:Severity == ES_WARNING, "WARNING", "ERROR")
@@ -197,5 +221,6 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
     PRIVATE METHOD CopyButton_Click( sender AS OBJECT, e AS System.EventArgs ) AS VOID
        System.Windows.Forms.Clipboard.SetDataObject( ErrorText:Text, TRUE )
        RETURN
-    
+
 END CLASS
+#endif

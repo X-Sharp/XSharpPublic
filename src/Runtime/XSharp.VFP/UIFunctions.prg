@@ -4,8 +4,9 @@
 // See License.txt in the project root for license information.
 //
 
+#ifndef NET5_0_OR_GREATER
 USING System.Windows.Forms
-
+#endif
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/messagebox/*" />
@@ -25,11 +26,16 @@ FUNCTION MessageBox( eMessageText AS USUAL, nDialogBoxType := 0 AS LONG, cTitleB
     nButton  := (MessageBoxButtons)         _AND(nDialogBoxType, 0x0F)
     nIcon    := (MessageBoxIcon)            _AND(nDialogBoxType, 0xF0)
     nDefault := (MessageBoxDefaultButton)   _AND(nDialogBoxType, 0xF00)
+#ifdef NET5_0_OR_GREATER
+    RETURN MessageBoxShow(cMessage, cTitleBarText,;
+        (DWORD)( (INT)nButton + (INT)nIcon + (INT)nDefault))
+#else
     IF nTimeOut >= 1
         RETURN XSharp.VFP.AutoCloseMessageBox.Show(cMessage, cTitleBarText, nTimeOut, nButton, nIcon, nDefault)
     ENDIF
     RETURN System.Windows.Forms.MessageBox.Show(cMessage, cTitleBarText, nButton, nIcon, nDefault)
-
+#endif
+#ifndef NET5_0_OR_GREATER
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sysmetric/*" />
@@ -165,3 +171,4 @@ FUNCTION SysMetric( nScreenElement AS LONG) AS LONG
     RETURN 0
 
 
+#endif

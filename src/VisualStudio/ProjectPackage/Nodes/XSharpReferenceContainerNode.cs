@@ -16,86 +16,128 @@ namespace XSharp.Project
     /// Reference container node
     /// </summary>
     public class XSharpReferenceContainerNode : ReferenceContainerNode
-   {
-      public XSharpReferenceContainerNode( ProjectNode project ) : base( project )
-      {
-      }
+    {
+        public XSharpReferenceContainerNode(ProjectNode project) : base(project)
+        {
+        }
 
-      protected override ProjectReferenceNode CreateProjectReferenceNode( ProjectElement element )
-      {
-         ProjectReferenceNode node = new XSharpProjectReferenceNode( this.ProjectMgr, element );
-         ReferenceNode existing = null;
-         if (isDuplicateNode(node, ref existing))
-         {
-             ProjectReferenceNode existingNode = existing as ProjectReferenceNode;
-             return existingNode;
-         }
-         return node;
-      }
-      public override ReferenceNode AddReferenceFromSelectorData(VSCOMPONENTSELECTORDATA selectorData, string wrapperTool )
-      {
-         if (String.IsNullOrEmpty(wrapperTool ))
-            wrapperTool = WrapperToolAttributeValue.TlbImp.ToString().ToLowerInvariant();
-         foreach (ReferenceNode child in this.EnumReferences())
-         {
+        protected override ProjectReferenceNode CreateProjectReferenceNode(ProjectElement element)
+        {
+            // Check to see if we have the Guid and Name in the ProjectElement
+            var guid = element.GetMetadata("Project");
+            var name = element.GetMetadata("Name");
+            var path = element.Item.EvaluatedInclude;
+            bool changed = false;
+            path = System.IO.Path.GetFileName(path);
+            var refnode = XSharpProjectNode.FindProject(path);
+            if (string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(name))
+            {
+                // No guid, so it is probably an old style project reference
+                // In that case we need to get the guid from the project file
+                if (refnode != null)
+                {
+                    guid = refnode.ProjectIDGuid.ToString("B");
+                    name = refnode.GetProjectProperty("AssemblyName");
+                    element.SetMetadata("Project", guid);
+                    element.SetMetadata("Name", name);
+                    changed = true;
+                }
+                else
+                {
+                    var parent = this.ProjectMgr as XSharpProjectNode;
+                    parent.HasIncompleteReferences = true;
+                }
+            }
+            if (refnode != null)
+            {
+                var refguid = refnode.ProjectIDGuid.ToString("B");
+                if (string.Compare(guid, refguid, StringComparison.OrdinalIgnoreCase) != 0)
+                {
+                    // The guid's do not match, so update the project element
+                    guid = refguid;
+                    element.SetMetadata("Project", guid);
+                    changed = true;
+                }
+
+            }
+            if (changed)
+            {
+                var parent = this.ProjectMgr as XSharpProjectNode;
+                parent.BuildProject.Save();
+            }
+            ProjectReferenceNode node = new XSharpProjectReferenceNode(this.ProjectMgr, element);
+            ReferenceNode existing = null;
+            if (isDuplicateNode(node, ref existing))
+            {
+                ProjectReferenceNode existingNode = existing as ProjectReferenceNode;
+                return existingNode;
+            }
+            return node;
+        }
+        public override ReferenceNode AddReferenceFromSelectorData(VSCOMPONENTSELECTORDATA selectorData, string wrapperTool)
+        {
+            if (String.IsNullOrEmpty(wrapperTool))
+                wrapperTool = WrapperToolAttributeValue.TlbImp.ToString().ToLowerInvariant();
+            foreach (ReferenceNode child in this.EnumReferences())
+            {
                 XSharpComReferenceNode comnode = child as XSharpComReferenceNode;
 
-            if (comnode != null && comnode.Matches(selectorData, wrapperTool))
-               return comnode;
+                if (comnode != null && comnode.Matches(selectorData, wrapperTool))
+                    return comnode;
 
-         }
-         return base.AddReferenceFromSelectorData(selectorData, wrapperTool);
-      }
-      protected override ProjectReferenceNode CreateProjectReferenceNode( VSCOMPONENTSELECTORDATA selectorData )
-      {
-         ProjectReferenceNode node = new XSharpProjectReferenceNode(this.ProjectMgr, selectorData.bstrTitle, selectorData.bstrFile, selectorData.bstrProjRef);
-         ReferenceNode existing = null;
-         if (isDuplicateNode(node, ref existing))
-         {
-             ProjectReferenceNode existingNode = existing as ProjectReferenceNode;
-             return existingNode;
-         }
-         return node;
+            }
+            return base.AddReferenceFromSelectorData(selectorData, wrapperTool);
+        }
+        protected override ProjectReferenceNode CreateProjectReferenceNode(VSCOMPONENTSELECTORDATA selectorData)
+        {
+            ProjectReferenceNode node = new XSharpProjectReferenceNode(this.ProjectMgr, selectorData.bstrTitle, selectorData.bstrFile, selectorData.bstrProjRef);
+            ReferenceNode existing = null;
+            if (isDuplicateNode(node, ref existing))
+            {
+                ProjectReferenceNode existingNode = existing as ProjectReferenceNode;
+                return existingNode;
+            }
+            return node;
 
-      }
-      protected override AssemblyReferenceNode CreateAssemblyReferenceNode(ProjectElement element)
-      {
-          AssemblyReferenceNode node = null;
-          try
-          {
-              node = new XSharpAssemblyReferenceNode(this.ProjectMgr, element);
-          }
-          catch (Exception e)
-          {
+        }
+        protected override AssemblyReferenceNode CreateAssemblyReferenceNode(ProjectElement element)
+        {
+            AssemblyReferenceNode node = null;
+            try
+            {
+                node = new XSharpAssemblyReferenceNode(this.ProjectMgr, element);
+            }
+            catch (Exception e)
+            {
                 Logger.Exception(e, "CreateAssemblyReferenceNode");
             }
-          ReferenceNode existing = null;
-          if (isDuplicateNode(node, ref existing))
-          {
-              AssemblyReferenceNode existingNode = existing as AssemblyReferenceNode;
-          }
-          return node;
-      }
+            ReferenceNode existing = null;
+            if (isDuplicateNode(node, ref existing))
+            {
+                AssemblyReferenceNode existingNode = existing as AssemblyReferenceNode;
+            }
+            return node;
+        }
 
-       // How to handle multiple references.
-      public static int multiRefAutoCorrection = 0;
+        // How to handle multiple references.
+        public static int multiRefAutoCorrection = 0;
 
-      protected override ComReferenceNode CreateComReferenceNode(ProjectElement reference)
-      {
-          return new XSharpComReferenceNode(this.ProjectMgr, reference);
-      }
+        protected override ComReferenceNode CreateComReferenceNode(ProjectElement reference)
+        {
+            return new XSharpComReferenceNode(this.ProjectMgr, reference);
+        }
 
-      protected override ComReferenceNode CreateComReferenceNode(Microsoft.VisualStudio.Shell.Interop.VSCOMPONENTSELECTORDATA selectorData, string wrapperTool )
-      {
-          ComReferenceNode node = new XSharpComReferenceNode(this.ProjectMgr, selectorData, wrapperTool);
-          return node;
-      }
+        protected override ComReferenceNode CreateComReferenceNode(Microsoft.VisualStudio.Shell.Interop.VSCOMPONENTSELECTORDATA selectorData, string wrapperTool)
+        {
+            ComReferenceNode node = new XSharpComReferenceNode(this.ProjectMgr, selectorData, wrapperTool);
+            return node;
+        }
 #if DEV17
         protected override bool SupportsIconMonikers => true;
         protected override ImageMoniker GetIconMoniker(bool open)
         {
             return KnownMonikers.ReferenceGroup;
-    }
+        }
 #else
         // VS2019 does not have these image monikers
         protected override bool SupportsIconMonikers => false;
@@ -103,59 +145,59 @@ namespace XSharp.Project
 
 #endif
 
-    private bool isDuplicateNode( string nodeCaption, ref ReferenceNode ExistingNode)
-      {
-          if (nodeCaption != null)
-          {
-              foreach (ReferenceNode child in this.EnumReferences())
-              {
-                  // check for duplicate nodes
-                  if (child.Caption == nodeCaption)
-                  {
-                      ExistingNode = child;
-                      return true;
-                  }
-              }
-          }
-          ExistingNode = null;
-          return false;
+        private bool isDuplicateNode(string nodeCaption, ref ReferenceNode ExistingNode)
+        {
+            if (nodeCaption != null)
+            {
+                foreach (ReferenceNode child in this.EnumReferences())
+                {
+                    // check for duplicate nodes
+                    if (child.Caption == nodeCaption)
+                    {
+                        ExistingNode = child;
+                        return true;
+                    }
+                }
+            }
+            ExistingNode = null;
+            return false;
 
-      }
+        }
 
-      private bool isDuplicateNode(ReferenceNode node, ref ReferenceNode ExistingNode )
-      {
-         if (node != null)
-         {
+        private bool isDuplicateNode(ReferenceNode node, ref ReferenceNode ExistingNode)
+        {
+            if (node != null)
+            {
                 return isDuplicateNode(node.Caption, ref ExistingNode);
-         }
-         ExistingNode = null;
-         return false;
+            }
+            ExistingNode = null;
+            return false;
 
-      }
-      protected override ReferenceNode CreateFileComponent(VSCOMPONENTSELECTORDATA selectorData, string _wrapperTool = null)
-      {
-          ReferenceNode node = null;
-          ReferenceNode existing = null;
-          // To avoid the add of the Reference in the reference list
-          // we will first check if it is already in there
-          if (selectorData.bstrFile == null)
-          {
-              throw new ArgumentNullException("selectorData");
-          }
-          //
-          if (selectorData.bstrFile[0] == '*')
-          {
-              selectorData.bstrFile = selectorData.bstrFile.Substring(1);
-          }
-          // We have a path to a file, it could be anything
-          // First see if it is a managed assembly
-          if (File.Exists(selectorData.bstrFile))
-          {
-              string assemblyPath = selectorData.bstrFile;
-              System.Reflection.AssemblyName assemblyName = System.Reflection.AssemblyName.GetAssemblyName(assemblyPath);
-              string caption = assemblyName.Name;
-              if (isDuplicateNode(caption, ref existing))
-              {
+        }
+        protected override ReferenceNode CreateFileComponent(VSCOMPONENTSELECTORDATA selectorData, string _wrapperTool = null)
+        {
+            ReferenceNode node = null;
+            ReferenceNode existing = null;
+            // To avoid the add of the Reference in the reference list
+            // we will first check if it is already in there
+            if (selectorData.bstrFile == null)
+            {
+                throw new ArgumentNullException("selectorData");
+            }
+            //
+            if (selectorData.bstrFile[0] == '*')
+            {
+                selectorData.bstrFile = selectorData.bstrFile.Substring(1);
+            }
+            // We have a path to a file, it could be anything
+            // First see if it is a managed assembly
+            if (File.Exists(selectorData.bstrFile))
+            {
+                string assemblyPath = selectorData.bstrFile;
+                System.Reflection.AssemblyName assemblyName = System.Reflection.AssemblyName.GetAssemblyName(assemblyPath);
+                string caption = assemblyName.Name;
+                if (isDuplicateNode(caption, ref existing))
+                {
                     //
                     string existingUrl = existing.Url;
                     if (File.Exists(existingUrl))
@@ -164,46 +206,46 @@ namespace XSharp.Project
                     existing.Remove(false);
                     var xProjectNode = this.ProjectMgr as XSharpProjectNode;
                     xProjectNode.ProjectModel.AddAssemblyReference(existingUrl);
-              }
-          }
-          //
-          // Ok, try to create and add the reference
-          node = base.CreateFileComponent(selectorData, _wrapperTool);
-          if (isDuplicateNode(node, ref existing))
-          {
-              // The CreateFileComponent create and Add the project element
-              // but as it is duplicated..Remove it !
-              node.Remove(false);
-              var xProjectNode = this.ProjectMgr as XSharpProjectNode;
-              xProjectNode.ProjectModel.AddAssemblyReference(existing.Url);
-              return existing;
-          }
-          return node;
-      }
-      /// <summary>
-      /// Creates an assembly reference node from a file path.
-      /// </summary>
-      protected override AssemblyReferenceNode CreateAssemblyReferenceNode(string fileName)
-      {
-          AssemblyReferenceNode node = null;
-          try
-          {
-              // Ok when file name is a full path or when it doesn't have a DLL extension
-              if (!File.Exists(fileName))
-              {
-                  if (fileName.EndsWith(".dll",StringComparison.OrdinalIgnoreCase))
-                  {
-                      fileName = Path.GetFileNameWithoutExtension(fileName);
-                  }
-              }
-              node = new XSharpAssemblyReferenceNode(this.ProjectMgr, fileName);
-          }
-          catch (Exception e)
-          {
+                }
+            }
+            //
+            // Ok, try to create and add the reference
+            node = base.CreateFileComponent(selectorData, _wrapperTool);
+            if (isDuplicateNode(node, ref existing))
+            {
+                // The CreateFileComponent create and Add the project element
+                // but as it is duplicated..Remove it !
+                node.Remove(false);
+                var xProjectNode = this.ProjectMgr as XSharpProjectNode;
+                xProjectNode.ProjectModel.AddAssemblyReference(existing.Url);
+                return existing;
+            }
+            return node;
+        }
+        /// <summary>
+        /// Creates an assembly reference node from a file path.
+        /// </summary>
+        protected override AssemblyReferenceNode CreateAssemblyReferenceNode(string fileName)
+        {
+            AssemblyReferenceNode node = null;
+            try
+            {
+                // Ok when file name is a full path or when it doesn't have a DLL extension
+                if (!File.Exists(fileName))
+                {
+                    if (fileName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                    {
+                        fileName = Path.GetFileNameWithoutExtension(fileName);
+                    }
+                }
+                node = new XSharpAssemblyReferenceNode(this.ProjectMgr, fileName);
+            }
+            catch (Exception e)
+            {
                 Logger.Exception(e, "CreateAssemblyReferenceNode");
-          }
-          return node;
-      }
+            }
+            return node;
+        }
 
-   }
+    }
 }

@@ -10,7 +10,7 @@ USING System.Diagnostics
 USING System.Reflection
 USING XSharp.RDD
 USING XSharp.RDD.Enums
-
+USING System.Text
 
 
 BEGIN NAMESPACE System.Runtime.CompilerServices
@@ -50,7 +50,12 @@ CLASS XSharp.RuntimeState
 	PRIVATE STATIC _shutdown := FALSE AS LOGIC  // To prevent creating state when shutting down
 	// Static Methods and Constructor
 	PRIVATE STATIC currentState := ThreadLocal<RuntimeState>{ {=>  _initialState:Clone()},TRUE }  AS ThreadLocal<RuntimeState>
-	STATIC CONSTRUCTOR
+    STATIC CONSTRUCTOR
+        #ifdef NET5_0_OR_GREATER
+        // Next line is needed for codepage support
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance)
+        #endif
+
         AutoLock        := NULL
         AutoUnLock      := NULL
         MacroCompilerErrorHandler := NULL

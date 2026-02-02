@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\VOSDK.SDK.Targets" />
+  <!-- Please note that most important settings are read from VOSDK.Targets -->
+  <PropertyGroup>
+    <Description>XSharp Typed VO RDD Classes</Description>
+    <AssemblyName>XSharp.VORDDClasses</AssemblyName>
+    <Name>XSharp.VO.VORDDClasses</Name>
+    <Includepaths>$(Solutiondir)Common</Includepaths>
+    <Nostandarddefs>false</Nostandarddefs>
+    <NamedArgs>false</NamedArgs>
+    <VO6>false</VO6>
+    <VO9>false</VO9>
+    <VO10>false</VO10>
+    <VO14>false</VO14>
+    <VO7>false</VO7>
+    <RootNamespace>XSharp.VO.SDK</RootNamespace>
+    <NoWin32Manifest>False</NoWin32Manifest>
+    <VO5>false</VO5>
+    <cs>true</cs>
+    <NamedArgs>False</NamedArgs>
+    <EnforceSelf>True</EnforceSelf>
+    <Allowdot>false</Allowdot>
+    <TargetFramework>net8.0</TargetFramework>
+    <ProjectGuid>{8d5c6c73-56a1-4115-b739-4e068654bd6c}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.Next.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.Next.xsproj">
+      <Name>XSharp.RT</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\System_Classes_SDK\XSharp.VO.SystemClasses.Next.xsproj">
+      <Name>XSharp.VOSystemClasses</Name>
+      <Private>True</Private>
+      <Project>{7650872d-77f3-45df-9942-595b2d75fe1c}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Properties\AssemblyInfo.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\" />
+  </ItemGroup>
+  <Import Project="..\VOSDKDocs.Targets" />
+</Project>

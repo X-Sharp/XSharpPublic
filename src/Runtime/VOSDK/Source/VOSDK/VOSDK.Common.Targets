@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <BinariesDir>$([System.IO.Path]::GetFullPath('$(Solutiondir)..\Artifacts\'))</BinariesDir>
+    <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
+    <BaseOutputPath>$(BinariesDir)</BaseOutputPath>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
+    <BaseIntermediateOutputPath>$(BinariesDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <OutputType>Library</OutputType>
+    <CommonDir>$(Solutiondir)Common\</CommonDir>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VO</RootNamespace>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <TargetFrameworkProfile />
+    <Nologo>true</Nologo>
+    <Nostandarddefs>true</Nostandarddefs>
+    <GenerateFullPaths>true</GenerateFullPaths>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)..\sharedbinaries\vulcanstrongnamekey.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <Prefer32Bit>False</Prefer32Bit>
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <CommonInclude>$(CommonDir)</CommonInclude>
+    <XscToolPath>$(BinariesDir)bin\xsc\$(Configuration)\net472\</XscToolPath>
+    <AZ>false</AZ>
+    <CS>false</CS>
+    <LB>false</LB>
+    <OVF>false</OVF>
+    <Unsafe>true</Unsafe>
+    <INS>true</INS>
+    <NS>true</NS>
+    <VO1>false</VO1>
+    <VO2>true</VO2>
+    <VO3>true</VO3>
+    <VO4>true</VO4>
+    <VO5>true</VO5>
+    <VO6>true</VO6>
+    <VO7>true</VO7>
+    <VO8>true</VO8>
+    <VO9>true</VO9>
+    <VO10>true</VO10>
+    <VO11>true</VO11>
+    <VO12>false</VO12>
+    <VO13>false</VO13>
+    <VO14>true</VO14>
+    <vo15>true</vo15>
+    <VO16>false</VO16>
+    <XPP1>false</XPP1>
+    <IncludePaths>$(CommonDir)</IncludePaths>
+    <MemVar>false</MemVar>
+    <Undeclared>false</Undeclared>
+    <ErrorReport>prompt</ErrorReport>
+    <Dialect>Vulcan</Dialect>
+    <StartupObject />
+    <ApplicationIcon />
+    <VulcanCompatibleResources>False</VulcanCompatibleResources>
+    <PlatformTarget>x86</PlatformTarget>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseSharedCompilation>false</UseSharedCompilation>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
+    <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE;DOCUMENTATION;RUNTIME</DefineConstants>
+    <DisabledWarnings>165,169,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573</DisabledWarnings>
+    <CommandLineOption>/noclipcall </CommandLineOption>
+	<vo15>true</vo15>
+	<vo5>false</vo5>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" >
+    <EmitDebugInformation>false</EmitDebugInformation>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;RUNTIME</DefineConstants>
+    <DisabledWarnings>165,9032,170,618,9068,108,9043</DisabledWarnings>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" >
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE;RUNTIME</DefineConstants>
+    <DisabledWarnings>165,9032,170,618,9068,108,9043</DisabledWarnings>
+  </PropertyGroup>
+
+</Project>

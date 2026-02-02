@@ -867,13 +867,13 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN
         /// <inheritdoc/>
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
-            LOCAL tmp AS REAL8
+            LOCAL tmp AS Int64
             LOCAL result AS Decimal
             IF SELF:IsNull()
                 RETURN DBNull.Value
             ENDIF
             tmp := BitConverter.ToInt64(buffer, SELF:Offset)
-            result := (decimal) (tmp/ (10 ^ SELF:Decimals))
+            result :=  (decimal)tmp / 10000m
             RETURN DbCurrency{result}
 
         /// <inheritdoc/>
@@ -889,7 +889,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE,__ENTITY__, SELF:TypeError("Currency",oValue))
                 RETURN FALSE
             ENDIF
-            i64Value := (INT64) (currValue * (System.Decimal) (10^ SELF:Decimals))
+            i64Value := (INT64) (currValue * 10000m)
             VAR data := BitConverter.GetBytes(i64Value)
             Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
             RETURN TRUE

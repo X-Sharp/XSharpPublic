@@ -48,7 +48,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Build.Framework" Version="$(MicrosoftBuildFrameworkVersion)" ExcludeAssets="Runtime" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(MicrosoftBuildTasksCoreVersion)" ExcludeAssets="Runtime" />
-    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
      <PackageReference Include="Microsoft.Win32.Registry" Version="4.3.0" />
     <PackageReference Include="System.Security.AccessControl" Version="$(SystemSecurityAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
   </ItemGroup>

@@ -17,10 +17,10 @@
     <EnforceSelf>True</EnforceSelf>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" >
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" >
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
@@ -80,16 +80,35 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Runtime">
-      <Version>4.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="xunit">
-      <Version>2.4.2</Version>
-    </PackageReference>
-    <PackageReference Include="xunit.runner.visualstudio">
-      <Version>2.4.3</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <Name>System</Name>
+      <AssemblyName>System.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <Name>System.Core</Name>
+      <AssemblyName>System.Core.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
+      <Name>xunit.abstractions</Name>
+      <AssemblyName>xunit.abstractions.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="xunit.assert, Version=2.4.2.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
+      <Name>xunit.assert</Name>
+      <AssemblyName>xunit.assert.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="xunit.core, Version=2.4.2.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
+      <Name>xunit.core</Name>
+      <AssemblyName>xunit.core.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="xunit.execution.desktop, Version=2.4.2.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
+      <Name>xunit.execution.desktop</Name>
+      <AssemblyName>xunit.execution.desktop.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
   </ItemGroup>
 </Project>

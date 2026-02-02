@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Targets" />
+  <PropertyGroup>
+    <RootNamespace>XSharp.Harbour</RootNamespace>
+    <AssemblyName>XSharp.Harbour</AssemblyName>
+    <Dialect>VO</Dialect>
+    <Unsafe>true</Unsafe>
+    <NS>true</NS>
+    <Nostandarddefs>true</Nostandarddefs>
+    <StandardDefs />
+    <EnforceSelf>True</EnforceSelf>
+    <Allowdot>false</Allowdot>
+    <StartupObject />
+    <TargetFramework>net8.0</TargetFramework>
+    <ProjectGuid>{eae30c29-634c-496a-9e6c-840878aa1901}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj">
+      <Name>XSharp.Core.Next</Name>
+      <Project>{cc7c83af-345a-4719-9490-65ee4a04f3f4}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj">
+      <Name>XSharp.RT.Next</Name>
+      <Project>{c58ddc14-8484-4e19-81ac-3d91c2b044ad}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Functions\" />
+    <Folder Include="obj\" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="..\XmlDoc.Targets" />
+</Project>

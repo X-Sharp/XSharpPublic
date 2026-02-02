@@ -339,11 +339,11 @@ END STRUCTURE
 STRUCTURE ADS_MGMT_THREAD_ACTIVITY
     // use Explicit layout to declare buffer for aucUserName and aucOSUserLoginName
     PRIVATE CONST a1 := 0  AS LONG
-    PRIVATE CONST a2 := a1 + SIZEOF(DWORD)  AS LONG
-    PRIVATE CONST a3 := a2 + SIZEOF(WORD) AS LONG
+    PRIVATE CONST a2 := a1 + (INT) SIZEOF(DWORD)  AS LONG
+    PRIVATE CONST a3 := a2 + (INT) SIZEOF(WORD) AS LONG
     PRIVATE CONST a4 := a3 + ACE.ADS_MAX_USER_NAME AS LONG
-    PRIVATE CONST a5 := a4 + sizeof(WORD) AS LONG
-    PRIVATE CONST a6 := a5 + sizeof(WORD) AS LONG
+    PRIVATE CONST a5 := a4 + (INT) sizeof(WORD) AS LONG
+    PRIVATE CONST a6 := a5 + (INT) sizeof(WORD) AS LONG
     [FieldOffset(a1)] PUBLIC ulThreadNumber            AS DWORD   /* Thread Number               */
     [FieldOffset(a2)] PUBLIC usOpCode                  AS WORD    /* Operation in progress       */
     [FieldOffset(a3)] PUBLIC aucUserName               AS BYTE    /* Name of user                */
@@ -386,13 +386,13 @@ STRUCTURE ADS_MGMT_USER_INFO
     // use Explicit layout to declare buffer for several strings
     PRIVATE CONST a1 := 0   AS LONG
     PRIVATE CONST a2 := a1 + ACE.ADS_MAX_USER_NAME AS LONG
-    PRIVATE CONST a3 := a2 + sizeof(WORD) AS LONG
+    PRIVATE CONST a3 := a2 + (INT) sizeof(WORD) AS LONG
     PRIVATE CONST a4 := a3 + ACE.ADS_MAX_USER_NAME AS LONG
     PRIVATE CONST a5 := a4 + ACE.ADS_MAX_ADDRESS_SIZE AS LONG
     PRIVATE CONST a6 := a5 + ACE.ADS_MAX_USER_NAME AS LONG
     PRIVATE CONST a7 := a6 + ACE.ADS_MAX_ADDRESS_SIZE AS LONG
     PRIVATE CONST a8 := a7 + ACE.ADS_MAX_MGMT_APPID_SIZE AS LONG
-    PRIVATE CONST a9 := a8 + sizeof(DWORD) AS LONG
+    PRIVATE CONST a9 := a8 + (INT) sizeof(DWORD) AS LONG
 
     [FieldOffset(a1)] PUBLIC aucUserName                      AS BYTE    /* Name of connected user    */
     [FieldOffset(a2)] PUBLIC usConnNumber                     AS WORD    /* NetWare conn # (NLM only) */
@@ -442,7 +442,7 @@ END STRUCTURE
 STRUCTURE ADS_MGMT_INSTALL_INFO
     // use Explicit layout to declare buffer for several strings
     PRIVATE CONST a1 := 0   AS LONG
-    PRIVATE CONST a2 := a1 + sizeof(DWORD) AS LONG
+    PRIVATE CONST a2 := a1 + (INT) sizeof(DWORD) AS LONG
     PRIVATE CONST a3 := a2 + ACE.ADS_REG_OWNER_LEN AS LONG
     PRIVATE CONST a4 := a3 + ACE.ADS_REVISION_LEN  AS LONG
     PRIVATE CONST a5 := a4 + ACE.ADS_INST_DATE_LEN AS LONG
@@ -450,7 +450,7 @@ STRUCTURE ADS_MGMT_INSTALL_INFO
     PRIVATE CONST a7 := a6 + ACE.ADS_ANSI_CHAR_NAME_LEN AS LONG
     PRIVATE CONST a8 := a7 + ACE.ADS_INST_DATE_LEN AS LONG
     PRIVATE CONST a9 := a8 + ACE.ADS_SERIAL_NUM_LEN AS LONG
-    PRIVATE CONST a10 := a9 + sizeof(DWORD) AS LONG
+    PRIVATE CONST a10 := a9 + (INT) sizeof(DWORD) AS LONG
 
     [FieldOffset(a1)]  PUBLIC ulUserOption                     AS DWORD      /* User option purchased*/
     [FieldOffset(a2)]  PUBLIC aucRegisteredOwner               AS BYTE       /* Registered owner     */
@@ -536,43 +536,43 @@ END STRUCTURE
 [StructLayout(LayoutKind.Explicit, Size := 866)];
 STRUCTURE ADS_MGMT_CONFIG_PARAMS
     PRIVATE CONST a01 := 0   AS LONG
-    PRIVATE CONST a02 := a01 + sizeof(DWORD) AS LONG
-    PRIVATE CONST a03 := a02 + sizeof(DWORD) AS LONG
-    PRIVATE CONST a04 := a03 + sizeof(DWORD) AS LONG
-    PRIVATE CONST a05 := a04 + sizeof(DWORD) AS LONG
-    PRIVATE CONST a06 := a05 + sizeof(DWORD) AS LONG
-    PRIVATE CONST a07 := a06 + sizeof(DWORD) AS LONG
-    PRIVATE CONST a08 := a07 + sizeof(DWORD) AS LONG
-    PRIVATE CONST a09 := a08 + sizeof(DWORD) AS LONG
-    PRIVATE CONST a10 := a09 + sizeof(DWORD) AS LONG
-    PRIVATE CONST a11 := a10 + sizeof(DWORD) AS LONG
-    PRIVATE CONST a12 := a11 + sizeof(DWORD) AS LONG
-    PRIVATE CONST a13 := a12 + sizeof(WORD) AS LONG
-    PRIVATE CONST a14 := a13 + sizeof(WORD) AS LONG
-    PRIVATE CONST a15 := a14 + sizeof(WORD) AS LONG
-    PRIVATE CONST a16 := a15 + sizeof(WORD) AS LONG
-    PRIVATE CONST a17 := a16 + sizeof(DWORD) AS LONG
+    PRIVATE CONST a02 := a01 + (INT) sizeof(DWORD) AS LONG
+    PRIVATE CONST a03 := a02 + (INT) sizeof(DWORD) AS LONG
+    PRIVATE CONST a04 := a03 + (INT) sizeof(DWORD) AS LONG
+    PRIVATE CONST a05 := a04 + (INT) sizeof(DWORD) AS LONG
+    PRIVATE CONST a06 := a05 + (INT) sizeof(DWORD) AS LONG
+    PRIVATE CONST a07 := a06 + (INT) sizeof(DWORD) AS LONG
+    PRIVATE CONST a08 := a07 + (INT) sizeof(DWORD) AS LONG
+    PRIVATE CONST a09 := a08 + (INT) sizeof(DWORD) AS LONG
+    PRIVATE CONST a10 := a09 + (INT) sizeof(DWORD) AS LONG
+    PRIVATE CONST a11 := a10 + (INT) sizeof(DWORD) AS LONG
+    PRIVATE CONST a12 := a11 + (INT) sizeof(DWORD) AS LONG
+    PRIVATE CONST a13 := a12 + (INT) sizeof(WORD) AS LONG
+    PRIVATE CONST a14 := a13 + (INT) sizeof(WORD) AS LONG
+    PRIVATE CONST a15 := a14 + (INT) sizeof(WORD) AS LONG
+    PRIVATE CONST a16 := a15 + (INT) sizeof(WORD) AS LONG
+    PRIVATE CONST a17 := a16 + (INT) sizeof(DWORD) AS LONG
     PRIVATE CONST a18 := a17 + ACE.ADS_MAX_CFG_PATH AS LONG
     PRIVATE CONST a19 := a18 + ACE.ADS_MAX_CFG_PATH AS LONG
     PRIVATE CONST a20 := a19 + ACE.ADS_MAX_CFG_PATH AS LONG
-    PRIVATE CONST a21 := a20 + sizeof(BYTE)  AS LONG
-    PRIVATE CONST a22 := a21 + sizeof(BYTE) AS LONG
-    PRIVATE CONST a23 := a22 + sizeof(WORD) AS LONG
-    PRIVATE CONST a24 := a23 + sizeof(WORD) AS LONG
-    PRIVATE CONST a25 := a24 + sizeof(BYTE) AS LONG
-    PRIVATE CONST a26 := a25 + sizeof(BYTE) AS LONG
-    PRIVATE CONST a27 := a26 + sizeof(DWORD) AS LONG
-    PRIVATE CONST a28 := a27 + sizeof(DWORD) AS LONG
-    PRIVATE CONST a29 := a28 + sizeof(DWORD) AS LONG
-    PRIVATE CONST a30 := a29 + sizeof(BYTE) AS LONG
-    PRIVATE CONST a31 := a30 + sizeof(BYTE) AS LONG
-    PRIVATE CONST a32 := a31 + sizeof(BYTE) AS LONG
-    PRIVATE CONST a33 := a32 + sizeof(BYTE) AS LONG
-    PRIVATE CONST a34 := a33 + sizeof(WORD) AS LONG
-    PRIVATE CONST a35 := a34 + sizeof(WORD) AS LONG
-    PRIVATE CONST a36 := a35 + sizeof(DWORD) AS LONG
-    PRIVATE CONST a37 := a36 + sizeof(WORD) AS LONG
-    PRIVATE CONST a38 := a37 + sizeof(DWORD) AS LONG
+    PRIVATE CONST a21 := a20 + (INT) sizeof(BYTE)  AS LONG
+    PRIVATE CONST a22 := a21 + (INT) sizeof(BYTE) AS LONG
+    PRIVATE CONST a23 := a22 + (INT) sizeof(WORD) AS LONG
+    PRIVATE CONST a24 := a23 + (INT) sizeof(WORD) AS LONG
+    PRIVATE CONST a25 := a24 + (INT) sizeof(BYTE) AS LONG
+    PRIVATE CONST a26 := a25 + (INT) sizeof(BYTE) AS LONG
+    PRIVATE CONST a27 := a26 + (INT) sizeof(DWORD) AS LONG
+    PRIVATE CONST a28 := a27 + (INT) sizeof(DWORD) AS LONG
+    PRIVATE CONST a29 := a28 + (INT) sizeof(DWORD) AS LONG
+    PRIVATE CONST a30 := a29 + (INT) sizeof(BYTE) AS LONG
+    PRIVATE CONST a31 := a30 + (INT) sizeof(BYTE) AS LONG
+    PRIVATE CONST a32 := a31 + (INT) sizeof(BYTE) AS LONG
+    PRIVATE CONST a33 := a32 + (INT) sizeof(BYTE) AS LONG
+    PRIVATE CONST a34 := a33 + (INT) sizeof(WORD) AS LONG
+    PRIVATE CONST a35 := a34 + (INT) sizeof(WORD) AS LONG
+    PRIVATE CONST a36 := a35 + (INT) sizeof(DWORD) AS LONG
+    PRIVATE CONST a37 := a36 + (INT) sizeof(WORD) AS LONG
+    PRIVATE CONST a38 := a37 + (INT) sizeof(DWORD) AS LONG
 
     [FieldOffset(a01)] PUBLIC ulNumConnections        AS DWORD    /* number connections            */
     [FieldOffset(a02)] PUBLIC ulNumWorkAreas          AS DWORD    /* number work areas             */

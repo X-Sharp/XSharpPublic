@@ -1,4 +1,5 @@
-﻿using Community.VisualStudio.Toolkit;
+#if DEV17
+using Community.VisualStudio.Toolkit;
 
 using EnvDTE;
 
@@ -53,19 +54,10 @@ namespace XSharp.Project
     internal abstract class XSharpSdkCommand<T> : BaseCommand<T>
            where T : class, new()
     {
-        internal async Task<SdkSubProjectInfo> GetActiveSubProjectAsync()
-        {
-            var node = await GetStartupProjectAsync();
-            if (node is XSharpSdkProjectNode sdkNode)
-            {
-                return sdkNode.ActiveSubProject;
-            }
-            return null;
-        }
 
-        internal async Task<ProjectNode> GetStartupProjectAsync()
+        internal static async Task<ProjectNode> GetStartupProjectAsync()
         {
-            var dte = (DTE) await VS.GetRequiredServiceAsync<DTE,DTE>();
+            var dte = (DTE)await VS.GetRequiredServiceAsync<DTE, DTE>();
             var sol4 = dte.Solution as Solution4;
 
             if (sol4 == null)
@@ -80,10 +72,11 @@ namespace XSharp.Project
                     var projectList = startupprojects as Array;
                     foreach (string prjName in projectList)
                     {
+                        var prjFileName = System.IO.Path.GetFileName(prjName);
                         foreach (var prj in projects)
                         {
                             var fileName = System.IO.Path.GetFileName(prj.FullPath);
-                            if (fileName.Equals(prjName, StringComparison.OrdinalIgnoreCase))
+                            if (fileName.Equals(prjFileName, StringComparison.OrdinalIgnoreCase))
                             {
                                 var node = XSharpProjectNode.FindProject(prj.FullPath);
                                 if (node != null)
@@ -96,10 +89,21 @@ namespace XSharp.Project
             return null;
 
         }
+        internal async Task<SdkSubProjectInfo> GetActiveSubProjectAsync()
+        {
+            var node = await GetStartupProjectAsync();
+            if (node is XSharpSdkProjectNode sdkNode)
+            {
+                return sdkNode.ActiveSubProject;
+            }
+            return null;
+        }
+
     }
-        internal abstract class XSharpFrameworkCommand<T> : XSharpSdkCommand<T>
-           where T : class, new()
+    internal abstract class XSharpFrameworkCommand<T> : XSharpSdkCommand<T>
+       where T : class, new()
     {
+
         protected override void BeforeQueryStatus(EventArgs e)
         {
             ThreadHelper.JoinableTaskFactory.Run(CheckAvailabilityAsync);
@@ -131,7 +135,7 @@ namespace XSharp.Project
             if (Command.Visible)
             {
                 var activeSubProject = await GetActiveSubProjectAsync();
-                if ( activeSubProject != null)
+                if (activeSubProject != null)
                 {
                     var sdkNode = activeSubProject.ParentProject;
                     if (sdkNode.SubProjects.Count == 1)
@@ -157,7 +161,10 @@ namespace XSharp.Project
             Command.Supported = true;
             return base.InitializeCompletedAsync();
         }
+       
+
     }
+
 
     [Command(PackageIds.idFramework1)]
     internal sealed class DebuggerFramework1 : XSharpFrameworkCommand<DebuggerFramework1>
@@ -179,5 +186,6 @@ namespace XSharp.Project
     {
         protected override int Id => 4;
     }
-
+ 
 }
+#endif

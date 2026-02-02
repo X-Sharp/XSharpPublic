@@ -385,7 +385,7 @@ FUNCTION DBFileCopy( hfFrom AS IntPtr, cFile AS STRING, cFullPath AS STRING) AS 
 
     LOCAL lRetCode  AS LOGIC
     LOCAL ptrBuff   AS BYTE[]
-    LOCAL hfTo      AS PTR
+    LOCAL hfTo      AS IntPtr
     LOCAL oError    AS Error
     LOCAL n         AS DWORD
     LOCAL dwPos     AS LONG
@@ -397,7 +397,7 @@ FUNCTION DBFileCopy( hfFrom AS IntPtr, cFile AS STRING, cFullPath AS STRING) AS 
 
     hfTo := FCreate( cFile)
 
-    IF hfTo == (IntPtr) F_ERROR
+    IF hfTo == F_ERROR
 
         oError := Error{1}
         oError:SubSystem                := "DBCMD"

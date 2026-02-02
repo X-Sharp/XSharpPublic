@@ -13,7 +13,6 @@
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -39,7 +38,6 @@ using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using System.Reflection;
 using Community.VisualStudio.Toolkit;
 using File = System.IO.File;
-using System.Runtime.Remoting.Messaging;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -2744,7 +2742,7 @@ namespace Microsoft.VisualStudio.Project
                 {
                     outputtype = outputtype.ToLower(CultureInfo.InvariantCulture);
                 }
-
+                
                 if (outputtype == "library")
                 {
                     options.ModuleKind = ModuleKindFlags.DynamicallyLinkedLibrary;
@@ -2774,12 +2772,12 @@ namespace Microsoft.VisualStudio.Project
                 {
                     options.AllowUnsafeCode = true;
                 }
-
-                if (GetProjectProperty("BaseAddress", false) != null)
+                var ba = GetProjectProperty("BaseAddress", false);
+                if ( ba != null)
                 {
                     try
                     {
-                        options.BaseAddress = Int64.Parse(GetProjectProperty("BaseAddress", false), CultureInfo.InvariantCulture);
+                        options.BaseAddress = Int64.Parse(ba, CultureInfo.InvariantCulture);
                     }
                     catch (ArgumentNullException e)
                     {
@@ -2803,9 +2801,10 @@ namespace Microsoft.VisualStudio.Project
                 {
                     options.CheckedArithmetic = true;
                 }
-                if (GetProjectProperty("DefineConstants", false) != null)
+                var defs = GetProjectProperty("DefineConstants", false);
+                if ( defs != null)
                 {
-                    foreach (string s in GetProjectProperty("DefineConstants", false).Replace(" \t\r\n", "").Split(';'))
+                    foreach (string s in defs.Replace(" \t\r\n", "").Split(';'))
                     {
                         options.DefinedPreprocessorSymbols.Add(s);
                     }
@@ -2822,11 +2821,12 @@ namespace Microsoft.VisualStudio.Project
                     options.IncludeDebugInformation = true;
                 }
 
-                if (GetProjectProperty("FileAlignment", false) != null)
+                var fa = GetProjectProperty("FileAlignment", false);
+                if (fa != null)
                 {
                     try
                     {
-                        options.FileAlignment = Int32.Parse(GetProjectProperty("FileAlignment", false), CultureInfo.InvariantCulture);
+                        options.FileAlignment = Int32.Parse(fa, CultureInfo.InvariantCulture);
                     }
                     catch (ArgumentNullException e)
                     {
@@ -2864,16 +2864,17 @@ namespace Microsoft.VisualStudio.Project
                 {
                 }
 
-                if (GetBoolAttr("TreatWarningsAsErrors"))
+                if (GetBoolAttr(nameof(options.TreatWarningsAsErrors)))
                 {
                     options.TreatWarningsAsErrors = true;
                 }
 
-                if (GetProjectProperty("WarningLevel", false) != null)
+                var warnLevel = GetProjectProperty(nameof(options.WarningLevel), false);
+                if (warnLevel != null)
                 {
                     try
                     {
-                        options.WarningLevel = Int32.Parse(GetProjectProperty("WarningLevel", false), CultureInfo.InvariantCulture);
+                        options.WarningLevel = Int32.Parse(warnLevel, CultureInfo.InvariantCulture);
                     }
                     catch (ArgumentNullException e)
                     {
@@ -2902,11 +2903,11 @@ namespace Microsoft.VisualStudio.Project
         {
             if (currentTargetFramework == null)
             {
-                throw new ArgumentNullException("currentTargetFramework");
+                throw new ArgumentNullException(nameof(currentTargetFramework));
             }
             if (newTargetFramework == null)
             {
-                throw new ArgumentNullException("newTargetFramework");
+                throw new ArgumentNullException(nameof(newTargetFramework));
             }
             ThreadUtilities.runSafe(() =>
             {
@@ -3593,6 +3594,7 @@ namespace Microsoft.VisualStudio.Project
                 return new BuildResult(MSBuildResult.Failed, null, submission);
             }
         }
+        private bool buildActive = false;
 
         /// <summary>
         /// Start MSBuild build submission
@@ -3607,79 +3609,91 @@ namespace Microsoft.VisualStudio.Project
         protected internal virtual BuildSubmission DoMSBuildSubmission(BuildKind buildKind, string target, ref ProjectInstance projectInstance, MSBuildCoda uiThreadCallback)
         {
             bool designTime = BuildKind.Sync == buildKind;
+            BuildSubmission submission = null;
             //projectInstance = null;
-
-            if (!TryBeginBuild(designTime))
+            if (buildActive)
             {
-                if (null != uiThreadCallback)
-                {
-                    uiThreadCallback(MSBuildResult.Failed, projectInstance);
-                }
-
+                VS.MessageBox.ShowError("Recursive builds are not supported.");
                 return null;
             }
-
-            string[] targetsToBuild = new string[target != null ? 1 : 0];
-            if (target != null)
-            {
-                targetsToBuild[0] = target;
-            }
-
-            if (null == projectInstance)
-            {
-                projectInstance = BuildProject.CreateProjectInstance();
-            }
-
-            projectInstance.SetProperty(GlobalProperty.VisualStudioStyleErrors.ToString(), "true");
-            projectInstance.SetProperty("Utf8Output", "true");
-            projectInstance.SetProperty(GlobalProperty.BuildingInsideVisualStudio.ToString(), "true");
-            this.BuildProject.ProjectCollection.HostServices.SetNodeAffinity(projectInstance.FullPath, NodeAffinity.InProc);
-            BuildRequestData requestData = new BuildRequestData(projectInstance, targetsToBuild, this.BuildProject.ProjectCollection.HostServices, BuildRequestDataFlags.ReplaceExistingProjectInstance);
-            BuildSubmission submission = BuildManager.DefaultBuildManager.PendBuildRequest(requestData);
             try
             {
-                ThreadHelper.ThrowIfNotOnUIThread();
-                if (useProvidedLogger && buildLogger != null)
+                buildActive = true;
+                if (!TryBeginBuild(designTime))
                 {
-                    ErrorHandler.ThrowOnFailure(this.buildManagerAccessor.RegisterLogger(submission.SubmissionId, buildLogger));
+                    if (null != uiThreadCallback)
+                    {
+                        uiThreadCallback(MSBuildResult.Failed, projectInstance);
+                    }
+
+                    return null;
                 }
 
-                if (buildKind == BuildKind.Async)
+                string[] targetsToBuild = new string[target != null ? 1 : 0];
+                if (target != null)
                 {
-                    ProjectInstance projectInstanceCopy = projectInstance;
-                    submission.ExecuteAsync(sub =>
-                    {
-                        ThreadUtilities.runSafe(() =>
-                        {
-                            this.FlushBuildLoggerContent();
-                            EndBuild(sub, designTime);
-                            uiThreadCallback((sub.BuildResult.OverallResult == BuildResultCode.Success) ? MSBuildResult.Successful : MSBuildResult.Failed, projectInstanceCopy);
-                        });
-                    }, null);
+                    targetsToBuild[0] = target;
                 }
-                else
+
+                if (null == projectInstance)
                 {
-                    submission.Execute();
-                    EndBuild(submission, designTime);
-                    MSBuildResult msbuildResult = (submission.BuildResult.OverallResult == BuildResultCode.Success) ? MSBuildResult.Successful : MSBuildResult.Failed;
-                    if (uiThreadCallback != null)
+                    projectInstance = BuildProject.CreateProjectInstance();
+                }
+
+                projectInstance.SetProperty(GlobalProperty.VisualStudioStyleErrors.ToString(), "true");
+                projectInstance.SetProperty("Utf8Output", "true");
+                projectInstance.SetProperty(GlobalProperty.BuildingInsideVisualStudio.ToString(), "true");
+                this.BuildProject.ProjectCollection.HostServices.SetNodeAffinity(projectInstance.FullPath, NodeAffinity.InProc);
+                BuildRequestData requestData = new BuildRequestData(projectInstance, targetsToBuild, this.BuildProject.ProjectCollection.HostServices);
+                submission = BuildManager.DefaultBuildManager.PendBuildRequest(requestData);
+                try
+                {
+                    ThreadHelper.ThrowIfNotOnUIThread();
+                    if (useProvidedLogger && buildLogger != null)
                     {
-                        uiThreadCallback(msbuildResult, projectInstance);
+                        ErrorHandler.ThrowOnFailure(this.buildManagerAccessor.RegisterLogger(submission.SubmissionId, buildLogger));
+                    }
+
+                    if (buildKind == BuildKind.Async)
+                    {
+                        ProjectInstance projectInstanceCopy = projectInstance;
+                        submission.ExecuteAsync(sub =>
+                        {
+                            ThreadUtilities.runSafe(() =>
+                            {
+                                this.FlushBuildLoggerContent();
+                                EndBuild(sub, designTime);
+                                uiThreadCallback((sub.BuildResult.OverallResult == BuildResultCode.Success) ? MSBuildResult.Successful : MSBuildResult.Failed, projectInstanceCopy);
+                            });
+                        }, null);
+                    }
+                    else
+                    {
+                        submission.Execute();
+                        EndBuild(submission, designTime);
+                        MSBuildResult msbuildResult = (submission.BuildResult.OverallResult == BuildResultCode.Success) ? MSBuildResult.Successful : MSBuildResult.Failed;
+                        if (uiThreadCallback != null)
+                        {
+                            uiThreadCallback(msbuildResult, projectInstance);
+                        }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                Debug.Fail(e.ToString());
-                EndBuild(submission, designTime);
-                if (uiThreadCallback != null)
+                catch (Exception e)
                 {
-                    uiThreadCallback(MSBuildResult.Failed, projectInstance);
+                    Debug.Fail(e.ToString());
+                    EndBuild(submission, designTime);
+                    if (uiThreadCallback != null)
+                    {
+                        uiThreadCallback(MSBuildResult.Failed, projectInstance);
+                    }
+
+                    throw;
                 }
-
-                throw;
             }
-
+            finally
+            {
+                buildActive = false;
+            }
             return submission;
         }
 
@@ -7199,19 +7213,23 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Sets the project guid from the project file. If no guid is found a new one is created and assigne for the instance project guid.
         /// </summary>
-        private void SetProjectGuidFromProjectFile()
+        protected void SetProjectGuidFromProjectFile()
         {
-            string projectGuid = this.GetProjectProperty(ProjectFileConstants.ProjectGuid);
-            if (String.IsNullOrEmpty(projectGuid))
+            if (this.projectIdGuid == Guid.Empty)
             {
-                this.projectIdGuid = Guid.NewGuid();
-            }
-            else
-            {
-                Guid guid = new Guid(projectGuid);
-                if (guid != this.projectIdGuid)
+                string projectGuid = this.GetProjectProperty(ProjectFileConstants.ProjectGuid);
+                if (String.IsNullOrEmpty(projectGuid))
                 {
-                    this.projectIdGuid = guid;
+                    this.projectIdGuid = Guid.NewGuid();
+                    this.SetProjectProperty(ProjectFileConstants.ProjectGuid, projectIdGuid.ToString("B"));
+                }
+                else
+                {
+                    Guid guid = new Guid(projectGuid);
+                    if (guid != this.projectIdGuid)
+                    {
+                        this.projectIdGuid = guid;
+                    }
                 }
             }
         }

@@ -14,8 +14,8 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <RuntimeIdentifiers>win;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <LangVersion>Preview</LangVersion>
+    <ResolveNuGetPackages>false</ResolveNuGetPackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -128,6 +128,7 @@
   <ItemGroup>
     <Content Include="Preprocessor\harbourppdoc.txt" />
     <Content Include="Preprocessor\preprocessor.txt" />
+    <Content Include="todo.txt" />
   </ItemGroup>
   <!-- On machines where the runtime output path exists the macro compiler will be copied to the runtime output folder  -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

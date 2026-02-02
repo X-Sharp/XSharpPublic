@@ -4,11 +4,15 @@
 // See License.txt in the project root for license information.
 //
 using Community.VisualStudio.Toolkit;
+
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
+
 using System;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+
 using XSharpModel;
 namespace XSharp.LanguageService
 {
@@ -192,10 +196,17 @@ namespace XSharp.LanguageService
                 sig = "visual-studio-integration.html";
             }
             var help = GeneralHelp;
-            EnvDTE.DTE dte = (EnvDTE.DTE)Microsoft.VisualStudio.Shell.ServiceProvider.GlobalProvider.GetService(typeof(EnvDTE.DTE));
-            if (dte == null)
-                return;
-            var locale = dte.LocaleID;
+            EnvDTE.DTE dte = null;
+            int locale = 0;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                dte = (EnvDTE.DTE)Microsoft.VisualStudio.Shell.ServiceProvider.GlobalProvider.GetService(typeof(EnvDTE.DTE));
+                if (dte == null)
+                    return;
+                locale = dte.LocaleID;
+
+            });
             var culture = System.Globalization.CultureInfo.GetCultureInfo(locale);
             if (culture.TwoLetterISOLanguageName == "zh" && File.Exists(CNHelp))
             {

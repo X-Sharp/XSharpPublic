@@ -83,7 +83,10 @@
       <HintPath>$(VsExternalDir)XSharp.CodeAnalysis.dll</HintPath>
       <Aliases>codeanalysis</Aliases>
     </Reference>
-    <Reference Include="XSharp.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" />
+    <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Artifacts\$(Configuration)\net46\XSharp.Core.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.Evaluator">
       <HintPath>$(VsExternalDir)XSharp.Evaluator.dll</HintPath>
     </Reference>
@@ -116,6 +119,7 @@
     <Compile Include="Automation\OAXSharpProject.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs" />
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
+    <Compile Include="Commands\commandDebuggerFramework.cs" />
     <Compile Include="Commands\CommandGenerateWinForm.cs" />
     <Compile Include="Commands\CommandAddDesignerFile.cs" />
     <Compile Include="Commands\CommandConvertXsRuntime.cs" />
@@ -181,6 +185,7 @@
     <Compile Include="Nodes\XSharpIncludeContainerNode.cs" />
     <Compile Include="Nodes\XSharpProjectNodeReferenceManager.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
+    <Compile Include="Nodes\XSharpSdkProjectNode.cs" />
     <Compile Include="OptionsPages\BaseOptionsModel.cs" />
     <Compile Include="OptionsPages\BaseOptionsPage.cs">
       <SubType>Component</SubType>
@@ -218,7 +223,6 @@
     <ZipItem Include="Templates\ProjectItems\VO\VOFieldspec\VOFieldSpec.png" />
     <ZipItem Include="Templates\ProjectItems\VO\VOMenu\VoMenu.png" />
     <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.png" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\Program.prg" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavoded.tpl" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavofed.tpl" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavowed.tpl" />
@@ -257,6 +261,14 @@
     <Content Include="Editors\Todo.txt" />
     <Content Include="source.extension.2019.vsixmanifest" />
     <Content Include="source.extension.2022.vsixmanifest" />
+    <Content Include="System.Memory.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="System.Reflection.Metadata.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Template.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -283,7 +295,6 @@
     <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\WPFApplication.png" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.png" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\Readme.txt" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFFlowDocument\WPFFlowDocument.png" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.png" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\WPFPage.png" />
@@ -389,9 +400,6 @@
       <SubType>Designer</SubType>
     </ZipProject>
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVulcan\VulcanClassLibrary.xsproj" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\ConsoleApplication.png" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\ConsoleApplication.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\ConsoleApplication.xsproj" />
     <ZipItem Include="Templates\ProjectItems\Code\TextTemplate\TextTemplate.tt">
       <LastGenOutput>TextTemplate.cs</LastGenOutput>
     </ZipItem>
@@ -756,7 +764,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.16">
-      <Version>16.0.527</Version>
+      <Version>16.0.549</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>
@@ -764,7 +772,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.DiaSymReader">
-      <Version>1.4.0</Version>
+      <Version>2.2.2</Version>
       <IncludeAssets>all</IncludeAssets>
     </PackageReference>
     <Content Include="$(VSExternalDir)XSharp.MonoCecil.dll">
@@ -782,8 +790,25 @@
       <IncludeAssets>all</IncludeAssets>
       <Version>1.0.119</Version>
     </PackageReference>
+    <PackageReference Include="System.Memory">
+      <Version>4.5.5</Version>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <IncludeAssets>all</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Reflection.Metadata">
+      <Version>8.0.0</Version>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <IncludeAssets>all</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" IncludeAssets="all">
+      <Version>6.0.0</Version>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

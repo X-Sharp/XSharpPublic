@@ -169,6 +169,12 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         RETURN
 
     [NODEBUG] [INLINE];
+    PRIVATE CONSTRUCTOR(@@Value AS System.UIntPtr)
+        SELF(__UsualType.Ptr)
+        SELF:_valueData:p		:= @@Value:ToPointer()
+        RETURN
+
+    [NODEBUG] [INLINE];
     PRIVATE CONSTRUCTOR(@@Value AS PSZ)
         SELF(__UsualType.String)
         SELF:_refData			:= Psz2String(@@Value)
@@ -2095,6 +2101,12 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         OTHERWISE
             THROW ConversionError(DATE, TYPEOF(DATE), u)
         END SWITCH
+
+    /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG];
+    STATIC OPERATOR IMPLICIT(u AS __Usual) AS UIntPtr
+        var p := (IntPtr) u
+        RETURN (UIntPtr) p:ToPointer()
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];

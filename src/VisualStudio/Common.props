@@ -12,7 +12,7 @@
     <RTBinariesDir>$(ArtifactsDir)</RTBinariesDir>
     <BaseIntermediateOutputPath>$(BinariesDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
     <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
-    <RTOutputPath>$(RTBinariesDir)$(Configuration)\</RTOutputPath>
+    <RTOutputPath>$(RTBinariesDir)$(Configuration)\net46\</RTOutputPath>
     <CommonDir>$(Solutiondir)Common\</CommonDir>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>

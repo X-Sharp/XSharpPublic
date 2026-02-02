@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>XSharp.VOSDKTyped</id>
+    <version>$Version</version>
+    <title>XSharp Visual Objects Typed SDK Classes</title>
+    <authors>XSharp B.V.</authors>
+    <owners>XSharp B.V.</owners>
+    <license type="expression">Apache-2.0</license>
+    <icon>icon\Xsharp.png</icon>
+    <readme>Readme.md</readme>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>XSharp Visual Objects Typed SDK Classes</description>
+    <copyright>Copyright (C) 2015 and beyond by XSharp B.V.</copyright>
+    <tags>XSharp, VOSDK</tags>
+    <repository type="git" url="https://github.com/X-Sharp/XSharpPublic.git" />
+  <dependencies>
+	<dependency id="XSharp.VO" version="$Version"  include="All"/>
+  </dependencies>
+  </metadata>
+  
+  <files>
+    <file src="icon\Xsharp.png"                 target= "icon\Xsharp.png" />
+    <file src="Readme.VOSDK.md"                 target="Readme.md" />
+	  <file src="$SourceFolder\XSharp.VOConsoleClasses.dll"  target= "lib\$TFM\XSharp.VOConsoleClasses.dll" />
+    <file src="$SourceFolder\XSharp.VORDDClasses.dll" 	    target= "lib\$TFM\XSharp.VORDDClasses.dll" 	/>
+    <file src="$SourceFolder\XSharp.VOSQLClasses.dll" 	    target= "lib\$TFM\XSharp.VOSQLClasses.dll" 	/>
+    <!-- <file src="$SourceFolder\XSharp.VOGUIClasses.dll" 	    target= "lib\$TFM\XSharp.VOGUIClasses.dll" 	/>-->
+    <file src="$SourceFolder\XSharp.VOSystemClasses.dll" 	target= "lib\$TFM\XSharp.VOSystemClasses.dll" 	/>
+  </files>
+</package>

@@ -188,7 +188,7 @@ end class
     internal static method GetDynamicModule() as ModuleBuilder
         if an == null .or. ab == null .or. mb == null
             an  := AssemblyName{"XSharp.XPP.DynamicClasses"}
-            ab  := AppDomain.CurrentDomain:DefineDynamicAssembly(an, AssemblyBuilderAccess.Run)
+            ab  := AssemblyBuilder.DefineDynamicAssembly(an, AssemblyBuilderAccess.Run)
             mb  := ab:DefineDynamicModule("MainModule")
         endif
         return mb

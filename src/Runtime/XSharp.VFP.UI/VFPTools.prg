@@ -25,7 +25,7 @@ STATIC PUBLIC CLASS VFPTools
         IF !System.IO.File.Exists( filename )
             IF VPFIsInDesignMode() .AND. !String.IsNullOrEmpty(filename)
                 // To avoid a crash in Designer
-                RETURN XSharp.VFP.UI.Properties.Resources.XSharp
+                RETURN null // XSharp.VFP.UI.Properties.Resources.XSharp
             ELSE
                 RETURN NULL
             ENDIF

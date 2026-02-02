@@ -15,6 +15,8 @@ using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
+using stdole;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -49,11 +51,16 @@ namespace XSharp.Project
 
         internal static XSharpProjectNode FindProject(string url)
         {
+            var file = System.IO.Path.GetFileName(url);
             foreach (var proj in nodes)
             {
-                if (string.Compare(proj.ProjectFolder, Path.GetDirectoryName(url), true) == 0)
+                if (string.Compare(proj.FileName, url, true) == 0)
+                    return proj;
+                var pFile = System.IO.Path.GetFileName(proj.FileName);
+                if (string.Compare(pFile, url, true) == 0)
                     return proj;
             }
+
             return null;
         }
 
@@ -464,7 +471,7 @@ namespace XSharp.Project
 
         public __VSPROJOUTPUTTYPE GetOutPutType()
         {
-            string outputTypeAsString = this.GetProjectProperty("OutputType", false);
+            string outputTypeAsString = this.GetProjectProperty(ProjectFileConstants.OutputType, false);
             switch (outputTypeAsString.ToLower())
             {
                 case "winexe":
@@ -1393,6 +1400,37 @@ namespace XSharp.Project
             return new XSharpReferenceContainerNode(this);
         }
 
+        internal bool HasIncompleteReferences = false;
+
+        internal bool FixReferences()
+        {
+            var found = true;
+            var container = this.GetReferenceContainer() as XSharpReferenceContainerNode;
+            foreach (var child in container.EnumReferences())
+            {
+                if (child is XSharpProjectReferenceNode)
+                {
+                    var element = child.ItemNode;
+                    var path = element.Item.EvaluatedInclude;
+                    path = System.IO.Path.GetFileName(path);
+                    var refnode = FindProject(path);
+                    var guid = refnode.ProjectIDGuid;
+                    if (guid != Guid.Empty)
+                    {
+                        element.SetMetadata("Project", guid.ToString("B").ToUpperInvariant());
+                    }
+                    else
+                    {
+                        found = false;
+                    }
+                }
+                HasIncompleteReferences = !found;
+                this.BuildProject.Save();
+            }
+            return found;
+        }
+
+
         private object CreateServices(Type serviceType)
         {
             object service = null;
@@ -1747,7 +1785,7 @@ namespace XSharp.Project
                 projectInstance.SetProperty("DesignTimeBuild", "true");
             }
             var result = base.DoMSBuildSubmission(buildKind, target, ref projectInstance, uiThreadCallback);
-            DumpProjectContents(projectInstance, target);
+            ProcessOptions(projectInstance, target);
 
             return result;
         }
@@ -1755,7 +1793,7 @@ namespace XSharp.Project
         private List<string> _commandLineArguments = new List<string>();
         protected List<string> _sdkReferences = new List<string>();
         protected List<string> _allReferenceAssemblies = new List<string>();
-        void DumpProjectContents(ProjectInstance projectInstance, string target)
+        void ProcessOptions(ProjectInstance projectInstance, string target)
         {
             Logger.Information($"Build:  Invocation Result for target '{target}'");
             if (projectInstance != null && this is XSharpSdkProjectNode)
@@ -1879,10 +1917,37 @@ namespace XSharp.Project
         {
             this.UnloadProject();
         }
-        public void DoReload()
+        public void DoReload(bool fromProperties)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            this.Reload();
+            var fileName = this.BuildProject.FullPath;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var projects = await VS.Solutions.GetAllProjectsAsync();
+                var prj = projects.FirstOrDefault(p => string.Compare(p.FullPath, fileName, true) == 0);
+                List<string> FileNames = new List<String>();
+                if (prj == null)
+                    return;
+                var windows = await VS.Windows.GetAllDocumentWindowsAsync();
+                foreach (var window in windows)
+                {
+                    var docview = await window.GetDocumentViewAsync();
+                    if (docview != null)
+                    {
+                        FileNames.Add(docview.FilePath);
+                    }
+                }
+                await prj.UnloadAsync();
+                await prj.LoadAsync();
+                foreach (var file in FileNames)
+                {
+                    await VS.Documents.OpenAsync(file);
+                }
+                if (fromProperties)
+                {
+                    await VS.Commands.ExecuteAsync(KnownCommands.Project_Properties);
+                }
+
+            });
         }
         protected override void Reload()
         {
@@ -1908,7 +1973,8 @@ namespace XSharp.Project
         internal void UpdateReferencesInProjectModel()
         {
             // find all the assembly references
-
+            if (!ThreadHelper.CheckAccess())
+                return;
             if (this.ProjectModel != null)
             {
                 var target = "FindReferenceAssembliesForReferences";

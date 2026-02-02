@@ -54,6 +54,7 @@ END CLASS
 FUNCTION Start() AS VOID STRICT
 	LOCAL typed := TestBase{} AS TestBase
 	LOCAL untyped AS USUAL
+	LOCAL a,b,c AS INT // $warning XS0168,XS0168,XS0168
 	untyped := typed
 
 	xAssert( typed.TestMethodWorking() == 1)
@@ -70,7 +71,7 @@ FUNCTION Start() AS VOID STRICT
 	xAssert( typed:TestNull("abc") == "abc") // OK
 	xAssert( untyped:TestNull("abc") == "abc") // did not work < 2.23
 	
-	LOCAL p AS USUAL
+	LOCAL p AS USUAL // $warning XS0219
 	p := NULL_PSZ // OK
 	p := NULL_PTR // OK
 	
@@ -82,7 +83,7 @@ FUNCTION Start() AS VOID STRICT
 
 
 	xAssert( typed:TestNullPsz() == "") // OK
-	xAssert( typed:TestNullPsz("abc") == "abc") // OK
+	xAssert( typed:TestNullPsz("abc") == "abc") // OK // $warning XS9068
 	xAssert( typed:TestNullSymbol() == "") // OK
 	xAssert( typed:TestNullSymbol(#abc) == "ABC") // OK
 

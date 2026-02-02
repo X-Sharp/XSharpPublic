@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#ifDEF FLEXFILE_DEADBLOCKS
 begin namespace XSharp.RDD.FlexFile
 
 internal class LocationIndex inherit Index
@@ -64,3 +64,4 @@ internal class LocationIndex inherit Index
 
 end class
 end namespace // XSharp.RDD.FlexFile
+#endif

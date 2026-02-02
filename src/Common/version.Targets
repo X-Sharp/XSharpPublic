@@ -1,12 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
     <AssemblyVersion>3.0</AssemblyVersion>
     <FileVersion>3.0.0.0</FileVersion>
     <Company>XSharp BV</Company>
     <Product>XSharp</Product>
-    <Copyright>Copyright (c) XSharp BV 2015-2025.</Copyright>
-    <InformationalVersion>XSharp Cahors</InformationalVersion>
+    <Copyright>Copyright (c) XSharp BV 2015-2026.</Copyright>
+    <InformationalVersion>XSharp XSharp Gaia (Γαῖα) Beta</InformationalVersion>
   </PropertyGroup>
 </Project>
 

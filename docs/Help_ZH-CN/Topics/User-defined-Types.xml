@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-26T10:31:25.952+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-01-06T07:30:37.463+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>自定义类型</title>
   <keywords>
     <keyword>CLASS</keyword>
@@ -22,7 +22,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">该语言的以下关键字定义了用户定义的类型。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="10" colcount="2">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="11" colcount="2">
       <thead style="vertical-align:top">
         <td style="vertical-align:top; width:249px;">
           <para styleclass="Normal"><text style="font-weight:bold;">类型</text></para>
@@ -77,6 +77,14 @@
         </td>
         <td style="vertical-align:top; width:882px;">
           <para styleclass="Normal">定义接口。</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:249px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="RECORD-statement">RECORD</link></para>
+        </td>
+        <td style="vertical-align:top; width:882px;">
+          <para styleclass="Normal">记录类型是类或结构的一种特殊形式，专用于处理数据模型。记录类型支持值相等性。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

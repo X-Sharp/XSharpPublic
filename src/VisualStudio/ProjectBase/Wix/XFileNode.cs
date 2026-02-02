@@ -192,6 +192,10 @@ namespace Microsoft.VisualStudio.Project
                     return this.IsNonMemberItem;
                 case __VSHPROPID.VSHPROPID_DefaultNamespace:
                     return this.ProjectMgr.GetProperty(propId);
+                case __VSHPROPID.VSHPROPID_IsNonSearchable:
+                    return this.IsNonMemberItem;
+                case __VSHPROPID.VSHPROPID_IsFindInFilesForegroundOnly:
+                    return false;
             }
 
             return base.GetProperty(propId);

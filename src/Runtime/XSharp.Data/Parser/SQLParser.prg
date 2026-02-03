@@ -70,7 +70,7 @@ PARTIAL CLASS SQLParser
     DO WHILE ! SELF:Eoi() .and. ! SELF:Eos()
         IF SELF:Matches(XTokenType.LPAREN)
             nestLevel += 1
-        ELSEIF SELF:Matches(XTokenType.RPAREN)
+        ELSEIF SELF:Matches(XTokenType.RPAREN) .AND. nestLevel > 0
             nestLevel -= 1
         ENDIF
         IF SELF:Matches(endTokens) .and. nestLevel == 0
@@ -717,6 +717,180 @@ PARTIAL CLASS SQLParser
             ENDIF
             stmt:WhereClause := SELF:ParseExpression()
             return true
+
+    METHOD ParseSelectStatement(stmt out FoxSelectContext) AS LOGIC
+        /*
+        SELECT [DISTINCT] [TOP n] select_list
+           FROM table_list [WITH (NOLOCK)]
+           [WHERE condition]
+           [GROUP BY group_list]
+           [HAVING condition]
+           [ORDER BY order_list]
+        */
+        stmt := FoxSelectContext{}
+        IF ! SELF:Expect(XTokenType.SELECT)
+            return FALSE
+        ENDIF
+
+        // Check for DISTINCT
+        IF SELF:Expect(XTokenType.DISTINCT)
+            stmt:IsDistinct := TRUE
+        ENDIF
+
+        // Check for TOP clause
+        IF SELF:Expect(XTokenType.TOP)
+            var topToken := SELF:ConsumeAndGet()
+            stmt:TopCount := topToken:Text
+        ENDIF
+
+        // Parse select list (columns)
+        DO WHILE SELF:Matches(XTokenType.ID) .OR. SELF:Matches(XTokenType.MULT) .OR. SELF:Matches(XTokenType.LPAREN)
+            var column := ""
+            IF SELF:Matches(XTokenType.MULT)
+                column := SELF:ConsumeAndGetText()
+            ELSE
+                column := SELF:ParseExpression(XTokenType.FROM, XTokenType.WHERE, XTokenType.GROUP, XTokenType.HAVING, XTokenType.ORDER, XTokenType.INTO)
+            ENDIF
+            stmt:SelectList:Add(column)
+
+            IF ! SELF:Expect(XTokenType.COMMA)
+                EXIT  // End of select list
+            ENDIF
+        ENDDO
+
+        IF ! SELF:Expect(XTokenType.FROM)
+            SELF:SetError("Expected FROM clause")
+            RETURN FALSE
+        ENDIF
+
+        // Parse table list
+        DO WHILE SELF:Matches(XTokenType.ID)
+            var tableName := SELF:ParseTableName()
+            stmt:TableList:Add(tableName)
+
+            IF ! SELF:Expect(XTokenType.COMMA)
+                EXIT  // End of table list
+            ENDIF
+        ENDDO
+
+        // Check for optional WITH clause (for locking hints)
+        IF SELF:Expect(XTokenType.WITH)
+            IF SELF:Expect(XTokenType.LPAREN)
+                var lockHint := SELF:ParseExpression(XTokenType.RPAREN)
+                SELF:Expect(XTokenType.RPAREN)
+                // Store lock hint info if needed
+            ENDIF
+        ENDIF
+
+        // Parse optional WHERE clause
+        IF SELF:Expect(XTokenType.WHERE)
+            stmt:WhereClause := SELF:ParseExpression(XTokenType.GROUP, XTokenType.HAVING, XTokenType.ORDER)
+        ENDIF
+
+        // Parse optional GROUP BY clause
+        IF SELF:Expect(XTokenType.GROUP) .AND. SELF:Expect(XTokenType.BY)
+            stmt:GroupByClause := SELF:ParseExpression(XTokenType.HAVING, XTokenType.ORDER)
+        ENDIF
+
+        // Parse optional HAVING clause
+        IF SELF:Expect(XTokenType.HAVING)
+            stmt:HavingClause := SELF:ParseExpression(XTokenType.ORDER)
+        ENDIF
+
+        // Parse optional ORDER BY clause
+        IF SELF:Expect(XTokenType.ORDER) .AND. SELF:Expect(XTokenType.BY)
+            stmt:OrderByClause := SELF:ParseExpression()
+        ENDIF
+
+        return TRUE
+
+    METHOD ParseInsertStatement(stmt out FoxInsertContext) AS LOGIC
+        /*
+        INSERT INTO table_name [(column1, column2, column3, ...)]
+        VALUES (value1, value2, value3, ...)
+
+        Or:
+        INSERT INTO table_name [(column1, column2, column3, ...)]
+        SELECT column1, column2, ...
+        FROM table_name
+        WHERE condition;
+        */
+        stmt := FoxInsertContext{}
+        IF ! SELF:Expect(XTokenType.INSERT)
+            return FALSE
+        ENDIF
+
+        IF ! SELF:Expect(XTokenType.INTO)
+            SELF:SetError("Expected INTO after INSERT")
+            RETURN FALSE
+        ENDIF
+
+        // Parse table name
+        IF SELF:Matches(XTokenType.ID)
+            stmt:TableName := SELF:ParseTableName()
+        ELSE
+            SELF:SetError("Expected table name after INTO")
+            RETURN FALSE
+        ENDIF
+
+        // Parse optional column list
+        IF SELF:Expect(XTokenType.LPAREN)
+            DO WHILE SELF:Matches(XTokenType.ID)
+                var columnName := SELF:ConsumeAndGetText()
+                stmt:ColumnList:Add(columnName)
+
+                IF ! SELF:Expect(XTokenType.COMMA)
+                    EXIT  // End of column list
+                ENDIF
+            ENDDO
+            IF ! SELF:Expect(XTokenType.RPAREN)
+                SELF:SetError("Expected closing parenthesis for column list")
+                RETURN FALSE
+            ENDIF
+        ENDIF
+
+        // Check if it's INSERT ... VALUES or INSERT ... SELECT
+        IF SELF:Expect(XTokenType.VALUES)
+            // Handle INSERT ... VALUES
+            IF ! SELF:Expect(XTokenType.LPAREN)
+                SELF:SetError("Expected opening parenthesis after VALUES")
+                RETURN FALSE
+            ENDIF
+
+            DO WHILE ! SELF:Matches(XTokenType.RPAREN) .AND. ! SELF:Eos()
+                ? SELF:La1, SELF:Lt(1):Text
+                var value := SELF:ParseExpression(XTokenType.COMMA, XTokenType.RPAREN)
+                stmt:ValueList:Add(value)
+                ? SELF:La1
+
+                IF ! SELF:Expect(XTokenType.COMMA)
+                    EXIT  // End of value list
+                ENDIF
+            ENDDO
+
+            ? SELF:La1
+            IF ! SELF:Expect(XTokenType.RPAREN)
+                SELF:SetError("Expected closing parenthesis for values list")
+                RETURN FALSE
+            ENDIF
+        ELSEIF SELF:Expect(XTokenType.SELECT)
+            // Handle INSERT ... SELECT
+            // For now, store the entire SELECT statement as a string
+            var sb := StringBuilder{}
+            // Move back to the SELECT token to parse the whole SELECT statement
+            SELF:PushBack()
+            DO WHILE ! SELF:Eos() .AND. ! SELF:Eoi()
+                var token := SELF:ConsumeAndGet()
+                sb:Append(token:Leadingws)
+                sb:Append(token:Text)
+            ENDDO
+            stmt:SelectStmt := sb:ToString()
+        ELSE
+            SELF:SetError("Expected VALUES or SELECT after table specification")
+            RETURN FALSE
+        ENDIF
+
+        return TRUE
 
 
 #endregion

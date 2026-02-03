@@ -124,4 +124,33 @@ CLASS FoxUpdateContext
         RETURN
 
 END CLASS
+CLASS FoxSelectContext
+    PROPERTY TopCount    AS STRING AUTO
+    PROPERTY IsDistinct  AS LOGIC AUTO
+    PROPERTY SelectList  AS List<STRING> AUTO
+    PROPERTY TableList   AS List<STRING> AUTO
+    PROPERTY JoinList    AS List<STRING> AUTO
+    PROPERTY WhereClause AS STRING AUTO
+    PROPERTY GroupByClause AS STRING AUTO
+    PROPERTY HavingClause AS STRING AUTO
+    PROPERTY OrderByClause AS STRING AUTO
+    CONSTRUCTOR()
+        SelectList := List<String>{}
+        TableList := List<String>{}
+        JoinList := List<String>{}
+        RETURN
+
+END CLASS
+CLASS FoxInsertContext
+    PROPERTY TableName   AS STRING AUTO
+    PROPERTY ColumnList  AS List<STRING> AUTO
+    PROPERTY ValueList   AS List<STRING> AUTO  // For VALUES clause
+    PROPERTY SelectStmt  AS STRING AUTO        // For INSERT ... SELECT
+    PROPERTY IsForce     AS LOGIC AUTO
+    CONSTRUCTOR()
+        ColumnList := List<String>{}
+        ValueList := List<String>{}
+        RETURN
+
+END CLASS
 END NAMESPACE

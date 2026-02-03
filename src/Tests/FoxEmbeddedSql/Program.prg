@@ -234,7 +234,7 @@ FUNCTION __SqlUpdate (sCommand as STRING)
 
     RETURN
 
-FUNCTION PrintContext(ctx AS SqlExpressionContext, depth := 0 AS INT)
+FUNCTION PrintContext(ctx AS XSharp.Parsers.SqlExpressionContext, depth := 0 AS INT)
     IF ctx IS SqlNameExpressionContext VAR s
         ? STRING{c" ", depth*2} + "NAME: " + s:ToString()
     ELSEIF ctx IS SqlSimpleExpressionContext VAR s
@@ -262,7 +262,7 @@ FUNCTION TestSqlParser (sCommand as STRING)
     VAR tokens := lexer:AllTokens()
     var parser := SqlParser{XTokenList{tokens}}
     ? sCommand
-    VAR ctx := parser.ParseExpressionContext()
+    VAR ctx := parser:ParseExpressionContext()
     ? ctx:ToString()
     PrintContext(ctx)
 

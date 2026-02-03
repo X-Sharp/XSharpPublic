@@ -20,6 +20,13 @@
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Context.Expression.prg" />
     <Compile Include="CursorAdapter.prg" />
     <Compile Include="DbDataFunctions.prg" />
     <Compile Include="FoxPro\Enums.prg" />
@@ -53,6 +60,7 @@
     <Compile Include="RDD\DbDataTable.prg" />
     <Compile Include="RDD\DbField.prg" />
     <Compile Include="RDD\DbRecord.prg" />
+    <Compile Include="SQLParser.Expression.prg" />
     <Compile Include="SQL\ISQLFactory.prg" />
     <Compile Include="SQL\SqlFactoryAbstract.prg" />
     <Compile Include="SQL\SqlFactoryODBC.prg" />

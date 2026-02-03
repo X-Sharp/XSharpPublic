@@ -112,7 +112,7 @@ FUNCTION Start() AS VOID STRICT
 
         CREATE TABLE Customers ;
             (CustId i PRIMARY KEY, ;
-             CustName c(20) )
+            CustName c(20) )
         INSERT INTO Customers(CustId,CustName) VALUES (1, "Microsoft")
         INSERT INTO Customers(CustId,CustName) VALUES (2, "Google")
         ? ALIAS()
@@ -205,7 +205,7 @@ FUNCTION TestSelectParsing() AS VOID
         ? "Order By Clause:", selectCtx:OrderByClause
 
         FOREACH VAR col IN selectCtx:SelectList
-            ? "  Column:", col
+            ? "  Column:", col:ToString()
         NEXT
     ELSE
         ? "Failed to parse SELECT statement:", parser:Error
@@ -235,7 +235,7 @@ FUNCTION TestInsertParsing() AS VOID
         NEXT
 
         FOREACH VAR val IN insertCtx:ValueList
-            ? "  Value:", val
+            ? "  Value:", val:ToString()
         NEXT
     ELSE
         ? "Failed to parse INSERT statement:", parser:Error
@@ -282,7 +282,7 @@ FUNCTION __SqlUpdate (sCommand as STRING)
         ? "Column", c
     next
     foreach var t in table:ValueList
-        ? "Value", t
+        ? "Value", t:ToString()
     next
     foreach var t in table:TableList
         ? "From Table", t
@@ -290,18 +290,18 @@ FUNCTION __SqlUpdate (sCommand as STRING)
     foreach var j in table:JoinList
         ? "Join Table", j
     next
-    ? "Where", table:WhereClause
+    ? "Where", table:WhereClause:ToString()
 
     VAR o := XSharp.MacroCompiler.MacroOptions.FoxPro
     o:AllowOldStyleAssignments := False
     VAR mc := XSharp.Runtime.MacroCompiler{o}
     // VAR mc := XSharp.Runtime.MacroCompiler.GetScriptCompiler(XSharpDialect.FoxPro)
-    VAR cbWhere := mc:CompileCodeblock(table:WhereClause)
+    VAR cbWhere := mc:CompileCodeblock(table:WhereClause:ToString())
     //VAR res := (OBJECT) cb:Eval(args)
 
     VAR values := Dictionary<STRING,CODEBLOCK>{}
     FOR VAR i := 0 TO table:ColumnList:Count-1
-        values[table:ColumnList[i]] := mc:CompileCodeblock(table:ValueList[i])
+        values[table:ColumnList[i]] := mc:CompileCodeblock(table:ValueList[i]:ToString())
     NEXT
 
     LOCAL FUNCTION UpdateRow() AS VOID
@@ -397,7 +397,7 @@ FUNCTION __SqlSelect(sCommand as STRING) AS VOID
 
     ? "Selected columns:"
     foreach var col in selectCtx:SelectList
-        ? "  " + col
+        ? "  " + col:ToString()
     next
 
     ? "Tables:"
@@ -415,5 +415,6 @@ FUNCTION TestSqlParser (sCommand as STRING)
     VAR ctx := parser:ParseExpressionContext()
     ? ctx:ToString()
     PrintContext(ctx)
+
 
 

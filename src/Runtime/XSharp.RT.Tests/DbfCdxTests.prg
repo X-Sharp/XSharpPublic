@@ -6247,6 +6247,27 @@ RETURN
 		RETURN
 
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD DBFVFP_Test() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/1557
+			LOCAL cFileName AS STRING
+			cFileName := DbfTests.GetTempFileName()
+			cFileName := cFileName + "."
+
+			DbCreate(cFileName, {{"TEST","Y",10,4}} , "DBFVFP")
+			DbUseArea(true, "DBFVFP", cFileName)
+			DbAppend()
+			FieldPut(1, 0.1234)
+			DbAppend()
+			FieldPut(1, $1234.5678)
+			DbGoTop()
+			Assert.Equal( $0.1234, (Currency) FieldGet(1))
+			DbSkip()
+			Assert.Equal( $1234.5678, (Currency) FieldGet(1))
+			DbCloseArea()
+		RETURN
+
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter

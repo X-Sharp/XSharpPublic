@@ -28,7 +28,7 @@ CLASS FoxCreateTableContext
     PROPERTY Columns    as List<FoxColumnContext> AUTO
     PROPERTY CodePage   as LONG AUTO
     PROPERTY ArrayName  as STRING AUTO
-    PROPERTY RuleExpression as STRING AUTO
+    PROPERTY RuleExpression as SqlExpressionContext AUTO
     PROPERTY RuleText       as string Auto
     PROPERTY Free       AS LOGIC AUTO
     PROPERTY LongName   AS STRING AUTO
@@ -42,8 +42,8 @@ CLASS FoxCreateTableContext
         sb:Append(" ")
         sb:Append(Name)
         sb:Append(" ")
-        if ! String.IsNullOrEmpty(RuleExpression)
-            sb:Append("Check "+RuleExpression)
+        if RuleExpression != NULL
+            sb:Append("Check "+RuleExpression:ToString())
         ENDIF
         return sb:ToString()
         END CLASS
@@ -81,11 +81,11 @@ CLASS FoxColumnContext INHERIT RddFieldInfo
         if SELF:PrimaryKey
             sb:Append(" Primary key")
         endif
-        if !String.IsNullOrEmpty(SELF:DefaultValue)
-            sb:Append(" Default " +SELF:DefaultValue)
+        if SELF:DefaultValue != NULL
+            sb:Append(" Default " +SELF:DefaultValue:ToString())
         endif
-        if !String.IsNullOrEmpty(SELF:RuleExpression)
-            sb:Append(" Check " +SELF:RuleExpression)
+        if SELF:RuleExpression != NULL
+            sb:Append(" Check " +SELF:RuleExpression:ToString())
             if !String.IsNullOrEmpty(SELF:RuleText)
                 sb:Append(" Error " +SELF:RuleText)
             endif
@@ -99,7 +99,7 @@ CLASS FoxDeleteContext
     PROPERTY IsForce    AS LOGIC AUTO
     PROPERTY TableList  AS List<STRING> AUTO
     PROPERTY JoinList   AS List<STRING> AUTO
-    PROPERTY WhereClause AS STRING AUTO
+    PROPERTY WhereClause AS SqlExpressionContext AUTO
     CONSTRUCTOR()
         IsForce   := FALSE
         TableList := List<String>{}
@@ -110,15 +110,15 @@ END CLASS
 CLASS FoxUpdateContext
     PROPERTY TableName   AS STRING AUTO
     PROPERTY ColumnList  AS List<STRING> AUTO
-    PROPERTY ValueList   AS List<STRING> AUTO
+    PROPERTY ValueList   AS List<SqlExpressionContext> AUTO
     PROPERTY IsForce    AS LOGIC AUTO
     PROPERTY TableList  AS List<STRING> AUTO
     PROPERTY JoinList   AS List<STRING> AUTO
-    PROPERTY WhereClause AS STRING AUTO
+    PROPERTY WhereClause AS SqlExpressionContext AUTO
     CONSTRUCTOR()
         IsForce   := FALSE
         ColumnList := List<String>{}
-        ValueList := List<String>{}
+        ValueList := List<SqlExpressionContext>{}
         TableList := List<String>{}
         JoinList  := List<String>{}
         RETURN
@@ -127,15 +127,15 @@ END CLASS
 CLASS FoxSelectContext
     PROPERTY TopCount    AS STRING AUTO
     PROPERTY IsDistinct  AS LOGIC AUTO
-    PROPERTY SelectList  AS List<STRING> AUTO
+    PROPERTY SelectList  AS List<SqlExpressionContext> AUTO
     PROPERTY TableList   AS List<STRING> AUTO
     PROPERTY JoinList    AS List<STRING> AUTO
-    PROPERTY WhereClause AS STRING AUTO
-    PROPERTY GroupByClause AS STRING AUTO
-    PROPERTY HavingClause AS STRING AUTO
-    PROPERTY OrderByClause AS STRING AUTO
+    PROPERTY WhereClause AS SqlExpressionContext AUTO
+    PROPERTY GroupByClause AS SqlExpressionContext AUTO
+    PROPERTY HavingClause AS SqlExpressionContext AUTO
+    PROPERTY OrderByClause AS SqlExpressionContext AUTO
     CONSTRUCTOR()
-        SelectList := List<String>{}
+        SelectList := List<SqlExpressionContext>{}
         TableList := List<String>{}
         JoinList := List<String>{}
         RETURN
@@ -144,13 +144,14 @@ END CLASS
 CLASS FoxInsertContext
     PROPERTY TableName   AS STRING AUTO
     PROPERTY ColumnList  AS List<STRING> AUTO
-    PROPERTY ValueList   AS List<STRING> AUTO  // For VALUES clause
+    PROPERTY ValueList   AS List<SqlExpressionContext> AUTO  // For VALUES clause
     PROPERTY SelectStmt  AS STRING AUTO        // For INSERT ... SELECT
     PROPERTY IsForce     AS LOGIC AUTO
     CONSTRUCTOR()
         ColumnList := List<String>{}
-        ValueList := List<String>{}
+        ValueList := List<SqlExpressionContext>{}
         RETURN
 
 END CLASS
 END NAMESPACE
+

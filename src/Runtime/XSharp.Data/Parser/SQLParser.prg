@@ -61,65 +61,7 @@ PARTIAL CLASS SQLParser
     CONSTRUCTOR(tokens as XTokenList)
         _list := tokens
         RETURN
-    PRIVATE METHOD ParseExpression(endTokens PARAMS XTokenType[]) AS STRING
-        RETURN SELF:TokensAsString(SELF:ParseExpressionAsTokens(endTokens))
 
-    PRIVATE METHOD ParseExpressionAsTokens(endTokens as XTokenType[]) AS IList<XToken>
-    VAR tokens := List<XToken>{}
-    var nestLevel := 0
-    DO WHILE ! SELF:Eoi() .and. ! SELF:Eos()
-        IF SELF:Matches(XTokenType.LPAREN)
-            nestLevel += 1
-        ELSEIF SELF:Matches(XTokenType.RPAREN) .AND. nestLevel > 0
-            nestLevel -= 1
-        ENDIF
-        IF SELF:Matches(endTokens) .and. nestLevel == 0
-            EXIT
-        ENDIF
-        tokens:Add(SELF:ConsumeAndGet())
-    ENDDO
-    RETURN tokens
-    PRIVATE METHOD ParseExpressionAsTokens() AS IList<XToken>
-        // parse until SELF:Eos() or tokens such as AS, IS,
-        LOCAL nested := 0 AS LONG
-        LOCAL done  := FALSE AS LOGIC
-        VAR tokens := List<XToken>{}
-
-        DO WHILE ! SELF:Eos() .AND. ! done
-            SWITCH SELF:La1
-            CASE XTokenType.LT
-            CASE XTokenType.LPAREN
-            CASE XTokenType.LBRKT
-            CASE XTokenType.LCURLY
-                nested++
-            CASE XTokenType.GT
-            CASE XTokenType.RPAREN
-            CASE XTokenType.RBRKT
-            CASE XTokenType.RCURLY
-                nested--
-
-            CASE XTokenType.AS
-            CASE XTokenType.IS
-            CASE XTokenType.COMMA
-                // The comma is used for a comma separated list of expression.
-                // however inside a method call or constructor call we should have nested > 0
-                IF (nested == 0)
-                    done := TRUE
-                ENDIF
-
-            OTHERWISE
-                // other keywords, operators etc.
-                //
-                NOP
-            END SWITCH
-            IF !done
-                tokens:Add(SELF:ConsumeAndGet())
-            ENDIF
-        ENDDO
-        RETURN tokens
-
-    PRIVATE METHOD ParseExpression() AS STRING
-        RETURN SELF:TokensAsString(SELF:ParseExpressionAsTokens())
 
     PRIVATE METHOD TokensAsString(tokens AS IList<XToken>, lAddTrivia := TRUE AS LOGIC) AS STRING
         LOCAL sb AS StringBuilder
@@ -306,9 +248,9 @@ PARTIAL CLASS SQLParser
                         endif
                     case XTokenType.CHECK
                         SELF:Consume()
-                        table:RuleExpression := SELF:ParseExpression()
+                        table:RuleExpression := SELF:ParseExpressionContext()
                         IF SELF:Expect(XTokenType.ERROR)
-                            table:RuleText := SELF:ParseExpression()
+                            table:RuleText := SELF:ParseExpressionContext():ToString()
                         endif
 
                     case XTokenType.ID
@@ -414,9 +356,7 @@ PARTIAL CLASS SQLParser
     METHOD ParseColumn(oColumns as List<FoxColumnContext>, lTable as LOGIC) AS LOGIC
         local name      as XToken
         local oType      as XToken
-        local endTokens as XTokenType[]
         local lOk := FALSE as logic
-        endTokens := <XTokenType>{XTokenType.CHECK,XTokenType.DEFAULT,XTokenType.AUTOINC,XTokenType.PRIMARY,XTokenType.UNIQUE,XTokenType.ERROR,XTokenType.COMMA}
         var sqlField := FoxColumnContext{}
         oColumns:Add(sqlField)
         IF !SELF:ExpectAndGet(XTokenType.ID, out name)
@@ -477,9 +417,9 @@ PARTIAL CLASS SQLParser
             CASE XTokenType.CHECK
                 SELF:Consume()
                 // Only when in DBC
-                sqlField:RuleExpression := SELF:ParseExpression(endTokens)
+                sqlField:RuleExpression := SELF:ParseExpressionContext():ToString()
                 IF SELF:Expect(XTokenType.ERROR)
-                    sqlField:RuleText := SELF:ParseExpression(endTokens)
+                    sqlField:RuleText := SELF:ParseExpressionContext():ToString()
                 endif
                 LOOP
             CASE XTokenType.AUTOINC
@@ -488,16 +428,16 @@ PARTIAL CLASS SQLParser
                 sqlField:NextValue := 1
                 sqlField:StepValue := 1
                 IF SELF:Expect("NEXTVALUE")
-                    var expr := SELF:ParseExpression(endTokens)
-                    IF Int32.TryParse(expr, out var nextval)
+                    var exprStr := SELF:ParseExpressionContext():ToString()
+                    IF Int32.TryParse(exprStr, out var nextval)
                         sqlField:NextValue := nextval
                     ELSE
                         SELF:SetError("Expected NextValue")
                         RETURN FALSE
                     endif
                     IF SELF:Expect("STEP")
-                        var step:= SELF:ParseExpression(endTokens)
-                        IF Int32.TryParse(step, out var stepval)
+                        var stepStr:= SELF:ParseExpressionContext():ToString()
+                        IF Int32.TryParse(stepStr, out var stepval)
                             sqlField:StepValue := stepval
                         ELSE
                             SELF:SetError("Expected StepValue")
@@ -507,7 +447,7 @@ PARTIAL CLASS SQLParser
                 ENDIF
             CASE XTokenType.DEFAULT
                 SELF:Consume()
-                sqlField:DefaultValue := SELF:ParseExpression(endTokens)
+                sqlField:DefaultValue := SELF:ParseExpressionContext():ToString()
             CASE XTokenType.UNIQUE
                 // This should create a unique index on the column
                 SELF:Consume()
@@ -591,21 +531,14 @@ PARTIAL CLASS SQLParser
             RETURN FALSE
         ENDIF
         IF SELF:Expect(XTokenType.WHERE)
-            var sb := StringBuilder{}
-            do while ! SELF:Eos() .and. ! SELF:Eoi()
-                var token := SELF:ConsumeAndGet()
-                sb:Append(token:Leadingws)
-                sb:Append(token:Text)
-            enddo
-            stmt:WhereClause := sb:ToString()
-        ELSEIF SELF:Eos() .or. SELF:Eoi()
+            stmt:WhereClause := SELF:ParseExpressionContext()
+        ENDIF
+        IF SELF:Eos() .or. SELF:Eoi()
             return true
         ELSE
             SELF:SetError("Expected Where clause or EOS")
             return false
         ENDIF
-        RETURN true
-
 
     // METHOD ParseTableName() AS STRING
         // local sTable as STRING
@@ -669,7 +602,7 @@ PARTIAL CLASS SQLParser
                     SELF:SetError("Expected '='")
                     RETURN FALSE
                 ENDIF
-                var expr := SELF:ParseExpression(XTokenType.FROM, XTokenType.JOIN, XTokenType.WHERE)
+                var expr := SELF:ParseExpressionContext()
                 stmt:ColumnList:Add(column)
                 stmt:ValueList:Add(expr)
                 IF ! SELF:Expect(XTokenType.COMMA)
@@ -715,7 +648,7 @@ PARTIAL CLASS SQLParser
                 SELF:SetError("Expected WHERE")
                 RETURN FALSE
             ENDIF
-            stmt:WhereClause := SELF:ParseExpression()
+            stmt:WhereClause := SELF:ParseExpressionContext()
             return true
 
     METHOD ParseSelectStatement(stmt out FoxSelectContext) AS LOGIC
@@ -745,13 +678,15 @@ PARTIAL CLASS SQLParser
 
         // Parse select list (columns)
         DO WHILE SELF:Matches(XTokenType.ID) .OR. SELF:Matches(XTokenType.MULT) .OR. SELF:Matches(XTokenType.LPAREN)
-            var column := ""
             IF SELF:Matches(XTokenType.MULT)
-                column := SELF:ConsumeAndGetText()
+                var multToken := SELF:ConsumeAndGet()
+                // Create a simple expression context for the '*' wildcard
+                var tokenList := List<XToken>{}
+                tokenList:Add(multToken)
+                stmt:SelectList:Add(SqlSimpleExpressionContext{} { Tokens := tokenList })
             ELSE
-                column := SELF:ParseExpression(XTokenType.FROM, XTokenType.WHERE, XTokenType.GROUP, XTokenType.HAVING, XTokenType.ORDER, XTokenType.INTO)
+                stmt:SelectList:Add(SELF:ParseExpressionContext())
             ENDIF
-            stmt:SelectList:Add(column)
 
             IF ! SELF:Expect(XTokenType.COMMA)
                 EXIT  // End of select list
@@ -776,7 +711,7 @@ PARTIAL CLASS SQLParser
         // Check for optional WITH clause (for locking hints)
         IF SELF:Expect(XTokenType.WITH)
             IF SELF:Expect(XTokenType.LPAREN)
-                var lockHint := SELF:ParseExpression(XTokenType.RPAREN)
+                var lockHint := SELF:ParseExpressionContext():ToString()
                 SELF:Expect(XTokenType.RPAREN)
                 // Store lock hint info if needed
             ENDIF
@@ -784,22 +719,22 @@ PARTIAL CLASS SQLParser
 
         // Parse optional WHERE clause
         IF SELF:Expect(XTokenType.WHERE)
-            stmt:WhereClause := SELF:ParseExpression(XTokenType.GROUP, XTokenType.HAVING, XTokenType.ORDER)
+            stmt:WhereClause := SELF:ParseExpressionContext()
         ENDIF
 
         // Parse optional GROUP BY clause
         IF SELF:Expect(XTokenType.GROUP) .AND. SELF:Expect(XTokenType.BY)
-            stmt:GroupByClause := SELF:ParseExpression(XTokenType.HAVING, XTokenType.ORDER)
+            stmt:GroupByClause := SELF:ParseExpressionContext()
         ENDIF
 
         // Parse optional HAVING clause
         IF SELF:Expect(XTokenType.HAVING)
-            stmt:HavingClause := SELF:ParseExpression(XTokenType.ORDER)
+            stmt:HavingClause := SELF:ParseExpressionContext()
         ENDIF
 
         // Parse optional ORDER BY clause
         IF SELF:Expect(XTokenType.ORDER) .AND. SELF:Expect(XTokenType.BY)
-            stmt:OrderByClause := SELF:ParseExpression()
+            stmt:OrderByClause := SELF:ParseExpressionContext()
         ENDIF
 
         return TRUE
@@ -859,7 +794,7 @@ PARTIAL CLASS SQLParser
 
             DO WHILE ! SELF:Matches(XTokenType.RPAREN) .AND. ! SELF:Eos()
                 ? SELF:La1, SELF:Lt(1):Text
-                var value := SELF:ParseExpression(XTokenType.COMMA, XTokenType.RPAREN)
+                var value := SELF:ParseExpressionContext()
                 stmt:ValueList:Add(value)
                 ? SELF:La1
 
@@ -896,3 +831,5 @@ PARTIAL CLASS SQLParser
 #endregion
 END CLASS
 END NAMESPACE
+
+

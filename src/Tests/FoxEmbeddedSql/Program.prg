@@ -106,6 +106,10 @@ FUNCTION Start() AS VOID STRICT
         TestSqlParser("xi = 1 AND (yi+1)+table.zed = 2")
         wait
 
+        // Test new SELECT and INSERT functionality
+        TestNewSqlFeatures()
+        wait
+
         CREATE TABLE Customers ;
             (CustId i PRIMARY KEY, ;
              CustName c(20) )
@@ -153,6 +157,91 @@ FUNCTION Start() AS VOID STRICT
         ? "Error", e:Message
     end try
     WAIT
+
+FUNCTION TestNewSqlFeatures() AS VOID
+    ? "Testing new SQL features..."
+
+    // Test SELECT parsing
+    TestSelectParsing()
+
+    // Test INSERT parsing
+    TestInsertParsing()
+
+    // Test SELECT UDC functionality
+    TestSelectUDC()
+
+    RETURN
+
+FUNCTION TestSelectUDC() AS VOID
+    ? "Testing SELECT UDC functionality..."
+
+    // This would test the actual UDC functionality if the table existed
+    // For now, we'll just show what would happen
+    ? "SELECT UDCs have been defined in foxcmd.xh"
+    ? "- Basic SELECT: SELECT field1, field2 FROM table WHERE condition"
+    ? "- SELECT with DISTINCT: SELECT DISTINCT field1 FROM table"
+    ? "- SELECT with TOP: SELECT TOP 10 field1 FROM table"
+    ? "These UDCs map to the __SqlSelect function"
+    RETURN
+
+FUNCTION TestSelectParsing() AS VOID
+    ? "Testing SELECT parsing..."
+
+    LOCAL selectSql AS STRING
+    selectSql := "SELECT DISTINCT TOP 10 CustomerID, CompanyName, ContactName FROM Customers WHERE City = 'New York' ORDER BY CompanyName"
+
+    VAR lexer := XSqlLexer{selectSql}
+    VAR tokens := lexer:AllTokens()
+    VAR parser := SqlParser{XTokenList{tokens}}
+    LOCAL selectCtx AS FoxSelectContext
+
+    IF parser:ParseSelectStatement(OUT selectCtx)
+        ? "Successfully parsed SELECT statement"
+        ? "Top Count:", selectCtx:TopCount
+        ? "Is Distinct:", selectCtx:IsDistinct
+        ? "Select List Count:", selectCtx:SelectList:Count
+        ? "Table List Count:", selectCtx:TableList:Count
+        ? "Where Clause:", selectCtx:WhereClause
+        ? "Order By Clause:", selectCtx:OrderByClause
+
+        FOREACH VAR col IN selectCtx:SelectList
+            ? "  Column:", col
+        NEXT
+    ELSE
+        ? "Failed to parse SELECT statement:", parser:Error
+    ENDIF
+
+    RETURN
+
+FUNCTION TestInsertParsing() AS VOID
+    ? "Testing INSERT parsing..."
+
+    LOCAL insertSql AS STRING
+    insertSql := "INSERT INTO Employees (FirstName, LastName, Salary) VALUES ('John', 'Doe', 50000)"
+
+    VAR lexer := XSqlLexer{insertSql}
+    VAR tokens := lexer:AllTokens()
+    VAR parser := SqlParser{XTokenList{tokens}}
+    LOCAL insertCtx AS FoxInsertContext
+
+    IF parser:ParseInsertStatement(OUT insertCtx)
+        ? "Successfully parsed INSERT statement"
+        ? "Table Name:", insertCtx:TableName
+        ? "Column List Count:", insertCtx:ColumnList:Count
+        ? "Value List Count:", insertCtx:ValueList:Count
+
+        FOREACH VAR col IN insertCtx:ColumnList
+            ? "  Column:", col
+        NEXT
+
+        FOREACH VAR val IN insertCtx:ValueList
+            ? "  Value:", val
+        NEXT
+    ELSE
+        ? "Failed to parse INSERT statement:", parser:Error
+    ENDIF
+
+    RETURN
 
 
 
@@ -256,6 +345,67 @@ FUNCTION PrintContext(ctx AS XSharp.Parsers.SqlExpressionContext, depth := 0 AS 
         PrintContext(co:Left, depth + 1)
         PrintContext(co:Right, depth + 1)
     ENDIF
+    RETURN
+
+FUNCTION __SqlInsertFromSQL( cUdc AS STRING, cTable AS STRING, aFields AS STRING[], cSelect AS STRING ) AS VOID
+    LOCAL i AS DWORD
+    LOCAL uValue AS USUAL
+    LOCAL cFieldName AS STRING
+
+    ? "Executing INSERT FROM SQL:", cUdc
+    ? "Target table:", cTable
+    ? "Fields:", Atoa(aFields)
+    ? "Source SQL:", cSelect
+
+    // This would normally execute the SELECT statement and insert the results
+    // For now, we'll just show the parsed information
+    RETURN
+
+FUNCTION Atoa(a AS ARRAY) AS STRING
+    LOCAL sb AS StringBuilder
+    LOCAL i AS DWORD
+    sb := StringBuilder{}
+    sb:Append("[")
+    FOR i := 0 UPTO a:Count-1
+        IF i > 0
+            sb:Append(", ")
+        ENDIF
+        sb:Append(a[i]:ToString())
+    NEXT
+    sb:Append("]")
+    RETURN sb:ToString()
+
+FUNCTION __SqlSelect(sCommand as STRING) AS VOID
+    VAR lexer := XSqlLexer{sCommand}
+    VAR tokens := lexer:AllTokens()
+    var parser := SqlParser{XTokenList{tokens}}
+    ? "SELECT Command:", sCommand
+    IF ! parser:ParseSelectStatement(out var selectCtx)
+        ? "Parse Error:", parser:Error
+        RETURN
+    ENDIF
+
+    ? "Parsed SELECT statement:"
+    ? "  Top Count:", selectCtx:TopCount
+    ? "  Is Distinct:", selectCtx:IsDistinct
+    ? "  Select List Count:", selectCtx:SelectList:Count
+    ? "  Table List Count:", selectCtx:TableList:Count
+    ? "  Where Clause:", selectCtx:WhereClause
+    ? "  Group By Clause:", selectCtx:GroupByClause
+    ? "  Having Clause:", selectCtx:HavingClause
+    ? "  Order By Clause:", selectCtx:OrderByClause
+
+    ? "Selected columns:"
+    foreach var col in selectCtx:SelectList
+        ? "  " + col
+    next
+
+    ? "Tables:"
+    foreach var tbl in selectCtx:TableList
+        ? "  " + tbl
+    next
+
+    RETURN
 
 FUNCTION TestSqlParser (sCommand as STRING)
     VAR lexer := XSqlLexer{sCommand}
@@ -265,4 +415,5 @@ FUNCTION TestSqlParser (sCommand as STRING)
     VAR ctx := parser:ParseExpressionContext()
     ? ctx:ToString()
     PrintContext(ctx)
+
 

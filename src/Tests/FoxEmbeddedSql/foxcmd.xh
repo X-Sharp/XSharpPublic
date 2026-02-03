@@ -24,3 +24,19 @@
   [FROM <*fromclause*>] [JOIN <*joinclause*>]  ;
   [WHERE <*whereclause*>]                                   => __SqlUpdate(<"udc">)
 
+// SQL Select Commands
+
+#command SELECT [<*distinct*>] [TOP <*topcount*>] <*selectlist*> ;
+  FROM <*tablelist*> ;
+  [WHERE <*whereclause*>] ;
+  [GROUP BY <*groupbylist*>] ;
+  [HAVING <*havingclause*>] ;
+  [ORDER BY <*orderbylist*>]                              => __SqlSelect(<"udc">)
+
+#command SELECT <*selectlist*> ;
+  FROM <*tablelist*> ;
+  [WHERE <*whereclause*>] ;
+  [GROUP BY <*groupbylist*>] ;
+  [HAVING <*havingclause*>] ;
+  [ORDER BY <*orderbylist*>]                              => __SqlSelect(<"udc">)
+

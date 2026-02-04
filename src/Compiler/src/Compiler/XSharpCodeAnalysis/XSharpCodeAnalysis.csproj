@@ -30,9 +30,6 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <DefineConstants>$(DefineConstants);DEBUG;TRACE;</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Public'">
-    <DefineConstants>$(DefineConstants);TRACE;</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DefineConstants>$(DefineConstants);NDEBUG;TRACE;</DefineConstants>
   </PropertyGroup>
@@ -151,4 +148,5 @@
   <ItemGroup>
     <None Remove="$(CSharpSource)Syntax\Syntax.xsd" />
   </ItemGroup>
+  <Import Project="Extra.Targets" />
 </Project>

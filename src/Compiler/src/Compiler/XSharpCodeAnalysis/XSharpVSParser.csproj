@@ -24,9 +24,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(GenericDefines);XSHARP;TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Public|AnyCPU' "> 
-    <DefineConstants>$(GenericDefines);XSHARP;TRACE</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DefineConstants>$(GenericDefines);XSHARP;NDEBUG</DefineConstants>
   </PropertyGroup>
@@ -98,8 +95,4 @@
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net472|AnyCPU'">
     <DefineConstants>$(DefineConstants);NET472</DefineConstants>
   </PropertyGroup>  
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Public|net472|AnyCPU'">
-    <DefineConstants>$(DefineConstants);NET472</DefineConstants>
-  </PropertyGroup> 
-
 </Project> 

@@ -54,7 +54,7 @@ See License.txt in the project root for license information.
     <XscToolPath Condition="'$(XscToolPath)' == '' ">$(BinariesDir)xsc\$(Configuration)\net472</XscToolPath>
 
     <XSharpCompilerSrc>$(Solutiondir)Compiler\src\Compiler\</XSharpCompilerSrc>
-    <Configurations>Debug;Release;Public</Configurations>
+    <Configurations>Debug;Release</Configurations>
     <Langversion>preview</Langversion>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>

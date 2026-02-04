@@ -9,7 +9,7 @@
     <MakeDir Directories="$(VsExternalDir)" />  
   </Target>
   <Target Name="CopyFiles" AfterTargets="Build" 
-    Condition="Exists('$(VsExternalDir)') and '$(TargetFramework)' == 'net472' ">
+    Condition="Exists('$(VsExternalDir)') and '$(TargetFramework)' != 'net9.0' ">
     <ItemGroup>
       <OurFiles Include="$(OutputPath)\XSharp*.*" />
     </ItemGroup> 

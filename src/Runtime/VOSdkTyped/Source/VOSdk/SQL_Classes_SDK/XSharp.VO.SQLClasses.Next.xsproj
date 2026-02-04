@@ -21,16 +21,17 @@
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
     <TargetFramework>net8.0</TargetFramework>
+    <ProjectGuid>{a89fffba-981c-46ee-bee7-36a6ea14b614}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.Next.xsproj">
       <Name>XSharp.Core</Name>
-      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Project>{cc7c83af-345a-4719-9490-65ee4a04f3f4}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.Next.xsproj">
       <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Project>{504a02d9-74ae-445f-85d7-af2544e06d81}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\XSharp.Data\XSharp.Data.Next.xsproj">

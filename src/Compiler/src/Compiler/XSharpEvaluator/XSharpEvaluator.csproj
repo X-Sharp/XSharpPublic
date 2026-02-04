@@ -27,13 +27,9 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <GenericDefines>COMPILERCORE;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE;NETSTANDARD20;NETSTANDARD;COMMITHASH;EXPRESSIONCOMPILER</GenericDefines>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Configurations>Debug;Release;Public</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>$(Genericdefines);XSHARP;DEBUG;TRACE;</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Public'">
-    <DefineConstants>$(Genericdefines);XSHARP;TRACE;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>$(Genericdefines);XSHARP;NDEBUG;TRACE;</DefineConstants>

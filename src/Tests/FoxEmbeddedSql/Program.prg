@@ -106,8 +106,15 @@ FUNCTION Start() AS VOID STRICT
         TestSqlParser("xi = 1 AND (yi+1)+table.zed = 2")
         wait
 
+        TestFieldResolution()
+        wait
+
         // Test new SELECT and INSERT functionality
         TestNewSqlFeatures()
+        wait
+
+        // Test SELECT functionality
+        TestSelectFunctionality()
         wait
 
         CREATE TABLE Customers ;
@@ -243,6 +250,112 @@ FUNCTION TestInsertParsing() AS VOID
 
     RETURN
 
+FUNCTION TestFieldResolution() AS VOID
+    // Test the field resolution functionality
+    VAR sqlText := "SELECT field1, table2.field2 FROM table1, table2 WHERE table1.id = table2.id"
+    VAR lexer := XSqlLexer{sqlText}
+    VAR tokens := lexer:AllTokens()
+    VAR parser := SQLParser{XTokenList{tokens}}
+    VAR selectCtx := FoxSelectContext{}
+
+    CREATE CURSOR table1 (ID N(5), field1 C(20))
+    CREATE CURSOR table2 (ID N(5), field2 C(20))
+
+    IF parser:ParseSelectStatement(out selectCtx)
+        ? "Successfully parsed SELECT statement"
+
+        ? "Original SELECT expressions:"
+        FOR VAR i := 0 TO selectCtx:SelectList:Count - 1
+            ? i"  {selectCtx:SelectList[i]:ToString()}"
+        NEXT
+
+        IF selectCtx:WhereClause != NULL
+            ? i"Original WHERE clause: {selectCtx:WhereClause:ToString()}"
+        ENDIF
+
+        ? "Available tables:"
+        FOREACH VAR table IN selectCtx:TableList
+            ? i"  {table}"
+        NEXT
+
+        ? "Resolved SELECT expressions:"
+        FOR VAR i := 0 TO selectCtx:SelectList:Count - 1
+            VAR sb := StringBuilder{}
+            selectCtx:SelectList[i]:BuildStringWithFieldResolution(sb, selectCtx:TableList)
+            ? i"  {sb:ToString()}"
+        NEXT
+
+        IF selectCtx:WhereClause != NULL
+            VAR whereSb := StringBuilder{}
+            selectCtx:WhereClause:BuildStringWithFieldResolution(whereSb, selectCtx:TableList)
+            ? i"Resolved WHERE clause: {whereSb:ToString()}"
+        ENDIF
+    ELSE
+        ? i"Failed to parse: {parser:Error}"
+    ENDIF
+
+    RETURN
+
+FUNCTION TestSelectFunctionality() AS VOID
+    ? "Testing SELECT functionality..."
+
+    // Create a test table
+    CREATE CURSOR test_select_table ;
+        (ID N(5), Name C(20), Age N(3))
+
+    IF Used()
+        ? "Created test table for SELECT testing"
+
+        // Insert some test data
+        INSERT INTO test_select_table VALUES (1, "John Doe", 30)
+        INSERT INTO test_select_table VALUES (2, "Jane Smith", 25)
+        INSERT INTO test_select_table VALUES (3, "Bob Johnson", 35)
+        INSERT INTO test_select_table VALUES (4, "Alice Brown", 30)  // Duplicate age for DISTINCT test
+
+        ? "Inserted test data"
+
+        // Test basic SELECT
+        ? "Attempting basic SELECT..."
+        SELECT * FROM test_select_table
+        ? "Records in QUERYRESULT after SELECT *: ", RecCount("QUERYRESULT")
+        Browse(DbDataSource())
+        DbCloseArea()
+
+        // Test SELECT with WHERE
+        ? "Attempting SELECT with WHERE..."
+        SELECT * FROM test_select_table WHERE Age > 25
+        ? "Records in QUERYRESULT after SELECT with WHERE: ", RecCount("QUERYRESULT")
+        Browse(DbDataSource())
+        DbCloseArea()
+
+        // Test SELECT with specific columns
+        ? "Attempting SELECT with specific columns..."
+        SELECT Name, Age FROM test_select_table WHERE Age > 25
+        ? "Records in QUERYRESULT after SELECT specific columns: ", RecCount("QUERYRESULT")
+        Browse(DbDataSource())
+        DbCloseArea()
+
+        // Test SELECT with DISTINCT
+        ? "Attempting SELECT with DISTINCT..."
+        SELECT DISTINCT Age FROM test_select_table
+        ? "Records in QUERYRESULT after SELECT DISTINCT: ", RecCount("QUERYRESULT")
+        Browse(DbDataSource())
+        DbCloseArea()
+
+        // Test SELECT with TOP
+        ? "Attempting SELECT with TOP..."
+        SELECT TOP 2 * FROM test_select_table
+        ? "Records in QUERYRESULT after SELECT TOP 2: ", RecCount("QUERYRESULT")
+        Browse(DbDataSource())
+        DbCloseArea()
+
+        // Close the test table
+        USE IN test_select_table
+    ELSE
+        ? "Failed to create test table"
+    ENDIF
+
+    RETURN
 
 
 FUNCTION __SqlDelete (sCommand as STRING)
@@ -375,37 +488,6 @@ FUNCTION Atoa(a AS ARRAY) AS STRING
     sb:Append("]")
     RETURN sb:ToString()
 
-FUNCTION __SqlSelect(sCommand as STRING) AS VOID
-    VAR lexer := XSqlLexer{sCommand}
-    VAR tokens := lexer:AllTokens()
-    var parser := SqlParser{XTokenList{tokens}}
-    ? "SELECT Command:", sCommand
-    IF ! parser:ParseSelectStatement(out var selectCtx)
-        ? "Parse Error:", parser:Error
-        RETURN
-    ENDIF
-
-    ? "Parsed SELECT statement:"
-    ? "  Top Count:", selectCtx:TopCount
-    ? "  Is Distinct:", selectCtx:IsDistinct
-    ? "  Select List Count:", selectCtx:SelectList:Count
-    ? "  Table List Count:", selectCtx:TableList:Count
-    ? "  Where Clause:", selectCtx:WhereClause
-    ? "  Group By Clause:", selectCtx:GroupByClause
-    ? "  Having Clause:", selectCtx:HavingClause
-    ? "  Order By Clause:", selectCtx:OrderByClause
-
-    ? "Selected columns:"
-    foreach var col in selectCtx:SelectList
-        ? "  " + col:ToString()
-    next
-
-    ? "Tables:"
-    foreach var tbl in selectCtx:TableList
-        ? "  " + tbl
-    next
-
-    RETURN
 
 FUNCTION TestSqlParser (sCommand as STRING)
     VAR lexer := XSqlLexer{sCommand}
@@ -415,6 +497,4 @@ FUNCTION TestSqlParser (sCommand as STRING)
     VAR ctx := parser:ParseExpressionContext()
     ? ctx:ToString()
     PrintContext(ctx)
-
-
 

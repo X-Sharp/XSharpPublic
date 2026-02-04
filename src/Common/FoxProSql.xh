@@ -77,16 +77,18 @@
 
 // SQL Select commands. Separate commands for TO and 3 different INTO variations
 
-#command SELECT <*columnClauses*> FROM <*TableList*>           ;
+#command SELECT [DISTINCT] [TOP <topNum>]                      ;
+    <*columnClauses*> FROM <*TableList*>                       ;
     [WITH (BUFFERING = <lExpr> ) ]                             ;
     [WHERE <*WhereConditions*> ]                               ;
     [GROUP BY <*ColumnList*> [HAVING <*HavingConditions*>] ]   ;
     [UNION [ALL] <*SelectCommand*>]                            ;
     [ORDER BY <*orderByList*>]                                 ;
     [TO <dest:FILE,PRINTER,SCREEN> <*extraoptions*>]        => ;
-    __NOFOXPROSQL__ <(udc)> //__FoxSqlSelect(<"udc">,<"dest">,<"extraoptions">
+    __SqlSelect(<"udc">) //__FoxSqlSelect(<"udc">,<"dest">,<"extraoptions">
 
-#command SELECT <*columnClauses*> FROM <*TableList*>           ;
+#command SELECT [DISTINCT] [TOP <topNum>]                      ;
+    <*columnClauses*> FROM <*TableList*>                       ;
     [WITH (BUFFERING = <lExpr> ) ]                             ;
     [WHERE <*WhereConditions*> ]                               ;
     [GROUP BY <*ColumnList*> [HAVING <*HavingConditions*>] ]   ;
@@ -95,7 +97,7 @@
     INTO <dest:ARRAY,CURSOR,TABLE> <NAME> ;
 	[<cursoropt:NOFILTER,READWRITE>]  ;
 	[DATABASE <DatabaseName> [NAME <LongName>] ] =>;
-    __NOFOXPROSQL__ <(udc)>  // __FoxSqlSelectSpecial(<"udc">, <(dest)>, <(Name)>, <cursoropt>,<DatabaseName>,<LongName>)
+    __SqlSelect(<"udc">)  // __FoxSqlSelectSpecial(<"udc">, <(dest)>, <(Name)>, <cursoropt>,<DatabaseName>,<LongName>)
 
    #endif
 // EOF

@@ -8,9 +8,11 @@ using XSharp.Parsers
 using XSharp.Internal
 using XSharp.RDD
 using XSharp.RDD.Support
+using System.Collections.Generic
 using System.IO
 using System.Linq
-using System.Collections.Generic
+using System.Text
+
 [NeedsAccessToLocals(FALSE)];
 FUNCTION __SqlInsertMemVar(sTable as STRING) AS LOGIC
     // FoxPro opens the table when needed and keeps it open
@@ -120,6 +122,16 @@ FUNCTION __SqlCreateTable(sCommand as STRING) AS LOGIC
     endif
     THROW Error{"Syntax error in command: "+sCommand}
 
+FUNCTION __SqlSelect(sCommand as STRING) AS VOID
+    // Parse the SELECT command using the SQL parser
+    var oContext := FoxEmbeddedSQL.ParseSqlSelect(sCommand)
+    if (oContext != NULL)
+        // Execute the SELECT statement based on the parsed context
+        FoxEmbeddedSQL.ExecuteSelect(oContext)
+    endif
+    RETURN
+
+
 STATIC CLASS FoxEmbeddedSQL
 
     STATIC METHOD CreateTableCursor(oTable as FoxCreateTableContext) AS LOGIC
@@ -209,6 +221,233 @@ STATIC CLASS FoxEmbeddedSQL
             Throw Error{parser:Error+" in command: "+sCommand}
         endif
         return table
+
+    STATIC METHOD ParseSqlSelect(sCommand as STRING) AS FoxSelectContext
+        VAR lexer := XSqlLexer{sCommand}
+        VAR tokens := lexer:AllTokens()
+        var parser := SQLParser{XTokenList{tokens}}
+        var selectCtx := FoxSelectContext{}
+        IF ! parser:ParseSelectStatement(out selectCtx)
+            THROW Error{"Syntax error in SELECT command: "+parser:Error+CRLF+sCommand}
+        ENDIF
+        RETURN selectCtx
+
+    STATIC METHOD ExecuteSelect(selectCtx as FoxSelectContext) AS VOID
+        // Implementation of SELECT execution
+        // This will handle opening tables, selecting records, and returning results
+
+        // Validate that we have tables to query
+        IF selectCtx:TableList:Count == 0
+            THROW Error{"No tables specified in SELECT statement"}
+        ENDIF
+
+        // Check if any expression in the select list is '*' (TODO: what if we have both '*' and named fields?)
+        LOCAL hasStarSelection AS LOGIC
+        hasStarSelection := FALSE
+        FOR LOCAL idx := 0 AS INT TO selectCtx:SelectList:Count - 1
+            LOCAL expr AS SqlExpressionContext
+            expr := selectCtx:SelectList[idx]
+            IF AllTrim(expr:ToString()) == "*"
+                hasStarSelection := TRUE
+                EXIT
+            ENDIF
+        NEXT
+
+        // Open the first table (TODO: basic implementation - doesn't handle joins yet)
+        LOCAL mainTable AS STRING
+        mainTable := selectCtx:TableList[0]
+
+        // Check if the table was already open before we opened it
+        LOCAL wasAlreadyOpen AS LOGIC
+        wasAlreadyOpen := DbSelectArea(mainTable)  // This selects the area if it's open
+        IF !wasAlreadyOpen
+            // If not already open, open it
+            IF ! FoxEmbeddedSQL.OpenArea(mainTable)
+                THROW Error{"Could not open table: " + mainTable}
+            ENDIF
+        ENDIF
+
+        VAR resultTable := "QUERYRESULT" // Default table name for SELECT results
+
+        LOCAL fieldList AS ARRAY
+        LOCAL selectFieldNames AS ARRAY
+        LOCAL selectExpressions AS ARRAY
+
+        // Process the SELECT list to determine which fields to include
+        IF selectCtx:SelectList:Count == 0 .OR. hasStarSelection
+            // If no specific fields are mentioned or if we have '*', select all fields
+            LOCAL struct AS ARRAY
+            struct := DbStruct()
+            fieldList := {}
+            selectFieldNames := {}
+            selectExpressions := {}
+
+            FOR LOCAL i := 1 AS DWORD TO ALen(struct)
+                LOCAL fieldInfo AS ARRAY
+                fieldInfo := struct[i]
+                AAdd(selectFieldNames, fieldInfo[1])  // Field name
+                AAdd(selectExpressions, mainTable + "->" + fieldInfo[1])  // Expression
+
+                // Create field definition for result table
+                AAdd(fieldList, {fieldInfo[1], fieldInfo[2], fieldInfo[3], fieldInfo[4], fieldInfo[1], fieldInfo[6]})
+            NEXT
+        ELSE
+            // Process specific fields in the SELECT list (no '*' involved)
+            fieldList := {}
+            selectFieldNames := {}
+            selectExpressions := {}
+
+            FOR LOCAL i := 0 AS INT TO selectCtx:SelectList:Count - 1
+                LOCAL expr AS SqlExpressionContext
+                expr := selectCtx:SelectList[i]
+
+                // Apply field resolution to the expression
+                LOCAL exprStr, resolvedExprStr AS STRING
+                VAR sb := StringBuilder{}
+                expr:BuildStringWithFieldResolution(sb, selectCtx:TableList)
+                resolvedExprStr := sb:ToString()
+                exprStr := AllTrim(expr:ToString())
+
+                // Find the field in the source table to get its type
+                LOCAL fieldPos AS DWORD
+                fieldPos := FieldPos(exprStr)
+                IF fieldPos == 0
+                    exprStr := "FIELD" + i:ToString()
+                ENDIF
+
+                AAdd(selectFieldNames, exprStr)
+                AAdd(selectExpressions, resolvedExprStr)
+
+                IF fieldPos > 0
+                    LOCAL fieldInfo AS ARRAY
+                    fieldInfo := DbStruct()[fieldPos]
+                    AAdd(fieldList, {fieldInfo[1], fieldInfo[2], fieldInfo[3], fieldInfo[4], fieldInfo[1], fieldInfo[6]})
+                ELSE
+                    // If field doesn't exist in source, assume it's an expression (TODO: determine the type)
+                    AAdd(fieldList, {exprStr, "C", 50, 0, exprStr, 0})
+                ENDIF
+            NEXT
+        ENDIF
+
+        // Create the result table
+        LOCAL tempPath AS STRING
+        tempPath := System.IO.Path.GetTempFileName()
+        tempPath := System.IO.Path.ChangeExtension(tempPath, ".dbf")
+
+        IF ! DbCreate(tempPath, fieldList, "DBFVFP", TRUE, resultTable)
+            THROW Error{"Could not create result table: " + resultTable}
+        ENDIF
+
+        LOCAL whereClause AS STRING
+        LOCAL whereCodeBlock AS CODEBLOCK
+        LOCAL hasWhereClause AS LOGIC
+        hasWhereClause := FALSE
+
+        IF selectCtx:WhereClause != NULL
+            VAR whereSb := StringBuilder{}
+            selectCtx:WhereClause:BuildStringWithFieldResolution(whereSb, selectCtx:TableList)
+            whereClause := whereSb:ToString()
+            hasWhereClause := TRUE
+            whereCodeBlock := MCompile(whereClause)
+        ENDIF
+
+        // Navigate through the source table and copy matching records to result
+        LOCAL recordCount AS DWORD
+        recordCount := 0
+
+        // Check if DISTINCT is specified
+        LOCAL isDistinct AS LOGIC
+        isDistinct := selectCtx:IsDistinct
+
+        // If TOP is specified, limit the number of records
+        LOCAL maxRecords AS LONG
+        maxRecords := -1 // -1 means no limit
+        IF ! String.IsNullOrEmpty(selectCtx:TopCount)
+            IF Int32.TryParse(selectCtx:TopCount, OUT maxRecords) .AND. maxRecords <= 0
+                maxRecords := 1 // At least one record if TOP is specified
+            ENDIF
+        ENDIF
+
+        LOCAL distinctValues AS HashSet<STRING>
+        IF isDistinct
+            distinctValues := HashSet<STRING>{}
+        ENDIF
+
+        (mainTable)->DbGoTop()
+
+        DO WHILE !(mainTable)->Eof()
+            LOCAL includeRecord AS LOGIC
+            includeRecord := TRUE
+
+            // Check WHERE condition if present
+            IF hasWhereClause
+                TRY
+                    includeRecord := whereCodeBlock:Eval()
+                CATCH ex AS Exception
+                    includeRecord := FALSE
+                    ? "Error evaluating WHERE clause: " + ex:Message
+                END TRY
+            ENDIF
+
+            // If the record matches the criteria, add it to the result
+            IF includeRecord
+                LOCAL recordAdded AS LOGIC
+                recordAdded := FALSE
+
+                LOCAL sourceValues AS USUAL[]
+                sourceValues := USUAL[]{ALen(selectFieldNames)}
+
+                FOR LOCAL i := 1 AS DWORD TO ALen(selectFieldNames)
+                    sourceValues[i] := &(selectExpressions[i])
+                NEXT
+
+                IF isDistinct
+                    // For DISTINCT, check if we've already seen this combination of values
+                    VAR recordKey := ""
+                    FOR LOCAL i := 1 AS DWORD TO ALen(selectFieldNames)
+                        recordKey += sourceValues[i]:ToString() + "|"
+                    NEXT
+
+                    IF ! distinctValues:Contains(recordKey)
+                        distinctValues:Add(recordKey)
+                        recordAdded := TRUE
+                    ENDIF
+                ELSE
+                    recordAdded := TRUE
+                ENDIF
+
+                IF recordAdded
+                    // Add the record to the result table
+                    (resultTable)->DbAppend()
+
+                    FOR LOCAL i := 1 AS DWORD TO ALen(selectFieldNames)
+                        IF fieldList[i][2] == "C"
+                            (resultTable)->FieldPut(i, sourceValues[i]:ToString())
+                        ELSE
+                            (resultTable)->FieldPut(i, sourceValues[i])
+                        ENDIF
+                    NEXT
+
+                    recordCount++
+
+                    // Check if we've reached the TOP limit
+                    IF maxRecords > 0 .AND. recordCount >= maxRecords
+                        EXIT
+                    ENDIF
+                ENDIF
+            ENDIF
+
+            (mainTable)->DbSkip(1)
+        ENDDO
+
+        // Set the result table as the current work area
+        (resultTable)->DbSelectArea()
+
+        IF !wasAlreadyOpen
+            (mainTable)->DbCloseArea()
+        ENDIF
+
+        RETURN
 
     STATIC METHOD OpenArea(sTable as STRING) AS LOGIC
         IF ! DbSelectArea(sTable)
@@ -326,3 +565,8 @@ STATIC METHOD SqlAlterTable(table as FoxAlterTableContext) AS LOGIC
     endif
     RETURN TRUE
 END CLASS
+
+
+
+
+

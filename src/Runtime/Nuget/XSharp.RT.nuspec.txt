@@ -14,8 +14,13 @@
     <copyright>Copyright (C) 2015 and beyond by XSharp B.V.</copyright>
     <tags>XSharp, Runtime</tags>
     <repository type="git" url="https://github.com/X-Sharp/XSharpPublic.git" />
-  <dependencies>
-	<dependency id="XSharp.Core" version="$Version"  include="All"/>
+ <dependencies>
+    <group targetFramework=".NETFramework4.6">
+	  <dependency id="XSharp.Core" version="$Version"  include="All"/>
+	</group>
+    <group targetFramework="net8.0">
+	  <dependency id="XSharp.Core" version="$Version"  include="All"/>
+	</group>
   </dependencies>
   </metadata>
   <files>

@@ -3,7 +3,6 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-//#define XDEBUG
 using LanguageService.CodeAnalysis;
 using LanguageService.CodeAnalysis.XSharp;
 using Eval=LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator;
@@ -42,15 +41,18 @@ namespace XSharpDebugger.ExpressionCompiler
     {
         IDkmClrExpressionCompiler compiler;
         IDkmLanguageFrameDecoder decoder;
-
+        bool HasXSharpDev = false;
         public XSharpExpressionCompiler()
         {
+            HasXSharpDev = Environment.GetEnvironmentVariable("XSHARPDEV") != null;
+            Logger.Information("Debugger: Create ExpressionCompiler");
             UpdateXSharpParseOptions();
             compiler = new Eval.XSharpExpressionCompiler();
             decoder = new Eval.XSharpFrameDecoder();
         }
         static void UpdateXSharpParseOptions()
         {
+            Logger.Information("Debugger: Update ParseOptions");
             var xoptions = Eval.XSyntaxHelpers.XSharpOptions;
             xoptions.SetDialect((XSharpDialect)XDebuggerSettings.Dialect);
             xoptions.SetOption(CompilerOption.MemVars, XDebuggerSettings.MemVars);
@@ -93,9 +95,7 @@ namespace XSharpDebugger.ExpressionCompiler
             out string error,
             out DkmCompiledClrInspectionQuery result)
         {
-#if XDEBUG
-            XSolution.WriteOutputMessage("CompileExpression: " + expression.Text);
-#endif
+            Logger.Information("Debugger:CompileExpression: " + expression.Text);
             if (compiler != null)
             {
                 NewCompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
@@ -187,9 +187,7 @@ namespace XSharpDebugger.ExpressionCompiler
         DkmCompiledClrLocalsQuery IDkmClrExpressionCompiler.GetClrLocalVariableQuery(DkmInspectionContext inspectionContext, DkmClrInstructionAddress instructionAddress, bool argumentsOnly)
         {
             DkmCompiledClrLocalsQuery result;
-#if XDEBUG
-            XSolution.WriteOutputMessage("GetClrLocalVariableQuery ");
-#endif
+            Logger.Information("Debugger:GetClrLocalVariableQuery ");
             if (compiler != null)
             {
                 result = NewClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
@@ -202,10 +200,18 @@ namespace XSharpDebugger.ExpressionCompiler
             bool changed = false;
             foreach (var loc in result.LocalInfo)
             {
+                Logger.Information("Debugger:GetClrLocalVariableQuery, var "+loc.VariableName);
                 if (loc.VariableName.Contains("$"))
                 {
-                    // do not add
-                    changed = true;
+                    if (HasXSharpDev)
+                    {
+                        newlocals.Add(loc);
+                    }
+                    else
+                    {
+                        // do not add
+                        changed = true;
+                    }
                 }
                 else if (loc.VariableName == "this")
                 {
@@ -263,9 +269,7 @@ namespace XSharpDebugger.ExpressionCompiler
         /// execute to perform the assignment.</param>
         void IDkmClrExpressionCompiler.CompileAssignment(DkmLanguageExpression expression, DkmClrInstructionAddress instructionAddress, DkmEvaluationResult lValue, out string error, out DkmCompiledClrInspectionQuery result)
         {
-#if XDEBUG
-            XSolution.WriteOutputMessage("CompileAssignment: "+expression.Text);
-#endif
+            Logger.Information("CompileAssignment: "+expression.Text);
             if (compiler != null)
             {
                 NewCompileAssignment(expression, instructionAddress, lValue, out error, out result);

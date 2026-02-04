@@ -16,29 +16,34 @@ namespace XSharpDebugger.ResultProvider
     {
         public void GetChildren(DkmEvaluationResult result, DkmWorkList workList, int initialRequestSize, DkmInspectionContext inspectionContext, DkmCompletionRoutine<DkmGetChildrenAsyncResult> completionRoutine)
         {
+            Logger.Information("Debugger: ResultProvider.GetChildren");
             result.GetChildren(workList, initialRequestSize, inspectionContext, completionRoutine);
             return;
         }
 
         public DkmClrValue GetClrValue(DkmSuccessEvaluationResult successResult)
         {
+            Logger.Information("Debugger: ResultProvider.GetClrValue");
             return successResult.GetClrValue();
         }
 
         public void GetItems(DkmEvaluationResultEnumContext enumContext, DkmWorkList workList, int startIndex, int count, DkmCompletionRoutine<DkmEvaluationEnumAsyncResult> completionRoutine)
         {
+            Logger.Information("Debugger: ResultProvider.GetItems");
             enumContext.GetItems(workList, startIndex, count, completionRoutine);
             return;
         }
 
         public void GetResult(DkmClrValue clrValue, DkmWorkList workList, DkmClrType declaredType, DkmClrCustomTypeInfo customTypeInfo, DkmInspectionContext inspectionContext, ReadOnlyCollection<string> formatSpecifiers, string resultName, string resultFullName, DkmCompletionRoutine<DkmEvaluationAsyncResult> completionRoutine)
         {
+            Logger.Information("Debugger: ResultProvider.GetResult");
             clrValue.GetResult(workList, declaredType, customTypeInfo, inspectionContext, formatSpecifiers, resultName, resultFullName, completionRoutine);
             return;
         }
 
         public string GetUnderlyingString(DkmEvaluationResult result)
         {
+            Logger.Information("Debugger: ResultProvider.GetUnderlyingString");
             var resString = result.GetUnderlyingString();
             return resString;
         }

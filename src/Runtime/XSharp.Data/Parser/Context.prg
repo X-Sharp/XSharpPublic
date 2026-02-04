@@ -129,6 +129,7 @@ CLASS FoxSelectContext
     PROPERTY IsDistinct  AS LOGIC AUTO
     PROPERTY SelectList  AS List<SqlExpressionContext> AUTO
     PROPERTY TableList   AS List<STRING> AUTO
+    PROPERTY TableAliases AS Dictionary<STRING,STRING> AUTO
     PROPERTY JoinList    AS List<STRING> AUTO
     PROPERTY WhereClause AS SqlExpressionContext AUTO
     PROPERTY GroupByClause AS SqlExpressionContext AUTO
@@ -137,6 +138,7 @@ CLASS FoxSelectContext
     CONSTRUCTOR()
         SelectList := List<SqlExpressionContext>{}
         TableList := List<String>{}
+        TableAliases := Dictionary<STRING,STRING>{StringComparer.OrdinalIgnoreCase}
         JoinList := List<String>{}
         RETURN
 

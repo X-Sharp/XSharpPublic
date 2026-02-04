@@ -303,9 +303,7 @@ STATIC CLASS FoxEmbeddedSQL
 
                 // Apply field resolution to the expression
                 LOCAL exprStr, resolvedExprStr AS STRING
-                VAR sb := StringBuilder{}
-                expr:BuildStringWithFieldResolution(sb, selectCtx:TableList)
-                resolvedExprStr := sb:ToString()
+                resolvedExprStr := expr:ToResolvedString(selectCtx:TableAliases)
                 exprStr := AllTrim(expr:ToString())
 
                 // Find the field in the source table to get its type
@@ -344,9 +342,7 @@ STATIC CLASS FoxEmbeddedSQL
         hasWhereClause := FALSE
 
         IF selectCtx:WhereClause != NULL
-            VAR whereSb := StringBuilder{}
-            selectCtx:WhereClause:BuildStringWithFieldResolution(whereSb, selectCtx:TableList)
-            whereClause := whereSb:ToString()
+            whereClause := selectCtx:WhereClause:ToResolvedString(selectCtx:TableAliases)
             hasWhereClause := TRUE
             whereCodeBlock := MCompile(whereClause)
         ENDIF
@@ -565,6 +561,7 @@ STATIC METHOD SqlAlterTable(table as FoxAlterTableContext) AS LOGIC
     endif
     RETURN TRUE
 END CLASS
+
 
 
 

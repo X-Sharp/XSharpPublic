@@ -109,6 +109,9 @@ FUNCTION Start() AS VOID STRICT
         TestFieldResolution()
         wait
 
+        TestTableResolution()
+        wait
+
         // Test new SELECT and INSERT functionality
         TestNewSqlFeatures()
         wait
@@ -280,19 +283,78 @@ FUNCTION TestFieldResolution() AS VOID
 
         ? "Resolved SELECT expressions:"
         FOR VAR i := 0 TO selectCtx:SelectList:Count - 1
-            VAR sb := StringBuilder{}
-            selectCtx:SelectList[i]:BuildStringWithFieldResolution(sb, selectCtx:TableList)
-            ? i"  {sb:ToString()}"
+            ? "  ", selectCtx:SelectList[i]:ToResolvedString(selectCtx:TableAliases)
         NEXT
 
         IF selectCtx:WhereClause != NULL
-            VAR whereSb := StringBuilder{}
-            selectCtx:WhereClause:BuildStringWithFieldResolution(whereSb, selectCtx:TableList)
-            ? i"Resolved WHERE clause: {whereSb:ToString()}"
+            ? i"Resolved WHERE clause:", selectCtx:WhereClause:ToResolvedString(selectCtx:TableAliases)
         ENDIF
     ELSE
         ? i"Failed to parse: {parser:Error}"
     ENDIF
+
+    USE IN table1
+    USE IN table2
+
+    RETURN
+
+FUNCTION TestTableResolution() AS VOID
+    // Test the table resolution mechanism
+    LOCAL sql AS STRING
+    sql := "SELECT Customers.Name, Orders.Total FROM Customers, Orders WHERE Customers.Id = Orders.CustomerId"
+    VAR lexer := XSqlLexer{sql}
+    VAR tokens := lexer:AllTokens()
+    VAR parser := SQLParser{XTokenList{tokens}}
+    VAR selectCtx := FoxSelectContext{}
+
+    CREATE CURSOR customers (ID N(5), Name c(20))
+    CREATE CURSOR orders (Id N(5), CustomerId N(5), TotalVal C(20))
+
+    ? "Parsing SQL: " + sql
+    IF parser:ParseSelectStatement(out selectCtx)
+        ? "Successfully parsed SELECT statement"
+        ? "Tables in FROM clause: " + String.Join(", ", selectCtx:TableList)
+
+        // Test individual expression dependencies
+        FOR LOCAL i := 0 AS INT TO selectCtx:SelectList:Count - 1
+            VAR expr := selectCtx:SelectList[i]
+            VAR exprDeps := expr:GetTableDependencies(selectCtx:TableAliases)
+            ? "Expression " + i:ToString() + " (" + expr:ToString() + ") depends on tables: " + String.Join(", ", exprDeps)
+        NEXT
+
+        // Test WHERE clause dependencies
+        IF selectCtx:WhereClause != NULL
+            VAR whereDeps := selectCtx:WhereClause:GetTableDependencies(selectCtx:TableAliases)
+            ? "WHERE clause depends on tables: " + String.Join(", ", whereDeps)
+        ENDIF
+    ELSE
+        ? "Failed to parse: " + parser:Error
+    ENDIF
+
+    // Test another SQL statement with different constructs
+    ? ""
+    sql := "SELECT c.Name, o.Total FROM Customers c, Orders o WHERE c.Id = o.CustomerId AND o.Total > 100"
+    ? "Parsing SQL: " + sql
+    lexer := XSqlLexer{sql}
+    tokens := lexer:AllTokens()
+    parser := SQLParser{XTokenList{tokens}}
+    selectCtx := FoxSelectContext{}
+
+    IF parser:ParseSelectStatement(out selectCtx)
+        ? "Successfully parsed SELECT statement"
+        ? "Tables in FROM clause: " + String.Join(", ", selectCtx:TableList)
+
+        // Test WHERE clause dependencies
+        IF selectCtx:WhereClause != NULL
+            VAR whereDeps := selectCtx:WhereClause:GetTableDependencies(selectCtx:TableAliases)
+            ? "WHERE clause depends on tables: " + String.Join(", ", whereDeps)
+        ENDIF
+    ELSE
+        ? "Failed to parse: " + parser:Error
+    ENDIF
+
+    USE IN customers
+    USE IN orders
 
     RETURN
 

@@ -700,8 +700,18 @@ PARTIAL CLASS SQLParser
 
         // Parse table list
         DO WHILE SELF:Matches(XTokenType.ID)
-            var tableName := SELF:ParseTableName()
+            VAR tableName := SELF:ParseTableName()
+
+            // Check for optional alias (AS alias or just alias)
+            LOCAL aliasName := NULL AS STRING
+            IF SELF:Expect(XTokenType.AS) .AND. SELF:Matches(XTokenType.ID)
+                aliasName := SELF:ConsumeAndGetText()
+            ELSEIF SELF:Matches(XTokenType.ID)
+                aliasName := SELF:ConsumeAndGetText()
+            ENDIF
+
             stmt:TableList:Add(tableName)
+            stmt:TableAliases[aliasName ?? tableName] := tableName
 
             IF ! SELF:Expect(XTokenType.COMMA)
                 EXIT  // End of table list

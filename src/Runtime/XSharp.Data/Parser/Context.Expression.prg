@@ -22,13 +22,18 @@ ABSTRACT CLASS SqlExpressionContext
         SELF:BuildString(sb)
         RETURN sb:ToString()
 
-    VIRTUAL METHOD BuildStringWithFieldResolution(sb AS StringBuilder, availableTables AS IList<STRING>) AS VOID
+    VIRTUAL METHOD BuildStringWithFieldResolution(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
         // Default implementation calls BuildString; override in derived classes as needed
         SELF:BuildString(sb)
         RETURN
-    METHOD ToResolvedString(availableTables AS IList<STRING>) AS STRING
+
+    VIRTUAL METHOD GetTableDependencies(tableAliases AS IDictionary<STRING,STRING>) AS IList<STRING>
+        // Default implementation returns empty list; override in derived classes as needed
+        RETURN List<STRING>{}
+
+    METHOD ToResolvedString(tableAliases AS IDictionary<STRING,STRING>) AS STRING
         VAR sb := StringBuilder{}
-        SELF:BuildStringWithFieldResolution(sb, availableTables)
+        SELF:BuildStringWithFieldResolution(sb, tableAliases)
         RETURN sb:ToString()
 END CLASS
 
@@ -49,10 +54,14 @@ CLASS SqlNameExpressionContext INHERIT SqlSimpleExpressionContext
     CONSTRUCTOR()
         RETURN
 
-    OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, availableTables AS IList<STRING>) AS VOID
+    OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
         // If we have a table qualifier, convert TABLE.FIELD to TABLE->FIELD
         IF !String.IsNullOrEmpty(Table)
-            sb:Append(Table)
+            LOCAL tableName AS STRING
+            IF !tableAliases:TryGetValue(Table, OUT tableName)
+                tableName := Table
+            ENDIF
+            sb:Append(tableName)
             sb:Append("->")
             sb:Append(Name)
         ELSE
@@ -62,7 +71,8 @@ CLASS SqlNameExpressionContext INHERIT SqlSimpleExpressionContext
 
             // In a real implementation, we would check if the field exists in each table
             // For now, we'll simulate checking by using a helper function
-            FOREACH VAR table IN availableTables
+            FOREACH VAR table IN tableAliases:Values
+? "CHECK", table
                 IF FieldInTable(table, Name) != NIL
                     matchingTables:Add(table)
                 ENDIF
@@ -81,6 +91,29 @@ CLASS SqlNameExpressionContext INHERIT SqlSimpleExpressionContext
                 THROW Error{ei"Ambiguous field reference '{Name}' exists in multiple tables: {String.Join(\", \", matchingTables)}"}
             ENDIF
         ENDIF
+
+    OVERRIDE METHOD GetTableDependencies(tableAliases AS IDictionary<STRING,STRING>) AS IList<STRING>
+        VAR result := List<STRING>{}
+        // If we have a table qualifier, add that table to dependencies
+        IF !String.IsNullOrEmpty(Table)
+            LOCAL tableName AS STRING
+            IF !tableAliases:TryGetValue(Table, OUT tableName)
+                tableName := Table
+            ENDIF
+            result:Add(tableName)
+        ELSE
+            // For unqualified fields, find which tables contain this field
+            VAR matchingTables := List<STRING>{}
+            FOREACH VAR table IN tableAliases:Values
+                IF FieldInTable(table, Name) != NIL
+                    matchingTables:Add(table)
+                ENDIF
+            NEXT
+
+            // Add all matching tables to dependencies
+            result:AddRange(matchingTables)
+        ENDIF
+        RETURN result
 
     /// Helper method to check if a field exists in a table
     PRIVATE STATIC METHOD FieldInTable(tableName AS STRING, fieldName AS STRING) AS USUAL
@@ -111,10 +144,22 @@ CLASS SqlCompsiteExpressionContext INHERIT SqlExpressionContext
             e:BuildString(sb)
         NEXT
 
-    OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, availableTables AS IList<STRING>) AS VOID
+    OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
         FOREACH VAR e IN Exprs
-            e:BuildStringWithFieldResolution(sb, availableTables)
+            e:BuildStringWithFieldResolution(sb, tableAliases)
         NEXT
+
+    OVERRIDE METHOD GetTableDependencies(tableAliases AS IDictionary<STRING,STRING>) AS IList<STRING>
+        VAR result := List<STRING>{}
+        FOREACH VAR e IN Exprs
+            VAR deps := e:GetTableDependencies(tableAliases)
+            FOREACH VAR dep IN deps
+                IF !result:Contains(dep)
+                    result:Add(dep)
+                ENDIF
+            NEXT
+        NEXT
+        RETURN result
 END CLASS
 
 CLASS SqlParenExpressionContext INHERIT SqlExpressionContext
@@ -130,12 +175,15 @@ CLASS SqlParenExpressionContext INHERIT SqlExpressionContext
         sb:Append(Close:Leadingws)
         sb:Append(Close:Text)
 
-    OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, availableTables AS IList<STRING>) AS VOID
+    OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
         sb:Append(Open:Leadingws)
         sb:Append(Open:Text)
-        Expr:BuildStringWithFieldResolution(sb, availableTables)
+        Expr:BuildStringWithFieldResolution(sb, tableAliases)
         sb:Append(Close:Leadingws)
         sb:Append(Close:Text)
+
+    OVERRIDE METHOD GetTableDependencies(tableAliases AS IDictionary<STRING,STRING>) AS IList<STRING>
+        RETURN Expr:GetTableDependencies(tableAliases)
 END CLASS
 
 CLASS SqlBinaryExpressionContext INHERIT SqlExpressionContext
@@ -150,11 +198,32 @@ CLASS SqlBinaryExpressionContext INHERIT SqlExpressionContext
         sb:Append(Op:Text)
         Right:BuildString(sb)
 
-    OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, availableTables AS IList<STRING>) AS VOID
-        Left:BuildStringWithFieldResolution(sb, availableTables)
+    OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
+        Left:BuildStringWithFieldResolution(sb, tableAliases)
         sb:Append(Op:Leadingws)
         sb:Append(Op:Text)
-        Right:BuildStringWithFieldResolution(sb, availableTables)
+        Right:BuildStringWithFieldResolution(sb, tableAliases)
+
+    OVERRIDE METHOD GetTableDependencies(tableAliases AS IDictionary<STRING,STRING>) AS IList<STRING>
+        VAR result := List<STRING>{}
+        VAR leftDeps := Left:GetTableDependencies(tableAliases)
+        VAR rightDeps := Right:GetTableDependencies(tableAliases)
+
+        // Add dependencies from left expression
+        FOREACH VAR dep IN leftDeps
+            IF !result:Contains(dep)
+                result:Add(dep)
+            ENDIF
+        NEXT
+
+        // Add dependencies from right expression
+        FOREACH VAR dep IN rightDeps
+            IF !result:Contains(dep)
+                result:Add(dep)
+            ENDIF
+        NEXT
+
+        RETURN result
 END CLASS
 
 CLASS SqlPrefixExpressionContext INHERIT SqlExpressionContext
@@ -167,10 +236,13 @@ CLASS SqlPrefixExpressionContext INHERIT SqlExpressionContext
         sb:Append(Op:Text)
         Expr:BuildString(sb)
 
-    OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, availableTables AS IList<STRING>) AS VOID
+    OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
         sb:Append(Op:Leadingws)
         sb:Append(Op:Text)
-        Expr:BuildStringWithFieldResolution(sb, availableTables)
+        Expr:BuildStringWithFieldResolution(sb, tableAliases)
+
+    OVERRIDE METHOD GetTableDependencies(tableAliases AS IDictionary<STRING,STRING>) AS IList<STRING>
+        RETURN Expr:GetTableDependencies(tableAliases)
 END CLASS
 
 CLASS SqlLogicExpressionContext INHERIT SqlBinaryExpressionContext
@@ -184,3 +256,4 @@ CLASS SqlCompareExpressionContext INHERIT SqlBinaryExpressionContext
 END CLASS
 
 END NAMESPACE
+

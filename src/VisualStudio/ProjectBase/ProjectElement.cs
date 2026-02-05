@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -20,6 +20,8 @@ using MSBuild = Microsoft.Build.Evaluation;
 using Microsoft.Build.Evaluation;
 using MSBuildExecution = Microsoft.Build.Execution;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using System.Linq;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -342,15 +344,32 @@ namespace Microsoft.VisualStudio.Project
             if(this.IsVirtual)
                 return;
 
+            bool isSdk = itemProject.BuildProject.Xml.Sdk != null;
             itemProject.BuildProject.ReevaluateIfNecessary();
-
-            IEnumerable<ProjectItem> items = itemProject.BuildProject.GetItems(item.ItemType);
-            foreach (ProjectItem projectItem in items)
+            IEnumerable<ProjectItem> items = itemProject.BuildProject.GetItems(this.item.ItemType);
+            if (isSdk)
             {
-                if(projectItem!= null && projectItem.UnevaluatedInclude.Equals(item.UnevaluatedInclude))
+                if (items.Count() > 1)
                 {
-                    item = projectItem;
-                    return;
+                    var ouritems = items.Where(i => i.EvaluatedInclude == this.item.EvaluatedInclude && i.UnevaluatedInclude == this.item.UnevaluatedInclude);
+                    var theiritems = items.Where(i => i.IsImported && i.EvaluatedInclude == this.item.EvaluatedInclude);
+                    if (ouritems.Count() == 1 && theiritems.Count() == 1)
+                    {
+                        itemProject.BuildProject.RemoveItem(this.item);
+                        this.item = theiritems.First();
+                        itemProject.BuildProject.ReevaluateIfNecessary();
+                    }
+                }
+            }
+            else
+            {
+                foreach (ProjectItem projectItem in items)
+                {
+                    if (projectItem != null && projectItem.UnevaluatedInclude.Equals(item.UnevaluatedInclude))
+                    {
+                        this.item = projectItem;
+                        return;
+                    }
                 }
             }
         }

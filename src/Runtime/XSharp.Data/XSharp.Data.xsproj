@@ -64,14 +64,17 @@
     <Compile Include="SQL\SqlFactoryODBC.prg" />
     <Compile Include="SQL\SqlFactoryOleDb.prg" />
     <Compile Include="SQL\SqlFactorySQLServer.prg" />
+    <Compile Include="Query\QueryOptimizer.prg" />
+    <Compile Include="Query\RecordBitmap.prg" />
     <Compile Include="Win32.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FoxPro" />
     <Folder Include="Parser" />
+    <Folder Include="Properties\" />
+    <Folder Include="Query" />
     <Folder Include="RDD" />
     <Folder Include="SQL" />
-    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">

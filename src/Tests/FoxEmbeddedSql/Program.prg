@@ -120,6 +120,10 @@ FUNCTION Start() AS VOID STRICT
         TestSelectFunctionality()
         wait
 
+        // Test Query Optimizer functionality
+        TestQueryOptimizer()
+        wait
+
         CREATE TABLE Customers ;
             (CustId i PRIMARY KEY, ;
             CustName c(20) )
@@ -418,6 +422,48 @@ FUNCTION TestSelectFunctionality() AS VOID
     ENDIF
 
     RETURN
+
+FUNCTION TestQueryOptimizer() AS VOID
+    ? "Testing Query Optimizer functionality..."
+
+    CREATE CURSOR test_optimizer_table ;
+        (Id N(5), Name Character(20), Age N(3), City Character(20))
+
+    IF Used()
+        ? "Created test table for optimizer testing"
+
+        INSERT INTO test_optimizer_table VALUES (1, "John Doe", 30, "New York")
+        INSERT INTO test_optimizer_table VALUES (2, "Jane Smith", 25, "Boston")
+        INSERT INTO test_optimizer_table VALUES (3, "Bob Johnson", 35, "New York")
+        INSERT INTO test_optimizer_table VALUES (4, "Alice Brown", 30, "Chicago")
+        INSERT INTO test_optimizer_table VALUES (5, "Charlie Wilson", 40, "New York")
+
+        // Test complex WHERE clause that would benefit from optimization
+        ? "Testing complex WHERE clause with optimizer..."
+        SELECT * FROM test_optimizer_table WHERE Age > 25 .AND. City = "New York"
+        ? "Records in QUERYRESULT after complex WHERE: ", RecCount("QUERYRESULT")
+
+        // Display the results
+        LOCAL resultTable AS STRING
+        resultTable := DbDataSource()
+        IF !EMPTY(resultTable)
+            SELECT (resultTable)
+            GO TOP
+            DO WHILE !EOF()
+                ? "ID:", (resultTable)->Id, "Name:", (resultTable)->Name, "Age:", (resultTable)->Age, "City:", (resultTable)->City
+                SKIP
+            ENDDO
+            DbCloseArea()
+        ENDIF
+
+        USE IN test_optimizer_table
+        IF USED("QUERYRESULT")
+            USE IN QUERYRESULT
+        ENDIF
+    ELSE
+        ? "Failed to create optimizer test table"
+    ENDIF
+RETURN
 
 
 FUNCTION __SqlDelete (sCommand as STRING)

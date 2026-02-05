@@ -8,6 +8,7 @@ using XSharp.Parsers
 using XSharp.Internal
 using XSharp.RDD
 using XSharp.RDD.Support
+using XSharp.Data.Query
 using System.Collections.Generic
 using System.IO
 using System.Linq
@@ -347,8 +348,14 @@ STATIC CLASS FoxEmbeddedSQL
             whereCodeBlock := MCompile(whereClause)
         ENDIF
 
-        // Navigate through the source table and copy matching records to result
+        // Use the QueryOptimizer to create an optimized bitmap of records to process
         LOCAL recordCount AS DWORD
+        LOCAL totalCount AS LONG
+        totalCount := (mainTable)->DbRecordCount()
+        LOCAL optimizedRecordList AS RecordBitmap
+        optimizedRecordList := QueryOptimizer.CreateOptimizedBitmap(mainTable, selectCtx:WhereClause, totalCount, selectCtx:TableAliases)
+
+        // Navigate through the source table and copy matching records to result
         recordCount := 0
 
         // Check if DISTINCT is specified
@@ -371,18 +378,36 @@ STATIC CLASS FoxEmbeddedSQL
 
         (mainTable)->DbGoTop()
 
+        LOCAL currentRecord AS LONG
+        currentRecord := 1
+
         DO WHILE !(mainTable)->Eof()
             LOCAL includeRecord AS LOGIC
             includeRecord := TRUE
 
-            // Check WHERE condition if present
-            IF hasWhereClause
-                TRY
-                    includeRecord := whereCodeBlock:Eval()
-                CATCH ex AS Exception
+            // Use the optimized record list to determine if we should process this record
+            IF selectCtx:WhereClause != NULL
+                // Check the optimized bitmap first
+                LOCAL recordMatchState AS RecordMatchState
+                recordMatchState := optimizedRecordList:Items[currentRecord]
+
+                IF recordMatchState == RecordBitmap.RecordMatchState.NoMatch
+                    // This record doesn't match the WHERE condition according to the optimizer
                     includeRecord := FALSE
-                    ? "Error evaluating WHERE clause: " + ex:Message
-                END TRY
+                ELSE
+                    // The optimizer indicates this record might match, so evaluate the condition
+                    IF hasWhereClause
+                        TRY
+                            includeRecord := whereCodeBlock:Eval()
+                        CATCH ex AS Exception
+                            includeRecord := FALSE
+                            ? "Error evaluating WHERE clause: " + ex:Message
+                        END TRY
+                    ENDIF
+                ENDIF
+            ELSE
+                // No WHERE clause, so include all records
+                includeRecord := TRUE
             ENDIF
 
             // If the record matches the criteria, add it to the result
@@ -433,6 +458,7 @@ STATIC CLASS FoxEmbeddedSQL
                 ENDIF
             ENDIF
 
+            currentRecord++  // Increment record counter for the optimizer
             (mainTable)->DbSkip(1)
         ENDDO
 

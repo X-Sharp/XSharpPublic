@@ -36,8 +36,16 @@ namespace XSharp.Project
                 VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
                 VS.Events.SolutionEvents.OnBeforeCloseProject += SolutionEvents_OnBeforeCloseProject;
                 VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
+                VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
             });
 
+        }
+
+        private void SolutionEvents_OnBeforeCloseSolution()
+        {
+#if !DEV17
+            XSharpProjectFactory.InvalidProjectFiles.Clear();
+#endif
         }
 
         private void SolutionEvents_OnAfterOpenSolution(Solution obj)
@@ -53,7 +61,7 @@ namespace XSharp.Project
         }
 
 
-        #region Project Events
+#region Project Events
 
         private void SolutionEvents_OnAfterLoadProject(Community.VisualStudio.Toolkit.Project project)
         {
@@ -62,18 +70,25 @@ namespace XSharp.Project
         private void SolutionEvents_OnBeforeCloseProject(Community.VisualStudio.Toolkit.Project project)
         {
             Logger.Information("XSharpShellEvents: OnBeforeCloseProjec " + project.FullPath);
+#if DEV17
             var node = XSharpProjectNode.FindProject(project.FullPath);
-            if (node != null)
+            if (node != null && node.IsSdkProject)
             {
                 var prop = node.GetProjectProperty(XSharpProjectFileConstants.XTargetFrameworks);
-                if (! String.IsNullOrEmpty(prop))
+                if (! string.IsNullOrEmpty(prop))
                 {
+                    var act = node.GetProjectProperty(XSharpProjectFileConstants.TargetFramework);
                     node.RemoveProjectProperty(XSharpProjectFileConstants.XTargetFrameworks);
                     node.RemoveProjectProperty(XSharpProjectFileConstants.TargetFramework);
+                    if (!string.IsNullOrEmpty(act))
+                    {
+                        node.SetProjectProperty(XSharpProjectFileConstants.ActiveTargetFramework, act);
+                    }
                     node.SetProjectProperty(XSharpProjectFileConstants.TargetFrameworks, prop);
                     node.BuildProject.Save();
                 }
             }
+#endif
         }
         private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
@@ -103,7 +118,8 @@ namespace XSharp.Project
                 var SdkPos = xml.IndexOf("<Project Sdk", StringComparison.OrdinalIgnoreCase);
                 if (SdkPos != -1)
                 {
-                    VS.MessageBox.ShowError("The project file " + fileName + " is an SDK style project and cannot be loaded inside this version of Visual Studio");
+                    //VS.MessageBox.ShowError("The project file " + fileName + " is an SDK style project and cannot be loaded inside this version of Visual Studio");
+                    XSharpProjectFactory.InvalidProjectFiles.Add(fileName.ToLower());
                     return;
                 }
 

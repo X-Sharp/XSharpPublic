@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
+using XSharp.Data
 using XSharp.Parsers
 using XSharp.Internal
 using XSharp.RDD
@@ -351,7 +352,7 @@ STATIC CLASS FoxEmbeddedSQL
         // Use the QueryOptimizer to create an optimized bitmap of records to process
         LOCAL recordCount AS DWORD
         LOCAL totalCount AS LONG
-        totalCount := (mainTable)->DbRecordCount()
+        totalCount := (LONG)( (mainTable)->RecNo() )
         LOCAL optimizedRecordList AS RecordBitmap
         optimizedRecordList := QueryOptimizer.CreateOptimizedBitmap(mainTable, selectCtx:WhereClause, totalCount, selectCtx:TableAliases)
 
@@ -388,7 +389,7 @@ STATIC CLASS FoxEmbeddedSQL
             // Use the optimized record list to determine if we should process this record
             IF selectCtx:WhereClause != NULL
                 // Check the optimized bitmap first
-                LOCAL recordMatchState AS RecordMatchState
+                LOCAL recordMatchState AS RecordBitmap.RecordMatchState
                 recordMatchState := optimizedRecordList:Items[currentRecord]
 
                 IF recordMatchState == RecordBitmap.RecordMatchState.NoMatch
@@ -587,6 +588,7 @@ STATIC METHOD SqlAlterTable(table as FoxAlterTableContext) AS LOGIC
     endif
     RETURN TRUE
 END CLASS
+
 
 
 

@@ -433,8 +433,7 @@ FUNCTION TestQueryOptimizer() AS VOID
         ? "Records in QUERYRESULT after complex WHERE: ", RecCount("QUERYRESULT")
 
         // Display the results
-        LOCAL resultTable AS STRING
-        resultTable := DbDataSource()
+        VAR resultTable := DbDataSource()
         IF !EMPTY(resultTable)
             SELECT (resultTable)
             GO TOP
@@ -532,7 +531,7 @@ FUNCTION PrintContext(ctx AS XSharp.Parsers.SqlExpressionContext, depth := 0 AS 
         ? STRING{c" ", depth*2} + "NAME: " + s:ToString()
     ELSEIF ctx IS SqlSimpleExpressionContext VAR s
         ? STRING{c" ", depth*2} + "SIMPLE: " + s:ToString()
-    ELSEIF ctx IS SqlCompsiteExpressionContext VAR c
+    ELSEIF ctx IS SqlCompositeExpressionContext VAR c
         ? STRING{c" ", depth*2} + "COMPOSITE: " + c:ToString() + " NAMES: " + c:Names:Count:ToString()
     ELSEIF ctx IS SqlParenExpressionContext VAR p
         ? STRING{c" ", depth*2} + "PAREN: "
@@ -588,4 +587,5 @@ FUNCTION TestSqlParser (sCommand as STRING)
     VAR ctx := parser:ParseExpressionContext()
     ? ctx:ToString()
     PrintContext(ctx)
+
 

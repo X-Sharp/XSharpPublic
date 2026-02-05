@@ -162,10 +162,10 @@ PARTIAL CLASS SQLParser
                     THROW ArgumentException{i"Unmatched closing parenthesis: {SELF:La1}","SQLParser"}
                 ENDIF
                 VAR c := SELF:ConsumeAndGet()
-                IF e IS NOT SqlSimpleExpressionContext .AND. e IS NOT SqlCompsiteExpressionContext
+                IF e IS NOT SqlSimpleExpressionContext .AND. e IS NOT SqlCompositeExpressionContext
                     hasComplexTerms := TRUE
                 ENDIF
-                IF e IS SqlCompsiteExpressionContext VAR ce
+                IF e IS SqlCompositeExpressionContext VAR ce
                     names:AddRange(ce:Names)
                 ENDIF
                 terms:Add( SqlParenExpressionContext{} { Open := o, Expr := e, Close := c } )
@@ -207,7 +207,7 @@ PARTIAL CLASS SQLParser
             IF hasComplexTerms
                 THROW ArgumentException{i"Unsupported combine or compare operator within expression term","SQLParser"}
             ENDIF
-            RETURN SqlCompsiteExpressionContext{} { Exprs := terms, Names := names }
+            RETURN SqlCompositeExpressionContext{} { Exprs := terms, Names := names }
         ELSEIF terms:Count == 1
             RETURN terms[0]
         ELSE // Empty term

@@ -133,7 +133,7 @@ CLASS SqlNameExpressionContext INHERIT SqlSimpleExpressionContext
         RETURN NIL
 END CLASS
 
-CLASS SqlCompsiteExpressionContext INHERIT SqlExpressionContext
+CLASS SqlCompositeExpressionContext INHERIT SqlExpressionContext
     PROPERTY Exprs AS IList<SqlExpressionContext> AUTO
     PROPERTY Names AS IList<SqlNameExpressionContext> AUTO
     CONSTRUCTOR()

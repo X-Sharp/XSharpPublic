@@ -41,7 +41,7 @@ PUBLIC CLASS QueryOptimizer
 
     PRIVATE STATIC METHOD IsOptimizable(expression AS SqlExpressionContext, tableAliases AS Dictionary<STRING, STRING>) AS LOGIC
         // For elementary expressions (simple and composite), check if they depend on only one table
-        IF expression IS SqlSimpleExpressionContext .OR. expression IS SqlCompsiteExpressionContext
+        IF expression IS SqlSimpleExpressionContext .OR. expression IS SqlCompositeExpressionContext
             LOCAL dependencies AS IList<STRING>
             dependencies := expression:GetTableDependencies(tableAliases)
             RETURN dependencies:Count <= 1  // Can optimize if depends on at most one table
@@ -72,7 +72,7 @@ PUBLIC CLASS QueryOptimizer
 
     PRIVATE STATIC METHOD EvaluateOptimizableExpression(expression AS SqlExpressionContext, recordCount AS LONG, tableAliases AS Dictionary<STRING, STRING>) AS RecordBitmap
         // Handle elementary expressions (simple and composite)
-        IF expression IS SqlSimpleExpressionContext .OR. expression IS SqlCompsiteExpressionContext
+        IF expression IS SqlSimpleExpressionContext .OR. expression IS SqlCompositeExpressionContext
             RETURN EvaluateElementaryExpression(expression, recordCount, tableAliases)
         ENDIF
 

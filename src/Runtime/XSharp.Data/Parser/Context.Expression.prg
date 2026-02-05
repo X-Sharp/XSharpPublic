@@ -55,8 +55,8 @@ CLASS SqlNameExpressionContext INHERIT SqlSimpleExpressionContext
         RETURN
 
     OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
-        // If we have a table qualifier, convert TABLE.FIELD to TABLE->FIELD
         IF !String.IsNullOrEmpty(Table)
+            // If we have a table qualifier, convert TABLE.FIELD to TABLE->FIELD
             LOCAL tableName AS STRING
             IF !tableAliases:TryGetValue(Table, OUT tableName)
                 tableName := Table
@@ -66,11 +66,7 @@ CLASS SqlNameExpressionContext INHERIT SqlSimpleExpressionContext
             sb:Append(Name)
         ELSE
             // For unqualified fields, we need to resolve them based on available tables
-            // First, check if the field exists in multiple tables (ambiguous)
             VAR matchingTables := List<STRING>{}
-
-            // In a real implementation, we would check if the field exists in each table
-            // For now, we'll simulate checking by using a helper function
             FOREACH VAR table IN tableAliases:Values
                 IF FieldInTable(table, Name) != NIL
                     matchingTables:Add(table)
@@ -78,7 +74,7 @@ CLASS SqlNameExpressionContext INHERIT SqlSimpleExpressionContext
             NEXT
 
             IF matchingTables:Count == 0
-                // Field doesn't exist in any table - just output the field name
+                // Field doesn't exist in any table - just output the name
                 sb:Append(Name)
             ELSEIF matchingTables:Count == 1
                 // Field exists in exactly one table - use that table
@@ -255,4 +251,5 @@ CLASS SqlCompareExpressionContext INHERIT SqlBinaryExpressionContext
 END CLASS
 
 END NAMESPACE
+
 

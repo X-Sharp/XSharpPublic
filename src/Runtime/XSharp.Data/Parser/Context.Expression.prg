@@ -72,7 +72,6 @@ CLASS SqlNameExpressionContext INHERIT SqlSimpleExpressionContext
             // In a real implementation, we would check if the field exists in each table
             // For now, we'll simulate checking by using a helper function
             FOREACH VAR table IN tableAliases:Values
-? "CHECK", table
                 IF FieldInTable(table, Name) != NIL
                     matchingTables:Add(table)
                 ENDIF

@@ -678,16 +678,31 @@ PARTIAL CLASS SQLParser
 
         // Parse select list (columns)
         DO WHILE SELF:Matches(XTokenType.ID) .OR. SELF:Matches(XTokenType.MULT) .OR. SELF:Matches(XTokenType.LPAREN)
+            LOCAL expr AS SqlExpressionContext
+            LOCAL aliasName AS STRING
+            
             IF SELF:Matches(XTokenType.MULT)
                 var multToken := SELF:ConsumeAndGet()
                 // Create a simple expression context for the '*' wildcard
                 var tokenList := List<XToken>{}
                 tokenList:Add(multToken)
-                stmt:SelectList:Add(SqlSimpleExpressionContext{} { Tokens := tokenList })
+                expr := SqlSimpleExpressionContext{} { Tokens := tokenList }
             ELSE
-                stmt:SelectList:Add(SELF:ParseExpressionContext())
+                expr := SELF:ParseExpressionContext()
             ENDIF
-
+            
+            // Check for optional AS alias
+            IF SELF:Expect(XTokenType.AS) .AND. SELF:Matches(XTokenType.ID)
+                aliasName := SELF:ConsumeAndGetText()
+            ELSEIF SELF:Matches(XTokenType.ID) .AND. !SELF:Matches(XTokenType.COMMA) .AND. !SELF:Matches(XTokenType.FROM)
+                // Check if the next token is not FROM or COMMA, then it might be an alias without AS
+                aliasName := SELF:ConsumeAndGetText()
+            ENDIF
+            
+            // Add to both lists for backward compatibility and new functionality
+            stmt:SelectList:Add(expr)
+            stmt:FieldSelectionList:Add(SqlFieldSelectionContext{} { Expression := expr, Alias := aliasName })
+            
             IF ! SELF:Expect(XTokenType.COMMA)
                 EXIT  // End of select list
             ENDIF

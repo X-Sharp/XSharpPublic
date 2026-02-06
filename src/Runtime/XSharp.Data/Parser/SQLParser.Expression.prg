@@ -116,7 +116,34 @@ PARTIAL CLASS SQLParser
         IF SELF:CompareOp()
             VAR o := SELF:ConsumeAndGet()
             VAR r := SELF:ParseExpressionTerm()
-            e := SqlCompareExpressionContext{} { Left := e, Op := o, Right := r }
+            IF SELF:CompareOp()
+                // At this point we are lost, keep parsing the whole thing as a composite expression
+                VAR terms := List<SqlExpressionContext>{} { e, SqlSimpleExpressionContext{} { Tokens := List<XToken>{}{o} }, r}
+                VAR names := List<SqlNameExpressionContext>{}
+                IF e IS SqlCompositeExpressionContext VAR ce
+                    names:AddRange(ce:Names)
+                ELSEIF e IS SqlNameExpressionContext VAR ne
+                    names:Add(ne)
+                ENDIF
+                IF r IS SqlCompositeExpressionContext VAR cr
+                    names:AddRange(cr:Names)
+                ELSEIF r IS SqlNameExpressionContext VAR nr
+                    names:Add(nr)
+                ENDIF
+                WHILE SELF:CompareOp()
+                    terms:Add(SqlSimpleExpressionContext{} { Tokens := List<XToken>{}{SELF:ConsumeAndGet()} })
+                    VAR a := SELF:ParseExpressionTerm()
+                    IF a IS SqlCompositeExpressionContext VAR ca
+                        names:AddRange(ca:Names)
+                    ELSEIF r IS SqlNameExpressionContext VAR na
+                        names:Add(na)
+                    ENDIF
+                    terms:Add(a)
+                    e := SqlCompositeExpressionContext{} { Exprs := terms, Names := names }
+                END WHILE
+            ELSE
+                e := SqlCompareExpressionContext{} { Left := e, Op := o, Right := r }
+            ENDIF
         ENDIF
         RETURN e
 
@@ -216,3 +243,4 @@ PARTIAL CLASS SQLParser
 
 END CLASS
 END NAMESPACE
+

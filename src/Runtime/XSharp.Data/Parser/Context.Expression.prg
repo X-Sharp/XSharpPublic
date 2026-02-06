@@ -57,6 +57,9 @@ CLASS SqlNameExpressionContext INHERIT SqlSimpleExpressionContext
     OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
         IF !String.IsNullOrEmpty(Table)
             // If we have a table qualifier, convert TABLE.FIELD to TABLE->FIELD
+            IF Tokens:Count > 0
+                sb:Append(Tokens[0]:Leadingws)
+            ENDIF
             LOCAL tableName AS STRING
             IF !tableAliases:TryGetValue(Table, OUT tableName)
                 tableName := Table

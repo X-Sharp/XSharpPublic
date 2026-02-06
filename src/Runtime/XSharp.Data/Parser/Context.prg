@@ -124,10 +124,19 @@ CLASS FoxUpdateContext
         RETURN
 
 END CLASS
+
+CLASS SqlFieldSelectionContext
+    PROPERTY Expression AS SqlExpressionContext AUTO
+    PROPERTY Alias AS STRING AUTO
+    CONSTRUCTOR()
+        RETURN
+END CLASS
+
 CLASS FoxSelectContext
     PROPERTY TopCount    AS STRING AUTO
     PROPERTY IsDistinct  AS LOGIC AUTO
     PROPERTY SelectList  AS List<SqlExpressionContext> AUTO
+    PROPERTY FieldSelectionList AS List<SqlFieldSelectionContext> AUTO  // New property for field selections with aliases
     PROPERTY TableList   AS List<STRING> AUTO
     PROPERTY TableAliases AS Dictionary<STRING,STRING> AUTO
     PROPERTY JoinList    AS List<STRING> AUTO
@@ -137,6 +146,7 @@ CLASS FoxSelectContext
     PROPERTY OrderByClause AS SqlExpressionContext AUTO
     CONSTRUCTOR()
         SelectList := List<SqlExpressionContext>{}
+        FieldSelectionList := List<SqlFieldSelectionContext>{}  // Initialize the new property
         TableList := List<String>{}
         TableAliases := Dictionary<STRING,STRING>{StringComparer.OrdinalIgnoreCase}
         JoinList := List<String>{}

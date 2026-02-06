@@ -362,6 +362,32 @@ FUNCTION TestTableResolution() AS VOID
 
     RETURN
 
+FUNCTION PrintFields() AS VOID
+    ? "FIELDS IN TABLE:", Alias()
+    FOREACH VAR f IN DbStruct()
+        ? "  ", f[1], f[2], f[3]
+    NEXT
+
+FUNCTION PrintTable() AS DWORD
+    ? "RECORDS:"
+    LOCAL resultTable AS STRING
+    LOCAL fields AS ARRAY
+    LOCAL Count AS DWORD
+    resultTable = DbDataSource():Name
+    fields := DbStruct()
+    count := 0
+    GO TOP
+    DO WHILE !EOF()
+        count++
+        ? "  ", "| Rec:", count:ToString(), "| "
+        FOREACH VAR f IN fields
+            ?? f[1]+":", &(resultTable+"->"+f[1]), "| "
+        NEXT
+        SKIP
+    ENDDO
+    RETURN count
+
+
 FUNCTION TestSelectFunctionality() AS VOID
     ? "Testing SELECT functionality..."
 
@@ -384,41 +410,46 @@ FUNCTION TestSelectFunctionality() AS VOID
         ? "Attempting basic SELECT..."
         SELECT * FROM test_select_table
         ? "Records in QUERYRESULT after SELECT *: ", RecCount("QUERYRESULT")
-        Browse(DbDataSource())
+        PrintFields()
+        PrintTable()
         DbCloseArea()
 
         // Test SELECT with WHERE
         ? "Attempting SELECT with WHERE..."
         SELECT * FROM test_select_table WHERE Age > 25
         ? "Records in QUERYRESULT after SELECT with WHERE: ", RecCount("QUERYRESULT")
-        Browse(DbDataSource())
+        PrintFields()
+        PrintTable()
         DbCloseArea()
 
         // Test SELECT with specific columns
         ? "Attempting SELECT with specific columns..."
         SELECT Name, Age FROM test_select_table WHERE Age > 25
         ? "Records in QUERYRESULT after SELECT specific columns: ", RecCount("QUERYRESULT")
-        Browse(DbDataSource())
+        PrintFields()
+        PrintTable()
         DbCloseArea()
 
         // Test SELECT with DISTINCT
         ? "Attempting SELECT with DISTINCT..."
         SELECT DISTINCT Age FROM test_select_table
         ? "Records in QUERYRESULT after SELECT DISTINCT: ", RecCount("QUERYRESULT")
-        Browse(DbDataSource())
+        PrintFields()
+        PrintTable()
         DbCloseArea()
 
         // Test SELECT with TOP
         ? "Attempting SELECT with TOP..."
         SELECT TOP 2 * FROM test_select_table
         ? "Records in QUERYRESULT after SELECT TOP 2: ", RecCount("QUERYRESULT")
-        Browse(DbDataSource())
+        PrintFields()
+        PrintTable()
         DbCloseArea()
 
         // Test cross join with multiple tables
         ? "Creating additional tables for cross join test..."
         CREATE CURSOR test_table_a (Id N(5), Name C(20))
-        CREATE CURSOR test_table_b (Id N(5), Description C(30))
+        CREATE CURSOR test_table_b (Id N(5), Desc C(30))
 
         IF Used("test_table_a") .AND. Used("test_table_b")
             ? "Created additional test tables"
@@ -435,21 +466,12 @@ FUNCTION TestSelectFunctionality() AS VOID
 
             // Test cross join (Cartesian product)
             ? "Attempting cross join (SELECT from multiple tables)..."
-            SELECT test_table_a.Name, test_table_b.Descriptio FROM test_table_a, test_table_b
+            SELECT test_table_a.Name, test_table_b.Desc FROM test_table_a, test_table_b
             ? "Records in QUERYRESULT after cross join: ", RecCount("QUERYRESULT")
             ? "Expected: 6 records (2 from A × 3 from B)"
 
-            // Display the results
-            // VAR resultTable := "QUERYRESULT"
-            // GO TOP
-            // LOCAL count AS DWORD
-            // count := 0
-            // DO WHILE !EOF()
-                // count++
-                // ? count:ToString() + ".", "Name:", (resultTable)->Name, "Description:", (resultTable)->Description
-                // SKIP
-            // ENDDO
-            Browse(DbDataSource())
+            PrintFields()
+            PrintTable()
             DbCloseArea()
 
             // Close the additional test tables
@@ -457,6 +479,66 @@ FUNCTION TestSelectFunctionality() AS VOID
             USE IN test_table_b
         ELSE
             ? "Failed to create additional test tables"
+        ENDIF
+
+        // Test field name resolution and aliasing
+        ? "Creating table for field name resolution test..."
+        CREATE CURSOR test_field_resolution (Id N(5), Name C(20), Value N(10,2))
+
+        IF Used("test_field_resolution")
+            ? "Created test table for field name resolution"
+
+            // Insert test data
+            INSERT INTO test_field_resolution VALUES (1, "Test Item", 100.50)
+            INSERT INTO test_field_resolution VALUES (2, "Another Item", 200.75)
+
+            ? "Inserted test data for field name resolution"
+
+            // Test field aliasing with AS
+            ? "Testing field aliasing with AS..."
+            SELECT Id AS Identifier, Name AS ItemName, Value AS Amount FROM test_field_resolution
+            ? "Records in QUERYRESULT after field aliasing: ", RecCount("QUERYRESULT")
+
+            PrintFields()
+            PrintTable()
+            DbCloseArea()
+
+            // Test expression aliasing with AS
+            ? "Testing expression aliasing with AS..."
+            SELECT Id, Name, Value, Value * 1.1 AS TaxedValue FROM test_field_resolution
+            ? "Records in QUERYRESULT after expression aliasing: ", RecCount("QUERYRESULT")
+
+            // Display the results to verify expression alias
+            PrintFields()
+            PrintTable()
+            DbCloseArea()
+
+            // Test field name conflict resolution
+            ? "Creating additional table for conflict resolution test..."
+            CREATE CURSOR test_conflict (Id N(5), Name C(20), Desc C(30))
+
+            IF Used("test_conflict")
+                INSERT INTO test_conflict VALUES (1, "Conflict Name", "Description 1")
+                INSERT INTO test_conflict VALUES (2, "Another Name", "Description 2")
+
+                ? "Testing field name conflict resolution..."
+                SELECT test_field_resolution.Name, test_conflict.Name ;
+                    FROM test_field_resolution, test_conflict ;
+                    WHERE test_field_resolution.Id == 1 .AND. test_conflict.Id == 1
+                ? "Records in QUERYRESULT after conflict resolution: ", RecCount("QUERYRESULT")
+
+                // Display the results to verify conflict resolution
+                PrintFields()
+                PrintTable()
+                DbCloseArea()
+
+                USE IN test_conflict
+            ENDIF
+
+            // Close the test table
+            USE IN test_field_resolution
+        ELSE
+            ? "Failed to create test table for field name resolution"
         ENDIF
 
         // Close the test table
@@ -488,21 +570,11 @@ FUNCTION TestQueryOptimizer() AS VOID
         ? "Records in QUERYRESULT after complex WHERE: ", RecCount("QUERYRESULT")
 
         // Display the results
-        VAR resultTable := DbDataSource()
-        IF !EMPTY(resultTable)
-            SELECT (resultTable)
-            GO TOP
-            DO WHILE !EOF()
-                ? "ID:", (resultTable)->Id, "Name:", (resultTable)->Name, "Age:", (resultTable)->Age, "City:", (resultTable)->City
-                SKIP
-            ENDDO
-            DbCloseArea()
-        ENDIF
+        PrintFields()
+        PrintTable()
+        DbCloseArea()
 
         USE IN test_optimizer_table
-        IF USED("QUERYRESULT")
-            USE IN QUERYRESULT
-        ENDIF
     ELSE
         ? "Failed to create optimizer test table"
     ENDIF
@@ -648,6 +720,7 @@ FUNCTION TestSqlParser (sCommand as STRING)
     VAR ctx := parser:ParseExpressionContext()
     ? ctx:ToString()
     PrintContext(ctx)
+
 
 
 

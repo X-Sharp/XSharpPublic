@@ -14,7 +14,7 @@ using System.Collections.Generic
 using System.IO
 using System.Linq
 using System.Text
-
+using System.Text.RegularExpressions
 [NeedsAccessToLocals(FALSE)];
 FUNCTION __SqlInsertMemVar(sTable as STRING) AS LOGIC
     // FoxPro opens the table when needed and keeps it open
@@ -300,6 +300,9 @@ STATIC CLASS FoxEmbeddedSQL
         LOCAL selectExpressions AS ARRAY
 
         // Process the SELECT list to determine which fields to include
+        LOCAL allFieldNames AS List<STRING>
+        allFieldNames := List<STRING>{}
+
         IF selectCtx:SelectList:Count == 0 .OR. hasStarSelection
             // If no specific fields are mentioned or if we have '*', select all fields
             fieldList := {}
@@ -320,6 +323,10 @@ STATIC CLASS FoxEmbeddedSQL
                     LOCAL fieldName AS STRING
                     fieldName := fieldInfo[1]
 
+                    // Resolve any conflicts with existing field names
+                    fieldName := ResolveConflictingFieldName(fieldName, allFieldNames)
+                    allFieldNames:Add(fieldName:ToUpper())
+
                     AAdd(selectFieldNames, fieldName)  // Field name
                     AAdd(selectExpressions, currentTable + "->" + fieldName)  // Expression
 
@@ -328,6 +335,10 @@ STATIC CLASS FoxEmbeddedSQL
                 NEXT
             NEXT
         ELSE
+            // Check if we have field selections with aliases (new functionality)
+            LOCAL hasFieldSelections AS LOGIC
+            hasFieldSelections := selectCtx:FieldSelectionList != NULL .AND. selectCtx:FieldSelectionList:Count > 0
+
             // Process specific fields in the SELECT list (no '*' involved)
             fieldList := {}
             selectFieldNames := {}
@@ -337,41 +348,67 @@ STATIC CLASS FoxEmbeddedSQL
                 LOCAL expr AS SqlExpressionContext
                 expr := selectCtx:SelectList[i]
 
+                LOCAL fieldAlias AS STRING
+                fieldAlias := NULL
+
+                // Use alias if available from the new field selection list
+                IF hasFieldSelections .AND. i < selectCtx:FieldSelectionList:Count
+                    fieldAlias := selectCtx:FieldSelectionList[i]:Alias
+                ENDIF
+
                 // Apply field resolution to the expression
                 LOCAL exprStr, resolvedExprStr AS STRING
                 resolvedExprStr := expr:ToResolvedString(selectCtx:TableAliases)
-                exprStr := AllTrim(expr:ToString())
+
+                // Use the alias if provided, otherwise generate a field name from the expression
+                IF fieldAlias != NULL .AND. fieldAlias:Trim():Length > 0
+                    exprStr := fieldAlias
+                ELSE
+                    exprStr := SqlExpressionToFieldName(expr)  // Use the new method to get VFP-compatible field name
+                ENDIF
+
+                // Resolve any conflicts with existing field names
+                exprStr := ResolveConflictingFieldName(exprStr, allFieldNames)
+                allFieldNames:Add(exprStr:ToUpper())
 
                 // Find the field in the source tables to get its type
                 LOCAL fieldFound AS LOGIC
                 fieldFound := FALSE
                 LOCAL fieldInfo AS ARRAY
 
-                // Loop through all tables to find the field
-                FOR LOCAL tableIdx := 1 AS DWORD TO ALen(tableNames)
-                    LOCAL currentTable AS STRING
-                    currentTable := tableNames[tableIdx]
+                LOCAL exprTable := NULL AS STRING
+                LOCAL exprField := NULL AS STRING
+                IF expr IS SqlNameExpressionContext VAR nameCtx
+                    exprTable := nameCtx:Table
+                    exprField := nameCtx:Name
+                ENDIF
 
-                    LOCAL fieldPos AS DWORD
-                    fieldPos := (currentTable)->FieldPos(exprStr)
+                IF ! System.String.IsNullOrEmpty(exprTable)
+                    VAR fieldPos := (exprTable)->FieldPos(exprField)
                     IF fieldPos > 0
                         fieldFound := TRUE
-                        fieldInfo := (currentTable)->DbStruct()[fieldPos]
-                        EXIT
+                        fieldInfo := (exprTable)->DbStruct()[fieldPos]
                     ENDIF
-                NEXT
+                ELSEIF ! System.String.IsNullOrEmpty(exprField)
+                    // Loop through all tables to find the field
+                    FOR LOCAL tableIdx := 1 AS DWORD TO ALen(tableNames)
+                        LOCAL currentTable AS STRING
+                        currentTable := tableNames[tableIdx]
 
-                // If field not found, it might be an expression or using table prefixes
-                IF !fieldFound
-                    // For now, treat it as an expression and use a generic field definition
-                    exprStr := "FIELD" + i:ToString()
+                        VAR fieldPos := (currentTable)->FieldPos(exprField)
+                        IF fieldPos > 0
+                            fieldFound := TRUE
+                            fieldInfo := (currentTable)->DbStruct()[fieldPos]
+                            EXIT
+                        ENDIF
+                    NEXT
                 ENDIF
 
                 AAdd(selectFieldNames, exprStr)
                 AAdd(selectExpressions, resolvedExprStr)
 
                 IF fieldFound .AND. fieldInfo != NULL
-                    AAdd(fieldList, {fieldInfo[1], fieldInfo[2], fieldInfo[3], fieldInfo[4], fieldInfo[1], fieldInfo[6]})
+                    AAdd(fieldList, {exprStr, fieldInfo[2], fieldInfo[3], fieldInfo[4], fieldInfo[1], fieldInfo[6]})
                 ELSE
                     // If field doesn't exist in source, assume it's an expression (TODO: determine the type)
                     AAdd(fieldList, {exprStr, "C", 50, 0, exprStr, 0})
@@ -396,6 +433,7 @@ STATIC CLASS FoxEmbeddedSQL
         IF selectCtx:WhereClause != NULL
             whereClause := selectCtx:WhereClause:ToResolvedString(selectCtx:TableAliases)
             hasWhereClause := TRUE
+            ? "WHERE EXPR", whereClause
             whereCodeBlock := MCompile(whereClause)
         ENDIF
 
@@ -441,7 +479,8 @@ STATIC CLASS FoxEmbeddedSQL
             sourceValues := USUAL[]{ALen(selectFieldNames)}
 
             FOR LOCAL i := 1 AS DWORD TO ALen(selectFieldNames)
-                TRY
+            TRY
+                    ? "EXPR", selectExpressions[i]
                     sourceValues[i] := &(selectExpressions[i])
                     ? "VALUE", sourceValues[i]
                 CATCH ex AS Exception
@@ -566,6 +605,99 @@ STATIC CLASS FoxEmbeddedSQL
 
         RETURN
 
+    STATIC METHOD SqlExpressionToFieldName(expr AS SqlExpressionContext) AS STRING
+        // Convert an SQL expression context to a VFP-compatible field name
+        // This method handles different types of expressions and generates appropriate field names
+
+        LOCAL result AS STRING
+        result := ""
+
+        IF expr IS SqlNameExpressionContext VAR nameCtx
+            // For name expressions, use the name part
+            result := nameCtx:Name
+        ELSEIF expr IS SqlCompositeExpressionContext VAR compCtx
+            // For composite expressions, use the first name if available
+            IF compCtx:Names:Count > 0
+                result := compCtx:Names[0]:Name
+            ELSE
+                result := compCtx:ToString()
+            ENDIF
+        ELSEIF expr IS SqlParenExpressionContext
+            // For parenthesized expressions, return a generic name
+            result := "EXPR"
+        ELSEIF expr IS SqlBinaryExpressionContext
+            // For binary expressions, return a generic name
+            result := "EXPR"
+        ELSEIF expr IS SqlPrefixExpressionContext
+            // For prefix expressions, return a generic name
+            result := "EXPR"
+        ELSE
+            // For any other expression type, just get the expression
+            result := expr:ToString()
+        ENDIF
+
+        // Clean up the field name to make it VFP-compatible
+        // Remove any special characters that aren't allowed in VFP field names
+        result := Regex.Replace(result, "[^a-zA-Z0-9_]", "_")
+
+        // Ensure the field name starts with a letter or underscore
+        IF result:Length > 0 .AND. !Char.IsLetter(result[0]) .AND. result[0] != c'_'
+            result := "_" + result
+        ENDIF
+
+        // Limit the length to 10 characters
+        IF result:Length > 10
+            result := result:Substring(0, 10)
+        ENDIF
+
+? __FUNCTION__, result
+        RETURN result
+
+    STATIC METHOD ResolveConflictingFieldName(newName AS STRING, existingNames AS List<STRING>) AS STRING
+        // Resolve conflicting field names the same way as VFP
+        // If the newName already exists in existingNames, append a number to make it unique
+
+        LOCAL result AS STRING
+        result := newName
+
+        // VFP field names are limited to 10 characters, so we need to account for this
+        LOCAL baseName AS STRING
+        baseName := result
+
+        // Truncate to 10 characters
+        IF baseName:Length > 10
+            baseName := baseName:Substring(0, 10)
+        ENDIF
+
+        LOCAL counter AS DWORD
+        counter := 1
+        LOCAL testName AS STRING
+        testName := baseName
+
+        // Check if the name already exists in the list of existing names
+        WHILE existingNames:Contains(testName:ToUpper())
+            testName := baseName + counter:ToString()
+            // Ensure the name doesn't exceed VFP's field name length limit
+            IF testName:Length > 10
+                // If the name with counter exceeds 10 chars, truncate the base name further
+                LOCAL availableChars AS INT
+                availableChars := 10 - counter:ToString():Length
+                IF availableChars < 1
+                    // If counter is too large, use a standard format
+                    testName := "FIELD" + counter:ToString()
+                    IF testName:Length > 10
+                        testName := testName:Substring(0, 10)
+                    ENDIF
+                    EXIT
+                ENDIF
+                testName := baseName:Substring(0, availableChars) + counter:ToString()
+            ENDIF
+            counter++
+        END WHILE
+
+? __FUNCTION__, testName
+        RETURN testName
+
     STATIC METHOD OpenArea(sTable as STRING) AS LOGIC
         IF ! DbSelectArea(sTable)
             DbUseArea(TRUE, "DBFVFP", sTable, sTable, TRUE, FALSE)
@@ -682,6 +814,8 @@ STATIC METHOD SqlAlterTable(table as FoxAlterTableContext) AS LOGIC
     endif
     RETURN TRUE
 END CLASS
+
+
 
 
 

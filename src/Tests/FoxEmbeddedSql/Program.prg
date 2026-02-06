@@ -415,6 +415,50 @@ FUNCTION TestSelectFunctionality() AS VOID
         Browse(DbDataSource())
         DbCloseArea()
 
+        // Test cross join with multiple tables
+        ? "Creating additional tables for cross join test..."
+        CREATE CURSOR test_table_a (Id N(5), Name C(20))
+        CREATE CURSOR test_table_b (Id N(5), Description C(30))
+
+        IF Used("test_table_a") .AND. Used("test_table_b")
+            ? "Created additional test tables"
+
+            // Insert test data for cross join
+            INSERT INTO test_table_a VALUES (1, "Item A1")
+            INSERT INTO test_table_a VALUES (2, "Item A2")
+
+            INSERT INTO test_table_b VALUES (1, "Description B1")
+            INSERT INTO test_table_b VALUES (2, "Description B2")
+            INSERT INTO test_table_b VALUES (3, "Description B3")
+
+            ? "Inserted test data for cross join"
+
+            // Test cross join (Cartesian product)
+            ? "Attempting cross join (SELECT from multiple tables)..."
+            SELECT test_table_a.Name, test_table_b.Descriptio FROM test_table_a, test_table_b
+            ? "Records in QUERYRESULT after cross join: ", RecCount("QUERYRESULT")
+            ? "Expected: 6 records (2 from A × 3 from B)"
+
+            // Display the results
+            // VAR resultTable := "QUERYRESULT"
+            // GO TOP
+            // LOCAL count AS DWORD
+            // count := 0
+            // DO WHILE !EOF()
+                // count++
+                // ? count:ToString() + ".", "Name:", (resultTable)->Name, "Description:", (resultTable)->Description
+                // SKIP
+            // ENDDO
+            Browse(DbDataSource())
+            DbCloseArea()
+
+            // Close the additional test tables
+            USE IN test_table_a
+            USE IN test_table_b
+        ELSE
+            ? "Failed to create additional test tables"
+        ENDIF
+
         // Close the test table
         USE IN test_select_table
     ELSE
@@ -604,5 +648,6 @@ FUNCTION TestSqlParser (sCommand as STRING)
     VAR ctx := parser:ParseExpressionContext()
     ? ctx:ToString()
     PrintContext(ctx)
+
 
 

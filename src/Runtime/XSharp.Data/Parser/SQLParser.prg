@@ -680,7 +680,7 @@ PARTIAL CLASS SQLParser
         DO WHILE SELF:Matches(XTokenType.ID) .OR. SELF:Matches(XTokenType.MULT) .OR. SELF:Matches(XTokenType.LPAREN)
             LOCAL expr AS SqlExpressionContext
             LOCAL aliasName AS STRING
-            
+
             IF SELF:Matches(XTokenType.MULT)
                 var multToken := SELF:ConsumeAndGet()
                 // Create a simple expression context for the '*' wildcard
@@ -690,7 +690,7 @@ PARTIAL CLASS SQLParser
             ELSE
                 expr := SELF:ParseExpressionContext()
             ENDIF
-            
+
             // Check for optional AS alias
             IF SELF:Expect(XTokenType.AS) .AND. SELF:Matches(XTokenType.ID)
                 aliasName := SELF:ConsumeAndGetText()
@@ -698,11 +698,11 @@ PARTIAL CLASS SQLParser
                 // Check if the next token is not FROM or COMMA, then it might be an alias without AS
                 aliasName := SELF:ConsumeAndGetText()
             ENDIF
-            
+
             // Add to both lists for backward compatibility and new functionality
             stmt:SelectList:Add(expr)
             stmt:FieldSelectionList:Add(SqlFieldSelectionContext{} { Expression := expr, Alias := aliasName })
-            
+
             IF ! SELF:Expect(XTokenType.COMMA)
                 EXIT  // End of select list
             ENDIF
@@ -833,17 +833,14 @@ PARTIAL CLASS SQLParser
             ENDIF
 
             DO WHILE ! SELF:Matches(XTokenType.RPAREN) .AND. ! SELF:Eos()
-                ? SELF:La1, SELF:Lt(1):Text
                 var value := SELF:ParseExpressionContext()
                 stmt:ValueList:Add(value)
-                ? SELF:La1
 
                 IF ! SELF:Expect(XTokenType.COMMA)
                     EXIT  // End of value list
                 ENDIF
             ENDDO
 
-            ? SELF:La1
             IF ! SELF:Expect(XTokenType.RPAREN)
                 SELF:SetError("Expected closing parenthesis for values list")
                 RETURN FALSE
@@ -871,5 +868,6 @@ PARTIAL CLASS SQLParser
 #endregion
 END CLASS
 END NAMESPACE
+
 
 

@@ -255,19 +255,43 @@ STATIC CLASS FoxEmbeddedSQL
             ENDIF
         NEXT
 
-        // Open the first table (TODO: basic implementation - doesn't handle joins yet)
-        LOCAL mainTable AS STRING
-        mainTable := selectCtx:TableList[0]
+        // Open all tables (for cross join implementation)
+        LOCAL tableNames AS ARRAY
+        LOCAL originalAreas AS ARRAY
 
-        // Check if the table was already open before we opened it
-        LOCAL wasAlreadyOpen AS LOGIC
-        wasAlreadyOpen := DbSelectArea(mainTable)  // This selects the area if it's open
-        IF !wasAlreadyOpen
-            // If not already open, open it
-            IF ! FoxEmbeddedSQL.OpenArea(mainTable)
-                THROW Error{"Could not open table: " + mainTable}
+        tableNames := {}
+        originalAreas := {}
+
+        FOR LOCAL i := 0 AS INT TO selectCtx:TableList:Count - 1
+            LOCAL tableName AS STRING
+            tableName := selectCtx:TableList[i]
+
+            // Find the alias for this table - the key is the alias, value is the actual table name
+            LOCAL aliasName AS STRING
+            aliasName := tableName  // Default to table name if no alias
+
+            // Look for the alias in the TableAliases dictionary (key=alias, value=actual table name)
+            FOREACH VAR kvp IN selectCtx:TableAliases
+                IF kvp:Value == tableName  // If the value matches the table name, key is the alias
+                    aliasName := kvp:Key
+                    EXIT
+                ENDIF
+            NEXT
+
+            // Check if the table was already open before we opened it
+            LOCAL wasAlreadyOpen AS LOGIC
+            wasAlreadyOpen := DbSelectArea(tableName)  // This selects the area if it's open
+            AAdd(originalAreas, wasAlreadyOpen)
+
+            IF !wasAlreadyOpen
+                // If not already open, open it
+                IF ! FoxEmbeddedSQL.OpenArea(tableName)
+                    THROW Error{"Could not open table: " + tableName}
+                ENDIF
             ENDIF
-        ENDIF
+
+            AAdd(tableNames, tableName)
+        NEXT
 
         VAR resultTable := "QUERYRESULT" // Default table name for SELECT results
 
@@ -278,20 +302,30 @@ STATIC CLASS FoxEmbeddedSQL
         // Process the SELECT list to determine which fields to include
         IF selectCtx:SelectList:Count == 0 .OR. hasStarSelection
             // If no specific fields are mentioned or if we have '*', select all fields
-            LOCAL struct AS ARRAY
-            struct := DbStruct()
             fieldList := {}
             selectFieldNames := {}
             selectExpressions := {}
 
-            FOR LOCAL i := 1 AS DWORD TO ALen(struct)
-                LOCAL fieldInfo AS ARRAY
-                fieldInfo := struct[i]
-                AAdd(selectFieldNames, fieldInfo[1])  // Field name
-                AAdd(selectExpressions, mainTable + "->" + fieldInfo[1])  // Expression
+            // Loop through all tables to get all fields
+            FOR LOCAL tableIdx := 1 AS DWORD TO ALen(tableNames)
+                LOCAL currentTable AS STRING
+                currentTable := tableNames[tableIdx]
 
-                // Create field definition for result table
-                AAdd(fieldList, {fieldInfo[1], fieldInfo[2], fieldInfo[3], fieldInfo[4], fieldInfo[1], fieldInfo[6]})
+                LOCAL struct AS ARRAY
+                struct := (currentTable)->DbStruct()
+
+                FOR LOCAL i := 1 AS DWORD TO ALen(struct)
+                    LOCAL fieldInfo AS ARRAY
+                    fieldInfo := struct[i]
+                    LOCAL fieldName AS STRING
+                    fieldName := fieldInfo[1]
+
+                    AAdd(selectFieldNames, fieldName)  // Field name
+                    AAdd(selectExpressions, currentTable + "->" + fieldName)  // Expression
+
+                    // Create field definition for result table
+                    AAdd(fieldList, {fieldInfo[1], fieldInfo[2], fieldInfo[3], fieldInfo[4], fieldInfo[1], fieldInfo[6]})
+                NEXT
             NEXT
         ELSE
             // Process specific fields in the SELECT list (no '*' involved)
@@ -308,19 +342,35 @@ STATIC CLASS FoxEmbeddedSQL
                 resolvedExprStr := expr:ToResolvedString(selectCtx:TableAliases)
                 exprStr := AllTrim(expr:ToString())
 
-                // Find the field in the source table to get its type
-                LOCAL fieldPos AS DWORD
-                fieldPos := FieldPos(exprStr)
-                IF fieldPos == 0
+                // Find the field in the source tables to get its type
+                LOCAL fieldFound AS LOGIC
+                fieldFound := FALSE
+                LOCAL fieldInfo AS ARRAY
+
+                // Loop through all tables to find the field
+                FOR LOCAL tableIdx := 1 AS DWORD TO ALen(tableNames)
+                    LOCAL currentTable AS STRING
+                    currentTable := tableNames[tableIdx]
+
+                    LOCAL fieldPos AS DWORD
+                    fieldPos := (currentTable)->FieldPos(exprStr)
+                    IF fieldPos > 0
+                        fieldFound := TRUE
+                        fieldInfo := (currentTable)->DbStruct()[fieldPos]
+                        EXIT
+                    ENDIF
+                NEXT
+
+                // If field not found, it might be an expression or using table prefixes
+                IF !fieldFound
+                    // For now, treat it as an expression and use a generic field definition
                     exprStr := "FIELD" + i:ToString()
                 ENDIF
 
                 AAdd(selectFieldNames, exprStr)
                 AAdd(selectExpressions, resolvedExprStr)
 
-                IF fieldPos > 0
-                    LOCAL fieldInfo AS ARRAY
-                    fieldInfo := DbStruct()[fieldPos]
+                IF fieldFound .AND. fieldInfo != NULL
                     AAdd(fieldList, {fieldInfo[1], fieldInfo[2], fieldInfo[3], fieldInfo[4], fieldInfo[1], fieldInfo[6]})
                 ELSE
                     // If field doesn't exist in source, assume it's an expression (TODO: determine the type)
@@ -349,16 +399,6 @@ STATIC CLASS FoxEmbeddedSQL
             whereCodeBlock := MCompile(whereClause)
         ENDIF
 
-        // Use the QueryOptimizer to create an optimized bitmap of records to process
-        LOCAL recordCount AS DWORD
-        LOCAL totalCount AS LONG
-        totalCount := (LONG)( (mainTable)->RecNo() )
-        LOCAL optimizedRecordList AS RecordBitmap
-        optimizedRecordList := QueryOptimizer.CreateOptimizedBitmap(mainTable, selectCtx:WhereClause, totalCount, selectCtx:TableAliases)
-
-        // Navigate through the source table and copy matching records to result
-        recordCount := 0
-
         // Check if DISTINCT is specified
         LOCAL isDistinct AS LOGIC
         isDistinct := selectCtx:IsDistinct
@@ -377,51 +417,60 @@ STATIC CLASS FoxEmbeddedSQL
             distinctValues := HashSet<STRING>{}
         ENDIF
 
-        (mainTable)->DbGoTop()
+        LOCAL recordCount AS DWORD
+        recordCount := 0
 
-        LOCAL currentRecord AS LONG
-        currentRecord := 1
+        // Perform cross join by iterating through all possible combinations
+        LOCAL tablePositions AS ARRAY
+        tablePositions := ArrayNew(ALen(tableNames))
 
-        DO WHILE !(mainTable)->Eof()
+        // Initialize all positions to 1 (first record) and go to top of each table
+        FOR LOCAL i := 1 AS DWORD TO ALen(tableNames)
+            tablePositions[i] := 1
+            ? "TABLE", tableNames[i]
+            (tableNames[i])->DbGoTop()
+        NEXT
+
+        // Main loop to iterate through all combinations
+        LOCAL continueProcessing AS LOGIC
+        continueProcessing := TRUE
+
+        DO WHILE continueProcessing
+            // Get values from current record combination
+            LOCAL sourceValues AS USUAL[]
+            sourceValues := USUAL[]{ALen(selectFieldNames)}
+
+            FOR LOCAL i := 1 AS DWORD TO ALen(selectFieldNames)
+                TRY
+                    sourceValues[i] := &(selectExpressions[i])
+                    ? "VALUE", sourceValues[i]
+                CATCH ex AS Exception
+                    // If expression evaluation fails, use a default value
+                    sourceValues[i] := NIL
+                    ? "Error evaluating expression: " + selectExpressions[i]
+                    ? "Exception: " + ex:Message
+                    ? "Stack Trace: " + ex:StackTrace
+                END TRY
+            NEXT
+
+            // Check WHERE clause if present
             LOCAL includeRecord AS LOGIC
             includeRecord := TRUE
 
-            // Use the optimized record list to determine if we should process this record
-            IF selectCtx:WhereClause != NULL
-                // Check the optimized bitmap first
-                LOCAL recordMatchState AS RecordBitmap.RecordMatchState
-                recordMatchState := optimizedRecordList:Items[currentRecord]
-
-                IF recordMatchState == RecordBitmap.RecordMatchState.NoMatch
-                    // This record doesn't match the WHERE condition according to the optimizer
+            IF hasWhereClause
+                TRY
+                    includeRecord := whereCodeBlock:Eval()
+                CATCH ex AS Exception
                     includeRecord := FALSE
-                ELSE
-                    // The optimizer indicates this record might match, so evaluate the condition
-                    IF hasWhereClause
-                        TRY
-                            includeRecord := whereCodeBlock:Eval()
-                        CATCH ex AS Exception
-                            includeRecord := FALSE
-                            ? "Error evaluating WHERE clause: " + ex:Message
-                        END TRY
-                    ENDIF
-                ENDIF
-            ELSE
-                // No WHERE clause, so include all records
-                includeRecord := TRUE
+                    ? "Error evaluating WHERE clause: " + ex:Message
+                    ? "WHERE clause: " + whereClause
+                END TRY
             ENDIF
 
             // If the record matches the criteria, add it to the result
             IF includeRecord
                 LOCAL recordAdded AS LOGIC
                 recordAdded := FALSE
-
-                LOCAL sourceValues AS USUAL[]
-                sourceValues := USUAL[]{ALen(selectFieldNames)}
-
-                FOR LOCAL i := 1 AS DWORD TO ALen(selectFieldNames)
-                    sourceValues[i] := &(selectExpressions[i])
-                NEXT
 
                 IF isDistinct
                     // For DISTINCT, check if we've already seen this combination of values
@@ -454,21 +503,66 @@ STATIC CLASS FoxEmbeddedSQL
 
                     // Check if we've reached the TOP limit
                     IF maxRecords > 0 .AND. recordCount >= maxRecords
-                        EXIT
+                        continueProcessing := FALSE
                     ENDIF
                 ENDIF
             ENDIF
 
-            currentRecord++  // Increment record counter for the optimizer
-            (mainTable)->DbSkip(1)
+            // Only continue if we haven't reached the TOP limit
+            IF continueProcessing
+                // Move to the next combination of records - implement proper nested loop logic
+                LOCAL positionIdx AS DWORD
+                positionIdx := 1
+
+                // Advance the first table (rightmost in our conceptual model)
+                (tableNames[1])->DbSkip(1)
+                tablePositions[1]++
+
+                // Check if first table has reached EOF - if so, we need to handle carry-over
+                IF (tableNames[1])->Eof()
+                    // Reset first table to top
+                    (tableNames[1])->DbGoTop()
+                    tablePositions[1] := 1
+
+                    // Start carry-over process with the second table
+                    positionIdx := 2
+
+                    // Handle carry-over when a table reaches EOF (like incrementing a multi-digit number)
+                    DO WHILE positionIdx <= ALen(tableNames)
+                        // Advance the current table
+                        (tableNames[positionIdx])->DbSkip(1)
+                        tablePositions[positionIdx]++
+
+                        // If this table hasn't reached EOF, we're done with carry-over
+                        IF !(tableNames[positionIdx])->Eof()
+                            EXIT  // Exit the carry-over loop
+                        ENDIF
+
+                        // If this table reached EOF, reset it and continue carry-over to next table
+                        (tableNames[positionIdx])->DbGoTop()
+                        tablePositions[positionIdx] := 1
+
+                        positionIdx++
+                    ENDDO
+
+                    // If we've gone past all tables (positionIdx > ALen(tableNames)),
+                    // it means we've processed all combinations
+                    IF positionIdx > ALen(tableNames)
+                        continueProcessing := FALSE
+                    ENDIF
+                ENDIF
+            ENDIF
         ENDDO
 
         // Set the result table as the current work area
         (resultTable)->DbSelectArea()
 
-        IF !wasAlreadyOpen
-            (mainTable)->DbCloseArea()
-        ENDIF
+        // Close tables that weren't originally open
+        FOR LOCAL i := 1 AS DWORD TO ALen(tableNames)
+            IF !originalAreas[i]
+                (tableNames[i])->DbCloseArea()
+            ENDIF
+        NEXT
 
         RETURN
 
@@ -588,6 +682,7 @@ STATIC METHOD SqlAlterTable(table as FoxAlterTableContext) AS LOGIC
     endif
     RETURN TRUE
 END CLASS
+
 
 
 

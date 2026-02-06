@@ -79,6 +79,7 @@
 
 #command SELECT [DISTINCT] [TOP <topNum>]                      ;
     <*columnClauses*> FROM <*TableList*>                       ;
+    [CROSS JOIN <*table2*> [AS <*alias2*>]                     ;
     [WITH (BUFFERING = <lExpr> ) ]                             ;
     [WHERE <*WhereConditions*> ]                               ;
     [GROUP BY <*ColumnList*> [HAVING <*HavingConditions*>] ]   ;
@@ -89,6 +90,7 @@
 
 #command SELECT [DISTINCT] [TOP <topNum>]                      ;
     <*columnClauses*> FROM <*TableList*>                       ;
+    [CROSS JOIN <*table2*> [AS <*alias2*>]                     ;
     [WITH (BUFFERING = <lExpr> ) ]                             ;
     [WHERE <*WhereConditions*> ]                               ;
     [GROUP BY <*ColumnList*> [HAVING <*HavingConditions*>] ]   ;

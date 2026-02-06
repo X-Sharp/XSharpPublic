@@ -611,10 +611,79 @@ FUNCTION TestSelectFunctionality() AS VOID
             ? "Failed to create test table for INTO CURSOR test"
         ENDIF
 
+        // Test CROSS JOIN functionality
+        TestCrossJoinFunctionality()
+
         // Close the test table
         USE IN test_select_table
     ELSE
         ? "Failed to create test table"
+    ENDIF
+
+    RETURN
+
+FUNCTION TestCrossJoinFunctionality() AS VOID
+    ? "Testing CROSS JOIN functionality..."
+
+    // Create test tables for CROSS JOIN
+    CREATE CURSOR cross_join_table_a (Id N(5), Name C(20))
+    CREATE CURSOR cross_join_table_b (Id N(5), Desc C(30))
+
+    IF Used("cross_join_table_a") .AND. Used("cross_join_table_b")
+        ? "Created test tables for CROSS JOIN"
+
+        // Insert test data
+        INSERT INTO cross_join_table_a VALUES (1, "Item A1")
+        INSERT INTO cross_join_table_a VALUES (2, "Item A2")
+
+        INSERT INTO cross_join_table_b VALUES (1, "Description B1")
+        INSERT INTO cross_join_table_b VALUES (2, "Description B2")
+        INSERT INTO cross_join_table_b VALUES (3, "Description B3")
+
+        ? "Inserted test data for CROSS JOIN"
+
+        // Test explicit CROSS JOIN syntax
+        ? "Testing explicit CROSS JOIN syntax..."
+        SELECT cross_join_table_a.Name, cross_join_table_b.Desc ;
+            FROM cross_join_table_a ;
+            CROSS JOIN cross_join_table_b
+        ? "Records in QUERYRESULT after explicit CROSS JOIN: ", RecCount("QUERYRESULT")
+        ? "Expected: 6 records (2 from A × 3 from B)"
+
+        PrintFields()
+        PrintTable()
+        DbCloseArea()
+
+        // Test CROSS JOIN with aliases
+        ? "Testing CROSS JOIN with aliases..."
+        SELECT a.Name, b.Desc ;
+            FROM cross_join_table_a a ;
+            CROSS JOIN cross_join_table_b b
+        ? "Records in QUERYRESULT after CROSS JOIN with aliases: ", RecCount("QUERYRESULT")
+        ? "Expected: 6 records (2 from A × 3 from B)"
+
+        PrintFields()
+        PrintTable()
+        DbCloseArea()
+
+        // Test CROSS JOIN with WHERE clause
+        ? "Testing CROSS JOIN with WHERE clause..."
+        SELECT a.Name, b.Desc ;
+            FROM cross_join_table_a a ;
+            CROSS JOIN cross_join_table_b b ;
+            WHERE a.Id = 1
+        ? "Records in QUERYRESULT after CROSS JOIN with WHERE: ", RecCount("QUERYRESULT")
+        ? "Expected: 3 records (only rows where a.Id = 1)"
+
+        PrintFields()
+        PrintTable()
+        DbCloseArea()
+
+        // Close the test tables
+        USE IN cross_join_table_a
+        USE IN cross_join_table_b
+    ELSE
+        ? "Failed to create test tables for CROSS JOIN"
     ENDIF
 
     RETURN
@@ -790,6 +859,7 @@ FUNCTION TestSqlParser (sCommand as STRING)
     VAR ctx := parser:ParseExpressionContext()
     ? ctx:ToString()
     PrintContext(ctx)
+
 
 
 

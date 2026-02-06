@@ -541,6 +541,76 @@ FUNCTION TestSelectFunctionality() AS VOID
             ? "Failed to create test table for field name resolution"
         ENDIF
 
+        // Test INTO CURSOR functionality
+        ? "Testing INTO CURSOR functionality..."
+        CREATE CURSOR test_cursor_target (Id N(5), Name C(20), Value N(10,2))
+
+        IF Used("test_cursor_target")
+            ? "Created test table for INTO CURSOR test"
+
+            // Insert test data
+            INSERT INTO test_cursor_target VALUES (1, "Test Item 1", 100.50)
+            INSERT INTO test_cursor_target VALUES (2, "Test Item 2", 200.75)
+            INSERT INTO test_cursor_target VALUES (3, "Test Item 3", 300.25)
+
+            ? "Inserted test data for INTO CURSOR test"
+
+            // Test SELECT INTO CURSOR
+            ? "Testing SELECT INTO CURSOR..."
+            SELECT * FROM test_cursor_target INTO CURSOR MyTestCursor
+            ? "Records in MyTestCursor: ", RecCount("MyTestCursor")
+
+            // Verify the cursor exists and has the correct data
+            IF Used("MyTestCursor")
+                SELECT MyTestCursor
+                GO TOP
+                LOCAL count AS DWORD
+                count := 0
+                DO WHILE !EOF()
+                    count++
+                    ? count:ToString() + ".", "Id:", MyTestCursor->Id, "Name:", MyTestCursor->Name, "Value:", MyTestCursor->Value
+                    SKIP
+                ENDDO
+                ? "Verified MyTestCursor has", count, "records"
+                USE IN MyTestCursor
+            ELSE
+                ? "ERROR: MyTestCursor was not created!"
+            ENDIF
+
+            // Test SELECT with field aliasing INTO CURSOR
+            ? "Testing SELECT with field aliasing INTO CURSOR..."
+            SELECT Id AS ItemId, Name AS ItemName, Value AS ItemValue FROM test_cursor_target INTO CURSOR AliasedCursor
+            ? "Records in AliasedCursor: ", RecCount("AliasedCursor")
+
+            // Verify the aliased cursor exists and has the correct data
+            IF Used("AliasedCursor")
+                SELECT AliasedCursor
+                GO TOP
+                LOCAL aliasCount AS DWORD
+                aliasCount := 0
+                LOCAL fieldCount AS DWORD
+                fieldCount := FCount()
+                ? "AliasedCursor has", fieldCount, "fields"
+                FOR LOCAL i := 1 AS DWORD TO fieldCount
+                    ? "Field " + i:ToString() + ": " + FieldName(i)
+                NEXT
+                DO WHILE !EOF()
+                    aliasCount++
+                    ? aliasCount:ToString() + ".", "ItemId:", AliasedCursor->ItemId, "ItemName:", AliasedCursor->ItemName, "ItemValue:", AliasedCursor->ItemValue
+                    SKIP
+                ENDDO
+                ? "Verified AliasedCursor has", aliasCount, "records"
+                USE IN AliasedCursor
+            ELSE
+                ? "ERROR: AliasedCursor was not created!"
+            ENDIF
+
+            // Close the test table
+            USE IN test_cursor_target
+        ELSE
+            ? "Failed to create test table for INTO CURSOR test"
+        ENDIF
+
         // Close the test table
         USE IN test_select_table
     ELSE
@@ -720,6 +790,7 @@ FUNCTION TestSqlParser (sCommand as STRING)
     VAR ctx := parser:ParseExpressionContext()
     ? ctx:ToString()
     PrintContext(ctx)
+
 
 
 

@@ -416,6 +416,11 @@ STATIC CLASS FoxEmbeddedSQL
             NEXT
         ENDIF
 
+        // Determine the result table name - use target cursor if specified
+        IF ! String.IsNullOrEmpty(AllTrim(selectCtx:TargetCursor))
+            resultTable := AllTrim(selectCtx:TargetCursor)
+        ENDIF
+
         // Create the result table
         LOCAL tempPath AS STRING
         tempPath := System.IO.Path.GetTempFileName()
@@ -814,13 +819,4 @@ STATIC METHOD SqlAlterTable(table as FoxAlterTableContext) AS LOGIC
     endif
     RETURN TRUE
 END CLASS
-
-
-
-
-
-
-
-
-
 

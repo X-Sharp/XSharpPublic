@@ -713,25 +713,98 @@ PARTIAL CLASS SQLParser
             RETURN FALSE
         ENDIF
 
-        // Parse table list
-        DO WHILE SELF:Matches(XTokenType.ID)
-            VAR tableName := SELF:ParseTableName()
+        // Parse table list - support both comma-separated tables and explicit JOIN syntax
+        LOCAL firstTableProcessed := FALSE AS LOGIC
+        LOCAL hasCommaSeparatedTables := FALSE AS LOGIC
+        
+        // First, check if we have comma-separated tables (traditional SQL syntax)
+        VAR firstTableName := SELF:ParseTableName()
+        
+        // Check for optional alias (AS alias or just alias)
+        LOCAL firstAliasName := NULL AS STRING
+        IF SELF:Expect(XTokenType.AS) .AND. SELF:Matches(XTokenType.ID)
+            firstAliasName := SELF:ConsumeAndGetText()
+        ELSEIF SELF:Matches(XTokenType.ID)
+            firstAliasName := SELF:ConsumeAndGetText()
+        ENDIF
 
-            // Check for optional alias (AS alias or just alias)
-            LOCAL aliasName := NULL AS STRING
-            IF SELF:Expect(XTokenType.AS) .AND. SELF:Matches(XTokenType.ID)
-                aliasName := SELF:ConsumeAndGetText()
-            ELSEIF SELF:Matches(XTokenType.ID)
-                aliasName := SELF:ConsumeAndGetText()
-            ENDIF
+        stmt:TableList:Add(firstTableName)
+        stmt:TableAliases[firstAliasName ?? firstTableName] := firstTableName
+        firstTableProcessed := TRUE
+        
+        // Check if we have comma-separated tables
+        IF SELF:Expect(XTokenType.COMMA)
+            hasCommaSeparatedTables := TRUE
+            // Continue processing comma-separated tables
+            DO WHILE TRUE
+                VAR tableName := SELF:ParseTableName()
 
-            stmt:TableList:Add(tableName)
-            stmt:TableAliases[aliasName ?? tableName] := tableName
+                // Check for optional alias (AS alias or just alias)
+                LOCAL aliasName := NULL AS STRING
+                IF SELF:Expect(XTokenType.AS) .AND. SELF:Matches(XTokenType.ID)
+                    aliasName := SELF:ConsumeAndGetText()
+                ELSEIF SELF:Matches(XTokenType.ID)
+                    aliasName := SELF:ConsumeAndGetText()
+                ENDIF
 
-            IF ! SELF:Expect(XTokenType.COMMA)
-                EXIT  // End of table list
-            ENDIF
-        ENDDO
+                stmt:TableList:Add(tableName)
+                stmt:TableAliases[aliasName ?? tableName] := tableName
+
+                IF ! SELF:Expect(XTokenType.COMMA)
+                    EXIT  // End of comma-separated table list
+                ENDIF
+            ENDDO
+        ELSE
+            // Check for explicit JOIN syntax
+            DO WHILE (SELF:Matches(XTokenType.JOIN) .OR. SELF:Matches(XTokenType.CROSS))
+                // Check for CROSS JOIN
+                IF SELF:Expect(XTokenType.CROSS)
+                    IF ! SELF:Expect(XTokenType.JOIN)
+                        SELF:SetError("Expected JOIN after CROSS")
+                        RETURN FALSE
+                    ENDIF
+                    
+                    // For CROSS JOIN, we just add the next table without any join condition
+                    VAR crossTableName := SELF:ParseTableName()
+
+                    // Check for optional alias (AS alias or just alias)
+                    LOCAL crossAliasName := NULL AS STRING
+                    IF SELF:Expect(XTokenType.AS) .AND. SELF:Matches(XTokenType.ID)
+                        crossAliasName := SELF:ConsumeAndGetText()
+                    ELSEIF SELF:Matches(XTokenType.ID)
+                        crossAliasName := SELF:ConsumeAndGetText()
+                    ENDIF
+
+                    stmt:TableList:Add(crossTableName)
+                    stmt:TableAliases[crossAliasName ?? crossTableName] := crossTableName
+                // Check for regular JOIN (INNER, LEFT, RIGHT, etc.) - though not implemented yet
+                ELSEIF SELF:Expect(XTokenType.JOIN)
+                    // For now, treat all JOINs similar to CROSS JOIN (cartesian product)
+                    VAR joinTableName := SELF:ParseTableName()
+
+                    // Check for optional alias (AS alias or just alias)
+                    LOCAL joinAliasName := NULL AS STRING
+                    IF SELF:Expect(XTokenType.AS) .AND. SELF:Matches(XTokenType.ID)
+                        joinAliasName := SELF:ConsumeAndGetText()
+                    ELSEIF SELF:Matches(XTokenType.ID)
+                        joinAliasName := SELF:ConsumeAndGetText()
+                    ENDIF
+
+                    stmt:TableList:Add(joinTableName)
+                    stmt:TableAliases[joinAliasName ?? joinTableName] := joinTableName
+                    
+                    // Check for ON clause (optional for now, since we implement as cartesian product)
+                    IF SELF:Expect(XTokenType.ON)
+                        // Skip the join condition for now - we'll implement full JOIN later
+                        // Just consume the condition expression
+                        VAR dummyExpr := SELF:ParseExpressionContext()
+                    ENDIF
+                ELSE
+                    // This shouldn't happen if our logic is correct
+                    EXIT
+                ENDIF
+            ENDDO
+        ENDIF
 
         // Check for optional WITH clause (for locking hints)
         IF SELF:Expect(XTokenType.WITH)

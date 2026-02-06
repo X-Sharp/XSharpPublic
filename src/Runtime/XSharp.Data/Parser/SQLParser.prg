@@ -762,6 +762,21 @@ PARTIAL CLASS SQLParser
             stmt:OrderByClause := SELF:ParseExpressionContext()
         ENDIF
 
+        // Parse optional INTO CURSOR clause
+        IF SELF:Expect(XTokenType.INTO)
+            IF SELF:Expect(XTokenType.CURSOR)
+                IF SELF:Matches(XTokenType.ID)
+                    stmt:TargetCursor := SELF:ConsumeAndGetText()
+                ELSE
+                    SELF:SetError("Expected cursor name after INTO CURSOR")
+                    RETURN FALSE
+                ENDIF
+            ELSE
+                SELF:SetError("Expected CURSOR after INTO")
+                RETURN FALSE
+            ENDIF
+        ENDIF
+
         return TRUE
 
     METHOD ParseInsertStatement(stmt out FoxInsertContext) AS LOGIC

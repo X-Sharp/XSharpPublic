@@ -140,6 +140,7 @@ CLASS FoxSelectContext
     PROPERTY TableList   AS List<STRING> AUTO
     PROPERTY TableAliases AS Dictionary<STRING,STRING> AUTO
     PROPERTY JoinList    AS List<STRING> AUTO
+    PROPERTY TargetCursor AS STRING AUTO  // Property to store the target cursor name for INTO CURSOR
     PROPERTY WhereClause AS SqlExpressionContext AUTO
     PROPERTY GroupByClause AS SqlExpressionContext AUTO
     PROPERTY HavingClause AS SqlExpressionContext AUTO

@@ -41,7 +41,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         Expr FixOldStyleAssignment(Expr e, Binder b)
         {
-            if (e is BinaryExpr bin && b.Options.AllowOldStyleAssignments)
+            if (e is BinaryExpr bin && b.Options.AllowOldStyleAssignments && b.Options.ParseStatements)
             {
                 var top = bin;
                 var left = bin.Left;

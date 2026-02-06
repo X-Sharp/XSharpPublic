@@ -524,7 +524,7 @@ FUNCTION TestSelectFunctionality() AS VOID
                 ? "Testing field name conflict resolution..."
                 SELECT test_field_resolution.Name, test_conflict.Name ;
                     FROM test_field_resolution, test_conflict ;
-                    WHERE test_field_resolution.Id == 1 .AND. test_conflict.Id == 1
+                    WHERE test_field_resolution.Id = 1 AND test_conflict.Id = 1
                 ? "Records in QUERYRESULT after conflict resolution: ", RecCount("QUERYRESULT")
 
                 // Display the results to verify conflict resolution

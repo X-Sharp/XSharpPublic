@@ -1,4 +1,5 @@
-﻿using Community.VisualStudio.Toolkit;
+﻿#if DEV17
+using Community.VisualStudio.Toolkit;
 
 using EnvDTE;
 
@@ -118,7 +119,6 @@ namespace XSharp.Project
                 SetProjectProperty(XSharpProjectFileConstants.ActiveTargetFramework, info.TargetFramework);
 
                 this.DoReload(false);
-                //this.OnPropertyChanged(this, (int)__VSHPROPID.VSHPROPID_Caption, 0);
                 this.OnPropertyChanged(this, (int)__VSHPROPID6.VSHPROPID_Subcaption, 0);
                 VS.Commands.ExecuteAsync("Project.SetAsStartupProject").FireAndForget();
                 return true;
@@ -242,7 +242,7 @@ namespace XSharp.Project
         public override void SetBuildProject(Microsoft.Build.Evaluation.Project newBuildProject)
         {
             base.SetBuildProject(newBuildProject);
-            if (this.ProjectIDGuid == Guid.Empty) 
+            if (this.ProjectIDGuid == Guid.Empty)
                 this.SetProjectGuidFromProjectFile();
             if (newBuildProject == null)
             {
@@ -358,7 +358,7 @@ namespace XSharp.Project
 
             var toDelete = new List<XSharpDependencyNode>();
             var toAdd = new List<string>();
-
+            this.Build(MsBuildTarget.ResolveAssemblyReferences);
 
             foreach (var reference in sdkReferences)
             {
@@ -393,7 +393,7 @@ namespace XSharp.Project
             frameworkNode.IsExpanded = isExpanded;
         }
     }
-    public class XSharpFrameworkNode : XSharpDependencyNode
+    internal class XSharpFrameworkNode : XSharpDependencyNode
     {
         public XSharpFrameworkNode(XSharpProjectNode root, string filePath) :
             base(root, filePath)
@@ -402,51 +402,23 @@ namespace XSharp.Project
         }
         protected override ImageMoniker GetIconMoniker(bool open)
         {
-#if DEV17
             return KnownMonikers.Framework;
-#else
-        return KnownMonikers.Reference;
-#endif
-
         }
     }
 
-    public class XSharpDependencyNode : HierarchyNode
+    internal class XSharpDependencyNode : XSharpAssemblyReferenceNode
     {
-        string path;
-        string caption;
         public XSharpDependencyNode(XSharpProjectNode root, string filePath) :
-            base(root)
+            base(root, filePath)
         {
-            caption = path = filePath;
-            if (path.Contains(System.IO.Path.DirectorySeparatorChar) || path.Contains(System.IO.Path.AltDirectorySeparatorChar))
-            {
-                caption = System.IO.Path.GetFileNameWithoutExtension(path);
-            }
+            // We do not want to store these dependencies in the project file, so we remove them from the BuildProject
+            root.BuildProject.RemoveItem(this.ItemNode.Item);
+        }
+        public override bool EmbedInteropTypes { get => false; set { }}
 
-        }
-        public override string Caption
-        {
-            get
-            {
-                return caption;
-            }
-        }
-        override public string Url
-        {
-            get
-            {
-                return path;
-            }
-        }
-        protected override bool SupportsIconMonikers => true;
         protected override ImageMoniker GetIconMoniker(bool open)
         {
-#if DEV17
             return KnownMonikers.Framework;
-#else
-            return KnownMonikers.Reference;
-#endif
         }
         override public Guid ItemTypeGuid
         {
@@ -558,7 +530,7 @@ class XSharpDependenciesContainerNode : XSharpReferenceContainerNode
             frameworkNode.AddChild(node);
         }
         else
-        { 
+        {
             base.AddChild(node);
         }
     }
@@ -580,3 +552,4 @@ class XSharpDependenciesContainerNode : XSharpReferenceContainerNode
         //    }
     }
 }
+#endif

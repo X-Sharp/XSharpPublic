@@ -1796,7 +1796,7 @@ namespace XSharp.Project
         void ProcessOptions(ProjectInstance projectInstance, string target)
         {
             Logger.Information($"Build:  Invocation Result for target '{target}'");
-            if (projectInstance != null && this is XSharpSdkProjectNode)
+            if (projectInstance != null && this.IsSdkProject)
             {
                 var commandLineArguments = new List<string>();
                 var sdkReferences = new List<string>();
@@ -1812,7 +1812,8 @@ namespace XSharp.Project
                 {
                     switch (item.ItemType.ToLower())
                     {
-                        case "reference":
+                        case "reference" when ! this.IsSdkProject:
+                        case "referencepath" when this.IsSdkProject:
                             allReferenceAssemblies.Add(item.EvaluatedInclude);
                             if (item.GetMetadataValue("NugetSourceType")?.ToLower() == "package")
                             {

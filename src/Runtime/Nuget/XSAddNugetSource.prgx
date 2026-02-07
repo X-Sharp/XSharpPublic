@@ -24,22 +24,47 @@ if packageSources == null
     packageSources := XElement{"packageSources"}
     configElement:Add(packageSources)
 endif
-// Search "XSharp Offline Packages"
+// Search "XSharp Offline Packages" and Add if missing
 GetSetPackageSource( packageSources, xsharpOffLine, sourceUrl )
 // Get the SourceMapping to "XSharp Offline Packages" ?
 GetSetSourceMapping( configElement, xsharpOffLine, "XSharp.*" )
-// We MUST check that we also have a pattern of Nuget.org
-GetSetSourceMapping( configElement, "nuget.org", "*" )
+// Is Nuget.org already in the list of package sources, if so add the SourceMapping to Nuget.org
+IF SearchPackageSource(packageSources, "nuget.org")
+    GetSetSourceMapping( configElement, "nuget.org", "*" )
+ELSE
+    VAR sourceList := GetPackageSourceList(packageSources)
+    // No Nuget,and more than XSharp Offline Packages
+    // You might filter/choose your sources.
+    IF sourceList:Count == 1
+        // Only XSharp Offline Packages, add Nuget.org as well
+        GetSetPackageSource( packageSources, "nuget.org", "https://api.nuget.org/v3/index.json" )
+        GetSetSourceMapping( configElement, "nuget.org", "*" )
+    ENDIF
+ENDIF
+
 doc:Save(nugetConfigPath)
 
-FUNCTION GetSetPackageSource( packageSources AS XElement, source AS STRING, sourceUrl AS STRING ) AS VOID
-VAR found := false
+FUNCTION GetPackageSourceList( packageSources AS XElement ) AS List<String>
+VAR list := List<String>{}
 foreach elt as XElement in packageSources:Elements("add") 
-    if elt:Attribute("key")?:Value == source
+    list:Add(elt:Attribute("key")?:Value)
+next
+RETURN list
+
+FUNCTION SearchPackageSource( packageSources AS XElement, source AS STRING ) AS LOGIC
+VAR found := false
+VAR sourceList := GetPackageSourceList(packageSources)
+foreach elt as String in sourceList
+    if elt == source
         found := true
         exit
     endif
 next
+RETURN found
+
+
+FUNCTION GetSetPackageSource( packageSources AS XElement, source AS STRING, sourceUrl AS STRING ) AS VOID
+VAR found := SearchPackageSource( packageSources, source )
 if !found
     packageSources:Add(XElement{"add", XAttribute{"key", source}, XAttribute{"value", sourceUrl}})
 endif

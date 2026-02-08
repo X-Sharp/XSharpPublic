@@ -35,7 +35,11 @@ namespace XSharp.Debugger.UI
             var vend_id = Guid.Parse(Constants.XSharpVendorString);
             var lang_id = Guid.Parse(Constants.XSharpLanguageString);
             language = DkmLanguage.Create(lang_name, new DkmCompilerId(vend_id, lang_id));
-            debugger = XSharpDebuggerUIPackage.Instance.Dte.Debugger;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                debugger = XSharpDebuggerUIPackage.Instance.Dte.Debugger;
+            });
             windows = new List<IDebuggerToolWindow>();
         }
         internal static string StripResult(string str)
@@ -102,6 +106,17 @@ namespace XSharp.Debugger.UI
         internal static async Task<string> GetFieldValuesAsync(int Area)
         {
             var result = await Support.ExecExpressionAsync($"XSharp.Debugger.Support.RtLink.GetFieldValues({Area})");
+            return StripResult(result);
+        }
+        internal static async Task<string> GetIndexesAsync(int Area)
+        {
+            var result = await Support.ExecExpressionAsync($"XSharp.Debugger.Support.RtLink.GetIndexes({Area})");
+            return StripResult(result);
+        }
+
+        internal static async Task<string> GetStructureAsync(int Area)
+        {
+            var result = await Support.ExecExpressionAsync($"XSharp.Debugger.Support.RtLink.GetStructure({Area})");
             return StripResult(result);
         }
 

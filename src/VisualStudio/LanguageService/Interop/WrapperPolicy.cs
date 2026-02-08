@@ -18,10 +18,25 @@ namespace XSharp.LanguageService.Interop
         /// Factory object for creating IComWrapperFixed instances.
         /// Internal and not readonly so that unit tests can provide an alternative implementation.
         /// </summary>
-        internal static IComWrapperFactory s_ComWrapperFactory =
-            (IComWrapperFactory)PackageUtilities.CreateInstance(typeof(IComWrapperFactory).GUID);
+        internal static IComWrapperFactory s_ComWrapperFactory ;
 
-        internal static object CreateAggregatedObject(object managedObject) => s_ComWrapperFactory.CreateAggregatedObject(managedObject);
+        static WrapperPolicy()
+        {
+            // Ensure that the factory is initialized.
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                s_ComWrapperFactory = (IComWrapperFactory)PackageUtilities.CreateInstance(typeof(IComWrapperFactory).GUID);
+            });
+        }
+        internal static object CreateAggregatedObject(object managedObject)
+        {
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                return s_ComWrapperFactory.CreateAggregatedObject(managedObject);
+            });
+        }
 
         /// <summary>
         /// Return the RCW for the native IComWrapperFixed instance aggregating "managedObject"

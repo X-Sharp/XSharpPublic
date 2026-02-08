@@ -1471,7 +1471,8 @@ namespace Microsoft.VisualStudio.Project
             {
                 try
                 {
-                    ErrorHandler.ThrowOnFailure(output.FlushToTaskList());
+                    if (output != null)
+                        ErrorHandler.ThrowOnFailure(output.FlushToTaskList());
                 }
                 finally
                 {

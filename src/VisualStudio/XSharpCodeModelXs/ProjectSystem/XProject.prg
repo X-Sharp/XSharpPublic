@@ -45,6 +45,7 @@ BEGIN NAMESPACE XSharpModel
     PRIVATE _dependentProjectList              AS STRING
     PRIVATE _dependentAssemblyList             AS STRING
     PRIVATE _name                              AS STRING
+    PRIVATE _fileName                          AS STRING
     PRIVATE _lastRefCheck                      AS DateTime
     PRIVATE _resolvingReferences               AS LOGIC
 
@@ -57,7 +58,7 @@ BEGIN NAMESPACE XSharpModel
 #region Properties
     PROPERTY Id   AS INT64                     GET _id INTERNAL SET _id := value
     PROPERTY FileWalkCompleted                 AS LOGIC AUTO
-    PROPERTY FileName                          AS STRING GET iif (_projectNode != null, _projectNode:Url, "")
+    PROPERTY FileName                          AS STRING GET _fileName
     PROPERTY HasFiles                          AS LOGIC GET _SourceFilesDict:Keys:Count > 0 .or. _OtherFilesDict:Keys:Count > 0
     PROPERTY Framework                         AS STRING GET _framework
     PROPERTY DisplayName                       AS STRING GET _projectNode?.DisplayName
@@ -176,8 +177,8 @@ BEGIN NAMESPACE XSharpModel
 #endregion
 
     CONSTRUCTOR(project AS IXSharpProject)
-        SELF(project,"")
-    CONSTRUCTOR(project AS IXSharpProject, framework as string)
+        SELF(project,"", project:Url)
+    CONSTRUCTOR(project AS IXSharpProject, framework as string, fileName as STRING)
         SUPER()
         SELF:_framework := framework
         SELF:_AssemblyReferences := List<XAssembly>{}
@@ -192,7 +193,8 @@ BEGIN NAMESPACE XSharpModel
         SELF:_projectNode := project
         SELF:_SourceFilesDict   := XFileDictionary{SELF}
         SELF:_OtherFilesDict    := XFileDictionary{SELF}
-        SELF:_name              := System.IO.Path.GetFileNameWithoutExtension(project:Url)
+        SELF:_fileName          := fileName
+        SELF:_name              := System.IO.Path.GetFileNameWithoutExtension(fileName)
         SELF:_lastRefCheck      := DateTime.MinValue
         SELF:_cachedAllNamespaces   := NULL
         SELF:_cachedUsingStatics   := NULL

@@ -7,4 +7,4 @@ USING System.Text
 FUNCTION Start() AS VOID STRICT
 	TestScript()
 	TestMacro()
-	RETURN	
+	RETURN

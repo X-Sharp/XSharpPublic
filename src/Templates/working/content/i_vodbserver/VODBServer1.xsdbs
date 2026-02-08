@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <DBServer Name="VODBServer">
+    <classname>VODBServer</classname>
+    <filename>VODBServer.dbf</filename>
+    <hlcaption>VODBServer</hlcaption>
+    <superclass>DBSERVER</superclass>
+    <hldescription>VODBServer</hldescription>
+    <hlhelpcontext>VODBServer</hlhelpcontext>
+    <share>
+    </share>
+    <ro>
+    </ro>
+    <rdd>DBFNTX</rdd>
+    <order>0</order>
+    <noaccass>No</noaccass>
+    <Fields>
+    </Fields>
+    <Indexes />
+  </DBServer>
+</Designers>

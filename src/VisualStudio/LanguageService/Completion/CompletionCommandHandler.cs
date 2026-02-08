@@ -63,8 +63,12 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-
-            return m_nextCommandHandler.QueryStatus(ref pguidCmdGroup, cCmds, commands, pCmdText);
+            var guid = pguidCmdGroup;
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                return m_nextCommandHandler.QueryStatus(ref guid, cCmds, commands, pCmdText);
+            });
         }
 
 

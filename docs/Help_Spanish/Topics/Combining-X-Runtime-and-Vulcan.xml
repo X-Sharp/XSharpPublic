@@ -1,13 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-08T20:10:13.350+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-02-04T09:10:50.951Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Combining X# Runtime and Vulcan Runtime</title>
   <body>
     <header>
       <para styleclass="Heading1">Combining X# Runtime and Vulcan Runtime</para>
     </header>
-    <para styleclass="Normal">Technically, it is possible to include both the X# and the Vulcan runtime libraries in your application. When you do so, the compiler will assume that you want to use the X# implementations for the XBase types such as USUAL and DATE. If the compiler does not find the XSharp.Core and XSharp.VO assemblies, it will assume that you want to map these types to the Vulcan runtime types.</para>
-    <para styleclass="Normal">Even though you can mix things, if you want to call code in the Vulcan runtime DLLs, you may have to use the fully qualified classnames or typenames.</para>
+    <para styleclass="Normal">Technically, it is possible to include both the X# and the Vulcan runtime libraries in your application. When you do so, the compiler will assume that you want to use the X# implementations for the XBase types such as USUAL and DATE. If the compiler does not find the XSharp.Core and XSharp.VO assemblies then it will only work in the Core dialect.</para>
     <para styleclass="Normal">And remember: there is no automatic translation between the X# types and Vulcan types. </para>
     <para styleclass="Normal">If you want to convert an X# variable to a Vulcan variable, you may have to cast it to an intermediate type first.</para>
     <para styleclass="Normal"></para>

@@ -218,5 +218,6 @@ namespace XSharp
         internal const string TargetFramework = nameof(TargetFramework);
         internal const string TargetFrameworks = nameof(TargetFrameworks);
         internal const string XTargetFrameworks = nameof(XTargetFrameworks);
+        internal const string ActiveTargetFramework = nameof(ActiveTargetFramework);
     }
 }

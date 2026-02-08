@@ -13,7 +13,7 @@ USING System.Runtime.InteropServices
 #ifdef DEBUG
 INTERNAL GLOBAL gcToggleText AS STRING
 #endif
-
+BEGIN NAMESPACE XSharp.VFP
 INTERNAL PARTIAL CLASS Win32
 
 	CONST INTERNAL VK_INSERT := 45 AS INT
@@ -155,5 +155,5 @@ STATIC FUNCTION __IsKeyToggled( nKey AS INT ) AS LOGIC
 
 	RETURN _AND ( Win32.GetKeyState(nKey) , 0x01) == 1
 
-
+END NAMESPACE
 

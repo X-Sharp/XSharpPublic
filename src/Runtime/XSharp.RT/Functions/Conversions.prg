@@ -232,8 +232,8 @@ function AsHexString(uValue IN usual) as string
             result := ""
         endif
     elseif uValue:IsPtr
-        local i64 := (UIntPtr)uValue as UIntPtr
-        local u64 := i64:ToUInt64() as uint64
+        local i64 := uValue:_i64Value as int64
+        local u64 := (UINT64) i64 as uint64
         result := String.Format( iif( u64 > System.UInt32.MaxValue, "{0:X16}", "{0:X8}" ), u64 )
     else
         result := ""
@@ -263,8 +263,8 @@ function AsString(uValue IN usual) as string
     case uValue:IsDate
         result := DToC( (date) uValue)
     case uValue:IsPtr
-        local i64 := (UIntPtr)uValue as UIntPtr
-        local u64 := i64:ToUInt64() as uint64
+        local i64 := uValue:_i64Value as int64
+        local u64 := (UINT64) i64 as uint64
         result := String.Format( iif( u64 > System.UInt32.MaxValue, "0x{0:X16}", "0x{0:X8}" ), u64 )
     case uValue:IsArray
         var aValue := (array) uValue
@@ -1019,7 +1019,7 @@ function Object2Float(oValue as object) as float
     // 78-64: Exponent(15 bits, biased by 16383)
     // 63-00: Mantissa (64 bits, with the implicit leading bit)
 
-STATIC DEFINE EXTENDEDFLOATBIAS := 0x3FFF as int
+#DEFINE EXTENDEDFLOATBIAS 0x3FFF
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bin2f/*" />
 function Bin2F(cFloat as string) as float
     LOCAL sign AS INT

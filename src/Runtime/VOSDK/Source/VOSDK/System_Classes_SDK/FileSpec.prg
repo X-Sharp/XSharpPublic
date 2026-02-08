@@ -143,7 +143,7 @@ METHOD __DefaultFullPath ()  AS STRING STRICT
 
 
 			IF !Empty(cTestPath)
-				IF InStr("\", cTestPath) .AND. RAt2("\", cTestPath) != SLen(cTestPath)
+				IF Instr("\", cTestPath) .AND. RAt2("\", cTestPath) != SLen(cTestPath)
 					cTestPath += "\"
 				ENDIF
 
@@ -515,9 +515,9 @@ METHOD Copy(oFSTarget, lName)
 		ErrorBlock(cbOldErr)
 		// get some kind of description for the DOS error
         LOCAL oErr := oError as Error
-		IF oErr:OsCode != 0
-			oErr:Description := VO_Sprintf(__CAVOSTR_SYSLIB_DOS_ERROR, NTrim(oErr:OsCode) + ;
-				" (" + DosErrString(oErr:OsCode) + ")")
+		IF oErr:OSCode != 0
+			oErr:Description := VO_Sprintf(__CAVOSTR_SYSLIB_DOS_ERROR, NTrim(oErr:OSCode) + ;
+				" (" + DosErrString(oErr:OSCode) + ")")
 		ENDIF
 		SELF:oErrorInfo := oErr
 		lRetCode := FALSE
@@ -620,7 +620,7 @@ METHOD Error( oError, symMethod )
     ELSE
 		cErrorValType := ValType(oError)
 		oErr := Error{ }
-		oErr:GenCode := EG_ERRORBUILD
+		oErr:Gencode := EG_ERRORBUILD
 		oErr:Description := VO_Sprintf(__CAVOSTR_SYSCLASS_BADERROROBJECT,cErrorValType) 
 	ENDIF
 
@@ -771,7 +771,7 @@ METHOD Find( )
 	LOCAL cPath AS STRING
 
 
-	lRet := File(SELF:Fullpath)
+	lRet := File(SELF:FullPath)
 
 
 	IF !lRet
@@ -877,7 +877,7 @@ METHOD Move(oFSTarget, lName)
 	//        oFSTarget := FileSpec{ "A:\CUSTDATA\CUSTOMER.BAK" }     // specify new file
 	//        oFSSource:Move( oFSTarget )             // move the file
 	//
-	LOCAL oSelf         AS FILESPEC
+    LOCAL oSelf         AS FileSpec
 	LOCAL aFullPath     AS ARRAY
 	LOCAL cNewName      AS STRING
 	LOCAL cFileName     AS STRING
@@ -1037,9 +1037,9 @@ METHOD Move(oFSTarget, lName)
 		ErrorBlock(cbOldErr)
         LOCAL oErr := oError as Error
 		// get some kind of description for the DOS error
-		IF oErr:OsCode != 0
-			oErr:Description := VO_Sprintf(__CAVOSTR_SYSLIB_DOS_ERROR, NTrim(oErr:OsCode) + ;
-				" (" + DosErrString(oErr:OsCode) + ")")
+		IF oErr:OSCode != 0
+			oErr:Description := VO_Sprintf(__CAVOSTR_SYSLIB_DOS_ERROR, NTrim(oErr:OSCode) + ;
+				" (" + DosErrString(oErr:OSCode) + ")")
 		ENDIF
 
 
@@ -1365,11 +1365,11 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 
 
 	IF wErrorType# NIL
-		SELF:GenCode := wErrorType
+		SELF:Gencode := wErrorType
 
 
 	ELSE
-		SELF:GenCode := EG_NOTABLE
+		SELF:Gencode := EG_NOTABLE
 
 
 	ENDIF
@@ -1388,7 +1388,7 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 	ENDIF
 
 
-	IF GenCode = EG_ARG
+	IF Gencode = EG_ARG
 		SELF:Args := { uMisc1 }
 		SELF:Arg := uMisc2
 

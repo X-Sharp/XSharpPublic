@@ -64,8 +64,34 @@ namespace XSharp.MacroCompiler
             if (s is SymbolList)
             {
                 Symbol u = null;
-                foreach (var m in (s as SymbolList).Symbols)
+                var list = (s as SymbolList).Symbols;
+                if (list.Count == 2)
                 {
+                    // in .net 8 some types have both a constant and a property (Int32.MaxValue) (the property is declared in IMinMaxValue<T>)
+                    // or both a field and a property (IntPtr.Zero) (The property is declared in INumberBase)
+                    // We have hardcoded a preference here: constant before field before property
+                    switch (list[0])
+                    {
+                        case Constant c when list[1] is PropertySymbol:
+                            return c;
+                        case FieldSymbol f when list[1] is PropertySymbol:
+                            return f;
+                    }
+                    switch (list[1])
+                    {
+                        case Constant c when list[0] is PropertySymbol:
+                            return c;
+                        case FieldSymbol f when list[0] is PropertySymbol:
+                            return f;
+                    }
+                }
+
+
+                foreach (var m in list)
+                {
+                    if (m is FieldSymbol && list.Count == 2)
+                        return m;
+
                     if (!(m is MethodBaseSymbol) && !(m is TypeSymbol) && !(m is NamespaceSymbol))
                     {
                         if (u != null)

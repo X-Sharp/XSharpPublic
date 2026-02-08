@@ -33,10 +33,13 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     $endif$
-    <Reference Include="VulcanRT">
+    <Reference Include="XSharp.Core">
       <SpecificVersion>false</SpecificVersion>
     </Reference>
-    <Reference Include="VulcanRTFuncs">
+    <Reference Include="XSharp.RT">
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <Reference Include="XSharp.VO">
       <SpecificVersion>false</SpecificVersion>
     </Reference>
   </ItemGroup>

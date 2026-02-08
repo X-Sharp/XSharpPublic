@@ -91,12 +91,6 @@
     <File Path="Runtime/XmlDoc.Targets" />
   </Folder>
   <Folder Name="/TestApps/">
-    <Project Path="C:/SqlRdd/Beta1/Example/DataConverter/DataConverter.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="3409ef64-bb1a-47db-ab1b-38623cf6a251">
-      <BuildType Solution="DocChinese|*" Project="Debug" />
-      <BuildType Solution="Documentation|*" Project="Debug" />
-      <Build Solution="DocChinese|*" Project="false" />
-      <Build Solution="Documentation|*" Project="false" />
-    </Project>
     <Project Path="Runtime/XSharp.RDD.App/XSharp.RDD.App.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="13e1266e-d868-4a7d-bf68-ee1e4aa2d308">
       <BuildType Solution="DocChinese|*" Project="Documentation" />
     </Project>
@@ -172,18 +166,6 @@
       <Build Solution="DocChinese|*" Project="false" />
       <Build Solution="Documentation|*" Project="false" />
     </Project>
-    <Project Path="Tests/SqlDataexpl/SqlRddDataexpl.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="544d5f4f-1ca0-4cf0-a62a-7b4d6ba97aea">
-      <BuildType Solution="DocChinese|*" Project="Debug" />
-      <BuildType Solution="Documentation|*" Project="Debug" />
-      <Build Solution="DocChinese|*" Project="false" />
-      <Build Solution="Documentation|*" Project="false" />
-    </Project>
-    <Project Path="Tests/SqlRDDTests/SQLRddTests.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="1f7d08f1-fafd-415f-852f-153ad39f1c96">
-      <BuildType Solution="DocChinese|*" Project="Debug" />
-      <BuildType Solution="Documentation|*" Project="Debug" />
-      <Build Solution="DocChinese|*" Project="false" />
-      <Build Solution="Documentation|*" Project="false" />
-    </Project>
     <Project Path="Tests/SqlTest/TypedSqlTest.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="21b3548e-ada0-4137-abc2-4fc256598e14">
       <BuildType Solution="DocChinese|*" Project="Debug" />
       <BuildType Solution="Documentation|*" Project="Debug" />
@@ -244,7 +226,7 @@
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/SQL_Classes_SDK/XSharp.VO.SQLClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="91816960-eb2d-4e4a-ae67-4edc5bd38940" />
     <Project Path="Runtime/VOSdkTyped/Source/VOSdk/System_Classes_SDK/XSharp.VO.SystemClasses.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="5ac3e55d-f2bd-45eb-9cc2-dd8bd36240ea" />
   </Folder>
-  <Folder Name="/VOSDK-Typed/VOSDK-Typed-Tests/" Id="bc09a029-4245-9083-c4ca-7daae7144a69">
+  <Folder Name="/VOSDK-Typed/VOSDK-Typed-Tests/">
     <Project Path="Tests/TypedSDK/Explorer/Explorer.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="0c4f4347-33c2-4a81-a1d5-306c46fdb0bd">
       <BuildType Solution="DocChinese|*" Project="Debug" />
       <BuildType Solution="Documentation|*" Project="Debug" />
@@ -284,7 +266,6 @@
     <Project Path="Runtime/XSharp.Rdd/XSharp.RDD.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="e83c6c8c-773f-4b01-a597-3d38398a9362" />
     <Project Path="Runtime/XSharp.RT.Debugger/XSharp.RT.Debugger.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="770e6ebb-804f-415a-a9ca-e5b0383105f0" />
     <Project Path="Runtime/XSharp.RT/XSharp.RT.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="ef8d2bf2-e81a-479a-ba4f-294c4c348b66" />
-    <Project Path="Runtime/XSharp.SQLRdd/XSharp.SQLRDD.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="e83c6c8c-773f-4b01-a597-3d38398a9373" />
     <Project Path="Runtime/XSharp.VFP/XSharp.VFP.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="3a771f0e-9400-4a19-8663-c71567ebfa29" />
     <Project Path="Runtime/XSharp.VO/XSharp.VO.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="06099c3d-1697-4eb1-9f53-8a9a50b9eacd" />
     <Project Path="Runtime/XSharp.XPP/XSharp.XPP.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="c5d7be20-038e-4b42-a90a-b13bab83d8e5" />

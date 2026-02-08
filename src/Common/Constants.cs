@@ -10,7 +10,7 @@ namespace XSharp
         internal const string LanguageName = "XSharp";
         internal const string Company = "XSharp BV";
         internal const string RegCompany = "XSharpBV";
-        internal const string ProductName = "XSharp Gaia";
+        internal const string ProductName = "XSharp Gaia (\u0393\u03B1\u1FD6\u03B1)";
         internal const string Product = "XSharp";
         // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE BUILDNUMBER.H FILE and the Versions.Props file
 #if RUNTIME
@@ -19,7 +19,7 @@ namespace XSharp
         internal const string Version = FileVersion;
 #endif
         internal const string FileVersion = "3.0.0.0";
-        internal const string ProductVersion = "3.0 Alpha";
+        internal const string ProductVersion = "XSharp Gaia  (\u0393\u03B1\u1FD6\u03B1) 3.0 Beta";
         internal const string PublicKey = "ed555a0467764586";
         internal const string Copyright = "Copyright © XSharp BV 2015-2026";
 

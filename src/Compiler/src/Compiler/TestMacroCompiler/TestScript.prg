@@ -18,9 +18,9 @@ FUNCTION testScript() AS VOID STRICT
             RETURN x+y/z
 
     ENDTEXT
-    ? ExecScript(cScript,1,2,3)
-    ? ExecScript(cScript,4,5,6)
-    ? ExecScript(cScript,7,8,9)
+    ? ExecScriptSlow(cScript,1,2,3)
+    ? ExecScriptSlow(cScript,4,5,6)
+    ? ExecScriptSlow(cScript,7,8,9)
     CATCH e as Exception
         ? e:ToString()
 

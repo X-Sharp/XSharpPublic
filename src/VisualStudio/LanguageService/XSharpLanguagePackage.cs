@@ -351,7 +351,7 @@ namespace XSharp.LanguageService
                 if (!lValue)
                 {
                     GetIntellisenseSettings(false);
-                    var res = ThreadHelper.JoinableTaskFactory.RunAsync(RefreshAllDocumentWindowSettingsAsync);
+                    ThreadHelper.JoinableTaskFactory.Run(RefreshAllDocumentWindowSettingsAsync);
 
                 }
             }

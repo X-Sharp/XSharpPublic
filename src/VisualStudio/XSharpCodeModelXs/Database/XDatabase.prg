@@ -24,7 +24,7 @@ STATIC CLASS XDatabase
     STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
-    PRIVATE CONST CurrentDbVersion := 3.2 AS System.Double
+    PRIVATE CONST CurrentDbVersion := 3.3 AS System.Double
 
     STATIC METHOD InitializeMicrosoft() AS VOID
         SQLitePCL.Batteries.Init()
@@ -247,7 +247,7 @@ STATIC CLASS XDatabase
 #endregion
 #region Table Projects
             VAR stmt	:= "CREATE TABLE Projects ("
-            stmt     	+= " Id integer NOT NULL PRIMARY KEY, ProjectFileName text NOT NULL COLLATE NOCASE, Framework text NOT NULL COLLATE NOCASE"
+            stmt     	+= " Id integer NOT NULL PRIMARY KEY, ProjectFileName text NOT NULL COLLATE NOCASE, Startup integer, Framework text NOT NULL COLLATE NOCASE"
             stmt		+= " ) ;"
             stmt	    += "CREATE UNIQUE INDEX Projects_Pk     ON Projects (Id) ;"
             stmt	    += "CREATE UNIQUE INDEX Projects_Name   ON Projects (ProjectFileName, Framework); "
@@ -609,14 +609,14 @@ STATIC CLASS XDatabase
         Log(i"SaveOpenDesignerFiles returned {result}")
         RETURN result
 
-    STATIC METHOD GetProjectsPerFile(file as XFile) AS List<Int64>
+    STATIC METHOD GetProjectsPerFile(File as XFile) AS List<Int64>
         VAR result := List<INT64>{}
         IF IsDbOpen
-            Log("Get Projects for file: "+file:FullPath)
+            Log("Get Projects for file: "+File:FullPath)
             BEGIN LOCK oConn
                 TRY
                     USING VAR cmd := CreateCommand("SELECT DISTINCT IdProject from FilesPerProject where IdFile = $file", oConn)
-                    cmd:Parameters:AddWithValue("$file",file:Id)
+                    cmd:Parameters:AddWithValue("$file",File:Id)
                     USING VAR rdr := cmd:ExecuteReader()
                     DO WHILE rdr:Read()
                         result:Add(rdr:GetInt64(0))
@@ -674,7 +674,7 @@ STATIC CLASS XDatabase
                     ENDIF
                 END USING
                 IF ! lOk
-                    cmd:CommandText := "INSERT INTO Projects( ProjectFileName, Framework ) values ($file, $framework); SELECT last_insert_rowid() "
+                    cmd:CommandText := "INSERT INTO Projects( ProjectFileName, Startup, Framework ) values ($file, 0, $framework); SELECT last_insert_rowid() "
                     VAR Id := (INT64) cmd:ExecuteScalar()
                     oProject:Id := Id
                     lUpdated := TRUE
@@ -688,6 +688,41 @@ STATIC CLASS XDatabase
             CommitWhenNeeded()
         ENDIF
         RETURN
+    STATIC METHOD SaveStartuprojects(Projects as List<String>) as VOID
+        IF IsDbOpen
+            Log("Update startup projects")
+            BEGIN LOCK oConn
+                USING var cmd := CreateCommand("Update projects set Startup = 0", oConn)
+                cmd:ExecuteNonQuery()
+                foreach var proj in Projects
+                    cmd:CommandText := "Update projects set Startup = 1 where ProjectFileName = $file"
+                    cmd:Parameters:Clear()
+                    cmd:Parameters:AddWithValue("$file",proj)
+                    cmd:ExecuteNonQuery()
+                next
+            END LOCK
+        ENDIF
+        RETURN
+    STATIC METHOD GetStartupProjects() as List<string>
+        VAR result := List<STRING>{}
+        IF IsDbOpen
+            Log("Load startup projects")
+            BEGIN LOCK oConn
+                TRY
+                    USING var cmd := CreateCommand("Select ProjectFileName from projects where Startup = 1", oConn)
+                    USING VAR rdr := cmd:ExecuteReader()
+                    DO WHILE rdr:Read()
+                        VAR name := rdr:GetString(0)
+                        result:Add(name)
+                    ENDDO
+                CATCH e as Exception
+                    Log("Error getting startup Projects")
+                    XSettings.Exception(e, __FUNCTION__)
+                END TRY
+
+            END LOCK
+        ENDIF
+        RETURN result
 
     STATIC METHOD GetFileNames(oProject AS XProject) AS List<STRING>
         VAR result := List<STRING>{}
@@ -1773,8 +1808,8 @@ STATIC CLASS XDatabase
         Log(i"GetNamespacesInFile returns {result.Count} matches")
         RETURN result
 
-    STATIC METHOD GetTypesInFile(xFile AS XFile) AS IList<XDbResult>
-        VAR stmt := "Select * from ProjectTypes where IdFile = "+xFile:Id:ToString()+" and IdProject = "+xFile:Project:Id:ToString()
+    STATIC METHOD GetTypesInFile(XFile AS XFile) AS IList<XDbResult>
+        VAR stmt := "Select * from ProjectTypes where IdFile = "+XFile:Id:ToString()+" and IdProject = "+XFile:Project:Id:ToString()
         VAR result := List<XDbResult>{}
         IF IsDbOpen
             BEGIN LOCK oConn

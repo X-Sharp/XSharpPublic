@@ -160,7 +160,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 FOR VAR nBranch := 0 TO currentPage:Keys:Count-1
                     VAR branch := currentPage:Keys[nBranch]
                     IF SELF:__Compare(prevKey, branch:Key, _keySize, prevRecno, branch:Recno) > 0
-                        SELF:_addError( i"Key value in the index for page {branch.ChildPage:X}, record {branch.Recno} is not in the right order")
+                        SELF:_addError( i"Key value in the index for page {branch:ChildPage:X}, record {branch:Recno} is not in the right order")
                     ENDIF
                     VAR childPage  := SELF:GetPage(branch:ChildPage)
                     VAR lastNode   := childPage:LastNode

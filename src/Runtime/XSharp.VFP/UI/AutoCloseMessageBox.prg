@@ -5,7 +5,7 @@
 //
 
 // This class was inspired by the AutoClosingMessageBox on https://github.com/DmitryGaravsky/AutoClosingMessageBox
-
+#ifndef NET5_0_OR_GREATER
 USING System
 USING System.Collections.Generic
 USING System.Text
@@ -98,3 +98,4 @@ INTERNAL STATIC CLASS MessageBoxButtonsExtension
 
 END CLASS
 
+#endif

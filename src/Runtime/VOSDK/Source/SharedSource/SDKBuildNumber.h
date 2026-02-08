@@ -6,6 +6,6 @@
 #define SDK_BUILDNUMBER_H
 #include "BuildNumber.h"
 #undef  COPYRIGHT_STR
-#define COPYRIGHT_STR "Copyright © 1993-2020 Computer Associates & XSharp BV, All rights reserved"
+#define COPYRIGHT_STR "Copyright © 1993-2026 Computer Associates & XSharp BV, All rights reserved"
 #endif  // BUILDNUMBER_H 
 

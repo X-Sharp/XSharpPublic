@@ -1,6 +1,7 @@
 ﻿
 using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 using System;
@@ -206,7 +207,11 @@ namespace XSharp.LanguageService.Commands
 
         private static void GotoDefinition(DocumentView doc)
         {
-            XSharpGotoDefinition.GotoDefn(doc.TextView);
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                XSharpGotoDefinition.GotoDefn(doc.TextView);
+            });
         }
 
         private static int findCurrentEntity(DocumentView doc)

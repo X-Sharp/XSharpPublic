@@ -5,7 +5,7 @@
 System.InvalidCastException
 Invalid cast from 'System.Int32' to 'TestEnum'.
 */
-
+// $NOWARNING
 ENUM TestEnum
 	MEMBER One
 	MEMBER Two

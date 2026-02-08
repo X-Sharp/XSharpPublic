@@ -9,7 +9,6 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 USING System.Linq
-USING XSharp.Runtime
 USING XSharp.MacroCompiler
 
 BEGIN NAMESPACE MacroCompilerTest

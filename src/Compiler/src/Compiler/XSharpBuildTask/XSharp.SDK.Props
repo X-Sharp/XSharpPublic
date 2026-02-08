@@ -1,0 +1,55 @@
+<!--
+***********************************************************************************************
+XSharp.SDK Props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) XSharp BV. All rights reserved.
+***********************************************************************************************
+-->
+<!-- This file contains properties and items used by the XSharp SDK style projects -->
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- Make sure these items are excluded by the SDK props and targets -->
+    <VOBinaryFiles>**\*.xsfs;**\*.xsdbs;**\*.xsmnu;**\*.xsfrm;**\*.xsrep;**\*.xssql;**/*.vnfs;**/*.vndbs;**/*.vnmnu;**/*.vnfrm</VOBinaryFiles>
+	<DefaultItemExcludes>$(VOBinaryFiles);**/*.rc;**/*.resx;**/*.designer.prg</DefaultItemExcludes>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <!-- Add our own definitions for the VOBinary items with calculated dependentupon properti -->
+    <VOBinary Include="$(VOBinaryFiles)"  KeepDuplicates="false">
+      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\%(Extension)$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentName>
+      <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
+    </VOBinary>
+    <NativeResource Include="**/*.rc" >
+      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\.rc$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentName>
+      <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
+    </NativeResource >
+    <Compile Include="**/*.designer.prg"  KeepDuplicates="false" >
+      <!-- Designer.prg can depend on prg, resx or settings -->
+      <ParentPrgName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentPrgName>
+      <ParentResxName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.resx', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentResxName>
+      <ParentSettingsName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.settings', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentSettingsName>
+      <DependentUpon Condition="Exists('%(ParentPrgName)')">%(ParentPrgName)</DependentUpon>
+      <DependentUpon Condition="Exists('%(ParentResxName)')">%(ParentResxName)</DependentUpon>
+      <DependentUpon Condition="Exists('%(ParentSettingsName)')">%(ParentSettingsName)</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="**/*.resx"   KeepDuplicates="false">
+      <!-- This handles form.resx that depends on form.prg -->
+      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.resx$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentName>
+      <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <!-- Implicit imports -->
+  <ItemGroup Condition="'$(ImplicitUsings)' == 'true' Or '$(ImplicitUsings)' == 'enable'">
+    <Using Include="System" />
+    <Using Include="System.Collections.Generic" />
+    <Using Include="System.IO" />
+    <Using Include="System.Linq" />
+    <Using Include="System.Net.Http" Condition="'$(TargetFrameworkIdentifier)' != '.NETFramework'"/>
+    <Using Include="System.Threading" />
+    <Using Include="System.Threading.Tasks" />
+  </ItemGroup>
+</Project>

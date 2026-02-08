@@ -22,7 +22,9 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
     public abstract class ExpressionCompiler :
         IDkmClrExpressionCompiler,
         IDkmClrExpressionCompilerCallback,
+#if !XSHARP
         IDkmMetaDataPointerInvalidatedNotification,
+#endif
         IDkmModuleModifiedNotification,
         IDkmModuleInstanceUnloadNotification,
         IDkmLanguageFrameDecoder,
@@ -246,11 +248,12 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 
             return false;
         }
-
+#if !XSHARP
         void IDkmMetaDataPointerInvalidatedNotification.OnMetaDataPointerInvalidated(DkmClrModuleInstance moduleInstance)
         {
             RemoveDataItemIfNecessary(moduleInstance);
         }
+#endif
 
         void IDkmModuleModifiedNotification.OnModuleModified(DkmModuleInstance moduleInstance)
         {
@@ -433,7 +436,7 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
                         if (!missingAssemblyIdentities.IsEmpty)
                         {
                             assembliesLoadedInRetryLoop ??= PooledHashSet<AssemblyIdentity>.GetInstance();
-                            // If any identities failed to add (they were already in the list), then don't retry. 
+                            // If any identities failed to add (they were already in the list), then don't retry.
                             if (assembliesLoadedInRetryLoop.AddAll(missingAssemblyIdentities))
                             {
                                 tryAgain = ShouldTryAgainWithMoreMetadataBlocks(getMetaDataBytesPtr, missingAssemblyIdentities, ref metadataBlocks);

@@ -256,7 +256,9 @@ namespace Microsoft.VisualStudio.Project
                 if (result != VSConstants.S_OK && result != VSConstants.S_FALSE && result != VSConstants.OLE_E_PROMPTSAVECANCELLED)
                 {
                     // Note that the error MUST be thrown. Without this the file will not be opened in the debugger when it is not already opened
-                    ErrorHandler.ThrowOnFailure(result);
+                    if (logicalView == new Guid("7651A700-06E5-11D1-8EBD-00A0C90F26EA"))
+                        ErrorHandler.ThrowOnFailure(result);
+
                 }
 
                 if (windowFrame != null)

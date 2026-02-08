@@ -119,23 +119,23 @@ namespace XSharpDebugger
 
         #region IConstructedTypeProvider<XSharpType> implementation
 
-        XSharpType IConstructedTypeProvider<XSharpType>.GetPointerType(XSharpType elementType)
+        public XSharpType GetPointerType(XSharpType elementType)
         {
             return XSharpType.Create(elementType.Name+" PTR");
         }
 
-        XSharpType IConstructedTypeProvider<XSharpType>.GetGenericInstantiation(XSharpType genericType, ImmutableArray<XSharpType> typeArguments)
+        public XSharpType GetGenericInstantiation(XSharpType genericType, ImmutableArray<XSharpType> typeArguments)
         {
             return XSharpType.Invalid;
         }
 
-        XSharpType IConstructedTypeProvider<XSharpType>.GetArrayType(XSharpType elementType, ArrayShape shape)
+        public XSharpType GetArrayType(XSharpType elementType, ArrayShape shape)
         {
             // In the world of .NET metadata, we only support SZArray.
             return XSharpType.Create(elementType.Name + "[]");
         }
 
-        XSharpType IConstructedTypeProvider<XSharpType>.GetByReferenceType(XSharpType elementType)
+        public XSharpType GetByReferenceType(XSharpType elementType)
         {
             return elementType.MakeByRefType();
         }

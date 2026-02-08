@@ -6,7 +6,7 @@
     <StrongNameKeyId />
     <CommonDir>$(Solutiondir)Common\</CommonDir>
     <ArtifactsDir>$(SolutionDir)..\Artifacts\</ArtifactsDir>
-    <RtOutPutDir>$(ArtifactsDir)$(Config)\</RtOutPutDir>
+    <RtOutPutDir>$(ArtifactsDir)$(Config)\net46\</RtOutPutDir>
     <XsiDir>$(ArtifactsDir)bin\xsi\$(Config)\net472\</XsiDir>
     <AssemblyOriginatorKeyFile>$(Solutiondir)common\XSharp.snk</AssemblyOriginatorKeyFile>
     <PublicKeyToken>ed555a0467764586</PublicKeyToken>
@@ -20,6 +20,7 @@
     <RuntimeIdentifiers>win</RuntimeIdentifiers>
     <Vo15>true</Vo15>
     <Allowdot>false</Allowdot>
+	<ResolveNuGetPackages>false</ResolveNuGetPackages>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>
@@ -29,7 +30,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.MacroCompiler</RootNamespace>
     <AssemblyName>XSharp.MacroCompiler.Full</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <Name>FullMacroCompiler</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
@@ -39,7 +40,6 @@
     <SignAssembly>true</SignAssembly>
     <IncludePaths>$(CommonDir)</IncludePaths>
     <NoStandardDefs>true</NoStandardDefs>
-    <OutputPath>$(Binariesdir)</OutputPath>
     <StartupObject />
     <ApplicationIcon />
     <AZ>false</AZ>
@@ -82,17 +82,6 @@
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <PackageReference Include="System.Collections.Immutable">
-      <Version>7.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Runtime">
-      <Version>4.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
-      <Version>6.0.0</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="ExecScript.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
@@ -108,26 +97,29 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Runtime\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net46\XSharp.Core.dll" />
+    <Reference Include="e:\XSharp\Dev\Artifacts\Debug\net46\XSharp.RT.dll" />
+    <Reference Include="System.Collections.Immutable, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Collections.Immutable</Name>
+      <AssemblyName>System.Collections.Immutable.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Runtime\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <HintPath>..\..\..\..\..\Artifacts\bin\xsi\Debug\net472\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.CodeAnalysis, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.CodeAnalysis</Name>
+      <AssemblyName>XSharp.CodeAnalysis.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Scripting\XSharpScripting\XSharpScripting.csproj">
-      <Name>XSharpScripting</Name>
-      <Project>{014963ae-d6d1-4ff8-8d8a-8d417f5d8d1f}</Project>
+      <HintPath>..\..\..\..\..\Artifacts\bin\xsi\Debug\net472\XSharp.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.Scripting, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Scripting</Name>
+      <AssemblyName>XSharp.Scripting.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
-      <Name>XSharpCodeAnalysis</Name>
-      <Project>{f738fd65-ffaf-4f52-8efc-5affd1c42846}</Project>
-      <Private>True</Private>
-    </ProjectReference>
+      <HintPath>..\..\..\..\..\Artifacts\bin\xsi\Debug\net472\XSharp.Scripting.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Target Name="SignWithXSharpKey" AfterTargets="PostBuildEvent" Condition="'$(UseXSharpKey)' == 'true'">
     <Exec Command="&quot;$(SDK40ToolsPath)sn.exe&quot;  -q -R $(TargetPath) $(AssemblyOriginatorKeyFile)" />

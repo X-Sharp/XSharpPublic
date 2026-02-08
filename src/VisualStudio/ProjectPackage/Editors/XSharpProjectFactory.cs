@@ -53,6 +53,7 @@ namespace XSharp.Project
         }
         protected override ProjectNode CreateSdkProject()
         {
+#if DEV17
             ThreadHelper.ThrowIfNotOnUIThread();
             var project = new XSharpSdkProjectNode(this.package);
             IOleServiceProvider provider = null;
@@ -61,7 +62,10 @@ namespace XSharp.Project
             provider = (IOleServiceProvider)serviceProvider.GetService(typeof(IOleServiceProvider));
             project.SetSite(provider);
             return project;
+#else
+            return null;
+#endif
         }
-        #endregion
+#endregion
     }
 }

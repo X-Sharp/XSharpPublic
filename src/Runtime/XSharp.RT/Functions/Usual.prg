@@ -164,8 +164,8 @@ FUNCTION Empty(uValue AS PSZ) AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
 /// <remarks>For PTR values the 'emptyness' is determined by comparing to NULL_PTR</remarks>
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Empty(uValue AS PTR) AS LOGIC
-    RETURN (uValue == NULL_PTR)
+FUNCTION Empty(uValue AS Ptr) AS LOGIC
+    RETURN (IntPtr) uValue == IntPtr.Zero
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
 /// <remarks>For DateTime values the 'emptyness' is determined by comparing to DEFAULT(DateTime)</remarks>

@@ -22,7 +22,7 @@ namespace XSharpDebugger.FrameDecoder
     {
         public XSharpFrameDecoder()
         {
-            ;
+            Logger.Information("Debugger: Create FrameDecoder");
         }
         /// <summary>
         /// This method is called by the debug engine to get the text representation of a stack
@@ -47,12 +47,14 @@ namespace XSharpDebugger.FrameDecoder
         {
             try
             {
+                Logger.Information("Debugger: GetFrameName");
                 string name = TryGetFrameNameHelper(inspectionContext, frame, argumentFlags) ?? "<Unknown Method>";
                 completionRoutine(new DkmGetFrameNameAsyncResult(name));
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Logger.Exception(e, "Debugger: GetFrameName");
                 inspectionContext.GetFrameName(workList, frame, argumentFlags, completionRoutine);
             }
         }
@@ -79,11 +81,13 @@ namespace XSharpDebugger.FrameDecoder
 
             try
             {
+                Logger.Information("Debugger: GetFrameReturnType");
                 string name = TryGetFrameReturnTypeHelper(inspectionContext, frame) ?? "<Unknown>";
                 completionRoutine(new DkmGetFrameReturnTypeAsyncResult(name));
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Logger.Exception(e, "Debugger: GetFrameReturnType");
                 inspectionContext.GetFrameReturnType(workList, frame, completionRoutine);
             }
         }

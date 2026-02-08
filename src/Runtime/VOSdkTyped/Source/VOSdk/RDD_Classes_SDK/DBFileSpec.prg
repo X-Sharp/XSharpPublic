@@ -855,7 +855,7 @@ ASSIGN FileName( cFileName AS STRING)
 
 
 /// <include file="Rdd.xml" path="doc/DbFileSpec.Find/*" />
-METHOD Find() AS LOGIC STRICT
+METHOD Find() AS LOGIC
 	LOCAL lRetCode AS LOGIC
 
 

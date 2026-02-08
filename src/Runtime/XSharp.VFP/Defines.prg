@@ -1497,3 +1497,10 @@ DEFINE ALINES_INCLUDE_LAST := 2
 DEFINE ALINES_NO_EMPTY := 4
 DEFINE ALINES_CASE_IGNORE := 8
 DEFINE ALINES_INCLUDE_SEP := 16
+
+//
+// AMEMBERS() Constants
+//
+DEFINE AMEMBERS_PROPERTIES := 1 // Properties only
+DEFINE AMEMBERS_USER := 2 // User-defined members only (Hard to distinguish in .NET sometimes)
+DEFINE AMEMBERS_METHODS := 3 // Methods and Events only

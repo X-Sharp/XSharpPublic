@@ -1360,9 +1360,7 @@ FUNCTION __WCSelfPtrFree(ptrSelfPtr AS SelfPtr) AS LOGIC
 FUNCTION __WCSelfPtr2Object( p AS SelfPtr) AS OBJECT
     LOCAL oObject AS OBJECT
     IF p != NULL_PTR
-#ifdef DEBUG
         IF  MemCheckPtr(PTR(_CAST, p), _SIZEOF(SelfPtr))
-#endif
 #ifdef __VULCAN__
             IF (p:ptrSelf != 0)
                 oObject := GCHandle.FromIntPtr( p:ptrSelf ):Target
@@ -1371,9 +1369,7 @@ FUNCTION __WCSelfPtr2Object( p AS SelfPtr) AS OBJECT
             oObject := OBJECT(_CAST, p:ptrSelf)
 #endif
             RETURN oObject
-#ifdef DEBUG
         ENDIF
-#endif
     ENDIF
     RETURN NULL_OBJECT
 

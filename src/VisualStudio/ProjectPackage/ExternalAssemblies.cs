@@ -28,6 +28,9 @@ using Microsoft.VisualStudio.Shell;
 [assembly: ProvideCodeBase(AssemblyName = "SQLitePCLRaw.core")]
 [assembly: ProvideCodeBase(AssemblyName = "SQLitePCLRaw.batteries_v2")]
 [assembly: ProvideCodeBase(AssemblyName = "SQLitePCLRaw.provider.dynamic_cdecl")]
+#else
+[assembly: ProvideCodeBase(AssemblyName = "System.Memory")]
+[assembly: ProvideCodeBase(AssemblyName = "System.Runtime.CompilerServices.Unsafe")]
 #endif
 [assembly: ProvideCodeBase(AssemblyName = "System.Data.SQLite")]
 

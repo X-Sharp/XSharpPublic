@@ -8,10 +8,14 @@ USING XSharp.Internal
 USING System.Text.RegularExpressions
 USING System.Collections.Generic
 USING System.Text
+USING System.Reflection
+USING System.Linq
+USING System.Diagnostics
+USING System.IO
 
 
 INTERNAL FUNCTION FoxALen(a as ARRAY) AS DWORD
-RETURN XSharp.VFP.Functions.ALen( (__FoxArray) a, 0)
+    RETURN XSharp.VFP.Functions.ALen( (__FoxArray) a, 0)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alen/*" />
 FUNCTION ALen(a AS __FoxArray) AS DWORD
@@ -29,7 +33,7 @@ FUNCTION ALen(a AS __FoxArray, nArrayAttribute AS LONG) AS DWORD
             RETURN 0
         ENDIF
     CASE 0
-            RETURN (DWORD) a:Count
+        RETURN (DWORD) a:Count
     OTHERWISE
         var cMessage := __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE, nameof(nArrayAttribute))
         THROW ArgumentOutOfRangeException { nameof(nArrayAttribute),nArrayAttribute, cMessage}
@@ -42,21 +46,21 @@ FUNCTION __FoxALen(a AS __FoxArray) AS DWORD
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/aelement/*" />
 FUNCTION AElement(ArrayName AS __FoxArray, nRowSubscript AS DWORD) AS USUAL
-   IF ( nRowSubscript > 0 .AND. nRowSubscript <= ArrayName:Rows )
-      RETURN nRowSubscript
-   ENDIF
-   var cMessage := __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE, nameof(nRowSubscript))
-   THROW ArgumentOutOfRangeException { nameof(nRowSubscript),nRowSubscript, cMessage}
+    IF ( nRowSubscript > 0 .AND. nRowSubscript <= ArrayName:Rows )
+        RETURN nRowSubscript
+    ENDIF
+    var cMessage := __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE, nameof(nRowSubscript))
+    THROW ArgumentOutOfRangeException { nameof(nRowSubscript),nRowSubscript, cMessage}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/aelement/*" />
 FUNCTION AElement(ArrayName AS __FoxArray, nRowSubscript AS DWORD, nColumnSubscript AS DWORD) AS USUAL
     IF ArrayName:MultiDimensional
         IF nRowSubscript == 0 .OR. nRowSubscript >  ArrayName:Rows
-           var cMessage := __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE,nameof(nRowSubscript))
-           THROW ArgumentOutOfRangeException { nameof(nRowSubscript), nRowSubscript, cMessage}
+            var cMessage := __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE,nameof(nRowSubscript))
+            THROW ArgumentOutOfRangeException { nameof(nRowSubscript), nRowSubscript, cMessage}
         ELSEIF nColumnSubscript == 0 .OR. nColumnSubscript > ArrayName:Columns
-           var cMessage := __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE,nameof(nColumnSubscript))
-           THROW ArgumentOutOfRangeException { nameof(nColumnSubscript), nColumnSubscript, cMessage }
+            var cMessage := __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE,nameof(nColumnSubscript))
+            THROW ArgumentOutOfRangeException { nameof(nColumnSubscript), nColumnSubscript, cMessage }
         ENDIF
         nRowSubscript --
         RETURN ( nRowSubscript * ArrayName:Columns ) + nColumnSubscript
@@ -211,9 +215,9 @@ FUNCTION ShowFoxArray ( aPar AS ARRAY , cPrefix := "" AS STRING ) AS VOID
     IF aTest:MultiDimensional
         FOR i := 1 TO ALen ( aTest , 1 )
             FOR j := 1 TO ALen ( aTest , 2 )
-                 //var line := i"{cPrefix}{cLDelim}{AElement ( aTest , i , j )}{cRDelim} {cLDelim}{i},{j}{cRDelim} {aTest[i,j]} {GetElementValueType ( aTest[i,j] )}"
-                 var line := i"{cPrefix}{cLDelim}{i},{j}{cRDelim} = {aTest[i,j]} {GetElementValueType ( aTest[i,j] )}"
-                 QOut(line)
+                //var line := i"{cPrefix}{cLDelim}{AElement ( aTest , i , j )}{cRDelim} {cLDelim}{i},{j}{cRDelim} {aTest[i,j]} {GetElementValueType ( aTest[i,j] )}"
+                var line := i"{cPrefix}{cLDelim}{i},{j}{cRDelim} = {aTest[i,j]} {GetElementValueType ( aTest[i,j] )}"
+                QOut(line)
             NEXT
         NEXT
     ELSE
@@ -223,14 +227,14 @@ FUNCTION ShowFoxArray ( aPar AS ARRAY , cPrefix := "" AS STRING ) AS VOID
         NEXT
     ENDIF
 
-    LOCAL FUNCTION GetElementValueType( uValue AS USUAL ) AS STRING
-        IF IsNil ( uValue )
-            RETURN "(Nil)"
-        ELSE
-            RETURN "(" + ValType ( uValue ) + ")"
-        ENDIF
+LOCAL FUNCTION GetElementValueType( uValue AS USUAL ) AS STRING
+    IF IsNil ( uValue )
+        RETURN "(Nil)"
+    ELSE
+        RETURN "(" + ValType ( uValue ) + ")"
+    ENDIF
 
-        END FUNCTION
+END FUNCTION
 
 RETURN
 
@@ -272,12 +276,12 @@ FUNCTION ALines (ArrayName AS ARRAY, cExpression AS STRING, nFlags := 0 AS INT, 
         ENDIF
     NEXT
 
-    VAR regexOptions := RegexOptions.None
+    VAR @@regexOptions := RegexOptions.None
     IF lIgnoreCase
-        regexOptions := RegexOptions.IgnoreCase
+        @@regexOptions := RegexOptions.IgnoreCase
     ENDIF
 
-    VAR aRawParts := Regex.Split(cExpression, sbPattern:ToString(), regexOptions)
+    VAR aRawParts := Regex.Split(cExpression, sbPattern:ToString(), @@regexOptions)
 
     VAR finalLines := List<STRING>{}
     VAR nIndex := 0
@@ -324,4 +328,140 @@ FUNCTION ALines (ArrayName AS ARRAY, cExpression AS STRING, nFlags := 0 AS INT, 
     NEXT
 
     RETURN nRows
+END FUNCTION
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/amembers/*" />
+FUNCTION AMembers (ArrayName AS ARRAY, oObjectOrClass AS USUAL, nArrayContentsID := 0 AS INT, cFlags := "" AS STRING) AS DWORD
+    LOCAL oType AS Type
+
+    IF IsObject(oObjectOrClass)
+        oType := ((OBJECT)oObjectOrClass):GetType()
+    ELSEIF IsString(oObjectOrClass)
+        VAR cName := (STRING)oObjectOrClass
+        oType := Type.GetType(cName, FALSE, TRUE) // Case insensitive
+
+        IF oType == NULL
+            // TODO(irwin): serach in loaded assemblies if not found directly
+            RETURN 0
+        ENDIF
+    ELSE
+        RETURN 0
+    ENDIF
+
+    VAR bFlags := BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy
+    VAR @@aMembers := oType:GetMembers(bFlags)
+
+    VAR resultList := List<STRING[]>{}
+
+    FOREACH VAR oMember IN @@aMembers
+        LOCAL cMemberName AS STRING
+        LOCAL cMemberType AS STRING
+        LOCAL lAdd := FALSE AS LOGIC
+
+        cMemberName := oMember:Name:ToUpper()
+        cMemberType := ""
+
+        IF cMemberName:StartsWith("GET_") .OR. cMemberName:StartsWith("SET_") .OR. ;
+            cMemberName:StartsWith("ADD_") .OR. cMemberName:StartsWith("REMOVE_")
+            LOOP
+        ENDIF
+
+        SWITCH oMember:MemberType
+        CASE MemberTypes.Property
+        CASE MemberTypes.Field
+            cMemberType := "Property"
+            lAdd := TRUE
+
+        CASE MemberTypes.Method
+            cMemberType := "Method"
+            lAdd := TRUE
+
+        CASE MemberTypes.Event
+            cMemberType := "Event"
+            lAdd := TRUE
+
+        CASE MemberTypes.NestedType
+            NOP
+        END SWITCH
+
+        IF lAdd
+            VAR exists := resultList:Any({ x => x[1] == cMemberName })
+            IF !exists
+                resultList:Add( <STRING>{ cMemberName, cMemberType })
+            ENDIF
+        ENDIF
+    NEXT
+
+    // Foxpro sorts it alphabetically
+    resultList:Sort({ x, y => String.Compare(x[1], y[1]) })
+
+    VAR nRows := (DWORD)resultList:Count
+    IF nRows == 0
+        RETURN 0
+    ENDIF
+
+    IF ArrayName IS __FoxArray VAR foxArray
+        IF nArrayContentsID == 0
+            // 1 dimension: Just name
+            foxArray:Resize((INT)nRows) // 1D
+            FOR VAR i := 0 TO (INT)nRows - 1
+                foxArray[i+1] := resultList[i][1]
+            NEXT
+        ELSEIF nArrayContentsID == 1
+            // 2 dimensions: Name and Type
+            foxArray:ReDim(nRows, 2) // 2D
+            FOR VAR i := 0 TO (INT)nRows - 1
+                foxArray[i+1, 1] := resultList[i][1] // Col 1: Name
+                foxArray[i+1, 2] := resultList[i][2] // Col 2: Type
+            NEXT
+        ELSE
+            // nInfo 2, 3 not supported yet
+            THROW NotImplementedException{"AMEMBERS with nInfo=" + nArrayContentsID:ToString() + " is not fully implemented yet."}
+        ENDIF
+    ELSE
+        THROW ArgumentException{"ArrayName must be a valid VFP Array created with DIMENSION or generic usage."}
+    ENDIF
+
+    RETURN nRows
+END FUNCTION
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/agetfileversion/*" />
+FUNCTION AGetFileVersion (ArrayName AS ARRAY, cFileName AS STRING) AS DWORD
+    IF String.IsNullOrEmpty(cFileName) .OR. !File.Exists(cFileName)
+        RETURN 0
+    ENDIF
+
+    LOCAL oInfo AS FileVersionInfo
+    TRY
+        oInfo := FileVersionInfo.GetVersionInfo(cFileName)
+    CATCH
+        RETURN 0
+    END TRY
+
+    IF String.IsNullOrEmpty(oInfo:FileVersion)
+        RETURN 0
+    ENDIF
+
+    ASize(ArrayName, 15)
+
+    ArrayName[1] := oInfo:Comments ?? "" // 1. Comments
+    ArrayName[2] := oInfo:CompanyName ?? "" // 2. Company Name
+    ArrayName[3] := oInfo:FileDescription ?? "" // 3. File Description
+    ArrayName[4] := oInfo:FileVersion ?? "" // 4. File Version
+    ArrayName[5] := oInfo:InternalName ?? "" // 5. Internal Name
+    ArrayName[6] := oInfo:LegalCopyright ?? "" // 6. Legal Copyright
+    ArrayName[7] := oInfo:LegalTrademarks ?? "" // 7. Legal Trademarks
+    ArrayName[8] := oInfo:OriginalFilename ?? "" // 8. Original File Name
+    ArrayName[9] := oInfo:PrivateBuild ?? "" // 9. Private Build
+    ArrayName[10] := oInfo:ProductName ?? "" // 10. Product Name
+    ArrayName[11] := oInfo:ProductVersion ?? "" // 11. Product Version
+    ArrayName[12] := oInfo:SpecialBuild ?? "" // 12. Special Build
+    ArrayName[13] := "" // 13. OLE Self Registration (Not available in FileVersionInfo)
+    ArrayName[14] := oInfo:Language ?? "" // 14. Language
+    ArrayName[15] := "" // 15. Translation Code (this is complex and requires Win32 API)
+
+    // TODO(irwin): Elements 13, 15 require low-level Win32 VerQueryValue API logic
+    // which FileVersionInfo wraps but does not expose fully.
+
+    RETURN 15
 END FUNCTION

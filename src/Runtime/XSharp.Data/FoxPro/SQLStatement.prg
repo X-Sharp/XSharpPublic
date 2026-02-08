@@ -414,7 +414,11 @@ INTERNAL CLASS XSharp.VFP.SQLStatement IMPLEMENTS IDbConnectionClient
                 SELF:_CloseReader()
                 SELF:_aSyncState := AsyncState.Exception
                 IF SELF:_oThread:ThreadState == System.Threading.ThreadState.Running
+				#ifdef NET5_0_OR_GREATER
+					SELF:_oThread:Interrupt()
+				#else
                     SELF:_oThread:Abort()
+				#endif
                 ENDIF
                 SELF:_oThread := NULL
             END LOCK

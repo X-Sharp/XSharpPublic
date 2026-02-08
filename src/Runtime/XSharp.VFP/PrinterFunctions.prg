@@ -5,8 +5,8 @@
 //
 USING System.Management
 USING System.Drawing.Printing
+#ifndef NET5_0_OR_GREATER
 USING System.Windows.Forms
-
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/aprinters/*" />
 FUNCTION APrinters ( ArrayName , nValue ) AS INT CLIPPER
@@ -41,12 +41,12 @@ LOCAL iCount AS INT
 			VAR oProperty := ManagementObject{"Win32_Printer.DeviceID='" + cPrinterName + "'"}
 
 			ArrayName [ i + __ARRAYBASE__ , __ARRAYBASE__ ]     := cPrinterName
-			ArrayName [ i + __ARRAYBASE__ , __ARRAYBASE__ + 1 ] := IIF ( oProperty["PortName"] == NULL , "" , oProperty["PortName"]   )
+			ArrayName [ i + __ARRAYBASE__ , __ARRAYBASE__ + 1 ] := IIF ( oProperty["PortName"] == NULL , "" , (string) oProperty["PortName"]   )
 
 			IF nValue > 0
-				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 2  ] := IIF ( oProperty["DriverName"] == NULL , "" , oProperty["DriverName"] )
-				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 3  ] := IIF ( oProperty["Comment"]    == NULL , "" , oProperty["Comment"] )
-				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 4  ] := IIF ( oProperty["Location"]   == NULL , "" , oProperty["Location"] )
+				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 2  ] := IIF ( oProperty["DriverName"] == NULL , "" , (string) oProperty["DriverName"] )
+				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 3  ] := IIF ( oProperty["Comment"]    == NULL , "" , (string) oProperty["Comment"] )
+				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 4  ] := IIF ( oProperty["Location"]   == NULL , "" , (string) oProperty["Location"] )
 			ENDIF
 
 		NEXT
@@ -54,3 +54,4 @@ LOCAL iCount AS INT
 	ENDIF
 
 	RETURN iCount
+#endif

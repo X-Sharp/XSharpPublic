@@ -33,6 +33,8 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="CodeGenerator" Path="|CodeGenerator|" AssemblyName="|CodeGenerator;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="Debugger.Support" Path="|Debugger.Support|" AssemblyName="|Debugger.Support;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharp.Designers.pkgdef" />
+        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="System.Memory.dll" AssemblyName="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" />
+        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="System.Reflection.Metadata.dll" AssemblyName="System.Reflection.Metadata, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     </Assets>
     <Content>
         <ProjectTemplate>ProjectTemplates</ProjectTemplate>

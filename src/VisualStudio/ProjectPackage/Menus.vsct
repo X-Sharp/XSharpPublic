@@ -41,11 +41,28 @@
       <Menu guid="guidProjectPackage" id="idDebuggerSubMenu" priority="0x100" type="Menu" >
         <Parent guid="guidVSDebugGroup" id="IDG_WINDOWS"/>
         <CommandFlag>IconAndText</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>&amp;XSharp</ButtonText>
           <CommandName>XSharp</CommandName>
         </Strings>
       </Menu>
+
+      <!--XSharp Debugger Framework  in Debug/Windows-->
+      <!-- Debugging Framework menu added to debug controller -->
+      <Menu guid="guidProjectPackage" id="DebugTargetMenuDebugFrameworkMenu" priority="0x00F1" type="Menu">
+        <Parent guid="guidDebugTargetHandlerPackage" id="DebugTargetMenuControllerFooterGroup"/>
+        <CommandFlag>TextChanges</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <!--<CommandFlag>DefaultInvisible</CommandFlag>-->
+        <Strings>
+          <ButtonText>Framework</ButtonText>
+        </Strings>
+      </Menu>
+
+
+
     </Menus>
 
     <Groups>
@@ -60,6 +77,13 @@
         <Parent guid="guidProjectPackage"  id="idDebuggerSubMenu"/>
         <GroupFlag />
       </Group>
+
+      <!--Group for the Framework Items inside the Debug-Start menu for MultiTarget projects-->
+      <Group guid="guidProjectPackage" id="DebugTargetMenuDebugFrameworkGroup" priority="0x0600">
+        <Parent guid="guidProjectPackage"  id="DebugTargetMenuDebugFrameworkMenu"/>
+        <GroupFlag />
+      </Group>
+
       <!--Group for the items in the Help Menu-->
       <Group guid="guidProjectPackage" id="idHelpMenuGroup" priority="0x0600">
         <Parent guid="VSMainMenu" id="Help" />
@@ -313,6 +337,64 @@
           <LocCanonicalName>.XSharp.Debugger.ViewSettings</LocCanonicalName>
         </Strings>
       </Button>
+      <Button guid="guidProjectPackage" id="idDbgMemvarsWindow" priority="0x0200" type="Button">
+        <Icon guid="ImageCatalogGuid" id="Dynamic" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>View &amp;Publics and Privates</ButtonText>
+          <CommandName>View &amp;Publics and Privates</CommandName>
+          <ToolTipText>View Publics and Privates</ToolTipText>
+          <CanonicalName>View Publics and Privates</CanonicalName>
+          <LocCanonicalName>.XSharp.Debugger.ViewPublicsAndPrivates</LocCanonicalName>
+        </Strings>
+      </Button>
+
+
+      <!-- Added to the Debugger Framework Menu-->
+
+      <Button guid="guidProjectPackage" id="idFramework1" priority="0x1000" type="Button">
+        <Parent guid="guidProjectPackage" id="DebugTargetMenuDebugFrameworkGroup"/>
+        <CommandFlag>TextChanges</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Framework 1</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidProjectPackage" id="idFramework2" priority="0x1000" type="Button">
+        <Parent guid="guidProjectPackage" id="DebugTargetMenuDebugFrameworkGroup"/>
+        <CommandFlag>TextChanges</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Framework 2</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidProjectPackage" id="idFramework3" priority="0x1000" type="Button">
+        <Parent guid="guidProjectPackage" id="DebugTargetMenuDebugFrameworkGroup"/>
+        <CommandFlag>TextChanges</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Framework 3</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidProjectPackage" id="idFramework4" priority="0x1000" type="Button">
+        <Parent guid="guidProjectPackage" id="DebugTargetMenuDebugFrameworkGroup"/>
+        <CommandFlag>TextChanges</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Framework 4</ButtonText>
+        </Strings>
+      </Button>
+
+
+
+
+
       <Button guid="guidProjectPackage" id="idConvertXSharpRuntime" priority="0x0400" type="Button">
         <Icon guid="guidImages" id="bmpXSharp" />
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -485,6 +567,8 @@
       <IDSymbol name="idExporterGroup" value="0x01040" />
       <IDSymbol name="idDebuggerSubMenu" value="0x01050" />
       <IDSymbol name="idDebuggerMenuGroup" value="0x01060" />
+      <IDSymbol name="idDebuggerFrameworkSubmenu" value="0x01061" />
+      <IDSymbol name="idDebuggerFrameworkGroup" value="0x01062" />
       <IDSymbol name="idHelpMenuGroup" value="0x1021" />
       <IDSymbol name="idViewMenuGroup" value="0x1022" />
       <IDSymbol name="idViewBarGroup" value="0x1023" />
@@ -492,7 +576,20 @@
       <IDSymbol name="idFileContextMenuGroup" value="0x1025" />
       <IDSymbol name="idDebuggerToolbar" value="0x2000" />
       <IDSymbol name="idDebuggerToolbarGroup" value="0x2001" />
+      <IDSymbol name="idDebuggerFrameworkSubMenu" value="0x2002" />
 
+      <IDSymbol name="DebugTargetMenuDebugFrameworkMenu" value="0x7000" />
+      <IDSymbol name="DebugTargetMenuDebugFrameworkGroup" value="0x7001" />
+      <IDSymbol name="cmdidProjectDebugger" value="0x7002" />
+      <IDSymbol name="idFramework1" value="0x7011" />
+      <IDSymbol name="idFramework2" value="0x7012" />
+      <IDSymbol name="idFramework3" value="0x7013" />
+      <IDSymbol name="idFramework4" value="0x7014" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidDebugTargetHandlerPackage" value="{6e87cfad-6c05-4adf-9cd7-3b7943875b7c}">
+      <IDSymbol name="DebugTargetMenuControllerGroup" value="0x1000" />
+      <IDSymbol name="DebugTargetMenuControllerFooterGroup" value="0x2000" />
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{9f1c712d-4803-4aff-9153-28b74c34e1bf}">

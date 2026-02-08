@@ -28,8 +28,10 @@
             <TextBlock Text="Area:" VerticalAlignment="Center" Margin="5,5,10,5"  Padding="2,0,0,0"/>
             <TextBlock Text="{Binding Path=Alias}" VerticalAlignment="Center" MinWidth="30" Margin="5,5,10,5"  /> 
             <TextBlock Text="Show:" VerticalAlignment="Center" Margin="5,5,10,5"  Padding="2,0,0,0"/>
-            <RadioButton IsChecked="{Binding Path=ShowStatus}" VerticalAlignment="Center" Content="_Status" Margin="5,5,10,5"/>
-            <RadioButton IsChecked="{Binding Path=ShowFields}" VerticalAlignment="Center" Content="_Fields" Margin="5,5,10,5"/>
+            <RadioButton Name="btnStatus" IsChecked="{Binding Path=ShowStatus}" VerticalAlignment="Center" Content="_Status" Margin="5,5,10,5" Click="OnRadioClicked"/>
+            <RadioButton Name="btnStructure" IsChecked="{Binding Path=ShowStructure}" VerticalAlignment="Center" Content="_Structure" Margin="5,5,10,5" Click="OnRadioClicked"/>
+            <RadioButton Name="btnFields" IsChecked="{Binding Path=ShowFields}" VerticalAlignment="Center" Content="_Fields" Margin="5,5,10,5" Click="OnRadioClicked"/>
+            <RadioButton Name="btnIndexes" IsChecked="{Binding Path=ShowIndexes}" VerticalAlignment="Center" Content="_Indexes" Margin="5,5,10,5" Click="OnRadioClicked"/>
         </StackPanel>
         <Separator Grid.Row="1" Grid.ColumnSpan="2"/>
         <TextBox  Grid.Row="2" Grid.ColumnSpan="2" Visibility="Hidden" Name="tbNotLoaded" Text="The X# Runtime is NOT loaded"/>
@@ -52,10 +54,12 @@
         <DataGrid.Resources>
             <ResourceDictionary Source="VsThemeDictionary.xaml"/>
         </DataGrid.Resources>
-        <DataGrid.Columns>
-            <DataGridTextColumn Header="Name" MinWidth="50" Width="Auto" Binding="{Binding Path=Name}" />
-            <DataGridTextColumn Header="Value" MinWidth="50" Width="*" Binding="{Binding Path=Value}" />
-        </DataGrid.Columns>
+            <DataGrid.Columns >
+                <DataGridTextColumn Header="Name" MinWidth="50" Width="Auto" Binding="{Binding Path=Name}" CanUserResize="False" CanUserSort="False" />
+                <DataGridTextColumn Header="Value" MinWidth="50" Width="*" Binding="{Binding Path=Value}" CanUserReorder="False" CanUserSort="False"/>
+                <DataGridTextColumn Header="Length" MinWidth="50" Width="Auto" Binding="{Binding Path=Length}" Visibility="Hidden" CanUserReorder="False" CanUserSort="False" />
+                <DataGridTextColumn Header="Decimals" MinWidth="50" Width="*" Binding="{Binding Path=Decimals}" Visibility="Hidden" CanUserReorder="False" CanUserSort="False" />
+            </DataGrid.Columns>
         </DataGrid>
     </Grid>
 </UserControl>

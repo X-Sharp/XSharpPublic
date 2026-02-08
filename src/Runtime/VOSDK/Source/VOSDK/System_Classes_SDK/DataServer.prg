@@ -14,11 +14,11 @@ CLASS DataServer
 METHOD __ClearLocks( ) AS VOID STRICT
     SWITCH nCCMode
     CASE ccStable
-        SELF:Unlock( nLastLock )
+        SELF:UnLock( nLastLock )
     CASE ccRepeatable
-        SELF:Unlock( )
+        SELF:UnLock( )
     CASE ccFile
-        SELF:Unlock( )
+        SELF:UnLock( )
     END SWITCH
 
 
@@ -49,7 +49,7 @@ METHOD __SetupLocks( ) AS VOID STRICT
         NOP
     CASE ccStable
     CASE ccRepeatable
-        nLastLock := SELF:Recno
+        nLastLock := SELF:RecNo
         // Do not free locks in case user has other locks
         IF ! SELF:RLOCK( nLastLock )
             nLastLock := 0
@@ -191,7 +191,7 @@ ACCESS FCount
 
 
 /// <include file="System.xml" path="doc/DataServer.FieldGet/*" />
-METHOD FIELDGET( nFieldPosition )
+METHOD FieldGet( nFieldPosition )
     RETURN NIL
 
 
@@ -216,7 +216,7 @@ METHOD FieldPos( nFieldPosition )
 
 
 /// <include file="System.xml" path="doc/DataServer.FieldPut/*" />
-METHOD FIELDPUT( nFieldPosition, uValue )
+METHOD FieldPut( nFieldPosition, uValue )
     RETURN NIL
 
 
@@ -285,7 +285,7 @@ CONSTRUCTOR( )
 
 /// <include file="System.xml" path="doc/DataServer.Name/*" />
 ACCESS Name
-    IF oHyperlabel != NULL_OBJECT
+    IF oHyperLabel != NULL_OBJECT
         RETURN oHyperLabel:Name
     ENDIF
     RETURN NULL_STRING
@@ -293,7 +293,7 @@ ACCESS Name
 
 /// <include file="System.xml" path="doc/DataServer.NameSym/*" />
 ACCESS NameSym
-    IF oHyperlabel != NULL_OBJECT
+    IF oHyperLabel != NULL_OBJECT
         RETURN oHyperLabel:NameSym
     ENDIF
     RETURN NULL_STRING

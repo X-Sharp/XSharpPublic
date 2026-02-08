@@ -23,8 +23,6 @@
     <NamedArgs>False</NamedArgs>
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <WarningsAsErrors />
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>

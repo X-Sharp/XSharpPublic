@@ -103,11 +103,13 @@ class GeneralPropertyPagePanel
     const captStartup := "Startup object:" as string
     const captOutputType := "Output Type:" as string
     const captTargetFramework := "Target Framework:" as string
+    const captTargetFrameworks := "Target Frameworks:" as string
     const captAppName := "Application Name" as string
     const captNamespace := "Default Namespace:" as string
     const descNamespace := "Specifies the base namespace for files added to the project." as string
     const descAssembly := "Specifies the name of the output file that will hold the assembly manifest." as string
     const descFramework := "Specifies the version of .NET that the application targets. This option can have different values depending on which versions of .NET are installed on your computer." as string
+    const descFrameworks := "Specifies the versions of .NET that the application targets, seperated with a semicolon." as string
     const descOutputType := "Specifies the type of application to build." as string
     const descStartup := "Defines the entry point to be called when the application loads. Generally this is set either to the main form in your application or to the 'Start' function that should run when the application starts. Class libraries do not define an entry point." as string
     const descIcon := "Sets the .ico file that you want to use as your program icon. Note you must specify the icon and manifest -or- a resource file." as string

@@ -3,16 +3,16 @@
 
 // All of the function definitions below cause an ICE (in non-core dialects) instead of a proper error message:
 
-FUNCTION TestFunc1( a AS INT, b := 85, c AS INT) AS INT STRICT
+FUNCTION TestFunc1( a AS INT, b := 85, c AS INT) AS INT STRICT // $WARNING XS9118
 	? a,b,c
 RETURN a+b+c
-FUNCTION TestFunc2( a AS INT, b := 85, c := 1 AS INT) AS INT STRICT
+FUNCTION TestFunc2( a AS INT, b := 85, c := 1 AS INT) AS INT STRICT // $WARNING XS9118
 	? a,b,c
 RETURN a+b+c
-FUNCTION TestFunc3( b := 85, c AS INT) AS INT STRICT
+FUNCTION TestFunc3( b := 85, c AS INT) AS INT STRICT // $WARNING XS9118
 	? b,c
 RETURN b+c
-FUNCTION TestFunc4( b := 85, c := 1 AS INT) AS INT STRICT
+FUNCTION TestFunc4( b := 85, c := 1 AS INT) AS INT STRICT // $WARNING XS9118
 	? b,c
 RETURN b+c
 	

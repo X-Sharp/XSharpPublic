@@ -1,5 +1,6 @@
 // 938. Latebound assign of iVars
 
+// $NOWARNING
 CLASS TestClass
 
 	EXPORT nValue AS INT

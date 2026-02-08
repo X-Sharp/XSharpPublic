@@ -380,22 +380,20 @@ namespace Microsoft.VisualStudio.Project
                 {
                     if (output.Pane is IVsOutputWindowPaneNoPump nopump)
                     {
-                        ThreadHelper.JoinableTaskFactory.Run(async delegate
-                        {
-                            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        if (ThreadHelper.CheckAccess())
+                        { 
                             nopump.OutputStringNoPump(output.Message);
-                        });
+                        }
                     }
                     else
                     {
 #if DEV17
                         output.Pane.OutputStringThreadSafe(output.Message);
 #else
-                            ThreadHelper.JoinableTaskFactory.Run(async delegate
+                            if (ThreadHelper.CheckAccess())
                             {
-                                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                                 output.Pane.OutputString(output.Message);
-                            });
+                            }
 #endif
                     }
                 }

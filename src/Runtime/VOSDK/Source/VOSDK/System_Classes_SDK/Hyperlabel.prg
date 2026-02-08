@@ -42,7 +42,7 @@ METHOD Error( oError, symMethod )
     ELSE
 		cErrorValType   := ValType(oError)
 		oErr:= Error{}
-		oErr:GenCode := EG_ERRORBUILD
+		oErr:Gencode := EG_ERRORBUILD
 		oErr:Description := VO_Sprintf(__CAVOSTR_SYSCLASS_BADERROROBJECT, cErrorValType)
 	ENDIF
 	oErr:MethodSelf := SELF    
@@ -137,9 +137,9 @@ ACCESS NameSym
 /// <include file="System.xml" path="doc/HyperLabel.NameSym/*" />
 ASSIGN NameSym  (x)                 			
 	IF IsSymbol(x)
-		SELF:SymName := x
+		SELF:symName := x
 	ENDIF
-	RETURN SELF:SymName
+	RETURN SELF:symName
 
 
 END CLASS
@@ -162,9 +162,9 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 		SELF:CallFuncSym := symMethod
 	ENDIF
 	IF wErrorType# NIL
-		SELF:GenCode := wErrorType
+		SELF:Gencode := wErrorType
 	ELSE
-		SELF:GenCode := EG_NOTABLE
+		SELF:Gencode := EG_NOTABLE
 	ENDIF
 	IF oHLErrorMessage# NIL
         IF IsObject( oHLErrorMessage) .and. __USual.ToObject(oHLErrorMessage) IS HyperLabel 
@@ -175,7 +175,7 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 			SELF:Description := oHLErrorMessage
 		ENDIF
 	ENDIF
-	IF GenCode = EG_ARG
+	IF Gencode = EG_ARG
 		SELF:Args := { uMisc1 }
 		SELF:Arg := uMisc2
 	ENDIF

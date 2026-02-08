@@ -1523,8 +1523,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(rewrittenOperand != null);
             Debug.Assert((object)rewrittenType != null);
             Debug.Assert(rewrittenOperand.Type is { });
+#if !XSHARP
             Debug.Assert(!_compilation.Assembly.RuntimeSupportsNumericIntPtr);
-
+#endif
             TypeSymbol source = rewrittenOperand.Type;
             TypeSymbol target = rewrittenType;
 

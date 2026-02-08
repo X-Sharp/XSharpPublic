@@ -12,4 +12,9 @@ namespace XSharp.Project
             await XSharp.Debugger.UI.MemvarsWindow.ShowAsync();
         }
     }
+    [Command(PackageIds.idDebuggerSubMenu)]
+    internal sealed class DebuggerSubMenu : XSharpDebuggerBaseCommand<DebuggerSubMenu>
+    {
+    }
+
 }

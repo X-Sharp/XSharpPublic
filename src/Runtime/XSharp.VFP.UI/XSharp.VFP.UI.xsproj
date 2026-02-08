@@ -41,6 +41,8 @@
     <WarningsAsErrors />
     <PlatformTarget>AnyCPU</PlatformTarget>
     <NoWarn>$(DisabledWarnings);108,114</NoWarn>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <ResolveNuGetPackages>false</ResolveNuGetPackages>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>

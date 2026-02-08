@@ -80,7 +80,7 @@ namespace XSharp.Project
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
     [ProvideProjectFactory(typeof(XSharpProjectFactory),
         XSharpConstants.LanguageName, XSharpConstants.ProjectFileMask, XSharpConstants.ProjectExtension, XSharpConstants.ProjectExtensions,
-        @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
+        "ProjectTemplates", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
     [ProvideOptionPage(typeof(Options.DialogPageProvider.WindowEditor), "X# Custom Editors", "VO Window Editor",
         categoryResourceID: 200,

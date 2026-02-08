@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-02-04T12:45:15.910Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Nuget Packages</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Nuget Packages</para>
+    </header>
+    <para styleclass="Normal">XSharp 3 comes with nuget packages for the runtime.<br/>These packages contain assemblies and support files for both .Net Framework 4.6 and .Net 8.0</para>
+    <para styleclass="Normal">There are the following packages:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="3">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Package</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Contains</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Depends on</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharp.Core.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">nothing</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.RT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharp.RT.DLL<br/>XSharp.RT.Debugger.DLL</para>
+          <para styleclass="Normal">XSharp.MacroCompiler.dll<br/>XSharp.Data.DLL<br/>XSharp.RDD.DLL</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharp.Core</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.VO</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharp.VO.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharp.RT</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.VFP</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharp.VFP.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharp.RT</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.XPP</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharp.XPP.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharp.RT</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.Harbour</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharp.Harbour.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharp.RT</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.VOSDK<br/><text style="font-weight:bold;">For .Net framework 4.6</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">VOConsoleClasses.dll<br/>VOSystemClasses.dll</para>
+          <para styleclass="Normal">VORDDClasses.dll</para>
+          <para styleclass="Normal">VOGUIClasses.dll<br/>VOSQLClasses.dll<br/>VOInternetClasses.dll<br/>VOWin32APILibrary.dll<br/>VOReportClasses.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharp.VO</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.VOSDKTyped</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharp.VOConsoleClasses.dll<br/>XSharp.VOSystemClasses.dll</para>
+          <para styleclass="Normal">XSharp.VORDDClasses.dll</para>
+          <para styleclass="Normal">XSharp.VOSQLClasses.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharp.VO</para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

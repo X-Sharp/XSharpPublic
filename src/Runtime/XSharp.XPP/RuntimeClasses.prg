@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+using XSharp.XPP
 /// <summary>Retrieves the class object of class. </summary>
 /// <param name="cClassName">The name of the class whose class object should be returned. </param>
 /// <returns>The function returns the class object of the class with the name &lt;cClassName&gt;.

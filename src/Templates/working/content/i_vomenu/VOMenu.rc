@@ -1,0 +1,6 @@
+
+#define IDM_VOMenu_File_ID 15001
+VOMenu MENU
+BEGIN
+	MENUITEM "File" , IDM_VOMenu_File_ID
+END

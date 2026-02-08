@@ -17,9 +17,9 @@ using Microsoft.VisualStudio.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Diagnostics;
 using XSharp.Settings;
+using Microsoft.VisualStudio.Shell;
 #if DEV17
 using System.Threading;
-using Microsoft.VisualStudio.Shell;
 using System.Threading.Tasks;
 #endif
 
@@ -38,7 +38,11 @@ namespace XSharp.LanguageService
         {
             var componentModel = XSharpLanguagePackage.GetComponentModel();
             _editorAdaptersFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
-            base.SetSite(serviceContainer);
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                base.SetSite(serviceContainer);
+            });
         }
 #if DEV17
         internal object ComAggregate { get; private set; }

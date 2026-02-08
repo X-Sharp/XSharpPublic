@@ -41,6 +41,7 @@ namespace Microsoft.VisualStudio.Project
     public static class ProjectFileConstants
     {
         public const string Include = nameof(Include);
+        public const string Update = nameof(Update);
         public const string Name = nameof(Name);
         public const string HintPath = nameof(HintPath);
         public const string AssemblyName = nameof(AssemblyName);

@@ -27,6 +27,7 @@
     <file src="icon\Xsharp.png" target="icon\Xsharp.png" />
     <file src="Readme.VFP.md"  target="Readme.md" />
     <file src="$SourceFolder\XSharp.VFP.dll" target="lib\$TFM\XSharp.VFP.dll" />
+    <file src="$XmlFolder\XSharp.VFP.xml" target="lib\$TFM\XSharp.VFP.xml" />
     <!-- <file src="$SourceFolder\XSharp.VFP.UI.dll" target="lib\$TFM\XSharp.VFP.UI.dll" />-->
   </files>
 </package>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-02-09T14:22:01.397Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-02-09T16:36:45.100Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -19,13 +19,13 @@
     <para styleclass="Heading1"><text styleclass="Heading2">Breaking changes</text></para>
     <para styleclass="Heading1"><text styleclass="Heading3">Compiler</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">The compiler no longer supports &quot;Bring Your Own Runtime&quot;. If you want to compile in the VO or Vulcan dialect you will HAVE to include references to XSharp.Core and XShar\p.RT.<br/>That does not mean that you can&apos;t link your program against the Vulcan runtime DLLs, but we no longer map our Xbase types to the types in these DLLs. So USUAL will not be mapped to Vulcan.__Usual. You can still use the types, functions and classes on these DLLs, but they will no longer be treated specially. If you want to call a function from the Vulcan Runtime yuou will have to use the syntax for static methods</li>
+      <li styleclass="Normal">The compiler no longer supports &quot;Bring Your Own Runtime&quot;. If you want to compile in the VO or Vulcan dialect you will HAVE to include references to XSharp.Core and XSharp.RT.<br/>That does not mean that you can&apos;t link your program against the Vulcan runtime DLLs, but we no longer map our Xbase types to the types in these DLLs. So USUAL will not be mapped to Vulcan.__Usual. You can still use the types, functions and classes on these DLLs, but they will no longer be treated specially. If you want to call a function from the Vulcan Runtime yuou will have to use the syntax for static methods</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading3">Runtime</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">The signature for several functions and methods in the X# Runtime has been changed. We have used the new IN keyword for many that use parameters defined AS USUAL. The new IN USUAL tells the compiler to pass the variable by reference, which should make the code slightly faster. It also tells the compiler that the parameter will not be changed by the code in the function / method</li>
+      <li styleclass="Normal">The signature for several functions and methods in the XSharp Runtime has been changed. We have used the new IN keyword for many that use parameters defined AS USUAL. The new IN USUAL tells the compiler to pass the variable by reference, which should make the code slightly faster. It also tells the compiler that the parameter will not be changed by the code in the function / method</li>
       <li styleclass="Normal">We have also moved several functions and types between Runtime DLLs, because they were not in the best possible location. </li>
-      <li styleclass="Normal">X# 3 comes with runtime DLLs for both .net 46 and .net 8. Not all VOSDK Dlls have been ported to .Net 8 because they contain code that does not work in a AnyCPU environment.</li>
+      <li styleclass="Normal">X# 3 comes with runtime DLLs for both .net 46 and .net 8. Not all VOSDK Dlls have been ported to .Net 8 because they contain code that does not work in an AnyCPU environment.</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text><br/><text styleclass="Heading3">New Features</text></para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

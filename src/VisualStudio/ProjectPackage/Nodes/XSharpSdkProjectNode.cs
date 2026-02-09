@@ -29,7 +29,7 @@ namespace XSharp.Project
 {
     internal class XSharpSdkProjectNode : XSharpProjectNode
     {
-
+        internal bool SuspendBuild = false;
         class VirtualBuildProject : MSBuild.Project
         {
             public VirtualBuildProject(string fileName) : base(fileName)
@@ -358,8 +358,7 @@ namespace XSharp.Project
 
             var toDelete = new List<XSharpDependencyNode>();
             var toAdd = new List<string>();
-            this.Build(MsBuildTarget.ResolveAssemblyReferences);
-
+            //this.Build(MsBuildTarget.ResolveAssemblyReferences);
             foreach (var reference in sdkReferences)
             {
                 if (!newReferences.Contains(reference, StringComparer.OrdinalIgnoreCase))
@@ -383,11 +382,14 @@ namespace XSharp.Project
                 node.Dispose();
             }
             // add new nodes
+            this.SuspendBuild = true;
+
             foreach (var item in toAdd)
             {
                 var node = new XSharpDependencyNode(this, item);
                 frameworkNode.AddChild(node);
             }
+            this.SuspendBuild = false;
             sdkReferences.Clear();
             sdkReferences.AddRange(newReferences);
             frameworkNode.IsExpanded = isExpanded;
@@ -412,13 +414,24 @@ namespace XSharp.Project
             base(root, filePath)
         {
             // We do not want to store these dependencies in the project file, so we remove them from the BuildProject
-            root.BuildProject.RemoveItem(this.ItemNode.Item);
+            if (this.ItemNode != null && this.ItemNode.Item != null)
+                root.BuildProject.RemoveItem(this.ItemNode.Item);
         }
         public override bool EmbedInteropTypes { get => false; set { }}
 
         protected override ImageMoniker GetIconMoniker(bool open)
         {
             return KnownMonikers.ReferencePrivate;
+        }
+        protected override void ResolveAssemblyReference()
+        {
+            if (this.ProjectMgr is XSharpSdkProjectNode sdk && !sdk.SuspendBuild)
+                base.ResolveAssemblyReference();
+        }
+        protected override void BindReferenceData()
+        {
+            if (this.ProjectMgr is XSharpSdkProjectNode sdk && !sdk.SuspendBuild)
+                base.BindReferenceData();
         }
         override public Guid ItemTypeGuid => VSConstants.GUID_ItemType_VirtualFolder;
     }

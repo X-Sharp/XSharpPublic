@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.CodeFile",
   "Name": "CodeFile",
-  "Description": "An empty Code File",
+  "description": "An empty Code File",
   "SourceName": "CodeFile",
   "ShortName": "xscodefilei",
   "Tags": {
@@ -13,6 +13,6 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "CodeFile.prg"
+  "preferNameDirectory": true,
+  "defaultName": "CodeFile.prg"
 }

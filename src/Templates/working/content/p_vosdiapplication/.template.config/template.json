@@ -8,7 +8,7 @@
   ],
   "Identity": "XSharp.VOSDIApplication.SDK",
   "Name": "VO SDI Application (SDK)",
-  "Description": "A SDK Style project for creating a VO SDI application in the VO Dialect.",
+  "description": "A SDK Style project for creating a VO SDI application in the VO Dialect.",
   "SourceName": "XSharp.VOSDIApplication",
   "ShortName": "xsvosdiapplication",
   "Tags": {
@@ -17,35 +17,43 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "VOSDIApp",
-  "Symbols": {
-    "TargetNetFramework": {
-      "Type": "parameter",
-      "Description": "Target .NET version",
-      "Datatype": "choice",
-      "Choices": [
+  "preferNameDirectory": true,
+  "defaultName": "VOSDIApp",
+  "symbols": {
+    "TargetFrameworkOverride": {
+      "type": "parameter",
+      "description": "Overrides the target framework",
+      "replaces": "TargetFrameworkOverride",
+      "datatype": "string",
+      "defaultvalue": "",
+      "displayName": "Target framework override"
+    },
+    "Framework": {
+      "type": "parameter",
+      "description": "Target .NET version",
+      "datatype": "choice",
+      "choices": [
         {
-          "Choice": "net46",
-          "Description": "Target .NET Framework 4.6"
+          "choice": "net46",
+          "description": "Target .NET Framework 4.6"
         },
         {
-          "Choice": "net47",
-          "Description": "Target .NET Framework 4.7"
+          "choice": "net47",
+          "description": "Target .NET Framework 4.7"
         },
         {
-          "Choice": "net48",
-          "Description": "Target .NET Framework 4.8"
+          "choice": "net48",
+          "description": "Target .NET Framework 4.8"
         }
       ],
-      "Replaces": "net46",
-      "DefaultValue": "net46"
+      "replaces": "net46",
+      "defaultvalue": "net46"
     },
     "DefaultNamespace": {
-      "Type": "parameter",
-      "Datatype": "string",
-      "Replaces": "Company.Namespace1",
-      "DefaultValue": "Company.Namespace1"
+      "type": "parameter",
+      "datatype": "string",
+      "replaces": "Company.Namespace1",
+      "defaultvalue": "Company.Namespace1"
     }
   }
 }

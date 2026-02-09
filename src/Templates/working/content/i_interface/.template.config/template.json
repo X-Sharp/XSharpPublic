@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.Interface",
   "Name": "Interface",
-  "Description": "An empty interface definition",
+  "description": "An empty interface definition",
   "SourceName": "Interface1",
   "ShortName": "xsinterfacei",
   "Tags": {
@@ -13,8 +13,8 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "Interface1.prg",
+  "preferNameDirectory": true,
+  "defaultName": "Interface1.prg",
   "symbols": {
     "name": {
       "type": "parameter",
@@ -22,7 +22,7 @@
       "datatype": "string",
       "replaces": "Interface1",
       "fileRename": "Interface1",
-      "defaultValue": "Interface1"
+      "defaultvalue": "Interface1"
     }
   }
 }

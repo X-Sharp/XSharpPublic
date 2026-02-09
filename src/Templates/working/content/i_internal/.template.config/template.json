@@ -4,13 +4,13 @@
   "Classifications": [],
   "Identity": "XSharp.Settings.Internal",
   "Name": "Settings Internal",
-  "Description": "A hidden settings file",
+  "description": "A hidden settings file",
   "SourceName": "Settings Internal",
   "ShortName": "xsinternali",
   "Tags": {
     "language": "X#",
     "type": "item"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "Settings.settings"
+  "preferNameDirectory": true,
+  "defaultName": "Settings.settings"
 }

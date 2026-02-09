@@ -8,7 +8,7 @@
   ],
   "Identity": "XSharp.ClassLibraryHarbour.SDK",
   "Name": "Class Library Harbour Dialect (SDK)",
-  "Description": "A SDK Style project for creating a X# class library (.dll) for the Harbour Dialect",
+  "description": "A SDK Style project for creating a X# class library (.dll) for the Harbour Dialect",
   "SourceName": "XSharp.ClassLibraryHarbour",
   "ShortName": "xsclasslibraryharbour",
   "Tags": {
@@ -17,35 +17,43 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "ClassLibrary",
-  "Symbols": {
-    "TargetNetFramework": {
-      "Type": "parameter",
-      "Description": "Target .NET version",
-      "Datatype": "choice",
-      "Choices": [
+  "preferNameDirectory": true,
+  "defaultName": "ClassLibrary",
+  "symbols": {
+    "TargetFrameworkOverride": {
+      "type": "parameter",
+      "description": "Overrides the target framework",
+      "replaces": "TargetFrameworkOverride",
+      "datatype": "string",
+      "defaultvalue": "",
+      "displayName": "Target framework override"
+    },
+    "Framework": {
+      "type": "parameter",
+      "description": "Target .NET version",
+      "datatype": "choice",
+      "choices": [
         {
-          "Choice": "net8.0",
-          "Description": "Target .NET 8"
+          "choice": "net8.0",
+          "description": "Target .NET 8"
         },
         {
-          "Choice": "net9.0",
-          "Description": "Target .NET 9"
+          "choice": "net9.0",
+          "description": "Target .NET 9"
         },
         {
-          "Choice": "net10.0",
-          "Description": "Target .NET 10"
+          "choice": "net10.0",
+          "description": "Target .NET 10"
         }
       ],
-      "Replaces": "net8.0",
-      "DefaultValue": "net8.0"
+      "replaces": "net8.0",
+      "defaultvalue": "net8.0"
     },
     "DefaultNamespace": {
-      "Type": "parameter",
-      "Datatype": "string",
-      "Replaces": "Company.Namespace1",
-      "DefaultValue": "Company.Namespace1"
+      "type": "parameter",
+      "datatype": "string",
+      "replaces": "Company.Namespace1",
+      "defaultvalue": "Company.Namespace1"
     }
   }
 }

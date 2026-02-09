@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.Structure",
   "Name": "Structure",
-  "Description": "An empty structure definition",
+  "description": "An empty structure definition",
   "SourceName": "Structure1",
   "ShortName": "xsstructurei",
   "Tags": {
@@ -13,8 +13,8 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "Structure1.prg",
+  "preferNameDirectory": true,
+  "defaultName": "Structure1.prg",
   "symbols": {
     "name": {
       "type": "parameter",
@@ -22,7 +22,7 @@
       "datatype": "string",
       "replaces": "Structure1",
       "fileRename": "Structure1",
-      "defaultValue": "Structure1"
+      "defaultvalue": "Structure1"
     }
   }
 }

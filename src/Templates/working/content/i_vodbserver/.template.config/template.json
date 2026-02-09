@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.VODBServer",
   "Name": "VODBServer",
-  "Description": "An empty DBServer",
+  "description": "An empty DBServer",
   "SourceName": "VODBServer1",
   "ShortName": "xsvodbserveri",
   "Tags": {
@@ -13,8 +13,8 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "VODBServer1.prg",
+  "preferNameDirectory": true,
+  "defaultName": "VODBServer1.prg",
   "symbols": {
     "name": {
       "type": "parameter",
@@ -22,7 +22,7 @@
       "datatype": "string",
       "replaces": "VODBServer1",
       "fileRename": "VODBServer1",
-      "defaultValue": "VODBServer1"
+      "defaultvalue": "VODBServer1"
     }
   },
   "postActions": [

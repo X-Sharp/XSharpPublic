@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.VOMenu",
   "Name": "VOMenu",
-  "Description": "An empty VO Menu",
+  "description": "An empty VO Menu",
   "SourceName": "VOMenu",
   "ShortName": "xsvomenui",
   "Tags": {
@@ -13,8 +13,8 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "VOMenu.prg",
+  "preferNameDirectory": true,
+  "defaultName": "VOMenu.prg",
   "symbols": {
     "name": {
       "type": "parameter",
@@ -22,7 +22,7 @@
       "datatype": "string",
       "replaces": "VOMenu",
       "fileRename": "VOMenu",
-      "defaultValue": "VOMenu"
+      "defaultvalue": "VOMenu"
     }
   },
   "postActions": [

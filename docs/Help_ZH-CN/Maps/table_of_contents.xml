@@ -283,6 +283,15 @@
     </topicref>
     <topicref type="topic" id="423888143662582" build="ALL" modified="2024-05-26T17:51:05.985Z" icon="0" href="VersionHistory">
       <caption translate="true">版本历史</caption>
+      <topicref type="topic" id="460575145617501" build="ALL" modified="2026-02-09T14:03:36.266Z" icon="0" href="Known-Issues-in-XSharp-3">
+        <caption translate="true">XSharp 3 已知问题</caption>
+      </topicref>
+      <topicref type="topic" id="460571586406113" build="ALL" modified="2026-02-09T14:03:59.716Z" icon="0" href="VersionHistoryXSharp2">
+        <caption translate="true">历史XSharp 2</caption>
+      </topicref>
+      <topicref type="topic" id="460572396034078" build="ALL" modified="2026-02-09T14:04:13.524Z" icon="0" href="VersionHistoryXSharp1">
+        <caption translate="true">历史 XSharp 1 及更早版本</caption>
+      </topicref>
     </topicref>
     <topicref type="topic" id="428984094992566" build="ALL" modified="2024-06-04T08:08:25.825Z" icon="0" href="MigratingappsfromVOtoX">
       <caption translate="true">将应用程序从 VO 迁移到 X#</caption>
@@ -304,6 +313,9 @@
     </topicref>
     <topicref type="topic" id="432585631903751" build="ALL" modified="2024-06-04T08:11:26.637Z" icon="0" href="The-X-Runtime">
       <caption translate="true">X# 运行时(Runtime)</caption>
+      <topicref type="topic" id="460576784294169" build="ALL" modified="2026-02-09T14:08:05.130Z" icon="0" href="Nuget-Packages">
+        <caption translate="true">金块套装</caption>
+      </topicref>
       <topicref type="topic" id="432589511557658" build="ALL" modified="2018-06-07T17:53:51.735Z" icon="0" href="XSharp_Core">
         <caption translate="true">XSharp.Core</caption>
       </topicref>

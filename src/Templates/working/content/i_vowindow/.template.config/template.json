@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.VOWindow",
   "Name": "VOWindow",
-  "Description": "An empty VO Window",
+  "description": "An empty VO Window",
   "SourceName": "VOWindow",
   "ShortName": "xsvowindowi",
   "Tags": {
@@ -13,8 +13,8 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "VOWindow.prg",
+  "preferNameDirectory": true,
+  "defaultName": "VOWindow.prg",
   "symbols": {
     "name": {
       "type": "parameter",
@@ -22,7 +22,7 @@
       "datatype": "string",
       "replaces": "VOWindow",
       "fileRename": "VOWindow",
-      "defaultValue": "VOWindow"
+      "defaultvalue": "VOWindow"
     }
   },
   "postActions": [

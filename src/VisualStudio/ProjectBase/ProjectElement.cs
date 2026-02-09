@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -20,6 +20,8 @@ using MSBuild = Microsoft.Build.Evaluation;
 using Microsoft.Build.Evaluation;
 using MSBuildExecution = Microsoft.Build.Execution;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using System.Linq;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -342,15 +344,19 @@ namespace Microsoft.VisualStudio.Project
             if(this.IsVirtual)
                 return;
 
-            itemProject.BuildProject.ReevaluateIfNecessary();
-
-            IEnumerable<ProjectItem> items = itemProject.BuildProject.GetItems(item.ItemType);
-            foreach (ProjectItem projectItem in items)
+            bool isSdk = itemProject.BuildProject.Xml.Sdk != null;
+            if (!isSdk)
             {
-                if(projectItem!= null && projectItem.UnevaluatedInclude.Equals(item.UnevaluatedInclude))
+				// prevent duplicate items.
+                itemProject.BuildProject.ReevaluateIfNecessary();
+                IEnumerable<ProjectItem> items = itemProject.BuildProject.GetItems(this.item.ItemType);
+                foreach (ProjectItem projectItem in items)
                 {
-                    item = projectItem;
-                    return;
+                    if (string.Equals(projectItem?.UnevaluatedInclude, item.UnevaluatedInclude, StringComparison.OrdinalIgnoreCase))
+                    {
+                        this.item = projectItem;
+                        return;
+                    }
                 }
             }
         }

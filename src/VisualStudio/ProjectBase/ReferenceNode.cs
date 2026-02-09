@@ -84,7 +84,7 @@ namespace Microsoft.VisualStudio.Project
                 return String.Empty;
             }
         }
-        public bool EmbedInteropTypes
+        public virtual bool EmbedInteropTypes
         {
             get
             {

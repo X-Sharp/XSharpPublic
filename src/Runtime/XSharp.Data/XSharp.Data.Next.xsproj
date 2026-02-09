@@ -29,7 +29,7 @@
     </ProjectReference>
     <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj">
       <Name>XSharp.RT.Next</Name>
-      <Project>{d233b3c6-e6f8-478d-9ce5-ef27a594e370}</Project>
+      <Project>{504a02d9-74ae-445f-85d7-af2544e06d81}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.Header",
   "Name": "Header",
-  "Description": "An empty Header File",
+  "description": "An empty Header File",
   "SourceName": "Header1",
   "ShortName": "xsheaderi",
   "Tags": {
@@ -13,6 +13,6 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "Header1.xh"
+  "preferNameDirectory": true,
+  "defaultName": "Header1.xh"
 }

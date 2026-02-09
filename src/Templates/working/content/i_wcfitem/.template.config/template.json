@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.WcfItem",
   "Name": "WCF Service",
-  "Description": "A WCF Service",
+  "description": "A WCF Service",
   "SourceName": "WCFService1",
   "ShortName": "xswcfitemi",
   "Tags": {
@@ -13,8 +13,8 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "WCFService1.prg",
+  "preferNameDirectory": true,
+  "defaultName": "WCFService1.prg",
   "symbols": {
     "name": {
       "type": "parameter",
@@ -22,7 +22,7 @@
       "datatype": "string",
       "replaces": "WCFService1",
       "fileRename": "WCFService1",
-      "defaultValue": "WCFService1"
+      "defaultvalue": "WCFService1"
     }
   }
 }

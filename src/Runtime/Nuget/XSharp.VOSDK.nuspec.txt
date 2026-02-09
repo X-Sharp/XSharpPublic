@@ -24,9 +24,10 @@
 	</dependencies>
   </metadata>
   <files>
-    <file src="icon\Xsharp.png"             target= "icon\Xsharp.png" />
+    <file src="icon\Xsharp.png"             target= "icon/Xsharp.png" />
     <file src="Readme.VOSDK.md"             target="Readme.md" />
-	<file src="$SourceFolder\net46\VO*.dll" target= "lib\$TFM" />
+	<file src="$SourceFolder\net46\VO*.dll" target= "lib/$TFM" />
+	<file src="$XmlFolder\VO*.xml"    target= "lib/$TFM" />
     <file src="..\voredist\*.DLL"           target= "contentFiles/any/net46" />
   </files>
 </package>

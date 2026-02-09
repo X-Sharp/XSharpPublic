@@ -16,7 +16,7 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <ArtifactsDir>..\..\Artifacts\</ArtifactsDir>
-    <DocDir>$(ArtifactsDir)DocChinese</DocDir>
+    <DocDir>$(ArtifactsDir)DocChinese\net46</DocDir>
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 4.6</FrameworkVersion>
     <OutputPath>$(ArtifactsDir)Help_ZH-CN</OutputPath>
@@ -70,7 +70,7 @@
       <DocumentationSource sourceFile="..\Docs\XSharp.RT.Docs.xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>2.24.0.0</HelpFileVersion>
+    <HelpFileVersion>3.0.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -206,7 +206,7 @@
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
     <RootNamespaceTitle>X# Runtime and SDK Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
-    <CopyrightText>Copyright &amp;#169; 2015-2025 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169; Computer Associates.</CopyrightText>
+    <CopyrightText>Copyright &amp;#169; 2015-2026 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169; Computer Associates.</CopyrightText>
     <BuildLogFile>$(Artifactsdir)\Obj\Help_ZH-CN\BuildLog.log</BuildLogFile>
     <CatalogProductId>VS</CatalogProductId>
     <CatalogVersion>100</CatalogVersion>

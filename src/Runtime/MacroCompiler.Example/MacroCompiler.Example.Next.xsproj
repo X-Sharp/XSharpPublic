@@ -16,6 +16,7 @@
     <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
     <NoStandardDefs>False</NoStandardDefs>
     <TargetFramework>net8.0</TargetFramework>
+    <ProjectGuid>{c3bc651e-9d08-43e1-bbb2-90bf5232a4df}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\MacroCompiler\XSharp.MacroCompiler.Next.csproj">

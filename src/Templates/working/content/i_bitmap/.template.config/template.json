@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.Bitmap",
   "Name": "Bitmap",
-  "Description": "A Bitmap file",
+  "description": "A Bitmap file",
   "SourceName": "Bitmap",
   "ShortName": "xsbitmapi",
   "Tags": {
@@ -14,6 +14,6 @@
     "is-icon-path": "true"
     
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "Bitmap.bmp"
+  "preferNameDirectory": true,
+  "defaultName": "Bitmap.bmp"
 }

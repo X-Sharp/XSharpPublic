@@ -1,50 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-24T13:05:09.165+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-02-09T14:10:01.023Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>自备运行时 (BYOR))</title>
   <body>
     <header>
       <para styleclass="Heading1">自备运行时 (BYOR))</para>
     </header>
-    <para styleclass="Normal" style="border-color:#000000; border-style:single; border-width:1px; padding:5px;"><table styleclass="Default" rowcount="1" colcount="1" style="background-color:#ffff99; head-row-background-color:#ffff99; alt-row-background-color:#ffff99;">
-      <thead style="vertical-align:top">
-        <td>
-          <para styleclass="Normal" style="border-color:#000000; border-style:single; border-width:1px; padding:5px;"><text style="font-weight:bold;">X# 运行时现已可用。我们不再需要针对 Vulcan 运行时进行编译！目前，我们仍然支持 Vulcan 运行时，但在 X# 的未来版本中可能会放弃这一支持。</text></para>
-        </td>
-      </thead>
-    </table></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">通过我们称之为 “自带运行时”(Bring Your Own Runtime)，在 XSharp 的这一版本中提供了对 VO 和 Vulcan 的支持。</para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">如果你拥有 Vulcan 的许可证，你可以将 &lt;Vulcan.NET BaseFolder&gt;\Redist\4.0 文件夹中的 DLL 复制到你的解决方案中的文件夹。</para>
-    <para styleclass="Body Text">然后在项目中添加所需的 DLL 引用。</para>
-    <para styleclass="Heading3">如果使用 Vulcan 运行时编译 VO/Vulcan 方言，<text style="color:#ff0000;">必须</text>添加的动态链接库：</para>
-    <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">VulcanRT.DLL</li>
-      <li styleclass="Normal">VulcanRTFuncs.DLL</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">这两个文件绝对不会添加到你的 Vulcan 项目中，Vulcan 会自动添加对这些 DLL 的引用。XSharp 不会这样做，所以你应该自己添加它们。</para>
-    <para styleclass="Heading3">您<text style="color:#ff0000;">可能</text>需要添加的动态链接库，这取决于您在应用程序中使用什么：</para>
-    <para styleclass="Normal"></para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">VulcanVOSystemClasses.dll </li>
-      <li styleclass="Normal">VulcanVORDDClasses.dll </li>
-      <li styleclass="Normal">VulcanVOGUIClasses.dll </li>
-      <li styleclass="Normal">VulcanVOInternetClasses.dll </li>
-      <li styleclass="Normal">VulcanVOSQLClasses.dll </li>
-      <li styleclass="Normal">VulcanVOConsoleClasses.dll </li>
-      <li styleclass="Normal">VulcanVOWin32APILibrary.dll </li>
-    </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading3">您通常<text style="color:#ff0000;">不会</text>添加到项目中的 DLL（Vulcan Runtime 会自动处理这些 DLL）。</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">VulcanRDD.DLL</li>
-      <li styleclass="Normal">VulcanMacroCompiler.DLL</li>
-      <li styleclass="Normal">VulcanDBFCDX.dll </li>
-      <li styleclass="Normal">VulcanDBFFPT.dll </li>
-    </list>
+    <para styleclass="Normal" style="border:none;">XSharp 3 不再支持&quot;自带运行时&quot;功能。若需使用非核心方言进行编译，必须添加对 X# 运行时的引用。</para>
+    <para styleclass="Normal" style="border:none;">您仍可在项目中引用 Vulcan 运行时 DLL，但这些程序集中的类型和函数将被视为普通 .Net 程序集处理。</para>
   </body>
 </topic>

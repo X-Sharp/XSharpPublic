@@ -37,6 +37,7 @@
     <ProjectReference Include="..\..\..\..\XSharp.Data\XSharp.Data.Next.xsproj">
       <Name>XSharp.Data</Name>
       <Private>True</Private>
+      <Project>{9cea0df2-04fb-499e-9976-5c9cf7c0e689}</Project>
     </ProjectReference>
     <ProjectReference Include="..\System_Classes_SDK\XSharp.VO.SystemClasses.Next.xsproj">
       <Name>XSharp.VOSystemClasses</Name>

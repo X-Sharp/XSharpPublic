@@ -4,55 +4,89 @@ using System
 using System.IO
 using System.Xml.Linq
 
-//
+// Looking for AppData\Roaming Folder
 VAR appDataRoamingPath := Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
 VAR nugetConfigPath := Path.Combine(appDataRoamingPath, "NuGet\\nuget.config")
 VAR xsharpOffLine := "XSharp Offline Packages"
 VAR sourceUrl := GetXSharpInstallationPath()
 sourceUrl := Path.Combine(sourceUrl, "NuGet")
-
+// Load/Create the nuget.config file
 local doc as XDocument
 IF !File.Exists(nugetConfigPath)
     doc := XDocument{XElement{"configuration"}}
 ELSE
     doc := XDocument.Load(nugetConfigPath)
 endif
-
+// Search in the XML File
 VAR configElement := doc:Element("configuration")
 VAR packageSources := configElement:Element("packageSources")
-
 if packageSources == null
     packageSources := XElement{"packageSources"}
     configElement:Add(packageSources)
 endif
-VAR found := false
+// Search "XSharp Offline Packages" and Add if missing
+GetSetPackageSource( packageSources, xsharpOffLine, sourceUrl )
+// Get the SourceMapping to "XSharp Offline Packages" ?
+GetSetSourceMapping( configElement, xsharpOffLine, "XSharp.*" )
+// Is Nuget.org already in the list of package sources, if so add the SourceMapping to Nuget.org
+IF SearchPackageSource(packageSources, "nuget.org")
+    GetSetSourceMapping( configElement, "nuget.org", "*" )
+ELSE
+    VAR sourceList := GetPackageSourceList(packageSources)
+    // No Nuget,and more than XSharp Offline Packages
+    // You might filter/choose your sources.
+    IF sourceList:Count == 1
+        // Only XSharp Offline Packages, add Nuget.org as well
+        GetSetPackageSource( packageSources, "nuget.org", "https://api.nuget.org/v3/index.json" )
+        GetSetSourceMapping( configElement, "nuget.org", "*" )
+    ENDIF
+ENDIF
+
+doc:Save(nugetConfigPath)
+
+FUNCTION GetPackageSourceList( packageSources AS XElement ) AS List<String>
+VAR list := List<String>{}
 foreach elt as XElement in packageSources:Elements("add") 
-    if elt:Attribute("key")?:Value == xsharpOffLine
+    list:Add(elt:Attribute("key")?:Value)
+next
+RETURN list
+
+FUNCTION SearchPackageSource( packageSources AS XElement, source AS STRING ) AS LOGIC
+VAR found := false
+VAR sourceList := GetPackageSourceList(packageSources)
+foreach elt as String in sourceList
+    if elt == source
         found := true
         exit
     endif
 next
+RETURN found
+
+
+FUNCTION GetSetPackageSource( packageSources AS XElement, source AS STRING, sourceUrl AS STRING ) AS VOID
+VAR found := SearchPackageSource( packageSources, source )
 if !found
-    packageSources:Add(XElement{"add", XAttribute{"key", xsharpOffLine}, XAttribute{"value", sourceUrl}})
+    packageSources:Add(XElement{"add", XAttribute{"key", source}, XAttribute{"value", sourceUrl}})
 endif
-//
+
+
+FUNCTION GetSetSourceMapping( configElement AS XElement, source AS STRING, pattern AS STRING ) AS VOID
 VAR packageSourceMapping := configElement:Element("packageSourceMapping")
 if packageSourceMapping == null
     packageSourceMapping := XElement{"packageSourceMapping"}
     configElement:Add(packageSourceMapping)
 endif
-found := false
+VAR found := false
 foreach elt as XElement in packageSourceMapping:Elements() 
-    if elt:Attribute("key")?:Value == xsharpOffLine
+    if elt:Attribute("key")?:Value == source
         found := true
         exit
     endif
 next
 if !found
-    VAR packageSource := XElement{"packageSource", XAttribute{"key", xsharpOffLine}, XElement{"package", XAttribute{"pattern", "XSharp.*"}}}
+    VAR packageSource := XElement{"packageSource", XAttribute{"key", source}, XElement{"package", XAttribute{"pattern", pattern}}}
     packageSourceMapping:Add(packageSource)
 endif
-doc:Save(nugetConfigPath)
 
 
 FUNCTION GetXSharpInstallationPath() as string

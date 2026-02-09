@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.WinForms.UserControl",
   "Name": "UserControl (WinForms)",
-  "Description": "Windows Forms User control",
+  "description": "Windows Forms User control",
   "SourceName": "UserControl1",
   "ShortName": "xsusercontroli",
   "Tags": {
@@ -13,8 +13,8 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "UserControl1.prg",
+  "preferNameDirectory": true,
+  "defaultName": "UserControl1.prg",
   "symbols": {
     "name": {
       "type": "parameter",
@@ -22,7 +22,7 @@
       "datatype": "string",
       "replaces": "UserControl1",
       "fileRename": "UserControl1",
-      "defaultValue": "UserControl1"
+      "defaultvalue": "UserControl1"
     }
   }
 }

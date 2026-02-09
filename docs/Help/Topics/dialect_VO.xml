@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-08T20:45:30.359+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-02-04T12:06:42.025Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Visual Objects</title>
   <keywords>
     <keyword>&amp;&amp;</keyword>
@@ -29,7 +29,7 @@
       <li styleclass="Normal">The preprocessor adds a define __VO__ with a value of TRUE.</li>
       <li styleclass="Normal">Adds the VOSTRUCT and UNION entity types.</li>
       <li styleclass="Normal">Uses the _WINBOOL type for logical values inside VOSTRUCT and UNION entities.</li>
-      <li styleclass="Normal">The indexer on PSZ types start with element 1.</li>
+      <li styleclass="Normal">The indexer on PSZ types start with element 1.<br/><text styleclass="Body Text">PLEASE NOTE that this is different from the Vulcan Dialect!</text></li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

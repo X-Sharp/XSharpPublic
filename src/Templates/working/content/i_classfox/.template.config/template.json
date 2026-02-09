@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.ClassFox",
   "Name": "ClassFox",
-  "Description": "An empty class definition using the VFP Class syntax",
+  "description": "An empty class definition using the VFP Class syntax",
   "SourceName": "ClassFox1",
   "ShortName": "xsclassfoxi",
   "Tags": {
@@ -13,8 +13,8 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "Class1.prg",
+  "preferNameDirectory": true,
+  "defaultName": "Class1.prg",
   "symbols": {
     "name": {
       "type": "parameter",
@@ -22,7 +22,7 @@
       "datatype": "string",
       "replaces": "Class1",
       "fileRename": "Class1",
-      "defaultValue": "Class1"
+      "defaultvalue": "Class1"
     }
   },
   "postActions": [

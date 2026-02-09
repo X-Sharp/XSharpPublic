@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.Icon",
   "Name": "Icon",
-  "Description": "An Icon file",
+  "description": "An Icon file",
   "SourceName": "Icon",
   "ShortName": "xsiconi",
   "Tags": {
@@ -13,6 +13,6 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "Icon.ico"
+  "preferNameDirectory": true,
+  "defaultName": "Icon.ico"
 }

@@ -18,11 +18,13 @@
     <vo15>true</vo15>
     <vo16>true</vo16>
     <NamedArgs>False</NamedArgs>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework Condition="'$(TargetFrameworkOverride)' == ''">net8.0</TargetFramework>
+    <TargetFramework Condition="'$(TargetFrameworkOverride)' != ''">TargetFrameworkOverride</TargetFramework>
+    <RootNamespace>Company.Namespace1</RootNamespace>
   </PropertyGroup>
-   
+
   <ItemGroup>
     <PackageReference Include="xsharp.xpp" Version="*"/>
   </ItemGroup>
- 
+
 </Project>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-02-09T14:03:42.534Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XSharp 3 已知问题</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">XSharp 3 已知问题</para>
+    </header>
+    <para styleclass="Heading2">已知问题</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">在SDK项目中重命名项目有时也会失败。</li>
+      <li styleclass="Body Text"><text styleclass="Normal">Visual Studio 目前尚未提供在项目文件级别声明全局使用项的对话框</text></li>
+      <li styleclass="Body Text"><text styleclass="Normal">支持多目标项目（即具有TargetFramework</text><text styleclass="Normal" style="font-weight:bold;">s</text><text styleclass="Normal">属性的项目），但在Visual Studio中打开时仅会构建一个框架。项目系统会将节点重命名为XTargetFrameworks，并添加包含当前活动框架的TargetFramework属性。保存时该操作会被逆转，项目文件中会将最后选定的活动目标框架存储为ActiveTargetFramework，以便下次打开项目时恢复。</text></li>
+      <li styleclass="Normal">我们偶尔发现，将单一目标项目从一个版本切换到另一个版本可能会导致 Visual Studio 挂起。 </li>
+    </list>
+  </body>
+</topic>

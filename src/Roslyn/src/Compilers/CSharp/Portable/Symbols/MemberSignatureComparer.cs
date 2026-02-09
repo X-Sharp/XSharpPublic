@@ -507,9 +507,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
 #if XSHARP
             TypeCompareKind typeCompareKind = _typeComparison;
-            if ((member1.ContainingType.Name == "Codeblock" || member2.ContainingType.Name == "Codeblock") && member1.Name == "Eval")
+            if (member1 is not SignatureOnlyMethodSymbol && member2 is not SignatureOnlyMethodSymbol)
             {
-                typeCompareKind |= TypeCompareKind.IgnoreCustomModifiersAndArraySizesAndLowerBounds;
+                if ((member1.ContainingType.Name == "Codeblock" || member2.ContainingType.Name == "Codeblock") && member1.Name == "Eval")
+                {
+                    typeCompareKind |= TypeCompareKind.IgnoreCustomModifiersAndArraySizesAndLowerBounds;
+                }
             }
             if (member1.GetParameterCount() > 0 && !HaveSameParameterTypes(member1.GetParameters().AsSpan(), typeMap1, member2.GetParameters().AsSpan(), typeMap2,
                                                                            _refKindCompareMode, considerDefaultValues: _considerDefaultValues, typeCompareKind))

@@ -6,7 +6,7 @@
     "Console",
     "VO"
   ],
-  "Identity": "XSharp.VOConsole",
+  "Identity": "XSharp.VOConsole.SDK",
   "Name": "VO Console Application (SDK)",
   "Description": "A SDK Style project for creating a X# command-line application in the VO Dialect.",
   "SourceName": "XSharp.VOConsole",

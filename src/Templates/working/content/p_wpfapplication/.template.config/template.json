@@ -5,7 +5,7 @@
     "Windows",
     "Desktop"
   ],
-  "Identity": "XSharp.WPFApplication",
+  "Identity": "XSharp.WPFApplication.SDK",
   "Name": "WPF Application (SDK)",
   "Description": "SDK Style Windows Presentation Foundation client application.",
   "SourceName": "XSharp.WPFApplication",

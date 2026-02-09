@@ -6,7 +6,7 @@
     "Console",
     "XPP"
   ],
-  "Identity": "XSharp.XPPConsole",
+  "Identity": "XSharp.XPPConsole.SDK",
   "Name": "Xbase\u002B\u002B Console Application (SDK)",
   "Description": "A SDK Style project for creating a X# command-line application in the Xbase\u002B\u002B Dialect.",
   "SourceName": "XSharp.XPPConsole",

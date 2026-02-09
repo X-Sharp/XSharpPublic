@@ -5,7 +5,7 @@
     "Windows",
     "Console"
   ],
-  "Identity": "XSharp.ConsoleApplication.NetCore",
+  "Identity": "XSharp.ConsoleApplication.NetCore.SDK",
   "Name": "Console Application (.Net Core) (SDK)",
   "Description": "A SDK Style project for creating a X# command-line application in the core dialect.",
   "SourceName": "XSharp.ConsoleApplication.NetCore",

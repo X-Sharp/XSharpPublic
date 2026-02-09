@@ -5,7 +5,7 @@
     "Windows",
     "Library"
   ],
-  "Identity": "XSharp.ClassLibrary",
+  "Identity": "XSharp.ClassLibrary.SDK",
   "Name": "Class Library Core Dialect without Runtime (SDK)",
   "Description": "A SDK Style project for creating a X# class library (.dll) for the Core dialect with no dependencies on the runtime",
   "SourceName": "XSharp.ClassLibrary",

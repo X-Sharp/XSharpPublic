@@ -6,7 +6,7 @@
     "Library",
     "XPP"
   ],
-  "Identity": "XSharp.ClassLibraryXPP",
+  "Identity": "XSharp.ClassLibraryXPP.SDK",
   "Name": "Class Library XBase\u002B\u002B Dialect (SDK)",
   "Description": "A SDK Style project for creating a X# class library (.dll) for the Xbase\u002B\u002B Dialect",
   "SourceName": "XSharp.ClassLibraryXPP",

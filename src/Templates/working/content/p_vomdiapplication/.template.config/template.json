@@ -6,7 +6,7 @@
     "Desktop",
     "VO"
   ],
-  "Identity": "XSharp.VOMDIApplication",
+  "Identity": "XSharp.VOMDIApplication.SDK",
   "Name": "VO MDI Application (SDK)",
   "Description": "A SDK Style project for creating a VO MDI application in the VO Dialect.",
   "SourceName": "XSharp.VOMDIApplication",

@@ -6,7 +6,7 @@
     "Library",
     "Visual FoxPro"
   ],
-  "Identity": "XSharp.ClassLibraryFox",
+  "Identity": "XSharp.ClassLibraryFox.SDK",
   "Name": "Class Library FoxPro Dialect (SDK)",
   "Description": "A SDK Style project for creating a X# class library (.dll) for the Visual FoxPro Dialect",
   "SourceName": "XSharp.ClassLibraryFox",

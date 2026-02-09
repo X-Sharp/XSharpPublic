@@ -1,11 +1,11 @@
 {
   "$schema": "http://json.schemastore.org/template",
   "Author": "XSharp",
-  "classifications": [ "Web","WebAPI","Web API","API","Service", "X#" ],
-  "identity": "XSharpBV.WebRoute.XSharp",
+  "classifications": [ "Web", "WebAPI", "Web API", "API", "Service", "X#" ],
+  "identity": "XSharpBV.WebRoute.XSharp.SDK",
   "name": "WebApp Application - RESTful with Attributes (SDK)",
   "description": "A SDK Style project for creating a RESTful application that can run on .NET on Windows, Linux and macOS. This application is using Attributes for routing.",
-  "sourceName":"XSharp.WebRoute",
+  "sourceName": "XSharp.WebRoute",
   "shortName": "xswebroute",
   "tags": {
     "language": "X#",

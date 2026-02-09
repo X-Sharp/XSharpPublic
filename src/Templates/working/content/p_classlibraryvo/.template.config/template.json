@@ -6,7 +6,7 @@
     "Library",
     "VO"
   ],
-  "Identity": "XSharp.ClassLibraryVO",
+  "Identity": "XSharp.ClassLibraryVO.SDK",
   "Name": "Class Library VO Dialect (SDK)",
   "Description": "A SDK Style project for creating a X# class library (.dll) for the VO Dialect",
   "SourceName": "XSharp.ClassLibraryVO",

@@ -5,7 +5,7 @@
     "Windows",
     "Test"
   ],
-  "Identity": "XSharp.Test.NUnitClassLibrary",
+  "Identity": "XSharp.Test.NUnitClassLibrary.SDK",
   "Name": "Class Library with NUnit Testing (SDK)",
   "Description": "A SDK Style project for creating a X# class library (.dll) with NUnit Testing",
   "SourceName": "XSharp.Test.NUnitClassLibrary",

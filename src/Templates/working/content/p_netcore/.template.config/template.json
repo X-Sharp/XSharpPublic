@@ -6,8 +6,8 @@
     "Console"
   ],
   "Identity": "XSharp.ConsoleApplication.NetCore",
-  "Name": "Console Application (.Net Core)",
-  "Description": "A project for creating a X# command-line application in the core dialect.",
+  "Name": "Console Application (.Net Core) (SDK)",
+  "Description": "A SDK Style project for creating a X# command-line application in the core dialect.",
   "SourceName": "XSharp.ConsoleApplication.NetCore",
   "ShortName": "xsnetcore",
   "Tags": {

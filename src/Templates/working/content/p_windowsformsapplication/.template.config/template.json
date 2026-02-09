@@ -6,8 +6,8 @@
     "Desktop"
   ],
   "Identity": "XSharp.WindowsFormsApplication",
-  "Name": "Windows Forms Application",
-  "Description": "A project for creating an application with a Windows Forms user interface.",
+  "Name": "Windows Forms Application (SDK)",
+  "Description": "A SDK Style project for creating an application with a Windows Forms user interface.",
   "SourceName": "XSharp.WindowsFormsApplication",
   "ShortName": "xswindowsformsapplication",
   "Tags": {

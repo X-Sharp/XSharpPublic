@@ -402,7 +402,7 @@ namespace XSharp.Project
         }
         protected override ImageMoniker GetIconMoniker(bool open)
         {
-            return KnownMonikers.Framework;
+            return KnownMonikers.ReferencePrivate;
         }
     }
 
@@ -418,15 +418,9 @@ namespace XSharp.Project
 
         protected override ImageMoniker GetIconMoniker(bool open)
         {
-            return KnownMonikers.Framework;
+            return KnownMonikers.ReferencePrivate;
         }
-        override public Guid ItemTypeGuid
-        {
-            get
-            {
-                return VSConstants.GUID_ItemType_VirtualFolder;
-            }
-        }
+        override public Guid ItemTypeGuid => VSConstants.GUID_ItemType_VirtualFolder;
     }
 
 

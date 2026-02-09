@@ -6,8 +6,8 @@
     "Library"
   ],
   "Identity": "XSharp.ClassLibraryCore",
-  "Name": "Class Library Core Dialect with Runtime",
-  "Description": "A project for creating a X# class library (.dll) for the Core dialect with a dependency on XSharp.Core",
+  "Name": "Class Library Core Dialect with Runtime (SDK)",
+  "Description": "A SDK Style project for creating a X# class library (.dll) for the Core dialect with a dependency on XSharp.Core",
   "SourceName": "XSharp.ClassLibraryCore",
   "ShortName": "xsclasslibrarycore",
   "Tags": {

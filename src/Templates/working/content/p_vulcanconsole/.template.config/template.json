@@ -7,8 +7,8 @@
     "Vulcan"
   ],
   "Identity": "XSharp.VulcanConsole",
-  "Name": "Vulcan Application",
-  "Description": "A project for creating a X# command-line application in the Vulcan dialect with Vulcan Runtime Assemblies (BYOR = Bring Your Own Runtime).",
+  "Name": "Vulcan Application (SDK)",
+  "Description": "A SDK Style project for creating a X# command-line application in the Vulcan dialect with Vulcan Runtime Assemblies (BYOR = Bring Your Own Runtime).",
   "SourceName": "XSharp.VulcanConsole",
   "ShortName": "xsvulcanconsole",
   "Tags": {

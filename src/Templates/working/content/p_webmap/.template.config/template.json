@@ -3,8 +3,8 @@
   "Author": "XSharp",
   "classifications": [ "Web","WebAPI","Web API","API","Service", "X#" ],
   "identity": "XSharpBV.WebMap.XSharp",
-  "name": "WebApp Application - RESTful with MapGet/MapPost",
-  "description": "A project for creating a RESTful application that can run on .NET on Windows, Linux and macOS. This application is using MapGet/MapPost for routing.",
+  "name": "WebApp Application - RESTful with MapGet/MapPost (SDK)",
+  "description": "A SDK Style project for creating a RESTful application that can run on .NET on Windows, Linux and macOS. This application is using MapGet/MapPost for routing.",
   "sourceName":"XSharp.WebMap",
   "shortName": "xswebmap",
   "tags": {

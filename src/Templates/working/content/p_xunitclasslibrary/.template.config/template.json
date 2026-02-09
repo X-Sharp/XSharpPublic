@@ -6,8 +6,8 @@
     "Test"
   ],
   "Identity": "XSharp.Test.XUnitClassLibrary",
-  "Name": "Class Library with XUnit Testing",
-  "Description": "A project for creating a X# class library (.dll) with XUnit Testing",
+  "Name": "Class Library with XUnit Testing (SDK)",
+  "Description": "A SDK Style project for creating a X# class library (.dll) with XUnit Testing",
   "SourceName": "XSharp.Test.XUnitClassLibrary",
   "ShortName": "xsxunitclasslibrary",
   "Tags": {

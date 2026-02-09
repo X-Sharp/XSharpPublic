@@ -6,8 +6,8 @@
     "Test"
   ],
   "Identity": "XSharp.Test.MsClassLibrary",
-  "Name": "Class Library with MsTest Support",
-  "Description": "A project for creating a X# class library (.dll) with MS Unit Testing",
+  "Name": "Class Library with MsTest Support (SDK)",
+  "Description": "A SDK Style project for creating a X# class library (.dll) with MS Unit Testing",
   "SourceName": "XSharp.Test.MsClassLibrary",
   "ShortName": "xsmsclasslibrary",
   "Tags": {

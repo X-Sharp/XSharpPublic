@@ -7,8 +7,8 @@
     "VO"
   ],
   "Identity": "XSharp.VOMDIApplication",
-  "Name": "VO MDI Application",
-  "Description": "A project for creating a VO MDI application in the VO Dialect.",
+  "Name": "VO MDI Application (SDK)",
+  "Description": "A SDK Style project for creating a VO MDI application in the VO Dialect.",
   "SourceName": "XSharp.VOMDIApplication",
   "ShortName": "xsvomdiapplication",
   "Tags": {
@@ -26,20 +26,20 @@
       "Datatype": "choice",
       "Choices": [
         {
-          "Choice": "net8.0",
-          "Description": "Target .NET 8"
+          "Choice": "net46",
+          "Description": "Target .NET Framework 4.6"
         },
         {
-          "Choice": "net9.0",
-          "Description": "Target .NET 9"
+          "Choice": "net47",
+          "Description": "Target .NET Framework 4.7"
         },
         {
-          "Choice": "net10.0",
-          "Description": "Target .NET 10"
+          "Choice": "net48",
+          "Description": "Target .NET Framework 4.8"
         }
       ],
-      "Replaces": "net8.0",
-      "DefaultValue": "net8.0"
+      "Replaces": "net46",
+      "DefaultValue": "net46"
     },
     "DefaultNamespace": {
       "Type": "parameter",

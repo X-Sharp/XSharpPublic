@@ -7,8 +7,8 @@
     "Visual FoxPro"
   ],
   "Identity": "XSharp.VFPConsole",
-  "Name": "FoxPro Console Application",
-  "Description": "A project for creating a X# command-line application in the Visual FoxPro Dialect.",
+  "Name": "FoxPro Console Application (SDK)",
+  "Description": "A SDK Style project for creating a X# command-line application in the Visual FoxPro Dialect.",
   "SourceName": "XSharp.VFPConsole",
   "ShortName": "xsvfpconsole",
   "Tags": {

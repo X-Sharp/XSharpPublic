@@ -7,8 +7,8 @@
     "Harbour"
   ],
   "Identity": "XSharp.ClassLibraryHarbour",
-  "Name": "Class Library Harbour Dialect",
-  "Description": "A project for creating a X# class library (.dll) for the Harbour Dialect",
+  "Name": "Class Library Harbour Dialect (SDK)",
+  "Description": "A SDK Style project for creating a X# class library (.dll) for the Harbour Dialect",
   "SourceName": "XSharp.ClassLibraryHarbour",
   "ShortName": "xsclasslibraryharbour",
   "Tags": {

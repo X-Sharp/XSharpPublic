@@ -345,27 +345,14 @@ namespace Microsoft.VisualStudio.Project
                 return;
 
             bool isSdk = itemProject.BuildProject.Xml.Sdk != null;
-            itemProject.BuildProject.ReevaluateIfNecessary();
-            IEnumerable<ProjectItem> items = itemProject.BuildProject.GetItems(this.item.ItemType);
-            if (isSdk)
+            if (!isSdk)
             {
-                if (items.Count() > 1)
-                {
-                    var ouritems = items.Where(i => i.EvaluatedInclude == this.item.EvaluatedInclude && i.UnevaluatedInclude == this.item.UnevaluatedInclude);
-                    var theiritems = items.Where(i => i.IsImported && i.EvaluatedInclude == this.item.EvaluatedInclude);
-                    if (ouritems.Count() == 1 && theiritems.Count() == 1)
-                    {
-                        itemProject.BuildProject.RemoveItem(this.item);
-                        this.item = theiritems.First();
-                        itemProject.BuildProject.ReevaluateIfNecessary();
-                    }
-                }
-            }
-            else
-            {
+				// prevent duplicate items.
+                itemProject.BuildProject.ReevaluateIfNecessary();
+                IEnumerable<ProjectItem> items = itemProject.BuildProject.GetItems(this.item.ItemType);
                 foreach (ProjectItem projectItem in items)
                 {
-                    if (projectItem != null && projectItem.UnevaluatedInclude.Equals(item.UnevaluatedInclude))
+                    if (string.Equals(projectItem?.UnevaluatedInclude, item.UnevaluatedInclude, StringComparison.OrdinalIgnoreCase))
                     {
                         this.item = projectItem;
                         return;

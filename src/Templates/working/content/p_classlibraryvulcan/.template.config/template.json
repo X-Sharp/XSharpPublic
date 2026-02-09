@@ -7,8 +7,8 @@
     "Vulcan"
   ],
   "Identity": "XSharp.ClassLibraryVulcan",
-  "Name": "Class Library Vulcan Dialect",
-  "Description": "A project for creating a X# class library (.dll) for the Vulcan Dialect",
+  "Name": "Class Library Vulcan Dialect (SDK)",
+  "Description": "A SDK Style project for creating a X# class library (.dll) for the Vulcan Dialect",
   "SourceName": "XSharp.ClassLibraryVulcan",
   "ShortName": "xsclasslibraryvulcan",
   "Tags": {

@@ -26,6 +26,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <CommonInclude>$(CommonDir)</CommonInclude>
     <XscToolPath>$(BinariesDir)bin\xsc\Debug\net472\</XscToolPath>
+    <XscToolPath Condition="$(Configuration.Contains('Doc'))">$(BinariesDir)bin\xsc\Debug\net472\</XscToolPath>
     <AZ>false</AZ>
     <CS>true</CS>
     <LB>false</LB>

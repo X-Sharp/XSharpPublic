@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.TextFile",
   "Name": "TextFile",
-  "Description": "An empty text file",
+  "description": "An empty text file",
   "SourceName": "TextFile1",
   "ShortName": "xstextfilei",
   "Tags": {
@@ -13,6 +13,6 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "TextFile1.txt"
+  "preferNameDirectory": true,
+  "defaultName": "TextFile1.txt"
 }

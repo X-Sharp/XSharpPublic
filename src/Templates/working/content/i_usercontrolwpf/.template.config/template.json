@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.WPF.UserControl",
   "Name": "UserControl (WPF)",
-  "Description": "Windows Presentation Foundation user control",
+  "description": "Windows Presentation Foundation user control",
   "SourceName": "UserControl1",
   "ShortName": "xsusercontroli",
   "Tags": {
@@ -13,8 +13,8 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "UserControl1.xaml",
+  "preferNameDirectory": true,
+  "defaultName": "UserControl1.xaml",
   "symbols": {
     "name": {
       "type": "parameter",
@@ -22,7 +22,7 @@
       "datatype": "string",
       "replaces": "UserControl1",
       "fileRename": "UserControl1",
-      "defaultValue": "UserControl1"
+      "defaultvalue": "UserControl1"
     }
   }
 }

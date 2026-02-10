@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-08T19:55:19.307+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-02-09T14:20:20.314Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Who is who in the X# team</title>
   <body>
     <header>
@@ -11,7 +11,7 @@
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">They are in alphabetical order:</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="4">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="4">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text style="font-weight:bold;">Name</text></para>
@@ -66,6 +66,20 @@
         </td>
         <td>
           <para styleclass="Body Text">Support, tools, examples, tutorials, runtime</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Irwin Rodriguez</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Spain</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">irwin@xsharp.eu</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Spanish translation, FoxPro compatibility</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

@@ -27,16 +27,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="UI\AssertDialog.designer.prg">
-      <DependentUpon>AssertDialog.prg</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="UI\AssertDialog.resx">
-      <DependentUpon>AssertDialog.prg</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="UI\**\*.prg" />
     <Compile Remove="UI\**\*.resx" />
   </ItemGroup>

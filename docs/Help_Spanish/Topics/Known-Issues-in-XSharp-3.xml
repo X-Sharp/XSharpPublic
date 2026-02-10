@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-02-04T08:59:51.513Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-02-06T11:58:41.557Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Known Issues in XSharp 3</title>
   <body>
     <header>
@@ -8,9 +8,7 @@
     </header>
     <para styleclass="Heading2">Known issues</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Adding a new item to a SDK style project may generate errors during compilation, when the item will be automatically included by a build script rule</li>
-      <li styleclass="Normal">Excluding an item from a SDK style project does not work. You will have to manually add an item to the project file to exclude it in the form of:<br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#800000;">&lt;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">Compile Remove</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#800000;">=</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#0000ff;">&quot;YourFileName.prg&quot;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#800000;">/&gt;</text></li>
-      <li styleclass="Body Text"><text styleclass="Normal">Renaming an item in a SDK project also sometimes fails.</text></li>
+      <li styleclass="Normal">Renaming an item in a SDK project also sometimes fails.</li>
       <li styleclass="Body Text"><text styleclass="Normal">There is no dialog yet in Visual Studio to declare GLOBAL USINGs at the project file level</text></li>
       <li styleclass="Body Text"><text styleclass="Normal">Projects that are Multi-Targeting (that have a TargetFramework</text><text styleclass="Normal" style="font-weight:bold;">s </text><text styleclass="Normal">property are supported, but only one Framework is built when opened inside Visual Studio. The project system renames the node to XTargetFrameworks, and adds a TargetFramework property with the active framework. When saving this is reversed and the last selected active target framework is stored in the project file as ActiveTargetFramework, so it can be restored the next time that the project is opened.</text></li>
       <li styleclass="Normal">We have occasionally seen that switching a single targeting project from one version to another may cause Visual Studio to hang. </li>

@@ -31,5 +31,9 @@
     <file src="$SourceFolder\XSharp.RT.dll" target="lib\$TFM\XSharp.RT.dll" />
     <file src="$SourceFolder\XSharp.Data.dll" target="lib\$TFM\XSharp.Data.dll" />
     <file src="$SourceFolder\XSharp.RT.Debugger.dll" target="lib\$TFM\XSharp.RT.Debugger.dll" />
+    <file src="$XmlFolder\XSharp.RDD.xml" target="lib\$TFM\XSharp.RDD.xml" />
+    <file src="$XmlFolder\XSharp.RT.xml" target="lib\$TFM\XSharp.RT.xml" />
+    <file src="$XmlFolder\XSharp.Data.xml" target="lib\$TFM\XSharp.Data.xml" />
+    <file src="$XmlFolder\XSharp.RT.Debugger.xml" target="lib\$TFM\XSharp.RT.Debugger.xml" />
   </files>
 </package>

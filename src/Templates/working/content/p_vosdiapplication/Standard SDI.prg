@@ -8,15 +8,15 @@ class StandardSDIWindow inherit DataWindow
     protect oStdMenu as Menu
 
 
-METHOD DoOpenFile(cFileName, lReadOnly) 
+METHOD DoOpenFile(cFileName, lReadOnly)
     LOCAL oTB AS TextBox
 
     IF (Len(cFileName) > 3)  .AND. (Upper(Right(cFileName, 4)) == ".DBF")
           IF (SELF:Menu != oStdMenu)
             SELF:Menu := oStdMenu
                 SELF:ToolBar:PressItem(IDM_StandardSDIMenu_View_Form_ID, #MenuItemID)
-        ENDIF    
-        
+        ENDIF
+
         SELF:Use(DBServer{cFileName, , lReadOnly})
           SELF:Caption := "Browse Database: " + cFileName
     ELSE
@@ -27,28 +27,28 @@ METHOD DoOpenFile(cFileName, lReadOnly)
     ENDIF
 RETURN SELF
 
-METHOD Drop(oDragEvent) 
+METHOD Drop(oDragEvent)
     IF File(oDragEvent:FileName(1))
         SELF:DoOpenFile(oDragEvent:FileName(1))
     ENDIF
 RETURN SELF
 
-METHOD FileClose() 
+METHOD FileClose()
     SELF:Use()
-RETURN SELF    
+RETURN SELF
 
-METHOD FileExit() 
+METHOD FileExit()
     SELF:EndWindow()
-RETURN SELF    
+RETURN SELF
 
-METHOD FileOpen() 
+METHOD FileOpen()
     LOCAL oOD AS OpenDialog
     LOCAL oTB AS TextBox
     LOCAL retval AS SHORT
 
-    IF(oAttachedServer == NULL_OBJECT)    
+    IF(oAttachedServer == NULL_OBJECT)
         (oOD := OpenDialog{SELF, "*.dbf"}):Show()
-        
+
         IF !Empty(oOD:FileName)
             SELF:DoOpenFile(oOD:FileName, oOD:ReadOnly)
         ENDIF
@@ -68,24 +68,24 @@ METHOD FileOpen()
   ENDIF
 RETURN SELF
 
-METHOD FilePrint() 
+METHOD FilePrint()
     SELF:Print(oPrinter)
-RETURN SELF    
-
-METHOD FilePrinterSetup() 
-
-    oPrinter:Setup()
-    
 RETURN SELF
 
-CONSTRUCTOR(oOwnerApp) 
+METHOD FilePrinterSetup()
+
+    oPrinter:Setup()
+
+RETURN SELF
+
+CONSTRUCTOR(oOwnerApp)
 
   SetDeleted(TRUE)
 
   SUPER(oOwnerApp)
-    
+
   SELF:EnableDragDropClient()
-    
+
   SELF:Icon      := Icon{ResourceID{IDI_STANDARDICON, _GetInst()}}
   SELF:Menu    := EmptySDIMenu{SELF}
   oStdMenu     := StandardSDIMenu{SELF}
@@ -97,22 +97,22 @@ CONSTRUCTOR(oOwnerApp)
   SELF:Size := Dimension{850,650}
 
   oPrinter  := PrintingDevice{}
-    
-  RETURN SELF
+
+  RETURN
 
 
-method ViewForm() 
+method ViewForm()
     self:ToolBar:UnPressItem(IDM_StandardSDIMenu_View_Table_ID)
     self:ToolBar:PressItem(IDM_StandardSDIMenu_View_Form_ID)
-    
-    return super:ViewForm()    
 
-method ViewTable() 
+    return super:ViewForm()
+
+method ViewTable()
     self:ToolBar:UnPressItem(IDM_StandardSDIMenu_View_Form_ID)
     self:ToolBar:PressItem(IDM_StandardSDIMenu_View_Table_ID)
-    
+
     return super:ViewTable()
-    
+
 
 
 END CLASS

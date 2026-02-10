@@ -19,5 +19,6 @@
     <file src="icon\Xsharp.png" target="icon\Xsharp.png" />
     <file src="Readme.Core.md"  target="Readme.md" />
     <file src="$SourceFolder\XSharp.Core.dll" target="lib\$TFM\XSharp.Core.dll" />
+	<file src="$XmlFolder\XSharp.Core.xml" target="lib\$TFM\XSharp.Core.xml" />
   </files>
 </package>

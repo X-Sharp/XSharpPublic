@@ -1080,6 +1080,7 @@
 		<xs:attribute name="anchor" type="xs:string"/>
 		<xs:attribute name="target" type="xs:string"/>
 		<xs:attribute name="domain" type="xs:string"/>
+		<xs:attribute name="ghost" type="xs:boolean"/>
 	</xs:complexType>
 	<xs:complexType name="topic.class" mixed="true">
 		<xs:annotation>

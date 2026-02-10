@@ -217,6 +217,7 @@ namespace XSharp.Project
                 {
                     info.clsidCustom = VSConstants.DebugEnginesGuids.ManagedOnly_guid;      // {449EC4CC-30D2-4032-9256-EE18EB41B62B}
                 }
+#if DEV17
                 if (this.ProjectMgr is XSharpSdkProjectNode sdk)
                 {
                     if (sdk.IsNetCoreApp)
@@ -224,7 +225,7 @@ namespace XSharp.Project
                         info.clsidCustom = VSConstants.DebugEnginesGuids.CoreSystemClr_guid;
                     }
                 }
-
+#endif
                 info.grfLaunch = grfLaunch;
                 VsShellUtilities.LaunchDebugger(this._project.Site, info);
             }

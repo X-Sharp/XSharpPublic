@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.VOFieldSpec",
   "Name": "VOFieldSpec",
-  "Description": "An empty FieldSpec container file",
+  "description": "An empty FieldSpec container file",
   "SourceName": "VOFieldSpec",
   "ShortName": "xsvofieldspeci",
   "Tags": {
@@ -13,6 +13,6 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "Fieldspecs.prg"
+  "preferNameDirectory": true,
+  "defaultName": "Fieldspecs.prg"
 }

@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.Resource",
   "Name": "Managed resource file (.resx)",
-  "Description": "A file to store managed resources",
+  "description": "A file to store managed resources",
   "SourceName": "Resource1",
   "ShortName": "xsresourcei",
   "Tags": {
@@ -13,6 +13,6 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "Resource1.resx"
+  "preferNameDirectory": true,
+  "defaultName": "Resource1.resx"
 }

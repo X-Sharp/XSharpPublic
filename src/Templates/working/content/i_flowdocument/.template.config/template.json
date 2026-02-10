@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.WPF.FlowDocument",
   "Name": "Flow Document (WPF)",
-  "Description": "Dynamically formatted XAML document",
+  "description": "Dynamically formatted XAML document",
   "SourceName": "Flow Document (WPF)",
   "ShortName": "xsflowdocumenti",
   "Tags": {
@@ -13,6 +13,6 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "FlowDocument.xaml"
+  "preferNameDirectory": true,
+  "defaultName": "FlowDocument.xaml"
 }

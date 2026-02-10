@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.ClassXpp",
   "Name": "ClassXpp",
-  "Description": "An empty class definition using the Xbase\u002B\u002B class syntax",
+  "description": "An empty class definition using the Xbase\u002B\u002B class syntax",
   "SourceName": "ClassXpp",
   "ShortName": "xsclassxppi",
   "Tags": {
@@ -13,8 +13,8 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "Class1.prg",
+  "preferNameDirectory": true,
+  "defaultName": "Class1.prg",
   "symbols": {
     "name": {
       "type": "parameter",
@@ -22,7 +22,7 @@
       "datatype": "string",
       "replaces": "Class1",
       "fileRename": "Class1",
-      "defaultValue": "Class1"
+      "defaultvalue": "Class1"
     }
   },
   "postActions": [

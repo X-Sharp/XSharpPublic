@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.WPF.ResourceDictionary",
   "Name": "Resource Dictionary (WPF)",
-  "Description": "XAML Resource Dictionary",
+  "description": "XAML Resource Dictionary",
   "SourceName": "ResourceDictionary1",
   "ShortName": "xsresourcedictionaryi",
   "Tags": {
@@ -13,6 +13,6 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "ResourceDictionary1.xaml"
+  "preferNameDirectory": true,
+  "defaultName": "ResourceDictionary1.xaml"
 }

@@ -27,5 +27,6 @@
     <file src="icon\Xsharp.png" target="icon\Xsharp.png" />
     <file src="Readme.VO.md"  target="Readme.md" />
     <file src="$SourceFolder\XSharp.VO.dll" target="lib\$TFM\XSharp.VO.dll" />
+    <file src="$XmlFolder\XSharp.VO.xml" target="lib\$TFM\XSharp.VO.xml" />
   </files>
 </package>

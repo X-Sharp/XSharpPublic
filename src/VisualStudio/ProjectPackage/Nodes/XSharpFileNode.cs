@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
+using Microsoft.Build.Evaluation;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
@@ -18,6 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+
 using XSharpModel;
 
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
@@ -150,10 +152,33 @@ namespace XSharp.Project
             }
         }
 
+        static bool MyStringEquals(string file1, string file2)
+        {
+            return string.Equals(file1, file2, StringComparison.OrdinalIgnoreCase);
+        }
 
         protected override int IncludeInProject()
         {
             int result = base.IncludeInProject();
+
+            if (((XSharpProjectNode)this.ProjectMgr).IsSdkProject)
+            {
+                var buildProject = this.ProjectMgr.BuildProject;
+                var filename = ProjectMgr.GetRelativePath(this.Url);
+                foreach (var xmlItem in buildProject.Xml.Items)
+                {
+                    if (xmlItem.ItemType == ItemNode.ItemName && MyStringEquals(xmlItem.Remove, filename))
+                    {
+                        xmlItem.Parent.RemoveChild(xmlItem);
+                        buildProject.RemoveItem(this.ItemNode.Item);
+                        buildProject.ReevaluateIfNecessary();
+                        break;
+                    }
+                }
+            }
+            // we could be including a file that was removed earlier
+
+
             DetermineSubType();
             if (this.ProjectMgr is XSharpProjectNode prjNode)
             {
@@ -168,7 +193,7 @@ namespace XSharp.Project
             DetermineFileType();
         }
 
-        internal void BuildActionChanged( )
+        internal void BuildActionChanged()
         {
             this.ResetFileType();
             var prjNode = this.ProjectMgr as XSharpProjectNode;
@@ -181,6 +206,19 @@ namespace XSharp.Project
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
          {
              await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+             if (this.IsImported)
+             {
+                 // to exclude an imported file we need to remove
+                 var fileName = ProjectMgr.GetRelativePath(this.Url);
+                 var item = ProjectMgr.CreateMsBuildFileItem(fileName, this.ItemType);
+                 var xml = item.Item.Xml;
+                 if (xml != null)
+                 {
+                     xml.Include = null;
+                     xml.Remove = fileName;
+                     ProjectMgr.BuildProject.ReevaluateIfNecessary();
+                 }
+             }
              //if (this.FileType == XFileType.SourceCode)
              {
                  var prjNode = this.ProjectMgr as XSharpProjectNode;
@@ -408,7 +446,7 @@ namespace XSharp.Project
             // If the file is not a XSharpFileNode then drop it and create a new XSharpFileNode
             XSharpFileNode dependent;
 
-            if ( child.IsImported)
+            if (child.IsImported)
             {
                 // Todo: Link imported node with parent node
                 // Do not update the project file for imported items, we will take care of this later
@@ -436,7 +474,7 @@ namespace XSharp.Project
             {
                 string parentPath = Path.GetDirectoryName(Path.GetFullPath(this.Url));
                 string childPath = Path.GetDirectoryName(Path.GetFullPath(dependent.Url));
-                if (string.Equals(parentPath, childPath, StringComparison.OrdinalIgnoreCase))
+                if (MyStringEquals(parentPath, childPath))
                 {
                     dependent.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parent);
                 }
@@ -524,7 +562,7 @@ namespace XSharp.Project
         private bool HasSubType(string value)
         {
             string result = SubType;
-            return !String.IsNullOrEmpty(result) && String.Equals(result, value, StringComparison.OrdinalIgnoreCase);
+            return !String.IsNullOrEmpty(result) && MyStringEquals(result, value);
 
         }
         public bool IsXAML
@@ -572,7 +610,7 @@ namespace XSharp.Project
             _fileType = XFileTypeHelpers.GetFileType(this.Url);
             if (_fileType == XFileType.SourceCode)
             {
-                if (!string.Equals(ItemType, "Compile", StringComparison.OrdinalIgnoreCase))
+                if (!MyStringEquals(ItemType, "Compile"))
                 {
                     _fileType = XFileType.Other;
                 }
@@ -598,15 +636,15 @@ namespace XSharp.Project
             {
                 case XFileType.XAML:
                     // do not change the type when not needed
-                    if (String.Equals(itemType, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase))
+                    if (MyStringEquals(itemType, ProjectFileConstants.Page))
                     {
                         break;
                     }
-                    else if (String.Equals(itemType, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase))
+                    else if (MyStringEquals(itemType, ProjectFileConstants.ApplicationDefinition))
                     {
                         break;
                     }
-                    else if (String.Equals(itemType, ProjectFileConstants.Resource, StringComparison.OrdinalIgnoreCase))
+                    else if (MyStringEquals(itemType, ProjectFileConstants.Resource))
                     {
                         break;
                     }
@@ -620,7 +658,7 @@ namespace XSharp.Project
                     break;
                 case XFileType.ManagedResource:
                 case XFileType.License:
-                    if (!String.Equals(itemType, ProjectFileConstants.EmbeddedResource, StringComparison.OrdinalIgnoreCase))
+                    if (!MyStringEquals(itemType, ProjectFileConstants.EmbeddedResource))
                     {
                         this.ItemNode.ItemName = ProjectFileConstants.EmbeddedResource;
                     }

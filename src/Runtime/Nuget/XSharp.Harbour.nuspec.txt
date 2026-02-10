@@ -27,5 +27,6 @@
     <file src="icon\Xsharp.png" target="icon\Xsharp.png" />
     <file src="Readme.Harbour.md"  target="Readme.md" />
     <file src="$SourceFolder\XSharp.Harbour.dll" target="lib\$TFM\XSharp.Harbour.dll" />
+    <file src="$XmlFolder\XSharp.Harbour.xml" target="lib\$TFM\XSharp.Harbour.xml" />
   </files>
 </package>

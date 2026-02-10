@@ -27,5 +27,6 @@
     <file src="icon\Xsharp.png" target="icon\Xsharp.png" />
     <file src="Readme.XPP.md"  target="Readme.md" />
     <file src="$SourceFolder\XSharp.XPP.dll" target="lib\$TFM\XSharp.XPP.dll" />
+    <file src="$XmlFolder\XSharp.XPP.xml" target="lib\$TFM\XSharp.XPP.xml" />
   </files>
 </package>

@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.NativeResource",
   "Name": "Native Resource File (.rc)",
-  "Description": "A file in which native resources can be defined",
+  "description": "A file in which native resources can be defined",
   "SourceName": "NativeResources1",
   "ShortName": "xsnativeresourcei",
   "Tags": {
@@ -13,6 +13,6 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "NativeResources1.rc"
+  "preferNameDirectory": true,
+  "defaultName": "NativeResources1.rc"
 }

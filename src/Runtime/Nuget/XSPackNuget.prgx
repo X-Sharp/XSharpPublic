@@ -33,6 +33,7 @@ ENDIF
 // For a Single TFM, this could work
 VAR SourceFolders := Root + "\Artifacts\" + Build
 VAR OutputFolder := Root + "\Artifacts\Packages\" + Build
+VAR XmlFolder    := Root+"\Artifacts\Help" 
 
 // Parameter for TFM ?
 IF Args:Count >= 3
@@ -85,6 +86,7 @@ InfoMessage( "Tool : " + Tool )
 InfoMessage( "Build : " + Build )
 InfoMessage( "Target Framework : " + TFM )
 InfoMessage( "Source Folder : " + SourceFolders )
+InfoMessage( "Xml Folder : " + XmlFolder )
 InfoMessage( "Output Folder : " + OutputFolder )
 InfoMessage( "Version : " + Version )
 // Check if Nuget is installed
@@ -95,7 +97,7 @@ IF ( ! result )
     RETURN
 ENDIF
 
-CreateNuSpec( TFM, SourceFolders, Tool, Version )
+CreateNuSpec( TFM, SourceFolders, Tool, Version, XmlFolder )
 
 IF !RunNuget( Tool, Version, OutputFolder )
 	ErrorMessage( "Something went wrong...." )
@@ -142,7 +144,7 @@ FUNCTION CheckNuGet() AS LOGIC
 	END USING
 RETURN result
 
-PROCEDURE CreateNuSpec( tfm AS STRING, sourceFolders AS STRING, tool AS String, version AS STRING )
+PROCEDURE CreateNuSpec( tfm AS STRING, sourceFolders AS STRING, tool AS String, version AS STRING, xmlFolder AS STRING)
 	VAR source := "XSharp." + tool + ".nuspec.txt"
 	VAR destination := "XSharp." + tool + "." + version +".nuspec"
 	VAR content := ""
@@ -156,10 +158,15 @@ PROCEDURE CreateNuSpec( tfm AS STRING, sourceFolders AS STRING, tool AS String, 
 				FOR VAR i := 1 TO tfmList:Length
 					VAR tfmItem := tfmList[i]
 					VAR srcFolder := sourceFolder[i]
-					content += line:Replace( "$SourceFolder", srcFolder ):Replace( "$TFM", tfmItem ) + Environment.NewLine
+					content += line:Replace( "$SourceFolder", srcFolder ):Replace( "$TFM", tfmItem ) +Environment.NewLine
+				NEXT
+			ELSEIF line:Contains( "$XmlFolder" ) 
+				FOR VAR i := 1 TO tfmList:Length
+					VAR tfmItem := tfmList[i]
+					content += line:Replace( "$XmlFolder", xmlFolder ):Replace( "$TFM", tfmItem ) +Environment.NewLine
 				NEXT
 			ELSE
-				content += line:Replace( "$Version", version ) + Environment.NewLine
+				content += line:Replace( "$Version", version ) +Environment.NewLine
 			ENDIF
 		NEXT
 		File.WriteAllText( destination, content )

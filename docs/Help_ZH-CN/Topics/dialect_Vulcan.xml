@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-24T12:53:13.735+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-02-09T14:09:23.981Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Vulcan</title>
   <keywords>
     <keyword>&apos;@&apos;</keyword>
@@ -18,7 +18,15 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">这种方言具有“<link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_All-Non-Core-dialects">所有非 Core 方言</link>”的特征。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">编译器和运行时在编译 “Vulcan” 方言时具有以下“特殊”行为。</para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="1" style="background-color:#ffff00;">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">请注意，在 XSharp 3 中，Vulcan 方言仅支持 XSharp 运行时 DLL。不再</text><br/><text style="font-weight:bold;">支持&quot;自带运行时&quot;功能</text><br/><text style="font-weight:bold;">。此外，编译器不再自动从注册表读取 Vulcan 包含文件的位置设置。</text><br/><text style="font-weight:bold;">若使用这些文件，需确保项目设置中包含文件存储位置。</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">编译器和运行时在为&quot;Vulcan&quot;方言编译时具有以下&quot;特殊&quot;行为：</para>
     <para styleclass="Heading2">编译器</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">不允许使用 4 个字母的关键字缩写</li>

@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.Class",
   "Name": "Class",
-  "Description": "An empty class definition",
+  "description": "An empty class definition",
   "SourceName": "Class1",
   "ShortName": "xsclassi",
   "Tags": {
@@ -13,8 +13,8 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "Class1.prg",
+  "preferNameDirectory": true,
+  "defaultName": "Class1.prg",
   "symbols": {
     "name": {
       "type": "parameter",
@@ -22,7 +22,7 @@
       "datatype": "string",
       "replaces": "Class1",
       "fileRename": "Class1",
-      "defaultValue": "Class1"
+      "defaultvalue": "Class1"
     }
   }
 }

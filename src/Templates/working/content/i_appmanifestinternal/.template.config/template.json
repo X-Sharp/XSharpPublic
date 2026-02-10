@@ -4,13 +4,13 @@
   "Classifications": [],
   "Identity": "XSharp.AppManifestInternal",
   "Name": "AppManifestInternal",
-  "Description": "A hidden app.manifest",
+  "description": "A hidden app.manifest",
   "SourceName": "AppManifestInternal",
   "ShortName": "xsappmanifestinternali",
   "Tags": {
     "language": "X#",
     "type": "item"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "app.manifest"
+  "preferNameDirectory": true,
+  "defaultName": "app.manifest"
 }

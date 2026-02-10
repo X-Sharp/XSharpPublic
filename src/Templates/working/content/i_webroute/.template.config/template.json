@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.APIController",
   "Name": "APIController",
-  "Description": "An empty Web API controller",
+  "description": "An empty Web API controller",
   "SourceName": "APIController",
   "ShortName": "xsapicontrolleri",
   "Tags": {
@@ -13,8 +13,8 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "APIController.prg",
+  "preferNameDirectory": true,
+  "defaultName": "APIController.prg",
   "symbols": {
     "name": {
       "type": "parameter",
@@ -22,7 +22,7 @@
       "datatype": "string",
       "replaces": "APIController",
       "fileRename": "APIController",
-      "defaultValue": "APIController"
+      "defaultvalue": "APIController"
     }
   }
 }

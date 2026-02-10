@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-08T20:46:22.558+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-02-05T10:48:16.200Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Vulcan</title>
   <keywords>
     <keyword>&apos;@&apos;</keyword>
@@ -16,6 +16,15 @@
       <para styleclass="Heading1">Vulcan</para>
     </header>
     <para styleclass="Normal">This dialect shares the features of &quot;<link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_All-Non-Core-dialects">All Non Core Dialects</link>&quot;.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="1" style="background-color:#ffff00;">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Please note that in XSharp 3 the Vulcan dialect is only supported with the XSharp Runtime DLLs. </text><br/><text style="font-weight:bold;">Support for &quot;Bring Your Own Runtime&quot; is no longer available</text><br/><text style="font-weight:bold;">Also the compiler no longer automatically reads the setting for the location for the Vulcan Include files from the registry.</text><br/><text style="font-weight:bold;">If you use these files you need to make sure that the location where the files are stored is included in your project settings.</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal">The compiler and runtime have the following &quot;special&quot; behavior when compiling for the &quot;Vulcan&quot; dialect:</para>
     <para styleclass="Heading2">Compiler</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -46,9 +55,8 @@
       <li styleclass="Normal">Uses the _WINBOOL type for logical values inside VOSTRUCT and UNION entities.</li>
     </list>
     <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">The indexer on PSZ types start with element 0.</li>
+      <li styleclass="Body Text">The indexer on PSZ types start with element 0. <br/>PLEASE NOTE that this is different from the VO Dialect!</li>
     </list>
-    <para styleclass="Body Text"></para>
     <para styleclass="Heading2">Runtime</para>
     <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">When running in Ansi more (SetAnsi(TRUE), which is the default), the DBF header for DBFNTX gets the Ansi bit set.</li>

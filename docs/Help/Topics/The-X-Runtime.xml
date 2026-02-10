@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-08T19:40:26.335+02:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-02-06T11:58:09.176Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>The X# Runtime</title>
   <body>
     <header>
@@ -11,7 +11,6 @@
     <para styleclass="Normal">In this chapter, we would like to give you an overview of the design decisions that we made, what the run time looks like, where you can find which types and functions, etc.</para>
     <para styleclass="Normal">We will also list the features that are not supported yet here.</para>
     <para styleclass="Heading2">Introduction</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">When we designed the X# compile and X# Runtime, we had a few focus points in mind:</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">The language and runtime should be VO compatible whenever possible. We know that the Vulcan devteam made some decisions not to support certain features from VO, but we decided that we would like to be as compatible as technically possible.</li>
@@ -53,7 +52,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.6 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -67,7 +66,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.6 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -81,7 +80,7 @@
           <para styleclass="Normal">X# non - core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.6 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -95,7 +94,7 @@
           <para styleclass="Normal">X# core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.6 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -109,7 +108,7 @@
           <para styleclass="Normal">X# VO and X# Vulcan</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.6 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -123,7 +122,7 @@
           <para styleclass="Normal">X# XPP</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.6 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -137,7 +136,7 @@
           <para styleclass="Normal">X# FoxPro</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.6 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -151,7 +150,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.6 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -165,7 +164,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.6 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -179,7 +178,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.6 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

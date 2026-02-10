@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.WPF.PageFunction",
   "Name": "Page Function (WPF)",
-  "Description": "Windows Presentation Foundation page function",
+  "description": "Windows Presentation Foundation page function",
   "SourceName": "PageFunction1",
   "ShortName": "xspagefunctioni",
   "Tags": {
@@ -13,6 +13,6 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "PageFunction1.xaml"
+  "preferNameDirectory": true,
+  "defaultName": "PageFunction1.xaml"
 }

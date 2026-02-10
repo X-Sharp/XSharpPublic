@@ -736,11 +736,11 @@ namespace Microsoft.VisualStudio.Project
             {
                 if ((VsCommands2K)cmd == VsCommands2K.EXCLUDEFROMPROJECT)
                 {
-                    if (this.IsLink)
-                    {
-                        result |= QueryStatusResult.NOTSUPPORTED;
-                    }
-                    else
+                    //if (this.IsLink)
+                    //{
+                    //    result |= QueryStatusResult.NOTSUPPORTED;
+                    //}
+                    //else
                     {
                         result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
                     }

@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.T4",
   "Name": "Text Template",
-  "Description": "A template for the T4 text template transformation system",
+  "description": "A template for the T4 text template transformation system",
   "SourceName": "TextTemplate1",
   "ShortName": "xst4i",
   "Tags": {
@@ -13,6 +13,6 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "TextTemplate1.tt"
+  "preferNameDirectory": true,
+  "defaultName": "TextTemplate1.tt"
 }

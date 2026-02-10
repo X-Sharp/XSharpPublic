@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.Cursor",
   "Name": "Cursor",
-  "Description": "A Cursor file",
+  "description": "A Cursor file",
   "SourceName": "Cursor",
   "ShortName": "xscursori",
   "Tags": {
@@ -13,6 +13,6 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "Cursor.cur"
+  "preferNameDirectory": true,
+  "defaultName": "Cursor.cur"
 }

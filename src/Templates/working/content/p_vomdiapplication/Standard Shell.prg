@@ -86,7 +86,7 @@ CONSTRUCTOR( oOwnerApp )
 	
 	oPrinter := PrintingDevice{}
 	
-	return self
+	return 
 
 
 ACCESS Printer 
@@ -147,7 +147,7 @@ CONSTRUCTOR(oParentWindow, sFileName, lReadOnly, oServer)
 		SELF:Caption := sCaption + sFileName
 	ENDIF	
 
-RETURN SELF
+RETURN 
 
 method ViewForm() 
 	self:ToolBar:UnPressItem(IDM_StandardShellMenu_View_Table_ID)

@@ -4,7 +4,7 @@
   "Classifications": [],
   "Identity": "XSharp.FormSimple",
   "Name": "Windows Forms Simple Form",
-  "Description": "A simple Windows Forms Form without designer.prg",
+  "description": "A simple Windows Forms Form without designer.prg",
   "SourceName": "SimpleForm1",
   "ShortName": "xsformsimplei",
   "Tags": {
@@ -13,8 +13,8 @@
     "icon": "template.png",
     "is-icon-path": "true"
   },
-  "PreferNameDirectory": true,
-  "DefaultName": "SimpleForm1.prg",
+  "preferNameDirectory": true,
+  "defaultName": "SimpleForm1.prg",
   "symbols": {
     "name": {
       "type": "parameter",
@@ -22,7 +22,7 @@
       "datatype": "string",
       "replaces": "SimpleForm1",
       "fileRename": "SimpleForm1",
-      "defaultValue": "SimpleForm1"
+      "defaultvalue": "SimpleForm1"
     }
   }
 }

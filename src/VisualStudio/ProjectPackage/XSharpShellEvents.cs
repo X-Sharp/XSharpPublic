@@ -17,6 +17,7 @@ namespace XSharp.Project
     {
         static ILogger Logger => XSettings.Logger;
 
+        public int BuildEvents_SolutionBuildFinished { get; private set; }
         static bool hasEnvironmentvariable = false;
         static XSharpShellEvents()
         {

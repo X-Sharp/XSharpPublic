@@ -29,7 +29,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The name of the assembly this reference represents
         /// </summary>
-        private System.Reflection.AssemblyName assemblyName;
+        private AssemblyName assemblyName;
         private AssemblyName resolvedAssemblyName;
         private string assemblyPath = string.Empty;
         private HashSet<string> resolvedProperties; // the names of the properties that MsBuild has resolved
@@ -65,7 +65,7 @@ namespace Microsoft.VisualStudio.Project
         /// The name of the assembly this reference represents.
         /// </summary>
         /// <value></value>
-        public System.Reflection.AssemblyName AssemblyName
+        public AssemblyName AssemblyName
         {
             get { return this.assemblyName; }
             set { this.assemblyName = value; }
@@ -76,9 +76,19 @@ namespace Microsoft.VisualStudio.Project
         /// machine. It can be different from the AssemblyName property because it can
         /// be more specific.
         /// </summary>
-        public System.Reflection.AssemblyName ResolvedAssembly
+        public AssemblyName ResolvedAssembly
         {
-            get { return resolvedAssemblyName; }
+            get
+            {
+                if (resolvedAssemblyName == null)
+                {
+                    if (! String.IsNullOrEmpty(this.AssemblyPath) && File.Exists(this.AssemblyPath))
+                    {
+                        resolvedAssemblyName = System.Reflection.AssemblyName.GetAssemblyName(this.AssemblyPath);
+                    }
+                }
+                return resolvedAssemblyName;
+            }
             set { resolvedAssemblyName = value; }
         }
 

@@ -1825,6 +1825,8 @@ namespace XSharp.Project
                         case "xsccommandlineargs":
                             commandLineArguments.Add(item.EvaluatedInclude);
                             break;
+                        case "resolvedframeworkreference":
+                            break;
                         default:
                             continue;
                     }

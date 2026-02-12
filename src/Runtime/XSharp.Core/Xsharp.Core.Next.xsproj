@@ -25,16 +25,5 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CollationHelpers\" />
-    <Folder Include="Collations\" />
-    <Folder Include="Functions\" />
-    <Folder Include="Language\" />
-    <Folder Include="obj\" />
-    <Folder Include="Properties\" />
-    <Folder Include="RDD\" />
-    <Folder Include="State\" />
-    <Folder Include="Types\" />
-  </ItemGroup>
   <Import Project="..\XmlDoc.Targets" />
 </Project>

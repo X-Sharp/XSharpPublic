@@ -11,7 +11,7 @@ USING LanguageService.SyntaxTree
 USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 using XSharp.Settings
 
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
 
 [DebuggerDisplay("{ToString(),nq}")];
 CLASS XSourceMemberSymbol INHERIT XSourceEntity IMPLEMENTS IXMemberSymbol,IXSourceEntity
@@ -55,7 +55,7 @@ CLASS XSourceMemberSymbol INHERIT XSourceEntity IMPLEMENTS IXMemberSymbol,IXSour
         IF modifiers?:Count > 0
             SELF:BlockTokens:AddRange(modifiers)
         ENDIF
-    CONSTRUCTOR(dbresult AS XDbResult, file AS XFile)
+    PRIVATE CONSTRUCTOR(dbresult AS XDbResult, file AS XFile)
         SELF(dbresult:MemberName, dbresult:Kind, dbresult:Attributes, dbresult:TextRange, dbresult:TextInterval, dbresult:ReturnType, null, dbresult:Modifiers:HasFlag(Modifiers.Static))
         SELF:File        := file
         SELF:CopyValuesFrom(dbresult)
@@ -231,6 +231,4 @@ CLASS XSourceMemberSymbol INHERIT XSourceEntity IMPLEMENTS IXMemberSymbol,IXSour
 
 #endregion
 END CLASS
-
-END NAMESPACE
 

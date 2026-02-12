@@ -46,6 +46,7 @@ namespace XSharp.LanguageService
                         return KnownMonikers.Type;
                     case Kind.Union:
                         return KnownMonikers.Union;
+                    case Kind.Using:
                     case Kind.Namespace:
                         return KnownMonikers.Namespace;
                     case Kind.Keyword:

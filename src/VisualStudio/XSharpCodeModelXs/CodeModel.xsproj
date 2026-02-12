@@ -129,6 +129,7 @@
     <Compile Include="Source\XSourceMemberSymbol.prg" />
     <Compile Include="Source\XSourceParameterSymbol.prg" />
     <Compile Include="Source\XSourceTypeSymbol.prg" />
+    <Compile Include="Source\XSourceUsing.prg" />
     <Compile Include="Source\XSourceVariableSymbol.prg" />
     <Compile Include="Support\TextInterval.prg" />
     <Compile Include="Support\TextRange.prg" />

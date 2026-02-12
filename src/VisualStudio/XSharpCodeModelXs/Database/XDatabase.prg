@@ -14,7 +14,7 @@ USING System.ComponentModel
 USING File := System.IO.File
 USING XSharp.Settings
 
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
 STATIC CLASS XDatabase
     STATIC PRIVATE oFact   as DbProviderFactory
     internal static UseMicrosoftSQLite   as logic
@@ -24,7 +24,7 @@ STATIC CLASS XDatabase
     STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
-    PRIVATE CONST CurrentDbVersion := 3.3 AS System.Double
+    PRIVATE CONST CurrentDbVersion := 3.4 AS System.Double
 
     STATIC METHOD InitializeMicrosoft() AS VOID
         SQLitePCL.Batteries.Init()
@@ -257,7 +257,7 @@ STATIC CLASS XDatabase
 #region Table Files
             stmt  		:= "CREATE TABLE Files ("
             stmt     	+= " Id integer NOT NULL PRIMARY KEY, FileName text NOT NULL COLLATE NOCASE,  "
-            stmt     	+= " FileType integer NOT NULL, LastChanged DateTime NOT NULL, Size integer, Usings text, StaticUsings text"
+            stmt     	+= " FileType integer NOT NULL, LastChanged DateTime NOT NULL, Size integer"
             stmt		+= " ) ;"
             stmt	    += "CREATE UNIQUE INDEX Files_Pk    ON Files (Id) ;"
             stmt	    += "CREATE UNIQUE INDEX Files_Name  ON Files (FileName); "
@@ -273,6 +273,7 @@ STATIC CLASS XDatabase
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 #endregion
+
 
 #region Table IncludeFilesPerFile
 
@@ -444,8 +445,16 @@ STATIC CLASS XDatabase
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
+            stmt := " CREATE VIEW ProjectGlobalUsings AS "+;
+                " SELECT distinct fp.IdProject, u.Name, u.ReturnType, u.Sourcecode, u.Attributes "+;
+                " FROM ProjectFiles fp JOIN Members u ON fp.IdFile = u.IdFile where kind = " + ((Int) Kind.Using).ToString() +;
+                " and sourcecode like '%Global%' "
+
+            cmd:CommandText := stmt
+            cmd:ExecuteNonQuery()
+
             stmt := "CREATE VIEW TypeMembers AS SELECT m.*, t.Name AS TypeName, t.Namespace, t.BaseTypeName, t.ClassType " + ;
-                "FROM members m JOIN Types t ON m.IdType = t.Id"
+                " FROM members m JOIN Types t ON m.IdType = t.Id"
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
@@ -841,7 +850,7 @@ STATIC CLASS XDatabase
         /*
         "Create Table Files ("
         " Id integer NOT NULL PRIMARY KEY, FileName text NOT NULL COLLATE NOCASE "
-        " FileType integer NOT NULL, LastChanged DateTime NOT NULL, Size integer, Usings text, StaticUsings text"
+        " FileType integer NOT NULL, LastChanged DateTime NOT NULL, Size integer"
         " )"
 
         "Create Table FilesPerProject ("
@@ -857,7 +866,7 @@ STATIC CLASS XDatabase
         BEGIN LOCK oConn
             TRY
                 USING VAR cmd := CreateCommand("", oConn)
-                cmd:CommandText := "SELECT Id, LastChanged, Size, Usings,StaticUsings FROM Files WHERE FileName = $file"
+                cmd:CommandText := "SELECT Id, LastChanged, Size FROM Files WHERE FileName = $file"
                 cmd:Parameters:AddWithValue("$file",file)
                 VAR lOk := FALSE
                 BEGIN USING VAR rdr := cmd:ExecuteReader()
@@ -866,8 +875,7 @@ STATIC CLASS XDatabase
                         oFile:LastChanged       := rdr:GetDateTime(1)
                         // these can be NULL
                         oFile:Size              := DbToInt(rdr[2])
-                        oFile:UsingsStr         := DbToString(rdr[3])
-                        oFile:StaticUsingsStr := DbToString(rdr[4])
+
                         lOk := TRUE
                     ENDIF
                 END USING
@@ -891,6 +899,7 @@ STATIC CLASS XDatabase
                     cmd:CommandText := "INSERT INTO FilesPerProject(idFile, idProject) VALUES ($idFile, $idProject)"
                     cmd:ExecuteNonQuery()
                 ENDIF
+
             CATCH e AS Exception
                 Log("Error reading file : "+oFile:FullPath+" "+oFile:Id:ToString())
                 XSettings.Exception(e, __FUNCTION__)
@@ -907,20 +916,20 @@ STATIC CLASS XDatabase
             RETURN
         ENDIF
         Log(i"Update File info for file {oFile.FullPath}")
+
         BEGIN LOCK oConn
             TRY
                 IF File.Exists(oFile:FullPath)  // for files from SCC the physical file does not always exist
                     USING VAR oCmd := CreateCommand("SELECT 1", oConn)
-                    oCmd:CommandText := "UPDATE Files SET LastChanged = $last, Size = $size, Usings = $usings, StaticUsings = $staticUsings WHERE id = "+oFile:Id:ToString()
+                    oCmd:CommandText := "UPDATE Files SET LastChanged = $last, Size = $size WHERE id = "+oFile:Id:ToString()
                     VAR fi            := FileInfo{oFile:FullPath}
                     oFile:LastChanged := fi:LastWriteTime
                     oFile:Size        := fi:Length
                     oCmd:Parameters:Clear()
                     oCmd:Parameters:AddWithValue("$last", oFile:LastChanged)
                     oCmd:Parameters:AddWithValue("$size", oFile:Size)
-                    oCmd:Parameters:AddWithValue("$usings", oFile:UsingsStr)
-                    oCmd:Parameters:AddWithValue("$staticUsings", oFile:StaticUsingsStr)
                     oCmd:ExecuteNonQuery()
+
                 ENDIF
             CATCH e AS Exception
                 Log("Error updating File data : "+oFile:FullPath+" "+oFile:Id:ToString())
@@ -1023,23 +1032,22 @@ STATIC CLASS XDatabase
                 VAR Types := oFile:TypeList:Values:Where({ t=> t.Kind != Kind.Namespace })
                 FOREACH VAR typedef IN Types
                     TRY
-                        local i := 0 as LONG
-                        pars[i++]:Value := typedef:Name
-                        pars[i++]:Value := oFile:Id
-                        pars[i++]:Value := oFile:Project:Id
-                        pars[i++]:Value := typedef:Namespace default ""
-                        pars[i++]:Value := (INT) typedef:Kind
-                        pars[i++]:Value := typedef:BaseTypeName default ""
-                        pars[i++]:Value := (INT) typedef:Attributes
-                        pars[i++]:Value := typedef:SourceCode default ""
-                        pars[i++]:Value := typedef:XmlComments default ""
-                        pars[i++]:Value := typedef:Range:StartLine
-                        pars[i++]:Value := typedef:Range:StartColumn
-                        pars[i++]:Value := typedef:Range:EndLine
-                        pars[i++]:Value := typedef:Range:EndColumn
-                        pars[i++]:Value := typedef:Interval:Start
-                        pars[i++]:Value := typedef:Interval:Stop
-                        pars[i++]:Value := (INT) typedef:ClassType
+                        pars[0]:Value := typedef:Name
+                        pars[1]:Value := oFile:Id
+                        pars[2]:Value := oFile:Project:Id
+                        pars[3]:Value := typedef:Namespace default ""
+                        pars[4]:Value := (INT) typedef:Kind
+                        pars[5]:Value := typedef:BaseTypeName default ""
+                        pars[6]:Value := (INT) typedef:Attributes
+                        pars[7]:Value := typedef:SourceCode default ""
+                        pars[8]:Value := typedef:XmlComments default ""
+                        pars[9]:Value := typedef:StartLine
+                        pars[10]:Value := typedef:StartColumn
+                        pars[11]:Value := typedef:EndLine
+                        pars[12]:Value := typedef:EndColumn
+                        pars[13]:Value := typedef:Start
+                        pars[14]:Value := typedef:Stop
+                        pars[15]:Value := (INT) typedef:ClassType
                         VAR Id := (INT64) oCmd:ExecuteScalar()
                         typedef:Id := Id
                     CATCH e AS Exception
@@ -1083,22 +1091,20 @@ STATIC CLASS XDatabase
                 FOREACH VAR typedef IN Types
                     FOREACH VAR xmember IN typedef:XMembers
                         TRY
-                            local i := 0 as LONG
-                            // file is constant
-                            pars[i++]:Value := oFile:Id
-                            pars[i++]:Value := typedef:Id
-                            pars[i++]:Value := xmember:Name
-                            pars[i++]:Value := (INT) xmember:Kind
-                            pars[i++]:Value := (INT) xmember:Attributes
-                            pars[i++]:Value := xmember:Range:StartLine
-                            pars[i++]:Value := xmember:Range:StartColumn
-                            pars[i++]:Value := xmember:Range:EndLine
-                            pars[i++]:Value := xmember:Range:EndColumn
-                            pars[i++]:Value := xmember:Interval:Start
-                            pars[i++]:Value := xmember:Interval:Stop
-                            pars[i++]:Value := xmember:SourceCode default ""
-                            pars[i++]:Value := xmember:XmlComments default ""
-                            pars[i++]:Value := xmember:ReturnType default ""
+                            pars[0]:Value := oFile:Id
+                            pars[1]:Value := typedef:Id
+                            pars[2]:Value := xmember:Name
+                            pars[3]:Value := (INT) xmember:Kind
+                            pars[4]:Value := (INT) xmember:Attributes
+                            pars[5]:Value := xmember:StartLine
+                            pars[6]:Value := xmember:StartColumn
+                            pars[7]:Value := xmember:EndLine
+                            pars[8]:Value := xmember:EndColumn
+                            pars[9]:Value := xmember:Start
+                            pars[10]:Value := xmember:Stop
+                            pars[11]:Value := xmember:SourceCode default ""
+                            pars[12]:Value := xmember:XmlComments default ""
+                            pars[13]:Value := xmember:ReturnType default ""
                             VAR Id := (INT64) oCmd:ExecuteScalar()
                             xmember:Id := Id
                             if xmember:Signature:IsExtension .and. xmember:Parameters:Count > 0
@@ -1124,21 +1130,20 @@ STATIC CLASS XDatabase
                 FOREACH xmember as XSourceMemberSymbol in oFile:EntityList:Where ( {m => m.Kind.IsLocal() } )
                     TRY
                         // file is constant
-                        local i := 0 as LONG
-                        pars[i++]:Value := oFile:Id
-                        pars[i++]:Value := ((XSourceTypeSymbol) xmember:ParentType):Id
-                        pars[i++]:Value := xmember:Name
-                        pars[i++]:Value := (INT) xmember:Kind
-                        pars[i++]:Value := (INT) xmember:Attributes
-                        pars[i++]:Value := xmember:Range:StartLine
-                        pars[i++]:Value := xmember:Range:StartColumn
-                        pars[i++]:Value := xmember:Range:EndLine
-                        pars[i++]:Value := xmember:Range:EndColumn
-                        pars[i++]:Value := xmember:Interval:Start
-                        pars[i++]:Value := xmember:Interval:Stop
-                        pars[i++]:Value := xmember:SourceCode default ""
-                        pars[i++]:Value := xmember:XmlComments default ""
-                        pars[i++]:Value := xmember:ReturnType default ""
+                        pars[1]:Value := oFile:Id
+                        pars[2]:Value := ((XSourceTypeSymbol) xmember:ParentType):Id
+                        pars[3]:Value := xmember:Name
+                        pars[4]:Value := (INT) xmember:Kind
+                        pars[5]:Value := (INT) xmember:Attributes
+                        pars[6]:Value := xmember:Range:StartLine
+                        pars[7]:Value := xmember:Range:StartColumn
+                        pars[8]:Value := xmember:Range:EndLine
+                        pars[9]:Value := xmember:Range:EndColumn
+                        pars[10]:Value := xmember:Interval:Start
+                        pars[11]:Value := xmember:Interval:Stop
+                        pars[12]:Value := xmember:SourceCode default ""
+                        pars[13]:Value := xmember:XmlComments default ""
+                        pars[14]:Value := xmember:ReturnType default ""
                         VAR Id := (INT64) oCmd:ExecuteScalar()
                         xmember:Id := Id
                     CATCH e AS Exception
@@ -1164,12 +1169,11 @@ STATIC CLASS XDatabase
                         oCmd:Parameters:AddWithValue("$priority", 0),;
                         oCmd:Parameters:AddWithValue("$comment", "")}
                     FOREACH task AS XCommentTask IN oFile:CommentTasks
-                        local i := 0 as LONG
-                        pars[i++]:Value := oFile:Id
-                        pars[i++]:Value := task:Line
-                        pars[i++]:Value := task:Column
-                        pars[i++]:Value := task:Priority
-                        pars[i++]:Value := task:Comment default ""
+                        pars[0]:Value := oFile:Id
+                        pars[1]:Value := task:Line
+                        pars[2]:Value := task:Column
+                        pars[3]:Value := task:Priority
+                        pars[4]:Value := task:Comment default ""
                         oCmd:ExecuteScalar()
                     NEXT
                 endif
@@ -1474,6 +1478,27 @@ STATIC CLASS XDatabase
         ENDIF
         RETURN result
 
+
+    STATIC METHOD GetProjectGlobalUsings(nProjectId as INT64) AS IList<XDbResult>
+
+        VAR result := List<XDbResult>{}
+        IF IsDbOpen
+            BEGIN LOCK oConn
+                TRY
+                    USING VAR oCmd := CreateCommand("SELECT 1", oConn)
+                    oCmd:CommandText := "SELECT Name, Attributes, ReturnType FROM ProjectGlobalUsings WHERE IdProject = "+nProjectId:ToString()
+                    USING VAR rdr := oCmd:ExecuteReader()
+                    DO WHILE rdr:Read()
+                        var dbResult := CreateUsing(rdr)
+                        result:Add(dbResult)
+                    ENDDO
+                CATCH e AS Exception
+                    XSettings.Exception(e, __FUNCTION__)
+                END TRY
+            END LOCK
+
+        ENDIF
+        RETURN result
 
 
     STATIC METHOD FindProjectGlobalOrDefine(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
@@ -2007,7 +2032,12 @@ STATIC CLASS XDatabase
         res:FileName     := DbToString(rdr["FileName"])
         RETURN res
 
-
+    STATIC METHOD CreateUsing(rdr AS DbDataReader) AS XDbResult
+        VAR res := XDbResult{}
+        res:Namespace    := DbToString(rdr["Name"])
+        res:Attributes   := (Modifiers) (INT64) rdr["Attributes"]
+        res:ReturnType   := DbToString(rdr["ReturnType"])
+        RETURN res
     STATIC METHOD CreateMemberInfo(rdr AS DbDataReader) AS XDbResult
         VAR res := XDbResult{}
         res:TypeName     := DbToString(rdr["TypeName"])
@@ -2123,4 +2153,3 @@ STATIC CLASS SqlExtensions
 
 END CLASS
 
-END NAMESPACE

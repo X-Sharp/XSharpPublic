@@ -27,7 +27,10 @@ BEGIN NAMESPACE XSharpModel
           ENDIF
           RETURN ""
 
-      STATIC METHOD GetProtoType(SELF tm as IXMemberSymbol, lApplyCallingConvention := FALSE AS LOGIC) AS STRING
+    STATIC METHOD GetProtoType(SELF tm as IXMemberSymbol, lApplyCallingConvention := FALSE AS LOGIC) AS STRING
+         if tm:SingleLine .and. tm is XSourceMemberSymbol var sm
+             return sm:SourceCode
+         endif
          VAR vars := StringBuilder{}
          IF tm:TypeParameters?:Count > 0
             VAR delim := "<"

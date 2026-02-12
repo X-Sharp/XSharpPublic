@@ -10,7 +10,7 @@ USING System.Collections.Generic
 USING LanguageService.SyntaxTree
 USING XSharp.Settings
 
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
 /// <summary>An symbol in the source code. Can be an entity but also a local or parameter</summary>
 CLASS XSourceSymbol INHERIT XSymbol IMPLEMENTS IXSourceSymbol
     PROTECTED _id    := -1                AS INT64
@@ -21,12 +21,19 @@ CLASS XSourceSymbol INHERIT XSymbol IMPLEMENTS IXSourceSymbol
     /// </summary>
     /// <value></value>
     PROPERTY Range AS TextRange           AUTO
+    PROPERTY StartLine as INT GET SELF:Range:StartLine
+    PROPERTY StartColumn as INT GET SELF:Range:StartColumn
+    PROPERTY EndLine as INT GET SELF:Range:EndLine
+    PROPERTY EndColumn as INT GET SELF:Range:EndColumn
+
     /// <summary>
     /// Location in the source where the item is in start / end position
     /// </summary>
     /// <value></value>
     PROPERTY Prototype      as STRING GET SELF:KindKeyword+" "+SELF:Name
     PROPERTY Interval       AS TextInterval     AUTO
+    PROPERTY Start AS INT GET SELF:Interval:Start
+    PROPERTY Stop AS INT GET SELF:Interval:Stop
     PROPERTY FileUsings     AS IList<STRING>  GET  IIF(SELF:File != NULL, SELF:File:Usings, (IList<STRING>) STRING[]{0})
     /// <summary>
     /// 1 Based Line Number
@@ -78,4 +85,3 @@ CLASS XSourceSymbol INHERIT XSymbol IMPLEMENTS IXSourceSymbol
         ENDIF
 
 END CLASS
-END NAMESPACE

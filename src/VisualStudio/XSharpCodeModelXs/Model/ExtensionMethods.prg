@@ -188,6 +188,7 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.XTranslate
                 CASE Kind.Attribute
                 CASE Kind.Include
+                CASE Kind.Using
                     RETURN TRUE
             END SWITCH
         RETURN FALSE

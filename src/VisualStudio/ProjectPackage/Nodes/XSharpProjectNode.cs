@@ -1812,18 +1812,19 @@ namespace XSharp.Project
                 {
                     switch (item.ItemType.ToLower())
                     {
-                        case "reference" when ! this.IsSdkProject:
-                        case "referencepath" when this.IsSdkProject:
-                            allReferenceAssemblies.Add(item.EvaluatedInclude);
+                        case "reference":
+                        case "referencepath":
+                            var file = item.EvaluatedInclude.Replace("/", "\\");
+                            allReferenceAssemblies.AddUnique(file);
                             if (item.GetMetadataValue("NugetSourceType")?.ToLower() == "package")
                             {
                                 Logger.Information($"Item: Package{item.ItemType} {item.EvaluatedInclude}");
                                 continue;
                             }
-                            sdkReferences.Add(item.EvaluatedInclude);
+                            sdkReferences.AddUnique(file);
                             break;
                         case "xsccommandlineargs":
-                            commandLineArguments.Add(item.EvaluatedInclude);
+                            commandLineArguments.AddUnique(item.EvaluatedInclude);
                             break;
                         case "resolvedframeworkreference":
                             break;

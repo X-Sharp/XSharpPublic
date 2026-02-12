@@ -377,8 +377,11 @@ namespace XSharp.Project
             // delete nodes that are no longer needed
             foreach (var node in toDelete)
             {
-                frameworkNode.RemoveChild(node);
-                node.Dispose();
+                if (node is object)
+                {
+                    frameworkNode.RemoveChild(node);
+                    node.Dispose();
+                }
             }
             // add new nodes
             this.SuspendBuild = true;

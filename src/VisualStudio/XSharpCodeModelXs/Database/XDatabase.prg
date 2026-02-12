@@ -1128,20 +1128,20 @@ STATIC CLASS XDatabase
                 FOREACH xmember as XSourceMemberSymbol in oFile:EntityList:Where ( {m => m.Kind.IsLocal() } )
                     TRY
                         // file is constant
-                        pars[1]:Value := oFile:Id
-                        pars[2]:Value := ((XSourceTypeSymbol) xmember:ParentType):Id
-                        pars[3]:Value := xmember:Name
-                        pars[4]:Value := (INT) xmember:Kind
-                        pars[5]:Value := (INT) xmember:Attributes
-                        pars[6]:Value := xmember:Range:StartLine
-                        pars[7]:Value := xmember:Range:StartColumn
-                        pars[8]:Value := xmember:Range:EndLine
-                        pars[9]:Value := xmember:Range:EndColumn
-                        pars[10]:Value := xmember:Interval:Start
-                        pars[11]:Value := xmember:Interval:Stop
-                        pars[12]:Value := xmember:SourceCode default ""
-                        pars[13]:Value := xmember:XmlComments default ""
-                        pars[14]:Value := xmember:ReturnType default ""
+                        pars[0]:Value := oFile:Id
+                        pars[1]:Value := ((XSourceTypeSymbol) xmember:ParentType):Id
+                        pars[2]:Value := xmember:Name
+                        pars[3]:Value := (INT) xmember:Kind
+                        pars[4]:Value := (INT) xmember:Attributes
+                        pars[5]:Value := xmember:Range:StartLine
+                        pars[6]:Value := xmember:Range:StartColumn
+                        pars[7]:Value := xmember:Range:EndLine
+                        pars[8]:Value := xmember:Range:EndColumn
+                        pars[9]:Value := xmember:Interval:Start
+                        pars[10]:Value := xmember:Interval:Stop
+                        pars[11]:Value := xmember:SourceCode default ""
+                        pars[12]:Value := xmember:XmlComments default ""
+                        pars[13]:Value := xmember:ReturnType default ""
                         VAR Id := (INT64) oCmd:ExecuteScalar()
                         xmember:Id := Id
                     CATCH e AS Exception

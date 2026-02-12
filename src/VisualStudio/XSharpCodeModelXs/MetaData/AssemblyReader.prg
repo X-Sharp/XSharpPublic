@@ -1,11 +1,8 @@
-﻿USING System
-USING System.Linq
-USING System.Collections.Generic
-USING System.IO
+﻿USING System.IO
 USING Mono.Cecil
 using XSharp.Settings
 
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
 INTERNAL CLASS AssemblyReader
    PROTECT reader             AS AssemblyDefinition
    PROTECT _extensionMethods  AS List<MethodDefinition>
@@ -208,4 +205,3 @@ INTERNAL CLASS AssemblyReader
    END CLASS
 
 END CLASS
-END NAMESPACE

@@ -7,9 +7,7 @@
 //USING Microsoft.Data.Sqlite
 USING System.IO
 USING System.Data
-USING System.Linq
 USING System.Data.Common
-USING System.Collections.Generic
 USING System.ComponentModel
 USING File := System.IO.File
 USING XSharp.Settings

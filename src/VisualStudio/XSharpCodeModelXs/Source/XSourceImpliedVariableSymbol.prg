@@ -4,31 +4,25 @@
 // See License.txt in the project root for license information.
 //
 
-USING XSharpModel
-USING System.Diagnostics
-USING System.Collections.Generic
-USING LanguageService.SyntaxTree
 
-BEGIN NAMESPACE XSharpModel
-     // A variable is strictly speaking not an entity
-    [DebuggerDisplay("{DebuggerDisplay(),nq}")];
-    CLASS XSourceImpliedVariableSymbol INHERIT XSourceVariableSymbol
-        
-        CONSTRUCTOR(parent AS XSourceEntity, name AS STRING, span AS TextRange, position AS TextInterval)
-            SUPER(parent, name, span, position, XLiterals.VarType)
-            SELF:ImpliedKind := ImpliedKind.None
+NAMESPACE XSharpModel
+    // A variable is strictly speaking not an entity
+[DebuggerDisplay("{DebuggerDisplay(),nq}")];
+CLASS XSourceImpliedVariableSymbol INHERIT XSourceVariableSymbol
 
-        METHOD Clone() AS IXVariableSymbol
-            RETURN (IXVariableSymbol) SELF:MemberwiseClone()
+    CONSTRUCTOR(parent AS XSourceEntity, name AS STRING, span AS TextRange, position AS TextInterval)
+        SUPER(parent, name, span, position, XLiterals.VarType)
+        SELF:ImpliedKind := ImpliedKind.None
 
-        // Properties
-        PROPERTY IsParameter  AS LOGIC AUTO
-        PROPERTY ImpliedKind as ImpliedKind AUTO
-        PROPERTY Collection   AS IXSymbol AUTO
+    METHOD Clone() AS IXVariableSymbol
+        RETURN (IXVariableSymbol) SELF:MemberwiseClone()
+
+    // Properties
+    PROPERTY IsParameter  AS LOGIC AUTO
+    PROPERTY ImpliedKind as ImpliedKind AUTO
+    PROPERTY Collection   AS IXSymbol AUTO
 
 
-    END CLASS
-         
+END CLASS
 
-END NAMESPACE
 

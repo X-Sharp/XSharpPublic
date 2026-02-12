@@ -4,10 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING System.Collections.Concurrent
-USING System.Collections.Generic
 USING System.IO
-USING System.Linq
-USING System
 USING XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel

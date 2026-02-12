@@ -4,9 +4,6 @@
 // See License.txt in the project root for license information.
 //
 
-USING System.Collections.Generic
-USING System.Diagnostics
-USING System
 USING System.Linq
 USING LanguageService.CodeAnalysis.XSharp
 USING Mono.Cecil

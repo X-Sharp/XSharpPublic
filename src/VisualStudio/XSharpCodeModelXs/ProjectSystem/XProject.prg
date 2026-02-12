@@ -3,17 +3,13 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-USING System
 USING System.IO
-USING System.Collections.Generic
 USING System.ComponentModel
-USING System.Linq
 USING System.Text
 USING System.Threading.Tasks
 USING LanguageService.CodeAnalysis
 USING LanguageService.CodeAnalysis.XSharp
 USING System.Collections.Concurrent
-USING System.Diagnostics
 USING System.Reflection
 USING XSharp.Settings
 

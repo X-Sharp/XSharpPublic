@@ -4,13 +4,8 @@
 // See License.txt in the project root for license information.
 //
 USING System.Collections.Concurrent
-USING System.Collections.Generic
 USING System.Collections.ObjectModel
-USING System
 USING System.IO
-USING System.Linq
-USING System.Diagnostics
-USING XSharpModel
 using XSharp.Settings
 USING LanguageService.CodeAnalysis.XSharp
 USING STATIC XSharpModel.XFileTypeHelpers

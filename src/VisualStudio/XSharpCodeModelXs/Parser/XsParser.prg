@@ -6,14 +6,11 @@
 
 // Note that the comment blocks from the various rules have been copied from XSharp.g4 inside the compiler
 
-
-USING System.Collections.Generic
-USING System.Collections
+USING System.Collections.Concurrent
 USING System.Text
 USING System.Text.RegularExpressions
 USING System.IO
-USING System.Diagnostics
-USING System.Linq
+
 USING LanguageService.CodeAnalysis.XSharp
 USING LanguageService.SyntaxTree
 USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
@@ -25,30 +22,30 @@ NAMESPACE XSharpModel
 
 
 CLASS XsParser IMPLEMENTS VsParser.IErrorListener
-    PRIVATE  _list         AS XSharpTokenList
-    PRIVATE  _file         AS XFile
-    PRIVATE  _usings       AS IList<XSourceUsing>
-    PRIVATE  _EntityList    AS IList<XSourceEntity>
-    PRIVATE  _EntityStack   AS Stack<XSourceEntity>
-    PRIVATE  _BlockList     AS IList<XSourceBlock>
-    PRIVATE  _BlockStack    AS Stack<XSourceBlock>
-    PRIVATE  _PPBlockStack  AS Stack<XSourceBlock>
-    PRIVATE  _locals        AS IList<XSourceVariableSymbol>
-    PRIVATE  _collectLocals AS LOGIC
-    PRIVATE  _collectBlocks AS LOGIC
-    PRIVATE  _errors        AS IList<XError>
-    PRIVATE  _globalType    AS XSourceTypeSymbol
-    PRIVATE  _dialect       AS XDialect
-    PRIVATE  _xppVisibility AS Modifiers
-    PRIVATE  _commentTasks  AS IList<XCommentTask>
-    PRIVATE  _modifiers     AS IList<IToken>
+    PRIVATE _list         AS XSharpTokenList
+    PRIVATE _file         AS XFile
+    PRIVATE _usings       AS IList<XSourceUsing>
+    PRIVATE _EntityList    AS IList<XSourceEntity>
+    PRIVATE _EntityStack   AS Stack<XSourceEntity>
+    PRIVATE _BlockList     AS IList<XSourceBlock>
+    PRIVATE _BlockStack    AS Stack<XSourceBlock>
+    PRIVATE _PPBlockStack  AS Stack<XSourceBlock>
+    PRIVATE _locals        AS IList<XSourceVariableSymbol>
+    PRIVATE _collectLocals AS LOGIC
+    PRIVATE _collectBlocks AS LOGIC
+    PRIVATE _errors        AS IList<XError>
+    PRIVATE _globalType    AS XSourceTypeSymbol
+    PRIVATE _dialect       AS XDialect
+    PRIVATE _xppVisibility AS Modifiers
+    PRIVATE _commentTasks  AS IList<XCommentTask>
+    PRIVATE _modifiers     AS IList<IToken>
 
-    PRIVATE  _attributes   AS Modifiers      // for the current entity
-    PRIVATE  _start        AS IToken
-    PRIVATE  _hasXmlDoc    AS LOGIC
-    PRIVATE  _tokens       AS IList<IToken>
-    PRIVATE  _firstTokenOnLine as IToken
-    PRIVATE  _missingType  AS STRING
+    PRIVATE _attributes   AS Modifiers      // for the current entity
+    PRIVATE _start        AS IToken
+    PRIVATE _hasXmlDoc    AS LOGIC
+    PRIVATE _tokens       AS IList<IToken>
+    PRIVATE _firstTokenOnLine as IToken
+    PRIVATE _missingType  AS STRING
 
     PRIVATE PROPERTY CurrentEntity      AS XSourceEntity GET IIF(_EntityStack:Count > 0, _EntityStack:Peek(), NULL_OBJECT)
     PRIVATE PROPERTY CurrentType        AS XSourceTypeSymbol

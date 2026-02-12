@@ -1,5 +1,5 @@
 ﻿
-BEGIN NAMESPACE XSharp.Settings
+NAMESPACE XSharp.Settings
 
 /// <summary>
 /// The KnownTypes class.
@@ -69,4 +69,3 @@ STATIC CLASS KnownTypes
 
 
 END CLASS
-END NAMESPACE // XSharpModel.Support

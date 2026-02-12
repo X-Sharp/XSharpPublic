@@ -4,9 +4,6 @@
 // See License.txt in the project root for license information.
 //
 
-USING XSharpModel
-USING System.Diagnostics
-USING System.Collections.Generic
 USING LanguageService.SyntaxTree
 USING XSharp.Settings
 

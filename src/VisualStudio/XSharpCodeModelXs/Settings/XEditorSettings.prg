@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-BEGIN NAMESPACE XSharp.Settings
+NAMESPACE XSharp.Settings
 STATIC CLASS XEditorSettings
 
     PUBLIC STATIC PROPERTY KeywordCase                        AS KeywordCase AUTO
@@ -79,4 +79,3 @@ STATIC CLASS XEditorSettings
 
 END CLASS
 
-END NAMESPACE

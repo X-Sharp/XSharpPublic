@@ -5,7 +5,7 @@
 //
 
 USING LanguageService.CodeAnalysis.XSharp
-BEGIN NAMESPACE XSharp.Settings
+NAMESPACE XSharp.Settings
 STATIC CLASS XDebuggerSettings
     PUBLIC STATIC PROPERTY AllowEditing AS LOGIC AUTO
     PUBLIC STATIC PROPERTY NoLateBinding AS LOGIC AUTO
@@ -35,4 +35,3 @@ STATIC CLASS XDebuggerSettings
 
 END CLASS
 
-END NAMESPACE

@@ -118,7 +118,6 @@ ABSTRACT CLASS XPEMemberSymbol     INHERIT XPESymbol IMPLEMENTS IXMemberSymbol
         FOREACH var attr in attributes
             SWITCH attr:AttributeType:FullName
             CASE KnownTypes.XSharpDefaultParam
-            CASE KnownTypes.VulcanDefaultParam
                 var arg1     := attr:ConstructorArguments[0]
                 IF arg1:Value is CustomAttributeArgument VAR arg
                     arg1 := arg

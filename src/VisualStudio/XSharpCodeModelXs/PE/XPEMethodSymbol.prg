@@ -77,7 +77,6 @@ CLASS XPEMethodSymbol  INHERIT XPEMemberSymbol
                         SELF:DeclaringTypeSym := asm:Types[SELF:DeclaringType]
                     endif
                 CASE KnownTypes.XSharpClipper
-                CASE KnownTypes.VulcanClipper
                     SELF:CallingConvention := CallingConvention.Clipper
                     _ccAttrib := attr
                 END SWITCH

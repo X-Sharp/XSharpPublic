@@ -36,6 +36,8 @@ using XSharpModel;
 using File = System.IO.File;
 using MBC = Microsoft.Build.Construction;
 using MSBuild = Microsoft.Build.Evaluation;
+using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
+using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 
 namespace XSharp.Project
 {
@@ -444,6 +446,23 @@ namespace XSharp.Project
             return this.options;
         }
 
+        protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
+        {
+            if (cmdGroup == Microsoft.VisualStudio.Project.VsMenus.guidStandardCommandSet97)
+            {
+                switch ((VsCommands)cmd)
+                {
+                    case VsCommands.CancelBuild:
+                        result |= QueryStatusResult.SUPPORTED;
+                        if (XSettings.IsVsBuilding)
+                            result |= QueryStatusResult.ENABLED;
+                        else
+                            result |= QueryStatusResult.INVISIBLE;
+                        return VSConstants.S_OK;
+                }
+            }
+            return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
+        }
         public override void PrepareBuild(ConfigCanonicalName config, bool cleanBuild)
         {
             // Do not prepare the build when we are not completely loaded. This

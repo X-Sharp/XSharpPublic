@@ -5,13 +5,8 @@
 //
 USING LanguageService.CodeAnalysis
 USING LanguageService.CodeAnalysis.XSharp
-USING System
-USING System.Collections.Generic
-USING System.Linq
-USING System.Text
-USING System.Threading.Tasks
 
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
 INTERFACE IXSharpProject
     METHOD AddFileNode(fileName AS STRING) AS VOID
     METHOD DeleteFileNode(fileName AS STRING) AS VOID
@@ -69,6 +64,4 @@ INTERFACE IXVsShellLink
 
 END INTERFACE
 
-
-END NAMESPACE
 

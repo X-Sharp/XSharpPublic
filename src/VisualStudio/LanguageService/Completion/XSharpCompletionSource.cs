@@ -123,7 +123,7 @@ namespace XSharp.LanguageService
                     return;
                 var tokenList = XSharpTokenTools.GetTokenList(location, out state, includeKeywords);
                 var lastToken = tokenList.LastOrDefault(t => t.StopIndex < location.Position);
-                if (lastToken != null) 
+                if (lastToken != null)
                 {
                     if (lastToken.Type != XSharpLexer.DOT && lastToken.Type != XSharpLexer.COLON)
                     {
@@ -134,7 +134,7 @@ namespace XSharp.LanguageService
                         }
                         tokenList.RemoveAt(tokenList.Count - 1);
                         lastToken = tokenList.LastOrDefault();
-                        
+
                     }
                 }
                 var addKeywords = typedChar != '.' && typedChar != ':';
@@ -160,11 +160,11 @@ namespace XSharp.LanguageService
                     {
                         isInstance = false;
                         if (! state.HasFlag(CompletionState.Namespaces))
-                        { 
+                        {
                             state = CompletionState.Namespaces | CompletionState.Types;
                         }
                     }
-                    else 
+                    else
                     {
                         isInstance = true;
                         state = CompletionState.Members;
@@ -202,7 +202,7 @@ namespace XSharp.LanguageService
                             }
                             memberName = xmember.Name;
                         }
-                        else 
+                        else
                         {
                             type = xmember.ResolvedType;
                         }
@@ -252,7 +252,6 @@ namespace XSharp.LanguageService
                         switch (type.FullName)
                         {
                             case KnownTypes.XSharpUsual:
-                            case KnownTypes.VulcanUsual:
                                 type = null;
                                 break;
                         }

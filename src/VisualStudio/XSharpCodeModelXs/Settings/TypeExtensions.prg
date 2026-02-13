@@ -13,7 +13,6 @@ BEGIN NAMESPACE XSharp.Settings
         // Fields
         STATIC INTERNAL SystemToXSharp AS IDictionary<STRING, STRING>
         STATIC INTERNAL XSharpToSystem AS IDictionary<STRING, STRING>
-        STATIC INTERNAL VulcanToSystem AS IDictionary<STRING, STRING>
 
         // Methods
         STATIC CONSTRUCTOR()
@@ -35,15 +34,6 @@ BEGIN NAMESPACE XSharp.Settings
             SystemToXSharp:Add(KnownTypes.SystemIntPtr, "PTR")
 
 
-            SystemToXSharp:Add(KnownTypes.VulcanCodeblock, "CODEBLOCK")
-            SystemToXSharp:Add(KnownTypes.VulcanArray, "ARRAY")
-            SystemToXSharp:Add(KnownTypes.VulcanDate, "DATE")
-            SystemToXSharp:Add(KnownTypes.VulcanFloat, "FLOAT")
-            SystemToXSharp:Add(KnownTypes.VulcanPSZ, "PSZ")
-            SystemToXSharp:Add(KnownTypes.VulcanSymbol, "SYMBOL")
-            SystemToXSharp:Add(KnownTypes.VulcanUsual, "USUAL")
-            SystemToXSharp:Add(KnownTypes.VulcanWinBool, "LOGIC")
-
             SystemToXSharp:Add(KnownTypes.XSharpCodeblock, "CODEBLOCK")
             SystemToXSharp:Add(KnownTypes.XSharpArray, "ARRAY")
             SystemToXSharp:Add(KnownTypes.XSharpBinary, "BINARY")
@@ -56,18 +46,11 @@ BEGIN NAMESPACE XSharp.Settings
             SystemToXSharp:Add(KnownTypes.XSharpWinBool, "LOGIC")
             SystemToXSharp:Add(KnownTypes.XSharpWinDate, "DATE")
             XSharpToSystem  := XDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
-            VulcanToSystem  := XDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
             FOREACH VAR pair IN SystemToXSharp
                 if !pair:Key:Contains("__WinBool")
-                    if pair:Key:StartsWith("Vulcan")
-                        IF ! VulcanToSystem:ContainsKey(pair:Value)
-                            VulcanToSystem:Add(pair:Value, pair:Key)
-                        ENDIF
-                    else
-                        IF ! XSharpToSystem:ContainsKey(pair:Value)
-                            XSharpToSystem:Add(pair:Value, pair:Key)
-                        ENDIF
-                    endif
+                    IF ! XSharpToSystem:ContainsKey(pair:Value)
+                        XSharpToSystem:Add(pair:Value, pair:Key)
+                    ENDIF
                 endif
             NEXT
             XSharpToSystem:Add("LONG", KnownTypes.SystemInt32)
@@ -75,7 +58,7 @@ BEGIN NAMESPACE XSharp.Settings
             XSharpToSystem:Add("SHORTINT", KnownTypes.SystemInt16)
 
         STATIC METHOD IsXSharpTypeName( SELF typeName as STRING) AS LOGIC
-            RETURN XSharpToSystem:ContainsKey(typeName) .or. VulcanToSystem:ContainsKey(typeName)
+            RETURN XSharpToSystem:ContainsKey(typeName)
 
         STATIC METHOD GetSystemTypeName( SELF typename AS STRING, lXSharpNames AS LOGIC) AS STRING
             LOCAL lHandled := TRUE AS LOGIC
@@ -91,9 +74,6 @@ BEGIN NAMESPACE XSharp.Settings
                 ENDIF
 
             ELSE
-                if VulcanToSystem:ContainsKey(typename)
-                    return VulcanToSystem[typename]
-                endif
                 if XSharpToSystem:ContainsKey(typename)
                     return XSharpToSystem[typename]
                 endif

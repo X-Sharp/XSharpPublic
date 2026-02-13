@@ -358,7 +358,6 @@ namespace XSharp.Project
 
             var toDelete = new List<XSharpDependencyNode>();
             var toAdd = new List<string>();
-            //this.Build(MsBuildTarget.ResolveAssemblyReferences);
             foreach (var reference in sdkReferences)
             {
                 if (!newReferences.Contains(reference, StringComparer.OrdinalIgnoreCase))
@@ -378,8 +377,11 @@ namespace XSharp.Project
             // delete nodes that are no longer needed
             foreach (var node in toDelete)
             {
-                frameworkNode.RemoveChild(node);
-                node.Dispose();
+                if (node is object)
+                {
+                    frameworkNode.RemoveChild(node);
+                    node.Dispose();
+                }
             }
             // add new nodes
             this.SuspendBuild = true;
@@ -425,15 +427,36 @@ namespace XSharp.Project
         }
         protected override void ResolveAssemblyReference()
         {
-            if (this.ProjectMgr is XSharpSdkProjectNode sdk && !sdk.SuspendBuild)
-                base.ResolveAssemblyReference();
+            if (this.ProjectMgr is XSharpSdkProjectNode sdk && sdk.SuspendBuild)
+            {
+                return;
+            }
+
+            base.ResolveAssemblyReference();
         }
         protected override void BindReferenceData()
         {
-            if (this.ProjectMgr is XSharpSdkProjectNode sdk && !sdk.SuspendBuild)
-                base.BindReferenceData();
+            if (this.ProjectMgr is XSharpSdkProjectNode sdk && sdk.SuspendBuild)
+            {
+                return;
+            }
+            base.BindReferenceData();
         }
         override public Guid ItemTypeGuid => VSConstants.GUID_ItemType_VirtualFolder;
+        protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
+        {
+            if (cmdGroup == Microsoft.VisualStudio.Project.VsMenus.guidStandardCommandSet97)
+            {
+                switch ((VsCommands)cmd)
+                {
+                    case VsCommands.Remove:
+                    case VsCommands.Delete:
+                        result |= QueryStatusResult.SUPPORTED | QueryStatusResult.INVISIBLE;
+                        return 0;
+                }
+            }
+            return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
+        }
     }
 
 

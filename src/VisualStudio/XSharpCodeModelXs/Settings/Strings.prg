@@ -1,15 +1,14 @@
-﻿// Strings.prg
-// Created by    : robert
-// Creation Date : 1/23/2023 1:00:15 PM
-// Created for   :
-// WorkStation   : NYX
-
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 USING System
 USING System.Collections.Generic
 USING System.Text
 
-BEGIN NAMESPACE XSharp.Settings
+NAMESPACE XSharp.Settings
 
 class GlobalUsingsPropertyPagePanel
     const captImplicitUsings := "Implicit Global Usings" as string
@@ -213,4 +212,3 @@ class BuildPropertyPagePanel
 end class
 
 
-END NAMESPACE // XSharpModel.Constants

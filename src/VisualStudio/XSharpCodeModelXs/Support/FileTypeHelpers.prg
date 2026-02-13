@@ -6,7 +6,7 @@
 
 USING System
 using XSharp.Settings
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
 
 STATIC CLASS XFileTypeHelpers
 
@@ -134,6 +134,4 @@ STATIC CLASS XFileTypeHelpers
 
 
 END CLASS
-
-END NAMESPACE
 

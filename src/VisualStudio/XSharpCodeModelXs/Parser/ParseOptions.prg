@@ -1,18 +1,14 @@
-﻿// ParseOptions.prg
-// Created by    : robert
-// Creation Date : 8/22/2024 11:07:12 AM
-// Created for   :
-// WorkStation   : LEDA
-
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 USING LanguageService.CodeAnalysis.XSharp
 USING LanguageService.SyntaxTree
 USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
-USING System
-USING System.Collections.Generic
 USING System.Text
-using System.Diagnostics
 using Microsoft.Win32
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
 
 	/// <summary>
     /// The ParseOptions class.
@@ -62,5 +58,4 @@ BEGIN NAMESPACE XSharpModel
     PROPERTY CaseSensitive AS LOGIC GET _options:CaseSensitive
     PROPERTY AllowDotForInstanceMembers AS LOGIC GET _options:AllowDotForInstanceMembers
     PROPERTY EnforceSelf AS LOGIC GET _options:EnforceSelf
-	END CLASS
-END NAMESPACE // XSharpModel.Parser
+END CLASS

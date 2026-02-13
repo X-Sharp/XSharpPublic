@@ -336,6 +336,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             addMacro("__UTCTIME__", XSharpLexer.STRING_CONST, DateTime.Now.ToUniversalTime().ToString("HH:mm:ss"));
             addMacro("__VERSION__", XSharpLexer.STRING_CONST, global::XSharp.Constants.FileVersion);
             addMacro("__XSHARP__", XSharpLexer.TRUE_CONST);
+            addMacro("__XSHARP3__", XSharpLexer.TRUE_CONST);
 
             _macroDefines.Add("__LINE__", (token) => new XSharpPPToken(XSharpLexer.INT_CONST, token.Line.ToString(), token));
             _macroDefines.Add("__SRCLOC__", (token) => new XSharpPPToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + " line " + token.Line.ToString() + '"', token));

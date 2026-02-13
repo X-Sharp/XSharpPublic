@@ -26,27 +26,27 @@
     </ProjectReference>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj">
       <Name>XSharp.Core.Next</Name>
-      <Project>{9badda97-6004-4ba9-9144-a292f376cee2}</Project>
+      <Project>{cc7c83af-345a-4719-9490-65ee4a04f3f4}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\XSharp.Data\XSharp.Data.Next.xsproj">
       <Name>XSharp.Data.Next</Name>
-      <Project>{368adef3-b879-4ece-a022-3baa151aec9e}</Project>
+      <Project>{9cea0df2-04fb-499e-9976-5c9cf7c0e689}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\XSharp.RT\XSharp.RT.Next.xsproj">
       <Name>XSharp.RT.Next</Name>
-      <Project>{eb2c85ab-fdd9-4f2f-9186-ea332143ba51}</Project>
+      <Project>{504a02d9-74ae-445f-85d7-af2544e06d81}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\XSharp.VFP\XSharp.VFP.Next.xsproj">
       <Name>XSharp.VFP.Next</Name>
-      <Project>{13e6cc8c-8372-440f-9334-6840dc1e451e}</Project>
+      <Project>{0792ab92-a662-4d1d-9f96-338a6cc6ce54}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\XSharp.VO\XSharp.VO.Next.xsproj">
       <Name>XSharp.VO.Next</Name>
-      <Project>{40c9905f-7bff-44cf-ac8f-1dc80ee372fb}</Project>
+      <Project>{583c4466-3bbe-4828-b5de-17068ea3a035}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

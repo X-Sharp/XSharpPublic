@@ -12,11 +12,14 @@ namespace XSharp.Project
         protected ListFactory<T> Factory { get; set; }
         protected IList<T> Items { get; set; }
         protected bool dirty;
-        internal ListManager(XSharpProjectNode node, ListProvider provider)
+        internal ListManager(XSharpProjectNode node)
         {
             Project = node;
             Items = new List<T>();
-            Factory = new ListFactory<T>(provider, node.ProjectIDGuid);
+        }
+        internal void SetProvider( ListProvider provider)
+        {
+            Factory = new ListFactory<T>(provider, Project.ProjectIDGuid);
         }
 
         internal void Clear()

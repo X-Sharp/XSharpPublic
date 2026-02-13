@@ -5,10 +5,10 @@
 //
 
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser
-
+NAMESPACE XSharpModel
 // imported from XSharpLexer.tokens
 // Keep in Sync !
-ENUM XSharpModel.XTokenType AS SHORT
+ENUM XTokenType AS SHORT
     MEMBER None := 0
     MEMBER @@First_keyword:= XSharpLexer.FIRST_KEYWORD
     MEMBER @@Access:= XSharpLexer.ACCESS

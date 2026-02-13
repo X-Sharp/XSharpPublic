@@ -4,15 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING LanguageService.SyntaxTree
-USING System.Collections.Generic
-USING System.Linq
-USING System.Text
-USING System.Threading.Tasks
-USING System.Diagnostics
-USING System
-USING System.Runtime.InteropServices
-USING System
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
 /// <summary>
 /// 1 based TextRange
 /// </summary>
@@ -135,6 +127,4 @@ STRUCTURE TextRange
         RETURN i"{StartLine}.{StartColumn}-{EndLine}.{EndColumn}"
 
 END STRUCTURE
-
-END NAMESPACE
 

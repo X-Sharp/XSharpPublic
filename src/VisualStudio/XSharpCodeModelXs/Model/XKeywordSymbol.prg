@@ -4,20 +4,16 @@
 // See License.txt in the project root for license information.
 //
 
-USING XSharpModel
-USING System.Diagnostics
-USING System.Collections.Generic
 USING LanguageService.SyntaxTree
 
-BEGIN NAMESPACE XSharpModel
-     // an entity in the source code
-    [DebuggerDisplay("{Kind}, {Name,nq}")];
-	CLASS XKeywordSymbol INHERIT XSymbol
+NAMESPACE XSharpModel
+    // an entity in the source code
+[DebuggerDisplay("{Kind}, {Name,nq}")];
+CLASS XKeywordSymbol INHERIT XSymbol
 
-    CONSTRUCTOR(name AS STRING)
-        SUPER(name, Kind.Keyword, Modifiers.Public)
-        RETURN
-    PROPERTY Prototype as STRING GET SELF:KindKeyword+" "+SELF:Name
-    PROPERTY Location AS STRING GET ""
-	END CLASS
-END NAMESPACE // XSharpModel.Model
+CONSTRUCTOR(name AS STRING)
+    SUPER(name, Kind.Keyword, Modifiers.Public)
+    RETURN
+PROPERTY Prototype as STRING GET SELF:KindKeyword+" "+SELF:Name
+PROPERTY Location AS STRING GET ""
+END CLASS

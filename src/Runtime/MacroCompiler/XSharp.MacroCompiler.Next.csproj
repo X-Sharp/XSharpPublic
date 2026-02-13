@@ -5,9 +5,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>XSharp.MacroCompiler</RootNamespace>
     <AssemblyName>XSharp.MacroCompiler</AssemblyName>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <LangVersion>Preview</LangVersion>
-    <RuntimeIdentifier>win</RuntimeIdentifier>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\Constants.cs">

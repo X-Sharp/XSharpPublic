@@ -9,7 +9,7 @@ USING System.IO
 USING System.Linq
 USING System
 USING XSharpModel
-BEGIN NAMESPACE XSharp.Settings
+NAMESPACE XSharp.Settings
 STATIC CLASS XSettings
     // Fields
 
@@ -207,4 +207,3 @@ CLASS DummyLogger IMPLEMENTS XSharpModel.ILogger
 END CLASS
 
 
-END NAMESPACE

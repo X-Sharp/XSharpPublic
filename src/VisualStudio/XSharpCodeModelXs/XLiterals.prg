@@ -4,15 +4,11 @@
 // See License.txt in the project root for license information.
 //
 
-USING System.Collections.Generic
-USING System.Diagnostics
-USING System
-USING System.Linq
 USING LanguageService.CodeAnalysis.XSharp
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser
 USING XSharp.Settings
 
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
 
 
 
@@ -169,6 +165,4 @@ STATIC CLASS XLiterals
 END CLASS
 
 
-
-END NAMESPACE
 

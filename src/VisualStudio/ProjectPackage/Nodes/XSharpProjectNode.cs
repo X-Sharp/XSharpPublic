@@ -36,6 +36,8 @@ using XSharpModel;
 using File = System.IO.File;
 using MBC = Microsoft.Build.Construction;
 using MSBuild = Microsoft.Build.Evaluation;
+using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
+using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 
 namespace XSharp.Project
 {
@@ -444,6 +446,23 @@ namespace XSharp.Project
             return this.options;
         }
 
+        protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
+        {
+            if (cmdGroup == Microsoft.VisualStudio.Project.VsMenus.guidStandardCommandSet97)
+            {
+                switch ((VsCommands)cmd)
+                {
+                    case VsCommands.CancelBuild:
+                        result |= QueryStatusResult.SUPPORTED;
+                        if (XSettings.IsVsBuilding)
+                            result |= QueryStatusResult.ENABLED;
+                        else
+                            result |= QueryStatusResult.INVISIBLE;
+                        return VSConstants.S_OK;
+                }
+            }
+            return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
+        }
         public override void PrepareBuild(ConfigCanonicalName config, bool cleanBuild)
         {
             // Do not prepare the build when we are not completely loaded. This
@@ -1812,18 +1831,21 @@ namespace XSharp.Project
                 {
                     switch (item.ItemType.ToLower())
                     {
-                        case "reference" when ! this.IsSdkProject:
-                        case "referencepath" when this.IsSdkProject:
-                            allReferenceAssemblies.Add(item.EvaluatedInclude);
+                        case "reference":
+                        case "referencepath":
+                            var file = item.EvaluatedInclude.Replace("/", "\\");
+                            allReferenceAssemblies.AddUnique(file);
                             if (item.GetMetadataValue("NugetSourceType")?.ToLower() == "package")
                             {
                                 Logger.Information($"Item: Package{item.ItemType} {item.EvaluatedInclude}");
                                 continue;
                             }
-                            sdkReferences.Add(item.EvaluatedInclude);
+                            sdkReferences.AddUnique(file);
                             break;
                         case "xsccommandlineargs":
-                            commandLineArguments.Add(item.EvaluatedInclude);
+                            commandLineArguments.AddUnique(item.EvaluatedInclude);
+                            break;
+                        case "resolvedframeworkreference":
                             break;
                         default:
                             continue;

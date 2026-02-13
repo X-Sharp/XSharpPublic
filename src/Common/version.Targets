@@ -2,7 +2,7 @@
 <Project>
   <PropertyGroup>
     <AssemblyVersion>3.0</AssemblyVersion>
-    <FileVersion>3.0.0.0</FileVersion>
+    <FileVersion>3.0.0.1</FileVersion>
     <Company>XSharp BV</Company>
     <Product>XSharp</Product>
     <Copyright>Copyright (c) XSharp BV 2015-2026.</Copyright>

@@ -4,13 +4,9 @@
 // See License.txt in the project root for license information.
 //
 
-USING System.Collections.Generic
-USING System.Diagnostics
-USING System
-USING System.Linq
 USING LanguageService.CodeAnalysis.XSharp
 USING LanguageService.SyntaxTree
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
 
 
 /// <summary>An entity in a source file. </summary>
@@ -29,7 +25,7 @@ CLASS XSourceEntity INHERIT XSourceSymbol IMPLEMENTS IXSymbol, IXSourceSymbol
     PROPERTY SingleLine              AS LOGIC            AUTO
     PROPERTY Value                   AS STRING           AUTO
     PROPERTY XmlComments             AS STRING           AUTO
-    PRIVATE _typeName                AS STRING
+    PROTECTED _typeName                AS STRING
     PROPERTY IsGeneric               AS LOGIC            GET GenericArgs != NULL
     PROPERTY GenericArgs             AS STRING[]         AUTO GET PRIVATE SET
     PROPERTY StartOfXmlComments      AS LONG             AUTO
@@ -128,7 +124,4 @@ CLASS XSourceEntity INHERIT XSourceSymbol IMPLEMENTS IXSymbol, IXSourceSymbol
 
 #endregion
 END CLASS
-
-END NAMESPACE
-
 

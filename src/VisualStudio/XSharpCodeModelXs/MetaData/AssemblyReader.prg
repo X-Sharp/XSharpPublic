@@ -1,11 +1,8 @@
-﻿USING System
-USING System.Linq
-USING System.Collections.Generic
-USING System.IO
+﻿USING System.IO
 USING Mono.Cecil
 using XSharp.Settings
 
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
 INTERNAL CLASS AssemblyReader
    PROTECT reader             AS AssemblyDefinition
    PROTECT _extensionMethods  AS List<MethodDefinition>
@@ -51,7 +48,6 @@ INTERNAL CLASS AssemblyReader
          FOREACH VAR att IN reader:CustomAttributes
             VAR type := att:AttributeType
     		SWITCH type:ToString()
-			CASE KnownTypes.VulcanClassLibrary
             CASE KnownTypes.XSharpClassLibrary
                if att:ConstructorArguments:Count >= 2
                   var arg1 := att:ConstructorArguments[0]:Value:ToString()
@@ -62,7 +58,6 @@ INTERNAL CLASS AssemblyReader
                   ENDIF
                   assembly:IsXSharp := TRUE
                ENDIF
-			CASE KnownTypes.VulcanImplicitNS
 			CASE KnownTypes.XSharpImplicitNS
 			    IF att:ConstructorArguments:Count >= 1
                     VAR ns := att:ConstructorArguments[0]:Value:ToString()
@@ -210,4 +205,3 @@ INTERNAL CLASS AssemblyReader
    END CLASS
 
 END CLASS
-END NAMESPACE

@@ -39,7 +39,7 @@ Copyright (C) XSharp BV. All rights reserved.
     <UseHostCompilerIfAvailable>false</UseHostCompilerIfAvailable>
     <UseSharedCompilation>true</UseSharedCompilation>
     <WarningLevel>4</WarningLevel>
-    <RuntimeIdentifier Condition="'$(UsingMicrosoftNETSdk)' != 'true'">win</RuntimeIdentifier>
+    <_EnableDefaultWindowsPlatform Condition="'$(_EnableDefaultWindowsPlatform)' == '' And '$(UsingMicrosoftNETSdk)' != 'true'">true</_EnableDefaultWindowsPlatform>
   </PropertyGroup>
   <!-- Set defaults for Configuration, Platform, Optimize and PDB generation -->
   <PropertyGroup>

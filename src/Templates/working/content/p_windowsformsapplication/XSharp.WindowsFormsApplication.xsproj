@@ -2,11 +2,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Name>WindowsFormsApplication</Name>
+    <UseWindowsForms>true</UseWindowsForms>
     <OutputType>WinExe</OutputType>
     <Dialect>Core</Dialect>
     <Allowdot>True</Allowdot>
     <NamedArgs>True</NamedArgs>
-    <TargetFramework Condition="'$(TargetFrameworkOverride)' == ''">net46</TargetFramework>
+    <TargetFramework Condition="'$(TargetFrameworkOverride)' == ''">FrameworkParameter</TargetFramework>
     <TargetFramework Condition="'$(TargetFrameworkOverride)' != ''">TargetFrameworkOverride</TargetFramework>
     <RootNamespace>Company.Namespace1</RootNamespace>
   </PropertyGroup>

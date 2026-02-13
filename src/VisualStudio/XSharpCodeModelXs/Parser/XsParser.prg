@@ -6,14 +6,11 @@
 
 // Note that the comment blocks from the various rules have been copied from XSharp.g4 inside the compiler
 
-
-USING System.Collections.Generic
-USING System.Collections
+USING System.Collections.Concurrent
 USING System.Text
 USING System.Text.RegularExpressions
 USING System.IO
-USING System.Diagnostics
-USING System.Linq
+
 USING LanguageService.CodeAnalysis.XSharp
 USING LanguageService.SyntaxTree
 USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
@@ -21,35 +18,34 @@ USING XSharp.Parser
 USING LanguageService.CodeAnalysis.Text
 USING XSharp.Settings
 
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
 
 
 CLASS XsParser IMPLEMENTS VsParser.IErrorListener
-    PRIVATE  _list         AS XSharpTokenList
-    PRIVATE  _file         AS XFile
-    PRIVATE  _usings       AS IList<STRING>
-    PRIVATE  _staticusings AS IList<STRING>
-    PRIVATE  _EntityList    AS IList<XSourceEntity>
-    PRIVATE  _EntityStack   AS Stack<XSourceEntity>
-    PRIVATE  _BlockList     AS IList<XSourceBlock>
-    PRIVATE  _BlockStack    AS Stack<XSourceBlock>
-    PRIVATE  _PPBlockStack  AS Stack<XSourceBlock>
-    PRIVATE  _locals        AS IList<XSourceVariableSymbol>
-    PRIVATE  _collectLocals AS LOGIC
-    PRIVATE  _collectBlocks AS LOGIC
-    PRIVATE  _errors        AS IList<XError>
-    PRIVATE  _globalType    AS XSourceTypeSymbol
-    PRIVATE  _dialect       AS XDialect
-    PRIVATE  _xppVisibility AS Modifiers
-    PRIVATE  _commentTasks  AS IList<XCommentTask>
-    PRIVATE  _modifiers     AS IList<IToken>
+    PRIVATE _list         AS XSharpTokenList
+    PRIVATE _file         AS XFile
+    PRIVATE _usings       AS IList<XSourceUsing>
+    PRIVATE _EntityList    AS IList<XSourceEntity>
+    PRIVATE _EntityStack   AS Stack<XSourceEntity>
+    PRIVATE _BlockList     AS IList<XSourceBlock>
+    PRIVATE _BlockStack    AS Stack<XSourceBlock>
+    PRIVATE _PPBlockStack  AS Stack<XSourceBlock>
+    PRIVATE _locals        AS IList<XSourceVariableSymbol>
+    PRIVATE _collectLocals AS LOGIC
+    PRIVATE _collectBlocks AS LOGIC
+    PRIVATE _errors        AS IList<XError>
+    PRIVATE _globalType    AS XSourceTypeSymbol
+    PRIVATE _dialect       AS XDialect
+    PRIVATE _xppVisibility AS Modifiers
+    PRIVATE _commentTasks  AS IList<XCommentTask>
+    PRIVATE _modifiers     AS IList<IToken>
 
-    PRIVATE  _attributes   AS Modifiers      // for the current entity
-    PRIVATE  _start        AS IToken
-    PRIVATE  _hasXmlDoc    AS LOGIC
-    PRIVATE  _tokens       AS IList<IToken>
-    PRIVATE  _firstTokenOnLine as IToken
-    PRIVATE  _missingType  AS STRING
+    PRIVATE _attributes   AS Modifiers      // for the current entity
+    PRIVATE _start        AS IToken
+    PRIVATE _hasXmlDoc    AS LOGIC
+    PRIVATE _tokens       AS IList<IToken>
+    PRIVATE _firstTokenOnLine as IToken
+    PRIVATE _missingType  AS STRING
 
     PRIVATE PROPERTY CurrentEntity      AS XSourceEntity GET IIF(_EntityStack:Count > 0, _EntityStack:Peek(), NULL_OBJECT)
     PRIVATE PROPERTY CurrentType        AS XSourceTypeSymbol
@@ -76,9 +72,8 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
     CONSTRUCTOR(oFile AS XFile, dialect AS XDialect)
         SELF:SaveToDisk := TRUE
         _errors        := List<XError>{}
-        _usings        := List<STRING>{}
+        _usings        := List<XSourceUsing>{}
         _commentTasks  := List<XCommentTask>{}
-        _staticusings  := List<STRING>{}
         _EntityList    := List<XSourceEntity>{}
         _EntityStack   := Stack<XSourceEntity>{}
         _BlockList     := List<XSourceBlock>{}
@@ -183,6 +178,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             ENDIF
             IF SELF:ParseUsing( OUT VAR memUsing)
                 _EntityList:Add(memUsing)
+                _globalType:AddMember(memUsing)
                 LOOP
             ENDIF
             LOCAL firstDocCommentToken := NULL AS XSharpToken
@@ -450,7 +446,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             SELF:_globalType:AddMember(xmember)
         ENDIF
         IF ! lLocals
-            _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
+            _file:SetTypes(typelist, _usings, SELF:_EntityList)
             IF SELF:SaveToDisk
                 _file:SaveToDatabase()
             ENDIF
@@ -468,11 +464,11 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
 
     PRIVATE METHOD AddUniqueUsing(strName as STRING) AS VOID
         FOREACH var u in SELF:_usings
-            if String.Compare(u, strName, TRUE) == 0
+            if String.Compare(u:Name, strName, TRUE) == 0
                 RETURN
             ENDIF
         NEXT
-        _usings:Add(strName)
+        _usings:Add(XSourceUsing{strName, Modifiers.None})
         RETURN
 
     PRIVATE METHOD ParsePPLine() AS LOGIC
@@ -577,31 +573,40 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ENDIF
         RETURN TRUE
 
-    PRIVATE METHOD ParseUsing(entUsing out XSourceMemberSymbol) AS LOGIC
+    PRIVATE METHOD ParseUsing(entUsing out XSourceUsing) AS LOGIC
         /*
-        using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoperator)? Name=name EOS
-        ;
+        this could parse different things:
+        - a Namespace USING
+        using_  :(Global=GLOBAL)? USING (Static=STATIC)? (Unsafe=UNSAFE)? (Alias=identifierName Op=assignoperator)? Name=name EOS
+        - a Using Variable declaration:
+          Using=USING Static=STATIC? VAR ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)* end=eos #varLocalDecl
+          Using=USING Static=STATIC? LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
+          This should only happen as part of the body of an entity
 
+            NOTE: GLOBAL Must prefix the USING keyword
+                  STATIC and UNSAFE can be in any order and must follow the USING keyword
         */
         entUsing := NULL
+        LOCAL isGlobal := FALSE AS LOGIC
+        LOCAL isStatic := FALSE AS LOGIC
+        LOCAL isUnsafe := FALSE AS LOGIC
+
         if SELF:La1 == XSharpLexer.GLOBAL .and. SELF:La2 == XSharpLexer.USING
             NOP // Ok
+            isGlobal := TRUE
         elseIF SELF:La1 != XSharpLexer.USING
             RETURN FALSE
         ENDIF
         IF SELF:ExpectOnThisLine(XSharpLexer.VAR)             // USING VAR
             RETURN FALSE
         ENDIF
-        IF SELF:ExpectOnThisLine(XSharpLexer.IMPLIED)
+        IF SELF:ExpectOnThisLine(XSharpLexer.IMPLIED)       // USING LOCAL? IMPLIED
             RETURN FALSE
         ENDIF
-        var isGlobal := SELF:La1 == XSharpLexer.GLOBAL
-        VAR startToken := SELF:ConsumeAndGet()
+        VAR startToken := SELF:ConsumeAndGet()              // GLOBAL or USING
         if isGlobal
             SELF:ConsumeAndGet() // USING
         ENDIF
-        VAR isStatic := FALSE
-        VAR isUnsafe := FALSE
         VAR alias := ""
         IF SELF:Expect(XSharpLexer.STATIC)
             isStatic := TRUE
@@ -615,29 +620,28 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             SELF:Consume()   // :=
         ENDIF
         VAR name := SELF:ParseQualifiedName()
-        IF isStatic
-            SELF:_staticusings:Add(name)
-        ELSE
-            SELF:_usings:Add(name)
+        var mods := Modifiers.None
+        IF isGlobal
+            mods |= Modifiers.Global
         ENDIF
+        IF isStatic
+            mods |= Modifiers.Static
+        ENDIF
+        IF isUnsafe
+            mods |= Modifiers.Unsafe
+        ENDIF
+
         var endToken := Self:Lt1
         SELF:ReadLine()
-        var mods := Modifiers.None
-        if (isStatic)
-            mods := Modifiers.Static
-        endif
-        if (isGlobal)
-            mods |= Modifiers.Global
-        endif
-        if (isUnsafe)
-            mods |= Modifiers.Unsafe
-        endif
         SELF:GetSourceInfo(startToken, endToken , OUT VAR range, OUT VAR interval, OUT VAR source)
-        VAR entity := XSourceMemberSymbol{name, Kind.Using, mods, range,interval,"",_modifiers, isStatic}
+        VAR entity := XSourceUsing{name, mods, range, interval, alias}
+        if String.IsNullOrEmpty(alias)
+            entity:Alias := name
+        endif
         entity:SourceCode := source
         entity:File := _file
         entity:SingleLine := TRUE
-        _globalType:AddMember(entity)
+        _usings:Add(entity)
         entUsing := entity
         RETURN TRUE
     PRIVATE METHOD ParseUdcTokens() AS VOID
@@ -4214,19 +4218,6 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         RETURN
 END CLASS
 
-    DELEGATE DelEndToken(iToken AS LONG) AS LOGIC
-
-
-
-END NAMESPACE
-
-
-
-
-
-
-
-
-
+DELEGATE DelEndToken(iToken AS LONG) AS LOGIC
 
 

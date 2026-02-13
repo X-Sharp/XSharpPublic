@@ -14,7 +14,7 @@ Copyright (C) XSharp BV. All rights reserved.
   <PropertyGroup>
     <!-- Make sure these items are excluded by the SDK props and targets -->
     <VOBinaryFiles>**\*.xsfs;**\*.xsdbs;**\*.xsmnu;**\*.xsfrm;**\*.xsrep;**\*.xssql;**/*.vnfs;**/*.vndbs;**/*.vnmnu;**/*.vnfrm</VOBinaryFiles>
-	<DefaultItemExcludes>$(VOBinaryFiles);**/*.rc;**/*.resx;**/*.designer.prg</DefaultItemExcludes>
+	<DefaultItemExcludes>$(VOBinaryFiles);**/*.rc;**/*.resx;**/*.designer.prg;**/*.xaml.prg</DefaultItemExcludes>
   </PropertyGroup>
   
   <ItemGroup>
@@ -27,8 +27,13 @@ Copyright (C) XSharp BV. All rights reserved.
       <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\.rc$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentName>
       <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
     </NativeResource >
+	<Compile Include="**/*.xaml.prg"  KeepDuplicates="false" >
+	   <!-- .xaml.prg can depend on xaml -->
+      <ParentXamlName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.xaml.prg$', '.xaml', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentXamlName>
+      <DependentUpon Condition="Exists('%(ParentXamlName)')">%(ParentXamlName)</DependentUpon>
+	</Compile>
     <Compile Include="**/*.designer.prg"  KeepDuplicates="false" >
-      <!-- Designer.prg can depend on prg, resx or settings -->
+      <!-- Designer.prg can depend on xaml, prg, resx or settings -->
       <ParentPrgName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentPrgName>
       <ParentResxName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.resx', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentResxName>
       <ParentSettingsName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.settings', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentSettingsName>

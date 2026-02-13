@@ -22,7 +22,7 @@ STATIC CLASS XDatabase
     STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
-    PRIVATE CONST CurrentDbVersion := 3.4 AS System.Double
+    PRIVATE CONST CurrentDbVersion := 3.5 AS System.Double
 
     STATIC METHOD InitializeMicrosoft() AS VOID
         SQLitePCL.Batteries.Init()
@@ -276,13 +276,15 @@ STATIC CLASS XDatabase
 #region Table IncludeFilesPerFile
 
             stmt    := "CREATE TABLE IncludeFilesPerFile ("
-            stmt	+= " idFile integer NOT NULL, IdInclude integer NOT NULL, "
-            stmt    += " PRIMARY KEY (idFile, IdInclude), "
-            stmt	+= " FOREIGN KEY (idFile) 	 REFERENCES Files (Id)    ON DELETE CASCADE ON UPDATE CASCADE, "
-            stmt    += " FOREIGN KEY (IdInclude) REFERENCES IncludeFiles (Id) ON DELETE CASCADE ON UPDATE CASCADE "
+            stmt	+= " idFile integer NOT NULL, IdInclude integer NOT NULL, IdProject integer NOT NULL,"
+            stmt    += " PRIMARY KEY (idFile, IdProject, IdInclude), "
+            stmt	+= " FOREIGN KEY (idFile) 	 REFERENCES Files        (Id) ON DELETE CASCADE ON UPDATE CASCADE, "
+            stmt    += " FOREIGN KEY (IdInclude) REFERENCES IncludeFiles (Id) ON DELETE CASCADE ON UPDATE CASCADE, "
+            stmt    += " FOREIGN KEY (IdProject) REFERENCES Projects     (Id) ON DELETE CASCADE ON UPDATE CASCADE "
             stmt	+= " ) ;"
             stmt	+= "CREATE UNIQUE INDEX IncludeFilesPerFile_Pk  ON IncludeFilesPerFile (IdInclude, idFile); "
-            stmt	+= "CREATE INDEX IncludeFilesPerFile_File       ON IncludeFilesPerFile (idFile) ;"
+            stmt	+= "CREATE INDEX IncludeFilesPerFile_File       ON IncludeFilesPerFile (IdFile) ;"
+            stmt	+= "CREATE INDEX IncludeFilesPerFile_Project    ON IncludeFilesPerFile (IdProject) ;"
             stmt	+= "CREATE INDEX IncludeFilesPerFile_Include    ON IncludeFilesPerFile (IdInclude); "
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
@@ -435,10 +437,9 @@ STATIC CLASS XDatabase
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
-            stmt := " CREATE VIEW ProjectIncludeFiles AS SELECT distinct fp.IdProject, iff.IdInclude, i.FileName " + ;
-                " FROM FilesPerProject fp " + ;
-                " JOIN IncludeFilesPerFile iff ON fp.IdFile = iff.IdFile " + ;
-                " JOIN IncludeFiles i ON iff.IdInclude = i.Id "
+            stmt := " CREATE VIEW ProjectIncludeFiles AS SELECT distinct ipf.IdProject, i.Id, i.FileName " + ;
+                " FROM IncludeFilesPerFile ipf " + ;
+                " JOIN IncludeFiles i ON ipf.IdInclude = i.Id "
 
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
@@ -563,6 +564,7 @@ STATIC CLASS XDatabase
 
                     cmd:CommandText := "Delete from IncludeFiles where Id not in (select IdInclude from IncludeFilesPerFile)"
                     cmd:ExecuteScalar()
+
                 CATCH e AS Exception
                     Log("Error deleting orphaned files ")
                     XSettings.Exception(e, __FUNCTION__)
@@ -1175,37 +1177,40 @@ STATIC CLASS XDatabase
                         oCmd:ExecuteScalar()
                     NEXT
                 endif
+                if oFile:FullPath != XSolution.BuiltInFunctions
                 // Update Includefile IDs and write to disk
-                foreach include as XInclude in oFile:IncludeFiles:ToArray()
-                    if include:Id == -1
-                        oCmd:CommandText := "SELECT Id from IncludeFiles where fileName = $fileName"
-                        oCmd:Parameters:Clear()
-                        var fn := include:FileName
-                        if fn:Contains(".\")
-                            fn := System.IO.Path.GetFullPath(fn)
-                        endif
-                        oCmd:Parameters:AddWithValue("$fileName",fn)
-                        using var rdr := oCmd:ExecuteReader()
-                        if rdr:Read()
-                            include:Id := rdr.GetInt64(0)
-                        else
-                            rdr:Close()
-                            oCmd:CommandText := "INSERT INTO IncludeFiles (FileName) " +;
-                                " VALUES ($fileName) ;" +;
-                                " SELECT last_insert_rowid()"
+                    foreach include as XInclude in oFile:IncludeFiles:ToArray()
+                        if include:Id == -1
+                            oCmd:CommandText := "SELECT Id from IncludeFiles where fileName = $fileName"
                             oCmd:Parameters:Clear()
-                            oCmd:Parameters:AddWithValue("$fileName", fn)
-                            VAR Id := (INT64) oCmd:ExecuteScalar()
-                            include:Id := Id
+                            var fn := include:FileName
+                            if fn:Contains(".\")
+                                fn := System.IO.Path.GetFullPath(fn)
+                            endif
+                            oCmd:Parameters:AddWithValue("$fileName",fn)
+                            using var rdr := oCmd:ExecuteReader()
+                            if rdr:Read()
+                                include:Id := rdr.GetInt64(0)
+                            else
+                                rdr:Close()
+                                oCmd:CommandText := "INSERT INTO IncludeFiles (FileName) " +;
+                                    " VALUES ($fileName) ;" +;
+                                    " SELECT last_insert_rowid()"
+                                oCmd:Parameters:Clear()
+                                oCmd:Parameters:AddWithValue("$fileName", fn)
+                                VAR Id := (INT64) oCmd:ExecuteScalar()
+                                include:Id := Id
+                            endif
                         endif
-                    endif
-                    oCmd:CommandText := "INSERT INTO IncludeFilesPerFile (IdInclude, IdFile) " +;
-                        " VALUES ($idInclude, $idFile) "
-                    oCmd:Parameters:Clear()
-                    oCmd:Parameters:AddWithValue("$idInclude", include:Id)
-                    oCmd:Parameters:AddWithValue("$idFile", oFile:Id)
-                    oCmd:ExecuteNonQuery()
-                next
+                        oCmd:CommandText := "INSERT INTO IncludeFilesPerFile (IdInclude, IdFile, IdProject) " +;
+                            " VALUES ($idInclude, $idFile, $idProject) "
+                        oCmd:Parameters:Clear()
+                        oCmd:Parameters:AddWithValue("$idInclude", include:Id)
+                        oCmd:Parameters:AddWithValue("$idFile", oFile:Id)
+                        oCmd:Parameters:AddWithValue("$idProject", oFile:Project:Id)
+                        oCmd:ExecuteNonQuery()
+                    next
+                endif
                 oCmd:CommandText := "Delete from IncludeFiles where Id not in (select IdInclude from IncludeFilesPerFile)"
                 oCmd:Parameters:Clear()
                 oCmd:ExecuteScalar()

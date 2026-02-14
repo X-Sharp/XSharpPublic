@@ -14,12 +14,17 @@ Copyright (C) XSharp BV. All rights reserved.
   <PropertyGroup>
     <!-- Make sure these items are excluded by the SDK props and targets -->
     <VOBinaryFiles>**\*.xsfs;**\*.xsdbs;**\*.xsmnu;**\*.xsfrm;**\*.xsrep;**\*.xssql;**/*.vnfs;**/*.vndbs;**/*.vnmnu;**/*.vnfrm</VOBinaryFiles>
-	<DefaultItemExcludes>$(VOBinaryFiles);**/*.rc;**/*.resx;**/*.designer.prg</DefaultItemExcludes>
+	<AppXamlFiles>**\App.xaml</AppXamlFiles>
+	<!-- App.xaml files need special item type ApplicationDefinition, so exclude these as well -->
+	<DefaultItemExcludes>$(VOBinaryFiles);$(AppXamlFiles);**/*.rc;**/*.resx;**/*.designer.prg;**/*.xaml.prg</DefaultItemExcludes>
   </PropertyGroup>
-  
   <ItemGroup>
+     <!-- App.xaml files need special item type ApplicationDefinition -->
+    <ApplicationDefinition Include="$(AppXamlFiles)">
+	    <Generator>MSBuild:Compile</Generator>
+	</ApplicationDefinition>
     <!-- Add our own definitions for the VOBinary items with calculated dependentupon properti -->
-    <VOBinary Include="$(VOBinaryFiles)"  KeepDuplicates="false">
+	<VOBinary Include="$(VOBinaryFiles)"  KeepDuplicates="false">
       <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\%(Extension)$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentName>
       <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
     </VOBinary>

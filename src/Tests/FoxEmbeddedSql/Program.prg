@@ -1,4 +1,4 @@
-﻿// Program.prg
+// Program.prg
 // Created by    : robert
 // Creation Date : 11/8/2023 5:05:33 PM
 // Created for   :
@@ -731,6 +731,63 @@ FUNCTION TestQueryOptimizer() AS VOID
         ? "Testing complex WHERE clause with optimizer..."
         SELECT * FROM test_optimizer_table WHERE Age > 25 .AND. City = "New York"
         ? "Records in QUERYRESULT after complex WHERE: ", RecCount("QUERYRESULT")
+
+        // Display the results
+        PrintFields()
+        PrintTable()
+        DbCloseArea()
+
+        // Test with index optimization - create an index on Age field
+        ? "Testing index optimization..."
+        DbSelectArea("test_optimizer_table")
+
+        // Create an index on the Age field
+        LOCAL lIndexCreated AS LOGIC
+        lIndexCreated := DbCreateOrder("AgeIdx",, "Age")
+        ? "Index created on Age field:", lIndexCreated
+
+        // Set focus to the new index
+        OrdSetFocus("AgeIdx")
+
+        // Test SELECT with WHERE clause that can use the index
+        ? "SELECT * FROM test_optimizer_table WHERE Age > 25"
+        SELECT * FROM test_optimizer_table WHERE Age > 25
+        ? "Records in QUERYRESULT after indexed WHERE: ", RecCount("QUERYRESULT")
+
+        // Display the results to verify correct filtering
+        PrintFields()
+        PrintTable()
+        DbCloseArea()
+
+        // Test with equality condition on indexed field
+        ? "Testing equality condition with index..."
+        ? "SELECT * FROM test_optimizer_table WHERE Age = 30"
+        SELECT * FROM test_optimizer_table WHERE Age = 30
+        ? "Records in QUERYRESULT after equality WHERE: ", RecCount("QUERYRESULT")
+
+        // Display the results
+        PrintFields()
+        PrintTable()
+        DbCloseArea()
+
+        // Test with multiple conditions where one uses index
+        ? "Testing multiple conditions with index..."
+        ? "SELECT * FROM test_optimizer_table WHERE Age = 30 .AND. City = 'New York'"
+        SELECT * FROM test_optimizer_table WHERE Age = 30 .AND. City = "New York"
+        ? "Records in QUERYRESULT after indexed multi-condition WHERE: ", RecCount("QUERYRESULT")
+
+        // Display the results
+        PrintFields()
+        PrintTable()
+        DbCloseArea()
+
+        // Clear the index and test without optimization for comparison
+        ? "Testing without index (clearing index)..."
+        DbSetIndex(NULL)
+
+        ? "SELECT * FROM test_optimizer_table WHERE Age > 25 (without index)"
+        SELECT * FROM test_optimizer_table WHERE Age > 25
+        ? "Records in QUERYRESULT after simple WHERE (no index): ", RecCount("QUERYRESULT")
 
         // Display the results
         PrintFields()

@@ -45,7 +45,8 @@ FUNCTION RunTests(tests := NULL AS List<STRING>) AS VOID
             ? "Starting test:", test
             testFuncs[test]()
         CATCH e AS Exception
-            ? "Error:", e:Message
+            ? "Error:"
+            ? e:ToString()
             RETURN
         END
     NEXT
@@ -717,6 +718,14 @@ FUNCTION TestQueryOptimizer() AS VOID
         INSERT INTO test_optimizer_table VALUES (3, "Bob Johnson", 35, "New York")
         INSERT INTO test_optimizer_table VALUES (4, "Alice Brown", 30, "Chicago")
         INSERT INTO test_optimizer_table VALUES (5, "Charlie Wilson", 40, "New York")
+
+        // Test simple WHERE clause first
+        ? "Testing simple WHERE clause..."
+        SELECT * FROM test_optimizer_table WHERE Age > 25
+        ? "Records in QUERYRESULT after simple WHERE: ", RecCount("QUERYRESULT")
+        PrintFields()
+        PrintTable()
+        DbCloseArea()
 
         // Test complex WHERE clause that would benefit from optimization
         ? "Testing complex WHERE clause with optimizer..."

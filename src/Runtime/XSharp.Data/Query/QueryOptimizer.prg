@@ -40,11 +40,10 @@ PUBLIC CLASS QueryOptimizer
         RETURN OptimizeQuery(query, recordCount, emptyTableAliases)
 
     PRIVATE STATIC METHOD IsOptimizable(expression AS SqlExpressionContext, tableAliases AS Dictionary<STRING, STRING>) AS LOGIC
-        // For elementary expressions (simple and composite), check if they depend on only one table
+        // An expression is optimizable if it depends on at most one table and contains comparisons
         IF expression IS SqlSimpleExpressionContext .OR. expression IS SqlCompositeExpressionContext
-            LOCAL dependencies AS IList<STRING>
-            dependencies := expression:GetTableDependencies(tableAliases)
-            RETURN dependencies:Count <= 1  // Can optimize if depends on at most one table
+            LOCAL dependencies := expression:GetTableDependencies(tableAliases) as IList<STRING>
+            RETURN dependencies:Count <= 1
         ENDIF
 
         // For parenthesized expressions, check the inner expression
@@ -52,14 +51,19 @@ PUBLIC CLASS QueryOptimizer
             RETURN IsOptimizable(parenExpr:Expr, tableAliases)
         ENDIF
 
-        // For compare expressions, check if both operands are optimizable
-        IF expression IS SqlCompareExpressionContext VAR compareExpr
-            RETURN IsOptimizable(compareExpr:Left, tableAliases) .AND. IsOptimizable(compareExpr:Right, tableAliases)
+        // For compare and logic expressions, check if both sides are optimizable
+        IF expression IS SqlCompareExpressionContext VAR compExpr
+            VAR leftInvariant := compExpr:Left:GetTableDependencies(tableAliases):Count == 0
+            VAR rightInvariant := compExpr:Right:GetTableDependencies(tableAliases):Count == 0
+            VAR leftOpt := IsOptimizable(compExpr:Left, tableAliases)
+            VAR rightOpt := IsOptimizable(compExpr:Right, tableAliases)
+            RETURN leftOpt .AND. rightOpt .AND. (leftInvariant .OR. rightInvariant)
         ENDIF
 
-        // For logic expressions, check if both operands are optimizable
         IF expression IS SqlLogicExpressionContext VAR logicExpr
-            RETURN IsOptimizable(logicExpr:Left, tableAliases) .AND. IsOptimizable(logicExpr:Right, tableAliases)
+            VAR leftOpt := IsOptimizable(logicExpr:Left, tableAliases)
+            VAR rightOpt := IsOptimizable(logicExpr:Right, tableAliases)
+            RETURN leftOpt .AND. rightOpt
         ENDIF
 
         // For prefix expressions, check the inner expression
@@ -71,82 +75,186 @@ PUBLIC CLASS QueryOptimizer
         RETURN FALSE
 
     PRIVATE STATIC METHOD EvaluateOptimizableExpression(expression AS SqlExpressionContext, recordCount AS LONG, tableAliases AS Dictionary<STRING, STRING>) AS RecordBitmap
-        // Handle elementary expressions (simple and composite)
-        IF expression IS SqlSimpleExpressionContext .OR. expression IS SqlCompositeExpressionContext
-            RETURN EvaluateElementaryExpression(expression, recordCount, tableAliases)
-        ENDIF
-
-        // Handle parenthesized expressions
-        IF expression IS SqlParenExpressionContext VAR parenExpr
-            RETURN EvaluateOptimizableExpression(parenExpr:Expr, recordCount, tableAliases)
-        ENDIF
-
-        // Handle compare expressions
-        IF expression IS SqlCompareExpressionContext VAR compareExpr
-            RETURN EvaluateCompareExpression(compareExpr, recordCount, tableAliases)
-        ENDIF
-
-        // Handle logic expressions
-        IF expression IS SqlLogicExpressionContext VAR logicExpr
-            RETURN EvaluateLogicExpression(logicExpr, recordCount, tableAliases)
-        ENDIF
-
-        // Handle prefix expressions
-        IF expression IS SqlPrefixExpressionContext VAR prefixExpr
-            RETURN EvaluatePrefixExpression(prefixExpr, recordCount, tableAliases)
-        ENDIF
-
-        // Default case: return all records as matching
-        LOCAL result AS RecordBitmap
-        result := RecordBitmap{}
-        result:Length := recordCount
-        result:Fill()
-        RETURN result
-
-    PRIVATE STATIC METHOD EvaluateElementaryExpression(expression AS SqlExpressionContext, recordCount AS LONG, tableAliases AS Dictionary<STRING, STRING>) AS RecordBitmap
-        LOCAL result AS RecordBitmap
-        result := RecordBitmap{}
+        LOCAL result := RecordBitmap{} as RecordBitmap
         result:Length := recordCount
 
-        // Convert the expression to a string representation
-        LOCAL exprStr AS STRING
-        exprStr := AllTrim(expression:ToResolvedString(tableAliases))
+        TRY
+            // Handle compare expressions (field = value, field > value, etc.)
+            IF expression IS SqlCompareExpressionContext VAR compExpr
+                RETURN EvaluateCompareExpression(compExpr, recordCount, tableAliases)
+            ENDIF
 
-        // In a full implementation, we would check if the expression matches an index
-        // For now, we'll create a temporary index lookup or evaluate directly
-        // Extract field name and value if this is a field=value expression
-        result:Fill()  // For now, mark all records as matching
+            // Handle parenthesized expressions
+            IF expression IS SqlParenExpressionContext VAR parenExpr
+                RETURN EvaluateOptimizableExpression(parenExpr:Expr, recordCount, tableAliases)
+            ENDIF
+
+            // Handle logic expressions (AND, OR)
+            IF expression IS SqlLogicExpressionContext VAR logicExpr
+                RETURN EvaluateLogicExpression(logicExpr, recordCount, tableAliases)
+            ENDIF
+
+            // Handle prefix expressions (NOT)
+            IF expression IS SqlPrefixExpressionContext VAR prefixExpr
+                RETURN EvaluatePrefixExpression(prefixExpr, recordCount, tableAliases)
+            ENDIF
+
+            // For other cases, evaluate using codeblock fallback
+            result:Fill()
+        CATCH ex AS Exception
+            result:Fill()  // On error, include all records (safe fallback)
+        END TRY
 
         RETURN result
 
     PRIVATE STATIC METHOD EvaluateCompareExpression(compareExpr AS SqlCompareExpressionContext, recordCount AS LONG, tableAliases AS Dictionary<STRING, STRING>) AS RecordBitmap
-        LOCAL result AS RecordBitmap
-        result := RecordBitmap{}
+        LOCAL result := RecordBitmap{} as RecordBitmap
         result:Length := recordCount
 
-        // Check if either operand matches an index
-        LOCAL leftDependencies AS IList<STRING>
-        LOCAL rightDependencies AS IList<STRING>
-        leftDependencies := compareExpr:Left:GetTableDependencies(tableAliases)
-        rightDependencies := compareExpr:Right:GetTableDependencies(tableAliases)
+        // Check dependencies - expression should depend on at most one table
+        LOCAL leftDeps := compareExpr:Left:GetTableDependencies(tableAliases) as IList<STRING>
+        LOCAL rightDeps := compareExpr:Right:GetTableDependencies(tableAliases) as IList<STRING>
 
-        // If one side is a field and the other is a constant, we might be able to use an index
-        LOCAL leftExprStr AS STRING
-        LOCAL rightExprStr AS STRING
-        leftExprStr := AllTrim(compareExpr:Left:ToResolvedString(tableAliases))
-        rightExprStr := AllTrim(compareExpr:Right:ToResolvedString(tableAliases))
+        LOCAL totalDeps := List<STRING>{} as List<STRING>
+        FOREACH VAR dep IN leftDeps
+            IF !totalDeps:Contains(dep)
+                totalDeps:Add(dep)
+            ENDIF
+        NEXT
+        FOREACH VAR dep IN rightDeps
+            IF !totalDeps:Contains(dep)
+                totalDeps:Add(dep)
+            ENDIF
+        NEXT
 
-        // For now, we'll evaluate the comparison directly
-        // In a full implementation, we would check for index availability and use IndexLookup
-        result:Fill()  // For now, mark all records as matching
+        // Can only optimize if expression depends on single table
+        IF totalDeps:Count > 1
+            result:Fill()
+            RETURN result
+        ENDIF
+
+        // Determine which side is the field (table-dependent) and which is invariant
+        LOCAL fieldName := "" AS STRING
+        LOCAL tableName := "" AS STRING
+        LOCAL invariantExpr := NULL AS SqlExpressionContext
+
+        IF leftDeps:Count == 0 .AND. rightDeps:Count > 0
+            // Right side is the field, left side is invariant value
+            IF compareExpr:Left IS SqlSimpleExpressionContext VAR simpleLeft
+                fieldName := compareExpr:Right:ToString()
+                tableName := rightDeps[0]
+                invariantExpr := compareExpr:Left
+            ENDIF
+        ELSEIF rightDeps:Count == 0 .AND. leftDeps:Count > 0
+            // Left side is the field, right side is invariant value
+            IF compareExpr:Right IS SqlSimpleExpressionContext VAR simpleRight
+                fieldName := compareExpr:Left:ToString()
+                tableName := leftDeps[0]
+                invariantExpr := compareExpr:Right
+            ENDIF
+        ENDIF
+
+        // If we couldn't identify field and invariant, fall back to full evaluation
+        IF invariantExpr == NULL
+            result:Fill()
+            RETURN result
+        ENDIF
+
+        // Get table name if not already resolved
+        IF String.IsNullOrEmpty(tableName)
+            IF totalDeps:Count > 0
+                tableName := totalDeps[0]
+            ELSE
+                result:Fill()
+                RETURN result
+            ENDIF
+        ENDIF
+
+        // Build filter expression by replacing field reference with actual table->field syntax
+        LOCAL filterExpr := invariantExpr:ToResolvedString(tableAliases) as STRING
+        LOCAL opText := compareExpr:Op:Type as XTokenType
+        LOCAL opSymbol := "" AS STRING
+
+        SWITCH opText
+        CASE XTokenType.EQ
+            opSymbol := "="
+        CASE XTokenType.NEQ
+            opSymbol := "<>"
+        CASE XTokenType.LT
+            opSymbol := "<"
+        CASE XTokenType.GT
+            opSymbol := ">"
+        CASE XTokenType.LTE
+            opSymbol := "<="
+        CASE XTokenType.GTE
+            opSymbol := ">="
+        END SWITCH
+
+        // Build the filter: field op invariant_value
+        LOCAL resolvedField := "" AS STRING
+        IF String.IsNullOrEmpty(compareExpr:Left:ToString())
+            resolvedField := compareExpr:Right:ToResolvedString(tableAliases)
+        ELSE
+            resolvedField := compareExpr:Left:ToResolvedString(tableAliases)
+        ENDIF
+
+        // Use MCompile to evaluate the invariant expression and build filter
+        LOCAL macroValue := "" AS STRING
+        TRY
+            VAR cb := MCompile(invariantExpr:ToString())
+            IF cb != NULL
+                LOCAL val := (OBJECT)cb:Eval(NULL) as OBJECT
+                IF val != NULL
+                    macroValue := IIF(UsualType(val) == __UsualType.String, ;
+                        "\"" + AllTrim((STRING)val) + \""", val:ToString())
+                ENDIF
+            ENDIF
+        CATCH ex AS Exception
+            // If macro evaluation fails, use the resolved string
+            macroValue := invariantExpr:ToResolvedString(tableAliases)
+        END TRY
+
+        filterExpr := resolvedField + " " + opSymbol + " " + macroValue
+
+        // Save current workarea and open target table
+        LOCAL savedArea := DbSelect() as DWORD
+
+        IF !DbSelectArea(tableName)
+            IF !DbUseArea(TRUE, "DBFVFP", tableName, tableName, TRUE, FALSE)
+                result:Fill()
+                RETURN result
+            ENDIF
+        ENDIF
+
+        // Apply filter and scan records
+        DbSetFilter(NULL)
+
+        (tableName)->DbSetFilter(filterExpr)
+        (tableName)->DbGoTop()
+
+        DO WHILE !(tableName)->Eof()
+            VAR recNo := (LONG)(tableName)->RecNo()
+            result:SetMatchState(recNo, RecordBitmap.RecordMatchState.Match)
+            (tableName)->DbSkip(1)
+            IF (tableName)->Eof()
+                EXIT
+            ENDIF
+        ENDDO
+
+        // Clear filter and restore workarea
+        (tableName)->DbSetFilter(NULL)
+
+        IF savedArea > 0
+            DbSelectArea(savedArea)
+        ELSE
+            DbCloseArea()
+        ENDIF
 
         RETURN result
 
     PRIVATE STATIC METHOD EvaluateLogicExpression(logicExpr AS SqlLogicExpressionContext, recordCount AS LONG, tableAliases AS Dictionary<STRING, STRING>) AS RecordBitmap
-        LOCAL leftBitmap AS RecordBitmap
-        LOCAL rightBitmap AS RecordBitmap
-        leftBitmap := EvaluateOptimizableExpression(logicExpr:Left, recordCount, tableAliases)
-        rightBitmap := EvaluateOptimizableExpression(logicExpr:Right, recordCount, tableAliases)
+        LOCAL leftBitmap := EvaluateOptimizableExpression(logicExpr:Left, recordCount, tableAliases) as RecordBitmap
+        LOCAL rightBitmap := EvaluateOptimizableExpression(logicExpr:Right, recordCount, tableAliases) as RecordBitmap
 
         // Apply the logical operator to combine the bitmaps
         SWITCH logicExpr:Op:Type
@@ -161,8 +269,7 @@ PUBLIC CLASS QueryOptimizer
         RETURN leftBitmap
 
     PRIVATE STATIC METHOD EvaluatePrefixExpression(prefixExpr AS SqlPrefixExpressionContext, recordCount AS LONG, tableAliases AS Dictionary<STRING, STRING>) AS RecordBitmap
-        LOCAL innerBitmap AS RecordBitmap
-        innerBitmap := EvaluateOptimizableExpression(prefixExpr:Expr, recordCount, tableAliases)
+        LOCAL innerBitmap := EvaluateOptimizableExpression(prefixExpr:Expr, recordCount, tableAliases) as RecordBitmap
 
         // Apply the prefix operator (currently only NOT is supported)
         SWITCH prefixExpr:Op:Type
@@ -174,32 +281,7 @@ PUBLIC CLASS QueryOptimizer
 
         RETURN innerBitmap
 
-    PUBLIC STATIC METHOD CreateOptimizedBitmap(tableName AS STRING, query AS SqlExpressionContext, recordCount AS LONG, tableAliases AS Dictionary<STRING, STRING>) AS RecordBitmap
-        RETURN OptimizeQuery(query, recordCount, tableAliases)
-    END METHOD
-
-    PUBLIC STATIC METHOD CreateOptimizedBitmap(tableName AS STRING, query AS SqlExpressionContext, recordCount AS LONG) AS RecordBitmap
-        LOCAL emptyTableAliases AS Dictionary<STRING, STRING>
-        emptyTableAliases := Dictionary<STRING, STRING>{}
-        RETURN OptimizeQuery(query, recordCount, emptyTableAliases)
-
-    PRIVATE STATIC METHOD IndexExists(tableName AS STRING, fieldName AS STRING) AS LOGIC
-        // In a full implementation, this would check the table metadata
-        // to determine if an index exists for the specified field
-        RETURN FALSE  // Placeholder implementation
-
-    PRIVATE STATIC METHOD IndexLookup(tableName AS STRING, fieldName AS STRING, value AS OBJECT, recordCount AS LONG) AS RecordBitmap
-        LOCAL result AS RecordBitmap
-        result := RecordBitmap{}
-        result:Length := recordCount
-
-        // In a full implementation, this would use the index to quickly
-        // identify which records match the specified value
-        // For now, we'll return all records as non-matching to indicate no optimization
-        result:Clear()
-
-        RETURN result
-
 END CLASS
 
 END NAMESPACE
+

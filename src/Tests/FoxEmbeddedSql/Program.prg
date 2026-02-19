@@ -25,54 +25,93 @@ USING XSharp.MacroCompiler
 // insert into <table> opens the table when it is not already open
 // select * from <table> opens the table when it is not already open
 
+GLOBAL AllTests := List<STRING>{} AS List<STRING>
+GLOBAL TestFuncs := Dictionary<STRING,Action>{} AS Dictionary<STRING,Action>
+
+FUNCTION RegisterTest(name AS STRING, testFunc AS Action) AS VOID
+    IF NOT TestFuncs:ContainsKey(name)
+        TestFuncs[name] := testFunc
+        AllTests:Add(name)
+    ENDIF
+    RETURN
+
+FUNCTION RunTests(tests := NULL AS List<STRING>) AS VOID
+    IF tests == NULL
+        tests := AllTests
+    ENDIF
+    FOREACH VAR test IN tests
+        TRY
+            ?
+            ? "Starting test:", test
+            testFuncs[test]()
+        CATCH e AS Exception
+            ? "Error:", e:Message
+            RETURN
+        END
+    NEXT
+    RETURN
 
 FUNCTION Start() AS VOID STRICT
-    try
-        local a,b,c as int
-        a := b := c := 42
-        CREATE TABLE Salesman ;
-            (SalesID c(6) PRIMARY KEY, ;
-            SaleName Character(20) )
-        IF Used()
-            INSERT INTO Salesman VALUES ("1", "Robert")
-            INSERT INTO Salesman VALUES ("2", "Fabrice")
-            INSERT INTO Salesman VALUES ("3", "Chris")
-            INSERT INTO Salesman VALUES ("4", "Nikos")
-            //Browse()
-        ELSE
-            ? "Table not open"
-        ENDIF
+    RegisterTest("TestCreate", TestCreate)
+    RegisterTest("TestSqlParser", TestSqlParser)
+    RegisterTest("TestFieldResolution", TestFieldResolution)
+    RegisterTest("TestTableResolution", TestTableResolution)
+    RegisterTest("TestNewSqlFeatures", TestNewSqlFeatures)
+    RegisterTest("TestSelectFunctionality", TestSelectFunctionality)
+    RegisterTest("TestQueryOptimizer", TestQueryOptimizer)
 
-        CREATE CURSOR employee ;
-            (EmpID N(5), Name Character(20), DOB D, Address c( 30 ) , City c(30), ;
-            PostalCode c(10), OfficeNo c(8) NULL, Salary Numeric(10 , 2 ),  Specialty Memo)
+    RunTests()
+    RETURN
 
-        IF Used()
-            INSERT INTO Employee(EmpId, Name) VALUES (1, "Nikos")
-            Local Address as usual
-            m.Address = "Zuukerweg"
-            m.EmpId = 10
-            m.Name  = "Robert"
-            INSERT INTO employee FROM Memvar
+FUNCTION TestCreate() AS VOID
+    local a,b,c as int
+    a := b := c := 42
+    CREATE TABLE Salesman ;
+        (SalesID c(6) PRIMARY KEY, ;
+        SaleName Character(20) )
+    IF Used()
+        INSERT INTO Salesman VALUES ("1", "Robert")
+        INSERT INTO Salesman VALUES ("2", "Fabrice")
+        INSERT INTO Salesman VALUES ("3", "Chris")
+        INSERT INTO Salesman VALUES ("4", "Nikos")
+        //Browse()
+    ELSE
+        ? "Table not open"
+    ENDIF
 
-            LOCAL obj as object
-            OBJ = CREATEOBJECT("Empty")
-            = AddProperty(obj,"EmpId", 42)
-            = AddProperty(obj,"Name", "Fabrice")
-            INSERT INTO employee FROM NAME obj
+    CREATE CURSOR employee ;
+        (EmpID N(5), Name Character(20), DOB D, Address c( 30 ) , City c(30), ;
+        PostalCode c(10), OfficeNo c(8) NULL, Salary Numeric(10 , 2 ),  Specialty Memo)
 
-            Dimension values[3]
-            values[1] = 100
-            values[2] = "Chris"
-            values[3] = ToDay()
-            INSERT INTO employee FROM ARRAY values
+    IF Used()
+        INSERT INTO Employee(EmpId, Name) VALUES (1, "Nikos")
+        Local Address as usual
+        m.Address = "Zuukerweg"
+        m.EmpId = 10
+        m.Name  = "Robert"
+        INSERT INTO employee FROM Memvar
 
-            //Browse()
+        LOCAL obj as object
+        OBJ = CREATEOBJECT("Empty")
+        = AddProperty(obj,"EmpId", 42)
+        = AddProperty(obj,"Name", "Fabrice")
+        INSERT INTO employee FROM NAME obj
 
-        ELSE
-            ? "Table not open"
-        ENDIF
+        Dimension values[3]
+        values[1] = 100
+        values[2] = "Chris"
+        values[3] = ToDay()
+        INSERT INTO employee FROM ARRAY values
 
+        //Browse()
+
+    ELSE
+        ? "Table not open"
+    ENDIF
+
+    RETURN
+
+FUNCTION TestDelete() AS VOID
 /*
         DELETE FROM employee where _FIELD->EmpID = 1
 
@@ -103,27 +142,8 @@ FUNCTION Start() AS VOID STRICT
             WHERE mfg_msrp.productID = products.productID;
             AND mfg_msrp.discontinued = .f.
 */
-        TestSqlParser("xi = 1 AND (yi+1)+table.zed = 2")
-        wait
 
-        TestFieldResolution()
-        wait
-
-        TestTableResolution()
-        wait
-
-        // Test new SELECT and INSERT functionality
-        TestNewSqlFeatures()
-        wait
-
-        // Test SELECT functionality
-        TestSelectFunctionality()
-        wait
-
-        // Test Query Optimizer functionality
-        TestQueryOptimizer()
-        wait
-
+FUNCTION TestCreateTables()
         CREATE TABLE Customers ;
             (CustId i PRIMARY KEY, ;
             CustName c(20) )
@@ -154,7 +174,6 @@ FUNCTION Start() AS VOID STRICT
             SET OrderAmt = OrderAmt*1.1 ;
             FROM Customers ;
             WHERE Orders->CustId = Customers->CustId AND Customers->CustName = "Microsoft"
-        wait
         Browse()
         ALTER TABLE Orders Add OrderDate Date NULL
         Browse()
@@ -166,11 +185,7 @@ FUNCTION Start() AS VOID STRICT
         Browse()
 
 //         CREATE SQL VIEW MyView AS SELECT * FROM Northwind!Customers;
-//             WHERE Country="Mexico"
-    catch e as exception
-        ? "Error", e:Message
-    end try
-    WAIT
+//             WHERE Country="Mexico
 
 FUNCTION TestNewSqlFeatures() AS VOID
     ? "Testing new SQL features..."
@@ -851,7 +866,8 @@ FUNCTION Atoa(a AS ARRAY) AS STRING
     RETURN sb:ToString()
 
 
-FUNCTION TestSqlParser (sCommand as STRING)
+FUNCTION TestSqlParser () AS VOID
+    VAR sCommand := "xi = 1 AND (yi+1)+table.zed = 2"
     VAR lexer := XSqlLexer{sCommand}
     VAR tokens := lexer:AllTokens()
     var parser := SqlParser{XTokenList{tokens}}

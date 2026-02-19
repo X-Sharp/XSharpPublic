@@ -5,11 +5,11 @@
 //
 
 using XSharp.Data
+using XSharp.Data.Query
 using XSharp.Parsers
 using XSharp.Internal
 using XSharp.RDD
 using XSharp.RDD.Support
-using XSharp.Data.Query
 using System.Collections.Generic
 using System.IO
 using System.Linq
@@ -224,6 +224,31 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             whereCodeBlock := MCompile(whereClause)
         ENDIF
 
+        // Try to optimize the WHERE clause using QueryOptimizer
+        LOCAL optimizedBitmap AS RecordBitmap
+        LOCAL useOptimization AS LOGIC
+        useOptimization := FALSE
+
+        IF hasWhereClause .AND. tableNames:Count == 1
+            // Get the record count for optimization (only single table queries supported)
+            LOCAL tableName AS STRING
+            tableName := tableNames[1]
+            VAR workarea := DbSelect()
+            (tableName)->DbSelectArea()
+            LOCAL recCount AS LONG
+            recCount := (LONG)((tableName)->RecCount())
+            (workarea)->DbSelectArea()
+
+            // Try to optimize the WHERE clause
+            optimizedBitmap := QueryOptimizer.OptimizeQuery(selectCtx:WhereClause, recCount, selectCtx:TableAliases)
+
+            // Only use optimization if we got a valid bitmap and it's not all matches
+            // (if all records match, we can skip optimization overhead)
+            IF optimizedBitmap != NULL .AND. !optimizedBitmap:IsAllMatch()
+                useOptimization := TRUE
+            ENDIF
+        ENDIF
+
         // Check if DISTINCT is specified
         LOCAL isDistinct AS LOGIC
         isDistinct := selectCtx:IsDistinct
@@ -259,17 +284,33 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         LOCAL continueProcessing AS LOGIC
         continueProcessing := TRUE
 
+        // For optimization: track current record number for bitmap lookup
+        // Only works for single-table queries; multi-table needs different approach
+        LOCAL recNo AS LONG
+        recNo := 0
+
+        // Initialize first table to top if using optimization with single table
+        IF useOptimization .AND. ALen(tableNames) == 1
+            (tableNames[1])->DbGoTop()
+            recNo := 1
+        ENDIF
+
         DO WHILE continueProcessing
             // Check WHERE clause if present
             LOCAL includeRecord AS LOGIC
             includeRecord := TRUE
 
             IF hasWhereClause
-                TRY
-                    includeRecord := whereCodeBlock:Eval()
-                CATCH ex AS Exception
-                    includeRecord := FALSE
-                END TRY
+                // Use optimized bitmap when available, otherwise evaluate codeblock
+                IF useOptimization .AND. ALen(tableNames) == 1 .AND. recNo > 0
+                    includeRecord := optimizedBitmap:GetMatchState(recNo) == RecordBitmap.RecordMatchState.Match
+                ELSEIF hasWhereClause
+                    TRY
+                        includeRecord := whereCodeBlock:Eval()
+                    CATCH ex AS Exception
+                        includeRecord := FALSE
+                    END TRY
+                ENDIF
             ENDIF
 
             // If the record matches the criteria, add it to the result
@@ -322,38 +363,47 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
             // Only continue if we haven't reached the TOP limit
             IF continueProcessing
-                // Move to the next combination of records - implement proper nested loop logic
-                LOCAL positionIdx AS DWORD
-                positionIdx := ALen(tableNames)
+                // For single-table optimization, advance the table and check for EOF
+                IF useOptimization .AND. ALen(tableNames) == 1
+                    (tableNames[1])->DbSkip(1)
+                    recNo++
 
-                // Handle carry-over when a table reaches EOF (like incrementing a multi-digit number)
-                DO WHILE positionIdx >= 1
-                    // Advance the current table
-                    (tableNames[positionIdx])->DbSkip(1)
-                    tablePositions[positionIdx]++
-
-                    // If this table hasn't reached EOF, we're done with carry-over
-                    IF !(tableNames[positionIdx])->Eof()
-                        EXIT  // Exit the carry-over loop
+                    // Check if we've reached the end of this table
+                    IF (tableNames[1])->Eof()
+                        continueProcessing := FALSE
+                        (tableNames[1])->DbGoTop()  // Reset for cleanup
                     ENDIF
+                ELSE
+                    // Move to the next combination of records - implement proper nested loop logic
+                    LOCAL positionIdx AS DWORD
+                    positionIdx := ALen(tableNames)
 
-                    // If this table reached EOF, reset it and continue carry-over to next table
-                    (tableNames[positionIdx])->DbGoTop()
-                    tablePositions[positionIdx] := 1
+                    // Handle carry-over when a table reaches EOF (like incrementing a multi-digit number)
+                    DO WHILE positionIdx >= 1
+                        // Advance the current table
+                        (tableNames[positionIdx])->DbSkip(1)
+                        tablePositions[positionIdx]++
 
-                    positionIdx--
-                ENDDO
+                        // If this table hasn't reached EOF, we're done with carry-over
+                        IF !(tableNames[positionIdx])->Eof()
+                            EXIT  // Exit the carry-over loop
+                        ENDIF
 
-                // If we've gone past all tables (positionIdx > ALen(tableNames)),
-                // it means we've processed all combinations
-                IF positionIdx == 0
-                    continueProcessing := FALSE
+                        // If this table reached EOF, reset it and continue carry-over to next table
+                        (tableNames[positionIdx])->DbGoTop()
+                        tablePositions[positionIdx] := 1
+
+                        positionIdx--
+                    ENDDO
+
+                    // If we've gone past all tables (positionIdx > ALen(tableNames)),
+                    // it means we've processed all combinations
+                    IF positionIdx == 0
+                        continueProcessing := FALSE
+                    ENDIF
                 ENDIF
             ENDIF
         ENDDO
-
-        // Set the result table as the current work area
-        (resultTable)->DbSelectArea()
 
         // Close tables that weren't originally open
         FOR LOCAL i := 1 AS DWORD TO ALen(tableNames)
@@ -361,6 +411,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 (tableNames[i])->DbCloseArea()
             ENDIF
         NEXT
+
+        // Set the result table as the current work area
+        DbSelectArea(resultTable)
 
         RETURN
 

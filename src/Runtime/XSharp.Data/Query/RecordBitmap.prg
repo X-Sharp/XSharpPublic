@@ -110,9 +110,28 @@ PUBLIC CLASS RecordBitmap
         _bits:Not()
     END METHOD
 
-    PUBLIC METHOD Clone() AS RecordBitmap
+PUBLIC METHOD Clone() AS RecordBitmap
         RETURN RecordBitmap{SELF}
     END METHOD
+
+    PUBLIC METHOD IsAllMatch() AS LOGIC
+        LOCAL allSet := TRUE AS LOGIC
+        FOR LOCAL i := 0 AS LONG TO _bits:Length - 1
+            IF !_bits[i]
+                allSet := FALSE
+                EXIT
+            ENDIF
+        NEXT
+        RETURN allSet
+
+    PUBLIC METHOD CountMatches() AS LONG
+        LOCAL count := 0 AS LONG
+        FOR LOCAL i := 0 AS LONG TO _bits:Length - 1
+            IF _bits[i]
+                count++
+            ENDIF
+        NEXT
+        RETURN count
 
 END CLASS
 

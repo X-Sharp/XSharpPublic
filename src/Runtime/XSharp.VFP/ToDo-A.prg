@@ -47,16 +47,6 @@ FUNCTION ATagInfo (ArrayName ,cCDXName , uArea )
     THROW NotImplementedException{}
     //RETURN 0
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/aused/*" />
-FUNCTION AUsed (ArrayName , nDataSessionNumber , cTableName )
-    THROW NotImplementedException{}
-    //RETURN 0
-
-
-
-
-
 /*
 FALSE  Boolean
 0.0.0  DATE

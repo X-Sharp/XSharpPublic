@@ -12,6 +12,8 @@ USING System.Reflection
 USING System.Linq
 USING System.Diagnostics
 USING System.IO
+USING XSharp.RDD
+USING XSharp.Core
 
 
 INTERNAL FUNCTION FoxALen(a as ARRAY) AS DWORD
@@ -465,3 +467,60 @@ FUNCTION AGetFileVersion (ArrayName AS ARRAY, cFileName AS STRING) AS DWORD
 
     RETURN 15
 END FUNCTION
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/aused/*" />
+FUNCTION AUsed (ArrayName AS ARRAY, nDataSessionNumber := NIL AS USUAL, cTableName := NIL AS USUAL) AS DWORD
+
+    IF !IsNil(nDataSessionNumber) .AND. IsNumeric(nDataSessionNumber)
+        LOCAL nSession := (INT)nDataSessionNumber AS INT
+        // TODO(irwin): compare with SET("DATASESSION") and change context if neccesary
+        // I asume current session for now
+    ENDIF
+
+    LOCAL cFilterName := NULL AS STRING
+    IF !IsNil(cTableName) .AND. IsString(cTableName)
+        cFilterName := ((STRING)cTableName):ToUpper()
+    ENDIF
+
+    VAR aFound := List<STRING[]>{}
+
+    FOR VAR i := 1 TO 32767
+        VAR cAlias := CoreDb.Alias((DWORD)i)
+
+        IF String.IsNullOrEmpty(cAlias)
+            LOOP
+        ENDIF
+
+        IF !String.IsNullOrEmpty(cFilterName)
+            IF cAlias:ToUpper() != cFilterName
+                LOOP
+            ENDIF
+        ENDIF
+
+        aFound:Add(<STRING>{cAlias, i:ToString()})
+    NEXT
+
+    // LIFO ordering (reverse order)
+    // VFP places the last opened first
+    aFound:Reverse()
+
+    LOCAL nCount := (DWORD)aFound:Count AS DWORD
+
+    IF nCount == 0
+        RETURN 0
+    ENDIF
+
+    IF ArrayName IS __FoxArray VAR foxArray
+        foxArray:ReDim(nCount, 2)
+
+        FOR VAR i := 0 TO (INT)nCount - 1
+            foxArray[i+1, 1] := aFound[i][1] // Alias
+            foxArray[i+1, 2] := Int32.Parse(aFound[i][2]) // WorkArea ID
+        NEXT
+    ELSE
+        THROW ArgumentException{"ArrayName must be a valid existing Array."}
+    ENDIF
+
+    RETURN nCount
+END FUNCTION
+

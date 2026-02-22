@@ -8,8 +8,6 @@
 USING System
 USING XUnit
 USING XSharp.RDD
-// USING XSharp.VFP
-// USING XSharp.RDD
 USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.VFP.Tests
@@ -42,24 +40,29 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             SELECT 0
             USE TEST_B ALIAS ALIAS_B
 
-            // Usamos sintaxis LOCAL ARRAY para evitar líos con DIMENSION
             LOCAL ARRAY aTest[1]
 
-            // Llamamos a la función
             VAR nCount := AUsed(aTest)
-
-            // --- Validaciones ---
-
             Assert.Equal(2, (INT)nCount)
 
-            // Verificamos contenido (LIFO)
             Assert.Equal("ALIAS_B", aTest[1, 1])
             Assert.Equal("ALIAS_A", aTest[2, 1])
 
-            // Limpieza
             CoreDb.CloseAll()
             System.IO.File.Delete("TEST_A.DBF")
             System.IO.File.Delete("TEST_B.DBF")
+        RETURN
+
+        [Fact, Trait("Category", "AUsed")];
+        METHOD EmptySessionTest() AS VOID
+            CoreDb.CloseAll()
+            LOCAL ARRAY aTest[1]
+            aTest[1] := "Original"
+
+            VAR nCount := AUsed(aTest)
+
+            Assert.Equal(0, (INT)nCount)
+            Assert.Equal("Original", aTest[1])
         RETURN
 
 	END CLASS

@@ -471,25 +471,21 @@ END FUNCTION
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/aused/*" />
 FUNCTION AUsed (ArrayName AS ARRAY, nDataSessionNumber := NIL AS USUAL, cTableName := NIL AS USUAL) AS DWORD
 
-    IF !IsNil(nDataSessionNumber) .AND. IsNumeric(nDataSessionNumber)
-        LOCAL nSession := (INT)nDataSessionNumber AS INT
-        // TODO(irwin): compare with SET("DATASESSION") and change context if neccesary
-        // I asume current session for now
+    VAR oWA := RuntimeState.Workareas
+
+    IF oWA == NULL
+        RETURN 0
     ENDIF
 
     LOCAL cFilterName := NULL AS STRING
-    IF !IsNil(cTableName) .AND. IsString(cTableName)
+    IF IsString(cTableName)
         cFilterName := ((STRING)cTableName):ToUpper()
     ENDIF
 
-    VAR aFound := List<STRING[]>{}
+    VAR resultList := List<KeyValuePair<STRING, DWORD>>{}
 
-    FOR VAR i := 1 TO 32767
-        VAR cAlias := CoreDb.Alias((DWORD)i)
-
-        IF String.IsNullOrEmpty(cAlias)
-            LOOP
-        ENDIF
+    FOREACH VAR pair IN oWA:OpenAliases
+        VAR cAlias := pair:Key
 
         IF !String.IsNullOrEmpty(cFilterName)
             IF cAlias:ToUpper() != cFilterName
@@ -497,14 +493,14 @@ FUNCTION AUsed (ArrayName AS ARRAY, nDataSessionNumber := NIL AS USUAL, cTableNa
             ENDIF
         ENDIF
 
-        aFound:Add(<STRING>{cAlias, i:ToString()})
+        resultList:Add(pair)
     NEXT
 
     // LIFO ordering (reverse order)
     // VFP places the last opened first
-    aFound:Reverse()
+    VAR sortedList := resultList:OrderByDescending({ p => p:Value }):ToList()
 
-    LOCAL nCount := (DWORD)aFound:Count AS DWORD
+    VAR nCount := (DWORD)sortedList:Count
 
     IF nCount == 0
         RETURN 0
@@ -514,11 +510,11 @@ FUNCTION AUsed (ArrayName AS ARRAY, nDataSessionNumber := NIL AS USUAL, cTableNa
         foxArray:ReDim(nCount, 2)
 
         FOR VAR i := 0 TO (INT)nCount - 1
-            foxArray[i+1, 1] := aFound[i][1] // Alias
-            foxArray[i+1, 2] := Int32.Parse(aFound[i][2]) // WorkArea ID
+            foxArray[i+1, 1] := sortedList[i]:Key
+            foxArray[i+1, 2] := sortedList[i]:Value
         NEXT
     ELSE
-        THROW ArgumentException{"ArrayName must be a valid existing Array."}
+        THROW ArgumentException{"ArrayName must be a valid existing FoxArray."}
     ENDIF
 
     RETURN nCount

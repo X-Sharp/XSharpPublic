@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -350,9 +350,9 @@ namespace Microsoft.VisualStudio.Project
             ThreadHelper.ThrowIfNotOnUIThread();
 
             // Get base namespace from the project
-            string namespce = node.GetProjectProperty("RootNamespace");
+            string namespce = node.GetProjectProperty(ProjectFileConstants.RootNamespace);
             if(String.IsNullOrEmpty(namespce))
-                namespce = Path.GetFileNameWithoutExtension(fileFullPath); 
+                namespce = Path.GetFileNameWithoutExtension(fileFullPath);
 
             // If the item is added to a sub folder, the name space should reflect this.
             // This is done so that class names from 2 files with the same name but different

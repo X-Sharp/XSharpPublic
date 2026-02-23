@@ -508,6 +508,8 @@ namespace Microsoft.VisualStudio.Project
 
         private Guid projectIdGuid;
 
+        protected bool virtualProjectGuid;
+
         protected ProjectOptions options;
 
         private bool isClosed;
@@ -701,7 +703,8 @@ namespace Microsoft.VisualStudio.Project
                 if (this.projectIdGuid != value)
                 {
                     this.projectIdGuid = value;
-                    SetProjectProperty(ProjectFileConstants.ProjectGuid, this.projectIdGuid.ToString("B"));
+                    if (! virtualProjectGuid)
+                        SetProjectProperty(ProjectFileConstants.ProjectGuid, this.projectIdGuid.ToString("B"));
                 }
             }
         }
@@ -2703,7 +2706,7 @@ namespace Microsoft.VisualStudio.Project
                     return this.options;
                 }
                 ProjectOptions options = this.options = CreateProjectOptions();
-                string targetFrameworkMoniker = GetProjectProperty("TargetFrameworkMoniker");
+                string targetFrameworkMoniker = GetProjectProperty(ProjectFileConstants.TargetFrameworkMoniker);
 
                 if (!string.IsNullOrEmpty(targetFrameworkMoniker))
                 {
@@ -2742,7 +2745,7 @@ namespace Microsoft.VisualStudio.Project
                 {
                     outputtype = outputtype.ToLower(CultureInfo.InvariantCulture);
                 }
-                
+
                 if (outputtype == "library")
                 {
                     options.ModuleKind = ModuleKindFlags.DynamicallyLinkedLibrary;
@@ -2753,8 +2756,9 @@ namespace Microsoft.VisualStudio.Project
                 else
                     options.ModuleKind = ModuleKindFlags.ConsoleApplication;
 
-                options.Win32Icon = GetProjectProperty("ApplicationIcon");
-                options.MainClass = GetProjectProperty("StartupObject");
+
+                options.Win32Icon = GetProjectProperty(ProjectFileConstants.ApplicationIcon);
+                options.MainClass = GetProjectProperty(ProjectFileConstants.StartupObject);
 
                 //    other settings from CSharp we may want to adopt at some point...
                 //    AssemblyKeyContainerName = ""  //This is the key file used to sign the interop assembly generated when importing a com object via add reference
@@ -2801,7 +2805,7 @@ namespace Microsoft.VisualStudio.Project
                 {
                     options.CheckedArithmetic = true;
                 }
-                var defs = GetProjectProperty("DefineConstants", false);
+                var defs = GetProjectProperty(ProjectFileConstants.DefineConstants, false);
                 if ( defs != null)
                 {
                     foreach (string s in defs.Replace(" \t\r\n", "").Split(';'))
@@ -2810,7 +2814,7 @@ namespace Microsoft.VisualStudio.Project
                     }
                 }
 
-                string docFile = GetProjectProperty("DocumentationFile", false);
+                string docFile = GetProjectProperty(ProjectFileConstants.DocumentationFile, false);
                 if (!String.IsNullOrEmpty(docFile))
                 {
                     options.XmlDocFileName = Path.Combine(this.ProjectFolder, docFile);
@@ -2821,7 +2825,7 @@ namespace Microsoft.VisualStudio.Project
                     options.IncludeDebugInformation = true;
                 }
 
-                var fa = GetProjectProperty("FileAlignment", false);
+                var fa = GetProjectProperty(ProjectFileConstants.FileAlignment, false);
                 if (fa != null)
                 {
                     try
@@ -7090,7 +7094,7 @@ namespace Microsoft.VisualStudio.Project
         {
             if (_outputPath != null)
                 return _outputPath;
-            string outputPath = GetProjectProperty("OutputPath");
+            string outputPath = GetProjectProperty(ProjectFileConstants.OutputPath);
 
             if (!String.IsNullOrEmpty(outputPath))
             {
@@ -7215,13 +7219,14 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         protected void SetProjectGuidFromProjectFile()
         {
-            if (this.projectIdGuid == Guid.Empty)
+            if (this.projectIdGuid == Guid.Empty && ! virtualProjectGuid)
             {
                 string projectGuid = this.GetProjectProperty(ProjectFileConstants.ProjectGuid);
                 if (String.IsNullOrEmpty(projectGuid))
                 {
                     this.projectIdGuid = Guid.NewGuid();
-                    this.SetProjectProperty(ProjectFileConstants.ProjectGuid, projectIdGuid.ToString("B"));
+                    if (! virtualProjectGuid)
+                        this.SetProjectProperty(ProjectFileConstants.ProjectGuid, projectIdGuid.ToString("B"));
                 }
                 else
                 {
@@ -7229,6 +7234,11 @@ namespace Microsoft.VisualStudio.Project
                     if (guid != this.projectIdGuid)
                     {
                         this.projectIdGuid = guid;
+                    }
+                    if (virtualProjectGuid)
+                    {
+                        var prop = this.BuildProject.GetProperty(ProjectFileConstants.ProjectGuid);
+                        this.BuildProject.RemoveProperty(prop);
                     }
                 }
             }
@@ -7382,9 +7392,9 @@ namespace Microsoft.VisualStudio.Project
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             FrameworkName moniker = new FrameworkName(newTargetFramework);
-            SetProjectProperty("TargetFrameworkIdentifier", moniker.Identifier);
-            SetProjectProperty("TargetFrameworkVersion", "v" + moniker.Version);
-            SetProjectProperty("TargetFrameworkProfile", moniker.Profile);
+            SetProjectProperty(ProjectFileConstants.TargetFrameworkIdentifier, moniker.Identifier);
+            SetProjectProperty(ProjectFileConstants.TargetFrameworkVersion, "v" + moniker.Version);
+            SetProjectProperty(ProjectFileConstants.TargetFrameworkProfile, moniker.Profile);
             return VSConstants.S_OK;
         }
 

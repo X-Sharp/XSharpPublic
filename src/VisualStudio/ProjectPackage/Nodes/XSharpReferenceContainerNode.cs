@@ -37,7 +37,7 @@ namespace XSharp.Project
                 if (refnode != null)
                 {
                     guid = refnode.ProjectIDGuid.ToString("B");
-                    name = refnode.GetProjectProperty("AssemblyName");
+                    name = refnode.GetProjectProperty(ProjectFileConstants.AssemblyName);
                     element.SetMetadata("Project", guid);
                     element.SetMetadata("Name", name);
                     changed = true;

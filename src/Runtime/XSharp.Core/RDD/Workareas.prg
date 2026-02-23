@@ -117,6 +117,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
             ENDIF
             RETURN 0
         INTERNAL PROPERTY OpenRDDs AS ConcurrentDictionary<DWORD, IRdd> GET RDDs
+        PUBLIC PROPERTY OpenAliases AS IDictionary<STRING, DWORD> GET Aliases
     #endregion
     /// <exclude />
     CONSTRUCTOR()

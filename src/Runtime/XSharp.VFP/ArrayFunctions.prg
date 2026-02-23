@@ -12,6 +12,8 @@ USING System.Reflection
 USING System.Linq
 USING System.Diagnostics
 USING System.IO
+USING XSharp.RDD
+USING XSharp.Core
 
 
 INTERNAL FUNCTION FoxALen(a as ARRAY) AS DWORD
@@ -465,3 +467,56 @@ FUNCTION AGetFileVersion (ArrayName AS ARRAY, cFileName AS STRING) AS DWORD
 
     RETURN 15
 END FUNCTION
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/aused/*" />
+FUNCTION AUsed (ArrayName AS ARRAY, nDataSessionNumber := NIL AS USUAL, cTableName := NIL AS USUAL) AS DWORD
+
+    VAR oWA := RuntimeState.Workareas
+
+    IF oWA == NULL
+        RETURN 0
+    ENDIF
+
+    LOCAL cFilterName := NULL AS STRING
+    IF IsString(cTableName)
+        cFilterName := ((STRING)cTableName):ToUpper()
+    ENDIF
+
+    VAR resultList := List<KeyValuePair<STRING, DWORD>>{}
+
+    FOREACH VAR pair IN oWA:OpenAliases
+        VAR cAlias := pair:Key
+
+        IF !String.IsNullOrEmpty(cFilterName)
+            IF cAlias:ToUpper() != cFilterName
+                LOOP
+            ENDIF
+        ENDIF
+
+        resultList:Add(pair)
+    NEXT
+
+    // LIFO ordering (reverse order)
+    // VFP places the last opened first
+    VAR sortedList := resultList:OrderByDescending({ p => p:Value }):ToList()
+
+    VAR nCount := (DWORD)sortedList:Count
+
+    IF nCount == 0
+        RETURN 0
+    ENDIF
+
+    IF ArrayName IS __FoxArray VAR foxArray
+        foxArray:ReDim(nCount, 2)
+
+        FOR VAR i := 0 TO (INT)nCount - 1
+            foxArray[i+1, 1] := sortedList[i]:Key
+            foxArray[i+1, 2] := sortedList[i]:Value
+        NEXT
+    ELSE
+        THROW ArgumentException{"ArrayName must be a valid existing FoxArray."}
+    ENDIF
+
+    RETURN nCount
+END FUNCTION
+

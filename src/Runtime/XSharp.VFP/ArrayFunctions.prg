@@ -421,7 +421,8 @@ FUNCTION AMembers (ArrayName AS ARRAY, oObjectOrClass AS USUAL, nArrayContentsID
             THROW NotImplementedException{"AMEMBERS with nInfo=" + nArrayContentsID:ToString() + " is not fully implemented yet."}
         ENDIF
     ELSE
-        THROW ArgumentException{"ArrayName must be a valid VFP Array created with DIMENSION or generic usage."}
+        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
     ENDIF
 
     RETURN nRows
@@ -514,7 +515,8 @@ FUNCTION AUsed (ArrayName AS ARRAY, nDataSessionNumber := NIL AS USUAL, cTableNa
             foxArray[i+1, 2] := sortedList[i]:Value
         NEXT
     ELSE
-        THROW ArgumentException{"ArrayName must be a valid existing FoxArray."}
+        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
     ENDIF
 
     RETURN nCount

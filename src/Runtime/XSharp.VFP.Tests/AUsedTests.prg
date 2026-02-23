@@ -12,7 +12,7 @@ USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.VFP.Tests
 
-	CLASS AUsedTests
+CLASS AUsedTests IMPLEMENTS IDisposable
 
         CONSTRUCTOR()
             CoreDb.CloseAll()
@@ -20,8 +20,8 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
         METHOD Dispose() AS VOID
             CoreDb.CloseAll()
-            TRY; System.IO.File.Delete("TEST_A.DBF"); END TRY
-            TRY; System.IO.File.Delete("TEST_B.DBF"); END TRY
+            FErase("TEST_A.DBF",FALSE)
+            FErase("TEST_B.DBF",FALSE)
             RETURN
 
         [Fact, Trait("Category", "AUsed")];
@@ -49,8 +49,8 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal("ALIAS_A", aTest[2, 1])
 
             CoreDb.CloseAll()
-            System.IO.File.Delete("TEST_A.DBF")
-            System.IO.File.Delete("TEST_B.DBF")
+            FErase("TEST_A.DBF",FALSE)
+            FErase("TEST_B.DBF",FALSE)
         RETURN
 
         [Fact, Trait("Category", "AUsed")];

@@ -461,6 +461,17 @@ namespace XSharp.Project
                         return VSConstants.S_OK;
                 }
             }
+            //else if (cmdGroup == Microsoft.VisualStudio.Project.VsMenus.guidStandardCommandSet2K)
+            //{
+
+            //    switch ((VsCommands2K)cmd)
+            //    {
+            //        case VsCommands2K.ECMD_PUBLISHSELECTION:
+            //        case VsCommands2K.ECMD_PUBLISHSLNCTX:
+            //            result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
+            //            return VSConstants.S_OK;
+            //    }
+            //}
             return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
         }
         public override void PrepareBuild(ConfigCanonicalName config, bool cleanBuild)
@@ -650,7 +661,7 @@ namespace XSharp.Project
             return newNode;
         }
 
-        private Guid guidPublishPage = Guid.Parse("CC4014F5-B18D-439C-9352-F99D984CCA85");
+        //private Guid guidPublishPage = Guid.Parse("CC4014F5-B18D-439C-9352-F99D984CCA85");
 
         /// <summary>
         /// Return list of guids of all property pages
@@ -663,6 +674,7 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                 typeof(XSharpDialectPropertyPage).GUID,
+                guidPublishPage,
                 /*typeof(XSharpGlobalUsingsPropertiesPage).GUID,
                 */typeof(XSharpBuildPropertyPage).GUID,
                 typeof(XSharpBuildEventsPropertyPage).GUID,
@@ -682,6 +694,7 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                  typeof(XSharpDialectPropertyPage).GUID,
+                 guidPublishPage,
                  /*typeof(XSharpGlobalUsingsPropertiesPage).GUID,*/
                 };
             return result;
@@ -3115,14 +3128,12 @@ namespace XSharp.Project
                 case DeclaredSourceItems:
                 case DotNet:
                 case Managed:
-                //case PackageReferences:
                 case Publish:
                 case UserSourceItems:
                 case WindowsXAML:
                 case WindowsXaml:
                 case WPF:
                 case XSharp:
-                // Do we support these?
                 case PackageReferences:
                 case DependenciesTree:
                 case DependencyPackageManagement:

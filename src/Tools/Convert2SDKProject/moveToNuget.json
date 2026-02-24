@@ -1,0 +1,41 @@
+{
+  "XSharp.Core": [
+    "XSharp.Core"
+  ],
+  "XSharp.RT": [
+    "XSharp.Data",
+    "XSharp.MacroCompiler",
+    "XSharp.RDD",
+    "XSharp.RT.Debugger",
+    "XSharp.RT"
+  ],
+  "XSharp.Harbour": [
+    "XSharp.Harbour"
+  ],
+  "XSharp.VFP": [
+    "XSharp.VFP"
+  ],
+  "XSharp.VO": [
+    "XSharp.VO"
+  ],
+  "XSharp.VOSDK": [
+    "VOConsoleClasses",
+    "VOGUIClasses",
+    "VOInternetClasses",
+    "VORDDClasses",
+    "VOReportClasses",
+    "VOSQLClasses",
+    "VOSystemClasses",
+    "VOWin32APILibrary"
+  ],
+  "XSharp.VOSDKTyped": [
+    "VOConsoleClasses",
+    "VOGUIClasses",
+    "VORDDClasses",
+    "VOSQLClasses",
+    "VOSystemClasses"
+  ],
+  "XSharp.XPP": [
+    "XSharp.XPP"
+  ]
+}

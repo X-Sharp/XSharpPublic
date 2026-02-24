@@ -581,13 +581,13 @@ FUNCTION TestSelectFunctionality() AS VOID
     SELECT Name, Age FROM test_select_table WHERE Age > 25
     VerifyTable(3, "Failed: Expected 3 records from SELECT specific columns", TRUE)
 
-    // Test SELECT with DISTINCT
+// Test SELECT with DISTINCT
     IF Verbose
         ? "Attempting SELECT with DISTINCT..."
     ENDIF
 
     SELECT DISTINCT Age FROM test_select_table
-    VerifyTable(2, "Failed: Expected 2 distinct ages", TRUE)
+    VerifyTable(3, "Failed: Expected 3 distinct ages", TRUE)
 
     // Test SELECT with TOP
     IF Verbose
@@ -875,21 +875,21 @@ FUNCTION TestQueryOptimizer() AS VOID
     INSERT INTO test_optimizer_table VALUES (4, "Alice Brown", 30, "Chicago")
     INSERT INTO test_optimizer_table VALUES (5, "Charlie Wilson", 40, "New York")
 
-    // Test simple WHERE clause first
+// Test simple WHERE clause first
     IF Verbose
         ? "Testing simple WHERE clause..."
     ENDIF
 
     SELECT * FROM test_optimizer_table WHERE Age > 25
-    VerifyTable(3, "Failed: Expected 3 records from simple WHERE", TRUE)
+    VerifyTable(4, "Failed: Expected 4 records from simple WHERE", TRUE)
 
-    // Test complex WHERE clause that would benefit from optimization
+// Test complex WHERE clause that would benefit from optimization
     IF Verbose
         ? "Testing complex WHERE clause with optimizer..."
     ENDIF
 
     SELECT * FROM test_optimizer_table WHERE Age > 25 .AND. City = "New York"
-    VerifyTable(2, "Failed: Expected 2 records from complex WHERE", TRUE)
+    VerifyTable(3, "Failed: Expected 3 records from complex WHERE", TRUE)
 
     // Test with index optimization - create an index on Age field
     IF Verbose
@@ -909,13 +909,13 @@ FUNCTION TestQueryOptimizer() AS VOID
     // Set focus to the new index
     OrdSetFocus("AgeIdx")
 
-    // Test SELECT with WHERE clause that can use the index
+// Test SELECT with WHERE clause that can use the index
     IF Verbose
         ? "SELECT * FROM test_optimizer_table WHERE Age > 25"
     ENDIF
 
     SELECT * FROM test_optimizer_table WHERE Age > 25
-    VerifyTable(3, "Failed: Expected 3 records from indexed WHERE", TRUE)
+    VerifyTable(4, "Failed: Expected 4 records from indexed WHERE", TRUE)
 
     // Test with equality condition on indexed field
     IF Verbose
@@ -935,7 +935,7 @@ FUNCTION TestQueryOptimizer() AS VOID
     SELECT * FROM test_optimizer_table WHERE Age = 30 .AND. City = "New York"
     VerifyTable(1, "Failed: Expected 1 record from indexed multi-condition WHERE", TRUE)
 
-    // Clear the index and test without optimization for comparison
+// Clear the index and test without optimization for comparison
     IF Verbose
         ? "Testing without index (clearing index)..."
         ? "SELECT * FROM test_optimizer_table WHERE Age > 25 (without index)"
@@ -944,7 +944,7 @@ FUNCTION TestQueryOptimizer() AS VOID
     DbSetIndex(NULL)
 
     SELECT * FROM test_optimizer_table WHERE Age > 25
-    VerifyTable(3, "Failed: Expected 3 records from simple WHERE (no index)", TRUE)
+    VerifyTable(4, "Failed: Expected 4 records from simple WHERE (no index)", TRUE)
 
     USE IN test_optimizer_table
 

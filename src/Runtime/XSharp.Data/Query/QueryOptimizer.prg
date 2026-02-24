@@ -359,7 +359,7 @@ PRIVATE STATIC METHOD EvaluatePrefixExpression(prefixExpr AS SqlPrefixExpression
         LOCAL lSoftSeek := FALSE AS LOGIC
         LOCAL lLast := FALSE AS LOGIC
 
-        SWITCH opText
+SWITCH opText
         CASE XTokenType.EQ
             lSoftSeek := FALSE
             lLast := FALSE
@@ -371,7 +371,7 @@ PRIVATE STATIC METHOD EvaluatePrefixExpression(prefixExpr AS SqlPrefixExpression
             lLast := TRUE
         CASE XTokenType.GT
             lSoftSeek := TRUE
-            lLast := TRUE
+            lLast := FALSE
         CASE XTokenType.GTE
             lSoftSeek := TRUE
             lLast := FALSE
@@ -397,34 +397,41 @@ PRIVATE STATIC METHOD EvaluatePrefixExpression(prefixExpr AS SqlPrefixExpression
                 result:SetMatchState(recNo, RecordBitmap.RecordMatchState.Match)
             ENDIF
 
-        CASE XTokenType.LT
-            // For less than: mark all records from BOF up to current position
-            IF !CoreDb.Bof()
+CASE XTokenType.LT
+            // For less than: mark all records from BOF up to (but not including) current position
+            IF !CoreDb.Bof() .AND. !CoreDb.Eof()
+                VAR currentPosition := CoreDb.Recno()
                 CoreDb.GoTop()
-                DO WHILE !CoreDb.Eof() .AND. CoreDb.Recno() <= result:Length
+                DO WHILE !CoreDb.Eof() .AND. CoreDb.Recno() < currentPosition .AND. CoreDb.Recno() <= result:Length
+                    VAR recNo := (LONG)CoreDb.Recno()
+                    result:SetMatchState(recNo, RecordBitmap.RecordMatchState.Match)
+                    CoreDb.Skip(1)
+                ENDDO
+            ELSEIF CoreDb.Eof()
+                // All records match (cursor at EOF means all records are less than value)
+                DO WHILE !CoreDb.Bof()
+                    VAR recNo := (LONG)CoreDb.Recno()
+                    result:SetMatchState(recNo, RecordBitmap.RecordMatchState.Match)
+                    CoreDb.Skip(-1)
+                ENDDO
+            ENDIF
+
+CASE XTokenType.LTE
+            // For less than or equal: mark all records from BOF up to current position (inclusive)
+            IF !CoreDb.Bof()
+                VAR currentPosition := CoreDb.Recno()
+                CoreDb.GoTop()
+                DO WHILE !CoreDb.Eof() .AND. CoreDb.Recno() <= currentPosition .AND. CoreDb.Recno() <= result:Length
                     VAR recNo := (LONG)CoreDb.Recno()
                     result:SetMatchState(recNo, RecordBitmap.RecordMatchState.Match)
                     CoreDb.Skip(1)
                 ENDDO
             ENDIF
 
-        CASE XTokenType.LTE
-            // For less than or equal: mark all records from BOF up to current position (inclusive)
-            IF !CoreDb.Bof()
-                CoreDb.GoTop()
-                DO WHILE !CoreDb.Eof() .AND. CoreDb.Recno() <= result:Length
-                    VAR recNo := (LONG)CoreDb.Recno()
-                    result:SetMatchState(recNo, RecordBitmap.RecordMatchState.Match)
-
-                    // For LE with soft seek, exit after first record to avoid duplicates
-                    EXIT
-
-                ENDDO
-            ENDIF
-
-        CASE XTokenType.GT
-            // For greater than: mark all records from current position to EOF
+CASE XTokenType.GT
+            // For greater than: skip past current position first, then mark all records to EOF
             IF !CoreDb.Eof()
+                CoreDb.Skip(1)  // Skip the record we're currently on (might be == value)
                 DO WHILE !CoreDb.Eof() .AND. CoreDb.Recno() <= result:Length
                     VAR recNo := (LONG)CoreDb.Recno()
                     result:SetMatchState(recNo, RecordBitmap.RecordMatchState.Match)

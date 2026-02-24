@@ -38,7 +38,7 @@ namespace XSharp.Project
                 return imports;
             }
         }
-        
+
         public override VSProjectEvents Events
         {
             get
@@ -61,7 +61,7 @@ namespace XSharp.Project
                 {
                     if (oaxp.Project is XSharpProjectNode xpn)
                     {
-                        XSharpPackageReferenceContainerNode referenceContainer = xpn?.PackageReferenceContainerNode ?? null;
+                        XSharpPackageReferenceContainerNode referenceContainer = xpn?.GetPackageReferenceContainerNode() ?? null;
                         if (referenceContainer == null)
                         {
                             return null;

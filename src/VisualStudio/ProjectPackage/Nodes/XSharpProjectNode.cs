@@ -674,7 +674,6 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                 typeof(XSharpDialectPropertyPage).GUID,
-                guidPublishPage,
                 /*typeof(XSharpGlobalUsingsPropertiesPage).GUID,
                 */typeof(XSharpBuildPropertyPage).GUID,
                 typeof(XSharpBuildEventsPropertyPage).GUID,
@@ -694,7 +693,6 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                  typeof(XSharpDialectPropertyPage).GUID,
-                 guidPublishPage,
                  /*typeof(XSharpGlobalUsingsPropertiesPage).GUID,*/
                 };
             return result;
@@ -1348,18 +1346,26 @@ namespace XSharp.Project
 
         internal void LoadPackageReferences()
         {
-            var packageContainer = PackageReferenceContainerNode;
-            var referenceContainerNode = GetReferenceContainer() as HierarchyNode;
-            if (packageContainer == null)
+            var packageContainer = GetPackageReferenceContainerNode();
+            var items = this.BuildProject.GetItems(ProjectFileConstants.PackageReference);
+            if (items.Any())
             {
-                packageContainer = new XSharpPackageReferenceContainerNode(this);
-                referenceContainerNode.AddChild(packageContainer);
+                packageContainer.LoadReferencesFromBuildProject(this);
             }
-            packageContainer.LoadReferencesFromBuildProject(this);
         }
 
-        public XSharpPackageReferenceContainerNode PackageReferenceContainerNode =>
-            FindChild(XSharpPackageReferenceContainerNode.PackageReferencesNodeVirtualName) as XSharpPackageReferenceContainerNode;
+        public XSharpPackageReferenceContainerNode GetPackageReferenceContainerNode()
+        {
+            var node = FindChild(XSharpPackageReferenceContainerNode.PackageReferencesNodeVirtualName) as XSharpPackageReferenceContainerNode;
+            if (node == null )
+            {
+                var referenceContainerNode = GetReferenceContainer() as HierarchyNode;
+                node = new XSharpPackageReferenceContainerNode(this);
+                referenceContainerNode.AddChild(node);
+
+            }
+            return node;
+        }
 
         public virtual XSharpPackageReferenceNode CreatePackageReferenceNode(string name)
         {
@@ -1823,16 +1829,16 @@ namespace XSharp.Project
         }
 
         private List<string> _commandLineArguments = new List<string>();
-        protected List<string> _sdkReferences = new List<string>();
-        protected List<string> _allReferenceAssemblies = new List<string>();
+        protected List<ProjectItemInstance> _sdkReferences = new List<ProjectItemInstance>();
+        protected List<ProjectItemInstance> _allReferenceAssemblies = new List<ProjectItemInstance>();
         void ProcessOptions(ProjectInstance projectInstance, string target)
         {
             Logger.Information($"Build:  Invocation Result for target '{target}'");
             if (projectInstance != null && this.IsSdkProject)
             {
                 var commandLineArguments = new List<string>();
-                var sdkReferences = new List<string>();
-                var allReferenceAssemblies = new List<string>();
+                var sdkReferences = new List<ProjectItemInstance>();
+                var allReferenceAssemblies = new List<ProjectItemInstance>();
                 //Logger.Information($"Build:  Properties for projectInstance {projectInstance.FullPath}");
                 //foreach (var item in projectInstance.Properties)
                 //{
@@ -1840,20 +1846,24 @@ namespace XSharp.Project
                 //}
                 Logger.Information($"Build:  Items for projectInstance {projectInstance.FullPath}");
                 var items = projectInstance.Items.ToArray();
+                bool isSdk = this.IsSdkProject;
                 foreach (var item in items)
                 {
                     switch (item.ItemType.ToLower())
                     {
-                        case "reference":
-                        case "referencepath":
+                        case "reference" when ! isSdk:
+                            allReferenceAssemblies.AddUnique(item);
+                            break;
+                        case "referencepath" when isSdk:
                             var file = item.EvaluatedInclude.Replace("/", "\\");
-                            allReferenceAssemblies.AddUnique(file);
+                            allReferenceAssemblies.AddUnique(item);
                             if (item.GetMetadataValue("NugetSourceType")?.ToLower() == "package")
                             {
                                 Logger.Information($"Item: Package{item.ItemType} {item.EvaluatedInclude}");
                                 continue;
                             }
-                            sdkReferences.AddUnique(file);
+                            if (item.HasMetadata("FrameworkReferenceName"))
+                                sdkReferences.AddUnique(item);
                             break;
                         case "xsccommandlineargs":
                             commandLineArguments.AddUnique(item.EvaluatedInclude);
@@ -1863,7 +1873,6 @@ namespace XSharp.Project
                         default:
                             continue;
                     }
-
                     Logger.Information($"Item: {item.ItemType} {item.EvaluatedInclude}");
                 }
                 if (commandLineArguments.Count > 0)
@@ -1951,6 +1960,7 @@ namespace XSharp.Project
 
         internal void Unload()
         {
+            this.BuildProject.Save();
             this.UnloadProject();
         }
         public void DoReload(bool fromProperties)
@@ -1972,16 +1982,17 @@ namespace XSharp.Project
                         FileNames.Add(docview.FilePath);
                     }
                 }
-                await prj.UnloadAsync();
-                await prj.LoadAsync();
+                var project = FindProject(fileName);
+                project.Unload();
+                project.Reload();
                 foreach (var file in FileNames)
                 {
                     await VS.Documents.OpenAsync(file);
                 }
-                if (fromProperties)
-                {
-                    await VS.Commands.ExecuteAsync(KnownCommands.Project_Properties);
-                }
+                //if (fromProperties)
+                //{
+                //    await VS.Commands.ExecuteAsync(KnownCommands.Project_Properties);
+                //}
 
             });
         }
@@ -1999,10 +2010,15 @@ namespace XSharp.Project
             RefreshIncludeFiles();
         }
 
-        protected virtual List<string> RefreshReferences()
+        protected virtual List<ProjectItemInstance> RefreshReferences()
         {
             // find the resource file and read the lines with /reference
-            ProjectModel.RefreshReferences(_allReferenceAssemblies);
+            List<string> references = new List<string>();
+            foreach (var item in _allReferenceAssemblies)
+            {
+                references.Add(item.EvaluatedInclude);
+            }
+            ProjectModel.RefreshReferences(references);
             return _allReferenceAssemblies;
         }
 

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -269,18 +270,10 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region IReferenceContainer
-        public IList<ReferenceNode> EnumReferences()
+        public virtual IList<ReferenceNode> EnumReferences()
         {
-            List<ReferenceNode> refs = new List<ReferenceNode>();
-            for(HierarchyNode node = this.FirstChild; node != null; node = node.NextSibling)
-            {
-                ReferenceNode refNode = node as ReferenceNode;
-                if(refNode != null)
-                {
-                    refs.Add(refNode);
-                }
-            }
-
+            var refs = new List<ReferenceNode>();
+            FindNodesOfType(refs);
             return refs;
         }
         /// <summary>
@@ -310,22 +303,10 @@ namespace Microsoft.VisualStudio.Project
 
                     if(node != null)
                     {
-                        // Make sure that we do not want to add the item twice to the ui hierarchy
-                        // We are using here the UI representation of the Node namely the Caption to find that out, in order to
-                        // avoid different representation problems.
-                        // Example :<Reference Include="EnvDTE80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-                        //		  <Reference Include="EnvDTE80" />
-                        bool found = false;
-                        for(HierarchyNode n = this.FirstChild; n != null && !found; n = n.NextSibling)
-                        {
-                            if(String.Compare(n.Caption, node.Caption, StringComparison.OrdinalIgnoreCase) == 0)
-                            {
-                                found = true;
-                                break;
-                            }
-                        }
-
-                        if(!found)
+                        var nodes = new List<AssemblyReferenceNode>();
+                        this.FindNodesOfType(nodes);
+                        var found = nodes.Where( n=>string.Equals(n.Caption, node.Caption, StringComparison.OrdinalIgnoreCase)).FirstOrDefault() != null;
+                        if (!found)
                         {
                             this.AddChild(node);
                             children.Add(node);
@@ -350,7 +331,6 @@ namespace Microsoft.VisualStudio.Project
                 }
             }
             var references = buildResult.ProjectInstance.GetItems(ProjectFileConstants.ReferencePath);
-            //var references = MSBuildProjectInstance.GetItems(buildResult.ProjectInstance, ProjectFileConstants.ReferencePath);
             foreach (var reference in references)
             {
                 string fullName = MSBuildItem.GetEvaluatedInclude(reference);

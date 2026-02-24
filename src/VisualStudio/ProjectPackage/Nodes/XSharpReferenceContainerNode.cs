@@ -24,13 +24,25 @@ namespace XSharp.Project
         protected override ProjectReferenceNode CreateProjectReferenceNode(ProjectElement element)
         {
             // Check to see if we have the Guid and Name in the ProjectElement
-            var guid = element.GetMetadata("Project");
-            var name = element.GetMetadata("Name");
+            var guid = element.GetMetadata(ProjectFileConstants.Project);
+            var name = element.GetMetadata(ProjectFileConstants.Name);
+            var priv = element.GetMetadata(ProjectFileConstants.Private);
             var path = element.Item.EvaluatedInclude;
-            bool changed = false;
-            path = System.IO.Path.GetFileName(path);
+            var parent = (XSharpProjectNode)this.ProjectMgr;
             var refnode = XSharpProjectNode.FindProject(path);
-            if (string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(name))
+            bool changed = false;
+            path = Path.GetFileName(path);
+            if (parent.IsSdkProject)
+            {
+                if (!string.IsNullOrEmpty(guid + priv + name))
+                {
+                    element.Item.RemoveMetadata(ProjectFileConstants.Project);
+                    element.Item.RemoveMetadata(ProjectFileConstants.Private);
+                    element.Item.RemoveMetadata(ProjectFileConstants.Name);
+                    changed = true;
+                }
+            }
+            else if (string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(name))
             {
                 // No guid, so it is probably an old style project reference
                 // In that case we need to get the guid from the project file
@@ -38,34 +50,31 @@ namespace XSharp.Project
                 {
                     guid = refnode.ProjectIDGuid.ToString("B");
                     name = refnode.GetProjectProperty(ProjectFileConstants.AssemblyName);
-                    element.SetMetadata("Project", guid);
-                    element.SetMetadata("Name", name);
+                    element.SetMetadata(ProjectFileConstants.Project, guid);
+                    element.SetMetadata(ProjectFileConstants.Name, name);
                     changed = true;
                 }
                 else
                 {
-                    var parent = this.ProjectMgr as XSharpProjectNode;
                     parent.HasIncompleteReferences = true;
                 }
-            }
-            if (refnode != null)
-            {
-                var refguid = refnode.ProjectIDGuid.ToString("B");
-                if (string.Compare(guid, refguid, StringComparison.OrdinalIgnoreCase) != 0)
+                if (refnode != null)
                 {
-                    // The guid's do not match, so update the project element
-                    guid = refguid;
-                    element.SetMetadata("Project", guid);
-                    changed = true;
+                    var refguid = refnode.ProjectIDGuid.ToString("B");
+                    if (string.Compare(guid, refguid, StringComparison.OrdinalIgnoreCase) != 0)
+                    {
+                        // The guid's do not match, so update the project element
+                        guid = refguid;
+                        element.SetMetadata(ProjectFileConstants.Project, guid);
+                        changed = true;
+                    }
                 }
-
             }
             if (changed)
             {
-                var parent = this.ProjectMgr as XSharpProjectNode;
                 parent.BuildProject.Save();
             }
-            ProjectReferenceNode node = new XSharpProjectReferenceNode(this.ProjectMgr, element);
+            var node = new XSharpProjectReferenceNode(this.ProjectMgr, element);
             ReferenceNode existing = null;
             if (isDuplicateNode(node, ref existing))
             {
@@ -90,7 +99,15 @@ namespace XSharp.Project
         }
         protected override ProjectReferenceNode CreateProjectReferenceNode(VSCOMPONENTSELECTORDATA selectorData)
         {
-            ProjectReferenceNode node = new XSharpProjectReferenceNode(this.ProjectMgr, selectorData.bstrTitle, selectorData.bstrFile, selectorData.bstrProjRef);
+            ProjectReferenceNode node = null;
+            try
+            {
+                node = new XSharpProjectReferenceNode(this.ProjectMgr, selectorData.bstrTitle, selectorData.bstrFile, selectorData.bstrProjRef);
+            }
+            catch (Exception e)
+            {
+                Logger.Exception(e, "CreateProjectReferenceNode");
+            }
             ReferenceNode existing = null;
             if (isDuplicateNode(node, ref existing))
             {
@@ -98,7 +115,6 @@ namespace XSharp.Project
                 return existingNode;
             }
             return node;
-
         }
         protected override AssemblyReferenceNode CreateAssemblyReferenceNode(ProjectElement element)
         {
@@ -124,12 +140,29 @@ namespace XSharp.Project
 
         protected override ComReferenceNode CreateComReferenceNode(ProjectElement reference)
         {
-            return new XSharpComReferenceNode(this.ProjectMgr, reference);
+            ComReferenceNode node = null;
+            try
+            {
+                node = new XSharpComReferenceNode(this.ProjectMgr, reference);
+            }
+            catch (Exception e)
+            {
+                Logger.Exception(e, "CreateComReferenceNode");
+            }
+            return node;
         }
 
         protected override ComReferenceNode CreateComReferenceNode(Microsoft.VisualStudio.Shell.Interop.VSCOMPONENTSELECTORDATA selectorData, string wrapperTool)
         {
-            ComReferenceNode node = new XSharpComReferenceNode(this.ProjectMgr, selectorData, wrapperTool);
+            ComReferenceNode node = null;
+            try
+            {
+                node = new XSharpComReferenceNode(this.ProjectMgr, selectorData, wrapperTool);
+            }
+            catch (Exception e)
+            {
+                Logger.Exception(e, "CreateComReferenceNode");
+            }
             return node;
         }
 #if DEV17

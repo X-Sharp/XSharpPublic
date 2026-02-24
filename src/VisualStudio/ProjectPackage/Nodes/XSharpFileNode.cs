@@ -4,7 +4,6 @@
 // See License.txt in the project root for license information.
 //
 
-using Microsoft.Build.Evaluation;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
@@ -82,7 +81,6 @@ namespace XSharp.Project
 
         #endregion
         #region Properties
-
         internal string ItemType => this.ItemNode.ItemName;
         /// <summary>
         /// Gets an index into the default <b>ImageList</b> of the icon to show for this file.
@@ -171,6 +169,8 @@ namespace XSharp.Project
                     {
                         xmlItem.Parent.RemoveChild(xmlItem);
                         buildProject.RemoveItem(this.ItemNode.Item);
+                        buildProject.MarkDirty();
+                        ProjectMgr.SetProjectFileDirty(true);
                         buildProject.ReevaluateIfNecessary();
                         break;
                     }
@@ -216,6 +216,7 @@ namespace XSharp.Project
                  {
                      xml.Include = null;
                      xml.Remove = fileName;
+                     ProjectMgr.SetProjectFileDirty(true);
                      ProjectMgr.BuildProject.ReevaluateIfNecessary();
                  }
              }
@@ -892,10 +893,17 @@ namespace XSharp.Project
         {
             // Remove here because later the URL is gone
             var project = (XSharpProjectNode)this.ProjectMgr;
+
             var name = this.GetMkDocument();
             base.Remove(removeFromStorage);
             project.ProjectModel.RemoveFile(name);
             project.RemoveURL(name);
+            if (project.IsSdkProject)
+            {
+                project.BuildProject.MarkDirty();
+                project.BuildProject.ReevaluateIfNecessary();
+            }
+
         }
         protected override bool RenameDocument(string oldName, string newName, out HierarchyNode newNodeOut)
         {

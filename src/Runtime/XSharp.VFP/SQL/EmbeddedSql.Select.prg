@@ -202,6 +202,11 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         VAR resultTable := "QUERYRESULT" // Default table name for SELECT results
         IF ! String.IsNullOrEmpty(AllTrim(selectCtx:TargetCursor))
             resultTable := AllTrim(selectCtx:TargetCursor)
+ENDIF
+
+        // Close any existing work area with this alias to avoid "Alias already defined" error
+        IF Used(resultTable)
+            (resultTable)->DbCloseArea()
         ENDIF
 
         // Create the result table

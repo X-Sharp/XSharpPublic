@@ -260,17 +260,17 @@ CLASS XSqlLexer INHERIT XLexer
                         IF SELF:La(3) == c'.'
                             IF SELF:ExpectLower("or")
                                 SELF:Consume() // eat the closing dot
-                                t := XTokenType.LOGIC_OR
+                                t := XTokenType.OR
                             ENDIF
                         ELSE
                             IF SELF:La(4) == c'.'
                                 IF SELF:ExpectLower("and")
                                     SELF:Consume() // eat the closing dot
-                                    t := XTokenType.LOGIC_AND
+                                    t := XTokenType.AND
                                 ELSE
                                     IF SELF:ExpectLower("not")
                                         SELF:Consume()// eat the closing dot
-                                        t := XTokenType.LOGIC_NOT
+                                        t := XTokenType.NOT
                                     ELSE
                                         IF SELF:ExpectLower("xor")
                                             SELF:Consume() // eat the closing dot

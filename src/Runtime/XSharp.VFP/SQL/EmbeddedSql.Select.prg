@@ -202,9 +202,10 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         VAR resultTable := "QUERYRESULT" // Default table name for SELECT results
         IF ! String.IsNullOrEmpty(AllTrim(selectCtx:TargetCursor))
             resultTable := AllTrim(selectCtx:TargetCursor)
-ENDIF
+        ENDIF
 
         // Close any existing work area with this alias to avoid "Alias already defined" error
+        // TODO: This differs from the VFP behavior that reuses the same area.
         IF Used(resultTable)
             (resultTable)->DbCloseArea()
         ENDIF
@@ -308,7 +309,14 @@ ENDIF
             IF hasWhereClause
                 // Use optimized bitmap when available, otherwise evaluate codeblock
                 IF useOptimization .AND. ALen(tableNames) == 1 .AND. recNo > 0
-                    includeRecord := optimizedBitmap:GetMatchState(recNo) == RecordBitmap.RecordMatchState.Match
+                    // The bitmap is indexed by raw record numbers, but we're traversing in index order
+                    // We need to seek to the physical record number from the bitmap
+                    LOCAL currentRecNo := (LONG)(tableNames[1])->RecNo() as LONG
+                    IF optimizedBitmap:GetMatchState(currentRecNo) == RecordBitmap.RecordMatchState.Match
+                        includeRecord := TRUE
+                    ELSE
+                        includeRecord := FALSE
+                    ENDIF
                 ELSEIF hasWhereClause
                     TRY
                         includeRecord := whereCodeBlock:Eval()

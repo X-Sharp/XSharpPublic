@@ -359,7 +359,7 @@ PRIVATE STATIC METHOD EvaluatePrefixExpression(prefixExpr AS SqlPrefixExpression
         LOCAL lSoftSeek := FALSE AS LOGIC
         LOCAL lLast := FALSE AS LOGIC
 
-SWITCH opText
+        SWITCH opText
         CASE XTokenType.EQ
             lSoftSeek := FALSE
             lLast := FALSE
@@ -397,7 +397,7 @@ SWITCH opText
                 result:SetMatchState(recNo, RecordBitmap.RecordMatchState.Match)
             ENDIF
 
-CASE XTokenType.LT
+        CASE XTokenType.LT
             // For less than: mark all records from BOF up to (but not including) current position
             IF !CoreDb.Bof() .AND. !CoreDb.Eof()
                 VAR currentPosition := CoreDb.Recno()
@@ -416,7 +416,7 @@ CASE XTokenType.LT
                 ENDDO
             ENDIF
 
-CASE XTokenType.LTE
+        CASE XTokenType.LTE
             // For less than or equal: mark all records from BOF up to current position (inclusive)
             IF !CoreDb.Bof()
                 VAR currentPosition := CoreDb.Recno()
@@ -428,7 +428,7 @@ CASE XTokenType.LTE
                 ENDDO
             ENDIF
 
-CASE XTokenType.GT
+        CASE XTokenType.GT
             // For greater than: skip past current position first, then mark all records to EOF
             IF !CoreDb.Eof()
                 CoreDb.Skip(1)  // Skip the record we're currently on (might be == value)

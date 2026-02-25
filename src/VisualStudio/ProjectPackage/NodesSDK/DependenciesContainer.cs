@@ -111,31 +111,13 @@ namespace XSharp.Project
 
         protected override ProjectReferenceNode CreateProjectReferenceNode(ProjectElement element)
         {
-            ClearElement(element);
             return base.CreateProjectReferenceNode(element);
-        }
-
-        void ClearElement(ProjectElement element)
-        {
-            // Check to see if we have the Guid and Name in the ProjectElement
-            var guid = element.GetMetadata(ProjectFileConstants.Project);
-            var name = element.GetMetadata(ProjectFileConstants.Name);
-            var priv = element.GetMetadata(ProjectFileConstants.Private);
-            var parent = (XSharpProjectNode)this.ProjectMgr;
-            if (!string.IsNullOrEmpty(guid + priv + name))
-            {
-                element.Item.RemoveMetadata(ProjectFileConstants.Project);
-                element.Item.RemoveMetadata(ProjectFileConstants.Private);
-                element.Item.RemoveMetadata(ProjectFileConstants.Name);
-                parent.BuildProject.Save();
-            }
         }
 
 
         protected override ProjectReferenceNode CreateProjectReferenceNode(VSCOMPONENTSELECTORDATA selectorData)
         {
             var result = base.CreateProjectReferenceNode(selectorData);
-            ClearElement(result.ItemNode);
             return result;
         }
 

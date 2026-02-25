@@ -24,14 +24,6 @@ namespace XSharp.Project
     internal class XSharpSdkProjectNode : XSharpProjectNode
     {
         internal bool SuspendBuild = false;
-        class VirtualBuildProject : MSBuild.Project
-        {
-            public VirtualBuildProject(string fileName) : base(fileName)
-            {
-                ;
-            }
-        }
-
         [DebuggerDisplay("{Name,nq} - {TargetFramework,nq}")]
         internal class SdkSubProjectInfo
         {
@@ -285,10 +277,10 @@ namespace XSharp.Project
 
         private void SaveTargetFrameworks()
         {
-            SetProjectProperty(XSharpProjectFileConstants.ActiveTargetFramework, ActiveSubProject.TargetFramework);
             if (TargetFrameworks.Count > 1)
             {
                 // Store the active project in the XTargetFramework property
+                SetProjectProperty(XSharpProjectFileConstants.ActiveTargetFramework, ActiveSubProject.TargetFramework);
                 RemoveProjectProperty(XSharpProjectFileConstants.TargetFramework);
                 RemoveProjectProperty(XSharpProjectFileConstants.XTargetFrameworks);
                 SetProjectProperty(XSharpProjectFileConstants.TargetFrameworks, _frameworks);
@@ -296,6 +288,7 @@ namespace XSharp.Project
             else
             {
                 // Store the active project in the TargetFramework property
+                RemoveProjectProperty(XSharpProjectFileConstants.ActiveTargetFramework);
                 SetProjectProperty(XSharpProjectFileConstants.TargetFramework, ActiveSubProject.TargetFramework);
                 RemoveProjectProperty(XSharpProjectFileConstants.TargetFrameworks);
                 RemoveProjectProperty(XSharpProjectFileConstants.XTargetFrameworks);
@@ -343,22 +336,35 @@ namespace XSharp.Project
         public override int Close()
         {
             this.SaveTargetFrameworks();
+            this.Clean();
             return base.Close();
         }
 
-        // Do not store FolderNodes in SDK projects
-        public override int Save(string fileToBeSaved, int remember, uint formatIndex)
+        void Clean()
         {
             var folderNodes = new List<FolderNode>();
-            var dirty = this.IsProjectFileDirty;
+            bool dirty = false;
             this.FindNodesOfType(folderNodes);
             foreach (var node in folderNodes)
             {
                 if (!(node is XSharpSdkFolderNode) && node.ItemNode != null
                     && node.ItemNode.Item != null)
+                {
                     this.BuildProject.RemoveItem(node.ItemNode.Item);
+                    dirty = true;
+                }
             }
             this.RemoveProjectProperty("ProjectGuid");
+            if (this.BuildProject.IsDirty || dirty)
+                this.BuildProject.Save();
+        }
+
+
+        // Do not store FolderNodes in SDK projects
+        public override int Save(string fileToBeSaved, int remember, uint formatIndex)
+        {
+            var dirty = this.IsProjectFileDirty;
+            this.Clean();
             this.SetProjectFileDirty(dirty);
             return base.Save(fileToBeSaved, remember, formatIndex);
         }

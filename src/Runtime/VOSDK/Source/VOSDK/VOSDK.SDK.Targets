@@ -5,6 +5,7 @@
   <Import Project="Version.Targets" />
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <Configurations>Debug;Release;Documentation;DocChinese</Configurations>
     <cs>True</cs>
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>

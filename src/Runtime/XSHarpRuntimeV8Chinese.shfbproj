@@ -16,7 +16,7 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <ArtifactsDir>..\..\Artifacts\</ArtifactsDir>
-    <DocDir>$(ArtifactsDir)Documentation\net8.0</DocDir>
+    <DocDir>$(ArtifactsDir)DocChinese\net8.0</DocDir>
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Core/.NET Standard/.NET 5.0+</FrameworkVersion>
     <OutputPath>$(ArtifactsDir)Help</OutputPath>
@@ -24,22 +24,21 @@
     <Language>en-US</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="$(DocDir)\XSharp.Rdd.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Core.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VO.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Data.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.dll" />
-    </DocumentationSources>
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Core.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RT.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VO.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Data.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.dll" /></DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
     <HelpFileVersion>3.0.0.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
@@ -236,10 +235,27 @@
     <SaveComponentCacheCapacity>0</SaveComponentCacheCapacity>
     <TocOrder>-1</TocOrder>
     <PlugInConfigurations>
-      <PlugInConfig id="XSharp Function Output" enabled="False">
+      <PlugInConfig id="XSharp Function Output" enabled="True">
         <configuration />
       </PlugInConfig>
-<PlugInConfig id="XPath Reflection File Filter" enabled="False"><configuration><expressions><expression>/reflection/apis/api[contains(@id,"N:") and string-length(@id)=2]</expression><expression>/reflection/apis/api[starts-with(apidata/@name,"$")]</expression><expression>/reflection/apis/api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression></expressions></configuration></PlugInConfig></PlugInConfigurations>
+      <PlugInConfig id="XPath Reflection File Filter" enabled="True">
+        <configuration>
+          <expressions>
+            <expression>/reflection/apis/api[contains(@id,"N:") and string-length(@id)=2]</expression>
+            <expression>/reflection/apis/api[starts-with(apidata/@name,"$")]</expression>
+            <expression>/reflection/apis/api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression>
+          </expressions>
+        </configuration>
+      </PlugInConfig>
+      <PlugInConfig id="Version Builder" enabled="True">
+        <configuration>
+          <currentProject label="Net Framework" version="4.6" ripOldApis="False" />
+          <versions>
+            <version label="Net8" version="8.0" helpFileProject="XSHarpRuntimeV8.shfbproj" />
+          </versions>
+        </configuration>
+      </PlugInConfig>
+    </PlugInConfigurations>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

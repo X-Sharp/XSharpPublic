@@ -21,6 +21,13 @@ namespace XSharp.Project
         {
 
         }
+        protected override void BindReferenceData()
+        {
+            var sdkproject = this.ProjectMgr as XSharpSdkProjectNode;
+            sdkproject.SuspendBuild = true;
+            base.BindReferenceData();
+            sdkproject.SuspendBuild = false;
+        }
     }
 
     class XSharpSDKProjectReferenceNode : XSharpProjectReferenceNode
@@ -33,6 +40,13 @@ namespace XSharp.Project
          : base(root, element)
         {
         }
+        protected override void BindReferenceData()
+        {
+            var sdkproject = this.ProjectMgr as XSharpSdkProjectNode;
+            sdkproject.SuspendBuild = true;
+            base.BindReferenceData();
+            sdkproject.SuspendBuild = false;
+        }
     }
 
     class XSharpSDKComReferenceNode : XSharpComReferenceNode
@@ -44,6 +58,13 @@ namespace XSharp.Project
         public XSharpSDKComReferenceNode(ProjectNode root, ProjectElement element)
          : base(root, element)
         {
+        }
+        protected override void BindReferenceData()
+        {
+            var sdkproject = this.ProjectMgr as XSharpSdkProjectNode;
+            sdkproject.SuspendBuild = true;
+            base.BindReferenceData();
+            sdkproject.SuspendBuild = false;
         }
     }
 

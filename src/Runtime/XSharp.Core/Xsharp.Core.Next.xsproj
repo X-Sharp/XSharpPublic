@@ -13,7 +13,6 @@
     <NamedArgs>True</NamedArgs>
     <EnforceSelf>True</EnforceSelf>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <ProjectGuid>{cc7c83af-345a-4719-9490-65ee4a04f3f4}</ProjectGuid>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>

@@ -16,57 +16,35 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <ArtifactsDir>..\..\Artifacts\</ArtifactsDir>
-    <DocDir>$(ArtifactsDir)Documentation\net46</DocDir>
+    <DocDir>$(ArtifactsDir)Documentation\net80</DocDir>
     <!-- SHFB properties -->
-    <FrameworkVersion>.NET Framework 4.6</FrameworkVersion>
+    <FrameworkVersion>.NET Core/.NET Standard/.NET 5.0+</FrameworkVersion>
     <OutputPath>$(ArtifactsDir)Help</OutputPath>
     <HtmlHelpName>XSharpRef</HtmlHelpName>
     <Language>en-US</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="$(DocDir)\XSharp.Rdd.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Core.XML" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.Core.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RDD.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.XML" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.XML" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.dll" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VO.XML" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.VO.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.XML" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.dll" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.Data.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Data.xml" />
       <DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.Xml" />
       <DocumentationSource sourceFile="$(DocDir)\VOGUIClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOGUIClasses.xml" />
       <DocumentationSource sourceFile="$(DocDir)\VOInternetClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOInternetClasses.xml" />
       <DocumentationSource sourceFile="$(DocDir)\VORDDClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VORDDClasses.xml" />
       <DocumentationSource sourceFile="$(DocDir)\VOSQLClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSQLClasses.xml" />
       <DocumentationSource sourceFile="$(DocDir)\VOSystemClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSystemClasses.xml" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.Xml" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.dll" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.dll" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.dll" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.Xml" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.Xml" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.xml" />
       <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
     <HelpFileVersion>3.0.0.0</HelpFileVersion>
@@ -268,7 +246,7 @@
         <configuration />
       </PlugInConfig>
 <PlugInConfig id="XPath Reflection File Filter" enabled="True"><configuration><expressions><expression>/reflection/apis/api[contains(@id,"N:") and string-length(@id)=2]</expression><expression>/reflection/apis/api[starts-with(apidata/@name,"$")]</expression><expression>/reflection/apis/api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression></expressions></configuration></PlugInConfig>
-<PlugInConfig id="Version Builder" enabled="False"><configuration /></PlugInConfig></PlugInConfigurations>
+<PlugInConfig id="Version Builder" enabled="True"><configuration><currentProject label="Net Framework" version="4.6" ripOldApis="False" /><versions><version label="Net8" version="8.0" helpFileProject="XSHarpRuntimeV8.shfbproj" /></versions></configuration></PlugInConfig></PlugInConfigurations>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->
@@ -287,93 +265,4 @@
     </PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="icons\" />
-    <Folder Include="RtDocs\Categories\" />
-    <Folder Include="RtDocs\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="RtDocs\Categories\Metadata_Functions.aml" />
-    <None Include="RtDocs\Categories\display_Classes.aml" />
-    <None Include="RtDocs\Categories\attributes_Classes.aml" />
-    <None Include="RtDocs\Categories\ads_Classes.aml" />
-    <None Include="RtDocs\Categories\file_Classes.aml" />
-    <None Include="RtDocs\Categories\event_Classes.aml" />
-    <None Include="RtDocs\Categories\error_Classes.aml" />
-    <None Include="RtDocs\Categories\application_Classes.aml" />
-    <None Include="RtDocs\Categories\dbc_Classes.aml" />
-    <None Include="RtDocs\Categories\data_Classes.aml" />
-    <None Include="RtDocs\Categories\dialog_Classes.aml" />
-    <None Include="RtDocs\Categories\draw_Classes.aml" />
-    <None Include="RtDocs\Categories\button_Classes.aml" />
-    <None Include="RtDocs\Categories\control_Classes.aml" />
-    <None Include="RtDocs\Categories\xpp_Classes.aml" />
-    <None Include="RtDocs\Categories\window_Classes.aml" />
-    <None Include="RtDocs\Categories\vfp_Classes.aml" />
-    <None Include="RtDocs\Categories\textcontrol_Classes.aml" />
-    <None Include="RtDocs\Categories\support_Classes.aml" />
-    <None Include="RtDocs\Categories\state_Classes.aml" />
-    <None Include="RtDocs\Categories\sql_Classes.aml" />
-    <None Include="RtDocs\Categories\rdd_Classes.aml" />
-    <None Include="RtDocs\Categories\printer_Classes.aml" />
-    <None Include="RtDocs\Categories\ole_Classes.aml" />
-    <None Include="RtDocs\Categories\menu_Classes.aml" />
-    <None Include="RtDocs\Categories\macro_Classes.aml" />
-    <None Include="RtDocs\Categories\internet_Classes.aml" />
-    <None Include="RtDocs\Categories\international_Classes.aml" />
-    <None Include="RtDocs\Categories\image_Classes.aml" />
-    <None Include="RtDocs\Categories\help_Classes.aml" />
-    <None Include="RtDocs\Categories\gdi_Functions.aml" />
-    <None Include="RtDocs\Categories\datetime_Functions.aml" />
-    <None Include="RtDocs\Categories\Codeblock_Functions.aml" />
-    <None Include="RtDocs\Categories\template.aml" />
-    <None Include="RtDocs\Categories\XML_Functions.aml" />
-    <None Include="RtDocs\Categories\Usual_Functions.aml" />
-    <None Include="RtDocs\Categories\Time_Functions.aml" />
-    <None Include="RtDocs\Categories\Terminal_Functions.aml" />
-    <None Include="RtDocs\Categories\Symbol_Functions.aml" />
-    <None Include="RtDocs\Categories\Support_Functions.aml" />
-    <None Include="RtDocs\Categories\Sql_Functions.aml" />
-    <None Include="RtDocs\Categories\Settings_Functions.aml" />
-    <None Include="RtDocs\Categories\Registry_Functions.aml" />
-    <None Include="RtDocs\Categories\RDD_Functions.aml" />
-    <None Include="RtDocs\Categories\PSZ_Functions.aml" />
-    <None Include="RtDocs\Categories\Programming_Functions.aml" />
-    <None Include="RtDocs\Categories\Printing_Functions.aml" />
-    <None Include="RtDocs\Categories\Numeric_Functions.aml" />
-    <None Include="RtDocs\Categories\Network_Functions.aml" />
-    <None Include="RtDocs\Categories\Memvar_Functions.aml" />
-    <None Include="RtDocs\Categories\Memory_Functions.aml" />
-    <None Include="RtDocs\Categories\Memo_Functions.aml" />
-    <None Include="RtDocs\Categories\Macro_Functions.aml" />
-    <None Include="RtDocs\Categories\Locking_Functions.aml" />
-    <None Include="RtDocs\Categories\International_Functions.aml" />
-    <None Include="RtDocs\Categories\Index_Functions.aml" />
-    <None Include="RtDocs\Categories\File_Functions.aml" />
-    <None Include="RtDocs\Categories\Error_Functions.aml" />
-    <None Include="RtDocs\Categories\Encryption_Functions.aml" />
-    <None Include="RtDocs\Categories\Disk_Functions.aml" />
-    <None Include="RtDocs\Categories\Dialog_Functions.aml" />
-    <None Include="RtDocs\Categories\Debug_Functions.aml" />
-    <None Include="RtDocs\Categories\DbfTyped_Functions.aml" />
-    <None Include="RtDocs\Categories\Dbf_Functions.aml" />
-    <None Include="RtDocs\Categories\Dbc_Functions.aml" />
-    <None Include="RtDocs\Categories\Cursor_Functions.aml" />
-    <None Include="RtDocs\Categories\Conversion_Functions.aml" />
-    <None Include="RtDocs\Categories\Blob_Functions.aml" />
-    <None Include="RtDocs\Categories\Binary_Functions.aml" />
-    <None Include="RtDocs\Categories\Array_Functions.aml" />
-    <None Include="RtDocs\Categories\Ads_Functions.aml" />
-    <None Include="RtDocs\Categories\Date_Functions.aml" />
-    <None Include="RtDocs\Categories\String_Functions.aml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ContentLayout Include="RtDocs\Content.content" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="icons\logo100.jpg">
-      <ImageId>logo100</ImageId>
-      <AlternateText>logo 100</AlternateText>
-    </Content>
-  </ItemGroup>
 </Project>

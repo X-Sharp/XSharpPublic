@@ -1,8 +1,6 @@
 ﻿#if DEV17
 using Community.VisualStudio.Toolkit;
 
-using EnvDTE;
-
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
@@ -14,18 +12,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-
-using XSharp.Project;
-using XSharp.Settings;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
-using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
-using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 
 using XSharpModel;
 
 using MSBuild = Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
-using Microsoft.Build.Evaluation;
 
 namespace XSharp.Project
 {
@@ -487,155 +479,6 @@ namespace XSharp.Project
         }
     }
 
-
-    class XSharpSdkFolderNode : XSharpFolderNode
-    {
-        public XSharpSdkFolderNode(XSharpProjectNode root, string folderName) :
-            base(root, folderName, null, true)
-        {
-
-        }
-        protected override ImageMoniker GetIconMoniker(bool open) => KnownMonikers.Reference;
-        protected override bool SupportsIconMonikers => true;
-        protected override int SetEditLabel(string label, string relativePath)
-        {
-            return VSConstants.S_FALSE;
-        }
-    }
-}
-class XSharpSdkProjectsNode : XSharpSdkFolderNode
-{
-    public XSharpSdkProjectsNode(XSharpProjectNode root) :
-        base(root, "Projects")
-    {
-    }
-    public override int SortPriority => DefaultSortOrderNode.ProjectsNode;
-}
-class XSharpSdkAssembliesNode : XSharpSdkFolderNode
-{
-    public XSharpSdkAssembliesNode(XSharpProjectNode root) :
-        base(root, "Assemblies")
-    {
-    }
-    public override int SortPriority => DefaultSortOrderNode.AssembliesNode;
 }
 
-
-[DebuggerDisplay("Frameworks {Parent?.Caption,nq}")]
-class XSharpSdkFrameworksNode : XSharpSdkFolderNode
-{
-    public XSharpSdkFrameworksNode(XSharpProjectNode root) :
-        base(root, "Frameworks")
-    {
-    }
-    public override int SortPriority => DefaultSortOrderNode.TargetFrameworksNode;
-}
-[DebuggerDisplay("{Caption,nq}")]
-class XSharpTargetFrameworkReferenceNode : XSharpSdkFolderNode
-{
-    public XSharpTargetFrameworkReferenceNode(XSharpProjectNode root, string frameworkName) :
-        base(root, frameworkName)
-    {
-    }
-    protected override ImageMoniker GetIconMoniker(bool open) => KnownMonikers.DotNETFrameworkDependency;
-
-}
-class XSharpDependenciesContainerNode : XSharpReferenceContainerNode
-{
-    internal List<XSharpSdkFrameworksNode> FrameworkNodes { get; private set; }
-    private XSharpSdkProjectsNode _ProjectsNode = null;
-    private XSharpSdkAssembliesNode _AssembliesNode = null;
-    public XSharpDependenciesContainerNode(XSharpProjectNode root) : base(root)
-    {
-        // Create the FrameworkReference node
-        FrameworkNodes = new List<XSharpSdkFrameworksNode>();
-        CreateFrameworkReferenceNode();
-    }
-    internal XSharpSdkProjectsNode GetProjectsNode()
-    {
-        if (_ProjectsNode == null)
-        {
-            _ProjectsNode = new XSharpSdkProjectsNode((XSharpProjectNode)this.ProjectMgr);
-            base.AddChild(_ProjectsNode);
-        }
-        return _ProjectsNode;
-    }
-    internal XSharpSdkAssembliesNode GetAssembliesNode()
-    {
-        if (_AssembliesNode == null)
-        {
-            _AssembliesNode = new XSharpSdkAssembliesNode((XSharpProjectNode)this.ProjectMgr);
-            base.AddChild(_AssembliesNode);
-        }
-        return _AssembliesNode;
-    }
-    public override int SortPriority => DefaultSortOrderNode.DependenciesNode;
-
-    public override string Caption => "Dependencies";
-
-    private void CreateFrameworkReferenceNode()
-    {
-        var project = this.ProjectMgr as XSharpSdkProjectNode;
-        var node = new XSharpSdkFrameworksNode((XSharpProjectNode)this.ProjectMgr);
-        this.FrameworkNodes.Add(node);
-        this.AddChild(node);
-        if (project.SubProjects.Count == 1)
-        {
-            var subProject = project.SubProjects[0];
-            // Create the node where the assembly dependencies will be stored
-            subProject.FrameworksNode = node;
-        }
-        else
-        {
-            foreach (var subProject in project.SubProjects)
-            {
-                var targetNode = new XSharpTargetFrameworkReferenceNode((XSharpProjectNode)this.ProjectMgr, subProject.TargetFramework);
-                subProject.TargetFrameworkReferenceNode = targetNode;
-                subProject.FrameworksNode = node;
-                node.AddChild(targetNode);
-            }
-        }
-    }
-    public override void AddChild(HierarchyNode node)
-    {
-        switch (node)
-        {
-            case XSharpIncludeContainerNode inc:
-                base.AddChild(inc);
-                break;
-            case XSharpProjectReferenceNode pr:
-                var projects = GetProjectsNode();
-                projects.AddChild(pr);
-                break;
-            case XSharpAssemblyReferenceNode ar:
-                var assemblies = GetAssembliesNode();
-                assemblies.AddChild(ar);
-                break;
-            case XSharpTargetFrameworkReferenceNode fr:
-                var frameworkNode = FrameworkNodes.FirstOrDefault();
-                frameworkNode.AddChild(fr);
-                break;
-            default:
-                base.AddChild(node);
-                break;
-        }
-    }
-
-    public override void RemoveChild(HierarchyNode node)
-    {
-        base.RemoveChild(node);
-    }
-
-    public void DeleteDependencies(string targetframework)
-    {
-
-        //    var nodes = new List<XSharpDependencyNode>();
-        //    frameworkNode.FindNodesOfType(nodes);
-        //    foreach (var child in nodes)
-        //    {
-        //        frameworkNode.RemoveChild(child);
-        //        child.Dispose();
-        //    }
-    }
-}
 #endif

@@ -181,10 +181,13 @@
     <Compile Include="List\TaskList\TaskListItem.cs" />
     <Compile Include="List\TaskList\TaskListManager.cs" />
     <Compile Include="List\TaskList\TaskListProvider.cs" />
+    <Compile Include="NodesSDK\DependenciesContainer.cs" />
+    <Compile Include="NodesSDK\FolderNodes.cs" />
+    <Compile Include="NodesSDK\ReferenceNodes.cs" />
+    <Compile Include="NodesSDK\SdkProjectNode.cs" />
     <Compile Include="Nodes\XSharpIncludeContainerNode.cs" />
     <Compile Include="Nodes\XSharpProjectNodeReferenceManager.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
-    <Compile Include="Nodes\XSharpSdkProjectNode.cs" />
     <Compile Include="OptionsPages\BaseOptionsModel.cs" />
     <Compile Include="OptionsPages\BaseOptionsPage.cs">
       <SubType>Component</SubType>

@@ -313,6 +313,8 @@ namespace XSharp.Project
 
         protected override int ShowContextMenu(int menuId, Guid menuGroup, POINTS points)
         {
+            // Save the fact that we are showing a context menu, we need that to fool the Nuget tools.
+            // See OAXSharpProject.cs
             InContextMenu = true;
             var result = base.ShowContextMenu(menuId, menuGroup, points);
             InContextMenu = false;

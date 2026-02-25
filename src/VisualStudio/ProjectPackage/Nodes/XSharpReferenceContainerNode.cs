@@ -21,28 +21,25 @@ namespace XSharp.Project
         {
         }
 
+        protected virtual System.Type ProjectReferenceType => typeof(XSharpProjectReferenceNode);
+        protected virtual System.Type AssemblyReferenceType => typeof(XSharpAssemblyReferenceNode);
+
+        protected virtual System.Type ComReferenceType => typeof(XSharpComReferenceNode);
+
         protected override ProjectReferenceNode CreateProjectReferenceNode(ProjectElement element)
         {
             // Check to see if we have the Guid and Name in the ProjectElement
             var guid = element.GetMetadata(ProjectFileConstants.Project);
             var name = element.GetMetadata(ProjectFileConstants.Name);
-            var priv = element.GetMetadata(ProjectFileConstants.Private);
             var path = element.Item.EvaluatedInclude;
             var parent = (XSharpProjectNode)this.ProjectMgr;
             var refnode = XSharpProjectNode.FindProject(path);
             bool changed = false;
-            path = Path.GetFileName(path);
-            if (parent.IsSdkProject)
+            if ( parent.IsSdkProject)
             {
-                if (!string.IsNullOrEmpty(guid + priv + name))
-                {
-                    element.Item.RemoveMetadata(ProjectFileConstants.Project);
-                    element.Item.RemoveMetadata(ProjectFileConstants.Private);
-                    element.Item.RemoveMetadata(ProjectFileConstants.Name);
-                    changed = true;
-                }
+                // already handled in the DependenciesContainer
             }
-            else if (string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(name))
+            else if (string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(name) )
             {
                 // No guid, so it is probably an old style project reference
                 // In that case we need to get the guid from the project file
@@ -74,18 +71,18 @@ namespace XSharp.Project
             {
                 parent.BuildProject.Save();
             }
-            var node = new XSharpProjectReferenceNode(this.ProjectMgr, element);
+
+            var node = (XSharpProjectReferenceNode) Activator.CreateInstance(ProjectReferenceType,this.ProjectMgr, element);
             ReferenceNode existing = null;
             if (isDuplicateNode(node, ref existing))
             {
-                ProjectReferenceNode existingNode = existing as ProjectReferenceNode;
-                return existingNode;
+                node = existing as XSharpProjectReferenceNode;
             }
             return node;
         }
         public override ReferenceNode AddReferenceFromSelectorData(VSCOMPONENTSELECTORDATA selectorData, string wrapperTool)
         {
-            if (String.IsNullOrEmpty(wrapperTool))
+            if (string.IsNullOrEmpty(wrapperTool))
                 wrapperTool = WrapperToolAttributeValue.TlbImp.ToString().ToLowerInvariant();
             foreach (ReferenceNode child in this.EnumReferences())
             {
@@ -102,7 +99,7 @@ namespace XSharp.Project
             ProjectReferenceNode node = null;
             try
             {
-                node = new XSharpProjectReferenceNode(this.ProjectMgr, selectorData.bstrTitle, selectorData.bstrFile, selectorData.bstrProjRef);
+                node = (XSharpProjectReferenceNode)Activator.CreateInstance(ProjectReferenceType, this.ProjectMgr, selectorData.bstrTitle, selectorData.bstrFile, selectorData.bstrProjRef);
             }
             catch (Exception e)
             {
@@ -111,8 +108,7 @@ namespace XSharp.Project
             ReferenceNode existing = null;
             if (isDuplicateNode(node, ref existing))
             {
-                ProjectReferenceNode existingNode = existing as ProjectReferenceNode;
-                return existingNode;
+                node = existing as ProjectReferenceNode;
             }
             return node;
         }
@@ -121,7 +117,7 @@ namespace XSharp.Project
             AssemblyReferenceNode node = null;
             try
             {
-                node = new XSharpAssemblyReferenceNode(this.ProjectMgr, element);
+                node = (AssemblyReferenceNode) Activator.CreateInstance(AssemblyReferenceType, this.ProjectMgr, element);
             }
             catch (Exception e)
             {
@@ -130,7 +126,7 @@ namespace XSharp.Project
             ReferenceNode existing = null;
             if (isDuplicateNode(node, ref existing))
             {
-                AssemblyReferenceNode existingNode = existing as AssemblyReferenceNode;
+                node = existing as AssemblyReferenceNode;
             }
             return node;
         }
@@ -143,7 +139,7 @@ namespace XSharp.Project
             ComReferenceNode node = null;
             try
             {
-                node = new XSharpComReferenceNode(this.ProjectMgr, reference);
+                node = (ComReferenceNode)Activator.CreateInstance(ComReferenceType, this.ProjectMgr, reference);
             }
             catch (Exception e)
             {
@@ -157,7 +153,7 @@ namespace XSharp.Project
             ComReferenceNode node = null;
             try
             {
-                node = new XSharpComReferenceNode(this.ProjectMgr, selectorData, wrapperTool);
+                node = (ComReferenceNode)Activator.CreateInstance(ComReferenceType, this.ProjectMgr, selectorData, wrapperTool);
             }
             catch (Exception e)
             {
@@ -271,7 +267,7 @@ namespace XSharp.Project
                         fileName = Path.GetFileNameWithoutExtension(fileName);
                     }
                 }
-                node = new XSharpAssemblyReferenceNode(this.ProjectMgr, fileName);
+                node = (AssemblyReferenceNode)Activator.CreateInstance(AssemblyReferenceType, this.ProjectMgr, fileName);
             }
             catch (Exception e)
             {

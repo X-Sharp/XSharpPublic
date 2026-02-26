@@ -117,7 +117,7 @@ CLASS XProject
                     RETURN _parseOptions:Dialect
                 ENDIF
             CATCH e AS Exception
-                XSettings.Exception(e,__FUNCTION__)
+                XSettings.Exception(e)
             END TRY
             RETURN XDialect.Core
 
@@ -541,7 +541,7 @@ CLASS XProject
             // p is the Community Toolkit Project object here
             OutputFile := p:GetAttributeAsync("TargetPath").Result
         CATCH Exception AS Exception
-            XSettings.Exception(Exception,__FUNCTION__)
+            XSettings.Exception(Exception)
         END TRY
         RETURN OutputFile
 

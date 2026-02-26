@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+USING System.Runtime.CompilerServices
 USING System.Collections.Concurrent
 USING System.Collections.Generic
 USING System.IO
@@ -88,8 +89,8 @@ STATIC CLASS XSettings
         RETURN
 
 
-    PUBLIC STATIC METHOD Exception(ex AS Exception, msg as STRING) AS VOID
-        Logger:Exception(ex, msg)
+    PUBLIC STATIC METHOD Exception(ex AS Exception, [CallerMemberName] caller := "" as STRING) AS VOID
+        Logger:Exception(ex, caller)
         RETURN
 
     PUBLIC STATIC METHOD Debug(msg as STRING) AS VOID

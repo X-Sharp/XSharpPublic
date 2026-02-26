@@ -103,7 +103,7 @@ INTERNAL STATIC METHOD FileWalk(file AS XFile) AS VOID
                 walker:Parse(FALSE)
 
             CATCH e AS Exception
-                XSettings.Exception(e, __FUNCTION__)
+                XSettings.Exception(e)
                 walkFile := FALSE
             FINALLY
                 IF walker != NULL
@@ -157,7 +157,7 @@ STATIC METHOD Walk() AS VOID
                 _WalkerThread:Start()
             ENDIF
         CATCH exception AS System.Exception
-            XSettings.Exception(exception,"Cannot start Background walker Thread")
+            XSettings.Exception(exception)
 
         END TRY
 ENDIF
@@ -197,7 +197,7 @@ PRIVATE STATIC METHOD WalkSource() AS VOID
             TRY
                 Parallel.ForEach(aFiles, parallelOptions, walkOneFile)
             CATCH e AS Exception
-                XSettings.Exception(e, __FUNCTION__)
+                XSettings.Exception(e)
             END TRY
             BEGIN LOCK _gate
                 _projectsForTypeResolution:Enqueue(project)
@@ -308,7 +308,7 @@ STATIC PROPERTY IsRunning AS LOGIC
             ENDIF
         CATCH exception AS System.Exception
             //
-            XSettings.Exception(exception,"Cannot check Background walker Thread")
+            XSettings.Exception(exception)
         END TRY
         RETURN FALSE
     END GET

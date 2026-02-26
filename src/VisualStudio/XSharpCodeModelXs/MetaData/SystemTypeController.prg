@@ -160,7 +160,7 @@ CLASS SystemTypeController
 			// Also Check into the Functions Class for Globals/Defines/...
 			result := Lookup("Functions." + typeName, assemblies)
 		CATCH e AS Exception
-			XSettings.Exception(e,__FUNCTION__)
+			XSettings.Exception(e)
 			result := NULL
         FINALLY
             lastSearch := ""

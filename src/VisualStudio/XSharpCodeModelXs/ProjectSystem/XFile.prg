@@ -200,7 +200,7 @@ NAMESPACE XSharpModel
                     endif
 
                 CATCH exception AS System.Exception
-                    XSettings.Exception(exception,__FUNCTION__)
+                    XSettings.Exception(exception)
                 END TRY
             END USING
             SELF:WriteOutputMessage("<<-- ParseContents()")

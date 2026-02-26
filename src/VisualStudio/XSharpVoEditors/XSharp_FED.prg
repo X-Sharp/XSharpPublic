@@ -154,7 +154,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
             END IF
 
         CATCH e AS Exception
-            XSettings.Exception(e, __FUNCTION__)
+            XSettings.Exception(e)
 
             XFuncs.ErrorBox(e:Message )
             lSuccess := FALSE

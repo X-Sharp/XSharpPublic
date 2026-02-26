@@ -351,10 +351,15 @@ namespace XSharp.Project
                     && node.ItemNode.Item != null)
                 {
                     this.BuildProject.RemoveItem(node.ItemNode.Item);
+                    Logger.Information($"Removed folder node {node.Caption} from project {this.Caption}");
                     dirty = true;
                 }
             }
-            this.RemoveProjectProperty("ProjectGuid");
+            if (this.GetProjectProperty(ProjectFileConstants.ProjectGuid) != null)
+            {
+                Logger.Information($"Removed project Guid from project{this.Caption}");
+                this.RemoveProjectProperty(ProjectFileConstants.ProjectGuid);
+            }
             if (this.BuildProject.IsDirty || dirty)
                 this.BuildProject.Save();
         }

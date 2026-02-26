@@ -70,26 +70,7 @@ namespace XSharp.Project
         }
         private void SolutionEvents_OnBeforeCloseProject(Community.VisualStudio.Toolkit.Project project)
         {
-            Logger.Information("XSharpShellEvents: OnBeforeCloseProjec " + project.FullPath);
-#if DEV17
-            var node = XSharpProjectNode.FindProject(project.FullPath);
-            if (node != null && node.IsSdkProject)
-            {
-                var prop = node.GetProjectProperty(XSharpProjectFileConstants.XTargetFrameworks);
-                if (! string.IsNullOrEmpty(prop))
-                {
-                    var act = node.GetProjectProperty(XSharpProjectFileConstants.TargetFramework);
-                    node.RemoveProjectProperty(XSharpProjectFileConstants.XTargetFrameworks);
-                    node.RemoveProjectProperty(XSharpProjectFileConstants.TargetFramework);
-                    if (!string.IsNullOrEmpty(act))
-                    {
-                        node.SetProjectProperty(XSharpProjectFileConstants.ActiveTargetFramework, act);
-                    }
-                    node.SetProjectProperty(XSharpProjectFileConstants.TargetFrameworks, prop);
-                    node.BuildProject.Save();
-                }
-            }
-#endif
+            Logger.Information("XSharpShellEvents: OnBeforeCloseProject " + project.FullPath);
         }
         private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
@@ -114,60 +95,61 @@ namespace XSharp.Project
             if (fileName != null && fileName.ToLower().EndsWith("xsproj") && File.Exists(fileName))
             {
                 string xml = File.ReadAllText(fileName);
-#if !DEV17
+                bool oldProject = xml.IndexOf("<Project Sdk", StringComparison.OrdinalIgnoreCase) == -1;
                 // In VS 2022 and earlier we need to fix the casing of the new text
-                var SdkPos = xml.IndexOf("<Project Sdk", StringComparison.OrdinalIgnoreCase);
-                if (SdkPos != -1)
+                if (oldProject)
                 {
-                    //VS.MessageBox.ShowError("The project file " + fileName + " is an SDK style project and cannot be loaded inside this version of Visual Studio");
-                    XSharpProjectFactory.InvalidProjectFiles.Add(fileName.ToLower());
-                    return;
-                }
-
-#endif
-
-                var original = Path.ChangeExtension(fileName, ".original");
-                bool changed = false;
-                if (hasEnvironmentvariable)
-                {
-                    var pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
-                    if (pos >= 0)
+                    var original = Path.ChangeExtension(fileName, ".original");
+                    bool changed = false;
+                    if (hasEnvironmentvariable)
                     {
-                        while (pos > 0)
+                        var pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
+                        if (pos >= 0)
                         {
-                            xml = xml.Substring(0, pos) + newText + xml.Substring(pos + oldText.Length);
-                            pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
+                            while (pos > 0)
+                            {
+                                xml = xml.Substring(0, pos) + newText + xml.Substring(pos + oldText.Length);
+                                pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
+                            }
+                            DeleteFileSafe(original);
+                            File.Copy(fileName, original);
+                            DeleteFileSafe(fileName);
+                            File.WriteAllText(fileName, xml);
+                            changed = true;
                         }
-                        DeleteFileSafe(original);
-                        File.Copy(fileName, original);
+                    }
+                    var testpos = xml.IndexOf(MsTestGuid, StringComparison.OrdinalIgnoreCase);
+                    if (testpos >= 0)
+                    {
+                        var left = xml.Substring(0, testpos);
+                        var right = xml.Substring(testpos + MsTestGuid.Length);
+                        if (!changed)
+                        {
+                            DeleteFileSafe(original);
+                            File.Copy(fileName, original);
+                        }
+                        xml = left + right;
                         DeleteFileSafe(fileName);
                         File.WriteAllText(fileName, xml);
                         changed = true;
                     }
-                }
-                var testpos = xml.IndexOf(MsTestGuid, StringComparison.OrdinalIgnoreCase);
-                if (testpos >= 0)
-                {
-                    var left = xml.Substring(0, testpos);
-                    var right = xml.Substring(testpos + MsTestGuid.Length);
-                    if (!changed)
+                    if (changed)
                     {
-                        DeleteFileSafe(original);
-                        File.Copy(fileName, original);
-                    }
-                    xml = left + right;
-                    DeleteFileSafe(fileName);
-                    File.WriteAllText(fileName, xml);
-                    changed = true;
-                }
-                if (changed)
-                {
-                    Logger.SingleLine();
-                    Logger.Information("==> Project must be upgraded: " + fileName);
-                    Logger.SingleLine();
+                        Logger.SingleLine();
+                        Logger.Information("==> Project must be upgraded: " + fileName);
+                        Logger.SingleLine();
 
-                    XSharpProjectNode.ChangedProjectFiles.Add(fileName, original);
+                        XSharpProjectNode.ChangedProjectFiles.Add(fileName, original);
+                    }
                 }
+#if !DEV17
+                else
+                {
+                    XSharpProjectFactory.InvalidProjectFiles.Add(fileName.ToLower());
+                    return;
+                }
+#endif
+
             }
         }
 

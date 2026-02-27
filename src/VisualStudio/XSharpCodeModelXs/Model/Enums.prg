@@ -106,6 +106,7 @@ Enum AccessorKind
     MEMBER @@Set        := 1 << 1
     MEMBER @@Add        := 1 << 2
     MEMBER @@Remove     := 1 << 3
+    MEMBER @@Init       := 1 << 4
 END ENUM
 ENUM Kind AS Int32
     MEMBER @@Namespace   :=  0
@@ -151,7 +152,9 @@ ENUM Kind AS Int32
     MEMBER @@Undeclared  :=  40
     MEMBER @@TypeParameter  :=  41
     MEMBER @@Include     := 42
-    MEMBER @@Snippet    := 43
+    MEMBER @@Snippet     := 43
+    MEMBER @@YCommand    :=  44
+    MEMBER @@YTranslate  :=  45
 END ENUM
 
 [Flags];

@@ -550,12 +550,16 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 VAR cType := start:Text[1]
                 IF cType == c'x' .OR. cType == c'X'
                     kind := Kind.XCommand
+                ELSEIF cType == c'y' .OR. cType == c'Y'
+                    kind := Kind.YCommand
                 ENDIF
             CASE XSharpLexer.PP_TRANSLATE
                 kind := Kind.Translate
                 VAR cType := start:Text[1]
                 IF cType == c'x' .OR. cType == c'X'
                     kind := Kind.XTranslate
+                ELSEIF cType == c'y' .OR. cType == c'Y'
+                    kind := Kind.YTranslate
                 ENDIF
             END SWITCH
             entity := XSourceMemberSymbol{name, kind, Modifiers.None, range,interval,"",_modifiers,FALSE}
@@ -1009,13 +1013,13 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                     var curblock := CurrentBlock
                     if xt:Kw1 == XTokenType.Set .or. xt:Kw1 == XTokenType.Get .or. xt:Kw1 == XTokenType.Init
                         if curblock:XKeyword:Kw1 == XTokenType.Set .or. ;
-                                curblock:XKeyword:Kw1 == XTokenType.Get .or.;
-                                curblock:XKeyword:Kw1 == XTokenType.Init
+                            curblock:XKeyword:Kw1 == XTokenType.Get .or.;
+                            curblock:XKeyword:Kw1 == XTokenType.Init
                             _BlockStack:Pop()
                         endif
                     elseif xt:Kw1 == XTokenType.Add .or. xt:Kw1 == XTokenType.Remove
                         if curblock:XKeyword:Kw1 == XTokenType.Add .or. ;
-                                curblock:XKeyword:Kw1 == XTokenType.Remove
+                            curblock:XKeyword:Kw1 == XTokenType.Remove
                             _BlockStack:Pop()
                         endif
                     endif
@@ -1777,39 +1781,43 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ENDIF
         // Note that inside the editor the SET and GET accessors are parsed as blocks and not as entities
         /*
-        property            : (Attributes=attributes)? (Modifiers=memberModifiers)?
-        P=PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier)
-        (ParamList=propertyParameterList)?
-        (AS Type=datatype)?
-        ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (Op=assignoperator Initializer=expression)? end=EOS	// Auto
-        | (LineAccessors+=propertyLineAccessor)+ end=EOS													// Single Line
-        | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? EOS				// Multi Line
-        )
+        property : (Attributes=attributes)? (Modifiers=memberModifiers)?
+                P=PROPERTY (ExplicitIface=nameDot)? (Self=SELF | Id=identifier)
+                (ParamList=propertyParameterList)?
+                (AS Type=datatype)?
+                ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (Op=assignoperator Initializer=expression)? end=EOS	// Auto
+                | (LineAccessors+=propertyLineAccessor)+ end=EOS                     // Single Line
+                | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? EOS        // Multi Line
+                )
+
         ;
 
         propertyParameterList
-        : LBRKT  (Params+=parameter (COMMA Params+=parameter)*)? RBRKT
-        | LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN		// Allow Parentheses as well
+        :  L=LBRKT  (Params+=parameter (COMMA Params+=parameter)*)? R=RBRKT
+        // Parentheses are parsed but may generate an error in the future
+        | L=LPAREN (Params+=parameter (COMMA Params+=parameter)*)? R=RPAREN
+
         ;
 
-        propertyAutoAccessor: Attributes=attributes? Modifiers=accessorModifiers? Key=(GET|SET)
+        propertyAutoAccessor: Attributes=attributes? Modifiers=accessorModifiers? Key=(GET|SET|INIT)
         ;
 
         propertyLineAccessor: Attributes=attributes? Modifiers=accessorModifiers?
-        ( {InputStream.La(2) != SET}? Key=GET Expr=expression?
-        | {InputStream.La(2) != SET}? Key=UDCSEP Expr=expression?           // New: UDCSep instead of GET
-        | {InputStream.La(2) != GET}? Key=SET ExprList=expressionList?
-        | Key=(GET|SET) )
-        ;
-        expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
-        ;
-
+                      ( {InputStream.La(2) != SET && InputStream.La(2) != INIT}?     Key=(GET|UDCSEP)    Expr=expression?
+                      | {InputStream.La(2) != GET && InputStream.La(2) != UDCSEP}?   Key=(SET|INIT)      ExprList=expressionList?
+                      | Key=(GET|SET|INIT)
+                      )
+                        ;
         propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
-        ( Key=GET end=eos StmtBlk=statementBlock END GET?
-        | Key=GET UDCSEP ExpressionBody=expression              // New: Expression Body
-        | Key=SET end=eos StmtBlk=statementBlock END SET? )
-        | Key=SET UDCSEP ExpressionBody=expression              // New: Expression Body
-        end=eos
+                      ( Key=GET end=eos StmtBlk=statementBlock END Key2=GET?
+                      | Key=GET UDCSEP ExpressionBody=expression              // New: Expression Body
+                      | Key=(SET|INIT) end=eos StmtBlk=statementBlock END Key2=(SET | INIT)?
+                      | Key=(SET|INIT) UDCSEP ExpressionBody=expression              // New: Expression Body
+                      )
+                      end=eos
+                    ;
+        accessorModifiers	: ( Tokens+=(PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL ) )+
+        expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
         ;
 
         */
@@ -1828,7 +1836,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         VAR sType := SELF:ParseDataType(FALSE)
         LOCAL lSingleLine AS LOGIC
         DO WHILE ! SELF:Eos()
-            IF SELF:Matches(XSharpLexer.AUTO, XSharpLexer.GET,XSharpLexer.SET, XSharpLexer.UDCSEP)
+            IF SELF:Matches(XSharpLexer.AUTO, XSharpLexer.GET, XSharpLexer.SET, XSharpLexer.UDCSEP, XSharpLexer.INIT)
                 lSingleLine := TRUE
             ENDIF
             SELF:Consume()
@@ -2448,8 +2456,8 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         SELF:Expect(XSharpLexer.GT)
         RETURN aTypeParams
 
-    PRIVATE METHOD ParseParameterList(lBracketed AS LOGIC, isSelf OUT LOGIC) AS List<XSourceParameterSymbol>
-        isSelf := FALSE
+    PRIVATE METHOD ParseParameterList(lBracketed AS LOGIC, isExtension OUT LOGIC) AS List<XSourceParameterSymbol>
+        isExtension := FALSE
         IF SELF:La1 != XSharpLexer.LPAREN .AND. ! lBracketed
             RETURN NULL
         ENDIF
@@ -2468,7 +2476,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             VAR sId   := ""
             VAR sTypeName := ""
             IF SELF:Expect(XSharpLexer.SELF)
-                isSelf := TRUE
+                isExtension := TRUE
             ENDIF
             IF SELF:IsId(SELF:La1)
                 sId  += SELF:ConsumeAndGetText()

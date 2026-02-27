@@ -95,8 +95,10 @@ namespace XSharp.LanguageService
                     break;
                 case Kind.Command:
                 case Kind.XCommand:
+                case Kind.YCommand:
                 case Kind.Translate:
                 case Kind.XTranslate:
+                case Kind.YTranslate:
                     imgG = StandardGlyphGroup.GlyphGroupMacro;
                     break;
                 case Kind.TypeParameter:

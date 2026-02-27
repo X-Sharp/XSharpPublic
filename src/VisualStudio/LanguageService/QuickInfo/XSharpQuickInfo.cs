@@ -272,8 +272,10 @@ namespace XSharp.LanguageService
                             return KnownMonikers.LocalVariable;
                         case Kind.Command:
                         case Kind.XCommand:
+                        case Kind.YCommand:
                         case Kind.Translate:
                         case Kind.XTranslate:
+                        case Kind.YTranslate:
                             return KnownMonikers.MacroPublic;
                     }
                     return default;

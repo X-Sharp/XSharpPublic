@@ -788,6 +788,8 @@ namespace XSharp.LanguageService
                                     Translate = 3,               // #translate
                                     XCommand = 4,                // #xcommand
                                     XTranslate = 5,              // #xtranslate
+                                    YCommand = 6,                // #ycommand
+                                    YTranslate = 7,              // #ytranslate
                                 }
                              * */
                             case 1:
@@ -804,6 +806,12 @@ namespace XSharp.LanguageService
                                 break;
                             case 5:
                                 kind = Kind.XTranslate;
+                                break;
+                            case 6:
+                                kind = Kind.YCommand;
+                                break;
+                            case 7:
+                                kind = Kind.YTranslate;
                                 break;
                             default:
                                 kind = Kind.Unknown;

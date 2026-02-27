@@ -715,7 +715,15 @@ namespace XSharp.LanguageService
                         else if (symbols.Count > 0)
                         {
                             if (symbols.Peek() is IXTypeSymbol type)
+                            {
                                 currentType = type;
+                                if (currentToken.Type == XSharpLexer.RCURLY)
+                                {
+                                    findConstructor = true;
+                                    currentName = type.Name;
+                                    break;
+                                }
+                            }
                             else if (symbols.Peek() is IXMemberSymbol member)
                             {
                                 currentType = member.ResolvedType;
@@ -870,6 +878,7 @@ namespace XSharp.LanguageService
                     }
                 }
                 var literal = XSharpLexer.IsConstant(currentToken.Type);
+
                 if (isId)
                 {
                     qualifiedName = list.La1 == XSharpLexer.DOT;
@@ -899,6 +908,10 @@ namespace XSharp.LanguageService
                             result.AddRange(props.Where(p => !p.IsStatic));
                         }
                     }
+                }
+                if (findConstructor)
+                {
+                    isId = true;
                 }
                 if (literal)
                 {
@@ -966,7 +979,15 @@ namespace XSharp.LanguageService
                         var types = SearchType(location, lookupName, additionalUsings);
                         if (types?.Count() > 0)
                         {
-                            result.AddRange(types);
+                            if (findConstructor)
+                            {
+                                var ctors = SearchConstructors(types[0], Modifiers.Public);
+                                result.AddRange(ctors);
+                            }
+                            else
+                            {
+                                result.AddRange(types);
+                            }
                         }
                     }
                     if (startOfExpression && result.Count == 0)

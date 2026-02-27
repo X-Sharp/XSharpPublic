@@ -728,6 +728,12 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 result |= Modifiers.Protected
             CASE XSharpLexer.PUBLIC
                 result |= Modifiers.Public
+            // Local is a special case as it can be used in different contexts and
+            // has different meaning in each of them. It can be both a visibility modifier
+            // as well as a keyword to declare a variable
+            CASE XSharpLexer.LOCAL when SELF:IsKeyword(SELF:La2) .and. ! IsValidLocalSuffix(SELF:La2)
+                result |= Modifiers.Private
+                result |= Modifiers.Local
 
                 // Real modifiers Alphabetical
             CASE XSharpLexer.ABSTRACT
@@ -784,6 +790,16 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ENDDO
         RETURN result
 
+    PRIVATE STATIC METHOD IsValidLocalSuffix(token as LONG) AS LOGIC
+        SWITCH token
+        CASE XSharpLexer.STATIC
+        CASE XSharpLexer.IMPLIED
+        CASE XSharpLexer.CONST
+        CASE XSharpLexer.DIM
+        CASE XSharpLexer.ARRAY
+            return TRUE
+        END SWITCH
+        RETURN FALSE
 
     PRIVATE METHOD IsStartOfEntity(entityKind OUT Kind, mods AS Modifiers) AS LOGIC
         entityKind := Kind.Unknown
@@ -943,6 +959,18 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 entityKind := Kind.LocalFunc
             ELSEIF SELF:La2 == XSharpLexer.PROCEDURE
                 entityKind := Kind.LocalProc
+            ELSEIF SELF:La2 == XSharpLexer.CLASS
+                entityKind := Kind.Class
+            ELSEIF SELF:La2 == XSharpLexer.STRUCTURE
+                entityKind := Kind.Structure
+            ELSEIF SELF:La2 == XSharpLexer.INTERFACE
+                entityKind := Kind.Interface
+            ELSEIF SELF:La2 == XSharpLexer.DELEGATE
+                entityKind := Kind.Delegate
+            ELSEIF SELF:La2 == XSharpLexer.ENUM
+                entityKind := Kind.Enum
+            ELSEIF SELF:La2 == XSharpLexer.EVENT
+                entityKind := Kind.Event
             ENDIF
         CASE XSharpLexer.GET
         CASE XSharpLexer.SET
@@ -1102,7 +1130,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         local xt as XKeyword
         if XFormattingRule.IsSingleKeyword(oLt1:Type)
             xt := XKeyword{oLt1:Type}
-        elseif XSharpLexer.IsKeyword(oLt2:Type)
+        elseif SELF:IsKeyword(oLt2:Type)
             xt := XKeyword{oLt1:Type, oLt2:Type}
         else
             xt := XKeyword{oLt1:Type}
@@ -1113,7 +1141,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         // Start of block is also added to the _BlockList
         // Does not process the tokens on the line !
         SELF:ParseUdcTokens()  // Read UDC tokens on the current line
-        if !XSharpLexer.IsKeyword(La1) .and. ! XSharpLexer.IsPPKeyword(La1)
+        if !SELF:IsKeyword(La1) .and. ! XSharpLexer.IsPPKeyword(La1)
             return
         endif
         local xt as XKeyword
@@ -2677,7 +2705,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         CASE XSharpLexer.WORD
             result :=  SELF:ConsumeAndGetText()
         OTHERWISE
-            IF XSharpLexer.IsKeyword(SELF:La1)
+            IF SELF:IsKeyword(SELF:La1)
                 result :=  SELF:ConsumeAndGetText()
             ENDIF
         END SWITCH
@@ -2697,7 +2725,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             RETURN " "+SELF:ConsumeAndGetText()
         ELSEIF SELF:Matches(XSharpLexer.QMARK)
             RETURN SELF:ConsumeAndGetText()
-        ELSEIF SELF:Matches(XSharpLexer.LBRKT) .and. (SELF:La2 != XSharpLexer.ID .and. SELF:La2 != XSharpLexer.UDC_KEYWORD .and. ! XSharpLexer.IsKeyword(SELF:La2))
+        ELSEIF SELF:Matches(XSharpLexer.LBRKT) .and. (SELF:La2 != XSharpLexer.ID .and. SELF:La2 != XSharpLexer.UDC_KEYWORD .and. ! SELF:IsKeyword(SELF:La2))
             VAR tokens := List<IToken>{}
             tokens:Add(SELF:ConsumeAndGet())
             LOCAL openCount := 1 as LONG
@@ -3081,7 +3109,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 SELF:Consume()
             ELSEIF SELF:Expect(XSharpLexer.VAR)
                 lImplied  := TRUE
-            ELSEIF XSharpLexer.IsKeyword(SELF:La1)      // STATIC Keyword should exit
+            ELSEIF SELF:IsKeyword(SELF:La1)      // STATIC Keyword should exit
                 RETURN FALSE
             ENDIF
             IF SELF:Expect(XSharpLexer.IMPLIED)
@@ -4043,6 +4071,9 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
 
 #endregion
 
+    PRIVATE METHOD IsKeyword(token AS LONG) AS LOGIC
+        RETURN XSharpLexer.IsKeyword(token)
+    END METHOD
 
     PRIVATE METHOD IsKeywordXs(token AS LONG) AS LOGIC
         SWITCH token

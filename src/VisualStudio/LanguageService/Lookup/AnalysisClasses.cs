@@ -43,7 +43,7 @@ namespace XSharp.LanguageService
                     case Kind.Enum:
                         return KnownMonikers.Enumeration;
                     case Kind.VOStruct:
-                        return KnownMonikers.Type;
+                        return KnownMonikers.ValueType;
                     case Kind.Union:
                         return KnownMonikers.Union;
                     case Kind.Using:
@@ -55,75 +55,8 @@ namespace XSharp.LanguageService
                 return KnownMonikers.None;
             }
         }
-        public string Prototype
-        {
-            get
-            {
-                return Name;
-                //
-            }
-        }
-        public StandardGlyphGroup GlyphGroup
-        {
-            get
-            {
-                StandardGlyphGroup imgG;
-                //
-                switch (symbol.Kind)
-                {
-                    case Kind.Class:
-                    default:
-                        imgG = StandardGlyphGroup.GlyphGroupClass;
-                        break;
-                    case Kind.Interface:
-                        imgG = StandardGlyphGroup.GlyphGroupInterface;
-                        break;
-                    case Kind.Enum:
-                        imgG = StandardGlyphGroup.GlyphGroupEnum;
-                        break;
-                    case Kind.Delegate:
-                        imgG = StandardGlyphGroup.GlyphGroupDelegate;
-                        break;
+        public string Prototype => Name;
 
-                }
-                return imgG;
-            }
-        }
-        /// <summary>
-        /// Glyph Item used by CompletionList in CompletionSource
-        /// - See also GlyphGroup
-        ///  http://glyphlist.azurewebsites.net/standardglyphgroup/
-        /// </summary>
-        public StandardGlyphItem GlyphItem
-        {
-            get
-            {
-                StandardGlyphItem imgI;
-                //
-                switch (symbol.Visibility)
-                {
-                    case Modifiers.Public:
-                    default:
-                        imgI = StandardGlyphItem.GlyphItemPublic;
-                        break;
-                    case Modifiers.Protected:
-                        imgI = StandardGlyphItem.GlyphItemProtected;
-                        break;
-                    case Modifiers.Private:
-                        imgI = StandardGlyphItem.GlyphItemPrivate;
-                        break;
-                    case Modifiers.Internal:
-                        imgI = StandardGlyphItem.GlyphItemInternal;
-                        break;
-                    case Modifiers.ProtectedInternal:
-                        imgI = StandardGlyphItem.GlyphItemFriend;
-                        break;
-
-                }
-                //
-                return imgI;
-            }
-        }
         public virtual ClassifiedTextRun[] WPFDescription
         {
             get
@@ -161,13 +94,23 @@ namespace XSharp.LanguageService
             {
                 var content = new List<ClassifiedTextRun>();
 
-                if (Type.Modifiers != Modifiers.None)
+                // Local class has visibility Private and Modifier Local
+                // So only show the Local modifier and skip the Private visibility
+                if (Type.Modifiers.HasFlag(Modifiers.Local) && Type.Visibility.HasFlag(Modifiers.Private))
                 {
                     content.addKeyword(XLiterals.FormatKeyword(Type.ModifiersKeyword));
                     content.addWs();
                 }
-                content.addKeyword(XLiterals.FormatKeyword(Type.VisibilityKeyword));
-                content.addWs();
+                else
+                {
+                    if (Type.Modifiers != Modifiers.None)
+                    {
+                        content.addKeyword(XLiterals.FormatKeyword(Type.ModifiersKeyword));
+                        content.addWs();
+                    }
+                    content.addKeyword(XLiterals.FormatKeyword(Type.VisibilityKeyword));
+                    content.addWs();
+                }
                 //
                 if (Type.Kind != Kind.Field)
                 {

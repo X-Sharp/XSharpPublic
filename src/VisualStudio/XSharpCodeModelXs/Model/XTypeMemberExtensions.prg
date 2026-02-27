@@ -214,6 +214,7 @@ STATIC METHOD GetProtoType(SELF tm as IXMemberSymbol, lApplyCallingConvention :=
         case Modifiers.Public
             return true
         CASE Modifiers.Private
+        CASE Modifiers.Local
             return Wanted == Modifiers.Private
         CASE Modifiers.Protected
             return Wanted == Modifiers.Private .or. Wanted == Modifiers.Protected .or. Wanted == Modifiers.ProtectedInternal

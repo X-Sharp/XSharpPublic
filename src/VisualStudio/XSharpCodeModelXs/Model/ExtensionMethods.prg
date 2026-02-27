@@ -454,6 +454,7 @@ STATIC CLASS ExtensionMethods
             CASE Modifiers.Protected
                 imgO := ImageListOverlay.Protected
             CASE Modifiers.Private
+            CASE Modifiers.Local
                 imgO := ImageListOverlay.Private
             CASE Modifiers.Internal
                 imgO := ImageListOverlay.Internal
@@ -478,6 +479,9 @@ STATIC METHOD ToDisplayString(SELF mods AS Modifiers) AS STRING
             return ""
         endif
         VAR result := mods:ToString():Replace(","," ")
+        if mods:HasFlag(Modifiers.Local)
+            result := result.Replace("Private","")
+        endif
         if mods:HasFlag(Modifiers.ProtectedInternal)
             result := "PROTECTED INTERNAL"
         elseif mods:HasFlag(Modifiers.Public)

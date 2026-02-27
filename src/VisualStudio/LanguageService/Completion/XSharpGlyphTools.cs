@@ -17,6 +17,11 @@ namespace XSharp.LanguageService
     {
         public static StandardGlyphGroup getGlyphGroup(this IXSymbol elt)
         {
+            /// <summary>
+            /// Glyph Item used by CompletionList in CompletionSource
+            /// - See also GlyphGroup
+            ///  http://glyphlist.azurewebsites.net/standardglyphgroup/
+            /// </summary>
             StandardGlyphGroup imgG = StandardGlyphGroup.GlyphGroupClass;
             switch (elt.Kind)
             {
@@ -115,6 +120,7 @@ namespace XSharp.LanguageService
 
         public static StandardGlyphItem getGlyphItem(this IXSymbol elt)
         {
+
             StandardGlyphItem imgI = StandardGlyphItem.GlyphItemPublic;
             switch (elt.Visibility)
             {
@@ -125,6 +131,7 @@ namespace XSharp.LanguageService
                     imgI = StandardGlyphItem.GlyphItemProtected;
                     break;
                 case Modifiers.Private:
+                case Modifiers.Local:
                     imgI = StandardGlyphItem.GlyphItemPrivate;
                     break;
                 case Modifiers.Internal:

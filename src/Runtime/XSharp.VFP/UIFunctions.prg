@@ -10,6 +10,7 @@ USING System.Windows.Forms
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/messagebox/*" />
+[FoxProFunction("MESSAGEBOX", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION MessageBox( eMessageText AS USUAL, nDialogBoxType := 0 AS LONG, cTitleBarText := "" AS STRING,nTimeOut := 0 AS LONG) AS LONG
     LOCAL cMessage AS STRING
     IF !IsString(eMessageText)
@@ -39,6 +40,7 @@ FUNCTION MessageBox( eMessageText AS USUAL, nDialogBoxType := 0 AS LONG, cTitleB
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sysmetric/*" />
+[FoxProFunction("SYSMETRIC", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION SysMetric( nScreenElement AS LONG) AS LONG
     SWITCH nScreenElement
     case 1

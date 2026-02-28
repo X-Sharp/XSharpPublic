@@ -7,6 +7,7 @@
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bintoc/*" />
 #pragma options("vo15", on)
+[FoxProFunction("BINTOC", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION BinToc (nExpression , eFlags )
     THROW NotImplementedException{}
     //RETURN ""

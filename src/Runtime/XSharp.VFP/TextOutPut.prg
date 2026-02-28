@@ -270,6 +270,7 @@ function __TextEnd(cString as string) as string
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/textmerge/*" />
 [NeedsAccessToLocals(FALSE)];
+[FoxProFunction("TEXTMERGE", FoxFunctionCategory.StringAndCharacter, FoxEngine.Macro, FoxFunctionStatus.Full, FoxCriticality.High)];
 function TextMerge( cExpression , lRecursive , cLeftDelim , cRightDelim) as string clipper
     var delims := SetTextMergeDelimiters()
     if ! IsString(cExpression)

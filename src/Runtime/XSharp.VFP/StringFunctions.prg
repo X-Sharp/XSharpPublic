@@ -325,8 +325,7 @@ FUNCTION AtCC(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccu
 /// <inheritdoc cref="M:XSharp.Core.Functions.AllTrim(System.String)" />
 /// <param name="Expression">Specifies an expression to remove leading and trailing spaces or 0 bytes from</param>
 /// <param name="Flags">Specifies if trimming is case-sensitive when one or more parse characters
-/// (cParseChar, cParseChar2,
-/// are included. Trimming is case-sensitive if nFlags is zero or is omitted.
+/// (cParseChar, cParseChar2, etc.) are included. Trimming is case-sensitive if nFlags is zero or is omitted.
 /// Trimming is case-insensitive if nFlags = 1.</param>
 /// <param name="TrimChars">Specifies one or more character strings that are trimmed from the beginning of cExpression.
 /// If cParseChar isn't included, then leading spaces or 0 bytes are removed from Expression. </param>

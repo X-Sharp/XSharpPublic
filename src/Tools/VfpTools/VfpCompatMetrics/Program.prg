@@ -261,7 +261,7 @@ BEGIN NAMESPACE VfpCompatMetrics
     END CLASS
 
     // =========================================================================
-    // 7. CLI entry poitn
+    // 7. CLI entry point
     // =========================================================================
     CLASS Program
         STATIC METHOD Start(args AS STRING[]) AS INT

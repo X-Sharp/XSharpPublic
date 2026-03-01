@@ -110,6 +110,7 @@
     <Compile Include="StringFunctions.prg" />
     <Compile Include="SystemVariables.prg" />
     <Compile Include="TextOutPut.prg" />
+    <Compile Include="Types\Attributes.prg" />
     <Compile Include="UIFunctions.prg" />
     <Compile Include="UI\Assert.prg" />
     <Compile Include="UI\AssertDialog.designer.prg">
@@ -127,6 +128,7 @@
     <Folder Include="Classes" />
     <Folder Include="Cursors" />
     <Folder Include="Database" />
+    <Folder Include="Types" />
     <Folder Include="TestData\" />
     <Folder Include="UI" />
     <Folder Include="SQL" />

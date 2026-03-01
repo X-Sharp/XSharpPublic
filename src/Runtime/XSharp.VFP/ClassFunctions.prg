@@ -5,6 +5,7 @@
 //
 
 /// <include file="VFPRuntimeDocs.xml" path="Runtimefunctions/addproperty/*" />
+[FoxProFunction("ADDPROPERTY", FoxFunctionCategory.ClassAndObject, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION AddProperty (oObjectName AS OBJECT, cPropertyName AS STRING, eNewValue := NIL AS USUAL) AS LOGIC
     if (object) oObjectName is XSharp.IDynamicProperties2 var oDynamic
         oDynamic:_AddProperty(cPropertyName, eNewValue,1,"")
@@ -15,6 +16,7 @@ FUNCTION AddProperty (oObjectName AS OBJECT, cPropertyName AS STRING, eNewValue 
 
 
 /// <include file="VFPRuntimeDocs.xml" path="Runtimefunctions/removeproperty/*" />
+[FoxProFunction("REMOVEPROPERTY", FoxFunctionCategory.ClassAndObject, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 function RemoveProperty( oObjectName as object, cPropertyName as string) as logic
     if (object) oObjectName is XSharp.IDynamicProperties2 var oDynamic
         oDynamic:_RemoveProperty(cPropertyName)
@@ -25,6 +27,7 @@ function RemoveProperty( oObjectName as object, cPropertyName as string) as logi
 
 
 /// <include file="VFPRuntimeDocs.xml" path="Runtimefunctions/getpem/*" />
+[FoxProFunction("GETPEM", FoxFunctionCategory.ClassAndObject, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION GETPEM( uObject as USUAL, cProperty as STRING) as USUAL
     if uObject is string var strObject
         return NIL

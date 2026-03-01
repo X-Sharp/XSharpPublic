@@ -6,38 +6,39 @@
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/id/*" />
+[FoxProFunction("ID", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION Id( ) AS STRING
     RETURN Sys(0)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/iscolor/*" />
+[FoxProFunction("ISCOLOR", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION IsColor( ) AS LOGIC
     RETURN TRUE
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ismouse/*" />
+[FoxProFunction("ISMOUSE", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION IsMouse( ) AS LOGIC
     RETURN TRUE
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/nvl/*" />
+[FoxProFunction("NVL", FoxFunctionCategory.General, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION NVL( eExpression1, eExpression2) AS USUAL CLIPPER
     IF IsNil(eExpression1)
         RETURN eExpression2
     ENDIF
     RETURN eExpression1
 
-
 /// <include file="VFPDocs.xml" path="Runtimefunctions/evl/*" />
+[FoxProFunction("EVL", FoxFunctionCategory.General, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION EVL( eExpression1 AS USUAL, eExpression2  AS USUAL) AS USUAL
     IF ! Empty(eExpression1)
         RETURN eExpression1
     ENDIF
     RETURN eExpression2
 
-
 //#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>)                   => __FoxCast(<expression>,<(type)>)
 //#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ) )        => __FoxCast(<expression>,<(type)>, <width>,-1)
 //#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ,<dec>) )  => __FoxCast(<expression>,<(type)>, <width>,<dec>)
-
-
 
 FUNCTION __FoxCast(expr AS USUAL, targetType AS STRING, nLen AS LONG, nDec AS LONG) AS USUAL
     LOCAL result := NIL AS USUAL
@@ -191,6 +192,7 @@ FUNCTION __FoxCast(expr AS USUAL, targetType AS STRING, nLen AS LONG, nDec AS LO
     RETURN result
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/isblank/*" />
+    [FoxProFunction("ISBLANK", FoxFunctionCategory.General, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
     FUNCTION IsBlank(eExpression AS USUAL) AS LOGIC
         IF eExpression == NIL .OR. eExpression == System.DBNull.Value
             RETURN FALSE
@@ -216,6 +218,7 @@ FUNCTION __FoxCast(expr AS USUAL, targetType AS STRING, nLen AS LONG, nDec AS LO
     ENDFUNC
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/isnull/*" />
+[FoxProFunction("ISNULL", FoxFunctionCategory.General, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION IsNull(eExpression AS USUAL) AS LOGIC
     IF eExpression == NIL
         RETURN TRUE

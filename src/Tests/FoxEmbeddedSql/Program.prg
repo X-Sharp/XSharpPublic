@@ -518,7 +518,7 @@ FUNCTION PrintTable() AS DWORD
 
     RETURN count
 
-FUNCTION VerifyTable(expectedRecords AS DWORD, message AS STRING, closeTable := FALSE AS LOGIC) AS VOID
+FUNCTION VerifyTable(expectedRecords AS DWORD, message AS STRING, closeTable := FALSE AS LOGIC, expectedData := NULL AS ARRAY) AS VOID
     VAR  actualRecords := RecCount()
     PrintTable()
     IF expectedRecords != actualRecords
@@ -527,10 +527,53 @@ FUNCTION VerifyTable(expectedRecords AS DWORD, message AS STRING, closeTable := 
         ENDIF
         THROW Exception{message + " (Expected records: " + expectedRecords:ToString() + ", Got: " + actualRecords:ToString() + ")"}
     ENDIF
+    IF expectedData != NULL
+        LOCAL fieldCount := FCount() AS DWORD
+        GO TOP
+        FOR VAR row := 1 TO expectedData:Count
+            IF EOF()
+                IF closeTable
+                    DbCloseArea()
+                ENDIF
+                THROW Exception{message + " (Expected row " + row:ToString() + " but reached end of file)"}
+            ENDIF
+            LOCAL aRow := expectedData[row] AS ARRAY
+            FOR VAR col := 1 TO aRow:Count
+                IF col > fieldCount
+                    IF closeTable
+                        DbCloseArea()
+                    ENDIF
+                    THROW Exception{message + " (Row " + row:ToString() + ", Field " + col:ToString() + ": Expected field does not exist)"}
+                ENDIF
+                LOCAL expectedValue := aRow[col]
+                LOCAL actualValue := FieldGet(col)
+                IF !ValueSame(expectedValue, actualValue)
+                    IF closeTable
+                        DbCloseArea()
+                    ENDIF
+                    THROW Exception{message + " (Row " + row:ToString() + ", Field " + col:ToString() + ": Expected '" + expectedValue:ToString() + "', Got '" + actualValue:ToString() + "')"}
+                ENDIF
+            NEXT
+            SKIP
+        NEXT
+        IF !EOF()
+            IF closeTable
+                DbCloseArea()
+            ENDIF
+            THROW Exception{message + " (Unexpected additional records in table)"}
+        ENDIF
+    ENDIF
     IF closeTable
         DbCloseArea()
     ENDIF
     RETURN
+
+FUNCTION ValueSame(value1 AS USUAL, value2 AS USUAL) AS LOGIC
+    IF value1 == NULL .OR. value2 == NULL
+        RETURN value1 == value2
+    ENDIF
+    // Let's be relaxed and not check the exact type
+    RETURN AllTrim(value1:ToString()) == AllTrim(value2:ToString())
 
 FUNCTION TestSelectFunctionality() AS VOID
     ? "Testing SELECT functionality..."
@@ -557,45 +600,60 @@ FUNCTION TestSelectFunctionality() AS VOID
         ? "Inserted test data"
     ENDIF
 
-    // Test basic SELECT
+// Test basic SELECT
     IF Verbose
         ? "Attempting basic SELECT..."
     ENDIF
 
     SELECT * FROM test_select_table
-    VerifyTable(4, "Failed: Expected 4 records from SELECT *", TRUE)
+    VerifyTable(4, "Failed: Expected 4 records from SELECT *", TRUE, ;
+        { {1, "John Doe", 30}, ;
+          {2, "Jane Smith", 25}, ;
+          {3, "Bob Johnson", 35}, ;
+          {4, "Alice Brown", 30} } )
 
-    // Test SELECT with WHERE
+// Test SELECT with WHERE
     IF Verbose
         ? "Attempting SELECT with WHERE..."
     ENDIF
 
     SELECT * FROM test_select_table WHERE Age > 25
-    VerifyTable(3, "Failed: Expected 3 records from SELECT with WHERE", TRUE)
+    VerifyTable(3, "Failed: Expected 3 records from SELECT with WHERE", TRUE, ;
+            { {1, "John Doe", 30}, ;
+              {3, "Bob Johnson", 35}, ;
+              {4, "Alice Brown", 30} } )
 
-    // Test SELECT with specific columns
+// Test SELECT with specific columns
     IF Verbose
         ? "Attempting SELECT with specific columns..."
     ENDIF
 
     SELECT Name, Age FROM test_select_table WHERE Age > 25
-    VerifyTable(3, "Failed: Expected 3 records from SELECT specific columns", TRUE)
+    VerifyTable(3, "Failed: Expected 3 records from SELECT specific columns", TRUE, ;
+            { {"John Doe", 30}, ;
+              {"Bob Johnson", 35}, ;
+              {"Alice Brown", 30} } )
 
-    // Test SELECT with DISTINCT
+// Test SELECT with DISTINCT
     IF Verbose
         ? "Attempting SELECT with DISTINCT..."
     ENDIF
 
     SELECT DISTINCT Age FROM test_select_table
-    VerifyTable(3, "Failed: Expected 3 distinct ages", TRUE)
+    VerifyTable(3, "Failed: Expected 3 distinct ages", TRUE, ;
+            { {30}, ;
+              {25}, ;
+              {35} } )
 
-    // Test SELECT with TOP
+// Test SELECT with TOP
     IF Verbose
         ? "Attempting SELECT with TOP..."
     ENDIF
 
     SELECT TOP 2 * FROM test_select_table
-    VerifyTable(2, "Failed: Expected 2 records from SELECT TOP 2", TRUE)
+    VerifyTable(2, "Failed: Expected 2 records from SELECT TOP 2", TRUE, ;
+            { {1, "John Doe", 30}, ;
+              {2, "Jane Smith", 25} } )
 
     // Test cross join with multiple tables
     IF Verbose
@@ -625,13 +683,19 @@ FUNCTION TestSelectFunctionality() AS VOID
         ? "Inserted test data for cross join"
     ENDIF
 
-    // Test cross join (Cartesian product)
+// Test cross join (Cartesian product)
     IF Verbose
         ? "Attempting cross join (SELECT from multiple tables)..."
     ENDIF
 
     SELECT test_table_a.Name, test_table_b.Desc FROM test_table_a, test_table_b
-    VerifyTable(6, "Failed: Expected 6 records from cross join", TRUE)
+    VerifyTable(6, "Failed: Expected 6 records from cross join", TRUE, ;
+            { {"Item A1", "Description B1"}, ;
+              {"Item A1", "Description B2"}, ;
+              {"Item A1", "Description B3"}, ;
+              {"Item A2", "Description B1"}, ;
+              {"Item A2", "Description B2"}, ;
+              {"Item A2", "Description B3"} } )
 
     // Close the additional test tables
     USE IN test_table_a
@@ -660,13 +724,15 @@ FUNCTION TestSelectFunctionality() AS VOID
         ? "Inserted test data for field name resolution"
     ENDIF
 
-    // Test field aliasing with AS
+// Test field aliasing with AS
     IF Verbose
         ? "Testing field aliasing with AS..."
     ENDIF
 
     SELECT Id AS Identifier, Name AS ItemName, Value AS Amount FROM test_field_resolution
-    VerifyTable(2, "Failed: Expected 2 records from field aliasing", TRUE)
+    VerifyTable(2, "Failed: Expected 2 records from field aliasing", TRUE, ;
+            { {1, "Test Item", 100.50}, ;
+              {2, "Another Item", 200.75} } )
 
     // Test expression aliasing with AS
     IF Verbose
@@ -676,7 +742,7 @@ FUNCTION TestSelectFunctionality() AS VOID
     SELECT Id, Name, Value, Value * 1.1 AS TaxedValue FROM test_field_resolution
     VerifyTable(2, "Failed: Expected 2 records from expression aliasing", TRUE)
 
-    // Test field name conflict resolution
+// Test field name conflict resolution
     IF Verbose
         ? "Creating additional table for conflict resolution test..."
     ENDIF
@@ -697,7 +763,7 @@ FUNCTION TestSelectFunctionality() AS VOID
     SELECT test_field_resolution.Name, test_conflict.Name ;
         FROM test_field_resolution, test_conflict ;
         WHERE test_field_resolution.Id = 1 AND test_conflict.Id = 1
-    VerifyTable(1, "Failed: Expected 1 record from conflict resolution", TRUE)
+    VerifyTable(1, "Failed: Expected 1 record from conflict resolution", TRUE, { {"Test Item", "Conflict Name"} } )
 
     USE IN test_conflict
 
@@ -728,13 +794,16 @@ FUNCTION TestSelectFunctionality() AS VOID
         ? "Inserted test data for INTO CURSOR test"
     ENDIF
 
-    // Test SELECT INTO CURSOR
+// Test SELECT INTO CURSOR
     IF Verbose
         ? "Testing SELECT INTO CURSOR..."
     ENDIF
 
     SELECT * FROM test_cursor_target INTO CURSOR MyTestCursor
-    VerifyTable(3, "Failed: Expected 3 records in MyTestCursor", FALSE)
+    VerifyTable(3, "Failed: Expected 3 records in MyTestCursor", FALSE, ;
+            { {1, "Test Item 1", 100.50}, ;
+              {2, "Test Item 2", 200.75}, ;
+              {3, "Test Item 3", 300.25} } )
 
     // Verify the cursor exists and has the correct data
     IF !Used("MyTestCursor")
@@ -752,13 +821,16 @@ FUNCTION TestSelectFunctionality() AS VOID
 
     VerifyTable(verifiedCount, "Failed: Verified record count mismatch in MyTestCursor", TRUE)
 
-    // Test SELECT with field aliasing INTO CURSOR
+// Test SELECT with field aliasing INTO CURSOR
     IF Verbose
         ? "Testing SELECT with field aliasing INTO CURSOR..."
     ENDIF
 
     SELECT Id AS ItemId, Name AS ItemName, Value AS ItemValue FROM test_cursor_target INTO CURSOR AliasedCursor
-    VerifyTable(3, "Failed: Expected 3 records in AliasedCursor", FALSE)
+    VerifyTable(3, "Failed: Expected 3 records in AliasedCursor", FALSE, ;
+            { {1, "Test Item 1", 100.50}, ;
+              {2, "Test Item 2", 200.75}, ;
+              {3, "Test Item 3", 300.25} } )
 
     // Verify the aliased cursor exists and has the correct data
     IF !Used("AliasedCursor")
@@ -818,7 +890,7 @@ FUNCTION TestCrossJoinFunctionality() AS VOID
         ? "Inserted test data for CROSS JOIN"
     ENDIF
 
-    // Test explicit CROSS JOIN syntax
+// Test explicit CROSS JOIN syntax
     IF Verbose
         ? "Testing explicit CROSS JOIN syntax..."
     ENDIF
@@ -826,9 +898,15 @@ FUNCTION TestCrossJoinFunctionality() AS VOID
     SELECT cross_join_table_a.Name, cross_join_table_b.Desc ;
         FROM cross_join_table_a ;
         CROSS JOIN cross_join_table_b
-    VerifyTable(6, "Failed: Expected 6 records from explicit CROSS JOIN", TRUE)
+    VerifyTable(6, "Failed: Expected 6 records from explicit CROSS JOIN", TRUE, ;
+            { {"Item A1", "Description B1"}, ;
+              {"Item A1", "Description B2"}, ;
+              {"Item A1", "Description B3"}, ;
+              {"Item A2", "Description B1"}, ;
+              {"Item A2", "Description B2"}, ;
+              {"Item A2", "Description B3"} } )
 
-    // Test CROSS JOIN with aliases
+// Test CROSS JOIN with aliases
     IF Verbose
         ? "Testing CROSS JOIN with aliases..."
     ENDIF
@@ -836,9 +914,15 @@ FUNCTION TestCrossJoinFunctionality() AS VOID
     SELECT a.Name, b.Desc ;
         FROM cross_join_table_a a ;
         CROSS JOIN cross_join_table_b b
-    VerifyTable(6, "Failed: Expected 6 records from CROSS JOIN with aliases", TRUE)
+    VerifyTable(6, "Failed: Expected 6 records from CROSS JOIN with aliases", TRUE, ;
+            { {"Item A1", "Description B1"}, ;
+              {"Item A1", "Description B2"}, ;
+              {"Item A1", "Description B3"}, ;
+              {"Item A2", "Description B1"}, ;
+              {"Item A2", "Description B2"}, ;
+              {"Item A2", "Description B3"} } )
 
-    // Test CROSS JOIN with WHERE clause
+// Test CROSS JOIN with WHERE clause
     IF Verbose
         ? "Testing CROSS JOIN with WHERE clause..."
     ENDIF
@@ -847,7 +931,10 @@ FUNCTION TestCrossJoinFunctionality() AS VOID
         FROM cross_join_table_a a ;
         CROSS JOIN cross_join_table_b b ;
         WHERE a.Id = 1
-    VerifyTable(3, "Failed: Expected 3 records from CROSS JOIN with WHERE", TRUE)
+    VerifyTable(3, "Failed: Expected 3 records from CROSS JOIN with WHERE", TRUE, ;
+            { {"Item A1", "Description B1"}, ;
+              {"Item A1", "Description B2"}, ;
+              {"Item A1", "Description B3"} } )
 
     // Close the test tables
     USE IN cross_join_table_a

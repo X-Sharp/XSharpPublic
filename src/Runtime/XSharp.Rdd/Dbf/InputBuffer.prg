@@ -42,11 +42,18 @@ BEGIN NAMESPACE XSharp.RDD
             INTERNAL InBufferTick := 0  AS INT
             CONSTRUCTOR(size AS LONG)
                 Buffer := BYTE[]{size}
+            END CONSTRUCTOR
+
             INTERNAL METHOD Resize(size AS LONG) AS VOID
                 System.Array.Resize(REF Buffer, size)
+            END METHOD
+
         END CLASS
 
-        PRIVATE STATIC BufferCache := Dictionary<STRING, WeakBuffer>{} AS Dictionary<STRING, WeakBuffer>
+        PRIVATE STATIC BufferCache AS Dictionary<STRING, WeakBuffer>
+        STATIC CONSTRUCTOR()
+            BufferCache := Dictionary<STRING, WeakBuffer>{StringComparer.OrdinalIgnoreCase}
+        END CONSTRUCTOR
 
         CONSTRUCTOR(stream AS Stream, headerLength AS INT, recordLength AS INT, shared AS LOGIC) AS VOID
             _stream := stream
@@ -86,6 +93,8 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
 
             RETURN
+        END CONSTRUCTOR
+
 
         METHOD Close() AS VOID
             IF _name != NULL
@@ -101,11 +110,11 @@ BEGIN NAMESPACE XSharp.RDD
                 _name := NULL
                 GC.SuppressFinalize( SELF )
             ENDIF
-
+        END METHOD
         DESTRUCTOR()
             SELF:Close()
             RETURN
-
+        END DESTRUCTOR
         PRIVATE METHOD ReadAt(position AS INT64, buffer AS BYTE[], offset AS LONG, length AS LONG) AS LONG
             LOCAL result AS LONG
             TRY
@@ -115,7 +124,7 @@ BEGIN NAMESPACE XSharp.RDD
                 result := -1
             END TRY
             RETURN result
-
+        END METHOD
         PRIVATE METHOD WriteAt(position AS INT64, buffer AS BYTE[], offset AS LONG, length AS LONG) AS LOGIC
             LOCAL result AS LOGIC
             TRY
@@ -126,6 +135,7 @@ BEGIN NAMESPACE XSharp.RDD
                 result := FALSE
             END TRY
             RETURN result
+            END METHOD
 
         METHOD Read(offset AS INT64, buffer AS BYTE[], size AS LONG) AS LOGIC
             LOCAL tick := 0 AS INT
@@ -194,6 +204,7 @@ BEGIN NAMESPACE XSharp.RDD
                 Array.Copy( _inBuffer, offset - _inBufferOfs, buffer, 0, size )
             END LOCK
             RETURN TRUE
+            END METHOD
 
         METHOD Write(offset AS INT64, buffer AS BYTE[], size AS LONG) AS LOGIC
             VAR res := SELF:WriteAt(offset, buffer, 0, size)
@@ -208,6 +219,8 @@ BEGIN NAMESPACE XSharp.RDD
                 END LOCK
             ENDIF
             RETURN res
+        END METHOD
+
 
         METHOD Invalidate() AS VOID
             BEGIN LOCK _weakBuffer
@@ -215,6 +228,8 @@ BEGIN NAMESPACE XSharp.RDD
                 _inBufferLen := 0
             END LOCK
             RETURN
+        END METHOD
+
 
     END CLASS
 

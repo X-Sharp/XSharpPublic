@@ -4,6 +4,7 @@
   <Import Project="VOSDK.Common.Targets" />
   <Import Project="Version.Targets" />
   <PropertyGroup>
+    <Configurations>Debug;Release;Documentation;DocChinese</Configurations>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <cs>True</cs>
     <NS>true</NS>

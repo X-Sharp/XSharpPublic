@@ -150,7 +150,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
             ENDIF
 
         CATCH e AS Exception
-            XSettings.Exception(e, __FUNCTION__)
+            XSettings.Exception(e)
 
             XFuncs.WarningBox(e:Message )
             lSuccess := FALSE

@@ -4,7 +4,6 @@
 // See License.txt in the project root for license information.
 //
 
-using Microsoft.Build.Evaluation;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
@@ -82,7 +81,6 @@ namespace XSharp.Project
 
         #endregion
         #region Properties
-
         internal string ItemType => this.ItemNode.ItemName;
         /// <summary>
         /// Gets an index into the default <b>ImageList</b> of the icon to show for this file.
@@ -171,6 +169,8 @@ namespace XSharp.Project
                     {
                         xmlItem.Parent.RemoveChild(xmlItem);
                         buildProject.RemoveItem(this.ItemNode.Item);
+                        buildProject.MarkDirty();
+                        ProjectMgr.SetProjectFileDirty(true);
                         buildProject.ReevaluateIfNecessary();
                         break;
                     }
@@ -216,6 +216,7 @@ namespace XSharp.Project
                  {
                      xml.Include = null;
                      xml.Remove = fileName;
+                     ProjectMgr.SetProjectFileDirty(true);
                      ProjectMgr.BuildProject.ReevaluateIfNecessary();
                  }
              }
@@ -837,6 +838,7 @@ namespace XSharp.Project
                 xfile.SetSpecialPropertiesEx();
             }
         }
+        internal static XSharpFileNode CurrentItem = null;
 
         /// <summary>
         /// Handles command status on a node. Should be overridden by descendant nodes. If a command cannot be handled then the base should be called.
@@ -848,6 +850,8 @@ namespace XSharp.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         protected override int QueryStatusOnNode(Guid guidCmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
         {
+            // Save the current item. We need that to fool the Nuget tools later
+            // See OAXSharpProject.cs
             CurrentItem = this;
             if (guidCmdGroup == Microsoft.VisualStudio.Shell.VsMenus.guidStandardCommandSet97)
             {
@@ -886,7 +890,6 @@ namespace XSharp.Project
 
             return base.QueryStatusOnNode(guidCmdGroup, cmd, pCmdText, ref result);
         }
-        internal static XSharpFileNode CurrentItem = null;
 
         public override void Remove(bool removeFromStorage)
         {
@@ -896,6 +899,13 @@ namespace XSharp.Project
             base.Remove(removeFromStorage);
             project.ProjectModel.RemoveFile(name);
             project.RemoveURL(name);
+            if (project.IsSdkProject)
+            {
+                // we have to do this after the file was deleted to make sure
+                // that Msbuild cannot find it anymore
+                project.BuildProject.MarkDirty();
+            }
+
         }
         protected override bool RenameDocument(string oldName, string newName, out HierarchyNode newNodeOut)
         {

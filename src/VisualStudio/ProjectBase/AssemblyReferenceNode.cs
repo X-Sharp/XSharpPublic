@@ -154,7 +154,7 @@ namespace Microsoft.VisualStudio.Project
             this.InitializeFileChangeEvents();
 
             // The assemblyPath variable can be an actual path on disk or a generic assembly name.
-            if(File.Exists(assemblyPath))
+            if (File.Exists(assemblyPath))
             {
                 // The assemblyPath parameter is an actual file on disk; try to load it.
                 this.assemblyName = System.Reflection.AssemblyName.GetAssemblyName(assemblyPath);
@@ -170,7 +170,7 @@ namespace Microsoft.VisualStudio.Project
                 // The file does not exist on disk. This can be because the file / path is not
                 // correct or because this is not a path, but an assembly name.
                 // Try to resolve the reference as an assembly name.
-                this.CreateFromAssemblyName(new System.Reflection.AssemblyName(assemblyPath));
+                this.AssemblyName = new AssemblyName() { Name = assemblyPath };
             }
         }
         #endregion

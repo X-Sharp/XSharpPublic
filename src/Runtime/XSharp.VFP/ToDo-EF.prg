@@ -9,14 +9,14 @@
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/fldlist/*" />
-
+[FoxProFunction("FLDLIST", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION FldList( ) AS USUAL
     THROW NotImplementedException{}
     // RETURN NIL
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/fontmetric/*" />
-
+[FoxProFunction("FONTMETRIC", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION FontMetric( nAttribute , cFontName, nFontSize , cFontStyle) AS LONG CLIPPER
     THROW NotImplementedException{}
     // RETURN 0

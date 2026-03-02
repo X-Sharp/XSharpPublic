@@ -94,7 +94,7 @@ namespace XSharp.LanguageService
                     continue;
                 var typeAnalysis = new XTypeAnalysis(type);
 
-                ImageSource icon = _glyphService.GetGlyph(typeAnalysis.GlyphGroup, typeAnalysis.GlyphItem);
+                ImageSource icon = _glyphService.GetGlyph(type.getGlyphGroup(), type.getGlyphItem());
                 if (!compList.Add(new XSCompletion(displayName, displayName, typeAnalysis.Prototype, icon, null, Kind.Class, "")))
                     break;
             }
@@ -120,7 +120,7 @@ namespace XSharp.LanguageService
                     continue;
                 var typeAnalysis = new XTypeAnalysis(type);
 
-                ImageSource icon = _glyphService.GetGlyph(typeAnalysis.GlyphGroup, typeAnalysis.GlyphItem);
+                ImageSource icon = _glyphService.GetGlyph(type.getGlyphGroup(), type.getGlyphItem());
                 if (!compList.Add(new XSCompletion(displayName, displayName, typeAnalysis.Prototype, icon, null, Kind.Class, "")))
                     break;
             }

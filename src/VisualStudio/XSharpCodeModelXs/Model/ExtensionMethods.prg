@@ -98,6 +98,10 @@ STATIC CLASS ExtensionMethods
                 RETURN "#translate"
             CASE Kind.XTranslate
                 RETURN "#xtranslate"
+            CASE Kind.YCommand
+                RETURN "#ycommand"
+            CASE Kind.YTranslate
+                RETURN "#ytranslate"
             CASE Kind.Include
                 RETURN "#include"
             CASE Kind.Undeclared
@@ -181,8 +185,10 @@ STATIC CLASS ExtensionMethods
             CASE Kind.Undefine
             CASE Kind.Command
             CASE Kind.XCommand
+            CASE Kind.YCommand
             CASE Kind.Translate
             CASE Kind.XTranslate
+            CASE Kind.YTranslate
             CASE Kind.Attribute
             CASE Kind.Include
             CASE Kind.Using
@@ -197,8 +203,10 @@ STATIC CLASS ExtensionMethods
         CASE Kind.Undefine
         CASE Kind.Command
         CASE Kind.XCommand
+        CASE Kind.YCommand
         CASE Kind.Translate
         CASE Kind.XTranslate
+        CASE Kind.YTranslate
         CASE Kind.Include
             RETURN TRUE
         END SWITCH
@@ -252,8 +260,10 @@ STATIC CLASS ExtensionMethods
             CASE Kind.Undefine
             CASE Kind.Command
             CASE Kind.XCommand
+            CASE Kind.YCommand
             CASE Kind.Translate
             CASE Kind.XTranslate
+            CASE Kind.YTranslate
             CASE Kind.Attribute
             CASE Kind.Include
             CASE Kind.Using
@@ -426,8 +436,10 @@ STATIC CLASS ExtensionMethods
                 imgK := ImageListKind.Local
             CASE Kind.Command
             CASE Kind.XCommand
+            CASE Kind.YCommand
             CASE Kind.Translate
             CASE Kind.XTranslate
+            CASE Kind.YTranslate
                 imgK := ImageListKind.Macro
             CASE Kind.Include
                 imgK := ImageListKind.Library
@@ -442,6 +454,7 @@ STATIC CLASS ExtensionMethods
             CASE Modifiers.Protected
                 imgO := ImageListOverlay.Protected
             CASE Modifiers.Private
+            CASE Modifiers.Local
                 imgO := ImageListOverlay.Private
             CASE Modifiers.Internal
                 imgO := ImageListOverlay.Internal
@@ -466,6 +479,9 @@ STATIC METHOD ToDisplayString(SELF mods AS Modifiers) AS STRING
             return ""
         endif
         VAR result := mods:ToString():Replace(","," ")
+        if mods:HasFlag(Modifiers.Local)
+            result := result.Replace("Private","")
+        endif
         if mods:HasFlag(Modifiers.ProtectedInternal)
             result := "PROTECTED INTERNAL"
         elseif mods:HasFlag(Modifiers.Public)

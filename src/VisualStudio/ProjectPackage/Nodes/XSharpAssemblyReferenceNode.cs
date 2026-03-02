@@ -24,7 +24,7 @@ namespace XSharp.Project
         public XSharpAssemblyReferenceNode(ProjectNode root, ProjectElement element)
          : base(root, element)
       {
-         //Binding reference data at startup will cause a 'project has changed' method
+         //Binding reference data at startup will cause a 'project has changed' message
          //BindReferenceData();
 
       }
@@ -53,7 +53,7 @@ namespace XSharp.Project
                     projectNode.RemoveURL(this);
                 ProjectMgr = null;
             }
- 
+
             base.Dispose(disposing);
         }
         protected override NodeProperties CreatePropertiesObject()

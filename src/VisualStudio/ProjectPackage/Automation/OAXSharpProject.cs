@@ -93,7 +93,9 @@ namespace XSharp.Project
                     XSharpFileNode.CurrentItem.FileName.ToLower().EndsWith("packages.config") &&
                     MustReturnCSharp() )
                 {
-                    // The Nuget Utility to convert packages.confif has a hard coded check for C#, VB and F#
+                    // HACK: When NuGet is trying to convert packages.config to PackageReference, it
+                    // looks at the project type and only supports C#, VB and F#. So we return C# here
+                    // to make sure it work
                     return CSharpProjectType;
                 }
                 return Project.ProjectGuidString;

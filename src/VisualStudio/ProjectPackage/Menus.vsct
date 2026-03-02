@@ -392,15 +392,12 @@
       </Button>
 
 
-
-
-
-      <Button guid="guidProjectPackage" id="idConvertXSharpRuntime" priority="0x0400" type="Button">
+      <Button guid="guidProjectPackage" id="idConvertSDKProject" priority="0x0400" type="Button">
         <Icon guid="guidImages" id="bmpXSharp" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>
         <Strings>
-          <ButtonText>Convert to X# Runtime</ButtonText>
+          <ButtonText>Convert to SDK style project</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idViewInDisassembler" priority="0x0400" type="Button">
@@ -471,7 +468,7 @@
     <CommandPlacement guid="guidProjectPackage" id="idGenerateWinForm" priority="0x0100">
       <Parent guid="guidProjectPackage" id="idFileContextMenuGroup"/>
     </CommandPlacement>
-    <CommandPlacement guid="guidProjectPackage" id="idConvertXSharpRuntime" priority="0x0100">
+    <CommandPlacement guid="guidProjectPackage" id="idConvertSDKProject" priority="0x0100">
       <Parent guid="guidProjectPackage" id="idProjectContextMenuGroup"/>
     </CommandPlacement>
     <CommandPlacement guid="guidProjectPackage" id="idViewInDisassembler" priority="0x0100">
@@ -554,7 +551,7 @@
       <IDSymbol name="idDbgMemvarsWindow" value="0x0106" />
       <IDSymbol name="idDbgWorkareaWindow" value="0x0107" />
       <IDSymbol name="idDbgSettingsWindow" value="0x0108" />
-      <IDSymbol name="idConvertXSharpRuntime" value="0x0109" />
+      <IDSymbol name="idConvertSDKProject" value="0x0109" />
       <IDSymbol name="idAddDesignerFile" value="0x010A" />
       <IDSymbol name="idViewRepo" value="0x010B" />
       <IDSymbol name="idUDCTester" value="0x010C" />

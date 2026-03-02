@@ -106,6 +106,7 @@ Enum AccessorKind
     MEMBER @@Set        := 1 << 1
     MEMBER @@Add        := 1 << 2
     MEMBER @@Remove     := 1 << 3
+    MEMBER @@Init       := 1 << 4
 END ENUM
 ENUM Kind AS Int32
     MEMBER @@Namespace   :=  0
@@ -151,7 +152,9 @@ ENUM Kind AS Int32
     MEMBER @@Undeclared  :=  40
     MEMBER @@TypeParameter  :=  41
     MEMBER @@Include     := 42
-    MEMBER @@Snippet    := 43
+    MEMBER @@Snippet     := 43
+    MEMBER @@YCommand    :=  44
+    MEMBER @@YTranslate  :=  45
 END ENUM
 
 [Flags];
@@ -165,6 +168,7 @@ ENUM Modifiers AS LONG
     MEMBER @@Public            := 1 << 4
     MEMBER @@Export            := 1 << 4   // alias for Public
     MEMBER @@VisibilityMask    := (1 << 5) -1
+
     MEMBER @@Abstract          := 1 << 5
     MEMBER @@New               := 1 << 6
     MEMBER @@Partial           := 1 << 7
@@ -188,6 +192,8 @@ ENUM Modifiers AS LONG
     MEMBER @@Introduce         := 1 << 23            // Mapped to NEW
     MEMBER @@Sync              := 1 << 24            // Implemented in the method body
     MEMBER @@Class             := 1 << 25            // Mapped to STATIC
+// New modifier X# 3.0
+    MEMBER @@Local             := 1 << 26            // File wide visibility
 
 END ENUM
 

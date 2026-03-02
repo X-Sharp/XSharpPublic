@@ -43,17 +43,23 @@ FUNCTION FRename( cOldFile AS STRING , cNewFile AS STRING) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ferase/*" />
 FUNCTION FErase(cFileName AS STRING) AS LOGIC
+    RETURN FErase(cFileName, TRUE)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ferase/*" />
+FUNCTION FErase(cFileName AS STRING, lError AS LOGIC) AS LOGIC
 	LOCAL isDeleted := FALSE AS LOGIC
 	TRY
         IF String.IsNullOrEmpty(cFileName)
             BadFileParam(__FUNCTION__, nameof(cFileName), 1)
             RETURN FALSE
         ENDIF
-        XSharp.IO.File.ClearErrorState()
+        IF lError
+            XSharp.IO.File.ClearErrorState()
+        ENDIF
         IF System.IO.File.Exists(cFileName)
 		    System.IO.File.Delete(cFileName)
 		    isDeleted := TRUE
-        ELSE
+        ELSEIF lError
             THROW FileNotFoundException { cFileName }
         ENDIF
 	CATCH e AS Exception
@@ -131,7 +137,7 @@ FUNCTION _SplitPath(cPath AS STRING, cDrive OUT STRING,cDir OUT STRING,cName OUT
 	ELSE
 		cName := cPath
 	ENDIF
-	
+
 	IF lDotAfterDirSep
 		nPos := cName:LastIndexOf('.')
 		IF nPos != -1 // should be always true

@@ -47,6 +47,7 @@ INTERNAL PARTIAL CLASS Win32
 END CLASS
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/numlock/*" />
+[FoxProFunction("NUMLOCK", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION NumLock() AS LOGIC STRICT
 	 RETURN __IsKeyToggled( Win32.VK_NUMLOCK )
 
@@ -72,6 +73,7 @@ VAR lPrevious := NumLock()
 	RETURN lPrevious
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/capslock/*" />
+[FoxProFunction("CAPSLOCK", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION CapsLock() AS LOGIC STRICT
 
 	 RETURN __IsKeyToggled( Win32.VK_CAPITAL )
@@ -99,6 +101,7 @@ VAR lPrevious := CapsLock()
 	RETURN lPrevious
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/insmode/*" />
+[FoxProFunction("INSMODE", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION InsMode() AS LOGIC STRICT
 	 RETURN __IsKeyToggled( Win32.VK_INSERT )
 

@@ -27,6 +27,7 @@ END CLASS
 /// <seealso cref='JustFName' />
 /// <seealso cref='JustPath' />
 /// <seealso cref='JustStem' />
+[FoxProFunction("ADDBS", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION AddBs (cPath AS STRING) AS STRING
     IF String.IsNullOrEmpty(cPath)
         RETURN ""
@@ -39,6 +40,7 @@ FUNCTION AddBs (cPath AS STRING) AS STRING
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/forceext/*" />
+[FoxProFunction("FORCEEXT", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION ForceExt( cFileName AS STRING, cExtension AS STRING) AS STRING
     IF String.IsNullOrEmpty(cFileName)
         RETURN ""
@@ -72,6 +74,7 @@ FUNCTION ForceExt( cFileName AS STRING, cExtension AS STRING, tlOptAsVfp9 AS LOG
     RETURN cResult
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/forcepath/*" />
+[FoxProFunction("FORCEPATH", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION ForcePath( cFileName AS STRING, cPath AS STRING) AS STRING
     *-- check if path needs also check...
     IF String.IsNullOrEmpty(cFileName)
@@ -84,6 +87,7 @@ FUNCTION ForcePath( cFileName AS STRING, cPath AS STRING) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/justdrive/*" />
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/justcommon/*" />
+[FoxProFunction("JUSTDRIVE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION JustDrive(cPath AS STRING) AS STRING
     IF String.IsNullOrEmpty(cPath)
         RETURN ""
@@ -95,6 +99,7 @@ FUNCTION JustDrive(cPath AS STRING) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/justext/*" />
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/justcommon/*" />
+[FoxProFunction("JUSTEXT", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION JustExt(cPath AS STRING) AS STRING
     *-- Default for new parameter  lOptWithLeadingDot ist .f.
     *-- As returning all extensions with leading dot could lead to breaking changes
@@ -116,6 +121,7 @@ FUNCTION JustExt(cPath AS STRING, lOptWithLeadingDot AS LOGIC) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/justfname/*" />
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/justcommon/*" />
+[FoxProFunction("JUSTFNAME", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION JustFName(cPath AS STRING) AS STRING
     IF String.IsNullOrEmpty(cPath)
         RETURN ""
@@ -126,6 +132,7 @@ FUNCTION JustFName(cPath AS STRING) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/justpath/*" />
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/justcommon/*" />
+[FoxProFunction("JUSTPATH", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION JustPath(cPath AS STRING) AS STRING
     IF String.IsNullOrEmpty(cPath)
         RETURN ""
@@ -140,6 +147,7 @@ FUNCTION JustPath(cPath AS STRING) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/juststem/*" />
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/justcommon/*" />
+[FoxProFunction("JUSTSTEM", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION JustStem(cPath AS STRING) AS STRING
     IF String.IsNullOrEmpty(cPath)
         RETURN ""
@@ -148,40 +156,43 @@ FUNCTION JustStem(cPath AS STRING) AS STRING
     RETURN result
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/leftc/*" />
+[FoxProFunction("LEFTC", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION LeftC( cExpression AS STRING, nExpression AS DWORD) AS STRING
     RETURN Left(cExpression, nExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/lenc/*" />
+[FoxProFunction("LENC", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION LenC( cExpression AS STRING ) AS DWORD
     RETURN SLen(cExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/likec/*" />
+[FoxProFunction("LIKEC", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION LikeC( cExpression1, cExpression2) AS LOGIC CLIPPER
     RETURN Like(cExpression1, cExpression2)
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/rightc/*" />
+[FoxProFunction("RIGHTC", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION RightC( cExpression AS STRING, nCharacters AS DWORD) AS STRING
     RETURN Right(cExpression, nCharacters)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/stuffc/*" />
+[FoxProFunction("STUFFC", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION StuffC( cExpression, nStartReplacement, nCharactersReplaced, cReplacement) AS STRING CLIPPER
     RETURN Stuff(cExpression, nStartReplacement, nCharactersReplaced, cReplacement)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/substrc/*" />
+[FoxProFunction("SUBSTRC", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION SubStrC(cExpression, nStartPosition , nCharactersReturned ) AS STRING CLIPPER
     RETURN SubStr(cExpression, nStartPosition, nCharactersReturned)
 
-
-
-
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ratc/*" />
+[FoxProFunction("RATC", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION RAtC(cSearchExpression AS STRING , cExpressionSearched AS STRING , dwOccurrence := 1 AS DWORD ) AS DWORD
     RETURN RAt(cSearchExpression , cExpressionSearched , dwOccurrence )
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/rat/*" />
+[FoxProFunction("RAT", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION RAt(cSearchExpression AS STRING , cExpressionSearched AS STRING , dwOccurrence := 1 AS DWORD ) AS DWORD
     LOCAL dwPosition, dwOccurred AS DWORD
     LOCAL i , iPosition  AS INT
@@ -230,13 +241,13 @@ FUNCTION RAt(cSearchExpression AS STRING , cExpressionSearched AS STRING , dwOcc
     ENDIF
     RETURN dwPosition
 
-
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/chrtranc/*" />
+[FoxProFunction("CHRTRANC", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION ChrTranC( cSearchIn AS STRING , cSearchFor AS STRING, cReplaceWith  AS STRING ) AS STRING
     RETURN ChrTran( cSearchIn , cSearchFor , cReplaceWith )
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/chrtran/*" />
+[FoxProFunction("CHRTRAN", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION ChrTran( cSearchIn AS STRING , cSearchFor AS STRING, cReplaceWith  AS STRING ) AS STRING
     LOCAL cRetVal ,cReplaceChar AS STRING
     LOCAL i AS INT
@@ -264,10 +275,8 @@ FUNCTION ChrTran( cSearchIn AS STRING , cSearchFor AS STRING, cReplaceWith  AS S
 
     RETURN cRetVal
 
-
-
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/at/*" />
+[FoxProFunction("AT", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION At(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccurrence := 1 AS DWORD) AS DWORD
     LOCAL position := 0 AS DWORD
     IF ( cExpressionSearched != NULL .AND. cSearchExpression != NULL )
@@ -285,11 +294,13 @@ FUNCTION At(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccurr
 /// <inheritdoc cref="At" />
 /// <remarks>This is an alias for the At() function. X# works with unicode and the difference
 /// between single byte and multi byte characters does not exist in Unicode</remarks>
+[FoxProFunction("AT_C", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION At_C(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccurrence := 1 AS DWORD) AS DWORD
     RETURN At(cSearchExpression, cExpressionSearched, dwOccurrence)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/atc/*" />
+[FoxProFunction("ATC", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION AtC(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccurrence := 1 AS DWORD) AS DWORD
     LOCAL position := 0 AS DWORD
     IF ( cExpressionSearched != NULL .AND. cSearchExpression != NULL )
@@ -307,17 +318,18 @@ FUNCTION AtC(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccur
 /// <inheritdoc cref="AtC" />
 /// <remarks>This is an alias for the AtC() function. X# works with unicode and the difference
 /// between single byte and multi byte characters does not exist in Unicode</remarks>
-
+[FoxProFunction("ATCC", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION AtCC(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccurrence := 1 AS DWORD) AS DWORD
     RETURN AtC(cSearchExpression, cExpressionSearched, dwOccurrence)
 
 /// <inheritdoc cref="M:XSharp.Core.Functions.AllTrim(System.String)" />
 /// <param name="Expression">Specifies an expression to remove leading and trailing spaces or 0 bytes from</param>
 /// <param name="Flags">Specifies if trimming is case-sensitive when one or more parse characters
-/// (cParseChar, cParseChar2,  are included. Trimming is case-sensitive if nFlags is zero or is omitted.
+/// (cParseChar, cParseChar2, etc.) are included. Trimming is case-sensitive if nFlags is zero or is omitted.
 /// Trimming is case-insensitive if nFlags = 1.</param>
 /// <param name="TrimChars">Specifies one or more character strings that are trimmed from the beginning of cExpression.
 /// If cParseChar isn't included, then leading spaces or 0 bytes are removed from Expression. </param>
+[FoxProFunction("ALLTRIM", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION AllTrim(Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS STRING STRICT
     RETURN Trim_helper(.T., .T., Expression, Flags, TrimChars)
 
@@ -325,6 +337,7 @@ FUNCTION AllTrim(Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) 
 /// <param name="Expression">Specifies an expression to remove leading spaces or 0 bytes from, respectively</param>
 /// <param name="TrimChars">Specifies one or more character strings that are trimmed from the beginning of cExpression.
 /// If cParseChar isn't included, then leading spaces or 0 bytes are removed from Expression. </param>
+[FoxProFunction("LTRIM", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION LTrim(Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS STRING STRICT
     RETURN Trim_helper(.T., .F., Expression, Flags, TrimChars)
 
@@ -332,16 +345,19 @@ FUNCTION LTrim(Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS
 /// <param name="Expression">Specifies an expression to remove leading spaces or 0 bytes from, respectively</param>
 /// <param name="TrimChars">Specifies one or more character strings that are trimmed from the beginning of cExpression.
 /// If cParseChar isn't included, then leading spaces or 0 bytes are removed from Expression. </param>
+[FoxProFunction("RTRIM", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION RTrim(Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS STRING STRICT
     RETURN Trim_helper(.F., .T., Expression, Flags, TrimChars)
 
 /// <inheritdoc cref="M:XSharp.Core.Functions.Trim(System.String)" />
 /// <param name="Expression">Specifies an expression to remove trailing spaces or 0 bytes from</param>
 /// <param name="Flags">Specifies if trimming is case-sensitive when one or more parse characters
-/// (cParseChar, cParseChar2,  are included. Trimming is case-sensitive if nFlags is zero or is omitted.
+/// (cParseChar, cParseChar2,
+/// are included. Trimming is case-sensitive if nFlags is zero or is omitted.
 /// Trimming is case-insensitive if nFlags = 1.</param>
 /// <param name="TrimChars">Specifies one or more character strings that are trimmed from the beginning of cExpression.
 /// If cParseChar isn't included, then leading spaces or 0 bytes are removed from Expression. </param>
+[FoxProFunction("TRIM", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION Trim(Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS STRING STRICT
     RETURN Trim_helper(.F., .T., Expression, Flags, TrimChars)
 
@@ -403,10 +419,12 @@ END FUNCTION
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/transform/*" />
+[FoxProFunction("TRANSFORM", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Partial, FoxCriticality.High)];
 FUNCTION Transform( uValue AS USUAL ) AS STRING
     RETURN AsString(uValue)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/str/*" />
+[FoxProFunction("STR", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Str(nNumber ,nLength ,nDecimals ) AS STRING CLIPPER
     IF PCount() < 1 .or. pCount() > 3
         RETURN ""
@@ -416,6 +434,7 @@ FUNCTION Str(nNumber ,nLength ,nDecimals ) AS STRING CLIPPER
     RETURN XSharp.RT.Functions.Str(nNumber, nLength, nDecimals)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/strextract/*" />
+[FoxProFunction("STREXTRACT", FoxFunctionCategory.StringAndCharacter, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION StrExtract(cSearchExpression as string, cBeginDelim as string, cEndDelim := "" as string, nOccurrence := 1 as int, nFlag := 0 as int) AS STRING
     if String.IsNullOrEmpty(cSearchExpression) || String.IsNullOrEmpty(cBeginDelim)
         return ""
@@ -491,6 +510,7 @@ FUNCTION StrExtract(cSearchExpression as string, cBeginDelim as string, cEndDeli
 END FUNCTION
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/difference/*" />
+[FoxProFunction("DIFFERENCE", FoxFunctionCategory.StringAndCharacter, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION Difference( cExpression1 as string, cExpression2 as string) as int
     if String.IsNullOrEmpty(cExpression1) || String.IsNullOrEmpty(cExpression2)
         return 0
@@ -512,6 +532,7 @@ FUNCTION Difference( cExpression1 as string, cExpression2 as string) as int
 END FUNCTION
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/strconv/*" />
+[FoxProFunction("STRCONV", FoxFunctionCategory.StringAndCharacter, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION StrConv(cExpression AS USUAL, nConversionSetting AS INT, nRegionalIdentifier := 0 AS INT, nRegionalIDType := 0 AS INT) AS USUAL
 
     local nCP := XSharp.RuntimeState.WinCodePage as int
@@ -693,3 +714,4 @@ INTERNAL STATIC CLASS StrConvHelpers
     end method
 
 END CLASS
+

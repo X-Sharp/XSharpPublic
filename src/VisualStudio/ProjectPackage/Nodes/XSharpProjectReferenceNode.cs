@@ -3,13 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using System;
-using System.Collections.Generic;
-using System.IO;
 using Microsoft.VisualStudio.Project;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio;
 using System.Diagnostics;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Imaging;
@@ -22,10 +16,12 @@ namespace XSharp.Project
     [DebuggerDisplay("{Caption}")]
     public class XSharpProjectReferenceNode : ProjectReferenceNode
     {
+        XSharpProjectNode referencedProject = null;
         public XSharpProjectReferenceNode(ProjectNode root, ProjectElement element)
            : base(root, element)
         {
             AddProject();
+
         }
 
         public XSharpProjectReferenceNode(ProjectNode root, string referencedProjectName, string projectPath, string projectReference)
@@ -33,17 +29,31 @@ namespace XSharp.Project
         {
             AddProject();
         }
+        public override string Caption
+        {
+            get
+            {
+                if (this.referencedProject == null)
+                {
+                    this.referencedProject = XSharpProjectNode.FindProject(this.Url);
+                    if (this.referencedProject != null)
+                    {
+                        this.IsUnloaded = false;
+                        base.ReferencedProjectName = this.referencedProject.Caption;
+                    }
+                }
+                return base.Caption;
+            }
+        }
 
+        protected override ImageMoniker GetIconMoniker(bool open) => KnownMonikers.Library;
         private void AddProject()
         {
-            XSharpProjectNode project = this.ProjectMgr as XSharpProjectNode;
+            var project = this.ProjectMgr as XSharpProjectNode;
             if (project != null)
                 project.AddURL(this.Url, this);
             project.ProjectModel.AddProjectReference(this.Url);
         }
-
-
-
 
         /// <summary>
         /// Checks if a reference can be added to the project.
@@ -72,21 +82,7 @@ namespace XSharp.Project
             projectNode.ProjectModel.RemoveProjectReference(this.Url);
             base.Remove(removeFromStorage);
         }
-        /// <summary>
-        /// Gets a Project type string for a specified project instance guid
-        /// </summary>
-        /// <param name="projectGuid">Project instance guid.</param>
-        /// <returns>The project type string</returns>
-        private string GetProjectType(Guid projectGuid)
-        {
-            IVsHierarchy hierarchy = VsShellUtilities.GetHierarchy(this.ProjectMgr.Site, projectGuid);
-            object projectType;
-            ThreadHelper.ThrowIfNotOnUIThread();
 
-            ErrorHandler.ThrowOnFailure(hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_TypeName, out projectType));
-            return projectType as string;
-        }
-       
         #region Dispose Methods
         protected override void Dispose(bool disposing)
         {

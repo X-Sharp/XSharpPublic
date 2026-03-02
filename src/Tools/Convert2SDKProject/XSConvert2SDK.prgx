@@ -1,0 +1,285 @@
+#r "System.Xml.XDocument.dll"
+//#r "System.Text.Json.dll"
+#r "Newtonsoft.Json.dll"
+
+USING System
+USING System.Collections.Generic
+USING System.Linq
+USING System.Text
+USING System.Xml
+USING System.Xml.Linq
+USING System.IO
+//using System.Text.Json
+using Newtonsoft.Json
+
+// What is the Project to convert ?
+VAR xsProjFile := ""
+IF Args:Count >= 1
+	xsProjFile := Args[0]
+ENDIF
+IF String.IsNullOrEmpty( xsProjFile )
+	InfoMessage( "Usage : XSConvert2SDK <xsProjFile>  " )
+    InfoMessage( "<xsProjFile> is the 'classic' XSharp Project File.")
+	RETURN
+ENDIF
+
+InfoMessage( "Running XSConvert2SDK ..." )
+InfoMessage( "Project : " + xsProjFile )
+
+TRY 
+    VAR converter := ProjectConversion{}
+    converter:DoConvert( xsProjFile )
+CATCH ex AS Exception
+    ErrorMessage( "An error occurred during conversion: " + Environment.NewLine + ex:Message )
+END TRY
+
+
+
+CLASS ProjectConversion
+    PRIVATE nugetPackages AS List<TUPLE(Name AS STRING, Version AS STRING)>
+    PRIVATE externalDlls AS List<STRING>
+
+    PRIVATE moveToNuget AS Dictionary<STRING, List<STRING>>
+    PRIVATE propertiesToKeep AS List<STRING>
+
+    PRIVATE orgFileName AS STRING
+
+    CONSTRUCTOR()
+        // Move External DLLs => Nuget Packages
+        LoadNugetMapping()
+        // Keep Compiler Switches
+        LoadPropertiesToKeep()
+    END CONSTRUCTOR
+
+    METHOD DoConvert( prjFile AS STRING ) AS VOID
+        IF !File.Exists(prjFile)
+            ErrorMessage( "Please provide the path to the .xsproj file as an argument." )
+            RETURN
+        ENDIF
+        //
+        orgFileName := prjFile
+        //
+        LOCAL doc AS XDocument
+        doc := XDocument.Load(orgFileName)
+        //
+        VAR ns := doc:Root:Name:Namespace
+        VAR propertyGroup := doc:Root:Element(ns + "PropertyGroup")
+        // --- Read Properties ---
+        VAR properties := propertyGroup? ;
+            :Elements() ;// tous les sous-éléments
+            :ToDictionary( ;
+            { el => el:Name:LocalName }, ;   // name
+            { el => el:Value } ;            // value
+            );
+            //
+
+        VAR assemblyName := propertyGroup?;
+            :Element(ns + "AssemblyName")?;
+            :Value
+
+        // --- Read references ---
+        VAR references := doc:Root;
+            :Elements(ns + "ItemGroup");
+            :Elements(ns + "Reference");
+            :ToList()
+
+        // Process references to determine which are NuGet packages and which are external DLLs
+        SELF:nugetPackages := List<TUPLE(Name AS STRING, Version AS STRING)>{}
+        SELF:externalDlls := List<STRING>{}
+        FOREACH VAR reference IN references
+            VAR include := reference:Attribute("Include")?:Value
+            VAR hintPath := reference:Element(ns + "HintPath")?:Value
+            // Skip system assemblies
+            IF (hintPath != NULL)
+                // Case 1: NuGet package
+                IF (hintPath:Contains("packages"))
+                    // Example: ..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll
+                    VAR folder := hintPath:Split('\\');
+                        :FirstOrDefault( { p => p:Contains(".") } )
+
+                    IF (folder != NULL)
+                        VAR parts := folder:Split('.')
+                        IF (parts:Length >= 4)
+                            VAR Name := ""
+                            VAR Version := ""
+
+                            // Build the name (all parts except the last 3)
+                            FOR VAR i := 0 TO parts:Length - 3
+                                IF (i > 0)
+                                    Name += "."
+                                ENDIF
+                                Name += parts[i]
+                            NEXT
+
+                            // Build the version (last 3 parts)
+                            FOR VAR i := parts:Length - 3 TO parts:Length
+                                IF (i > parts:Length - 3)
+                                    Version += "."
+                                ENDIF
+                                Version += parts[i]
+                            NEXT
+                            //
+                            nugetPackages:Add(TUPLE(Name, Version))
+                        ENDIF
+                    ENDIF
+                ELSE
+                    // Case 2: External DLL
+                    CheckExternalDLL( hintPath, TRUE )
+                ENDIF
+            ELSE
+                // No HintPath, treat as external reference (could be GAC or project reference, but we'll keep it simple)
+                // So, don't add it to externalDlls, but check if it should be replaced by a NuGet package
+                CheckExternalDLL( include, FALSE )
+            ENDIF
+        NEXT
+
+        // Process properties to keep only those we want
+        properties := FilterAndProcessProperties( properties )
+
+
+        // --- Build new SDK-style project ---
+        VAR newProject :=  XElement{"Project"}
+        newProject:SetAttributeValue("Sdk", "Microsoft.NET.Sdk")
+
+        // --- Add back properties we want to keep ---
+        VAR newPropertyGroup :=  XElement{"PropertyGroup"}
+        IF (properties:Any())
+            FOREACH VAR prop IN properties
+                newPropertyGroup:Add( XElement{prop:Key, prop:Value} )
+            NEXT
+        ENDIF
+        IF (!String.IsNullOrEmpty(assemblyName))
+            newPropertyGroup:Add( XElement{"AssemblyName", assemblyName})
+        ENDIF
+        newProject:Add(newPropertyGroup)
+
+        // --- Add PackageReference entries ---
+        IF (nugetPackages:Any())
+            VAR packageGroup :=  XElement{"ItemGroup"}
+            FOREACH VAR pkg IN nugetPackages
+                packageGroup:Add(;
+                    XElement{"PackageReference",;
+                    XAttribute{"Include", pkg:Name},;
+                    XAttribute{"Version", pkg:Version}};
+                    )
+            NEXT
+            newProject:Add(packageGroup)
+        ENDIF
+
+        // --- Add external DLL references ---
+        IF (externalDlls:Any())
+            VAR dllGroup :=  XElement{"ItemGroup"}
+            FOREACH VAR dll IN externalDlls
+                dllGroup:Add(;
+                    XElement{"Reference",;
+                    XAttribute{"Include", Path.GetFileNameWithoutExtension(dll)},;
+                    XElement{"HintPath", dll}};
+                    )
+            NEXT
+            newProject:Add(dllGroup)
+        ENDIF
+
+        //
+        VAR backup := prjFile + ".bak"
+        IF (File.Exists(backup))
+            File.Delete(backup)
+        ENDIF
+        File.Move(prjFile, backup)
+
+        // --- Save result ---
+        VAR newDoc := XDocument{newProject}
+        newDoc:Save(prjFile)
+
+        InfoMessage("Project file updated successfully. Original backed up as: " + backup)
+
+    END METHOD
+
+    PRIVATE METHOD CheckExternalDLL( hintPath AS STRING, AddExternal AS LOGIC ) AS VOID
+        hintPath := hintPath:ToLower()
+        IF !hintPath:EndsWith(".dll")
+            hintPath := hintPath + ".dll"
+        ENDIF
+        VAR external := Path.GetFileNameWithoutExtension( hintPath )
+        FOREACH VAR mapping IN moveToNuget
+            IF mapping:Value:Exists( { x => x:ToLower() == external })
+                // This DLL should be replaced by a NuGet package, so skip it
+                IF !nugetPackages:Exists( { p => p:Name:ToLower() == mapping:Key:ToLower() } )
+                    nugetPackages:Add(TUPLE(mapping:Key, "*"))
+                ENDIF
+                RETURN
+            ENDIF
+        NEXT
+        IF AddExternal
+            externalDlls:Add( hintPath )
+        ENDIF
+    END METHOD
+
+    PRIVATE METHOD LoadNugetMapping() AS VOID
+        VAR jsonFile := "moveToNuget.json"
+        IF (File.Exists(jsonFile))
+            VAR jsonString := File.ReadAllText(jsonFile)
+            //SELF:moveToNuget := JsonSerializer.Deserialize<Dictionary<STRING, List<STRING>>>(jsonString)  // .NET Core version
+            SELF:moveToNuget := JsonConvert.DeserializeObject<Dictionary<STRING, List<STRING>>>(jsonString)       // Newtonsoft Version
+        ELSE
+            moveToNuget := Dictionary<STRING, List<STRING>>{}
+            moveToNuget:Add( "XSharp.Core", List<STRING>{ <STRING>{ "XSharp.Core" } })
+            moveToNuget:Add( "XSharp.RT", List<STRING>{ <STRING>{ "XSharp.Data", "XSharp.MacroCompiler", "XSharp.RDD", "XSharp.RT.Debugger", "XSharp.RT"} } )
+            moveToNuget:Add( "XSharp.Harbour", List<STRING>{ <STRING>{"XSharp.Harbour" } } )
+            moveToNuget:Add( "XSharp.VFP", List<STRING>{ <STRING>{"XSharp.VFP" } } )
+            moveToNuget:Add( "XSharp.VO", List<STRING>{ <STRING>{"XSharp.VO" } } )
+            moveToNuget:Add( "XSharp.VOSDK", List<STRING>{ <STRING>{"VOConsoleClasses", "VOGUIClasses", "VOInternetClasses", "VORDDClasses", "VOReportClasses", "VOSQLClasses", "VOSystemClasses", "VOWin32APILibrary" } } )
+            moveToNuget:Add( "XSharp.VOSDKTyped", List<STRING>{ <STRING>{"VOConsoleClasses", "VOGUIClasses", "VORDDClasses", "VOSQLClasses", "VOSystemClasses"} } )
+            moveToNuget:Add( "XSharp.XPP", List<STRING>{ <STRING>{"XSharp.XPP" } } )
+        ENDIF
+    END METHOD
+
+    PRIVATE METHOD LoadPropertiesToKeep() AS VOID
+        VAR jsonFile := "propertiesToKeep.json"
+        IF (File.Exists(jsonFile))
+            VAR jsonString := File.ReadAllText(jsonFile)
+            // SELF:propertiesToKeep := JsonSerializer.Deserialize<List<STRING>>(jsonString) // .NET Core version
+            SELF:propertiesToKeep := JsonConvert.DeserializeObject<List<STRING>>(jsonString)       // Newtonsoft Version
+        ELSE
+            propertiesToKeep := List<STRING>{}
+            propertiesToKeep:AddRange( <STRING>{"Allowdot","InitLocals","INS","LB","Memvar","NS","OutputType","OVF","Undeclared","UnSafe","VO10","VO11","VO12","Vo15", ;
+                "VO2", "VO3","VO4","VO5","VO6","VO7","VO8","VO9","TargetFrameworkVersion"} )
+        ENDIF
+    END METHOD
+
+
+    PRIVATE METHOD FilterAndProcessProperties( properties AS Dictionary<STRING, STRING> ) AS Dictionary<STRING, STRING>
+        VAR result := Dictionary<STRING, STRING>{}
+        FOREACH VAR prop IN properties
+            IF propertiesToKeep:Contains( prop:Key )
+                // Convert TargetFrameworkVersion format
+                IF prop:Key == "TargetFrameworkVersion"
+                    VAR pValue := prop:Value
+                    IF pValue:StartsWith("v")
+                        pValue := "net" + pValue:Substring(1):Replace(".", "")
+                    ENDIF
+                    result:Add(prop:Key, pValue)
+                ELSE
+                    result:Add(prop:Key, prop:Value)
+                ENDIF
+            ENDIF
+        NEXT
+        RETURN result
+    END METHOD
+
+END CLASS
+
+FUNCTION ErrorMessage( msg AS STRING ) AS VOID
+    VAR clr := Console.ForegroundColor
+    Console.ForegroundColor := ConsoleColor.Red
+    Console.WriteLine( msg )
+    Console.ForegroundColor := clr
+    RETURN
+
+FUNCTION InfoMessage( msg AS STRING ) AS VOID
+    VAR clr := Console.ForegroundColor
+    Console.ForegroundColor := ConsoleColor.White
+    Console.WriteLine( msg )
+    Console.ForegroundColor := clr
+    RETURN
+
+    // FUNCTION CheckProperties( xx AS xx ) AS xx

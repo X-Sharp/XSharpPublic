@@ -9,6 +9,7 @@ USING System.Drawing.Printing
 USING System.Windows.Forms
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/aprinters/*" />
+[FoxProFunction("APRINTERS", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION APrinters ( ArrayName , nValue ) AS INT CLIPPER
 LOCAL cPrinterName AS STRING
 LOCAL iCount AS INT

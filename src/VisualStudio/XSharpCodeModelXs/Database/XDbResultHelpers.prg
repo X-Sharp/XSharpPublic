@@ -40,7 +40,7 @@ CLASS XDbResultHelpers
                 result:Add(xtype)
             NEXT
         CATCH e AS Exception
-            XSettings.Exception(e, __FUNCTION__)
+            XSettings.Exception(e)
         END TRY
     RETURN result
 
@@ -90,7 +90,7 @@ CLASS XDbResultHelpers
                 ENDIF
             NEXT
         CATCH e AS Exception
-            XSettings.Exception(e, __FUNCTION__)
+            XSettings.Exception(e)
         END TRY
         //
     RETURN result
@@ -131,7 +131,7 @@ CLASS XDbResultHelpers
                 NEXT
             ENDIF
         CATCH e AS Exception
-            XSettings.Exception(e, __FUNCTION__)
+            XSettings.Exception(e)
         END TRY
     RETURN result
 END CLASS

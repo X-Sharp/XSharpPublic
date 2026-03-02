@@ -147,13 +147,14 @@ namespace XSharp.LanguageService.Commands
                 {
                     bool done = false;
                     var (start, end) = SortLowHigh(selection.Start.Position, selection.End.Position);
+                    var line = snapshot.GetLineFromPosition(start);
+                    var text = line.GetText();
+                    bool uncomment = text.TrimStart().StartsWith("//");
                     do
                     {
-                        var line = snapshot.GetLineFromPosition(start);
+                        line = snapshot.GetLineFromPosition(start);
                         var span = line.Extent;
-                        var text = line.GetText();
-                        var trimmed = text.TrimStart();
-                        if (trimmed.StartsWith("//"))
+                        if (uncomment)
                         {
                             UnCommentLine(doc, editsession, span);
                         }

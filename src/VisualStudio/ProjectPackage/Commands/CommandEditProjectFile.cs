@@ -27,6 +27,7 @@ namespace XSharp.Project
             var projectNode = XSharpProjectNode.FindProject(project.FullPath);
             if (projectNode != null)
             {
+                projectNode.BuildProject.Save();
                 projectNode.Unload();
             }
 

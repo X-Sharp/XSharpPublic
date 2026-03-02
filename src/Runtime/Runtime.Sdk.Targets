@@ -4,6 +4,7 @@
   <Import Project="Runtime.Common.Targets" />
   <Import Project="$(CommonInclude)Version.Targets" />
   <PropertyGroup>
+    <Configurations>Debug;Release;Documentation;DocChinese</Configurations>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <cs>True</cs>
     <NS>true</NS>

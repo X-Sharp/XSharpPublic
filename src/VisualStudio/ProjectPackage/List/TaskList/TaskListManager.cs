@@ -1,11 +1,14 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using EnvDTE80;
+
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell.TableManager;
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -26,16 +29,29 @@ namespace XSharp.Project
         static ITaskList _taskList;
         static ITableManager _manager;
 
+
+        static void GetTaskList()
+        {
+            if (_taskList != null)
+                return;
+            _taskList = XSharpProjectPackage.XInstance.TaskList;
+            if (_taskList != null)
+            {
+                _manager = _taskList.TableControl.Manager;
+                _provider = new TaskListProvider(_manager);
+            }
+        }
+
         static TaskListManager()
         {
             _projects = new ConcurrentDictionary<Guid, TaskListManager>();
-            _taskList = XSharpProjectPackage.XInstance.TaskList;
-            _manager = _taskList.TableControl.Manager;
-            _provider = new TaskListProvider(_manager);
+            GetTaskList();
         }
 
-        internal TaskListManager(XSharpProjectNode node) : base(node, _provider)
+        internal TaskListManager(XSharpProjectNode node) : base(node)
         {
+            GetTaskList();
+            SetProvider(_provider);
         }
 
         internal static TaskListManager RegisterProject(XSharpProjectNode project)
@@ -50,7 +66,7 @@ namespace XSharp.Project
             _projects.TryGetValue(project.ProjectIDGuid, out var tasklistmanager);
             return tasklistmanager;
         }
-      
+
         internal void AddItem(XSharpModel.XCommentTask task, Guid guid)
         {
             var item = new TaskListItem()

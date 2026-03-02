@@ -12,12 +12,15 @@ USING System.Reflection
 USING System.Linq
 USING System.Diagnostics
 USING System.IO
+USING XSharp.RDD
+USING XSharp.Core
 
 
 INTERNAL FUNCTION FoxALen(a as ARRAY) AS DWORD
     RETURN XSharp.VFP.Functions.ALen( (__FoxArray) a, 0)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alen/*" />
+[FoxProFunction("ALEN", FoxFunctionCategory.Array, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION ALen(a AS __FoxArray) AS DWORD
     RETURN XSharp.VFP.Functions.ALen(a, 0)
 
@@ -45,6 +48,7 @@ FUNCTION __FoxALen(a AS __FoxArray) AS DWORD
     RETURN XSharp.VFP.Functions.ALen(a, 0)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/aelement/*" />
+[FoxProFunction("AELEMENT", FoxFunctionCategory.Array, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION AElement(ArrayName AS __FoxArray, nRowSubscript AS DWORD) AS USUAL
     IF ( nRowSubscript > 0 .AND. nRowSubscript <= ArrayName:Rows )
         RETURN nRowSubscript
@@ -80,8 +84,8 @@ FUNCTION __FoxADel(foxArray AS __FoxArray, nElementNumber AS LONG, nDeleteType :
     ENDIF
     RETURN 1
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/adel/*" />
+[FoxProFunction("ADEL", FoxFunctionCategory.Array, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION ADel(foxArray AS __FoxArray, nElementNumber AS LONG, nDeleteType := 2 AS LONG) AS DWORD
     RETURN __FoxADel(foxArray, nElementNumber, nDeleteType)
 
@@ -97,6 +101,7 @@ FUNCTION ADel(ArrayName AS ARRAY, nElementNumber AS LONG, nDeleteType AS LONG) A
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asubscript/*" />
+[FoxProFunction("ASUBSCRIPT", FoxFunctionCategory.Array, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION ASubScript(ArrayName AS __FoxArray, nElementNumber AS DWORD, nSubscript := 1 AS DWORD) AS DWORD
     IF nSubscript == 0 .OR. nSubscript > 2
         var cMessage := __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE, nameof(nSubscript))
@@ -163,9 +168,9 @@ FUNCTION __FoxAIns(foxArray AS __FoxArray, nElementNumber AS DWORD, nInsertType 
     RETURN 1
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ains/*" />
+[FoxProFunction("AINS", FoxFunctionCategory.Array, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION AIns(ArrayName AS __FoxArray, nElementNumber AS DWORD, nInsertType := 1 AS DWORD) AS DWORD
     RETURN __FoxAIns(ArrayName, nElementNumber, nInsertType)
-
 
 INTERNAL FUNCTION FoxAIns(ArrayName AS ARRAY, nElementNumber AS DWORD, nInsertType AS DWORD) AS DWORD
     IF ArrayName IS __FoxArray VAR foxArray
@@ -173,8 +178,6 @@ INTERNAL FUNCTION FoxAIns(ArrayName AS ARRAY, nElementNumber AS DWORD, nInsertTy
     ENDIF
     XSharp.RT.Functions.AIns(ArrayName, nElementNumber)
     RETURN 1
-
-
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ains/*" />
 /// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
@@ -241,6 +244,7 @@ RETURN
 END FUNCTION
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alines/*" />
+[FoxProFunction("ALINES", FoxFunctionCategory.Array, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION ALines (ArrayName AS ARRAY, cExpression AS STRING, nFlags := 0 AS INT, cParseChars PARAMS STRING[]) AS DWORD
     IF cExpression == null
         cExpression := ""
@@ -331,6 +335,7 @@ FUNCTION ALines (ArrayName AS ARRAY, cExpression AS STRING, nFlags := 0 AS INT, 
 END FUNCTION
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/amembers/*" />
+[FoxProFunction("AMEMBERS", FoxFunctionCategory.Array, FoxEngine.LanguageCore, FoxFunctionStatus.Partial, FoxCriticality.High)];
 FUNCTION AMembers (ArrayName AS ARRAY, oObjectOrClass AS USUAL, nArrayContentsID := 0 AS INT, cFlags := "" AS STRING) AS DWORD
     LOCAL oType AS Type
 
@@ -419,13 +424,15 @@ FUNCTION AMembers (ArrayName AS ARRAY, oObjectOrClass AS USUAL, nArrayContentsID
             THROW NotImplementedException{"AMEMBERS with nInfo=" + nArrayContentsID:ToString() + " is not fully implemented yet."}
         ENDIF
     ELSE
-        THROW ArgumentException{"ArrayName must be a valid VFP Array created with DIMENSION or generic usage."}
+        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
     ENDIF
 
     RETURN nRows
 END FUNCTION
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/agetfileversion/*" />
+[FoxProFunction("AGETFILEVERSION", FoxFunctionCategory.Array, FoxEngine.RuntimeCore, FoxFunctionStatus.Partial, FoxCriticality.Medium)];
 FUNCTION AGetFileVersion (ArrayName AS ARRAY, cFileName AS STRING) AS DWORD
     IF String.IsNullOrEmpty(cFileName) .OR. !File.Exists(cFileName)
         RETURN 0
@@ -465,3 +472,58 @@ FUNCTION AGetFileVersion (ArrayName AS ARRAY, cFileName AS STRING) AS DWORD
 
     RETURN 15
 END FUNCTION
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/aused/*" />
+[FoxProFunction("AUSED", FoxFunctionCategory.Array, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION AUsed (ArrayName AS ARRAY, nDataSessionNumber := NIL AS USUAL, cTableName := NIL AS USUAL) AS DWORD
+
+    VAR oWA := RuntimeState.Workareas
+
+    IF oWA == NULL
+        RETURN 0
+    ENDIF
+
+    LOCAL cFilterName := NULL AS STRING
+    IF IsString(cTableName)
+        cFilterName := ((STRING)cTableName):ToUpper()
+    ENDIF
+
+    VAR resultList := List<KeyValuePair<STRING, DWORD>>{}
+
+    FOREACH VAR pair IN oWA:OpenAliases
+        VAR cAlias := pair:Key
+
+        IF !String.IsNullOrEmpty(cFilterName)
+            IF cAlias:ToUpper() != cFilterName
+                LOOP
+            ENDIF
+        ENDIF
+
+        resultList:Add(pair)
+    NEXT
+
+    // LIFO ordering (reverse order)
+    // VFP places the last opened first
+    VAR sortedList := resultList:OrderByDescending({ p => p:Value }):ToList()
+
+    VAR nCount := (DWORD)sortedList:Count
+
+    IF nCount == 0
+        RETURN 0
+    ENDIF
+
+    IF ArrayName IS __FoxArray VAR foxArray
+        foxArray:ReDim(nCount, 2)
+
+        FOR VAR i := 0 TO (INT)nCount - 1
+            foxArray[i+1, 1] := sortedList[i]:Key
+            foxArray[i+1, 2] := sortedList[i]:Value
+        NEXT
+    ELSE
+        var cMessage := __VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, nameof(ArrayName))
+        THROW ArgumentException{cMessage}
+    ENDIF
+
+    RETURN nCount
+END FUNCTION
+

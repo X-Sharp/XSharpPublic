@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-BEGIN NAMESPACE XSharp.Settings
+NAMESPACE XSharp.Settings
 STATIC CLASS XEditorSettings
 
     PUBLIC STATIC PROPERTY KeywordCase                        AS KeywordCase AUTO
@@ -57,8 +57,8 @@ STATIC CLASS XEditorSettings
     PUBLIC STATIC PROPERTY IndentContinuedLines            AS LOGIC AUTO
     PUBLIC STATIC PROPERTY IndentPreprocessorLines         AS LOGIC AUTO
     PUBLIC STATIC PROPERTY IndentNamespace                 AS LOGIC AUTO
-    PUBLIC STATIC PROPERTY MaxCompletionEntries             AS LONG AUTO := Int32.MaxValue
-    PUBLIC STATIC PROPERTY CompleteNumChars                 AS LONG AUTO := 4
+    PUBLIC STATIC PROPERTY MaxCompletionEntries            AS LONG AUTO := 250
+    PUBLIC STATIC PROPERTY CompleteNumChars                AS LONG AUTO := 4
 
 
     // Code completion settings
@@ -79,4 +79,3 @@ STATIC CLASS XEditorSettings
 
 END CLASS
 
-END NAMESPACE

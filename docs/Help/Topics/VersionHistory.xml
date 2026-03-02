@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-02-09T16:36:45.100Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-02-10T18:26:24.018Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -32,6 +32,7 @@
       <li styleclass="Normal">GLOBAL USING</li>
       <li styleclass="Normal">File wide NAMESPACE</li>
       <li styleclass="Normal">RECORD modifier for classes and structures</li>
+      <li styleclass="Normal">Added a new __XSHARP3__ define which is always true, so you can conditional compile differences between XSharp 3 and a previous version</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading3">Bug fixes</text></para>
     <para styleclass="Heading1"><text styleclass="Heading2">Build System</text><br/><text styleclass="Heading3">New Features</text></para>
@@ -48,6 +49,7 @@
       <li styleclass="Normal">We are now including .Net 8 versions of most of our runtime DLLs.</li>
       <li styleclass="Normal">The Runtime is now delivered in both DLL format as well as Nuget Packages. See the separate topic about the Runtime in this help file for a description of these packages and DLLs</li>
       <li styleclass="Normal">Several functions in the FoxPro Runtime have been added</li>
+      <li styleclass="Normal">The record number in RDD operations is now a DWORD and no longer a LONG. The maximum record number in a DBF file is now 2^32 - 1 </li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading3">Bug fixes</text></para>
     <para styleclass="Heading1"><text styleclass="Heading2">Visual Studio Integration</text><br/><text styleclass="Heading3">New Features</text></para>

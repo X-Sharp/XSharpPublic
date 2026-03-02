@@ -4,10 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING System.Collections.Concurrent
-USING System.Collections.Generic
 USING System.IO
-USING System.Linq
-USING System
 USING XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
@@ -104,7 +101,7 @@ BEGIN NAMESPACE XSharpModel
             System.IO.File.WriteAllText(BuiltInFunctions, XSharpBuiltInFunctions(BuiltInFunctions))
             System.IO.File.SetAttributes(BuiltInFunctions, FileAttributes.ReadOnly)
         CATCH e as Exception
-            XSettings.Exception(e,__FUNCTION__)
+            XSettings.Exception(e)
             BuiltInFunctions := ""
         END TRY
 

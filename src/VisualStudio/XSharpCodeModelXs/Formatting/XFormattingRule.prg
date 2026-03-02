@@ -4,12 +4,7 @@
 // See License.txt in the project root for license information.
 //
 //------------------------------------------------------------------------------
-USING System
-USING System.Collections.Generic
 USING System.Collections
-USING System.Text
-USING System.Linq
-USING System.Diagnostics
 USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 USING LanguageService.SyntaxTree
 USING LanguageService.CodeAnalysis
@@ -19,7 +14,7 @@ USING LanguageService.CodeAnalysis.Text
 USING XSharp.Parser
 USING XSharp.Settings
 #pragma options("az", on)
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
 
 STATIC CLASS FormattingExtensions
 
@@ -727,8 +722,6 @@ CLASS RulesReader IMPLEMENTS VsParser.IErrorListener
 
 END CLASS
 
-
-END NAMESPACE // XSharpModel.Model
 
 
 

@@ -10276,6 +10276,7 @@
     </summary>
 
     <param name="cFileName">The file name, including an optional drive, directory, and extension.  SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory as part of the file name.  No extension is assumed.</param>
+    <param name="lError">Set the Error state in the runtime when the file does not exist.</param>
     <returns>
       TRUE if the operation succeeds; otherwise, FALSE.  In the case of a failure, FError() can be used to determine the specific error.
     </returns>

@@ -3,10 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-USING System
 USING System.IO
-USING System.Collections.Generic
-USING System.Linq
 USING System.Text
 USING System.Threading.Tasks
 USING LanguageService.SyntaxTree
@@ -18,7 +15,7 @@ USING LanguageService.CodeAnalysis.Text
 USING XSharp.Parser
 USING XSharp.Settings
 
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
 CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
 #region fields
     PRIVATE _errors     AS IList<XError>
@@ -86,7 +83,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         CATCH e AS Exception
             WriteOutputMessage("Lex() Failed:")
             WriteOutputMessage(SELF:SourcePath)
-            XSettings.Exception(e, __FUNCTION__)
+            XSettings.Exception(e)
         END TRY
         WriteOutputMessage("<<-- Lex() "+SELF:SourcePath)
         RETURN (BufferedTokenStream) stream
@@ -181,7 +178,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
 
         CATCH e AS Exception
             WriteOutputMessage(SELF:SourcePath)
-            XSettings.Exception(e, __FUNCTION__)
+            XSettings.Exception(e)
         END TRY
         WriteOutputMessage("<<-- ParseTokens() "+SELF:SourcePath)
 
@@ -210,7 +207,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         CATCH e AS Exception
             WriteOutputMessage("Parse() Failed:")
             WriteOutputMessage(SELF:SourcePath)
-            XSettings.Exception(e, __FUNCTION__)
+            XSettings.Exception(e)
 
         END TRY
         WriteOutputMessage("<<-- Parse() "+SELF:SourcePath)
@@ -263,6 +260,4 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
 #endregion
 
 END CLASS
-
-END NAMESPACE
 

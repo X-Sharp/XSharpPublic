@@ -3,8 +3,6 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-USING System.Collections.Generic
-USING System.Diagnostics
 USING Mono.Cecil
 using XSharp.Settings
 BEGIN NAMESPACE XSharpModel
@@ -118,7 +116,6 @@ ABSTRACT CLASS XPEMemberSymbol     INHERIT XPESymbol IMPLEMENTS IXMemberSymbol
         FOREACH var attr in attributes
             SWITCH attr:AttributeType:FullName
             CASE KnownTypes.XSharpDefaultParam
-            CASE KnownTypes.VulcanDefaultParam
                 var arg1     := attr:ConstructorArguments[0]
                 IF arg1:Value is CustomAttributeArgument VAR arg
                     arg1 := arg

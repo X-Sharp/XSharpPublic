@@ -420,6 +420,7 @@ INTERNAL FUNCTION GetDefaultWordHandler()  AS GetWordHandler
     RETURN loSrch
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/getwordcount/*" />
+[FoxProFunction("GETWORDCOUNT", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION GetWordCount( cString AS STRING) AS LONG
     LOCAL loSrch := GetDefaultWordHandler() AS GetWordHandler
     RETURN loSrch:oActiveObjc:GetWordCount( cString)
@@ -447,6 +448,7 @@ INTERNAL FUNCTION GetWordCount( cString AS STRING, cDelimiters AS STRING, tnSwit
     RETURN lnReturn
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/getwordnum/*" />
+[FoxProFunction("GETWORDNUM", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION GetWordNum( cString AS STRING, nIndex AS INT) AS STRING
     LOCAL loSrch := GetDefaultWordHandler() AS GetWordHandler
     RETURN loSrch:oActiveObjc:GetWordNum( cString, nIndex)

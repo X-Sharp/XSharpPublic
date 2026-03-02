@@ -8,21 +8,21 @@
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/candidate/*" />
 #pragma options("vo15", on)
+[FoxProFunction("CANDIDATE", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION Candidate (nIndexNumber , uArea)
     THROW NotImplementedException{}
     // RETURN FALSE
 
-
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/compobj/*" />
-
+[FoxProFunction("COMPOBJ", FoxFunctionCategory.ClassAndObject, FoxEngine.LanguageCore, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION CompObj (oExpression1, oExpression2)
     THROW NotImplementedException{}
     // RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/cpconvert/*" />
-
+[FoxProFunction("CPCONVERT", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION CpConvert ( nCurrentCodePage, nNewCodePage, cExpression)
     THROW NotImplementedException{}
     // RETURN ""

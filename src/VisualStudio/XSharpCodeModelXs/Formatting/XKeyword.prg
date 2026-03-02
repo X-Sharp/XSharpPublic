@@ -5,12 +5,10 @@
 // See License.txt in the project root for license information.
 //
 
-USING XSharpModel
-USING System.Diagnostics
-USING System.Collections.Generic
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser
 USING System.Runtime.InteropServices
 
+NAMESPACE XSharpModel
 
 /// <summary>
 /// This structure with the size of an Int is used to store
@@ -18,7 +16,7 @@ USING System.Runtime.InteropServices
 /// for the formatting code
 /// </summary>
 [StructLayout(LayoutKind.Explicit, Size := 4)];
-STRUCTURE XSharpModel.XKeyword IMPLEMENTS IEquatable<XKeyword>, IEqualityComparer<XKeyword>
+STRUCTURE XKeyword IMPLEMENTS IEquatable<XKeyword>, IEqualityComparer<XKeyword>
     [FieldOffset(0)];
     PUBLIC INITONLY Kw1 as XTokenType
     [FieldOffset(2)];
@@ -70,7 +68,7 @@ STRUCTURE XSharpModel.XKeyword IMPLEMENTS IEquatable<XKeyword>, IEqualityCompare
 
 END STRUCTURE
 
-STATIC CLASS XSharpModel.XKeywordExtensions
+STATIC CLASS XKeywordExtensions
     STATIC METHOD IsEntity(SELF kw as XKeyword) AS LOGIC
         RETURN XFormattingRule.IsEntity(kw)
 
@@ -107,6 +105,6 @@ STATIC CLASS XSharpModel.XKeywordExtensions
     STATIC METHOD IsEndOfType(SELF kw as XKeyword) AS LOGIC
         RETURN XFormattingRule.IsEndOfType(kw)
     STATIC METHOD IsAttribute(SELF kw as XKeyword) AS LOGIC
-        RETURN kw.Kw1 == XTokenType.Lbrkt 
+        RETURN kw.Kw1 == XTokenType.Lbrkt
 
 END CLASS

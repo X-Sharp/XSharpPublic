@@ -73,7 +73,7 @@ namespace XSharpDebugger
             {
                 return KeywordCase.None;
             }
-            
+
         }
         static void InitTypes()
         {
@@ -138,14 +138,6 @@ namespace XSharpDebugger
             s_types.Add(KnownTypes.SystemVoid, XSharpType.Void);
             s_types.Add(KnownTypes.SystemVoidPtr, XSharpType.Ptr);
 
-            s_types.Add(KnownTypes.VulcanArray, XSharpType.Array);
-            s_types.Add(KnownTypes.VulcanPSZ, XSharpType.Psz);
-            s_types.Add(KnownTypes.VulcanUsual, XSharpType.Usual);
-            s_types.Add(KnownTypes.VulcanUsualType, XSharpType.UsualType);
-            s_types.Add(KnownTypes.VulcanSymbol, XSharpType.Symbol);
-            s_types.Add(KnownTypes.VulcanDate, XSharpType.Date);
-            s_types.Add(KnownTypes.VulcanFloat, XSharpType.Float);
-
             s_types.Add(KnownTypes.XSharpArray, XSharpType.Array);
             s_types.Add(KnownTypes.XSharpArrayBase, XSharpType.ArrayBase);
             s_types.Add(KnownTypes.XSharpBinary, XSharpType.Binary);
@@ -191,7 +183,7 @@ namespace XSharpDebugger
         internal string Name => _name;
         protected XSharpType(string name, bool casesync = false)
         {
-            
+
             if (casesync)
             {
                 _name = FormatKeyword(name);

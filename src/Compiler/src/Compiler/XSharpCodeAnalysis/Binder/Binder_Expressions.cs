@@ -80,8 +80,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     left = this.BindNamespaceOrType(node.Left, bag);
                 }
                 diagnostics.AddRange(bag.DiagnosticBag);
-                bag.Free();
             }
+            else
+            {
+                diagnostics.AddRange(bag.DiagnosticBag);
+            }
+            bag.Free();
             return BindMemberAccessWithBoundLeft(node, left, node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
         }
         private BoundExpression XsBindIndexerAccess(BoundExpression expr, BindingDiagnosticBag diagnostics)

@@ -140,7 +140,7 @@ namespace XSharp.Project
         //private XSharpProjectSelector _projectSelector = null;
         private uint shellCookie;
         IVsShell shell = null;
- 
+
         public static XSharpProjectPackage XInstance => instance ;
 
 
@@ -174,7 +174,7 @@ namespace XSharp.Project
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
- 
+
             // The project selector helps to choose between MPF and CPS projects
             //_projectSelector = new XSharpProjectSelector();
             //await _projectSelector.InitAsync(this);
@@ -255,7 +255,7 @@ namespace XSharp.Project
             }
             else
             {
-        //        // save values from disk to private registry 
+        //        // save values from disk to private registry
                 await options.DebuggerOptions.SaveAsync();
                 await options.WindowEditorOptions.SaveAsync();
                 await options.OtherEditorOptions.SaveAsync();
@@ -264,9 +264,9 @@ namespace XSharp.Project
             return true;
         }
 
-        
-        
-		
+
+
+
         /// <summary>
         /// Read the comment tokens from the Tools/Options dialog and pass them to the CodeModel assembly
         /// </summary>

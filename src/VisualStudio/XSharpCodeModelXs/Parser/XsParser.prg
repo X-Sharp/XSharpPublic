@@ -6,14 +6,11 @@
 
 // Note that the comment blocks from the various rules have been copied from XSharp.g4 inside the compiler
 
-
-USING System.Collections.Generic
-USING System.Collections
+USING System.Collections.Concurrent
 USING System.Text
 USING System.Text.RegularExpressions
 USING System.IO
-USING System.Diagnostics
-USING System.Linq
+
 USING LanguageService.CodeAnalysis.XSharp
 USING LanguageService.SyntaxTree
 USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
@@ -21,35 +18,34 @@ USING XSharp.Parser
 USING LanguageService.CodeAnalysis.Text
 USING XSharp.Settings
 
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
 
 
 CLASS XsParser IMPLEMENTS VsParser.IErrorListener
-    PRIVATE  _list         AS XSharpTokenList
-    PRIVATE  _file         AS XFile
-    PRIVATE  _usings       AS IList<STRING>
-    PRIVATE  _staticusings AS IList<STRING>
-    PRIVATE  _EntityList    AS IList<XSourceEntity>
-    PRIVATE  _EntityStack   AS Stack<XSourceEntity>
-    PRIVATE  _BlockList     AS IList<XSourceBlock>
-    PRIVATE  _BlockStack    AS Stack<XSourceBlock>
-    PRIVATE  _PPBlockStack  AS Stack<XSourceBlock>
-    PRIVATE  _locals        AS IList<XSourceVariableSymbol>
-    PRIVATE  _collectLocals AS LOGIC
-    PRIVATE  _collectBlocks AS LOGIC
-    PRIVATE  _errors        AS IList<XError>
-    PRIVATE  _globalType    AS XSourceTypeSymbol
-    PRIVATE  _dialect       AS XDialect
-    PRIVATE  _xppVisibility AS Modifiers
-    PRIVATE  _commentTasks  AS IList<XCommentTask>
-    PRIVATE  _modifiers     AS IList<IToken>
+    PRIVATE _list         AS XSharpTokenList
+    PRIVATE _file         AS XFile
+    PRIVATE _usings       AS IList<XSourceUsing>
+    PRIVATE _EntityList    AS IList<XSourceEntity>
+    PRIVATE _EntityStack   AS Stack<XSourceEntity>
+    PRIVATE _BlockList     AS IList<XSourceBlock>
+    PRIVATE _BlockStack    AS Stack<XSourceBlock>
+    PRIVATE _PPBlockStack  AS Stack<XSourceBlock>
+    PRIVATE _locals        AS IList<XSourceVariableSymbol>
+    PRIVATE _collectLocals AS LOGIC
+    PRIVATE _collectBlocks AS LOGIC
+    PRIVATE _errors        AS IList<XError>
+    PRIVATE _globalType    AS XSourceTypeSymbol
+    PRIVATE _dialect       AS XDialect
+    PRIVATE _xppVisibility AS Modifiers
+    PRIVATE _commentTasks  AS IList<XCommentTask>
+    PRIVATE _modifiers     AS IList<IToken>
 
-    PRIVATE  _attributes   AS Modifiers      // for the current entity
-    PRIVATE  _start        AS IToken
-    PRIVATE  _hasXmlDoc    AS LOGIC
-    PRIVATE  _tokens       AS IList<IToken>
-    PRIVATE  _firstTokenOnLine as IToken
-    PRIVATE  _missingType  AS STRING
+    PRIVATE _attributes   AS Modifiers      // for the current entity
+    PRIVATE _start        AS IToken
+    PRIVATE _hasXmlDoc    AS LOGIC
+    PRIVATE _tokens       AS IList<IToken>
+    PRIVATE _firstTokenOnLine as IToken
+    PRIVATE _missingType  AS STRING
 
     PRIVATE PROPERTY CurrentEntity      AS XSourceEntity GET IIF(_EntityStack:Count > 0, _EntityStack:Peek(), NULL_OBJECT)
     PRIVATE PROPERTY CurrentType        AS XSourceTypeSymbol
@@ -76,9 +72,8 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
     CONSTRUCTOR(oFile AS XFile, dialect AS XDialect)
         SELF:SaveToDisk := TRUE
         _errors        := List<XError>{}
-        _usings        := List<STRING>{}
+        _usings        := List<XSourceUsing>{}
         _commentTasks  := List<XCommentTask>{}
-        _staticusings  := List<STRING>{}
         _EntityList    := List<XSourceEntity>{}
         _EntityStack   := Stack<XSourceEntity>{}
         _BlockList     := List<XSourceBlock>{}
@@ -183,6 +178,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             ENDIF
             IF SELF:ParseUsing( OUT VAR memUsing)
                 _EntityList:Add(memUsing)
+                _globalType:AddMember(memUsing)
                 LOOP
             ENDIF
             LOCAL firstDocCommentToken := NULL AS XSharpToken
@@ -450,7 +446,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             SELF:_globalType:AddMember(xmember)
         ENDIF
         IF ! lLocals
-            _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
+            _file:SetTypes(typelist, _usings, SELF:_EntityList)
             IF SELF:SaveToDisk
                 _file:SaveToDatabase()
             ENDIF
@@ -468,11 +464,11 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
 
     PRIVATE METHOD AddUniqueUsing(strName as STRING) AS VOID
         FOREACH var u in SELF:_usings
-            if String.Compare(u, strName, TRUE) == 0
+            if String.Compare(u:Name, strName, TRUE) == 0
                 RETURN
             ENDIF
         NEXT
-        _usings:Add(strName)
+        _usings:Add(XSourceUsing{strName, Modifiers.None})
         RETURN
 
     PRIVATE METHOD ParsePPLine() AS LOGIC
@@ -554,12 +550,16 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 VAR cType := start:Text[1]
                 IF cType == c'x' .OR. cType == c'X'
                     kind := Kind.XCommand
+                ELSEIF cType == c'y' .OR. cType == c'Y'
+                    kind := Kind.YCommand
                 ENDIF
             CASE XSharpLexer.PP_TRANSLATE
                 kind := Kind.Translate
                 VAR cType := start:Text[1]
                 IF cType == c'x' .OR. cType == c'X'
                     kind := Kind.XTranslate
+                ELSEIF cType == c'y' .OR. cType == c'Y'
+                    kind := Kind.YTranslate
                 ENDIF
             END SWITCH
             entity := XSourceMemberSymbol{name, kind, Modifiers.None, range,interval,"",_modifiers,FALSE}
@@ -577,31 +577,40 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ENDIF
         RETURN TRUE
 
-    PRIVATE METHOD ParseUsing(entUsing out XSourceMemberSymbol) AS LOGIC
+    PRIVATE METHOD ParseUsing(entUsing out XSourceUsing) AS LOGIC
         /*
-        using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoperator)? Name=name EOS
-        ;
+        this could parse different things:
+        - a Namespace USING
+        using_  :(Global=GLOBAL)? USING (Static=STATIC)? (Unsafe=UNSAFE)? (Alias=identifierName Op=assignoperator)? Name=name EOS
+        - a Using Variable declaration:
+          Using=USING Static=STATIC? VAR ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)* end=eos #varLocalDecl
+          Using=USING Static=STATIC? LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
+          This should only happen as part of the body of an entity
 
+            NOTE: GLOBAL Must prefix the USING keyword
+                  STATIC and UNSAFE can be in any order and must follow the USING keyword
         */
         entUsing := NULL
+        LOCAL isGlobal := FALSE AS LOGIC
+        LOCAL isStatic := FALSE AS LOGIC
+        LOCAL isUnsafe := FALSE AS LOGIC
+
         if SELF:La1 == XSharpLexer.GLOBAL .and. SELF:La2 == XSharpLexer.USING
             NOP // Ok
+            isGlobal := TRUE
         elseIF SELF:La1 != XSharpLexer.USING
             RETURN FALSE
         ENDIF
         IF SELF:ExpectOnThisLine(XSharpLexer.VAR)             // USING VAR
             RETURN FALSE
         ENDIF
-        IF SELF:ExpectOnThisLine(XSharpLexer.IMPLIED)
+        IF SELF:ExpectOnThisLine(XSharpLexer.IMPLIED)       // USING LOCAL? IMPLIED
             RETURN FALSE
         ENDIF
-        var isGlobal := SELF:La1 == XSharpLexer.GLOBAL
-        VAR startToken := SELF:ConsumeAndGet()
+        VAR startToken := SELF:ConsumeAndGet()              // GLOBAL or USING
         if isGlobal
             SELF:ConsumeAndGet() // USING
         ENDIF
-        VAR isStatic := FALSE
-        VAR isUnsafe := FALSE
         VAR alias := ""
         IF SELF:Expect(XSharpLexer.STATIC)
             isStatic := TRUE
@@ -615,29 +624,28 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             SELF:Consume()   // :=
         ENDIF
         VAR name := SELF:ParseQualifiedName()
-        IF isStatic
-            SELF:_staticusings:Add(name)
-        ELSE
-            SELF:_usings:Add(name)
+        var mods := Modifiers.None
+        IF isGlobal
+            mods |= Modifiers.Global
         ENDIF
+        IF isStatic
+            mods |= Modifiers.Static
+        ENDIF
+        IF isUnsafe
+            mods |= Modifiers.Unsafe
+        ENDIF
+
         var endToken := Self:Lt1
         SELF:ReadLine()
-        var mods := Modifiers.None
-        if (isStatic)
-            mods := Modifiers.Static
-        endif
-        if (isGlobal)
-            mods |= Modifiers.Global
-        endif
-        if (isUnsafe)
-            mods |= Modifiers.Unsafe
-        endif
         SELF:GetSourceInfo(startToken, endToken , OUT VAR range, OUT VAR interval, OUT VAR source)
-        VAR entity := XSourceMemberSymbol{name, Kind.Using, mods, range,interval,"",_modifiers, isStatic}
+        VAR entity := XSourceUsing{name, mods, range, interval, alias}
+        if String.IsNullOrEmpty(alias)
+            entity:Alias := name
+        endif
         entity:SourceCode := source
         entity:File := _file
         entity:SingleLine := TRUE
-        _globalType:AddMember(entity)
+        _usings:Add(entity)
         entUsing := entity
         RETURN TRUE
     PRIVATE METHOD ParseUdcTokens() AS VOID
@@ -720,6 +728,12 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 result |= Modifiers.Protected
             CASE XSharpLexer.PUBLIC
                 result |= Modifiers.Public
+            // Local is a special case as it can be used in different contexts and
+            // has different meaning in each of them. It can be both a visibility modifier
+            // as well as a keyword to declare a variable
+            CASE XSharpLexer.LOCAL when SELF:IsKeyword(SELF:La2) .and. ! IsValidLocalSuffix(SELF:La2)
+                result |= Modifiers.Private
+                result |= Modifiers.Local
 
                 // Real modifiers Alphabetical
             CASE XSharpLexer.ABSTRACT
@@ -776,6 +790,16 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ENDDO
         RETURN result
 
+    PRIVATE STATIC METHOD IsValidLocalSuffix(token as LONG) AS LOGIC
+        SWITCH token
+        CASE XSharpLexer.STATIC
+        CASE XSharpLexer.IMPLIED
+        CASE XSharpLexer.CONST
+        CASE XSharpLexer.DIM
+        CASE XSharpLexer.ARRAY
+            return TRUE
+        END SWITCH
+        RETURN FALSE
 
     PRIVATE METHOD IsStartOfEntity(entityKind OUT Kind, mods AS Modifiers) AS LOGIC
         entityKind := Kind.Unknown
@@ -935,6 +959,18 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 entityKind := Kind.LocalFunc
             ELSEIF SELF:La2 == XSharpLexer.PROCEDURE
                 entityKind := Kind.LocalProc
+            ELSEIF SELF:La2 == XSharpLexer.CLASS
+                entityKind := Kind.Class
+            ELSEIF SELF:La2 == XSharpLexer.STRUCTURE
+                entityKind := Kind.Structure
+            ELSEIF SELF:La2 == XSharpLexer.INTERFACE
+                entityKind := Kind.Interface
+            ELSEIF SELF:La2 == XSharpLexer.DELEGATE
+                entityKind := Kind.Delegate
+            ELSEIF SELF:La2 == XSharpLexer.ENUM
+                entityKind := Kind.Enum
+            ELSEIF SELF:La2 == XSharpLexer.EVENT
+                entityKind := Kind.Event
             ENDIF
         CASE XSharpLexer.GET
         CASE XSharpLexer.SET
@@ -1005,13 +1041,13 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                     var curblock := CurrentBlock
                     if xt:Kw1 == XTokenType.Set .or. xt:Kw1 == XTokenType.Get .or. xt:Kw1 == XTokenType.Init
                         if curblock:XKeyword:Kw1 == XTokenType.Set .or. ;
-                                curblock:XKeyword:Kw1 == XTokenType.Get .or.;
-                                curblock:XKeyword:Kw1 == XTokenType.Init
+                            curblock:XKeyword:Kw1 == XTokenType.Get .or.;
+                            curblock:XKeyword:Kw1 == XTokenType.Init
                             _BlockStack:Pop()
                         endif
                     elseif xt:Kw1 == XTokenType.Add .or. xt:Kw1 == XTokenType.Remove
                         if curblock:XKeyword:Kw1 == XTokenType.Add .or. ;
-                                curblock:XKeyword:Kw1 == XTokenType.Remove
+                            curblock:XKeyword:Kw1 == XTokenType.Remove
                             _BlockStack:Pop()
                         endif
                     endif
@@ -1094,7 +1130,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         local xt as XKeyword
         if XFormattingRule.IsSingleKeyword(oLt1:Type)
             xt := XKeyword{oLt1:Type}
-        elseif XSharpLexer.IsKeyword(oLt2:Type)
+        elseif SELF:IsKeyword(oLt2:Type)
             xt := XKeyword{oLt1:Type, oLt2:Type}
         else
             xt := XKeyword{oLt1:Type}
@@ -1105,7 +1141,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         // Start of block is also added to the _BlockList
         // Does not process the tokens on the line !
         SELF:ParseUdcTokens()  // Read UDC tokens on the current line
-        if !XSharpLexer.IsKeyword(La1) .and. ! XSharpLexer.IsPPKeyword(La1)
+        if !SELF:IsKeyword(La1) .and. ! XSharpLexer.IsPPKeyword(La1)
             return
         endif
         local xt as XKeyword
@@ -1773,39 +1809,43 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ENDIF
         // Note that inside the editor the SET and GET accessors are parsed as blocks and not as entities
         /*
-        property            : (Attributes=attributes)? (Modifiers=memberModifiers)?
-        P=PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier)
-        (ParamList=propertyParameterList)?
-        (AS Type=datatype)?
-        ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (Op=assignoperator Initializer=expression)? end=EOS	// Auto
-        | (LineAccessors+=propertyLineAccessor)+ end=EOS													// Single Line
-        | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? EOS				// Multi Line
-        )
+        property : (Attributes=attributes)? (Modifiers=memberModifiers)?
+                P=PROPERTY (ExplicitIface=nameDot)? (Self=SELF | Id=identifier)
+                (ParamList=propertyParameterList)?
+                (AS Type=datatype)?
+                ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (Op=assignoperator Initializer=expression)? end=EOS	// Auto
+                | (LineAccessors+=propertyLineAccessor)+ end=EOS                     // Single Line
+                | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? EOS        // Multi Line
+                )
+
         ;
 
         propertyParameterList
-        : LBRKT  (Params+=parameter (COMMA Params+=parameter)*)? RBRKT
-        | LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN		// Allow Parentheses as well
+        :  L=LBRKT  (Params+=parameter (COMMA Params+=parameter)*)? R=RBRKT
+        // Parentheses are parsed but may generate an error in the future
+        | L=LPAREN (Params+=parameter (COMMA Params+=parameter)*)? R=RPAREN
+
         ;
 
-        propertyAutoAccessor: Attributes=attributes? Modifiers=accessorModifiers? Key=(GET|SET)
+        propertyAutoAccessor: Attributes=attributes? Modifiers=accessorModifiers? Key=(GET|SET|INIT)
         ;
 
         propertyLineAccessor: Attributes=attributes? Modifiers=accessorModifiers?
-        ( {InputStream.La(2) != SET}? Key=GET Expr=expression?
-        | {InputStream.La(2) != SET}? Key=UDCSEP Expr=expression?           // New: UDCSep instead of GET
-        | {InputStream.La(2) != GET}? Key=SET ExprList=expressionList?
-        | Key=(GET|SET) )
-        ;
-        expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
-        ;
-
+                      ( {InputStream.La(2) != SET && InputStream.La(2) != INIT}?     Key=(GET|UDCSEP)    Expr=expression?
+                      | {InputStream.La(2) != GET && InputStream.La(2) != UDCSEP}?   Key=(SET|INIT)      ExprList=expressionList?
+                      | Key=(GET|SET|INIT)
+                      )
+                        ;
         propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
-        ( Key=GET end=eos StmtBlk=statementBlock END GET?
-        | Key=GET UDCSEP ExpressionBody=expression              // New: Expression Body
-        | Key=SET end=eos StmtBlk=statementBlock END SET? )
-        | Key=SET UDCSEP ExpressionBody=expression              // New: Expression Body
-        end=eos
+                      ( Key=GET end=eos StmtBlk=statementBlock END Key2=GET?
+                      | Key=GET UDCSEP ExpressionBody=expression              // New: Expression Body
+                      | Key=(SET|INIT) end=eos StmtBlk=statementBlock END Key2=(SET | INIT)?
+                      | Key=(SET|INIT) UDCSEP ExpressionBody=expression              // New: Expression Body
+                      )
+                      end=eos
+                    ;
+        accessorModifiers	: ( Tokens+=(PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL ) )+
+        expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
         ;
 
         */
@@ -1824,7 +1864,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         VAR sType := SELF:ParseDataType(FALSE)
         LOCAL lSingleLine AS LOGIC
         DO WHILE ! SELF:Eos()
-            IF SELF:Matches(XSharpLexer.AUTO, XSharpLexer.GET,XSharpLexer.SET, XSharpLexer.UDCSEP)
+            IF SELF:Matches(XSharpLexer.AUTO, XSharpLexer.GET, XSharpLexer.SET, XSharpLexer.UDCSEP, XSharpLexer.INIT)
                 lSingleLine := TRUE
             ENDIF
             SELF:Consume()
@@ -2444,8 +2484,8 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         SELF:Expect(XSharpLexer.GT)
         RETURN aTypeParams
 
-    PRIVATE METHOD ParseParameterList(lBracketed AS LOGIC, isSelf OUT LOGIC) AS List<XSourceParameterSymbol>
-        isSelf := FALSE
+    PRIVATE METHOD ParseParameterList(lBracketed AS LOGIC, isExtension OUT LOGIC) AS List<XSourceParameterSymbol>
+        isExtension := FALSE
         IF SELF:La1 != XSharpLexer.LPAREN .AND. ! lBracketed
             RETURN NULL
         ENDIF
@@ -2464,7 +2504,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             VAR sId   := ""
             VAR sTypeName := ""
             IF SELF:Expect(XSharpLexer.SELF)
-                isSelf := TRUE
+                isExtension := TRUE
             ENDIF
             IF SELF:IsId(SELF:La1)
                 sId  += SELF:ConsumeAndGetText()
@@ -2665,7 +2705,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         CASE XSharpLexer.WORD
             result :=  SELF:ConsumeAndGetText()
         OTHERWISE
-            IF XSharpLexer.IsKeyword(SELF:La1)
+            IF SELF:IsKeyword(SELF:La1)
                 result :=  SELF:ConsumeAndGetText()
             ENDIF
         END SWITCH
@@ -2685,7 +2725,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             RETURN " "+SELF:ConsumeAndGetText()
         ELSEIF SELF:Matches(XSharpLexer.QMARK)
             RETURN SELF:ConsumeAndGetText()
-        ELSEIF SELF:Matches(XSharpLexer.LBRKT) .and. (SELF:La2 != XSharpLexer.ID .and. SELF:La2 != XSharpLexer.UDC_KEYWORD .and. ! XSharpLexer.IsKeyword(SELF:La2))
+        ELSEIF SELF:Matches(XSharpLexer.LBRKT) .and. (SELF:La2 != XSharpLexer.ID .and. SELF:La2 != XSharpLexer.UDC_KEYWORD .and. ! SELF:IsKeyword(SELF:La2))
             VAR tokens := List<IToken>{}
             tokens:Add(SELF:ConsumeAndGet())
             LOCAL openCount := 1 as LONG
@@ -3069,7 +3109,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 SELF:Consume()
             ELSEIF SELF:Expect(XSharpLexer.VAR)
                 lImplied  := TRUE
-            ELSEIF XSharpLexer.IsKeyword(SELF:La1)      // STATIC Keyword should exit
+            ELSEIF SELF:IsKeyword(SELF:La1)      // STATIC Keyword should exit
                 RETURN FALSE
             ENDIF
             IF SELF:Expect(XSharpLexer.IMPLIED)
@@ -4031,6 +4071,9 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
 
 #endregion
 
+    PRIVATE METHOD IsKeyword(token AS LONG) AS LOGIC
+        RETURN XSharpLexer.IsKeyword(token)
+    END METHOD
 
     PRIVATE METHOD IsKeywordXs(token AS LONG) AS LOGIC
         SWITCH token
@@ -4214,19 +4257,6 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         RETURN
 END CLASS
 
-    DELEGATE DelEndToken(iToken AS LONG) AS LOGIC
-
-
-
-END NAMESPACE
-
-
-
-
-
-
-
-
-
+DELEGATE DelEndToken(iToken AS LONG) AS LOGIC
 
 

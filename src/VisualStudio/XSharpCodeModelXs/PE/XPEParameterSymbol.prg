@@ -5,8 +5,6 @@
 //
 
 USING XSharpModel
-USING System.Diagnostics
-USING System.Collections.Generic
 USING LanguageService.SyntaxTree
 
 BEGIN NAMESPACE XSharpModel

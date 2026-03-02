@@ -26,6 +26,7 @@ Copyright (C) XSharp BV. All rights reserved.
     <XSharpMsBuildDir Condition="'$(XSharpMsBuildDir)' == ''" >$(MSBuildProgramFiles32)\XSharp\MsBuild</XSharpMsBuildDir>
     <LanguageTargets Condition="'$(LanguageTargets )' == ''" >$(XSharpMsBuildDir)\XSharp.Common.targets</LanguageTargets>
     <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    <GenerateSupportedOSPlatformAttribute>false</GenerateSupportedOSPlatformAttribute>
     <XsMSBuildManagedFolder>$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed</XsMSBuildManagedFolder>
   </PropertyGroup>
   <Import Condition="'$(MSBuildProjectExtension)' == '.xsproj' and '$(XSharpDefaultProps)' == '' " Project="$(XSharpMsBuildDir)\XSharp.Props" />

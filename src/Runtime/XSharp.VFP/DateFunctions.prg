@@ -7,26 +7,32 @@ USING System.Globalization
 USING System.Collections.Generic
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dtot/*" />
+[FoxProFunction("DTOT", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION DToT( dDateExpression AS DATE) AS DateTime
     RETURN (System.DateTime) dDateExpression
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/hour/*" />
+[FoxProFunction("HOUR", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Hour( tExpression AS System.DateTime) AS LONG
     RETURN tExpression:Hour
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/minute/*" />
+[FoxProFunction("MINUTE", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Minute(tExpression AS System.DateTime) AS LONG
     RETURN tExpression:Minute
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sec/*" />
+[FoxProFunction("SEC", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Sec( tExpression AS System.DateTime) AS LONG
     RETURN tExpression:Second
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ttod/*" />
+[FoxProFunction("TTOD", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION TToD( tExpression AS System.DateTime) AS DATE
     RETURN (DATE) tExpression
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/gomonth/*" />
+[FoxProFunction("GOMONTH", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION GoMonth( dExpression AS DATE , iNumberOfMonths AS INT ) AS DATE
     RETURN GoMonth ( (System.DateTime) dExpression , iNumberOfMonths )
 
@@ -75,6 +81,7 @@ FUNCTION GoMonth( uExpression AS USUAL , iNumberOfMonths AS INT ) AS DATE
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/quarter/*" />
+[FoxProFunction("QUARTER", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION Quarter( uExpression  AS USUAL , nMonth  := 1 AS INT ) AS INT
     IF IsDate(uExpression)
         RETURN Quarter ( (DATE) uExpression , nMonth )
@@ -104,6 +111,7 @@ FUNCTION Quarter( tExpression  AS System.DateTime , nMonth  := 1 AS INT ) AS INT
     RETURN  (INT) System.Math.Ceiling((DECIMAL)dtOffset:Month / 3)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/week/*" />
+[FoxProFunction("WEEK", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION Week( uExpression AS USUAL, nFirstWeek := 1 AS LONG, nFirstDayOfWeek := 1 AS LONG) AS LONG
     IF IsDate(uExpression)
         RETURN Week ( (Date) uExpression , nFirstWeek, nFirstDayOfWeek )
@@ -148,6 +156,7 @@ FUNCTION Week( tExpression AS System.DateTime, nFirstWeek := 1 AS LONG, nFirstDa
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mdy/*" />
+[FoxProFunction("MDY", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION MDY ( uExpression AS USUAL ) AS STRING
     IF IsDate(uExpression)
         RETURN MDY( (DATE) uExpression )
@@ -194,7 +203,9 @@ FUNCTION DMY ( dExpression  AS DATE ) AS STRING
 
 	RETURN PadL(Day(dExpression), 2 , "0" ) + " " + CMonth(dExpression) + " " + ;
 			IIF ( SetCentury() , dExpression:ToString("yyyy") , dExpression:ToString("yy")  )
+
 /// <include file="VFPDocs.xml" path="Runtimefunctions/ctot/*" />
+[FoxProFunction("CTOT", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION CToT(cCharacterExpression AS STRING) AS System.DateTime
     IF String.IsNullOrEmpty(cCharacterExpression)
         RETURN DateTime.MinValue
@@ -215,6 +226,7 @@ FUNCTION CToT(cCharacterExpression AS STRING) AS System.DateTime
 ENDFUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/ttoc/*" />
+[FoxProFunction("TTOC", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION TToC(tdExpression AS System.DateTime, nParam := 0 AS LONG) AS STRING
 	LOCAL lcResult AS STRING
 	LOCAL culture := CultureInfo.InvariantCulture AS CultureInfo
@@ -383,23 +395,6 @@ INTERNAL STATIC CLASS DateTimeHelper
 	    RETURN aFormats:ToArray()
 	END METHOD
 
-	// STATIC METHOD GetDateSeparatorForFormat(tcDateFormat AS STRING) AS STRING
-		// SWITCH tcDateFormat:ToUpper()
-		//ANSI, GERMAN
-		// CASE "YY.MM.DD"
-		// CASE "YYYY.MM.DD"
-		// CASE "DD.MM.YY"
-		// CASE "DD.MM.YYYY"
-			// RETURN "."
-		//ITALIAN
-		// CASE "DD-MM-YY"
-		// CASE "DD-MM-YYYY"
-			// RETURN "-"
-		// OTHERWISE
-			// RETURN "/"
-		// END SWITCH
-	// END METHOD
-
 	STATIC METHOD GetDateFormatsForParsing(tcDateFormat AS STRING, tcSeparator AS STRING, tlCentury AS LOGIC) AS STRING[]
 	    LOCAL aFormats := List<STRING>{} AS List<STRING>
 
@@ -517,7 +512,6 @@ INTERNAL STATIC CLASS DateTimeHelper
 			ENDIF
 		ENDIF
 
-	//	return i"{lcDatePart} {lcTimePart}"
 		RETURN lcDatePart + " " + lcTimePart
 	END METHOD
 
@@ -549,7 +543,6 @@ INTERNAL STATIC CLASS DateTimeHelper
 		LOCAL lcDatePart := GetEmptyDatePart(lcDateFormat, lCentury) AS STRING
 		LOCAL lcTimePart := GetEmptyTimePart(lHours, lSeconds) AS STRING
 
-	//	return i"{lcDatePart} {lcTimePart}"
 		RETURN lcDatePart + " " + lcTimePart
 	END METHOD
 

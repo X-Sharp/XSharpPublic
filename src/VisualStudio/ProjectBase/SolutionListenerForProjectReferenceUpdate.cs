@@ -78,6 +78,7 @@ namespace Microsoft.VisualStudio.Project
                 projectReference.CanRemoveReference = true;
 
                 projectReference.OnInvalidateItems(projectReference.Parent);
+                projectReference.IsUnloaded = false;
             }
 
             return VSConstants.S_OK;
@@ -152,6 +153,7 @@ namespace Microsoft.VisualStudio.Project
                 projectReference.OnInvalidateItems(projectReference.Parent);
                 projectReference.CanRemoveReference = false;
                 projectReference.IsNodeValid = false;
+                projectReference.IsUnloaded = true;
                 projectReference.DropReferencedProjectCache();
             }
 

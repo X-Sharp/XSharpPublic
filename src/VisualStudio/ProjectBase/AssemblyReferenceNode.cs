@@ -29,7 +29,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The name of the assembly this reference represents
         /// </summary>
-        private System.Reflection.AssemblyName assemblyName;
+        private AssemblyName assemblyName;
         private AssemblyName resolvedAssemblyName;
         private string assemblyPath = string.Empty;
         private HashSet<string> resolvedProperties; // the names of the properties that MsBuild has resolved
@@ -65,7 +65,7 @@ namespace Microsoft.VisualStudio.Project
         /// The name of the assembly this reference represents.
         /// </summary>
         /// <value></value>
-        public System.Reflection.AssemblyName AssemblyName
+        public AssemblyName AssemblyName
         {
             get { return this.assemblyName; }
             set { this.assemblyName = value; }
@@ -76,9 +76,19 @@ namespace Microsoft.VisualStudio.Project
         /// machine. It can be different from the AssemblyName property because it can
         /// be more specific.
         /// </summary>
-        public System.Reflection.AssemblyName ResolvedAssembly
+        public AssemblyName ResolvedAssembly
         {
-            get { return resolvedAssemblyName; }
+            get
+            {
+                if (resolvedAssemblyName == null)
+                {
+                    if (! String.IsNullOrEmpty(this.AssemblyPath) && File.Exists(this.AssemblyPath))
+                    {
+                        resolvedAssemblyName = System.Reflection.AssemblyName.GetAssemblyName(this.AssemblyPath);
+                    }
+                }
+                return resolvedAssemblyName;
+            }
             set { resolvedAssemblyName = value; }
         }
 
@@ -144,7 +154,7 @@ namespace Microsoft.VisualStudio.Project
             this.InitializeFileChangeEvents();
 
             // The assemblyPath variable can be an actual path on disk or a generic assembly name.
-            if(File.Exists(assemblyPath))
+            if (File.Exists(assemblyPath))
             {
                 // The assemblyPath parameter is an actual file on disk; try to load it.
                 this.assemblyName = System.Reflection.AssemblyName.GetAssemblyName(assemblyPath);
@@ -160,7 +170,7 @@ namespace Microsoft.VisualStudio.Project
                 // The file does not exist on disk. This can be because the file / path is not
                 // correct or because this is not a path, but an assembly name.
                 // Try to resolve the reference as an assembly name.
-                this.CreateFromAssemblyName(new System.Reflection.AssemblyName(assemblyPath));
+                this.AssemblyName = new AssemblyName() { Name = assemblyPath };
             }
         }
         #endregion

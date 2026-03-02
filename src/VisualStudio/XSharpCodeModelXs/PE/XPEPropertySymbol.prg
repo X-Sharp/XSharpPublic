@@ -3,8 +3,6 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-USING System.Collections.Generic
-USING System.Diagnostics
 USING Mono.Cecil
 
 BEGIN NAMESPACE XSharpModel
@@ -47,6 +45,7 @@ CLASS XPEPropertySymbol INHERIT XPEMemberSymbol
             result += SELF:Prototype
             result += IIF(Accessors.HasFlag(AccessorKind.Get), " GET","")
             result += IIF(Accessors.HasFlag(AccessorKind.Set), " SET","")
+            result += IIF(Accessors.HasFlag(AccessorKind.Init), " INIT","")
             RETURN result:Replace("  ", " ")
         END GET
     END PROPERTY

@@ -5,6 +5,7 @@
 //
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/payment/*" />
+[FoxProFunction("PAYMENT", FoxFunctionCategory.Financial, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION Payment( nPrincipal AS FLOAT , nInterestRate AS FLOAT , nPayments AS FLOAT ) AS FLOAT
 
 	// ensures that both values are always positive
@@ -17,6 +18,7 @@ FUNCTION Payment( nPrincipal AS FLOAT , nInterestRate AS FLOAT , nPayments AS FL
    	RETURN nPrincipal * (nInterestRate * ( (1 + nInterestRate)^nPayments) ) / (((1+ nInterestRate)^nPayments) - 1)
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/pv/*" />
+[FoxProFunction("PV", FoxFunctionCategory.Financial, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION PV ( nPayment AS FLOAT , nInterestRate AS FLOAT , nTotalPayments AS FLOAT ) AS FLOAT
 
 	// ensures that both values are always positive
@@ -29,6 +31,7 @@ FUNCTION PV ( nPayment AS FLOAT , nInterestRate AS FLOAT , nTotalPayments AS FLO
 	RETURN nPayment * (1 - (1 + nInterestRate)^-nTotalPayments)/nInterestRate
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/fv/*" />
+[FoxProFunction("FV", FoxFunctionCategory.Financial, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION FV ( nPayment AS FLOAT , nInterestRate AS FLOAT , nPeriods AS FLOAT ) AS FLOAT
 
 	// ensures that both values are always positive

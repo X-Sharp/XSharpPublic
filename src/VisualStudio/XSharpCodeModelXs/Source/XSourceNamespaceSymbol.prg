@@ -4,18 +4,14 @@
 // See License.txt in the project root for license information.
 //
 
-USING XSharpModel
-USING System.Diagnostics
-USING System.Collections.Generic
 USING LanguageService.SyntaxTree
 
-BEGIN NAMESPACE XSharpModel
-     // an entity in the source code
-   [DebuggerDisplay("{ToString(),nq}")];
-   CLASS XSourceNamespaceSymbol INHERIT XSourceTypeSymbol
+NAMESPACE XSharpModel
+    // an entity in the source code
+[DebuggerDisplay("{ToString(),nq}")];
+CLASS XSourceNamespaceSymbol INHERIT XSourceTypeSymbol
 
-    CONSTRUCTOR(name AS STRING, span AS TextRange, position AS TextInterval, oFile AS XFile, modifiers as IList<IToken>)
-        SUPER(name, Kind.Namespace, Modifiers.Public, span, position, oFile, modifiers)
-        RETURN
-	END CLASS
-END NAMESPACE // XSharpModel.Model
+CONSTRUCTOR(name AS STRING, span AS TextRange, position AS TextInterval, oFile AS XFile, modifiers as IList<IToken>)
+    SUPER(name, Kind.Namespace, Modifiers.Public, span, position, oFile, modifiers)
+    RETURN
+END CLASS

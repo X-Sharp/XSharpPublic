@@ -7,6 +7,7 @@ USING System.Text
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sys/*" />
+[FoxProFunction("SYS", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Partial, FoxCriticality.High)];
 FUNCTION Sys(nSetting, uNewValue, uContextParam3) AS USUAL CLIPPER
     LOCAL retVal AS OBJECT
     retVal := FALSE

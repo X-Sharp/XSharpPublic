@@ -56,16 +56,26 @@ BEGIN NAMESPACE XSharpModel.Formatting
          END SET
       END PROPERTY
       /// <summary>
-      ///   Looks up a localized string similar to /*
-      ///Formattingrules.txt
-      ///Each line consists of one or more begin token(s) followed by a comma and the matching end token(s)
-      ///Tokens that are followed by a question mark are optional
-      ///After the end token there may be another comma and a list of &quot;options&quot;
-      ///These options can be:
-      ///- OPTIONAL (end token is optional)
-      ///- MIDDLE   (block with a middle token, such as DO CASE)
-      ///- CASE     (for special indenting rules for CASE blocks)
-      ///- SINGLE (for rules that may be single line such as property)
+      ///   Looks up a localized string similar to /*
+
+      ///Formattingrules.txt
+
+      ///Each line consists of one or more begin token(s) followed by a comma and the matching end token(s)
+
+      ///Tokens that are followed by a question mark are optional
+
+      ///After the end token there may be another comma and a list of &quot;options&quot;
+
+      ///These options can be:
+
+      ///- OPTIONAL (end token is optional)
+
+      ///- MIDDLE   (block with a middle token, such as DO CASE)
+
+      ///- CASE     (for special indenting rules for CASE blocks)
+
+      ///- SINGLE (for rules that may be single line such as property)
+
       ///Section delimiters i [rest of string was truncated]&quot;;.
       /// </summary>
       INTERNAL STATIC PROPERTY Rules AS STRING

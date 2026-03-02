@@ -11,5 +11,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>$(AssemblyName).Xml</DocumentationFile>
+    <DefineConstants>$(DefineConstants);DOC</DefineConstants>
   </PropertyGroup>
 </Project>

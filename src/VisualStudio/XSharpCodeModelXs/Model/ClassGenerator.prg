@@ -5,11 +5,9 @@
 //
 // Based on original work for XIDE
 //
-using System.Linq
-using System.Collections.Generic
 using Mono.Cecil
 USING XSharp.Settings
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
 
 DELEGATE XmlDocProvider (entry as IXSymbol) AS STRING
 
@@ -52,7 +50,7 @@ CLASS XClassCreator
             var result := List<String>{}
             result:Add("// Exception occurred during reading type information: ")
             result:Add("// "+e:Message)
-            XSettings.Exception(e, __FUNCTION__)
+            XSettings.Exception(e)
             return result
 		END TRY
 
@@ -376,4 +374,3 @@ CLASS XClassCreator
 END CLASS
 
 
-END NAMESPACE // XSharpModel

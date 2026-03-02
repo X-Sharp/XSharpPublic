@@ -3,15 +3,11 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-USING System
-USING System.Linq
-USING System.Collections.Generic
 USING LanguageService.CodeAnalysis.Text
 USING LanguageService.CodeAnalysis.XSharp
-USING System.Diagnostics
 USING LanguageService.SyntaxTree
 
-BEGIN NAMESPACE XSharpModel
+NAMESPACE XSharpModel
    /// <summary>
       /// Model for Namespace, Class, Interface, Structure, Enum
    /// </summary>
@@ -389,6 +385,4 @@ BEGIN NAMESPACE XSharpModel
         END METHOD
 
 END CLASS
-
-END NAMESPACE
 

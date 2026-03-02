@@ -7,28 +7,28 @@
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/savepicture/*" />
-
+[FoxProFunction("SAVEPICTURE", FoxFunctionCategory.UIAndWindow, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Low)];
 FUNCTION SavePicture( oObjectReference, cFileName ) AS LOGIC
     THROW NotImplementedException{}
     // RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/scheme/*" />
-
+[FoxProFunction("SCHEME", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.Low)];
 FUNCTION Scheme( nSchemeNumber , nColorPairNumber) AS STRING
     THROW NotImplementedException{}
     // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/setfldstate/*" />
-
+[FoxProFunction("SETFLDSTATE", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
 FUNCTION SetFldState( uField, nFieldState , uArea) AS LOGIC
     THROW NotImplementedException{}
     // RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/setresultset/*" />
-
+[FoxProFunction("SETRESULTSET", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
 FUNCTION SetResultSet( uArea ) AS LONG
     THROW NotImplementedException{}
     // RETURN 0

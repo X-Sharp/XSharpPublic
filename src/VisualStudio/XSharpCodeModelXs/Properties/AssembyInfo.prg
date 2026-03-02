@@ -7,9 +7,12 @@
 // This file defines the 'per assembly' attributes
 // The common attributes are defined in version.vh in the Include folder
 ////////////////////////////////////////////////////////////////////////////////
-#using System.Reflection
-#using System.Runtime.InteropServices
+using System.Reflection
+using System.Runtime.InteropServices
 
 [assembly: AssemblyTitleAttribute( "XSharpCodeModel" )]
 [assembly: AssemblyDescriptionAttribute( "XSharpCodeModel" )]
 
+GLOBAL USING System.Diagnostics
+GLOBAL USING System.Linq
+GLOBAL USING System.Collections.Generic

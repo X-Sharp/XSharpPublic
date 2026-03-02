@@ -3,15 +3,11 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-USING System
-USING System.Collections.Generic
-USING System.Linq
 USING System.Text
 USING System.Threading.Tasks
 USING LanguageService.CodeAnalysis
 USING LanguageService.CodeAnalysis.XSharp
 using XSharp.Parser
-USING System.Diagnostics
 
 BEGIN NAMESPACE XSharpModel
     [DebuggerDisplay("Orphaned files")];

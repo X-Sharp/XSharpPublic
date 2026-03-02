@@ -45,7 +45,7 @@
           "description": "Target .NET 10"
         }
       ],
-      "replaces": "net8.0",
+      "replaces": "FrameworkParameter",
       "defaultvalue": "net8.0"
     },
     "DefaultNamespace": {

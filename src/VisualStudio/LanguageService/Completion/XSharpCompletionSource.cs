@@ -10,8 +10,6 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using XSharpModel;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using Microsoft.VisualStudio;
-using LanguageService.CodeAnalysis.XSharp;
 using Microsoft.VisualStudio.Text.Tagging;
 using XSharp.Settings;
 #if ! ASYNCCOMPLETION
@@ -74,8 +72,6 @@ namespace XSharp.LanguageService
 
                 // The "parameters" coming from CommandFilter
                 char typedChar = props.Char;
-
-                VSConstants.VSStd2KCmdID nCmdId = (VSConstants.VSStd2KCmdID)props.Command;
                 bool showInstanceMembers = (typedChar == ':') || ((typedChar == '.') && _file.Project.ParseOptions.AllowDotForInstanceMembers);
 
                 ////////////////////////////////////////////
@@ -123,7 +119,7 @@ namespace XSharp.LanguageService
                     return;
                 var tokenList = XSharpTokenTools.GetTokenList(location, out state, includeKeywords);
                 var lastToken = tokenList.LastOrDefault(t => t.StopIndex < location.Position);
-                if (lastToken != null) 
+                if (lastToken != null)
                 {
                     if (lastToken.Type != XSharpLexer.DOT && lastToken.Type != XSharpLexer.COLON)
                     {
@@ -134,7 +130,7 @@ namespace XSharp.LanguageService
                         }
                         tokenList.RemoveAt(tokenList.Count - 1);
                         lastToken = tokenList.LastOrDefault();
-                        
+
                     }
                 }
                 var addKeywords = typedChar != '.' && typedChar != ':';
@@ -160,14 +156,22 @@ namespace XSharp.LanguageService
                     {
                         isInstance = false;
                         if (! state.HasFlag(CompletionState.Namespaces))
-                        { 
+                        {
                             state = CompletionState.Namespaces | CompletionState.Types;
                         }
                     }
-                    else 
+                    else
                     {
                         isInstance = true;
-                        state = CompletionState.Members;
+                        if (showInstanceMembers)
+                        {
+                            state |= CompletionState.InstanceMembers;
+                            state |= CompletionState.StaticMembers;
+                        }
+                        else
+                        {
+                            state |= CompletionState.StaticMembers;
+                        }
                     }
 
                     switch (lastToken.Type)
@@ -202,7 +206,7 @@ namespace XSharp.LanguageService
                             }
                             memberName = xmember.Name;
                         }
-                        else 
+                        else
                         {
                             type = xmember.ResolvedType;
                         }
@@ -252,7 +256,6 @@ namespace XSharp.LanguageService
                         switch (type.FullName)
                         {
                             case KnownTypes.XSharpUsual:
-                            case KnownTypes.VulcanUsual:
                                 type = null;
                                 break;
                         }

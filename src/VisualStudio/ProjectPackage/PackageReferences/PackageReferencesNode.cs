@@ -67,10 +67,10 @@ namespace XSharp.Project
         public XSharpPackageReferenceNode(ProjectNode projectManager, ProjectElement element)
             : base(projectManager, element)
         {
-            XSharpProjectNode XSharpProject = projectManager as XSharpProjectNode;
-            if (XSharpProject != null)
+            XSharpProjectNode prj = projectManager as XSharpProjectNode;
+            if (prj != null)
             {
-                base.Parent = XSharpProject.PackageReferenceContainerNode;
+                base.Parent = prj.GetPackageReferenceContainerNode();
             }
             this.ExcludeNodeFromScc = true;
         }

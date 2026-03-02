@@ -5,7 +5,7 @@ using System.IO
 
 
 #pragma warning disable 618
-begin namespace XSharpModel
+namespace XSharpModel
 /// <summary>
 /// This class is a wrapper around the CodeDomProvider class that is used by the XSharpCodeModel
 /// </summary>
@@ -113,4 +113,3 @@ public class XSharpCodeDomProvider INHERIT CodeDomProvider
     END METHOD
 
 end class
-end namespace

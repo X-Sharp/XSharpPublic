@@ -1,5 +1,5 @@
 ﻿
-BEGIN NAMESPACE XSharp.Settings
+NAMESPACE XSharp.Settings
 
 /// <summary>
 /// The KnownTypes class.
@@ -7,10 +7,6 @@ BEGIN NAMESPACE XSharp.Settings
 STATIC CLASS KnownTypes
 
     PUBLIC CONST SystemExtension    := "System.Runtime.CompilerServices.ExtensionAttribute" AS STRING
-    PUBLIC CONST VulcanClipper      := "Vulcan.Internal.ClipperCallingConventionAttribute" AS STRING
-    PUBLIC CONST VulcanClassLibrary := "Vulcan.Internal.VulcanClassLibraryAttribute" AS STRING
-    PUBLIC CONST VulcanImplicitNS   := "Vulcan.VulcanImplicitNamespaceAttribute" AS STRING
-    PUBLIC CONST VulcanDefaultParam := "Vulcan.Internal.DefaultParameterValueAttribute" as STRING
     PUBLIC CONST XSharpClipper      := "XSharp.Internal.ClipperCallingConventionAttribute" AS STRING
     PUBLIC CONST XSharpClassLibrary := "XSharp.Internal.ClassLibraryAttribute" AS STRING
     PUBLIC CONST XSharpImplicitNS   := "XSharp.ImplicitNamespaceAttribute" AS STRING
@@ -23,16 +19,6 @@ STATIC CLASS KnownTypes
     PUBLIC CONST DateType           := "__Date" AS STRING
     PUBLIC CONST PszType            := "__Psz" AS STRING
     PUBLIC CONST SymbolType         := "__Symbol" AS STRING
-
-    PUBLIC CONST VulcanArray        := "Vulcan.__Array" AS STRING
-    PUBLIC CONST VulcanCodeblock    := "Vulcan._CodeBlock" AS STRING
-    PUBLIC CONST VulcanDate         := "Vulcan.__VODate" AS STRING
-    PUBLIC CONST VulcanFloat        := "Vulcan.__VOFloat" AS STRING
-    PUBLIC CONST VulcanPSZ          := "Vulcan.__Psz" AS STRING
-    PUBLIC CONST VulcanSymbol       := "Vulcan.__Symbol" AS STRING
-    PUBLIC CONST VulcanUsual        := "Vulcan.__Usual" AS STRING
-    PUBLIC CONST VulcanUsualType    := "Vulcan.UsualType" AS STRING
-    PUBLIC CONST VulcanWinBool      := "Vulcan.__WinBool" AS STRING
 
 
     PUBLIC CONST XSharpArray        := "XSharp.__Array" AS STRING
@@ -51,7 +37,7 @@ STATIC CLASS KnownTypes
     PUBLIC CONST XSharpVOFloat      := "XSharp.__VOFloat" AS STRING
     PUBLIC CONST XSharpWinBool      := "XSharp.__WinBool" AS STRING
     PUBLIC CONST XSharpWinDate      := "XSharp.__WinDate" AS STRING
-    
+
     PUBLIC CONST SystemArray        := "System.Array"  AS STRING
     PUBLIC CONST SystemBoolean      := "System.Boolean"  AS STRING
     PUBLIC CONST SystemByte         := "System.Byte"     AS STRING
@@ -83,4 +69,3 @@ STATIC CLASS KnownTypes
 
 
 END CLASS
-END NAMESPACE // XSharpModel.Support

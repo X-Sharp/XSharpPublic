@@ -141,7 +141,6 @@ STATIC CLASS XDatabase
         RETURN lResult
 
     STATIC METHOD SetPragmas(oConn AS DbConnection) AS VOID
-        CHECKIFOPEN
         BEGIN LOCK oConn
             TRY
                 Log("Set the pragmas for the database")
@@ -547,7 +546,6 @@ STATIC CLASS XDatabase
 
     STATIC METHOD ValidateSchema( Connection AS DbConnection) AS LOGIC
         LOCAL lOk AS LOGIC
-        CHECKIFOPEN FALSE
         lOk := TRUE
         BEGIN LOCK Connection
             Log("Validate database schema start")
@@ -616,7 +614,7 @@ STATIC CLASS XDatabase
             TRY
                 USING VAR cmd := CreateCommand("SELECT FullName from OpenDesignerFiles", oConn)
                 USING VAR rdr := cmd:ExecuteReader()
-                DO WHILE rdr:Read() 
+                DO WHILE rdr:Read()
                     VAR name := rdr:GetString(0)
                     result:Add(name)
                 ENDDO
@@ -1733,7 +1731,7 @@ STATIC CLASS XDatabase
             TRY
                 USING VAR oCmd := CreateCommand(stmt, oConn)
                 USING VAR rdr := oCmd:ExecuteReader()
-                DO WHILE rdr:Read() 
+                DO WHILE rdr:Read()
                     result:Add(CreateCommentTask(rdr))
                 ENDDO
             CATCH e AS Exception

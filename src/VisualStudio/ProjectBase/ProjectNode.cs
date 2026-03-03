@@ -10,6 +10,15 @@
  * ***************************************************************************/
 
 
+using Community.VisualStudio.Toolkit;
+
+using EnvDTE;
+
+using Microsoft.Build.Execution;
+using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -18,26 +27,22 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Xml;
-using EnvDTE;
-using Microsoft.Build.Execution;
-using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using MSBuildExecution = Microsoft.Build.Execution;
+
+using File = System.IO.File;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using IServiceProvider = System.IServiceProvider;
 using MSBuild = Microsoft.Build.Evaluation;
 using MSBuildConstruction = Microsoft.Build.Construction;
+using MSBuildExecution = Microsoft.Build.Execution;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
-using System.Reflection;
-using Community.VisualStudio.Toolkit;
-using File = System.IO.File;
 
 namespace Microsoft.VisualStudio.Project
 {

@@ -32,7 +32,7 @@ namespace XSharp.LanguageService
         internal static void Start()
         {
             try
-            { 
+            {
             if (!active ||
                 log2debugger != XSettings.EnableDebugLogging ||
                 log2file != XSettings.EnableFileLogging)
@@ -94,6 +94,8 @@ namespace XSharp.LanguageService
                 {
                     Log.Information(singleline);
                     Log.Information("Current solution: " + sol.FullPath);
+                    if (! XSolution.IsOpen)
+                        XSolution.Open(sol.FullPath);
                     // we only want to enum projects when the solution explorer window is already visible
                     bool enumProjects = ! isOpening;
                     if ( enumProjects)

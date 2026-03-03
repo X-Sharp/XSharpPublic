@@ -180,11 +180,18 @@ NAMESPACE XSharpModel
                 SELF:Clear()
             ENDIF
         ENDIF
-    METHOD NofityClients as VOID
+    METHOD NotifyClients as VOID
         IF ContentsChanged != NULL
             SELF:ContentsChanged()
         ENDIF
         RETURN
+
+    METHOD Parse() AS VOID
+        IF System.IO.File.Exists(SELF:FullPath)
+            LOCAL cSource AS STRING
+            cSource := System.IO.File.ReadAllText(SELF:FullPath)
+            SELF:ParseContents(cSource)
+        ENDIF
 
     METHOD ParseContents(cSource := "" AS STRING) AS VOID
         //
@@ -203,6 +210,7 @@ NAMESPACE XSharpModel
                     XSettings.Exception(exception)
                 END TRY
             END USING
+            SELF:NotifyClients()
             SELF:WriteOutputMessage("<<-- ParseContents()")
         ENDIF
 

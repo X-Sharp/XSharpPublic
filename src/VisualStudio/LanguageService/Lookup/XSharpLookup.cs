@@ -190,6 +190,20 @@ namespace XSharp.LanguageService
         }
         public static XSourceMemberSymbol FindMember(int nLine, XFile file)
         {
+            var member = _FindMemberWorker(nLine, file);
+            if (member != null)
+                return member;
+            file.Parse();
+            member = _FindMemberWorker(nLine, file);
+            if (member != null)
+                return member;
+            WriteOutputMessage(string.Format("Cannot find member at 0 based line {0} in file {0} .", nLine, file.FullPath));
+            return null;
+        }
+
+        static XSourceMemberSymbol _FindMemberWorker(int nLine, XFile file)
+        {
+
             var member = FindEntity(nLine, file);
             if (member is XSourceMemberSymbol)
             {
@@ -225,9 +239,6 @@ namespace XSharp.LanguageService
             {
                 return symbol.XMembers.LastOrDefault();
             }
-
-            WriteOutputMessage(string.Format("Cannot find member at 0 based line {0} in file {0} .", nLine, file.FullPath));
-
             return null;
         }
 

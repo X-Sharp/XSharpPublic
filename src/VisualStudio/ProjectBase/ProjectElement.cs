@@ -73,6 +73,9 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region properties
+
+        public bool IsImported => item != null && item.IsImported;
+
         public string ItemName
         {
             get
@@ -136,7 +139,7 @@ namespace Microsoft.VisualStudio.Project
 
             // create and add the item to the project
 
-            this.item = project.BuildProject.AddItem(itemType, Microsoft.Build.Evaluation.ProjectCollection.Escape(itemPath))[0];
+            this.item = project.BuildProject.AddItem(itemType, ProjectCollection.Escape(itemPath))[0];
             if (itemType != ProjectFileConstants.Folder)
                 this.itemProject.SetProjectFileDirty(true);
             this.RefreshProperties();
@@ -177,10 +180,10 @@ namespace Microsoft.VisualStudio.Project
             if(!deleted && item != null)
             {
                 deleted = true;
-                if (!item.IsImported)
+                if (!IsImported)
                 {
-                itemProject.BuildProject.RemoveItem(item);
-                this.itemProject.SetProjectFileDirty(true);
+                    itemProject.BuildProject.RemoveItem(item);
+                    this.itemProject.SetProjectFileDirty(true);
                 }
             }
             itemProject = null;
@@ -195,7 +198,11 @@ namespace Microsoft.VisualStudio.Project
         public void SetMetadata(string attributeName, string attributeValue)
         {
             Debug.Assert(String.Compare(attributeName, ProjectFileConstants.Include, StringComparison.OrdinalIgnoreCase) != 0, "Use rename as this won't work");
-
+            if (IsImported)
+            {
+                Logger.Debug($"Try to set attribute {attributeName} to value {attributeValue} for Imported item");
+                return;
+            }
             if(this.IsVirtual)
             {
                 // For virtual node, use our virtual property collection

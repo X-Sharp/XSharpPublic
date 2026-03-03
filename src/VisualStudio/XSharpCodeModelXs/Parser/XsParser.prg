@@ -450,7 +450,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             IF SELF:SaveToDisk
                 _file:SaveToDatabase()
             ENDIF
-            _file:NofityClients()
+            _file:NotifyClients()
         ENDIF
     PRIVATE METHOD AddNameSpaceToUsing(name as STRING) AS VOID
         var pos  := name:LastIndexOf(".")

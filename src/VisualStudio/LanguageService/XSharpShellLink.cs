@@ -21,8 +21,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-using VSLangProj;
-
 using XSharp.Settings;
 
 using XSharpModel;
@@ -42,6 +40,7 @@ namespace XSharp.LanguageService
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                Logger.Information("Initialize XSharpShellLink");
                 VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_OnBeforeOpenSolution;
                 VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
                 VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
@@ -50,6 +49,8 @@ namespace XSharp.LanguageService
                 VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
                 VS.Events.SolutionEvents.OnBeforeCloseProject += SolutionEvents_OnBeforeCloseProject;
                 VS.Events.SolutionEvents.OnAfterRenameProject += SolutionEvents_OnAfterRenameProject;
+                VS.Events.DocumentEvents.Closed += DocumentEvents_Closed;
+
 
 #if LIBRARYMANAGER
 
@@ -69,6 +70,7 @@ namespace XSharp.LanguageService
                 {
                     SolutionEvents_OnAfterOpenSolution(sol);
                 }
+                Logger.Information("Initialized XSharpShellLink");
             });
 
         }
@@ -225,7 +227,7 @@ namespace XSharp.LanguageService
                 dte = await VS.GetRequiredServiceAsync<EnvDTE.DTE, EnvDTE.DTE>();
                 if (dte != null)
                     sol4 = dte.Solution as Solution4;
-                if (sol4 != null) 
+                if (sol4 != null)
                     build = sol4.SolutionBuild;
                 if ( build != null)
                 {
@@ -233,7 +235,7 @@ namespace XSharp.LanguageService
                 }
 
             });
-                
+
             if (startupprojects != null)
             {
                 var projects = await VS.Solutions.GetAllProjectsAsync();
@@ -338,7 +340,27 @@ namespace XSharp.LanguageService
 
         #endregion
 
-
+        private static void DocumentEvents_Closed(string document)
+        {
+            // Remove document from OrphanedFilesProject
+            // So it can be opened in normal project afterwards
+            // when possible
+            if (!IsXSharpProject(document))
+            {
+                Logger.Information("Languageservice.DocumentEvents_Closed " + document ?? "(none)");
+                var xfile = XSolution.FindFile(document);
+                if (xfile != null && xfile.Project.Name == OrphanedFilesProject.OrphanName)
+                {
+                    XSolution.OrphanedFilesProject.RemoveFile(document);
+                }
+            }
+        }
+        static bool IsXSharpProject(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return false;
+            return string.Equals(System.IO.Path.GetExtension(fileName), ".xsproj", StringComparison.OrdinalIgnoreCase);
+        }
         private void ShellEvents_ShutdownStarted()
         {
             XSolution.IsClosing = true;
@@ -399,12 +421,12 @@ namespace XSharp.LanguageService
         }
 
 
-        bool IsXSharpProject(string fileName)
-        {
-            if (string.IsNullOrEmpty(fileName))
-                return false;
-            return string.Equals(System.IO.Path.GetExtension(fileName), ".xsproj", StringComparison.OrdinalIgnoreCase);
-        }
+        //bool IsXSharpProject(string fileName)
+        //{
+        //    if (string.IsNullOrEmpty(fileName))
+        //        return false;
+        //    return string.Equals(System.IO.Path.GetExtension(fileName), ".xsproj", StringComparison.OrdinalIgnoreCase);
+        //}
 
 #endregion
 
@@ -455,19 +477,11 @@ namespace XSharp.LanguageService
             Logger.Information("Closed solution: " + solutionName);
             Logger.SingleLine();
             solutionName = "";
+            XSharpXMLDocTools.Close();
         }
 
         private void SolutionEvents_OnAfterOpenSolution(Solution solution)
         {
-            if (solution is Solution sol)
-            {
-                var file = sol.FullPath;
-                if (!string.IsNullOrEmpty(file))
-                {
-                    XSolution.Open(file);
-                }
-            }
-
             Logger.SingleLine();
             Logger.Information("Opened Solution: " + solution?.FullPath ?? "");
             Logger.SingleLine();
@@ -515,6 +529,11 @@ namespace XSharp.LanguageService
             Logger.Information("Opening Solution: " + solutionFileName ?? "");
             Logger.SingleLine();
             solutionName = solutionFileName;
+            if (!string.IsNullOrEmpty(solutionName) && File.Exists(solutionName))
+            {
+                XSolution.Open(solutionName);
+            }
+
         }
         #endregion
 

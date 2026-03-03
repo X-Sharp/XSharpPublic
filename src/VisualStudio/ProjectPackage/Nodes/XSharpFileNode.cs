@@ -209,16 +209,7 @@ namespace XSharp.Project
              if (this.IsImported)
              {
                  // to exclude an imported file we need to remove
-                 var fileName = ProjectMgr.GetRelativePath(this.Url);
-                 var item = ProjectMgr.CreateMsBuildFileItem(fileName, this.ItemType);
-                 var xml = item.Item.Xml;
-                 if (xml != null)
-                 {
-                     xml.Include = null;
-                     xml.Remove = fileName;
-                     ProjectMgr.SetProjectFileDirty(true);
-                     ProjectMgr.BuildProject.ReevaluateIfNecessary();
-                 }
+                 this.CreateRemoveItem();
              }
              //if (this.FileType == XFileType.SourceCode)
              {
@@ -308,6 +299,8 @@ namespace XSharp.Project
                             }
                             if (SubType != null && this.ItemNode.GetMetadata(ProjectFileConstants.SubType) != SubType)
                             {
+                                if (IsImported)
+                                    CreateUpdateItem();
                                 this.ItemNode.SetMetadata(ProjectFileConstants.SubType, SubType);
                                 this.ItemNode.RefreshProperties();
                                 this.UpdateHasDesigner();
@@ -319,6 +312,9 @@ namespace XSharp.Project
             }
             if (this.FileType == XFileType.TextTemplate)
             {
+                if (IsImported)
+                    CreateUpdateItem();
+
                 this.ItemNode.SetMetadata(ProjectFileConstants.Generator, "TextTemplatingFileGenerator");
                 this.ItemNode.RefreshProperties();
             }
@@ -471,7 +467,7 @@ namespace XSharp.Project
             // In that case the path is the path from the base project folder
             string parent = this.ItemNode.GetMetadata(ProjectFileConstants.Include);
             parent = Path.GetFileName(parent);
-            if (!this.IsNonMemberItem)
+            if (!this.IsNonMemberItem && !IsImported)
             {
                 string parentPath = Path.GetDirectoryName(Path.GetFullPath(this.Url));
                 string childPath = Path.GetDirectoryName(Path.GetFullPath(dependent.Url));
@@ -479,7 +475,7 @@ namespace XSharp.Project
                 {
                     dependent.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parent);
                 }
-                else
+                else if (!IsImported)
                 {
                     string projectPath = this.ProjectMgr.ProjectFolder;
                     Uri projectFolder = new Uri(projectPath);
@@ -595,6 +591,56 @@ namespace XSharp.Project
                 return HasSubType(ProjectFileAttributeValue.UserControl);
             }
         }
+
+        private bool CreateUpdateItem()
+        {
+            var item = ProjectMgr.CreateMsBuildFileItem(this.ItemNode.Item.EvaluatedInclude, this.ItemType);
+            ProjectMgr.BuildProject.MarkDirty();
+            ProjectMgr.BuildProject.ReevaluateIfNecessary();
+            var items = ProjectMgr.BuildProject.Items.Where(i => !i.IsImported && i.ItemType == this.ItemType);
+            foreach (var i in items)
+            {
+                if (i.EvaluatedInclude == ItemNode.Item.EvaluatedInclude)
+                {
+                    var xml = i.Xml;
+                    if (xml != null)
+                    {
+                        var temp = xml.Include;
+                        xml.Include = null;
+                        xml.Update = temp;
+                    }
+                    this.ItemNode = new ProjectElement(this.ProjectMgr, i, false);
+                    this.ProjectMgr.SetProjectFileDirty(true);
+                    return true;
+                }
+            }
+            return false;
+        }
+        private bool CreateRemoveItem()
+        {
+            var item = ProjectMgr.CreateMsBuildFileItem(this.ItemNode.Item.EvaluatedInclude, this.ItemType);
+            ProjectMgr.BuildProject.MarkDirty();
+            ProjectMgr.BuildProject.ReevaluateIfNecessary();
+            var items = ProjectMgr.BuildProject.Items.Where(i => !i.IsImported).ToList();
+            foreach (var i in items)
+            {
+                if (i.ItemType == this.ItemType && i.EvaluatedInclude == ItemNode.Item.EvaluatedInclude)
+                {
+                    var xml = i.Xml;
+                    if (xml != null)
+                    {
+                        var temp = xml.Include;
+                        xml.Include = null;
+                        xml.Remove = temp;
+                    }
+                    this.ItemNode = new ProjectElement(this.ProjectMgr, i, false);
+                    this.ProjectMgr.SetProjectFileDirty(true);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public override int SortPriority
         {
             get
@@ -629,6 +675,8 @@ namespace XSharp.Project
                 return _fileType;
             }
         }
+
+
 
         private void CheckItemType()
         {
@@ -683,8 +731,9 @@ namespace XSharp.Project
             {
                 try
                 {
+                    if (IsImported)
+                        CreateUpdateItem();
                     ItemNode.SetMetadata(ProjectFileConstants.SubType, value);
-                    // Don't forget to update...
                     UpdateHasDesigner();
                 }
                 catch (Exception)
@@ -701,7 +750,11 @@ namespace XSharp.Project
             }
             set
             {
+
+                if (IsImported)
+                    CreateUpdateItem();
                 ItemNode.SetMetadata(ProjectFileConstants.Generator, value);
+                UpdateHasDesigner();
             }
         }
 

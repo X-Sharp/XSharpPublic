@@ -1,13 +1,13 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
+  "author": "XSharp",
   "classifications": [ "Common" ],
-  "Identity": "XSharp.ClassFox",
-  "Name": "ClassFox",
+  "identity": "XSharp.ClassFox",
+  "name": "ClassFox",
   "description": "An empty class definition using the VFP Class syntax",
   "SourceName": "ClassFox1",
-  "ShortName": "xsclassfoxi",
-  "Tags": {
+  "shortName": "xsclassfoxi",
+  "tags": {
     "language": "X#",
     "type": "item",
     "icon": "template.png",

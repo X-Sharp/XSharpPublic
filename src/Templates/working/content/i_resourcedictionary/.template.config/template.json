@@ -1,13 +1,13 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
-  "Classifications": ["WPF"],
-  "Identity": "XSharp.WPF.ResourceDictionary",
-  "Name": "Resource Dictionary (WPF)",
+  "author": "XSharp",
+  "classifications": ["WPF"],
+  "identity": "XSharp.WPF.ResourceDictionary",
+  "name": "Resource Dictionary (WPF)",
   "description": "XAML Resource Dictionary",
   "SourceName": "ResourceDictionary1",
-  "ShortName": "xsresourcedictionaryi",
-  "Tags": {
+  "shortName": "xsresourcedictionaryi",
+  "tags": {
     "language": "X#",
     "type": "item",
     "icon": "template.png",

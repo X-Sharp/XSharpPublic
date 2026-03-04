@@ -1,13 +1,13 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
-  "Classifications": ["WPF"],
-  "Identity": "XSharp.WPF.Window",
-  "Name": "Window (WPF)",
+  "author": "XSharp",
+  "classifications": ["WPF"],
+  "identity": "XSharp.WPF.Window",
+  "name": "Window (WPF)",
   "description": "Windows Presentation Foundation window",
   "SourceName": "WPFWindow1",
-  "ShortName": "xswindowi",
-  "Tags": {
+  "shortName": "xswindowi",
+  "tags": {
     "language": "X#",
     "type": "item",
     "icon": "template.png",

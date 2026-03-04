@@ -1,13 +1,13 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
-  "Classifications": [ "VoBinary" ],
-  "Identity": "XSharp.VOMenu",
-  "Name": "VOMenu",
+  "author": "XSharp",
+  "classifications": [ "VoBinary" ],
+  "identity": "XSharp.VOMenu",
+  "name": "VOMenu",
   "description": "An empty VO Menu",
   "SourceName": "VOMenu",
-  "ShortName": "xsvomenui",
-  "Tags": {
+  "shortName": "xsvomenui",
+  "tags": {
     "language": "X#",
     "type": "item",
     "icon": "template.png",
@@ -37,7 +37,8 @@
           }
         ]
       },
-      "continueOnError": true
+      "continueOnError": true,
+      "manualInstructions": []
     }
   ]
 }

@@ -1,13 +1,13 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
-  "Classifications": [ "WinForms" ],
-  "Identity": "XSharp.FormSimple",
-  "Name": "Windows Forms Simple Form",
+  "author": "XSharp",
+  "classifications": [ "WinForms" ],
+  "identity": "XSharp.FormSimple",
+  "name": "Windows Forms Simple Form",
   "description": "A simple Windows Forms Form without designer.prg",
   "SourceName": "SimpleForm1",
-  "ShortName": "xsformsimplei",
-  "Tags": {
+  "shortName": "xsformsimplei",
+  "tags": {
     "language": "X#",
     "type": "item",
     "icon": "template.png",

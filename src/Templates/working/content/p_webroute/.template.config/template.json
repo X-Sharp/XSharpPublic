@@ -1,7 +1,7 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
-  "classifications": [ "Web", "WebAPI", "Web API", "API", "Service", "X#" ],
+  "author": "XSharp",
+  "classifications": [ "Web", "Web API", "API", "Service", "X#", "Cloud" ],
   "identity": "XSharpBV.WebRoute.XSharp.SDK",
   "name": "WebApp Application - RESTful with Attributes (SDK)",
   "description": "A SDK Style project for creating a RESTful application that can run on .NET on Windows, Linux and macOS. This application is using Attributes for routing.",
@@ -11,6 +11,25 @@
     "language": "X#",
     "type": "project"
   },
+  "primaryOutputs": [
+    {
+      "path": "XSharp.WebRoute.xsproj"
+    }
+  ],
   "preferNameDirectory": true,
-  "defaultName": "xswebroute1"
+  "defaultName": "xswebroute1",
+  "postActions": [
+    {
+      "id": "restore",
+      "condition": "",
+      "description": "Restore NuGet packages required by this project.",
+      "manualInstructions": [
+        {
+          "text": "Run 'dotnet restore'"
+        }
+      ],
+      "actionId": "210D431B-A78B-4D2F-B762-4ED3E3EA9025",
+      "continueOnError": true
+    }
+  ]
 }

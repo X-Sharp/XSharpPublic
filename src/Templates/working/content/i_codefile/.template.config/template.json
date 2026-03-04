@@ -1,13 +1,13 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
+  "author": "XSharp",
   "classifications": [ "Common" ],
-  "Identity": "XSharp.CodeFile",
-  "Name": "CodeFile",
+  "identity": "XSharp.CodeFile",
+  "name": "CodeFile",
   "description": "An empty Code File",
   "SourceName": "CodeFile",
-  "ShortName": "xscodefilei",
-  "Tags": {
+  "shortName": "xscodefilei",
+  "tags": {
     "language": "X#",
     "type": "item",
     "icon": "template.png",

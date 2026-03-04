@@ -1,19 +1,20 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
-  "Classifications": [
+  "author": "XSharp",
+  "classifications": [
     "Windows",
+    "Android",
     "Linux",
     "MacOS",
     "Console",
     "Visual FoxPro"
   ],
-  "Identity": "XSharp.VFPConsole.SDK",
-  "Name": "FoxPro Console Application (SDK)",
+  "identity": "XSharp.VFPConsole.SDK",
+  "name": "FoxPro Console Application (SDK)",
   "description": "A SDK Style project for creating a X# command-line application in the Visual FoxPro Dialect.",
   "SourceName": "XSharp.VFPConsole",
-  "ShortName": "xsvfpconsole",
-  "Tags": {
+  "shortName": "xsvfpconsole",
+  "tags": {
     "language": "X#",
     "type": "project",
     "icon": "template.png",

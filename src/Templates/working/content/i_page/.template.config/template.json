@@ -1,13 +1,13 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
+  "author": "XSharp",
   "classifications": [ "WPF" ],
-  "Identity": "XSharp.WPF.Page",
-  "Name": "Page (WPF)",
+  "identity": "XSharp.WPF.Page",
+  "name": "Page (WPF)",
   "description": "Windows Presentation Foundation page",
   "SourceName": "Page1",
-  "ShortName": "xspagei",
-  "Tags": {
+  "shortName": "xspagei",
+  "tags": {
     "language": "X#",
     "type": "item",
     "icon": "template.png",

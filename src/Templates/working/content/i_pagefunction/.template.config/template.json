@@ -1,13 +1,13 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
+  "author": "XSharp",
   "classifications": [ "WPF" ],
-  "Identity": "XSharp.WPF.PageFunction",
-  "Name": "Page Function (WPF)",
+  "identity": "XSharp.WPF.PageFunction",
+  "name": "Page Function (WPF)",
   "description": "Windows Presentation Foundation page function",
   "SourceName": "PageFunction1",
-  "ShortName": "xspagefunctioni",
-  "Tags": {
+  "shortName": "xspagefunctioni",
+  "tags": {
     "language": "X#",
     "type": "item",
     "icon": "template.png",

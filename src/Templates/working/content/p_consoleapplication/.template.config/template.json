@@ -1,18 +1,19 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
-  "Classifications": [
+  "author": "XSharp",
+  "classifications": [
     "Windows",
+    "Android",
     "Linux",
     "MacOS",
     "Console"
   ],
-  "Identity": "XSharp.ConsoleApplication.SDK",
-  "Name": "Console Application (SDK)",
+  "identity": "XSharp.ConsoleApplication.SDK",
+  "name": "Console Application (SDK)",
   "description": "A SDK Style project for creating a X# command-line application in the core dialect.",
   "SourceName": "XSharp.ConsoleApplication",
-  "ShortName": "xsconsoleapplication",
-  "Tags": {
+  "shortName": "xsconsoleapplication",
+  "tags": {
     "language": "X#",
     "type": "project"
   },

@@ -1,18 +1,19 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
-  "Classifications": [
+  "author": "XSharp",
+  "classifications": [
     "Windows",
+    "Android",
     "Linux",
     "MacOS",
     "Library"
   ],
-  "Identity": "XSharp.ClassLibrary.SDK",
-  "Name": "Class Library Core Dialect without Runtime (SDK)",
+  "identity": "XSharp.ClassLibrary.SDK",
+  "name": "Class Library Core Dialect without Runtime (SDK)",
   "description": "A SDK Style project for creating a X# class library (.dll) for the Core dialect with no dependencies on the runtime",
   "SourceName": "XSharp.ClassLibrary",
-  "ShortName": "xsclasslibrary",
-  "Tags": {
+  "shortName": "xsclasslibrary",
+  "tags": {
     "language": "X#",
     "type": "project",
     "icon": "template.png",

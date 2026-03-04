@@ -6,10 +6,11 @@
     "Desktop",
     "VO"
   ],
-  "identity": "XSharp.VOMDIApplication.SDK",
   "name": "VO MDI Application (SDK)",
+  "defaultName": "VOMDIApp",
   "description": "A SDK Style project for creating a VO MDI application in the VO Dialect.",
   "sourceName": "XSharp.VOMDIApplication",
+  "identity": "XSharp.VOMDIApplication.SDK",
   "shortName": "xsvomdiapplication",
   "tags": {
     "language": "X#",
@@ -18,7 +19,6 @@
     "is-icon-path": "true"
   },
   "preferNameDirectory": true,
-  "defaultName": "VOMDIApp",
   "symbols": {
     "TargetFrameworkOverride": {
       "type": "parameter",

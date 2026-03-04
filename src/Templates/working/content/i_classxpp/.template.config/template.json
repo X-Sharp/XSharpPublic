@@ -1,13 +1,13 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
+  "author": "XSharp",
   "classifications": [ "Common" ],
-  "Identity": "XSharp.ClassXpp",
-  "Name": "ClassXpp",
+  "identity": "XSharp.ClassXpp",
+  "name": "ClassXpp",
   "description": "An empty class definition using the Xbase\u002B\u002B class syntax",
   "SourceName": "ClassXpp",
-  "ShortName": "xsclassxppi",
-  "Tags": {
+  "shortName": "xsclassxppi",
+  "tags": {
     "language": "X#",
     "type": "item",
     "icon": "template.png",

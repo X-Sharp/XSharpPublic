@@ -1,19 +1,20 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "Author": "XSharp",
-  "Classifications": [
+  "author": "XSharp",
+  "classifications": [
     "Windows",
+    "Android",
     "Linux",
     "MacOS",
     "Console",
     "VO"
   ],
-  "Identity": "XSharp.VOConsole.SDK",
-  "Name": "VO Console Application (SDK)",
+  "identity": "XSharp.VOConsole.SDK",
+  "name": "VO Console Application (SDK)",
   "description": "A SDK Style project for creating a X# command-line application in the VO Dialect.",
   "SourceName": "XSharp.VOConsole",
-  "ShortName": "xsvoconsole",
-  "Tags": {
+  "shortName": "xsvoconsole",
+  "tags": {
     "language": "X#",
     "type": "project",
     "icon": "template.png",

@@ -354,7 +354,7 @@ FUNCTION DbDelete () AS LOGIC STRICT
 FUNCTION DbDelete (uArea IN USUAL) AS LOGIC STRICT
     RETURN (uArea)->DbDelete()
 
-// Delete with AutoLock for FoxPro support
+// Delete with automatic locking for FoxPro support
 FUNCTION __DbDelete () AS LOGIC STRICT
     TRY
         DbAutoLock()

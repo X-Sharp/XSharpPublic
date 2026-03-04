@@ -244,9 +244,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_oRdd:_dbfError(Subcodes.EDB_EXPR_WIDTH,Gencode.EG_SYNTAX,  "DBFCDX.EvaluateExpressions", FALSE)
                     return FALSE
                 elseif strKey:Length == 0
-                    var sMessage := __ErrString(VOErrors.INDEX_EXPRESSION_ZEROLENGTH,SELF:_KeyExpr)
-                    SELF:_oRdd:_dbfError(Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX, "DBFCDX.EvaluateExpressions",sMessage ,FALSE)
-                    return FALSE
+                    if SELF:RDD Is DBFVFP
+                        foreach var fld in fields
+                            var fldInfo := SELF:_oRdd:_Fields[fld-1]
+                            strKey += String{' ', fldInfo:Length}
+                        next
+                        oKey := strKey
+                    else
+                        var sMessage := __ErrString(VOErrors.INDEX_EXPRESSION_ZEROLENGTH,SELF:_KeyExpr)
+                        SELF:_oRdd:_dbfError(Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX, "DBFCDX.EvaluateExpressions",sMessage ,FALSE)
+                        return FALSE
+                    endif
                 endif
             ENDIF
             SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oKey)

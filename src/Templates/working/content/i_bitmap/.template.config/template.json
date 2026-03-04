@@ -1,7 +1,7 @@
 {
   "$schema": "http://json.schemastore.org/template",
   "Author": "XSharp",
-  "Classifications": [],
+  "Classifications": ["Resource"],
   "Identity": "XSharp.Bitmap",
   "Name": "Bitmap",
   "description": "A Bitmap file",
@@ -12,7 +12,7 @@
     "type": "item",
     "icon": "template.png",
     "is-icon-path": "true"
-    
+
   },
   "preferNameDirectory": true,
   "defaultName": "Bitmap.bmp"

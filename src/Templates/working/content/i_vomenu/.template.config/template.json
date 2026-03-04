@@ -1,7 +1,7 @@
 {
   "$schema": "http://json.schemastore.org/template",
   "Author": "XSharp",
-  "Classifications": [],
+  "Classifications": [ "VoBinary" ],
   "Identity": "XSharp.VOMenu",
   "Name": "VOMenu",
   "description": "An empty VO Menu",
@@ -29,7 +29,7 @@
     {
       "description": "Adding mandatory NuGet package (only from Visual Studio)",
       "actionId": "B1755282-45A0-4C2E-A430-D6E9419131AF",
-	  "condition": "(HostIdentifier == \"vs\")",
+      "condition": "(HostIdentifier == \"vs\")",
       "args": {
         "packages": [
           {

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json.schemastore.org/template",
   "Author": "XSharp",
-  "Classifications": [],
+  "Classifications": [ "WinForms" ],
   "Identity": "XSharp.Form",
   "Name": "Windows Forms Form",
   "description": "A Windows form with separate designer.prg",

@@ -3,6 +3,8 @@
   "Author": "XSharp",
   "Classifications": [
     "Windows",
+    "Linux",
+    "MacOS",
     "Library",
     "Harbour"
   ],

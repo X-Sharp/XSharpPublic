@@ -1,7 +1,7 @@
 {
   "$schema": "http://json.schemastore.org/template",
   "Author": "XSharp",
-  "Classifications": [],
+  "classifications": [ "Common" ],
   "Identity": "XSharp.Class",
   "Name": "Class",
   "description": "An empty class definition",

@@ -76,9 +76,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, MessageID.IDS_Text.Localize(), "/dialect:");
                     }
-                    else if (!TryParseDialect(value, XSharpDialect.Core, out dialect))
+                    else if (!TryParseDialect(value, XSharpDialect.Core, out dialect, out var error))
                     {
-                        AddDiagnostic(diagnostics, ErrorCode.ERR_InvalidDialect, value);
+                        if (error != ErrorCode.Unknown)
+                        {
+                            AddDiagnostic(diagnostics, error, value);
+                        }
+                        else
+                        {
+                            AddDiagnostic(diagnostics, ErrorCode.ERR_InvalidDialect, value);
+                        }
                     }
                     options.Dialect = dialect;
                     break;
@@ -434,8 +441,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return handled;
         }
 
-        private static bool TryParseDialect(string str, XSharpDialect defaultDialect, out XSharpDialect dialect)
+        private static bool TryParseDialect(string str, XSharpDialect defaultDialect, out XSharpDialect dialect, out ErrorCode error)
         {
+            error = ErrorCode.Unknown;
             if (str == null)
             {
                 dialect = defaultDialect;
@@ -450,13 +458,22 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case "vo":
                     dialect = XSharpDialect.VO;
+#if PUBLIC
+                    error = ErrorCode.ERR_DialectNotSupportedInPublicBuild;
+                    return false;
+#else
                     return true;
+#endif
 
                 case "vulcan":
                 case "vulcan.net":
                     dialect = XSharpDialect.Vulcan;
+#if PUBLIC
+                    error = ErrorCode.ERR_DialectNotSupportedInPublicBuild;
+                    return false;
+#else
                     return true;
-
+#endif
                 case "dbase":
                     dialect = XSharpDialect.dBase;
                     return true;

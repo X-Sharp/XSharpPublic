@@ -33,13 +33,9 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DefineConstants>$(DefineConstants);NDEBUG;TRACE;</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Public|netstandard2.0|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Public'">
     <DefineConstants>$(DefineConstants);COMMITHASH;COMPILERCORE;NET35PLUS;NET40PLUS;NET45PLUS;NETSTANDARD;NETSTANDARD20;PORTABLE;XSHARP;PUBLIC</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Public|net9.0|AnyCPU'">
-    <DefineConstants>$(DefineConstants);COMMITHASH;COMPILERCORE;NET35PLUS;NET40PLUS;NET45PLUS;NETSTANDARD;NETSTANDARD20;PORTABLE;XSHARP;PUBLIC</DefineConstants>
-  </PropertyGroup>
-
   <ItemGroup>
     <!--
       Analyzers that will be used to analyze projects that references

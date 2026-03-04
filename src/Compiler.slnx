@@ -7,8 +7,12 @@
     <Platform Name="x64" />
   </Configurations>
   <Folder Name="/CSharp/">
-    <Project Path="Compiler/src/Tools/csc/csc.csproj" />
-    <Project Path="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
+    <Project Path="Compiler/src/Tools/csc/csc.csproj" >
+	<BuildType Solution="Public|*" Project="Debug" />
+	</Project>
+    <Project Path="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" >
+	<BuildType Solution="Public|*" Project="Debug" />
+	</Project>
     <Project Path="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj">
       <BuildType Solution="Public|*" Project="Debug" />
     </Project>
@@ -27,11 +31,9 @@
   <Folder Name="/Roslyn/Tools/" Id="927886e5-8481-2654-9a6e-b65d0cba1fd6">
     <Project Path="Roslyn/src/Tools/Source/CompilerGeneratorTools/Source/BoundTreeGenerator/CompilersBoundTreeGenerator.csproj">
       <BuildType Solution="Public|*" Project="Debug" />
-      <Platform Project="x64" />
     </Project>
     <Project Path="Roslyn/src/Tools/Source/CompilerGeneratorTools/Source/CSharpErrorFactsGenerator/CSharpErrorFactsGenerator.csproj">
       <BuildType Solution="Public|*" Project="Debug" />
-      <Platform Project="x64" />
     </Project>
     <Project Path="Roslyn/src/Tools/Source/CompilerGeneratorTools/Source/CSharpSyntaxGenerator/CSharpSyntaxGenerator.csproj">
       <BuildType Solution="Public|*" Project="Debug" />
@@ -75,19 +77,22 @@
   </Folder>
   <Folder Name="/XSharp/" />
   <Folder Name="/XSharp/Build/" Id="2dca04a6-e0f9-d770-ac74-3f1fd3f9552f">
-    <Project Path="Compiler/src/Compiler/XSharpBuildTask/XSharp.Build.csproj" />
+    <Project Path="Compiler/src/Compiler/XSharpBuildTask/XSharp.Build.csproj" >
+	<BuildType Solution="Public|*" Project="Debug" />
+	</Project>
   </Folder>
   <Folder Name="/XSharp/Compiler/" Id="e0df48e9-298a-2769-7ee0-b8e75888becc">
     <Project Path="Compiler/src/Compiler/xsc/xsc.csproj">
       <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
-      <BuildType Solution="Public|x64" Project="Debug" />
+      <BuildType Solution="Public|*" Project="Debug" />
     </Project>
     <Project Path="Compiler/src/Compiler/XSCompiler/XSCompiler.csproj">
       <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+	  <BuildType Solution="Public|*" Project="Debug" />
     </Project>
     <Project Path="Compiler/src/Compiler/XSharpCodeAnalysis/XSharpCodeAnalysis.csproj">
       <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
@@ -99,11 +104,13 @@
       <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+	  <BuildType Solution="Public|*" Project="Debug" />
     </Project>
     <Project Path="Compiler/src/Compiler/XSharpEvaluator/XSharpEvaluator.csproj">
       <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+	  <BuildType Solution="Public|*" Project="Debug" />
     </Project>
   </Folder>
   <Folder Name="/XSharp/NuGet/" Id="be2843ab-9320-73b9-bbe3-73b6005d785f">
@@ -116,6 +123,7 @@
       <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+	  <BuildType Solution="Public|*" Project="Debug" />
     </Project>
   </Folder>
   <Folder Name="/XSharp/Scripting/" Id="ca6f962b-cb36-c82f-ba67-10ab26d274be">
@@ -123,10 +131,12 @@
       <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
+	  <BuildType Solution="Public|*" Project="Debug" />
     </Project>
     <Project Path="Compiler/src/Scripting/xsi/xsi.csproj">
       <BuildDependency Project="Compiler/src/Compiler/xsc/xsc.csproj" />
       <BuildDependency Project="Compiler/src/Compiler/XSCompiler/XSCompiler.csproj" />
+	  <BuildType Solution="Public|*" Project="Debug" />
     </Project>
   </Folder>
 </Solution>

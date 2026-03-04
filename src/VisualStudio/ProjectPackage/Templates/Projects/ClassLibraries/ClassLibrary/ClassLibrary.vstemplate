@@ -15,8 +15,6 @@
     <PreviewImage>ClassLibrary.png</PreviewImage>
     <LanguageTag Value="X#" />
     <PlatformTag Value="Windows" />
-    <PlatformTag Value="Linux" />
-    <PlatformTag Value="MacOS" />
     <ProjectTypeTag Value="Library" />
 
   </TemplateData>

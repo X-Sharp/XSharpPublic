@@ -38,8 +38,6 @@ INTERNAL PROCEDURE RddInit() AS VOID _INIT3
     RuntimeState.MemoBlockSize := 64
 RETURN
 
-
-
 Function SetFoxCollation(cCollation as STRING) AS STRING
     local cOld := RuntimeState.GetValue<STRING>(Set.CollateFox) AS STRING
     local aAllowed as STRING[]
@@ -87,7 +85,6 @@ function ICase(lCondition, eResult, lCondition2, eResult2, eOtherwiseResult) as 
     // when they call this function with < 2 parameters then we have no idea what return type they expect...
     return NIL
 
-
 FUNCTION __VfpStr( resid AS DWORD , args PARAMS OBJECT[]) AS STRING
     // Strings are stored in a Managed resource with a name
     // the name matches the enum names
@@ -106,9 +103,6 @@ FUNCTION __VfpStr( resid AS DWORD , args PARAMS OBJECT[]) AS STRING
         strMessage := "Cannot find string for error number "+resid:ToString()
     ENDIF
     RETURN strMessage
-
-
-
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/vartype/*" />
 FUNCTION VarType( eExpression AS USUAL) AS STRING
@@ -141,5 +135,3 @@ FUNCTION VarType( eExpression AS USUAL, lNullDataType AS LOGIC) AS STRING
         result := ValType(eExpression)
     endif
     RETURN result
-
-

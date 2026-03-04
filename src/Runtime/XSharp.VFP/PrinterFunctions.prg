@@ -28,16 +28,13 @@ LOCAL iCount AS INT
 
 		nValue := (INT) nValue  // note: VFP allows to pass a float in the range from 0.00 to 1.00 !
 
-
 		IF nValue > 0
 			ArrayName := __FoxRedim(ArrayName, (DWORD) iCount, 5 )
 		ELSE
 			ArrayName := __FoxRedim(ArrayName, (DWORD) iCount, 2 )
 		ENDIF
 
-
 		FOR VAR i := 0 TO iCount - 1
-
 			cPrinterName := PrinterSettings.InstalledPrinters[i]
 			VAR oProperty := ManagementObject{"Win32_Printer.DeviceID='" + cPrinterName + "'"}
 
@@ -49,9 +46,7 @@ LOCAL iCount AS INT
 				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 3  ] := IIF ( oProperty["Comment"]    == NULL , "" , (string) oProperty["Comment"] )
 				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 4  ] := IIF ( oProperty["Location"]   == NULL , "" , (string) oProperty["Location"] )
 			ENDIF
-
 		NEXT
-
 	ENDIF
 
 	RETURN iCount

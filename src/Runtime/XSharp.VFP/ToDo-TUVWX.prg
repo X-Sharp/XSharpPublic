@@ -45,8 +45,8 @@ FUNCTION XmlToCursor( eExpression , cCursorName , nFlags ) AS LONG
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/xmlupdategram/*" />
-[FoxProFunction("XMLUPDATEFRAM", FoxFunctionCategory.General, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION XmlUpdatefram( cAliasList , nFlags , cSchemaLocation) AS STRING
+[FoxProFunction("XMLUPDATEGRAM", FoxFunctionCategory.General, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
+FUNCTION XmlUpdategram( cAliasList , nFlags , cSchemaLocation) AS STRING
     THROW NotImplementedException{}
     // RETURN ""
 

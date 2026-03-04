@@ -12,6 +12,7 @@ USING XSharp.Internal
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlconnect/*" />
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlconnectoverload/*" />
+[FoxProFunction("SQLCONNECT", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION SqlConnect(nStatementHandle AS LONG) AS LONG
    RETURN SqlFunctions.SqlConnect(nStatementHandle)
 
@@ -21,9 +22,9 @@ FUNCTION SqlConnect(cDataSourceName AS STRING, cUserID := NIL AS USUAL, cPasswor
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlstringconnect/*" />
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlstringconnectoverload/*" />
+[FoxProFunction("SQLSTRINGCONNECT", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION SqlStringConnect( lShared AS LOGIC) AS LONG
     RETURN SqlFunctions.SqlStringConnect("", lShared)
-
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlstringconnect/*" />
 FUNCTION SqlStringConnect( cConnectString AS STRING, lShared AS LOGIC) AS LONG
@@ -33,44 +34,43 @@ FUNCTION SqlStringConnect( cConnectString AS STRING, lShared AS LOGIC) AS LONG
 FUNCTION SqlStringConnect( cConnectString AS STRING) AS LONG
     RETURN SqlFunctions.SqlStringConnect(cConnectString, FALSE)
 
-
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlcancel/*" />
+[FoxProFunction("SQLCANCEL", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION SqlCancel( nStatementHandle AS LONG) AS LONG
     RETURN SqlFunctions.SqlCancel(nStatementHandle)
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqldisconnect/*" />
+[FoxProFunction("SQLDISCONNECT", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION SqlDisconnect( nStatementHandle AS LONG) AS LONG
     RETURN SqlFunctions.SqlDisconnect( nStatementHandle)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlexec/*" />
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(TRUE)];
+[FoxProFunction("SQLEXEC", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := "" AS STRING, cCursorName := "SQLRESULT" AS STRING, aCountInfo := NULL_ARRAY  AS ARRAY) AS LONG
     RETURN SqlFunctions.SqlExec(nStatementHandle, cSQLCommand, cCursorName, aCountInfo)
 
-
-
 /// <summary>-- todo --</summary>
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlidledisconnect/*" />
+[FoxProFunction("SQLIDLEDISCONNECT", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION SqlIdleDisconnect( nStatementHandle AS LONG) AS LONG
     return SqlFunctions.SqlIdleDisconnect ( nStatementHandle)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlmoreresults/*" />
+[FoxProFunction("SQLMORERESULTS", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION SqlMoreResults( nStatementHandle AS LONG, cCursorName := NIL AS USUAL , aCountInfo := NIL AS USUAL) AS LONG
     return SqlFunctions.SqlMoreResults(nStatementHandle, cCursorName, aCountInfo)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlprepare/*" />
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(TRUE)];
+[FoxProFunction("SQLPREPARE", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION SqlPrepare( nStatementHandle AS LONG, cSQLCommand AS STRING, cCursorName := "SQLRESULT" AS STRING) AS LONG
    return SqlFunctions.SqlPrepare ( nStatementHandle, cSQLCommand, cCursorName)
 
-
 INTERNAL FUNCTION GetStatement(nStatementHandle AS LONG) AS XSharp.VFP.SQLStatement
     RETURN SQLSupport.FindStatement(nStatementHandle)
-
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetfactory/*" />
 FUNCTION SqlSetFactory() AS ISqlFactory
@@ -93,7 +93,6 @@ FUNCTION SqlSetFactory(cFactory AS STRING ) AS ISqlFactory
     ENDIF
     RETURN oResult
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetfactory/*" />
 FUNCTION SqlSetFactory(oFactory AS ISqlFactory) AS ISqlFactory
     LOCAL oResult := SQLSupport.Factory AS ISqlFactory
@@ -102,12 +101,14 @@ FUNCTION SqlSetFactory(oFactory AS ISqlFactory) AS ISqlFactory
     ENDIF
     RETURN oResult
 
-
 #region Transaction Support
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlcommit/*" />
+[FoxProFunction("SQLCOMMIT", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION SqlCommit( nStatementHandle AS LONG) AS LONG
     RETURN SqlFunctions.SqlCommit(nStatementHandle)
+
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlrollback/*" />
+[FoxProFunction("SQLROLLBACK", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION SqlRollBack( nStatementHandle AS LONG) AS LONG
     RETURN SqlFunctions.SqlRollBack(nStatementHandle )
 
@@ -117,6 +118,7 @@ FUNCTION SqlRollBack( nStatementHandle AS LONG) AS LONG
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlgetprop/*" />
 /// <seealso cref="SQLProperty" />
+[FoxProFunction("SQLGETPROP", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION SqlGetProp( nStatementHandle AS LONG, cSetting AS STRING ) AS USUAL
     RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
 
@@ -129,6 +131,7 @@ FUNCTION SqlGetProp( nStatementHandle AS LONG, nSetting AS LONG ) AS USUAL
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetprop/*" />
 /// <seealso cref="SQLProperty" />
+[FoxProFunction("SQLSETPROP", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION SqlSetProp( nStatementHandle AS LONG, cSetting AS STRING, eExpression AS USUAL) AS LONG
     RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)
 
@@ -141,21 +144,20 @@ FUNCTION SqlSetProp( nStatementHandle AS LONG, nSetting AS LONG, eExpression AS 
 
 #endregion
 
-
-
 #region MetaData
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqltables/*" />
-
+[FoxProFunction("SQLTABLES", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION SqlTables( nStatementHandle AS LONG , cTableTypes:= "" AS STRING, cCursorName := "SQLRESULT" AS STRING) AS LONG
     RETURN SqlFunctions.SqlTables(nStatementHandle , cTableTypes, cCursorName)
+
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlcolumns/*" />
+[FoxProFunction("SQLCOLUMNS", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION SqlColumns( nStatementHandle AS LONG, cTableName := "" AS STRING, cType:= "FOXPRO" AS STRING, cCursorName:= "SQLRESULT" AS STRING) AS USUAL
     RETURN SqlFunctions.SqlColumns( nStatementHandle, cTableName, cType, cCursorName)
 
-
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asqlhandles/*" />
+[FoxProFunction("ASQLHANDLES", FoxFunctionCategory.Array, FoxEngine.SQL, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION ASqlHandles (ArrayName AS ARRAY, nStatementHandle := NIL AS USUAL) AS DWORD
     LOCAL aResult AS ARRAY
     IF IsNumeric(nStatementHandle)
@@ -177,16 +179,12 @@ FUNCTION ASqlHandles (ArrayName AS ARRAY, nStatementHandle := NIL AS USUAL) AS D
     ENDIF
     RETURN ALen(aResult)
 
-
 FUNCTION SqlParameters( nStatementHandle AS LONG, oParams AS OBJECT) AS LONG
     RETURN SqlFunctions.SqlParameters(nStatementHandle, oParams)
 
-
-
 #endregion
 
-
-
-
-
-
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/clearresultset/*" />
+[FoxProFunction("CLEARRESULTSET", FoxFunctionCategory.SQL, FoxEngine.SQL, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
+FUNCTION ClearResultSet() AS LOGIC
+    THROW NotImplementedException{}

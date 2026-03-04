@@ -8,7 +8,6 @@
 USING System.Windows.Forms
 #endif
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/messagebox/*" />
 [FoxProFunction("MESSAGEBOX", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION MessageBox( eMessageText AS USUAL, nDialogBoxType := 0 AS LONG, cTitleBarText := "" AS STRING,nTimeOut := 0 AS LONG) AS LONG
@@ -37,7 +36,6 @@ FUNCTION MessageBox( eMessageText AS USUAL, nDialogBoxType := 0 AS LONG, cTitleB
     RETURN System.Windows.Forms.MessageBox.Show(cMessage, cTitleBarText, nButton, nIcon, nDefault)
 #endif
 #ifndef NET5_0_OR_GREATER
-
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sysmetric/*" />
 [FoxProFunction("SYSMETRIC", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
@@ -171,6 +169,5 @@ FUNCTION SysMetric( nScreenElement AS LONG) AS LONG
 
     END SWITCH
     RETURN 0
-
 
 #endif

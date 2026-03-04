@@ -72,6 +72,7 @@
     <Compile Include="ClassFunctions.prg" />
     <Compile Include="BitFunctions.prg" />
     <Compile Include="Commands.prg" />
+    <Compile Include="LanguageCoreWrappers.prg" />
     <Compile Include="Cursors\DbFunctions.prg" />
     <Compile Include="Database\DbFunctions.prg" />
     <Compile Include="DebugFunctions.prg" />
@@ -82,8 +83,10 @@
     <Compile Include="GatherScatter.prg" />
     <Compile Include="GetWord.prg" />
     <Compile Include="Keyboard.prg" />
+    <Compile Include="MacroWrappers.prg" />
     <Compile Include="NotSupported.prg" />
     <Compile Include="PrinterFunctions.prg" />
+    <Compile Include="RuntimeCoreWrappers.prg" />
     <Compile Include="SQL\EmbeddedSql.prg" />
     <Compile Include="SQL\SQLFunctions.prg" />
     <Compile Include="SystemFunctions.prg" />
@@ -121,8 +124,10 @@
     </Compile>
     <Compile Include="UI\AutoCloseMessageBox.prg" />
     <Compile Include="UI\Dialogs.prg" />
+    <Compile Include="UI\UIAndWindows.prg" />
     <Compile Include="Win32.prg" />
     <Compile Include="WindowFunctions.prg" />
+    <Compile Include="WorkAreaWrappers.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Classes" />

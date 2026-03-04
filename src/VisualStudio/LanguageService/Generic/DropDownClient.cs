@@ -164,8 +164,6 @@ namespace XSharp.LanguageService
                 textView.Closed += TextView_Closed;
                 if (textView.Caret != null)
                     textView.Caret.PositionChanged += Caret_PositionChanged;
-                else
-                    ;
                 StartOnIdleAsync(textViewAdapter).FireAndForget();
 
 
@@ -709,7 +707,7 @@ namespace XSharp.LanguageService
             
             if (nLine == -1 && _activeView != null)
             {
-                nLine = _activeView.Caret.Position.BufferPosition.GetContainingLineNumber();
+                nLine = _activeView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;
             }
             loadTypeCombos(nLine);
             _selectedTypeIndex = temp;

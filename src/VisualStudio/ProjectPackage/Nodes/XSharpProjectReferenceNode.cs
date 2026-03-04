@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.Project;
 using System.Diagnostics;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Imaging;
+using System;
 
 namespace XSharp.Project
 {
@@ -29,17 +30,22 @@ namespace XSharp.Project
         {
             AddProject();
         }
+        private long lastCheck = -1;
         public override string Caption
         {
             get
             {
                 if (this.referencedProject == null)
                 {
-                    this.referencedProject = XSharpProjectNode.FindProject(this.Url);
-                    if (this.referencedProject != null)
+                    if (lastCheck == -1 || (DateTime.Now.Ticks - lastCheck) > TimeSpan.TicksPerSecond * 5)
                     {
-                        this.IsUnloaded = false;
-                        base.ReferencedProjectName = this.referencedProject.Caption;
+                        lastCheck = DateTime.Now.Ticks;
+                        this.referencedProject = XSharpProjectNode.FindProject(this.Url);
+                        if (this.referencedProject != null)
+                        {
+                            //this.IsUnloaded = false;
+                            base.ReferencedProjectName = this.referencedProject.Caption;
+                        }
                     }
                 }
                 return base.Caption;

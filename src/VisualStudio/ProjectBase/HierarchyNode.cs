@@ -3402,6 +3402,11 @@ namespace Microsoft.VisualStudio.Project
         {
             for (HierarchyNode n = this.FirstChild; n != null; n = n.NextSibling)
             {
+                if (n == n.NextSibling)
+                {
+                    // this should not happen, but we have seen it
+                    break;
+                }
                 if (n is T)
                 {
                     T nodeAsT = (T)n;

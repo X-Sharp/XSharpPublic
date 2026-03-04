@@ -124,7 +124,6 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Formatting\Formatting.cs" />
     <Compile Include="LanguageService\XSharpLanguageService.cs" />
-    <Compile Include="EventHandlers.cs" />
     <Compile Include="Generic\DropDownClient.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />
     <Compile Include="LightBulb\CreateStubAction.cs" />

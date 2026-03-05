@@ -4,13 +4,13 @@
 // See License.txt in the project root for license information.
 //
 
-
 using Microsoft.Win32
 using System.Drawing
 using System.Reflection
 using System.Windows.Forms
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getcolor/*" />
+[FoxProFunction("GETCOLOR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION GetColor( nDefaultColorNumber ) AS INT CLIPPER
     LOCAL hRegKey AS RegistryKey
     LOCAL iColorref := -1 AS INT
@@ -20,20 +20,15 @@ FUNCTION GetColor( nDefaultColorNumber ) AS INT CLIPPER
     ENDIF
     VAR iCustomColorsArr := INT[]{16} // contains the colorrefs of the sixteen user defined colors
 
-
     IF RuntimeState.RunningOnWindows
 
         IF ( hRegKey := Registry.CurrentUser:OpenSubKey( cRegKeyName , TRUE )) != NULL
 
             // fills iCustomColorsArr with values read from the registry.
             iCustomColorsArr := __ReadColors ( hRegKey )
-
             hRegKey:Close()
-
         ELSE
-
             hRegKey := Registry.CurrentUser:CreateSubKey(cRegKeyName )
-
             // the default values are sixteen WHITE colorrefs
             var white        := 16777215
             iCustomColorsArr :=	<INT> { white, white, white, white, white, white , white, white, ;
@@ -44,11 +39,8 @@ FUNCTION GetColor( nDefaultColorNumber ) AS INT CLIPPER
             __WriteColors ( hRegKey , iCustomColorsArr )
 
             hRegKey:Close()
-
         ENDIF
-
     ENDIF
-
 
     VAR oDlg := ColorDialog{}
     oDlg:Color := ColorTranslator.FromWin32(nDefaultColorNumber)
@@ -60,21 +52,15 @@ FUNCTION GetColor( nDefaultColorNumber ) AS INT CLIPPER
 
         iColorref := ColorTranslator.ToWin32(oDlg:Color)
 
-
         IF RuntimeState.RunningOnWindows
-
             IF ( hRegKey := Registry.CurrentUser:OpenSubKey( cRegKeyName , TRUE )) != NULL
-
                 // translates the content of the "oDlg:CustomColors" array to a byte[]{64} array. The content of the
                 // byte array is written to the registry.
                 __WriteColors ( hRegKey , oDlg:CustomColors )
 
                 hRegKey:Close()
-
             ENDIF
-
         ENDIF
-
     ENDIF
     #region Local Functions
 
@@ -117,7 +103,6 @@ FUNCTION GetColor( nDefaultColorNumber ) AS INT CLIPPER
                 iCustomColorsArr[j] := ColorTranslator.ToWin32(oColor)
                 //		? bRegistryArr[i] , bRegistryArr[i+1] , bRegistryArr[i+2] , iCustomColorsArr[j]
                 j ++
-
             NEXT
         ELSE
             iCustomColorsArr :=INT[]{0}
@@ -127,17 +112,15 @@ FUNCTION GetColor( nDefaultColorNumber ) AS INT CLIPPER
 #endregion
 RETURN iColorref
 
-
-
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getfont/*" />
+[FoxProFunction("GETFONT", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION GetFont(cFontName,nFontSize,cFontStyle,nFontCharSet) AS STRING CLIPPER
-LOCAL oDlg AS FontDialog
-LOCAL cSelectedFont := "" AS STRING
-LOCAL eFontstyle AS FontStyle
-LOCAL lReturnCharSet AS LOGIC
-LOCAL oMi AS MethodInfo
-LOCAL iParamCount AS INT
-
+    LOCAL oDlg AS FontDialog
+    LOCAL cSelectedFont := "" AS STRING
+    LOCAL eFontstyle AS FontStyle
+    LOCAL lReturnCharSet AS LOGIC
+    LOCAL oMi AS MethodInfo
+    LOCAL iParamCount AS INT
 
 	iParamCount := PCount()
 
@@ -192,7 +175,6 @@ LOCAL iParamCount AS INT
 	oDlg:MinSize := 4
 	oDlg:MaxSize := 127
 
-
 	lReturnCharSet := IIF ( IsNil ( nFontCharSet ) , FALSE , TRUE )
 
 	IF oMi != NULL .and. ! lReturnCharSet
@@ -221,14 +203,11 @@ LOCAL iParamCount AS INT
 
 	ENDIF
 
-
 	IF oDlg:ShowDialog() == DialogResult.OK
-
 		cSelectedFont := oDlg:Font:Name +"," + ;
 			((INT) System.Math.Round(oDlg:Font:SizeInPoints,MidpointRounding.AwayFromZero)):ToString()+"," +;
 			FontStyleToString (oDlg:Font:Style) + ;
 			iif ( lReturnCharSet , "," + oDlg:Font:GdiCharSet:ToString() , "" )
-
 	ENDIF
 
 	//RETURN cSelectedFont  // https://github.com/X-Sharp/XSharpPublic/issues/1017
@@ -281,6 +260,3 @@ END FUNCTION
 
 INTERNAL DEFINE CF_NOSCRIPTSEL := 0x00800000L
 INTERNAL DEFINE CF_PRINTERFONTS := 0x00000002L
-
-
-

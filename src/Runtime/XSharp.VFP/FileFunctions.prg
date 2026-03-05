@@ -17,7 +17,6 @@ DEFINE S2F_FLAG_UNICODE_FORMATS     = S2F_FLAG_UNICODE_LE | S2F_FLAG_UTF8 | S2F_
 DEFINE S2F_FLAG_UNICODE_TEXT        = 0x0100
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mkdir/*" />
-[FoxProFunction("MKDIR", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION MkDir(cPath AS STRING) AS INT
     LOCAL nRet AS INT
     IF System.IO.Directory.Exists(cPath)
@@ -33,7 +32,7 @@ FUNCTION MkDir(cPath AS STRING) AS INT
     RETURN nRet
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/strtofile/*" />
-[FoxProFunction("STRTOFILE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
+[FoxProFunction("STRTOFILE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Partial, FoxCriticality.High)];
 FUNCTION StrToFile (cExpression AS STRING, cFileName AS STRING) AS INT
     RETURN StrToFile(cExpression, cFileName, S2F_FLAG_OVERWRITE)
 
@@ -268,7 +267,7 @@ FUNCTION DriveType( cDrive as string) as DWORD
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/fullpath/*" />
-[FoxProFunction("FULLPATH", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
+[FoxProFunction("FULLPATH", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Partial, FoxCriticality.High)];
 FUNCTION FullPath( cFileName1 as string, cFileName2 := "" as STRING) AS STRING
     IF File(cFileName1)
         RETURN FPathName()

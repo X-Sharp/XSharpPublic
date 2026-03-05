@@ -10,6 +10,7 @@ USING System.Text
 using System.Diagnostics
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/program/*" />
+[FoxProFunction("PROGRAM", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Program( nLevel, lShowSignature) AS USUAL CLIPPER
     local frameCount as LONG
     local iLevel as LONG

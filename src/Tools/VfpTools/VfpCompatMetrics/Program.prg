@@ -1,10 +1,10 @@
-﻿
-USING System
+﻿USING System
 USING System.IO
 USING System.Reflection
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
+USING System.Web.Script.Serialization
 
 
 BEGIN NAMESPACE VfpCompatMetrics
@@ -20,6 +20,23 @@ BEGIN NAMESPACE VfpCompatMetrics
         PROPERTY Notes AS STRING AUTO
         PROPERTY MethodName AS STRING AUTO
     END CLASS
+
+    // JSON models (Deserialization)
+    class FoxUniverseRoot
+        property Language as string auto
+        property Version as string auto
+        property TotalFunctions as int auto
+        property Functions as List<UniverseFunction> auto
+    end class
+
+    class UniverseFunction
+        property Name as string auto
+        property Category as string auto
+        property Engine as string auto
+        property Criticality as string auto
+        property IsExtension as logic auto
+        property IsIntrinsic as logic auto
+    end class
 
     CLASS ValidationIssue
         PROPERTY Level AS STRING AUTO // "ERROR", "WARNING", "ALERT"
@@ -111,30 +128,43 @@ BEGIN NAMESPACE VfpCompatMetrics
     // 4. Validation engine
     // =======================================================
     CLASS ValidationEngine
-        STATIC METHOD Validate(data AS List<FoxFunctionMetadata>) AS List<ValidationIssue>
+        STATIC METHOD Validate(data AS List<FoxFunctionMetadata>, universe as FoxUniverseRoot) AS List<ValidationIssue>
             VAR issues := List<ValidationIssue>{}
-            VAR nameSet := HashSet<STRING>{}
+            VAR nameMap := Dictionary<string, FoxFunctionMetadata>{StringComparer.OrdinalIgnoreCase}
+
+            // Detect orphans
+            var universeSet := HashSet<string>{StringComparer.OrdinalIgnoreCase}
+            foreach uFunc as UniverseFunction in universe:Functions
+                if !String.IsNullOrWhiteSpace(uFunc:Name)
+                    universeSet:Add(uFunc:Name)
+                endif
+            next
 
             FOREACH item AS FoxFunctionMetadata IN data
-                // 1. Empty name
                 IF String.IsNullOrWhiteSpace(item:Name)
                     issues:Add(ValidationIssue{}{ Level := "ERROR", FunctionName := "<Unknown>", Message := "Unnamed attribute in the technical method: " + item:MethodName })
-                ELSE
-                    // 2. Duplicated names
-                    VAR upperName := item:Name:ToUpper()
-                    IF nameSet:Contains(upperName)
-                        issues:Add(ValidationIssue{}{ Level := "ERROR", FunctionName := item:Name, Message := "Duplicated function name. More than 1 overload was decorated." })
-                    ELSE
-                        nameSet:Add(upperName)
-                    ENDIF
+                    loop
                 ENDIF
 
-                // 3. Simple warning: marked as "Full" but with notes/limitations
+                // 1. Detect Orphanhood (it's in code but not in JSON)
+                if !universeSet:Contains(item:Name)
+                    issues:Add(ValidationIssue{}{ Level := "ALERT", FunctionName := item:Name, Message := "ORPHAN: Decorated in code but missing from vfp_universe.json" })
+                endif
+
+                // 2. Duplicated
+                IF nameMap:ContainsKey(item:Name)
+                    var original := nameMap[item:Name]
+                    issues:Add(ValidationIssue{}{ Level := "ERROR", FunctionName := item:Name, Message := "DUPLICATED: Already decorated in '" + original:MethodName + "'" })
+                ELSE
+                    nameMap:Add(item:Name, item)
+                ENDIF
+
+
+                // 3. Warnings and Debt
                 IF item:Status == "Full" && !String.IsNullOrWhiteSpace(item:Notes)
                     issues:Add(ValidationIssue{}{ Level := "WARNING", FunctionName := item:Name, Message := "State is 'Full' but contains limitation notes." })
                 ENDIF
 
-                // 4. Critical alert: High Criticality but is a Stub
                 IF item:Criticality == "High" && item:Status == "Stub"
                     issues:Add(ValidationIssue{}{ Level := "ALERT", FunctionName := item:Name, Message := "CRITICAL TECHNICAL DEBT: Essential function marked only as Stub"})
                 ENDIF
@@ -148,39 +178,118 @@ BEGIN NAMESPACE VfpCompatMetrics
     // 5. Metrics Engine
     // =========================================================================
     CLASS MetricsEngine
-        PROPERTY TotalFunctions AS INT AUTO
-        PROPERTY StatusCounts AS Dictionary<STRING, INT> AUTO
-        PROPERTY EngineCounts AS Dictionary<STRING, INT> AUTO
-        PROPERTY CategoryCounts AS Dictionary<STRING, INT> AUTO
-        PROPERTY CompatibilityScore AS REAL8 AUTO
+        PROPERTY TotalUniverse AS INT AUTO
+        property ImplementedCount as int auto
+        property MissingCount as int auto
+        property TotalExtensions as int auto
+        property TotalIntrinsics as int auto              
+        property MissingFunctions as List<string> auto    
 
-        CONSTRUCTOR(data AS List<FoxFunctionMetadata>)
-            SELF:StatusCounts := Dictionary<STRING, INT>{}
-            SELF:EngineCounts := Dictionary<STRING, INT>{}
-            SELF:CategoryCounts := Dictionary<STRING, INT>{}
-            SELF:TotalFunctions := data:Count
+        property StatusCounts as Dictionary<string, int> auto
+        property EngineCoverage as Dictionary<string, string> auto
 
-            LOCAL totalWeight := 0.0 AS REAL8
-            LOCAL earnedWeight := 0.0 AS REAL8
+        property StructuralCoverage as real8 auto
+        property TrueCompatibilityScore as real8 auto
 
-            FOREACH item AS FoxFunctionMetadata IN data
-                SELF:IncrementDict(SELF:StatusCounts, item:Status)
-                SELF:IncrementDict(SELF:EngineCounts, item:Engine)
-                SELF:IncrementDict(SELF:CategoryCounts, item:Category)
+        constructor(runtimeData as List<FoxFunctionMetadata>, universeRoot as FoxUniverseRoot)
+            self:StatusCounts := Dictionary<string, int>{StringComparer.OrdinalIgnoreCase}
+            self:EngineCoverage := Dictionary<string, string>{}
+            self:MissingFunctions := List<string>{}
 
-                VAR cWeight := SELF:GetCriticalityWeight(item:Criticality)
-                VAR sWeight := SELF:GetStatusWeight(item:Status)
+            var engImplCounts := Dictionary<string, int>{StringComparer.OrdinalIgnoreCase}
+            var engUnivCounts := Dictionary<string, int>{StringComparer.OrdinalIgnoreCase}
 
-                totalWeight += (1.0 * cWeight)
-                earnedWeight += (sWeight * cWeight)
-            NEXT
+            self:TotalUniverse := universeRoot:Functions:Count
+            self:MissingCount := 0
+            self:ImplementedCount := 0
+            self:TotalExtensions := 0
+            self:TotalIntrinsics := 0
 
-            IF totalWeight > 0.0
-                SELF:CompatibilityScore := earnedWeight / totalWeight
-            ELSE
-                SELF:CompatibilityScore := 0.0
-            ENDIF
-        END CONSTRUCTOR
+            var implementedMap := Dictionary<string, FoxFunctionMetadata>{StringComparer.OrdinalIgnoreCase}
+            foreach rItem as FoxFunctionMetadata in runtimeData
+                if !String.IsNullOrWhiteSpace(rItem:Name) && !implementedMap:ContainsKey(rItem:Name)
+                    implementedMap:Add(rItem:Name, rItem)
+                endif
+            next
+
+            local totalWeight := 0.0 as real8
+            local earnedWeight := 0.0 as real8
+
+            foreach uItem as UniverseFunction in universeRoot:Functions
+                if uItem:IsExtension
+                    self:TotalUniverse--
+                    if implementedMap:ContainsKey(uItem:Name)
+                        self:TotalExtensions++
+                        var rItem := implementedMap[uItem:Name]
+                        self:IncrementDict(self:StatusCounts, "X# Extension")
+                    endif
+                    loop
+                endif
+                
+                if uItem:IsIntrinsic
+                    self:TotalIntrinsics++
+                    self:ImplementedCount++ // Se considera 100% implementada por ser del compilador
+
+                    self:IncrementDict(engUnivCounts, uItem:Engine)
+                    self:IncrementDict(engImplCounts, uItem:Engine)
+                    self:IncrementDict(self:StatusCounts, "Intrinsic")
+
+                    var cWeight := self:GetCriticalityWeight(uItem:Criticality)
+                    totalWeight += (1.0 * cWeight)
+                    earnedWeight += (1.0 * cWeight) // Peso 1.0 = Full compatibilidad
+                    loop
+                endif
+
+                if implementedMap:ContainsKey(uItem:Name)
+                    var rItem := implementedMap[uItem:Name]
+                    self:ImplementedCount++
+
+                    self:IncrementDict(engUnivCounts, rItem:Engine)
+                    self:IncrementDict(engImplCounts, rItem:Engine)
+                    self:IncrementDict(self:StatusCounts, rItem:Status)
+
+                    var cWeight := self:GetCriticalityWeight(rItem:Criticality)
+                    var sWeight := self:GetStatusWeight(rItem:Status)
+
+                    totalWeight += (1.0 * cWeight)
+                    earnedWeight += (sWeight * cWeight)
+                else
+                    self:MissingCount++
+                    self:MissingFunctions:Add(uItem:Name)
+                    self:IncrementDict(self:StatusCounts, "Missing")
+
+                    self:IncrementDict(engUnivCounts, uItem:Engine)
+
+                    var cWeight := self:GetCriticalityWeight(uItem:Criticality)
+                    totalWeight += (1.0 * cWeight)
+                endif
+            next
+
+            if self:TotalUniverse > 0
+                self:StructuralCoverage := ((Real8)self:ImplementedCount) / ((real8)self:TotalUniverse)
+            endif
+
+            if totalWeight > 0.0
+                self:TrueCompatibilityScore := earnedWeight / totalWeight
+            else
+                self:TrueCompatibilityScore := 0.0
+            endif
+
+            foreach kvp as KeyValuePair<string, int> in engUnivCounts:OrderByDescending({x => x:Value})
+                local engName := kvp:Key as string
+                local uniCount := kvp:Value as int
+                local impCount := 0 as int
+
+                if engImplCounts:ContainsKey(engName)
+                    impCount := engImplCounts[engName]
+                endif
+
+                local perc := 0.0 as real8
+                if uniCount > 0; perc := ((real8)impCount / (real8)uniCount) * 100.0; endif
+
+                self:EngineCoverage:Add(engName, String.Format("{0,3} / {1,-3} ({2,5:F1} %)", impCount, uniCount, perc))
+            next
+        end constructor
 
         PRIVATE METHOD IncrementDict(dict AS Dictionary<STRING, INT>, key AS STRING) AS VOID
             VAR safeKey := IIF(String.IsNullOrWhiteSpace(key), "Unspecified", key)
@@ -194,7 +303,7 @@ BEGIN NAMESPACE VfpCompatMetrics
 
         PRIVATE METHOD GetStatusWeight(@@status AS STRING) AS REAL8
             DO CASE
-                CASE @@status == "Full"; RETURN 1.0
+                CASE @@status == "Full" .OR. @@status == "Intrinsic"; RETURN 1.0
                 CASE @@status == "Partial"; RETURN 0.75
                 CASE @@status == "Changed"; RETURN 0.60
                 CASE @@status == "Stub"; RETURN 0.30
@@ -209,7 +318,7 @@ BEGIN NAMESPACE VfpCompatMetrics
                 CASE crit == "High"; RETURN 3.0
                 CASE crit == "Medium"; RETURN 2.0
                 CASE crit == "Low"; RETURN 1.0
-                OTHERWISE; RETURN 1.0 // base weight by default
+                OTHERWISE; RETURN 2.0 // medium by default
             END CASE
         END METHOD
     END CLASS
@@ -220,12 +329,38 @@ BEGIN NAMESPACE VfpCompatMetrics
     CLASS ReportPrinter
         STATIC METHOD Print(metrics AS MetricsEngine, issues AS List<ValidationIssue>) AS VOID
             Console.WriteLine("=============================================")
-            Console.WriteLine("     VISUAL FOXPRO COMPATIBILITY REPORT      ")
+            Console.WriteLine("    FORMAL VFP COMPATIBILITY AUDIT REPORT    ")
             Console.WriteLine("=============================================")
-            Console.WriteLine(String.Format("Total Instrumented Functions: {0}", metrics:TotalFunctions))
+            Console.WriteLine(String.Format("Theoretical VFP9 Universe: {0} standard functions", metrics:TotalUniverse))
+            Console.WriteLine(String.Format("VFP9 Functions Implemented: {0}", metrics:ImplementedCount))
+            Console.WriteLine(String.Format("VFP9 Functions Missing    : {0}", metrics:MissingCount))
 
-            Console.WriteLine(String.Format("Weighted Compatibility Score: {0:P2}", metrics:CompatibilityScore))
+            if metrics:TotalIntrinsics > 0
+                Console.ForegroundColor := ConsoleColor.DarkGreen
+                Console.WriteLine(String.Format("X# Compiler Intrinsics   : {0} (Resolved internally)", metrics:TotalIntrinsics))
+                Console.ResetColor()
+            endif
+
+            if metrics:TotalExtensions > 0
+                Console.ForegroundColor := ConsoleColor.Cyan
+                Console.WriteLine(String.Format("X# Custom Extensions   : {0} (Innovations)", metrics:TotalExtensions))
+                Console.ResetColor()
+            endif
             Console.WriteLine("--------------------------------------------------")
+
+            Console.WriteLine(String.Format("Structural Coverage: {0:P2} (Raw Code vs JSON)", metrics:StructuralCoverage))
+            Console.WriteLine(String.Format("TRUE WEIGHTED SCORE: {0:P2} (Implementation Quality)", metrics:TrueCompatibilityScore))
+            Console.WriteLine("--------------------------------------------------")
+
+            IF metrics:MissingCount > 0
+                Console.ForegroundColor := ConsoleColor.Red
+                Console.WriteLine(">>> MISSING FUNCTIONS (Not found in DLL & Not Intrinsic):")
+                FOREACH missingName AS STRING IN metrics:MissingFunctions
+                    Console.WriteLine("  - " + missingName)
+                NEXT
+                Console.ResetColor()
+                Console.WriteLine("--------------------------------------------------")
+            ENDIF
 
             Console.WriteLine(">>> DISTRIBUTION BY STATUS:")
             FOREACH kvp AS KeyValuePair<STRING, INT> IN metrics:StatusCounts:OrderByDescending({ x => x:Value })
@@ -233,14 +368,14 @@ BEGIN NAMESPACE VfpCompatMetrics
             NEXT
             Console.WriteLine("--------------------------------------------------")
 
-            Console.WriteLine(">>> DISTRIBUTION BY ENGINE:")
-            FOREACH kvp AS KeyValuePair<STRING, INT> IN metrics:EngineCounts:OrderByDescending({ x => x:Value })
+            Console.WriteLine(">>> HEATMAP BY ENGINE (Implemented / Known Universe):")
+            FOREACH kvp AS KeyValuePair<STRING, string> IN metrics:EngineCoverage
                 Console.WriteLine(String.Format("  - {0, -15}: {1}", kvp:Key, kvp:Value))
             NEXT
             Console.WriteLine("--------------------------------------------------")
 
             IF issues:Count > 0
-                Console.WriteLine(">>> CONSISTENCY PROBLEMS DETECTED (" + issues:Count:ToString() + "):")
+                Console.WriteLine(">>> AUDIT ISSUES DETECTED (" + issues:Count:ToString() + "):")
                 FOREACH issue AS ValidationIssue IN issues
                     LOCAL color := ConsoleColor.Yellow AS ConsoleColor
                     IF issue:Level == "ERROR"; color := ConsoleColor.Red; ENDIF
@@ -258,6 +393,53 @@ BEGIN NAMESPACE VfpCompatMetrics
             ENDIF
             Console.WriteLine("=============================================")
         END METHOD
+
+        static method PrintInventory(data as List<FoxFunctionMetadata>) as void
+            Console.WriteLine("==================================================")
+            Console.WriteLine("       VFP RUNTIME IMPLEMENTED INVENTORY          ")
+            Console.WriteLine("==================================================")
+            Console.WriteLine(String.Format("Total Functions Found: {0}", data:Count))
+            Console.WriteLine("--------------------------------------------------")
+
+            var grouped := Dictionary<string, List<FoxFunctionMetadata>>{StringComparer.OrdinalIgnoreCase}
+
+            foreach item as FoxFunctionMetadata in data
+                var eng := iif(String.IsNullOrWhiteSpace(item:Engine), "Unspecified", item:Engine)
+                if !grouped:ContainsKey(eng)
+                    grouped:Add(eng, List<FoxFunctionMetadata>{})
+                endif
+                grouped[eng]:Add(item)
+            next
+
+            foreach kvp as KeyValuePair<string, List<FoxFunctionMetadata>> in grouped:OrderBy({ x => x:Key })
+                Console.ForegroundColor := ConsoleColor.Cyan
+                Console.WriteLine(">> ENGINE: " + kvp:Key + " (" + kvp:Value:Count:ToString() + " functions)")
+                Console.ResetColor()
+
+                var sortedFuncs := kvp:Value:OrderBy({ f => f:Name })
+
+                foreach func as FoxFunctionMetadata in sortedFuncs
+                    local statusColor := ConsoleColor.Gray as ConsoleColor
+                    if func:Status == "Full"; statusColor := ConsoleColor.Green; endif
+                    if func:Status == "Stub" || func:Status == "NotSupported"; statusColor := ConsoleColor.Red; endif
+                    if func:Status == "Partial"; statusColor := ConsoleColor.Yellow; endif
+
+                    Console.Write("  - ")
+                    Console.ForegroundColor := statusColor
+                    Console.Write(String.Format("[{0, -12}] ", func:Status))
+                    Console.ResetColor()
+
+                    var crit := iif(String.IsNullOrWhiteSpace(func:Criticality), "Unspecified", func:Criticality)
+
+                    Console.WriteLine(String.Format("{0, -25} (Category: {1, -20} | Criticality: {2})", func:Name, func:Category, crit))
+                next
+                Console.WriteLine()
+            next
+
+            Console.WriteLine("==================================================")
+            Console.WriteLine("  End of Inventory")
+            Console.WriteLine("==================================================")
+        end method
     END CLASS
 
     // =========================================================================
@@ -265,27 +447,42 @@ BEGIN NAMESPACE VfpCompatMetrics
     // =========================================================================
     CLASS Program
         STATIC METHOD Start(args AS STRING[]) AS INT
+
 	        IF args:Length == 0
-                Console.WriteLine("Usage: vfpCompatMetrics <path_to_XSharp_VFP_dll>")
+                Console.WriteLine("Usage for Audit: vfpCompatMetrics <path_to_XSharp_VFP_dll> <path_to_universe_json>")
+                Console.WriteLine("Usage for Inventory: vfpCompatMetrics <path_to_XSharp_VFP_dll>")
                 RETURN 1
             ENDIF
 
             VAR asmPath := args[0]
+            var isInventoryMode := (args:Length == 1) // Si solo hay 1 argumento, es Inventario
 
             TRY
                 Console.WriteLine("Loading assembly for analysis: " + asmPath)
                 VAR asm := AssemblyLoader.Load(asmPath)
 
-                Console.WriteLine("Extracting metadata based on attributes...")
+                Console.WriteLine("Extracting runtime metadata...")
                 VAR metadataList := MetadataExtractor.Extract(asm)
 
-                Console.WriteLine("Analyzing metrics and consistency...")
-                VAR metrics := MetricsEngine{metadataList}
-                VAR issues := ValidationEngine.Validate(metadataList)
-
                 Console.Clear()
-                ReportPrinter.Print(metrics, issues)
 
+                if isInventoryMode
+                    ReportPrinter.PrintInventory(metadataList)
+                else
+                    var jsonPath := args[1]
+                    Console.WriteLine("Loading theoretical universe from JSON...")
+                    var jsonString := File.ReadAllText(jsonPath)
+
+                    var serializer := JavaScriptSerializer{}
+                    serializer:MaxJsonLength := 2147483644
+                    var universeRoot := serializer:Deserialize<FoxUniverseRoot>(jsonString)
+
+                    Console.WriteLine("Analyzing metrics against the universe...")
+                    VAR metrics := MetricsEngine{metadataList, universeRoot}
+                    VAR issues := ValidationEngine.Validate(metadataList, universeRoot)
+
+                    ReportPrinter.Print(metrics, issues)
+                endif
             CATCH ex AS Exception
                 Console.ForegroundColor := ConsoleColor.Red
                 Console.WriteLine("Fatal error during analysis:")
@@ -293,7 +490,6 @@ BEGIN NAMESPACE VfpCompatMetrics
                 Console.ResetColor()
                 RETURN -1
             END TRY
-
 
             RETURN 0
         END METHOD

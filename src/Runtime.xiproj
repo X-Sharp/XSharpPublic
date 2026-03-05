@@ -4147,6 +4147,10 @@ File = %AppPath%\LateBindingTests.prg
 FileGUID = 03063C44-A502-457D-9232-F5DAF3832370
 FileType = Code
 CopyToBin = 0
+File = %AppPath%\DbfVfpTests.prg
+FileGUID = 7F698B1F-B1CB-455C-9E1E-6E6274FF33AC
+FileType = Code
+CopyToBin = 0
 [XSharp.RT.Tests References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core
@@ -4189,7 +4193,7 @@ EnforceSelf=0
 EnforceOverride=1
 UseNativeVersion=0
 MemVar=0
-IgnoreStdDefs=1
+IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ModernSyntax=0
@@ -4967,6 +4971,8 @@ ReferenceProject = 8AF12585-EC47-448F-B2B4-0DB1F6D3C715,1,0,XSharp.VFP
 ReferenceProject = B4E2BBBD-7674-489C-9B93-9854442EB79E,1,0,XSharp.VFP.Tests
 ReferenceGAC = CLR4,System.Windows.Forms,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Web,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Web.Extensions,1,0,4.0.0.0
 [Xide.Tests.VFP Resources]
 [Xide.Tests.VFP Native Resources]
 [Xide.Tests.VFP License files]

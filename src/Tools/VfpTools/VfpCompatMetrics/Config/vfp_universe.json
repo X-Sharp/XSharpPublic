@@ -1,0 +1,2636 @@
+{
+  "Language": "Visual FoxPro",
+  "Version": "9.0 SP2",
+  "TotalFunctions": 437,
+  "Functions": [
+    {
+      "Name": "ID",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "ALLTRIM",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ASC",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "AT",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "AT_C",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ATC",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ATCC",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ATCLINE",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "ATLINE",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "BETWEEN",
+      "Category": "General",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "CHR",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "CHRTRAN",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "CHRTRANC",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "CPCONVERT",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "CTOD",
+      "Category": "DateAndTime",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "DIFFERENCE",
+      "Category": "StringAndCharacter",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DTOC",
+      "Category": "DateAndTime",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "EMPTY",
+      "Category": "General",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "EVALUATE",
+      "Category": "General",
+      "Engine": "Macro",
+      "Criticality": "High"
+    },
+    {
+      "Name": "GETWORDCOUNT",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "GETWORDNUM",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "INLIST",
+      "Category": "General",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ISALPHA",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ISDIGIT",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ISLEADBYTE",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ISLOWER",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ISUPPER",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "LEFT",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "LEFTC",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "LEN",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "LENC",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "LIKE",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "LIKEC",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "LOWER",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "LTRIM",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "MAX",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "MIN",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "NORMALIZE",
+      "Category": "General",
+      "Engine": "SQL",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "OCCURS",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "PADL",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "PADR",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "PADC",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "PROPER",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "RAT",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "RATC",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "RATLINE",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "REPLICATE",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "RIGHT",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "RIGHTC",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "RTRIM",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SOUNDEX",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "SPACE",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "STR",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "STRCONV",
+      "Category": "StringAndCharacter",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "STRTOFILE",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "STRTRAN",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "STUFF",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "STUFFC",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "SUBSTR",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SUBSTRC",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SYS",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "TEXTMERGE",
+      "Category": "StringAndCharacter",
+      "Engine": "Macro",
+      "Criticality": "High"
+    },
+    {
+      "Name": "TRANSFORM",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "TRIM",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "TXTWIDTH",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "TYPE",
+      "Category": "General",
+      "Engine": "NameResolution",
+      "Criticality": "High"
+    },
+    {
+      "Name": "UPPER",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "VARTYPE",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "CAST",
+      "Category": "General",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "CURVAL",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "CURSORTOXML",
+      "Category": "General",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "MTON",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "NTOM",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "NVL",
+      "Category": "General",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "TTOC",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "TTOD",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "VAL",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "CDOW",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "CMONTH",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "CTOT",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "DATE",
+      "Category": "DateAndTime",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "DATETIME",
+      "Category": "DateAndTime",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "DAY",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "DMY",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "DOW",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "DTOS",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "DTOT",
+      "Category": "DateAndTime",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FDATE",
+      "Category": "DateAndTime",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "FTIME",
+      "Category": "DateAndTime",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "GOMONTH",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "HOUR",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "MDY",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "MINUTE",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "MONTH",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "QUARTER",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "SEC",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SECONDS",
+      "Category": "DateAndTime",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "TIME",
+      "Category": "DateAndTime",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WEEK",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "YEAR",
+      "Category": "DateAndTime",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "COMCLASSINFO",
+      "Category": "ClassAndObject",
+      "Engine": "Interop",
+      "Criticality": "High"
+    },
+    {
+      "Name": "COMARRAY",
+      "Category": "ClassAndObject",
+      "Engine": "Interop",
+      "Criticality": "High"
+    },
+    {
+      "Name": "COMRETURNERROR",
+      "Category": "ClassAndObject",
+      "Engine": "Interop",
+      "Criticality": "High"
+    },
+    {
+      "Name": "COMPROP",
+      "Category": "ClassAndObject",
+      "Engine": "Interop",
+      "Criticality": "High"
+    },
+    {
+      "Name": "CREATEOBJECT",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "CREATEOBJECTEX",
+      "Category": "ClassAndObject",
+      "Engine": "Interop",
+      "Criticality": "High"
+    },
+    {
+      "Name": "GETOBJECT",
+      "Category": "ClassAndObject",
+      "Engine": "Interop",
+      "Criticality": "High"
+    },
+    {
+      "Name": "GETINTERFACE",
+      "Category": "ClassAndObject",
+      "Engine": "Interop",
+      "Criticality": "High"
+    },
+    {
+      "Name": "EVENTHANDLER",
+      "Category": "ClassAndObject",
+      "Engine": "Interop",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "ABS",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ACOS",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ASIN",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ATAN",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ATN2",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "BITAND",
+      "Category": "Bitwise",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "BITCLEAR",
+      "Category": "Bitwise",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "BITLSHIFT",
+      "Category": "Bitwise",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "BITNOT",
+      "Category": "Bitwise",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "BITOR",
+      "Category": "Bitwise",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "BITRSHIFT",
+      "Category": "Bitwise",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "BITSET",
+      "Category": "Bitwise",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "BITTEST",
+      "Category": "Bitwise",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "BITXOR",
+      "Category": "Bitwise",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "CEILING",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "COS",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DTOR",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "EXP",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "FLOOR",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "FV",
+      "Category": "Financial",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "INT",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "LOG",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "LOG10",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "MOD",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "PAYMENT",
+      "Category": "Financial",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "PI",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "PV",
+      "Category": "Financial",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "RAND",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ROUND",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "RTOD",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "SIGN",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "SQRT",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "TAN",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "XMLUPDATEGRAM",
+      "Category": "General",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "XMLTOCURSOR",
+      "Category": "General",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ACLASS",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ACOPY",
+      "Category": "Array",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ADATABASES",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "ADBOBJECTS",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "ADDBS",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "ADDPROPERTY",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "REMOVEPROPERTY",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ADEL",
+      "Category": "Array",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ADIR",
+      "Category": "Array",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ADLLS",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ADOCKSTATE",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "AELEMENT",
+      "Category": "Array",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "AERROR",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "AEVENTS",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "AFIELDS",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "AFONT",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "AGETCLASS",
+      "Category": "ClassAndObject",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "AGETFILEVERSION",
+      "Category": "Array",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "AINS",
+      "Category": "Array",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "AINSTANCE",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "ALANGUAGE",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ALEN",
+      "Category": "Array",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ALIAS",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ALINES",
+      "Category": "Array",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "AMEMBERS",
+      "Category": "Array",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "AMOUSEOBJ",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "ANETRESOURCES",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "APRINTERS",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "APROCINFO",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "ASCAN",
+      "Category": "Array",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ASELOBJ",
+      "Category": "ClassAndObject",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ASESSIONS",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "DataSession",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "ASORT",
+      "Category": "Array",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "ASQLHANDLES",
+      "Category": "Array",
+      "Engine": "SQL",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "ASTACKINFO",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ASUBSCRIPT",
+      "Category": "Array",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "ATAGINFO",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "AUSED",
+      "Category": "Array",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "AVCXCLASSES",
+      "Category": "ClassAndObject",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "BAR",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "BARCOUNT",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "BARPROMPT",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "BINDEVENT",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "BINTOC",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "BOF",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "CANDIDATE",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "CAPSLOCK",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "CDX",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "CHRSAW",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "CLEARRESULTSET",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "CNTBAR",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "CNTPAD",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "COL",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "COMPOBJ",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "CPCURRENT",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "CPDBF",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "CREATEBINARY",
+      "Category": "General",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "CREATEOFFLINE",
+      "Category": "Database",
+      "Engine": "SQL",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "CTOBIN",
+      "Category": "General",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "CURDIR",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "CURSORGETPROP",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "CURSORSETPROP",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "DBC",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "DBF",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "DBGETPROP",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+   {
+      "Name": "DBALIAS",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },    
+    {
+      "Name": "DBSETPROP",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "DBUSED",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "DDEABORTTRANS",
+      "Category": "General",
+      "Engine": "Interop",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DDEADVISE",
+      "Category": "General",
+      "Engine": "Interop",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DDEENABLED",
+      "Category": "General",
+      "Engine": "Interop",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DDEEXECUTE",
+      "Category": "General",
+      "Engine": "Interop",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DDEINITIATE",
+      "Category": "General",
+      "Engine": "Interop",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DDELASTERROR",
+      "Category": "General",
+      "Engine": "Interop",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DDEPOKE",
+      "Category": "General",
+      "Engine": "Interop",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DDEREQUEST",
+      "Category": "General",
+      "Engine": "Interop",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DDESETOPTION",
+      "Category": "General",
+      "Engine": "Interop",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DDESETSERVICE",
+      "Category": "General",
+      "Engine": "Interop",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DDESETTOPIC",
+      "Category": "General",
+      "Engine": "Interop",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DDETERMINATE",
+      "Category": "General",
+      "Engine": "Interop",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DEFAULTEXT",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "DELETED",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "DESCENDING",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "DIRECTORY",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "DISKSPACE",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DISPLAYPATH",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DODEFAULT",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "DRIVETYPE",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "DROPOFFLINE",
+      "Category": "Database",
+      "Engine": "SQL",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "EDITSOURCE",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "EOF",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ERROR",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "EVL",
+      "Category": "General",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "EXECSCRIPT",
+      "Category": "General",
+      "Engine": "Macro",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FCHSIZE",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "FCLOSE",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FCOUNT",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FLDCOUNT",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FCREATE",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FEOF",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FERROR",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FFLUSH",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "FGETS",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FIELD",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FILE",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FILETOSTR",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FILTER",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FKLABEL",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "FKMAX",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "FLDLIST",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "FLOCK",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FONTMETRIC",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "FOPEN",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FOR",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FORCEEXT",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "FORCEPATH",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "FOUND",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FPUTS",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FREAD",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FSEEK",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FSIZE",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FULLPATH",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "FWRITE",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "GETAUTOINCVALUE",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "GETBAR",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "GETCOLOR",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "GETCP",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "GETDIR",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "High"
+    },
+    {
+      "Name": "GETENV",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "GETFILE",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "High"
+    },
+    {
+      "Name": "GETFLDSTATE",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "GETFONT",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "GETNEXTMODIFIED",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "GETPAD",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "GETPEM",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "GETPICT",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "GETPRINTER",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "GETRESULTSET",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "GETCURSORADAPTER",
+      "Category": "CursorAndTable",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "HEADER",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "HOME",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "ICASE",
+      "Category": "General",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "IDXCOLLATE",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "IIF",
+      "Category": "General",
+      "Engine": "LanguageCore",
+      "Criticality": "High",
+      "IsIntrinsic": true      
+    },
+    {
+      "Name": "IMESTATUS",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "INDBC",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "INDEXSEEK",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "INKEY",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "High"
+    },
+    {
+      "Name": "INPUTBOX",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "High"
+    },
+    {
+      "Name": "INSMODE",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ISBLANK",
+      "Category": "General",
+      "Engine": "LanguageCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "ISCOLOR",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ISEXCLUSIVE",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ISFLOCKED",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ISMEMOFETCHED",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "ISMOUSE",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ISNULL",
+      "Category": "General",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ISPEN",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "ISREADONLY",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ISRLOCKED",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ISTRANSACTABLE",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "JUSTDRIVE",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "JUSTEXT",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "JUSTFNAME",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "JUSTPATH",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "JUSTSTEM",
+      "Category": "FileAndIO",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "KEY",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "KEYMATCH",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "LASTKEY",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "High"
+    },
+    {
+      "Name": "LINENO",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "LOADPICTURE",
+      "Category": "General",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "LOCFILE",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "LOCK",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "LOOKUP",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "LUPDATE",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "MAKETRANSACTABLE",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "MCOL",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "MDOWN",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "MDX",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "MEMLINES",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "MEMORY",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "MENU",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "MESSAGE",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "MESSAGEBOX",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "High"
+    },
+    {
+      "Name": "PADPROMPT",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "MLINE",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "MRKBAR",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "MRKPAD",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "MROW",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "MWINDOW",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "NDX",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "NEWOBJECT",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "NUMLOCK",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "OBJNUM",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "OBJTOCLIENT",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "OBJVAR",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "OEMTOANSI",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "OLDVAL",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ON",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ORDER",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "OS",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "PAD",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "PARAMETERS",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "PCOL",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "PCOUNT",
+      "Category": "General",
+      "Engine": "LanguageCore",
+      "Criticality": "High",
+      "IsIntrinsic": true
+    },
+    {
+      "Name": "PEMSTATUS",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "POPUP",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "PRIMARY",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "PRINTSTATUS",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "PRMBAR",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "PRMPAD",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "PROGRAM",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "PROMPT",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "PROW",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "PRTINFO",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "PUTFILE",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "RAISEEVENT",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "RDLEVEL",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "READKEY",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "RECCOUNT",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "RECNO",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "RECSIZE",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "REFRESH",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "RELATION",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "REQUERY",
+      "Category": "Database",
+      "Engine": "SQL",
+      "Criticality": "High"
+    },
+    {
+      "Name": "RGB",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "RGBSCHEME",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "RLOCK",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "ROW",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "SAVEPICTURE",
+      "Category": "UIAndWindow",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "SCHEME",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "SCOLS",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "SEEK",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SELECT",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SET",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SETFLDSTATE",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SETRESULTSET",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "SIN",
+      "Category": "MathAndNumeric",
+      "Engine": "LanguageCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "SKPBAR",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "SKPPAD",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "SQLCANCEL",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "SQLCOLUMNS",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "SQLCOMMIT",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SQLCONNECT",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SQLDISCONNECT",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SQLEXEC",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SQLGETPROP",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SQLIDLEDISCONNECT",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "SQLMORERESULTS",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "SQLPREPARE",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "SQLROLLBACK",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SQLSETPROP",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SQLSTRINGCONNECT",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SQLTABLES",
+      "Category": "SQL",
+      "Engine": "SQL",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "SROWS",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "STREXTRACT",
+      "Category": "StringAndCharacter",
+      "Engine": "RuntimeCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "SYSMETRIC",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "TABLEREVERT",
+      "Category": "Database",
+      "Engine": "SQL",
+      "Criticality": "High"
+    },
+    {
+      "Name": "TABLEUPDATE",
+      "Category": "Database",
+      "Engine": "SQL",
+      "Criticality": "High"
+    },
+    {
+      "Name": "TAG",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "TAGCOUNT",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "TAGNO",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "TARGET",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "TXNLEVEL",
+      "Category": "Database",
+      "Engine": "SQL",
+      "Criticality": "High"
+    },
+    {
+      "Name": "UNBINDEVENTS",
+      "Category": "ClassAndObject",
+      "Engine": "LanguageCore",
+      "Criticality": "High"
+    },
+    {
+      "Name": "UNIQUE",
+      "Category": "Database",
+      "Engine": "WorkArea",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "UPDATED",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "USED",
+      "Category": "CursorAndTable",
+      "Engine": "WorkArea",
+      "Criticality": "High"
+    },
+    {
+      "Name": "VARREAD",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "VERSION",
+      "Category": "EnvironmentAndSystem",
+      "Engine": "RuntimeCore",
+      "Criticality": "Low"
+    },
+    {
+      "Name": "WBORDER",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WCHILD",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WCOLS",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WDOCKABLE",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WEXIST",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WFONT",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WLAST",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WLCOL",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WLROW",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WMAXIMUM",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WMINIMUM",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WONTOP",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WOUTPUT",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WPARENT",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WREAD",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WROWS",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WTITLE",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "WVISIBLE",
+      "Category": "UIAndWindow",
+      "Engine": "UI",
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "STRTOJSON",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "IsExtension": true,
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "JSONTOSTR",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "IsExtension": true,
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "HTTPGET",
+      "Category": "General",
+      "Engine": "RuntimeCore",
+      "IsExtension": true,
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "HTTPPOST",
+      "Category": "General",
+      "Engine": "RuntimeCore",
+      "IsExtension": true,
+      "Criticality": "Medium"
+    },
+    {
+      "Name": "REGEXMATCH",
+      "Category": "StringAndCharacter",
+      "Engine": "LanguageCore",
+      "IsExtension": true,
+      "Criticality": "Medium"
+    }
+  ]
+}

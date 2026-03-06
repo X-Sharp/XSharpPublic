@@ -103,6 +103,9 @@ GLOBAL UU AS USUAL
 
         VIRTUAL METHOD FString() AS STRING
             RETURN "base"
+
+        PUBLIC OVERRIDE METHOD ToString() AS STRING
+            RETURN SUPER:ToString():Replace("MacroCompilerTest.","")
     END CLASS
 
     CLASS testclass INHERIT testbase
@@ -122,7 +125,8 @@ GLOBAL UU AS USUAL
 
         PUBLIC CONST ccc := 456 AS INT
 
-            PUBLIC CONST eee := child.blabla AS child
+        PUBLIC CONST eee := child.blabla AS child
+
         END CLASS
 
     PUBLIC v1 AS INT
@@ -185,6 +189,8 @@ GLOBAL UU AS USUAL
             RETURN o1:v1 == o2:v1 .AND. o1:v2 == o2:v2
         OPERATOR !=(o1 AS teststruct, o2 AS teststruct) AS LOGIC
             RETURN !(o1 == o2)
+        PUBLIC OVERRIDE METHOD ToString() AS STRING
+            RETURN SUPER:ToString():Replace("MacroCompilerTest.","")
         END STRUCT
 
     CLASS TestWithItem

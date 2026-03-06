@@ -43,69 +43,81 @@ FUNCTION Seconds() AS REAL8
 // TODO(irwin): functions to check
 // -------------------------------------------------------------
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fchsize/*" />
-[FoxProFunction("FCHSIZE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION FChSize(nFileHandle AS INT, nNewSize AS INT) AS INT
-    THROW NotImplementedException{}
+[FoxProFunction("FCHSIZE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION FChSize(nFileHandle AS INT64, nNewSize AS INT64) AS INT64
+    IF ! XSharp.Core.Functions.FChSize(nFileHandle, nNewSize)
+        RETURN -1
+    ENDIF
+    RETURN XSharp.Core.Functions.FSize(nFileHandle)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fclose/*" />
-[FoxProFunction("FCLOSE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION FClose(nFileHandle AS INT) AS LOGIC
-    THROW NotImplementedException{}
+[FoxProFunction("FCLOSE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION FClose(nFileHandle AS INT64) AS LOGIC
+    RETURN XSharp.Core.Functions.FClose(nFileHandle)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fcreate/*" />
 [FoxProFunction("FCREATE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION FCreate(cFileName AS STRING, nFileAttribute := 0 AS INT) AS INT
+FUNCTION FCreate(cFileName AS STRING, nFileAttribute := 0 AS INT) AS INT64
+    // todo: Map attributes to FileMode and FileAccess and call FCreate()
     THROW NotImplementedException{}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/feof/*" />
-[FoxProFunction("FEOF", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION FEof(nFileHandle AS INT) AS LOGIC
-    THROW NotImplementedException{}
+[FoxProFunction("FEOF", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION FEof(nFileHandle AS INT64) AS LOGIC
+    RETURN XSharp.Core.Functions.FEof(nFileHandle)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ferror/*" />
-[FoxProFunction("FERROR", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
+[FoxProFunction("FERROR", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION FError() AS INT
-    THROW NotImplementedException{}
+    RETURN (INT) XSharp.RuntimeState.FileError
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fflush/*" />
-[FoxProFunction("FFLUSH", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION FFlush(nFileHandle AS INT) AS LOGIC
-    THROW NotImplementedException{}
+[FoxProFunction("FFLUSH", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION FFlush(nFileHandle AS INT64) AS LOGIC
+    RETURN XSharp.Core.Functions.FFlush(nFileHandle)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fgets/*" />
-[FoxProFunction("FGETS", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION FGets(nFileHandle AS INT, nBytes := 254 AS INT) AS STRING
-    THROW NotImplementedException{}
+[FoxProFunction("FGETS", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION FGets(nFileHandle AS INT64, nBytes := 254 AS INT) AS STRING
+    RETURN XSharp.Core.Functions.FGetS(nFileHandle, (DWORD) nBytes)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fopen/*" />
 [FoxProFunction("FOPEN", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION FOpen(cFileName AS STRING, nAttribute := 0 AS INT) AS INT
+FUNCTION FOpen(cFileName AS STRING, nAttribute := 0 AS INT) AS INT64
+    // todo: Map attributes to FileMode and FileAccess and call FOpen()
     THROW NotImplementedException{}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fputs/*" />
-[FoxProFunction("FPUTS", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION FPuts(nFileHandle AS INT, cExpression AS STRING, nBytesWritten := 0 AS INT) AS INT
-    THROW NotImplementedException{}
+[FoxProFunction("FPUTS", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION FPuts(nFileHandle AS INT64, cExpression AS STRING, nBytesWritten := 0 AS INT) AS INT
+    IF nBytesWritten <= 0
+        nBytesWritten := (INT) SLen(cExpression)
+    ENDIF
+    RETURN (INT) XSharp.Core.Functions.FPutS(nFileHandle, cExpression, (DWORD) nBytesWritten)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fread/*" />
-[FoxProFunction("FREAD", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION FRead(nFileHandle AS INT, nBytes AS INT) AS STRING
-    THROW NotImplementedException{}
+[FoxProFunction("FREAD", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION FRead(nFileHandle AS INT64, nBytes AS INT) AS STRING
+    RETURN XSharp.Core.Functions.FReadStr(nFileHandle, (DWORD) nBytes)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fseek/*" />
-[FoxProFunction("FSEEK", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION FSeek(nFileHandle AS INT, nBytesMoved AS INT, nRelativePosition := 0 AS INT) AS INT
-    THROW NotImplementedException{}
+[FoxProFunction("FSEEK", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
+FUNCTION FSeek(nFileHandle AS INT64, nBytesMoved AS INT, nRelativePosition := 0 AS INT) AS INT
+    RETURN XSharp.Core.Functions.FSeek3(nFileHandle, nBytesMoved, (DWORD) nRelativePosition)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fsize/*" />
 [FoxProFunction("FSIZE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
 FUNCTION FSize(cFieldName AS STRING, eWorkArea := NIL AS USUAL) AS INT
+    // Todo: Create an overload for function with cFileName parameter
     THROW NotImplementedException{}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fwrite/*" />
 [FoxProFunction("FWRITE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION FWrite(nFileHandle AS INT, cExpression AS STRING, nCharactersWritten := 0 AS INT) AS INT
-    THROW NotImplementedException{}
+FUNCTION FWrite(nFileHandle AS INT64, cExpression AS STRING, nCharactersWritten := 0 AS INT) AS INT
+    IF nCharactersWritten <= 0
+        nCharactersWritten := (INT) SLen(cExpression)
+    ENDIF
+    RETURN (INT) XSharp.Core.Functions.FWrite(nFileHandle, cExpression, (DWORD) nCharactersWritten)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/adir/*" />
 [FoxProFunction("ADIR", FoxFunctionCategory.Array, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];

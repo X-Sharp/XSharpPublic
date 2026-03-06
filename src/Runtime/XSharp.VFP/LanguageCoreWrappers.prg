@@ -16,7 +16,7 @@ FUNCTION Right(cString AS STRING, dwCount AS DWORD) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/len/*" />
 [FoxProFunction("LEN", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION Len(uValue REF USUAL) AS DWORD
+FUNCTION Len(uValue IN USUAL) AS DWORD
     RETURN XSharp.RT.Functions.Len(uValue)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/upper/*" />
@@ -41,7 +41,7 @@ FUNCTION Between(uValue AS USUAL, uMin AS USUAL, uMax AS USUAL) AS LOGIC
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/inlist/*" />
 [FoxProFunction("INLIST", FoxFunctionCategory.General, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION InList(uValue AS USUAL, uValueList AS USUAL[]) AS LOGIC
+FUNCTION InList(uValue AS USUAL, uValueList PARAMS USUAL[]) AS LOGIC
     RETURN XSharp.RT.Functions.InList(uValue, uValueList)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/occurs/*" />
@@ -61,17 +61,17 @@ FUNCTION Val(cNumber AS STRING) AS USUAL
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/int/*" />
 [FoxProFunction("INT", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION Int(nValue REF USUAL) AS USUAL
+FUNCTION Int(nValue IN USUAL) AS USUAL
     RETURN XSharp.RT.Functions.Integer(nValue)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/abs/*" />
 [FoxProFunction("ABS", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Abs(nValue REF USUAL) AS USUAL
+FUNCTION Abs(nValue IN USUAL) AS USUAL
     RETURN XSharp.RT.Functions.Abs(nValue)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqrt/*" />
 [FoxProFunction("SQRT", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Sqrt(nNumber REF USUAL) AS FLOAT
+FUNCTION Sqrt(nNumber IN USUAL) AS FLOAT
     RETURN XSharp.RT.Functions.SQrt(nNumber)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/pi/*" />
@@ -174,17 +174,17 @@ FUNCTION Substr(cTarget AS USUAL, nStart AS USUAL, nCount AS USUAL) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/max/*" />
 [FoxProFunction("MAX", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION Max(uValue1 REF USUAL, uValue2 REF USUAL) AS USUAL
+FUNCTION Max(uValue1 IN USUAL, uValue2 IN USUAL) AS USUAL
     RETURN XSharp.RT.Functions.Max(uValue1, uValue2)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/min/*" />
 [FoxProFunction("MIN", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION Min(uValue1 REF USUAL, uValue2 REF USUAL) AS USUAL
+FUNCTION Min(uValue1 IN USUAL, uValue2 IN USUAL) AS USUAL
     RETURN XSharp.RT.Functions.Min(uValue1, uValue2)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mod/*" />
 [FoxProFunction("MOD", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION Mod(nDividend REF USUAL, nDivisor REF USUAL) AS USUAL
+FUNCTION Mod(nDividend IN USUAL, nDivisor IN USUAL) AS USUAL
     RETURN XSharp.RT.Functions.Mod(nDividend, nDivisor)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/rand/*" />
@@ -194,22 +194,22 @@ FUNCTION Rand() AS FLOAT
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/round/*" />
 [FoxProFunction("ROUND", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION Round(nNumber REF USUAL, siDecimals AS INT) AS USUAL
+FUNCTION Round(nNumber IN USUAL, siDecimals AS INT) AS USUAL
     RETURN XSharp.RT.Functions.Round(nNumber, siDecimals)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/acos/*" />
 [FoxProFunction("ACOS", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Acos(nExpression REF USUAL) AS FLOAT
+FUNCTION Acos(nExpression IN USUAL) AS FLOAT
     RETURN XSharp.RT.Functions.ACos(nExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asin/*" />
 [FoxProFunction("ASIN", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Asin(nExpression REF USUAL) AS FLOAT
+FUNCTION Asin(nExpression IN USUAL) AS FLOAT
     RETURN XSharp.RT.Functions.ASin(nExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/atan/*" />
 [FoxProFunction("ATAN", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Atan(nNum REF USUAL) AS FLOAT
+FUNCTION Atan(nNum IN USUAL) AS FLOAT
     RETURN XSharp.RT.Functions.ATan(nNum)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/atn2/*" />
@@ -219,42 +219,42 @@ FUNCTION Atn2(nRow AS REAL8, nColumn AS REAL8) AS REAL8
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/cos/*" />
 [FoxProFunction("COS", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Cos(nNum REF USUAL) AS FLOAT
+FUNCTION Cos(nNum IN USUAL) AS FLOAT
     RETURN XSharp.RT.Functions.Cos(nNum)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sin/*" />
 [FoxProFunction("SIN", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Sin(nNum REF USUAL) AS FLOAT
+FUNCTION Sin(nNum IN USUAL) AS FLOAT
     RETURN XSharp.RT.Functions.Sin(nNum)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/tan/*" />
 [FoxProFunction("TAN", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Tan(nNum REF USUAL) AS FLOAT
+FUNCTION Tan(nNum IN USUAL) AS FLOAT
     RETURN XSharp.RT.Functions.Tan(nNum)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dtor/*" />
 [FoxProFunction("DTOR", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Dtor(nExpression REF USUAL) AS REAL8
+FUNCTION Dtor(nExpression IN USUAL) AS REAL8
     RETURN XSharp.RT.Functions.DToR(nExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/rtod/*" />
 [FoxProFunction("RTOD", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Rtod(nExpression REF USUAL) AS REAL8
+FUNCTION Rtod(nExpression IN USUAL) AS REAL8
     RETURN XSharp.RT.Functions.RToD(nExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/exp/*" />
 [FoxProFunction("EXP", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Exp(nExponent REF USUAL) AS FLOAT
+FUNCTION Exp(nExponent IN USUAL) AS FLOAT
     RETURN XSharp.RT.Functions.Exp(nExponent)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/log/*" />
 [FoxProFunction("LOG", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Log(nValue REF USUAL) AS FLOAT
+FUNCTION Log(nValue IN USUAL) AS FLOAT
     RETURN XSharp.RT.Functions.LOG(nValue)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/log10/*" />
 [FoxProFunction("LOG10", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Log10(nValue REF USUAL) AS FLOAT
+FUNCTION Log10(nValue IN USUAL) AS FLOAT
     RETURN XSharp.RT.Functions.Log10(nValue)
 
 //-----------------------------------------------------------------------*
@@ -312,7 +312,7 @@ FUNCTION ACopy(aSource AS USUAL, aTarget AS USUAL, nStart := 1 AS USUAL, nCount 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ascan/*" />
 [FoxProFunction("ASCAN", FoxFunctionCategory.Array, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION AScan(aTarget AS ARRAY, uSearch REF USUAL) AS DWORD
+FUNCTION AScan(aTarget AS ARRAY, uSearch IN USUAL) AS DWORD
     RETURN XSharp.RT.Functions.AScan(aTarget, uSearch)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asort/*" />
@@ -325,7 +325,7 @@ FUNCTION ASort(aTarget AS ARRAY, nStart := NIL AS USUAL, nCount := NIL AS USUAL,
 // ----------------------------------------------------------------------- //
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/cast/*" />
 [FoxProFunction("CAST", FoxFunctionCategory.General, FoxEngine.LanguageCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION Cast(eExpression AS USUAL, cType AS STRING) AS USUAL
+FUNCTION Cast(eExpression IN USUAL, cType AS STRING) AS USUAL
     THROW NotImplementedException{}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dodefault/*" />

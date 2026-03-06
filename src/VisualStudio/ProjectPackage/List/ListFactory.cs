@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using Microsoft.VisualStudio.Shell.TableManager;
@@ -17,12 +17,12 @@ namespace XSharp.Project
     /// </summary>
     internal class ListFactory<T> : TableEntriesSnapshotFactoryBase where T: IListItem
     {
-        protected readonly IListProvider _errorProvider;
+        protected readonly IListProvider _listProvider;
         protected List<T> _items = new List<T>();
         protected Guid _projectGuid = Guid.Empty;
-        internal ListFactory(IListProvider errorProvider, Guid projectGuid)
+        internal ListFactory(IListProvider listProvider, Guid projectGuid)
         {
-            _errorProvider = errorProvider;
+            _listProvider = listProvider;
             _projectGuid = projectGuid;
             CurrentSnapshot = new ListSnapshot<T>(0, _items, _projectGuid);
         }
@@ -75,7 +75,8 @@ namespace XSharp.Project
         internal void UpdateErrors()
         {
             CurrentSnapshot = NewSnapShot();
-            _errorProvider.UpdateAllSinks(this);
+            if (_listProvider != null)
+                _listProvider.UpdateAllSinks(this);
         }
 
         #region ITableEntriesSnapshotFactory members

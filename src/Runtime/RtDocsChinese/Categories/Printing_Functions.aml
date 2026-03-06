@@ -30,10 +30,10 @@
             </entry>
             <entry>
               <para>
-            Stores information about currently-available printers into an array.
-            The behavior of this function is OS (operating system) - specific.
-            X# may or may not check to see if the printers are actually connected to your computer when it prepares this list,
-            and the list may include all printers installed as printer setups, or only those available on the current network.
+            将有关当前可用打印机的信息存储到数组中。
+            此函数的行为是特定于操作系统（OS）的。
+            X#在准备此列表时可能会也可能不会检查打印机是否实际连接到您的计算机，
+            并且该列表可能包括所有安装为打印机设置的打印机，或仅包括当前网络上可用的打印机。
         </para>
             </entry>
           </row>

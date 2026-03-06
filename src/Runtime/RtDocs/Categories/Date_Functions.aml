@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 32-bit binary date to a date data type.
-        </para>
+      Convert a string containing a 32-bit binary date to a date data type.
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,23 @@
             </entry>
             <entry>
               <para>
-            Extract the name of the day of the week from a date.
-        </para>
+      Extract the name of the day of the week from a date.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CDow(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the day of the week from a given Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +75,23 @@
             </entry>
             <entry>
               <para>
-            Extract the name of the month from a date.
-        </para>
+      Extract the name of the month from a date.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CMonth(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the name of the month from a given date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +105,8 @@
             </entry>
             <entry>
               <para>
-            Format a set of numbers representing a year, month, and day as a date.
-        </para>
+      Format a set of numbers representing a year, month, and day as a date.
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +120,23 @@
             </entry>
             <entry>
               <para>
-            Convert a date string to date format.
-        </para>
+      Convert a date string to date format.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CToD(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Converts a character expression to a date expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -105,8 +150,8 @@
             </entry>
             <entry>
               <para>
-            Convert an ANSI date string to date format.
-        </para>
+      Convert an ANSI date string to date format.
+    </para>
             </entry>
           </row>
           <row>
@@ -120,8 +165,23 @@
             </entry>
             <entry>
               <para>
-            Return the system date as a date value.
-        </para>
+      Return the system date as a date value.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Date</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the current system date, which is controlled by the operating system, or creates a year 2000-compliant Date value.
+    </para>
             </entry>
           </row>
           <row>
@@ -135,8 +195,8 @@
             </entry>
             <entry>
               <para>
-            Convert a date to a 32-bit binary date string.
-        </para>
+      Convert a date to a 32-bit binary date string.
+    </para>
             </entry>
           </row>
           <row>
@@ -150,8 +210,23 @@
             </entry>
             <entry>
               <para>
-            Extract the number of the day of the month from a date.
-        </para>
+      Extract the number of the day of the month from a date.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Day(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the numeric day of the month for a given Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -165,8 +240,8 @@
             </entry>
             <entry>
               <para>
-            Convert a specified number of seconds to days.
-        </para>
+      Convert a specified number of seconds to days.
+    </para>
             </entry>
           </row>
           <row>
@@ -175,7 +250,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DMY(System.DateTime)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DMY(XSharp.__Date)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -195,8 +270,23 @@
             </entry>
             <entry>
               <para>
-            Extract the number of the day of the week from a date.
-        </para>
+      Extract the number of the day of the week from a date.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dow(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a numeric day-of-the-week value from a Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -225,8 +315,23 @@
             </entry>
             <entry>
               <para>
-            Convert a date to a string.
-        </para>
+      Convert a date to a string.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dtoc(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a Character-type date from a Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -240,8 +345,23 @@
             </entry>
             <entry>
               <para>
-            Convert a date value to a string formatted as yyyymmdd.
-        </para>
+      Convert a date value to a string formatted as yyyymmdd.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToS(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a character-string date in a yyyymmdd format from a specified Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -265,7 +385,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GoMonth(XSharp.__Date,System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GoMonth(System.DateTime,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -284,8 +404,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -294,13 +413,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDate(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDate(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a DATE.
-        </para>
+      Determine if a value is a DATE.
+    </para>
             </entry>
           </row>
           <row>
@@ -309,27 +428,12 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MDY(System.DateTime)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MDY(XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
-        </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Min(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Return the smaller of 2 values.
+            Returns the specified date or datetime expression in month-day-year format with the name of the month spelled out.
         </para>
             </entry>
           </row>
@@ -344,8 +448,23 @@
             </entry>
             <entry>
               <para>
-            Extract the number of the month from a date.
-        </para>
+      Extract the number of the month from a date.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Month(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the number of the month for a given Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -359,8 +478,8 @@
             </entry>
             <entry>
               <para>
-            Convert the number that identifies a day into the name of the day.
-        </para>
+      Convert the number that identifies a day into the name of the day.
+    </para>
             </entry>
           </row>
           <row>
@@ -374,8 +493,8 @@
             </entry>
             <entry>
               <para>
-            Convert the number that identifies a month into the name of the month.
-        </para>
+      Convert the number that identifies a month into the name of the month.
+    </para>
             </entry>
           </row>
           <row>
@@ -397,7 +516,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Quarter(XSharp.__Date,System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Quarter(XSharp.__Usual,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -417,8 +536,8 @@
             </entry>
             <entry>
               <para>
-            Convert an ANSI date string to date format.
-        </para>
+      Convert an ANSI date string to date format.
+    </para>
             </entry>
           </row>
           <row>
@@ -432,8 +551,8 @@
             </entry>
             <entry>
               <para>
-            Return the system time in a format determined by various international settings.
-        </para>
+      Return the system time in a format determined by various international settings.
+    </para>
             </entry>
           </row>
           <row>
@@ -447,8 +566,8 @@
             </entry>
             <entry>
               <para>
-            Return the system time in 24-hour format.
-        </para>
+      Return the system time in 24-hour format.
+    </para>
             </entry>
           </row>
           <row>
@@ -462,8 +581,8 @@
             </entry>
             <entry>
               <para>
-            Return the system date as a date value.
-        </para>
+      Return the system date as a date value.
+    </para>
             </entry>
           </row>
           <row>
@@ -472,7 +591,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Week(XSharp.__Date,System.Int32,System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Week(XSharp.__Usual,System.Int32,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -492,8 +611,23 @@
             </entry>
             <entry>
               <para>
-            Extract the number of the year from a date.
-        </para>
+      Extract the number of the year from a date.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Year(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the year from the specified date or datetime expression.
+    </para>
             </entry>
           </row>
         </table>

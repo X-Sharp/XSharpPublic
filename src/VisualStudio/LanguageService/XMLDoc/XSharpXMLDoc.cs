@@ -35,6 +35,10 @@ namespace XSharp.LanguageService
             coreIndex = null;
         }
 
+        static void init()
+        {
+        }
+
         static bool GetIndex()
         {
             if (_XMLMemberIndexService == null)
@@ -177,7 +181,7 @@ namespace XSharp.LanguageService
             foreach (var token in tokens)
             {
                 if (result.Length + token.Length + 1 > maxLength )
-                { 
+                {
                     yield return result;
                     result = "";
                 }
@@ -268,7 +272,7 @@ namespace XSharp.LanguageService
                         sb.Append(addXml("remarks", remarks));
                     }
                     return sb.ToString();
-                    
+
                 });
             }
             return null;
@@ -421,7 +425,7 @@ namespace XSharp.LanguageService
                             }
                             if (lastchar != ' ' && lastchar != '>')  // no space after '>' or after another space
                             {
-                                lastchar = ' ';          
+                                lastchar = ' ';
                                 sb.Append(lastchar);
                             }
                             break;

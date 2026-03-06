@@ -30,7 +30,7 @@
             </entry>
             <entry>
               <para>
-            Provide the base class from which all X# catalog classes are subclassed.
+            提供所有 X# 目录类的基类，这些类都是 SQLCatalogQuery 的子类。
         </para>
             </entry>
           </row>
@@ -45,7 +45,7 @@
             </entry>
             <entry>
               <para>
-            Describe an SQL column.
+            描述一个 SQL 列。
         </para>
             </entry>
           </row>
@@ -60,7 +60,7 @@
             </entry>
             <entry>
               <para>
-            Describe the attributes of an SQL column.
+            描述一个 SQL 列属性。
         </para>
             </entry>
           </row>
@@ -75,7 +75,7 @@
             </entry>
             <entry>
               <para>
-            Manage an SQL connection to an ODBC data source.  A SQLConnection object is needed before any database operations can be performed.
+            管理到 ODBC 数据源的 SQL 连接。在执行任何数据库操作之前，需要一个 SQLConnection 对象。
         </para>
             </entry>
           </row>
@@ -90,7 +90,7 @@
             </entry>
             <entry>
               <para>
-            Represent an SQL data value; used internally by SQL classes.
+            表示一个 SQL 数据值；由 SQL 类内部使用。
         </para>
             </entry>
           </row>
@@ -104,8 +104,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -119,7 +118,7 @@
             </entry>
             <entry>
               <para>
-            Describe a SQL error.
+            描述一个 SQL 错误。
         </para>
             </entry>
           </row>
@@ -134,7 +133,7 @@
             </entry>
             <entry>
               <para>
-            List the columns and associated privileges for one or more tables.
+            列出一个或多个表的列和相关权限。
         </para>
             </entry>
           </row>
@@ -149,7 +148,7 @@
             </entry>
             <entry>
               <para>
-            List the column names in specified tables.
+            列出指定表中的列名。
         </para>
             </entry>
           </row>
@@ -164,7 +163,7 @@
             </entry>
             <entry>
               <para>
-            List the column names that comprise foreign keys, if they exist for a specified table.
+            列出指定表的外键列名。
         </para>
             </entry>
           </row>
@@ -179,7 +178,7 @@
             </entry>
             <entry>
               <para>
-            List the column names that comprise the primary key for a table.
+            列出表的主键列名。
         </para>
             </entry>
           </row>
@@ -194,7 +193,7 @@
             </entry>
             <entry>
               <para>
-            List the input and output procedure parameters and columns that make up the result set for the specified procedures.
+            列出指定过程的输入和输出参数以及组成结果集的列。
         </para>
             </entry>
           </row>
@@ -209,7 +208,7 @@
             </entry>
             <entry>
               <para>
-            List the procedure names stored in a specific data source.
+            列出存储在特定数据源中的过程名称。
         </para>
             </entry>
           </row>
@@ -224,7 +223,7 @@
             </entry>
             <entry>
               <para>
-            List information about the optimal set of columns that uniquely identifies a row in a specified table or the columns that are updated automatically when any value in the row is updated by a transaction.
+            列出关于在指定表中唯一标识行的最佳列集或在事务更新行的任何值时自动更新的列的信息。
         </para>
             </entry>
           </row>
@@ -239,7 +238,7 @@
             </entry>
             <entry>
               <para>
-            List the table statistics and the indexes.
+            列出表的统计信息和索引。
         </para>
             </entry>
           </row>
@@ -254,7 +253,7 @@
             </entry>
             <entry>
               <para>
-            List the tables and associated privileges.
+            列出表及其关联的权限。
         </para>
             </entry>
           </row>
@@ -269,7 +268,7 @@
             </entry>
             <entry>
               <para>
-            List the table names stored in a specific data source.
+            列出存储在特定数据源中的表的名称。
         </para>
             </entry>
           </row>
@@ -284,7 +283,7 @@
             </entry>
             <entry>
               <para>
-            List the ODBC data types that are supported by this connection.
+            列出此连接支持的 ODBC 数据类型。
         </para>
             </entry>
           </row>
@@ -298,7 +297,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:VO.SqlParameterSQL.xmldoc/SqlParameter/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -312,7 +311,7 @@
             </entry>
             <entry>
               <para>
-            Manage a SQL select statement to select a set of rows from an ODBC data source.  The rows can be read, modified, or deleted using the SQLSelect methods.
+            管理一个 SQL 选择语句，从 ODBC 数据源中选择一组行。可以使用 SQLSelect 方法读取、修改或删除这些行。
         </para>
             </entry>
           </row>
@@ -327,7 +326,7 @@
             </entry>
             <entry>
               <para>
-            Manage a SQL statement.
+            管理一个 SQL 语句。
         </para>
             </entry>
           </row>
@@ -342,7 +341,7 @@
             </entry>
             <entry>
               <para>
-            Manage a table.
+            管理一个表。
         </para>
             </entry>
           </row>
@@ -357,7 +356,7 @@
             </entry>
             <entry>
               <para>
-            Describe a SQL value.
+            描述一个 SQL 值。
         </para>
             </entry>
           </row>
@@ -428,6 +427,99 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.Parsers</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Parsers.FoxAlterMode</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Parsers</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Parsers.FoxAlterTableContext</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Parsers</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Parsers.FoxColumnContext</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Parsers</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Parsers.FoxCreateTableContext</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Parsers</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Parsers.FoxDeleteContext</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Parsers</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Parsers.FoxUpdateContext</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Parsers</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Parsers.SQLParser</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            The SQLParser class.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.RDD</para>
             </entry>
             <entry>
@@ -441,6 +533,21 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VFP.SqlWhereType</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This enum emulates the FoxPro defines for the CursorAdapter.WhereType property
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.VO.SDK</para>
             </entry>
             <entry>
@@ -450,7 +557,7 @@
             </entry>
             <entry>
               <para>
-            Provide the base class from which all X# catalog classes are subclassed.
+            提供所有 X# 目录类的基类，这些类都是 SQLCatalogQuery 的子类。
         </para>
             </entry>
           </row>
@@ -465,7 +572,7 @@
             </entry>
             <entry>
               <para>
-            Describe an SQL column.
+            描述一个 SQL 列。
         </para>
             </entry>
           </row>
@@ -480,7 +587,7 @@
             </entry>
             <entry>
               <para>
-            Describe the attributes of an SQL column.
+            描述一个 SQL 列属性。
         </para>
             </entry>
           </row>
@@ -495,7 +602,7 @@
             </entry>
             <entry>
               <para>
-            Manage an SQL connection to an ODBC data source.  A SQLConnection object is needed before any database operations can be performed.
+            管理到 ODBC 数据源的 SQL 连接。在执行任何数据库操作之前，需要一个 SQLConnection 对象。
         </para>
             </entry>
           </row>
@@ -510,7 +617,7 @@
             </entry>
             <entry>
               <para>
-            Represent an SQL data value; used internally by SQL classes.
+            表示一个 SQL 数据值；由 SQL 类内部使用。
         </para>
             </entry>
           </row>
@@ -525,7 +632,7 @@
             </entry>
             <entry>
               <para>
-            Describe a SQL error.
+            描述一个 SQL 错误。
         </para>
             </entry>
           </row>
@@ -540,7 +647,7 @@
             </entry>
             <entry>
               <para>
-            List the columns and associated privileges for one or more tables.
+            列出一个或多个表的列和相关权限。
         </para>
             </entry>
           </row>
@@ -555,7 +662,7 @@
             </entry>
             <entry>
               <para>
-            List the column names in specified tables.
+            列出指定表中的列名。
         </para>
             </entry>
           </row>
@@ -569,7 +676,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListDatabasesSql.xmldoc/SQLListDatabases/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -583,7 +690,7 @@
             </entry>
             <entry>
               <para>
-            List the column names that comprise foreign keys, if they exist for a specified table.
+            列出指定表的外键列名。
         </para>
             </entry>
           </row>
@@ -597,7 +704,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListIndexColumnsSql.xmldoc/SQLListIndexColumns/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -610,7 +717,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListIndexesSql.xmldoc/SQLListIndexes/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -624,7 +731,7 @@
             </entry>
             <entry>
               <para>
-            List the column names that comprise the primary key for a table.
+            列出表的主键列名。
         </para>
             </entry>
           </row>
@@ -639,7 +746,7 @@
             </entry>
             <entry>
               <para>
-            List the input and output procedure parameters and columns that make up the result set for the specified procedures.
+            列出指定过程的输入和输出参数以及组成结果集的列。
         </para>
             </entry>
           </row>
@@ -653,7 +760,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListProcedureParametersSql.xmldoc/SQLListProcedureParameters/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -667,7 +774,7 @@
             </entry>
             <entry>
               <para>
-            List the procedure names stored in a specific data source.
+            列出存储在特定数据源中的过程名称。
         </para>
             </entry>
           </row>
@@ -681,7 +788,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListReservedWordsSql.xmldoc/SQLListReservedWords/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -694,7 +801,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListRestrictionsSql.xmldoc/SQLListRestrictions/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -708,7 +815,7 @@
             </entry>
             <entry>
               <para>
-            List information about the optimal set of columns that uniquely identifies a row in a specified table or the columns that are updated automatically when any value in the row is updated by a transaction.
+            列出关于在指定表中唯一标识行的最佳列集或在事务更新行的任何值时自动更新的列的信息。
         </para>
             </entry>
           </row>
@@ -723,7 +830,7 @@
             </entry>
             <entry>
               <para>
-            List the table statistics and the indexes.
+            列出表的统计信息和索引。
         </para>
             </entry>
           </row>
@@ -738,7 +845,7 @@
             </entry>
             <entry>
               <para>
-            List the tables and associated privileges.
+            列出表及其关联的权限。
         </para>
             </entry>
           </row>
@@ -753,7 +860,7 @@
             </entry>
             <entry>
               <para>
-            List the table names stored in a specific data source.
+            列出存储在特定数据源中的表的名称。
         </para>
             </entry>
           </row>
@@ -767,7 +874,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListTriggersSql.xmldoc/SQLListTriggers/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -781,7 +888,7 @@
             </entry>
             <entry>
               <para>
-            List the ODBC data types that are supported by this connection.
+            列出此连接支持的 ODBC 数据类型。
         </para>
             </entry>
           </row>
@@ -795,7 +902,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListUsersSql.xmldoc/SQLListUsers/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -808,7 +915,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListViewColumnsSql.xmldoc/SQLListViewColumns/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -821,7 +928,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListViewsSql.xmldoc/SQLListViews/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -834,7 +941,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SqlParameterSql.xmldoc/SqlParameter/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -848,7 +955,7 @@
             </entry>
             <entry>
               <para>
-            Manage a SQL select statement to select a set of rows from an ODBC data source.  The rows can be read, modified, or deleted using the SQLSelect methods.
+            管理一个 SQL 选择语句，从 ODBC 数据源中选择一组行。可以使用 SQLSelect 方法读取、修改或删除这些行。
         </para>
             </entry>
           </row>
@@ -863,7 +970,7 @@
             </entry>
             <entry>
               <para>
-            Manage a SQL statement.
+            管理一个 SQL 语句。
         </para>
             </entry>
           </row>
@@ -878,7 +985,7 @@
             </entry>
             <entry>
               <para>
-            Manage a table.
+            管理一个表。
         </para>
             </entry>
           </row>
@@ -893,7 +1000,7 @@
             </entry>
             <entry>
               <para>
-            Describe a SQL value.
+            描述一个 SQL 值。
         </para>
             </entry>
           </row>

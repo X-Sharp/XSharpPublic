@@ -29,7 +29,7 @@
               </para>
             </entry>
             <entry>
-              <para>See the ADS documentation for more information about this function.</para>
+              <para>查看 ADS 文档，了解更多关于此函数的信息。</para>
             </entry>
           </row>
           <row>
@@ -42,7 +42,7 @@
               </para>
             </entry>
             <entry>
-              <para>See the ADS documentation for more information about this function.</para>
+              <para>查看 ADS 文档，了解更多关于此函数的信息。</para>
             </entry>
           </row>
           <row>
@@ -55,7 +55,7 @@
               </para>
             </entry>
             <entry>
-              <para>See the ADS documentation for more information about this function.</para>
+              <para>查看 ADS 文档，了解更多关于此函数的信息。</para>
             </entry>
           </row>
           <row>
@@ -68,7 +68,7 @@
               </para>
             </entry>
             <entry>
-              <para>See the ADS documentation for more information about this function.</para>
+              <para>查看 ADS 文档，了解更多关于此函数的信息。</para>
             </entry>
           </row>
           <row>
@@ -81,7 +81,7 @@
               </para>
             </entry>
             <entry>
-              <para>See the ADS documentation for more information about this function.</para>
+              <para>查看 ADS 文档，了解更多关于此函数的信息。</para>
             </entry>
           </row>
           <row>
@@ -94,7 +94,7 @@
               </para>
             </entry>
             <entry>
-              <para>See the ADS documentation for more information about this function.</para>
+              <para>查看 ADS 文档，了解更多关于此函数的信息。</para>
             </entry>
           </row>
           <row>
@@ -107,7 +107,7 @@
               </para>
             </entry>
             <entry>
-              <para>See the ADS documentation for more information about this function.</para>
+              <para>查看 ADS 文档，了解更多关于此函数的信息。</para>
             </entry>
           </row>
           <row>
@@ -120,7 +120,7 @@
               </para>
             </entry>
             <entry>
-              <para>See the ADS documentation for more information about this function.</para>
+              <para>查看 ADS 文档，了解更多关于此函数的信息。</para>
             </entry>
           </row>
           <row>
@@ -133,7 +133,7 @@
               </para>
             </entry>
             <entry>
-              <para>See the ADS documentation for more information about this function.</para>
+              <para>查看 ADS 文档，了解更多关于此函数的信息。</para>
             </entry>
           </row>
           <row>
@@ -146,7 +146,7 @@
               </para>
             </entry>
             <entry>
-              <para>See the ADS documentation for more information about this function.</para>
+              <para>查看 ADS 文档，了解更多关于此函数的信息。</para>
             </entry>
           </row>
           <row>
@@ -159,7 +159,7 @@
               </para>
             </entry>
             <entry>
-              <para>See the ADS documentation for more information about this function.</para>
+              <para>查看 ADS 文档，了解更多关于此函数的信息。</para>
             </entry>
           </row>
           <row>
@@ -186,8 +186,8 @@
             </entry>
             <entry>
               <para>
-            Obtain a lock on the root area of a BLOB file.
-        </para>
+      在 BLOB 文件的根目录中获取锁。
+    </para>
             </entry>
           </row>
           <row>
@@ -201,8 +201,8 @@
             </entry>
             <entry>
               <para>
-            Release the lock on a BLOB file's root area.
-        </para>
+      释放 BLOB 文件根区域的锁定。
+    </para>
             </entry>
           </row>
           <row>
@@ -224,7 +224,33 @@
             </entry>
             <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAutoLockArea(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Automatically lock a record in the FoxPro dialect </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAutoUnLock</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Automatically unlock a record in the FoxPro dialect </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAutoUnLockArea(System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -268,8 +294,8 @@
             </entry>
             <entry>
               <para>
-            Lock a record in a shared database file, optionally retaining previous record locks.
-        </para>
+      在共享数据库文件中锁定记录，可选择保留先前的记录锁定。
+    </para>
             </entry>
           </row>
           <row>
@@ -283,8 +309,8 @@
             </entry>
             <entry>
               <para>
-            Get a list of locked records.
-        </para>
+      获取锁定记录的列表。
+    </para>
             </entry>
           </row>
           <row>
@@ -298,8 +324,8 @@
             </entry>
             <entry>
               <para>
-            Release all or specified record locks.
-        </para>
+      释放所有或指定的记录锁。
+    </para>
             </entry>
           </row>
           <row>
@@ -339,8 +365,8 @@
             </entry>
             <entry>
               <para>
-            Release all locks for a work area.
-        </para>
+      释放工作区的所有锁定或指定锁定。
+    </para>
             </entry>
           </row>
           <row>
@@ -354,8 +380,8 @@
             </entry>
             <entry>
               <para>
-            Release all locks for all work areas.
-        </para>
+      释放所有工作区的所有锁定。
+    </para>
             </entry>
           </row>
           <row>
@@ -364,13 +390,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FFLock(System.IntPtr,System.UInt32,System.UInt32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FFLock(System.IntPtr,System.Int64,System.UInt32)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Lock a portion of an open file.
-        </para>
+      锁定已打开文件的一部分。
+    </para>
             </entry>
           </row>
           <row>
@@ -384,8 +410,8 @@
             </entry>
             <entry>
               <para>
-            Lock a portion of an open file.
-        </para>
+      锁定已打开文件的一部分。
+    </para>
             </entry>
           </row>
           <row>
@@ -399,8 +425,8 @@
             </entry>
             <entry>
               <para>
-            UnLock a portion of an opened file.
-        </para>
+      解锁已打开文件的一部分。
+    </para>
             </entry>
           </row>
           <row>
@@ -414,8 +440,8 @@
             </entry>
             <entry>
               <para>
-            UnLock a portion of an opened file.
-        </para>
+      解锁已打开文件的一部分。
+    </para>
             </entry>
           </row>
           <row>
@@ -429,8 +455,21 @@
             </entry>
             <entry>
               <para>
-            Lock an opened and shared database file.
-        </para>
+      锁定已打开并共享的数据库文件。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FLock(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -443,8 +482,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -458,8 +496,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.
-        </para>
+      返回并可选择更改设置，以确定是否在 .NTX 文件中使用新的锁定偏移量 -1 (0xFFFFFFFF)。
+    </para>
             </entry>
           </row>
           <row>
@@ -473,10 +511,10 @@
             </entry>
             <entry>
               <para>
-            Return the setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.
-            Note:  NewLocks() is a compatibility function and therefore not recommended.
-            It is superseded by the NewIndexLock() function, which allows you to change and retrieve the setting.  Refer to NewIndexLock() for more information.
-        </para>
+      返回设置以确定是否在 .NTX 文件中使用新的锁定偏移量 -1 (0xFFFFFFFF)。
+      注意：NewLocks() 是一个兼容函数，因此不推荐使用。
+      它被 NewIndexLock() 函数取代，后者允许您更改和检索设置。有关更多信息，请参考 NewIndexLock()。
+    </para>
             </entry>
           </row>
           <row>
@@ -490,8 +528,21 @@
             </entry>
             <entry>
               <para>
-            Lock the current record.
-        </para>
+      锁定当前记录。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RLock(System.String,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -505,8 +556,8 @@
             </entry>
             <entry>
               <para>
-            Lock an opened and shared database file.
-        </para>
+      锁定已打开和共享的数据库文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -520,8 +571,8 @@
             </entry>
             <entry>
               <para>
-            Lock the current record.
-        </para>
+      锁定当前记录。
+    </para>
             </entry>
           </row>
           <row>
@@ -530,13 +581,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbUnlock(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbUnlock(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Release all locks for a work area.
-        </para>
+      释放工作区的所有锁定。
+    </para>
             </entry>
           </row>
           <row>
@@ -550,8 +601,8 @@
             </entry>
             <entry>
               <para>
-            Release all locks for all work areas.
-        </para>
+      释放所有工作区的所有锁定。
+    </para>
             </entry>
           </row>
         </table>

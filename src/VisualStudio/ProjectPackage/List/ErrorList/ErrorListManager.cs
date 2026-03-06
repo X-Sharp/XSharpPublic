@@ -24,7 +24,7 @@ namespace XSharp.Project
     internal class ErrorListManager : ListManager<IErrorListItem>
     {
         static ConcurrentDictionary<Guid, ErrorListManager> _projects;
-        static ErrorListProvider _provider = null;
+        static ErrorListProvider _listprovider = null;
         static IErrorList _errorList = null;
         static ITableManager _manager = null;
 
@@ -43,13 +43,13 @@ namespace XSharp.Project
             if (_errorList != null)
             {
                 _manager = _errorList.TableControl.Manager;
-                _provider = new ErrorListProvider(_manager);
+                _listprovider = new ErrorListProvider(_manager);
             }
         }
         internal ErrorListManager(XSharpProjectNode node) : base(node)
         {
             GetErrorList();
-            SetProvider(_provider);
+            SetProvider(_listprovider);
         }
 
         internal static ErrorListManager RegisterProject(XSharpProjectNode project)
@@ -58,7 +58,9 @@ namespace XSharp.Project
             if (!_projects.ContainsKey(project.ProjectIDGuid))
             {
                 var manager = new ErrorListManager(project);
-                _provider.AddListFactory(manager.Factory);
+                if (_listprovider != null)
+                    _listprovider.AddListFactory(manager.Factory);
+
                 _projects.TryAdd(project.ProjectIDGuid, manager);
             }
             _projects.TryGetValue(project.ProjectIDGuid, out var errorlistmanager);
@@ -244,7 +246,7 @@ namespace XSharp.Project
         {
             if (_projects.TryGetValue(project.ProjectIDGuid, out var entry))
             {
-                _provider.RemoveListFactory(entry.Factory);
+                _listprovider.RemoveListFactory(entry.Factory);
                 return _projects.TryRemove(project.ProjectIDGuid, out _);
             }
             return false;

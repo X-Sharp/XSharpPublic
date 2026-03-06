@@ -56,8 +56,8 @@
             </entry>
             <entry>
               <para>
-            Decode a file from an e-mail transfer.
-        </para>
+      从电子邮件传输中解码文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -70,8 +70,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>

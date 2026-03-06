@@ -47,8 +47,8 @@
             </entry>
             <entry>
               <para>
-            Determine if an object is an instance of a particular class.
-        </para>
+      Determine if an object is an instance of a particular class.
+    </para>
             </entry>
           </row>
           <row>
@@ -62,8 +62,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of classes available to your application.
-        </para>
+      Return the number of classes available to your application.
+    </para>
             </entry>
           </row>
           <row>
@@ -103,8 +103,8 @@
             </entry>
             <entry>
               <para>
-            Return an array of symbols corresponding to the classes available to your application.
-        </para>
+      Return an array of symbols corresponding to the classes available to your application.
+    </para>
             </entry>
           </row>
           <row>
@@ -118,8 +118,8 @@
             </entry>
             <entry>
               <para>
-            Get the class name of an object.
-        </para>
+      Get the class name of an object.
+    </para>
             </entry>
           </row>
           <row>
@@ -146,8 +146,8 @@
             </entry>
             <entry>
               <para>
-            Get the class hierarchy of an object.
-        </para>
+      Get the class hierarchy of an object.
+    </para>
             </entry>
           </row>
           <row>
@@ -161,8 +161,8 @@
             </entry>
             <entry>
               <para>
-            Get the class hierarchy of a class.
-        </para>
+      Get the class hierarchy of a class.
+    </para>
             </entry>
           </row>
           <row>
@@ -176,8 +176,8 @@
             </entry>
             <entry>
               <para>
-            Create an object.
-        </para>
+      Create an object.
+    </para>
             </entry>
           </row>
           <row>
@@ -219,8 +219,8 @@
             </entry>
             <entry>
               <para>
-            Invoke a method.
-        </para>
+      Invoke a method.
+    </para>
             </entry>
           </row>
           <row>
@@ -247,8 +247,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular access method can be sent to an object.
-        </para>
+      Check whether a particular access method can be sent to an object.
+    </para>
             </entry>
           </row>
           <row>
@@ -262,8 +262,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular assign method can be sent to an object.
-        </para>
+      Check whether a particular assign method can be sent to an object.
+    </para>
             </entry>
           </row>
           <row>
@@ -277,8 +277,8 @@
             </entry>
             <entry>
               <para>
-            Determine if a class exists.
-        </para>
+      Determine if a class exists.
+    </para>
             </entry>
           </row>
           <row>
@@ -292,8 +292,8 @@
             </entry>
             <entry>
               <para>
-            Determine if one class is a subclass of another class.
-        </para>
+      Determine if one class is a subclass of another class.
+    </para>
             </entry>
           </row>
           <row>
@@ -307,8 +307,8 @@
             </entry>
             <entry>
               <para>
-            Determine if an object is an instance of a class.
-        </para>
+      Determine if an object is an instance of a class.
+    </para>
             </entry>
           </row>
           <row>
@@ -322,8 +322,8 @@
             </entry>
             <entry>
               <para>
-            Determine if an object inside a USUAL is an instance of a class.
-        </para>
+      Determine if an object inside a USUAL is an instance of a class.
+    </para>
             </entry>
           </row>
           <row>
@@ -336,8 +336,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -351,8 +350,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular method can be sent to an object.
-        </para>
+      Check whether a particular method can be sent to an object.
+    </para>
             </entry>
           </row>
           <row>
@@ -366,8 +365,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular method can be sent to a class.
-        </para>
+      Check whether a particular method can be sent to a class.
+    </para>
             </entry>
           </row>
           <row>
@@ -381,8 +380,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular method can be sent to an object inside a USUAL.
-        </para>
+      Check whether a particular method can be sent to an object inside a USUAL.
+    </para>
             </entry>
           </row>
           <row>
@@ -396,8 +395,8 @@
             </entry>
             <entry>
               <para>
-            Return the contents of an exported instance variable.
-        </para>
+      Return the contents of an exported instance variable.
+    </para>
             </entry>
           </row>
           <row>
@@ -411,8 +410,8 @@
             </entry>
             <entry>
               <para>
-            Get information about how a particular instance variable (or access method) was declared.
-        </para>
+      Get information about how a particular instance variable (or access method) was declared.
+    </para>
             </entry>
           </row>
           <row>
@@ -426,8 +425,8 @@
             </entry>
             <entry>
               <para>
-            Return the contents of an instance variable.
-        </para>
+      Return the contents of an instance variable.
+    </para>
             </entry>
           </row>
           <row>
@@ -441,8 +440,8 @@
             </entry>
             <entry>
               <para>
-            Store all instance variables of an object into an array.
-        </para>
+      Store all instance variables of an object into an array.
+    </para>
             </entry>
           </row>
           <row>
@@ -456,8 +455,8 @@
             </entry>
             <entry>
               <para>
-            Store all instance variables of a class into an array.
-        </para>
+      Store all instance variables of a class into an array.
+    </para>
             </entry>
           </row>
           <row>
@@ -466,13 +465,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IVarPut(System.Object,System.String,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IVarPut(System.Object,System.String,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Assign a value to an exported instance variable.
-        </para>
+      Assign a value to an exported instance variable.
+    </para>
             </entry>
           </row>
           <row>
@@ -486,8 +485,8 @@
             </entry>
             <entry>
               <para>
-            Get information about how a particular instance variable (or assign method) was declared.
-        </para>
+      Get information about how a particular instance variable (or assign method) was declared.
+    </para>
             </entry>
           </row>
           <row>
@@ -496,13 +495,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IVarPutSelf(System.Object,System.String,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IVarPutSelf(System.Object,System.String,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Assign a value to an instance variable.
-        </para>
+      Assign a value to an instance variable.
+    </para>
             </entry>
           </row>
           <row>
@@ -516,8 +515,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of arguments that a method is expecting.
-        </para>
+      Return the number of arguments that a method is expecting.
+    </para>
             </entry>
           </row>
           <row>
@@ -531,8 +530,8 @@
             </entry>
             <entry>
               <para>
-            Identify an invalid method call.
-        </para>
+      Identify an invalid method call.
+    </para>
             </entry>
           </row>
           <row>
@@ -546,8 +545,8 @@
             </entry>
             <entry>
               <para>
-            Return a multidimensional array of all object-oriented programming symbols that constitute the class.
-        </para>
+      Return a multidimensional array of all object-oriented programming symbols that constitute the class.
+    </para>
             </entry>
           </row>
           <row>
@@ -561,8 +560,8 @@
             </entry>
             <entry>
               <para>
-            Return a multidimensional array of all object-oriented programming symbols that constitute the class of an object.
-        </para>
+      Return a multidimensional array of all object-oriented programming symbols that constitute the class of an object.
+    </para>
             </entry>
           </row>
           <row>

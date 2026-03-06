@@ -8,42 +8,42 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
-
 INTERNAL FUNCTION _DoInArea<T>(uArea as Usual, action as @@Func<T>, defaultValue as T, cFunction as STRING, nArg as DWORD) as T
     IF IsNil(uArea)
         RETURN (T) IIF(Used(), action(), defaultValue)
     ELSEIF IsNumeric(uArea)
-        RETURN (T) (uArea)->(IIF(Used(), action(), defaultValue)) 
-    ENDIF 
-    VAR curArea := RuntimeState.CurrentWorkarea 
-    VAR newArea := VoDb.SymSelect(uArea) 
-    RuntimeState.CurrentWorkarea := curArea 
-    IF newArea == 0 
+        RETURN (T) (uArea)->(IIF(Used(), action(), defaultValue))
+    ENDIF
+    VAR curArea := RuntimeState.CurrentWorkarea
+    VAR newArea := VoDb.SymSelect(uArea)
+    RuntimeState.CurrentWorkarea := curArea
+    IF newArea == 0
         THROW Error.VoDbError( EG_ARG, EDB_BADALIAS, cFunction, nameof(uArea), nArg, <OBJECT>{uArea}  )
-    ENDIF 
-    RETURN (T) (newArea)->(action()) 
+    ENDIF
+    RETURN (T) (newArea)->(action())
 
 // The last 2 params in the function calls below determine the error message generated when the uArea parameter
 // is an non existing alias
 // The number should match the position of the uArea parameter in the parameter list of the original parameters list
 //
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/cdx/*" />
+[FoxProFunction("CDX", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION  Cdx (nIndexNumber , uArea)  AS USUAL CLIPPER
     RETURN _DoInArea(uArea, { => (String) DbOrderInfo(DBOI_INDEXNAME, NIL, nIndexNumber) } , "",__FUNCTION__,2)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/cpdbf/*" />
+[FoxProFunction("CPDBF", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION CpDbf( uArea) AS LONG CLIPPER
     RETURN _DoInArea(uArea, { => (LONG) DbInfo(DBI_CODEPAGE) } , 0,__FUNCTION__,1)
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/descending/*" />
+[FoxProFunction("DESCENDING", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Descending( uIndex, uArea) AS USUAL CLIPPER
     RETURN _DoInArea(uArea, { => (LOGIC) DbOrderInfo(DBOI_ISDESC, NIL, uIndex) } , FALSE,__FUNCTION__,2)
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/field/*" />
+[FoxProFunction("FIELD", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Field( uField , uArea, nFlag) AS STRING CLIPPER
     LOCAL nInfo as LONG
     @@Default(@nFlag, 0)
@@ -51,7 +51,7 @@ FUNCTION Field( uField , uArea, nFlag) AS STRING CLIPPER
         nInfo := DBS_CAPTION
     ELSE
         nInfo := DBS_NAME
-    ENDIF        
+    ENDIF
     IF IsString(uField)
         RETURN _DoInArea(uArea, { => (STRING) DbFieldInfo(nInfo, uField) } , "",__FUNCTION__,2)
     ELSEIF IsNumeric(uField)
@@ -61,85 +61,89 @@ FUNCTION Field( uField , uArea, nFlag) AS STRING CLIPPER
     ENDIF
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/filter/*" />
+[FoxProFunction("FILTER", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Filter( uArea ) AS USUAL CLIPPER
     RETURN _DoInArea(uArea, { => (STRING) DbInfo(DBI_DBFILTER) } , "",__FUNCTION__,1)
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fldcount/*" />
+[FoxProFunction("FLDCOUNT", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION FldCount( ) AS USUAL CLIPPER
     RETURN FCount()
 
-
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/for/*" />
+[FoxProFunction("FOR", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION For( nIndexNumber , uArea) AS STRING CLIPPER
     RETURN _DoInArea(uArea, { => (String) DbOrderInfo(DBOI_CONDITION, NIL, nIndexNumber) } , "",__FUNCTION__,2)
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/idxcollate/*" />
+[FoxProFunction("IDXCOLLATE", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION IdxCollate( uIndex, nIndex, uArea) AS STRING CLIPPER
     RETURN _DoInArea(uArea, { => (String) DbOrderInfo(DBOI_COLLATION, uIndex, nIndex) } , "",__FUNCTION__,3)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/isflocked/*" />
+[FoxProFunction("ISFLOCKED", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION IsFlocked( uArea ) AS LOGIC CLIPPER
     RETURN _DoInArea(uArea, { => (LOGIC) DbInfo(DBI_ISFLOCK) } , FALSE,__FUNCTION__,1)
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/isreadonly/*" />
+[FoxProFunction("ISREADONLY", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION IsReadOnly( uArea ) AS LOGIC CLIPPER
     RETURN _DoInArea(uArea, { => (LOGIC) DbInfo(DBI_READONLY) } , FALSE,__FUNCTION__,1)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/isrlocked/*" />
+[FoxProFunction("ISRLOCKED", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION IsRlocked( nRecordNumber, uArea ) AS LOGIC CLIPPER
     RETURN _DoInArea(uArea, { => (LOGIC) DbRecordInfo(DBRI_LOCKED, nRecordNumber) } , FALSE,__FUNCTION__,2)
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/key/*" />
+[FoxProFunction("KEY", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Key( uIndex, uArea) AS STRING CLIPPER
     RETURN _DoInArea(uArea, { => (String) DbOrderInfo(DBOI_EXPRESSION,NIL ,uIndex) } , "",__FUNCTION__,2)
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mdx/*" />
+[FoxProFunction("MDX", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Mdx( nIndexNumber , uArea) AS STRING CLIPPER
     RETURN _DoInArea(uArea, { => (String) DbOrderInfo(DBOI_INDEXNAME,NIL ,nIndexNumber) } , "",__FUNCTION__,2)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ndx/*" />
+[FoxProFunction("NDX", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Ndx( nIndexNumber , uArea ) AS STRING CLIPPER
     RETURN _DoInArea(uArea, { => (String) DbOrderInfo(DBOI_INDEXNAME,NIL ,nIndexNumber) } , "",__FUNCTION__,2)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/order/*" />
+[FoxProFunction("ORDER", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Order( uArea, nPath) AS STRING CLIPPER
     IF IsNumeric(nPath)
         RETURN _DoInArea(uArea, { => (String) DbOrderInfo(DBOI_FULLPATH, 0) } , "",__FUNCTION__,1)
     ENDIF
     RETURN _DoInArea(uArea, { => (STRING) DbOrderInfo(DBOI_NAME, 0) } , "",__FUNCTION__,1)
-    
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/relation/*" />
+[FoxProFunction("RELATION", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Relation( nRelationNumber , uArea) AS STRING CLIPPER
     RETURN _DoInArea(uArea, { =>  DbRelation(nRelationNumber) } , "",__FUNCTION__,2)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/tag/*" />
+[FoxProFunction("TAG", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Tag( CDXFileName, nTagNumber, uArea) AS STRING CLIPPER
     RETURN _DoInArea(uArea, { => (String) DbOrderInfo(DBOI_NAME, CDXFileName, nTagNumber) } , "",__FUNCTION__,3)
-    
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/tagcount/*" />
+[FoxProFunction("TAGCOUNT", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION TagCount( CDXFileName , uArea) AS LONG CLIPPER
     RETURN _DoInArea(uArea, { => (LONG) DbOrderInfo(DBOI_ORDERCOUNT, CDXFileName) } , 0,__FUNCTION__,2)
-
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/bagcount/*" />
 FUNCTION BagCount( uArea) AS LONG CLIPPER
     RETURN _DoInArea(uArea, { => (LONG) DbOrderInfo(DBOI_BAGCOUNT) } , 0,__FUNCTION__,1)
 
-
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/tagno/*" />
+[FoxProFunction("TAGNO", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION TagNo( IndexName , CDXFileName , uArea ) AS LONG CLIPPER
     RETURN _DoInArea(uArea, { => (LONG) DbOrderInfo(DBOI_NUMBER, CDXFileName, IndexName) } , 0,__FUNCTION__,3)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/target/*" />
+[FoxProFunction("TARGET", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Target( nRelationshipNumber , uArea ) AS STRING CLIPPER
     RETURN _DoInArea(uArea, { =>
         LOCAL nArea AS DWORD
@@ -150,9 +154,7 @@ FUNCTION Target( nRelationshipNumber , uArea ) AS STRING CLIPPER
         RETURN ""
         } , "",__FUNCTION__,2)
 
-
-
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/unique/*" />
+[FoxProFunction("UNIQUE", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION Unique(uArea ) AS LOGIC CLIPPER
     RETURN _DoInArea(uArea, { => (LOGIC) DbOrderInfo(DBOI_UNIQUE , NIL, NIL) } , FALSE,__FUNCTION__,1)

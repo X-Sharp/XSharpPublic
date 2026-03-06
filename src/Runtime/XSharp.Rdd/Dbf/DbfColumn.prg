@@ -799,14 +799,20 @@ BEGIN NAMESPACE XSharp.RDD
             // increment the counter and write to the header
             // then write the current value to the buffer
             LOCAL nCurrent as LONG
+            local mustLock as LOGIC
             nCurrent := SELF:Counter
-            DO WHILE ! SELF:RDD:HeaderLock(DbLockMode.Lock)
-                NOP
-            ENDDO
+            mustLock := SELF:RDD:Shared .and. ! SELF:RDD:_HeaderLocked
+            IF mustLock
+                DO WHILE ! SELF:RDD:HeaderLock(DbLockMode.Lock)
+                    NOP
+                ENDDO
+            ENDIF
             SELF:Read()
             SELF:Counter += SELF:IncrStep
             SELF:Write()
-            SELF:RDD:HeaderLock( DbLockMode.UnLock )
+            IF mustLock
+                SELF:RDD:HeaderLock( DbLockMode.UnLock )
+            endif
 
 	    // Call SUPER:PutValue because we have overwritten PutValue to not allow to write,
 	    // but this of course is the exception, since we HAVE to write the new autonumber field.

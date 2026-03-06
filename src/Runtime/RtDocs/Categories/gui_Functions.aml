@@ -29,8 +29,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -43,8 +42,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -57,8 +55,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -71,7 +68,7 @@
               </para>
             </entry>
             <entry>
-              <para>M:VOGUIClasses.Functions.CAPaintIsLoadedGui.xmldoc/CAPaintIsLoaded/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -84,7 +81,7 @@
               </para>
             </entry>
             <entry>
-              <para>M:VOGUIClasses.Functions.CAPaintLastErrorGui.xmldoc/CAPaintLastError/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -97,7 +94,7 @@
               </para>
             </entry>
             <entry>
-              <para>M:VOGUIClasses.Functions.CAPaintLastErrorMsgGui.xmldoc/CAPaintLastErrorMsg/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -110,7 +107,7 @@
               </para>
             </entry>
             <entry>
-              <para>M:VOGUIClasses.Functions.CAPaintShowErrors(System.Boolean)Gui.xmldoc/CAPaintShowErrors/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -123,8 +120,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -242,8 +238,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -256,8 +251,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -270,8 +264,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -284,8 +277,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -298,8 +290,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -312,7 +303,7 @@
               </para>
             </entry>
             <entry>
-              <para>M:VOGUIClasses.Functions.DrawThemeEdge(System.Void*,System.Void*,System.Int32,System.Int32,System.Void*,System.UInt32,System.UInt32,System.Void*)Gui.xmldoc/DrawThemeEdge/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -325,8 +316,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -352,8 +342,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -366,8 +355,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -380,8 +368,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -394,8 +381,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -438,8 +424,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -467,8 +452,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -481,8 +465,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -495,7 +478,7 @@
               </para>
             </entry>
             <entry>
-              <para>M:VOGUIClasses.Functions.GUIExit(System.Object,System.EventArgs)Gui.xmldoc/GUIExit/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -508,8 +491,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -522,8 +504,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -549,8 +530,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -576,8 +556,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -603,8 +582,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -617,8 +595,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -631,8 +608,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -645,8 +621,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -659,7 +634,7 @@
               </para>
             </entry>
             <entry>
-              <para>M:VOGUIClasses.Functions.SetClassStyle(System.Void*,System.UInt32,System.Boolean)Gui.xmldoc/SetClassStyle/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -672,8 +647,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -686,8 +660,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -700,8 +673,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -714,8 +686,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -728,8 +699,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -742,8 +712,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -756,7 +725,7 @@
               </para>
             </entry>
             <entry>
-              <para>M:VOGUIClasses.Functions.THTMLHelp(System.Void*,XSharp.__Psz,System.UInt32,System.UInt32)Gui.xmldoc/THTMLHelp/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -769,8 +738,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -783,7 +751,7 @@
               </para>
             </entry>
             <entry>
-              <para>M:VOGUIClasses.Functions.UseColonInAutoLayoutCaptions(System.Boolean)Gui.xmldoc/UseColonInAutoLayoutCaptions/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -796,8 +764,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -810,8 +777,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -824,8 +790,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -838,8 +803,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -852,8 +816,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -866,8 +829,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -880,8 +842,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -894,8 +855,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -908,8 +868,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -922,8 +881,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -936,8 +894,35 @@
               </para>
             </entry>
             <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.WEXIST(System.String)</codeEntityReference>
               </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.WVISIBLE(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Determines if the specified window has been activated and isn't hidden.
+        </para>
             </entry>
           </row>
         </table>

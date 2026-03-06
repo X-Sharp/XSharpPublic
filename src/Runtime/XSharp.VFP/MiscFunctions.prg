@@ -4,7 +4,6 @@
 // See License.txt in the project root for license information.
 //
 
-
 /// <include file="VFPDocs.xml" path="Runtimefunctions/id/*" />
 [FoxProFunction("ID", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION Id( ) AS STRING

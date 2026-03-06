@@ -38,26 +38,19 @@ FUNCTION GoMonth( dExpression AS DATE , iNumberOfMonths AS INT ) AS DATE
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/gomonth/*" />
 FUNCTION GoMonth( tExpression AS System.DateTime , iNumberOfMonths AS INT ) AS DATE
-LOCAL dDate AS DATE
-
+    LOCAL dDate AS DATE
    	IF ((DATE) tExpression):IsEmpty
 		RETURN NULL_DATE
 	ENDIF
 
-
     TRY    // suppresses a exception if the year becomes < 1 or > 9999
-
  		dDate := (DATE) tExpression:AddMonths( iNumberOfMonths )
-
 		// according the docs, 1753 is the VFP min limit
 		IF Year ( dDate ) < 1753
 			dDate := NULL_DATE
 		ENDIF
-
     CATCH
-
     	dDate := NULL_DATE // just to be sure ...
-
     END TRY
 
     RETURN dDate
@@ -69,7 +62,6 @@ INTERNAL FUNCTION _DateTimeError( sParameter AS STRING, argNum AS DWORD, aArgs P
     err:Stack := ErrorStack(1)
     RETURN err
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/gomonth/*" />
 FUNCTION GoMonth( uExpression AS USUAL , iNumberOfMonths AS INT ) AS DATE
     IF IsDate(uExpression)
@@ -78,7 +70,6 @@ FUNCTION GoMonth( uExpression AS USUAL , iNumberOfMonths AS INT ) AS DATE
         RETURN GoMonth ( (System.DateTime) uExpression , iNumberOfMonths )
     ENDIF
     THROW _DateTimeError(NAMEOF(uExpression), 1, uExpression, iNumberOfMonths)
-
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/quarter/*" />
 [FoxProFunction("QUARTER", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
@@ -90,11 +81,9 @@ FUNCTION Quarter( uExpression  AS USUAL , nMonth  := 1 AS INT ) AS INT
     ENDIF
     THROW _DateTimeError(NAMEOF(uExpression),1, uExpression, nMonth)
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/quarter/*" />
 FUNCTION Quarter( dExpression  AS DATE , nMonth  := 1 AS INT ) AS INT
     RETURN Quarter ( (System.DateTime) dExpression  , nMonth  )
-
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/quarter/*" />
 FUNCTION Quarter( tExpression  AS System.DateTime , nMonth  := 1 AS INT ) AS INT
@@ -119,7 +108,6 @@ FUNCTION Week( uExpression AS USUAL, nFirstWeek := 1 AS LONG, nFirstDayOfWeek :=
         RETURN Week ( (System.DateTime) uExpression , nFirstWeek, nFirstDayOfWeek )
     ENDIF
     THROW _DateTimeError(NAMEOF(uExpression), 1, uExpression, nFirstWeek,nFirstDayOfWeek)
-
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/week/*" />
 FUNCTION Week( dExpression AS DATE, nFirstWeek := 1 AS LONG, nFirstDayOfWeek := 1 AS LONG) AS LONG
@@ -153,7 +141,6 @@ FUNCTION Week( tExpression AS System.DateTime, nFirstWeek := 1 AS LONG, nFirstDa
     ENDIF
     VAR calendar := System.Globalization.GregorianCalendar{}
     RETURN calendar:GetWeekOfYear ( tExpression, weekRule, day)
-
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mdy/*" />
 [FoxProFunction("MDY", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
@@ -189,10 +176,9 @@ FUNCTION DMY ( uExpression  AS USUAL ) AS STRING
     ENDIF
     THROW _DateTimeError(NAMEOF(uExpression),1, uExpression)
 
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
 FUNCTION DMY ( tExpression  AS System.DateTime) AS STRING
-RETURN DMY ( (DATE) tExpression   )
+    RETURN DMY ( (DATE) tExpression   )
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
 FUNCTION DMY ( dExpression  AS DATE ) AS STRING

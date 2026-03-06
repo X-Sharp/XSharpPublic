@@ -68,6 +68,7 @@
     <Compile Include="CodeBlockTest.prg" />
     <Compile Include="ClipperCallingTests.prg" />
     <Compile Include="ArrayBaseTests.prg" />
+    <Compile Include="DbfVfpTests.prg" />
     <Compile Include="LateBindingTests.prg" />
     <Compile Include="TerminalTests.prg" />
     <Compile Include="DbfNtxTests.prg" />

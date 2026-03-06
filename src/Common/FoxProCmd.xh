@@ -234,10 +234,12 @@
          [ALL]                                                          ;
          IN <(a)>                                                       ;
                                                                         ;
-      => (<(a)>)->(DBEval(                                              ;
+         => BEGIN SCOPE ; VAR __saveDeleted := SetDeleted();            ;
+         IF RuntimeState.Dialect == XSharpDialect.FoxPro; SetDeleted(FALSE); ENDIF ;;
+            (<(a)>)->(DbEval(                                              ;
                  {|| __DbRecall()},                                     ;
                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
-               ))
+               )) ;SetDeleted(__saveDeleted); END SCOPE
 
 
 #command LOCATE                                                         ;

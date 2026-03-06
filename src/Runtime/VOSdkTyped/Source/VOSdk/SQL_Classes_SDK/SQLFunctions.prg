@@ -342,15 +342,13 @@ STATIC CLASS SqlFunctions
 		oError:SubSystem 	:= "NetServer"
 		oError:Severity		:= ES_ERROR
 		oError:Tries 	 	:= 1
-		RETURN oError
-	STATIC PRIVATE INITONLY cAllowed AS STRING
+        RETURN oError
+	CONST cAllowed := "ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789_abcdefghijklmnopqrstuvwxyz" AS STRING
 	STATIC PRIVATE INITONLY aFieldNames AS System.Collections.Generic.Dictionary<STRING, STRING>
 	STATIC CONSTRUCTOR
-		cAllowed   := "ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789_abcdefghijklmnopqrstuvwxyz"
 		aFieldNames := System.Collections.Generic.Dictionary<STRING, STRING>{}
 
-
-    STATIC METHOD  CleanupColumnName( cColumnName AS  STRING ) AS STRING
+    STATIC METHOD CleanupColumnName( cColumnName AS  STRING ) AS STRING
 		LOCAL sb AS System.Text.StringBuilder
 		LOCAL lLastWasOk AS LOGIC
 		LOCAL cResult AS STRING

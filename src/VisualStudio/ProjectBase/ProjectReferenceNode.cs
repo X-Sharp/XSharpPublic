@@ -63,7 +63,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
 		private bool isNodeValid = true;
 
-        private bool isUnloaded = true;
+        //private bool isUnloaded = true;
         #endregion
 
         #region properties
@@ -81,8 +81,8 @@ namespace Microsoft.VisualStudio.Project
             get
             {
                 var res = this.ReferencedProjectName;
-                if (this.isUnloaded)
-                    res += " (unloaded)";
+                //if (this.isUnloaded)
+                //    res += " (unloaded)";
                 return res;
 
             }
@@ -111,17 +111,17 @@ namespace Microsoft.VisualStudio.Project
                 this.isNodeValid = value;
             }
         }
-        internal protected bool IsUnloaded
-        {
-            get
-            {
-                return this.isUnloaded;
-            }
-            set
-            {
-                this.isUnloaded = value;
-            }
-        }
+        //internal protected bool IsUnloaded
+        //{
+        //    get
+        //    {
+        //        return this.isUnloaded;
+        //    }
+        //    set
+        //    {
+        //        this.isUnloaded = value;
+        //    }
+        //}
         /// <summary>
         /// Controls the state whether this reference can be removed or not. Think of the project unload scenario where the project reference should not be deleted.
         /// </summary>

@@ -295,8 +295,20 @@ namespace Microsoft.VisualStudio.Project
 				{
 					continue;
 				}
-				foreach (var item in MSBuildProject.GetItems(buildProject, referenceType))
+                // We have seen a project with duplicate project references. Remove these from the list
+                var filenames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                foreach (var item in MSBuildProject.GetItems(buildProject, referenceType))
 				{
+                    var url = item.EvaluatedInclude;
+                    if (filenames.Contains(url))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        filenames.Add(url);
+                    }
                     ProjectElement element = new ProjectElement(this.ProjectMgr, item, false);
 
                     ReferenceNode node = CreateReferenceNode(referenceType, element);

@@ -58,8 +58,8 @@
             </entry>
             <entry>
               <para>
-            Gets the locale ID that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
-        </para>
+      Gets the locale ID that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
+    </para>
             </entry>
           </row>
           <row>
@@ -86,8 +86,8 @@
             </entry>
             <entry>
               <para>
-            Get the current DLL for nation-dependent operations and messages.
-        </para>
+      Get the current DLL for nation-dependent operations and messages.
+    </para>
             </entry>
           </row>
           <row>
@@ -113,8 +113,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -127,8 +126,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -141,8 +139,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -155,8 +152,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -169,8 +165,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -199,8 +194,8 @@
             </entry>
             <entry>
               <para>
-            Remove leading and trailing spaces — including double-byte spaces — from a string.
-        </para>
+      Remove leading and trailing spaces — including double-byte spaces — from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -214,8 +209,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -229,8 +224,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -244,8 +239,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the position of the first occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -259,8 +254,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a sub string within a string, without regard for case — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the position of the first occurrence of a sub string within a string, without regard for case — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -274,8 +269,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string, without regard for case — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the position of the first occurrence of a substring within a string, without regard for case — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -289,8 +284,8 @@
             </entry>
             <entry>
               <para>
-            Return the line number of the first occurrence of a substring within a multiple line string — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the line number of the first occurrence of a substring within a multiple line string — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -304,8 +299,8 @@
             </entry>
             <entry>
               <para>
-            Return the line number of the first occurrence of a substring within a multiple line string — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the line number of the first occurrence of a substring within a multiple line string — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -319,8 +314,8 @@
             </entry>
             <entry>
               <para>
-            Return a substring beginning with the first character of a string containing double-byte characters.
-        </para>
+      Return a substring beginning with the first character of a string containing double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -334,8 +329,8 @@
             </entry>
             <entry>
               <para>
-            Return the length of a string containing double-byte characters or an array.
-        </para>
+      Return the length of a string containing double-byte characters or an array.
+    </para>
             </entry>
           </row>
           <row>
@@ -349,8 +344,8 @@
             </entry>
             <entry>
               <para>
-            Remove leading spaces — including double-byte spaces — from a string.
-        </para>
+      Remove leading spaces — including double-byte spaces — from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -364,8 +359,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -379,8 +374,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -394,8 +389,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the last occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the position of the last occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -409,8 +404,8 @@
             </entry>
             <entry>
               <para>
-            Return a substring beginning with the last character of a string containing double-byte characters.
-        </para>
+      Return a substring beginning with the last character of a string containing double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -424,8 +419,8 @@
             </entry>
             <entry>
               <para>
-            Remove trailing spaces — including double-byte spaces — from a string.
-        </para>
+      Remove trailing spaces — including double-byte spaces — from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -439,8 +434,8 @@
             </entry>
             <entry>
               <para>
-            Return the length of a strongly typed string containing double-byte characters.
-        </para>
+      Return the length of a strongly typed string containing double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -454,8 +449,8 @@
             </entry>
             <entry>
               <para>
-            Insert a string into another string, optionally deleting a specified number of characters from the original string — both strings can contain double-byte characters.
-        </para>
+      Insert a string into another string, optionally deleting a specified number of characters from the original string — both strings can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -484,8 +479,8 @@
             </entry>
             <entry>
               <para>
-            Extract a substring from a string, using strong typing and only two arguments — both the substring and the string can contain double-byte characters.
-        </para>
+      Extract a substring from a string, using strong typing and only two arguments — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -499,8 +494,8 @@
             </entry>
             <entry>
               <para>
-            Extract a substring from a string, using strong typing and three required arguments — both the substring and the string can contain double-byte characters.
-        </para>
+      Extract a substring from a string, using strong typing and three required arguments — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -514,8 +509,8 @@
             </entry>
             <entry>
               <para>
-            Remove trailing spaces — including double-byte spaces — from a string.
-        </para>
+      Remove trailing spaces — including double-byte spaces — from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -529,8 +524,8 @@
             </entry>
             <entry>
               <para>
-            Identify a character set by its nation driver.
-        </para>
+      Identify a character set by its nation driver.
+    </para>
             </entry>
           </row>
           <row>
@@ -544,8 +539,8 @@
             </entry>
             <entry>
               <para>
-            Sets the locale that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
-        </para>
+      Sets the locale that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
+    </para>
             </entry>
           </row>
           <row>
@@ -559,8 +554,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether to include or omit century digits in the date format.
-        </para>
+      Return and optionally change the setting that determines whether to include or omit century digits in the date format.
+    </para>
             </entry>
           </row>
           <row>
@@ -574,8 +569,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the internal collation routine used for string comparisons.
-        </para>
+      Return and optionally change the setting that determines the internal collation routine used for string comparisons.
+    </para>
             </entry>
           </row>
           <row>
@@ -615,8 +610,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the X# date format by selecting from a list of constants with corresponding date formats.
-        </para>
+      Return and optionally change the setting that determines the X# date format by selecting from a list of constants with corresponding date formats.
+    </para>
             </entry>
           </row>
           <row>
@@ -630,8 +625,8 @@
             </entry>
             <entry>
               <para>
-            Change the setting that determines the X# date format.
-        </para>
+      Change the setting that determines the X# date format.
+    </para>
             </entry>
           </row>
           <row>
@@ -645,8 +640,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the decimal separation character to be used in numeric-to-string conversion functions.
-        </para>
+      Return and optionally change the setting that determines the decimal separation character to be used in numeric-to-string conversion functions.
+    </para>
             </entry>
           </row>
           <row>
@@ -660,8 +655,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the international mode for the application.
-        </para>
+      Return and optionally change the setting that determines the international mode for the application.
+    </para>
             </entry>
           </row>
           <row>
@@ -675,8 +670,8 @@
             </entry>
             <entry>
               <para>
-            Activate a new DLL for nation-dependent operations and messages.
-        </para>
+      Activate a new DLL for nation-dependent operations and messages.
+    </para>
             </entry>
           </row>
           <row>
@@ -690,8 +685,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the thousands separation character to be used in numeric-to-string conversion functions.
-        </para>
+      Return and optionally change the setting that determines the thousands separation character to be used in numeric-to-string conversion functions.
+    </para>
             </entry>
           </row>
           <row>

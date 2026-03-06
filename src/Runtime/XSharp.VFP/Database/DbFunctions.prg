@@ -8,7 +8,6 @@
 // This also contains the push / pop code to allow access to WITH variables outside of the
 // function where they are declared.
 
-
 USING XSharp.RDD
 USING System.Collections.Generic
 USING XSharp.RDD.Support
@@ -20,6 +19,7 @@ USING XSharp.RDD.Support
 /// <seealso cref="DbcView" />
 /// <seealso cref="DbcConnection" />
 /// <seealso cref="DbcField" />
+[FoxProFunction("DBGETPROP", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION DbGetProp( cName AS STRING, cType AS STRING, cProperty AS STRING)  AS USUAL
     IF ! Dbc.IsValidObjectType(cType)
         THROW Error.ArgumentError(__FUNCTION__, nameof(cType), __VfpStr(VFPErrors.VFP_INVALID_DB_OBJECT, cType))
@@ -35,7 +35,6 @@ FUNCTION DbGetProp( cName AS STRING, cType AS STRING, cProperty AS STRING)  AS U
 
     RETURN oDb:GetProp(cName, cType, cProperty)
 
-
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbsetprop/*" />
 /// <seealso cref="DbGetProp" />
 /// <seealso cref="DbcDatabase" />
@@ -43,6 +42,7 @@ FUNCTION DbGetProp( cName AS STRING, cType AS STRING, cProperty AS STRING)  AS U
 /// <seealso cref="DbcView" />
 /// <seealso cref="DbcConnection" />
 /// <seealso cref="DbcField" />
+[FoxProFunction("DBSETPROP", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION DbSetProp(cName AS STRING, cType AS STRING, cProperty AS STRING, ePropertyValue AS USUAL) AS USUAL
     IF ! Dbc.IsValidObjectType(cType)
         THROW Error.ArgumentError(__FUNCTION__, nameof(cType), __VfpStr(VFPErrors.VFP_INVALID_DB_OBJECT, cType))
@@ -56,11 +56,10 @@ FUNCTION DbSetProp(cName AS STRING, cType AS STRING, cProperty AS STRING, ePrope
     ENDIF
     RETURN oDb:SetProp(cName, cType, cProperty, ePropertyValue)
 
-
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbc/*" />
 /// <seealso cref="DbAlias" />
 /// <seealso cref="DbUsed" />
-
+[FoxProFunction("DBC", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Dbc() AS STRING
     LOCAL oDb := Dbc.GetCurrent() as DbcDatabase
     IF oDb != NULL
@@ -71,12 +70,14 @@ FUNCTION Dbc() AS STRING
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbused/*" />
 /// <seealso cref="DbAlias" />
 /// <seealso cref="Dbc" />
+[FoxProFunction("DBUSED", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION DbUsed( cDatabaseName AS STRING) AS LOGIC
     RETURN Dbc.IsUsed(cDatabaseName)
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbalias/*" />
 /// <seealso cref="DbUsed" />
 /// <seealso cref="Dbc" />
+[FoxProFunction("DBALIAS", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION DbAlias () AS STRING
     LOCAL oDb := Dbc.GetCurrent() as DbcDatabase
     IF oDb != NULL
@@ -84,9 +85,9 @@ FUNCTION DbAlias () AS STRING
     ENDIF
     RETURN String.Empty
 
-
 #pragma options("az", ON)
 /// <include file="VFPDocs.xml" path="Runtimefunctions/adatabases/*" />
+[FoxProFunction("ADATABASES", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION ADatabases( ArrayName AS ARRAY) AS DWORD
     local result := (DWORD) DbcManager.Databases:Count AS DWORD
     IF result > 0
@@ -102,9 +103,9 @@ FUNCTION ADatabases( ArrayName AS ARRAY) AS DWORD
 #pragma options("az", default)
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/lock/*" />
+[FoxProFunction("LOCK", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Lock( cRecordNumberList, uArea) AS LOGIC CLIPPER
     RETURN RLock(cRecordNumberList, uArea)
-
 
 FUNCTION __DbFieldList(aFields AS ARRAY, lIncludeMemo AS LOGIC) AS ARRAY
     var fields := __DbFieldListHelper(aFields, "", "", lIncludeMemo)
@@ -270,9 +271,6 @@ FUNCTION DbCopyDelimFox (cTargetFile, cDelim, cChar, aFields,  ;
         __DbPopOptimize(lNoOptimize, lOldOpt)
     END TRY
 
-
-
-
 FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, lNoOptimize) AS ARRAY CLIPPER
     // COPY TO ARRAY doed not have a MEMO keyword, so automatically include memo fields
     VAR aFields := __BuildFieldList(aFieldList, TRUE)
@@ -351,7 +349,6 @@ INTERNAL FUNCTION DbCopyToArraySingleRecord(aFields as IList<string> ) AS ARRAY
     NEXT
     RETURN result
 
-
 FUNCTION DbAppendFromArray(aValues, aFieldList, cbForCondition) AS LOGIC CLIPPER
     IF ! IsArray(aValues)
         THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.VFP_MULTI_DIM_EXPECTED,nameof(aValues))  , 1, {aValues})
@@ -391,8 +388,6 @@ FUNCTION DbAppendFromArray(aValues, aFieldList, cbForCondition) AS LOGIC CLIPPER
     ENDIF
     RETURN TRUE
 
-
-
 FUNCTION DbAppFox(cSourceFile, cType, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, cSheet, nCodePage, lNoOptimize) AS USUAL CLIPPER
     local cInPutType as STRING
     LOCAL result as LOGIC
@@ -426,7 +421,6 @@ FUNCTION DbAppFox(cSourceFile, cType, aFields, cbForCondition, cbWhileCondition,
     END TRY
     return result
 
-
 FUNCTION DbAppDelimFox (cTargetFile, cDelim, cChar, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, nCodePage, lNoOptimize)   AS LOGIC CLIPPER
     IF IsString(cDelim)
         VAR sDelim := Upper(cDelim)
@@ -441,7 +435,6 @@ FUNCTION DbAppDelimFox (cTargetFile, cDelim, cChar, aFields, cbForCondition, cbW
     ENDIF
     RuntimeState.StringDelimiter := cChar
     RETURN DbAppDelim(cTargetFile, cDelim, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)
-
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsort/*" />
 FUNCTION DbSortFox(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext, nRecord, ;
@@ -462,7 +455,7 @@ FUNCTION DbSortFox(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNex
     // - NoData
     // - ConnString
 
-/// <include file="VFPRUntimeDocs.xml" path="Runtimefunctions/dbuseareafox/*" />
+/// <include file="VFPRuntimeDocs.xml" path="Runtimefunctions/dbuseareafox/*" />
 FUNCTION DbUseAreaFox(uArea, cDataFile, cAlias, lShared, lReadOnly, ;
         lOnline, lAdmin, lAgain, lNoData, lNoRequery, nDataSession, uConnection) AS LOGIC CLIPPER
 
@@ -501,7 +494,6 @@ FUNCTION DbUseAreaFox(uArea, cDataFile, cAlias, lShared, lReadOnly, ;
     ENDIF
     RETURN DbUseArea(FALSE, cDriver, cDataFile, cAlias, lShared, lReadOnly)
 
-
 FUNCTION DbSeekFox(uExpr, uOrder, cBagName, lDescend) AS LOGIC CLIPPER
     local currentOrder := NIL AS USUAL
     local bagName      := "" AS STRING
@@ -518,8 +510,8 @@ FUNCTION DbSeekFox(uExpr, uOrder, cBagName, lDescend) AS LOGIC CLIPPER
     endif
     RETURN result
 
-
 /// <include file="VFPDocs.xml" path="Runtimefunctions/seek/*" />
+[FoxProFunction("SEEK", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Seek(uExpression, uWorkarea, uOrder) AS LOGIC CLIPPER
     LOCAL dwCurrentWorkarea := 0 AS DWORD
     IF ! IsNil( uWorkarea )
@@ -535,7 +527,6 @@ FUNCTION Seek(uExpression, uWorkarea, uOrder) AS LOGIC CLIPPER
     	DbSelectArea( dwCurrentWorkarea )
     END IF
     RETURN lResult
-
 
 FUNCTION DbCopyStructFox(cTargetFile, aFields, lCdx) AS LOGIC CLIPPER
     local acStruct as ARRAY
@@ -558,10 +549,5 @@ FUNCTION DbCopyStructFox(cTargetFile, aFields, lCdx) AS LOGIC CLIPPER
     VoDbSetSelect((INT) siFrom)
     return result
 
-
 FUNCTION DbCopyXStructFox(cTargetFile AS STRING) AS LOGIC
     return DbCopyXStruct(cTargetFile)
-
-
-
-

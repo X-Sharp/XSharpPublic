@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Topics>
+  <Topic id="f693ccb5-4542-4390-9ac1-03d514f62396" visible="True" noFile="true" isExpanded="true" apiParentMode="InsertAfter" title="Command Reference">
+    <Topic id="command_ifdef" visible="True" title="#ifdef Statement" />
+    <Topic id="command_ifndef" visible="True" title="#ifndef Statement" />
+    <Topic id="f80a7605-2274-4950-b1e3-7cf834952050" visible="True" title="?|?? Statement" />
+    <Topic id="156e06bc-f29e-4b31-bb0e-02b216ad2601" visible="True" title="\|\\ Statement" />
+    <Topic id="818667b2-8b9c-4b21-a45f-7cdfe5b4f670" visible="True" title="_DLL Statement" />
+    <Topic id="725d43d7-d668-484b-9c95-ec2a7b9b4fd7" visible="True" title="ACCEPT Command" />
+    <Topic id="2e3ce02f-e582-464b-b3d8-3ebe56eba8a2" visible="True" title="ACCESS CONSTRUCTOR" />
+    <Topic id="2a5aba7a-b709-40e1-9bd0-f31d73c511b7" visible="True" title="ACCESS Statement" />
+    <Topic id="56cb826e-96f3-4135-b64a-05189803b13e" visible="True" title="ADD OBJECT Clause" />
+    <Topic id="command_append_blank" visible="True" title="APPEND BLANK Command">
+      <HelpKeywords>
+        <HelpKeyword index="K" term="APPEND BLANK" />
+      </HelpKeywords>
+    </Topic>
+    <Topic id="758e4c7e-09b3-4ace-ab30-c361684ab5f7" visible="True" title="APPEND FROM ARRAY Command" />
+    <Topic id="ac449d30-9cb1-4c13-b775-b6eba943f6b1" visible="True" title="APPEND FROM Command" />
+    <Topic id="e4171a19-d961-4cb8-bbff-a833b9a27ef7" visible="True" title="APPEND FROM Command (FoxPro)" />
+    <Topic id="91993c4b-eb98-471f-a272-3feaddceb3d0" visible="True" title="ASSIGN Statement">
+      <HelpKeywords>
+        <HelpKeyword index="K" term="ASSIGN" />
+      </HelpKeywords>
+    </Topic>
+    <Topic id="d6654903-c9e9-4cb3-8dbe-16e383b429e4" visible="True" title="AVERAGE Command">
+      <HelpKeywords>
+        <HelpKeyword index="K" term="AVERAGE" />
+      </HelpKeywords>
+    </Topic>
+    <Topic id="a10d017b-3f7b-4b45-bac4-11b209020cdd" visible="True" title="BEGIN (UN)CHECKED" />
+    <Topic id="5a515d6e-6b49-4fff-bebf-9583d1248ba8" visible="True" title="BEGIN FIXED" />
+    <Topic id="02b0b057-7431-40c0-9b58-2fa0604b4d68" visible="True" title="BEGIN LOCK" />
+    <Topic id="08265969-6d42-40f6-8770-f900acda4e83" visible="True" title="BEGIN SCOPE" />
+    <Topic id="8d75ad58-39e3-4eb7-86fc-c76fd96f2441" visible="True" title="BEGIN SEQUENCE" />
+    <Topic id="8fc150d3-ff60-4982-ba29-ec8c86969a13" visible="True" title="BEGIN SEQUENCE Statement" />
+    <Topic id="ff1b8ca1-a152-4376-ae26-c054c5dd684c" visible="True" title="BEGIN UNSAFE" />
+    <Topic id="6edccb33-cecc-45a3-9ae8-9f4c435b904a" visible="True" title="BEGIN USING" />
+    <Topic id="ec59bbbe-c5f7-4c77-bb2f-cb4bedf04964" visible="True" title="BREAK statement" />
+    <Topic id="5592ade7-f33e-4d0b-8b0d-2b1010a298b6" visible="True" title="CANCEL Command" />
+    <Topic id="8cc61ea8-a93d-4059-9210-d7825d90f7d6" visible="True" title="Class Members" />
+    <Topic id="e8707520-821f-41bc-857b-31cdf44b7886" visible="True" title="CLASS Statement (All dialects)" />
+    <Topic id="c6b4374e-7e31-423e-b481-6788ea32ecbd" visible="True" title="CLASS Statement (FoxPro dialect)" />
+    <Topic id="ca532dd1-d0fb-4ed2-813b-7a152a34dc08" visible="True" title="CLASS Statement (Xbase++ dialect)" />
+    <Topic id="00eb8af4-5993-4b87-a5d7-305fb549f744" visible="True" title="CLEAR ALL Command" />
+    <Topic id="7f522226-04b7-4e01-93bb-5e93c0c2d8d8" visible="True" title="CLEAR MEMORY Command" />
+    <Topic id="b2dadc11-7421-4923-a980-de78f6ae39ae" visible="True" title="CLEAR SCREEN Command" />
+    <Topic id="01c5c1c9-fdc5-439f-b315-74a43eea5c13" visible="True" title="CLOSE Command" />
+    <Topic id="6c7e6533-def3-4e05-a421-97b080a47a4a" visible="True" title="command_ASYNC .. AWAIT" />
+    <Topic id="4fe980e5-4554-4e15-a11c-f06c7836d8b8" visible="True" title="COMMIT Command" />
+    <Topic id="75949503-2d46-453a-aa3a-9b17e5f9cdb9" visible="True" title="CONTINUE Command" />
+    <Topic id="3d60f7ab-7488-4042-81e5-6364490c5c29" visible="True" title="COPY FILE Command" />
+    <Topic id="d95a3454-a077-4c2f-94dc-b90965fe99fe" visible="True" title="COPY STRUCTURE Command" />
+    <Topic id="266a52b5-1333-4fb2-b5ed-df54ff8a292a" visible="True" title="COPY STRUCTURE EXTENDED Command" />
+    <Topic id="ca9a9a9e-070c-4be5-9f07-26b70cebbe4e" visible="True" title="COPY TO ARRAY Command" />
+    <Topic id="afff88e4-8ef5-4ba6-b258-ed25aed855c9" visible="True" title="COPY TO Command" />
+    <Topic id="d4f37016-e7fd-4847-885b-9b67bcd31bc9" visible="True" title="COPY TO Command (FoxPro)" />
+    <Topic id="466615c8-2f88-4526-b03d-17f5da12256d" visible="True" title="COUNT Command" />
+    <Topic id="443ff541-0d69-4158-9bb8-84636a435fdb" visible="True" title="CREATE Command" />
+    <Topic id="3bc3d7fa-9b8a-4747-b728-0256869fd6bf" visible="True" title="CREATE FROM Command" />
+    <Topic id="a82a4d41-7bd2-4306-98d2-e0b9cae666ed" visible="True" title="DECLARE METHOD Statement" />
+    <Topic id="c33877a5-43d7-4a51-b075-ec5858943fc5" visible="True" title="DECLARE Statement" />
+    <Topic id="4d95815a-dae0-4c65-95f1-0a0727c308db" visible="True" title="DEFAULT Command" />
+    <Topic id="a27c69ad-1651-48fd-93e1-5c184a48acde" visible="True" title="DEFINE Statement" />
+    <Topic id="198dc8b4-b6e9-482d-9edd-0be368279d52" visible="True" title="DELEGATE Statement" />
+    <Topic id="d9b7ffae-c23b-4222-8767-577023d97475" visible="True" title="DELETE Command" />
+    <Topic id="30f3e9e5-098c-4c06-bdb1-fc5cd8864bb1" visible="True" title="DELETE FILE Command" />
+    <Topic id="f0167ca1-e970-4d15-8a44-6edea49d19e6" visible="True" title="DELETE TAG Command" />
+    <Topic id="1517da49-281d-4c1b-9337-5d60d2bd1f95" visible="True" title="DESTRUCTOR Statement" />
+    <Topic id="982d354d-e9d8-4274-89de-836e4da40718" visible="True" title="DIR Command" />
+    <Topic id="289eca8d-5593-4340-b806-5a25d5a19a0b" visible="True" title="DO CASE Statement" />
+    <Topic id="7c01f660-13b8-4e72-9084-4b401a7a90e9" visible="True" title="DO Statement" />
+    <Topic id="d5dffe8e-fc26-4e58-a5a7-31c26132758f" visible="True" title="DO WHILE Statement" />
+    <Topic id="34620539-dc0e-4e1b-a5ef-8ec6772b75c4" visible="True" title="ENUM Statement" />
+    <Topic id="74a83abc-31da-4451-839b-3da0d939c56a" visible="True" title="ERASE Command" />
+    <Topic id="e3b838c9-f90d-4c04-a519-0d3c6533d416" visible="True" title="EVENT Statement" />
+    <Topic id="d46d231d-06f4-4e27-ac1c-5931ee7d3987" visible="True" title="EXIT Statement" />
+    <Topic id="6f05d867-c3eb-4958-84d7-0e52e88faa21" visible="True" title="EXTERNAL Command" />
+    <Topic id="da571189-a521-4066-b374-de88f72d37e8" visible="True" title="FIELD Statement" />
+    <Topic id="d8c79371-36c3-45ee-88ba-4c507bbac222" visible="True" title="Fields" />
+    <Topic id="1d8bbd8f-695b-4bf8-a508-705775f7c142" visible="True" title="FIND Command" />
+    <Topic id="a6f0f406-78b2-4a8e-8819-6fadbb71474d" visible="True" title="FOR Statement" />
+    <Topic id="1f854d56-6755-4db4-8078-83f5937dede8" visible="True" title="FOREACH Statement" />
+    <Topic id="6d2ad4c1-1013-4e91-8a02-9ac65ae9cb0e" visible="True" title="FUNCTION and PROCEDURE" />
+    <Topic id="14cdd669-1822-49e7-b700-7abebe59013c" visible="True" title="FUNCTION Statement" />
+    <Topic id="f7451e68-caf8-41bd-967c-34c4860ebd45" visible="True" title="GATHER Command" />
+    <Topic id="2a900f41-b488-4d93-9c87-137df66f4503" visible="True" title="GLOBAL Statement" />
+    <Topic id="d9fdd3f5-64ab-4229-969a-bc6fe4b682c7" visible="True" title="GO Command" />
+    <Topic id="c100f682-3607-4d37-af60-c7e05e9b7695" visible="True" title="IF Statement" />
+    <Topic id="71849326-2b2a-4fdb-ac64-f9f6ae2cfc51" visible="True" title="IMPLEMENTS clause" />
+    <Topic id="ed7dcc99-a2aa-4fad-8eb1-79d7e2ed9e3d" visible="True" title="INDEX Command" />
+    <Topic id="2e388c61-0643-4c5d-976f-125a5c7e9bf5" visible="True" title="Instance Variables" />
+    <Topic id="c224a54c-83d5-4423-8914-f45d34e54454" visible="True" title="INTERFACE Statement" />
+    <Topic id="5ab205da-3eab-4669-9b4e-791fdec3b715" visible="True" title="JOIN Command" />
+    <Topic id="7086e6fb-f293-4953-a582-0c29bcc05846" visible="True" title="LOCAL FUNCTION" />
+    <Topic id="a33f7857-86fb-4892-8044-3018b6a69e01" visible="True" title="LOCAL PROCEDURE" />
+    <Topic id="d8822cca-7c06-4150-b83c-2dd9b531186d" visible="True" title="LOCAL Statement" />
+    <Topic id="59e8c9dc-c2e9-4b5d-b788-56a931e950cf" visible="True" title="LOCATE Command" />
+    <Topic id="86073255-06b0-4cd0-b086-15b22091d3b7" visible="True" title="LOOP Statement" />
+    <Topic id="70df5af5-ce42-4ba8-afec-5b3a4de8d996" visible="True" title="MEMVAR Statement" />
+    <Topic id="d82ca908-3507-4f4b-9da6-6d65ff2db61d" visible="True" title="METHOD Declarations" />
+    <Topic id="07c494c5-6627-49ae-abf3-01d9f0d6aaff" visible="True" title="METHOD Implementation" />
+    <Topic id="77b4131b-7ffd-4fad-ae60-b9ca0ec84fc7" visible="True" title="METHOD Statement" />
+    <Topic id="3b6a5e3e-bfd2-4c92-b379-b0b8d89c2bba" visible="True" title="NOP Statement" />
+    <Topic id="4d6279cb-f438-4885-9c02-e61120f22548" visible="True" title="OPERATOR Statement" />
+    <Topic id="4599f46c-f169-46e4-b43a-452c21b6e907" visible="True" title="Other Classmembers" />
+    <Topic id="db7d284d-ce1f-4ebc-bb02-0217e48b6449" visible="True" title="PACK Command" />
+    <Topic id="f6fe8ee8-c61d-405e-8da1-35f1f0564f84" visible="True" title="PARAMETERS Statement" />
+    <Topic id="167a7bca-5bea-4198-b685-3376fba16514" visible="True" title="PRIVATE statement" />
+    <Topic id="76e253bd-c169-4078-b086-64feffe160c1" visible="True" title="PROCEDURE Statement" />
+    <Topic id="3246e9b5-de8f-41a9-8bf9-cc797a57728c" visible="True" title="Properties and Fields" />
+    <Topic id="ef62a4ba-0422-4701-9e88-9cc105d382be" visible="True" title="PROPERTY Statement" />
+    <Topic id="8d194317-f7c6-462f-bcfb-ccb8b195d6bf" visible="True" title="PUBLIC Statement" />
+    <Topic id="da9ad6d2-893c-4a63-b00e-475dd4687e12" visible="True" title="QUIT Command" />
+    <Topic id="4884735d-06d9-4652-9887-45c4d8293bb7" visible="True" title="RECALL Command" />
+    <Topic id="79edf21a-e6eb-4d50-abf8-a5284293d42b" visible="True" title="REINDEX Command" />
+    <Topic id="deefbc86-9dcf-48e1-85c3-6bb4ba96e72e" visible="True" title="RELEASE Command" />
+    <Topic id="9c61a29b-489d-443c-ace8-3e0c3f65b8b5" visible="True" title="RENAME Command" />
+    <Topic id="eb977cbb-17b1-435b-9dba-5de7a682bec0" visible="True" title="REPEAT UNTIL Statement" />
+    <Topic id="0a30ff7e-788b-4630-9e4b-b61279449f34" visible="True" title="REPLACE Command" />
+    <Topic id="b058df06-6e00-4b17-82e2-a80610cadfc3" visible="True" title="RESTORE Command" />
+    <Topic id="70c94423-9322-4c94-aecc-907f367520ad" visible="True" title="RETURN Statement" />
+    <Topic id="33599c6f-b76b-4ef5-98d2-2c30e3907ad5" visible="True" title="RUN Command" />
+    <Topic id="90f76795-c5ca-4bfb-b6c4-21556ec416c0" visible="True" title="SAVE Command" />
+    <Topic id="c8ac4542-9a98-4c54-808e-781ed794489c" visible="True" title="SCATTER Command" />
+    <Topic id="47709958-9c2e-4f27-80f6-4317fc7f7bc2" visible="True" title="SEEK Command" />
+    <Topic id="acd7ca8c-3036-402a-b2de-f7da4c74d089" visible="True" title="SELECT Command" />
+    <Topic id="81ba36de-47a6-43ca-ad09-032a3a707fab" visible="True" title="SET ALTERNATE Command" />
+    <Topic id="17736f19-d7fb-4ab2-aaa7-c87729f980ca" visible="True" title="SET ANSI Command" />
+    <Topic id="7380a08f-e2ef-4e9f-957a-574179c45882" visible="True" title="SET CENTURY Command" />
+    <Topic id="5e55c714-6c87-47a7-95d0-256ac28e57d3" visible="True" title="SET COLLATION Command" />
+    <Topic id="0126a1b5-2a4a-4a84-98e6-b8da39fd13ac" visible="True" title="SET COLOR Command" />
+    <Topic id="5a4e274f-f8d8-4348-a990-ead59bc73fe4" visible="True" title="SET CONSOLE Command" />
+    <Topic id="2b1923f8-d2f5-4052-9c1e-a8cb13fe51ba" visible="True" title="SET DATE Command" />
+    <Topic id="5b30e445-8c95-47e5-8dd0-fe30ba2ebfa4" visible="True" title="SET DATE FORMAT Command" />
+    <Topic id="ed6e8225-5d3d-4a9e-9a86-ec340c2bf361" visible="True" title="SET DECIMALS Command" />
+    <Topic id="2b1f8f31-911c-437c-9cfd-e0074afee305" visible="True" title="SET DEFAULT Command" />
+    <Topic id="f0436f89-0075-41ac-965e-75a2b83c44c9" visible="True" title="SET DELETED Command" />
+    <Topic id="d5a33f0e-81d4-4050-a9e4-cacfe2af7da5" visible="True" title="SET DESCENDING Command" />
+    <Topic id="5bf666fb-d51d-4b7a-b09f-3e15a5b7e958" visible="True" title="SET DIGITFIXED Command" />
+    <Topic id="2af9baa1-598e-4530-ae2c-3b390a22a140" visible="True" title="SET DIGITS Command" />
+    <Topic id="1d2f8313-b905-4b11-8f01-59054aa9100f" visible="True" title="SET DRIVER Command" />
+    <Topic id="9b237401-cd7f-49b8-b324-681da4e64cae" visible="True" title="SET EPOCH Command" />
+    <Topic id="b7d6abca-2ba5-4006-819f-1b33dba9d05c" visible="True" title="SET EXACT Command" />
+    <Topic id="86d49857-1cd9-44f8-ad9b-cdd3b9b7d344" visible="True" title="SET EXCLUSIVE Command" />
+    <Topic id="b599a490-b76f-4658-8844-348d51ae7120" visible="True" title="SET FILTER Command" />
+    <Topic id="45d9ed37-c484-49bc-81ed-50c8ffeef22a" visible="True" title="SET FIXED Command" />
+    <Topic id="9085df4a-da8f-4ed6-948a-db58aa0eeb27" visible="True" title="SET INDEX Command" />
+    <Topic id="85bd24e6-3110-4983-9928-beb655ec0bc8" visible="True" title="SET INTERNATIONAL Command" />
+    <Topic id="b88ee2e4-493b-43a8-b5b8-4ab6f6ebbbbf" visible="True" title="SET MEMOBLOCK Command" />
+    <Topic id="5b8cee2d-7c7e-4279-9f76-4daabb6d7fb6" visible="True" title="SET OPTIMIZE Command" />
+    <Topic id="4d6305aa-62bf-4dce-8716-be94d777c277" visible="True" title="SET ORDER Command" />
+    <Topic id="ce1b6535-40b2-4d7c-a655-82e1eb23120b" visible="True" title="SET PATH Command" />
+    <Topic id="3b8419ea-2907-4b54-a995-d5bd1bc1a537" visible="True" title="SET RELATION Command" />
+    <Topic id="3c899aac-2e03-4a1e-bc66-aed9a7bf2940" visible="True" title="SET SCOPE Command" />
+    <Topic id="3b0545e3-b7ff-447d-a63d-a06c86a90a0a" visible="True" title="SET SCOPEBOTTOM Command" />
+    <Topic id="1847fd7a-3fdb-407f-bbb4-34391b2a072b" visible="True" title="SET SCOPETOP Command" />
+    <Topic id="1f97596e-854c-4f83-a30e-fde34994e605" visible="True" title="SET SOFTSEEK Command" />
+    <Topic id="d355a8ea-d476-493e-ac70-d98be3ac39b9" visible="True" title="SET UNIQUE Command" />
+    <Topic id="d5237bd6-1ee4-45ac-a7b2-8dea3cc8a4a1" visible="True" title="SKIP Command" />
+    <Topic id="7f0a1f47-7559-4c41-a23f-9577625f322b" visible="True" title="SORT Command" />
+    <Topic id="3910e899-798b-4188-834b-5046aaa0cd3c" visible="True" title="STATIC Statement" />
+    <Topic id="4de57022-1ab5-49a3-bfbe-309216c3b018" visible="True" title="STORE Command" />
+    <Topic id="a6320054-7ff3-4d6a-a900-62bb607f9e55" visible="True" title="STRUCTURE Statement" />
+    <Topic id="51394bf1-03b5-4735-a726-de078b915a8a" visible="True" title="SUM Command" />
+    <Topic id="3f1770e9-c4df-435e-86a3-2c990e77d598" visible="True" title="SWITCH Statement" />
+    <Topic id="6dba281e-c295-40b6-b305-66237fc6c5a3" visible="True" title="TEXT Command" />
+    <Topic id="b311f02d-ac36-46c7-a504-e068924e54c7" visible="True" title="THROW Statement" />
+    <Topic id="e06547e3-3b3c-4b0d-a079-0f7e37964e4c" visible="True" title="TOTAL Command" />
+    <Topic id="71a37628-1a90-4927-a16d-9343f5ea84f2" visible="True" title="TRY CATCH Statement" />
+    <Topic id="7bf12771-682c-4595-975e-d92b1a802255" visible="True" title="UNION Statement" />
+    <Topic id="5e7f1b5e-d4a2-4edc-8a4a-609fb576899d" visible="True" title="UNLOCK Command" />
+    <Topic id="483b4e7b-dda5-41d7-9f41-1b60079ce94e" visible="True" title="UPDATE Command" />
+    <Topic id="9afbce44-d16f-4cde-a11e-74871ec4b08a" visible="True" title="USE Command" />
+    <Topic id="a036b3f9-462c-4bf4-8db2-e01961c0d4e3" visible="True" title="VOSTRUCT Statement" />
+    <Topic id="b00d15fa-3647-440f-878d-efa42b7b7b26" visible="True" title="WAIT Command" />
+    <Topic id="5ffa86f0-6380-4660-8d4d-76e7c452fb24" visible="True" title="YIELD Statement" />
+    <Topic id="92d108ad-302f-48aa-aeac-d4329b05a943" visible="True" title="ZAP Command" />
+    <Topic id="d0f35de9-d173-467d-9312-7ef302fc068d" visible="True" isSelected="true" title="Ref_With_Syntax" />
+  </Topic>
+</Topics>

@@ -30,7 +30,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about an AppCommand event, which is launched by the extra keys on an extended keyboard or mouse.
+      提供有关 AppCommand 事件的信息，该事件由扩展键盘或鼠标上的额外键启动。
     </para>
             </entry>
           </row>
@@ -45,7 +45,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a ComboBoxEx EndEdit event
+      提供有关 ComboBoxEx EndEdit 事件的信息
     </para>
             </entry>
           </row>
@@ -60,7 +60,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a control that generated a control event.
+      提供有关生成控件事件的控件的信息。
     </para>
             </entry>
           </row>
@@ -75,7 +75,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about an ControlFocusChangeEvent, generated when a control gains or loses the keyboard focus.
+      提供有关 ControlFocusChangeEvent 的信息，当控件获得或失去键盘焦点时生成。
     </para>
             </entry>
           </row>
@@ -90,7 +90,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a control notification event, which is generated when a control is required to notify its parent window of an event.
+      提供有关控件通知事件的信息，当控件需要通知其父窗口某个事件时生成。
     </para>
             </entry>
           </row>
@@ -105,7 +105,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a date time selection event, which is generated when a user selected a Date or Time in a DateTimePicker control.
+      提供有关日期时间选择事件的信息，该事件在用户在 DateTimePicker 控件中选择日期或时间时生成。
     </para>
             </entry>
           </row>
@@ -120,7 +120,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a drag event, which enables the drag-and-drop client (the receiving window) to track the progress of the mouse during the drag operation and to identify the files that the user can drop.
+      提供有关拖放事件的信息，这使得拖放客户端(接收窗口)能够跟踪鼠标在拖放操作期间的进度，并识别用户可以放置的文件。
     </para>
             </entry>
           </row>
@@ -135,7 +135,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about an EditFocusChangeEvent, generated when an edit control (i.e., SingleLineEdit, MultiLineEdit, or EditWindow) gains or loses the keyboard focus.
+      提供有关 EditFocusChangeEvent 的信息，该事件在编辑控件(例如，SingleLineEdit、MultiLineEdit 或 EditWindow)获得或失去键盘焦点时生成。
     </para>
             </entry>
           </row>
@@ -150,7 +150,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which all X# events are subclassed.
+      提供所有 X# 事件的基类。
     </para>
             </entry>
           </row>
@@ -165,7 +165,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about an ExposeEvent, used to notify a window that it may need to be repainted.
+      提供有关 ExposeEvent 的信息，用于通知窗口可能需要重新绘制。
     </para>
             </entry>
           </row>
@@ -180,7 +180,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a FocusChangeEvent, used to indicate a change in window focus (i.e., gaining or losing focus).
+      提供有关 FocusChangeEvent 的信息，用于指示窗口焦点的变化(即，获得或失去焦点)。
     </para>
             </entry>
           </row>
@@ -195,7 +195,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a HelpRequestEvent, used to describe the context and item combinations for which help is requested. (This can be help for controls, menu commands, and specific areas of a window.)
+      提供关于 HelpRequestEvent 的信息，用于描述请求帮助的上下文和项组合(例如，控件、菜单命令和窗口特定区域的帮助)。
     </para>
             </entry>
           </row>
@@ -210,7 +210,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about an IpcClientErrorEvent, used to indicate what type of error event occurred in an IPC server.
+      提供有关 IpcClientErrorEvent 的信息，用于指示 IPC 服务器发生的错误事件的类型。
     </para>
             </entry>
           </row>
@@ -225,7 +225,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about an IpcDataRequestEvent, used to store the topic name (and length) and the item name (and length) for which data has been requested.
+      提供有关 IpcDataRequestEvent 的信息，用于存储已请求数据的主题名称(和长度)和项目名称(和长度)。
     </para>
             </entry>
           </row>
@@ -240,7 +240,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about an IpcDataUpdateEvent, used to store information about the topic name, item name, and the new data.
+      提供有关 IpcDataUpdateEvent 的信息，用于存储主题名称、项目名称和新数据的信息。
     </para>
             </entry>
           </row>
@@ -255,7 +255,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which all Ipc event classes are subclassed.
+      提供所有 Ipc 事件类的基类。
     </para>
             </entry>
           </row>
@@ -270,7 +270,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about an IpcExecuteRequestEvent, used to store information about the topic, item, and command string.
+      提供有关 IpcExecuteRequestEvent 的信息，用于存储主题名称、项目名称和命令字符串的信息。
     </para>
             </entry>
           </row>
@@ -285,7 +285,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a KeyEvent, used to encapsulate information about the key that was pressed.
+      提供有关 KeyEvent 的信息，用于封装有关按下的键的信息。
     </para>
             </entry>
           </row>
@@ -300,7 +300,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a list view column click event, which is generated when the header of a column in a list view control is clicked.
+      提供有关列表视图列单击事件的信息，该事件在列表视图控件的列标题被单击时生成。
     </para>
             </entry>
           </row>
@@ -315,7 +315,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a list view delete event, which is generated when an item in a list view control is deleted.
+      提供有关列表视图删除事件的信息，该事件在列表视图控件的项目被删除时生成。
     </para>
             </entry>
           </row>
@@ -330,7 +330,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a list view drag event, which is generated when an item in a list view control is dragged.
+      提供有关列表视图拖动事件的信息，该事件在列表视图控件的项目被拖动时生成。
     </para>
             </entry>
           </row>
@@ -345,7 +345,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a list view edit event, which is generated when the label of an item in a list view control is edited.
+      提供有关列表视图编辑事件的信息，该事件在列表视图控件的项目标签被编辑时生成。
     </para>
             </entry>
           </row>
@@ -360,7 +360,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about events generated when operations with list view items are taking place.
+      提供有关操作列表视图项目时生成的事件的信息。
     </para>
             </entry>
           </row>
@@ -375,7 +375,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a list view key event, which is generated when a key is pressed while the list view control has the input focus.
+      提供有关列表视图键盘事件的信息，这些事件在列表视图控件具有输入焦点时按键时生成。
     </para>
             </entry>
           </row>
@@ -390,7 +390,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a list view mouse event, which is generated when a mouse button in a list view control is clicked or double-clicked.
+      提供有关列表视图鼠标事件的信息，这些事件在列表视图控件中的鼠标按钮被单击或双击时生成。
     </para>
             </entry>
           </row>
@@ -405,7 +405,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a MenuCommandEvent, generated when the user executes a menu item, either directly or through the use of accelerator keys.
+      提供有关 MenuCommandEvent 的信息，当用户直接执行菜单项或通过使用加速键时生成时。
     </para>
             </entry>
           </row>
@@ -420,7 +420,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a MenuInitEvent, generated when the user first activates a menu for the first time.
+      提供有关 MenuInitEvent 的信息，当用户第一次激活菜单时生成。
     </para>
             </entry>
           </row>
@@ -435,7 +435,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a MenuSelectEvent, generated whenever a menu item is highlighted on a menu (menu items are highlighted as the user moves either the mouse or the highlight bar up or down a menu).
+      提供有关 MenuSelectEvent 的信息，当用户在菜单上突出显示菜单项时生成。
     </para>
             </entry>
           </row>
@@ -450,7 +450,8 @@
             </entry>
             <entry>
               <para>
-      Provide information about a MinMaxInfoEvent, generated whenever the size or position of a window is about to change. The MinMaxInfoEvent object describes the maximised width, height and position of the maximised window in addition to the minimum and maximum height and width of the window.
+      提供有关 MinMaxInfoEvent 的信息，当窗口的大小或位置即将更改时生成。
+      MinMaxInfoEvent 对象描述了最大化窗口的宽度、高度和位置，以及窗口的最小和最大高度和宽度。
     </para>
             </entry>
           </row>
@@ -465,7 +466,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a monthcalendar selection event, which is generated when a user selects a date in a MonthCalendar control.
+      提供有关 MonthCalSelectionEvent 的信息，当用户在 MonthCalendar 控件中选择日期时生成。
     </para>
             </entry>
           </row>
@@ -480,7 +481,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about the location of the mouse, as well as which mouse button was pressed, when a MouseEvent occurred.
+      提供有关 MouseEvent 的信息，当鼠标发生 MouseEvent时，包括鼠标的位置以及用户按下了哪个鼠标按钮。
     </para>
             </entry>
           </row>
@@ -495,7 +496,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a MoveEvent, used to notify the program that the user is in the process of moving a window.
+      提供有关 MoveEvent 的信息，用于通知程序用户正在移动窗口的过程。
     </para>
             </entry>
           </row>
@@ -509,7 +510,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:VO.OleDragEventGui.xmldoc/OleDragEvent/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -523,7 +524,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a PrinterErrorEvent, used to describe errors that occur during a print job (for example, insufficient memory or disk space).
+      提供有关 PrinterErrorEvent 的信息，用于描述打印作业期间发生的错误(例如，内存或磁盘空间不足)。
     </para>
             </entry>
           </row>
@@ -538,7 +539,7 @@
             </entry>
             <entry>
               <para>
-      Provides facilities for determining the number of the page to be painted, as well as the area of the page to be painted.
+      提供确定要绘制的页码的数量，以及要绘制的页码的区域的设施。
     </para>
             </entry>
           </row>
@@ -553,7 +554,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about the ResizeEvent, used to indicate that a window has been resized.
+      提供关于 ResizeEvent 的信息，用于指示窗口已调整大小。
     </para>
             </entry>
           </row>
@@ -568,7 +569,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a rich edit protection event, which is generated when the user attempts to edit protected text in a rich edit control.
+      提供有关富文本保护事件的信息，当用户尝试在富文本控件中编辑受保护的文本时，会生成此事件。
     </para>
             </entry>
           </row>
@@ -583,7 +584,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a rich edit selection event, which is generated when the selection in a rich edit control is changed.
+      提供有关富文本选择事件的信息，当在富文本控件中更改选择时，会生成此事件。
     </para>
             </entry>
           </row>
@@ -598,7 +599,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a ScrollEvent, generated when a scroll bar is manipulated.
+      提供有关 ScrollEvent 的信息，当操作滚动条时生成。
     </para>
             </entry>
           </row>
@@ -613,7 +614,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a slider event, which is generated when the thumb of a slider is dragged with the mouse or moved by pressing the Direction keys.
+      提供有关滑块事件的信息，当滑块的拇指被鼠标拖动或通过按方向键移动时，会生成此事件。
     </para>
             </entry>
           </row>
@@ -628,7 +629,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a spinner event, which is generated when either of the spinner's arrow buttons is clicked.
+      提供有关微调器事件的信息，当微调器的箭头按钮之一被点击时，会生成此事件。
     </para>
             </entry>
           </row>
@@ -643,7 +644,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about an event that gets generated when a SysLink control is selected
+      提供有关 SysLink 控件被选中时生成的事件的信息。
     </para>
             </entry>
           </row>
@@ -658,7 +659,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a tree view delete event, which is generated when an item in a tree view control is deleted.
+      提供有关树形视图删除事件的信息，该事件在删除树形视图控件中的项时生成。
     </para>
             </entry>
           </row>
@@ -673,7 +674,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a tree view drag event, which is generated when an item in a tree view control is dragged.
+      提供有关树形视图拖动事件的信息，该事件在拖动树形视图控件中的项时生成。
     </para>
             </entry>
           </row>
@@ -688,7 +689,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a tree view edit event, which is generated when the label of an item in a tree view control is edited.
+      提供有关树形视图编辑事件的信息，该事件在编辑树形视图控件中的项的标签时生成。
     </para>
             </entry>
           </row>
@@ -703,7 +704,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a tree view expanded event, which is generated when an item in a tree view is expanded or collapsed, exposing or hiding its children.
+      提供有关树形视图展开事件的信息，该事件在展开或折叠树形视图中的项时生成，显示或隐藏其子项。
     </para>
             </entry>
           </row>
@@ -718,7 +719,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a tree view expanding event, which is generated when an item in a tree view is about to be expanded or collapsed, exposing or hiding its children.
+      提供有关树形视图展开事件的信息，该事件在即将展开或折叠树形视图中的项时生成，显示或隐藏其子项。
     </para>
             </entry>
           </row>
@@ -733,7 +734,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a tree view key event, which is generated when a key is pressed while the tree view control has the input focus.
+      提供关于树形视图键事件的信息，当树形视图控件具有输入焦点时按键时生成。
     </para>
             </entry>
           </row>
@@ -748,7 +749,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a tree view mouse event, which is generated when a mouse button in a tree view control is clicked or double-clicked.
+      提供关于树形视图鼠标事件的信息，当在树形视图控件中单击或双击鼠标按钮时生成。
     </para>
             </entry>
           </row>
@@ -763,7 +764,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a tree view selection event, which is generated when the current selection in a tree view control has changed or is about to change.
+      提供关于树形视图选择事件的信息，当树形视图控件中的当前选择已更改或即将更改时生成。
     </para>
             </entry>
           </row>

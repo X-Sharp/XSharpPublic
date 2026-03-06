@@ -169,12 +169,13 @@
          [ALL]                                                          ;
                                                                         ;
       => DbEval(                                                        ;
-                 {|| DbAutoLock(), DbDelete(), DbAutoUnLock()},                                       ;
+                 {|| __DbDelete() },                                       ;
                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
 
 // Single Record Delete
 #command DELETE                     =>  __DbDelete()
+
 
 // Multi record RECALL
 #command RECALL                                                         ;
@@ -186,10 +187,12 @@
          [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
                                                                         ;
-      => DBEval(                                                        ;
+         => BEGIN SCOPE ; VAR __saveDeleted := SetDeleted();            ;
+         IF RuntimeState.Dialect == XSharpDialect.FoxPro; SetDeleted(FALSE); ENDIF ;;
+            DbEval(                                                        ;
                  {|| __DbRecall()},                                       ;
                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
-                  )
+                  ); SetDeleted(__saveDeleted); END SCOPE
 
 // Single record RECALL
 #command RECALL                     =>  __DbRecall()

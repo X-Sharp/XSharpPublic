@@ -15,7 +15,8 @@ using System.Text;
 namespace XSharp.Build
 {
 
-    public class NativeResourceCompiler : ToolTask {
+    public class NativeResourceCompiler : ToolTask
+    {
 
         const string outputName = "NativeResources.res";
         const string defines = "NativeResourceDefines.xh";
@@ -26,9 +27,11 @@ namespace XSharp.Build
 
         }
 
-        private int numberofInputFiles {
-            get {
-                if(this.Sources == null)
+        private int numberofInputFiles
+        {
+            get
+            {
+                if (this.Sources == null)
                     return 0;
                 return Sources.Length;
             }
@@ -41,17 +44,20 @@ namespace XSharp.Build
         private string outputFileName;
 
         [return: MarshalAs(UnmanagedType.U1)]
-        public override bool Execute() {
+        public override bool Execute()
+        {
             string rcPath = GenerateFullPathToTool();
-            if (!System.IO.File.Exists(rcPath)){
-                base.Log.LogError("MSB3108: Cannot find the Native Resource compiler in the XSharp Bin folder", null);
+            if (!System.IO.File.Exists(rcPath))
+            {
+                base.Log.LogError("XS9301: Cannot find the Native Resource compiler in the XSharp Bin folder", null);
                 return false;
             }
             bool ok = base.Execute();
             return ok;
         }
 
-        protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands) {
+        protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
+        {
             int iResult;
             DateTime start = DateTime.Now;
             Log.LogMessageFromText("Creating Native Resource file: \"" + this.outputFileName + "\"", MessageImportance.Normal);
@@ -63,7 +69,8 @@ namespace XSharp.Build
         }
 
 
-        protected override  void LogToolCommand(string message) {
+        protected override void LogToolCommand(string message)
+        {
             base.Log.LogMessageFromText(message, MessageImportance.Normal);
         }
         /// <summary>
@@ -75,12 +82,13 @@ namespace XSharp.Build
         /// rest is passed through a response file
         /// </summary>
         /// <returns></returns>
-        protected override string GenerateCommandLineCommands() {
+        protected override string GenerateCommandLineCommands()
+        {
             StringBuilder cmdline = null;
             cmdline = new StringBuilder();
             cmdline.Append($"/i \"{this.XSharpIncludedir}\" /v /x ");
             cmdline.Append($"/fo \"{this.outputFileName}\"");
-            if(EmitDebugInformation)
+            if (EmitDebugInformation)
                 cmdline.Append(" /dDEBUG");
             else
                 cmdline.Append(" /dNDEBUG");
@@ -93,7 +101,8 @@ namespace XSharp.Build
             return cmdline.ToString();
         }
 
-        protected override string GenerateFullPathToTool() {
+        protected override string GenerateFullPathToTool()
+        {
             return FindRc(this.ToolName);
         }
 
@@ -108,35 +117,74 @@ namespace XSharp.Build
         /// We can only include one native resource
         /// </summary>
         /// <returns></returns>
-        protected override string GenerateResponseFileCommands() {
+        protected override string GenerateResponseFileCommands()
+        {
             StringBuilder cmds = null;
             string Result = null;
             cmds = new StringBuilder();
-            if (this.numberofInputFiles > 0) {
-                cmds.AppendLine("#define __VERSION__ " + Constants.FileVersion.Replace(".","") );
-                var rcinclude =this.NativeResourceInclude;
+            if (this.numberofInputFiles > 0)
+            {
+                cmds.AppendLine("#define __VERSION__ " + Constants.FileVersion.Replace(".", ""));
+                var rcinclude = this.NativeResourceInclude;
                 if (System.IO.File.Exists(rcinclude))
                 {
+                    var hasBOM = HasBom(rcinclude);
+                    if (hasBOM)
+                    {
+                        GenBomError(rcinclude);
+                    }
                     cmds.AppendLine($"#include \"{rcinclude}\"");
                 }
                 // VS_VERSION_INFO and other defines that could be used for version resources
-                foreach (var item in this.Sources) {
-                    try {
+                foreach (var item in this.Sources)
+                {
+                    try
+                    {
                         var fileName = item.GetMetadata("Fullpath");
                         if (System.IO.File.Exists(fileName))
                         {
-                            cmds.AppendLine ($"#include \"{fileName}\"");
+                            var hasBOM = HasBom(fileName);
+                            if (hasBOM)
+                            {
+                                GenBomError(fileName);
+                            }
+                            cmds.AppendLine($"#include \"{fileName}\"");
                         }
                     }
-                    catch (Exception e) {
+                    catch (Exception e)
+                    {
                         base.Log.LogErrorFromException(e);
                     }
                 }
             }
-            if(cmds.Length > 0) {
+            if (cmds.Length > 0)
+            {
                 Result = cmds.ToString();
             }
             return Result;
+        }
+
+        public static bool HasBom(string filename)
+        {
+            // Read the BOM
+            var bom = new byte[4];
+            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            {
+                file.Read(bom, 0, 4);
+                file.Close();
+            }
+
+            // Analyze the BOM
+            if (bom[0] == 0x2b && bom[1] == 0x2f && bom[2] == 0x76) return true;
+            if (bom[0] == 0xef && bom[1] == 0xbb && bom[2] == 0xbf) return true;
+            if (bom[0] == 0xff && bom[1] == 0xfe && bom[2] == 0 && bom[3] == 0) return true; //UTF-32LE
+            if (bom[0] == 0xff && bom[1] == 0xfe) return true; //UTF-16LE
+            if (bom[0] == 0xfe && bom[1] == 0xff) return true; //UTF-16BE
+            if (bom[0] == 0 && bom[1] == 0 && bom[2] == 0xfe && bom[3] == 0xff) return true;  //UTF-32BE
+
+            // We actually have no idea what the encoding is if we reach this point, so
+            // you may wish to return null instead of defaulting to ASCII
+            return false;
         }
 
         protected override string GetResponseFileSwitch(string responseFilePath)
@@ -147,8 +195,13 @@ namespace XSharp.Build
         }
 
 
-        protected override string GetWorkingDirectory() {
+        protected override string GetWorkingDirectory()
+        {
             return null;
+        }
+        protected void GenBomError(string fileName)
+        {
+            base.Log.LogWarning("XS9302: File \"{0}\" has a Byte Order Mark (BOM) and is not a valid file for the Native Resource compiler.", fileName);
         }
 
         /// <summary>
@@ -157,69 +210,90 @@ namespace XSharp.Build
         /// <param name="fileNames">List of files</param>
         /// <param name="outputFileName">outputFileName</param>
         /// <returns></returns>
-        protected bool FilesAreNewer(List<string> fileNames, string outputFileName) {
+        protected bool FilesAreNewer(List<string> fileNames, string outputFileName)
+        {
             //System.Diagnostics.Debugger.Launch();
             string[] includeDirectories = null;
             string IncludeDir = XSharpIncludedir;
             DateTime outputTime = File.GetLastWriteTime(outputFileName);
             string outName = Path.GetFileName(outputFileName);
-            if(!string.IsNullOrEmpty(IncludeDir)) {
+            if (!string.IsNullOrEmpty(IncludeDir))
+            {
                 includeDirectories = IncludeDir.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             }
             var alreadychecked = new List<string>();
-            foreach (var fileName in fileNames) {
-                if (! System.IO.File.Exists(fileName)) {
-                    base.Log.LogError("MSB3375: Input file: {0} not found", fileName);
+            foreach (var fileName in fileNames)
+            {
+                if (!System.IO.File.Exists(fileName))
+                {
+                    base.Log.LogWarning("XS9300: The file \"{0}\" does not exist.", fileName);
                     return true;
                 }
+                var hasBOM = HasBom(fileName);
+                if (hasBOM)
+                {
+                    GenBomError(fileName);
+                }
                 DateTime fileTime = File.GetLastWriteTime(fileName);
-                if(fileTime > outputTime) {
-                    base.Log.LogMessage("Input file: {0} is newer than output file {1}, last updated on {2:f}" , Path.GetFileName(fileName), outName, fileTime);
+                if (fileTime > outputTime)
+                {
+                    base.Log.LogMessage("Input file: {0} is newer than output file {1}, last updated on {2:f}", Path.GetFileName(fileName), outName, fileTime);
                     return true;
                 }
                 // check file for include files
                 // this can probably be done smarter using a RegEx but it works for now
                 base.Log.LogMessage("Input file: {0} is older than {1}", Path.GetFileName(fileName), outName);
                 var contents = System.IO.File.ReadAllLines(fileName);
-                foreach(var line in contents) {
-                    if(line.TrimStart().StartsWith("#include", StringComparison.OrdinalIgnoreCase)) {
+                foreach (var line in contents)
+                {
+                    if (line.TrimStart().StartsWith("#include", StringComparison.OrdinalIgnoreCase))
+                    {
                         var includefile = line.Substring(8).Trim();
                         string foundfile = "";
                         bool found = false;
-                        if(includefile.StartsWith("\""))
+                        if (includefile.StartsWith("\""))
                             includefile = includefile.Substring(1, includefile.Length - 2);
-                        if(File.Exists(includefile)) {
+                        if (File.Exists(includefile))
+                        {
                             foundfile = includefile;
                             found = true;
                         }
-                        if(!found) {
+                        if (!found)
+                        {
                             // Check in the folder of the input file itself
-                            if(!Path.IsPathRooted(includefile)) {
-                                foundfile = Path.Combine(Path.GetDirectoryName(fileName)) + "\\"+includefile;
+                            if (!Path.IsPathRooted(includefile))
+                            {
+                                foundfile = Path.Combine(Path.GetDirectoryName(fileName)) + "\\" + includefile;
                                 found = File.Exists(foundfile);
                             }
                         }
-                        if (! found && includeDirectories.Length > 0) {
-                            foreach(var includeDir in includeDirectories) {
+                        if (!found && includeDirectories.Length > 0)
+                        {
+                            foreach (var includeDir in includeDirectories)
+                            {
                                 foundfile = Path.Combine(includeDir, includefile);
                                 found = File.Exists(foundfile);
-                                if(found)
+                                if (found)
                                     break;
                             }
                         }
-                        if(found) {
-                            if(!alreadychecked.Contains(foundfile.ToLower())) {
+                        if (found)
+                        {
+                            if (!alreadychecked.Contains(foundfile.ToLower()))
+                            {
                                 DateTime includeTime = File.GetLastWriteTime(foundfile);
                                 base.Log.LogMessage("Input file: \"{0}\"  depends on include file \"{1}\"", fileName, foundfile);
-                                if(includeTime > outputTime) {
+                                if (includeTime > outputTime)
+                                {
                                     base.Log.LogMessage("Include file: \"{0}\" is newer than output file \"{1}\" as was last updated on {2:f}", foundfile, outputFileName, includeTime);
                                     return true;
                                 }
                                 alreadychecked.Add(foundfile.ToLower());
                             }
                         }
-                        else{
-                            base.Log.LogError("MSB3375: Could not find include file \"{0}\" ", includefile);
+                        else
+                        {
+                            base.Log.LogWarning("XS9300: The file \"{0}\" does not exist.", includefile);
                             return true;
                         }
                     }
@@ -232,15 +306,21 @@ namespace XSharp.Build
         /// Task does not have to run when the ouput file exists and is newer than the source files
         /// </summary>
         /// <returns></returns>
-        protected override bool SkipTaskExecution() {
+        protected override bool SkipTaskExecution()
+        {
             bool mustCompile = false;
-            if(this.numberofInputFiles > 0) {
-                if(!File.Exists(this.outputFileName)) {
+            if (this.numberofInputFiles > 0)
+            {
+                if (!File.Exists(this.outputFileName))
+                {
                     base.Log.LogMessage("Output file: {0} does not exist", outputFileName);
                     mustCompile = true;
-                } else {
+                }
+                else
+                {
                     var files = new List<String>();
-                    foreach(var file in Sources) {
+                    foreach (var file in Sources)
+                    {
                         string fileName = file.GetMetadata("Fullpath");
                         files.Add(fileName);
                     }
@@ -248,7 +328,8 @@ namespace XSharp.Build
 
                 }
             }
-            if(!mustCompile) {
+            if (!mustCompile)
+            {
                 base.Log.LogMessage("No need to recompile the resources, no file changes detected.");
             }
             return !mustCompile;
@@ -258,19 +339,23 @@ namespace XSharp.Build
         /// Check to see if all mandatory parameters are filled
         /// </summary>
         /// <returns>True when compilation can start</returns>
-        protected override bool ValidateParameters() {
+        protected override bool ValidateParameters()
+        {
             string resourceCompilerExe = this.GenerateFullPathToTool();
             bool parametersValid = true;
-            if(!File.Exists(resourceCompilerExe)) {
-                base.Log.LogError("MSB3666: "+resourceCompilerExe + " not found.", null);
+            if (!File.Exists(resourceCompilerExe))
+            {
+                base.Log.LogError("XS9301: " + resourceCompilerExe + " not found.", null);
                 parametersValid = false;
             }
-            if(this.numberofInputFiles == 0) {
-                base.Log.LogError("No input files specified. Skipping resource generation.", null);
+            if (this.numberofInputFiles == 0)
+            {
+                base.Log.LogError("XS9304: No input files specified. Skipping resource generation.", null);
                 parametersValid = false;
             }
-            if(this.OutputPath == null) {
-                base.Log.LogError("No output path specified. Skipping resource generation.", null);
+            if (this.OutputPath == null)
+            {
+                base.Log.LogError("XS9303: No output path specified. Skipping resource generation.", null);
                 return false;
             }
             this.outputFileName = this.OutputPath + outputName;
@@ -299,7 +384,8 @@ namespace XSharp.Build
         /// <summary>
         /// Encoding for ResponseFile
         /// </summary>
-        protected override Encoding ResponseFileEncoding {
+        protected override Encoding ResponseFileEncoding
+        {
             get
             {
                 // the native resource compiler does not understand UTF8. We don't use ASCII because that "kill" accents
@@ -315,8 +401,10 @@ namespace XSharp.Build
         /// <summary>
         /// Name of the resource compiler executable
         /// </summary>
-        protected override string ToolName {
-            get {
+        protected override string ToolName
+        {
+            get
+            {
                 return "rc.exe";
             }
         }
@@ -324,16 +412,19 @@ namespace XSharp.Build
         /// <summary>
         /// Combined path from IncludeDirs and the XSharp Includepath
         /// </summary>
-        protected string XSharpIncludedir {
-            get {
+        protected string XSharpIncludedir
+        {
+            get
+            {
                 var incpath = this.IncludePaths;
                 var defincpath = Utilities.XSharpIncludeDir();
-                if(!string.IsNullOrEmpty(incpath)) {
+                if (!string.IsNullOrEmpty(incpath))
+                {
                     defincpath = incpath + ";" + defincpath;
                 }
                 // please note that the path should not end with a backslash
                 if (defincpath.EndsWith(@"\"))
-                   defincpath = defincpath.Substring(0, defincpath.Length - 1);
+                    defincpath = defincpath.Substring(0, defincpath.Length - 1);
                 return defincpath;
             }
         }
@@ -348,7 +439,7 @@ namespace XSharp.Build
         protected override void LogEventsFromTextOutput(string singleLine, MessageImportance messageImportance)
         {
             bool isWarning = singleLine.IndexOf(" warning RC4005") != -1;
-            if (SuppressRCWarnings && isWarning )
+            if (SuppressRCWarnings && isWarning)
             {
                 ; // do nothing
             }

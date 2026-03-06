@@ -308,12 +308,12 @@ FUNCTION BitTest (BinString AS BINARY, BitNumber AS INT) AS LOGIC
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitxor/*" />
+[FoxProFunction("BITXOR", FoxFunctionCategory.Bitwise, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION BitXor (Arg1 AS USUAL, Arg2 PARAMS USUAL[]) AS USUAL
     RETURN BitHelpers._BITANDORX(BitOperation.Xor, Arg1, Arg2)
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitxor/*" />
-[FoxProFunction("BITXOR", FoxFunctionCategory.Bitwise, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION BitXor (Arg1 AS INT, Arg2 PARAMS INT[]) AS INT
     RETURN BitHelpers._BITANDORX(BitOperation.Xor, Arg1, Arg2)
 END FUNC
@@ -322,7 +322,6 @@ END FUNC
 FUNCTION BitXor (Arg1 AS BINARY, Arg2 PARAMS BINARY[]) AS BINARY
     RETURN BitHelpers._BITANDORX(BitOperation.Xor, Arg1, Arg2)
 END FUNC
-
 
 INTERNAL STATIC CLASS BitHelpers
 STATIC METHOD _BITANDORX (LogicalOp AS BitOperation, Arg1 AS USUAL, Arg2 PARAMS USUAL[]) AS USUAL

@@ -29,8 +29,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -43,8 +42,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -71,11 +69,26 @@
             </entry>
             <entry>
               <para>
-            Fill a series of arrays with directory information.
-            Note:
-            ADir() is a compatibility function and therefore not recommended.
-            It is superseded by the Directory() function, which returns all file information in a multidimensional array.
-        </para>
+      Fill a series of arrays with directory information.
+      Note:
+      ADir() is a compatibility function and therefore not recommended.
+      It is superseded by the Directory() function, which returns all file information in a multidimensional array.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ADir(XSharp.__Array,System.String,System.String,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Places information about files into an array and then returns the number of files.
+    </para>
             </entry>
           </row>
           <row>
@@ -89,8 +102,8 @@
             </entry>
             <entry>
               <para>
-            Remove spaces from a file name specified as a string.
-        </para>
+      Remove spaces from a file name specified as a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -104,8 +117,8 @@
             </entry>
             <entry>
               <para>
-            Remove spaces from a file name specified as a string, changing the contents of the original file name as well as the returned file name.
-        </para>
+      Remove spaces from a file name specified as a string, changing the contents of the original file name as well as the returned file name.
+    </para>
             </entry>
           </row>
           <row>
@@ -114,11 +127,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DefaultExt(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DefaultExt(System.String,System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            Returns a file name with a new extension if one does not already exist.
+        </para>
             </entry>
           </row>
           <row>
@@ -145,8 +160,8 @@
             </entry>
             <entry>
               <para>
-            Display file attributes as a string.
-        </para>
+      Display file attributes as a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -160,8 +175,8 @@
             </entry>
             <entry>
               <para>
-            Determine the attributes of the file found after FFCount(), FFirst(), or FNext().
-        </para>
+      Determine the attributes of the file found after FFCount(), FFirst(), or FNext().
+    </para>
             </entry>
           </row>
           <row>
@@ -170,13 +185,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FChSize(System.IntPtr,System.UInt32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FChSize(System.IntPtr,System.Int64)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Change the size of a file opened with a low-level file function.
-        </para>
+      Change the size of a file opened with a low-level file function.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FChSize(System.Int64,System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Changes the size of a file opened with a low-level file function.
+    </para>
             </entry>
           </row>
           <row>
@@ -190,8 +220,23 @@
             </entry>
             <entry>
               <para>
-            Close an open file and write the buffers to disk.
-        </para>
+      Close an open file and write the buffers to disk.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FClose(System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Flushes and closes a file or communication port opened with a low-level file function.
+    </para>
             </entry>
           </row>
           <row>
@@ -205,8 +250,8 @@
             </entry>
             <entry>
               <para>
-            Flush file buffers.
-        </para>
+      Flush file buffers.
+    </para>
             </entry>
           </row>
           <row>
@@ -215,12 +260,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FConvertToFileStream(System.IntPtr)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FConvertToFileStream</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -229,12 +273,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FConvertToMemoryStream(System.IntPtr)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FConvertToMemoryStream</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -248,23 +291,8 @@
             </entry>
             <entry>
               <para>
-            Copy a file to a new file or to a device.
-        </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FCount</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Return the number of fields in the current database file.
-        </para>
+      Copy a file to a new file or to a device.
+    </para>
             </entry>
           </row>
           <row>
@@ -278,8 +306,23 @@
             </entry>
             <entry>
               <para>
-            Create a file or open and truncate an existing file.
-        </para>
+      Create a file or open and truncate an existing file.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FCreate(System.String,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Creates and opens a low-level file.
+    </para>
             </entry>
           </row>
           <row>
@@ -293,8 +336,8 @@
             </entry>
             <entry>
               <para>
-            Create a file or open and truncate an existing file, specifying two strongly typed arguments.
-        </para>
+      Create a file or open and truncate an existing file, specifying two strongly typed arguments.
+    </para>
             </entry>
           </row>
           <row>
@@ -308,8 +351,23 @@
             </entry>
             <entry>
               <para>
-            Return the date stamp of the file found by FFCount(), FFirst(), or FNext().
-        </para>
+      Return the date stamp of the file found by FFCount(), FFirst(), or FNext().
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FDate(System.String,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the last modification Date or DateTime for a file.
+    </para>
             </entry>
           </row>
           <row>
@@ -323,8 +381,23 @@
             </entry>
             <entry>
               <para>
-            Determine if the file pointer is positioned at the end-of-file.
-        </para>
+      Determine if the file pointer is positioned at the end-of-file.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FEof(System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines whether the file pointer is positioned at the end of a file.
+    </para>
             </entry>
           </row>
           <row>
@@ -338,8 +411,8 @@
             </entry>
             <entry>
               <para>
-            Delete a file from disk.
-        </para>
+      Delete a file from disk.
+    </para>
             </entry>
           </row>
           <row>
@@ -355,6 +428,21 @@
               <para>
             Set the error code for a file operation.
             </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FError</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a number corresponding to the most recent low-level file function error.
+    </para>
             </entry>
           </row>
           <row>
@@ -383,8 +471,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of files that match a given file specification and attribute.
-        </para>
+      Return the number of files that match a given file specification and attribute.
+    </para>
             </entry>
           </row>
           <row>
@@ -398,8 +486,8 @@
             </entry>
             <entry>
               <para>
-            Find the first file that matches a given file specification or attribute.
-        </para>
+      Find the first file that matches a given file specification or attribute.
+    </para>
             </entry>
           </row>
           <row>
@@ -408,13 +496,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FFLock(System.IntPtr,System.UInt32,System.UInt32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FFLock(System.IntPtr,System.Int64,System.UInt32)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Lock a portion of an open file.
-        </para>
+      Lock a portion of an open file.
+    </para>
             </entry>
           </row>
           <row>
@@ -428,8 +516,8 @@
             </entry>
             <entry>
               <para>
-            Lock a portion of an open file.
-        </para>
+      Lock a portion of an open file.
+    </para>
             </entry>
           </row>
           <row>
@@ -443,8 +531,23 @@
             </entry>
             <entry>
               <para>
-            Flush to disk a file opened with a low-level file function.
-        </para>
+      Flush to disk a file opened with a low-level file function.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FFlush(System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Flushes to disk a file opened with a low-level function.
+    </para>
             </entry>
           </row>
           <row>
@@ -458,8 +561,8 @@
             </entry>
             <entry>
               <para>
-            UnLock a portion of an opened file.
-        </para>
+      UnLock a portion of an opened file.
+    </para>
             </entry>
           </row>
           <row>
@@ -473,8 +576,8 @@
             </entry>
             <entry>
               <para>
-            UnLock a portion of an opened file.
-        </para>
+      UnLock a portion of an opened file.
+    </para>
             </entry>
           </row>
           <row>
@@ -514,8 +617,23 @@
             </entry>
             <entry>
               <para>
-            Read a line from an open file.
-        </para>
+      Read a line from an open file.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FGets(System.Int64,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a series of bytes from a file or a communication port opened with a low-level file function until it encounters a carriage return.
+    </para>
             </entry>
           </row>
           <row>
@@ -529,8 +647,8 @@
             </entry>
             <entry>
               <para>
-            Read a line from an open file, specifying two strongly typed arguments.
-        </para>
+      Read a line from an open file, specifying two strongly typed arguments.
+    </para>
             </entry>
           </row>
           <row>
@@ -557,8 +675,23 @@
             </entry>
             <entry>
               <para>
-            Determine if any file matches a given file specification.
-        </para>
+      Determine if any file matches a given file specification.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.File(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Locates the specified file.
+    </para>
             </entry>
           </row>
           <row>
@@ -587,8 +720,8 @@
             </entry>
             <entry>
               <para>
-            Return the name of the file found by FFCount(), FFirst(), or FNext().
-        </para>
+      Return the name of the file found by FFCount(), FFirst(), or FNext().
+    </para>
             </entry>
           </row>
           <row>
@@ -602,8 +735,8 @@
             </entry>
             <entry>
               <para>
-            Find the next file that matches the file previously found by FFirst().
-        </para>
+      Find the next file that matches the file previously found by FFirst().
+    </para>
             </entry>
           </row>
           <row>
@@ -617,8 +750,23 @@
             </entry>
             <entry>
               <para>
-            Open a file.
-        </para>
+      Open a file.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FOpen(System.String,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Opens a file for use with low-level file functions.
+    </para>
             </entry>
           </row>
           <row>
@@ -632,8 +780,8 @@
             </entry>
             <entry>
               <para>
-            Open a file, specifying two strongly-typed arguments.
-        </para>
+      Open a file, specifying two strongly-typed arguments.
+    </para>
             </entry>
           </row>
           <row>
@@ -677,8 +825,8 @@
             </entry>
             <entry>
               <para>
-            Return the name and path of the file that was used by File().
-        </para>
+      Return the name and path of the file that was used by File().
+    </para>
             </entry>
           </row>
           <row>
@@ -692,8 +840,23 @@
             </entry>
             <entry>
               <para>
-            Write a string, a carriage-return character, and a linefeed character to an open file.
-        </para>
+      Write a string, a carriage-return character, and a linefeed character to an open file.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FPuts(System.Int64,System.String,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Writes a character string, carriage return, and line feed to a file opened with a low-level file function.
+    </para>
             </entry>
           </row>
           <row>
@@ -707,8 +870,8 @@
             </entry>
             <entry>
               <para>
-            Write a string, a carriage-return character, and a linefeed character to an open file, specifying three strongly-typed arguments.
-        </para>
+      Write a string, a carriage-return character, and a linefeed character to an open file, specifying three strongly-typed arguments.
+    </para>
             </entry>
           </row>
           <row>
@@ -722,8 +885,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into a buffer variable that is passed by reference.
-        </para>
+      Read characters from a file into a buffer variable that is passed by reference.
+    </para>
             </entry>
           </row>
           <row>
@@ -737,8 +900,23 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into an allocated buffer.
-        </para>
+      Read characters from a file into an allocated buffer.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FRead(System.Int64,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a specified number of bytes from a file opened with a low-level function.
+    </para>
             </entry>
           </row>
           <row>
@@ -752,8 +930,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into an allocated buffer.
-        </para>
+      Read characters from a file into an allocated buffer.
+    </para>
             </entry>
           </row>
           <row>
@@ -767,8 +945,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into an allocated buffer.
-        </para>
+      Read characters from a file into an allocated buffer.
+    </para>
             </entry>
           </row>
           <row>
@@ -782,8 +960,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into an allocated buffer.
-        </para>
+      Read characters from a file into an allocated buffer.
+    </para>
             </entry>
           </row>
           <row>
@@ -797,8 +975,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into an allocated buffer.
-        </para>
+      Read characters from a file into an allocated buffer.
+    </para>
             </entry>
           </row>
           <row>
@@ -812,8 +990,8 @@
             </entry>
             <entry>
               <para>
-            Read a line from an open file.
-        </para>
+      Read a line from an open file.
+    </para>
             </entry>
           </row>
           <row>
@@ -827,8 +1005,8 @@
             </entry>
             <entry>
               <para>
-            Read a line from an open file.
-        </para>
+      Read a line from an open file.
+    </para>
             </entry>
           </row>
           <row>
@@ -842,8 +1020,8 @@
             </entry>
             <entry>
               <para>
-            Read a line from an open file, specifying two strongly-typed arguments.
-        </para>
+      Read a line from an open file, specifying two strongly-typed arguments.
+    </para>
             </entry>
           </row>
           <row>
@@ -857,8 +1035,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file.
-        </para>
+      Read characters from a file.
+    </para>
             </entry>
           </row>
           <row>
@@ -872,8 +1050,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into a buffer variable that is passed by reference.
-        </para>
+      Read characters from a file into a buffer variable that is passed by reference.
+    </para>
             </entry>
           </row>
           <row>
@@ -887,8 +1065,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into an allocated buffer, with possible OEM to ANSI conversion, based on the current SetAnsi() setting.
-        </para>
+      Read characters from a file into an allocated buffer, with possible OEM to ANSI conversion, based on the current SetAnsi() setting.
+    </para>
             </entry>
           </row>
           <row>
@@ -902,8 +1080,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into a buffer variable that is passed by reference.
-        </para>
+      Read characters from a file into a buffer variable that is passed by reference.
+    </para>
             </entry>
           </row>
           <row>
@@ -917,8 +1095,8 @@
             </entry>
             <entry>
               <para>
-            Change the name of a file.
-        </para>
+      Change the name of a file.
+    </para>
             </entry>
           </row>
           <row>
@@ -932,8 +1110,8 @@
             </entry>
             <entry>
               <para>
-            Set the file pointer at the top of an open file.
-        </para>
+      Set the file pointer at the top of an open file.
+    </para>
             </entry>
           </row>
           <row>
@@ -947,8 +1125,23 @@
             </entry>
             <entry>
               <para>
-            Set the file pointer to a new position.
-        </para>
+      Set the file pointer to a new position.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FSeek(System.Int64,System.Int32,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Moves the file pointer in a file opened with a low-level file function.
+    </para>
             </entry>
           </row>
           <row>
@@ -962,8 +1155,23 @@
             </entry>
             <entry>
               <para>
-            Set the file pointer to a new position, specifying three strongly-typed arguments.
-        </para>
+      Set the file pointer to a new position, specifying three strongly-typed arguments.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FSeek64(System.IntPtr,System.Int64,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Set the file pointer to a new position, specifying three strongly-typed arguments.
+    </para>
             </entry>
           </row>
           <row>
@@ -981,6 +1189,21 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FSize(System.String,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the size in bytes of a specified field or file.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.Core</para>
             </entry>
             <entry>
@@ -990,8 +1213,8 @@
             </entry>
             <entry>
               <para>
-            Return the current position of the file pointer.
-        </para>
+      Return the current position of the file pointer.
+    </para>
             </entry>
           </row>
           <row>
@@ -1005,8 +1228,8 @@
             </entry>
             <entry>
               <para>
-            Return the current position of the file pointer.
-        </para>
+      Return the current position of the file pointer.
+    </para>
             </entry>
           </row>
           <row>
@@ -1020,8 +1243,8 @@
             </entry>
             <entry>
               <para>
-            Return the time stamp of the file found by FFCount(), FFirst(), or FNext().
-        </para>
+      Return the time stamp of the file found by FFCount(), FFirst(), or FNext().
+    </para>
             </entry>
           </row>
           <row>
@@ -1030,11 +1253,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FullPath(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FTime(System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+      Returns the last modification time for a file.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FullPath(System.String,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Returns the path to a specified file or the path relative to another file.
+        </para>
             </entry>
           </row>
           <row>
@@ -1047,8 +1287,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1062,8 +1301,23 @@
             </entry>
             <entry>
               <para>
-            Write a string to an open file.
-        </para>
+      Write a string to an open file.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FWrite(System.Int64,System.String,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Writes a character string to a file opened with a low-level file function.
+    </para>
             </entry>
           </row>
           <row>
@@ -1077,8 +1331,8 @@
             </entry>
             <entry>
               <para>
-            Write the contents of a buffer to an open file.
-        </para>
+      Write the contents of a buffer to an open file.
+    </para>
             </entry>
           </row>
           <row>
@@ -1092,8 +1346,8 @@
             </entry>
             <entry>
               <para>
-            Write the contents of a buffer to an open file.
-        </para>
+      Write the contents of a buffer to an open file.
+    </para>
             </entry>
           </row>
           <row>
@@ -1107,8 +1361,8 @@
             </entry>
             <entry>
               <para>
-            Write the contents of a buffer to an open file, with an ANSI to OEM conversion option.
-        </para>
+      Write the contents of a buffer to an open file, with an ANSI to OEM conversion option.
+    </para>
             </entry>
           </row>
           <row>
@@ -1122,8 +1376,8 @@
             </entry>
             <entry>
               <para>
-            Write a string, a carriage-return character, and a linefeed character to an open file.
-        </para>
+      Write a string, a carriage-return character, and a linefeed character to an open file.
+    </para>
             </entry>
           </row>
           <row>
@@ -1137,8 +1391,8 @@
             </entry>
             <entry>
               <para>
-            Write a string, a carriage-return character, and a linefeed character to an open file.
-        </para>
+      Write a string, a carriage-return character, and a linefeed character to an open file.
+    </para>
             </entry>
           </row>
           <row>
@@ -1152,8 +1406,8 @@
             </entry>
             <entry>
               <para>
-            Write a string, a carriage-return character, and a linefeed character to an open file, specifying two strongly-typed arguments.
-        </para>
+      Write a string, a carriage-return character, and a linefeed character to an open file, specifying two strongly-typed arguments.
+    </para>
             </entry>
           </row>
           <row>
@@ -1167,8 +1421,8 @@
             </entry>
             <entry>
               <para>
-            Write a string to an open file, with SetAnsi() dependency.
-        </para>
+      Write a string to an open file, with SetAnsi() dependency.
+    </para>
             </entry>
           </row>
           <row>
@@ -1182,8 +1436,8 @@
             </entry>
             <entry>
               <para>
-            Write the contents of a buffer to an open file, with SetAnsi() dependency.
-        </para>
+      Write the contents of a buffer to an open file, with SetAnsi() dependency.
+    </para>
             </entry>
           </row>
           <row>
@@ -1265,8 +1519,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1275,11 +1528,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.UseBufferedFileStream(System.Boolean)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.UseBufferedFileStream</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>Control the buffered File IO setting for the runtime</para>
+              <para>Retrieve the buffered File IO setting for the runtime</para>
             </entry>
           </row>
         </table>

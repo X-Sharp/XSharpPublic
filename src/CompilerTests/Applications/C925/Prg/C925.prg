@@ -15,7 +15,12 @@ FUNCTION Start() AS VOID
 	LOCAL o AS OBJECT
 
 	// this throws an index out of range exception in 2.20
-	o := col:Item[123] // abc in 2.14
+	o := col[123] // abc in 2.14
+	? o
+	xAssert(col[123] == "abc")
+
+	// using the Item indexed property directly it works as expected:
+	o := col:Item[123]
 	? o
 	xAssert(col:Item[123] == "abc")
 

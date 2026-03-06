@@ -51,7 +51,7 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     PROTECT _Deleted		AS LOGIC	// Record has been deleted ?
     //PROTECT _HeaderDirty	AS LOGIC	// Header is dirty ?
     PROTECT _fLocked		AS LOGIC    // File Locked ?
-    PROTECT _HeaderLocked	AS LOGIC
+    PROTECT INTERNAL _HeaderLocked	AS LOGIC
     //PROTECT _PackMemo		AS LOGIC
     INTERNAL _OpenInfo		AS DbOpenInfo // current dbOpenInfo structure in OPEN/CREATE method
     PROTECT _Locks			AS List<DWORD>
@@ -452,7 +452,7 @@ RETURN isOK
     /// <inheritdoc />
 OVERRIDE METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
     //
-	IF lockMode == DbLockMode.Lock
+	IF lockMode == DbLockMode.Lock .and. ! _HeaderLocked
         //? CurrentThreadId, "Start Header Lock", ProcName(1)
         LOCAL nTries := 0 AS LONG
         VAR timer := LockTimer{}

@@ -30,7 +30,7 @@
             </entry>
             <entry>
               <para>
-      An auxiliary class used by the DateTimePicker and MonthCalendar controls to represent a date range.
+      由 DateTimePicker 和 MonthCalendar 控件使用的辅助类，用于表示日期范围。
     </para>
             </entry>
           </row>
@@ -45,7 +45,7 @@
             </entry>
             <entry>
               <para>
-      Create a Dimension object, which is used to describe the size of two-dimensional objects using ordered pair coordinates (width, height or x, y).
+      创建一个 Dimension 对象，该对象用于使用有序对坐标(宽度，高度或x，y)描述二维对象的大小。
     </para>
             </entry>
           </row>
@@ -60,7 +60,7 @@
             </entry>
             <entry>
               <para>
-      Create a hot key.
+      创建一个热键。
     </para>
             </entry>
           </row>
@@ -75,7 +75,7 @@
             </entry>
             <entry>
               <para>
-      Create a hot key rule.
+      创建一个热键规则。
     </para>
             </entry>
           </row>
@@ -90,7 +90,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which all X# objects containing ordered pairs of values are subclassed.
+      提供所有 X# 对象的基类，这些对象包含有序对的值。
     </para>
             </entry>
           </row>
@@ -105,7 +105,7 @@
             </entry>
             <entry>
               <para>
-      Create a point, which is used to describe a location on the canvas of a window.
+      创建一个点，用于描述窗口画布上的位置。
     </para>
             </entry>
           </row>
@@ -120,7 +120,7 @@
             </entry>
             <entry>
               <para>
-      Create a range, representing the minimum and maximum values of the coordinates (or scroll units) that the thumb position on a scroll bar can move—up or down, left or right.
+      创建一个范围，表示滚动条上的拇指位置可以移动的坐标(或滚动单位)的最小值和最大值—向上或向下，向左或向右。
     </para>
             </entry>
           </row>
@@ -135,7 +135,7 @@
             </entry>
             <entry>
               <para>
-      Create a selection, which represents the start and end of a text selection in an edit control as an ordered pair.
+      创建一个选择，它表示编辑控件中的文本选择的开始和结束，作为一个有序对。
     </para>
             </entry>
           </row>
@@ -177,8 +177,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -272,8 +271,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -561,6 +559,19 @@
             </entry>
             <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbCurrency</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Implementation of the ICurrency interface that can be used by the RDD system. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbDate</codeEntityReference>
               </para>
             </entry>
@@ -643,7 +654,7 @@
               </para>
             </entry>
             <entry>
-              <para>This enum specifies how files should be opened.</para>
+              <para>此枚举指定文件应如何打开。</para>
             </entry>
           </row>
           <row>
@@ -656,7 +667,7 @@
               </para>
             </entry>
             <entry>
-              <para>DBF Field flags.</para>
+              <para>DBF 字段标志。</para>
             </entry>
           </row>
           <row>
@@ -669,8 +680,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -683,8 +693,7 @@
               </para>
             </entry>
             <entry>
-              <para>This enum specifies the various values that the FieldInfo method for the IRDD interface accepts.
-            </para>
+              <para>此枚举指定 IRDD 接口的 FieldInfo 方法可接受的各种值。</para>
             </entry>
           </row>
           <row>
@@ -697,7 +706,7 @@
               </para>
             </entry>
             <entry>
-              <para>This enum specifies the various field types that can appear in DBF files.</para>
+              <para>此枚举指定可以出现在 DBF 文件中的各种字段类型。</para>
             </entry>
           </row>
           <row>
@@ -710,8 +719,9 @@
               </para>
             </entry>
             <entry>
-              <para>This enum specifies the various values that the Info method for the IRDD interface accepts.
-            </para>
+              <para>
+      此枚举指定 IRDD 接口的 Info 方法接受的各种值。
+    </para>
             </entry>
           </row>
           <row>
@@ -724,7 +734,7 @@
               </para>
             </entry>
             <entry>
-              <para>This enum specifies the lock modes.</para>
+              <para>此枚举指定锁定模式。</para>
             </entry>
           </row>
           <row>
@@ -737,7 +747,7 @@
               </para>
             </entry>
             <entry>
-              <para>Enum that described the possible Notification messages that are sent to clients of Workareas</para>
+              <para>枚举描述了发送给工作区客户端的可能通知消息</para>
             </entry>
           </row>
           <row>
@@ -750,8 +760,7 @@
               </para>
             </entry>
             <entry>
-              <para>This enum specifies the various values that the OrderInfo method for the IRDD interface accepts.
-            </para>
+              <para>此枚举指定 IRDD 接口的 OrderInfo 方法所接受的各种值。</para>
             </entry>
           </row>
           <row>
@@ -764,8 +773,9 @@
               </para>
             </entry>
             <entry>
-              <para>This enum specifies the various values that the RecordInfo method for the IRDD interface accepts.
-            </para>
+              <para>
+      此枚举指定 IRDD 接口的 RecordInfo 方法所接受的各种值。
+    </para>
             </entry>
           </row>
           <row>
@@ -778,7 +788,7 @@
               </para>
             </entry>
             <entry>
-              <para>Flags that describe how a DbSort operation can be done.</para>
+              <para>描述如何执行 DbSort 操作的标志。</para>
             </entry>
           </row>
           <row>
@@ -791,7 +801,7 @@
               </para>
             </entry>
             <entry>
-              <para>Flags that describe how a DbTrans operation can be done.</para>
+              <para>描述如何进行 DbTrans 操作的标志。</para>
             </entry>
           </row>
           <row>

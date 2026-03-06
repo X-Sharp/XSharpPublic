@@ -248,15 +248,12 @@ internal static class FoxTextOut
 
 end class
 
-
-
 function __TextInit(lMerge as logic, lNoShow as logic, nFlags as long, uPreText as usual) as logic
     FoxTextOut.Init(lMerge, lNoShow, nFlags, uPreText)
     return true
 
 function __TextLine(cText as string) as string
     return cText+CRLF
-
 
 [NeedsAccessToLocals(FALSE)];
 function __TextEnd(cString as string) as string
@@ -265,8 +262,6 @@ function __TextEnd(cString as string) as string
         cString := cString:Substring(0, cString:Length-2)
     endif
     return cString
-
-
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/textmerge/*" />
 [NeedsAccessToLocals(FALSE)];

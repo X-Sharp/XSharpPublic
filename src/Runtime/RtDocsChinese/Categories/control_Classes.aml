@@ -30,7 +30,7 @@
             </entry>
             <entry>
               <para>
-      Create an animation control.
+      创建一个动画控件。
     </para>
             </entry>
           </row>
@@ -45,7 +45,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which all X# list boxes are subclassed.
+      提供了 X# 列表框的基类，从中可以继承所有 X# 列表框类。
     </para>
             </entry>
           </row>
@@ -60,7 +60,7 @@
             </entry>
             <entry>
               <para>
-      Create a combo box, which is used when you need to provide the user with both a list of choices and an edit control (to optionally allow them to type in their own choice).
+      创建一个组合框，当您需要为用户提供一个选择列表和一个编辑控件(以便他们可以选择输入自己的选择)时使用。
     </para>
             </entry>
           </row>
@@ -75,7 +75,7 @@
             </entry>
             <entry>
               <para>
-      Encapsulate a ComboBoxEx control.
+      封装一个 ComboBoxEx 控件。
     </para>
             </entry>
           </row>
@@ -90,11 +90,8 @@
             </entry>
             <entry>
               <para>
-      This class contains all properties of a ComboBoxEx item.
-      It is used with the ComboBoxEx methods
-      ComboBoxEx:SetItemAttributes()
-      ComboBoxEx:GetItemAttributes()
-      ComboBoxEx:InsertItem()
+      此类包含 ComboBoxEx 项目的所有属性。
+      它与 ComboBoxEx 方法一起使用 ComboBoxEx:SetItemAttributes() ComboBoxEx:GetItemAttributes() ComboBoxEx:InsertItem()
     </para>
             </entry>
           </row>
@@ -109,7 +106,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which all X# controls are subclassed.
+      提供所有 X# 控件的基类。
     </para>
             </entry>
           </row>
@@ -124,7 +121,7 @@
             </entry>
             <entry>
               <para>
-      Provide a base custom control class from which to derive specialized custom controls.
+      提供一个自定义控件基类，从中派生专门的自定义控件。
     </para>
             </entry>
           </row>
@@ -139,7 +136,7 @@
             </entry>
             <entry>
               <para>
-      Create a data browser, which is a spreadsheet-like table for displaying information from a data server.
+      创建一个数据浏览器，它是一个类似电子表格的表，用于显示来自数据服务器的信息。
     </para>
             </entry>
           </row>
@@ -154,7 +151,7 @@
             </entry>
             <entry>
               <para>
-      Create columns for use in a data browser.
+      为在数据浏览器中使用的列创建列。
     </para>
             </entry>
           </row>
@@ -169,7 +166,7 @@
             </entry>
             <entry>
               <para>
-      Create a data list view as a faster, read-only, standalone control and an alternative to a data browser.
+      创建一个数据列表视图，作为更快速、只读、独立控件和数据浏览器的替代。
     </para>
             </entry>
           </row>
@@ -184,7 +181,7 @@
             </entry>
             <entry>
               <para>
-      Encapsulate a DateTimePicker control.
+      封装一个 DateTimePicker 控件。
     </para>
             </entry>
           </row>
@@ -199,7 +196,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which all X# edit controls are subclassed.
+      提供所有 X# 编辑控件的基类，这些控件都是从它派生的。
     </para>
             </entry>
           </row>
@@ -214,7 +211,7 @@
             </entry>
             <entry>
               <para>
-      Create a horizontal scroll bar that is independent of its owner window.
+      创建一个独立于其所有者窗口的水平滚动条。
     </para>
             </entry>
           </row>
@@ -229,7 +226,7 @@
             </entry>
             <entry>
               <para>
-      Create a horizontal selection slider control.
+      创建一个水平选择滑块控件。
     </para>
             </entry>
           </row>
@@ -244,7 +241,7 @@
             </entry>
             <entry>
               <para>
-      Create a horizontal slider control.
+      创建一个水平滑块控件。
     </para>
             </entry>
           </row>
@@ -259,7 +256,7 @@
             </entry>
             <entry>
               <para>
-      Create a spinner with horizontal arrow buttons.
+      创建一个带有水平箭头按钮的微调器。
     </para>
             </entry>
           </row>
@@ -274,7 +271,7 @@
             </entry>
             <entry>
               <para>
-      Create a list box.
+      创建一个列表框。
     </para>
             </entry>
           </row>
@@ -289,8 +286,8 @@
             </entry>
             <entry>
               <para>
-      Create a list view control.
-      Important - Microsoft Note - Under visual styles GridLines are not always displayed correctly.
+      创建一个列表视图控件。
+      重要 - Microsoft 注意 - 在视觉样式下，网格线不总是正确显示。
     </para>
             </entry>
           </row>
@@ -305,7 +302,7 @@
             </entry>
             <entry>
               <para>
-      Create a list view column.
+      创建一个列表视图列。
     </para>
             </entry>
           </row>
@@ -320,7 +317,7 @@
             </entry>
             <entry>
               <para>
-      Create a list view item.
+      创建一个列表视图项目。
     </para>
             </entry>
           </row>
@@ -335,7 +332,7 @@
             </entry>
             <entry>
               <para>
-      Encapsulate a standalone MonthCalendar control.
+      封装一个独立的 MonthCalendar 控件。
     </para>
             </entry>
           </row>
@@ -350,7 +347,7 @@
             </entry>
             <entry>
               <para>
-      Create a progress bar.
+      创建一个进度条。
     </para>
             </entry>
           </row>
@@ -365,7 +362,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which all X# scroll bars are subclassed.
+      提供所有 X# 滚动条的基类，所有 X# 滚动条都是从这个类派生的。
     </para>
             </entry>
           </row>
@@ -380,7 +377,7 @@
             </entry>
             <entry>
               <para>
-      Create a selection slider.
+      创建一个选择滑块。
     </para>
             </entry>
           </row>
@@ -395,7 +392,7 @@
             </entry>
             <entry>
               <para>
-      Create a slider control.
+      创建一个滑块控件。
     </para>
             </entry>
           </row>
@@ -410,7 +407,7 @@
             </entry>
             <entry>
               <para>
-      Create a spinner.
+      创建一个微调器。
     </para>
             </entry>
           </row>
@@ -425,7 +422,7 @@
             </entry>
             <entry>
               <para>
-      Create a status bar for use in a window.
+      为窗口创建一个状态栏。
     </para>
             </entry>
           </row>
@@ -440,7 +437,7 @@
             </entry>
             <entry>
               <para>
-      Create a status bar item.
+      创建一个状态栏项目。
     </para>
             </entry>
           </row>
@@ -455,7 +452,7 @@
             </entry>
             <entry>
               <para>
-      Create a status bar item to display CapsLock, Numlock and Insert keys
+      创建一个状态栏项目，用于显示 CapsLock、Numlock 和 Insert 键
     </para>
             </entry>
           </row>
@@ -470,7 +467,7 @@
             </entry>
             <entry>
               <para>
-      Create a SysLink control.
+      创建一个 SysLink 控件。
     </para>
             </entry>
           </row>
@@ -485,7 +482,7 @@
             </entry>
             <entry>
               <para>
-      Create a tab control.
+      创建一个选项卡控件。
     </para>
             </entry>
           </row>
@@ -500,7 +497,7 @@
             </entry>
             <entry>
               <para>
-      Create a toolbar.
+      创建一个工具栏。
     </para>
             </entry>
           </row>
@@ -515,7 +512,7 @@
             </entry>
             <entry>
               <para>
-      Create a tree view control.
+      创建一个树形视图控件。
     </para>
             </entry>
           </row>
@@ -530,7 +527,7 @@
             </entry>
             <entry>
               <para>
-      Create a tree view item.
+      创建一个树形视图项。
     </para>
             </entry>
           </row>
@@ -545,7 +542,7 @@
             </entry>
             <entry>
               <para>
-      Create a vertical scroll bar.
+      创建一个垂直滚动条。
     </para>
             </entry>
           </row>
@@ -560,7 +557,7 @@
             </entry>
             <entry>
               <para>
-      Create a vertical selection slider control.
+      创建一个垂直选择滑块控件。
     </para>
             </entry>
           </row>
@@ -575,7 +572,7 @@
             </entry>
             <entry>
               <para>
-      Create a vertical slider control.
+      创建一个垂直滑块控件。
     </para>
             </entry>
           </row>
@@ -590,7 +587,7 @@
             </entry>
             <entry>
               <para>
-      Create a spinner with vertical arrow buttons.
+      创建一个带有垂直箭头按钮的微调器。
     </para>
             </entry>
           </row>
@@ -605,7 +602,7 @@
             </entry>
             <entry>
               <para>
-      Create a window horizontal scroll bar.
+      创建一个窗口水平滚动条。
     </para>
             </entry>
           </row>
@@ -620,7 +617,7 @@
             </entry>
             <entry>
               <para>
-      Abstract class for Windows Scrollbars
+      Windows Scrollbars 的 Abstract class
     </para>
             </entry>
           </row>
@@ -635,7 +632,7 @@
             </entry>
             <entry>
               <para>
-      Create a window vertical scroll bar.
+      创建一个窗口垂直滚动条.
     </para>
             </entry>
           </row>

@@ -51,13 +51,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Break(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Break(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Branch out of a BEGIN SEQUENCE...END construct.
-        </para>
+      从 BEGIN SEQUENCE...END 结构中分支出去。
+    </para>
             </entry>
           </row>
           <row>
@@ -83,8 +83,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -97,8 +96,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -107,13 +105,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._CreateInstance(System.String,XSharp.__Usual[])</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._CreateInstance(System.Type,XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Create an object.
-        </para>
+      创建一个对象。
+    </para>
             </entry>
           </row>
           <row>
@@ -127,8 +125,8 @@
             </entry>
             <entry>
               <para>
-            Return a pointer to the command line used to invoke the application.
-        </para>
+      返回指向用于调用应用程序的命令行的指针。
+    </para>
             </entry>
           </row>
           <row>
@@ -141,9 +139,22 @@
               </para>
             </entry>
             <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO</para>
+            </entry>
+            <entry>
               <para>
-            Return the instance handle of an application or DLL.
-        </para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions._GetInst</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      返回应用程序或 DLL 的实例句柄。
+    </para>
             </entry>
           </row>
           <row>
@@ -156,8 +167,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -196,7 +206,7 @@
               </para>
             </entry>
             <entry>
-              <para>Execute a Windows or DOS application, a batch file, or a DOS command.</para>
+              <para>执行 Windows 或 DOS 应用程序、批处理文件或 DOS 命令。</para>
             </entry>
           </row>
           <row>
@@ -209,8 +219,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -308,11 +317,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AGetFileVersion(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AGetFileVersion(XSharp.__Array,System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -321,11 +330,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AMembers(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AMembers(XSharp.__Array,XSharp.__Usual,System.Int32,System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -352,8 +361,8 @@
             </entry>
             <entry>
               <para>
-            Invoke a method for every element in an array of objects.
-        </para>
+      对数组中的每个对象元素调用一个方法。
+    </para>
             </entry>
           </row>
           <row>
@@ -375,11 +384,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AUsed(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AUsed(XSharp.__Array,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -393,8 +402,21 @@
             </entry>
             <entry>
               <para>
-            Determine if a value is between two other values.
-        </para>
+      确定一个值是否在另外两个值之间。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Between(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -423,7 +445,7 @@
             </entry>
             <entry>
               <para>
-            Returns the current mode of the CAPS Lock key or sets the CAPS Lock key mode on or off.
+            返回CAPS Lock键的当前模式，或设置CAPS Lock键的模式为开启或关闭。
         </para>
             </entry>
           </row>
@@ -438,8 +460,8 @@
             </entry>
             <entry>
               <para>
-            Determine if an object is an instance of a particular class.
-        </para>
+      确定对象是否为特定类的实例。
+    </para>
             </entry>
           </row>
           <row>
@@ -453,8 +475,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of classes available to your application.
-        </para>
+      返回应用程序可用的类的数量。
+    </para>
             </entry>
           </row>
           <row>
@@ -494,8 +516,8 @@
             </entry>
             <entry>
               <para>
-            Return an array of symbols corresponding to the classes available to your application.
-        </para>
+      返回一个符号数组，对应于应用程序可用的类。
+    </para>
             </entry>
           </row>
           <row>
@@ -509,8 +531,8 @@
             </entry>
             <entry>
               <para>
-            Get the class name of an object.
-        </para>
+      获取对象的类名。
+    </para>
             </entry>
           </row>
           <row>
@@ -537,8 +559,8 @@
             </entry>
             <entry>
               <para>
-            Get the class hierarchy of an object.
-        </para>
+      获取对象的类层次结构。
+    </para>
             </entry>
           </row>
           <row>
@@ -552,8 +574,8 @@
             </entry>
             <entry>
               <para>
-            Get the class hierarchy of a class.
-        </para>
+      获取类的层次结构。
+    </para>
             </entry>
           </row>
           <row>
@@ -595,8 +617,8 @@
             </entry>
             <entry>
               <para>
-            Create an object.
-        </para>
+      创建一个对象。
+    </para>
             </entry>
           </row>
           <row>
@@ -638,8 +660,8 @@
             </entry>
             <entry>
               <para>
-            Invoke a method.
-        </para>
+      调用一个方法。
+    </para>
             </entry>
           </row>
           <row>
@@ -653,8 +675,8 @@
             </entry>
             <entry>
               <para>
-            Assign a default value to a NIL argument.
-        </para>
+      为 NIL 参数分配默认值。
+    </para>
             </entry>
           </row>
           <row>
@@ -663,11 +685,24 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Difference(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Difference(System.String,System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DoDefault(XSharp.__Usual[])</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -680,8 +715,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -695,8 +729,21 @@
             </entry>
             <entry>
               <para>
-            Determine if the result of an expression is empty.
-        </para>
+      确定表达式的结果是否为空。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Empty(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -710,8 +757,8 @@
             </entry>
             <entry>
               <para>
-            Determine if field number n in the current workarea is empty.
-        </para>
+      确定当前工作区中的字段 n 是否为空。
+    </para>
             </entry>
           </row>
           <row>
@@ -724,8 +771,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -739,8 +785,8 @@
             </entry>
             <entry>
               <para>
-            Determine if the current record in the current workarea is empty.
-        </para>
+      确定当前工作区中的当前记录是否为空。
+    </para>
             </entry>
           </row>
           <row>
@@ -753,8 +799,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -768,8 +813,8 @@
             </entry>
             <entry>
               <para>
-            Return the empty value of a specified data type.
-        </para>
+      返回指定数据类型的空值。
+    </para>
             </entry>
           </row>
           <row>
@@ -795,8 +840,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -810,8 +854,8 @@
             </entry>
             <entry>
               <para>
-            Make sure a variable is a numeric.
-        </para>
+      确保变量是数值类型。
+    </para>
             </entry>
           </row>
           <row>
@@ -825,8 +869,8 @@
             </entry>
             <entry>
               <para>
-            Make sure a variable is of a certain type.
-        </para>
+      确保变量是特定类型。
+    </para>
             </entry>
           </row>
           <row>
@@ -855,8 +899,21 @@
             </entry>
             <entry>
               <para>
-            Evaluate an expression contained in a string.
-        </para>
+      评估包含在字符串中的表达式。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Evaluate(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -870,10 +927,10 @@
             </entry>
             <entry>
               <para>
-            Returns a non-empty value from two expressions.
-            You can use the EVL( ) function to return an appropriate substitute value instead of an empty value, such as False (.F.) or 0, from two expressions.
-            You can also use this functionality to remove empty values from calculations or operations where empty values are not supported or relevant.
-            The X# Logical value, False (.F.), and the Numeric value of 0 also evaluate to empty.
+            从两个表达式中返回一个非空值。
+            您可以使用EVL()函数从两个表达式中返回一个适当的替代值，而不是空值（如False (.F.)或0）。
+            您还可以使用此功能从不支持或不相关的空值的计算或操作中删除空值。
+            X#的逻辑值False (.F.)和数值0也被评估为空。
         </para>
             </entry>
           </row>
@@ -887,8 +944,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -902,8 +958,21 @@
             </entry>
             <entry>
               <para>
-            Enables you to run multiple lines of code from variables, tables, and other text at runtime.
+            允许您在运行时从变量、表格和其他文本中执行多行代码。
         </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ExecScript(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -917,7 +986,22 @@
             </entry>
             <entry>
               <para>
-            Enables you to run multiple lines of code from variables, tables, and other text at runtime.
+            允许您在运行时从变量、表格和其他文本中执行多行代码。
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ExecScriptSlow(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            允许您在运行时从变量、表格和其他文本中执行多行代码。
         </para>
             </entry>
           </row>
@@ -1011,6 +1095,19 @@
             </entry>
             <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GETPEM(XSharp.__Usual,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetWordCount(System.String)</codeEntityReference>
               </para>
             </entry>
@@ -1074,8 +1171,21 @@
             </entry>
             <entry>
               <para>
-            Indicate whether the first expression in a series is repeated later in the series.
-        </para>
+      指示系列中的第一个表达式是否在后续中重复。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.InList(XSharp.__Usual,XSharp.__Usual[])</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1089,8 +1199,8 @@
             </entry>
             <entry>
               <para>
-            Indicate whether the first expression in a series is repeated later in the series.
-        </para>
+      指示系列中的第一个表达式是否在后续中重复。
+    </para>
             </entry>
           </row>
           <row>
@@ -1117,7 +1227,7 @@
             </entry>
             <entry>
               <para>
-            Returns the current insert mode, or sets the insert mode on or off.
+            返回当前插入模式，或设置插入模式为开启或关闭。
         </para>
             </entry>
           </row>
@@ -1132,8 +1242,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular access method can be sent to an object.
-        </para>
+      检查是否可以向对象发送特定的访问方法。
+    </para>
             </entry>
           </row>
           <row>
@@ -1147,8 +1257,8 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is alphanumeric.
-        </para>
+      确定字符串的左侧字符是否为字母数字。
+    </para>
             </entry>
           </row>
           <row>
@@ -1162,8 +1272,21 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is alphabetic.
-        </para>
+      确定字符串的左侧字符是否为字母。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsAlpha(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1185,13 +1308,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsArray(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsArray(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is an array.
-        </para>
+      确定一个值是否为数组。
+    </para>
             </entry>
           </row>
           <row>
@@ -1205,8 +1328,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular assign method can be sent to an object.
-        </para>
+      检查是否可以向对象发送特定的赋值方法。
+    </para>
             </entry>
           </row>
           <row>
@@ -1220,8 +1343,8 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is a binary digit (0 or 1).
-        </para>
+      确定字符串的左侧字符是否为二进制数字（0或1）。
+    </para>
             </entry>
           </row>
           <row>
@@ -1230,7 +1353,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsBinary(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsBinary(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1245,7 +1368,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsByRef(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsByRef(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1265,8 +1388,8 @@
             </entry>
             <entry>
               <para>
-            Determine if a class exists.
-        </para>
+      确定类是否存在。
+    </para>
             </entry>
           </row>
           <row>
@@ -1280,8 +1403,8 @@
             </entry>
             <entry>
               <para>
-            Determine if one class is a subclass of another class.
-        </para>
+      确定一个类是否是另一个类的子类。
+    </para>
             </entry>
           </row>
           <row>
@@ -1290,13 +1413,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCodeBlock(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCodeBlock(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a code block.
-        </para>
+      确定一个值是否为代码块。
+    </para>
             </entry>
           </row>
           <row>
@@ -1320,7 +1443,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCurrency(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCurrency(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1335,13 +1458,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDate(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDate(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a DATE.
-        </para>
+      确定值是否为日期（DATE）。
+    </para>
             </entry>
           </row>
           <row>
@@ -1350,7 +1473,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDateTime(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDateTime(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1365,7 +1488,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDecimal(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDecimal(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1385,8 +1508,21 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is a digit (that is, a numeric digit between 0 and 9).
-        </para>
+      确定字符串的左侧字符是否为数字（即 0 到 9 之间的数字）。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsDigit(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1408,13 +1544,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFloat(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFloat(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a FLOAT.
-        </para>
+      确定值是否为浮点数（FLOAT）。
+    </para>
             </entry>
           </row>
           <row>
@@ -1438,7 +1574,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFractional(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFractional(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1458,8 +1594,8 @@
             </entry>
             <entry>
               <para>
-            Determine if an object is an instance of a class.
-        </para>
+      确定对象是否为特定类的实例。
+    </para>
             </entry>
           </row>
           <row>
@@ -1473,8 +1609,8 @@
             </entry>
             <entry>
               <para>
-            Determine if an object inside a USUAL is an instance of a class.
-        </para>
+      确定 USUAL 中的对象是否为某个类的实例。
+    </para>
             </entry>
           </row>
           <row>
@@ -1483,7 +1619,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsInt64(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsInt64(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1498,7 +1634,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsInteger(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsInteger(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1513,13 +1649,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLogic(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLogic(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a logical.
-        </para>
+      确定一个值是否为逻辑值。
+    </para>
             </entry>
           </row>
           <row>
@@ -1528,13 +1664,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLong(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLong(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a LONGINT.
-        </para>
+      确定值是否为 LONGINT。
+    </para>
             </entry>
           </row>
           <row>
@@ -1548,8 +1684,21 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is a lowercase letter.
-        </para>
+      确定字符串的左侧字符是否为小写字母。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsLower(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1562,8 +1711,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1590,8 +1738,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular method can be sent to an object.
-        </para>
+      检查特定方法是否可以发送到对象。
+    </para>
             </entry>
           </row>
           <row>
@@ -1605,8 +1753,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular method can be sent to a class.
-        </para>
+      检查特定方法是否可以发送到类。
+    </para>
             </entry>
           </row>
           <row>
@@ -1620,8 +1768,8 @@
             </entry>
             <entry>
               <para>
-            Check whether a particular method can be sent to an object inside a USUAL.
-        </para>
+      检查特定方法是否可以发送到USUAL中的对象。
+    </para>
             </entry>
           </row>
           <row>
@@ -1645,13 +1793,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNil(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNil(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is NIL.
-        </para>
+      确定一个值是否为NIL。
+    </para>
             </entry>
           </row>
           <row>
@@ -1664,7 +1812,7 @@
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1673,13 +1821,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNumeric(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNumeric(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a numeric.
-        </para>
+      确定一个值是否为数字。
+    </para>
             </entry>
           </row>
           <row>
@@ -1688,13 +1836,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsObject(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsObject(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is an object.
-        </para>
+      确定值是否为对象。
+    </para>
             </entry>
           </row>
           <row>
@@ -1716,13 +1864,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsPtr(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsPtr(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a pointer.
-        </para>
+      确定一个值是否为指针。
+    </para>
             </entry>
           </row>
           <row>
@@ -1765,8 +1913,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1780,8 +1927,8 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is a blank (that is, Chr(9) through Chr(13) or Chr(32)).
-        </para>
+      确定字符串的左侧字符是否为空白（即，Chr(9) 到 Chr(13) 或 Chr(32)）。
+    </para>
             </entry>
           </row>
           <row>
@@ -1790,13 +1937,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsString(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsString(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a string.
-        </para>
+      确定一个值是否为字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -1805,13 +1952,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsSymbol(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsSymbol(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a symbol.
-        </para>
+      确定一个值是否为符号。
+    </para>
             </entry>
           </row>
           <row>
@@ -1838,8 +1985,21 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is uppercase.
-        </para>
+      确定字符串的左侧字符是否为大写字母。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsUpper(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1853,8 +2013,8 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is a hex character (that is, digits from 1 through 9 and letters from A through F).
-        </para>
+      确定字符串的左侧字符是否为十六进制字符（即，数字1到9和字母A到F）。
+    </para>
             </entry>
           </row>
           <row>
@@ -1868,8 +2028,8 @@
             </entry>
             <entry>
               <para>
-            Return the contents of an exported instance variable.
-        </para>
+      返回导出实例变量的内容。
+    </para>
             </entry>
           </row>
           <row>
@@ -1883,8 +2043,8 @@
             </entry>
             <entry>
               <para>
-            Get information about how a particular instance variable (or access method) was declared.
-        </para>
+      获取有关特定实例变量（或访问方法）声明方式的信息。
+    </para>
             </entry>
           </row>
           <row>
@@ -1898,8 +2058,8 @@
             </entry>
             <entry>
               <para>
-            Return the contents of an instance variable.
-        </para>
+      返回实例变量的内容。
+    </para>
             </entry>
           </row>
           <row>
@@ -1913,8 +2073,8 @@
             </entry>
             <entry>
               <para>
-            Store all instance variables of an object into an array.
-        </para>
+      将对象的所有实例变量存储到数组中。
+    </para>
             </entry>
           </row>
           <row>
@@ -1928,8 +2088,8 @@
             </entry>
             <entry>
               <para>
-            Store all instance variables of a class into an array.
-        </para>
+      将类的所有实例变量存储到数组中。
+    </para>
             </entry>
           </row>
           <row>
@@ -1938,13 +2098,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IVarPut(System.Object,System.String,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IVarPut(System.Object,System.String,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Assign a value to an exported instance variable.
-        </para>
+      将值分配给导出实例变量。
+    </para>
             </entry>
           </row>
           <row>
@@ -1958,8 +2118,8 @@
             </entry>
             <entry>
               <para>
-            Get information about how a particular instance variable (or assign method) was declared.
-        </para>
+      获取有关特定实例变量（或赋值方法）声明方式的信息。
+    </para>
             </entry>
           </row>
           <row>
@@ -1968,13 +2128,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IVarPutSelf(System.Object,System.String,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IVarPutSelf(System.Object,System.String,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Assign a value to an instance variable.
-        </para>
+      将值分配给实例变量。
+    </para>
             </entry>
           </row>
           <row>
@@ -1987,8 +2147,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2001,8 +2160,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2015,8 +2173,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2066,13 +2223,26 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Max(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Max(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the larger of 2 values.
-        </para>
+      返回两个值中的较大者。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Max(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -2101,8 +2271,8 @@
             </entry>
             <entry>
               <para>
-            Create a class list in the form of an array for the specified object.
-        </para>
+      创建指定对象的类列表，以数组形式返回。
+    </para>
             </entry>
           </row>
           <row>
@@ -2116,8 +2286,8 @@
             </entry>
             <entry>
               <para>
-            Create a class list in the form of an array for the specified class.
-        </para>
+      创建指定类的类列表，以数组形式返回。
+    </para>
             </entry>
           </row>
           <row>
@@ -2130,8 +2300,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2145,8 +2314,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of arguments that a method is expecting.
-        </para>
+      返回方法期望的参数数量。
+    </para>
             </entry>
           </row>
           <row>
@@ -2160,8 +2329,8 @@
             </entry>
             <entry>
               <para>
-            Detect a concurrency conflict.
-        </para>
+      检测并发冲突。
+    </para>
             </entry>
           </row>
           <row>
@@ -2188,8 +2357,8 @@
             </entry>
             <entry>
               <para>
-            Identify an invalid method call.
-        </para>
+      识别无效的方法调用。
+    </para>
             </entry>
           </row>
           <row>
@@ -2216,7 +2385,7 @@
             </entry>
             <entry>
               <para>
-            Returns the current mode of the Num Lock key or sets the mode of the Num Lock key on or off.
+            返回Num Lock键的当前模式，或设置Num Lock键的模式为开启或关闭。
         </para>
             </entry>
           </row>
@@ -2231,8 +2400,8 @@
             </entry>
             <entry>
               <para>
-            Identify a character set by its nation driver.
-        </para>
+      通过其国家驱动程序识别字符集。
+    </para>
             </entry>
           </row>
           <row>
@@ -2246,7 +2415,7 @@
             </entry>
             <entry>
               <para>
-            Returns a non-null value from two expressions.
+            从两个表达式中返回一个非空值。
         </para>
             </entry>
           </row>
@@ -2261,8 +2430,8 @@
             </entry>
             <entry>
               <para>
-            Convert the values of an object's instance variables to an array.
-        </para>
+      将对象的实例变量的值转换为数组。
+    </para>
             </entry>
           </row>
           <row>
@@ -2290,7 +2459,7 @@
               </para>
             </entry>
             <entry>
-              <para>Duplicate an object`.</para>
+              <para>复制一个对象。</para>
             </entry>
           </row>
           <row>
@@ -2317,8 +2486,8 @@
             </entry>
             <entry>
               <para>
-            Return a multidimensional array of all object-oriented programming symbols that constitute the class.
-        </para>
+      返回构成类的所有面向对象编程符号的多维数组。
+    </para>
             </entry>
           </row>
           <row>
@@ -2332,8 +2501,8 @@
             </entry>
             <entry>
               <para>
-            Return a multidimensional array of all object-oriented programming symbols that constitute the class of an object.
-        </para>
+      返回构成对象类的所有面向对象编程符号的多维数组。
+    </para>
             </entry>
           </row>
           <row>
@@ -2347,8 +2516,21 @@
             </entry>
             <entry>
               <para>
-            Return the operating system name.
-        </para>
+      返回操作系统名称。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Os(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -2362,8 +2544,8 @@
             </entry>
             <entry>
               <para>
-            Display a system modal dialog box to pause the current application.
-        </para>
+      显示系统模态对话框以暂停当前应用程序。
+    </para>
             </entry>
           </row>
           <row>
@@ -2377,8 +2559,8 @@
             </entry>
             <entry>
               <para>
-            Return the name of the activated module.
-        </para>
+      返回激活模块的名称。
+    </para>
             </entry>
           </row>
           <row>
@@ -2392,8 +2574,8 @@
             </entry>
             <entry>
               <para>
-            Return the source line number of the last line executed in an activated entity.
-        </para>
+      返回激活实体中最后执行的行的源行号。
+    </para>
             </entry>
           </row>
           <row>
@@ -2407,8 +2589,8 @@
             </entry>
             <entry>
               <para>
-            Return the name of an activated entity.
-        </para>
+      返回激活实体的名称。
+    </para>
             </entry>
           </row>
           <row>
@@ -2422,8 +2604,7 @@
             </entry>
             <entry>
               <para>
-            Returns the name of the program at a specified program level, the name of the currently executing program, the current program level,
-            or the name of the program executing when an error occurred.
+            返回指定程序级别的程序名称、当前执行程序的名称、当前程序级别，或发生错误时正在执行的程序名称。
         </para>
             </entry>
           </row>
@@ -2438,8 +2619,8 @@
             </entry>
             <entry>
               <para>
-            Determine the number of bytes that can be read at a given pointer.
-        </para>
+      确定在给定指针处可以读取的字节数。
+    </para>
             </entry>
           </row>
           <row>
@@ -2453,8 +2634,8 @@
             </entry>
             <entry>
               <para>
-            Determine the number of bytes that can be written at a given pointer.
-        </para>
+      确定在给定指针处可以写入的字节数。
+    </para>
             </entry>
           </row>
           <row>
@@ -2495,8 +2676,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2525,8 +2705,21 @@
             </entry>
             <entry>
               <para>
-            Get a particular Windows color.
-        </para>
+      获取特定的 Windows 颜色。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Rgb(System.Int32,System.Int32,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -2566,8 +2759,8 @@
             </entry>
             <entry>
               <para>
-            Invoke a method.
-        </para>
+      调用一个方法。
+    </para>
             </entry>
           </row>
           <row>
@@ -2591,11 +2784,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Sys(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Sys(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            返回系统信息或设置其行为。
+        </para>
             </entry>
           </row>
           <row>
@@ -2608,7 +2803,9 @@
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            返回操作系统屏幕元素的大小。
+        </para>
             </entry>
           </row>
           <row>
@@ -2622,8 +2819,8 @@
             </entry>
             <entry>
               <para>
-            Install a system-wide object. Please not that this works a bit different from Visual Objects.
-        </para>
+      安装系统范围的对象。请注意，这与 Visual Objects 的工作方式略有不同。
+    </para>
             </entry>
           </row>
           <row>
@@ -2652,7 +2849,7 @@
             </entry>
             <entry>
               <para>
-            Provides evaluation of a character expression.
+            提供字符表达式的评估。
         </para>
             </entry>
           </row>
@@ -2666,8 +2863,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2681,8 +2877,21 @@
             </entry>
             <entry>
               <para>
-            Determine the data type of an expression represented as a string.
-        </para>
+      确定以字符串表示的表达式的数据类型。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Type(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -2769,9 +2978,9 @@
             </entry>
             <entry>
               <para>
-            Returns the data type of an expression.
-            VARTYPE( ) is similar to the TYPE( ) function, but VARTYPE( ) is faster and does not require quotation
-                marks to enclose the expression for which the data type is returned.
+            返回表达式的数据类型。
+            VARTYPE( )类似于TYPE( )函数，但VARTYPE( )更快，且不需要引号
+                来包围要返回数据类型的表达式。
             </para>
             </entry>
           </row>
@@ -2788,6 +2997,19 @@
               <para>
             Returns the version of X# you are using.
             </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Version(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>

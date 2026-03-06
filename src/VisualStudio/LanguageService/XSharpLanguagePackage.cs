@@ -226,12 +226,12 @@ namespace XSharp.LanguageService
             options.WriteToRegistry();
             return;
         }
-        
+
 
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             instance = this;
-            LanguageServiceEvents.Start();
+            //LanguageServiceEvents.Start();
             await base.InitializeAsync(cancellationToken, progress);
             _txtManager = await GetServiceAsync(typeof(SVsTextManager)) as IVsTextManager4;
             Assumes.Present(_txtManager);
@@ -248,6 +248,8 @@ namespace XSharp.LanguageService
             XSettings.Version = await VS.Shell.GetVsVersionAsync();
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
             IServiceContainer serviceContainer = this;
+            StartLogging();
+            XSettings.ShellLink = new XSharpShellLink();
 #if DEV17
             RegisterLanguageService(typeof(XSharpLanguageService), async cToken =>
             {
@@ -295,10 +297,8 @@ namespace XSharp.LanguageService
             }
             GetIntellisenseSettings(true);
             Commands.AbstractCommand.InitializeCommands();
-            XSettings.ShellLink = new XSharpShellLink();
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             XSettings.CodeDomProviderClass  = typeof(XSharp.CodeDom.XSharpCodeDomProvider);
-            StartLogging();
         }
 
         protected override void Dispose(bool disposing)
@@ -457,5 +457,5 @@ namespace XSharp.LanguageService
 
         }
     }
-    
+
 }

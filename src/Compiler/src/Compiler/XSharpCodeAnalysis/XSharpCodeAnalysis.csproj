@@ -33,7 +33,9 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DefineConstants>$(DefineConstants);NDEBUG;TRACE;</DefineConstants>
   </PropertyGroup>
-
+  <PropertyGroup Condition="'$(Configuration)'=='Public'">
+    <DefineConstants>$(DefineConstants);COMMITHASH;COMPILERCORE;NET35PLUS;NET40PLUS;NET45PLUS;NETSTANDARD;NETSTANDARD20;PORTABLE;XSHARP;PUBLIC</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <!--
       Analyzers that will be used to analyze projects that references
@@ -49,7 +51,7 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Condition="'$(TargetFrameworkIdentifier)' != '.NETCoreApp'" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
     <PackageReference Include="System.Text.Encoding.CodePages" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
-    <PackageReference Include="Microsoft.Win32.Registry" PrivateAssets="ContentFiles"/>
+    <PackageReference Include="Microsoft.Win32.Registry" PrivateAssets="ContentFiles" />
 
   </ItemGroup>
 

@@ -70,8 +70,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -177,6 +176,19 @@
             </entry>
             <entry>
               <para>Class for reading / writing AutoIncrement Columns. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFBLOB</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBFFPT RDD. For DBF/FPT. No index support at this level</para>
             </entry>
           </row>
           <row>
@@ -393,6 +405,32 @@
             </entry>
             <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFMEMO</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBFFPT RDD. For DBF/FPT. No index support at this level</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFMEMOCDX</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>DBFFPT RDD. For DBF/FPT. No index support at this level</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfMemoColumn</codeEntityReference>
               </para>
             </entry>
@@ -542,8 +580,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -569,8 +606,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -692,8 +728,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -706,8 +741,7 @@
               </para>
             </entry>
             <entry>
-              <para>This enum specifies the various values that the FieldInfo method for the IRDD interface accepts.
-            </para>
+              <para>This enum specifies the various values that the FieldInfo method for the IRDD interface accepts.</para>
             </entry>
           </row>
           <row>
@@ -733,8 +767,9 @@
               </para>
             </entry>
             <entry>
-              <para>This enum specifies the various values that the Info method for the IRDD interface accepts.
-            </para>
+              <para>
+      This enum specifies the various values that the Info method for the IRDD interface accepts.
+    </para>
             </entry>
           </row>
           <row>
@@ -773,8 +808,7 @@
               </para>
             </entry>
             <entry>
-              <para>This enum specifies the various values that the OrderInfo method for the IRDD interface accepts.
-            </para>
+              <para>This enum specifies the various values that the OrderInfo method for the IRDD interface accepts.</para>
             </entry>
           </row>
           <row>
@@ -787,8 +821,9 @@
               </para>
             </entry>
             <entry>
-              <para>This enum specifies the various values that the RecordInfo method for the IRDD interface accepts.
-            </para>
+              <para>
+      This enum specifies the various values that the RecordInfo method for the IRDD interface accepts.
+    </para>
             </entry>
           </row>
           <row>
@@ -827,10 +862,11 @@
               </para>
             </entry>
             <entry>
-              <para>This enum specifies the various values that the RDDInfo method for the IRDD interface accepts.
-             
-             These enums are also available as DEFINES and can therefore also be used without the "RDDInfo." prefix.
-             </para>
+              <para>
+      This enum specifies the various values that the RDDInfo method for the IRDD interface accepts.
+      
+        These enums are also available as DEFINES and can therefore also be used without the "RDDInfo." prefix.
+      </para>
             </entry>
           </row>
           <row>
@@ -1026,6 +1062,47 @@
             </entry>
             <entry>
               <para>Helper class for the RDD system to store field information</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VFP.CursorAdapter</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VFP.CursorFlags</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VFP.CursorStatus</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This enum emulates the FoxPro values for the CursorAdapter.CursorStatus
+            </para>
             </entry>
           </row>
         </table>

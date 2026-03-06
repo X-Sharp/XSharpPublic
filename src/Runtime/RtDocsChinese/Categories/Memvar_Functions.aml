@@ -225,8 +225,8 @@
             </entry>
             <entry>
               <para>
-            Perform an assignment to a variable whose name is stored in a specified string.
-        </para>
+      对存储在指定字符串中的变量名执行赋值。
+    </para>
             </entry>
           </row>
           <row>
@@ -240,8 +240,8 @@
             </entry>
             <entry>
               <para>
-            Return a set-get code block for a given memory variable.
-        </para>
+      返回给定内存变量的设置-获取代码块。
+    </para>
             </entry>
           </row>
           <row>
@@ -255,8 +255,8 @@
             </entry>
             <entry>
               <para>
-            Return a set-get code block for a given memory variable.
-        </para>
+      Return a set-get code block for a given memory variable.
+    </para>
             </entry>
           </row>
           <row>
@@ -285,8 +285,8 @@
             </entry>
             <entry>
               <para>
-            Return the contents of a memory variable.
-        </para>
+      返回内存变量的内容。
+    </para>
             </entry>
           </row>
           <row>
@@ -300,8 +300,8 @@
             </entry>
             <entry>
               <para>
-            Return the contents of a memory variable.
-        </para>
+      Return the contents of a memory variable.
+    </para>
             </entry>
           </row>
           <row>
@@ -315,8 +315,8 @@
             </entry>
             <entry>
               <para>
-            Assign a value to a memory variable of a given name.
-        </para>
+      为给定名称的内存变量分配一个值。
+    </para>
             </entry>
           </row>
           <row>
@@ -330,8 +330,8 @@
             </entry>
             <entry>
               <para>
-            Assign a value to a memory variable of a given name.
-        </para>
+      Assign a value to a memory variable of a given name.
+    </para>
             </entry>
           </row>
           <row>
@@ -359,8 +359,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -400,8 +399,8 @@
             </entry>
             <entry>
               <para>
-            Return the contents of a field or a memory variable.
-        </para>
+      返回字段或内存变量的内容。
+    </para>
             </entry>
           </row>
           <row>
@@ -415,8 +414,8 @@
             </entry>
             <entry>
               <para>
-            Return the contents of a field or a memory variable.
-        </para>
+      Return the contents of a field or a memory variable.
+    </para>
             </entry>
           </row>
           <row>
@@ -430,8 +429,8 @@
             </entry>
             <entry>
               <para>
-            Assign a value to a field or a memory variable of a given name.
-        </para>
+      将值分配给给定名称的字段或内存变量。
+    </para>
             </entry>
           </row>
           <row>
@@ -445,8 +444,8 @@
             </entry>
             <entry>
               <para>
-            Assign a value to a field or a memory variable of a given name.
-        </para>
+      Assign a value to a field or a memory variable of a given name.
+    </para>
             </entry>
           </row>
         </table>

@@ -30,7 +30,7 @@
             </entry>
             <entry>
               <para>
-      Present the user with an error message box.
+      向用户显示一个错误消息框。
     </para>
             </entry>
           </row>
@@ -45,7 +45,7 @@
             </entry>
             <entry>
               <para>
-      Present the user with informational message box.
+      向用户显示信息性消息框。
     </para>
             </entry>
           </row>
@@ -60,7 +60,7 @@
             </entry>
             <entry>
               <para>
-      Create a modeless dialog window (also commonly referred to as a dialog box), which are used to present a collection of controls for user input and output.
+      创建一个无模式对话框窗口(通常也称为对话框框)，用于呈现用户输入和输出的一组控件。
     </para>
             </entry>
           </row>
@@ -75,7 +75,7 @@
             </entry>
             <entry>
               <para>
-      Present the user with a standard "file open" dialog box.
+      向用户显示标准的“文件打开”对话框。
     </para>
             </entry>
           </row>
@@ -90,7 +90,7 @@
             </entry>
             <entry>
               <para>
-      Present the user with a standard color palette dialog box, allowing the user to define custom colors.
+      向用户显示标准的颜色调色板对话框，允许用户定义自定义颜色。
     </para>
             </entry>
           </row>
@@ -105,7 +105,7 @@
             </entry>
             <entry>
               <para>
-      Provide standard save-file dialog facilities.
+      提供标准的保存文件对话框功能。
     </para>
             </entry>
           </row>
@@ -120,7 +120,7 @@
             </entry>
             <entry>
               <para>
-      Present the user with a standard color palette dialog box.
+      显示一个标准的颜色调色板对话框，让用户选择颜色。
     </para>
             </entry>
           </row>
@@ -135,7 +135,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which all X# color dialog boxes are subclassed.
+      提供所有 X# 颜色对话框的子类化的基类。
     </para>
             </entry>
           </row>
@@ -150,7 +150,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which all X# standard dialog boxes are subclassed.
+      提供所有 X# 标准对话框的子类化的基类。
     </para>
             </entry>
           </row>
@@ -165,7 +165,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which all X# standard file-oriented dialog boxes are subclassed.
+      提供所有 X# 标准文件对话框的子类化的基类。
     </para>
             </entry>
           </row>
@@ -180,7 +180,7 @@
             </entry>
             <entry>
               <para>
-      Encapsulate a standard folder dialog.
+      封装一个标准文件夹对话框。
     </para>
             </entry>
           </row>
@@ -195,7 +195,7 @@
             </entry>
             <entry>
               <para>
-      Provide standard font dialog facilities.
+      提供标准字体对话框功能。
     </para>
             </entry>
           </row>
@@ -210,7 +210,7 @@
             </entry>
             <entry>
               <para>
-      Present the user with a text message box.
+      显示一个文本消息框给用户。
     </para>
             </entry>
           </row>
@@ -225,7 +225,7 @@
             </entry>
             <entry>
               <para>
-      Create a warning message box.
+      创建一个警告消息框。
     </para>
             </entry>
           </row>
@@ -239,8 +239,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
         </table>

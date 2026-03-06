@@ -29,8 +29,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -43,8 +42,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -71,11 +69,24 @@
             </entry>
             <entry>
               <para>
-            Fill a series of arrays with directory information.
-            Note:
-            ADir() is a compatibility function and therefore not recommended.
-            It is superseded by the Directory() function, which returns all file information in a multidimensional array.
-        </para>
+      用目录信息填充一系列数组。
+      注意：
+      ADir() 是一个兼容性函数，因此不推荐使用。
+      它被 Directory() 函数取代，后者将所有文件信息返回在一个多维数组中。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ADir(XSharp.__Array,System.String,System.String,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -89,8 +100,8 @@
             </entry>
             <entry>
               <para>
-            Remove spaces from a file name specified as a string.
-        </para>
+      从指定为字符串的文件名中删除空格。
+    </para>
             </entry>
           </row>
           <row>
@@ -104,8 +115,8 @@
             </entry>
             <entry>
               <para>
-            Remove spaces from a file name specified as a string, changing the contents of the original file name as well as the returned file name.
-        </para>
+      从指定为字符串的文件名中删除空格，同时更改原始文件名的内容和返回的文件名。
+    </para>
             </entry>
           </row>
           <row>
@@ -114,11 +125,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DefaultExt(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DefaultExt(System.String,System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            如果文件名没有扩展名，则返回带有新扩展名的文件名。
+        </para>
             </entry>
           </row>
           <row>
@@ -145,8 +158,8 @@
             </entry>
             <entry>
               <para>
-            Display file attributes as a string.
-        </para>
+      将文件属性显示为字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -160,8 +173,8 @@
             </entry>
             <entry>
               <para>
-            Determine the attributes of the file found after FFCount(), FFirst(), or FNext().
-        </para>
+      确定 FFCount()、FFirst() 或 FNext() 找到的文件的属性。
+    </para>
             </entry>
           </row>
           <row>
@@ -170,13 +183,26 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FChSize(System.IntPtr,System.UInt32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FChSize(System.IntPtr,System.Int64)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Change the size of a file opened with a low-level file function.
-        </para>
+      通过低级文件函数更改已打开文件的大小。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FChSize(System.Int64,System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -190,8 +216,21 @@
             </entry>
             <entry>
               <para>
-            Close an open file and write the buffers to disk.
-        </para>
+      关闭打开的文件并将缓冲区写入磁盘。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FClose(System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -205,8 +244,8 @@
             </entry>
             <entry>
               <para>
-            Flush file buffers.
-        </para>
+      刷新文件缓冲区。
+    </para>
             </entry>
           </row>
           <row>
@@ -215,12 +254,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FConvertToFileStream(System.IntPtr)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FConvertToFileStream</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -229,12 +267,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FConvertToMemoryStream(System.IntPtr)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FConvertToMemoryStream</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -248,23 +285,8 @@
             </entry>
             <entry>
               <para>
-            Copy a file to a new file or to a device.
-        </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FCount</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Return the number of fields in the current database file.
-        </para>
+      将文件复制到新文件或设备。
+    </para>
             </entry>
           </row>
           <row>
@@ -278,8 +300,21 @@
             </entry>
             <entry>
               <para>
-            Create a file or open and truncate an existing file.
-        </para>
+      创建文件或打开并截断现有文件。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FCreate(System.String,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -293,8 +328,8 @@
             </entry>
             <entry>
               <para>
-            Create a file or open and truncate an existing file, specifying two strongly typed arguments.
-        </para>
+      创建文件或打开并截断现有文件，指定两个强类型参数。
+    </para>
             </entry>
           </row>
           <row>
@@ -308,8 +343,21 @@
             </entry>
             <entry>
               <para>
-            Return the date stamp of the file found by FFCount(), FFirst(), or FNext().
-        </para>
+      返回由 FFCount()、FFirst() 或 FNext() 找到的文件的日期戳。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FDate(System.String,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -323,8 +371,21 @@
             </entry>
             <entry>
               <para>
-            Determine if the file pointer is positioned at the end-of-file.
-        </para>
+      确定文件指针是否位于文件末尾。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FEof(System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -338,8 +399,8 @@
             </entry>
             <entry>
               <para>
-            Delete a file from disk.
-        </para>
+      从磁盘删除文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -355,6 +416,19 @@
               <para>
             Set the error code for a file operation.
             </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FError</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -383,8 +457,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of files that match a given file specification and attribute.
-        </para>
+      返回与给定文件规范和属性匹配的文件数量。
+    </para>
             </entry>
           </row>
           <row>
@@ -398,8 +472,8 @@
             </entry>
             <entry>
               <para>
-            Find the first file that matches a given file specification or attribute.
-        </para>
+      查找与给定文件规范或属性匹配的第一个文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -408,13 +482,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FFLock(System.IntPtr,System.UInt32,System.UInt32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FFLock(System.IntPtr,System.Int64,System.UInt32)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Lock a portion of an open file.
-        </para>
+      锁定已打开文件的一部分。
+    </para>
             </entry>
           </row>
           <row>
@@ -428,8 +502,8 @@
             </entry>
             <entry>
               <para>
-            Lock a portion of an open file.
-        </para>
+      锁定已打开文件的一部分。
+    </para>
             </entry>
           </row>
           <row>
@@ -443,8 +517,21 @@
             </entry>
             <entry>
               <para>
-            Flush to disk a file opened with a low-level file function.
-        </para>
+      将使用低级文件函数打开的文件刷新到磁盘。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FFlush(System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -458,8 +545,8 @@
             </entry>
             <entry>
               <para>
-            UnLock a portion of an opened file.
-        </para>
+      解锁已打开文件的一部分。
+    </para>
             </entry>
           </row>
           <row>
@@ -473,8 +560,8 @@
             </entry>
             <entry>
               <para>
-            UnLock a portion of an opened file.
-        </para>
+      解锁已打开文件的一部分。
+    </para>
             </entry>
           </row>
           <row>
@@ -514,8 +601,21 @@
             </entry>
             <entry>
               <para>
-            Read a line from an open file.
-        </para>
+      从打开的文件中读取一行。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FGets(System.Int64,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -529,8 +629,8 @@
             </entry>
             <entry>
               <para>
-            Read a line from an open file, specifying two strongly typed arguments.
-        </para>
+      从打开的文件中读取一行，指定两个强类型参数。
+    </para>
             </entry>
           </row>
           <row>
@@ -557,8 +657,21 @@
             </entry>
             <entry>
               <para>
-            Determine if any file matches a given file specification.
-        </para>
+      判断是否有任何文件匹配给定的文件规范。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.File(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -587,8 +700,8 @@
             </entry>
             <entry>
               <para>
-            Return the name of the file found by FFCount(), FFirst(), or FNext().
-        </para>
+      返回由 FFCount()、FFirst() 或 FNext() 找到的文件名。
+    </para>
             </entry>
           </row>
           <row>
@@ -602,8 +715,8 @@
             </entry>
             <entry>
               <para>
-            Find the next file that matches the file previously found by FFirst().
-        </para>
+      查找与之前由 FFirst() 找到的文件匹配的下一个文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -617,8 +730,21 @@
             </entry>
             <entry>
               <para>
-            Open a file.
-        </para>
+      打开一个文件。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FOpen(System.String,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -632,8 +758,8 @@
             </entry>
             <entry>
               <para>
-            Open a file, specifying two strongly-typed arguments.
-        </para>
+      打开文件，指定两个强类型参数。
+    </para>
             </entry>
           </row>
           <row>
@@ -677,8 +803,8 @@
             </entry>
             <entry>
               <para>
-            Return the name and path of the file that was used by File().
-        </para>
+      返回由 File() 使用的文件的名称和路径。
+    </para>
             </entry>
           </row>
           <row>
@@ -692,8 +818,21 @@
             </entry>
             <entry>
               <para>
-            Write a string, a carriage-return character, and a linefeed character to an open file.
-        </para>
+      向打开的文件写入一个字符串、回车符和换行符。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FPuts(System.Int64,System.String,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -707,8 +846,8 @@
             </entry>
             <entry>
               <para>
-            Write a string, a carriage-return character, and a linefeed character to an open file, specifying three strongly-typed arguments.
-        </para>
+      向打开的文件写入一个字符串、回车符和换行符，指定三个强类型参数。
+    </para>
             </entry>
           </row>
           <row>
@@ -722,8 +861,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into a buffer variable that is passed by reference.
-        </para>
+      从文件中读取字符到通过引用传递的缓冲区变量中。
+    </para>
             </entry>
           </row>
           <row>
@@ -737,8 +876,21 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into an allocated buffer.
-        </para>
+      从文件中读取字符到分配的缓冲区中。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FRead(System.Int64,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -752,8 +904,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into an allocated buffer.
-        </para>
+      从文件中读取字符到分配的缓冲区中。
+    </para>
             </entry>
           </row>
           <row>
@@ -767,8 +919,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into an allocated buffer.
-        </para>
+      从文件中读取字符到分配的缓冲区中。
+    </para>
             </entry>
           </row>
           <row>
@@ -782,8 +934,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into an allocated buffer.
-        </para>
+      从文件中读取字符到已分配的缓冲区。
+    </para>
             </entry>
           </row>
           <row>
@@ -797,8 +949,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into an allocated buffer.
-        </para>
+      从文件中读取字符到已分配的缓冲区。
+    </para>
             </entry>
           </row>
           <row>
@@ -812,8 +964,8 @@
             </entry>
             <entry>
               <para>
-            Read a line from an open file.
-        </para>
+      从打开的文件中读取一行。
+    </para>
             </entry>
           </row>
           <row>
@@ -827,8 +979,8 @@
             </entry>
             <entry>
               <para>
-            Read a line from an open file.
-        </para>
+      从打开的文件中读取一行。
+    </para>
             </entry>
           </row>
           <row>
@@ -842,8 +994,8 @@
             </entry>
             <entry>
               <para>
-            Read a line from an open file, specifying two strongly-typed arguments.
-        </para>
+      从打开的文件中读取一行，指定两个强类型参数。
+    </para>
             </entry>
           </row>
           <row>
@@ -857,8 +1009,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file.
-        </para>
+      从文件中读取字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -872,8 +1024,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into a buffer variable that is passed by reference.
-        </para>
+      从文件中读取字符到通过引用传递的缓冲区变量中。
+    </para>
             </entry>
           </row>
           <row>
@@ -887,8 +1039,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into an allocated buffer, with possible OEM to ANSI conversion, based on the current SetAnsi() setting.
-        </para>
+      从文件中读取字符到分配的缓冲区，并根据当前的 SetAnsi() 设置进行可能的 OEM 到 ANSI 转换。
+    </para>
             </entry>
           </row>
           <row>
@@ -902,8 +1054,8 @@
             </entry>
             <entry>
               <para>
-            Read characters from a file into a buffer variable that is passed by reference.
-        </para>
+      从文件中读取字符到通过引用传递的缓冲区变量中。
+    </para>
             </entry>
           </row>
           <row>
@@ -917,8 +1069,8 @@
             </entry>
             <entry>
               <para>
-            Change the name of a file.
-        </para>
+      更改文件名。
+    </para>
             </entry>
           </row>
           <row>
@@ -932,8 +1084,8 @@
             </entry>
             <entry>
               <para>
-            Set the file pointer at the top of an open file.
-        </para>
+      将文件指针设置在打开文件的顶部。
+    </para>
             </entry>
           </row>
           <row>
@@ -947,8 +1099,21 @@
             </entry>
             <entry>
               <para>
-            Set the file pointer to a new position.
-        </para>
+      将文件指针设置到新位置。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FSeek(System.Int64,System.Int32,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -962,8 +1127,23 @@
             </entry>
             <entry>
               <para>
-            Set the file pointer to a new position, specifying three strongly-typed arguments.
-        </para>
+      设置文件指针到一个新位置，指定三个强类型参数。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FSeek64(System.IntPtr,System.Int64,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Set the file pointer to a new position, specifying three strongly-typed arguments.
+    </para>
             </entry>
           </row>
           <row>
@@ -981,6 +1161,19 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FSize(System.String,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.Core</para>
             </entry>
             <entry>
@@ -990,8 +1183,8 @@
             </entry>
             <entry>
               <para>
-            Return the current position of the file pointer.
-        </para>
+      返回文件指针的当前位置。
+    </para>
             </entry>
           </row>
           <row>
@@ -1005,8 +1198,8 @@
             </entry>
             <entry>
               <para>
-            Return the current position of the file pointer.
-        </para>
+      Return the current position of the file pointer.
+    </para>
             </entry>
           </row>
           <row>
@@ -1020,8 +1213,8 @@
             </entry>
             <entry>
               <para>
-            Return the time stamp of the file found by FFCount(), FFirst(), or FNext().
-        </para>
+      返回由 FFCount()、FFirst() 或 FNext() 找到的文件的时间戳。
+    </para>
             </entry>
           </row>
           <row>
@@ -1030,11 +1223,26 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FullPath(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FTime(System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FullPath(System.String,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            返回指定文件的路径或相对于另一个文件的路径。
+        </para>
             </entry>
           </row>
           <row>
@@ -1047,8 +1255,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1062,8 +1269,21 @@
             </entry>
             <entry>
               <para>
-            Write a string to an open file.
-        </para>
+      将字符串写入打开的文件。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FWrite(System.Int64,System.String,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1077,8 +1297,8 @@
             </entry>
             <entry>
               <para>
-            Write the contents of a buffer to an open file.
-        </para>
+      将缓冲区的内容写入打开的文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -1092,8 +1312,8 @@
             </entry>
             <entry>
               <para>
-            Write the contents of a buffer to an open file.
-        </para>
+      将缓冲区的内容写入打开的文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -1107,8 +1327,8 @@
             </entry>
             <entry>
               <para>
-            Write the contents of a buffer to an open file, with an ANSI to OEM conversion option.
-        </para>
+      将缓冲区的内容写入打开的文件，并提供ANSI到OEM转换选项。
+    </para>
             </entry>
           </row>
           <row>
@@ -1122,8 +1342,8 @@
             </entry>
             <entry>
               <para>
-            Write a string, a carriage-return character, and a linefeed character to an open file.
-        </para>
+      将字符串、回车符和换行符写入打开的文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -1137,8 +1357,8 @@
             </entry>
             <entry>
               <para>
-            Write a string, a carriage-return character, and a linefeed character to an open file.
-        </para>
+      将字符串、回车符和换行符写入打开的文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -1152,8 +1372,8 @@
             </entry>
             <entry>
               <para>
-            Write a string, a carriage-return character, and a linefeed character to an open file, specifying two strongly-typed arguments.
-        </para>
+      将字符串、回车符和换行符写入打开的文件，指定两个强类型参数。
+    </para>
             </entry>
           </row>
           <row>
@@ -1167,8 +1387,8 @@
             </entry>
             <entry>
               <para>
-            Write a string to an open file, with SetAnsi() dependency.
-        </para>
+      将字符串写入打开的文件，具有 SetAnsi() 依赖性。
+    </para>
             </entry>
           </row>
           <row>
@@ -1182,8 +1402,8 @@
             </entry>
             <entry>
               <para>
-            Write the contents of a buffer to an open file, with SetAnsi() dependency.
-        </para>
+      将缓冲区的内容写入打开的文件，具有 SetAnsi() 依赖性。
+    </para>
             </entry>
           </row>
           <row>
@@ -1265,8 +1485,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1275,11 +1494,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.UseBufferedFileStream(System.Boolean)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.UseBufferedFileStream</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>Control the buffered File IO setting for the runtime</para>
+              <para>Retrieve the buffered File IO setting for the runtime</para>
             </entry>
           </row>
         </table>

@@ -20,9 +20,8 @@ FUNCTION NToM( nExpression AS FLOAT) AS CURRENCY
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/ceiling/*" />
 [FoxProFunction("CEILING", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
-FUNCTION Ceiling (nExpression) AS USUAL CLIPPER
-    RETURN Ceil(nExpression)
-
+FUNCTION Ceiling (nExpression IN USUAL) AS USUAL
+    RETURN XSharp.RT.Functions.Ceil(nExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sign/*" />
 [FoxProFunction("SIGN", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
@@ -34,3 +33,8 @@ FUNCTION Sign( nExpression AS USUAL) AS LONG
         RETURN 1
     ENDIF
     RETURN 0
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/floor/*" />
+[FoxProFunction("FLOOR", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION Floor(nExpression IN USUAL) AS USUAL
+    RETURN XSharp.RT.Functions.Floor(nExpression)

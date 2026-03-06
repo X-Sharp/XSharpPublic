@@ -30,7 +30,9 @@
             </entry>
             <entry>
               <para>
-      Create a FixedBitmap object. Unlike the bitmaps created by the Bitmap class, fixed bitmaps are static—they do not need to be redisplayed every time an ExposeEvent occurs. FixedBitmap objects can be created dynamically or from a resource entity.
+      创建一个 FixedBitmap 对象。
+      与 Bitmap 类创建的位图不同，固定位图是静态的—每次发生 ExposeEvent 时都不需要重新显示。
+      固定位图对象可以动态创建，也可以从资源实体创建。
     </para>
             </entry>
           </row>
@@ -45,7 +47,9 @@
             </entry>
             <entry>
               <para>
-      Create a FixedIcon object. Unlike the icons created by the Icon class, fixed icons are static—they do not need to be redisplayed every time an ExposeEvent occurs. FixedIcon objects can be created dynamically or from a resource entity.
+      创建一个 FixedIcon 对象。
+      与 Icon 类创建的图标不同，FixedIcon 是静态的 — 每次发生 ExposeEvent 时都不需要重新显示。
+      FixedIcon 对象可以动态创建，也可以从资源实体创建。
     </para>
             </entry>
           </row>
@@ -60,7 +64,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which FixedBitmap and FixedIcon are subclassed.
+      提供 FixedBitmap 和 FixedIcon 的子类的基类。
     </para>
             </entry>
           </row>
@@ -75,7 +79,7 @@
             </entry>
             <entry>
               <para>
-      Implement a container window for displaying multimedia data.
+      实现一个用于显示多媒体数据的容器窗口。
     </para>
             </entry>
           </row>

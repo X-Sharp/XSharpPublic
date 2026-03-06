@@ -21,6 +21,20 @@
           </tableHeader>
           <row>
             <entry>
+              <para>
+              </para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:.VFPErrorMessage</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp</para>
             </entry>
             <entry>
@@ -42,8 +56,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -95,9 +108,7 @@
               </para>
             </entry>
             <entry>
-              <para>List of error codes used in the XSharp VTP support. 
-            Each error code represents a translatable string in the string table inside XSharp.Core.
-            </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -149,8 +160,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -163,8 +173,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
         </table>

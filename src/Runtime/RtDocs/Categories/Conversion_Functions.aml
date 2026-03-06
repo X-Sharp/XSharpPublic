@@ -43,8 +43,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string.
-        </para>
+      Convert a numeric expression to a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -58,8 +58,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string of specific length and decimal places.
-        </para>
+      Convert a numeric expression to a string of specific length and decimal places.
+    </para>
             </entry>
           </row>
           <row>
@@ -73,8 +73,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a numeric value to a numeric data type.
-        </para>
+      Convert a string containing a numeric value to a numeric data type.
+    </para>
             </entry>
           </row>
           <row>
@@ -88,8 +88,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string of ANSI characters to OEM characters.
-        </para>
+      Convert a string of ANSI characters to OEM characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -103,8 +103,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string of ANSI characters to OEM characters, changing the contents of the original string as well as the returned string.
-        </para>
+      Convert a string of ANSI characters to OEM characters, changing the contents of the original string as well as the returned string.
+    </para>
             </entry>
           </row>
           <row>
@@ -118,8 +118,8 @@
             </entry>
             <entry>
               <para>
-            Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
-        </para>
+      Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -133,8 +133,8 @@
             </entry>
             <entry>
               <para>
-            Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
-        </para>
+      Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -148,8 +148,23 @@
             </entry>
             <entry>
               <para>
-            Convert a character to its ASCII value.
-        </para>
+      Convert a character to its ASCII value.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Asc(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the ANSI value for the leftmost character in a character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -173,13 +188,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsHexString(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsHexString(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a value to a hexadecimal string.
-        </para>
+      Convert a value to a hexadecimal string.
+    </para>
             </entry>
           </row>
           <row>
@@ -193,8 +208,8 @@
             </entry>
             <entry>
               <para>
-            Convert a value to a right-padded string.
-        </para>
+      Convert a value to a right-padded string.
+    </para>
             </entry>
           </row>
           <row>
@@ -203,13 +218,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsSymbol(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsSymbol(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a string or a PSZ to a symbol.
-        </para>
+      Convert a string or a PSZ to a symbol.
+    </para>
             </entry>
           </row>
           <row>
@@ -223,8 +238,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 32-bit binary date to a date data type.
-        </para>
+      Convert a string containing a 32-bit binary date to a date data type.
+    </para>
             </entry>
           </row>
           <row>
@@ -238,8 +253,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 32-bit unsigned integer to a double word.
-        </para>
+      Convert a string containing a 32-bit unsigned integer to a double word.
+    </para>
             </entry>
           </row>
           <row>
@@ -253,8 +268,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 80-bit floating point number to a float value.
-        </para>
+      Convert a string containing a 80-bit floating point number to a float value.
+    </para>
             </entry>
           </row>
           <row>
@@ -268,8 +283,23 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 16-bit signed integer to a short integer.
-        </para>
+      Convert a string containing a 16-bit signed integer to a short integer.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Bin2Int64(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Convert a string containing a 32-bit signed integer to a long integer.
+    </para>
             </entry>
           </row>
           <row>
@@ -283,8 +313,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 32-bit signed integer to a long integer.
-        </para>
+      Convert a string containing a 32-bit signed integer to a long integer.
+    </para>
             </entry>
           </row>
           <row>
@@ -298,8 +328,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing an 8-bit logical into a logical value.
-        </para>
+      Convert a string containing an 8-bit logical into a logical value.
+    </para>
             </entry>
           </row>
           <row>
@@ -313,8 +343,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing an 8-bit logical into a logical value.
-        </para>
+      Convert a string containing an 8-bit logical into a logical value.
+    </para>
             </entry>
           </row>
           <row>
@@ -327,8 +357,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -342,8 +371,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 32-bit floating point number to a Real4 value.
-        </para>
+      Convert a string containing a 32-bit floating point number to a Real4 value.
+    </para>
             </entry>
           </row>
           <row>
@@ -357,8 +386,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 32-bit floating point number to a Real8 value.
-        </para>
+      Convert a string containing a 32-bit floating point number to a Real8 value.
+    </para>
             </entry>
           </row>
           <row>
@@ -372,8 +401,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a 16-bit unsigned integer to a word.
-        </para>
+      Convert a string containing a 16-bit unsigned integer to a word.
+    </para>
             </entry>
           </row>
           <row>
@@ -386,8 +415,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -405,6 +433,21 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Cast(XSharp.__Usual@,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Converts an expression from one data type to another.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.RT</para>
             </entry>
             <entry>
@@ -414,8 +457,23 @@
             </entry>
             <entry>
               <para>
-            Extract the name of the day of the week from a date.
-        </para>
+      Extract the name of the day of the week from a date.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CDow(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the day of the week from a given Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -429,8 +487,23 @@
             </entry>
             <entry>
               <para>
-            Convert an ASCII code to a character value.
-        </para>
+      Convert an ASCII code to a character value.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Chr(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the character associated with the specified numeric ANSI code.
+    </para>
             </entry>
           </row>
           <row>
@@ -446,6 +519,21 @@
               <para>
             Convert an ASCII code to a character value, always using the Ansi codepage, ignoring the SetAnsi() setting.
             </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ChrSaw(System.Double)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines whether or not a character is present in the keyboard buffer.
+    </para>
             </entry>
           </row>
           <row>
@@ -474,8 +562,23 @@
             </entry>
             <entry>
               <para>
-            Extract the name of the month from a date.
-        </para>
+      Extract the name of the month from a date.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CMonth(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the name of the month from a given date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -489,8 +592,8 @@
             </entry>
             <entry>
               <para>
-            Format a set of numbers representing a year, month, and day as a date.
-        </para>
+      Format a set of numbers representing a year, month, and day as a date.
+    </para>
             </entry>
           </row>
           <row>
@@ -517,8 +620,23 @@
             </entry>
             <entry>
               <para>
-            Convert a date string to date format.
-        </para>
+      Convert a date string to date format.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CToD(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Converts a character expression to a date expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -532,8 +650,8 @@
             </entry>
             <entry>
               <para>
-            Convert an ANSI date string to date format.
-        </para>
+      Convert an ANSI date string to date format.
+    </para>
             </entry>
           </row>
           <row>
@@ -587,11 +705,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CToT(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CToT(System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            Returns a DateTime value from a character expression.
+        </para>
             </entry>
           </row>
           <row>
@@ -605,8 +725,8 @@
             </entry>
             <entry>
               <para>
-            Convert a date to a 32-bit binary date string.
-        </para>
+      Convert a date to a 32-bit binary date string.
+    </para>
             </entry>
           </row>
           <row>
@@ -620,8 +740,23 @@
             </entry>
             <entry>
               <para>
-            Extract the number of the day of the week from a date.
-        </para>
+      Extract the number of the day of the week from a date.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dow(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a numeric day-of-the-week value from a Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -635,8 +770,23 @@
             </entry>
             <entry>
               <para>
-            Convert a date to a string.
-        </para>
+      Convert a date to a string.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dtoc(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a Character-type date from a Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -671,13 +821,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DToR(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DToR(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Converts degrees to radians.
-        </para>
+      Converts degrees to radians.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dtor(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Converts degrees to radians.
+    </para>
             </entry>
           </row>
           <row>
@@ -691,8 +856,23 @@
             </entry>
             <entry>
               <para>
-            Convert a date value to a string formatted as yyyymmdd.
-        </para>
+      Convert a date value to a string formatted as yyyymmdd.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToS(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a character-string date in a yyyymmdd format from a specified Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -751,8 +931,8 @@
             </entry>
             <entry>
               <para>
-            Convert a double word to a string containing a 32-bit unsigned integer.
-        </para>
+      Convert a double word to a string containing a 32-bit unsigned integer.
+    </para>
             </entry>
           </row>
           <row>
@@ -766,8 +946,8 @@
             </entry>
             <entry>
               <para>
-            Encode a file for e-mail transfer.
-        </para>
+      Encode a file for e-mail transfer.
+    </para>
             </entry>
           </row>
           <row>
@@ -781,8 +961,8 @@
             </entry>
             <entry>
               <para>
-            Convert a float to a string containing an 80-bit floating point number.
-        </para>
+      Convert a float to a string containing an 80-bit floating point number.
+    </para>
             </entry>
           </row>
           <row>
@@ -791,12 +971,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Float2Long(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Float2Long(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -809,8 +988,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -824,8 +1002,23 @@
             </entry>
             <entry>
               <para>
-            Convert a short integer to a string containing a 16-bit signed integer.
-        </para>
+      Convert a short integer to a string containing a 16-bit signed integer.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.I642Bin(System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Convert a long integer to a string containing a 32-bit signed integer.
+    </para>
             </entry>
           </row>
           <row>
@@ -839,8 +1032,8 @@
             </entry>
             <entry>
               <para>
-            Convert a long integer to a string containing a 32-bit signed integer.
-        </para>
+      Convert a long integer to a string containing a 32-bit signed integer.
+    </para>
             </entry>
           </row>
           <row>
@@ -854,8 +1047,8 @@
             </entry>
             <entry>
               <para>
-            Convert a logical value to a string containing an 8-bit logical value.
-        </para>
+      Convert a logical value to a string containing an 8-bit logical value.
+    </para>
             </entry>
           </row>
           <row>
@@ -869,8 +1062,8 @@
             </entry>
             <entry>
               <para>
-            Convert a logical value to a string.
-        </para>
+      Convert a logical value to a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -879,12 +1072,12 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MDY(System.DateTime)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MDY(XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
+            Returns the specified date or datetime expression in month-day-year format with the name of the month spelled out.
         </para>
             </entry>
           </row>
@@ -899,8 +1092,8 @@
             </entry>
             <entry>
               <para>
-            Extract a substring of a certain size from the left of a buffer.
-        </para>
+      Extract a substring of a certain size from the left of a buffer.
+    </para>
             </entry>
           </row>
           <row>
@@ -914,8 +1107,8 @@
             </entry>
             <entry>
               <para>
-            Convert the number that identifies a day into the name of the day.
-        </para>
+      Convert the number that identifies a day into the name of the day.
+    </para>
             </entry>
           </row>
           <row>
@@ -929,8 +1122,8 @@
             </entry>
             <entry>
               <para>
-            Convert the number that identifies a month into the name of the month.
-        </para>
+      Convert the number that identifies a month into the name of the month.
+    </para>
             </entry>
           </row>
           <row>
@@ -954,13 +1147,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NTrim(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NTrim(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a left-trimmed string.
-        </para>
+      Convert a numeric expression to a left-trimmed string.
+    </para>
             </entry>
           </row>
           <row>
@@ -974,8 +1167,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string of OEM characters to ANSI characters.
-        </para>
+      Convert a string of OEM characters to ANSI characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -989,8 +1182,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string of OEM characters to ANSI characters, changing the contents of the argument as well as the return value.
-        </para>
+      Convert a string of OEM characters to ANSI characters, changing the contents of the argument as well as the return value.
+    </para>
             </entry>
           </row>
           <row>
@@ -1004,8 +1197,8 @@
             </entry>
             <entry>
               <para>
-            Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
-        </para>
+      Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1019,8 +1212,8 @@
             </entry>
             <entry>
               <para>
-            Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
-        </para>
+      Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1034,8 +1227,8 @@
             </entry>
             <entry>
               <para>
-            Convert a null-terminated string to a strongly typed string.
-        </para>
+      Convert a null-terminated string to a strongly typed string.
+    </para>
             </entry>
           </row>
           <row>
@@ -1049,8 +1242,8 @@
             </entry>
             <entry>
               <para>
-            Convert a null-terminated string to a strongly typed string.
-        </para>
+      Convert a null-terminated string to a strongly typed string.
+    </para>
             </entry>
           </row>
           <row>
@@ -1079,8 +1272,8 @@
             </entry>
             <entry>
               <para>
-            Convert a Real4 value to a string containing a 32-bit floating point number.
-        </para>
+      Convert a Real4 value to a string containing a 32-bit floating point number.
+    </para>
             </entry>
           </row>
           <row>
@@ -1094,8 +1287,8 @@
             </entry>
             <entry>
               <para>
-            Convert a Real8 value to a string containing an 8-byte floating point number.
-        </para>
+      Convert a Real8 value to a string containing an 8-byte floating point number.
+    </para>
             </entry>
           </row>
           <row>
@@ -1104,14 +1297,30 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RToD(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RToD(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Converts radians to its equivalent in degrees.
-            You can use RTOD( ) when working with the X# trigonometric functions COS( ), SIN( ), and TAN( ).
-        </para>
+      Converts radians to its equivalent in degrees.
+      You can use RTOD( ) when working with the X# trigonometric functions COS( ), SIN( ), and TAN( ).
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Rtod(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Converts radians to its equivalent in degrees.
+      You can use RTOD( ) when working with the X# trigonometric functions COS( ), SIN( ), and TAN( ).
+    </para>
             </entry>
           </row>
           <row>
@@ -1125,8 +1334,23 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string.
-        </para>
+      Convert a numeric expression to a string.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the character equivalent of a numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1135,13 +1359,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str1(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str1(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string.
-        </para>
+      Convert a numeric expression to a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -1155,8 +1379,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string of a specified length.
-        </para>
+      Convert a numeric expression to a string of a specified length.
+    </para>
             </entry>
           </row>
           <row>
@@ -1170,8 +1394,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string of specific length and decimal places.
-        </para>
+      Convert a numeric expression to a string of specific length and decimal places.
+    </para>
             </entry>
           </row>
           <row>
@@ -1180,11 +1404,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrConv(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrConv(XSharp.__Usual,System.Int32,System.Int32,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1198,8 +1422,8 @@
             </entry>
             <entry>
               <para>
-            Convert a float expression to a PSZ.
-        </para>
+      Convert a float expression to a PSZ.
+    </para>
             </entry>
           </row>
           <row>
@@ -1227,8 +1451,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1257,8 +1480,8 @@
             </entry>
             <entry>
               <para>
-            Convert an integer expression to a PSZ.
-        </para>
+      Convert an integer expression to a PSZ.
+    </para>
             </entry>
           </row>
           <row>
@@ -1272,8 +1495,8 @@
             </entry>
             <entry>
               <para>
-            Convert a long integer expression to a PSZ.
-        </para>
+      Convert a long integer expression to a PSZ.
+    </para>
             </entry>
           </row>
           <row>
@@ -1287,8 +1510,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a numeric value to a numeric data type.
-        </para>
+      Convert a string containing a numeric value to a numeric data type.
+    </para>
             </entry>
           </row>
           <row>
@@ -1302,8 +1525,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string and pad it with leading zeroes instead of blanks.
-        </para>
+      Convert a numeric expression to a string and pad it with leading zeroes instead of blanks.
+    </para>
             </entry>
           </row>
           <row>
@@ -1327,13 +1550,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ToWord(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ToWord(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a number to a word.
-        </para>
+      Convert a number to a word.
+    </para>
             </entry>
           </row>
           <row>
@@ -1347,8 +1570,23 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a numeric value to a numeric data type.
-        </para>
+      Convert a string containing a numeric value to a numeric data type.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Val(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a numeric or currency value from a character expression composed of numbers. You can use VAL( ) to convert the character strings returned by the X# SYS( ) functions to numeric values.
+    </para>
             </entry>
           </row>
           <row>
@@ -1361,8 +1599,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1376,8 +1613,8 @@
             </entry>
             <entry>
               <para>
-            Convert a word to a string containing a 16-bit unsigned integer.
-        </para>
+      Convert a word to a string containing a 16-bit unsigned integer.
+    </para>
             </entry>
           </row>
           <row>
@@ -1391,8 +1628,23 @@
             </entry>
             <entry>
               <para>
-            Extract the number of the year from a date.
-        </para>
+      Extract the number of the year from a date.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Year(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the year from the specified date or datetime expression.
+    </para>
             </entry>
           </row>
         </table>

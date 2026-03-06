@@ -2558,6 +2558,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_FoxDimensionNeedsMemvars = 9235,
         ERR_FoxMissingWithStatement = 9236,
         ERR_FoxDefineClassMustInheritFromCustom = 9237,
+        // NativeResource gen error numbers
+        // 9300 File not found
+        // 9301 Cannot find native resource compiler
+        // 9302 RC file has BOM
+        // 9303 No Output path defined
+        // 9304 No input files specified.
+        ERR_DialectNotSupportedInPublicBuild = 9998,
         ERR_Internal = 9999
         #endregion X#-only messages
     }

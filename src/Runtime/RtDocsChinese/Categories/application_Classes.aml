@@ -29,8 +29,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -44,7 +43,8 @@
             </entry>
             <entry>
               <para>
-      Create an entity that represents the overall application. Please note that you have to create a subclass of App in your code and add a Start() method to this class. You can't add a Start() method to the App() class inside GUI Classes like you can in VO.
+      创建一个表示整个应用程序的实体。
+      请注意，您必须在代码中创建 App 的子类并向该类添加 Start() 方法。您不能像在 VO 中那样在 GUI 类中向 App() 类添加 Start() 方法。
     </para>
             </entry>
           </row>
@@ -59,7 +59,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which all X# application windows are subclassed.
+      提供所有 X# 应用程序窗口的基类。
     </para>
             </entry>
           </row>
@@ -73,7 +73,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:VO.ClipboardGui.xmldoc/Clipboard/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -87,7 +87,7 @@
             </entry>
             <entry>
               <para>
-      Create the client for use in a drag-and-drop operation.
+      创建用于拖放操作的客户端。
     </para>
             </entry>
           </row>
@@ -102,7 +102,7 @@
             </entry>
             <entry>
               <para>
-      Create the server for use in a drag-and-drop operation.
+      创建用于拖放操作的服务器。
     </para>
             </entry>
           </row>
@@ -117,7 +117,7 @@
             </entry>
             <entry>
               <para>
-      Register an application as a client able to request and receive data from a designated server application.
+      注册一个应用程序作为客户端，能够从指定的服务器应用程序请求和接收数据。
     </para>
             </entry>
           </row>
@@ -132,7 +132,7 @@
             </entry>
             <entry>
               <para>
-      Register an application as a server able to access data on specific topics and update registered topics and update registered client applications.
+      注册一个应用程序作为服务器，能够访问特定主题上的数据，并更新已注册的主题和已注册的客户端应用程序。
     </para>
             </entry>
           </row>
@@ -147,7 +147,7 @@
             </entry>
             <entry>
               <para>
-      Create topic (and items) to be supported by an IPC server and which IPC clients can request. These objects are used by IpcServer:AddTopic() and IpcClient:RequestData().
+      创建一个 IPC 服务器支持的主题(和项目)，IPC 客户端可以请求。这些对象由 IpcServer:AddTopic() 和 IpcClient:RequestData() 使用。
     </para>
             </entry>
           </row>
@@ -162,7 +162,7 @@
             </entry>
             <entry>
               <para>
-      Create a global memory object and pass a data handle back to the application.
+      创建一个全局内存对象，并将数据句柄返回给应用程序。
     </para>
             </entry>
           </row>
@@ -177,7 +177,7 @@
             </entry>
             <entry>
               <para>
-      Identify a file containing resource information.
+      识别包含资源信息的文件。
     </para>
             </entry>
           </row>
@@ -192,7 +192,7 @@
             </entry>
             <entry>
               <para>
-      Identify and create a ResourceID using a numeric resource ID.
+      通过数字资源ID识别和创建 ResourceID。
     </para>
             </entry>
           </row>
@@ -207,7 +207,7 @@
             </entry>
             <entry>
               <para>
-      Extract strings from a resource entity.
+      从资源实体中提取字符串。
     </para>
             </entry>
           </row>
@@ -236,8 +236,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -295,8 +294,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -325,8 +323,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -339,8 +336,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -353,8 +349,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
         </table>

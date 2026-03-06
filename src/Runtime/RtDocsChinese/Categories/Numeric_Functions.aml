@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string.
-        </para>
+      Convert a numeric expression to a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string of specific length and decimal places.
-        </para>
+      Convert a numeric expression to a string of specific length and decimal places.
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a numeric value to a numeric data type.
-        </para>
+      将包含数值的字符串转换为数值数据类型。
+    </para>
             </entry>
           </row>
           <row>
@@ -70,13 +70,26 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Abs(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Abs(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the absolute value of a numeric expression, regardless of its sign.
-        </para>
+      返回数值表达式的绝对值，无论其符号如何。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Abs(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -90,8 +103,8 @@
             </entry>
             <entry>
               <para>
-            Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-        </para>
+      返回强类型数值表达式的绝对值，无论其符号如何。
+    </para>
             </entry>
           </row>
           <row>
@@ -105,8 +118,8 @@
             </entry>
             <entry>
               <para>
-            Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-        </para>
+      返回强类型数值表达式的绝对值，无论其符号如何。
+    </para>
             </entry>
           </row>
           <row>
@@ -120,8 +133,8 @@
             </entry>
             <entry>
               <para>
-            Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-        </para>
+      返回强类型数值表达式的绝对值，无论其符号如何。
+    </para>
             </entry>
           </row>
           <row>
@@ -135,8 +148,8 @@
             </entry>
             <entry>
               <para>
-            Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-        </para>
+      返回强类型数值表达式的绝对值，无论其符号如何。
+    </para>
             </entry>
           </row>
           <row>
@@ -150,8 +163,8 @@
             </entry>
             <entry>
               <para>
-            Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-        </para>
+      返回强类型数值表达式的绝对值，无论其符号如何。
+    </para>
             </entry>
           </row>
           <row>
@@ -165,8 +178,8 @@
             </entry>
             <entry>
               <para>
-            Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-        </para>
+      返回强类型数值表达式的绝对值，无论其符号如何。
+    </para>
             </entry>
           </row>
           <row>
@@ -175,88 +188,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ACos(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ACos(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Returns the arc cosine of a specified numeric expression.
-        </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ACot(XSharp.__Usual)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Calculate the arc cotangent of a number.
-        </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ASin(XSharp.__Usual)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Returns in radians the arc sine of a numeric expression.
-        </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ATan(XSharp.__Usual)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Calculate the arc tangent of a number.
-        </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Atan2(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Returns the angle whose tangent is the quotient of two specified numbers.
-        </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Ceil(XSharp.__Usual)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Round a number up to the next highest integer.
-        </para>
+      返回指定数值表达式的反余弦值。
+    </para>
             </entry>
           </row>
           <row>
@@ -265,11 +203,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Ceiling(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Acos(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -278,12 +216,126 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Cos(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ACot(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Calculate the cosine of a number.
+      计算一个数的反余切。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ASin(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      返回数值表达式的反正弦值（以弧度为单位）。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Asin(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ATan(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      计算一个数的反正切值。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Atan(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Atan2(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      返回正切值为两个指定数值商的角度。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Atn2(System.Double,System.Double)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Ceil(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      将数字向上舍入到下一个最高整数。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Ceiling(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            返回大于或等于指定数值表达式的下一个最高整数。
         </para>
             </entry>
           </row>
@@ -293,13 +345,41 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Cot(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Cos(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Calculate the cotangent of a value.
-        </para>
+      计算数字的余弦值。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Cos(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Cot(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      计算一个值的余切。
+    </para>
             </entry>
           </row>
           <row>
@@ -321,13 +401,26 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DToR(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DToR(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Converts degrees to radians.
-        </para>
+      将度数转换为弧度。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dtor(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -341,8 +434,8 @@
             </entry>
             <entry>
               <para>
-            Convert a double word to a string containing a 32-bit unsigned integer.
-        </para>
+      将双字转换为包含32位无符号整数的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -351,13 +444,26 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Exp(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Exp(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Calculate the numeric value of a natural logarithm.
-        </para>
+      计算自然对数的数值。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Exp(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -371,8 +477,8 @@
             </entry>
             <entry>
               <para>
-            Convert a float to a string containing an 80-bit floating point number.
-        </para>
+      将浮点数转换为包含 80 位浮点数的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -386,8 +492,8 @@
             </entry>
             <entry>
               <para>
-            Calculate the factorial of a number.
-        </para>
+      计算一个数的阶乘。
+    </para>
             </entry>
           </row>
           <row>
@@ -396,12 +502,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Float2Long(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Float2Long(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -415,8 +520,8 @@
             </entry>
             <entry>
               <para>
-            Set the display format for a floating point numeric.
-        </para>
+      设置浮点数的显示格式。
+    </para>
             </entry>
           </row>
           <row>
@@ -425,13 +530,26 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Floor(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Floor(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Round a number down to the next lowest integer.
-        </para>
+      将数字向下舍入到最接近的较小整数。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Floor(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -445,8 +563,8 @@
             </entry>
             <entry>
               <para>
-            Return the fractional portion of a number.
-        </para>
+      返回数字的小数部分。
+    </para>
             </entry>
           </row>
           <row>
@@ -460,7 +578,7 @@
             </entry>
             <entry>
               <para>
-            Returns the future value of a financial investment.
+            返回金融投资的未来价值。
         </para>
             </entry>
           </row>
@@ -475,8 +593,8 @@
             </entry>
             <entry>
               <para>
-            Return the high-order (leftmost) byte in a number.
-        </para>
+      返回一个数字中的高位（最左边）字节。
+    </para>
             </entry>
           </row>
           <row>
@@ -490,8 +608,8 @@
             </entry>
             <entry>
               <para>
-            Return the high-order (leftmost) word in a number.
-        </para>
+      返回数字中的高位（最左边）字。
+    </para>
             </entry>
           </row>
           <row>
@@ -505,23 +623,36 @@
             </entry>
             <entry>
               <para>
-            Convert a short integer to a string containing a 16-bit signed integer.
-        </para>
+      将短整型转换为包含 16 位有符号整数的字符串。
+    </para>
             </entry>
           </row>
           <row>
             <entry>
-              <para>XSharp.RT</para>
+              <para>XSharp.Core</para>
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Integer(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.I642Bin(System.Int64)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Truncate or floor a number with decimal digits to a whole number.
-        </para>
+      将长整型转换为包含32位带符号整数的字符串。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Int(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -530,7 +661,22 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsBinary(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Integer(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      截断或向下取整带小数位的数字为整数。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsBinary(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -545,7 +691,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCurrency(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCurrency(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -560,7 +706,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDecimal(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDecimal(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -575,13 +721,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFloat(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFloat(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a FLOAT.
-        </para>
+      确定值是否为浮点数（FLOAT）。
+    </para>
             </entry>
           </row>
           <row>
@@ -590,7 +736,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFractional(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFractional(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -605,7 +751,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsInt64(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsInt64(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -620,7 +766,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsInteger(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsInteger(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -635,13 +781,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLong(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLong(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a LONGINT.
-        </para>
+      确定值是否为 LONGINT。
+    </para>
             </entry>
           </row>
           <row>
@@ -650,13 +796,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNumeric(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNumeric(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a numeric.
-        </para>
+      确定一个值是否为数字。
+    </para>
             </entry>
           </row>
           <row>
@@ -670,8 +816,8 @@
             </entry>
             <entry>
               <para>
-            Convert a long integer to a string containing a 32-bit signed integer.
-        </para>
+      将长整型转换为包含32位带符号整数的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -680,13 +826,26 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Len(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Len(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the length of a string or an array.
-        </para>
+      返回字符串或数组的长度。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Len(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -700,8 +859,8 @@
             </entry>
             <entry>
               <para>
-            Return the low-order (rightmost) byte in a number.
-        </para>
+      返回数字中的低位（最右侧）字节。
+    </para>
             </entry>
           </row>
           <row>
@@ -710,13 +869,26 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.LOG(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.LOG(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Calculate the natural logarithm of a numeric value.
-        </para>
+      计算数字值的自然对数。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Log(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -725,13 +897,26 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Log10(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Log10(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Calculate the common logarithm of a numeric value.
-        </para>
+      计算数字值的常用对数。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Log10(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -745,8 +930,8 @@
             </entry>
             <entry>
               <para>
-            Convert a logical value to a string containing an 8-bit logical value.
-        </para>
+      将逻辑值转换为包含 8 位逻辑值的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -760,8 +945,8 @@
             </entry>
             <entry>
               <para>
-            Return the low-order (rightmost) word in a number.
-        </para>
+      返回数字中的低位（最右边）字。
+    </para>
             </entry>
           </row>
           <row>
@@ -775,8 +960,8 @@
             </entry>
             <entry>
               <para>
-            Create a DWORD from two words
-        </para>
+      从两个字创建一个 DWORD
+    </para>
             </entry>
           </row>
           <row>
@@ -790,8 +975,8 @@
             </entry>
             <entry>
               <para>
-            Create a long from two words
-        </para>
+      从两个字创建一个长整型
+    </para>
             </entry>
           </row>
           <row>
@@ -804,8 +989,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -819,8 +1003,8 @@
             </entry>
             <entry>
               <para>
-            Create a Short from two bytes
-        </para>
+      从两个字节创建一个短整型
+    </para>
             </entry>
           </row>
           <row>
@@ -834,8 +1018,8 @@
             </entry>
             <entry>
               <para>
-            Create a Short from two bytes
-        </para>
+      从两个字节创建一个字
+    </para>
             </entry>
           </row>
           <row>
@@ -844,13 +1028,54 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Max(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Max(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the larger of 2 values.
-        </para>
+      返回两个值中的较大者。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Max(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Min(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      返回两个值中的较小者。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Min(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -864,8 +1089,8 @@
             </entry>
             <entry>
               <para>
-            Return the remainder of one number divided by another number.
-        </para>
+      返回一个数字除以另一个数字的余数。
+    </para>
             </entry>
           </row>
           <row>
@@ -874,13 +1099,26 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Mod(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Mod(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the remainder of one number divided by another number.
-        </para>
+      返回一个数字除以另一个数字的余数。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Mod(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -919,13 +1157,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NTrim(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NTrim(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a left-trimmed string.
-        </para>
+      将数值表达式转换为左侧修剪的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -939,7 +1177,7 @@
             </entry>
             <entry>
               <para>
-            Returns the amount of each periodic payment on a fixed-interest loan.
+            返回固定利率贷款的每期定期还款金额。
         </para>
             </entry>
           </row>
@@ -954,8 +1192,21 @@
             </entry>
             <entry>
               <para>
-            Returns the numeric constant pi.
-        </para>
+      返回数值常数 pi（π）。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Pi</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -964,13 +1215,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Pow(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Pow(XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Raise the first argument to the numeric power specified by the second argument.
-        </para>
+      将第一个参数提升到第二个参数指定的数值幂。
+    </para>
             </entry>
           </row>
           <row>
@@ -984,7 +1235,7 @@
             </entry>
             <entry>
               <para>
-            Returns the present value of an investment.
+            返回投资的现值。
         </para>
             </entry>
           </row>
@@ -999,8 +1250,21 @@
             </entry>
             <entry>
               <para>
-            Return a random number between 0 and 1.
-        </para>
+      返回一个介于 0 和 1 之间的随机数。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Rand</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1014,8 +1278,8 @@
             </entry>
             <entry>
               <para>
-            Convert a Real4 value to a string containing a 32-bit floating point number.
-        </para>
+      将 Real4 值转换为包含 32 位浮点数的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -1029,8 +1293,8 @@
             </entry>
             <entry>
               <para>
-            Convert a Real8 value to a string containing an 8-byte floating point number.
-        </para>
+      将 Real8 值转换为包含 8 字节浮点数的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -1039,13 +1303,26 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Round(XSharp.__Usual,System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Round(XSharp.__Usual@,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Round a number to a specified number of digits.
-        </para>
+      将数字四舍五入到指定的位数。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Round(XSharp.__Usual@,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1054,14 +1331,27 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RToD(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RToD(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Converts radians to its equivalent in degrees.
-            You can use RTOD( ) when working with the X# trigonometric functions COS( ), SIN( ), and TAN( ).
-        </para>
+      将弧度转换为相应的角度。
+      在使用 X# 三角函数 COS()、SIN() 和 TAN() 时，可以使用 RTOD()。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Rtod(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1085,13 +1375,26 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Sin(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Sin(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Calculate the sine of a number.
-        </para>
+      计算一个数的正弦值。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Sin(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1100,13 +1403,26 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SQrt(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SQrt(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the square root of a positive number.
-        </para>
+      返回正数的平方根。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Sqrt(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1120,8 +1436,21 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string.
-        </para>
+      将数值表达式转换为字符串。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1130,13 +1459,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str1(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str1(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string.
-        </para>
+      将数值表达式转换为字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -1150,8 +1479,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string of a specified length.
-        </para>
+      将数值表达式转换为指定长度的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -1165,8 +1494,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string of specific length and decimal places.
-        </para>
+      将数值表达式转换为特定长度和小数位数的字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -1175,11 +1504,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrConv(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrConv(XSharp.__Usual,System.Int32,System.Int32,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1208,8 +1537,8 @@
             </entry>
             <entry>
               <para>
-            Convert an integer expression to a PSZ.
-        </para>
+      将整数表达式转换为 PSZ。
+    </para>
             </entry>
           </row>
           <row>
@@ -1223,8 +1552,8 @@
             </entry>
             <entry>
               <para>
-            Convert a long integer expression to a PSZ.
-        </para>
+      将长整型表达式转换为 PSZ。
+    </para>
             </entry>
           </row>
           <row>
@@ -1238,8 +1567,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a numeric value to a numeric data type.
-        </para>
+      Convert a string containing a numeric value to a numeric data type.
+    </para>
             </entry>
           </row>
           <row>
@@ -1253,8 +1582,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string and pad it with leading zeroes instead of blanks.
-        </para>
+      将数字表达式转换为字符串，并用前导零而非空格填充。
+    </para>
             </entry>
           </row>
           <row>
@@ -1268,8 +1597,8 @@
             </entry>
             <entry>
               <para>
-            Exchange the right and left halves of a byte.
-        </para>
+      交换字节的左右半部分。
+    </para>
             </entry>
           </row>
           <row>
@@ -1283,8 +1612,8 @@
             </entry>
             <entry>
               <para>
-            Exchange the right and left halves of a double word.
-        </para>
+      交换双字的左右半部分。
+    </para>
             </entry>
           </row>
           <row>
@@ -1298,8 +1627,8 @@
             </entry>
             <entry>
               <para>
-            Exchange the right and left halves of an integer.
-        </para>
+      交换整数的左右半部分。
+    </para>
             </entry>
           </row>
           <row>
@@ -1328,8 +1657,8 @@
             </entry>
             <entry>
               <para>
-            Exchange the right and left halves of a long integer.
-        </para>
+      交换长整数的左右半部分。
+    </para>
             </entry>
           </row>
           <row>
@@ -1342,8 +1671,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1357,8 +1685,8 @@
             </entry>
             <entry>
               <para>
-            Exchange the right and left halves of a short integer.
-        </para>
+      交换短整型的左右半部分。
+    </para>
             </entry>
           </row>
           <row>
@@ -1372,8 +1700,8 @@
             </entry>
             <entry>
               <para>
-            Exchange the right and left halves of a word.
-        </para>
+      交换字的左右半部分。
+    </para>
             </entry>
           </row>
           <row>
@@ -1382,13 +1710,26 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Tan(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Tan(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Calculate the tangent of a number.
-        </para>
+      计算一个数的正切值。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Tan(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1397,13 +1738,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ToWord(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ToWord(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a number to a word.
-        </para>
+      将数字转换为字。
+    </para>
             </entry>
           </row>
           <row>
@@ -1417,8 +1758,21 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a numeric value to a numeric data type.
-        </para>
+      将包含数值的字符串转换为数值数据类型。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Val(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1432,8 +1786,8 @@
             </entry>
             <entry>
               <para>
-            Convert a word to a string containing a 16-bit unsigned integer.
-        </para>
+      将一个字转换为包含 16 位无符号整数的字符串。
+    </para>
             </entry>
           </row>
         </table>

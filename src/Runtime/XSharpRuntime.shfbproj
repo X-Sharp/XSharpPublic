@@ -68,8 +68,8 @@
       <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.dll" />
       <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.xml" />
     </DocumentationSources>
-    <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>3.0.0.0</HelpFileVersion>
+    <HelpTitle>X# Runtime Reference</HelpTitle>
+    <HelpFileVersion>3.0.0.2</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -79,7 +79,7 @@
     <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013XSharp</PresentationStyle>
-    <CleanIntermediates>True</CleanIntermediates>
+    <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
     <IndentHtml>True</IndentHtml>
@@ -211,7 +211,7 @@
     </FooterText>
     <SourceCodeBasePath>E:\XSharp\Dev\src\</SourceCodeBasePath>
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
-    <RootNamespaceTitle>X# Runtime and SDK Reference</RootNamespaceTitle>
+    <RootNamespaceTitle>X# Runtime Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169; 2015-2026 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169; Computer Associates.</CopyrightText>
     <BuildLogFile>$(Artifactsdir)\Obj\Help\BuildLog.log</BuildLogFile>
@@ -267,8 +267,16 @@
       <PlugInConfig id="XSharp Function Output" enabled="True">
         <configuration />
       </PlugInConfig>
-<PlugInConfig id="XPath Reflection File Filter" enabled="True"><configuration><expressions><expression>/reflection/apis/api[contains(@id,"N:") and string-length(@id)=2]</expression><expression>/reflection/apis/api[starts-with(apidata/@name,"$")]</expression><expression>/reflection/apis/api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression></expressions></configuration></PlugInConfig>
-<PlugInConfig id="Version Builder" enabled="True"><configuration><currentProject label=".NetFramework 4.6" version="Net46" ripOldApis="False" /><versions><version label=".Net 8.0" version="Net80" helpFileProject="XSHarpRuntimeV8.shfbproj" /></versions></configuration></PlugInConfig></PlugInConfigurations>
+      <PlugInConfig id="XPath Reflection File Filter" enabled="True">
+        <configuration>
+          <expressions>
+            <expression>/reflection/apis/api[contains(@id,"N:") and string-length(@id)=2]</expression>
+            <expression>/reflection/apis/api[starts-with(apidata/@name,"$")]</expression>
+            <expression>/reflection/apis/api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression>
+          </expressions>
+        </configuration>
+      </PlugInConfig>
+    </PlugInConfigurations>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

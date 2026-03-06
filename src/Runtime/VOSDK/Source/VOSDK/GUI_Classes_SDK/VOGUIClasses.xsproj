@@ -56,7 +56,7 @@
     <Compile Include="**\*.prg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\VoRedist\*.dll">
+    <None Include="$(Runtimedir)\VoRedist\*.dll">
       <Link>Redist\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -75,7 +75,6 @@
       <Name>System.Core</Name>
       <AssemblyName>System.Core.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>System.Drawing</Name>

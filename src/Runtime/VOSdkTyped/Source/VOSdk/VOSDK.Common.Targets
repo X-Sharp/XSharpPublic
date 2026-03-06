@@ -2,6 +2,7 @@
 <Project>
   <PropertyGroup>
     <BinariesDir>$(SolutionDir)..\Artifacts\</BinariesDir>
+    <Runtimedir>$(SolutionDir)Runtime\</Runtimedir>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
     <BaseOutputPath>$(BinariesDir)</BaseOutputPath>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>

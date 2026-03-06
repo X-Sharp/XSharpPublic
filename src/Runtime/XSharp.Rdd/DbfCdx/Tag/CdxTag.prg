@@ -566,6 +566,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN TRUE
             CASE TypeCode.String
                 text := (STRING)toConvert
+                if (text:Length < buffer:Length)
+                    // pad the buffer
+                    System.Array.Copy(aClear, buffer,buffer:Length)
+                endif
             CASE TypeCode.Boolean
                 text := IIF ((LOGIC) toConvert, "T", "F")
             END SWITCH

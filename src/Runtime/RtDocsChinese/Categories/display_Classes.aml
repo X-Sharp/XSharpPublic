@@ -30,7 +30,7 @@
             </entry>
             <entry>
               <para>
-      Create a bitmap, which is a bit pattern entity—that is, a two-dimensional array of pixels, each pixel having color attributes (monochrome or color).
+      创建一个位图，它是一个位模式实体，即一个二维像素数组，每个像素具有颜色属性(单色或彩色)。
     </para>
             </entry>
           </row>
@@ -45,7 +45,7 @@
             </entry>
             <entry>
               <para>
-      Create a bounding box, which is a set of four numbers that represent the bottom-left and top-right corners of a rectangle.
+      创建一个边界框，它是一组四个数字，表示矩形的左下角和右上角。
     </para>
             </entry>
           </row>
@@ -60,7 +60,7 @@
             </entry>
             <entry>
               <para>
-      Create a brush, which can be used by the Window:PaintBoundingBox() method and the DrawObject hierarchy.
+      创建一个画笔，可以由 Window:PaintBoundingBox() 方法和 DrawObject 层次结构使用。
     </para>
             </entry>
           </row>
@@ -75,7 +75,7 @@
             </entry>
             <entry>
               <para>
-      Create an image list for use with buttons.
+      创建用于按钮的图像列表。
     </para>
             </entry>
           </row>
@@ -90,7 +90,7 @@
             </entry>
             <entry>
               <para>
-      Select or create a color, which can be used by a Brush, Pen, or DrawObject object.
+      选择或创建一种颜色，该颜色可由 Brush、Pen 或 DrawObject 对象使用。
     </para>
             </entry>
           </row>
@@ -105,7 +105,7 @@
             </entry>
             <entry>
               <para>
-            Encapsulate a Win32 console application.
+            封装一个 Win32 控制台应用程序。
         </para>
             </entry>
           </row>
@@ -120,7 +120,7 @@
             </entry>
             <entry>
               <para>
-            A helper class encapsulating a console window's coordinates.
+            一个封装控制台窗口坐标的辅助类。
         </para>
             </entry>
           </row>
@@ -135,7 +135,7 @@
             </entry>
             <entry>
               <para>
-      Create a text cursor, which is used to visually represent the position in a window where the next piece of text appears.
+      创建一个文本光标，用于在窗口中可视化表示下一个文本出现的位置。
     </para>
             </entry>
           </row>
@@ -150,7 +150,7 @@
             </entry>
             <entry>
               <para>
-      Create a font, which describes how characters are displayed on a window.
+      创建一个字体，描述字符在窗口上的显示方式。
     </para>
             </entry>
           </row>
@@ -165,7 +165,7 @@
             </entry>
             <entry>
               <para>
-      Create an icon, which is a small bitmap that the system displays for a window when it is iconized in its owner window.
+      创建一个图标，它是系统在其所有者窗口中被图标化时系统显示的小位图。
     </para>
             </entry>
           </row>
@@ -180,7 +180,7 @@
             </entry>
             <entry>
               <para>
-      Create an image list.
+      创建一个图像列表。
     </para>
             </entry>
           </row>
@@ -195,7 +195,7 @@
             </entry>
             <entry>
               <para>
-      Create a pen, which can be used to draw lines in a particular color, style, and width. Pens are used by the Window:LineTo() method and the DrawObject hierarchy.
+      创建一个笔，它可以用来以特定颜色、样式和宽度绘制线条。笔由 Window:LineTo() 方法和 DrawObject 层次结构使用。
     </para>
             </entry>
           </row>
@@ -210,7 +210,7 @@
             </entry>
             <entry>
               <para>
-      Create a mouse cursor, which is used to visually represent the mouse in a window.
+      创建一个鼠标指针，用于在窗口中视觉上表示鼠标。
     </para>
             </entry>
           </row>
@@ -225,7 +225,7 @@
             </entry>
             <entry>
               <para>
-            Encapsulate a Win32 console application.
+            封装一个 Win32 控制台应用程序。
         </para>
             </entry>
           </row>
@@ -240,7 +240,7 @@
             </entry>
             <entry>
               <para>
-            A helper class encapsulating a console window's coordinates.
+            一个封装控制台窗口坐标的辅助类。
         </para>
             </entry>
           </row>

@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Break a path name into its components.
-        </para>
+      将路径名拆分为其组件。
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,21 @@
             </entry>
             <entry>
               <para>
-            Return the current Windows directory.
-        </para>
+      返回当前 Windows 目录。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Curdir(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -60,8 +73,8 @@
             </entry>
             <entry>
               <para>
-            Return the current Windows drive.
-        </para>
+      返回当前 Windows 驱动器。
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +88,8 @@
             </entry>
             <entry>
               <para>
-            Change the current Windows directory.
-        </para>
+      更改当前 Windows 目录。
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +103,8 @@
             </entry>
             <entry>
               <para>
-            Change the current Windows directory.
-        </para>
+      更改当前 Windows 目录。
+    </para>
             </entry>
           </row>
           <row>
@@ -105,8 +118,21 @@
             </entry>
             <entry>
               <para>
-            Create an array of directory and file information.
-        </para>
+      创建一个包含目录和文件信息的数组。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Directory(System.String,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -120,8 +146,8 @@
             </entry>
             <entry>
               <para>
-            Create a directory.
-        </para>
+      创建一个目录。
+    </para>
             </entry>
           </row>
           <row>
@@ -135,8 +161,8 @@
             </entry>
             <entry>
               <para>
-            Create a directory.
-        </para>
+      创建一个目录。
+    </para>
             </entry>
           </row>
           <row>
@@ -150,8 +176,8 @@
             </entry>
             <entry>
               <para>
-            Remove a directory.
-        </para>
+      删除一个目录。
+    </para>
             </entry>
           </row>
           <row>
@@ -165,8 +191,8 @@
             </entry>
             <entry>
               <para>
-            Remove a directory.
-        </para>
+      删除一个目录。
+    </para>
             </entry>
           </row>
           <row>
@@ -180,8 +206,8 @@
             </entry>
             <entry>
               <para>
-            Change the current disk drive.
-        </para>
+      更改当前磁盘驱动器。
+    </para>
             </entry>
           </row>
           <row>
@@ -195,8 +221,8 @@
             </entry>
             <entry>
               <para>
-            Change the current disk drive.
-        </para>
+      更改当前磁盘驱动器。
+    </para>
             </entry>
           </row>
           <row>
@@ -210,8 +236,8 @@
             </entry>
             <entry>
               <para>
-            Return the space available on a specified disk.
-        </para>
+      返回指定磁盘上的可用空间。
+    </para>
             </entry>
           </row>
           <row>
@@ -225,8 +251,8 @@
             </entry>
             <entry>
               <para>
-            Return the current Windows drive.
-        </para>
+      返回当前 Windows 驱动器。
+    </para>
             </entry>
           </row>
           <row>
@@ -240,8 +266,8 @@
             </entry>
             <entry>
               <para>
-            Return the capacity of the specified disk.
-        </para>
+      返回指定磁盘的容量。
+    </para>
             </entry>
           </row>
           <row>
@@ -250,11 +276,26 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DriveType(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Diskspace(System.String,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DriveType(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            返回指定驱动器的类型。
+        </para>
             </entry>
           </row>
           <row>
@@ -345,7 +386,7 @@
               </para>
             </entry>
             <entry>
-              <para>M:XSharp.VFP.Functions.MkDir(System.String)VfpRuntimeDocs.xmlRuntimefunctions/mkdir/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -359,8 +400,8 @@
             </entry>
             <entry>
               <para>
-            Break a path name into its components.
-        </para>
+      将路径名拆分为其组件。
+    </para>
             </entry>
           </row>
           <row>
@@ -374,8 +415,8 @@
             </entry>
             <entry>
               <para>
-            Return the currently selected working directory.
-        </para>
+      返回当前选定的工作目录。
+    </para>
             </entry>
           </row>
         </table>

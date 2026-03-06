@@ -30,7 +30,7 @@
             </entry>
             <entry>
               <para>
-      Create an accelerator table.
+      创建一个加速键表。
     </para>
             </entry>
           </row>
@@ -45,7 +45,7 @@
             </entry>
             <entry>
               <para>
-      Create a menu. Menus consist of items which the user selects for execution; a menu item can be a string, a bitmap, or another menu.
+      创建一个菜单。菜单由用户选择执行的项目组成；菜单项可以是字符串，位图或另一个菜单。
     </para>
             </entry>
           </row>
@@ -60,7 +60,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a MenuCommandEvent, generated when the user executes a menu item, either directly or through the use of accelerator keys.
+      提供有关 MenuCommandEvent 的信息，当用户直接执行菜单项或通过使用加速键时生成时。
     </para>
             </entry>
           </row>
@@ -75,7 +75,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a MenuInitEvent, generated when the user first activates a menu for the first time.
+      提供有关 MenuInitEvent 的信息，当用户第一次激活菜单时生成。
     </para>
             </entry>
           </row>
@@ -90,7 +90,7 @@
             </entry>
             <entry>
               <para>
-      Provide information about a MenuSelectEvent, generated whenever a menu item is highlighted on a menu (menu items are highlighted as the user moves either the mouse or the highlight bar up or down a menu).
+      提供有关 MenuSelectEvent 的信息，当用户在菜单上突出显示菜单项时生成。
     </para>
             </entry>
           </row>
@@ -105,7 +105,7 @@
             </entry>
             <entry>
               <para>
-      Create a system menu.
+      创建一个系统菜单。
     </para>
             </entry>
           </row>

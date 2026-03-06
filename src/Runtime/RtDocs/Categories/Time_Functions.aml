@@ -43,8 +43,8 @@
             </entry>
             <entry>
               <para>
-            Convert a 24-hour military time to a 12-hour clock time.
-        </para>
+      Convert a 24-hour military time to a 12-hour clock time.
+    </para>
             </entry>
           </row>
           <row>
@@ -58,8 +58,8 @@
             </entry>
             <entry>
               <para>
-            Format a set of numbers representing an hour, minute, and second as a time string.
-        </para>
+      Format a set of numbers representing an hour, minute, and second as a time string.
+    </para>
             </entry>
           </row>
           <row>
@@ -73,8 +73,8 @@
             </entry>
             <entry>
               <para>
-            Return the difference between two time strings.
-        </para>
+      Return the difference between two time strings.
+    </para>
             </entry>
           </row>
           <row>
@@ -88,8 +88,23 @@
             </entry>
             <entry>
               <para>
-            Return the time stamp of the file found by FFCount(), FFirst(), or FNext().
-        </para>
+      Return the time stamp of the file found by FFCount(), FFirst(), or FNext().
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FTime(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the last modification time for a file.
+    </para>
             </entry>
           </row>
           <row>
@@ -118,8 +133,8 @@
             </entry>
             <entry>
               <para>
-            Return the current separation character used in time strings.
-        </para>
+      Return the current separation character used in time strings.
+    </para>
             </entry>
           </row>
           <row>
@@ -193,8 +208,21 @@
             </entry>
             <entry>
               <para>
-            Return the number of seconds that have elapsed since midnight.
-        </para>
+      Return the number of seconds that have elapsed since midnight.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Seconds</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -208,8 +236,8 @@
             </entry>
             <entry>
               <para>
-            Return a time as the number of seconds that have elapsed since midnight.
-        </para>
+      Return a time as the number of seconds that have elapsed since midnight.
+    </para>
             </entry>
           </row>
           <row>
@@ -222,8 +250,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -237,8 +264,8 @@
             </entry>
             <entry>
               <para>
-            Change the setting that determines the separation character to be used in time strings.
-        </para>
+      Change the setting that determines the separation character to be used in time strings.
+    </para>
             </entry>
           </row>
           <row>
@@ -252,8 +279,23 @@
             </entry>
             <entry>
               <para>
-            Return the system time in a format determined by various international settings.
-        </para>
+      Return the system time in a format determined by various international settings.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Time(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the current system time in 24-hour, eight-character string (hh:mm:ss) format.
+    </para>
             </entry>
           </row>
           <row>
@@ -267,8 +309,8 @@
             </entry>
             <entry>
               <para>
-            Return the system time in 24-hour format.
-        </para>
+      Return the system time in 24-hour format.
+    </para>
             </entry>
           </row>
           <row>
@@ -282,8 +324,8 @@
             </entry>
             <entry>
               <para>
-            Convert a specified number of seconds to a time string.
-        </para>
+      Convert a specified number of seconds to a time string.
+    </para>
             </entry>
           </row>
         </table>

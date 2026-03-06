@@ -43,7 +43,7 @@
             </entry>
             <entry>
               <para>
-            Returns the name and path of the current database.
+            返回当前数据库的名称和路径。
         </para>
             </entry>
           </row>
@@ -58,9 +58,9 @@
             </entry>
             <entry>
               <para>
-            Retrieves the value of a property for the current database or for fields, named connections, tables, or views in the current database.
-                You must open the database before you can retrieve its properties or those of its connections, tables, views, or fields.
-                However, you do not need to open a table or view before retrieving its properties.
+            检索当前数据库或当前数据库中的字段、命名连接、表或视图的属性值。
+                在检索数据库及其连接、表、视图或字段的属性之前，必须先打开数据库。
+                但是，在检索表或视图的属性之前，不需要打开表或视图。
             </para>
             </entry>
           </row>
@@ -75,7 +75,7 @@
             </entry>
             <entry>
               <para>
-            Sets a property for the current database or for fields, named connections, tables, or views in the current database.
+            为当前数据库或当前数据库中的字段、命名连接、表或视图设置属性。
         </para>
             </entry>
           </row>

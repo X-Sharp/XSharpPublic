@@ -30,7 +30,7 @@
             </entry>
             <entry>
               <para>
-      Create a FixedText object.
+      创建一个 FixedText 对象。
     </para>
             </entry>
           </row>
@@ -45,7 +45,7 @@
             </entry>
             <entry>
               <para>
-      Create a group box, which can be used to group related controls together.
+      创建一个分组框，可以用来将相关的控件组合在一起。
     </para>
             </entry>
           </row>
@@ -60,7 +60,7 @@
             </entry>
             <entry>
               <para>
-      Create a hot key edit.
+      创建一个热键编辑。
     </para>
             </entry>
           </row>
@@ -75,7 +75,7 @@
             </entry>
             <entry>
               <para>
-      Create a HyperLink control.
+      创建一个超链接控件。
     </para>
             </entry>
           </row>
@@ -90,7 +90,7 @@
             </entry>
             <entry>
               <para>
-      Edit control to edit an IP address that consists of 4 numbers
+      编辑控件，用于编辑由4个数字组成的IP地址
     </para>
             </entry>
           </row>
@@ -105,7 +105,7 @@
             </entry>
             <entry>
               <para>
-      Create a multiline edit control for displaying and entering information to a variable or field in a server. Multiline edit controls may be bound to a data server field of any type (character, date, logical, numeric, or memo).
+      创建一个多行编辑控件，用于在服务器的变量或字段中显示和输入信息。多行编辑控件可以绑定到任何类型的数据服务器字段(字符、日期、逻辑、数值或备忘录)。
     </para>
             </entry>
           </row>
@@ -120,7 +120,7 @@
             </entry>
             <entry>
               <para>
-      Create a rich edit control.
+      创建一个富文本编辑控件。
     </para>
             </entry>
           </row>
@@ -135,8 +135,8 @@
             </entry>
             <entry>
               <para>
-      Create a single-line edit control for displaying and entering information to a variable or field in a server.
-      Single-line edit controls may be bound to a data server field of any type (character, date, logical, numeric, or memo).
+      创建一个单行编辑控件，用于在服务器的变量或字段中显示和输入信息。
+      单行编辑控件可以绑定到任何类型(字符、日期、逻辑、数值或备忘录)的数据服务器字段。
     </para>
             </entry>
           </row>
@@ -151,7 +151,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which all X# controls are subclassed.
+      提供所有 X# 控件的基类。
     </para>
             </entry>
           </row>

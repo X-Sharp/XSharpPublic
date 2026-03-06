@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Write information to the Debug Terminal Program
-        </para>
+      向调试终端程序写入信息
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Programmatically define a breakpoint in an application.
-        </para>
+      在应用程序中以编程方式定义断点。
+    </para>
             </entry>
           </row>
           <row>
@@ -127,8 +127,8 @@
             </entry>
             <entry>
               <para>
-            Write information to the Debug Terminal Program
-        </para>
+      向调试终端程序写入信息
+    </para>
             </entry>
           </row>
         </table>

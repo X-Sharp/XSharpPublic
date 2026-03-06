@@ -25,12 +25,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._NoAlias(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._NoAlias(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -44,8 +43,8 @@
             </entry>
             <entry>
               <para>
-            Determine the number of a work area.
-        </para>
+      确定工作区的编号。
+    </para>
             </entry>
           </row>
           <row>
@@ -59,8 +58,8 @@
             </entry>
             <entry>
               <para>
-            Determine the number of a work area.
-        </para>
+      确定工作区的编号。
+    </para>
             </entry>
           </row>
           <row>
@@ -74,7 +73,7 @@
             </entry>
             <entry>
               <para>
-            Places the names of all open databases and their paths into a variable array.
+            将所有打开的数据库名称及其路径放入变量数组中。
         </para>
             </entry>
           </row>
@@ -89,11 +88,11 @@
             </entry>
             <entry>
               <para>
-            Fill arrays with the structure of the current database file.
-            Note:
-            AFields() is a compatibility function and therefore not recommended.
-            It is superseded by DBStruct(), which does not require the existence of any arrays prior to invocation and returns a multidimensional array containing the current database file structure.
-        </para>
+      用当前数据库文件的结构填充数组。
+      注意：
+      AFields() 是一个兼容性函数，因此不推荐使用。
+      它已被 DBStruct() 取代，后者不需要在调用前存在任何数组，并返回一个包含当前数据库文件结构的多维数组。
+    </para>
             </entry>
           </row>
           <row>
@@ -102,11 +101,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AUsed(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AUsed(XSharp.__Array,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -135,8 +134,21 @@
             </entry>
             <entry>
               <para>
-            Determine when beginning-of-file is encountered.
-        </para>
+      判断是否遇到文件开头。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Bof</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -163,7 +175,7 @@
             </entry>
             <entry>
               <para>
-            Returns database alias of currently set database.
+            返回当前设置的数据库的别名。
         </para>
             </entry>
           </row>
@@ -178,8 +190,8 @@
             </entry>
             <entry>
               <para>
-            Import records from a database file.
-        </para>
+      从数据库文件导入记录。
+    </para>
             </entry>
           </row>
           <row>
@@ -193,8 +205,8 @@
             </entry>
             <entry>
               <para>
-            Import records from a delimited text file.
-        </para>
+      从分隔文本文件导入记录。
+    </para>
             </entry>
           </row>
           <row>
@@ -207,8 +219,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -217,13 +228,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAppend(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAppend(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Add a new record to a database file.
-        </para>
+      向数据库文件添加新记录。
+    </para>
             </entry>
           </row>
           <row>
@@ -236,8 +247,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -250,8 +260,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -265,8 +274,8 @@
             </entry>
             <entry>
               <para>
-            Import records from an SDF file.
-        </para>
+      从 SDF 文件导入记录。
+    </para>
             </entry>
           </row>
           <row>
@@ -276,6 +285,19 @@
             <entry>
               <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAutoLock</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Automatically lock a record in the FoxPro dialect </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAutoLockArea(System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -301,12 +323,24 @@
             </entry>
             <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAutoUnLockArea(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Automatically unlock a record in the FoxPro dialect </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbBlobInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -346,8 +380,8 @@
             </entry>
             <entry>
               <para>
-            Clear a logical filter condition.
-        </para>
+      清除逻辑过滤条件。
+    </para>
             </entry>
           </row>
           <row>
@@ -361,8 +395,8 @@
             </entry>
             <entry>
               <para>
-            Remove orders from the order list in a work area and close associated index files.
-        </para>
+      从工作区的排序列表中移除排序并关闭相关的索引文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -376,8 +410,8 @@
             </entry>
             <entry>
               <para>
-            Clear the condition and scope for an order.
-        </para>
+      清除排序的条件和范围。
+    </para>
             </entry>
           </row>
           <row>
@@ -391,8 +425,8 @@
             </entry>
             <entry>
               <para>
-            Clear any active relations.
-        </para>
+      清除所有活动的关系。
+    </para>
             </entry>
           </row>
           <row>
@@ -419,8 +453,8 @@
             </entry>
             <entry>
               <para>
-            Close all files in all work areas.
-        </para>
+      关闭所有工作区中的所有文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -434,8 +468,8 @@
             </entry>
             <entry>
               <para>
-            Close all files in a work area.
-        </para>
+      关闭工作区中的所有文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -449,8 +483,8 @@
             </entry>
             <entry>
               <para>
-            Flush all pending updates in one work area.
-        </para>
+      将一个工作区中所有待处理的更新刷新到磁盘。
+    </para>
             </entry>
           </row>
           <row>
@@ -464,8 +498,8 @@
             </entry>
             <entry>
               <para>
-            Flush all pending updates in all work areas.
-        </para>
+      将所有工作区中所有待处理的更新刷新到磁盘。
+    </para>
             </entry>
           </row>
           <row>
@@ -474,13 +508,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbContinue(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbContinue</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Resume a pending locate condition.
-        </para>
+      继续执行挂起的定位条件。
+    </para>
             </entry>
           </row>
           <row>
@@ -489,13 +523,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCopy(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCopy(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Export records to a new database file.
-        </para>
+      将记录导出到新的数据库文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -509,8 +543,8 @@
             </entry>
             <entry>
               <para>
-            Export records to a new delimited text file.
-        </para>
+      将记录导出到新的分隔文本文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -523,8 +557,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -537,8 +570,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -552,8 +584,8 @@
             </entry>
             <entry>
               <para>
-            Export records to a new SDF file.
-        </para>
+      将记录导出到新的 SDF 文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -567,8 +599,21 @@
             </entry>
             <entry>
               <para>
-            Create an empty database file with field definitions from another database file.
-        </para>
+      从另一个数据库文件创建具有字段定义的空数据库文件。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbCopyStructFox(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -581,8 +626,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -596,8 +640,21 @@
             </entry>
             <entry>
               <para>
-            Copy the field definitions in a database file structure to a structure-extended file as data.
-        </para>
+      将数据库文件结构中的字段定义复制到结构扩展文件中作为数据。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbCopyXStructFox(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -611,8 +668,8 @@
             </entry>
             <entry>
               <para>
-            Create a database file from a database structure array.
-        </para>
+      从数据库结构数组创建数据库文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -626,8 +683,8 @@
             </entry>
             <entry>
               <para>
-            Create an index file and add an order to it.
-        </para>
+      创建索引文件并向其添加一个顺序。
+    </para>
             </entry>
           </row>
           <row>
@@ -641,8 +698,8 @@
             </entry>
             <entry>
               <para>
-            Create or replace an order in an index file.
-        </para>
+      在索引文件中创建或替换一个顺序。
+    </para>
             </entry>
           </row>
           <row>
@@ -682,8 +739,8 @@
             </entry>
             <entry>
               <para>
-            Mark the current record for deletion.
-        </para>
+      标记当前记录为删除状态。
+    </para>
             </entry>
           </row>
           <row>
@@ -697,8 +754,8 @@
             </entry>
             <entry>
               <para>
-            Remove an order from an open index file.
-        </para>
+      从打开的索引文件中删除一个排序。
+    </para>
             </entry>
           </row>
           <row>
@@ -725,8 +782,8 @@
             </entry>
             <entry>
               <para>
-            Return the default RDD for the application.
-        </para>
+      返回应用程序的默认 RDD。
+    </para>
             </entry>
           </row>
           <row>
@@ -740,8 +797,8 @@
             </entry>
             <entry>
               <para>
-            Evaluate a code block for each record that matches a specified scope and/or condition.
-        </para>
+      对符合指定范围和/或条件的每条记录评估代码块。
+    </para>
             </entry>
           </row>
           <row>
@@ -755,10 +812,23 @@
             </entry>
             <entry>
               <para>
-            Return the name of the alias.
-            Note:  DBF() is a compatibility function and is no longer recommended.
-            It is superseded by Alias0().  See Alias0() for more information.
-        </para>
+      返回别名的名称。
+      注意：DBF() 是一个兼容性函数，不再推荐使用。
+      它已被 Alias0() 取代。更多信息请参见 Alias0()。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dbf(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -772,8 +842,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change information about a field.
-        </para>
+      返回并可选择性地更改字段信息。
+    </para>
             </entry>
           </row>
           <row>
@@ -786,8 +856,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -801,8 +870,8 @@
             </entry>
             <entry>
               <para>
-            Return a filter.
-        </para>
+      返回过滤条件。
+    </para>
             </entry>
           </row>
           <row>
@@ -816,8 +885,8 @@
             </entry>
             <entry>
               <para>
-            Return the work area number.
-        </para>
+      返回工作区编号。
+    </para>
             </entry>
           </row>
           <row>
@@ -831,8 +900,8 @@
             </entry>
             <entry>
               <para>
-            Move to the last logical record.
-        </para>
+      移动到最后一个逻辑记录。
+    </para>
             </entry>
           </row>
           <row>
@@ -841,13 +910,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbGoto(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbGoto(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Move to a record specified by record number.
-        </para>
+      移动到指定记录号的记录。
+    </para>
             </entry>
           </row>
           <row>
@@ -861,8 +930,8 @@
             </entry>
             <entry>
               <para>
-            Move to the first logical record.
-        </para>
+      移动到第一个逻辑记录。
+    </para>
             </entry>
           </row>
           <row>
@@ -876,8 +945,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change information about a database file open in a work area.
-        </para>
+      返回并可选择性地更改有关工作区中打开的数据库文件的信息。
+    </para>
             </entry>
           </row>
           <row>
@@ -891,8 +960,8 @@
             </entry>
             <entry>
               <para>
-            Create a new database file by merging records/fields from two work areas.
-        </para>
+      通过合并两个工作区的记录/字段来创建一个新的数据库文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -905,8 +974,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -920,8 +988,8 @@
             </entry>
             <entry>
               <para>
-            Search for the first record that matches the specified condition and scope.
-        </para>
+      搜索匹配指定条件和范围的第一条记录。
+    </para>
             </entry>
           </row>
           <row>
@@ -934,7 +1002,7 @@
               </para>
             </entry>
             <entry>
-              <para>This returns the memo extension of the file in the current workarea. For example DBT or FPT.</para>
+              <para>返回当前工作区文件的备注扩展名。例如DBT或FPT。</para>
             </entry>
           </row>
           <row>
@@ -943,13 +1011,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbMemoField(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbMemoField(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the memo field pointer of a DBF record.
-        </para>
+      返回DBF记录的备注字段指针。
+    </para>
             </entry>
           </row>
           <row>
@@ -963,8 +1031,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change information about orders and index files.
-        </para>
+      返回并可选择性地更改有关索引顺序和索引文件的信息。
+    </para>
             </entry>
           </row>
           <row>
@@ -978,8 +1046,8 @@
             </entry>
             <entry>
               <para>
-            Remove all records marked for deletion from a database file, rebuild all active orders, and recover all physical space occupied by the deleted records.
-        </para>
+      从数据库文件中删除所有标记为删除的记录，重建所有活动顺序，并恢复被删除记录占用的所有物理空间。
+    </para>
             </entry>
           </row>
           <row>
@@ -993,8 +1061,8 @@
             </entry>
             <entry>
               <para>
-            Restore the current record if it has been marked for deletion.
-        </para>
+      如果当前记录已被标记为删除，则恢复该记录。
+    </para>
             </entry>
           </row>
           <row>
@@ -1008,8 +1076,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve field definition information about a record.
-        </para>
+      检索记录的字段定义信息。
+    </para>
             </entry>
           </row>
           <row>
@@ -1036,8 +1104,8 @@
             </entry>
             <entry>
               <para>
-            Rebuild all orders in the order list of a work area.
-        </para>
+      重建工作区中 Order 列表的所有 Order 。
+    </para>
             </entry>
           </row>
           <row>
@@ -1051,8 +1119,8 @@
             </entry>
             <entry>
               <para>
-            Return the linking expression of a specified relation.
-        </para>
+      返回指定关系的链接表达式。
+    </para>
             </entry>
           </row>
           <row>
@@ -1066,8 +1134,8 @@
             </entry>
             <entry>
               <para>
-            Lock a record in a shared database file, optionally retaining previous record locks.
-        </para>
+      在共享数据库文件中锁定记录，可选择保留先前的记录锁定。
+    </para>
             </entry>
           </row>
           <row>
@@ -1081,8 +1149,8 @@
             </entry>
             <entry>
               <para>
-            Get a list of locked records.
-        </para>
+      获取锁定记录的列表。
+    </para>
             </entry>
           </row>
           <row>
@@ -1096,8 +1164,8 @@
             </entry>
             <entry>
               <para>
-            Return the work area number of a relation.
-        </para>
+      返回关系的工作区号。
+    </para>
             </entry>
           </row>
           <row>
@@ -1111,8 +1179,8 @@
             </entry>
             <entry>
               <para>
-            Release all or specified record locks.
-        </para>
+      释放所有或指定的记录锁。
+    </para>
             </entry>
           </row>
           <row>
@@ -1139,8 +1207,21 @@
             </entry>
             <entry>
               <para>
-            Move to the record having the specified key value in the controlling order.
-        </para>
+      移动到控制顺序中具有指定键值的记录。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbSeekFox(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1154,8 +1235,8 @@
             </entry>
             <entry>
               <para>
-            Select a new work area and retrieve the current work area.
-        </para>
+      选择一个新的工作区并检索当前工作区。
+    </para>
             </entry>
           </row>
           <row>
@@ -1169,8 +1250,8 @@
             </entry>
             <entry>
               <para>
-            Change the current work area.
-        </para>
+      更改当前工作区。
+    </para>
             </entry>
           </row>
           <row>
@@ -1197,10 +1278,10 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the default RDD driver for the application.
-            Note:  DBSetDriver() is a compatibility function and is no longer recommended.
-            It is superseded by the RDDSetDefault() function.  See RDDSetDefault() for more information.
-        </para>
+      返回并可选地更改应用程序的默认 RDD 驱动程序。
+      注意：DBSetDriver() 是一个兼容性函数，不再推荐使用。
+      它已被 RDDSetDefault() 函数取代。有关更多信息，请参阅 RDDSetDefault()。
+    </para>
             </entry>
           </row>
           <row>
@@ -1214,8 +1295,8 @@
             </entry>
             <entry>
               <para>
-            Set a filter condition.
-        </para>
+      设置过滤条件。
+    </para>
             </entry>
           </row>
           <row>
@@ -1229,8 +1310,8 @@
             </entry>
             <entry>
               <para>
-            Set the found flag.
-        </para>
+      设置找到标志。
+    </para>
             </entry>
           </row>
           <row>
@@ -1244,8 +1325,8 @@
             </entry>
             <entry>
               <para>
-            Open an index file and add all its orders to the order list in a work area.
-        </para>
+      在工作区中打开一个索引文件并将其所有排序添加到排序列表中。
+    </para>
             </entry>
           </row>
           <row>
@@ -1259,8 +1340,8 @@
             </entry>
             <entry>
               <para>
-            Set the controlling order for a work area.
-        </para>
+      为工作区设置控制排序。
+    </para>
             </entry>
           </row>
           <row>
@@ -1274,8 +1355,8 @@
             </entry>
             <entry>
               <para>
-            Set the condition and scope to use in creating the next order.
-        </para>
+      设置创建下一个排序时使用的条件和范围。
+    </para>
             </entry>
           </row>
           <row>
@@ -1289,8 +1370,8 @@
             </entry>
             <entry>
               <para>
-            Relate a specified work area to the current work area.
-        </para>
+      将指定的工作区关联到当前工作区。
+    </para>
             </entry>
           </row>
           <row>
@@ -1325,7 +1406,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSetScope(System.Int32,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSetScope(System.Int32,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1343,8 +1424,8 @@
             </entry>
             <entry>
               <para>
-            Select a new work area.
-        </para>
+      选择一个新的工作区。
+    </para>
             </entry>
           </row>
           <row>
@@ -1353,13 +1434,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSkip(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSkip(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Move the record pointer relative to the current record.
-        </para>
+      移动记录指针到相对于当前记录的位置。
+    </para>
             </entry>
           </row>
           <row>
@@ -1373,8 +1454,8 @@
             </entry>
             <entry>
               <para>
-            Copy records to a database file in sorted order.
-        </para>
+      将记录按排序顺序复制到数据库文件中。
+    </para>
             </entry>
           </row>
           <row>
@@ -1387,8 +1468,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1402,8 +1482,8 @@
             </entry>
             <entry>
               <para>
-            Copy records to a database file in sorted order.
-        </para>
+      将记录按排序顺序复制到数据库文件中。
+    </para>
             </entry>
           </row>
           <row>
@@ -1417,8 +1497,8 @@
             </entry>
             <entry>
               <para>
-            Create an array containing the structure of a database file.
-        </para>
+      创建包含数据库文件结构的数组。
+    </para>
             </entry>
           </row>
           <row>
@@ -1432,8 +1512,8 @@
             </entry>
             <entry>
               <para>
-            Select a new work area by specifying its alias as a symbol.
-        </para>
+      通过指定别名作为符号来选择新的工作区。
+    </para>
             </entry>
           </row>
           <row>
@@ -1446,8 +1526,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1461,8 +1540,8 @@
             </entry>
             <entry>
               <para>
-            Summarize records by key value to a database file.
-        </para>
+      根据键值将记录汇总到数据库文件中。
+    </para>
             </entry>
           </row>
           <row>
@@ -1476,8 +1555,8 @@
             </entry>
             <entry>
               <para>
-            Transfer records to an open database file.
-        </para>
+      将记录传输到打开的数据库文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -1491,8 +1570,8 @@
             </entry>
             <entry>
               <para>
-            Release all locks for a work area.
-        </para>
+      释放工作区的所有锁定或指定锁定。
+    </para>
             </entry>
           </row>
           <row>
@@ -1506,8 +1585,8 @@
             </entry>
             <entry>
               <para>
-            Release all locks for all work areas.
-        </para>
+      释放所有工作区的所有锁定。
+    </para>
             </entry>
           </row>
           <row>
@@ -1534,8 +1613,8 @@
             </entry>
             <entry>
               <para>
-            Replace fields in the current work area with values from another work area, based on the specified key expression.
-        </para>
+      根据指定的键表达式，用另一个工作区的值替换当前工作区的字段。
+    </para>
             </entry>
           </row>
           <row>
@@ -1549,8 +1628,23 @@
             </entry>
             <entry>
               <para>
-            Open a database file.
-        </para>
+      打开一个数据库文件。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbUseAreaFox(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Open a database file.
+    </para>
             </entry>
           </row>
           <row>
@@ -1564,7 +1658,7 @@
             </entry>
             <entry>
               <para>
-            Returns true (.T.) if the specified database is open.
+            如果指定的数据库已打开，则返回true (.T.)。
         </para>
             </entry>
           </row>
@@ -1579,8 +1673,8 @@
             </entry>
             <entry>
               <para>
-            Remove all records from open files.
-        </para>
+      从打开的文件中删除所有记录。
+    </para>
             </entry>
           </row>
           <row>
@@ -1594,8 +1688,8 @@
             </entry>
             <entry>
               <para>
-            Return the deleted status of the current record.
-        </para>
+      返回当前记录的删除状态。
+    </para>
             </entry>
           </row>
           <row>
@@ -1609,8 +1703,49 @@
             </entry>
             <entry>
               <para>
-            Determine when end-of-file is encountered.
-        </para>
+      确定何时遇到文件结尾。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Eof</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FCount</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      返回当前数据库文件中的字段数量。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FCount</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1639,8 +1774,8 @@
             </entry>
             <entry>
               <para>
-            Return a set-get code block for a field that is identified by its name.
-        </para>
+      返回一个用于通过名称标识的字段的设置-获取代码块。
+    </para>
             </entry>
           </row>
           <row>
@@ -1654,8 +1789,8 @@
             </entry>
             <entry>
               <para>
-            Return a set-get code block for a field that is identified by a symbol.
-        </para>
+      返回一个用于通过符号标识的字段的设置-获取代码块。
+    </para>
             </entry>
           </row>
           <row>
@@ -1669,8 +1804,8 @@
             </entry>
             <entry>
               <para>
-            Get the contents of a field that is identified by its position.
-        </para>
+      获取由其位置标识的字段的内容。
+    </para>
             </entry>
           </row>
           <row>
@@ -1684,8 +1819,8 @@
             </entry>
             <entry>
               <para>
-            Get the contents of a field that is identified by a work area alias and the field name.
-        </para>
+      获取由工作区别名和字段名标识的字段的内容。
+    </para>
             </entry>
           </row>
           <row>
@@ -1699,8 +1834,8 @@
             </entry>
             <entry>
               <para>
-            Get the contents of a field that is identified by its work area and a symbol.
-        </para>
+      获取由工作区和符号标识的字段的内容。
+    </para>
             </entry>
           </row>
           <row>
@@ -1714,8 +1849,8 @@
             </entry>
             <entry>
               <para>
-            Get the contents of a field that is identified by its position.
-        </para>
+      获取由其位置标识的字段的内容。
+    </para>
             </entry>
           </row>
           <row>
@@ -1729,8 +1864,8 @@
             </entry>
             <entry>
               <para>
-            Get the contents of a field that is identified by a work area alias and the field name.
-        </para>
+      获取由工作区别名和字段名标识的字段的内容。
+    </para>
             </entry>
           </row>
           <row>
@@ -1744,8 +1879,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve the contents of a field that is identified by its symbolic name.
-        </para>
+      通过符号名称获取字段内容。
+    </para>
             </entry>
           </row>
           <row>
@@ -1759,8 +1894,8 @@
             </entry>
             <entry>
               <para>
-            Return the name of a field as a string.
-        </para>
+      返回字段名称作为字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -1774,8 +1909,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of a field.
-        </para>
+      返回字段的位置。
+    </para>
             </entry>
           </row>
           <row>
@@ -1789,8 +1924,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of a field that is identified by a symbol.
-        </para>
+      返回由符号标识的字段的位置。
+    </para>
             </entry>
           </row>
           <row>
@@ -1804,8 +1939,8 @@
             </entry>
             <entry>
               <para>
-            Set the value of a field identified by its position.
-        </para>
+      通过位置设置字段的值。
+    </para>
             </entry>
           </row>
           <row>
@@ -1814,13 +1949,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutAlias(XSharp.__Symbol,XSharp.__Symbol,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutAlias(XSharp.__Symbol,XSharp.__Symbol,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Set the value of a field identified by its work area alias and field name.
-        </para>
+      设置由工作区别名和字段名标识的字段的值。
+    </para>
             </entry>
           </row>
           <row>
@@ -1829,13 +1964,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutArea(System.UInt32,XSharp.__Symbol,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutArea(System.UInt32,XSharp.__Symbol,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Set the value of a field identified by its work area number and field name.
-        </para>
+      通过工作区号和字段名设置字段的值。
+    </para>
             </entry>
           </row>
           <row>
@@ -1857,13 +1992,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutSelect(XSharp.__Usual,XSharp.__Symbol,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutSelect(XSharp.__Usual,XSharp.__Symbol,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Set the value of a field identified by its work area alias and field name.
-        </para>
+      通过工作区别名和字段名设置字段的值。
+    </para>
             </entry>
           </row>
           <row>
@@ -1872,13 +2007,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutSym(XSharp.__Symbol,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutSym(XSharp.__Symbol,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Set the value of a field that is identified by its symbolic name.
-        </para>
+      通过符号名称设置字段的值。
+    </para>
             </entry>
           </row>
           <row>
@@ -1892,8 +2027,8 @@
             </entry>
             <entry>
               <para>
-            Return the name of a field as a symbol.
-        </para>
+      返回字段名称作为符号。
+    </para>
             </entry>
           </row>
           <row>
@@ -1907,8 +2042,8 @@
             </entry>
             <entry>
               <para>
-            Return a set-get code block for a field, specified as a string, in a specified work area.
-        </para>
+      返回指定工作区中以字符串指定的字段的设置-获取代码块。
+    </para>
             </entry>
           </row>
           <row>
@@ -1917,13 +2052,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldWBlockSym(XSharp.__Symbol,System.UInt32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldWBlockSym(XSharp.__Symbol,System.UInt32@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return a set-get code block for a field, specified as a symbol, in a specified work area.
-        </para>
+      返回指定工作区中以符号指定的字段的设置-获取代码块。
+    </para>
             </entry>
           </row>
           <row>
@@ -1980,8 +2115,21 @@
             </entry>
             <entry>
               <para>
-            Lock an opened and shared database file.
-        </para>
+      锁定已打开并共享的数据库文件。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FLock(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1995,8 +2143,21 @@
             </entry>
             <entry>
               <para>
-            Determine if the previous search operation succeeded.
-        </para>
+      确定上一次搜索操作是否成功。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Found</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -2023,8 +2184,21 @@
             </entry>
             <entry>
               <para>
-            Return the length of the database file header.
-        </para>
+      返回数据库文件头的长度。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Header</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -2037,7 +2211,7 @@
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2051,8 +2225,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of the last record in a database file.
-        </para>
+      返回数据库文件中最后一条记录的编号。
+    </para>
             </entry>
           </row>
           <row>
@@ -2066,7 +2240,7 @@
             </entry>
             <entry>
               <para>
-            Attempts to lock one or more records in a table.
+            尝试锁定表中的一个或多个记录。
         </para>
             </entry>
           </row>
@@ -2080,8 +2254,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2108,8 +2281,21 @@
             </entry>
             <entry>
               <para>
-            Return the date a database file was last modified and closed.
-        </para>
+      返回数据库文件最后修改和关闭的日期。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LUpdate(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -2151,8 +2337,21 @@
             </entry>
             <entry>
               <para>
-            Determine the number of records in a database file.
-        </para>
+      确定数据库文件中的记录数量。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RecCount</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -2166,8 +2365,21 @@
             </entry>
             <entry>
               <para>
-            Return the current record number.
-        </para>
+      返回当前记录编号。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RecNo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -2181,8 +2393,21 @@
             </entry>
             <entry>
               <para>
-            Determine the record length of a database file.
-        </para>
+      确定数据库文件的记录长度。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RecSize(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -2211,8 +2436,21 @@
             </entry>
             <entry>
               <para>
-            Lock the current record.
-        </para>
+      锁定当前记录。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RLock(System.String,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -2225,7 +2463,11 @@
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            在索引表中搜索第一个索引键与指定表达式匹配的记录。
+            执行 Seek( ) 相当于依次执行 Seek 和 FOUND( )。
+            X# 不支持对二进制索引进行搜索操作。
+        </para>
             </entry>
           </row>
           <row>
@@ -2239,8 +2481,21 @@
             </entry>
             <entry>
               <para>
-            Determine the number of a work area.
-        </para>
+      确定工作区的编号。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Select(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -2308,8 +2563,21 @@
             </entry>
             <entry>
               <para>
-            Determine whether a database file is open.
-        </para>
+      确定数据库文件是否打开。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Used</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
         </table>

@@ -55,8 +55,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -70,8 +69,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string.
-        </para>
+      Convert a numeric expression to a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -85,8 +84,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string of specific length and decimal places.
-        </para>
+      Convert a numeric expression to a string of specific length and decimal places.
+    </para>
             </entry>
           </row>
           <row>
@@ -100,8 +99,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a numeric value to a numeric data type.
-        </para>
+      Convert a string containing a numeric value to a numeric data type.
+    </para>
             </entry>
           </row>
           <row>
@@ -154,8 +153,8 @@
             </entry>
             <entry>
               <para>
-            Remove leading and trailing spaces from a string.
-        </para>
+      Remove leading and trailing spaces from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -168,9 +167,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-            Remove leading and trailing spaces from a string.
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -184,8 +181,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string of ANSI characters to OEM characters.
-        </para>
+      Convert a string of ANSI characters to OEM characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -199,8 +196,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string of ANSI characters to OEM characters, changing the contents of the original string as well as the returned string.
-        </para>
+      Convert a string of ANSI characters to OEM characters, changing the contents of the original string as well as the returned string.
+    </para>
             </entry>
           </row>
           <row>
@@ -214,8 +211,8 @@
             </entry>
             <entry>
               <para>
-            Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
-        </para>
+      Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -229,8 +226,8 @@
             </entry>
             <entry>
               <para>
-            Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
-        </para>
+      Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -244,8 +241,38 @@
             </entry>
             <entry>
               <para>
-            Convert a character to its ASCII value.
-        </para>
+      Convert a character to its ASCII value.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Asc(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the ANSI value for the leftmost character in a character expression.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.AscA(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Convert a character to its ASCII value.
+    </para>
             </entry>
           </row>
           <row>
@@ -269,13 +296,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsHexString(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsHexString(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a value to a hexadecimal string.
-        </para>
+      Convert a value to a hexadecimal string.
+    </para>
             </entry>
           </row>
           <row>
@@ -289,8 +316,8 @@
             </entry>
             <entry>
               <para>
-            Convert a value to a right-padded string.
-        </para>
+      Convert a value to a right-padded string.
+    </para>
             </entry>
           </row>
           <row>
@@ -299,13 +326,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsString(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsString(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a value to a string.
-        </para>
+      Convert a value to a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -319,8 +346,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string.
-        </para>
+      Return the position of the first occurrence of a substring within a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -360,8 +387,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string.
-        </para>
+      Return the position of the first occurrence of a substring within a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -375,8 +402,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string, starting at a specified position.
-        </para>
+      Return the position of the first occurrence of a substring within a string, starting at a specified position.
+    </para>
             </entry>
           </row>
           <row>
@@ -390,8 +417,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string, without regard for case.
-        </para>
+      Return the position of the first occurrence of a substring within a string, without regard for case.
+    </para>
             </entry>
           </row>
           <row>
@@ -418,8 +445,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string, without regard for case.
-        </para>
+      Return the position of the first occurrence of a substring within a string, without regard for case.
+    </para>
             </entry>
           </row>
           <row>
@@ -446,8 +473,23 @@
             </entry>
             <entry>
               <para>
-            Return the line number of the first occurrence of a substring within a multiple line string, without regard for case.
-        </para>
+      Return the line number of the first occurrence of a substring within a multiple line string, without regard for case.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AtCLine(System.String,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the line number of the first occurrence of a character expression or memo field within another character expression or memo field, without regard for the case (upper or lower) of the characters in either expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -461,8 +503,8 @@
             </entry>
             <entry>
               <para>
-            Return the line number of the first occurrence of a substring within a multiple line string, without regard for case.
-        </para>
+      Return the line number of the first occurrence of a substring within a multiple line string, without regard for case.
+    </para>
             </entry>
           </row>
           <row>
@@ -476,8 +518,23 @@
             </entry>
             <entry>
               <para>
-            Return the line number of the first occurrence of a substring within a multiple line string.
-        </para>
+      Return the line number of the first occurrence of a substring within a multiple line string.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AtLine(System.String,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the line number of the first occurrence of a character expression or memo field within another character expression or memo field, counting from the first line.
+    </para>
             </entry>
           </row>
           <row>
@@ -491,8 +548,8 @@
             </entry>
             <entry>
               <para>
-            Return the line number of the first occurrence of a substring within a multiple line string.
-        </para>
+      Return the line number of the first occurrence of a substring within a multiple line string.
+    </para>
             </entry>
           </row>
           <row>
@@ -506,8 +563,8 @@
             </entry>
             <entry>
               <para>
-            Return an uninitialized string of a specified size.
-        </para>
+      Return an uninitialized string of a specified size.
+    </para>
             </entry>
           </row>
           <row>
@@ -534,8 +591,23 @@
             </entry>
             <entry>
               <para>
-            Extract the name of the day of the week from a date.
-        </para>
+      Extract the name of the day of the week from a date.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CDow(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the day of the week from a given Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -549,8 +621,8 @@
             </entry>
             <entry>
               <para>
-            Return the even-numbered characters in a string.
-        </para>
+      Return the even-numbered characters in a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -564,8 +636,8 @@
             </entry>
             <entry>
               <para>
-            Return a string whose odd-numbered characters and even-numbered characters are from 2 different strings.
-        </para>
+      Return a string whose odd-numbered characters and even-numbered characters are from 2 different strings.
+    </para>
             </entry>
           </row>
           <row>
@@ -579,8 +651,8 @@
             </entry>
             <entry>
               <para>
-            Return the odd-numbered characters in a string.
-        </para>
+      Return the odd-numbered characters in a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -594,8 +666,8 @@
             </entry>
             <entry>
               <para>
-            Return a character based on its position in a string.
-        </para>
+      Return a character based on its position in a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -609,8 +681,23 @@
             </entry>
             <entry>
               <para>
-            Convert an ASCII code to a character value.
-        </para>
+      Convert an ASCII code to a character value.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Chr(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the character associated with the specified numeric ANSI code.
+    </para>
             </entry>
           </row>
           <row>
@@ -669,8 +756,23 @@
             </entry>
             <entry>
               <para>
-            Extract the name of the month from a date.
-        </para>
+      Extract the name of the month from a date.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CMonth(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the name of the month from a given date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -684,8 +786,8 @@
             </entry>
             <entry>
               <para>
-            Encrypt or decrypt a string.
-        </para>
+      Encrypt or decrypt a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -699,8 +801,8 @@
             </entry>
             <entry>
               <para>
-            Encrypt or decrypt a string, changing the contents of the original string as well as returning the encrypted string.
-        </para>
+      Encrypt or decrypt a string, changing the contents of the original string as well as returning the encrypted string.
+    </para>
             </entry>
           </row>
           <row>
@@ -739,11 +841,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CToT(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CToT(System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            Returns a DateTime value from a character expression.
+        </para>
             </entry>
           </row>
           <row>
@@ -757,8 +861,8 @@
             </entry>
             <entry>
               <para>
-            Create a descending order key value.
-        </para>
+      Create a descending order key value.
+    </para>
             </entry>
           </row>
           <row>
@@ -772,8 +876,8 @@
             </entry>
             <entry>
               <para>
-            Create a descending order key value.
-        </para>
+      Create a descending order key value.
+    </para>
             </entry>
           </row>
           <row>
@@ -782,11 +886,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Difference(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Difference(System.String,System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -795,7 +899,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DMY(System.DateTime)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DMY(XSharp.__Date)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -815,8 +919,23 @@
             </entry>
             <entry>
               <para>
-            Convert a date to a string.
-        </para>
+      Convert a date to a string.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dtoc(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a Character-type date from a Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -830,8 +949,23 @@
             </entry>
             <entry>
               <para>
-            Convert a date value to a string formatted as yyyymmdd.
-        </para>
+      Convert a date value to a string formatted as yyyymmdd.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToS(XSharp.__Date)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a character-string date in a yyyymmdd format from a specified Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -875,8 +1009,8 @@
             </entry>
             <entry>
               <para>
-            Convert a double word to a string containing a 32-bit unsigned integer.
-        </para>
+      Convert a double word to a string containing a 32-bit unsigned integer.
+    </para>
             </entry>
           </row>
           <row>
@@ -890,8 +1024,8 @@
             </entry>
             <entry>
               <para>
-            Encode a file for e-mail transfer.
-        </para>
+      Encode a file for e-mail transfer.
+    </para>
             </entry>
           </row>
           <row>
@@ -905,8 +1039,8 @@
             </entry>
             <entry>
               <para>
-            Convert a float to a string containing an 80-bit floating point number.
-        </para>
+      Convert a float to a string containing an 80-bit floating point number.
+    </para>
             </entry>
           </row>
           <row>
@@ -935,8 +1069,8 @@
             </entry>
             <entry>
               <para>
-            Return the name and path of the file that was used by File().
-        </para>
+      Return the name and path of the file that was used by File().
+    </para>
             </entry>
           </row>
           <row>
@@ -945,11 +1079,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FullPath(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FullPath(System.String,System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            Returns the path to a specified file or the path relative to another file.
+        </para>
             </entry>
           </row>
           <row>
@@ -992,8 +1128,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1007,8 +1142,23 @@
             </entry>
             <entry>
               <para>
-            Convert a short integer to a string containing a 16-bit signed integer.
-        </para>
+      Convert a short integer to a string containing a 16-bit signed integer.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.I642Bin(System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Convert a long integer to a string containing a 32-bit signed integer.
+    </para>
             </entry>
           </row>
           <row>
@@ -1022,8 +1172,8 @@
             </entry>
             <entry>
               <para>
-            Indicate whether a substring is contained in a string.
-        </para>
+      Indicate whether a substring is contained in a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -1037,8 +1187,8 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is alphanumeric.
-        </para>
+      Determine if the leftmost character in a string is alphanumeric.
+    </para>
             </entry>
           </row>
           <row>
@@ -1052,8 +1202,23 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is alphabetic.
-        </para>
+      Determine if the leftmost character in a string is alphabetic.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsAlpha(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns one of two values depending on the value of a logical expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1075,13 +1240,58 @@
             </entry>
             <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.IsDigit(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determine if the leftmost character in a string is a digit (that is, a numeric digit between 0 and 9).
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsDigit(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines whether the leftmost character of the specified character expression is a digit (0 through 9).
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.IsLower(System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is a lowercase letter.
-        </para>
+      Determine if the leftmost character in a string is a lowercase letter.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsLower(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines whether the leftmost character of the specified character expression is a lowercase alphabetic character.
+    </para>
             </entry>
           </row>
           <row>
@@ -1095,8 +1305,8 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is a blank (that is, Chr(9) through Chr(13) or Chr(32)).
-        </para>
+      Determine if the leftmost character in a string is a blank (that is, Chr(9) through Chr(13) or Chr(32)).
+    </para>
             </entry>
           </row>
           <row>
@@ -1105,13 +1315,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsString(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsString(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a string.
-        </para>
+      Determine if a value is a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -1125,8 +1335,21 @@
             </entry>
             <entry>
               <para>
-            Determine if the leftmost character in a string is uppercase.
-        </para>
+      Determine if the leftmost character in a string is uppercase.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsUpper(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1140,8 +1363,8 @@
             </entry>
             <entry>
               <para>
-            Convert a long integer to a string containing a 32-bit signed integer.
-        </para>
+      Convert a long integer to a string containing a 32-bit signed integer.
+    </para>
             </entry>
           </row>
           <row>
@@ -1155,8 +1378,23 @@
             </entry>
             <entry>
               <para>
-            Extract a substring beginning with the first character in a string.
-        </para>
+      Extract a substring beginning with the first character in a string.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Left(System.String,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a specified number of characters from a character expression, starting with the leftmost character.
+    </para>
             </entry>
           </row>
           <row>
@@ -1180,13 +1418,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Len(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Len(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the length of a string or an array.
-        </para>
+      Return the length of a string or an array.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Len(XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines the number of characters in a character expression, indicating the length of the expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1215,6 +1468,21 @@
             </entry>
             <entry>
               <para>Determine if a string matches a wildcard pattern (like the wildcard pattern for the DIR command in the OS).</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Like(System.String,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Determines if a character expression matches another character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1258,8 +1526,23 @@
             </entry>
             <entry>
               <para>
-            Convert the uppercase and mixed case characters in a string to lowercase.
-        </para>
+      Convert the uppercase and mixed case characters in a string to lowercase.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Lower(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a specified character expression in lowercase letters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1273,8 +1556,8 @@
             </entry>
             <entry>
               <para>
-            Convert the uppercase and mixed case characters in a string to lowercase, changing the contents of the argument as well as the return value.
-        </para>
+      Convert the uppercase and mixed case characters in a string to lowercase, changing the contents of the argument as well as the return value.
+    </para>
             </entry>
           </row>
           <row>
@@ -1288,8 +1571,8 @@
             </entry>
             <entry>
               <para>
-            Remove leading spaces from a string.
-        </para>
+      Remove leading spaces from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -1303,8 +1586,8 @@
             </entry>
             <entry>
               <para>
-            Remove leading spaces from a string.
-        </para>
+      Remove leading spaces from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -1318,8 +1601,8 @@
             </entry>
             <entry>
               <para>
-            Remove leading and trailing spaces — including double-byte spaces — from a string.
-        </para>
+      Remove leading and trailing spaces — including double-byte spaces — from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -1333,8 +1616,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1348,8 +1631,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1363,8 +1646,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the position of the first occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1378,8 +1661,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a sub string within a string, without regard for case — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the position of the first occurrence of a sub string within a string, without regard for case — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1393,8 +1676,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string, without regard for case — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the position of the first occurrence of a substring within a string, without regard for case — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1408,8 +1691,8 @@
             </entry>
             <entry>
               <para>
-            Return the line number of the first occurrence of a substring within a multiple line string — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the line number of the first occurrence of a substring within a multiple line string — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1423,8 +1706,8 @@
             </entry>
             <entry>
               <para>
-            Return the line number of the first occurrence of a substring within a multiple line string — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the line number of the first occurrence of a substring within a multiple line string — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1438,8 +1721,8 @@
             </entry>
             <entry>
               <para>
-            Return a substring beginning with the first character of a string containing double-byte characters.
-        </para>
+      Return a substring beginning with the first character of a string containing double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1453,8 +1736,8 @@
             </entry>
             <entry>
               <para>
-            Return the length of a string containing double-byte characters or an array.
-        </para>
+      Return the length of a string containing double-byte characters or an array.
+    </para>
             </entry>
           </row>
           <row>
@@ -1468,8 +1751,8 @@
             </entry>
             <entry>
               <para>
-            Remove leading spaces — including double-byte spaces — from a string.
-        </para>
+      Remove leading spaces — including double-byte spaces — from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -1483,8 +1766,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1498,8 +1781,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1513,8 +1796,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the last occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
-        </para>
+      Return the position of the last occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1528,8 +1811,8 @@
             </entry>
             <entry>
               <para>
-            Return a substring beginning with the last character of a string containing double-byte characters.
-        </para>
+      Return a substring beginning with the last character of a string containing double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1543,8 +1826,8 @@
             </entry>
             <entry>
               <para>
-            Remove trailing spaces — including double-byte spaces — from a string.
-        </para>
+      Remove trailing spaces — including double-byte spaces — from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -1558,8 +1841,8 @@
             </entry>
             <entry>
               <para>
-            Return the length of a strongly typed string containing double-byte characters.
-        </para>
+      Return the length of a strongly typed string containing double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1573,8 +1856,8 @@
             </entry>
             <entry>
               <para>
-            Insert a string into another string, optionally deleting a specified number of characters from the original string — both strings can contain double-byte characters.
-        </para>
+      Insert a string into another string, optionally deleting a specified number of characters from the original string — both strings can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1603,8 +1886,8 @@
             </entry>
             <entry>
               <para>
-            Extract a substring from a string, using strong typing and only two arguments — both the substring and the string can contain double-byte characters.
-        </para>
+      Extract a substring from a string, using strong typing and only two arguments — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1618,8 +1901,8 @@
             </entry>
             <entry>
               <para>
-            Extract a substring from a string, using strong typing and three required arguments — both the substring and the string can contain double-byte characters.
-        </para>
+      Extract a substring from a string, using strong typing and three required arguments — both the substring and the string can contain double-byte characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1633,8 +1916,8 @@
             </entry>
             <entry>
               <para>
-            Remove trailing spaces — including double-byte spaces — from a string.
-        </para>
+      Remove trailing spaces — including double-byte spaces — from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -1643,12 +1926,12 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MDY(System.DateTime)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MDY(XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
+            Returns the specified date or datetime expression in month-day-year format with the name of the month spelled out.
         </para>
             </entry>
           </row>
@@ -1663,8 +1946,8 @@
             </entry>
             <entry>
               <para>
-            Extract a substring of a certain size from the left of a buffer.
-        </para>
+      Extract a substring of a certain size from the left of a buffer.
+    </para>
             </entry>
           </row>
           <row>
@@ -1678,8 +1961,8 @@
             </entry>
             <entry>
               <para>
-            Replace carriage-return/linefeeds with a character that can be displayed.
-        </para>
+      Replace carriage-return/linefeeds with a character that can be displayed.
+    </para>
             </entry>
           </row>
           <row>
@@ -1701,13 +1984,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NTrim(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NTrim(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a left-trimmed string.
-        </para>
+      Convert a numeric expression to a left-trimmed string.
+    </para>
             </entry>
           </row>
           <row>
@@ -1721,8 +2004,23 @@
             </entry>
             <entry>
               <para>
-            Return the number of times a substring occurs in a string.
-        </para>
+      Return the number of times a substring occurs in a string.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Occurs(System.String,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the number of times a character expression occurs within another character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1736,8 +2034,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of times a substring occurs in a string.
-        </para>
+      Return the number of times a substring occurs in a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -1751,8 +2049,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of times a substring occurs in a string, starting at a specified position.
-        </para>
+      Return the number of times a substring occurs in a string, starting at a specified position.
+    </para>
             </entry>
           </row>
           <row>
@@ -1766,8 +2064,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string of OEM characters to ANSI characters.
-        </para>
+      Convert a string of OEM characters to ANSI characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1781,8 +2079,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string of OEM characters to ANSI characters, changing the contents of the argument as well as the return value.
-        </para>
+      Convert a string of OEM characters to ANSI characters, changing the contents of the argument as well as the return value.
+    </para>
             </entry>
           </row>
           <row>
@@ -1796,8 +2094,8 @@
             </entry>
             <entry>
               <para>
-            Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
-        </para>
+      Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1811,8 +2109,25 @@
             </entry>
             <entry>
               <para>
-            Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
-        </para>
+      Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.OemToAnsi(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Included for backward compatibility. Use the CPCONVERT( ) Function instead.
+
+      Converts each character in a character expression to the corresponding character in the ANSI character set.
+    </para>
             </entry>
           </row>
           <row>
@@ -1826,8 +2141,8 @@
             </entry>
             <entry>
               <para>
-            Pad character, numeric, and date values with fill characters on the right.
-        </para>
+      Pad character, numeric, and date values with fill characters on the right.
+    </para>
             </entry>
           </row>
           <row>
@@ -1841,8 +2156,21 @@
             </entry>
             <entry>
               <para>
-            Pad character, numeric, and date values with fill characters on both the right and left.
-        </para>
+      Pad character, numeric, and date values with fill characters on both the right and left.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.PadC(XSharp.__Usual,System.Int32,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1856,8 +2184,21 @@
             </entry>
             <entry>
               <para>
-            Pad character, numeric, and date values with fill characters on the left.
-        </para>
+      Pad character, numeric, and date values with fill characters on the left.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.PadL(XSharp.__Usual,System.Int32,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1871,8 +2212,21 @@
             </entry>
             <entry>
               <para>
-            Pad character, numeric, and date values with fill characters on the right.
-        </para>
+      Pad character, numeric, and date values with fill characters on the right.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.PadR(XSharp.__Usual,System.Int32,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1977,8 +2331,8 @@
             </entry>
             <entry>
               <para>
-            Change the first character of each word to uppercase
-        </para>
+      Change the first character of each word to uppercase
+    </para>
             </entry>
           </row>
           <row>
@@ -1992,8 +2346,8 @@
             </entry>
             <entry>
               <para>
-            Capitalize a proper name correctly, changing the contents of the argument as well as the return value.
-        </para>
+      Capitalize a proper name correctly, changing the contents of the argument as well as the return value.
+    </para>
             </entry>
           </row>
           <row>
@@ -2007,8 +2361,8 @@
             </entry>
             <entry>
               <para>
-            Convert a null-terminated string to a strongly typed string.
-        </para>
+      Convert a null-terminated string to a strongly typed string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2022,8 +2376,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the last occurrence of a substring within a string.
-        </para>
+      Return the position of the last occurrence of a substring within a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2052,8 +2406,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the last occurrence of a substring within a string.
-        </para>
+      Return the position of the last occurrence of a substring within a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2067,8 +2421,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the last occurrence of a substring within a string.
-        </para>
+      Return the position of the last occurrence of a substring within a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2097,8 +2451,23 @@
             </entry>
             <entry>
               <para>
-            Return the line number of the last occurrence of a substring within a multiline string.
-        </para>
+      Return the line number of the last occurrence of a substring within a multiline string.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RAtLine(System.String,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the line number of the last occurrence of a character expression within another character expression or memo field, counting from the last line.
+    </para>
             </entry>
           </row>
           <row>
@@ -2112,8 +2481,8 @@
             </entry>
             <entry>
               <para>
-            Return the line number of the last occurrence of a substring within a multiline string.
-        </para>
+      Return the line number of the last occurrence of a substring within a multiline string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2127,8 +2496,8 @@
             </entry>
             <entry>
               <para>
-            Repeat a string a specified number of times.
-        </para>
+      Repeat a string a specified number of times.
+    </para>
             </entry>
           </row>
           <row>
@@ -2142,8 +2511,23 @@
             </entry>
             <entry>
               <para>
-            Repeat a string a specified number of times.
-        </para>
+      Repeat a string a specified number of times.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Replicate(System.String,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a character string that contains a specified character expression repeated a specified number of times.
+    </para>
             </entry>
           </row>
           <row>
@@ -2157,8 +2541,23 @@
             </entry>
             <entry>
               <para>
-            Return a substring beginning with the rightmost character.
-        </para>
+      Return a substring beginning with the rightmost character.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Right(System.String,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the specified number of rightmost characters from a character string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2187,8 +2586,8 @@
             </entry>
             <entry>
               <para>
-            Remove trailing spaces from a string.
-        </para>
+      Remove trailing spaces from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2202,8 +2601,8 @@
             </entry>
             <entry>
               <para>
-            Remove trailing spaces from a string.
-        </para>
+      Remove trailing spaces from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2216,8 +2615,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2231,8 +2629,8 @@
             </entry>
             <entry>
               <para>
-            Execute a code block for each of the individual characters in a string.
-        </para>
+      Execute a code block for each of the individual characters in a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2246,8 +2644,8 @@
             </entry>
             <entry>
               <para>
-            Execute a code block for each of the individual characters in a string, changing the contents of the argument as well as the return value.
-        </para>
+      Execute a code block for each of the individual characters in a string, changing the contents of the argument as well as the return value.
+    </para>
             </entry>
           </row>
           <row>
@@ -2261,8 +2659,8 @@
             </entry>
             <entry>
               <para>
-            Return the length of a strongly typed string.
-        </para>
+      Return the length of a strongly typed string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2276,8 +2674,23 @@
             </entry>
             <entry>
               <para>
-            Convert a string to Soundex form.
-        </para>
+      Convert a string to Soundex form.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Soundex(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a phonetic representation of the specified character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -2291,8 +2704,23 @@
             </entry>
             <entry>
               <para>
-            Create a string of spaces.
-        </para>
+      Create a string of spaces.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Space(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a character string composed of a specified number of spaces.
+    </para>
             </entry>
           </row>
           <row>
@@ -2306,8 +2734,8 @@
             </entry>
             <entry>
               <para>
-            Convert an ANSI date string to date format.
-        </para>
+      Convert an ANSI date string to date format.
+    </para>
             </entry>
           </row>
           <row>
@@ -2336,8 +2764,23 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string.
-        </para>
+      Convert a numeric expression to a string.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the character equivalent of a numeric expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -2346,13 +2789,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str1(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str1(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string.
-        </para>
+      Convert a numeric expression to a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2366,8 +2809,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string of a specified length.
-        </para>
+      Convert a numeric expression to a string of a specified length.
+    </para>
             </entry>
           </row>
           <row>
@@ -2381,8 +2824,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string of specific length and decimal places.
-        </para>
+      Convert a numeric expression to a string of specific length and decimal places.
+    </para>
             </entry>
           </row>
           <row>
@@ -2391,11 +2834,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrConv(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrConv(XSharp.__Usual,System.Int32,System.Int32,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2409,8 +2852,8 @@
             </entry>
             <entry>
               <para>
-            Allows text substitution in strings entered at runtime.
-        </para>
+      Allows text substitution in strings entered at runtime.
+    </para>
             </entry>
           </row>
           <row>
@@ -2419,11 +2862,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrExtract(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrExtract(System.String,System.String,System.String,System.Int32,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2437,8 +2880,8 @@
             </entry>
             <entry>
               <para>
-            Convert a float expression to a PSZ.
-        </para>
+      Convert a float expression to a PSZ.
+    </para>
             </entry>
           </row>
           <row>
@@ -2466,8 +2909,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2496,8 +2938,8 @@
             </entry>
             <entry>
               <para>
-            Copy a string to a newly allocated block of memory and return a PSZ to the memory.
-        </para>
+      Copy a string to a newly allocated block of memory and return a PSZ to the memory.
+    </para>
             </entry>
           </row>
           <row>
@@ -2511,8 +2953,8 @@
             </entry>
             <entry>
               <para>
-            Convert an integer expression to a PSZ.
-        </para>
+      Convert an integer expression to a PSZ.
+    </para>
             </entry>
           </row>
           <row>
@@ -2526,8 +2968,8 @@
             </entry>
             <entry>
               <para>
-            Convert a long integer expression to a PSZ.
-        </para>
+      Convert a long integer expression to a PSZ.
+    </para>
             </entry>
           </row>
           <row>
@@ -2556,8 +2998,8 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a numeric value to a numeric data type.
-        </para>
+      Convert a string containing a numeric value to a numeric data type.
+    </para>
             </entry>
           </row>
           <row>
@@ -2571,8 +3013,23 @@
             </entry>
             <entry>
               <para>
-            Search and replace characters within a string.
-        </para>
+      Search and replace characters within a string.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrTran(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Searches a character expression or memo field for a second character expression or memo field and replaces each occurrence with a third character expression or memo field. You can specify where the replacement begins and how many replacements are made.
+    </para>
             </entry>
           </row>
           <row>
@@ -2586,8 +3043,8 @@
             </entry>
             <entry>
               <para>
-            Convert a numeric expression to a string and pad it with leading zeroes instead of blanks.
-        </para>
+      Convert a numeric expression to a string and pad it with leading zeroes instead of blanks.
+    </para>
             </entry>
           </row>
           <row>
@@ -2601,8 +3058,23 @@
             </entry>
             <entry>
               <para>
-            Delete and insert characters in a string.
-        </para>
+      Delete and insert characters in a string.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Stuff(System.String,System.UInt32,System.UInt32,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a character string created by replacing a specified number of characters in a character expression with another character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -2631,8 +3103,8 @@
             </entry>
             <entry>
               <para>
-            Extract a substring from a string.
-        </para>
+      Extract a substring from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2646,8 +3118,23 @@
             </entry>
             <entry>
               <para>
-            Extract a substring from a string.
-        </para>
+      Extract a substring from a string.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Substr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a character string from the given character expression or memo field, starting at a specified position in the character expression or memo field and continuing for a specified number of characters.
+    </para>
             </entry>
           </row>
           <row>
@@ -2661,8 +3148,8 @@
             </entry>
             <entry>
               <para>
-            Extract a substring from a string, using strong typing and only two arguments.
-        </para>
+      Extract a substring from a string, using strong typing and only two arguments.
+    </para>
             </entry>
           </row>
           <row>
@@ -2676,8 +3163,8 @@
             </entry>
             <entry>
               <para>
-            Extract a substring from a string, using strong typing and three required arguments.
-        </para>
+      Extract a substring from a string, using strong typing and three required arguments.
+    </para>
             </entry>
           </row>
           <row>
@@ -2721,8 +3208,8 @@
             </entry>
             <entry>
               <para>
-            Convert any value into a formatted string.
-        </para>
+      Convert any value into a formatted string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2735,7 +3222,10 @@
               </para>
             </entry>
             <entry>
-              <para>M:XSharp.VFP.Functions.Transform(XSharp.__Usual)VfpRuntimeDocs.xmlRuntimefunctions/transform/*</para>
+              <para>
+      Returns a character string from an expression in a format determined by a format code.
+      Using TRANSFORM( ) with a large negative number that contains a decimal might result in numeric overflow when that number is passed in as a memory variable. You should use the STR( ) function instead with such numbers.
+    </para>
             </entry>
           </row>
           <row>
@@ -2749,8 +3239,8 @@
             </entry>
             <entry>
               <para>
-            Remove trailing spaces from a string.
-        </para>
+      Remove trailing spaces from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2763,9 +3253,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-            Remove trailing spaces from a string.
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2779,8 +3267,8 @@
             </entry>
             <entry>
               <para>
-            Convert a specified number of seconds to a time string.
-        </para>
+      Convert a specified number of seconds to a time string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2789,13 +3277,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.TString(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.TString(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Convert a specified number of seconds to a time string.
-        </para>
+      Convert a specified number of seconds to a time string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2804,11 +3292,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TToC(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TToC(System.DateTime,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para>
+            Converts a DateTime expression to a Character value with the specified format.
+        </para>
             </entry>
           </row>
           <row>
@@ -2850,8 +3340,8 @@
             </entry>
             <entry>
               <para>
-            Convert a transformed string back to its original value.
-        </para>
+      Convert a transformed string back to its original value.
+    </para>
             </entry>
           </row>
           <row>
@@ -2865,8 +3355,23 @@
             </entry>
             <entry>
               <para>
-            Convert the lowercase and mixed case characters in a string to uppercase.
-        </para>
+      Convert the lowercase and mixed case characters in a string to uppercase.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Upper(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns the specified character expression in uppercase.
+    </para>
             </entry>
           </row>
           <row>
@@ -2880,8 +3385,8 @@
             </entry>
             <entry>
               <para>
-            Convert the lowercase and mixed case characters in a string to uppercase, changing the contents of the argument as well as the return value.
-        </para>
+      Convert the lowercase and mixed case characters in a string to uppercase, changing the contents of the argument as well as the return value.
+    </para>
             </entry>
           </row>
           <row>
@@ -2895,8 +3400,23 @@
             </entry>
             <entry>
               <para>
-            Convert a string containing a numeric value to a numeric data type.
-        </para>
+      Convert a string containing a numeric value to a numeric data type.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Val(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a numeric or currency value from a character expression composed of numbers. You can use VAL( ) to convert the character strings returned by the X# SYS( ) functions to numeric values.
+    </para>
             </entry>
           </row>
         </table>

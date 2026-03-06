@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Detect a concurrency conflict.
-        </para>
+      检测并发冲突。
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Identify the current workstation.
-        </para>
+      识别当前工作站。
+    </para>
             </entry>
           </row>
         </table>

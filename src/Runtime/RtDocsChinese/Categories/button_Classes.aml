@@ -30,7 +30,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which all X# buttons are subclassed.
+      提供所有 X# 按钮的基类。
     </para>
             </entry>
           </row>
@@ -45,7 +45,7 @@
             </entry>
             <entry>
               <para>
-      Create check boxes, which are controls that can be toggled on or off by a user (or for 3-state check boxes, to a third state).
+      创建复选框，复选框是用户可以切换开或关的控件(对于三态复选框，可以切换到第三种状态)。
     </para>
             </entry>
           </row>
@@ -60,7 +60,7 @@
             </entry>
             <entry>
               <para>
-      Create a push button, which can be used to initiate an event and associated action when clicked on by the user.
+      创建一个推按钮，用户点击时可以触发事件和相关操作。
     </para>
             </entry>
           </row>
@@ -75,7 +75,7 @@
             </entry>
             <entry>
               <para>
-      Create a radio button.
+      创建一个单选按钮。
     </para>
             </entry>
           </row>
@@ -90,7 +90,7 @@
             </entry>
             <entry>
               <para>
-      A group of radio buttons considered as a combination control, presenting a set of options and returning a single value.
+      一组单选按钮，被视为一个组合控件，呈现一组选项，并返回一个值。
     </para>
             </entry>
           </row>

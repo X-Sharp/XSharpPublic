@@ -30,8 +30,21 @@
             </entry>
             <entry>
               <para>
-            Return the alias of a specified work area as a string.
-        </para>
+      返回指定工作区的别名作为字符串。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Alias(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -45,8 +58,8 @@
             </entry>
             <entry>
               <para>
-            Return the alias of the current work area as a string.
-        </para>
+      返回当前工作区的别名作为字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +73,8 @@
             </entry>
             <entry>
               <para>
-            Return the alias of the current work area as a symbol.
-        </para>
+      返回当前工作区的别名作为符号。
+    </para>
             </entry>
           </row>
           <row>
@@ -139,8 +152,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>

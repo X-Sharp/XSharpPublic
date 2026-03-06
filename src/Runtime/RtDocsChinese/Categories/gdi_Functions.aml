@@ -29,8 +29,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -56,8 +55,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -70,8 +68,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -85,7 +82,7 @@
             </entry>
             <entry>
               <para>
-            Displays the Windows Color dialog box and returns the color number of the chosen color.
+            显示Windows颜色对话框并返回所选颜色的颜色编号。
         </para>
             </entry>
           </row>
@@ -99,8 +96,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -114,7 +110,7 @@
             </entry>
             <entry>
               <para>
-            Displays the Font dialog box and returns information about the font you choose.
+            显示字体对话框并返回您选择的字体信息。
         </para>
             </entry>
           </row>
@@ -128,8 +124,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -142,8 +137,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -156,8 +150,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -183,8 +176,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -197,8 +189,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -212,8 +203,8 @@
             </entry>
             <entry>
               <para>
-            Get a particular color from a user-defined palette.
-        </para>
+      从用户定义的调色板中获取特定颜色。
+    </para>
             </entry>
           </row>
           <row>
@@ -227,8 +218,21 @@
             </entry>
             <entry>
               <para>
-            Get a particular Windows color.
-        </para>
+      获取特定的 Windows 颜色。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Rgb(System.Int32,System.Int32,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -263,12 +267,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SetColor(System.String)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SetColor</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -282,8 +285,8 @@
             </entry>
             <entry>
               <para>
-            Display a bitmap in a window or control.
-        </para>
+      在窗口或控件中显示位图。
+    </para>
             </entry>
           </row>
           <row>
@@ -297,8 +300,8 @@
             </entry>
             <entry>
               <para>
-            Display a bitmap stretched or shrunk to fit a window or control.
-        </para>
+      显示拉伸或缩小以适应窗口或控件的位图。
+    </para>
             </entry>
           </row>
           <row>

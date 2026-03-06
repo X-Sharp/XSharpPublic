@@ -29,8 +29,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -56,8 +55,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -70,8 +68,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -99,8 +96,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -128,8 +124,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -142,8 +137,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -156,8 +150,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -183,8 +176,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -197,8 +189,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -212,8 +203,8 @@
             </entry>
             <entry>
               <para>
-            Get a particular color from a user-defined palette.
-        </para>
+      Get a particular color from a user-defined palette.
+    </para>
             </entry>
           </row>
           <row>
@@ -227,8 +218,23 @@
             </entry>
             <entry>
               <para>
-            Get a particular Windows color.
-        </para>
+      Get a particular Windows color.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Rgb(System.Int32,System.Int32,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns a single color value from a set of red, green, and blue color components.
+    </para>
             </entry>
           </row>
           <row>
@@ -263,12 +269,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SetColor(System.String)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SetColor</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -282,8 +287,8 @@
             </entry>
             <entry>
               <para>
-            Display a bitmap in a window or control.
-        </para>
+      Display a bitmap in a window or control.
+    </para>
             </entry>
           </row>
           <row>
@@ -297,8 +302,8 @@
             </entry>
             <entry>
               <para>
-            Display a bitmap stretched or shrunk to fit a window or control.
-        </para>
+      Display a bitmap stretched or shrunk to fit a window or control.
+    </para>
             </entry>
           </row>
           <row>

@@ -69,7 +69,7 @@
       <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.xml" />
       <DocumentationSource sourceFile="..\Docs\XSharp.RT.Docs.xml" />
     </DocumentationSources>
-    <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
+    <HelpTitle>X# Runtime Reference</HelpTitle>
     <HelpFileVersion>3.0.0.2</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
@@ -204,7 +204,7 @@
     </FooterText>
     <SourceCodeBasePath>E:\XSharp\Dev\src\</SourceCodeBasePath>
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
-    <RootNamespaceTitle>X# Runtime and SDK Reference</RootNamespaceTitle>
+    <RootNamespaceTitle>X# Runtime Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169; 2015-2026 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169; Computer Associates.</CopyrightText>
     <BuildLogFile>$(Artifactsdir)\Obj\Help_ZH-CN\BuildLog.log</BuildLogFile>
@@ -291,86 +291,86 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="icons\" />
-    <Folder Include="RtDocs\Categories\" />
-    <Folder Include="RtDocs\" />
+    <Folder Include="RtDocsChinese\Categories\" />
+    <Folder Include="RtDocsChinese\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="RtDocs\Categories\Metadata_Functions.aml" />
-    <None Include="RtDocs\Categories\display_Classes.aml" />
-    <None Include="RtDocs\Categories\attributes_Classes.aml" />
-    <None Include="RtDocs\Categories\ads_Classes.aml" />
-    <None Include="RtDocs\Categories\file_Classes.aml" />
-    <None Include="RtDocs\Categories\event_Classes.aml" />
-    <None Include="RtDocs\Categories\error_Classes.aml" />
-    <None Include="RtDocs\Categories\application_Classes.aml" />
-    <None Include="RtDocs\Categories\dbc_Classes.aml" />
-    <None Include="RtDocs\Categories\data_Classes.aml" />
-    <None Include="RtDocs\Categories\dialog_Classes.aml" />
-    <None Include="RtDocs\Categories\draw_Classes.aml" />
-    <None Include="RtDocs\Categories\button_Classes.aml" />
-    <None Include="RtDocs\Categories\control_Classes.aml" />
-    <None Include="RtDocs\Categories\xpp_Classes.aml" />
-    <None Include="RtDocs\Categories\window_Classes.aml" />
-    <None Include="RtDocs\Categories\vfp_Classes.aml" />
-    <None Include="RtDocs\Categories\textcontrol_Classes.aml" />
-    <None Include="RtDocs\Categories\support_Classes.aml" />
-    <None Include="RtDocs\Categories\state_Classes.aml" />
-    <None Include="RtDocs\Categories\sql_Classes.aml" />
-    <None Include="RtDocs\Categories\rdd_Classes.aml" />
-    <None Include="RtDocs\Categories\printer_Classes.aml" />
-    <None Include="RtDocs\Categories\ole_Classes.aml" />
-    <None Include="RtDocs\Categories\menu_Classes.aml" />
-    <None Include="RtDocs\Categories\macro_Classes.aml" />
-    <None Include="RtDocs\Categories\internet_Classes.aml" />
-    <None Include="RtDocs\Categories\international_Classes.aml" />
-    <None Include="RtDocs\Categories\image_Classes.aml" />
-    <None Include="RtDocs\Categories\help_Classes.aml" />
-    <None Include="RtDocs\Categories\gdi_Functions.aml" />
-    <None Include="RtDocs\Categories\datetime_Functions.aml" />
-    <None Include="RtDocs\Categories\Codeblock_Functions.aml" />
-    <None Include="RtDocs\Categories\template.aml" />
-    <None Include="RtDocs\Categories\XML_Functions.aml" />
-    <None Include="RtDocs\Categories\Usual_Functions.aml" />
-    <None Include="RtDocs\Categories\Time_Functions.aml" />
-    <None Include="RtDocs\Categories\Terminal_Functions.aml" />
-    <None Include="RtDocs\Categories\Symbol_Functions.aml" />
-    <None Include="RtDocs\Categories\Support_Functions.aml" />
-    <None Include="RtDocs\Categories\Sql_Functions.aml" />
-    <None Include="RtDocs\Categories\Settings_Functions.aml" />
-    <None Include="RtDocs\Categories\Registry_Functions.aml" />
-    <None Include="RtDocs\Categories\RDD_Functions.aml" />
-    <None Include="RtDocs\Categories\PSZ_Functions.aml" />
-    <None Include="RtDocs\Categories\Programming_Functions.aml" />
-    <None Include="RtDocs\Categories\Printing_Functions.aml" />
-    <None Include="RtDocs\Categories\Numeric_Functions.aml" />
-    <None Include="RtDocs\Categories\Network_Functions.aml" />
-    <None Include="RtDocs\Categories\Memvar_Functions.aml" />
-    <None Include="RtDocs\Categories\Memory_Functions.aml" />
-    <None Include="RtDocs\Categories\Memo_Functions.aml" />
-    <None Include="RtDocs\Categories\Macro_Functions.aml" />
-    <None Include="RtDocs\Categories\Locking_Functions.aml" />
-    <None Include="RtDocs\Categories\International_Functions.aml" />
-    <None Include="RtDocs\Categories\Index_Functions.aml" />
-    <None Include="RtDocs\Categories\File_Functions.aml" />
-    <None Include="RtDocs\Categories\Error_Functions.aml" />
-    <None Include="RtDocs\Categories\Encryption_Functions.aml" />
-    <None Include="RtDocs\Categories\Disk_Functions.aml" />
-    <None Include="RtDocs\Categories\Dialog_Functions.aml" />
-    <None Include="RtDocs\Categories\Debug_Functions.aml" />
-    <None Include="RtDocs\Categories\DbfTyped_Functions.aml" />
-    <None Include="RtDocs\Categories\Dbf_Functions.aml" />
-    <None Include="RtDocs\Categories\Dbc_Functions.aml" />
-    <None Include="RtDocs\Categories\Cursor_Functions.aml" />
-    <None Include="RtDocs\Categories\Conversion_Functions.aml" />
-    <None Include="RtDocs\Categories\Blob_Functions.aml" />
-    <None Include="RtDocs\Categories\Binary_Functions.aml" />
-    <None Include="RtDocs\Categories\Array_Functions.aml" />
-    <None Include="RtDocs\Categories\Ads_Functions.aml" />
-    <None Include="RtDocs\Categories\Date_Functions.aml" />
-    <None Include="RtDocs\Categories\String_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Metadata_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\display_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\attributes_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\ads_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\file_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\event_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\error_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\application_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\dbc_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\data_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\dialog_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\draw_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\button_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\control_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\xpp_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\window_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\vfp_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\textcontrol_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\support_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\state_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\sql_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\rdd_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\printer_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\ole_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\menu_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\macro_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\internet_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\international_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\image_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\help_Classes.aml" />
+    <None Include="RtDocsChinese\Categories\gdi_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\datetime_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Codeblock_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\template.aml" />
+    <None Include="RtDocsChinese\Categories\XML_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Usual_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Time_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Terminal_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Symbol_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Support_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Sql_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Settings_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Registry_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\RDD_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\PSZ_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Programming_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Printing_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Numeric_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Network_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Memvar_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Memory_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Memo_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Macro_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Locking_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\International_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Index_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\File_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Error_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Encryption_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Disk_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Dialog_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Debug_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\DbfTyped_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Dbf_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Dbc_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Cursor_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Conversion_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Blob_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Binary_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Array_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Ads_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\Date_Functions.aml" />
+    <None Include="RtDocsChinese\Categories\String_Functions.aml" />
   </ItemGroup>
   <ItemGroup>
-    <ContentLayout Include="RtDocs\Content.content" />
+    <ContentLayout Include="RtDocsChinese\Content.content" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="icons\logo100.jpg">

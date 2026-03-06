@@ -25,13 +25,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsArray(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsArray(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is an array.
-        </para>
+      确定一个值是否为数组。
+    </para>
             </entry>
           </row>
           <row>
@@ -40,7 +40,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsBinary(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsBinary(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -59,7 +59,7 @@
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -68,7 +68,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsByRef(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsByRef(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -83,13 +83,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCodeBlock(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCodeBlock(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a code block.
-        </para>
+      确定一个值是否为代码块。
+    </para>
             </entry>
           </row>
           <row>
@@ -98,7 +98,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCurrency(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCurrency(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -113,13 +113,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDate(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDate(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a DATE.
-        </para>
+      确定值是否为日期（DATE）。
+    </para>
             </entry>
           </row>
           <row>
@@ -128,7 +128,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDateTime(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDateTime(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -143,7 +143,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDecimal(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDecimal(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -158,13 +158,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFloat(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFloat(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a FLOAT.
-        </para>
+      确定值是否为浮点数（FLOAT）。
+    </para>
             </entry>
           </row>
           <row>
@@ -173,13 +173,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLogic(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLogic(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a logical.
-        </para>
+      确定一个值是否为逻辑值。
+    </para>
             </entry>
           </row>
           <row>
@@ -188,13 +188,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLong(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLong(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a LONGINT.
-        </para>
+      确定值是否为 LONGINT。
+    </para>
             </entry>
           </row>
           <row>
@@ -203,13 +203,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNil(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNil(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is NIL.
-        </para>
+      确定一个值是否为NIL。
+    </para>
             </entry>
           </row>
           <row>
@@ -218,13 +218,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNumeric(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNumeric(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is a numeric.
-        </para>
+      确定一个值是否为数字。
+    </para>
             </entry>
           </row>
           <row>
@@ -233,13 +233,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsObject(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsObject(XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Determine if a value is an object.
-        </para>
+      确定值是否为对象。
+    </para>
             </entry>
           </row>
         </table>

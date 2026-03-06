@@ -25,13 +25,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AAdd(XSharp.__Array,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AAdd(XSharp.__Array,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Add a new element to the end of an array.
-        </para>
+      Add a new element to the end of an array.
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Duplicate a multidimensional array.
-        </para>
+      Duplicate a multidimensional array.
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Duplicate an array without its subarrays.
-        </para>
+      Duplicate an array without its subarrays.
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +75,23 @@
             </entry>
             <entry>
               <para>
-            Copy elements from one array to another.
-        </para>
+      Copy elements from one array to another.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ACopy(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Copies elements from one array to another array.
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +105,8 @@
             </entry>
             <entry>
               <para>
-            Delete an array element.
-        </para>
+      Delete an array element.
+    </para>
             </entry>
           </row>
           <row>
@@ -146,11 +161,26 @@
             </entry>
             <entry>
               <para>
-            Fill a series of arrays with directory information.
-            Note:
-            ADir() is a compatibility function and therefore not recommended.
-            It is superseded by the Directory() function, which returns all file information in a multidimensional array.
-        </para>
+      Fill a series of arrays with directory information.
+      Note:
+      ADir() is a compatibility function and therefore not recommended.
+      It is superseded by the Directory() function, which returns all file information in a multidimensional array.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ADir(XSharp.__Array,System.String,System.String,System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Places information about files into an array and then returns the number of files.
+    </para>
             </entry>
           </row>
           <row>
@@ -179,8 +209,8 @@
             </entry>
             <entry>
               <para>
-            Execute a code block for each element in an array.
-        </para>
+      Execute a code block for each element in an array.
+    </para>
             </entry>
           </row>
           <row>
@@ -194,8 +224,8 @@
             </entry>
             <entry>
               <para>
-            Execute a code block for each element in an array and assign the return value to each element in the array.
-        </para>
+      Execute a code block for each element in an array and assign the return value to each element in the array.
+    </para>
             </entry>
           </row>
           <row>
@@ -209,8 +239,8 @@
             </entry>
             <entry>
               <para>
-            Execute a code block for each element in an array.
-        </para>
+      Execute a code block for each element in an array.
+    </para>
             </entry>
           </row>
           <row>
@@ -224,11 +254,11 @@
             </entry>
             <entry>
               <para>
-            Fill arrays with the structure of the current database file.
-            Note:
-            AFields() is a compatibility function and therefore not recommended.
-            It is superseded by DBStruct(), which does not require the existence of any arrays prior to invocation and returns a multidimensional array containing the current database file structure.
-        </para>
+      Fill arrays with the structure of the current database file.
+      Note:
+      AFields() is a compatibility function and therefore not recommended.
+      It is superseded by DBStruct(), which does not require the existence of any arrays prior to invocation and returns a multidimensional array containing the current database file structure.
+    </para>
             </entry>
           </row>
           <row>
@@ -237,13 +267,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AFill(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AFill(XSharp.__Array,XSharp.__Usual@,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Fill array elements with a specified value.
-        </para>
+      Fill array elements with a specified value.
+    </para>
             </entry>
           </row>
           <row>
@@ -257,8 +287,8 @@
             </entry>
             <entry>
               <para>
-            Insert an element into an array and assign it a NIL value.
-        </para>
+      Insert an element into an array and assign it a NIL value.
+    </para>
             </entry>
           </row>
           <row>
@@ -287,8 +317,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of elements in an array.
-        </para>
+      Return the number of elements in an array.
+    </para>
             </entry>
           </row>
           <row>
@@ -312,11 +342,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ALines(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ALines(XSharp.__Array,System.String,System.Int32,System.String[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -330,8 +360,8 @@
             </entry>
             <entry>
               <para>
-            To create an array and fill its elements with a default value.
-        </para>
+      To create an array and fill its elements with a default value.
+    </para>
             </entry>
           </row>
           <row>
@@ -345,8 +375,8 @@
             </entry>
             <entry>
               <para>
-            Create an uninitialized array with the specified number of elements and dimensions.
-        </para>
+      Create an uninitialized array with the specified number of elements and dimensions.
+    </para>
             </entry>
           </row>
           <row>
@@ -360,8 +390,8 @@
             </entry>
             <entry>
               <para>
-            Create an empty array.
-        </para>
+      Create an empty array.
+    </para>
             </entry>
           </row>
           <row>
@@ -375,8 +405,8 @@
             </entry>
             <entry>
               <para>
-            Create an uninitialized, one-dimensional array.
-        </para>
+      Create an uninitialized, one-dimensional array.
+    </para>
             </entry>
           </row>
           <row>
@@ -390,8 +420,8 @@
             </entry>
             <entry>
               <para>
-            Removes write protection from an entire array.
-        </para>
+      Removes write protection from an entire array.
+    </para>
             </entry>
           </row>
           <row>
@@ -405,8 +435,8 @@
             </entry>
             <entry>
               <para>
-            Read an array element.
-        </para>
+      Read an array element.
+    </para>
             </entry>
           </row>
           <row>
@@ -420,8 +450,8 @@
             </entry>
             <entry>
               <para>
-            Create an initialized array.
-        </para>
+      Create an initialized array.
+    </para>
             </entry>
           </row>
           <row>
@@ -435,8 +465,8 @@
             </entry>
             <entry>
               <para>
-            Create an uninitialized array with the specified number of elements and dimensions.
-        </para>
+      Create an uninitialized array with the specified number of elements and dimensions.
+    </para>
             </entry>
           </row>
           <row>
@@ -450,8 +480,8 @@
             </entry>
             <entry>
               <para>
-            Protect an array from change in all functions except the one in which it was declared.
-        </para>
+      Protect an array from change in all functions except the one in which it was declared.
+    </para>
             </entry>
           </row>
           <row>
@@ -460,13 +490,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArrayPut(XSharp.__Array,System.UInt32,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArrayPut(XSharp.__Array,System.UInt32,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Write a value to an array element.
-        </para>
+      Write a value to an array element.
+    </para>
             </entry>
           </row>
           <row>
@@ -480,8 +510,8 @@
             </entry>
             <entry>
               <para>
-            Store an array to a buffer.
-        </para>
+      Store an array to a buffer.
+    </para>
             </entry>
           </row>
           <row>
@@ -490,13 +520,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArraySwap(XSharp.__Array,System.UInt32,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ArraySwap(XSharp.__Array,System.UInt32,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Replace an array element with a new value and return the old value.
-        </para>
+      Replace an array element with a new value and return the old value.
+    </para>
             </entry>
           </row>
           <row>
@@ -505,13 +535,28 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Scan an array until a value is found or a code block returns TRUE.
-        </para>
+      Scan an array until a value is found or a code block returns TRUE.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AScan(XSharp.__Array,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Searches an array for an element containing the same data and data type as an expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -520,13 +565,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScanBin(XSharp.__Array,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScanBin(XSharp.__Array,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Scan a sorted array until a value is found or a code block returns 0.
-        </para>
+      Scan a sorted array until a value is found or a code block returns 0.
+    </para>
             </entry>
           </row>
           <row>
@@ -535,13 +580,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScanBinExact(XSharp.__Array,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScanBinExact(XSharp.__Array,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Scan a sorted array until there is an exact match or a code block returns 0.
-        </para>
+      Scan a sorted array until there is an exact match or a code block returns 0.
+    </para>
             </entry>
           </row>
           <row>
@@ -550,13 +595,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScanExact(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AScanExact(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Scan an array until there is an exact match or a code block returns TRUE.
-        </para>
+      Scan an array until there is an exact match or a code block returns TRUE.
+    </para>
             </entry>
           </row>
           <row>
@@ -570,8 +615,8 @@
             </entry>
             <entry>
               <para>
-            Grow or shrink an array.
-        </para>
+      Grow or shrink an array.
+    </para>
             </entry>
           </row>
           <row>
@@ -584,7 +629,7 @@
               </para>
             </entry>
             <entry>
-              <para>M:XSharp.VFP.Functions.ASize(XSharp.__Array,System.UInt32)VfpRuntimeDocs.xmlRuntimefunctions/asize/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -598,8 +643,51 @@
             </entry>
             <entry>
               <para>
-            Sort an array.
-        </para>
+      Sort an array.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ASort(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Sorts elements in an array in ascending or descending order.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ASortEx(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.Codeblock)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Sort an array.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ASortFunc(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,System.Func`3[[XSharp.__Usual, XSharp.RT, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586],[XSharp.__Usual, XSharp.RT, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586],[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]])</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -641,8 +729,8 @@
             </entry>
             <entry>
               <para>
-            Return the highest numbered element of an array.
-        </para>
+      Return the highest numbered element of an array.
+    </para>
             </entry>
           </row>
           <row>
@@ -656,8 +744,8 @@
             </entry>
             <entry>
               <para>
-            Delete an array element.
-        </para>
+      Delete an array element.
+    </para>
             </entry>
           </row>
           <row>
@@ -666,11 +754,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AUsed(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AUsed(XSharp.__Array,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>

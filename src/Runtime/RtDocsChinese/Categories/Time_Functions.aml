@@ -29,7 +29,7 @@
               </para>
             </entry>
             <entry>
-              <para>See the ADS documentation for more information about this function.</para>
+              <para>查看 ADS 文档，了解更多关于此函数的信息。</para>
             </entry>
           </row>
           <row>
@@ -43,8 +43,8 @@
             </entry>
             <entry>
               <para>
-            Convert a 24-hour military time to a 12-hour clock time.
-        </para>
+      将24小时制军用时间转换为12小时制时间。
+    </para>
             </entry>
           </row>
           <row>
@@ -58,8 +58,8 @@
             </entry>
             <entry>
               <para>
-            Format a set of numbers representing an hour, minute, and second as a time string.
-        </para>
+      将表示小时、分钟和秒的一组数字格式化为时间字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -73,8 +73,8 @@
             </entry>
             <entry>
               <para>
-            Return the difference between two time strings.
-        </para>
+      返回两个时间字符串之间的差值。
+    </para>
             </entry>
           </row>
           <row>
@@ -88,8 +88,21 @@
             </entry>
             <entry>
               <para>
-            Return the time stamp of the file found by FFCount(), FFirst(), or FNext().
-        </para>
+      返回由 FFCount()、FFirst() 或 FNext() 找到的文件的时间戳。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FTime(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -118,8 +131,8 @@
             </entry>
             <entry>
               <para>
-            Return the current separation character used in time strings.
-        </para>
+      返回当前用于时间字符串的分隔字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -193,8 +206,21 @@
             </entry>
             <entry>
               <para>
-            Return the number of seconds that have elapsed since midnight.
-        </para>
+      返回自午夜以来经过的秒数。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Seconds</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -208,8 +234,8 @@
             </entry>
             <entry>
               <para>
-            Return a time as the number of seconds that have elapsed since midnight.
-        </para>
+      返回自午夜以来经过的秒数。
+    </para>
             </entry>
           </row>
           <row>
@@ -222,8 +248,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -237,8 +262,8 @@
             </entry>
             <entry>
               <para>
-            Change the setting that determines the separation character to be used in time strings.
-        </para>
+      更改用于时间字符串的分隔字符设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -252,8 +277,21 @@
             </entry>
             <entry>
               <para>
-            Return the system time in a format determined by various international settings.
-        </para>
+      以由各种国际化设置决定的格式返回系统时间。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Time(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -267,8 +305,8 @@
             </entry>
             <entry>
               <para>
-            Return the system time in 24-hour format.
-        </para>
+      以24小时格式返回系统时间。
+    </para>
             </entry>
           </row>
           <row>
@@ -282,8 +320,8 @@
             </entry>
             <entry>
               <para>
-            Convert a specified number of seconds to a time string.
-        </para>
+      将指定的秒数转换为时间字符串。
+    </para>
             </entry>
           </row>
         </table>

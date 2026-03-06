@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Write information to the Debug Terminal Program
-        </para>
+      Write information to the Debug Terminal Program
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Programmatically define a breakpoint in an application.
-        </para>
+      Programmatically define a breakpoint in an application.
+    </para>
             </entry>
           </row>
           <row>
@@ -127,8 +127,8 @@
             </entry>
             <entry>
               <para>
-            Write information to the Debug Terminal Program
-        </para>
+      Write information to the Debug Terminal Program
+    </para>
             </entry>
           </row>
         </table>

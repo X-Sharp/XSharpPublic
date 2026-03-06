@@ -30,7 +30,7 @@
             </entry>
             <entry>
               <para>
-      Create child application windows.
+      创建子应用程序窗口。
     </para>
             </entry>
           </row>
@@ -44,9 +44,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-      Create a control as part of the Window hierarchy, thereby allowing the behavior of the control to be customized using event handlers.
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -60,7 +58,7 @@
             </entry>
             <entry>
               <para>
-      Create a data window that behaves like a modal dialog window (also commonly referred to as a dialog box).
+      创建一个数据窗口，它的行为类似于模态对话框窗口(通常也称为对话框框)。
     </para>
             </entry>
           </row>
@@ -75,7 +73,7 @@
             </entry>
             <entry>
               <para>
-      Create a data window which is capable of interacting intelligently with a data server.
+      创建一个数据窗口，它能够与数据服务器智能地交互。
     </para>
             </entry>
           </row>
@@ -90,7 +88,7 @@
             </entry>
             <entry>
               <para>
-      Create a dialog window (also commonly referred to as a dialog box), which allows the application and end user to interact. This type of dialog can be modal or modeless (see the description below).
+      创建一个对话框窗口(通常也称为对话框框)，允许应用程序和最终用户进行交互。这种对话框可以是模态的，也可以是非模态的(请参阅下面的描述)。
     </para>
             </entry>
           </row>
@@ -104,9 +102,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-      Create an edit control as part of the Window hierarchy, thereby allowing the behavior of the edit control to be customized using event handlers.
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -120,7 +116,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which all X# event-handling classes are subclassed, embodying the elements needed by any objects that receive events.
+      提供所有 X# 事件处理类的基类，包含任何接收事件的对象所需的元素。
     </para>
             </entry>
           </row>
@@ -135,7 +131,7 @@
             </entry>
             <entry>
               <para>
-      Create an explorer window.
+      创建一个资源管理器窗口。
     </para>
             </entry>
           </row>
@@ -150,7 +146,7 @@
             </entry>
             <entry>
               <para>
-      Create a data window capable of hosting OLE objects.
+      创建一个能够承载 OLE 对象的数据窗口。
     </para>
             </entry>
           </row>
@@ -165,7 +161,7 @@
             </entry>
             <entry>
               <para>
-      Create a specialized shell window that includes support for in-place active OLE objects.
+      创建一个包含对原地激活 OLE 对象的支持的专用外壳窗口。
     </para>
             </entry>
           </row>
@@ -180,7 +176,7 @@
             </entry>
             <entry>
               <para>
-      Create a shell window, which provides MDI support for your applications.
+      创建一个 shell 窗口，为您的应用程序提供 MDI 支持。
     </para>
             </entry>
           </row>
@@ -195,7 +191,7 @@
             </entry>
             <entry>
               <para>
-      Create a split window.
+      创建一个分割窗口。
     </para>
             </entry>
           </row>
@@ -210,7 +206,7 @@
             </entry>
             <entry>
               <para>
-      Create a top-level application window.
+      创建一个顶级应用程序窗口。
     </para>
             </entry>
           </row>
@@ -225,7 +221,7 @@
             </entry>
             <entry>
               <para>
-      Provide the base class from which all X# windows are subclassed.
+      提供所有 X# 窗口都是基于的基类。
     </para>
             </entry>
           </row>

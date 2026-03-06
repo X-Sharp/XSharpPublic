@@ -104,8 +104,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -298,7 +297,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:VO.SqlParameterSQL.xmldoc/SqlParameter/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -428,6 +427,99 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.Parsers</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Parsers.FoxAlterMode</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Parsers</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Parsers.FoxAlterTableContext</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Parsers</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Parsers.FoxColumnContext</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Parsers</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Parsers.FoxCreateTableContext</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Parsers</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Parsers.FoxDeleteContext</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Parsers</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Parsers.FoxUpdateContext</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Parsers</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Parsers.SQLParser</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            The SQLParser class.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.RDD</para>
             </entry>
             <entry>
@@ -437,6 +529,21 @@
             </entry>
             <entry>
               <para>Enum that matches the various FoxPro Sql properties, used in SqlGetProp() and SqlSetProp()</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VFP.SqlWhereType</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This enum emulates the FoxPro defines for the CursorAdapter.WhereType property
+            </para>
             </entry>
           </row>
           <row>
@@ -569,7 +676,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListDatabasesSql.xmldoc/SQLListDatabases/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -597,7 +704,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListIndexColumnsSql.xmldoc/SQLListIndexColumns/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -610,7 +717,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListIndexesSql.xmldoc/SQLListIndexes/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -653,7 +760,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListProcedureParametersSql.xmldoc/SQLListProcedureParameters/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -681,7 +788,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListReservedWordsSql.xmldoc/SQLListReservedWords/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -694,7 +801,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListRestrictionsSql.xmldoc/SQLListRestrictions/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -767,7 +874,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListTriggersSql.xmldoc/SQLListTriggers/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -795,7 +902,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListUsersSql.xmldoc/SQLListUsers/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -808,7 +915,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListViewColumnsSql.xmldoc/SQLListViewColumns/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -821,7 +928,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SQLListViewsSql.xmldoc/SQLListViews/*</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -834,7 +941,7 @@
               </para>
             </entry>
             <entry>
-              <para>T:XSharp.VO.SDK.SqlParameterSql.xmldoc/SqlParameter/*</para>
+              <para />
             </entry>
           </row>
           <row>

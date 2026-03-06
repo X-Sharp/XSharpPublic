@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Replace all soft carriage returns (Chr(141)) in a string with hard carriage returns (Chr(13)).
-        </para>
+      将字符串中的所有软回车符（Chr(141)）替换为硬回车符（Chr(13)）。
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,21 @@
             </entry>
             <entry>
               <para>
-            Count the number of lines in a string or memo field.
-        </para>
+      计算字符串或备忘字段中的行数。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Memlines(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -60,8 +73,8 @@
             </entry>
             <entry>
               <para>
-            Extract a line of text from a string.
-        </para>
+      从字符串中提取一行文本。
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +88,8 @@
             </entry>
             <entry>
               <para>
-            Return the contents of a text file as a string.
-        </para>
+      返回文本文件的内容作为字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -106,8 +119,8 @@
             </entry>
             <entry>
               <para>
-            Replace carriage-return/linefeeds with a character that can be displayed.
-        </para>
+      用可显示的字符替换回车/换行符。
+    </para>
             </entry>
           </row>
           <row>
@@ -121,8 +134,8 @@
             </entry>
             <entry>
               <para>
-            Write a string to a disk file.
-        </para>
+      将字符串写入磁盘文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -151,8 +164,8 @@
             </entry>
             <entry>
               <para>
-            Count the number of lines in a string.
-        </para>
+      计算字符串中的行数。
+    </para>
             </entry>
           </row>
           <row>
@@ -166,8 +179,8 @@
             </entry>
             <entry>
               <para>
-            Count the number of lines in a string.
-        </para>
+      计算字符串中的行数。
+    </para>
             </entry>
           </row>
           <row>
@@ -181,8 +194,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of a character in a formatted string.
-        </para>
+      返回格式化字符串中字符的位置。
+    </para>
             </entry>
           </row>
           <row>
@@ -196,8 +209,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of a character in a formatted string.
-        </para>
+      返回格式化字符串中字符的位置。
+    </para>
             </entry>
           </row>
           <row>
@@ -211,8 +224,21 @@
             </entry>
             <entry>
               <para>
-            Extract a line of text from a string, specifying an optional offset argument.
-        </para>
+      从字符串中提取文本行，并指定可选的偏移量参数。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Mline(System.String,System.UInt32,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -226,8 +252,8 @@
             </entry>
             <entry>
               <para>
-            Extract a line of text from a string, specifying a required offset argument.
-        </para>
+      从字符串中提取文本行，并指定必需的偏移量参数。
+    </para>
             </entry>
           </row>
           <row>
@@ -241,8 +267,8 @@
             </entry>
             <entry>
               <para>
-            Determine the position of a line in a string.
-        </para>
+      确定字符串中行的位置。
+    </para>
             </entry>
           </row>
           <row>
@@ -256,8 +282,8 @@
             </entry>
             <entry>
               <para>
-            Determine the position of a line in a string.
-        </para>
+      确定字符串中行的位置。
+    </para>
             </entry>
           </row>
           <row>
@@ -271,8 +297,8 @@
             </entry>
             <entry>
               <para>
-            Return the line and column position of a character in a formatted string.
-        </para>
+      返回格式化字符串中字符的行和列位置。
+    </para>
             </entry>
           </row>
         </table>

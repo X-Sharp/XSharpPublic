@@ -30,7 +30,7 @@
             </entry>
             <entry>
               <para>
-      Create an object that represents a single print job.
+      创建一个表示单个打印作业的对象。
     </para>
             </entry>
           </row>
@@ -45,7 +45,7 @@
             </entry>
             <entry>
               <para>
-      Create an object that allows you to set up the printing device for an application. It also allows you to invoke the standard dialog box to configure a default printer and change values, such as changing the page orientation or paper source.
+      创建一个对象，允许您为应用程序设置打印设备。它还允许您调用标准对话框来配置默认打印机并更改值，例如更改页面方向或纸张来源。
     </para>
             </entry>
           </row>

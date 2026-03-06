@@ -42,8 +42,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -117,7 +116,7 @@
               </para>
             </entry>
             <entry>
-              <para>Returns the # of open indexes in the current workarea</para>
+              <para>返回当前工作区中打开的索引数量</para>
             </entry>
           </row>
           <row>
@@ -131,8 +130,8 @@
             </entry>
             <entry>
               <para>
-            Return the default index file extension for a work area as defined by its RDD.
-        </para>
+      返回由其 RDD 定义的工作区的默认索引文件扩展名。
+    </para>
             </entry>
           </row>
           <row>
@@ -146,8 +145,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether to use the High Performance (HP) locking schema for newly created .NTX files.
-        </para>
+      返回并可选择更改用于新创建的 .NTX 文件的高性能（HP）锁定方案的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -161,8 +160,8 @@
             </entry>
             <entry>
               <para>
-            Return the key expression of a specified order.
-        </para>
+      返回指定 Order 的关键表达式。
+    </para>
             </entry>
           </row>
           <row>
@@ -176,8 +175,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the controlling order within the order list.
-        </para>
+      返回控制 Order 在 Order 列表中的位置。
+    </para>
             </entry>
           </row>
           <row>
@@ -247,8 +246,8 @@
             </entry>
             <entry>
               <para>
-            Return the default index file extension for a work area as defined by its RDD.
-        </para>
+      返回由其 RDD 定义的工作区的默认索引文件扩展名。
+    </para>
             </entry>
           </row>
           <row>
@@ -262,8 +261,8 @@
             </entry>
             <entry>
               <para>
-            Return the index file name of a specific order.
-        </para>
+      返回特定顺序的索引文件名称。
+    </para>
             </entry>
           </row>
           <row>
@@ -277,8 +276,8 @@
             </entry>
             <entry>
               <para>
-            Set the condition and scope for an order.
-        </para>
+      设置顺序的条件和范围。
+    </para>
             </entry>
           </row>
           <row>
@@ -305,8 +304,8 @@
             </entry>
             <entry>
               <para>
-            Create or replace an order in an index file.
-        </para>
+      在索引文件中创建或替换一个顺序。
+    </para>
             </entry>
           </row>
           <row>
@@ -320,8 +319,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the descending flag of an order.
-        </para>
+      返回并可选地更改顺序的降序标志。
+    </para>
             </entry>
           </row>
           <row>
@@ -335,8 +334,8 @@
             </entry>
             <entry>
               <para>
-            Remove an order from an open index file.
-        </para>
+      从打开的索引文件中移除顺序。
+    </para>
             </entry>
           </row>
           <row>
@@ -365,8 +364,8 @@
             </entry>
             <entry>
               <para>
-            Return the for condition of an order.
-        </para>
+      返回顺序的 for 条件。
+    </para>
             </entry>
           </row>
           <row>
@@ -380,8 +379,8 @@
             </entry>
             <entry>
               <para>
-            Return the status of the unique flag for a given order.
-        </para>
+      返回给定顺序的唯一标志状态。
+    </para>
             </entry>
           </row>
           <row>
@@ -395,8 +394,8 @@
             </entry>
             <entry>
               <para>
-            Return the key expression of an order.
-        </para>
+      返回给定顺序的键表达式。
+    </para>
             </entry>
           </row>
           <row>
@@ -410,8 +409,8 @@
             </entry>
             <entry>
               <para>
-            Add a key to a custom built order.
-        </para>
+      向自定义构建的顺序添加键。
+    </para>
             </entry>
           </row>
           <row>
@@ -425,8 +424,8 @@
             </entry>
             <entry>
               <para>
-            Return the number of keys in an order.
-        </para>
+      返回顺序中的键的数量。
+    </para>
             </entry>
           </row>
           <row>
@@ -440,8 +439,8 @@
             </entry>
             <entry>
               <para>
-            Delete a key from a custom built order.
-        </para>
+      从自定义构建的顺序中删除一个键。
+    </para>
             </entry>
           </row>
           <row>
@@ -455,8 +454,8 @@
             </entry>
             <entry>
               <para>
-            Move to a record specified by its logical record number in the controlling order.
-        </para>
+      移动到控制顺序中由其逻辑记录编号指定的记录。
+    </para>
             </entry>
           </row>
           <row>
@@ -470,8 +469,8 @@
             </entry>
             <entry>
               <para>
-            Get the logical record number of the current record.
-        </para>
+      获取当前记录的逻辑记录编号。
+    </para>
             </entry>
           </row>
           <row>
@@ -485,8 +484,8 @@
             </entry>
             <entry>
               <para>
-            Get the key value of the current record from the controlling order.
-        </para>
+      获取当前记录在控制顺序中的键值。
+    </para>
             </entry>
           </row>
           <row>
@@ -513,8 +512,8 @@
             </entry>
             <entry>
               <para>
-            Open an index file and add specified orders to the order list in a work area.
-        </para>
+      打开索引文件并将指定的顺序添加到工作区的顺序列表中。
+    </para>
             </entry>
           </row>
           <row>
@@ -528,8 +527,8 @@
             </entry>
             <entry>
               <para>
-            Remove orders from the order list in a work area and close associated index files.
-        </para>
+      从工作区的排序列表中移除排序并关闭相关的索引文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -543,8 +542,8 @@
             </entry>
             <entry>
               <para>
-            Rebuild all orders in the order list of a work area.
-        </para>
+      重建工作区的顺序列表中的所有订单。
+    </para>
             </entry>
           </row>
           <row>
@@ -558,8 +557,8 @@
             </entry>
             <entry>
               <para>
-            Return the name of an order in the order list of a work area.
-        </para>
+      返回工作区的顺序列表中某个订单的名称。
+    </para>
             </entry>
           </row>
           <row>
@@ -573,8 +572,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of an order in the order list of a work area.
-        </para>
+      返回工作区的顺序列表中某个订单的位置。
+    </para>
             </entry>
           </row>
           <row>
@@ -588,8 +587,8 @@
             </entry>
             <entry>
               <para>
-            Set or clear the boundaries for scoping key values in the controlling order.
-        </para>
+      设置或清除控制顺序中的键值范围。
+    </para>
             </entry>
           </row>
           <row>
@@ -603,8 +602,8 @@
             </entry>
             <entry>
               <para>
-            Set the controlling order for a work area.
-        </para>
+      为工作区设置控制排序。
+    </para>
             </entry>
           </row>
           <row>
@@ -618,8 +617,8 @@
             </entry>
             <entry>
               <para>
-            Relate a specified work area to the current work area.
-        </para>
+      将指定的工作区与当前工作区关联。
+    </para>
             </entry>
           </row>
           <row>
@@ -633,8 +632,8 @@
             </entry>
             <entry>
               <para>
-            Move the record pointer to the next or previous unique key in the controlling order.
-        </para>
+      移动记录指针到控制顺序中的下一个或上一个唯一键。
+    </para>
             </entry>
           </row>
           <row>
@@ -686,8 +685,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -776,8 +774,8 @@
             </entry>
             <entry>
               <para>
-            Set the condition and scope for an order.
-        </para>
+      设置订单的条件和范围。
+    </para>
             </entry>
           </row>
           <row>
@@ -791,8 +789,8 @@
             </entry>
             <entry>
               <para>
-            Create or replace an order in an index file.
-        </para>
+      在索引文件中创建或替换一个顺序。
+    </para>
             </entry>
           </row>
           <row>
@@ -801,13 +799,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdDestroy(System.String,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdDestroy(System.String,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Remove an order from an open index file.
-        </para>
+      从打开的索引文件中删除一个排序。
+    </para>
             </entry>
           </row>
           <row>
@@ -816,13 +814,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrderInfo(System.UInt32,System.String,XSharp.__Usual,XSharp.__Usual@)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrderInfo(System.UInt32,System.String,XSharp.__Usual@,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return information about index files and the orders in them.
-        </para>
+      返回有关索引文件及其中的订单的信息。
+    </para>
             </entry>
           </row>
           <row>
@@ -831,13 +829,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListAdd(System.String,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListAdd(System.String,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Open an index file and add all its orders to the order list in a work area.
-        </para>
+      在工作区中打开一个索引文件并将其所有排序添加到排序列表中。
+    </para>
             </entry>
           </row>
           <row>
@@ -846,13 +844,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListClear(System.String,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListClear(System.String,XSharp.__Usual@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Remove orders from the order list in a work area and close associated index files.
-        </para>
+      从工作区的排序列表中移除排序并关闭相关的索引文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -866,8 +864,8 @@
             </entry>
             <entry>
               <para>
-            Rebuild all orders in the order list of a work area.
-        </para>
+      重建工作区中 Order 列表的所有 Order 。
+    </para>
             </entry>
           </row>
           <row>
@@ -876,13 +874,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdSetFocus(System.String,XSharp.__Usual,System.String@)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdSetFocus(System.String,XSharp.__Usual@,System.String@)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Set the controlling order for a work area.
-        </para>
+      为工作区设置控制排序。
+    </para>
             </entry>
           </row>
         </table>

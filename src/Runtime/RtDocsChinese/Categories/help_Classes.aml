@@ -30,7 +30,7 @@
             </entry>
             <entry>
               <para>
-      Create a link to the help system in use.
+      在使用的帮助系统中创建一个链接。
     </para>
             </entry>
           </row>
@@ -45,7 +45,7 @@
             </entry>
             <entry>
               <para>
-            Create a hyperlabel, which stores information about another object.
+            创建一个超级标签，用于存储关于另一个对象的信息。
         </para>
             </entry>
           </row>
@@ -60,7 +60,7 @@
             </entry>
             <entry>
               <para>
-            Create a hyperlabel, which stores information about another object.
+            创建一个超级标签，用于存储关于另一个对象的信息。
         </para>
             </entry>
           </row>

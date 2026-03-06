@@ -58,8 +58,8 @@
             </entry>
             <entry>
               <para>
-            Gets the locale ID that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
-        </para>
+      获取运行时在 Windows 排序模式下比较字符串时使用的区域 ID（SetCollation(#Windows)）。
+    </para>
             </entry>
           </row>
           <row>
@@ -86,8 +86,8 @@
             </entry>
             <entry>
               <para>
-            Get the current DLL for nation-dependent operations and messages.
-        </para>
+      获取当前用于国家依赖操作和消息的DLL。
+    </para>
             </entry>
           </row>
           <row>
@@ -113,8 +113,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -127,8 +126,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -141,8 +139,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -155,8 +152,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -169,8 +165,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -199,8 +194,8 @@
             </entry>
             <entry>
               <para>
-            Remove leading and trailing spaces — including double-byte spaces — from a string.
-        </para>
+      删除字符串中的前导和尾随空格，包括双字节空格。
+    </para>
             </entry>
           </row>
           <row>
@@ -214,8 +209,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
-        </para>
+      返回子字符串在字符串中第一次出现的位置 — 子字符串和字符串均可包含双字节字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -229,8 +224,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
-        </para>
+      返回子字符串在字符串中第一次出现的位置 — 子字符串和字符串均可包含双字节字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -244,8 +239,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
-        </para>
+      返回子字符串在字符串中第一次出现的位置，从特定位置开始搜索 — 子字符串和字符串均可包含双字节字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -259,8 +254,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a sub string within a string, without regard for case — both the substring and the string can contain double-byte characters.
-        </para>
+      返回子字符串在字符串中第一次出现的位置，不区分大小写 — 子字符串和字符串均可包含双字节字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -274,8 +269,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the first occurrence of a substring within a string, without regard for case — both the substring and the string can contain double-byte characters.
-        </para>
+      返回子字符串在字符串中第一次出现的位置，不区分大小写 — 子字符串和字符串均可包含双字节字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -289,8 +284,8 @@
             </entry>
             <entry>
               <para>
-            Return the line number of the first occurrence of a substring within a multiple line string — both the substring and the string can contain double-byte characters.
-        </para>
+      返回子字符串在多行字符串中第一次出现的行号 — 子字符串和字符串均可包含双字节字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -304,8 +299,8 @@
             </entry>
             <entry>
               <para>
-            Return the line number of the first occurrence of a substring within a multiple line string — both the substring and the string can contain double-byte characters.
-        </para>
+      返回子字符串在多行字符串中第一次出现的行号 — 子字符串和字符串均可包含双字节字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -319,8 +314,8 @@
             </entry>
             <entry>
               <para>
-            Return a substring beginning with the first character of a string containing double-byte characters.
-        </para>
+      返回包含双字节字符的字符串的子字符串，从第一个字符开始提取。
+    </para>
             </entry>
           </row>
           <row>
@@ -334,8 +329,8 @@
             </entry>
             <entry>
               <para>
-            Return the length of a string containing double-byte characters or an array.
-        </para>
+      返回包含双字节字符的字符串或数组的长度。
+    </para>
             </entry>
           </row>
           <row>
@@ -349,8 +344,8 @@
             </entry>
             <entry>
               <para>
-            Remove leading spaces — including double-byte spaces — from a string.
-        </para>
+      从字符串中移除前导空格 — 包括双字节空格。
+    </para>
             </entry>
           </row>
           <row>
@@ -364,8 +359,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
-        </para>
+      返回子字符串在字符串中最后一次出现的位置 — 子字符串和字符串均可包含双字节字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -379,8 +374,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
-        </para>
+      返回子字符串在字符串中最后一次出现的位置 — 子字符串和字符串均可包含双字节字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -394,8 +389,8 @@
             </entry>
             <entry>
               <para>
-            Return the position of the last occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
-        </para>
+      返回子字符串在字符串中最后一次出现的位置，从特定位置开始搜索 — 子字符串和字符串均可包含双字节字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -409,8 +404,8 @@
             </entry>
             <entry>
               <para>
-            Return a substring beginning with the last character of a string containing double-byte characters.
-        </para>
+      返回包含双字节字符的字符串的子字符串，从最后一个字符开始提取。
+    </para>
             </entry>
           </row>
           <row>
@@ -424,8 +419,8 @@
             </entry>
             <entry>
               <para>
-            Remove trailing spaces — including double-byte spaces — from a string.
-        </para>
+      从字符串中移除尾部空格 — 包括双字节空格。
+    </para>
             </entry>
           </row>
           <row>
@@ -439,8 +434,8 @@
             </entry>
             <entry>
               <para>
-            Return the length of a strongly typed string containing double-byte characters.
-        </para>
+      返回包含双字节字符的强类型字符串的长度。
+    </para>
             </entry>
           </row>
           <row>
@@ -454,8 +449,8 @@
             </entry>
             <entry>
               <para>
-            Insert a string into another string, optionally deleting a specified number of characters from the original string — both strings can contain double-byte characters.
-        </para>
+      将字符串插入到另一个字符串中，可选地从原始字符串中删除指定数量的字符 — 两个字符串均可包含双字节字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -484,8 +479,8 @@
             </entry>
             <entry>
               <para>
-            Extract a substring from a string, using strong typing and only two arguments — both the substring and the string can contain double-byte characters.
-        </para>
+      从字符串中提取子字符串，使用强类型和仅两个参数 — 子字符串和字符串均可包含双字节字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -499,8 +494,8 @@
             </entry>
             <entry>
               <para>
-            Extract a substring from a string, using strong typing and three required arguments — both the substring and the string can contain double-byte characters.
-        </para>
+      从字符串中提取子字符串，使用强类型和三个必需参数 — 子字符串和字符串均可包含双字节字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -514,8 +509,8 @@
             </entry>
             <entry>
               <para>
-            Remove trailing spaces — including double-byte spaces — from a string.
-        </para>
+      从字符串中移除尾部空格 — 包括双字节空格。
+    </para>
             </entry>
           </row>
           <row>
@@ -529,8 +524,8 @@
             </entry>
             <entry>
               <para>
-            Identify a character set by its nation driver.
-        </para>
+      通过其国家驱动程序识别字符集。
+    </para>
             </entry>
           </row>
           <row>
@@ -544,8 +539,8 @@
             </entry>
             <entry>
               <para>
-            Sets the locale that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
-        </para>
+      设置运行时在Windows排序模式下比较字符串时使用的区域设置（SetCollation(#Windows)）。
+    </para>
             </entry>
           </row>
           <row>
@@ -559,8 +554,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether to include or omit century digits in the date format.
-        </para>
+      返回并可选择更改设置，以确定在日期格式中是否包含或省略世纪数字。
+    </para>
             </entry>
           </row>
           <row>
@@ -574,8 +569,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the internal collation routine used for string comparisons.
-        </para>
+      返回并可选择更改设置，以确定用于字符串比较的内部排序例程。
+    </para>
             </entry>
           </row>
           <row>
@@ -615,8 +610,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the X# date format by selecting from a list of constants with corresponding date formats.
-        </para>
+      返回并可选地更改确定 X# 日期格式的设置，通过从常量列表中选择对应的日期格式。
+    </para>
             </entry>
           </row>
           <row>
@@ -630,8 +625,8 @@
             </entry>
             <entry>
               <para>
-            Change the setting that determines the X# date format.
-        </para>
+      更改确定 X# 日期格式的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -645,8 +640,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the decimal separation character to be used in numeric-to-string conversion functions.
-        </para>
+      返回并可选择性地更改用于数字到字符串转换函数的十进制分隔符设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -660,8 +655,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the international mode for the application.
-        </para>
+      返回并可选地更改决定应用程序的国际模式的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -675,8 +670,8 @@
             </entry>
             <entry>
               <para>
-            Activate a new DLL for nation-dependent operations and messages.
-        </para>
+      激活用于国家相关操作和消息的新DLL。
+    </para>
             </entry>
           </row>
           <row>
@@ -690,8 +685,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the thousands separation character to be used in numeric-to-string conversion functions.
-        </para>
+      返回并可选地更改在数字到字符串转换函数中使用的千位分隔符设置。
+    </para>
             </entry>
           </row>
           <row>

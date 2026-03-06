@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Returns a string representing the morning extension for time strings in 12-hour format.
-        </para>
+      返回一个字符串，表示12小时格式时间字符串的上午扩展。
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether time strings are in 12-hour or 24-hour format.
-        </para>
+      返回并可选择更改时间字符串是12小时格式还是24小时格式的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
-        </para>
+      返回并可选择更改设置，以确定数据库文件是使用ANSI格式还是OEM格式创建，以及某些文本文件操作是否在这两种字符集之间转换。
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +75,8 @@
             </entry>
             <entry>
               <para>
-            Gets the locale ID that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
-        </para>
+      获取运行时在 Windows 排序模式下比较字符串时使用的区域 ID（SetCollation(#Windows)）。
+    </para>
             </entry>
           </row>
           <row>
@@ -89,8 +89,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -103,8 +102,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -117,8 +115,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -145,8 +142,8 @@
             </entry>
             <entry>
               <para>
-            Get the current X# search path for opening file.
-        </para>
+      获取当前 X# 搜索路径以打开文件。
+    </para>
             </entry>
           </row>
           <row>
@@ -173,8 +170,8 @@
             </entry>
             <entry>
               <para>
-            Return the current date format.
-        </para>
+      返回当前的日期格式。
+    </para>
             </entry>
           </row>
           <row>
@@ -188,8 +185,8 @@
             </entry>
             <entry>
               <para>
-            Return the X# default drive and directory.
-        </para>
+      返回 X# 默认的驱动器和目录。
+    </para>
             </entry>
           </row>
           <row>
@@ -203,8 +200,8 @@
             </entry>
             <entry>
               <para>
-            Return the current SetDefault() setting.
-        </para>
+      返回当前 SetDefault() 设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -218,8 +215,8 @@
             </entry>
             <entry>
               <para>
-            Return the DOS error code from any application.
-        </para>
+      返回来自任何应用程序的 DOS 错误代码。
+    </para>
             </entry>
           </row>
           <row>
@@ -233,8 +230,21 @@
             </entry>
             <entry>
               <para>
-            Retrieve the contents of a DOS environment variable.
-        </para>
+      检索 DOS 环境变量的内容。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetEnv(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -248,8 +258,8 @@
             </entry>
             <entry>
               <para>
-            Convert file attributes to numbers.
-        </para>
+      将文件属性转换为数字。
+    </para>
             </entry>
           </row>
           <row>
@@ -289,8 +299,8 @@
             </entry>
             <entry>
               <para>
-            Prepare a file specification for wildcard searching.
-        </para>
+      准备一个文件规范，以便进行通配符搜索。
+    </para>
             </entry>
           </row>
           <row>
@@ -303,8 +313,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -331,8 +340,8 @@
             </entry>
             <entry>
               <para>
-            Get the current DLL for nation-dependent operations and messages.
-        </para>
+      获取当前用于国家依赖操作和消息的DLL。
+    </para>
             </entry>
           </row>
           <row>
@@ -359,8 +368,8 @@
             </entry>
             <entry>
               <para>
-            Returns a string representing the evening extension for time strings in 12-hour format.
-        </para>
+      返回一个字符串，表示12小时制时间字符串的晚上扩展。
+    </para>
             </entry>
           </row>
           <row>
@@ -373,8 +382,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -387,8 +395,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -402,8 +409,8 @@
             </entry>
             <entry>
               <para>
-            Return the current separation character used in time strings.
-        </para>
+      返回当前用于时间字符串的分隔字符。
+    </para>
             </entry>
           </row>
           <row>
@@ -431,8 +438,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -452,6 +458,19 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Set(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.RT</para>
             </entry>
             <entry>
@@ -460,8 +479,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -474,8 +492,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -489,8 +506,8 @@
             </entry>
             <entry>
               <para>
-            Set the morning extension for time strings in 12-hour format.
-        </para>
+      设置12小时格式时间字符串的上午扩展。
+    </para>
             </entry>
           </row>
           <row>
@@ -504,8 +521,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether time strings are in 12-hour or 24-hour format.
-        </para>
+      返回并可选择更改时间字符串是12小时格式还是24小时格式的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -519,8 +536,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
-        </para>
+      返回并可选择更改设置，以确定数据库文件是使用ANSI格式还是OEM格式创建，以及某些文本文件操作是否在这两种字符集之间转换。
+    </para>
             </entry>
           </row>
           <row>
@@ -534,8 +551,8 @@
             </entry>
             <entry>
               <para>
-            Sets the locale that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
-        </para>
+      设置运行时在Windows排序模式下比较字符串时使用的区域设置（SetCollation(#Windows)）。
+    </para>
             </entry>
           </row>
           <row>
@@ -549,8 +566,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether a beep is sounded by the error system when an error occurs.
-        </para>
+      返回并可选择更改错误系统发生错误时是否发出蜂鸣声的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -564,8 +581,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether to include or omit century digits in the date format.
-        </para>
+      返回并可选择更改设置，以确定在日期格式中是否包含或省略世纪数字。
+    </para>
             </entry>
           </row>
           <row>
@@ -592,8 +609,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the internal collation routine used for string comparisons.
-        </para>
+      返回并可选择更改设置，以确定用于字符串比较的内部排序例程。
+    </para>
             </entry>
           </row>
           <row>
@@ -602,12 +619,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SetColor(System.String)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SetColor</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -620,8 +636,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -634,23 +649,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.Core</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetCpu</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Return and optionally change the setting that determines the type of central processor you have.
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -664,8 +663,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the X# date format by selecting from a list of constants with corresponding date formats.
-        </para>
+      返回并可选地更改确定 X# 日期格式的设置，通过从常量列表中选择对应的日期格式。
+    </para>
             </entry>
           </row>
           <row>
@@ -679,8 +678,8 @@
             </entry>
             <entry>
               <para>
-            Change the setting that determines the X# date format.
-        </para>
+      更改确定 X# 日期格式的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -694,8 +693,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the number of decimal places used to display numbers.
-        </para>
+      返回并可选择性地更改决定用于显示数字的小数位数的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -709,8 +708,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the decimal separation character to be used in numeric-to-string conversion functions.
-        </para>
+      返回并可选择性地更改用于数字到字符串转换函数的十进制分隔符设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -724,8 +723,8 @@
             </entry>
             <entry>
               <para>
-            Change the setting that determines the X# default drive and directory.
-        </para>
+      更改决定 X# 默认驱动器和目录的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -739,8 +738,8 @@
             </entry>
             <entry>
               <para>
-            Change the setting that determines the location of the error log file.
-        </para>
+      更改决定错误日志文件位置的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -754,8 +753,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether to ignore or include records that are marked for deletion.
-        </para>
+      返回并可选地更改决定是否忽略或包含已标记为删除的记录的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -769,8 +768,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.
-        </para>
+      返回并可选地更改决定在数字显示时小数点左侧显示的数字个数的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -784,8 +783,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that fixes the number of digits used to display numeric output.
-        </para>
+      返回并可选地更改用于显示数字输出的数字位数设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -799,8 +798,8 @@
             </entry>
             <entry>
               <para>
-            Update or replace the contents of a DOS environment variable.
-        </para>
+      更新或替换 DOS 环境变量的内容。
+    </para>
             </entry>
           </row>
           <row>
@@ -814,8 +813,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines how dates without century digits are interpreted.
-        </para>
+      返回并可选地更改决定如何解释没有世纪数字的日期的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -829,8 +828,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether error information is written to the error log file by the default runtime error handler.
-        </para>
+      返回并可选地更改决定默认运行时错误处理程序是否将错误信息写入错误日志文件的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -870,8 +869,8 @@
             </entry>
             <entry>
               <para>
-            Toggles an exact match for character string comparisons.
-        </para>
+      切换字符字符串比较的精确匹配。
+    </para>
             </entry>
           </row>
           <row>
@@ -885,8 +884,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether to open database files in exclusive or shared mode.
-        </para>
+      返回并可选地更改决定以独占或共享模式打开数据库文件的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -900,8 +899,8 @@
             </entry>
             <entry>
               <para>
-            Reset the date and time stamps of a File.
-        </para>
+      重置文件的日期和时间戳。
+    </para>
             </entry>
           </row>
           <row>
@@ -915,8 +914,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether assignments are made to fields or to memory variables.
-        </para>
+      返回并可选地更改决定赋值是对字段还是对内存变量的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -930,8 +929,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that fixes the number of decimal digits used to display numbers.
-        </para>
+      返回并可选地更改用于显示数字的固定小数位数设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -958,8 +957,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the point at which 2 floating point numbers would be considered equal even though they are different.
-        </para>
+      返回并可选地更改决定两个浮点数被认为相等的设置，即使它们是不同的。
+    </para>
             </entry>
           </row>
           <row>
@@ -972,8 +971,20 @@
               </para>
             </entry>
             <entry>
+              <para />
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetHours</codeEntityReference>
               </para>
+            </entry>
+            <entry>
+              <para>Get/Set hours format (12 or 24 hours)</para>
             </entry>
           </row>
           <row>
@@ -987,8 +998,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the international mode for the application.
-        </para>
+      返回并可选地更改决定应用程序的国际模式的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -1027,28 +1038,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetMath</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para>
-            Return and optionally change the setting that determines the internal operational characteristics of the underlying floating-point system.
-        </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.Core</para>
-            </entry>
-            <entry>
-              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetNatDLL(System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Activate a new DLL for nation-dependent operations and messages.
-        </para>
+      激活用于国家相关操作和消息的新DLL。
+    </para>
             </entry>
           </row>
           <row>
@@ -1062,8 +1058,8 @@
             </entry>
             <entry>
               <para>
-            Change the setting that determines the X# search path for opening files.
-        </para>
+      更改确定X#打开文件的搜索路径的设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -1095,8 +1091,8 @@
             </entry>
             <entry>
               <para>
-            Set the evening extension for time strings in 12-hour format.
-        </para>
+      设置12小时格式时间字符串的晚上扩展。
+    </para>
             </entry>
           </row>
           <row>
@@ -1110,8 +1106,8 @@
             </entry>
             <entry>
               <para>
-            Move the cursor to a new position on the terminal window.
-        </para>
+      将光标移动到终端窗口的新位置。
+    </para>
             </entry>
           </row>
           <row>
@@ -1125,8 +1121,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve and optionally set the time for which the RDD system caches data.
-        </para>
+      检索并可选地设置 RDD 系统缓存数据的时间。
+    </para>
             </entry>
           </row>
           <row>
@@ -1152,8 +1148,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1167,8 +1162,21 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that displays numbers in scientific notation.
-        </para>
+      返回并可选地更改以科学计数法显示数字的设置。
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetSeconds</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get/Set seconds display</para>
             </entry>
           </row>
           <row>
@@ -1182,8 +1190,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether a seek operation will find a close match when no exact match is found.
-        </para>
+      返回并可选地更改设置，以确定当未找到精确匹配时，寻址操作是否会找到近似匹配。
+    </para>
             </entry>
           </row>
           <row>
@@ -1212,6 +1220,19 @@
             </entry>
             <entry>
               <para>Set a new default SQL factory.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SetTextFile</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para />
             </entry>
           </row>
           <row>
@@ -1255,8 +1276,8 @@
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines the thousands separation character to be used in numeric-to-string conversion functions.
-        </para>
+      返回并可选地更改在数字到字符串转换函数中使用的千位分隔符设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -1269,8 +1290,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1284,8 +1304,8 @@
             </entry>
             <entry>
               <para>
-            Change the setting that determines the separation character to be used in time strings.
-        </para>
+      更改用于时间字符串的分隔字符设置。
+    </para>
             </entry>
           </row>
           <row>
@@ -1294,13 +1314,13 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetUnique(System.Boolean)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetUnique</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return and optionally change the setting that determines whether to include unique record keys in an order.
-        </para>
+      返回并可选地更改设置，以确定在顺序中是否包含唯一记录键。
+    </para>
             </entry>
           </row>
           <row>
@@ -1339,8 +1359,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
         </table>

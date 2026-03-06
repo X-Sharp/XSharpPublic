@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Extract a substring of a certain size from the left of a buffer.
-        </para>
+      从缓冲区的左侧提取指定大小的子字符串。
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Allocate a static memory buffer of a specified size.
-        </para>
+      分配指定大小的静态内存缓冲区。
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Get the location of the first special console character in a buffer.
-        </para>
+      获取缓冲区中第一个特殊控制字符的位置。
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +75,8 @@
             </entry>
             <entry>
               <para>
-            Get a pointer to a byte in a memory buffer.
-        </para>
+      获取指向内存缓冲区中字节的指针。
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +90,8 @@
             </entry>
             <entry>
               <para>
-            Allocate static memory buffers of a specified size.
-        </para>
+      分配指定大小的静态内存缓冲区。
+    </para>
             </entry>
           </row>
           <row>
@@ -104,8 +104,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -119,8 +118,8 @@
             </entry>
             <entry>
               <para>
-            Get a pointer to a matching character value in a memory buffer.
-        </para>
+      获取指向内存缓冲区中匹配字符值的指针。
+    </para>
             </entry>
           </row>
           <row>
@@ -134,8 +133,8 @@
             </entry>
             <entry>
               <para>
-            Fill a memory buffer with null characters.
-        </para>
+      用空字符填充内存缓冲区。
+    </para>
             </entry>
           </row>
           <row>
@@ -149,8 +148,8 @@
             </entry>
             <entry>
               <para>
-            Compare bytes in two memory buffers.
-        </para>
+      比较两个内存缓冲区中的字节。
+    </para>
             </entry>
           </row>
           <row>
@@ -164,8 +163,8 @@
             </entry>
             <entry>
               <para>
-            Copy one memory buffer to another.
-        </para>
+      复制一个内存缓冲区到另一个。
+    </para>
             </entry>
           </row>
           <row>
@@ -179,8 +178,8 @@
             </entry>
             <entry>
               <para>
-            Copy one memory buffer to another and fill any remaining spaces with blanks.
-        </para>
+      复制一个内存缓冲区到另一个，并用空格填充任何剩余空间。
+    </para>
             </entry>
           </row>
           <row>
@@ -194,8 +193,8 @@
             </entry>
             <entry>
               <para>
-            Get a pointer to a matching double word in a memory buffer.
-        </para>
+      获取指向内存缓冲区中匹配的双字的指针。
+    </para>
             </entry>
           </row>
           <row>
@@ -209,8 +208,8 @@
             </entry>
             <entry>
               <para>
-            Deallocate a specified memory buffer.
-        </para>
+      释放指定的内存缓冲区。
+    </para>
             </entry>
           </row>
           <row>
@@ -224,8 +223,8 @@
             </entry>
             <entry>
               <para>
-            Allocate a new memory buffer in a group.
-        </para>
+      在组中分配一个新的内存缓冲区。
+    </para>
             </entry>
           </row>
           <row>
@@ -239,8 +238,8 @@
             </entry>
             <entry>
               <para>
-            Allocate static memory buffers of a specified size.
-        </para>
+      Allocate static memory buffers of a specified size.
+    </para>
             </entry>
           </row>
           <row>
@@ -254,8 +253,8 @@
             </entry>
             <entry>
               <para>
-            Close a memory group.
-        </para>
+      关闭内存组。
+    </para>
             </entry>
           </row>
           <row>
@@ -284,8 +283,8 @@
             </entry>
             <entry>
               <para>
-            Open up a new memory group.
-        </para>
+      打开一个新的内存组。
+    </para>
             </entry>
           </row>
           <row>
@@ -299,8 +298,8 @@
             </entry>
             <entry>
               <para>
-            Get a pointer to a matching integer in a memory buffer.
-        </para>
+      获取指向内存缓冲区中匹配整数的指针。
+    </para>
             </entry>
           </row>
           <row>
@@ -313,8 +312,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -328,8 +326,8 @@
             </entry>
             <entry>
               <para>
-            Get a pointer to a matching long integer in a memory buffer.
-        </para>
+      获取指向内存缓冲区中匹配长整数的指针。
+    </para>
             </entry>
           </row>
           <row>
@@ -342,8 +340,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -357,8 +354,8 @@
             </entry>
             <entry>
               <para>
-            Move one memory buffer to another.
-        </para>
+      将一个内存缓冲区移动到另一个。
+    </para>
             </entry>
           </row>
           <row>
@@ -387,8 +384,8 @@
             </entry>
             <entry>
               <para>
-            Fill a memory buffer with a specified character.
-        </para>
+      用指定字符填充内存缓冲区。
+    </para>
             </entry>
           </row>
           <row>
@@ -402,8 +399,8 @@
             </entry>
             <entry>
               <para>
-            Get a pointer to a matching short integer in a memory buffer.
-        </para>
+      获取内存缓冲区中匹配的短整数的指针。
+    </para>
             </entry>
           </row>
           <row>
@@ -417,8 +414,8 @@
             </entry>
             <entry>
               <para>
-            Report the total number of bytes used by other memory manager functions.
-        </para>
+      报告其他内存管理函数使用的总字节数。
+    </para>
             </entry>
           </row>
           <row>
@@ -444,8 +441,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -459,8 +455,8 @@
             </entry>
             <entry>
               <para>
-            Walk through the memory system, checking for validity.
-        </para>
+      遍历内存系统，检查有效性。
+    </para>
             </entry>
           </row>
           <row>
@@ -474,8 +470,8 @@
             </entry>
             <entry>
               <para>
-            Get a pointer to a matching word in a memory buffer.
-        </para>
+      获取指向内存缓冲区中匹配字的指针。
+    </para>
             </entry>
           </row>
           <row>
@@ -489,8 +485,8 @@
             </entry>
             <entry>
               <para>
-            Copy a string to a newly allocated block of memory and return a PSZ to the memory.
-        </para>
+      将字符串复制到新分配的内存块并返回指向该内存的 PSZ。
+    </para>
             </entry>
           </row>
         </table>

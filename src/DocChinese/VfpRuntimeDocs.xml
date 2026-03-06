@@ -1605,7 +1605,6 @@
             当 Set FullPath 为 OFF 时，NDX( ) 返回 .idx 文件所在驱动器的 .idx 文件名。
         </remarks>
     </ndx>
-
     <ntom>
         <summary>
             返回数值表达式的货币值。
@@ -3449,7 +3448,7 @@
       数值类型
     </returns>
     <example>
-       <code language="X"#>
+       <code language="X#">
         ? ABS(-45)       &amp;&amp; 显示 45
         ? ABS(10-30)     &amp;&amp; 显示 20
         ? ABS(30-10)     &amp;&amp; 显示 20
@@ -3484,7 +3483,7 @@
       使用<b>ACOPY( )</b>函数将成员数组复制到具有特定维度的现有非成员数组时，可能引发“下标超出定义范围”错误。调用<b>ACOPY( )</b>前将目标数组维度改为单元素可避免此错误。详情参见DIMENSION命令。
     </remarks>
     <example>
-       <code language="X"#>
+       <code language="X#">
         CLOSE DATABASES
         OPEN DATABASE (HOME(2) + ‘data\testdata’)
         USE customer     &amp;&amp; 打开客户表
@@ -3517,7 +3516,7 @@
       返回的反正弦值以弧度为单位。
     </备注>
     <示例>
-       <code language="X"#>
+       <code language="X#">
         CLEAR
         ? RTOD(ACOS(0))  &amp;&amp; 显示 90.00
         STORE -1 to gnArcAngle
@@ -3587,7 +3586,7 @@
       ADIR( ) 函数为每个文件在数组中存储文件名、大小、最后修改日期、最后修改时间及属性。
     </remarks>
     <example>
-       <code language="X"#>
+       <code language="X#">
         CLOSE DATABASES
         SET DEFAULT TO (HOME(2) + ‘Data’)
         gnDbcnumber = ADIR(gaDatabase, ‘*.DBC’)  &amp;&amp; 创建数组
@@ -5015,13 +5014,13 @@
   <barcount>
     <summary>
       Included for compatibility with dBASE.
-       
+
     </summary>
   </barcount>
   <barprompt>
     <summary>
       Included for compatibility with dBASE.
-       
+
     </summary>
   </barprompt>
   <between>
@@ -5544,7 +5543,6 @@
       Returns the character associated with the specified numeric ANSI code.
     </summary>
     <param name="nANSICode">
-
       Specifies a number between 0 and 255 whose equivalent ANSI character <b>CHR( )</b> returns.
       Use <b>ASC( )</b> to return the ANSI value for a specified character.
     </param>
@@ -5552,7 +5550,6 @@
       Character
     </returns>
     <remarks>
-
       <b>CHR( )</b> returns a single character corresponding to the numeric position of the character in the character table of the current code page. <b>CHR( )</b> can be used to send printer control codes to a printer.
     </remarks>
     <example>
@@ -5619,14 +5616,8 @@
     <summary>
       Returns the name of the month from a given date or DateTime expression.
     </summary>
-    <param name="dExpression">
-
+    <param name="dDate">
       Specifies the date expression from which <b>CMONTH( )</b> returns the name of the month.
-
-    </param>
-    <param name="tExpression">
-
-      Specifies the DateTime expression from which <b>CMONTH( )</b> returns the name of the month.
     </param>
     <returns>
       Character
@@ -5637,11 +5628,11 @@
     </remarks>
     <example>
        <code language="X#">
-        ? <b>CMONTH(</b>DATE( )<b>)</b>
+        ? CMONTH(DATE( )
         STORE {^1998-02-16} TO gdDueDate
-        ? 'Your payment was due in ', <b>CMONTH(</b>gdDueDate<b>)</b>
+        ? 'Your payment was due in ', CMONTH(gdDueDate)
         STORE gdDueDate+60 TO gdFinalDate
-        ? 'You must pay by ', <b>CMONTH(</b>gdFinalDate<b>)</b>
+        ? 'You must pay by ', CMONTH(gdFinalDate)
       </code>
     </example>
   </cmonth>
@@ -5650,7 +5641,6 @@
       Returns the number of menu items on a user-defined menu or the X# system menu.
     </summary>
     <param name="cMenuName">
-
       Specifies the name of the menu for which <b>CNTBAR( )</b> returns the number of menu items. For a list of the X# system menu names, see the System Menu Names topic.
     </param>
     <returns>
@@ -5776,7 +5766,7 @@
   <col>
     <summary>
       Included for backward compatibility. Use the CurrentX, CurrentY Properties.
-       
+
       Returns the current column position of the cursor.
     </summary>
     <returns>
@@ -8453,7 +8443,7 @@
       You can use the <b>CD</b> and <b>CHDIR</b> commands to switch to hidden files and directories.
     </remarks>
     <example>
-       
+
       <code language="X#">
         SET PATH TO HOME( )
         CLEAR
@@ -9530,17 +9520,17 @@
       ` or ~
       96
       126
-       
+
       41
       - or _
       45
       95
-       
-       
+
+
       = or +
       61
       43
-       
+
       13
       [ or {
       91
@@ -9560,27 +9550,27 @@
       ; or :
       59
       58
-       
+
       39
       ' or "
       39
       34
-       
+
       40
       , or &lt;
       44
       60
-       
+
       51
       . or &gt;
       46
       62
-       
+
       52
       / or ?
       47
       63
-       
+
       53
       * Keystroke reserved by Windows.
     </returns>
@@ -10019,7 +10009,7 @@
   <mdown>
     <summary>
       Included for backward compatibility. Use the Click, MouseDown, MouseUp, and RightClick events instead.
-       
+
       Determines whether or not the mouse button is pressed.
     </summary>
     <returns>
@@ -10788,7 +10778,7 @@
   <objvar>
     <summary>
       Included for backward compatibility. Use the Name Property (X#) for controls instead.
-       
+
       Returns the name of the memory variable, array element or field associated with an object.
     </summary>
     <returns>
@@ -10838,7 +10828,7 @@
   <oemtoansi>
     <summary>
       Included for backward compatibility. Use the CPCONVERT( ) Function instead.
-       
+
       Converts each character in a character expression to the corresponding character in the ANSI character set.
     </summary>
     <returns>
@@ -11481,7 +11471,7 @@
   <rdlevel>
     <summary>
       Included for backward compatibility. Use the Form Designer instead of READ.
-       
+
       Returns the current READ level.
     </summary>
     <returns>
@@ -11542,7 +11532,7 @@
   <readkey>
     <summary>
       Included for backward compatibility with READ. Use the Form Designer instead of READ.
-       
+
       Returns a value corresponding to the key pressed to exit certain editing commands, or a value indicating how the last READ was terminated.
     </summary>
     <returns>
@@ -11861,7 +11851,7 @@
   <row>
     <summary>
       Included for backward compatibility. Use the CurrentX, CurrentY Properties.
-       
+
       Returns the current row position of the cursor.
     </summary>
     <returns>
@@ -12722,13 +12712,13 @@
       <b>STRTRAN( )</b> returns the resulting character or varbinary string. The Result data type is derived by the first parameter data type.
     </returns>
     <example>
-       
+
       <code language="X#">
         STORE 'abracadabra' TO gcString
         ? STRTRAN(gcString, 'a', 'z')
         ? STRTRAN(gcString, 'a', 'q', 2, 3)
       </code>
-       
+
       <code language="X#">
         ? STRTRAN(gcString, 0h61, 0h7A)
         ? STRTRAN(0h + gcString, 'a', 0h7A)         &amp;&amp; This command shows parameters data type variability and returns varbinary string
@@ -13167,7 +13157,7 @@
   <updated>
     <summary>
       Included for backward compatibility. Use the InteractiveChange Event or ProgrammaticChange Event instead.
-       
+
       Returns true (.T.) if you changed any data during the most recent READ.
     </summary>
     <returns>
@@ -13255,7 +13245,7 @@
   <varread>
     <summary>
       Included for backward compatibility in X#. Use the ControlSource Property or Name Property (X#) instead.
-       
+
       Returns in uppercase the name of the memory variable, array element, or field used to create the current @ ... GET field or control.
     </summary>
     <returns>
@@ -13761,7 +13751,7 @@
   </wparent>
   <wread>
     <summary>
-       
+
       Included for backward compatibility. Use the Form Designer instead.
       Determines whether or not the current or specified window is involved in the current READ.
     </summary>
@@ -13857,5 +13847,5 @@
       </code>
     </example>
   </year>
-	
+
 </Runtimefunctions>

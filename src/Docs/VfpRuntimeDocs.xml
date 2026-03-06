@@ -1613,6 +1613,7 @@
         </example>
         <seealso cref='M:XSharp.VFP.Functions.MToN(XSharp.__Currency)' />
     </ntom>
+
     <order>
         <summary>
             Returns the name of the controlling index file or tag for the current or specified table.
@@ -1646,6 +1647,7 @@
             </code>
         </example>
     </order>
+
     <quarter>
         <summary>
             Returns the quarter of the year in which a date or datetime expression occurs.
@@ -1674,6 +1676,7 @@
         <seealso cref='O:XSharp.RT.Functions.Month'>Month( ) Function</seealso>
         <seealso cref='O:XSharp.RT.Functions.Year'>Year( ) Function</seealso>
     </quarter>
+
     <rat>
         <summary>
             Returns the numeric position of the last occurrence of a character expression or memo field within another character expression or memo field.
@@ -3349,12 +3352,21 @@
         <param name="nArrayAttribute">
 
             Determines whether ALEN( ) returns the number of elements, rows or columns in the array according to the following values for nArrayAttribute:
-            0
-            Returns the number of elements in the array. Omitting nArrayAttribute is identical to specifying 0.
-            1
-            Returns the number of rows in the array.
-            2
-            Returns the number of columns in the array. If the array is a one-dimensional array, ALEN( ) returns 0 (no columns).
+            <table border="1">
+                <tr>
+                    <td>0</td>
+            <td>Returns the number of elements in the array. Omitting nArrayAttribute is identical to specifying 0.</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+            <td>Returns the number of rows in the array.</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+
+            <td>Returns the number of columns in the array. If the array is a one-dimensional array, ALEN( ) returns 0 (no columns).</td>
+                </tr>
+            </table>
         </param>
         <returns>
             Numeric
@@ -5602,14 +5614,8 @@
     <summary>
       Returns the name of the month from a given date or DateTime expression.
     </summary>
-    <param name="dExpression">
-
+    <param name="dDate">
       Specifies the date expression from which <b>CMONTH( )</b> returns the name of the month.
-
-    </param>
-    <param name="tExpression">
-
-      Specifies the DateTime expression from which <b>CMONTH( )</b> returns the name of the month.
     </param>
     <returns>
       Character
@@ -5620,11 +5626,11 @@
     </remarks>
     <example>
        <code language="X#">
-        ? <b>CMONTH(</b>DATE( )<b>)</b>
+        ? CMONTH(DATE( )
         STORE {^1998-02-16} TO gdDueDate
-        ? 'Your payment was due in ', <b>CMONTH(</b>gdDueDate<b>)</b>
+        ? 'Your payment was due in ', CMONTH(gdDueDate)
         STORE gdDueDate+60 TO gdFinalDate
-        ? 'You must pay by ', <b>CMONTH(</b>gdFinalDate<b>)</b>
+        ? 'You must pay by ', CMONTH(gdFinalDate)
       </code>
     </example>
   </cmonth>
@@ -5633,7 +5639,6 @@
       Returns the number of menu items on a user-defined menu or the X# system menu.
     </summary>
     <param name="cMenuName">
-
       Specifies the name of the menu for which <b>CNTBAR( )</b> returns the number of menu items. For a list of the X# system menu names, see the System Menu Names topic.
     </param>
     <returns>

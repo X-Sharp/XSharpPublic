@@ -226,6 +226,9 @@ CLASS XProject
 
 #region AssemblyReferences
     METHOD RefreshReferences(asmList as IList<string>) AS VOID
+        if SELF:ProjectNode == null
+		   RETURN
+		ENDIF   
         var oldAsm := XDictionary<string, string>{StringComparer.OrdinalIgnoreCase}
         var newAsm := List<string>{}
         SELF:LogReferenceMessage("RefreshReferences , old "+SELF:AssemblyReferenceNames:Count:ToString()+" new "+asmList:Count:ToString())

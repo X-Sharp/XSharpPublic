@@ -272,14 +272,17 @@ namespace XSharp.Project
         /// </summary>
         public void SetCommentTokens()
         {
-            var commentTokens = _taskList.CommentTokens;
-            var tokens = new List<XCommentToken>();
-            foreach (var token in commentTokens)
-            {
-                var cmttoken = new XCommentToken(token.Text, (int)token.Priority);
-                tokens.Add(cmttoken);
+            if (_taskList != null)
+            { 
+	            var commentTokens = _taskList.CommentTokens;
+	            var tokens = new List<XCommentToken>();
+	            foreach (var token in commentTokens)
+	            {
+	                var cmttoken = new XCommentToken(token.Text, (int)token.Priority);
+	                tokens.Add(cmttoken);
+	            }
+	            XSolution.SetCommentTokens(tokens);
             }
-            XSolution.SetCommentTokens(tokens);
         }
 
 

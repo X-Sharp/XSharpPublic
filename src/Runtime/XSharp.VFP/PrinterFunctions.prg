@@ -1,53 +1,34 @@
-﻿//
+﻿
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
-//
-USING System.Management
-USING System.Drawing.Printing
-#ifndef NET5_0_OR_GREATER
-USING System.Windows.Forms
+
+USING System
+USING XSharp.VFP
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/aprinters/*" />
 [FoxProFunction("APRINTERS", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
-FUNCTION APrinters ( ArrayName , nValue ) AS INT CLIPPER
-LOCAL cPrinterName AS STRING
-LOCAL iCount AS INT
+FUNCTION APrinters( ArrayName , nValue ) AS INT CLIPPER
+    LOCAL aPrintersFromService AS ARRAY
+    LOCAL nRows AS DWORD
+    LOCAL nCols AS DWORD
 
-	Default ( @nValue , 0 )
+    Default(@nValue, 0)
+    nCols := (DWORD)IIF((INT)nValue > 0, 5, 2)
+    aPrintersFromService := VfpUIService.Provider:GetPrinters((INT)nValue)
+    nRows := XSharp.VFP.Functions.ALen((__FoxArray)aPrintersFromService, 1)
 
-	IF ( iCount := PrinterSettings.InstalledPrinters:Count ) > 0
+    IF nRows > 0
+        ArrayName := __FoxRedim(ArrayName, nRows, nCols)
+        LOCAL faDest := (__FoxArray)ArrayName AS __FoxArray
+        LOCAL faSrc  := (__FoxArray)aPrintersFromService AS __FoxArray
 
-		IF ! IsArray( ArrayName ) .or. ( IsArray ( ArrayName ) .and. ! ArrayName IS __FoxArray )
-			THROW ArgumentException {"parameter must be a Fox Array", nameof ( ArrayName ) }
-		ELSEIF ! IsNumeric ( nValue )
-			THROW ArgumentException {"wrong parameter type, must be numeric", nameof ( nValue ) }
-		ELSEIF nValue < 0 .or. nValue > 1
-			THROW ArgumentException {"parameter value must be either 0 or 1", nameof ( nValue ) }
-		ENDIF
+        FOR VAR i := 1 TO nRows
+            FOR VAR j := 1 TO nCols
+                faDest[i, j] := faSrc[i, j]
+            NEXT
+        NEXT
+    ENDIF
 
-		nValue := (INT) nValue  // note: VFP allows to pass a float in the range from 0.00 to 1.00 !
-
-		IF nValue > 0
-			ArrayName := __FoxRedim(ArrayName, (DWORD) iCount, 5 )
-		ELSE
-			ArrayName := __FoxRedim(ArrayName, (DWORD) iCount, 2 )
-		ENDIF
-
-		FOR VAR i := 0 TO iCount - 1
-			cPrinterName := PrinterSettings.InstalledPrinters[i]
-			VAR oProperty := ManagementObject{"Win32_Printer.DeviceID='" + cPrinterName + "'"}
-
-			ArrayName [ i + __ARRAYBASE__ , __ARRAYBASE__ ]     := cPrinterName
-			ArrayName [ i + __ARRAYBASE__ , __ARRAYBASE__ + 1 ] := IIF ( oProperty["PortName"] == NULL , "" , (string) oProperty["PortName"]   )
-
-			IF nValue > 0
-				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 2  ] := IIF ( oProperty["DriverName"] == NULL , "" , (string) oProperty["DriverName"] )
-				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 3  ] := IIF ( oProperty["Comment"]    == NULL , "" , (string) oProperty["Comment"] )
-				ArrayName [ i + __ARRAYBASE__ ,__ARRAYBASE__ + 4  ] := IIF ( oProperty["Location"]   == NULL , "" , (string) oProperty["Location"] )
-			ENDIF
-		NEXT
-	ENDIF
-
-	RETURN iCount
-#endif
+    RETURN (INT)nRows
+ENDFUNC

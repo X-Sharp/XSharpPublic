@@ -39,21 +39,6 @@
       <AssemblyName>System.Data.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>System.Drawing</Name>
-      <AssemblyName>System.Drawing.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Management, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>System.Management</Name>
-      <AssemblyName>System.Management.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Windows.Forms</Name>
-      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\commonAssemblyInfo.prg">
@@ -116,15 +101,9 @@
     <Compile Include="Types\Attributes.prg" />
     <Compile Include="UIFunctions.prg" />
     <Compile Include="UI\Assert.prg" />
-    <Compile Include="UI\AssertDialog.designer.prg">
-      <DependentUpon>AssertDialog.prg</DependentUpon>
-    </Compile>
-    <Compile Include="UI\AssertDialog.prg">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\AutoCloseMessageBox.prg" />
     <Compile Include="UI\Dialogs.prg" />
     <Compile Include="UI\UIAndWindows.prg" />
+    <Compile Include="UI\VfpUIService.prg" />
     <Compile Include="Win32.prg" />
     <Compile Include="WindowFunctions.prg" />
     <Compile Include="WorkAreaWrappers.prg" />
@@ -209,12 +188,6 @@
     <None Include="VFPFileStructures\VFP6Project2.pdf" />
     <None Include="VFPFileStructures\VFP6Report.pdf" />
     <None Include="VFPFileStructures\VFP6Report2.pdf" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UI\AssertDialog.resx">
-      <DependentUpon>AssertDialog.prg</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="..\XmlDoc.Targets" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">

@@ -30,7 +30,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
             nDefault := (MessageBoxDefaultButton) _AND(nDialogBoxType, 0xF00)
 
             IF nTimeOut >= 1
-                // AutoCloseMessageBox
                 RETURN (LONG) XSharp.VFP.UI.AutoCloseMessageBox.Show(cMessage, cTitleBarText, (INT)nTimeOut, nButton, nIcon, nDefault)
             ENDIF
 
@@ -127,7 +126,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
             RETURN iColorref
         END METHOD
 
-      // Métodos de ayuda internos para GetColor
         PRIVATE METHOD __WriteColors ( hSubKey AS RegistryKey , iCustomColorsArr AS INT[] ) AS VOID
             LOCAL i, j AS INT
             VAR bRegistryArr := BYTE[]{iCustomColorsArr:Length * 4}
@@ -225,14 +223,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
             iCount := PrinterSettings.InstalledPrinters:Count
             IF iCount > 0
-                // Creamos un array local para devolver los datos
                 VAR nCols := (DWORD)IIF(nValue > 0, 5, 2)
                 aResult := __FoxArray{(DWORD)iCount, nCols}
 
                 FOR VAR i := 0 TO iCount - 1
                     cPrinterName := PrinterSettings.InstalledPrinters[i]
 
-                    // Lógica de WMI para obtener detalles
                     TRY
                         VAR oProperty := ManagementObject{"Win32_Printer.DeviceID='" + cPrinterName + "'"}
 
@@ -245,7 +241,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
                             aResult[i + 1, 5] := IIF(oProperty["Location"] == NULL, "", (STRING)oProperty["Location"])
                         ENDIF
                     CATCH
-                        // Fallback si WMI falla
                         aResult[i + 1, 1] := cPrinterName
                         aResult[i + 1, 2] := "Unknown"
                     END TRY

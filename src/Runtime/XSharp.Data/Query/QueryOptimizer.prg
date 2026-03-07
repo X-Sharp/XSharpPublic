@@ -64,7 +64,29 @@ PUBLIC CLASS QueryOptimizer
         IF expression IS SqlLogicExpressionContext VAR logicExpr
             VAR leftOpt := IsOptimizable(logicExpr:Left, tableAliases)
             VAR rightOpt := IsOptimizable(logicExpr:Right, tableAliases)
-            RETURN leftOpt .AND. rightOpt
+
+            // Check that Left and Right don't share tables (independent expressions)
+            IF leftOpt .AND. rightOpt
+                VAR leftDeps := logicExpr:GetTableDependencies(tableAliases)
+                VAR rightDeps := logicExpr:GetTableDependencies(tableAliases)
+
+                // Check no overlap between Left and Right dependencies
+                VAR hasOverlap := FALSE
+                FOREACH VAR dep IN leftDeps
+                    IF rightDeps:Contains(dep)
+                        hasOverlap := TRUE
+                        EXIT
+                    ENDIF
+                NEXT
+
+                IF !hasOverlap
+                    RETURN TRUE  // Independent single-table expressions combined with AND/OR
+                ELSE
+                    RETURN FALSE  // Shared table dependency - not optimizable for multi-table optimization
+                ENDIF
+            ELSE
+                RETURN FALSE
+            ENDIF
         ENDIF
 
         // For prefix expressions, check the inner expression

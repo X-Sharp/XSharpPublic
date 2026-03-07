@@ -98,6 +98,7 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestNewSqlFeatures", TestNewSqlFeatures)
     RegisterTest("TestSelectFunctionality", TestSelectFunctionality)
     RegisterTest("TestQueryOptimizer", TestQueryOptimizer)
+    RegisterTest("TestMultiTableOptimizer", TestMultiTableOptimizer)
 
     LOCAL results := RunTests()
 
@@ -1190,5 +1191,101 @@ FUNCTION TestSqlParser () AS VOID
         // Parse silently when not verbose
         VAR ctx := parser:ParseExpressionContext()
     ENDIF
+RETURN
+
+
+FUNCTION TestMultiTableOptimizer() AS VOID STRICT
+    ? ""
+    ? "=== Testing Multi-Table Query Optimizer ==="
+    ? ""
+
+    CREATE CURSOR TableA (ID N(5), Value C(10))
+    CREATE CURSOR TableB (SKU N(5), Price N(8,2))
+
+    IF Verbose
+        ? "Created test tables:"
+    ENDIF
+
+    INSERT INTO TableA VALUES (1, "Item A1")
+    INSERT INTO TableA VALUES (2, "Item A2")
+    INSERT INTO TableA VALUES (3, "Item A3")
+
+    INSERT INTO TableB VALUES (101, 9.99)
+    INSERT INTO TableB VALUES (102, 19.99)
+    INSERT INTO TableB VALUES (103, 29.99)
+    INSERT INTO TableB VALUES (104, 39.99)
+    INSERT INTO TableB VALUES (105, 49.99)
+
+    IF Verbose
+        ? "TableA:", DbSelectArea("TableA"), "records:", RecCount()
+        ? "TableB:", DbSelectArea("TableB"), "records:", RecCount()
+    ENDIF
+
+    // Test 1: Single-table WHERE (baseline)
+    Title("Test 1: Single-table WHERE")
+    SELECT * FROM TableA WHERE ID = 2
+    VerifyTable(1, "Test 1 failed", FALSE)
+
+    // Test 2: AND of independent single-table conditions (KEY TEST FOR PHASE 1)
+    Title("Test 2: AND of independent single-table conditions")
+    SELECT * FROM TableA, TableB WHERE TableA.ID = 2 .AND. TableB.SKU = 103
+    VerifyTable(1, "Test 2 failed", FALSE)
+
+    // Test 3: OR of independent single-table conditions
+    Title("Test 3: OR of independent single-table conditions")
+    SELECT * FROM TableA, TableB WHERE TableA.ID = 1 .OR. TableB.SKU = 105
+    VerifyTable(2, "Test 3 failed", FALSE)
+
+    // Test 4: Multiple AND conditions across tables
+    Title("Test 4: Multiple independent single-table conditions")
+    SELECT * FROM TableA, TableB WHERE TableA.ID = 2 .AND. TableA.Value = "Item A2" .AND. TableB.SKU = 103
+    VerifyTable(1, "Test 4 failed", FALSE)
+
+    // Test 5: Cross-table comparison (not optimizable)
+    Title("Test 5: Cross-table comparison")
+    SELECT * FROM TableA, TableB WHERE TableA.ID = INT(TableB.SKU / 100)
+    VerifyTable(2, "Test 5 failed", FALSE)
+
+    // Test 6: Complex nested conditions
+    Title("Test 6: Complex nested conditions")
+    SELECT * FROM TableA, TableB WHERE (TableA.ID = 1 .OR. TableA.ID = 2) .AND. TableB.SKU >= 103
+    VerifyTable(6, "Test 6 failed", FALSE)
+
+    // Test 7: Range operators with independent tables
+    Title("Test 7: Range operators")
+    SELECT * FROM TableA, TableB WHERE TableA.ID > 1 .AND. TableB.Price < 25
+    VerifyTable(4, "Test 7 failed", FALSE)
+
+    Title("All tests completed successfully")
+
+    USE IN ALL
+RETURN
+
+FUNCTION Title(title AS STRING) AS VOID
+    IF Verbose
+        ? ""
+        ? "===", title, "==="
+    ENDIF
+
+FUNCTION VerifyTable(expectedRecords AS DWORD, message AS STRING, closeTable := TRUE AS LOGIC) AS VOID STRICT
+    LOCAL actualCount AS DWORD
+    actualCount := RecCount()
+
+    IF actualCount != expectedRecords
+        ? "FAILED:", message
+        ? "  Expected:", expectedRecords, "records"
+        ? "  Actual:", actualCount, "records"
+        THROW Exception{message + " Expected: " + expectedRecords:ToString() + " Actual: " + actualCount:ToString()}
+    ENDIF
+
+    IF Verbose
+        ? "PASSED: Expected", expectedRecords, "records - Got", actualCount
+    ENDIF
+
+    IF closeTable
+        USE IN 0
+    ENDIF
+RETURN
+
 
     RETURN

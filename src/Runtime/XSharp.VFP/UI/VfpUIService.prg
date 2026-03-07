@@ -7,7 +7,6 @@
 USING System
 USING System.Reflection
 USING System.IO
-USING System.Text
 
 BEGIN NAMESPACE XSharp.VFP
 
@@ -40,8 +39,7 @@ BEGIN NAMESPACE XSharp.VFP
             ENDIF
 
             TRY
-                LOCAL cDllPath AS STRING
-                cDllPath := Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly():Location), "XSharp.VFP.UI.dll")
+                VAR cDllPath := Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly():Location), "XSharp.VFP.UI.dll")
 
                 IF File.Exists(cDllPath)
                     VAR oAsm := Assembly.LoadFrom(cDllPath)

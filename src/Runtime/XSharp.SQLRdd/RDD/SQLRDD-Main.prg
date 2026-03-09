@@ -225,9 +225,9 @@ partial class SQLRDD inherit DBFVFP
                     row[c] := SELF:_HandleNullDate(values[c:Ordinal],c)
                 endif
             next
-            if self:_recnoColumNo > -1
-                self:_recordKeyCache:Add(key, (DWORD) SELF:RowCount-1)
-            endif
+            // if self:_recnoColumNo > -1
+                // self:_recordKeyCache:Add(key, (DWORD) SELF:RowCount-1)
+            // endif
             self:_serverReccount += 1
             self:GoHot()
         endif
@@ -508,6 +508,11 @@ partial class SQLRDD inherit DBFVFP
         if !self:_ForceOpen()
             return false
         endif
+        var nPage       := SELF:RecCount / self:_oTd:MaxRecords
+        if SELF:RecCount % self:_oTd:MaxRecords != 0
+            nPage += 1
+        ENDIF
+        SELF:_FetchPage((INT) nPage)
         SELF:RowNumber  := SELF:RowCount
         SELF:_Top       := FALSE
         SELF:_Bottom    := TRUE
@@ -540,13 +545,20 @@ partial class SQLRDD inherit DBFVFP
                 if newRow <= SELF:RowCount
                     SELF:RowNumber := (DWORD) newRow
                     SELF:_SetEOF(FALSE)
-                ELSE
+                ELSEIF SELF:_hasEOF
                     SELF:RowNumber := 0
                     SELF:_SetEOF(TRUE)
+                ELSE
+                    SELF:_FetchPage(SELF:_currentPageNo +1)
                 endif
             ELSE
-                isOK := SELF:GoTop()
-                SELF:_SetBOF(TRUE)
+                IF SELF:_currentPageNo == 1
+                    isOK := SELF:GoTop()
+                    SELF:_SetBOF(TRUE)
+                    SELF:_currentPageNo := 1
+                ELSE
+                    SELF:_FetchPage(SELF:_currentPageNo -1)
+                ENDIF
             ENDIF
         ENDIF
         #ifdef TRACERDD
@@ -579,15 +591,16 @@ partial class SQLRDD inherit DBFVFP
             return false
         endif
         SELF:GoCold()
-        if self:_recnoColumNo > -1 .and. nRec != 0
-            if self:_recordKeyCache:TryGetValue(nRec, out var nRowNum)
-                nRec := nRowNum + 1
-            else
-                // when record number does not exist, then go to phantom record and return FALSE
-                lSuccess := FALSE
-                nRec     := 0
-            endif
-        endif
+        // what do we do with goto ?
+        // if self:_recnoColumNo > -1 .and. nRec != 0
+            // if self:_recordKeyCache:TryGetValue(nRec, out var nRowNum)
+                // nRec := nRowNum + 1
+            // else
+                // // when record number does not exist, then go to phantom record and return FALSE
+                // lSuccess := FALSE
+                // nRec     := 0
+            // endif
+        // endif
         LOCAL nCount := SELF:RowCount AS DWORD
         // Normal positioning, VO resets FOUND to FALSE after a recprd movement
         SELF:_Found := FALSE

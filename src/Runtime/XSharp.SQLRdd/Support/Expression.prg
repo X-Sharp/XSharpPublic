@@ -386,7 +386,7 @@ internal class SqlDbExpression inherit SqlDbObject
     access SegmentCount as long
         return self:Segments:Count
     method TranslateFunctions() as void
-        local lastToken as SqlDbToken
+        local lastToken := null as SqlDbToken
         foreach var token in self:Tokens
             switch token:Type
             case TokenType.BoFunc
@@ -407,7 +407,7 @@ internal class SqlDbExpression inherit SqlDbObject
             case TokenType.Token
                 token:SQLName := _provider.QuoteIdentifier(token:Name)
             case TokenType.String
-                if lastToken:Name:Trim() == "="
+                if lastToken != null .and. lastToken:Name:Trim() == "="
                     // This is a string literal after a single equals, so we need to quote it as well
                     lastToken:SQLName := "like"
                     token:SQLName := Left(token:Name, (DWORD)token:Name:Length-1) + "%" + Right(token:Name, 1)

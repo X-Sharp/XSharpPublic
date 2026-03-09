@@ -136,6 +136,9 @@ internal class SqlDbTableCommandBuilder
         local scopeWhere := null as string
         var CurrentOrder := _oRdd:CurrentOrder
         var whereClauses := List<String>{}
+        sb:Append(SqlDbProvider.SelectClause)
+        sb:Append(self:ColumnList())
+        sb:Append(SqlDbProvider.FromClause)
         sb:Append(Provider:QuoteIdentifier(self:_oTable:RealName))
         if CurrentOrder != null
             scopeWhere := CurrentOrder:GetScopeClause()
@@ -176,12 +179,13 @@ internal class SqlDbTableCommandBuilder
         endif
         cOrderby :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.OrderByClause, _cTable, cOrderby)
         sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
-        var selectStmt := sb:ToString()
-        sb:Clear()
-        sb:Append(Provider:SelectTopStatement)
-        sb:Replace(SqlDbProvider.TopCountMacro, _oTable:MaxRecords:ToString())
-        sb:Replace(SqlDbProvider.ColumnsMacro, self:ColumnList())
-        sb:Replace(SqlDbProvider.TableNameMacro, selectStmt)
+
+        sb:Append(Provider:PagingClause)
+        sb:Replace(SqlDbProvider.PagesizeMacro, _oTable:MaxRecords:ToString())
+        // start of next page = (CurrentPage-1) * MaxRecords
+        var nStartRec := (_oRdd:CurrentPage-1) * _oTable:MaxRecords
+        sb:Replace(SqlDbProvider.StartRecMacro, nStartRec:ToString())
+
         return sb:ToString()
 
     method ColumnList() as string

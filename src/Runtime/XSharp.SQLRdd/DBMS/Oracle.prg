@@ -32,7 +32,7 @@ class SqlDbProviderOracle inherit SqlDbProvider
     /// <inheritdoc />
     override property GetRowCount            as string => "select SQL%ROWCOUNT"
     /// <inheritdoc />
-    override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+TableNameMacro+" top "+TopCountMacro
+    override property PagingClause     as string => " limit "+PagesizeMacro+" offset "+StartRecMacro
 
 
     constructor()

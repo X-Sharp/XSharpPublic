@@ -26,6 +26,8 @@ partial class SQLRDD inherit DBFVFP
     private _creatingIndex  as logic
     private _tableMode      as TableMode
     private _hasData        as logic
+    private _hasEOF         as logic
+    private _currentPageNo  as long
     private _getStructureOnly as logic
     private _connection     as SqlDbConnection
     private _oTd            as SqlDbTableInfo
@@ -48,7 +50,7 @@ partial class SQLRDD inherit DBFVFP
     /// 0 based Column Number for the column that has the record number
     /// </summary>
     private _recnoColumNo   as long
-    private _recordKeyCache as Dictionary<dword, dword>
+    // private _recordKeyCache as Dictionary<dword, dword>
 
     private _numHiddenColumns as long
     private _serverReccount as dword
@@ -59,6 +61,7 @@ partial class SQLRDD inherit DBFVFP
     internal property Provider       as ISqlDbProvider get _connection:Provider
     internal property Command        as SqlDbCommand get _command
     internal property OrderBagList   as List<SqlDbOrderBag> get _orderBagList
+    internal property CurrentPage    as int => _currentPageNo
     internal property DataTable as DataTable
         get
             return _table
@@ -106,22 +109,22 @@ partial class SQLRDD inherit DBFVFP
                 dbColumn:Flags := DBFFieldFlags.None
             next
             if self:_recnoColumNo > -1
-                _recordKeyCache := Dictionary<dword, dword>{(int) _RecCount}
+                // _recordKeyCache := Dictionary<dword, dword>{(int) _RecCount}
                 // save the record numbers
                 var rowNum := 0U
                 if _table:Rows:Count > 0
                     foreach row as DataRow in _table:Rows
                         var obj     := row[self:_recnoColumNo]
-                        var recno  := Convert.ToUInt32(obj)
-                        _recordKeyCache[recno] := rowNum
+                        // var recno  := Convert.ToUInt32(obj)
+                        // _recordKeyCache[recno] := rowNum
                         rowNum++
                         #ifdef TRACERDD
                         System.Diagnostics.Debug.WriteLine("Datatable Row {0}, Record {1}", rowNum, recno )
                         #endif
                     next
                 endif
-            else
-                _recordKeyCache := null
+            // else
+                // _recordKeyCache := null
             endif
             self:Header:RecCount := _RecCount
             // set file length
@@ -150,6 +153,7 @@ partial class SQLRDD inherit DBFVFP
         _builder          := null
         _deletedColumnNo  := -1
         _recnoColumNo     := -1
+        _currentPageNo    := 1
         self:_trimValues := true // trim String Valuess
         self:DeleteOnClose := TRUE
         _updatedRows     := List<DataRow>{}
@@ -584,7 +588,7 @@ partial class SQLRDD inherit DBFVFP
     private method _CloseCursor() as void
         self:_hasData       := FALSE
         self:_table         := null
-        self:_recordKeyCache := null
+        // self:_recordKeyCache := null
         return
 
     private method _GetRecCount() as void
@@ -594,6 +598,28 @@ partial class SQLRDD inherit DBFVFP
             self:_serverReccount := self:_builder:GetRecCount()
         endif
     end method
+
+    private method _FetchPage(nNewPageNo as int ) as logic
+        if self:_tableMode != TableMode.Table
+            // Exception?
+            return true
+        endif
+        var lForward := nNewPageNo > _currentPageNo
+        _currentPageNo := nNewPageNo
+        SELF:_hasEOF := false
+        var result := self:_OpenTable("")
+        if lForward .and. SELF:RowCount < _oTd:MaxRecords
+            SELF:_hasEOF := true
+        else
+            _currentPageNo := nNewPageNo
+        endif
+        if lForward
+            SELF:RowNumber := 1
+        else
+            SELF:RowNumber := SELF:RowCount
+        endif
+        return result
+
 end class
 
 end namespace // XSharp.RDD.SqlRDD

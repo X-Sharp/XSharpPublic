@@ -32,16 +32,18 @@ BEGIN NAMESPACE XSharp.VFP
         END PROPERTY
 
         STATIC PRIVATE METHOD LoadProvider() AS VOID
+            // Exclude non interactive solutions (services/IIS)
+            IF !Environment.UserInteractive
+                _provider := HeadlessUIProvider{}
+                RETURN
+            ENDIF
+
             TRY
-                LOCAL cDllPath AS STRING
-                cDllPath := Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly():Location), "XSharp.VFP.UI.dll")
+                VAR cDllPath := Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly():Location), "XSharp.VFP.UI.dll")
 
                 IF File.Exists(cDllPath)
-                    LOCAL oAsm AS Assembly
-                    oAsm := Assembly.LoadFrom(cDllPath)
-
-                    LOCAL oType AS Type
-                    oType := oAsm:GetType("XSharp.VFP.UI.VfpUIProvider", FALSE, TRUE)
+                    VAR oAsm := Assembly.LoadFrom(cDllPath)
+                    VAR oType := oAsm:GetType("XSharp.VFP.UI.VfpUIProvider", FALSE, TRUE)
 
                     IF oType != NULL AND typeof(IVfpUIProvider):IsAssignableFrom(oType)
                         _provider := (IVfpUIProvider) Activator.CreateInstance(oType)

@@ -14,7 +14,7 @@ global OleDbConnStr := "Provider=sqloledb;Data Source=LEDA;Initial Catalog=North
 global showEvents := true as logic
 
 function Start as void
-    TestBeta3()
+    //TestBeta3()
     //TestProviders()
     //TestSqlServer()
     //TestODBC()
@@ -29,7 +29,7 @@ function Start as void
 //     TestParametersODBC()
 //     TestParametersSQL()
 //     TestParametersOLEDB()
-    //TestTable()
+    TestTable()
     //TestCreateIndex()
     //TestServerFilter()
     //TestTableRecno()
@@ -113,15 +113,16 @@ function TestTable() as void
     var handle := SqlDbOpenConnection(SqlConnStr)
     var conn   := SqlDbGetConnection(handle)
     //conn:MetadataProvider := SqlMetaDataProviderDatabase{conn}
-    conn:CallBack += @@EventHandler
+    //conn:CallBack += @@EventHandler
     ? handle
     VoDbUseArea(true, "SQLRDD","Customers","Customers",true, true)
-    ? Cdx(1)
-    DbSetIndex("Customers.sdx")
-    ? Cdx(2)
+    //? Cdx(1)
+    //DbSetIndex("Customers.sdx")
+    //? Cdx(2)
     DumpIndexes()
 
     ? "SetDeleted(TRUE)"
+    DbSetOrder("PK")
     SetDeleted(true)
     DbGoTop()
     do while ! Eof() .and. Recno() < 10
@@ -169,6 +170,14 @@ function TestTable() as void
     ENDDO
     ? "By name"
     ? DbSetOrder("Name")
+    DbGoTop()
+    nI := 0
+    DO WHILE ! Eof() .and. ++nI < 10
+        ? Recno(), FieldGetSym(#City), FieldGetSym(#CustomerID), FieldGetSym(#ContactName)
+        DbSkip(1)
+    ENDDO
+    ? DbSetOrder(5)
+    ? "Index tag Alfred"
     DbGoTop()
     nI := 0
     DO WHILE ! Eof() .and. ++nI < 10
@@ -561,7 +570,7 @@ function DumpStructure(oTd as SqlDbTableInfo) as VOID
 FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs) AS OBJECT
     // Tags default
     switch e:Reason
-        
+
     case SqlRDDEventReason.Condition
         e:Value := ""
     case SqlRDDEventReason.Unique

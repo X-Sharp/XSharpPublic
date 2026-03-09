@@ -139,10 +139,14 @@ internal class SqlDbTableCommandBuilder
         sb:Append(Provider:QuoteIdentifier(self:_oTable:RealName))
         if CurrentOrder != null
             scopeWhere := CurrentOrder:GetScopeClause()
+            if ! String.IsNullOrEmpty(CurrentOrder:SqlWhere)
+                whereClauses:Add(CurrentOrder:SqlWhere)
+            endif
         endif
         if ! String.IsNullOrEmpty(sWhereClause)
             whereClauses:Add(sWhereClause)
         endif
+        // todo: Add condition from conditional index
         if ! String.IsNullOrEmpty(scopeWhere)
             whereClauses:Add(scopeWhere)
         endif

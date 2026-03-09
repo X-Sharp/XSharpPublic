@@ -124,17 +124,17 @@ function TestTable() as void
     ? "SetDeleted(TRUE)"
     DbSetOrder("PK")
     SetDeleted(true)
-    DbGoTop()
-    do while ! Eof() .and. Recno() < 10
+    DbGoBottom()
+    do while ! Bof()
         ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
-        DbSkip(1)
+        DbSkip(-1)
     enddo
     wait
     Cls()
     ? "SetDeleted(FALSE)"
     SetDeleted(false)
     DbGoTop()
-    do while ! Eof() .and. Recno() < 10
+    do while ! Eof()
         ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
         DbSkip(1)
     enddo
@@ -143,7 +143,7 @@ function TestTable() as void
     ? "Order by address"
     DbSetOrder("Address")
     DbGoTop()
-    do while ! Eof() .and. Recno() < 10
+    do while ! Eof()
         ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3),  FieldGetSym(#Country),  FieldGetSym(#City)
         DbSkip(1)
     enddo
@@ -164,7 +164,7 @@ function TestTable() as void
     DbGoTop()
     var nI := 0
     ? "By city"
-    DO WHILE ! Eof() .and. ++nI < 10
+    DO WHILE ! Eof()
         ? Recno(), FieldGetSym(#City), FieldGetSym(#CustomerID), FieldGetSym(#ContactName)
         DbSkip(1)
     ENDDO
@@ -172,7 +172,7 @@ function TestTable() as void
     ? DbSetOrder("Name")
     DbGoTop()
     nI := 0
-    DO WHILE ! Eof() .and. ++nI < 10
+    DO WHILE ! Eof()
         ? Recno(), FieldGetSym(#City), FieldGetSym(#CustomerID), FieldGetSym(#ContactName)
         DbSkip(1)
     ENDDO
@@ -180,7 +180,7 @@ function TestTable() as void
     ? "Index tag Alfred"
     DbGoTop()
     nI := 0
-    DO WHILE ! Eof() .and. ++nI < 10
+    DO WHILE ! Eof()
         ? Recno(), FieldGetSym(#City), FieldGetSym(#CustomerID), FieldGetSym(#ContactName)
         DbSkip(1)
     ENDDO
@@ -613,7 +613,7 @@ function TestProviders as void
         if SqlDbSetProvider(strProv)
             oProv := SqlDbGetProvider()
             ? "Name      ", oProv:Name
-            ? "TopStmt   ", oProv:SelectTopStatement
+            ? "Paging    ", oProv:PagingClause
             ? "Left()    ", oProv:GetFunction("LEFT(%1%,%2%)")
             ? "Alltrim() ", oProv:GetFunction("ALLTRIM(%1%)")
             ? "DTOS()    ", oProv:GetFunction("DTOS(%1%)")

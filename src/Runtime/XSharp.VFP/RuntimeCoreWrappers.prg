@@ -100,7 +100,7 @@ FUNCTION FOpen(cFileName AS STRING, nAttribute := 0 AS INT) AS INT64
         CASE 10; nMode := FO_READ | FO_SHARED | FO_UNBUFFERED
         CASE 11; nMode := FO_WRITE | FO_EXCLUSIVE | FO_UNBUFFERED
         CASE 12; nMode := FO_READWRITE | FO_EXCLUSIVE | FO_UNBUFFERED
-        CASE 0
+        CASE 0; nMode := FO_READ | FO_SHARED
         OTHERWISE
             nMode := FO_READ | FO_SHARED
     END SWITCH

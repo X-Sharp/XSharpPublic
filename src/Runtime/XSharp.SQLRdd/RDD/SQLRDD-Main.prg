@@ -170,8 +170,12 @@ partial class SQLRDD inherit DBFVFP
             ENDIF
         next
 
-        if !lhasRecnoColumn
-            throw Exception{"Recno column "+_oTd:RecnoColumn+" not found"}
+        if !lhasRecnoColumn .and. self:_tableMode = TableMode.Table
+            if !String.IsNullOrEmpty(_oTd:RecnoColumn)
+                throw Exception{"Recno column '"+_oTd:RecnoColumn+"' not found"}
+            else
+                throw Exception{"No column is flagged as the Recno column in the result set"}
+            endif
         endif
 
         var aFields := oFields:ToArray()

@@ -56,10 +56,13 @@ FUNCTION FClose(nFileHandle AS INT64) AS LOGIC
     RETURN XSharp.Core.Functions.FClose(nFileHandle)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fcreate/*" />
-[FoxProFunction("FCREATE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
+[FoxProFunction("FCREATE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION FCreate(cFileName AS STRING, nFileAttribute := 0 AS INT) AS INT64
-    // todo: Map attributes to FileMode and FileAccess and call FCreate()
-    THROW NotImplementedException{}
+    LOCAL pHandle AS IntPtr
+
+    pHandle := XSharp.Core.Functions.FCreate(cFileName, (DWORD) nFileAttribute)
+
+    RETURN pHandle:ToInt64()
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/feof/*" />
 [FoxProFunction("FEOF", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
@@ -82,10 +85,29 @@ FUNCTION FGets(nFileHandle AS INT64, nBytes := 254 AS INT) AS STRING
     RETURN XSharp.Core.Functions.FGetS(nFileHandle, (DWORD) nBytes)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fopen/*" />
-[FoxProFunction("FOPEN", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
+[FoxProFunction("FOPEN", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION FOpen(cFileName AS STRING, nAttribute := 0 AS INT) AS INT64
-    // todo: Map attributes to FileMode and FileAccess and call FOpen()
-    THROW NotImplementedException{}
+    LOCAL nMode AS DWORD
+    LOCAL pHandle AS IntPtr
+
+    IF XSharp.Core.Functions.File(cFileName)
+        cFileName := XSharp.Core.Functions.FPathName()
+    ENDIF
+
+    SWITCH nAttribute
+        CASE 1; nMode := FO_WRITE | FO_EXCLUSIVE
+        CASE 2; nMode := FO_READWRITE | FO_EXCLUSIVE
+        CASE 10; nMode := FO_READ | FO_SHARED | FO_UNBUFFERED
+        CASE 11; nMode := FO_WRITE | FO_EXCLUSIVE | FO_UNBUFFERED
+        CASE 12; nMode := FO_READWRITE | FO_EXCLUSIVE | FO_UNBUFFERED
+        CASE 0; nMode := FO_READ | FO_SHARED
+        OTHERWISE
+            nMode := FO_READ | FO_SHARED
+    END SWITCH
+
+    pHandle := XSharp.Core.Functions.FOpen2(cFileName, nMode)
+
+    RETURN pHandle:ToInt64()
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fputs/*" />
 [FoxProFunction("FPUTS", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];

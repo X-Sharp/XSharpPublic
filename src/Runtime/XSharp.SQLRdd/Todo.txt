@@ -5,7 +5,6 @@
 - when order is changed, the datatable should be cleared and refilled with the new order
 - properties to save if we have seen top or bottom of the table
 - do not use temp file, create rdd without the temp file. Can we inherit from Workarea or DBF?
-- Enforce the recno column. Throw an exception when there is no recno column
 - 
 
 declare @pageno int

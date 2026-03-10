@@ -111,6 +111,9 @@ partial class SQLRDD inherit DBFVFP
             if ! self:_GetTableInfo(cQuery)
                 throw Exception{}
             endif
+            if !self:_oTd:HasRecnoColumn
+                throw Exception{"RecnoColumn is required"}
+            endif
         endif
         local aUpdatableColumns := null as HashSet<string>
         if _oTd:HasUpdatableColumns
@@ -129,6 +132,7 @@ partial class SQLRDD inherit DBFVFP
         endif
 
         // Get the structure
+        var lhasRecnoColumn := false
         var oFields := List<RddFieldInfo>{}
         self:_updatableColumns := List<RddFieldInfo>{}
         self:_keyColumns       := List<RddFieldInfo>{}
@@ -140,6 +144,7 @@ partial class SQLRDD inherit DBFVFP
                 oField:Flags |= DBFFieldFlags.AutoIncrement
                 oField:Flags |= DBFFieldFlags.System
                 self:_numHiddenColumns += 1
+                lhasRecnoColumn := true
             elseif oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Deleted)
                 self:_deletedColumnNo := oField:Ordinal
                 self:_deletedColumnIsLogic := oField:FieldType == DbFieldType.Logic
@@ -164,6 +169,15 @@ partial class SQLRDD inherit DBFVFP
                 endif
             ENDIF
         next
+
+        if !lhasRecnoColumn .and. self:_tableMode = TableMode.Table
+            if !String.IsNullOrEmpty(_oTd:RecnoColumn)
+                throw Exception{"Recno column '"+_oTd:RecnoColumn+"' not found"}
+            else
+                throw Exception{"No column is flagged as the Recno column in the result set"}
+            endif
+        endif
+
         var aFields := oFields:ToArray()
         CoreDb.Create(tempFile,aFields,typeof(DBFVFP),true,"SQLRDD-TEMP","",false,false)
         File.SetAttributes(tempFile, _OR(File.GetAttributes(tempFile), FileAttributes.Temporary))

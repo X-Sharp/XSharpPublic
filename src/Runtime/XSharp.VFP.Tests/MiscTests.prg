@@ -89,8 +89,13 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             FClose(nHandle)
 
             && 3. Test expected failure (non existent file)
+            LOCAL cBadFile AS STRING
             LOCAL nBadHandle AS INT64
-            nBadHandle := FOpen("non_existent_file.txt", 0)
+
+            cBadFile := Path.Combine(Path.GetTempPath(), "vfp_test_" + Guid.NewGuid():ToString("N") + ".txt")
+            Assert.False(FILE(cBadFile))
+
+            nBadHandle := FOpen(cBadFile, 0)
             Assert.Equal(-1L, nBadHandle)
 
             IF FILE(cFile)

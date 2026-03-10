@@ -77,30 +77,47 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
             && 1. Test FCREATE()
             nHandle := FCreate(cFile, 0)
-            Assert.True(nHandle > 0, "FCreate should return a valid handle")
-
-            nWritten := FPuts(nHandle, "XSharp VFP File Test")
-            Assert.True(nWritten > 0, "Should have written data in the file")
-            FClose(nHandle)
-
-            && 2. Test FOPEN()
-            nHandle := FOpen(cFile, 0)
-            Assert.True(nHandle > 0, "FOpen should open existing file")
-            FClose(nHandle)
-
-            && 3. Test expected failure (non existent file)
-            LOCAL cBadFile AS STRING
             LOCAL nBadHandle AS INT64
 
-            cBadFile := Path.Combine(Path.GetTempPath(), "vfp_test_" + Guid.NewGuid():ToString("N") + ".txt")
-            Assert.False(FILE(cBadFile))
+            cFile := Path.Combine(Path.GetTempPath(), "vfp_test_" + Guid.NewGuid():ToString("N") + ".txt")
+            nHandle := 0
 
-            nBadHandle := FOpen(cBadFile, 0)
-            Assert.Equal(-1L, nBadHandle)
+            TRY
 
-            IF FILE(cFile)
-                File.Delete(cFile)
-            ENDIF
+                && 1. Test FCREATE()
+                nHandle := FCreate(cFile, 0)
+                Assert.True(nHandle > 0, "FCreate should return a valid handle")
+
+                nWritten := FPuts(nHandle, "XSharp VFP File Test")
+                Assert.True(nWritten > 0, "Should have written data in the file")
+
+                IF nHandle > 0
+                    FClose(nHandle)
+                    nHandle := 0
+                ENDIF
+
+                && 2. Test FOPEN()
+                nHandle := FOpen(cFile, 0)
+                Assert.True(nHandle > 0, "FOpen should open existing file")
+
+                IF nHandle > 0
+                    FClose(nHandle)
+                    nHandle := 0
+                ENDIF
+
+                && 3. Test expected failure (non existent file)
+                nBadHandle := FOpen("non_existent_file.txt", 0)
+                Assert.Equal(-1L, nBadHandle)
+
+            FINALLY
+                IF nHandle > 0
+                    FClose(nHandle)
+                ENDIF
+
+                IF FILE(cFile)
+                    File.Delete(cFile)
+                ENDIF
+            END TRY
         END METHOD
 
         [Fact, Trait("Category", "File")];

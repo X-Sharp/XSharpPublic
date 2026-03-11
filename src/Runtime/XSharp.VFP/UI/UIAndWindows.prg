@@ -41,5 +41,5 @@ FUNCTION ChrSaw(nSeconds := 0 AS REAL8) AS LOGIC
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/rgb/*" />
 [FoxProFunction("RGB", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION Rgb(nRedValue AS INT, nGreenValue AS INT, nBlueValue AS INT) AS INT
+FUNCTION RGB(nRedValue AS INT, nGreenValue AS INT, nBlueValue AS INT) AS INT
     THROW NotImplementedException{}

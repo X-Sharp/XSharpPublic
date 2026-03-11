@@ -71,12 +71,12 @@ FUNCTION Abs(nValue IN USUAL) AS USUAL
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqrt/*" />
 [FoxProFunction("SQRT", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Sqrt(nNumber IN USUAL) AS FLOAT
+FUNCTION SQrt(nNumber IN USUAL) AS FLOAT
     RETURN XSharp.RT.Functions.SQrt(nNumber)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/pi/*" />
 [FoxProFunction("PI", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Pi() AS REAL8
+FUNCTION PI() AS REAL8
     RETURN XSharp.Core.Functions.PI
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/day/*" />
@@ -114,12 +114,12 @@ FUNCTION Chr(dwCode AS DWORD) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/atcline/*" />
 [FoxProFunction("ATCLINE", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
-FUNCTION AtCLine(cSearch AS STRING, cTarget AS STRING) AS DWORD
+FUNCTION ATCLine(cSearch AS STRING, cTarget AS STRING) AS DWORD
     RETURN XSharp.Core.Functions.ATCLine(cSearch, cTarget)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/atline/*" />
 [FoxProFunction("ATLINE", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
-FUNCTION AtLine(cSearch AS STRING, cTarget AS STRING) AS DWORD
+FUNCTION ATLine(cSearch AS STRING, cTarget AS STRING) AS DWORD
     RETURN XSharp.Core.Functions.ATLine(cSearch, cTarget)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/padl/*" />
@@ -154,7 +154,7 @@ FUNCTION Replicate(cString AS STRING, dwCount AS DWORD) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/soundex/*" />
 [FoxProFunction("SOUNDEX", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Soundex(cString AS STRING) AS STRING
+FUNCTION SoundEx(cString AS STRING) AS STRING
     RETURN XSharp.Core.Functions.SoundEx(cString)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/space/*" />
@@ -169,7 +169,7 @@ FUNCTION Stuff(cTarget AS STRING, dwStart AS DWORD, dwDelete AS DWORD, cInsert A
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/substr/*" />
 [FoxProFunction("SUBSTR", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION Substr(cTarget AS USUAL, nStart AS USUAL, nCount AS USUAL) AS STRING
+FUNCTION SubStr(cTarget AS USUAL, nStart AS USUAL, nCount AS USUAL) AS STRING
     RETURN XSharp.RT.Functions.SubStr(cTarget, nStart, nCount)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/max/*" />
@@ -199,17 +199,17 @@ FUNCTION Round(nNumber IN USUAL, siDecimals AS INT) AS USUAL
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/acos/*" />
 [FoxProFunction("ACOS", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Acos(nExpression IN USUAL) AS FLOAT
+FUNCTION ACos(nExpression IN USUAL) AS FLOAT
     RETURN XSharp.RT.Functions.ACos(nExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asin/*" />
 [FoxProFunction("ASIN", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Asin(nExpression IN USUAL) AS FLOAT
+FUNCTION ASin(nExpression IN USUAL) AS FLOAT
     RETURN XSharp.RT.Functions.ASin(nExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/atan/*" />
 [FoxProFunction("ATAN", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Atan(nNum IN USUAL) AS FLOAT
+FUNCTION ATan(nNum IN USUAL) AS FLOAT
     RETURN XSharp.RT.Functions.ATan(nNum)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/atn2/*" />
@@ -234,12 +234,12 @@ FUNCTION Tan(nNum IN USUAL) AS FLOAT
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dtor/*" />
 [FoxProFunction("DTOR", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Dtor(nExpression IN USUAL) AS REAL8
+FUNCTION DToR(nExpression IN USUAL) AS REAL8
     RETURN XSharp.RT.Functions.DToR(nExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/rtod/*" />
 [FoxProFunction("RTOD", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Rtod(nExpression IN USUAL) AS REAL8
+FUNCTION RToD(nExpression IN USUAL) AS REAL8
     RETURN XSharp.RT.Functions.RToD(nExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/exp/*" />
@@ -249,7 +249,7 @@ FUNCTION Exp(nExponent IN USUAL) AS FLOAT
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/log/*" />
 [FoxProFunction("LOG", FoxFunctionCategory.MathAndNumeric, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
-FUNCTION Log(nValue IN USUAL) AS FLOAT
+FUNCTION LOG(nValue IN USUAL) AS FLOAT
     RETURN XSharp.RT.Functions.LOG(nValue)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/log10/*" />
@@ -262,7 +262,7 @@ FUNCTION Log10(nValue IN USUAL) AS FLOAT
 //-----------------------------------------------------------------------*
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/cdow/*" />
 [FoxProFunction("CDOW", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
-FUNCTION CDow(dDate AS DATE) AS STRING
+FUNCTION CDoW(dDate AS DATE) AS STRING
     RETURN XSharp.RT.Functions.CDoW(dDate)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/cmonth/*" />
@@ -272,7 +272,7 @@ FUNCTION CMonth(dDate AS DATE) AS STRING
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dow/*" />
 [FoxProFunction("DOW", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION Dow(dDate AS DATE) AS DWORD
+FUNCTION DoW(dDate AS DATE) AS DWORD
     RETURN XSharp.RT.Functions.DoW(dDate)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
@@ -287,7 +287,7 @@ FUNCTION CToD(cDate AS STRING) AS DATE
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dtoc/*" />
 [FoxProFunction("DTOC", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION Dtoc(dDate AS DATE) AS STRING
+FUNCTION DToC(dDate AS DATE) AS STRING
     RETURN XSharp.RT.Functions.DToC(dDate)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fdate/*" />
@@ -365,12 +365,12 @@ FUNCTION Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/memlines/*" />
 [FoxProFunction("MEMLINES", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION Memlines(cString AS STRING) AS DWORD
+FUNCTION MemLines(cString AS STRING) AS DWORD
     RETURN XSharp.Core.Functions.MemLines(cString)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mline/*" />
 [FoxProFunction("MLINE", FoxFunctionCategory.StringAndCharacter, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION Mline(cString AS STRING, nLine AS DWORD, nOffset := 0 AS DWORD) AS STRING
+FUNCTION MLine(cString AS STRING, nLine AS DWORD, nOffset := 0 AS DWORD) AS STRING
     RETURN XSharp.Core.Functions.MLine(cString, nLine)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/objnum/*" />

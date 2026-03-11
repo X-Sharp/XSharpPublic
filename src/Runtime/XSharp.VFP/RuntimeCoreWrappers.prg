@@ -81,7 +81,7 @@ FUNCTION FFlush(nFileHandle AS INT64) AS LOGIC
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fgets/*" />
 [FoxProFunction("FGETS", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION FGets(nFileHandle AS INT64, nBytes := 254 AS INT) AS STRING
+FUNCTION FGetS(nFileHandle AS INT64, nBytes := 254 AS INT) AS STRING
     RETURN XSharp.Core.Functions.FGetS(nFileHandle, (DWORD) nBytes)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fopen/*" />
@@ -111,7 +111,7 @@ FUNCTION FOpen(cFileName AS STRING, nAttribute := 0 AS INT) AS INT64
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fputs/*" />
 [FoxProFunction("FPUTS", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
-FUNCTION FPuts(nFileHandle AS INT64, cExpression AS STRING, nBytesWritten := 0 AS INT) AS INT
+FUNCTION FPutS(nFileHandle AS INT64, cExpression AS STRING, nBytesWritten := 0 AS INT) AS INT
     IF nBytesWritten <= 0
         nBytesWritten := (INT) SLen(cExpression)
     ENDIF
@@ -148,17 +148,17 @@ FUNCTION ADir(ArrayName AS ARRAY, cFileSkeleton := "" AS STRING, cAttribute := "
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/diskspace/*" />
 [FoxProFunction("DISKSPACE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Low)];
-FUNCTION Diskspace(cDriveName := "" AS STRING, nSpaceType := 1 AS INT) AS REAL8
+FUNCTION DiskSpace(cDriveName := "" AS STRING, nSpaceType := 1 AS INT) AS REAL8
     THROW NotImplementedException{}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/curdir/*" />
 [FoxProFunction("CURDIR", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION Curdir(cDriveDesignator := "" AS STRING) AS STRING
+FUNCTION CurDir(cDriveDesignator := "" AS STRING) AS STRING
     THROW NotImplementedException{}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/os/*" />
 [FoxProFunction("OS", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Low)];
-FUNCTION Os(nType := 0 AS INT) AS STRING
+FUNCTION OS(nType := 0 AS INT) AS STRING
     THROW NotImplementedException{}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/oemtoansi/*" />

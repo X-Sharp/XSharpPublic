@@ -273,7 +273,7 @@ RETURN NIL
 
 [Obsolete( "This function will not be supported" )];
 [FoxProFunction("PAD", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.NotSupported, FoxCriticality.Medium)];
-FUNCTION PAD( )
+FUNCTION Pad( )
 RETURN NIL
 
 [Obsolete( "This function will not be supported" )];

@@ -80,6 +80,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
         LOCAL sName AS string
         LOCAL query AS object
 
+        SELF:SetOpenInfo(openInfo, SELF:_Extension, FALSE)
         SUPER:_CheckRDDInfo()
         IF SELF:_Connection == IntPtr.Zero
             SUPER:_CheckError(ACEUNPUB.AdsSetLastError(5036, "The SQL driver requires a connection to Advantage."),EG_OPEN,__ENTITY__)

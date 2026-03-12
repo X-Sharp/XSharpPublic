@@ -1,0 +1,104 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{1C0880F5-74CF-4618-9856-D89B3FCB6DA3}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\Console.Xml = Docs\Console.Xml
+		Docs\CoreComments.Xml = Docs\CoreComments.Xml
+		Docs\gui.xml = Docs\gui.xml
+		Docs\Internet.xml = Docs\Internet.xml
+		Docs\rdd.xml = Docs\rdd.xml
+		Docs\Report.Xml = Docs\Report.Xml
+		Docs\RTComments.Xml = Docs\RTComments.Xml
+		Runtime\Runtime.Targets = Runtime\Runtime.Targets
+		Runtime\RuntimeFunctionsAndClasses.xlsx = Runtime\RuntimeFunctionsAndClasses.xlsx
+		Runtime\Docs\RuntimeSpecsV1.docx = Runtime\Docs\RuntimeSpecsV1.docx
+		Runtime\Docs\RuntimeSpecsV2.docx = Runtime\Docs\RuntimeSpecsV2.docx
+		Docs\Sql.Xml = Docs\Sql.Xml
+		Docs\System.Xml = Docs\System.Xml
+		Docs\VFPDocs.xml = Docs\VFPDocs.xml
+		Docs\VfpRuntimeDocs.xml = Docs\VfpRuntimeDocs.xml
+		Docs\VoFunctionDocs.xml = Docs\VoFunctionDocs.xml
+		Docs\VOSDK.Xml = Docs\VOSDK.Xml
+		Docs\XsRuntimeClasses.xml = Docs\XsRuntimeClasses.xml
+	EndProjectSection
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Core.Next", "Runtime\XSharp.Core\XSharp.Core.Next.xsproj", "{AB3D876E-6BDF-49D6-A06E-F92FF2D7B322}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RT.Next", "Runtime\XSharp.RT\XSharp.RT.Next.xsproj", "{6F486043-1338-4502-9D41-1B3099C5278D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0E600EC1-23D2-48D5-8301-0F4BF1C1D250}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Common\BuildNumber.h = Common\BuildNumber.h
+		Common\CommonAssemblyInfo.cs = Common\CommonAssemblyInfo.cs
+		Common\commonAssemblyInfo.prg = Common\commonAssemblyInfo.prg
+		Common\Constants.cs = Common\Constants.cs
+		Common\constants.prg = Common\constants.prg
+		Common\CustomDefs.xh = Common\CustomDefs.xh
+		Common\dbcmd.xh = Common\dbcmd.xh
+		Common\FoxProCmd.xh = Common\FoxProCmd.xh
+		Common\FoxProSet.xh = Common\FoxProSet.xh
+		Common\FoxProSql.xh = Common\FoxProSql.xh
+		Common\GuidStrings.cs = Common\GuidStrings.cs
+		Common\memvar.xh = Common\memvar.xh
+		Common\NativeResourceDefines.xh = Common\NativeResourceDefines.xh
+		Runtime\README.md = Runtime\README.md
+		Common\README.md = Common\README.md
+		Runtime\Runtime.Targets = Runtime\Runtime.Targets
+		Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg = Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg
+		Common\set.xh = Common\set.xh
+		Common\version.xh = Common\version.xh
+		Common\VFPProperties.xh = Common\VFPProperties.xh
+		Runtime\VOSDK\Source\VOSDK\VOSDK.Targets = Runtime\VOSDK\Source\VOSDK\VOSDK.Targets
+		Common\XbasePPCmd.xh = Common\XbasePPCmd.xh
+		Runtime\XmlDoc.Targets = Runtime\XmlDoc.Targets
+		Common\XSharp.snk = Common\XSharp.snk
+		Common\XSharpConstants.cs = Common\XSharpConstants.cs
+		Common\XSharpDefs.xh = Common\XSharpDefs.xh
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Documentation|Any CPU = Documentation|Any CPU
+		Documentation|x86 = Documentation|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB3D876E-6BDF-49D6-A06E-F92FF2D7B322}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB3D876E-6BDF-49D6-A06E-F92FF2D7B322}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB3D876E-6BDF-49D6-A06E-F92FF2D7B322}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AB3D876E-6BDF-49D6-A06E-F92FF2D7B322}.Debug|x86.Build.0 = Debug|Any CPU
+		{AB3D876E-6BDF-49D6-A06E-F92FF2D7B322}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{AB3D876E-6BDF-49D6-A06E-F92FF2D7B322}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{AB3D876E-6BDF-49D6-A06E-F92FF2D7B322}.Documentation|x86.ActiveCfg = Documentation|Any CPU
+		{AB3D876E-6BDF-49D6-A06E-F92FF2D7B322}.Documentation|x86.Build.0 = Documentation|Any CPU
+		{AB3D876E-6BDF-49D6-A06E-F92FF2D7B322}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB3D876E-6BDF-49D6-A06E-F92FF2D7B322}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB3D876E-6BDF-49D6-A06E-F92FF2D7B322}.Release|x86.ActiveCfg = Release|Any CPU
+		{AB3D876E-6BDF-49D6-A06E-F92FF2D7B322}.Release|x86.Build.0 = Release|Any CPU
+		{6F486043-1338-4502-9D41-1B3099C5278D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F486043-1338-4502-9D41-1B3099C5278D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F486043-1338-4502-9D41-1B3099C5278D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6F486043-1338-4502-9D41-1B3099C5278D}.Debug|x86.Build.0 = Debug|Any CPU
+		{6F486043-1338-4502-9D41-1B3099C5278D}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{6F486043-1338-4502-9D41-1B3099C5278D}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{6F486043-1338-4502-9D41-1B3099C5278D}.Documentation|x86.ActiveCfg = Documentation|Any CPU
+		{6F486043-1338-4502-9D41-1B3099C5278D}.Documentation|x86.Build.0 = Documentation|Any CPU
+		{6F486043-1338-4502-9D41-1B3099C5278D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F486043-1338-4502-9D41-1B3099C5278D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F486043-1338-4502-9D41-1B3099C5278D}.Release|x86.ActiveCfg = Release|Any CPU
+		{6F486043-1338-4502-9D41-1B3099C5278D}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EF30CE30-FC9E-4FC7-B9F0-DCA49411ACFC}
+	EndGlobalSection
+EndGlobal

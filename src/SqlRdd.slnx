@@ -46,6 +46,10 @@
       <Build Solution="DocChinese|*" Project="false" />
       <Build Solution="Documentation|*" Project="false" />
     </Project>
+    <Project Path="Runtime/XSharp.SQLRdd.Tests/XSharp.SQLRdd.Tests.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="a9ad5ca6-2b10-47d0-8b50-f5a8a998979f">
+      <BuildType Solution="DocChinese|*" Project="Release" />
+      <BuildType Solution="Documentation|*" Project="Release" />
+    </Project>
     <Project Path="Tests/SqlDataexpl/SqlRddDataexpl.xsproj" Type="aa6c8d78-22ff-423a-9c7c-5f2393824e04" Id="544d5f4f-1ca0-4cf0-a62a-7b4d6ba97aea">
       <BuildType Solution="DocChinese|*" Project="Debug" />
       <BuildType Solution="Documentation|*" Project="Debug" />

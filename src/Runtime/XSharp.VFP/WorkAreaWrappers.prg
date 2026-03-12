@@ -69,7 +69,7 @@ FUNCTION AFields(ArrayName AS ARRAY, eWorkArea := NIL AS USUAL) AS INT
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dbf/*" />
 [FoxProFunction("DBF", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION Dbf(eWorkArea := NIL AS USUAL) AS STRING
+FUNCTION DBF(eWorkArea := NIL AS USUAL) AS STRING
     THROW NotImplementedException{}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/deleted/*" />
@@ -79,7 +79,7 @@ FUNCTION Deleted(eWorkArea := NIL AS USUAL) AS LOGIC
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/flock/*" />
 [FoxProFunction("FLOCK", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Stub, FoxCriticality.High)];
-FUNCTION FLock(eWorkArea := NIL AS USUAL) AS LOGIC
+FUNCTION Flock(eWorkArea := NIL AS USUAL) AS LOGIC
     THROW NotImplementedException{}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/rlock/*" />

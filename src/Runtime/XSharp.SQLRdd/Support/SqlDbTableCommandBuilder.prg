@@ -174,7 +174,7 @@ internal class SqlDbTableCommandBuilder
                 endif
             endif
         elseif SELF:_oTable:HasRecnoColumn
-            sb:Append(Provider.OrderByClause)
+            sb:Append(Provider:OrderByClause)
             cOrderby := Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
         endif
         cOrderby :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.OrderByClause, _cTable, cOrderby)
@@ -187,6 +187,24 @@ internal class SqlDbTableCommandBuilder
         sb:Replace(SqlDbProvider.StartRecMacro, nStartRec:ToString())
 
         return sb:ToString()
+
+    METHOD BuildRowNumberStatement(nRec as DWORD) AS STRING
+        var sb := System.Text.StringBuilder{}
+        sb:Append(Provider:RowNumberStatement)
+        sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(self:_oTable:RealName))
+        var cOrderby := Functions.List2String(_oRdd:CurrentOrder:OrderList)
+        if SELF:_oTable:HasRecnoColumn
+            if ! String.IsNullOrEmpty(cOrderby)
+                cOrderby := cOrderby + ", " + Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
+            else
+                cOrderby := Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
+            endif
+        endif
+        sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
+        sb:Replace(SqlDbProvider.RecordNumberMacro, self:_oTable:RecnoColumn)
+        sb:Replace(SqlDbProvider.WhereMacro, nRec:ToString())
+        return sb:ToString()
+
 
     method ColumnList() as string
         var sb := StringBuilder{}

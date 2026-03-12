@@ -418,7 +418,7 @@ partial class SQLRDD
         case DBOI_POSITION
         case DBOI_RECNO
             // our position is the row number in the local cursor
-            info:Result := self:RowNumber
+            info:Result := self:RowNumber + (self:_currentPageNo-1) * self:_oTd:PageSize
         otherwise
             super:OrderInfo(nOrdinal, info)
         end switch
@@ -453,12 +453,19 @@ partial class SQLRDD
         var cSeekWhere := CurrentOrder:SeekExpression(seekInfo )
         SELF:_ClearTable()
         SELF:_currentPageNo := 1
+        // save PageSize
+        var nPageSize := SELF:_oTd:PageSize
+        SELF:_oTd:PageSize := 1
         self:_OpenTable(cSeekWhere)
+        SELF:_oTd:PageSize := nPageSize
         IF SELF:DataTable:Rows:Count = 0
             RETURN SELF:GoTo(0)
         ENDIF
+
+
+
+
         IF !SELF:_oTd:SeekReturnsSubset
-            // Todo: Find right row needs to be smarter
             var nRec := SELF:RecNo
             SELF:_GotoRecord(nRec)
         ENDIF

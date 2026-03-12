@@ -305,6 +305,9 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     /// </remarks>
     virtual property PagingClause          as string => " OFFSET "+StartRecMacro+" ROWS FETCH NEXT "+PagesizeMacro+" ROWS ONLY"
 
+    virtual property RowNumberStatement    as string =>  SelectClause +"RowNr"+FromClause+ "(" +SelectClause+RecordNumberMacro+" AS RecNo, ROW_NUMBER() " + ;
+        "OVER ("+OrderByClause+") AS RowNr "+FromClause+TableNameMacro+" ) p "+WhereClause+ "RecNo = "+WhereMacro
+
     /// <inheritdoc/>
     /// <remarks>
     /// The default implementation returns an empty string
@@ -367,6 +370,10 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     public const ValuesMacro     := "%V%" as string
     /// <summary>Literal that can be used in SQL statements to indicate a WHERE clause</summary>
     public const WhereMacro      := "%W%" as string
+
+    /// <summary>Literal that can be used in SQL statements for the name of the RecordNumber column</summary>
+    public const RecordNumberMacro := "%RN%" as string
+
     /// <summary>Connection Delimiter (::) </summary>
     public const ConnectionDelimiter := "::" as string
 

@@ -52,7 +52,7 @@ partial class SQLRDD
     /// 0 based Column Number for the column that has the record number
     /// </summary>
     private _recnoColumNo   as long
-    // private _recordKeyCache as Dictionary<dword, dword>
+        // private _recordKeyCache as Dictionary<dword, dword>
 
     private _numHiddenColumns as long
     private _serverReccount as dword
@@ -115,7 +115,7 @@ partial class SQLRDD
 
 #endregion
 
-   constructor()
+    constructor()
         super()
         SELF:_creatingIndex    := false
         SELF:_tableMode        := TableMode.Query
@@ -247,7 +247,7 @@ partial class SQLRDD
     end method
 
     private method _GetColumn(nFldPos as long) as RddFieldInfo
-	    local nArrPos := nFldPos -1 as long
+        local nArrPos := nFldPos -1 as long
         IF nArrPos >= 0 .AND. nArrPos < self:_Fields:Length
             return self:_Fields[ nArrPos ]
         endif
@@ -501,7 +501,7 @@ partial class SQLRDD
             SELF:_BoF := lNewValue
         ENDIF
 
-   PRIVATE METHOD _adjustCreateFields(aFields AS RddFieldInfo[]) AS RddFieldInfo[]
+    PRIVATE METHOD _adjustCreateFields(aFields AS RddFieldInfo[]) AS RddFieldInfo[]
         local fields := aFields:ToList() as List<RddFieldInfo>
         if ! String.IsNullOrEmpty(SELF:Connection:RecnoColumn)
             var found := false
@@ -602,12 +602,20 @@ partial class SQLRDD
 
     PRIVATE METHOD _GotoRecord(nRec as DWORD) AS LOGIC
         // Brute walk
-        SELF:GoTop()
-        DO WHILE ! SELF:EoF
-            if SELF:RecNo == nRec
+        SELF:_command:CommandText := _builder:BuildRowNumberStatement(nRec)
+        var result := SELF:_command:ExecuteScalar(SELF:_oTd:Name)
+        var iResult := Convert.ToInt64(result)
+        // determine correct page
+        SELF:_currentPageNo := (INT) ((iResult - 1) / SELF:_oTd:PageSize) + 1
+        SELF:_ClearTable()
+        SELF:DataTable := SELF:_ReadTable("")
+        // locate the row in the page
+        SELF:RowNumber := 1
+        DO WHILE SELF:RowNumber <= SELF:DataTable:Rows:Count
+            IF SELF:RecNo == nRec
                 RETURN TRUE
-            endif
-            SELF:Skip(1)
+            ENDIF
+            SELF:RowNumber+= 1
         ENDDO
         RETURN FALSE
     PRIVATE METHOD _GotoRow(nRow as LONG) AS LOGIC

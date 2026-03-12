@@ -29,7 +29,11 @@ interface ISqlDbProvider
     /// Type name of the DbProviderFactory
     /// </summary>
     property TypeName as string get
-
+    
+    /// <summary>
+    /// Syntax for a Statement to calculate the row number
+    /// </summary>
+    property RowNumberStatement as STRING get
     /// <summary>
     /// Syntax for a CREATE TABLE statement.
     /// </summary>

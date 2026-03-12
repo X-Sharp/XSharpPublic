@@ -25,7 +25,6 @@ BEGIN NAMESPACE XSharp.RDD
 [DebuggerDisplay("{Driver,q} ({Alias,nq})")];
 CLASS DBFBLOB INHERIT Workarea
     INTERNAL _area              as FlexArea
-    INTERNAL _OpenInfo		    AS DbOpenInfo // current dbOpenInfo structure in OPEN/CREATE method
     INTERNAL _oStream           AS FileStream
 
     STATIC PROPERTY DefExt AS STRING AUTO
@@ -45,20 +44,9 @@ CLASS DBFBLOB INHERIT Workarea
     PROTECT PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
     OVERRIDE METHOD Open(info AS DbOpenInfo ) AS LOGIC
         LOCAL isOk AS LOGIC
-        SELF:_OpenInfo := info
-        // Should we set to .DBF per default ?
-        IF String.IsNullOrEmpty(SELF:_OpenInfo:Extension)
-            SELF:_OpenInfo:Extension := DefExt
-        ENDIF
-        SELF:_FileName := SELF:_OpenInfo:FullName
-        IF File(SELF:_FileName)
-            SELF:_FileName := FPathName()
-            SELF:_OpenInfo:FullName := SELF:_FileName
-        ENDIF
-        SELF:_Alias := SELF:_OpenInfo:Alias
-        SELF:_Shared := SELF:_OpenInfo:Shared
-        SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
-        SELF:_hFile    := FOpen(SELF:_FileName, SELF:_OpenInfo:FileMode)
+        SELF:SetOpenInfo(info, DefExt, FALSE)
+
+        SELF:_hFile    := FOpen(SELF:_FileName, SELF:OpenInfo:FileMode)
         IF SELF:IsOpen
             SELF:_oStream    := (FileStream) FGetStream(SELF:_hFile)
             isOk := _area:Open(_oStream, _hFile)
@@ -72,7 +60,7 @@ CLASS DBFBLOB INHERIT Workarea
     OVERRIDE METHOD Close() AS LOGIC
         local isOk := FALSE as LOGIC
         IF SELF:IsOpen
-            isOk := SUPER:Close() 
+            isOk := SUPER:Close()
             FClose( SELF:_hFile )
             SELF:_hFile := F_ERROR
             SELF:_oStream := NULL
@@ -81,16 +69,7 @@ CLASS DBFBLOB INHERIT Workarea
 
     OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
         LOCAL isOk := FALSE AS LOGIC
-        SELF:_OpenInfo := info
-        // Should we set to .DBF per default ?
-        IF String.IsNullOrEmpty(SELF:_OpenInfo:Extension)
-            SELF:_OpenInfo:Extension := DefExt
-            //
-        ENDIF
-        SELF:_FileName := SELF:_OpenInfo:FullName
-        SELF:_Alias := SELF:_OpenInfo:Alias
-        SELF:_Shared := SELF:_OpenInfo:Shared
-        SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
+        SELF:SetOpenInfo( info, DefExt, TRUE)
         SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE | FO_UNBUFFERED)
         IF SELF:IsOpen
             SELF:_oStream    := (FileStream) FGetStream(SELF:_hFile)

@@ -181,9 +181,9 @@ internal class SqlDbTableCommandBuilder
         sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
 
         sb:Append(Provider:PagingClause)
-        sb:Replace(SqlDbProvider.PagesizeMacro, _oTable:MaxRecords:ToString())
+        sb:Replace(SqlDbProvider.PagesizeMacro, _oTable:PageSize:ToString())
         // start of next page = (CurrentPage-1) * MaxRecords
-        var nStartRec := (_oRdd:CurrentPage-1) * _oTable:MaxRecords
+        var nStartRec := (_oRdd:CurrentPage-1) * _oTable:PageSize
         sb:Replace(SqlDbProvider.StartRecMacro, nStartRec:ToString())
 
         return sb:ToString()

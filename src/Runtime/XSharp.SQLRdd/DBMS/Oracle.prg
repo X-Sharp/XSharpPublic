@@ -69,7 +69,7 @@ class SqlDbProviderOracle inherit SqlDbProvider
         switch oInfo:FieldType
         case DbFieldType.Character
         case DbFieldType.VarChar
-            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} NVARCHAR ({oInfo.Length}) default ''"
+            sResult := i"{SELF.QuoteIdentifier(oInfo.ColumnName)} NVARCHAR ({oInfo:Length}) default ''"
             if oConn:UseNulls
                 if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
                     sResult += NullClause

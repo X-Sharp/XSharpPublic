@@ -23,7 +23,7 @@ begin namespace XSharp.RDD.SqlRDD
 /// The SqlRDD class.
 /// </summary>
 [DebuggerDisplay("SQLRDD ({Alias,nq})")];
-partial class SQLRDD inherit DBFVFP
+partial class SQLRDD inherit Workarea
 
     // Overridden properties and methods, these should all be documented
 
@@ -38,19 +38,23 @@ partial class SQLRDD inherit DBFVFP
     public override property FieldCount  as long => super:FieldCount - self:_numHiddenColumns
 
     /// <summary>Returns the # of rows in the local buffer (DataTable).</summary>
-    public property RowCount    as dword => iif(Self:DataTable == null, 0, (DWORD) Self:DataTable:Rows:Count)
+    public property RowCount    as INT => iif(Self:DataTable == null, 0, Self:DataTable:Rows:Count)
 
     /// <summary>The current rownumber in the buffer (DataTable).</summary>
-    public property RowNumber   as dword GET _RecNo INTERNAL SET _RecNo := value
+    public property RowNumber   as INT GET _rowNumber INTERNAL SET _rowNumber := value
 
     /// <summary>The current row in the buffer (DataTable).
     /// When the server is at EOF then the phantomrow is returned.</summary>
     public property CurrentRow as DataRow
         get
-            if self:RowNumber == 0 .or. self:RowNumber > self:RowCount
+            var nRow := self:RowNumber
+            if nRow == 0 .or. nRow > self:RowCount
                 return self:_phantomRow
             endif
-            return self:DataTable:Rows[(int) self:RowNumber -1]
+            if self:_table == null .or. ! SELF:_hasData
+                return self:_phantomRow
+            endif
+            return self:DataTable:Rows[nRow -1]
         end get
     end property
 #endregion
@@ -67,10 +71,10 @@ partial class SQLRDD inherit DBFVFP
             return false
         endif
         self:_tableMode := TableMode.Table
-        self:_TempFileName(info)
+		local lResult := TRUE AS LOGIC
+        SELF:SetOpenInfo(info, "", TRUE)
         self:_creating := true
         self:_Fields := self:_adjustCreateFields(self:_Fields)
-        var lResult := super:Create(info)
         self:_creating := false
         self:_RecordLength := 2 // 1 byte "pseudo" data + deleted flag
         // create SQL table Now
@@ -93,12 +97,11 @@ partial class SQLRDD inherit DBFVFP
         if ! self:_PrepareOpen(info)
             return false
         endif
+		SELF:SetOpenInfo(info, "", FALSE)
         var cQuery := info:FileName
         if cQuery:IndexOf(System.IO.Path.DirectorySeparatorChar) >= 0
             cQuery := System.IO.Path.GetFileNameWithoutExtension(cQuery)
         endif
-        var tempFile   := self:_TempFileName(info)
-        self:_FileName := tempFile
         // Determine if this is a single table name or a query (select or Execute)
         var selectStmt := XSharp.SQLHelpers.ReturnsRows(cQuery)
         if (selectStmt)
@@ -139,6 +142,10 @@ partial class SQLRDD inherit DBFVFP
         self:_numHiddenColumns := 0
         foreach var oCol in _oTd:Columns
             var oField := oCol:ColumnInfo
+            if ! String.Equals(oField:ColumnName, oField:Name, StringComparison.OrdinalIgnoreCase)
+                oField:Alias := oField:ColumnName:Trim():ToUpperInvariant()
+            endif
+
             if oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Recno)
                 self:_recnoColumNo   := oField:Ordinal
                 oField:Flags |= DBFFieldFlags.AutoIncrement
@@ -179,23 +186,15 @@ partial class SQLRDD inherit DBFVFP
         endif
 
         var aFields := oFields:ToArray()
-        CoreDb.Create(tempFile,aFields,typeof(DBFVFP),true,"SQLRDD-TEMP","",false,false)
-        File.SetAttributes(tempFile, _OR(File.GetAttributes(tempFile), FileAttributes.Temporary))
 
         info:ReadOnly := false
-        self:_getStructureOnly := true
-        super:Open(info)
-        self:_RecordLength := 2 // 1 byte "pseudo" data + deleted flag
-        // Associate the extra properties
-        for var nI := 1 to aFields:Length
-            var aField := aFields[nI-1]
-            self:FieldInfo(nI, DBS_COLUMNINFO, aField)
-        next
-        // Add long field names
+        SUPER:CreateFields(aFields)
+        // Add fields and set flong field names
         for var nI := 1 to aFields:Length
             var aField := aFields[nI-1]
             if !_fieldNames:ContainsKey(aField:ColumnName)
                 _fieldNames:Add(aField:ColumnName, nI-1)
+
             endif
         next
         if self:_tableMode == TableMode.Table
@@ -203,9 +202,11 @@ partial class SQLRDD inherit DBFVFP
             self:_CloseCursor()
         else
             self:DataTable      := _command:GetDataTable(self:Alias)
+            SELF:_serverReccount := (DWORD) self:DataTable:Rows:Count
+            SELF:_ReadOnly := true
+            SELF:_hasEOF := TRUE
         endif
         _command:CommandText := cQuery
-        self:_getStructureOnly := false
         return true
     end method
 
@@ -219,10 +220,7 @@ partial class SQLRDD inherit DBFVFP
     /// </remarks>
     override method Append(lReleaseLock as logic) as logic
         self:_ForceOpen()
-        var old := self:_baseRecno
-        self:_baseRecno  := true
-        var lResult := super:Append(lReleaseLock)
-        self:_baseRecno  := old
+        var lResult := SELF:GoCold()
         if lResult
             var key := (dword) self:_builder:GetNextKey()
             var row := self:DataTable:NewRow()
@@ -242,7 +240,10 @@ partial class SQLRDD inherit DBFVFP
             // if self:_recnoColumNo > -1
                 // self:_recordKeyCache:Add(key, (DWORD) SELF:RowCount-1)
             // endif
+            SELF:_rowNumber := SELF:DataTable:Rows:Count
             self:_serverReccount += 1
+            SELF:_SetBOF(FALSE)
+            SELF:_SetEOF(FALSE)
             self:GoHot()
         endif
         return lResult
@@ -345,8 +346,12 @@ partial class SQLRDD inherit DBFVFP
     /// <summary>Write the contents of a work area's memory to the data store (usually a disk).</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method GoCold() as logic
-        local lWasHot := self:_Hot as logic
-        local lOk := super:GoCold() as logic
+        var current := SELF:CurrentRow
+        if current == null
+            return false
+        endif
+        var lWasHot := current:RowState != DataRowState.Unchanged
+        local lOk := TRUE as logic
         if lWasHot .and. self:DataTable != null
             foreach var row in _updatedRows
                 try
@@ -402,32 +407,22 @@ partial class SQLRDD inherit DBFVFP
         endif
         return lOk
     end method
-
+    override method GoHot() as logic
+        return true
+    end method
 
     /// <summary>Close a table.</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method Close() as logic
         local lOk as logic
+        lOk := SELF:GoCold()
         // This method deletes the temporary file after the file is closed
         foreach var bag in self:OrderBagList
             bag:Close()
         next
         _connection:UnregisterRdd(self)
-        var indexes := List<string>{}
-        foreach var index in self:OrderBagList
-            indexes:Add(index:FullPath)
-        next
 
         lOk := super:Close()
-        foreach var indexFile in indexes
-            if File.Exists(indexFile)
-                File.Delete(indexFile)
-            endif
-        next
-
-        if File.Exists(SELF:FileName)
-            File.Delete(SELF:FileName)
-        endif
         return lOk
     end method
 
@@ -448,10 +443,7 @@ partial class SQLRDD inherit DBFVFP
             endif
         endif
         // Must position the DBF on the right row for the deletion
-        var old := self:_baseRecno
-        self:_baseRecno  := true
         super:GoTo((DWORD) SELF:RowNumber)
-        self:_baseRecno  := old
         return super:Delete()
     end method
 
@@ -471,10 +463,7 @@ partial class SQLRDD inherit DBFVFP
             endif
         endif
         // Must position the DBF on the right row for the recall
-        var old := self:_baseRecno
-        self:_baseRecno  := true
         super:GoTo((DWORD) SELF:RowNumber)
-        self:_baseRecno  := old
         return super:Recall()
     end method
 
@@ -499,10 +488,11 @@ partial class SQLRDD inherit DBFVFP
         if !self:_ForceOpen()
             return false
         endif
+        SELF:_ClearTable()
+        SELF:_FetchPage( 1)
         SELF:RowNumber  := 1
         SELF:_Top       := TRUE
         SELF:_Bottom    := FALSE
-        SELF:_BufferValid := FALSE
         SELF:_SetEOF(FALSE)
         SELF:_SetBOF(FALSE)
         // Apply Filter and SetDeleted
@@ -522,15 +512,15 @@ partial class SQLRDD inherit DBFVFP
         if !self:_ForceOpen()
             return false
         endif
-        var nPage       := SELF:RecCount / self:_oTd:MaxRecords
-        if SELF:RecCount % self:_oTd:MaxRecords != 0
+        SELF:_ClearTable()
+        var nPage       := SELF:RecCount / self:_oTd:PageSize
+        if SELF:RecCount % self:_oTd:PageSize != 0
             nPage += 1
         ENDIF
         SELF:_FetchPage((INT) nPage)
         SELF:RowNumber  := SELF:RowCount
         SELF:_Top       := FALSE
         SELF:_Bottom    := TRUE
-        SELF:_BufferValid := FALSE
         // Apply Filter and SetDeleted
         VAR result := SELF:SkipFilter(-1)
         SELF:_CheckEofBof()
@@ -557,12 +547,13 @@ partial class SQLRDD inherit DBFVFP
             var newRow := SELF:RowNumber + nToSkip
             IF newRow > 0
                 if newRow <= SELF:RowCount
-                    SELF:RowNumber := (DWORD) newRow
+                    SELF:RowNumber :=  newRow
                     SELF:_SetEOF(FALSE)
                 ELSEIF SELF:_hasEOF
                     SELF:RowNumber := 0
                     SELF:_SetEOF(TRUE)
                 ELSE
+                    SELF:RowNumber :=  newRow
                     SELF:_FetchPage(SELF:_currentPageNo +1)
                 endif
             ELSE
@@ -600,45 +591,33 @@ partial class SQLRDD inherit DBFVFP
     /// If the recno does not exist, or when no RecnoColumn is defined, then the cursor will be positioned on the phantom row at the end of the table.
     /// </remarks>
     override method GoTo(nRec as DWORD) as logic
-        local lSuccess := TRUE as logic
         if !self:_ForceOpen()
             return false
         endif
         SELF:GoCold()
-        // what do we do with goto ?
-        // if self:_recnoColumNo > -1 .and. nRec != 0
-            // if self:_recordKeyCache:TryGetValue(nRec, out var nRowNum)
-                // nRec := nRowNum + 1
-            // else
-                // // when record number does not exist, then go to phantom record and return FALSE
-                // lSuccess := FALSE
-                // nRec     := 0
-            // endif
-        // endif
-        LOCAL nCount := SELF:RowCount AS DWORD
+        IF nRec == 0
+            SELF:GoBottom()
+            RETURN SELF:Skip(1)
+        ENDIF
         // Normal positioning, VO resets FOUND to FALSE after a recprd movement
         SELF:_Found := FALSE
-        SELF:_BufferValid := FALSE
-        IF  nRec <= nCount  .AND.  nRec > 0
-            SELF:RowNumber := nRec
-            SELF:_SetEOF(FALSE)
-            SELF:_SetBOF(FALSE)
-        ELSEIF nRec < 0 .AND. nCount > 0
-            // skip to BOF. Move to record 1.
-            SELF:RowNumber := 1
-            SELF:_SetEOF(FALSE)
-            SELF:_SetBOF(TRUE)
-        ELSE
-            // File empty, or move after last record
-            SELF:RowNumber := nCount + 1
-            SELF:_SetEOF(TRUE)
-            SELF:_SetBOF(nCount == 0)
+        IF SELF:_tableMode == TableMode.Query .and. self:_recnoColumNo == -1
+            RETURN SELF:_GotoRow((LONG) nRec)
         ENDIF
-        IF SELF:_Relations:Count != 0
-            SELF:SyncChildren()
-        ENDIF
+        // Check to see if we have the record in the current buffer
+        var nCount := SELF:DataTable:Rows:Count
+        FOR VAR nRow := 1 to nCount
+            SELF:RowNumber := nRow +1
+            IF SELF:RecNo == nRec
+                SELF:_SetEOF(FALSE)
+                SELF:_SetBOF(FALSE)
+                SELF:_Found := TRUE
+                RETURN TRUE
+            endif
+        NEXT
+        SELF:_GotoRecord(nRec)
         SELF:_CheckEofBof()
-        RETURN lSuccess
+        RETURN TRUE
     end method
 
 
@@ -649,12 +628,15 @@ partial class SQLRDD inherit DBFVFP
     /// </remarks>
     override property RecNo		as DWORD
         get
-            self:ForceRel()
-            if !SELF:_baseRecno .and. self:_recnoColumNo > -1 .and. ! SELF:EoF
-                var obj := SELF:CurrentRow[self:_recnoColumNo]
+            if self:_tableMode == TableMode.Query
+                return (DWORD) SELF:RowNumber
+            endif
+            var row := SELF:CurrentRow
+            if  ! SELF:EoF .and. row != null
+                var obj := row[self:_recnoColumNo]
                 return Convert.ToUInt32(obj)
             endif
-            return (DWORD) SELF:RowNumber
+            return SELF:RecCount+1
         end get
     end property
 
@@ -668,34 +650,30 @@ partial class SQLRDD inherit DBFVFP
     /// <inheritdoc />
     override method Skip(nToSkip as long) as logic
         LOCAL result := FALSE AS LOGIC
-        //var oldRow := SELF:RowNumber
-        //var oldRecNo := SELF:RecNo
-        SELF:ForceRel()
-        IF SELF:IsOpen
-
-			SELF:_Top := SELF:_Bottom := FALSE
-            IF nToSkip == 0
-                result := SELF:GoCold()
-            ELSE
-                result := SELF:SkipRaw( nToSkip )
-                if result
-                    result := SELF:SkipFilter( iif(nToSkip > 0, 1, -1) )
-                endif
-                // We reached the top ?
-                IF result
-                    IF ( nToSkip < 0 ) .AND. SELF:_BoF
-                        SELF:GoTop()
-                        SELF:BoF := TRUE
-                    ENDIF
-                    // when we land at EOF then do not reset the EOF flag
-                    IF nToSkip < 0 .AND. SELF:RowNumber < SELF:RowCount
-                        SELF:_SetEOF(FALSE)
-                    ELSEIF nToSkip > 0
-                        SELF:_SetBOF(FALSE)
-                    ENDIF
+        SELF:_ForceOpen()
+        SELF:_Top := FALSE
+        SELF:_Bottom := FALSE
+        IF nToSkip == 0
+            result := SELF:GoCold()
+        ELSE
+            result := SELF:SkipRaw( nToSkip )
+            if result
+                result := SELF:SkipFilter( iif(nToSkip > 0, 1, -1) )
+            endif
+            // We reached the top ?
+            IF result
+                IF ( nToSkip < 0 ) .AND. SELF:_BoF
+                    SELF:GoTop()
+                    SELF:BoF := TRUE
+                ENDIF
+                // when we land at EOF then do not reset the EOF flag
+                IF nToSkip < 0 .AND. SELF:RowNumber < SELF:RowCount
+                    SELF:_SetEOF(FALSE)
+                ELSEIF nToSkip > 0
+                    SELF:_SetBOF(FALSE)
                 ENDIF
             ENDIF
-        endif
+        ENDIF
         #ifdef TRACERDD
         System.Diagnostics.Debug.WriteLine(" Skip {0}, from row {1}, recno {2} to row {3}, recno {4}, EOF {5}, BOF {6}", nToSkip, oldRow, oldRecNo, SELF:RowNumber, SELF:RecNo, SELF:EoF, SELF:BoF)
         #endif
@@ -709,7 +687,6 @@ partial class SQLRDD inherit DBFVFP
     /// </remarks>
     override property Deleted		as logic
         get
-            self:ForceRel()
             if self:_deletedColumnNo > 0
                 var res:= CurrentRow[self:_deletedColumnNo]
                 if res is logic
@@ -723,7 +700,7 @@ partial class SQLRDD inherit DBFVFP
                     end try
                 endif
             else
-                super:_RecNo := self:RowNumber
+                self:_rowNumber := self:RowNumber
                 return super:Deleted
             endif
         end get
@@ -743,7 +720,7 @@ partial class SQLRDD inherit DBFVFP
             _command:ExecuteNonQuery()
         endif
         self:_CloseCursor()
-        return super:Zap()
+        return true
     end method
 
     /// <inheritdoc />

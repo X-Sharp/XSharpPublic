@@ -26,10 +26,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="UI\**\*.prg" />
-    <Compile Remove="UI\**\*.resx" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj">
       <Name>XSharp.Core.Next</Name>
     </ProjectReference>

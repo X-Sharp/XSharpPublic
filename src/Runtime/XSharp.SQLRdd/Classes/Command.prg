@@ -70,7 +70,7 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
         oConn:RegisterCommand(SELF)
         self:DbCommand := oConn:Provider:CreateCommand()
         self:DbCommand:Connection := oConn:DbConnection
-        Commands.Add(self)
+        Commands:Add(self)
         return
     end constructor
 

@@ -14,7 +14,7 @@ using System.Data.Common
 using XSharp.RDD.Enums
 using XSharp.RDD.Support
 begin namespace XSharp.RDD.SqlRDD.Providers
-
+#pragma options("allowdot", enable)
 /// <summary>
 /// The SqlDbProvider class. Abstract base class for other providers.
 /// </summary>
@@ -108,7 +108,7 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
 
     static protected method _LoadFactoryFromDllAndType(DllName as string, TypeName as string) as DbProviderFactory
         local type     := null as System.Type
-        foreach var asm in AppDomain.CurrentDomain.GetAssemblies()
+        foreach var asm in AppDomain.CurrentDomain:GetAssemblies()
             type := asm:GetType(TypeName, false)
             if type != null
                 exit

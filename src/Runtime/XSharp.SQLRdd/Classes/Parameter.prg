@@ -23,14 +23,14 @@ class SqlDbParameter inherit SqlDbObject
     property Value          as object
         get
             if DbParameter != null
-                return DbParameter.Value
+                return DbParameter:Value
             else
                 return oValue
             endif
         end get
         set
             if DbParameter != null
-                DbParameter.Value := value
+                DbParameter:Value := value
             else
                 oValue := value
             endif

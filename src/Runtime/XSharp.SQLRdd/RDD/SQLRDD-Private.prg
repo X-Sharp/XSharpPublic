@@ -16,10 +16,10 @@ using System.Data.Common
 using XSharp.RDD.SqlRDD.Providers
 
 #undef TRACERDD
-begin namespace XSharp.RDD.SqlRDD
+namespace XSharp.RDD.SqlRDD
 
 // Private methods and fields
-partial class SQLRDD inherit DBFVFP
+partial class SQLRDD
 
     private _table          as DataTable
     private _phantomRow     as DataRow
@@ -28,7 +28,7 @@ partial class SQLRDD inherit DBFVFP
     private _hasData        as logic
     private _hasEOF         as logic
     private _currentPageNo  as long
-    private _getStructureOnly as logic
+    private _firstPageNo    as long
     private _connection     as SqlDbConnection
     private _oTd            as SqlDbTableInfo
     private _builder        as SqlDbTableCommandBuilder
@@ -41,6 +41,8 @@ partial class SQLRDD inherit DBFVFP
     private _keyColumns     as List<RddFieldInfo>
     private _updatedRows    as List<DataRow>
     private _orderBagList   as List<SqlDbOrderBag>
+    private _rowNumber         as long
+
     /// <summary>
     /// 0 based Column Number for the column that has the deleted flag
     /// </summary>
@@ -54,7 +56,6 @@ partial class SQLRDD inherit DBFVFP
 
     private _numHiddenColumns as long
     private _serverReccount as dword
-    private _baseRecno as logic
 
 #region Properties
     internal property Connection     as SqlDbConnection get _connection
@@ -62,7 +63,7 @@ partial class SQLRDD inherit DBFVFP
     internal property Command        as SqlDbCommand get _command
     internal property OrderBagList   as List<SqlDbOrderBag> get _orderBagList
     internal property CurrentPage    as int => _currentPageNo
-    internal property DataTable as DataTable
+    internal property DataTable      as DataTable
         get
             return _table
         end get
@@ -82,7 +83,6 @@ partial class SQLRDD inherit DBFVFP
                 return
             endif
             SELF:_hasData := TRUE
-            self:_RecCount   	:= (DWORD)  _table:Rows:Count
             self:_phantomRow 	:= _table:NewRow()
             var prop := _table:GetType():GetProperty("EnforceConstraints", BindingFlags.Instance+BindingFlags.NonPublic)
             if prop != null
@@ -108,36 +108,7 @@ partial class SQLRDD inherit DBFVFP
                 endif
                 dbColumn:Flags := DBFFieldFlags.None
             next
-            if self:_recnoColumNo > -1
-                // _recordKeyCache := Dictionary<dword, dword>{(int) _RecCount}
-                // save the record numbers
-                var rowNum := 0U
-                if _table:Rows:Count > 0
-                    foreach row as DataRow in _table:Rows
-                        var obj     := row[self:_recnoColumNo]
-                        // var recno  := Convert.ToUInt32(obj)
-                        // _recordKeyCache[recno] := rowNum
-                        rowNum++
-                        #ifdef TRACERDD
-                        System.Diagnostics.Debug.WriteLine("Datatable Row {0}, Record {1}", rowNum, recno )
-                        #endif
-                    next
-                endif
-            // else
-                // _recordKeyCache := null
-            endif
-            self:Header:RecCount := _RecCount
-            // set file length
-            local lOffset   := self:_HeaderLength + self:_RecCount * self:_RecordLength as int64
-            // Note FoxPro does not write EOF character for files with 0 records
-            _oStream:SafeSetPos(lOffset)
-            _oStream:SafeWriteByte(26)
-            _oStream:SafeSetLength(lOffset+1)
-            // now set the file size and reccount in the header
-            var old := self:_baseRecno
-            self:_baseRecno  := true
-            super:GoTo(1)
-            self:_baseRecno  := old
+            SELF:RowNumber  := 1
             SELF:_CheckEofBof()
         end set
     end property
@@ -146,21 +117,21 @@ partial class SQLRDD inherit DBFVFP
 
    constructor()
         super()
-        _creatingIndex    := false
-        _tableMode        := TableMode.Query
-        _ReadOnly         := true
-        _connection       := null
-        _builder          := null
-        _deletedColumnNo  := -1
-        _recnoColumNo     := -1
-        _currentPageNo    := 1
-        self:_trimValues := true // trim String Valuess
-        self:DeleteOnClose := TRUE
-        _updatedRows     := List<DataRow>{}
-        _keyColumns      := List<RddFieldInfo>{}
-        _updatableColumns:= List<RddFieldInfo>{}
-        _orderBagList    := List<SqlDbOrderBag>{}
-        self:_baseRecno  := false
+        SELF:_creatingIndex    := false
+        SELF:_tableMode        := TableMode.Query
+        SELF:_ReadOnly         := true
+        SELF:_connection       := null
+        SELF:_builder          := null
+        SELF:_deletedColumnNo  := -1
+        SELF:_recnoColumNo     := -1
+        SELF:_currentPageNo    := 1
+        SELF:_firstPageNo      := 1
+        self:_trimValues       := true // trim String Valuess
+        SELF:_updatedRows      := List<DataRow>{}
+        SELF:_keyColumns       := List<RddFieldInfo>{}
+        SELF:_updatableColumns := List<RddFieldInfo>{}
+        SELF:_orderBagList     := List<SqlDbOrderBag>{}
+        SELF:_IsFileBased      := FALSE
         return
     end constructor
 
@@ -168,43 +139,10 @@ partial class SQLRDD inherit DBFVFP
         Command:Close()
     end destructor
 
-#region Hacks
-    // The field and property below allow us to access internal fields from the XSharp.RDD assembly
-    private _deleteOnClose as PropertyInfo
-    private method _GetDeleteOnClose() as void
-        if _deleteOnClose == null
-            var type := typeof(DBFVFP)
-            var prop := type:GetProperty("DeleteOnClose", BindingFlags.Instance + BindingFlags.NonPublic)
-            _deleteOnClose := prop
-        endif
-        return
-    end method
+    internal method _ClearTable() AS VOID
+        SELF:DataTable:Rows:Clear()
+        RETURN
 
-    /// <exclude />
-    property DeleteOnClose as logic
-        get
-            SELF:_GetDeleteOnClose()
-            return (logic) _deleteOnClose:GetValue(self)
-        end get
-        set
-            SELF:_GetDeleteOnClose()
-            _deleteOnClose:SetValue(self, value)
-        end set
-    end property
-#endregion
-
-    private method _TempFileName(info as DbOpenInfo) as string
-        local result as string
-        repeat
-            var folder := Path.GetTempPath()
-            var nId  := SqlDbHandles.GetId(0xFFFFF)
-            var name := i"SQL"+nId:ToInt32():ToString("X5")
-            result := Path.Combine(folder, name+".DBF")
-        until ! File.Exists(result)
-        info:FileName := Path.Combine(Path.GetDirectoryName(result), Path.GetFileNameWithoutExtension(result))
-        info:Extension := ".DBF"
-        return result
-    end method
 
     private method _GetTableInfo(cTable as string) as logic
         // First check to see if there is a tableDef for this table in the connection
@@ -505,11 +443,21 @@ partial class SQLRDD inherit DBFVFP
         return self:_OpenTable("")
     end method
 
-    private method _OpenTable(sWhereClause as string) as logic
+    private method _ReadTable(sWhereClause as string) as DataTable
         try
             _command:CommandText := self:_BuildSqlStatement(sWhereClause)
             _command:ClearParameters()
-            self:DataTable       := _command:GetDataTable(self:Alias)
+            var oDataTable := _command:GetDataTable(self:Alias)
+            return oDataTable
+        catch as Exception
+            return null
+        end try
+
+    private method _OpenTable(sWhereClause as string) as logic
+        try
+            SELF:_currentPageNo := 1
+            SELF:_firstPageNo := 1
+            SELF:DataTable := self:_ReadTable(sWhereClause)
             self:_GetRecCount()
         catch as Exception
             return false
@@ -520,14 +468,10 @@ partial class SQLRDD inherit DBFVFP
 
     private method _BuildSqlStatement(sWhereClause as string) as string
         local query as string
-        if self:_getStructureOnly
-            query := self:_oTd:EmptySelectStatement
+        if self:_tableMode == TableMode.Table
+            query := _builder:BuildSqlStatement(sWhereClause)
         else
-            if self:_tableMode == TableMode.Table
-                query := _builder:BuildSqlStatement(sWhereClause)
-            else
-                query := self:_oTd:SelectStatement
-            endif
+            query := self:_oTd:SelectStatement
         endif
         return query
     end method
@@ -535,11 +479,16 @@ partial class SQLRDD inherit DBFVFP
 
     PRIVATE METHOD _CheckEofBof() AS VOID
         VAR nRecs := SELF:RowCount
+
         IF nRecs == 0
             SELF:_SetEOF(TRUE)
             SELF:_SetBOF(TRUE)
         ELSEIF SELF:RowNumber > nRecs
+            SELF:_SetBOF(FALSE)
             SELF:_SetEOF(TRUE)
+        ELSE
+            SELF:_SetEOF(FALSE)
+            SELF:_SetBOF(FALSE)
         ENDIF
     END METHOD
 
@@ -588,15 +537,10 @@ partial class SQLRDD inherit DBFVFP
     private method _CloseCursor() as void
         self:_hasData       := FALSE
         self:_table         := null
-        // self:_recordKeyCache := null
         return
 
     private method _GetRecCount() as void
-        if self:_oTd:MaxRecnoAsRecCount .and. self:_recnoColumNo != -1
-            self:_serverReccount := self:_builder:GetMaxRecno()
-        else
-            self:_serverReccount := self:_builder:GetRecCount()
-        endif
+        self:_serverReccount := self:_builder:GetRecCount()
     end method
 
     private method _FetchPage(nNewPageNo as int ) as logic
@@ -604,22 +548,92 @@ partial class SQLRDD inherit DBFVFP
             // Exception?
             return true
         endif
-        var lForward := nNewPageNo > _currentPageNo
+        var maxTableSize := _oTd:PageSize * _oTd:BufferSize
+        var sizeBefore   := maxTableSize - _oTd:PageSize
+        var lForward     := nNewPageNo > _currentPageNo
+        if self:RowCount + _oTd:PageSize > maxTableSize
+            // We must delete rows
+            if lForward
+                // delete rows at the start
+                DO WHILE self:RowCount > sizeBefore
+                    self:DataTable:Rows:RemoveAt(0)
+                ENDDO
+                SELF:_firstPageNo += 1
+            else
+                // delete rows at the end
+                DO WHILE self:RowCount > sizeBefore
+                    self:DataTable:Rows:RemoveAt(DataTable:Rows:Count-1)
+                ENDDO
+                IF SELF:_firstPageNo > 1
+                    SELF:_firstPageNo -= 1
+                ELSE
+                    SELF:_firstPageNo := 1
+                endif
+            endif
+        endif
         _currentPageNo := nNewPageNo
         SELF:_hasEOF := false
-        var result := self:_OpenTable("")
-        if lForward .and. SELF:RowCount < _oTd:MaxRecords
-            SELF:_hasEOF := true
-        else
-            _currentPageNo := nNewPageNo
-        endif
-        if lForward
-            SELF:RowNumber := 1
-        else
-            SELF:RowNumber := SELF:RowCount
+        var newTable := SELF:_ReadTable("")
+        var result := (newTable != null)
+        if result
+            if lForward
+                SELF:RowNumber := SELF:DataTable:Rows:Count + 1
+
+                foreach row as DataRow in newTable:Rows
+                    SELF:DataTable:Rows:Add(row:ItemArray)
+                next
+            else
+                SELF:RowNumber := newTable:Rows:Count
+
+                for var nRow := newTable:Rows:Count-1 downto 0
+                    var row := newTable:Rows[nRow]
+                    var newRow := SELF:DataTable:NewRow()
+                    newRow:ItemArray := row:ItemArray
+                    SELF:DataTable:Rows:InsertAt(newRow, 0)
+                next
+            endif
+            if lForward .and. newTable:Rows:Count < _oTd:PageSize
+                SELF:_hasEOF := true
+            else
+                _currentPageNo := nNewPageNo
+            endif
         endif
         return result
 
+    PRIVATE METHOD _GotoRecord(nRec as DWORD) AS LOGIC
+        // Brute walk
+        SELF:GoTop()
+        DO WHILE ! SELF:EoF
+            if SELF:RecNo == nRec
+                RETURN TRUE
+            endif
+            SELF:Skip(1)
+        ENDDO
+        RETURN FALSE
+    PRIVATE METHOD _GotoRow(nRow as LONG) AS LOGIC
+        SELF:_Found := FALSE
+        var nCount := SELF:DataTable:Rows:Count
+        IF  nRow <= nCount  .AND.  nRow > 0
+            SELF:RowNumber := nRow
+            SELF:_SetEOF(FALSE)
+            SELF:_SetBOF(FALSE)
+        ELSEIF nRow < 0 .AND. nCount > 0
+            // skip to BOF. Move to record 1.
+            SELF:RowNumber := 1
+            SELF:_SetEOF(FALSE)
+            SELF:_SetBOF(TRUE)
+        ELSE
+            // File empty, or move after last record
+            SELF:RowNumber := nCount + 1
+            SELF:_SetEOF(TRUE)
+            SELF:_SetBOF(nCount == 0)
+        ENDIF
+        IF SELF:_Relations:Count != 0
+            SELF:SyncChildren()
+        ENDIF
+        SELF:_CheckEofBof()
+        RETURN TRUE
+
 end class
 
-end namespace // XSharp.RDD.SqlRDD
+

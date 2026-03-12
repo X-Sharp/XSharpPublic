@@ -10,7 +10,7 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
+NAMESPACE XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
 /// The SqlMetadataProviderAbstract class.
@@ -78,11 +78,11 @@ ABSTRACT CLASS SqlMetadataProviderAbstract IMPLEMENTS ISqlMetadataProvider
             _connection:TrimTrailingSpaces  := SELF:GetLogic(oPar,  SqlRDDEventReason.TrimTrailingSpaces, _connection:TrimTrailingSpaces)
             _connection:UpdateAllColumns    := SELF:GetLogic(oPar,  SqlRDDEventReason.UpdateAllColumns, _connection:UpdateAllColumns)
             _connection:AllowUpdates        := SELF:GetLogic(oPar,  SqlRDDEventReason.AllowUpdates, _connection:AllowUpdates)
-            _connection:MaxRecords          := SELF:GetInt(oPar,    SqlRDDEventReason.MaxRecords, _connection:MaxRecords)
+            _connection:PageSize            := SELF:GetInt(oPar,    SqlRDDEventReason.PageSize, _connection:PageSize)
+            _connection:BufferSize          := SELF:GetInt(oPar,    SqlRDDEventReason.BufferSize, _connection:BufferSize)
             _connection:RecnoColumn         := SELF:GetString(oPar, SqlRDDEventReason.RecnoColumn, _connection:RecnoColumn)
             _connection:DeletedColumn       := SELF:GetString(oPar, SqlRDDEventReason.DeletedColumn, _connection:DeletedColumn)
             _connection:CompareMemo         := SELF:GetLogic(oPar,  SqlRDDEventReason.CompareMemo, _connection:CompareMemo)
-            _connection:MaxRecnoAsRecCount  := SELF:GetLogic(oPar,  SqlRDDEventReason.MaxRecnoAsRecCount, _connection:MaxRecnoAsRecCount)
             _connection:SeekReturnsSubset   := SELF:GetLogic(oPar,  SqlRDDEventReason.SeekReturnsSubset, _connection:SeekReturnsSubset)
             hasDefaults := TRUE
         ENDIF
@@ -97,11 +97,11 @@ ABSTRACT CLASS SqlMetadataProviderAbstract IMPLEMENTS ISqlMetadataProvider
         oTable:DeletedColumn     := SELF:GetString(oPar,  SqlRDDEventReason.DeletedColumn, _connection:DeletedColumn)
         oTable:LongFieldNames    := SELF:GetLogic(oPar,   SqlRDDEventReason.LongFieldNames,_connection:LongFieldNames)
         oTable:UpdateAllColumns  := SELF:GetLogic(oPar,   SqlRDDEventReason.UpdateAllColumns,_connection:UpdateAllColumns)
-        oTable:MaxRecords        := SELF:GetInt(oPar,     SqlRDDEventReason.MaxRecords,    _connection:MaxRecords)
+        oTable:PageSize          := SELF:GetInt(oPar,     SqlRDDEventReason.PageSize,    _connection:PageSize)
+        oTable:BufferSize        := SELF:GetInt(oPar,     SqlRDDEventReason.BufferSize,    _connection:BufferSize)
         oTable:RecnoColumn       := SELF:GetString(oPar,  SqlRDDEventReason.RecnoColumn,   _connection:RecnoColumn)
         oTable:TrimTrailingSpaces:= SELF:GetLogic(oPar,   SqlRDDEventReason.TrimTrailingSpaces, _connection:TrimTrailingSpaces)
         oTable:CompareMemo       := SELF:GetLogic(oPar,   SqlRDDEventReason.CompareMemo,   _connection:CompareMemo)
-        oTable:MaxRecnoAsRecCount:= SELF:GetLogic(oPar,   SqlRDDEventReason.MaxRecnoAsRecCount,   _connection:MaxRecnoAsRecCount)
         oTable:SeekReturnsSubset := SELF:GetLogic(oPar,   SqlRDDEventReason.SeekReturnsSubset,   _connection:SeekReturnsSubset)
         // these fields have no connection level defaults
         oTable:ServerFilter      := SELF:GetString(oPar, SqlRDDEventReason.ServerFilter, DEFAULT_SERVERFILTER)
@@ -113,4 +113,3 @@ ABSTRACT CLASS SqlMetadataProviderAbstract IMPLEMENTS ISqlMetadataProvider
     END METHOD
 
 END CLASS
-END NAMESPACE // XSharp.SQLRdd.Metadata

@@ -99,7 +99,7 @@ CLASS TestClass IMPLEMENTS IClassFixture<TestFixture>
         Assert.Equal(LastRec(),91U)
         lOk := DbSeek("ANATR")
          Assert.Equal(lOk, TRUE)
-         VAR Recno := Recno()
+         VAR recno := Recno()
         Assert.Equal( recno, 2U)
         lOk := DbSeek("WOLZA")
          Assert.Equal(lOk, TRUE)

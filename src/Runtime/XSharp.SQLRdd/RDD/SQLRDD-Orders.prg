@@ -411,6 +411,8 @@ partial class SQLRDD inherit DBFVFP
             self:_ForceOpen()
             info:Result := self:RowCount
         case DBOI_POSITION
+            self:_ForceOpen()
+            info:Result := self:OrderKeyNo
         case DBOI_RECNO
             // our position is the row number in the local cursor
             info:Result := self:RowNumber

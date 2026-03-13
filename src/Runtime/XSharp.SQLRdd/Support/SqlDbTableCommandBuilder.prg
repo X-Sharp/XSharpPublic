@@ -302,6 +302,161 @@ internal class SqlDbTableCommandBuilder
         endif
         return maxVal + 1
 
+    method GetOrderKeyNo() as DWORD
+        /*
+        SELECT COUNT(*)
+        FROM table
+        WHERE
+        [FILTER],
+        [SCOPE],
+        [ORDERCONDITION],
+        [(K1 {<|>} @K1)
+         OR (K1 = @K1 AND K2 {<|>} @K2)
+         OR ...
+         OR (K1 = @K1 AND ... AND xs_recno <= @xs_recno)]
+        */
+
+        local nKeyNo as DWORD
+        local scopeWhere := null as string
+        local sWhereClause := null as string
+
+        var sb := System.Text.StringBuilder{}
+        var currentOrder := _oRdd:CurrentOrder
+        var recNoSql := Functions.XsValueToSqlValue(SELF:_oRdd:RecNo)
+
+        sb:Append(SqlDbProvider.SelectClause)
+        sb:Append("count(*)")
+        sb:Append(SqlDbProvider.FromClause)
+        sb:Append(Provider.QuoteIdentifier(_oTable:RealName))
+
+        var whereClauses := List<String>{}
+        
+        if SELF:_oTable:HasServerFilter .and. !String.IsNullOrEmpty(_oTable:ServerFilter)
+            whereClauses:Add(_oTable:ServerFilter)
+        endif
+
+        if currentOrder != null
+            var cCompareOp := " < "
+            if currentOrder:Descending
+                cCompareOp := " > "
+            endif
+            
+            scopeWhere := currentOrder:GetScopeClause()
+            if !String.IsNullOrEmpty(scopeWhere)
+                whereClauses:Add(scopeWhere)
+            endif
+
+            if !String.IsNullOrEmpty(currentOrder:SqlWhere)
+                whereClauses:Add(currentOrder:SqlWhere)
+            endif
+
+            var rawParts := currentOrder:SQLKey:Split(<CHAR>{'+'})
+            var keyParts := List<string>{}
+
+            foreach var cPart in rawParts
+                var cExpr := cPart:Trim()
+                if !String.IsNullOrEmpty(cExpr)
+                    keyParts:Add(cExpr)
+                endif
+            next
+
+            if keyParts:Count = 0
+                return 0
+            endif
+
+            var sbWhere := StringBuilder{}
+            var sbEquals := StringBuilder{}
+
+            var sbValue := StringBuilder{}
+            sbValue:Append(SqlDbProvider.SelectClause)
+            sbValue:Append(String.Join(",", keyParts))
+            sbValue:Append(SqlDbProvider.FromClause)
+            sbValue:Append(Provider.QuoteIdentifier(_oTable:RealName))
+            sbValue:Append(SqlDbProvider.WhereClause)
+            sbValue:Append(SELF:_oTable:RecnoColumn)
+            sbValue:Append("=")
+            sbValue:Append(recNoSql)
+
+            var reader := _connection:ExecuteReader(sbValue:ToString())
+            try
+                if !reader:Read()
+                    return 0
+                endif
+
+                for var nPart := 0 upto keyParts:Count - 1
+                    var cExpr := keyParts[nPart]
+                    var uKeyVal := reader[nPart]
+                    var cKeyVal := Functions.XsValueToSqlValue(uKeyVal)
+
+                    if nPart = 0
+                        sbWhere:Append("(")
+                        sbWhere:Append(cExpr)
+                        sbWhere:Append(cCompareOp)
+                        sbWhere:Append(cKeyVal)
+                        sbWhere:Append(")")
+                    else
+                        sbWhere:Append(SqlDbProvider.OrClause)
+                        sbWhere:Append("(")
+                        sbWhere:Append(sbEquals:ToString())
+                        sbWhere:Append(SqlDbProvider.AndClause)
+                        sbWhere:Append(cExpr)
+                        sbWhere:Append(cCompareOp)
+                        sbWhere:Append(cKeyVal)
+                        sbWhere:Append(")")
+                    endif
+
+                    if sbEquals:Length > 0
+                        sbEquals:Append(SqlDbProvider.AndClause)
+                    endif
+                    sbEquals:Append(cExpr)
+                    sbEquals:Append(" = ")
+                    sbEquals:Append(cKeyVal)
+                next
+
+                if sbEquals:Length = 0
+                    return 0
+                endif
+
+                if sbWhere:Length > 0
+                    sbWhere:Append(SqlDbProvider.OrClause)
+                endif
+
+                sbWhere:Append("(")
+                sbWhere:Append(sbEquals:ToString())
+                sbWhere:Append(SqlDbProvider.AndClause)
+                sbWhere:Append(SELF:_oTable:RecnoColumn)
+                sbWhere:Append(" <= ")
+                sbWhere:Append(recNoSql)
+                sbWhere:Append(")")
+
+                sWhereClause := sbWhere:ToString()
+
+            finally
+                reader:Dispose()
+            end try
+
+        else
+            sWhereClause := SELF:_oTable:RecnoColumn + " <= " + recNoSql
+        endif
+
+        if !String.IsNullOrEmpty(sWhereClause)
+            whereClauses:Add(sWhereClause)
+        endif
+
+        sWhereClause := SELF:CombineWhereClauses(whereClauses)
+        sWhereClause := _connection:RaiseStringEvent(_connection, SqlRDDEventReason.WhereClause, _cTable, sWhereClause)
+
+        if !String.IsNullOrEmpty(sWhereClause)
+            sb:Append(SqlDbProvider.WhereClause)
+            sb:Append(sWhereClause)
+        endif
+
+        var stmt := sb:ToString()
+        var result := _connection:ExecuteScalar(stmt)
+        nKeyNo := Convert.ToUInt32(result)
+
+        return nKeyNo
+    
     method ZapStatement() as STRING
         var sb := StringBuilder{}
         sb:Append(Provider:DeleteAllRowsStatement)

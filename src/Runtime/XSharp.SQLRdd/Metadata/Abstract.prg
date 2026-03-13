@@ -10,7 +10,7 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
-NAMESPACE XSharp.RDD.SqlRDD.Providers
+BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
 /// The SqlMetadataProviderAbstract class.
@@ -113,3 +113,4 @@ ABSTRACT CLASS SqlMetadataProviderAbstract IMPLEMENTS ISqlMetadataProvider
     END METHOD
 
 END CLASS
+END NAMESPACE

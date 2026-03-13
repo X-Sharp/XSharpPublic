@@ -12,7 +12,7 @@ USING System.Collections.Generic
 USING System.Text
 using XSharp.RDD.Support
 
-NAMESPACE XSharp.RDD.SqlRDD.Providers
+BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
 /// The SqlMetadataProviderDatabase class. Reads Metadata from tables in the database.
@@ -578,5 +578,5 @@ end class
     INTERNAL CONST Ordinal           := nameof(Ordinal) as string
 #endregion
 END CLASS
-
+END NAMESPACE
 

@@ -16,7 +16,7 @@ using System.Data.Common
 using XSharp.RDD.SqlRDD.Providers
 
 #undef TRACERDD
-namespace XSharp.RDD.SqlRDD
+begin namespace XSharp.RDD.SqlRDD
 
 // Private methods and fields
 partial class SQLRDD
@@ -643,5 +643,5 @@ partial class SQLRDD
         RETURN TRUE
 
 end class
-
+end namespace
 

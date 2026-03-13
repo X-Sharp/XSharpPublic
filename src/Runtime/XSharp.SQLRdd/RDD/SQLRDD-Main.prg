@@ -57,7 +57,21 @@ partial class SQLRDD inherit Workarea
             return self:DataTable:Rows[nRow -1]
         end get
     end property
-#endregion
+    /// <summary>A numeric value representing the logical record number of the current record.
+    /// When the server is not in tablemode 0 is returned</summary>
+    public property OrderKeyNo as dword
+        get
+            if self:_tableMode != TableMode.Table
+                return 0
+            endif
+            try
+                return self:_builder:GetOrderKeyNo()
+            catch as Exception
+                return 0
+            end try
+        end get
+    end property
+    #endregion
 
 
 
@@ -743,7 +757,6 @@ partial class SQLRDD inherit Workarea
         self:_CloseCursor()
         return super:Pack()
     end method
-
 
 end class
 

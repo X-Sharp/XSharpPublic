@@ -275,11 +275,6 @@ FUNCTION CMonth(dDate AS DATE) AS STRING
 FUNCTION DoW(dDate AS DATE) AS DWORD
     RETURN XSharp.RT.Functions.DoW(dDate)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
-[FoxProFunction("DMY", FoxFunctionCategory.DateAndTime, FoxEngine.LanguageCore, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION Dmy(dExpression AS DATE) AS STRING
-    THROW NotImplementedException{}
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ctod/*" />
 [FoxProFunction("CTOD", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION CToD(cDate AS STRING) AS DATE

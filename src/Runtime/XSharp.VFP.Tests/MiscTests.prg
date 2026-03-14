@@ -162,7 +162,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal("", cDbf)
         END METHOD
 
-        [Fact, Trait("Category", "DBF")];
+        [Fact, Trait("Category", "OS")];
         METHOD TestOSFunction() AS VOID
             VAR cOS := OS(1)
             Assert.True(cOS:Length > 0)

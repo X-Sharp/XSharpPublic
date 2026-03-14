@@ -128,10 +128,36 @@ FUNCTION FSeek(nFileHandle AS INT64, nBytesMoved AS INT, nRelativePosition := 0 
     RETURN XSharp.Core.Functions.FSeek3(nFileHandle, nBytesMoved, (DWORD) nRelativePosition)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fsize/*" />
-[FoxProFunction("FSIZE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
+[FoxProFunction("FSIZE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION FSize(cFieldName AS STRING, eWorkArea := NIL AS USUAL) AS INT
-    // Todo: Create an overload for function with cFileName parameter
-    THROW NotImplementedException{}
+    LOCAL nArea AS DWORD
+    IF IsNil(eWorkArea)
+        nArea := XSharp.RuntimeState.CurrentWorkarea
+    ELSE
+        nArea := (DWORD) XSharp.RT.Functions.Select(eWorkArea)
+    ENDIF
+
+    IF nArea == 0 || !XSharp.RT.Functions.Used(nArea)
+        RETURN 0
+    ENDIF
+
+    VAR nPos := XSharp.RT.Functions.FieldPos(cFieldName, nArea)
+    IF nPos > 0
+        LOCAL uLen := NULL AS USUAL
+        LOCAL nOldArea := XSharp.RuntimeState.CurrentWorkarea
+        TRY
+            XSharp.RuntimeState.CurrentWorkarea := nArea
+            XSharp.RT.Functions.VoDbFieldInfo(3, nPos, REF uLen) // 3 = DBS_LEN
+        FINALLY
+            XSharp.RuntimeState.CurrentWorkarea := nOldArea
+        END TRY
+
+        IF IsNumeric(uLen)
+            RETURN (INT) uLen
+        ENDIF
+    ENDIF
+
+    RETURN 0
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fwrite/*" />
 [FoxProFunction("FWRITE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
@@ -152,19 +178,43 @@ FUNCTION DiskSpace(cDriveName := "" AS STRING, nSpaceType := 1 AS INT) AS REAL8
     THROW NotImplementedException{}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/curdir/*" />
-[FoxProFunction("CURDIR", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION CurDir(cDriveDesignator := "" AS STRING) AS STRING
-    THROW NotImplementedException{}
+[FoxProFunction("CURDIR", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION CurDir(cDrive := "" AS STRING) AS STRING
+    RETURN XSharp.Core.Functions.CurDir(cDrive)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/os/*" />
-[FoxProFunction("OS", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Low)];
+[FoxProFunction("OS", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION OS(nType := 0 AS INT) AS STRING
-    THROW NotImplementedException{}
+    VAR oOS := System.Environment.OSVersion
+    SWITCH nType
+        CASE 0 // Default: name and version, same as CASE 1 in VFP
+        CASE 1 // Name and version
+            RETURN XSharp.Core.Functions.OS()
+        CASE 2 // DBCS Support
+            RETURN IIF(System.Text.Encoding.Default:IsSingleByte, "", "DBCS")
+        CASE 3 // Major version
+            RETURN oOS:Version:Major:ToString()
+        CASE 4 // Minor version
+            RETURN oOS:Version:Minor:ToString()
+        CASE 5 // Build number
+            RETURN oOS:Version:Build:ToString()
+        CASE 6 // Platform
+            RETURN ((INT)oOS:Platform):ToString()
+        CASE 7 // Service Pack String
+            RETURN oOS:ServicePack
+        CASE 8
+        CASE 9
+        CASE 10 // Product Suite
+            RETURN "0"
+        CASE 11 // Product Type
+            RETURN "1"
+    END SWITCH
+    RETURN ""
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/oemtoansi/*" />
-[FoxProFunction("OEMTOANSI", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Low)];
-FUNCTION OemToAnsi(cExpression AS STRING) AS STRING
-    THROW NotImplementedException{}
+[FoxProFunction("OEMTOANSI", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
+FUNCTION OemToAnsi(cOemString AS STRING) AS STRING
+    RETURN XSharp.Core.Functions.Oem2Ansi(cOemString)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/set/*" />
 [FoxProFunction("SET", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];

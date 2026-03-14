@@ -144,10 +144,13 @@ FUNCTION FSize(cFieldName AS STRING, eWorkArea := NIL AS USUAL) AS INT
     VAR nPos := XSharp.RT.Functions.FieldPos(cFieldName, nArea)
     IF nPos > 0
         LOCAL uLen := NULL AS USUAL
-        VAR nOldArea := XSharp.RuntimeState.CurrentWorkarea
-        XSharp.RuntimeState.CurrentWorkarea := nArea
-        XSharp.RT.Functions.VoDbFieldInfo(3, nPos, REF uLen) // 3 = DBS_LEN
-        XSharp.RuntimeState.CurrentWorkarea := nOldArea
+        LOCAL nOldArea := XSharp.RuntimeState.CurrentWorkarea
+        TRY
+            XSharp.RuntimeState.CurrentWorkarea := nArea
+            XSharp.RT.Functions.VoDbFieldInfo(3, nPos, REF uLen) // 3 = DBS_LEN
+        FINALLY
+            XSharp.RuntimeState.CurrentWorkarea := nOldArea
+        END TRY
 
         IF IsNumeric(uLen)
             RETURN (INT) uLen

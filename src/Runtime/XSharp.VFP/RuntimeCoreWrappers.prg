@@ -184,6 +184,7 @@ FUNCTION CurDir(cDrive := "" AS STRING) AS STRING
 FUNCTION OS(nType := 0 AS INT) AS STRING
     VAR oOS := System.Environment.OSVersion
     SWITCH nType
+        CASE 0 // Default: name and version, same as CASE 1 in VFP
         CASE 1 // Name and version
             RETURN XSharp.Core.Functions.OS()
         CASE 2 // DBCS Support

@@ -65,7 +65,10 @@ partial class SQLRDD inherit Workarea
                 return 0
             endif
             try
-                return self:_builder:GetOrderKeyNo()
+                SELF:_command:CommandText := _builder:BuildRowNumberStatement(self:RecNo)
+                var result := SELF:_command:ExecuteScalar(SELF:_oTd:Name)
+                var iResult := Convert.ToUInt32(result)
+                return iResult
             catch as Exception
                 return 0
             end try

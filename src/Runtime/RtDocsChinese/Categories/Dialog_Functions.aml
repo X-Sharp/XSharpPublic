@@ -25,13 +25,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetColor(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetColor(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            显示Windows颜色对话框并返回所选颜色的颜色编号。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -40,11 +38,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetDir(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetDir(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -53,13 +51,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetFont(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetFont(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            显示字体对话框并返回您选择的字体信息。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -68,11 +64,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetPict(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetPict(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -94,11 +90,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.InputBox(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.InputBox(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -107,11 +103,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LoadPicture(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LoadPicture(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -135,11 +131,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.PutFile(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.PutFile(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -148,11 +144,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SavePicture(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SavePicture(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
         </table>

@@ -79,13 +79,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddCount</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddCount(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      获取当前加载的 RDD 数量。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -94,13 +92,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddInfo(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddInfo(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      返回并可选择性地更改由 RDD 直接控制的设置。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -109,13 +105,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddList</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddList(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      获取正在使用的 RDD 列表。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -154,7 +148,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddVersion(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddVersion(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>

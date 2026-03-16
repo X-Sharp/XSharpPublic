@@ -38,13 +38,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Str(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      Convert a numeric expression to a string.
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -162,7 +160,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the ANSI value for the leftmost character in a character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -409,7 +409,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.BinToc(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.BinToc(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -439,7 +439,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Converts an expression from one data type to another.
+    </para>
             </entry>
           </row>
           <row>
@@ -495,7 +497,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the character associated with the specified numeric ANSI code.
+    </para>
             </entry>
           </row>
           <row>
@@ -523,7 +527,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether or not a character is present in the keyboard buffer.
+    </para>
             </entry>
           </row>
           <row>
@@ -566,7 +572,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the name of the month from a given date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -590,11 +598,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CToBin(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CToBin(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -622,7 +630,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Converts a character expression to a date expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -850,7 +860,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a character-string date in a yyyymmdd format from a specified Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1304,13 +1316,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      将数值表达式转换为字符串。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1319,7 +1329,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Str(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1557,7 +1567,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a numeric or currency value from a character expression composed of numbers. You can use VAL( ) to convert the character strings returned by the X# SYS( ) functions to numeric values.
+    </para>
             </entry>
           </row>
           <row>
@@ -1613,7 +1625,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the year from the specified date or datetime expression.
+    </para>
             </entry>
           </row>
         </table>

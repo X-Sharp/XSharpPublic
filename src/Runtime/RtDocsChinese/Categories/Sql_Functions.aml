@@ -25,11 +25,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ASessions(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ASessions(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -118,11 +118,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.MakeTimeStamp(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.MakeTimeStamp(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>将日期和秒转换为"YYYY-MM-DD HH:MM:SS.NNN"格式的时间戳字符串</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -131,11 +131,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Refresh(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Refresh(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -144,11 +144,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Requery(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Requery(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -230,13 +230,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLConnectErrorMsg(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLConnectErrorMsg(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            返回并可选择更改设置，该设置确定是否显示连接错误消息。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -245,13 +243,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VOSQLClasses.Functions.SQLConnectErrorMsg(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VOSQLClasses.Functions.SQLConnectErrorMsg(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            返回并可选择更改设置，该设置确定是否显示连接错误消息。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -288,13 +284,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLDropMyConnection(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLDropMyConnection(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            断开 ODBC 数据源。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -318,13 +312,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLGetDataSources</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLGetDataSources(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            识别可用的 ODBC 数据源。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -348,13 +340,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLGetMyConnection(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLGetMyConnection(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            连接到指定的 ODBC 源。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -445,13 +435,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLOpenConnection</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLOpenConnection(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            连接到 ODBC 源列表。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -503,13 +491,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLSetConnection(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLSetConnection(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            返回并可选地更改默认的 SQL 连接。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -518,13 +504,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VOSQLClasses.Functions.SQLSetConnection(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VOSQLClasses.Functions.SQLSetConnection(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            返回并可选地更改默认的 SQL 连接。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -564,13 +548,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlSetStmtConcurrency(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlSetStmtConcurrency(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            返回并可选地更改 SQLSelect 对象的默认并发模式
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -579,13 +561,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlSetStmtCursorType(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlSetStmtCursorType(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            返回并可选地更改 SQLSelect 对象的默认游标类型
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -594,13 +574,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlSetStmtSimulateCursor(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlSetStmtSimulateCursor(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            返回并可选地更改 SQLSelect 对象的默认游标模拟模式
-        </para>
+              <para />
             </entry>
           </row>
           <row>

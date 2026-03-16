@@ -89,7 +89,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the current date and time as a DateTime value, or creates a year 2000-compliant DateTime value.
+    </para>
             </entry>
           </row>
           <row>

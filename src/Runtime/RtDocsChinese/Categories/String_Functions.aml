@@ -64,13 +64,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Str(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      Convert a numeric expression to a string.
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -167,7 +165,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Remove leading and trailing spaces from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -255,7 +255,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the ANSI value for the leftmost character in a character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -687,7 +689,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the character associated with the specified numeric ANSI code.
+    </para>
             </entry>
           </row>
           <row>
@@ -760,7 +764,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the name of the month from a given date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -949,7 +955,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a character-string date in a yyyymmdd format from a specified Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1200,7 +1208,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns one of two values depending on the value of a logical expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1241,7 +1251,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether the leftmost character of the specified character expression is a digit (0 through 9).
+    </para>
             </entry>
           </row>
           <row>
@@ -1269,7 +1281,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether the leftmost character of the specified character expression is a lowercase alphabetic character.
+    </para>
             </entry>
           </row>
           <row>
@@ -1370,7 +1384,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a specified number of characters from a character expression, starting with the leftmost character.
+    </para>
             </entry>
           </row>
           <row>
@@ -1413,7 +1429,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines the number of characters in a character expression, indicating the length of the expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1454,7 +1472,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines if a character expression matches another character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1463,13 +1483,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LikeC(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LikeC(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            Determines whether a character expression matches another character expression.
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1478,13 +1496,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.LoadResString(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.LoadResString(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            Look up an identifier in a string table and returns its corresponding string.
-            </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1512,7 +1528,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a specified character expression in lowercase letters.
+    </para>
             </entry>
           </row>
           <row>
@@ -1926,13 +1944,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemoTran(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemoTran(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      用可显示的字符替换回车/换行符。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1941,11 +1957,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Normalize(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Normalize(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1988,7 +2004,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the number of times a character expression occurs within another character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -2091,7 +2109,11 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Included for backward compatibility. Use the CPCONVERT( ) Function instead.
+
+      Converts each character in a character expression to the corresponding character in the ANSI character set.
+    </para>
             </entry>
           </row>
           <row>
@@ -2199,11 +2221,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosAlpha(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosAlpha(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>Retrieves the 1 based position of the first letter in a string. </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2212,11 +2234,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosChar(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosChar(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>Replaces a single character at a specified position in a string. </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2225,11 +2247,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosDel(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosDel(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>Removes characters at a specified position in a string. </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2238,11 +2260,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosIns(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosIns(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>Inserts a character string into a string at a specified position.  </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2251,11 +2273,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosLower(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosLower(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>Retrieves the 1 based position of the first lower case letter in a string. </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2264,11 +2286,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosRepl(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosRepl(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>Inserts a character string into a string at a specified position.</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2277,11 +2299,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosUpper(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosUpper(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>Retrieves the 1 based position of the first upper case letter in a string. </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2429,7 +2451,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the line number of the last occurrence of a character expression within another character expression or memo field, counting from the last line.
+    </para>
             </entry>
           </row>
           <row>
@@ -2487,7 +2511,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a character string that contains a specified character expression repeated a specified number of times.
+    </para>
             </entry>
           </row>
           <row>
@@ -2515,7 +2541,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the specified number of rightmost characters from a character string.
+    </para>
             </entry>
           </row>
           <row>
@@ -2582,13 +2610,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SEval(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SEval(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      对字符串中的每个单个字符执行代码块。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2597,13 +2623,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SEvalA(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SEvalA(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      对字符串中的每个单个字符执行代码块，并更改参数的内容以及返回值。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2674,7 +2698,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a character string composed of a specified number of spaces.
+    </para>
             </entry>
           </row>
           <row>
@@ -2713,13 +2739,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      将数值表达式转换为字符串。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2728,7 +2752,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Str(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -2960,13 +2984,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StrTran(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StrTran(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      在字符串中搜索和替换字符。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2975,7 +2997,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrTran(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrTran(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -3022,7 +3044,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a character string created by replacing a specified number of characters in a character expression with another character expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -3031,13 +3055,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StuffC(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StuffC(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            Returns a character string created by replacing a specified number of characters in a character expression with another character expression.
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -3046,13 +3068,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SubS(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SubS(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      Extract a substring from a string.
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -3061,13 +3081,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SubStr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SubStr(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      从字符串中提取子字符串。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -3119,13 +3137,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SubStrC(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SubStrC(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            Returns a character string from the given character expression or memo field.
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -3168,7 +3184,10 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a character string from an expression in a format determined by a format code.
+      Using TRANSFORM( ) with a large negative number that contains a decimal might result in numeric overflow when that number is passed in as a memory variable. You should use the STR( ) function instead with such numbers.
+    </para>
             </entry>
           </row>
           <row>
@@ -3196,7 +3215,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Remove trailing spaces from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -3265,11 +3286,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TxtWidth(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TxtWidth(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -3312,7 +3333,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the specified character expression in uppercase.
+    </para>
             </entry>
           </row>
           <row>
@@ -3355,7 +3378,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a numeric or currency value from a character expression composed of numbers. You can use VAL( ) to convert the character strings returned by the X# SYS( ) functions to numeric values.
+    </para>
             </entry>
           </row>
         </table>

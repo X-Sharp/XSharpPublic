@@ -132,7 +132,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Locates the specified directory.
+    </para>
             </entry>
           </row>
           <row>
@@ -304,11 +306,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetDir(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetDir(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -374,19 +376,6 @@
             </entry>
             <entry>
               <para>Returns the stem name (the file name before the extension) from a complete path and file name.</para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.VFP</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MkDir(System.String)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
             </entry>
           </row>
           <row>

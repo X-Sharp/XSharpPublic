@@ -25,15 +25,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBDirectExport(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBDirectExport(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      将 binary large object (BLOB) 指针的内容导出到文件中。注意：
-      BLOB 文件 (.DBV 或 .FPT) 用于存储备忘录字段信息，作为替代标准 .DBT 文件机制的方法，支持一些 RDDs。
-      它是一个更为强大和高效的机制，用于存储和检索大量数据，而不是使用 .DBT 文件。  X# 提供了 DBFCDX 驱动程序，它默认使用 BLOB 文件存储机制，并且提供了 DBFBLOB 驱动程序，您可以将其作为继承的驱动程序用于其他 RDDs。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -42,13 +38,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBDirectGet(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBDirectGet(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      从 BLOB 文件中检索数据，而不需要引用特定的字段。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -57,13 +51,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBDirectImport(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBDirectImport(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      将文件导入 BLOB 文件中，并返回到数据的指针。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -72,13 +64,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBDirectPut(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBDirectPut(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      在不引用特定字段的情况下将数据放入 BLOB 文件中。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -87,13 +77,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBExport(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBExport(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      将 BLOB 的内容，根据其备注字段号，复制到文件中。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -102,13 +90,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBGet(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBGet(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      通过备注字段号获取 BLOB 的内容
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -117,13 +103,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBImport(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBImport(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      通过备注字段号将文件的内容读取到 BLOB 中
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -162,13 +146,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBRootPut(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBRootPut(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      在 BLOB 文件的根区域存储数据。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -192,7 +174,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbBlobInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbBlobInfo(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>

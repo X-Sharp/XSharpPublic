@@ -87,7 +87,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the name of the month from a given date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -130,7 +132,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Converts a character expression to a date expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -173,7 +177,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the current system date, which is controlled by the operating system, or creates a year 2000-compliant Date value.
+    </para>
             </entry>
           </row>
           <row>
@@ -216,7 +222,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the numeric day of the month for a given Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -345,7 +353,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns a character-string date in a yyyymmdd format from a specified Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -369,7 +379,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GoMonth(System.DateTime,System.Int32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GoMonth(XSharp.__Date,System.Int32)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -446,7 +456,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the number of the month for a given Date or DateTime expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -607,7 +619,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the year from the specified date or datetime expression.
+    </para>
             </entry>
           </row>
         </table>

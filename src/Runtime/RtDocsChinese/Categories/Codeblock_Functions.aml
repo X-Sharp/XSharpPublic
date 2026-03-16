@@ -70,13 +70,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbEval(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbEval(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      对符合指定范围和/或条件的每条记录评估代码块。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -119,7 +117,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Evaluates a character expression and returns the result.
+    </para>
             </entry>
           </row>
           <row>
@@ -233,13 +233,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SEval(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SEval(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      对字符串中的每个单个字符执行代码块。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -248,13 +246,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SEvalA(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SEvalA(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      对字符串中的每个单个字符执行代码块，并更改参数的内容以及返回值。
-    </para>
+              <para />
             </entry>
           </row>
           <row>

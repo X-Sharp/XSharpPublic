@@ -96,11 +96,11 @@
           </row>
           <row>
             <entry>
-              <para>XSharp.VO</para>
+              <para>XSharp.RT</para>
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MemCheckPtr(System.Void*,System.UInt32)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemCheckPtr</codeEntityReference>
               </para>
             </entry>
             <entry>

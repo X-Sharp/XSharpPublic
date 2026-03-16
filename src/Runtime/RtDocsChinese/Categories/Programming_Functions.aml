@@ -75,32 +75,6 @@
           </row>
           <row>
             <entry>
-              <para>XSharp.VFP</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions._cmdDirMake(System.String)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.VFP</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions._cmdDirRemove(System.String)</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
               <para>XSharp.RT</para>
             </entry>
             <entry>
@@ -127,19 +101,6 @@
               <para>
       返回指向用于调用应用程序的命令行的指针。
     </para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.Core</para>
-            </entry>
-            <entry>
-              <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions._GetInst</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
             </entry>
           </row>
           <row>
@@ -215,19 +176,6 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Send(System.Object,System.Reflection.MethodInfo,XSharp.__Usual[])</codeEntityReference>
-              </para>
-            </entry>
-            <entry>
-              <para />
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>XSharp.RT</para>
-            </entry>
-            <entry>
-              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._SequenceError(System.Exception)</codeEntityReference>
               </para>
             </entry>
@@ -274,11 +222,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AClass(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AClass(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -287,11 +235,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ADBObjects(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ADBObjects(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -343,11 +291,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ANetResources(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ANetResources(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -371,11 +319,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AStackInfo(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AStackInfo(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -416,7 +364,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether the value of an expression is inclusively between the values of two expressions of the same type.
+    </para>
             </entry>
           </row>
           <row>
@@ -485,11 +435,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.ClassCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.ClassCreate(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>Create a class dynamically.</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -498,11 +448,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.ClassDestroy(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.ClassDestroy(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>Remove the class object of class. </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -584,11 +534,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CompObj(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CompObj(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -612,13 +562,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.CreateInstance(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.CreateInstance(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      创建一个对象。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -627,11 +575,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CreateObject(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CreateObject(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>Creates an object from a class definition or an Automation-enabled application.</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -640,13 +588,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CreateObjectEx(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CreateObjectEx(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            Creates an instance of a registered COM object (such as a X# Automation server) on a remote computer.
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -702,7 +648,11 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Executes the parent class event or method of the same name from within a subclass.
+      For example, if you place DODEFAULT( ) in the Click event of a subclass, X# executes the Click event of the parent class. The scope resolution operator (::), unlike DODEFAULT( ), executes a parent class event or method of a different name.
+      You can place DODEFAULT( ) only within an event or method.
+    </para>
             </entry>
           </row>
           <row>
@@ -743,7 +693,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether an expression evaluates to empty.
+    </para>
             </entry>
           </row>
           <row>
@@ -913,7 +865,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Evaluates a character expression and returns the result.
+    </para>
             </entry>
           </row>
           <row>
@@ -953,13 +907,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ExecScript(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ExecScript(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            允许您在运行时从变量、表格和其他文本中执行多行代码。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -968,7 +920,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ExecScript(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ExecScript(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -981,13 +933,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ExecScriptFast(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ExecScriptFast(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            允许您在运行时从变量、表格和其他文本中执行多行代码。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -996,13 +946,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ExecScriptSlow(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ExecScriptSlow(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            允许您在运行时从变量、表格和其他文本中执行多行代码。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1026,11 +974,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FontMetric(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FontMetric(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1082,11 +1030,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetObject(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetObject(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1099,7 +1047,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the current value for a property or program code for an event or method at design time.
+    </para>
             </entry>
           </row>
           <row>
@@ -1138,13 +1088,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ICase(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ICase(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            Evaluates the results from a list of conditions (upto 100 pairs are supported).
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1153,11 +1101,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ImeStatus(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ImeStatus(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1185,7 +1133,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether an expression matches another expression in a set of expressions.
+    </para>
             </entry>
           </row>
           <row>
@@ -1209,11 +1159,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.InputBox(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.InputBox(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1286,7 +1236,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns one of two values depending on the value of a logical expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -1522,7 +1474,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether the leftmost character of the specified character expression is a digit (0 through 9).
+    </para>
             </entry>
           </row>
           <row>
@@ -1531,11 +1485,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsExclusive(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsExclusive(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1559,13 +1513,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsFlocked(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsFlocked(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            Returns the table lock status.
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1698,7 +1650,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Determines whether the leftmost character of the specified character expression is a lowercase alphabetic character.
+    </para>
             </entry>
           </row>
           <row>
@@ -1707,7 +1661,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.IsMemberVar(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.IsMemberVar(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1720,11 +1674,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsMemoFetched(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsMemoFetched(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1879,13 +1833,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsReadOnly(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsReadOnly(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            Determines whether a table or database is opened read-only.
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1894,13 +1846,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsRlocked(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsRlocked(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            Returns the record lock status.
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -1967,11 +1917,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsTransactable(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsTransactable(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2182,11 +2132,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LineNo(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LineNo(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2195,13 +2145,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.LoadResString(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.LoadResString(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            Look up an identifier in a string table and returns its corresponding string.
-            </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2210,11 +2158,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Lookup(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Lookup(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2242,7 +2190,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Evaluates a set of expressions and returns the expression with the maximum value.
+    </para>
             </entry>
           </row>
           <row>
@@ -2339,11 +2289,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.NewObject(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.NewObject(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2367,11 +2317,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Normalize(XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Normalize(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2410,13 +2360,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.NVL(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.NVL(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            从两个表达式中返回一个非空值。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2599,13 +2547,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Program(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Program(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            返回指定程序级别的程序名称、当前执行程序的名称、当前程序级别，或发生错误时正在执行的程序名称。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2644,11 +2590,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RaiseEvent(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RaiseEvent(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2728,11 +2674,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RgbScheme(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RgbScheme(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2741,11 +2687,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Scheme(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Scheme(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2784,13 +2730,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Sys(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Sys(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            返回系统信息或设置其行为。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2844,13 +2788,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TextMerge(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TextMerge(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-            提供字符表达式的评估。
-        </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -2891,7 +2833,10 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the data type of an expression.
+      VARTYPE( ) is similar to the TYPE( ) function, but VARTYPE( ) is faster and does not require quotation marks ("") to enclose the specified expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -3009,7 +2954,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns information about the X# version you are using.
+    </para>
             </entry>
           </row>
           <row>

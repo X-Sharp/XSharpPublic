@@ -102,7 +102,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the last modification time for a file.
+    </para>
             </entry>
           </row>
           <row>
@@ -291,7 +293,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Returns the current system time in 24-hour, eight-character string (hh:mm:ss) format.
+    </para>
             </entry>
           </row>
           <row>

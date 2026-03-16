@@ -70,13 +70,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ACopy(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ACopy(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      将元素从一个数组复制到另一个数组。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -89,7 +87,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Copies elements from one array to another array.
+    </para>
             </entry>
           </row>
           <row>
@@ -154,16 +154,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ADir(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ADir(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      用目录信息填充一系列数组。
-      注意：
-      ADir() 是一个兼容性函数，因此不推荐使用。
-      它被 Directory() 函数取代，后者将所有文件信息返回在一个多维数组中。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -176,7 +171,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Places information about files into an array and then returns the number of files.
+    </para>
             </entry>
           </row>
           <row>
@@ -245,16 +242,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AFields(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AFields(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      用当前数据库文件的结构填充数组。
-      注意：
-      AFields() 是一个兼容性函数，因此不推荐使用。
-      它已被 DBStruct() 取代，后者不需要在调用前存在任何数组，并返回一个包含当前数据库文件结构的多维数组。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -550,7 +542,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Searches an array for an element containing the same data and data type as an expression.
+    </para>
             </entry>
           </row>
           <row>
@@ -651,7 +645,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Sorts elements in an array in ascending or descending order.
+    </para>
             </entry>
           </row>
           <row>
@@ -703,11 +699,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ATagInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ATagInfo(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>-- todo --</para>
+              <para />
             </entry>
           </row>
           <row>
@@ -759,13 +755,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Harbour.Functions.Hb_ADel(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Harbour.Functions.Hb_ADel(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      从数组中删除一个元素，并且可以调整数组的长度。
-    </para>
+              <para />
             </entry>
           </row>
           <row>
@@ -774,13 +768,11 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Harbour.Functions.Hb_AIns(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Harbour.Functions.Hb_AIns(XSharp.__Usual[])</codeEntityReference>
               </para>
             </entry>
             <entry>
-              <para>
-      在数组的特定位置插入一个值，并且可以增加数组的长度。
-    </para>
+              <para />
             </entry>
           </row>
           <row>

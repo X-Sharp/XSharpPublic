@@ -884,7 +884,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            返回一个整数，0到4，表示两个字符表达式之间的相对语音差异。
+        </para>
             </entry>
           </row>
           <row>
@@ -1341,7 +1343,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            确定字符表达式中的第一个字符是否为大写字母。
+        </para>
             </entry>
           </row>
           <row>
@@ -2814,7 +2818,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            在单字节、双字节、UNICODE 和特定区域表示之间转换字符表达式。
+        </para>
             </entry>
           </row>
           <row>
@@ -2842,7 +2848,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            在两个分隔符之间检索字符串。
+        </para>
             </entry>
           </row>
           <row>

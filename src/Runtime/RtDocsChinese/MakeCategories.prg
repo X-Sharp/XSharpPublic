@@ -20,14 +20,14 @@ FUNCTION Start AS VOID
     // in the doc file
     var base := "E:\XSharp\Dev\"
     gsBinPath    := base+"Artifacts\DocChinese\net46\"
-    gsDocPath := base+"src\Runtime\RtDocs\"
+    gsDocPath := base+"src\Runtime\RtDocsChinese\"
     gsCatPath := gsDOcPath+"Categories\"
     documents := Dictionary<STRING, XmlDocument>{StringComparer.OrdinalIgnoreCase}
     TRY
-        CreateClassList()
-        CreateClassSectionFiles()
-        CreateFunctionList()
-        CreateFunctionSectionFiles()
+        //CreateClassList()
+        //CreateClassSectionFiles()
+        //CreateFunctionList()
+        //CreateFunctionSectionFiles()
         WriteFunctionTopics()
         WriteClassTopics()
     CATCH e AS Exception

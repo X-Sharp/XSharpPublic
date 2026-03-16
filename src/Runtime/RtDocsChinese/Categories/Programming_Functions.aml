@@ -269,7 +269,11 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            创建一个数组，包含具有 Windows 版本资源的文件（如 .exe、.dll 和 .fll 文件）或在 X# 中创建的自动化服务器的信息。
+            对于 X# 自动化服务器要具有 Windows 版本资源，您必须在 EXE 版本对话框中至少为一个项目指定一个值。
+            有关更多信息，请参阅 EXE 版本对话框。
+        </para>
             </entry>
           </row>
           <row>
@@ -282,7 +286,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            将对象的属性、过程和成员对象的名称放入变量数组中。
+        </para>
             </entry>
           </row>
           <row>
@@ -336,7 +342,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            将数据会话的表别名和工作区放入变量数组中。
+        </para>
             </entry>
           </row>
           <row>
@@ -635,7 +643,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            返回一个整数，0到4，表示两个字符表达式之间的相对语音差异。
+        </para>
             </entry>
           </row>
           <row>
@@ -1949,7 +1959,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            确定字符表达式中的第一个字符是否为大写字母。
+        </para>
             </entry>
           </row>
           <row>
@@ -2924,9 +2936,7 @@
             <entry>
               <para>
             返回表达式的数据类型。
-            VARTYPE( )类似于TYPE( )函数，但VARTYPE( )更快，且不需要引号
-                来包围要返回数据类型的表达式。
-            </para>
+        </para>
             </entry>
           </row>
           <row>

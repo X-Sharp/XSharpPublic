@@ -1391,7 +1391,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            在单字节、双字节、UNICODE 和特定区域表示之间转换字符表达式。
+        </para>
             </entry>
           </row>
           <row>

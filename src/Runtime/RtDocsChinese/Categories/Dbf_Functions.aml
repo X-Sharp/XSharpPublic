@@ -98,7 +98,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            将数据会话的表别名和工作区放入变量数组中。
+        </para>
             </entry>
           </row>
           <row>

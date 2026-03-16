@@ -222,7 +222,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            返回自午夜以来经过的秒数。
+        </para>
             </entry>
           </row>
           <row>

@@ -59,7 +59,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            判断表达式是否为空。
+        </para>
             </entry>
           </row>
           <row>

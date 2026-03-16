@@ -365,6 +365,7 @@ XSharp.RT.Debugger.DLL,XSharp.Debugger,MemVarsWindow,Application,
 XSharp.RT.Debugger.DLL,XSharp.Debugger,SettingsWindow,Application,
 XSharp.RT.Debugger.DLL,XSharp.Debugger,VariablesWindow,Application,
 XSharp.RT.Debugger.DLL,XSharp.Debugger,WorkareasWindow,Application,
+XSharp.Data.DLL,XSharp.Harbour,VFPErrorMessage
 XSharp.Core.DLL,XSharp.Internal,ActualTypeAttribute,Attributes,
 XSharp.Core.DLL,XSharp.Internal,AllowLateBindingAttribute,Attributes,
 XSharp.Core.DLL,XSharp.Internal,ClassLibraryAttribute,Attributes,
@@ -513,11 +514,13 @@ XSharp.VFP.DLL,XSharp.VFP,FoxEngine,,
 XSharp.VFP.DLL,XSharp.VFP,FoxFunctionCategory,,
 XSharp.VFP.DLL,XSharp.VFP,FoxFunctionStatus,,
 XSharp.VFP.DLL,XSharp.VFP,FoxProFunctionAttribute,,
+XSharp.VFP.DLL,XSharp.VFP,IVfpUIProvider
 XSharp.VFP.DLL,XSharp.VFP,NameValuePair,Application,
 XSharp.VFP.DLL,XSharp.VFP,PropertyContainer,Application,
 XSharp.VFP.DLL,XSharp.VFP,PropertyDescriptor,Application,
 XSharp.VFP.DLL,XSharp.VFP,PropertyNotFoundException,VFP,Error
 XSharp.Data.DLL,XSharp.VFP,SqlWhereType,SQL,
+XSharp.VFP.DLL,XSharp.VFP,VfpUIService
 XSharp.VORDDClasses.DLL,XSharp.VO.SDK,AdsSQLServer,ADS,
 XSharp.VOSystemClasses.DLL,XSharp.VO.SDK,Concurrency,Data,
 XSharp.VOConsoleClasses.DLL,XSharp.VO.SDK,Console,Display,

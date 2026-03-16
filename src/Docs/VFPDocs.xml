@@ -761,7 +761,7 @@
             </code>
         </example>
     </astackinfo>
-    
+
     <at>
         <summary>
             Searches a character expression for the occurrence of another character expression.
@@ -7469,7 +7469,7 @@
             By using <b>SetResultSet( )</b> to mark a cursor or table opened by the X# OLE DB Provider, you can retrieve a rowset created from the
             table or cursor from a database container (DBC) stored procedure. When the OLE DB Provider completes command execution, it creates a
             rowset from the marked cursor, if it exists, then clears the marker flag from the cursor.
-            In this scenario, the OLE DB Provider disregards all other return values. For example, if a stored procedure contains a <b>RETURN</b> 
+            In this scenario, the OLE DB Provider disregards all other return values. For example, if a stored procedure contains a <b>RETURN</b>
             Value statement and a marked cursor, the OLE DB Provider does not return the value. Instead, it returns the marked cursor as a rowset
             to the calling application. When the rowset closes, the cursor also closes.
             However, even though the OLE DB Provider disregards all return values when a marked cursor exists, you can use <b>SetResultSet( )</b>
@@ -8404,11 +8404,13 @@
     <vartype>
         <summary>
             Returns the data type of an expression.
-            <note name="Note">
-                <b>VARTYPE( )</b> is similar to the <b>TYPE( )</b> function, but <b>VARTYPE( )</b> is faster and does not require quotation
-                marks to enclose the expression for which the data type is returned.
-            </note>
         </summary>
+      <remarks>
+        <note name="Note">
+          <b>VARTYPE( )</b> is similar to the <b>TYPE( )</b> function, but <b>VARTYPE( )</b> is faster and does not require quotation
+          marks to enclose the expression for which the data type is returned.
+        </note>
+      </remarks>
         <param name="eExpression">
             Specifies the expression for which the data type is returned. <b>VARTYPE( )</b> returns a single character
             indicating the data type of the expression.<br/>

@@ -157,7 +157,7 @@ ACCESS DbStructure
 
 
     IF nPos > 0
-    xRet := SELF:FIELDGET(nPos)
+    xRet := SELF:FieldGet(nPos)
     ELSE
     xRet := SUPER:Name
     ENDIF

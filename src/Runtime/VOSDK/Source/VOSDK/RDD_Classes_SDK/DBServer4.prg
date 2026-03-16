@@ -330,7 +330,7 @@ METHOD Refresh() CLIPPER
                 IF aOriginalBuffer[BUFFER_IS_BLOB, n]
                     uInfo := aOriginalBuffer[BUFFER_VALUE, n]
                     IF ! IsNil( uInfo ) .AND. ! IsArray( uInfo )
-                        SELF:FIELDPUT( n, uInfo )
+                        SELF:FieldPut( n, uInfo )
                     ENDIF
                 ENDIF
             NEXT  // n
@@ -580,7 +580,7 @@ METHOD Replace( acbExpression, aFieldList, cbForBlock, cbWhileBlock, uScope )
             // RvdH 080212 acbExpr can be a codeblock , object or a 'normal' value
             // Therefore use the same method as above
             //  FOR w := 1 UPTO wExprCount
-            //     SELF:FIELDPUT( aFieldNames[w], Eval( acbExpr[w] ) )
+            //     SELF:FieldPut( aFieldNames[w], Eval( acbExpr[w] ) )
             //  NEXT
             //lRetCode := TRUE
             __IterateForFieldAssign( acbExpr, aFieldNames )

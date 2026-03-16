@@ -5787,7 +5787,7 @@
       An ExposeEvent is also triggered by calling Repaint() or Update(); you should not call Repaint() or Update() during the Expose().
     </remarks>
   </DataWindow.Expose>
-  <DataWindow.FIELDGET>
+  <DataWindow.FieldGet>
     <summary>
       Retrieve the current value of the indicated control in this data window (and the data server field associated with this control, if any).
     </summary>
@@ -5798,8 +5798,8 @@
     <remarks>
       In data windows, controls (such as edit controls and check boxes) can be linked to the fields in the connected data server. Since the name of the control and the field are the same, FieldGet() can also be used to retrieve a control that is not connected to a server.
     </remarks>
-  </DataWindow.FIELDGET>
-  <DataWindow.FIELDPUT>
+  </DataWindow.FieldGet>
+  <DataWindow.FieldPut>
     <summary>
       Set the value of the control in this data window (and the data server field associated with this control, if any).
     </summary>
@@ -5812,7 +5812,7 @@
       When executed successfully, the data server that received the updated value sends a NotifyFieldChange message to all of its clients, including this data window.
       In data windows, controls (such as edit controls and check boxes) can be linked to the fields in the connected data server.
     </remarks>
-  </DataWindow.FIELDPUT>
+  </DataWindow.FieldPut>
   <DataWindow.FocusChange>
     <summary>
       Provide a method that is invoked when the input focus changes from the current data window to another window (or vice versa).
@@ -6318,7 +6318,7 @@
     <summary>
       Move to the previous record (identical to Skip(-1)).
     </summary>
-    <include file="Gui.xml" path="doc/ReturnsLogic/*" />  
+    <include file="Gui.xml" path="doc/ReturnsLogic/*" />
   </DataWindow.SkipPrevious>
   <DataWindow.Status>
     <summary>
@@ -13555,18 +13555,18 @@
         LOCAL cCoachName	 AS string
         LOCAL oItem 		AS ListViewItem
         DO WHILE !SELF:oCoachesServer:eof
-        cCoachName	:= 	Trim( SELF:oCoachesServer:FIELDGET( #LastName ) ) ;
+        cCoachName	:= 	Trim( SELF:oCoachesServer:FieldGet( #LastName ) ) ;
         + ", " + ;
-        Trim( SELF:oCoachesServer:FIELDGET( #FirstName ) ) + " " + ;
-        SELF:oCoachesServer:FIELDGET( #MiddleInit )
-        oItem:SetText( SELF:oCoachesServer:FIELDGET( #Season ), #cSeason )
+        Trim( SELF:oCoachesServer:FieldGet( #FirstName ) ) + " " + ;
+        SELF:oCoachesServer:FieldGet( #MiddleInit )
+        oItem:SetText( SELF:oCoachesServer:FieldGet( #Season ), #cSeason )
         oItem:SetValue( SELF:oCoachesServer:RecNo, #cCoachName )
         oItem:SetText( CoachName, #cCoachName )
-        oItem:SetText( SELF:oCoachesServer:FIELDGET( #Gender ), #cGender )
-        oItem:SetText( SELF:oCoachesServer:FIELDGET( #ClubCode ), #cClubCode )
-        oItem:SetText( SELF:oCoachesServer:FIELDGET( #TeamNr ), #cTeamNr )
-        oItem:SetText( SELF:oCoachesServer:FIELDGET( #HomePhone ),	#cHomePhone )
-        oItem:SetText( SELF:oCoachesServer:FIELDGET( #WorkPhone ),	#cWorkPhone )
+        oItem:SetText( SELF:oCoachesServer:FieldGet( #Gender ), #cGender )
+        oItem:SetText( SELF:oCoachesServer:FieldGet( #ClubCode ), #cClubCode )
+        oItem:SetText( SELF:oCoachesServer:FieldGet( #TeamNr ), #cTeamNr )
+        oItem:SetText( SELF:oCoachesServer:FieldGet( #HomePhone ),	#cHomePhone )
+        oItem:SetText( SELF:oCoachesServer:FieldGet( #WorkPhone ),	#cWorkPhone )
       </code><code language="X#">
         SELF:oDClvCoaches:AddItem( oItem )
         SELF:oCoachesServer:skip()

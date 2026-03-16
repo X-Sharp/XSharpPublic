@@ -11,14 +11,14 @@ CLASS SQLListColumns INHERIT SQLCatalogQuery
 
 
 /// <include file="SQL.xml" path="doc/SQLListColumns.Execute/*" />
-METHOD Execute  () 
+METHOD Execute  ()
     LOCAL psz1, psz2, psz3, psz4 AS PSZ
     LOCAL   nRet    AS INT
 
 
-    #IFDEF __DEBUG__
-        __SQLOutputDebug("** SQLListColumns:Execute()")
-    #ENDIF
+#IFDEF __DEBUG__
+    __SQLOutputDebug("** SQLListColumns:Execute()")
+#ENDIF
 
 
     IF oStmt:StatementHandle = SQL_NULL_HSTMT
@@ -40,18 +40,18 @@ METHOD Execute  ()
     ENDIF
     // get the list of columns...
     nRet := SQLColumns( oStmt:StatementHandle,   ;
-                        psz1, _SLen(SELF:Qualifier),    ;
-                        psz2, _SLen(SELF:Owner),        ;
-                        psz3, _SLen(SELF:TableName),    ;
-                        psz4, _SLen(SELF:ColName)               )
+        psz1, _SLen(SELF:Qualifier),    ;
+        psz2, _SLen(SELF:Owner),        ;
+        psz3, _SLen(SELF:TableName),    ;
+        psz4, _SLen(SELF:ColName)               )
 
 
     IF nRet != SQL_SUCCESS
         oStmt:ErrInfo := SQLErrorInfo{  SELF,           ;
-                                        #Init,          ;
-                                        oStmt:__Connection:EnvHandle,   ;
-                                        oStmt:__Connection:ConnHandle,      ;
-                                        oStmt:StatementHandle }
+            __FUNCTION__,          ;
+            oStmt:__Connection:EnvHandle,   ;
+            oStmt:__Connection:ConnHandle,      ;
+            oStmt:StatementHandle }
 
 
         RETURN FALSE
@@ -62,18 +62,18 @@ METHOD Execute  ()
 
 
 /// <include file="SQL.xml" path="doc/SQLListColumns.ctor/*" />
-CONSTRUCTOR     ( cQualifier, cOwner, cTableName, cColName, oSQLConnection) 
+CONSTRUCTOR     ( cQualifier, cOwner, cTableName, cColName, oSQLConnection)
 
 
     SUPER(oSQLConnection)
 
 
-    #IFDEF __DEBUG__
-        __SQLOutputDebug("** SQLListColumns:Init("+AsString(cQualifier)+","+   ;
-                            AsString(cOwner) + "," +          ;
-                            AsString(cTableName) + "," +      ;
-                            AsString(cColName)+")" )
-    #ENDIF
+#IFDEF __DEBUG__
+    __SQLOutputDebug("** SQLListColumns:Init("+AsString(cQualifier)+","+   ;
+        AsString(cOwner) + "," +          ;
+        AsString(cTableName) + "," +      ;
+        AsString(cColName)+")" )
+#ENDIF
 
 
     IF IsString(cQualifier)
@@ -107,7 +107,7 @@ CONSTRUCTOR     ( cQualifier, cOwner, cTableName, cColName, oSQLConnection)
     SELF:Execute()
 
 
-    RETURN 
+    RETURN
 
 
 

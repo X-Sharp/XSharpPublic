@@ -2596,7 +2596,7 @@ CLASS DataColumn INHERIT VObject
 		IF lChanged
 			IF (oServer != NULL_OBJECT)
 				IF lBaseServer // if not subclassing
-					oServer:FIELDPUT(iDataField,SELF:Value) //use FieldPut
+					oServer:FieldPut(iDataField,SELF:Value) //use FieldPut
 				ELSEIF symDataField!=NULL_SYMBOL
 					IVarPut(oServer, symDataField ,SELF:Value)
 				ELSE
@@ -2643,7 +2643,7 @@ CLASS DataColumn INHERIT VObject
 
 	  IF oServer IS DataServer
 		 IF lBaseServer // if not subclassing
-			SELF:Value := oServer:FIELDGET(symDataField) //use fieldget
+			SELF:Value := oServer:FieldGet(symDataField) //use fieldget
 		 ELSEIF symDataField != NULL_SYMBOL
 			SELF:Value:=IVarGet(oServer, symDataField)
 		 ELSE

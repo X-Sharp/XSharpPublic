@@ -48,11 +48,11 @@
         <returns>成功时返回 TRUE。</returns>
     </SQLCatalogQuery.Skip>
 
-    <SQLCatalogQuery.FIELDPUT>
+    <SQLCatalogQuery.FieldPut>
         <summary>
             此方法用于覆盖从 SQLSelect 类继承的功能，因为它不适用于 SQLCatalogQuery；因此，它会生成错误并返回 FALSE。
         </summary>
-    </SQLCatalogQuery.FIELDPUT>
+    </SQLCatalogQuery.FieldPut>
 
     <SQLCatalogQuery.TableName>
         <summary>
@@ -1892,7 +1892,7 @@
         </remarks>
     </SQLSelect.Fetch>
 
-    <SQLSelect.FIELDGET>
+    <SQLSelect.FieldGet>
         <summary>
             检索指定列的内容。
         </summary>
@@ -1975,7 +1975,7 @@
                 </item>
             </list>
         </returns>
-    </SQLSelect.FIELDGET>
+    </SQLSelect.FieldGet>
 
     <SQLSelect.FieldGetFormatted>
         <summary>
@@ -2068,7 +2068,7 @@
         </returns>
     </SQLSelect.FieldPos>
 
-    <SQLSelect.FIELDPUT>
+    <SQLSelect.FieldPut>
         <summary>
             为数据服务器中的列分配一个值。
         </summary>
@@ -2081,7 +2081,7 @@
         <remarks>
             如果成功，将发送 NotifyRecordChange 消息。
         </remarks>
-    </SQLSelect.FIELDPUT>
+    </SQLSelect.FieldPut>
 
     <SQLSelect.FieldSpec>
         <summary>

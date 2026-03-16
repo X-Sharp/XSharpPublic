@@ -1493,7 +1493,7 @@ PARTIAL CLASS DbServer
 
 
     /// <include file="Rdd.xml" path="doc/DbServer.FieldGet/*" />
-    METHOD FIELDGET( uField )
+    METHOD FieldGet( uField )
         //SE-060601
         LOCAL uRetVal AS USUAL
         LOCAL oError AS USUAL
@@ -1836,7 +1836,7 @@ PARTIAL CLASS DbServer
 
 
     /// <include file="Rdd.xml" path="doc/DbServer.FieldPut/*" />
-    METHOD FIELDPUT( uField, uValue )
+    METHOD FieldPut( uField, uValue )
         //SE-080608 Updated error handling
         LOCAL wPos AS DWORD
         LOCAL symFieldName AS SYMBOL

@@ -312,7 +312,7 @@ CLASS DataBrowser INHERIT Control
                     IF oEdit != NULL_OBJECT
                         oCellEdit := oEdit
                         oEdit:AllowInPlace :=  FALSE
-                        oDBStg := oDataServer:FIELDGET(oCol:NameSym)
+                        oDBStg := oDataServer:FieldGet(oCol:NameSym)
                         IF IsInstanceOfUsual(oDBStg, #OLEDBStorage)
                             oEdit:CreateFromDBStorage(oDBStg)
                             oEdit:Activate()
@@ -3313,7 +3313,7 @@ CLASS DataColumn INHERIT VObject
         IF lChanged
             IF (oServer != NULL_OBJECT)
                 IF lBaseServer // if not subclassing
-                    oServer:FIELDPUT(iDataField,SELF:Value) //use FieldPut
+                    oServer:FieldPut(iDataField,SELF:Value) //use FieldPut
                 ELSEIF symDataField!=NULL_SYMBOL
                     IVarPut(oServer, symDataField ,SELF:Value)
                 ELSE
@@ -3369,7 +3369,7 @@ CLASS DataColumn INHERIT VObject
         //PP-030828 Strong typing
         IF oServer != NULL
             IF lBaseServer // if not subclassing
-                SELF:Value := oServer:FIELDGET(symDataField) //use fieldget
+                SELF:Value := oServer:FieldGet(symDataField) //use fieldget
             ELSEIF symDataField != NULL_SYMBOL
                 SELF:Value := IVarGet(oServer, symDataField)
             ELSE

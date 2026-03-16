@@ -1455,7 +1455,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetStringW(System.IntPtr,System.String,System.Char[],System.UInt32@,System.UInt16)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetStringW(System.IntPtr,System.UInt32,System.Char[],System.UInt32@,System.UInt16)</codeEntityReference>
               </para>
             </entry>
             <entry>

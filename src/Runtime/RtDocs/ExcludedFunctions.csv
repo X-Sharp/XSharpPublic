@@ -22,6 +22,7 @@ XSharp.RT.DLL,_AllocFieldNames
 XSharp.RT.DLL,_FreeFieldNames
 XSharp.RT.DLL,_NGet
 XSharp.RT.DLL,_NPut
+XSharp.RT.DLL;_Send
 XSharp.RT.DLL,_SendClassParams
 XSharp.RT.DLL,DoEvents
 XSharp.RT.DLL,MyDalFloatVal
@@ -33,3 +34,7 @@ XSharp.VO.DLL,GetNatDllHandle
 VOSQLClasses.DLL,InitGlobals
 XSharp.RT.DLL,_GetMRandID
 VOGUIClasses.DLL,GetThemeColor
+XSharp.VFP.DLL;_cmdDirChange
+XSharp.VFP.DLL;_cmdDirMake
+XSharp.VFP.DLL;_cmdDirRemove
+XSharp.VFP.DLL;MkDir

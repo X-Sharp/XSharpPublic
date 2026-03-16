@@ -263,6 +263,21 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AFields(XSharp.__Array,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Retrieves and stores information about the structure of the table in a specified work area, specified by a table alias, or in the currently selected work area in an array and returns the number of fields in the table.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.RT</para>
             </entry>
             <entry>
@@ -346,7 +361,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            Copies each line in a character expression or memo field to a corresponding row in an array.
+        </para>
             </entry>
           </row>
           <row>
@@ -758,7 +775,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            Places table aliases and work areas for a data session into a variable array.
+        </para>
             </entry>
           </row>
           <row>

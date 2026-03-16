@@ -24,10 +24,10 @@ FUNCTION Start AS VOID
     gsCatPath := gsDOcPath+"Categories\"
     documents := Dictionary<STRING, XmlDocument>{StringComparer.OrdinalIgnoreCase}
     TRY
-        //CreateClassList()
-        //CreateClassSectionFiles()
-        //CreateFunctionList()
-        //CreateFunctionSectionFiles()
+        CreateClassList()
+        CreateClassSectionFiles()
+        CreateFunctionList()
+        CreateFunctionSectionFiles()
         WriteFunctionTopics()
         WriteClassTopics()
     CATCH e AS Exception
@@ -521,7 +521,7 @@ PROPERTY Assembly AS STRING AUTO
 PROPERTY Name AS STRING AUTO
 PROPERTY Description AS STRING AUTO   := ""
 PROPERTY Categories AS STRING[] AUTO  := STRING[]{0}
-PROPERTY Key AS STRING GET Name:ToLower():PadRight(25) +":"+Assembly:ToLower()
+PROPERTY Key AS STRING GET Name:PadRight(25) +":"+Assembly:ToLower()
 PROPERTY Overloads AS MemberInfo[] AUTO
 PROPERTY Signature AS STRING
     GET

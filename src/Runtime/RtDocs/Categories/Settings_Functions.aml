@@ -89,7 +89,7 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>-- todo --</para>
             </entry>
           </row>
           <row>
@@ -1204,12 +1204,12 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetSpace</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetSpace(System.Boolean)</codeEntityReference>
               </para>
             </entry>
             <entry>
               <para>
-            Return the setting that determines whether a space is displayed between fields or expressions when you use the ? or ?? command.
+            Change the setting that determines whether a space is displayed between fields or expressions when you use the ? or ?? command.
             </para>
             </entry>
           </row>

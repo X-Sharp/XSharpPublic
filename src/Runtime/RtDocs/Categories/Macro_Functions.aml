@@ -44,7 +44,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            Enables you to run multiple lines of code from variables, tables, and other text at runtime.
+        </para>
             </entry>
           </row>
           <row>

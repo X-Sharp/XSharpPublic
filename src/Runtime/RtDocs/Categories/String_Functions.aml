@@ -167,7 +167,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Remove leading and trailing spaces from a string.
+    </para>
             </entry>
           </row>
           <row>
@@ -483,7 +485,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AtCLine(System.String,System.String)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ATCLine(System.String,System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -528,7 +530,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AtLine(System.String,System.String)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ATLine(System.String,System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -601,7 +603,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CDow(XSharp.__Date)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CDoW(XSharp.__Date)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -890,7 +892,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            Returns an integer, 0 through 4, which represents the relative phonetic difference between two character expressions.
+        </para>
             </entry>
           </row>
           <row>
@@ -899,7 +903,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DMY(XSharp.__Date)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DMY(XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -929,7 +933,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dtoc(XSharp.__Date)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToC(XSharp.__Date)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -1349,7 +1353,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            Determines whether the first character in a character expression is an uppercase alphabetic character.
+        </para>
             </entry>
           </row>
           <row>
@@ -2337,6 +2343,21 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Proper(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+      Returns from a character expression a string capitalized as appropriate for proper names.
+    </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.Core</para>
             </entry>
             <entry>
@@ -2684,7 +2705,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Soundex(System.String)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SoundEx(System.String)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -2838,7 +2859,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            Converts character expressions between single-byte, double-byte, UNICODE, and locale-specific representations.
+        </para>
             </entry>
           </row>
           <row>
@@ -2866,7 +2889,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+            Retrieves a string between two delimiters.
+        </para>
             </entry>
           </row>
           <row>
@@ -3128,7 +3153,7 @@
             </entry>
             <entry>
               <para>
-                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Substr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SubStr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
               </para>
             </entry>
             <entry>
@@ -3253,7 +3278,9 @@
               </para>
             </entry>
             <entry>
-              <para />
+              <para>
+      Remove trailing spaces from a string.
+    </para>
             </entry>
           </row>
           <row>

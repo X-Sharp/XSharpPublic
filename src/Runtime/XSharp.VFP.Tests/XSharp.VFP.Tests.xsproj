@@ -107,6 +107,7 @@
     <Compile Include="OtherTests.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="StringTests.prg" />
+    <Compile Include="WrappedStubsTests.prg" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

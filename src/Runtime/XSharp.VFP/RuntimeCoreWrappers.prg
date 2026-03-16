@@ -30,9 +30,35 @@ FUNCTION GetEnv(cEnvVariable AS STRING) AS STRING
     RETURN XSharp.Core.Functions.GetEnv(cEnvVariable)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/version/*" />
-[FoxProFunction("VERSION", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Low)];
-FUNCTION Version(nType := 0 AS INT) AS STRING
-    THROW NotImplementedException{}
+[FoxProFunction("VERSION", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
+FUNCTION Version(nType := 0 AS INT) AS USUAL
+    LOCAL cVer AS STRING
+    cVer := __VERSION__
+
+    SWITCH nType
+        CASE 1
+            RETURN "XSharp " + cVer + " for " + XSharp.Core.Functions.OS() + "[" + DateTime.Now:ToString("MMM dd yyyy") + "]"
+        CASE 2
+            // 0 = Runtime, 1 = Standard, 2 = Professional
+            RETURN 2
+        CASE 3
+            // 00 = English
+            RETURN "00"
+        CASE 4
+            // Format MM.mm.0000.NNNN
+            RETURN cVer
+        CASE 5
+            // Major version. Ej: X# 3.0 -> 300
+            LOCAL nMajor AS INT
+            IF cVer:Length > 0 .AND. Char.IsDigit(cVer[0])
+                nMajor := Int32.Parse(cVer[0]:ToString())
+            ELSE
+                nMajor := 3
+            ENDIF
+            RETURN nMajor * 100
+    END SWITCH
+
+    RETURN "XSharp " + cVer + " for " + XSharp.Core.Functions.OS()
 
 /// <include file="VfpDocs.xml" path="Runtimefunctions/seconds/*" />
 [FoxProFunction("SECONDS", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
@@ -160,7 +186,7 @@ FUNCTION FSize(cFieldName AS STRING, eWorkArea := NIL AS USUAL) AS INT
     RETURN 0
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fwrite/*" />
-[FoxProFunction("FWRITE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
+[FoxProFunction("FWRITE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION FWrite(nFileHandle AS INT64, cExpression AS STRING, nCharactersWritten := 0 AS INT) AS INT
     IF nCharactersWritten <= 0
         nCharactersWritten := (INT) SLen(cExpression)
@@ -168,14 +194,77 @@ FUNCTION FWrite(nFileHandle AS INT64, cExpression AS STRING, nCharactersWritten 
     RETURN (INT) XSharp.Core.Functions.FWrite(nFileHandle, cExpression, (DWORD) nCharactersWritten)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/adir/*" />
-[FoxProFunction("ADIR", FoxFunctionCategory.Array, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.High)];
+[FoxProFunction("ADIR", FoxFunctionCategory.Array, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION ADir(ArrayName AS ARRAY, cFileSkeleton := "" AS STRING, cAttribute := "" AS STRING, nFlag := 0 AS INT) AS INT
-    THROW NotImplementedException{}
+    LOCAL aDirInfo AS ARRAY
+    LOCAL nFiles AS DWORD
+    LOCAL i AS DWORD
+
+    IF String.IsNullOrEmpty(cFileSkeleton)
+        cFileSkeleton := "*.*"
+    ENDIF
+
+    aDirInfo := XSharp.RT.Functions.Directory(cFileSkeleton, cAttribute)
+    nFiles := XSharp.RT.Functions.ALen(aDirInfo)
+
+    IF nFiles > 0
+        IF ArrayName IS __FoxArray VAR foxArray
+            foxArray:ReDim(nFiles, 5) // (name, size, date, time, attributes)
+            FOR i := 1 TO nFiles
+                LOCAL aFile AS ARRAY
+                aFile := (ARRAY) aDirInfo[i]
+
+                // nFlag 0 = UPPERCASE (Default in VFP)
+                IF nFlag == 0
+                    foxArray[(INT)i, 1] := ((STRING)aFile[1]):ToUpper()
+                ELSE
+                    foxArray[(INT)i, 1] := (STRING)aFile[1]
+                ENDIF
+                foxArray[(INT)i, 2] := (INT)aFile[2]
+                foxArray[(INT)i, 3] := (DATE)aFile[3]
+                foxArray[(INT)i, 4] := (STRING)aFile[4]
+                foxArray[(INT)i, 5] := (STRING)aFile[5]
+            NEXT
+        ELSE
+            XSharp.RT.Functions.ASize(ArrayName, nFiles)
+            FOR i := 1 TO nFiles
+                LOCAL aFile AS ARRAY
+                aFile := (ARRAY) aDirInfo[i]
+                IF nFlag == 0
+                    aFile[1] := ((STRING)aFile[1]):ToUpper()
+                ENDIF
+                ArrayName[i] := aFile
+            NEXT
+        ENDIF
+    ELSE
+        IF ArrayName IS __FoxArray VAR foxArray
+            foxArray:ReDim(0, 0)
+        ELSE
+            XSharp.RT.Functions.ASize(ArrayName, 0)
+        ENDIF
+    ENDIF
+
+    RETURN (INT) nFiles
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/diskspace/*" />
-[FoxProFunction("DISKSPACE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Stub, FoxCriticality.Low)];
+[FoxProFunction("DISKSPACE", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];
 FUNCTION DiskSpace(cDriveName := "" AS STRING, nSpaceType := 1 AS INT) AS REAL8
-    THROW NotImplementedException{}
+    LOCAL nResult AS INT64
+
+    // 1 = Total amount of space on the hard disk drive.
+    // 2 = Total amount of free space on the hard disk drive. (Default)
+    // 3 = Total amount of free space available to the user associated with the calling thread.
+    SWITCH nSpaceType
+        CASE 1 // Total size
+            nResult := XSharp.Core.Functions.DiskSpace(cDriveName)
+        CASE 2 // Total free space (Default)
+        CASE 3 // User free space (we map it to the total free space for now)
+        OTHERWISE
+            nResult := XSharp.Core.Functions.DiskFree(cDriveName)
+    END SWITCH
+
+    RETURN (REAL8) nResult
+
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/curdir/*" />
 [FoxProFunction("CURDIR", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];

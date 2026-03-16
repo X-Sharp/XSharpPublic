@@ -7,37 +7,37 @@ CLASS HyperLabel
 
 
 /// <include file="System.xml" path="doc/HyperLabel.AsString/*" />
-METHOD AsString( )                              
+METHOD AsString( )
 	RETURN SELF:Caption
 
 
 /// <include file="System.xml" path="doc/HyperLabel.Caption/*" />
-ACCESS Caption                                	
+ACCESS Caption
 	RETURN rCaption
 
 
 /// <include file="System.xml" path="doc/HyperLabel.Caption/*" />
-ASSIGN Caption(u)     
+ASSIGN Caption(u)
 	SELF:rCaption := u
-	RETURN 
+	RETURN
 
 
 /// <include file="System.xml" path="doc/HyperLabel.Description/*" />
-ACCESS Description                                
+ACCESS Description
 	RETURN rDescription
 
 
 /// <include file="System.xml" path="doc/HyperLabel.Description/*" />
-ASSIGN Description(u) 
+ASSIGN Description(u)
 	SELF:rDescription  := u
-	RETURN 
+	RETURN
 
 
 /// <include file="System.xml" path="doc/HyperLabel.Error/*" />
-METHOD Error( oError, symMethod )                 
+METHOD Error( oError, symMethod )
 	LOCAL cErrorValType AS STRING
     LOCAL oErr AS Error
-    IF IsObject(oError) .and. __Usual.ToObject(oError) IS Error 
+    IF IsObject(oError) .and. __Usual.ToObject(oError) IS Error
         oErr := oError
     ELSE
 		cErrorValType   := ValType(oError)
@@ -45,7 +45,7 @@ METHOD Error( oError, symMethod )
 		oErr:Gencode := EG_ERRORBUILD
 		oErr:Description := VO_Sprintf(__CAVOSTR_SYSCLASS_BADERROROBJECT, cErrorValType)
 	ENDIF
-	oErr:MethodSelf := SELF    
+	oErr:MethodSelf := SELF
 	IF IsSymbol(symMethod)
 		oErr:FuncSym := symMethod
 	ELSE
@@ -59,18 +59,18 @@ METHOD Error( oError, symMethod )
 
 
 /// <include file="System.xml" path="doc/HyperLabel.HelpContext/*" />
-ACCESS HelpContext                            
+ACCESS HelpContext
 	RETURN rHelpContext
 
 
 /// <include file="System.xml" path="doc/HyperLabel.HelpContext/*" />
-ASSIGN HelpContext(u) 
+ASSIGN HelpContext(u)
 	SELF:rHelpContext :=u
-	RETURN 
+	RETURN
 
 
 /// <include file="System.xml" path="doc/HyperLabel.ctor/*" />
-CONSTRUCTOR( uName, uCaption, uDescription, uHelpContext )  
+CONSTRUCTOR( uName, uCaption, uDescription, uHelpContext )
 
 
 	IF IsSymbol( uName )
@@ -78,7 +78,7 @@ CONSTRUCTOR( uName, uCaption, uDescription, uHelpContext )
 	ELSEIF IsString( uName )
 		symName := String2Symbol( uName )
 	ELSE
-		SELF:Error(HLError{ SELF, #Init, EG_ARG,__CavoStr(__CAVOSTR_SYSCLASS_BADNAME), uName, "uName" }, #Init) 
+		SELF:Error(HLError{ SELF, __FUNCTION__, EG_ARG,__CavoStr(__CAVOSTR_SYSCLASS_BADNAME), uName, "uName" }, __FUNCTION__)
 	ENDIF
 
 
@@ -91,20 +91,20 @@ CONSTRUCTOR( uName, uCaption, uDescription, uHelpContext )
 	ELSEIF IsInstanceOfUsual( uCaption, #ResourceString )       // cannot change to IS because ResourceString is in GUI
 		rCaption := uCaption:AsString()
 	ELSE
-		SELF:Error(HLError{ SELF, #Init, EG_ARG,__CavoStr(__CAVOSTR_SYSCLASS_BADCAPTION), uCaption, "uCaption" }, #Init) 
+		SELF:Error(HLError{ SELF, __FUNCTION__, EG_ARG,__CavoStr(__CAVOSTR_SYSCLASS_BADCAPTION), uCaption, "uCaption" }, __FUNCTION__)
 	ENDIF
 
 
-	IF IsNil(uDescription)                    
-		rDescription := " "                   
-	ELSEIF IsString( uDescription )           
+	IF IsNil(uDescription)
+		rDescription := " "
+	ELSEIF IsString( uDescription )
 		rDescription := uDescription
 	ELSEIF IsSymbol( uDescription )
 		rDescription := Symbol2String( uDescription )
 	ELSEIF IsInstanceOfUsual( uDescription, #ResourceString ) // cannot change to IS because ResourceString is in GUI
 		rDescription := uDescription:AsString()
 	ELSEIF !IsNil( uDescription )
-		SELF:Error(HLError{ SELF, #Init, EG_ARG,__CavoStr(__CAVOSTR_SYSCLASS_BADDESCRIPTION), uDescription, "uDescription" }, #Init) 
+		SELF:Error(HLError{ SELF, __FUNCTION__, EG_ARG,__CavoStr(__CAVOSTR_SYSCLASS_BADDESCRIPTION), uDescription, "uDescription" }, __FUNCTION__)
 	ENDIF
 
 
@@ -115,27 +115,27 @@ CONSTRUCTOR( uName, uCaption, uDescription, uHelpContext )
 	ELSEIF IsInstanceOfUsual( uHelpContext, #ResourceString ) // cannot change to IS because ResourceString is in GUI
 		rHelpContext := uHelpContext:AsString()
 	ELSEIF !IsNil( uHelpContext )
-		SELF:Error(HLError{ SELF, #Init, EG_ARG,__CavoStr(__CAVOSTR_SYSCLASS_BADHELPCONTEXT), uHelpContext, "uHelpContext" }, #Init) 
+		SELF:Error(HLError{ SELF, __FUNCTION__, EG_ARG,__CavoStr(__CAVOSTR_SYSCLASS_BADHELPCONTEXT), uHelpContext, "uHelpContext" }, __FUNCTION__)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 
 
 /// <include file="System.xml" path="doc/HyperLabel.Name/*" />
-ACCESS Name                                   	
+ACCESS Name
 	RETURN Symbol2String( symName )
 
 
 /// <include file="System.xml" path="doc/HyperLabel.NameSym/*" />
-ACCESS NameSym                                	
+ACCESS NameSym
 	RETURN symName
 
 
 /// <include file="System.xml" path="doc/HyperLabel.NameSym/*" />
-ASSIGN NameSym  (x)                 			
+ASSIGN NameSym  (x)
 	IF IsSymbol(x)
 		SELF:symName := x
 	ENDIF
@@ -150,7 +150,7 @@ PARTIAL CLASS HLError   INHERIT Error
 
 
 /// <include file="System.xml" path="doc/HLError.ctor/*" />
-CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2 )  
+CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2 )
     //RvdH 080609 Added call to super:Init to correctly fill the callstack
     SUPER()
 	SELF:SubSystem := "HyperLabel"
@@ -167,7 +167,7 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 		SELF:Gencode := EG_NOTABLE
 	ENDIF
 	IF oHLErrorMessage# NIL
-        IF IsObject( oHLErrorMessage) .and. __USual.ToObject(oHLErrorMessage) IS HyperLabel 
+        IF IsObject( oHLErrorMessage) .and. __USual.ToObject(oHLErrorMessage) IS HyperLabel
 
 
 			SELF:Description := ((HyperLabel)oHLErrorMessage):Description
@@ -180,7 +180,7 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 		SELF:Arg := uMisc2
 	ENDIF
 	SELF:Severity := ES_ERROR
-	RETURN 
+	RETURN
 END CLASS
 
 

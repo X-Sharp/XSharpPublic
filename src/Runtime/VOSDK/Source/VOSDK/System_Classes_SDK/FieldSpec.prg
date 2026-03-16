@@ -86,7 +86,7 @@ CLASS FieldSpec
         ELSEIF IsNumeric( uDecimals )
             SELF:wDecimals := uDecimals
         ELSE
-            DbError{ SELF, #Decimals, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADDECIMALS), uDecimals, "uDecimals" }:Throw()
+            DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADDECIMALS), uDecimals, "uDecimals" }:Throw()
         ENDIF
         return
 
@@ -113,9 +113,9 @@ CLASS FieldSpec
         ELSEIF IsSymbol( oHLName ) .OR. IsString( oHLName )
             SELF:oHyperLabel := HyperLabel{ oHLName }
         ELSE
-            DbError{SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADNAME), oHLName, "oHLName" }:Throw()
+            DbError{SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADNAME), oHLName, "oHLName" }:Throw()
         ENDIF
-        SELF:_SetType(uType, #Init)
+        SELF:_SetType(uType, __FUNCTION__)
         if uType is STRING var strType .and. Left(Upper(strType),1)="I"
             uLength  := 10
             uDecimals := 0
@@ -126,7 +126,7 @@ CLASS FieldSpec
         ELSE
             IF SELF:lNumeric .OR. SELF:cType="C"
                 //  UH 12/16/1999
-                DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADLENGTH), uLength, "uLength" }:Throw()
+                DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADLENGTH), uLength, "uLength" }:Throw()
             ENDIF
         ENDIF
 
@@ -136,7 +136,7 @@ CLASS FieldSpec
         ELSEIF IsNumeric( uDecimals )
             SELF:wDecimals := uDecimals
         ELSE
-            DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADDECIMALS), uDecimals, "uDecimals" }:Throw()
+            DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADDECIMALS), uDecimals, "uDecimals" }:Throw()
         ENDIF
         return
 
@@ -364,14 +364,14 @@ CLASS FieldSpec
             IF IsNumeric( w )
                 SELF:wLength := w
             ELSE
-                DbError{ SELF, #SetLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADSI), w, "w" }:Throw()
+                DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADSI), w, "w" }:Throw()
             ENDIF
         ENDIF
         IF oHL # NIL
             IF oHL IS HyperLabel
                 SELF:oHLLength := oHL
             ELSE
-                DbError{ SELF, #SetLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
+                DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
             ENDIF
         ENDIF
         RETURN NIL
@@ -386,14 +386,14 @@ CLASS FieldSpec
             IF IsNumeric( w )
                 SELF:wMinLength := w
             ELSE
-                DbError{ SELF, #SetMinLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADSI), w, "w" }:Throw()
+                DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADSI), w, "w" }:Throw()
             ENDIF
         ENDIF
         IF !IsNil(oHL)
             if oHL is HyperLabel
                 SELF:oHLMinLength := oHL
             ELSE
-                DbError{ SELF, #SetMinLength, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
+                DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
             ENDIF
         ENDIF
         RETURN NIL
@@ -413,7 +413,7 @@ CLASS FieldSpec
             if IsObject(oHL) .and. __Usual.ToObject(oHL) is HyperLabel
                 SELF:oHLRange := oHL
             ELSE
-                DbError{ SELF, #SetRange, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
+                DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
             ENDIF
         ENDIF
         RETURN NIL
@@ -430,13 +430,13 @@ CLASS FieldSpec
         ELSEIF IsLogic( lReq )
             SELF:lRequired := lReq
         ELSE
-            DbError{ SELF, #SetRequired, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADLREQ), lReq, "lReq" }:Throw()
+            DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADLREQ), lReq, "lReq" }:Throw()
         ENDIF
         IF !IsNil(oHL)
             if oHL is HyperLabel
                 SELF:oHLRequired := oHL
             ELSE
-                DbError{ SELF, #SetRequired, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
+                DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
             ENDIF
         ENDIF
         RETURN NIL
@@ -519,14 +519,14 @@ CLASS FieldSpec
         // This method does allow the storage type to be changed and, more usefully,
         // the HyperLabel diagnostic for the storage type check
         // Both parameters are optional, if one is not provided the corresponding value is not changed
-        SELF:_SetType(uType, #SetType)
+        SELF:_SetType(uType, __FUNCTION__)
         IF !IsNil(oHL)
             if oHL is HyperLabel
                 SELF:oHLType := oHL
             ELSEIF IsSymbol( oHL ) .OR. IsString( oHL )
                 SELF:oHLType := HyperLabel{ oHL }
             ELSE
-                DbError{ SELF, #SetType, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
+                DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
             ENDIF
         ENDIF
         RETURN NIL
@@ -549,14 +549,14 @@ CLASS FieldSpec
             ELSEIF IsString( cb )
                 SELF:cbValidation := &( "{ | |" + cb + " }" )
             ELSE
-                DbError{ SELF, #SetValidation, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADCB), cb, "cb" }:Throw()
+                DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADCB), cb, "cb" }:Throw()
             ENDIF
         ENDIF
         IF !IsNil(oHL)
             IF oHL IS HyperLabel
                 SELF:oHLValidation := oHL
             ELSE
-                DbError{ SELF, #SetValidation, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
+                DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
             ENDIF
         ENDIF
         RETURN NIL
@@ -576,7 +576,7 @@ CLASS FieldSpec
         IF oHL IS HyperLabel
             SELF:oHLStatus := oHL
         ELSE
-            DbError{ SELF, #Status, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
+            DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
         ENDIF
 
 
@@ -658,7 +658,7 @@ CLASS FieldSpec
 
 
         IF !IsString( cString )     // This is a generic converter
-            DbError{ SELF, #Val, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADSTRING), cString, "cString" }:Throw()
+            DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADSTRING), cString, "cString" }:Throw()
         ENDIF
 
 

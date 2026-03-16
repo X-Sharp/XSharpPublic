@@ -64,7 +64,7 @@ METHOD __SetupLocks( ) AS VOID STRICT
             oHLStatus := SELF:Status
         ENDIF
     OTHERWISE
-        BREAK DbError{ SELF, #ConcurrencyControl, EG_ARG, ;
+        BREAK DbError{ SELF, __FUNCTION__, EG_ARG, ;
             __CavoStr(__CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN), nCCMode, "nCCMode" }
     END SWITCH
 
@@ -137,7 +137,7 @@ ASSIGN ConcurrencyControl( nMode  AS USUAL)
         CASE "CCFILE"
             newMode := ccFile
         OTHERWISE
-            BREAK DbError{ SELF, #ConcurrencyControl, EG_ARG, ;
+            BREAK DbError{ SELF, __FUNCTION__, EG_ARG, ;
                 __CavoStr( __CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN ), nMode, "nMode" }
         END SWITCH
     ENDIF
@@ -421,12 +421,12 @@ METHOD RegisterClient( oForm AS OBJECT) AS LOGIC
 
 
     IF aDataFields == NULL
-        BREAK DbError{ SELF, #SetDataField, EG_SEQUENCE, ;
+        BREAK DbError{ SELF, __FUNCTION__, EG_SEQUENCE, ;
             __CavoStr( __CAVOSTR_DBFCLASS_NODATAFIELDSEXIST ) }
 
 
     ELSEIF nFieldPosition < 1 .OR. nFieldPosition > ALen(aDataFields)
-        BREAK DbError{ SELF, #SetDataField, EG_ARG, ;
+        BREAK DbError{ SELF, __FUNCTION__, EG_ARG, ;
             __CavoStr(__CAVOSTR_DBFCLASS_BADFIELDPOSITION), nFieldPosition, "nFieldPosition" }
     ELSE
         LOCAL oExisting := aDataFields[ nFieldPosition ] AS DataField

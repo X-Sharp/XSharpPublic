@@ -468,7 +468,7 @@ METHOD SetValidation( cb AS USUAL, oHL := NULL_OBJECT AS HyperLabel) AS VOID
 		ELSEIF IsString( cb )
 			cbValidation := &( "{ | |" + cb + " }" )
 		ELSE
-			DbError{ SELF, #SetValidation, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADCB), cb, "cb" }:Throw()
+			DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADCB), cb, "cb" }:Throw()
 		ENDIF
 	ENDIF
 	if oHL != null_object

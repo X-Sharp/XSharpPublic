@@ -11,49 +11,49 @@ PROPERTY __HyperLabel as HyperLabel GET oHyperLabel
 
 
 /// <include file="System.xml" path="doc/DataField.AsString/*" />
-METHOD AsString( ) 
+METHOD AsString( )
 	RETURN oHyperLabel:AsString( )
 
 
 /// <include file="System.xml" path="doc/DataField.FieldSpec/*" />
-ACCESS FieldSpec 
+ACCESS FieldSpec
 	RETURN oFieldSpec
 
 
 /// <include file="System.xml" path="doc/DataField.HyperLabel/*" />
-ACCESS HyperLabel 
+ACCESS HyperLabel
 	RETURN oHyperLabel
 
 
 /// <include file="System.xml" path="doc/DataField.ctor/*" />
-CONSTRUCTOR( oHLName, oFS ) 
+CONSTRUCTOR( oHLName, oFS )
 
 
-	IF IsObject( oHLName) .and. __USual.ToObject(oHLName) IS HyperLabel 
+	IF IsObject( oHLName) .and. __USual.ToObject(oHLName) IS HyperLabel
 		oHyperLabel := oHLName
 	ELSEIF IsString( oHLName ) .OR. IsSymbol( oHLName )
 		oHyperLabel := HyperLabel{ oHLName }
 	ELSE
-		BREAK DbError{ SELF, #Init, EG_ARG, ;
+		BREAK DbError{ SELF, __FUNCTION__, EG_ARG, ;
 			__CavoStr(__CAVOSTR_DBFCLASS_BADHLNAME), oHLName, "oHLName" }
 	ENDIF
-	IF IsObject(oFS) .and. __Usual.ToObject(oFS) IS FieldSpec 
+	IF IsObject(oFS) .and. __Usual.ToObject(oFS) IS FieldSpec
 		oFieldSpec := oFS
 	ELSE
-		BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADFS), oFS, "oFS" }
+		BREAK DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADFS), oFS, "oFS" }
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="System.xml" path="doc/DataField.Name/*" />
-ACCESS Name 
+ACCESS Name
 	RETURN oHyperLabel:Name
 
 
 /// <include file="System.xml" path="doc/DataField.NameSym/*" />
-ACCESS NameSym 
+ACCESS NameSym
 	RETURN oHyperLabel:NameSym
 
 

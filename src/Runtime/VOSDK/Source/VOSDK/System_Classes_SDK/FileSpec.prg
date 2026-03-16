@@ -63,7 +63,7 @@ CLASS FileSpec
 
 
  /// <exclude />
-METHOD __DefaultFullPath ()  AS STRING STRICT 
+METHOD __DefaultFullPath ()  AS STRING STRICT
 	//Locates the first file using SetDefault(), CurDir() and SetPath()
 	//If no file is found then the ASSIGNed drive, path, filename and extension is used.
 	//
@@ -90,21 +90,21 @@ METHOD __DefaultFullPath ()  AS STRING STRICT
 	//  UH 12/27/1999
 	//  IF cDrive == NULL_STRING .OR. cPath == NULL_STRING
 	IF cPath == NULL_STRING
-		lSearch := .T. 
+		lSearch := .T.
 	ELSE
 		IF cDrive == NULL_STRING
 			IF ( SLen(cPath) > 1 ) .AND. ( Left(cPath, 2) =="\\" )
 				//
 				// UNC name given, no drive !!!
 				//
-				lSearch := .F. 
+				lSearch := .F.
 			ELSE
-				lSearch := .T. 
+				lSearch := .T.
 			ENDIF
 		ELSE
 			//  UH 01/03/2000
 			//  lSearch := .T.
-			lSearch := .F. 
+			lSearch := .F.
 		ENDIF
 
 
@@ -123,10 +123,10 @@ METHOD __DefaultFullPath ()  AS STRING STRICT
 		//Build search string of paths
         IF Empty(cDefault)
             //SE 090910
-            cSearch := CurDir() + ";" + GetCurPath() + ";" 
+            cSearch := CurDir() + ";" + GetCurPath() + ";"
             IF ! Left(cSearch, 2) == "\\"
                cSearch := CurDrive() +":\" + cSearch
-            ENDIF    
+            ENDIF
         ELSE
             cSearch := cDefault + ";" + GetCurPath() + ";"
 		ENDIF
@@ -200,7 +200,7 @@ METHOD __DefaultFullPath ()  AS STRING STRICT
 
 
  /// <exclude />
-METHOD __FullPathAcc() AS STRING STRICT 
+METHOD __FullPathAcc() AS STRING STRICT
 	LOCAL cPath AS STRING
 	LOCAL cRetVal AS STRING
 	cPath := SELF:cFSPath
@@ -215,11 +215,11 @@ METHOD __FullPathAcc() AS STRING STRICT
 
 
  /// <exclude />
-METHOD __SetDrive(cTestDrive AS STRING)  AS STRING STRICT 
+METHOD __SetDrive(cTestDrive AS STRING)  AS STRING STRICT
 
 
 	//IF !IsString(cTestDrive)
-	//	SELF:Error(FSError{ SELF, #__SetDrive, EG_ARG,__CavoStr(__CAVOSTR_DBFCLASS_BADDRIVE), cTestDrive, cTestDrive }, #__SetDrive)
+	//	SELF:Error(FSError{ SELF, __FUNCTION__, EG_ARG,__CavoStr(__CAVOSTR_DBFCLASS_BADDRIVE), cTestDrive, cTestDrive }, #__SetDrive)
    //
 	//ELSE
 		cTestDrive := Upper(cTestDrive)
@@ -237,7 +237,7 @@ METHOD __SetDrive(cTestDrive AS STRING)  AS STRING STRICT
 
 
  /// <exclude />
-METHOD __SetFileExt(cTestExt AS STRING) AS STRING STRICT      
+METHOD __SetFileExt(cTestExt AS STRING) AS STRING STRICT
 	//
 	// Test for a valid Extension specification and set cFSExtension is so.
 	//
@@ -257,7 +257,7 @@ METHOD __SetFileExt(cTestExt AS STRING) AS STRING STRICT
 
 
  /// <exclude />
-METHOD __SetFileName(cTestName AS STRING) AS STRING STRICT 
+METHOD __SetFileName(cTestName AS STRING) AS STRING STRICT
 	//
 	// Set the FileName
 	//
@@ -283,7 +283,7 @@ METHOD __SetFileName(cTestName AS STRING) AS STRING STRICT
 
 
  /// <exclude />
-METHOD __SetFilePath(cTestPath AS STRING ) AS STRING STRICT  
+METHOD __SetFilePath(cTestPath AS STRING ) AS STRING STRICT
 	//
 	// Set the path
 	//
@@ -310,7 +310,7 @@ METHOD __SetFilePath(cTestPath AS STRING ) AS STRING STRICT
 
 
 /// <include file="System.xml" path="doc/FileSpec.AppendToPath/*" />
-METHOD AppendToPath(cDirectory)     
+METHOD AppendToPath(cDirectory)
     // This method appends the specified directory or string of directories to the existing path.
     // For example:
     //
@@ -349,10 +349,10 @@ METHOD AppendToPath(cDirectory)
        IF Left(cPath, 2) == "\\"  //UNC-Path
           cFSDrive := NULL_STRING
        ELSE
-          cFSDrive := CurDrive()  
+          cFSDrive := CurDrive()
           // CurDir() returns NULL_STRING for ROOT directory and error. If error, default it to ROOT directory
           cPath := "\" + cPath
-       ENDIF     
+       ENDIF
     ENDIF
 
 
@@ -387,7 +387,7 @@ METHOD AppendToPath(cDirectory)
 
 
 /// <include file="System.xml" path="doc/FileSpec.Attributes/*" />
-ACCESS Attributes                   
+ACCESS Attributes
 	LOCAL cRet	AS STRING
 	LOCAL cPath AS STRING
 
@@ -406,7 +406,7 @@ ACCESS Attributes
 
 
 /// <include file="System.xml" path="doc/FileSpec.Copy/*" />
-METHOD Copy(oFSTarget, lName)       
+METHOD Copy(oFSTarget, lName)
 	//
 	// May be used to copy a file. For example,
 	// oFSSource := FileSpec{ "C:\DATA\CUSTOMER.DBF" } // define original file
@@ -492,11 +492,11 @@ METHOD Copy(oFSTarget, lName)
         // make a different file name if conflict exists
         IF (cNewName := __NewName(cTarget + cFileName + cFileNameExt)) != NULL_STRING
             cFileName := cNewName
-        ENDIF              
+        ENDIF
         //SE 080414
         IF oFSTarget != NULL_OBJECT
             ((FileSpec)oFSTarget):FileName := cNewName
-        ENDIF  
+        ENDIF
     ENDIF
 
 
@@ -532,7 +532,7 @@ METHOD Copy(oFSTarget, lName)
 
 
 /// <include file="System.xml" path="doc/FileSpec.DateChanged/*" />
-ACCESS DateChanged                  
+ACCESS DateChanged
 	LOCAL cPath AS STRING
 	LOCAL dRet	AS DATE
 
@@ -549,7 +549,7 @@ ACCESS DateChanged
 
 
 /// <include file="System.xml" path="doc/FileSpec.Delete/*" />
-METHOD Delete( )                    
+METHOD Delete( )
 	//
 	// Used to delete a file
 	//
@@ -568,7 +568,7 @@ METHOD Delete( )
 
 
 /// <include file="System.xml" path="doc/FileSpec.Drive/*" />
-ACCESS Drive                        
+ACCESS Drive
 	// Returns the drive of the file, as a string
 	// The string contain a trailing colon
 	// Note that if the file was not specified with a drive, and the file could not be found
@@ -579,7 +579,7 @@ ACCESS Drive
 
 
 /// <include file="System.xml" path="doc/FileSpec.Drive/*" />
-ASSIGN Drive(cDrive)                
+ASSIGN Drive(cDrive)
 	// The drive may be assigned separately with this method.
 	// The drive may be assigned with or without a trailing colon
 	// For example, to copy selected records from a file to another drive, under the same directory and filename,
@@ -605,23 +605,23 @@ ASSIGN Drive(cDrive)
 
 
 /// <include file="System.xml" path="doc/FileSpec.ErrInfo/*" />
-ACCESS ErrInfo  
+ACCESS ErrInfo
 	RETURN SELF:oErrorInfo
 
 
 /// <include file="System.xml" path="doc/FileSpec.Error/*" />
-METHOD Error( oError, symMethod )   
+METHOD Error( oError, symMethod )
 	LOCAL cErrorValType AS STRING
     LOCAL oErr as Error
 
 
-	IF IsObject(oError) .and. __Usual.ToObject(oError) IS Error 
+	IF IsObject(oError) .and. __Usual.ToObject(oError) IS Error
         oErr := oError
     ELSE
 		cErrorValType := ValType(oError)
 		oErr := Error{ }
 		oErr:Gencode := EG_ERRORBUILD
-		oErr:Description := VO_Sprintf(__CAVOSTR_SYSCLASS_BADERROROBJECT,cErrorValType) 
+		oErr:Description := VO_Sprintf(__CAVOSTR_SYSCLASS_BADERROROBJECT,cErrorValType)
 	ENDIF
 
 
@@ -641,7 +641,7 @@ METHOD Error( oError, symMethod )
 
 
 /// <include file="System.xml" path="doc/FileSpec.Extension/*" />
-ACCESS Extension                    
+ACCESS Extension
 	//
 	// Returns the file extension as a string, with a leading period
 	//
@@ -649,7 +649,7 @@ ACCESS Extension
 
 
 /// <include file="System.xml" path="doc/FileSpec.Extension/*" />
-ASSIGN Extension(cExtension)        
+ASSIGN Extension(cExtension)
 	//
 	// Assign file extension
 	//
@@ -680,7 +680,7 @@ ASSIGN Extension(cExtension)
 
 
 /// <include file="System.xml" path="doc/FileSpec.FileName/*" />
-ACCESS FileName                     
+ACCESS FileName
 	//
 	// Returns the file name as a string, excluding extension
 	//
@@ -688,7 +688,7 @@ ACCESS FileName
 
 
 /// <include file="System.xml" path="doc/FileSpec.FileName/*" />
-ASSIGN FileName( cFileName )        
+ASSIGN FileName( cFileName )
 	// The filename may be changed.
 	// A simple filename may be specified, or a filename with extension, or a full path complete with drive.
 	// Only those parts that are specified are changed.
@@ -758,11 +758,11 @@ ASSIGN FileName( cFileName )
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="System.xml" path="doc/FileSpec.Find/*" />
-METHOD Find( )                      
+METHOD Find( )
 	//
 	// This method looks for the file and returns a logic indicating whether the file is found or not
 	// If it finds it, it also stores the drive and path for future reference.
@@ -797,14 +797,14 @@ METHOD Find( )
 
 
 /// <include file="System.xml" path="doc/FileSpec.FullPath/*" />
-ACCESS FullPath                     
-	RETURN SELF:__FullPathAcc() 
+ACCESS FullPath
+	RETURN SELF:__FullPathAcc()
 
 
 
 
 /// <include file="System.xml" path="doc/FileSpec.FullPath/*" />
-ASSIGN FullPath(cFullPath)          
+ASSIGN FullPath(cFullPath)
 	// This ASSIGN method allows the entire path to be changed.
 	// Normally it is set through the instantiation parameters
 	//
@@ -843,7 +843,7 @@ ASSIGN FullPath(cFullPath)
 
 
 /// <include file="System.xml" path="doc/FileSpec.ctor/*" />
-CONSTRUCTOR(cFullPath)              
+CONSTRUCTOR(cFullPath)
 
 
 	IF !Empty(cFullPath)
@@ -864,13 +864,13 @@ CONSTRUCTOR(cFullPath)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 
 
 /// <include file="System.xml" path="doc/FileSpec.Move/*" />
-METHOD Move(oFSTarget, lName)       
+METHOD Move(oFSTarget, lName)
 	//
 	// May be used to move a file. For example,
 	//        oFSSource := FileSpec{ "C:\DATA\CUSTOMER.DBF" } // define original file
@@ -971,7 +971,7 @@ METHOD Move(oFSTarget, lName)
         //SE 080414
         IF oFSTarget != NULL_OBJECT
             ((FileSpec)oFSTarget):FileName := cNewName
-        ENDIF  
+        ENDIF
     ENDIF
 
 
@@ -1056,12 +1056,12 @@ METHOD Move(oFSTarget, lName)
 
 
 /// <include file="System.xml" path="doc/FileSpec.Path/*" />
-ACCESS Path                         
+ACCESS Path
 	RETURN SELF:cFSPath
 
 
 /// <include file="System.xml" path="doc/FileSpec.Path/*" />
-ASSIGN Path(cPath)                  
+ASSIGN Path(cPath)
 	//
 	// The path ( directory ) of a FileSpec may be changed.
 	// For example, to copy selected records from a file to another directory, under the same filename,
@@ -1118,11 +1118,11 @@ ASSIGN Path(cPath)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="System.xml" path="doc/FileSpec.PathUp/*" />
-METHOD PathUp( )                    
+METHOD PathUp( )
 	//
 	// This method strips off the last subdirectory from the end of the path, in effect moving up to the
 	// parent directory.
@@ -1171,7 +1171,7 @@ METHOD PathUp( )
 
 
 /// <include file="System.xml" path="doc/FileSpec.Rename/*" />
-METHOD Rename(oFSTarget, lName)     
+METHOD Rename(oFSTarget, lName)
 	//
 	// May be used to rename a file. For example,
 	// oFSSource := FileSpec{ "C:\DATA\CUSTOMER.DBF" } // define original file
@@ -1283,7 +1283,7 @@ METHOD Rename(oFSTarget, lName)
 
 
 /// <include file="System.xml" path="doc/FileSpec.Size/*" />
-ACCESS Size                         
+ACCESS Size
 	LOCAL dwSize    AS DWORD
 	LOCAL cPath     AS STRING
 
@@ -1307,7 +1307,7 @@ ACCESS Size
 
 
 /// <include file="System.xml" path="doc/FileSpec.TimeChanged/*" />
-ACCESS TimeChanged                  
+ACCESS TimeChanged
 
 
 	//	UH 09/12/96
@@ -1345,7 +1345,7 @@ PARTIAL CLASS FSError           INHERIT Error   //359@003
 
 
 /// <include file="System.xml" path="doc/FSError.ctor/*" />
-CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2 ) 
+CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2 )
     //RvdH 080609 Added call to super:Init to correctly fill the callstack
     SUPER()
 	SELF:SubSystem := "FileSpec"
@@ -1376,7 +1376,7 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 
 
 	IF oHLErrorMessage# NIL
-		IF IsObject( oHLErrorMessage) .and. __USual.ToObject(oHLErrorMessage) IS HyperLabel 
+		IF IsObject( oHLErrorMessage) .and. __USual.ToObject(oHLErrorMessage) IS HyperLabel
 			SELF:Description := ((HyperLabel)oHLErrorMessage):Description
 		ELSE
 			SELF:Description := oHLErrorMessage
@@ -1397,7 +1397,7 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 
 
 	SELF:Severity := ES_ERROR
-	RETURN 
+	RETURN
 
 
 END CLASS
@@ -1411,7 +1411,7 @@ FUNCTION __GetPath      (cPath)
 	LOCAL cCurDir   AS STRING
 	LOCAL nPathLen  AS DWORD
 	LOCAL i         AS DWORD
-    	LOCAL dwPos     AS DWORD  
+    	LOCAL dwPos     AS DWORD
 
 
 	IF !Empty(cPath)
@@ -1441,27 +1441,27 @@ FUNCTION __GetPath      (cPath)
                         IF SubStr3(cPath, dwPos + 1, 1) != "\"
                            // path looks something like this: D:DATA\
                            cCurDir := CurDir()
-                           IF Left(cPath, 1) != CurDrive() 
+                           IF Left(cPath, 1) != CurDrive()
                               cCurDir := NULL_STRING
-                           ENDIF   
+                           ENDIF
 
 
                            // CurDir() returns NULL_STRING for ROOT directory
                            // or on error - either way, default it to the ROOT directory
                            IF ! cCurDir == NULL_STRING
                               cCurDir := "\" + cCurDir
-                           ENDIF 
+                           ENDIF
                            cPath := Left(cPath, dwPos) + cCurDir + "\" + SubStr2(cPath, dwPos + 1)
                         ENDIF
 
 
-                        // don't strip off the root dir 
+                        // don't strip off the root dir
                         dwPos := SLen(cPath)
                         IF Right(cPath, 1) == "\" .AND. SubStr3(cPath, dwPos - 1, 1) != ":"
                            cPath := Left(cPath, dwPos - 1)
                         ENDIF
-                        
-                        
+
+
                         RETURN cPath
 
 
@@ -1471,18 +1471,18 @@ FUNCTION __GetPath      (cPath)
 
 
                         cCurDir := CurDir()
-                        IF Left(cPath, 1) != CurDrive() 
+                        IF Left(cPath, 1) != CurDrive()
                            cCurDir := NULL_STRING
                         ENDIF
-                        
-                        
+
+
                         // CurDir() returns NULL_STRING for ROOT directory
-                        // or on error - either way, default it to the ROOT directory 
+                        // or on error - either way, default it to the ROOT directory
                         IF ! cCurDir == NULL_STRING
                            cCurDir := "\" + cCurDir
-                        ENDIF 
-                        
-                        
+                        ENDIF
+
+
                         RETURN Left(cPath, dwPos) + cCurDir + "\" + SubStr2(cPath, dwPos + 1)
 
 
@@ -1490,15 +1490,15 @@ FUNCTION __GetPath      (cPath)
 
 
                 ELSE
-                     // no drive was given   
-                     
-                     
+                     // no drive was given
+
+
                      // check for trailing backslash and strip it off
                      IF SLen(cPath) > 1 .AND. Right(cPath, 1) == "\"
                         cPath := Left(cPath, SLen(cPath) - 1)
-                     ENDIF 
-                     
-                     
+                     ENDIF
+
+
                      cCurDir := CurDir()
 
 
@@ -1509,7 +1509,7 @@ FUNCTION __GetPath      (cPath)
                         ELSE
                            IF ! cCurDir == NULL_STRING
                               cCurDir += "\"
-                           ENDIF 
+                           ENDIF
                            cCurDir := CurDrive() + ":\" + cCurDir
                         ENDIF
                      ELSE
@@ -1518,16 +1518,16 @@ FUNCTION __GetPath      (cPath)
                            dwPos := At3("\", cCurDir, dwPos) //shared name
                            IF dwPos > 0
                               cCurDir := Left(cCurDir, dwPos-1)
-                           ENDIF 
+                           ENDIF
                            IF cPath == "\"
                               RETURN cCurDir
-                           ENDIF   
-                        ELSE   
+                           ENDIF
+                        ELSE
                            cCurDir := CurDrive() + ":"
-                        ENDIF       
-                     ENDIF  
-                     
-                     
+                        ENDIF
+                     ENDIF
+
+
                      RETURN cCurDir + cPath
 
 
@@ -1536,22 +1536,22 @@ FUNCTION __GetPath      (cPath)
 
             ELSE
                 // here we go...
-                // get drive letter and path length excluding drive letter and ":"  
+                // get drive letter and path length excluding drive letter and ":"
                 cCurDir := CurDir()
-                
-                
-                IF SubStr3(cPath, 2, 1) != ":" 
+
+
+                IF SubStr3(cPath, 2, 1) != ":"
                    IF Left(cCurDir,2) == "\\"
                       dwPos := At3("\", cCurDir, 2) //server name
                       dwPos := At3("\", cCurDir, dwPos) //shared name
                       IF dwPos > 0
                          cDrive  := Left(cCurDir, dwPos-1)
-                         cCurDir := SubStr2(cCurDir, dwPos+1) 
+                         cCurDir := SubStr2(cCurDir, dwPos+1)
                       ELSE
                          cDrive  := cCurDir
                          cCurDir := NULL_STRING
                       ENDIF
-                   ELSE   
+                   ELSE
                       cDrive := CurDrive() + ":"
                    ENDIF
                    nPathLen := SLen(cPath)
@@ -1560,8 +1560,8 @@ FUNCTION __GetPath      (cPath)
                    IF Left(cDrive, 1) != CurDrive()
                       cCurDir := NULL_STRING
                    ENDIF
-                   
-                   
+
+
                    nPathLen := SLen(cPath) - 2
                    // get rid of drive letter from cPath
                    cPath := SubStr2(cPath, 3)
@@ -1660,18 +1660,18 @@ FUNCTION __GetPath      (cPath)
 
 
         ELSE
-            // just return UNC-Path 
-            IF Right(cPath, 1) == "\" 
+            // just return UNC-Path
+            IF Right(cPath, 1) == "\"
                RETURN Left(cPath, SLen(cPath)-1)
             ENDIF
-            RETURN cPath   
+            RETURN cPath
         ENDIF
     ELSE
-        // empty path given - default it to current drive and directory 
+        // empty path given - default it to current drive and directory
         cCurDir := CurDir()
         IF Left(cCurDir, 1) == "\\"
            RETURN cCurDir
-        ENDIF   
+        ENDIF
         RETURN CurDrive() + ":\" + cCurDir
 
 
@@ -1789,8 +1789,8 @@ FUNCTION __SplitPath    (oFS , cString , aFullPath )
 	FOR i := 1 UPTO ALen(aFullPath)
 		aFullPath[ i ] := NULL_STRING
 	NEXT
-       
-       
+
+
 
 
     SplitPath(cString, REF cDrive, REF cDir, REF cName, REF cExt)
@@ -1803,18 +1803,18 @@ FUNCTION __SplitPath    (oFS , cString , aFullPath )
 
 
 	IF IsObject(oFS) .AND. __Usual.ToObject(oFS) IS FileSpec VAR oFsParam
-	
-	
+
+
 	   //SE-081211 fixes a problem with UNC pathnames
        IF aFullPath[2] == NULL_STRING
           aFullPath[2] := oFsParam:Path
        ENDIF
-      
-      
+
+
        IF aFullPath[1] == NULL_STRING
           IF ! Left(aFullPath[2],2) == "\\"  //SE-081211 copy drive only if path is no UNC path
-             aFullPath[1] := oFsParam:Drive 
-          ENDIF   
+             aFullPath[1] := oFsParam:Drive
+          ENDIF
        ENDIF
 
 

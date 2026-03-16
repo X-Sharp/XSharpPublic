@@ -60,7 +60,7 @@ METHOD __SetupLocks( ) AS VOID STRICT
             oHLStatus := SELF:Status
         ENDIF
     OTHERWISE
-        BREAK DbError{ SELF, #ConcurrencyControl, EG_ARG, ;
+        BREAK DbError{ SELF, __FUNCTION__, EG_ARG, ;
             __CavoStr(__CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN), nCCMode, "nCCMode" }
     END SWITCH
 
@@ -137,7 +137,7 @@ ASSIGN ConcurrencyControl( nMode)
         CASE "CCFILE"
             newMode := ccFile
         OTHERWISE
-            BREAK DbError{ SELF, #ConcurrencyControl, EG_ARG, ;
+            BREAK DbError{ SELF, __FUNCTION__, EG_ARG, ;
                 __CavoStr( __CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN ), nMode, "nMode" }
         END SWITCH
     ENDIF
@@ -393,14 +393,14 @@ METHOD SetDataField( nFieldPosition, oDataField )
 
 
     IF aDataFields = NULL_ARRAY
-        BREAK DbError{ SELF, #SetDataField, EG_SEQUENCE, ;
+        BREAK DbError{ SELF, __FUNCTION__, EG_SEQUENCE, ;
             __CavoStr( __CAVOSTR_DBFCLASS_NODATAFIELDSEXIST ) }
     ELSEIF IsNil( nFieldPosition) .OR. ! IsNumeric( nFieldPosition ) .OR.   ;
         wFieldPosition < 1 .OR. wFieldPosition > ALen( aDataFields )
-        BREAK DbError{ SELF, #SetDataField, EG_ARG, ;
+        BREAK DbError{ SELF, __FUNCTION__, EG_ARG, ;
             __CavoStr(__CAVOSTR_DBFCLASS_BADFIELDPOSITION), nFieldPosition, "nFieldPosition" }
     ELSEIF ! (__Usual.ToObject(oDataField) IS DataField)
-        BREAK DbError{ SELF, #SetDataField, EG_ARG,   ;
+        BREAK DbError{ SELF, __FUNCTION__, EG_ARG,   ;
             __CavoStr(__CAVOSTR_DBFCLASS_BADFIELDPOSITION), nFieldPosition, "nFieldPosition" }
     ELSE
         LOCAL oField := oDataField				AS DataField

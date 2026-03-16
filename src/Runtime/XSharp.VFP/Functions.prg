@@ -37,6 +37,7 @@ INTERNAL PROCEDURE RddInit() AS VOID _INIT3
     RuntimeState.Eof :=  TRUE
     RuntimeState.MemoBlockSize := 64
 RETURN
+    
 
 Function SetFoxCollation(cCollation as STRING) AS STRING
     local cOld := RuntimeState.GetValue<STRING>(Set.CollateFox) AS STRING

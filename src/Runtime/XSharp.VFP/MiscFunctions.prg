@@ -190,7 +190,7 @@ FUNCTION __FoxCast(expr AS USUAL, targetType AS STRING, nLen AS LONG, nDec AS LO
     ENDIF
     RETURN result
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/isblank/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/isblank/*" />
     [FoxProFunction("ISBLANK", FoxFunctionCategory.General, FoxEngine.LanguageCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
     FUNCTION IsBlank(eExpression AS USUAL) AS LOGIC
         IF eExpression == NIL .OR. eExpression == System.DBNull.Value

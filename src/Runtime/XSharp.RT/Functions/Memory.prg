@@ -476,8 +476,51 @@ FUNCTION MemWalk(pEnum AS MemWalker) AS LOGIC
 	RETURN lOk
 
 
-#endregion
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memcheckptr/*" />
+FUNCTION MemCheckPtr( pMemory AS PTR, dwSize AS DWORD ) AS LOGIC
+    STATIC LOCAL Is32Bits := IntPtr.Size == 4 AS LOGIC
+    LOCAL i64 AS INT64
+    IF (IntPtr) pMemory == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
+    IF RuntimeState.RunningOnWindows .AND. Win32.IsBadWritePtr(pMemory, dwSize)
+        RETURN FALSE
+    ENDIF
+    VAR pWork := (IntPtr) pMemory
+    IF Is32Bits
+        i64 := (pWork:ToInt32() - SIZEOF(FixedMemBlockStart))
+    ELSE
+        i64 := (pWork:ToInt64() - SIZEOF(FixedMemBlockStart))
+    ENDIF
+    VAR pMemBlockStart := (FixedMemBlockStart PTR) IntPtr{i64}:ToPointer()
+    IF ! pMemBlockStart:IsValid()
+        RETURN FALSE
+    ENDIF
+    IF pMemBlockStart:dwSize < dwSize
+        RETURN FALSE
+    ENDIF
+    IF Is32Bits
+        i64 := pWork:ToInt32() + pMemBlockStart:dwSize
+    ELSE
+        i64 := pWork:ToInt64() + pMemBlockStart:dwSize
+    ENDIF
+    VAR pMemBlockEnd := ( FixedMemBlockEnd PTR) IntPtr{i64}:ToPointer()
+    RETURN pMemBlockEnd:IsValid()
+
+
+#endregion
+INTERNAL PARTIAL STATIC CLASS XSharp.Win32
+    [DllImport("kernel32.dll")] ;
+    STATIC INTERNAL METHOD IsBadReadPtr(hMemory AS IntPtr, dwSize AS DWORD) AS LOGIC PASCAL
+    [DllImport("kernel32.dll")] ;
+    STATIC INTERNAL METHOD IsBadWritePtr(hMemory AS IntPtr, dwSize AS DWORD) AS LOGIC PASCAL
+    [DllImport("kernel32.dll")] ;
+    STATIC INTERNAL METHOD IsBadCodePtr(hMemory AS IntPtr, dwSize AS DWORD) AS LOGIC PASCAL
+
+
+
+END CLASS
 
 
 

@@ -34,7 +34,7 @@ FUNCTION GetEnv(cEnvVariable AS STRING) AS STRING
 FUNCTION Version(nType := 0 AS INT) AS STRING
     THROW NotImplementedException{}
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/seconds/*" />
+/// <include file="VfpDocs.xml" path="Runtimefunctions/seconds/*" />
 [FoxProFunction("SECONDS", FoxFunctionCategory.DateAndTime, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION Seconds() AS REAL8
     RETURN XSharp.Core.Functions.Seconds()
@@ -144,7 +144,7 @@ FUNCTION FSize(cFieldName AS STRING, eWorkArea := NIL AS USUAL) AS INT
     VAR nPos := XSharp.RT.Functions.FieldPos(cFieldName, nArea)
     IF nPos > 0
         LOCAL uLen := NULL AS USUAL
-        LOCAL nOldArea := XSharp.RuntimeState.CurrentWorkarea
+        VAR nOldArea := XSharp.RuntimeState.CurrentWorkarea
         TRY
             XSharp.RuntimeState.CurrentWorkarea := nArea
             XSharp.RT.Functions.VoDbFieldInfo(3, nPos, REF uLen) // 3 = DBS_LEN

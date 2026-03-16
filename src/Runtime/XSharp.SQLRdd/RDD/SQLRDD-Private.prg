@@ -550,7 +550,7 @@ partial class SQLRDD
         endif
         var maxTableSize := _oTd:PageSize * _oTd:BufferSize
         var sizeBefore   := maxTableSize - _oTd:PageSize
-        var lForward     := nNewPageNo > _currentPageNo
+        var lForward     := nNewPageNo >= _currentPageNo
         if self:RowCount + _oTd:PageSize > maxTableSize
             // We must delete rows
             if lForward
@@ -605,6 +605,8 @@ partial class SQLRDD
         SELF:_command:CommandText := _builder:BuildRowNumberStatement(nRec)
         var result := SELF:_command:ExecuteScalar(SELF:_oTd:Name)
         var iResult := Convert.ToInt64(result)
+        // shouldn't this be ToUInt32?
+        
         // determine correct page
         SELF:_currentPageNo := (INT) ((iResult - 1) / SELF:_oTd:PageSize) + 1
         SELF:_ClearTable()

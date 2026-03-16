@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\VOSDK.SDK.Targets" />
   <PropertyGroup>
-
     <AssemblyName>VORDDClasses</AssemblyName>
     <VO6>false</VO6>
     <VO9>false</VO9>
@@ -14,7 +13,7 @@
     <Allowdot>false</Allowdot>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
-   <ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.Next.xsproj">
       <Name>XSharp.Core.Next</Name>
     </ProjectReference>
@@ -22,6 +21,7 @@
       <Name>XSharp.RT.Next</Name>
     </ProjectReference>
     <ProjectReference Include="..\System_Classes_SDK\VOSystemClasses.Next.xsproj">
+      <Name>VOSystemClasses.Next</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

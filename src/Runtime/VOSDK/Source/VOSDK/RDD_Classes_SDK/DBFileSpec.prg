@@ -142,9 +142,9 @@ METHOD Copy( oDBFSTarget, lIDX, lName )
         RECOVER USING oError
             ErrorBlock( cbOldErr )
             LOCAL oErr := oError as Error
-            IF oErr:OsCode != 0
-                oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OsCode ) + ;
-                    " ( " + DosErrString( oErr:OsCode ) + " )" )
+            IF oErr:OSCode != 0
+                oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OSCode ) + ;
+                    " ( " + DosErrString( oErr:OSCode ) + " )" )
             ENDIF
 
 
@@ -238,9 +238,9 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
         cAlias := Symbol2String( __ConstructUniqueAlias( SELF:cFSFileName ) )
 
 
-        IF ( lRetCode := DBUseArea( TRUE, SELF:aRDDs, SELF:FullPath, cAlias, TRUE, TRUE, NIL, NIL ) )
+        IF ( lRetCode := DbUseArea( TRUE, SELF:aRDDs, SELF:FullPath, cAlias, TRUE, TRUE, NIL, NIL ) )
             IF SELF:cDelim == NULL_STRING .AND. ! SELF:lSDF
-                lRetCode := ( cAlias ) -> DBCopy( cTarget,  ;
+                lRetCode := ( cAlias ) -> DbCopy( cTarget,  ;
                     SELF:aFields,  ;
                     SELF:ForBlock,  ;
                     SELF:WhileBlock,  ;
@@ -252,7 +252,7 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
 
 
             ELSEIF SELF:cDelim != NULL_STRING .AND. ! SELF:lSDF
-                lRetCode := ( cAlias ) -> DBCopyDelim( cTarget,  ;
+                lRetCode := ( cAlias ) -> DbCopyDelim( cTarget,  ;
                     SELF:cDelim,  ;
                     SELF:aFields,  ;
                     SELF:ForBlock,  ;
@@ -263,7 +263,7 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
 
 
             ELSEIF SELF:cDelim == NULL_STRING .AND. SELF:lSDF
-                lRetCode := ( cAlias ) -> DBCopySDF( cTarget,  ;
+                lRetCode := ( cAlias ) -> DbCopySDF( cTarget,  ;
                     SELF:aFields,  ;
                     SELF:ForBlock,  ;
                     SELF:WhileBlock,  ;
@@ -279,7 +279,7 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
             ENDIF
 
 
-            ( cAlias ) -> ( DBCloseArea() )
+            ( cAlias ) -> ( DbCloseArea() )
 
 
         ENDIF
@@ -291,9 +291,9 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
     RECOVER USING oError
         ErrorBlock( cbOldErr )
         LOCAL oErr := oError as Error
-        IF oErr:OsCode != 0
-            oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OsCode ) + ;
-                " ( " + DosErrString( oErr:OsCode ) + " )" )
+        IF oErr:OSCode != 0
+            oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OSCode ) + ;
+                " ( " + DosErrString( oErr:OSCode ) + " )" )
         ENDIF
 
 
@@ -315,7 +315,7 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
 METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
     LOCAL cAlias AS STRING
     LOCAL lRetCode AS LOGIC
-    LOCAL rddList AS _RDDLIST
+    LOCAL rddList AS _RddList
     LOCAL cPath AS STRING
     LOCAL cFileName AS STRING
     LOCAL cNewName AS STRING
@@ -354,9 +354,9 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
 
         IF Empty( aDbStruct ) .OR. ! IsArray( aDbStruct )
             cAlias := Symbol2String( __ConstructUniqueAlias( SELF:cFSFileName ) )
-            IF DBUseArea( TRUE, SELF:cRDD_Name, SELF:__FullPathAcc(), cAlias, TRUE, TRUE, , , SELF:aRDDs )
-                aDbStruct := DBStruct()
-                ( cAlias ) -> ( DBCloseArea() )
+            IF DbUseArea( TRUE, SELF:cRDD_Name, SELF:__FullPathAcc(), cAlias, TRUE, TRUE, , , SELF:aRDDs )
+                aDbStruct := DbStruct()
+                ( cAlias ) -> ( DbCloseArea() )
             ELSE
                 RETURN FALSE
             ENDIF
@@ -407,8 +407,8 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
 
 
 
-        aRdds := __RddList( cDriver, aRdds )
-        rddList := __AllocRddList( aRdds )
+        aRDDs := __RDDList( cDriver, aRDDs )
+        rddList := __AllocRddList( aRDDs )
 
 
         IF Empty( lWantAnsi ) .OR. ! IsLogic( lWantAnsi )
@@ -418,7 +418,7 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
         ENDIF
 
 
-        lRetCode := VODBCreate( cFileName, aDbStruct, rddList, TRUE, cAlias, "", FALSE, FALSE )
+        lRetCode := VoDbCreate( cFileName, aDbStruct, rddList, TRUE, cAlias, "", FALSE, FALSE )
 
 
         IF lRetCode
@@ -435,9 +435,9 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
     RECOVER USING oError
         ErrorBlock( cbOldErr )
         LOCAL oErr := oError as Error
-        IF oErr:OsCode != 0
-            oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OsCode ) + ;
-                " ( " + DosErrString( oErr:OsCode ) + " )" )
+        IF oErr:OSCode != 0
+            oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OSCode ) + ;
+                " ( " + DosErrString( oErr:OSCode ) + " )" )
         ENDIF
 
 
@@ -508,25 +508,25 @@ METHOD DBFSGetInfo( xRDDs, aHidden )
         cAlias := Symbol2String( __ConstructUniqueAlias( SELF:cFSFileName ) )
 
 
-        IF ! IsArray( xRdds )
-            xRdds := SELF:aRDDs
+        IF ! IsArray( xRDDs )
+            xRDDs := SELF:aRDDs
         ENDIF
 
 
-        IF ALen( xRdds ) < 2
-            IF ! IsString( xRdds )
-                xRdds := SELF:cRDD_Name
+        IF ALen( xRDDs ) < 2
+            IF ! IsString( xRDDs )
+                xRDDs := SELF:cRDD_Name
             ENDIF
-            xRdds := __RddList( xRdds, aHidden )
+            xRDDs := __RDDList( xRDDs, aHidden )
         ENDIF
 
 
-        lRetCode := DBUseArea( TRUE, xRdds, cFile , cAlias, TRUE, TRUE, NIL, NIL, aHidden )
+        lRetCode := DbUseArea( TRUE, xRDDs, cFile , cAlias, TRUE, TRUE, NIL, NIL, aHidden )
 
 
         IF lRetCode
-            SELF:cRDD_Name := RDDName()
-            SELF:uRDD_Version := ( cAlias ) -> ( DBInfo( DBI_RDD_VERSION ) )
+            SELF:cRDD_Name := RddName()
+            SELF:uRDD_Version := ( cAlias ) -> ( DbInfo( DBI_RDD_VERSION ) )
             SELF:aRDDs := xRDDs
 
 
@@ -536,21 +536,21 @@ METHOD DBFSGetInfo( xRDDs, aHidden )
             ENDIF
 
 
-            IF DBInfo( DBI_ISDBF )
-                SELF:nFCount := ( cAlias ) -> ( DBInfo( DBI_FCOUNT ) )
-                SELF:nRecSize := ( cAlias ) -> (  DBInfo( DBI_GETRECSIZE ) )
-                SELF:nHeaderSize := ( cAlias ) -> ( DBInfo( DBI_GETHEADERSIZE ) )
-                SELF:lAnsi := ( cAlias ) -> ( DBInfo( DBI_ISANSI ) )
-                SELF:dLastUpDate := ( cAlias ) -> ( DBInfo( DBI_LASTUPDATE ) )
-                SELF:nRecCount := ( cAlias ) -> ( VODBLastRec() )
-                SELF:nRLockCount := ( cAlias ) -> ( DBInfo( DBI_LOCKCOUNT ) )
-                SELF:aDbStruct := ( cAlias ) -> ( DBStruct() )
+            IF DbInfo( DBI_ISDBF )
+                SELF:nFCount := ( cAlias ) -> ( DbInfo( DBI_FCOUNT ) )
+                SELF:nRecSize := ( cAlias ) -> (  DbInfo( DBI_GETRECSIZE ) )
+                SELF:nHeaderSize := ( cAlias ) -> ( DbInfo( DBI_GETHEADERSIZE ) )
+                SELF:lAnsi := ( cAlias ) -> ( DbInfo( DBI_ISANSI ) )
+                SELF:dLastUpDate := ( cAlias ) -> ( DbInfo( DBI_LASTUPDATE ) )
+                SELF:nRecCount := ( cAlias ) -> ( VoDbLastRec() )
+                SELF:nRLockCount := ( cAlias ) -> ( DbInfo( DBI_LOCKCOUNT ) )
+                SELF:aDbStruct := ( cAlias ) -> ( DbStruct() )
             ENDIF
 
 
             // pMemoHandle := ( cAlias ) -> ( DBINFO( DBI_MEMOHANDLE ) )
-            // Workaround for bug #965, DBInfo( DBI_MEMOHANDLE ) returns FileStream or IntPtr
-            oMemoHandle := ( cAlias ) -> ( DBInfo( DBI_MEMOHANDLE ) )
+            // Workaround for bug #965, DbInfo( DBI_MEMOHANDLE ) returns FileStream or IntPtr
+            oMemoHandle := ( cAlias ) -> ( DbInfo( DBI_MEMOHANDLE ) )
             LOCAL lMemoHandle AS LOGIC
             DO CASE
             CASE oMemoHandle == NULL
@@ -566,8 +566,8 @@ METHOD DBFSGetInfo( xRDDs, aHidden )
 
             IF lMemoHandle
                 SELF:cMemFileName := SELF:cFSFileName
-                SELF:cMemFileExt := ( cAlias ) -> ( DBInfo(  DBI_MEMOEXT ) )
-                SELF:nMemBlockSize := ( cAlias ) -> ( DBInfo( DBI_MEMOBLOCKSIZE ) )
+                SELF:cMemFileExt := ( cAlias ) -> ( DbInfo(  DBI_MEMOEXT ) )
+                SELF:nMemBlockSize := ( cAlias ) -> ( DbInfo( DBI_MEMOBLOCKSIZE ) )
 
 
                 aDirArray := Directory( SELF:MemFullPath )
@@ -575,21 +575,21 @@ METHOD DBFSGetInfo( xRDDs, aHidden )
                     SELF:Memo := aDirArray
                 ENDIF
             ENDIF
-            ( cAlias ) -> ( DBCloseArea() )
+            ( cAlias ) -> ( DbCloseArea() )
         ENDIF
 
 
     RECOVER USING oError
         ErrorBlock( cbOldErr )
         LOCAL oErr := oError as Error
-        IF oErr:OsCode != 0
-            oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OsCode ) +  ;
-                " ( " + DosErrString( oErr:OsCode ) + " )" )
+        IF oErr:OSCode != 0
+            oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OSCode ) +  ;
+                " ( " + DosErrString( oErr:OSCode ) + " )" )
         ENDIF
 
 
         IF lRetCode
-            ( cAlias ) -> ( DBCloseArea() )
+            ( cAlias ) -> ( DbCloseArea() )
         ENDIF
 
 
@@ -711,7 +711,7 @@ METHOD Delete()
                     os:Interval := 0
                     os:Start := 0
                     os:Records := 0
-                    os:Recno := 0
+                    os:RecNo := 0
                     os:Rest := FALSE
                     os:Descend := FALSE
                     os:All := FALSE
@@ -992,7 +992,7 @@ CONSTRUCTOR( cFullPath, cDriver, _aRDDs )
 
 
     IF Empty( cDriver ) .OR. ! IsString( cDriver )
-        SELF:cRDD_Name := RDDInfo( _SET_DEFAULTRDD )
+        SELF:cRDD_Name := RddInfo( _SET_DEFAULTRDD )
     ELSE
         SELF:cRDD_Name := cDriver
     ENDIF
@@ -1158,7 +1158,7 @@ METHOD Move( oDBFSTarget, lIDX, lName )
     LOCAL cProdIndex AS STRING
     LOCAL aDirArray AS ARRAY
     LOCAL cSourcePath AS STRING
-    LOCAL cMEMSource AS STRING
+    LOCAL cMemSource AS STRING
     LOCAL oError AS USUAL
     LOCAL cbOldErr AS USUAL
     LOCAL lRetCode AS LOGIC
@@ -1211,16 +1211,16 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 
 
                 cMEMTarget := cTargetPath + cFileName + SELF:MemFileExt
-                cMEMSource := cSourcePath + SELF:MemFileName + SELF:MemFileExt
+                cMemSource := cSourcePath + SELF:MemFileName + SELF:MemFileExt
 
 
                 IF SubStr3( cMEMTarget, 1, At2( ":", cMEMTarget ) ) == SubStr3( cMemSource, 1, At2( ":", cMemSource ) )
                     IF !lName .AND. File( cMEMTarget )
                         IF ( lRetCode := FErase( cMEMTarget  ) )
-                            lRetCode := FRename( cMEMSource , cMEMTarget  )
+                            lRetCode := FRename( cMemSource , cMEMTarget  )
                         ENDIF
                     ELSE
-                        lRetCode := FRename( cMEMSource , cMEMTarget  )
+                        lRetCode := FRename( cMemSource , cMEMTarget  )
                     ENDIF
 
 
@@ -1234,8 +1234,8 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 
 
                 ELSE
-                    IF lRetCode := FCopy( cMEMSource, cMEMTarget )
-                        lRetCode := FErase( cMEMSource  )
+                    IF lRetCode := FCopy( cMemSource, cMEMTarget )
+                        lRetCode := FErase( cMemSource  )
                         IF lRetCode
                             SELF:MemFullPath := cMEMTarget
                             aDirArray := Directory( cTargetPath + cFileName + SELF:MemFileExt )
@@ -1327,9 +1327,9 @@ METHOD Move( oDBFSTarget, lIDX, lName )
             LOCAL oErr := oError as Error
 
 
-            IF oErr:OsCode != 0
-                oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OsCode ) + ;
-                    " ( " + DosErrString( oErr:OsCode ) + " )" )
+            IF oErr:OSCode != 0
+                oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OSCode ) + ;
+                    " ( " + DosErrString( oErr:OSCode ) + " )" )
             ENDIF
 
 
@@ -1534,9 +1534,9 @@ METHOD Rename( oDBFSNewName, lName )
         LOCAL oErr := oError as Error
 
 
-        IF oErr:OsCode != 0
-            oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OsCode ) +  ;
-                " ( " + DosErrString( oErr:OsCode ) + " )" )
+        IF oErr:OSCode != 0
+            oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OSCode ) +  ;
+                " ( " + DosErrString( oErr:OSCode ) + " )" )
         ENDIF
 
 

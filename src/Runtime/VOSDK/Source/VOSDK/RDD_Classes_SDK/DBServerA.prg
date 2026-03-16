@@ -549,8 +549,8 @@ ASSIGN OrderBottomScope(uValue)
     BEGIN SEQUENCE
     VoDbSelect( wWorkArea, out dwCurrentWorkArea )
     //iRetVal := (OrdKeyNo()
-    IF ! VODBOrderInfo(DBOI_POSITION, "", NIL, REF uRetVal)
-    BREAK ErrorBuild(_VODBErrInfoPtr())
+    IF ! VoDbOrderInfo(DBOI_POSITION, "", NIL, REF uRetVal)
+    BREAK ErrorBuild(_VoDbErrInfoPtr())
     ENDIF
     __DBSSetSelect( dwCurrentWorkArea )
     RECOVER USING oError
@@ -585,9 +585,9 @@ ASSIGN OrderBottomScope(uValue)
     // 			BREAK DbError{ SELF, __FUNCTION__, 999, VO_SPrintF(__CAVOSTR_DBFCLASS_INTENTTOMOVE)}
     // 		ENDIF
     // 		//if !OrdKeyVal(uKeyValue)
-    // 		//  break ErrorBuild(_VODBErrInfoPtr())
+    // 		//  break ErrorBuild(_VoDbErrInfoPtr())
     // 		//endif
-    // 		//VODBOrderInfo(DBOI_KEYVAL, "", NIL, REF uRetVal)
+    // 		//VoDbOrderInfo(DBOI_KEYVAL, "", NIL, REF uRetVal)
     // 		SELF:OrderKeyGoTo(nKeyPos)
     //
     // 		SELF:__ProcessConcurrency(TRUE)
@@ -737,7 +737,7 @@ ACCESS  PaintedStructure
     FOR i:=1 UPTO nField
         LOCAL oFs as FieldSpec
         oFs := aFDesc[i][DBC_FIELDSPEC]
-        AAdd( aRet, { aFDesc[i][DBC_NAME] , oFs:valtype , oFs:length , oFs:Decimals } )
+        AAdd( aRet, { aFDesc[i][DBC_NAME] , oFs:ValType , oFs:Length , oFs:Decimals } )
     NEXT
     RETURN aRet
 

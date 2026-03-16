@@ -167,7 +167,7 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
         SELF:Gencode := EG_NOTABLE
     ENDIF
     IF oHLErrorMessage# NIL
-        IF IsObject( oHLErrorMessage) .and. __USual.ToObject(oHLErrorMessage) IS HyperLabel
+        IF IsObject( oHLErrorMessage) .and. oHLErrorMessage IS HyperLabel
 
 
             SELF:Description := ((HyperLabel)oHLErrorMessage):Description

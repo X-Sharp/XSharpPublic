@@ -413,7 +413,7 @@ CLASS XSharp.CoreDb
         /// Close all files in a work area.
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks>This function is like DBCloseArea().
+        /// <remarks>This function is like DbCloseArea().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbCloseArea() and CoreDb.CloseArea() are aliases</note></remarks>
     STATIC METHOD CloseArea() AS LOGIC
@@ -2144,7 +2144,7 @@ CLASS XSharp.CoreDb
         /// <param name="lShare">Should the file be opened shared ?</param>
         /// <param name="lReadOnly">Should the file be opened readonly ?</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks>This function is like DBUseArea() but strongly typed.
+        /// <remarks>This function is like DbUseArea() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbUseArea() and CoreDb.UseArea() are aliases</note></remarks>
 

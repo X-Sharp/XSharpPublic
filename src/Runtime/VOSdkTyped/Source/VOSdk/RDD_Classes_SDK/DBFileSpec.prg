@@ -464,7 +464,7 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRdds ) AS USUAL CLIPPE
 
 
 
-        aRdds := __RDDList( cDriver, aRdds )
+        aRdds := _RDDList( cDriver, aRdds )
         rddList := __AllocRddList( aRdds )
 
 
@@ -540,7 +540,7 @@ ACCESS DBFName AS STRING
 
 
 /// <include file="Rdd.xml" path="doc/DbFileSpec.DBFSGetInfo/*" />
-METHOD DBFSGetInfo( xRdds, aHidden ) AS USUAL CLIPPER
+METHOD DBFSGetInfo( xRDDs, aHidden ) AS USUAL CLIPPER
     LOCAL cAlias AS STRING
     LOCAL cFile AS STRING
     LOCAL aDirArray AS ARRAY
@@ -558,26 +558,26 @@ METHOD DBFSGetInfo( xRdds, aHidden ) AS USUAL CLIPPER
         cAlias := Symbol2String( __ConstructUniqueAlias( SELF:cFSFileName ) )
 
 
-        IF ! IsArray( xRdds )
-            xRdds := SELF:aRDDs
+        IF ! IsArray( xRDDs )
+            xRDDs := SELF:aRDDs
         ENDIF
 
 
-        IF ALen( xRdds ) < 2
-            IF ! IsString( xRdds )
-                xRdds := SELF:cRDD_Name
+        IF ALen( xRDDs ) < 2
+            IF ! IsString( xRDDs )
+                xRDDs := SELF:cRDD_Name
             ENDIF
-            xRdds := __RDDList( xRdds, aHidden )
+            xRDDs := _RDDList( xRDDs, aHidden )
         ENDIF
 
 
-        lRetCode := DbUseArea( TRUE, xRdds, cFile , cAlias, TRUE, TRUE, NIL, NIL, aHidden )
+        lRetCode := DbUseArea( TRUE, xRDDs, cFile , cAlias, TRUE, TRUE, NIL, NIL, aHidden )
 
 
         IF lRetCode
             SELF:cRDD_Name := RddName()
             SELF:uRDD_Version := ( cAlias ) -> ( DbInfo( DBI_RDD_VERSION ) )
-            SELF:aRDDs := xRdds
+            SELF:aRDDs := xRDDs
 
 
             aDirArray := Directory( cFile )

@@ -1,7 +1,7 @@
 #pragma options ("enforceself", on)
 /// <include file="Rdd.xml" path="doc/DBSelectionIndex/*" />
 CLASS DBSelectionIndex
-    PROTECT oServer AS DBSERVER
+    PROTECT oServer AS DbServer
     PROTECT cExpression AS STRING
     PROTECT cbExpression AS _CODEBLOCK
     PROTECT nSelect AS INT
@@ -13,9 +13,9 @@ METHOD Eval( )
     LOCAL xRet AS USUAL
 
 
-    VODBSelect( DWORD(SELF:nSelect), OUT nOldSelect )
+    VoDbSelect( DWORD(SELF:nSelect), OUT nOldSelect )
     xRet := Eval( SELF:cbExpression )
-    VODBSetSelect( LONGINT(nOldSelect) )
+    VoDbSetSelect( LONGINT(nOldSelect) )
     RETURN xRet
 
 

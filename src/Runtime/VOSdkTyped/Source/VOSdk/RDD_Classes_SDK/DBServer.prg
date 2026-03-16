@@ -768,7 +768,7 @@ constructor( oFS := null as FileSpec, lShareMode := null as object, lReadOnlyMod
         endif
 
 
-        self:aRdds := __RDDList( xDriver, aRDD )
+        self:aRdds := _RDDList( xDriver, aRDD )
         rddList := __AllocRddList( aRdds )
 
 

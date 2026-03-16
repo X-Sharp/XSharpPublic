@@ -633,7 +633,7 @@ method Transform( uValue )
             cResult := AsString(uValue)
         ENDIF
     ELSE
-        cResult := Functions.Transform(uValue,SELF:cPicture)
+        cResult := Transform(uValue,SELF:cPicture)
     ENDIF
 
 

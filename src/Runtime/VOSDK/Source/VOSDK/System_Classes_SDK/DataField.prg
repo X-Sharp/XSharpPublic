@@ -29,7 +29,7 @@ ACCESS HyperLabel
 CONSTRUCTOR( oHLName, oFS )
 
 
-    IF IsObject( oHLName) .and. __USual.ToObject(oHLName) IS HyperLabel
+    IF IsObject( oHLName) .and. oHLName IS HyperLabel
         oHyperLabel := oHLName
     ELSEIF IsString( oHLName ) .OR. IsSymbol( oHLName )
         oHyperLabel := HyperLabel{ oHLName }

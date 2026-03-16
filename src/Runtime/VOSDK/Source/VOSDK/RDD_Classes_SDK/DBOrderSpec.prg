@@ -1,6 +1,6 @@
 /// <include file="Rdd.xml" path="doc/OrderSpec/*" />
 CLASS OrderSpec
-    PROTECT oDBF            AS DBFileSpec
+    PROTECT oDBF            AS DbFileSpec
 
 
     // index order items
@@ -52,11 +52,11 @@ METHOD __OpenDb      ( cAlias AS STRING )	AS LOGIC STRICT
     ENDIF
 
 
-    RETURN DBUseArea( TRUE, SELF:oDBF:RDDs, SELF:oDBF:FullPath, cAlias, FALSE, FALSE )
+    RETURN DbUseArea( TRUE, SELF:oDBF:RDDs, SELF:oDBF:FullPath, cAlias, FALSE, FALSE )
 
 
 /// <exclude />
-PROPERTY __DBf as DbFileSpec GET oDBF
+PROPERTY __DBF as DbFileSpec GET oDBF
 /// <exclude />
 METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
     // Gets order information and assigns info into the OrderSpec Object.
@@ -71,10 +71,10 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
         aKeyInfo := ArrayNew( 4 )
 
 
-        cRDD := SELF:__DBf:RDD_Name
+        cRDD := SELF:__DBF:RDD_Name
 
 
-        aKeyInfo[ORD_KEYTYPE] := ( cAlias )->( DBOrderInfo( DBOI_KEYTYPE ) )
+        aKeyInfo[ORD_KEYTYPE] := ( cAlias )->( DbOrderInfo( DBOI_KEYTYPE ) )
         DO CASE
         CASE aKeyInfo[ORD_KEYTYPE] == 7
             aKeyInfo[ORD_KEYTYPE] := "STRING"
@@ -93,21 +93,21 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
         ENDCASE
 
 
-        aKeyInfo[ORD_KEYCOUNT]      := ( cAlias )->( DBOrderInfo( DBOI_KEYCOUNT ) )
-        aKeyInfo[ORD_KEYSIZE]       := ( cAlias )->( DBOrderInfo( DBOI_KEYSIZE ) )
-        aKeyInfo[ORD_KEYDEC]        := ( cAlias )->( DBOrderInfo( DBOI_KEYDEC ) )
+        aKeyInfo[ORD_KEYCOUNT]      := ( cAlias )->( DbOrderInfo( DBOI_KEYCOUNT ) )
+        aKeyInfo[ORD_KEYSIZE]       := ( cAlias )->( DbOrderInfo( DBOI_KEYSIZE ) )
+        aKeyInfo[ORD_KEYDEC]        := ( cAlias )->( DbOrderInfo( DBOI_KEYDEC ) )
 
 
         // non-conditional order information
-        SELF:FileName           := ( cAlias )->( DBOrderInfo( DBOI_FULLPATH ) )
-        SELF:__DBf:IndexNames     := ( cAlias )->( DBOrderInfo( DBOI_FULLPATH ) )
-        SELF:OrderName          := ( cAlias )->( DBOrderInfo( DBOI_NAME ) )
-        SELF:OrderExpr          := ( cAlias )->( DBOrderInfo( DBOI_EXPRESSION ) )
+        SELF:FileName           := ( cAlias )->( DbOrderInfo( DBOI_FULLPATH ) )
+        SELF:__DBF:IndexNames     := ( cAlias )->( DbOrderInfo( DBOI_FULLPATH ) )
+        SELF:OrderName          := ( cAlias )->( DbOrderInfo( DBOI_NAME ) )
+        SELF:OrderExpr          := ( cAlias )->( DbOrderInfo( DBOI_EXPRESSION ) )
         SELF:OrderBlock         := &( "{||" + SELF:OrderExpr + "}" )
-        SELF:Unique             := ( cAlias )->( DBOrderInfo( DBOI_UNIQUE ) )
+        SELF:Unique             := ( cAlias )->( DbOrderInfo( DBOI_UNIQUE ) )
 
 
-        SELF:__DBf:Orders         := SELF
+        SELF:__DBF:Orders         := SELF
 
 
         // key info
@@ -115,9 +115,9 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
 
 
         // conditional index info
-        SELF:lIsCond            := ( cAlias )->( DBOrderInfo( DBOI_ISCOND ) )
+        SELF:lIsCond            := ( cAlias )->( DbOrderInfo( DBOI_ISCOND ) )
         IF SELF:lIsCond
-            SELF:uForCond        := ( cAlias )->( DBOrderInfo( DBOI_CONDITION ) )
+            SELF:uForCond        := ( cAlias )->( DbOrderInfo( DBOI_CONDITION ) )
             SELF:uForBlock       := &( "{||" + SELF:uForCond + "}" )
         ELSE
             SELF:uForCond        := NULL_STRING
@@ -125,15 +125,15 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
         ENDIF
 
 
-        SELF:Descend            := ( cAlias )->( DBOrderInfo( DBOI_ISDESC ) )
+        SELF:Descend            := ( cAlias )->( DbOrderInfo( DBOI_ISDESC ) )
 
 
         // NTX specific items
         IF cRDD == "DBFNTX"
             SELF:Custom        := FALSE
             SELF:NoOptimize    := FALSE
-            SELF:lHPLock        := ( cAlias )->( DBOrderInfo( DBOI_HPLOCKING ) )
-            SELF:nLockOffSet    := ( cAlias )->( DBOrderInfo( DBOI_LOCKOFFSET ) )
+            SELF:lHPLock        := ( cAlias )->( DbOrderInfo( DBOI_HPLOCKING ) )
+            SELF:nLockOffSet    := ( cAlias )->( DbOrderInfo( DBOI_LOCKOFFSET ) )
 
 
         ENDIF
@@ -142,12 +142,12 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
         // CDX specific items
         //	IF cRDD == "DBFCDX"
         IF At2( "CDX", cRDD ) > 0
-            SELF:Custom        := ( cAlias )->( DBOrderInfo( DBOI_CUSTOM ) )
-            SELF:NoOptimize     := ( cAlias )->( RDDInfo( _SET_OPTIMIZE ) )
-            SELF:lAutoOpen      := ( cAlias )->( RDDInfo( _SET_AUTOOPEN ) )
-            SELF:nAutoOrder     := ( cAlias )->( RDDInfo( _SET_AUTOORDER ) )
-            SELF:nAutoShare     := ( cAlias )->( RDDInfo( _SET_AUTOSHARE ) )
-            SELF:lStrictRead    := ( cAlias )->( RDDInfo( _SET_STRICTREAD ) )
+            SELF:Custom        := ( cAlias )->( DbOrderInfo( DBOI_CUSTOM ) )
+            SELF:NoOptimize     := ( cAlias )->( RddInfo( _SET_OPTIMIZE ) )
+            SELF:lAutoOpen      := ( cAlias )->( RddInfo( _SET_AUTOOPEN ) )
+            SELF:nAutoOrder     := ( cAlias )->( RddInfo( _SET_AUTOORDER ) )
+            SELF:nAutoShare     := ( cAlias )->( RddInfo( _SET_AUTOSHARE ) )
+            SELF:lStrictRead    := ( cAlias )->( RddInfo( _SET_STRICTREAD ) )
         ENDIF
 
 
@@ -171,7 +171,7 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
         SELF:Interval       := 0
         SELF:Start          := 0
         SELF:Records        := 0
-        SELF:Recno          := 0
+        SELF:RecNo          := 0
         SELF:Rest           := FALSE
         SELF:Descend        := FALSE
         SELF:All            := FALSE
@@ -361,7 +361,7 @@ ACCESS FileName
 ASSIGN FileName( cName )
     LOCAL aFullPath AS ARRAY
     LOCAL cFileName AS STRING
-    LOCAL oDBFS     AS DBFileSpec
+    LOCAL oDBFS     AS DbFileSpec
 
 
     IF Empty( cName ) .OR. !IsString( cName )
@@ -471,16 +471,16 @@ CONSTRUCTOR( oDBFS )
     // oDBFS is an existing DBFileSpec object
     //
     IF IsObject(oDBFS) .AND. __Usual.ToObject(oDBFS) IS DbFileSpec
-        SELF:oDBf := oDBFS
-        IF SELF:__DBf:Orders == NULL_ARRAY
-            SELF:__DBf:Orders := {}
+        SELF:oDBF := oDBFS
+        IF SELF:__DBF:Orders == NULL_ARRAY
+            SELF:__DBF:Orders := {}
 
 
         ENDIF
 
 
-        IF SELF:__DBf:IndexNames == NULL_ARRAY
-            SELF:__DBf:IndexNames := {}
+        IF SELF:__DBF:IndexNames == NULL_ARRAY
+            SELF:__DBF:IndexNames := {}
 
 
         ENDIF
@@ -583,7 +583,7 @@ METHOD OrderAdd( oFS, uOrder )
     LOCAL cFile         AS STRING
     LOCAL cExt          AS STRING
     LOCAL cRDD          AS STRING
-    LOCAL oDBFSpec      AS DBFileSpec
+    LOCAL oDBFSpec      AS DbFileSpec
     //LOCAL oSelf         AS OrderSpec
     LOCAL cAlias		AS STRING
 
@@ -669,13 +669,13 @@ METHOD OrderAdd( oFS, uOrder )
 
         IF SELF:__OpenDb( cAlias )
             // auto-open index file
-            IF ( cAlias )->( DBOrderInfo( DBOI_FILEHANDLE ) ) > 0
-                lRetCode := ( cAlias )->( DBSetOrder ( uOrder ) )
+            IF ( cAlias )->( DbOrderInfo( DBOI_FILEHANDLE ) ) > 0
+                lRetCode := ( cAlias )->( DbSetOrder ( uOrder ) )
 
 
             ELSE
                 ( cAlias )->( OrdListAdd( cFile ) )
-                lRetCode := ( cAlias )->( DBSetOrder( uOrder ) )
+                lRetCode := ( cAlias )->( DbSetOrder( uOrder ) )
 
 
             ENDIF
@@ -688,7 +688,7 @@ METHOD OrderAdd( oFS, uOrder )
             ENDIF
 
 
-            ( cAlias )->( DBCloseArea() )
+            ( cAlias )->( DbCloseArea() )
 
 
         ENDIF
@@ -698,7 +698,7 @@ METHOD OrderAdd( oFS, uOrder )
         IF SELF:__OpenDb( NULL_STRING )
 
 
-            lRetCode := ( cAlias )->( DBSetIndex( cFile ) )
+            lRetCode := ( cAlias )->( DbSetIndex( cFile ) )
 
 
             IF lRetCode
@@ -708,7 +708,7 @@ METHOD OrderAdd( oFS, uOrder )
             ENDIF
 
 
-            ( cAlias )->( DBCloseArea() )
+            ( cAlias )->( DbCloseArea() )
 
 
         ENDIF
@@ -747,7 +747,7 @@ METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique )
     LOCAL cExt          AS STRING
     LOCAL cRDD          AS STRING
     LOCAL lOldHPLock    AS LOGIC
-    LOCAL oDBFSpec      AS DBFileSpec
+    LOCAL oDBFSpec      AS DbFileSpec
     LOCAL cAlias		AS STRING
     LOCAL nNext         AS USUAL
     LOCAL nRec          AS USUAL
@@ -896,7 +896,7 @@ METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique )
         ENDIF
 
 
-        lRetCode := ( cAlias )->( VODBOrdCreate ( cFile, cOrder, cKeyValue, cbKeyValue, lUnique, NULL ) )
+        lRetCode := ( cAlias )->( VoDbOrdCreate ( cFile, cOrder, cKeyValue, cbKeyValue, lUnique, NULL ) )
 
 
         IF cRDD == "DBFNTX"
@@ -905,7 +905,7 @@ METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique )
         IF lRetCode
             SELF:__OrderSetInfo( cAlias )
         ENDIF
-        ( cAlias )->( DBCloseArea() )
+        ( cAlias )->( DbCloseArea() )
     ENDIF
     RETURN lRetCode
 
@@ -933,12 +933,12 @@ METHOD OrderDelete( uOrder )
             uOrder := 1
         ENDIF
         IF SELF:__OpenDb( cAlias )
-            nHandle := DBOrderInfo( DBOI_FILEHANDLE )
+            nHandle := DbOrderInfo( DBOI_FILEHANDLE )
             IF nHandle > 0
-                lRetCode := ( cAlias )->( DBDeleteOrder( uOrder, cFullPath ) )
+                lRetCode := ( cAlias )->( DbDeleteOrder( uOrder, cFullPath ) )
             ELSE
                 ( cAlias )->( OrdListAdd( cFullPath ) )//, uOrder ) )
-                lRetCode := ( cAlias )->( DBDeleteOrder( uOrder, cFullPath ) )
+                lRetCode := ( cAlias )->( DbDeleteOrder( uOrder, cFullPath ) )
             ENDIF
 
 
@@ -955,8 +955,8 @@ METHOD OrderDelete( uOrder )
             ENDIF
 
 
-            nOrdCount := ( cAlias )->( DBOrderInfo( DBOI_ORDERCOUNT, SELF:cFileName ) )
-            ( cAlias )->( DBCloseArea() )
+            nOrdCount := ( cAlias )->( DbOrderInfo( DBOI_ORDERCOUNT, SELF:cFileName ) )
+            ( cAlias )->( DbCloseArea() )
 
 
             // DBFCDX deletes index file if order count == 0

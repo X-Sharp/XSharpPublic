@@ -28,7 +28,7 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             IF SELF:Notify( NOTIFYINTENTTOMOVE )
                 IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
                     cTarget := oFS:FullPath
@@ -101,11 +101,11 @@ PARTIAL CLASS DbServer
                 ELSEIF lSelectionActive
                     uValue := uSelectionValue
                     cbKey := cbSelectionIndexingExpression
-                    IF VODBSeek( uSelectionValue, FALSE )
+                    IF VoDbSeek( uSelectionValue, FALSE )
                         lRetCode := __DBSDBCopy( cTarget,  ;
                             aFieldNames,  ;
                             NIL,  ;
-                            { | | Functions.Eval( cbKey ) = uValue },  ;
+                            { | | Eval( cbKey ) = uValue },  ;
                             NIL,  ;
                             NIL,  ;
                             TRUE,  ;
@@ -113,16 +113,16 @@ PARTIAL CLASS DbServer
                             aRDD,  ;
                             aStruct )
                         siSelectionStatus := DBSELECTIONEOF
-                        IF ! VODBGoBottom( )
-                            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                        IF ! VoDbGoBottom( )
+                            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                         ENDIF
-                        IF ! VODBSkip( 1 )
-                            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                        IF ! VoDbSkip( 1 )
+                            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                         ENDIF
 
 
                     ELSE
-                        BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                        BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                     ENDIF
 
 
@@ -218,7 +218,7 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             IF SELF:Notify( NOTIFYINTENTTOMOVE )
                 IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
                     cTarget := oFS:FullPath
@@ -270,23 +270,23 @@ PARTIAL CLASS DbServer
                 ELSEIF lSelectionActive
                     uValue := uSelectionValue
                     cbKey := cbSelectionIndexingExpression
-                    IF VODBSeek( uSelectionValue, FALSE )
+                    IF VoDbSeek( uSelectionValue, FALSE )
                         lRetCode := __DBSDBCOPYDELIM( cTarget, cDelimiter,  aFieldNames,  ;
                             NIL,  ;
-                            { || Functions.Eval( cbKey ) = uValue },  ;
+                            { || Eval( cbKey ) = uValue },  ;
                             NIL,  ;
                             NIL,  ;
                             TRUE,  ;
                             aStruct )
                         siSelectionStatus := DBSELECTIONEOF
-                        IF ! VODBGoBottom( )
-                            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                        IF ! VoDbGoBottom( )
+                            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                         ENDIF
-                        IF ! VODBSkip( 1 )
-                            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                        IF ! VoDbSkip( 1 )
+                            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                         ENDIF
                     ELSE
-                        BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                        BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                     ENDIF
                 ELSE
                     lRetCode := __DBSDBCOPYDELIM( cTarget, cDelimiter,  aFieldNames,  ;
@@ -373,7 +373,7 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             IF SELF:Notify( NOTIFYINTENTTOMOVE )
                 IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
                     cTarget := oFS:FullPath
@@ -427,23 +427,23 @@ PARTIAL CLASS DbServer
                 ELSEIF lSelectionActive
                     uValue := uSelectionValue
                     cbKey := cbSelectionIndexingExpression
-                    IF VODBSeek( uSelectionValue, FALSE )
+                    IF VoDbSeek( uSelectionValue, FALSE )
                         lRetCode := __DBSDBCOPYSDF( cTarget, aFieldNames,  ;
                             NIL,  ;
-                            { || Functions.Eval( cbKey ) = uValue },  ;
+                            { || Eval( cbKey ) = uValue },  ;
                             NIL,  ;
                             NIL,  ;
                             TRUE,  ;
                             aStruct )
                         siSelectionStatus := DBSELECTIONEOF
-                        IF ! VODBGoBottom( )
-                            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                        IF ! VoDbGoBottom( )
+                            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                         ENDIF
-                        IF ! VODBSkip( 1 )
-                            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                        IF ! VoDbSkip( 1 )
+                            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                         ENDIF
                     ELSE
-                        BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                        BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                     ENDIF
                 ELSE
                     lRetCode := __DBSDBCOPYSDF( cTarget, aFieldNames,  ;
@@ -520,7 +520,7 @@ PARTIAL CLASS DbServer
         LOCAL oSelf AS DbServer
         LOCAL aFullPath AS ARRAY
         LOCAL aRdds AS ARRAY
-        LOCAL rddList AS _RDDLIST
+        LOCAL rddList AS _RddList
 
 
 #IFDEF __DEBUG__
@@ -585,15 +585,15 @@ PARTIAL CLASS DbServer
             lRetCode := TRUE
 
 
-            aRdds := __RddList( SELF:cRDDName )
+            aRdds := __RDDList( SELF:cRDDName )
             rddList := __AllocRddList( aRdds )
 
 
-            lRetCode := VODBCreate( cTarget, aNew, rddList, TRUE, cAlias, "", FALSE, FALSE )
+            lRetCode := VoDbCreate( cTarget, aNew, rddList, TRUE, cAlias, "", FALSE, FALSE )
 
 
             IF ! lRetCode
-                BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
             ENDIF
 
 
@@ -609,7 +609,7 @@ PARTIAL CLASS DbServer
 
 
 
-        SELF:__Notify( NotifyCompletion, #CopyStructure )
+        SELF:__Notify( NOTIFYCOMPLETION, #CopyStructure )
 
 
         IF ! lRetCode .AND. ! IsNil( oHLTemp )
@@ -649,7 +649,7 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             IF ! SELF:Notify( NOTIFYINTENTTOMOVE )
                 BREAK DbError{ SELF, __FUNCTION__, 999, VO_Sprintf( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) }
             ENDIF
@@ -667,7 +667,7 @@ PARTIAL CLASS DbServer
                         lRestOfFile := uScope
                     ENDIF
                 ENDIF
-                SELF:__DBServerEval( { || iTally++ },  ;
+                SELF:__DbServerEval( { || iTally++ },  ;
                     cbForBlock,  ;
                     cbWhileBlock,  ;
                     nNextCount,  ;
@@ -678,7 +678,7 @@ PARTIAL CLASS DbServer
 
 
             ELSEIF lActiveScope
-                SELF:__DBServerEval( { || iTally++ },  ;
+                SELF:__DbServerEval( { || iTally++ },  ;
                     cbStoredForBlock,  ;
                     cbStoredWhileBlock,  ;
                     nStoredNextCount,  ;
@@ -691,28 +691,28 @@ PARTIAL CLASS DbServer
             ELSEIF lSelectionActive
                 uValue := uSelectionValue
                 cbKey := cbSelectionIndexingExpression
-                IF VODBSeek( uSelectionValue, FALSE )
-                    SELF:__DBServerEval( { || iTally++ },  ;
+                IF VoDbSeek( uSelectionValue, FALSE )
+                    SELF:__DbServerEval( { || iTally++ },  ;
                         NIL,  ;
-                        { || Functions.Eval( cbKey ) = uValue },  ;
+                        { || Eval( cbKey ) = uValue },  ;
                         NIL,  ;
                         NIL,  ;
                         TRUE,  ;
                         DBCCON,  ;
                         DBCCREADONLY )
                     siSelectionStatus := DBSELECTIONEOF
-                    IF ! VODBGoBottom( )
-                        BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                    IF ! VoDbGoBottom( )
+                        BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                     ENDIF
-                    IF ! VODBSkip( 1 )
-                        BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                    IF ! VoDbSkip( 1 )
+                        BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                     ENDIF
                 ELSE
-                    BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                    BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                 ENDIF
             ELSE
                 //PP-040216 lRest requires a logic due to strong typing
-                SELF:__DBServerEval( { || iTally++ },  ;
+                SELF:__DbServerEval( { || iTally++ },  ;
                     NIL,  ;
                     NIL,  ;
                     NIL,  ;
@@ -781,7 +781,7 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             IF SELF:Notify( NOTIFYINTENTTOMOVE )
                 IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFs
                     cIndexFileName := oFs:FullPath
@@ -814,8 +814,8 @@ PARTIAL CLASS DbServer
                 ENDIF
 
 
-                IF ! VODBOrdCreate( cIndexFileName, NIL, cExpr, cbExpr, lUnique, NULL )
-                    BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                IF ! VoDbOrdCreate( cIndexFileName, NIL, cExpr, cbExpr, lUnique, NULL )
+                    BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                 ENDIF
                 lRetCode := TRUE
 
@@ -883,7 +883,7 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             IF SELF:Notify( NOTIFYINTENTTOMOVE )
                 IF IsObject(cIndexFileName) .and. __Usual.ToObject(cIndexFileName) IS FileSpec VAR oFs
                     cIndexFileName := oFs:FullPath
@@ -915,8 +915,8 @@ PARTIAL CLASS DbServer
                 ENDIF
 
 
-                IF ! VODBOrdCreate( cIndexFileName, cOrderName, cExpr, cbExpr, lUnique, NULL )
-                    BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                IF ! VoDbOrdCreate( cIndexFileName, cOrderName, cExpr, cbExpr, lUnique, NULL )
+                    BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                 ENDIF
                 lRetCode := TRUE
                 siSelectionStatus := DBSELECTIONEOF
@@ -980,7 +980,7 @@ PARTIAL CLASS DbServer
             SELF:__SetStatusHL( __FUNCTION__, EG_NOTABLE, __CavoStr( __CAVOSTR_DBFCLASS_NOTABLE2 ) )
             oResult := NULL_OBJECT
         ELSE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             dwPos := __GetFldPos( uField, wFieldCount )
             __DBSSetSelect( dwCurrentWorkArea )  //SE-060527
             IF dwPos > 0
@@ -1010,13 +1010,13 @@ PARTIAL CLASS DbServer
         LOCAL dwCurrentWorkArea AS DWORD
         LOCAL oError AS USUAL
         LOCAL nCurrRec AS DWORD
-        LOCAL uFLock AS USUAL
+        LOCAL uFlock AS USUAL
 #IFDEF __DEBUG__
         DBFDebug("Entering "+__ENTITY__)
 #ENDIF
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             IF ! IsNil( cbForBlock ) .OR. ! IsNil( cbWhileBlock ) .OR. ! IsNil( uScope )
                 IF SELF:Notify( NOTIFYINTENTTOMOVE )
                     IF IsString( cbForBlock )
@@ -1038,7 +1038,7 @@ PARTIAL CLASS DbServer
                     ENDIF
 
 
-                    lRetCode := SELF:__DBServerEval( { || VODBDelete( ) },  ;
+                    lRetCode := SELF:__DbServerEval( { || VoDbDelete( ) },  ;
                         cbForBlock,  ;
                         cbWhileBlock,  ;
                         nNextCount,  ;
@@ -1048,7 +1048,7 @@ PARTIAL CLASS DbServer
                         DBCCUPDATE )
                     SELF:Notify( NOTIFYFILECHANGE )
                     IF ! lRetCode
-                        BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                        BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                     ENDIF
 
 
@@ -1061,7 +1061,7 @@ PARTIAL CLASS DbServer
 
             ELSEIF lActiveScope
                 IF SELF:Notify( NOTIFYINTENTTOMOVE )
-                    lRetCode := SELF:__DBServerEval( { || VODBDelete( ) },  ;
+                    lRetCode := SELF:__DbServerEval( { || VoDbDelete( ) },  ;
                         cbStoredForBlock,  ;
                         cbStoredWhileBlock,  ;
                         nStoredNextCount,  ;
@@ -1071,7 +1071,7 @@ PARTIAL CLASS DbServer
                         DBCCUPDATE )
                     SELF:Notify( NOTIFYFILECHANGE )
                     IF ! lRetCode
-                        BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                        BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                     ENDIF
                 ELSE
                     lRetCode := FALSE
@@ -1079,24 +1079,24 @@ PARTIAL CLASS DbServer
                         __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
                 ENDIF
             ELSE
-                IF ! VODBInfo( DBI_IsFLock, REF uFlock )
-                    BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                IF ! VoDbInfo( DBI_ISFLOCK, REF uFlock )
+                    BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                 ENDIF
                 IF nEffectiveCCMode == ccOptimistic .AND.  ;
-                        ( nCurrRec := VODBRecno( ) ) <= VODBLastRec( ) .AND. ! uFLock
-                    IF ! VODBRLock( nCurrRec )
+                        ( nCurrRec := VoDbRecno( ) ) <= VoDbLastRec( ) .AND. ! uFlock
+                    IF ! VoDbRlock( nCurrRec )
                         BREAK DbError{ NIL, __FUNCTION__, EG_LOCK, __CavoStr( __CAVOSTR_DBFCLASS_LOCKFAILED ) }
                     ENDIF
-                    IF ! VODBDelete( )
-                        BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                    IF ! VoDbDelete( )
+                        BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                     ENDIF
                     lRetCode := TRUE
-                    IF ! uFLock
-                        VODBUnlock( nCurrRec )
+                    IF ! uFlock
+                        VoDbUnlock( nCurrRec )
                     ENDIF
                 ELSE
-                    IF ! VODBDelete( )
-                        BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                    IF ! VoDbDelete( )
+                        BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                     ENDIF
                     lRetCode := TRUE
                 ENDIF
@@ -1145,32 +1145,32 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             IF SELF:Notify( NOTIFYINTENTTOMOVE )
                 IF lSelectionActive
                     uValue := uSelectionValue
                     cbKey := cbSelectionIndexingExpression
-                    IF VODBSeek( uSelectionValue, FALSE )
-                        lRetCode := SELF:__DBServerEval( { || VODBDelete( ) },  ;
+                    IF VoDbSeek( uSelectionValue, FALSE )
+                        lRetCode := SELF:__DbServerEval( { || VoDbDelete( ) },  ;
                             NIL,  ;
-                            { || Functions.Eval( cbKey ) = uValue },  ;
+                            { || Eval( cbKey ) = uValue },  ;
                             NIL,  ;
                             NIL,  ;
                             TRUE,  ;
                             DBCCON,  ;
                             DBCCUPDATE )
-                        IF ! VODBGoBottom( )
-                            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                        IF ! VoDbGoBottom( )
+                            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                         ENDIF
-                        IF ! VODBSkip( 1 )
-                            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                        IF ! VoDbSkip( 1 )
+                            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                         ENDIF
                     ENDIF
 
 
                 ELSE
                     //PP-040216 lRest requires a logic due to strong typing
-                    lRetCode := SELF:__DBServerEval( { || VODBDelete( ) },  ;
+                    lRetCode := SELF:__DbServerEval( { || VoDbDelete( ) },  ;
                         NIL,  ;
                         NIL,  ;
                         NIL,  ;
@@ -1185,7 +1185,7 @@ PARTIAL CLASS DbServer
 
 
                 IF ! lRetCode
-                    BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                    BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                 ENDIF
 
 
@@ -1251,7 +1251,7 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             IF IsObject(cIndexFileName) .and. __Usual.ToObject(cIndexFileName) IS FileSpec VAR oFs
                 cOrdBag := oFs:FullPath
             ELSE
@@ -1261,7 +1261,7 @@ PARTIAL CLASS DbServer
 
             IF IsNumeric( uOrder )
                 cOrder := NIL
-                VODBOrderInfo( DBOI_NAME, "", uOrder, REF cOrder )
+                VoDbOrderInfo( DBOI_NAME, "", uOrder, REF cOrder )
                 uOrder := cOrder
             ELSEIF ! IsString( uOrder )
                 BREAK DbError{ SELF, __FUNCTION__, EG_ARG, VO_Sprintf( __CAVOSTR_DBFCLASS_INVALIDORDER ) }
@@ -1269,8 +1269,8 @@ PARTIAL CLASS DbServer
 
 
             lRetCode := TRUE
-            IF ! VODBOrdDestroy( cOrdBag, uOrder )
-                BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+            IF ! VoDbOrdDestroy( cOrdBag, uOrder )
+                BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
             ENDIF
             __DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 
@@ -1304,7 +1304,7 @@ PARTIAL CLASS DbServer
         DBFDebug("Entering "+__ENTITY__)
 #ENDIF
         IF lErrorProcessingSemaphor
-            Functions.Eval( ErrorBlock( ), oError )
+            Eval( ErrorBlock( ), oError )
         ELSE
             lErrorProcessingSemaphor := TRUE
 
@@ -1312,7 +1312,7 @@ PARTIAL CLASS DbServer
             IF ! IsInstanceOfUsual( oError, #Error )
                 cErrorValType := ValType( oError )
                 oErr := oError := Error{ }
-                oErr:GenCode := EG_ERRORBUILD
+                oErr:Gencode := EG_ERRORBUILD
                 oErr:Description := VO_Sprintf( __CAVOSTR_DBFCLASS_BADERROROBJECT, cErrorValType )
             ELSE
                 oErr := oError
@@ -1334,7 +1334,7 @@ PARTIAL CLASS DbServer
                 Send(aClients[1],#Error, oErr )
             ELSE
                 lErrorProcessingSemaphor := FALSE
-                Functions.Eval( ErrorBlock( ), oErr )
+                Eval( ErrorBlock( ), oErr )
             ENDIF
 
 
@@ -1371,7 +1371,7 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             IF SELF:Notify( NOTIFYINTENTTOMOVE )
                 IF ! IsNil( cbForBlock ) .OR. ! IsNil( cbWhileBlock ) .OR. ! IsNil( uScope )
                     IF IsString( cbForBlock )
@@ -1387,7 +1387,7 @@ PARTIAL CLASS DbServer
                             lRestOfFile := uScope
                         ENDIF
                     ENDIF
-                    lRetCode := SELF:__DBServerEval( cbBlock, cbForBlock,  ;
+                    lRetCode := SELF:__DbServerEval( cbBlock, cbForBlock,  ;
                         cbWhileBlock,  ;
                         nNextCount,  ;
                         NIL,  ;
@@ -1397,7 +1397,7 @@ PARTIAL CLASS DbServer
 
 
                 ELSEIF lActiveScope
-                    lRetCode := SELF:__DBServerEval( cbBlock, cbStoredForBlock,  ;
+                    lRetCode := SELF:__DbServerEval( cbBlock, cbStoredForBlock,  ;
                         cbStoredWhileBlock,  ;
                         nStoredNextCount,  ;
                         NIL,  ;
@@ -1409,28 +1409,28 @@ PARTIAL CLASS DbServer
                 ELSEIF lSelectionActive
                     uValue := uSelectionValue
                     cbKey := cbSelectionIndexingExpression
-                    IF VODBSeek( uSelectionValue, FALSE )
-                        lRetCode := SELF:__DBServerEval( cbBlock,  ;
+                    IF VoDbSeek( uSelectionValue, FALSE )
+                        lRetCode := SELF:__DbServerEval( cbBlock,  ;
                             NIL,  ;
-                            { || Functions.Eval( cbKey ) = uValue },  ;
+                            { || Eval( cbKey ) = uValue },  ;
                             NIL,  ;
                             NIL,  ;
                             TRUE,  ;
                             DBCCON,  ;
                             DBCCUPDATE )
                         siSelectionStatus := DBSELECTIONEOF
-                        IF ! VODBGoBottom( )
-                            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                        IF ! VoDbGoBottom( )
+                            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                         ENDIF
-                        IF ! VODBSkip( 1 )
-                            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                        IF ! VoDbSkip( 1 )
+                            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                         ENDIF
                     ENDIF
 
 
                 ELSE
                     //PP-031124 Pass FALSE for 6th parameter instead of NIL since it is strongly typed as LOGIC
-                    lRetCode := SELF:__DBServerEval( cbBlock,  ;
+                    lRetCode := SELF:__DbServerEval( cbBlock,  ;
                         NIL,  ;
                         NIL,  ;
                         NIL,  ;
@@ -1442,7 +1442,7 @@ PARTIAL CLASS DbServer
 
 
                 IF ! lRetCode
-                    BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                    BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                 ENDIF
 
 
@@ -1508,7 +1508,7 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             IF PCount() != 1
                 BREAK DbError{ SELF, __FUNCTION__, EG_ARG, ;
                     "Incorrect number of arguments", uField, NULL_STRING}
@@ -1521,14 +1521,14 @@ PARTIAL CLASS DbServer
             ENDIF
 
 
-            IF wpos > 0  .AND. nEffectiveCCMode == ccOptimistic .AND. lCCOptimisticRecChg .AND. ;
-                    aCurrentBuffer[BUFFER_IS_CHANGED, wpos] .AND. ! aOriginalBuffer[BUFFER_IS_BLOB, wpos]
+            IF wPos > 0  .AND. nEffectiveCCMode == ccOptimistic .AND. lCCOptimisticRecChg .AND. ;
+                    aCurrentBuffer[BUFFER_IS_CHANGED, wPos] .AND. ! aOriginalBuffer[BUFFER_IS_BLOB, wPos]
 
 
-                uRetVal := aCurrentBuffer[BUFFER_VALUE, wpos]
+                uRetVal := aCurrentBuffer[BUFFER_VALUE, wPos]
             ELSE
-                IF ! VODBFieldGet( wpos, REF uRetVal )
-                    BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                IF ! VoDbFieldGet( wPos, REF uRetVal )
+                    BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                 ENDIF
             ENDIF
 
@@ -1566,13 +1566,13 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             IF (wPos := __GetFldPos( uField, wFieldCount )) = 0
                 BREAK DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ), uField, "uField" }
             ENDIF
             bRetVal := NULL
-            IF ! VODBFieldGetBytes( wpos, REF bRetVal )
-                BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+            IF ! VoDbFieldGetBytes( wPos, REF bRetVal )
+                BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
             ENDIF
 
 
@@ -1614,19 +1614,19 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             IF (wPos := __GetFldPos( uField, wFieldCount )) == 0
                 BREAK DbError{ SELF, __FUNCTION__, EG_ARG,  ;
                     __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ), uField, "uField" }
             ELSE
                 IF nEffectiveCCMode == ccOptimistic .AND. lCCOptimisticRecChg .AND.  ;
-                        aCurrentBuffer[BUFFER_IS_CHANGED, wpos] .AND. ! aOriginalBuffer[BUFFER_IS_BLOB, wpos]
+                        aCurrentBuffer[BUFFER_IS_CHANGED, wPos] .AND. ! aOriginalBuffer[BUFFER_IS_BLOB, wPos]
 
 
-                    uRetVal := aCurrentBuffer[BUFFER_VALUE, wpos]
+                    uRetVal := aCurrentBuffer[BUFFER_VALUE, wPos]
                 ELSE
-                    IF ! VODBFieldGet( wPos, REF uRetVal )
-                        BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                    IF ! VoDbFieldGet( wPos, REF uRetVal )
+                        BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                     ENDIF
                 ENDIF
             ENDIF
@@ -1671,7 +1671,7 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             wPos := __GetFldPos( uField, wFieldCount )
             __DBSSetSelect( dwCurrentWorkArea )  //SE-060527
             IF wPos > 0
@@ -1718,17 +1718,17 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
-            IF kfieldInfoType == DBS_BLOB_DIRECT_LEN .OR.  ;
-                    kfieldInfoType == DBS_BLOB_DIRECT_TYPE
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+            IF kFieldInfoType == DBS_BLOB_DIRECT_LEN .OR.  ;
+                    kFieldInfoType == DBS_BLOB_DIRECT_TYPE
                 nPos := uField
             ELSE
                 nPos := __GetFldPos( uField, wFieldCount )
             ENDIF
 
 
-            IF ! VODBFieldInfo( kFieldInfoType, nPos, REF uFieldVal )
-                BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+            IF ! VoDbFieldInfo( kFieldInfoType, nPos, REF uFieldVal )
+                BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
             ENDIF
             __DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 
@@ -1737,7 +1737,7 @@ PARTIAL CLASS DbServer
             oErrorInfo := oError
             SELF:Error( oErrorInfo, __FUNCTION__ )
             __DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-            ufieldVal := NIL
+            uFieldVal := NIL
         END SEQUENCE
 
 
@@ -1764,13 +1764,13 @@ PARTIAL CLASS DbServer
 #ENDIF
 
 
-        VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+        VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
             IF nFieldPosition > 0 .AND. nFieldPosition <= wFieldCount
-                uRetVal := Functions.FieldName( nFieldPosition )
+                uRetVal := FieldName( nFieldPosition )
             ELSE
                 SELF:__SetStatusHL ( __FUNCTION__, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ) )
                 uRetVal := NULL_STRING
@@ -1812,7 +1812,7 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             uRetVal := __GetFldPos( cFieldName, wFieldCount )
             __DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 
@@ -1850,7 +1850,7 @@ PARTIAL CLASS DbServer
 #ENDIF
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             IF PCount() != 2
                 BREAK DbError{ SELF, __FUNCTION__, EG_ARG, ;
                     "Incorrect number of arguments", uField, NULL_STRING}
@@ -1859,7 +1859,7 @@ PARTIAL CLASS DbServer
                 BREAK DbError{ SELF, __FUNCTION__, EG_ARG, ;
                     __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ), uField, "uField" }
             ENDIF
-            IF nEffectiveCCMode == ccOptimistic .AND. VODBRecno() <= VODBLastRec()
+            IF nEffectiveCCMode == ccOptimistic .AND. VoDbRecno() <= VoDbLastRec()
                 //type checking for optimistic locking
                 IF ! __CheckFieldType(REF uValue, aStruct[wPos], REF uError)
                     ASize(uError, 3)
@@ -1867,25 +1867,25 @@ PARTIAL CLASS DbServer
                 ENDIF
 
 
-                IF ! VODBRecordInfo( DBRI_LOCKED, 0, REF uRLock )
-                    BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                IF ! VoDbRecordInfo( DBRI_LOCKED, 0, REF uRLock )
+                    BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                 ENDIF
                 IF ! uRLock
-                    aCurrentBuffer[BUFFER_VALUE, wpos]		:= uValue
-                    aCurrentBuffer[BUFFER_IS_CHANGED, wpos]	:= TRUE
+                    aCurrentBuffer[BUFFER_VALUE, wPos]		:= uValue
+                    aCurrentBuffer[BUFFER_IS_CHANGED, wPos]	:= TRUE
                     lCCOptimisticRecChg := TRUE
                 ELSE
-                    IF ! VODBFieldPut( wPos, uValue )
-                        BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                    IF ! VoDbFieldPut( wPos, uValue )
+                        BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                     ENDIF
                 ENDIF
             ELSE
-                IF ! VODBFieldPut( wPos, uValue )
-                    BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                IF ! VoDbFieldPut( wPos, uValue )
+                    BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                 ENDIF
             ENDIF
-            symFieldName := Functions.FieldSym(wPos)
-            SELF:Notify( NotifyFieldChange, symFieldName )
+            symFieldName := FieldSym(wPos)
+            SELF:Notify( NOTIFYFIELDCHANGE, symFieldName )
             __DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 
 
@@ -1918,17 +1918,17 @@ PARTIAL CLASS DbServer
 #ENDIF
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             IF (wPos := __GetFldPos( uField, wFieldCount )) = 0
                 BREAK DbError{ SELF, __FUNCTION__, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ), uField, "uField" }
             ENDIF
 
 
-            IF ! VODBFieldPutBytes( wPos, bValue )
-                BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+            IF ! VoDbFieldPutBytes( wPos, bValue )
+                BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
             ENDIF
-            symFieldName := Functions.FieldSym(wPos)
-            SELF:Notify( NotifyFieldChange, symFieldName )
+            symFieldName := FieldSym(wPos)
+            SELF:Notify( NOTIFYFIELDCHANGE, symFieldName )
             __DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 
 
@@ -1964,7 +1964,7 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             wPos := __GetFldPos( uField, wFieldCount )
             __DBSSetSelect( dwCurrentWorkArea )  //SE-060527
             IF wPos > 0
@@ -2012,12 +2012,12 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             wPos := __GetFldPos( uField, wFieldCount )
             __DBSSetSelect( dwCurrentWorkArea )  //SE-060527
             IF wPos > 0
                 IF IsNil( aDataFields[wPos] )
-                    aDataFields[wPOS] := SELF:__BuildDataField( aStruct[wPos] )
+                    aDataFields[wPos] := SELF:__BuildDataField( aStruct[wPos] )
                 ENDIF
                 uRetVal := SELF:__DataField(wPos):__FieldSpec:Status
             ELSE
@@ -2060,9 +2060,9 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             IF (wPos := __GetFldPos( uField, wFieldCount )) > 0
-                uRetVal := Functions.FieldSym( wPos )
+                uRetVal := FieldSym( wPos )
             ELSE
                 SELF:__SetStatusHL( __FUNCTION__, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ) )
                 uRetVal := NULL_SYMBOL
@@ -2104,7 +2104,7 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             wPos := __GetFldPos( uField, wFieldCount )
             __DBSSetSelect( dwCurrentWorkArea )  //SE-060527
             IF wPos > 0
@@ -2154,7 +2154,7 @@ PARTIAL CLASS DbServer
 
 
         BEGIN SEQUENCE
-            VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
             lRetCode := __DBSFLock( nTries )
             SELF:__OptimisticFlushNoLock( )
             __DBSSetSelect( dwCurrentWorkArea )  //SE-060527

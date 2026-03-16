@@ -564,7 +564,7 @@ METHOD CopyStructure( cFileName AS STRING, aFieldList := NULL AS ARRAY )   AS LO
         lRetCode := TRUE
 
 
-        aRdds := __RDDList( SELF:cRDDName )
+        aRdds := _RDDList( SELF:cRDDName )
         rddList := __AllocRddList( aRdds )
 
 

@@ -36,7 +36,7 @@ PARTIAL CLASS DbServer INHERIT DataServer
     PROTECT lCCOptimisticRecChg AS LOGIC
     PROTECT aStruct AS ARRAY
     PROTECT aRdds AS ARRAY
-    PROTECT nReTries AS DWORD
+    PROTECT nRetries AS DWORD
     PROTECT oRDD AS XSharp.RDD.IRdd
 
 
@@ -60,13 +60,13 @@ METHOD __AcceptSelectiveRelation( oDBParent AS DbServer, wParentWorkArea AS DWOR
     cbSelectionParentExpression := cbSelection
 
 
-    VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+    VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
 
     cIndexExt := IndexExt( )
 
 
-    IF InStr( "MDX", cIndexExt )
+    IF Instr( "MDX", cIndexExt )
         lSelectionActive := TRUE
         siSelectionStatus := DBSELECTIONNULL
         cbSelectionIndexingExpression := DBSelectionIndex{ SELF, __DBSDBOrderInfo( DBOI_EXPRESSION, "", 0 ), wWorkArea }
@@ -145,25 +145,25 @@ METHOD __ClearLocks( )  AS VOID STRICT
 
 
     CASE nEffectiveCCMode == ccStable
-        IF ! VODBInfo( DBI_IsFLock, REF uVOVal )
-            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+        IF ! VoDbInfo( DBI_ISFLOCK, REF uVOVal )
+            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
         ENDIF
         IF ! uVOVal
-            SELF:Unlock( nLastLock )
+            SELF:UnLock( nLastLock )
         ENDIF
 
 
     CASE nEffectiveCCMode == ccRepeatable
-        IF ! VODBInfo( DBI_IsFLock, REF uVOVal )
-            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+        IF ! VoDbInfo( DBI_ISFLOCK, REF uVOVal )
+            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
         ENDIF
         IF ! uVOVal
-            SELF:Unlock( )
+            SELF:UnLock( )
         ENDIF
 
 
     CASE nEffectiveCCMode == ccFile
-        SELF:Unlock( )
+        SELF:UnLock( )
     ENDCASE
 
 
@@ -197,7 +197,7 @@ METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
     lRestore	:= DbSetRestoreWorkarea(TRUE)
 
 
-    VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+    VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
 
     lErrorFlag := FALSE
@@ -211,7 +211,7 @@ METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
                 oHLStatus := HyperLabel{ #BadNext, __CavoStr( __CAVOSTR_DBFCLASS_BADNEXT_CAPTION ),  ;
                     __CavoStr( __CAVOSTR_DBFCLASS_BADNEXT ) }
                 lInternalError := TRUE
-                BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
             ENDIF
         ELSE
             lLimit := FALSE
@@ -219,7 +219,7 @@ METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
                 oHLStatus := HyperLabel{ #NoGoTop, __CavoStr( __CAVOSTR_DBFCLASS_NOGOTOP_CAPTION ),  ;
                     __CavoStr( __CAVOSTR_DBFCLASS_NOGOTOP ) }
                 lInternalError := TRUE
-                BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
             ENDIF
         ENDIF
 
@@ -231,47 +231,47 @@ METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
 
 
 
-        IF ! VODBInfo( DBI_IsFLock, REF uFLock )
-            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+        IF ! VoDbInfo( DBI_ISFLOCK, REF uFLock )
+            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
         ENDIF
-        DO WHILE ! VODBEof( )
-            IF lWhile .AND. ! Functions.Eval( uCobWhile )
+        DO WHILE ! VoDbEof( )
+            IF lWhile .AND. ! Eval( uCobWhile )
                 EXIT
             ENDIF
-            IF ( ! lFor .OR. Functions.Eval( uCobFor ) ) .AND. lBlock
+            IF ( ! lFor .OR. Eval( uCobFor ) ) .AND. lBlock
                 IF lCC
                     IF nEffectiveCCMode = ccOptimistic
                         IF lCCUpdate .AND. ! uFLock
-                            nCurrRec := VODBRecno( )
-                            VODBRLock( nCurrRec )
+                            nCurrRec := VoDbRecno( )
+                            VoDbRlock( nCurrRec )
                         ENDIF
                     ELSE
                         IF nEffectiveCCMode = ccStable .AND. lCCUpdate .AND. ! uFLock
                             IF nLastLock != 0
-                                VODBUnlock( nLastLock )
+                                VoDbUnlock( nLastLock )
                             ENDIF
-                            nLastLock := VODBRecno( )
-                            IF ! VODBEof( )
-                                lRetCode := VODBRLock( nLastLock )
+                            nLastLock := VoDbRecno( )
+                            IF ! VoDbEof( )
+                                lRetCode := VoDbRlock( nLastLock )
                             ELSE
                                 nLastLock := 0
                             ENDIF
                         ELSEIF nEffectiveCCMode = ccRepeatable
-                            IF ! VODBEof( )
-                                lRetCode := VODBRLock( VODBRecno( ) )
+                            IF ! VoDbEof( )
+                                lRetCode := VoDbRlock( VoDbRecno( ) )
                             ENDIF
                         ENDIF
                     ENDIF
                 ENDIF
 
 
-                uRC := Functions.Eval( uBlock )
+                uRC := Eval( uBlock )
                 IF lCC .AND. nEffectiveCCMode = ccOptimistic .AND. lCCUpdate .AND. ! uFLock
-                    VODBUnlock( nCurrRec )
+                    VoDbUnlock( nCurrRec )
                 ENDIF
 
 
-                IF IsLogic( uRc )
+                IF IsLogic( uRC )
                     lRetCode := lRetCode .AND. uRC
                     IF ! lRetCode
                         EXIT
@@ -285,8 +285,8 @@ METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
             ENDIF
 
 
-            IF ! VODBSkip( 1 )
-                BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+            IF ! VoDbSkip( 1 )
+                BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
             ENDIF
         ENDDO
     RECOVER USING oError
@@ -328,7 +328,7 @@ METHOD __GenerateStatusHL( oError AS  Error) AS HyperLabel STRICT
     IF Len( oError:Description ) > 0
         cDesc += oError:Description
     ELSE
-        cDesc += ErrString( oError:gencode )
+        cDesc += ErrString( oError:Gencode )
     ENDIF
     IF  SLen(oError:SubCodeText) > 0
         cDesc += " ("+oError:SubCodeText+")"
@@ -340,7 +340,7 @@ METHOD __GenerateStatusHL( oError AS  Error) AS HyperLabel STRICT
     ENDIF
 
 
-    oRet := HyperLabel{ oError:FuncSym, AsString( oError:GenCode ), cDesc }
+    oRet := HyperLabel{ oError:FuncSym, AsString( oError:Gencode ), cDesc }
 
 
 #IFDEF __DEBUG__
@@ -359,10 +359,10 @@ METHOD __InitRecordBuf( ) AS VOID STRICT
     DBFDebug("Entering "+__ENTITY__)
 #ENDIF
 
-    VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+    VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
     FOR i := 1 TO SELF:wFieldCount
-        IF VODBFieldGet( i, REF x )
+        IF VoDbFieldGet( i, REF x )
             //RvdH 060928 Mark as BLOB when fieldtype = 'M' and not string
             aOriginalBuffer[BUFFER_VALUE, i] 			:= x
             IF ! IsString(x) .AND. SELF:aStruct[i,DBS_TYPE] == "M"
@@ -371,7 +371,7 @@ METHOD __InitRecordBuf( ) AS VOID STRICT
                 aOriginalBuffer[BUFFER_IS_BLOB, i] 	:= FALSE
             ENDIF
         ELSE
-            // If VODBFieldGet() fails this may be a BLOB field > 64 Kb
+            // If VoDbFieldGet() fails this may be a BLOB field > 64 Kb
             aOriginalBuffer[BUFFER_VALUE, i] 			:= NIL
             aOriginalBuffer[BUFFER_IS_BLOB, i] 		:= TRUE
         ENDIF
@@ -417,7 +417,7 @@ METHOD __NotifyBufferFlush( ) AS VOID STRICT
     FOREACH oChild AS USUAL IN aRelationChildren
         Send(oChild, #__NotifyBufferFlush)
     NEXT  // nChild
-    VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+    VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
     SELF:__OptimisticFlush( )
     __DBSSetSelect( dwCurrentWorkArea  ) //SE-060527
 
@@ -443,25 +443,25 @@ METHOD __OptimisticFlush() AS VOID STRICT
 
 
     IF nEffectiveCCMode == ccOptimistic .AND. lCCOptimisticRecChg
-        nCurRec := VODBRecno( )
+        nCurRec := VoDbRecno( )
 
 
-        IF ! VODBRecordInfo( DBRI_LOCKED, 0, REF uIsRLock )
-            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+        IF ! VoDbRecordInfo( DBRI_LOCKED, 0, REF uIsRLock )
+            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
         ENDIF
 
 
         IF ! uIsRLock
             IF SELF:__RLockVerify( )
-                IF ! VODBInfo( DBI_IsFLock, REF uFLock )
-                    BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                IF ! VoDbInfo( DBI_ISFLOCK, REF uFLock )
+                    BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                 ENDIF
                 FOR w := 1 UPTO wFieldCount
                     cFieldType := SELF:aStruct[w, DBS_TYPE]
                     IF aCurrentBuffer[BUFFER_IS_CHANGED, w] .AND. ! aOriginalBuffer[BUFFER_IS_BLOB, w]
                         uValue := aCurrentBuffer[BUFFER_VALUE, w]
-                        IF ! VODBFieldPut( w, uValue )
-                            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                        IF ! VoDbFieldPut( w, uValue )
+                            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                         ENDIF
                         IF ! uFLock
                             //RvdH 051216 Memo Fields must NOT be padded !
@@ -482,7 +482,7 @@ METHOD __OptimisticFlush() AS VOID STRICT
 
 
                 IF ! uFLock
-                    VODBUnlock( nCurRec )
+                    VoDbUnlock( nCurRec )
                 ENDIF
             ELSE
                 IF oErrorInfo = NULL_OBJECT
@@ -512,13 +512,13 @@ METHOD __OptimisticFlushNoLock( ) AS VOID STRICT
 #IFDEF __DEBUG__
     DBFDebug("Entering "+__ENTITY__)
 #ENDIF
-    // nCurRec := VODBRecno( )      // dcaton 070430 never used
+    // nCurRec := VoDbRecno( )      // dcaton 070430 never used
     IF nEffectiveCCMode == ccOptimistic .AND. lCCOptimisticRecChg
         FOR w := 1 UPTO wFieldCount
             IF aCurrentBuffer[BUFFER_IS_CHANGED, w] .AND. ! aOriginalBuffer[BUFFER_IS_BLOB, w]
                 uValue := aCurrentBuffer[BUFFER_VALUE, w]
-                IF ! VODBFieldPut( w, uValue )
-                    BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+                IF ! VoDbFieldPut( w, uValue )
+                    BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
                 ENDIF
                 aCurrentBuffer[BUFFER_VALUE, w]		:= NIL
                 aCurrentBuffer[BUFFER_IS_CHANGED, w]	:= FALSE
@@ -546,14 +546,14 @@ METHOD __ProcessConcurrency( lBreak AS LOGIC) AS LOGIC STRICT
 
     lError := FALSE
     IF SELF:nEffectiveCCMode = ccStable
-        IF VODBInfo( DBI_IsFLock, REF uVOVal )
+        IF VoDbInfo( DBI_ISFLOCK, REF uVOVal )
             IF ! uVOVal
                 IF nLastLock != 0
-                    VODBUnlock( SELF:nLastLock )
+                    VoDbUnlock( SELF:nLastLock )
                 ENDIF
-                nLastLock := VODBRecno( )
-                IF ! VODBEof( )
-                    lRetCode := VODBRLock( SELF:nLastLock )
+                nLastLock := VoDbRecno( )
+                IF ! VoDbEof( )
+                    lRetCode := VoDbRlock( SELF:nLastLock )
                 ELSE
                     SELF:nLastLock := 0
                 ENDIF
@@ -566,10 +566,10 @@ METHOD __ProcessConcurrency( lBreak AS LOGIC) AS LOGIC STRICT
 
 
     ELSEIF SELF:nEffectiveCCMode = ccRepeatable
-        IF ! VODBEof( )
-            IF VODBInfo( DBI_IsFLock, REF uVOVal )
+        IF ! VoDbEof( )
+            IF VoDbInfo( DBI_ISFLOCK, REF uVOVal )
                 IF ! uVOVal
-                    lRetCode := VODBRLock( VODBRecno( ) )
+                    lRetCode := VoDbRlock( VoDbRecno( ) )
                 ENDIF
             ELSE
                 lError := TRUE
@@ -581,7 +581,7 @@ METHOD __ProcessConcurrency( lBreak AS LOGIC) AS LOGIC STRICT
 
 
     IF lBreak .AND. (lError .OR. ! lRetCode) .AND. CanBreak()
-        BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+        BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
     ENDIF
 
 
@@ -607,19 +607,19 @@ METHOD __RLockVerify( ) AS LOGIC STRICT
     DBFDebug("Entering "+__ENTITY__)
 #ENDIF
     lRetCode := TRUE
-    siCurrentRec := VODBRecno( )
-    IF ! VODBInfo( DBI_IsFLock, REF uVOVal )
-        BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+    siCurrentRec := VoDbRecno( )
+    IF ! VoDbInfo( DBI_ISFLOCK, REF uVOVal )
+        BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
     ENDIF
-    IF ! VODBRecordInfo( DBRI_LOCKED, 0, REF uWasLocked )
-        BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+    IF ! VoDbRecordInfo( DBRI_LOCKED, 0, REF uWasLocked )
+        BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
     ENDIF
     uWasLocked := uWasLocked .OR. uVOVal
     IF ! uWasLocked
-        lRetCode := VODBRLock( siCurrentRec )
+        lRetCode := VoDbRlock( siCurrentRec )
     ENDIF
     IF ! lRetCode
-        BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+        BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
     ELSE
         // Store our 'current record'
         aRLockVerifyBuffer := ArrayNew( wFieldCount )
@@ -628,7 +628,7 @@ METHOD __RLockVerify( ) AS LOGIC STRICT
         NEXT
         // Get the current record buffer from disk and compare the fields
         // in the current buffer with our values.
-        VODBBuffRefresh( )
+        VoDbBuffRefresh( )
         FOR w := 1 UPTO wFieldCount
             uValue := __DBSFieldGet( w )
             //
@@ -662,14 +662,14 @@ METHOD __RLockVerify( ) AS LOGIC STRICT
         NEXT
         // restore the 'current record' in the buffer
         FOR w := 1 UPTO wFieldCount
-            IF ! VODBFieldPut( w, aRLockVerifyBuffer[w] )
-                BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+            IF ! VoDbFieldPut( w, aRLockVerifyBuffer[w] )
+                BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
             ENDIF
         NEXT
 
 
         IF ! lRetCode .AND. ! uWasLocked
-            VODBUnlock( siCurrentRec )
+            VoDbUnlock( siCurrentRec )
         ENDIF
     ENDIF
 
@@ -720,7 +720,7 @@ METHOD __SetStatusHL( uFuncSym AS USUAL, uGenCode AS USUAL, uMessage AS USUAL ) 
 /// <exclude />
 METHOD __SetupLocks( )  AS VOID STRICT
     LOCAL w AS DWORD
-    LOCAL uFlock AS USUAL
+    LOCAL uFLock AS USUAL
 
 
 #IFDEF __DEBUG__
@@ -742,11 +742,11 @@ METHOD __SetupLocks( )  AS VOID STRICT
 
 
     CASE nEffectiveCCMode == ccStable .OR. nEffectiveCCMode == ccRepeatable
-        IF ! VODBInfo( DBI_IsFLock, REF uFLock )
-            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+        IF ! VoDbInfo( DBI_ISFLOCK, REF uFLock )
+            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
         ENDIF
         IF ! uFLock
-            nLastLock := SELF:Recno
+            nLastLock := SELF:RecNo
             IF ! SELF:RLOCK( nLastLock )
                 nLastLock := 0
                 oHLStatus := SELF:Status
@@ -784,7 +784,7 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD )
     LOCAL oError AS USUAL
     LOCAL symTemp AS SYMBOL
     LOCAL cTemp AS STRING
-    LOCAL rddList AS _RDDLIST
+    LOCAL rddList AS _RddList
     LOCAL uTemp AS USUAL
     LOCAL aField AS ARRAY
     LOCAL uProps AS USUAL
@@ -802,7 +802,7 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD )
     lErrorFlag := FALSE
     BEGIN SEQUENCE
         siSuspendNotification := 0
-        dwCurrentWorkArea := VODBGetSelect( )
+        dwCurrentWorkArea := VoDbGetSelect( )
 
 
         IF  IsObject(oFile) .AND. __Usual.ToObject(oFile) IS FileSpec VAR oFS
@@ -904,28 +904,28 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD )
         oHLStatus := NIL
 
 
-        SELF:wWorkArea := VODBSetSelect( -1 )
+        SELF:wWorkArea := VoDbSetSelect( -1 )
 
 
         IF ! ( IsArray( xDriver ) .OR. IsString( xDriver ) )
-            xDriver := RDDName( )
+            xDriver := RddName( )
         ENDIF
 
 
-        SELF:aRdds := __RddList( xDriver, aRDD )
+        SELF:aRdds := __RDDList( xDriver, aRDD )
         rddList := __AllocRddList( aRdds )
 
 
-        lRetCode := VODBUseArea( FALSE, rddList, oFileSpec:FullPath, Symbol2String( symAlias ),  ;
+        lRetCode := VoDbUseArea( FALSE, rddList, oFileSpec:FullPath, Symbol2String( symAlias ),  ;
             lShared, lReadOnly )
 
 
         IF ! lRetCode
-            BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+            BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
         ENDIF
 
 
-        SELF:cRDDName := RDDName( )
+        SELF:cRDDName := RddName( )
         SELF:oRDD     := (XSharp.RDD.IRdd) DbInfo(DBI_RDD_OBJECT)
 
 
@@ -943,13 +943,13 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD )
 
         FOR w := 1 UPTO wFieldCount
             uProps := NIL
-            IF ! VODBFieldInfo( DBS_PROPERTIES, w, REF uProps )
-                BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+            IF ! VoDbFieldInfo( DBS_PROPERTIES, w, REF uProps )
+                BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
             ENDIF
             wProps := uProps
             aField := ArrayCreate( wProps )
             FOR n := 1 UPTO wProps
-                VODBFieldInfo( n, w, REF uTemp )
+                VoDbFieldInfo( n, w, REF uTemp )
                 aField[n] := uTemp
             NEXT
             aStruct[w] := aField
@@ -972,7 +972,7 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD )
     RECOVER USING oError
         oErrorInfo := oError
         IF Used( )
-            VODBCloseArea( )
+            VoDbCloseArea( )
         ENDIF
         wWorkArea := 0
         __DBSSetSelect(dwCurrentWorkArea) //SE-060527
@@ -982,7 +982,7 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD )
     END SEQUENCE
 
 
-    SELF:nReTries := LockTries( )
+    SELF:nRetries := LockTries( )
 #IFDEF __DEBUG__
     DBFDebug("Leaving "+__ENTITY__)
 #ENDIF

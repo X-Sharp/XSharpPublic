@@ -457,7 +457,15 @@ partial class SQLRDD
         // save PageSize
         var nPageSize := SELF:_oTd:PageSize
         SELF:_oTd:PageSize := 1
+        
+        if seekInfo:Last
+            CurrentOrder:Descending := !CurrentOrder:Descending
+        endif
         self:_OpenTable(cSeekWhere)
+        if seekInfo:Last
+            CurrentOrder:Descending := !CurrentOrder:Descending
+        endif
+        
         SELF:_oTd:PageSize := nPageSize
         IF SELF:DataTable:Rows:Count = 0
             RETURN SELF:GoTo(0)
